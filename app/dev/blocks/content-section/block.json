@@ -1,7 +1,6 @@
 {
   "name": "divlabs/content-section",
   "title": "Content Section",
-  "category": "divlabs",
   "description": "Display a content section with inner blocks",
   "editorScript": "file:./js/edit.js",
   "viewScript": "file:./js/block.js",

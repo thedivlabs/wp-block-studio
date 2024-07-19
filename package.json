@@ -1,11 +1,15 @@
 {
   "main": "index.js",
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@wordpress/create-block": "^4.46.0",
-    "@wordpress/scripts": "^28.3.0"
+    "@wordpress/scripts": "^28.3.0",
+    "tailwindcss": "^3.4.6"
   },
   "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start --webpack-src-dir=/app/dev/src/ --output-path=app/public/wp-content/themes/wp-block-studio/dist/js/"
+    "wp": "wp-scripts start --webpack-src-dir=./app/dev/src/ --output-path=./app/public/wp-content/themes/wp-block-studio/dist/js/",
+    "tailwind": "tailwindcss -i ./app/dev/scss/theme.scss -o ./app/public/wp-content/themes/wp-block-studio/dist/css/theme.min.css --watch --minify",
+    "start": "npm run wp & npm run tailwind",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

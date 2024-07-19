@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@wordpress/scripts": "^28.3.0"
+  }
+}

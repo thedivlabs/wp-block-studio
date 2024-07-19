@@ -1,10 +1,11 @@
 {
   "main": "index.js",
   "dependencies": {
+    "@wordpress/create-block": "^4.46.0",
     "@wordpress/scripts": "^28.3.0"
   },
   "scripts": {
     "build": "wp-scripts build",
-    "start": "wp-scripts start --webpack-src-dir=/app/dev/src --output-path=app/public/wp-content/themes/wp-block-studio/dist/js/"
+    "start": "wp-scripts start --webpack-src-dir=/app/dev/src/ --output-path=app/public/wp-content/themes/wp-block-studio/dist/js/"
   }
 }

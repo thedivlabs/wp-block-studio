@@ -1,9 +1,12 @@
 {
-  "name": "acf/content-section",
+  "name": "divlabs/content-section",
   "title": "Content Section",
   "category": "divlabs",
   "description": "Display a content section with inner blocks",
-  "editorScript": "file:./index.js",
+  "editorScript": "file:./edit.js",
+  "viewScript": "file:./index.js",
+  "style": "file:./block.css",
+  "render": "file:./block.php",
   "supports": {
     "innerBlocks": true,
     "color": {
@@ -45,10 +48,7 @@
       "name": "block",
       "label": "Block"
     }
-  ],
-  "acf": {
-    "mode": "preview"
-  }
+  ]
 }
 
 

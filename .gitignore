@@ -20,5 +20,6 @@ package-lock.json
 !app/public/wp-content/themes/wp-block-studio/
 !app/public/wp-content/themes/wp-block-studio/**
 app/public/wp-content/themes/wp-block-studio/dist
+app/public/wp-content/themes/wp-block-studio/blocks
 app/public/wp-content/themes/wp-block-studio/**/dist
 app/public/wp-content/themes/wp-block-studio/**/*.min.*

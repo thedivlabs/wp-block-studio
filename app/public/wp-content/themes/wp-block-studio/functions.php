@@ -7,5 +7,5 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 add_action( 'init', function () {
-	register_block_type( __DIR__ . '/dist/content-section' );
+	register_block_type( get_stylesheet_directory() . '/blocks/content-section/' );
 } );

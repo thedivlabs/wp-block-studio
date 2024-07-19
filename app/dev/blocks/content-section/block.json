@@ -3,9 +3,9 @@
   "title": "Content Section",
   "category": "divlabs",
   "description": "Display a content section with inner blocks",
-  "editorScript": "file:./edit.js",
-  "viewScript": "file:./index.js",
-  "style": "file:./block.css",
+  "editorScript": "file:./js/edit.js",
+  "viewScript": "file:./js/block.js",
+  "style": "file:./css/block.scss",
   "render": "file:./block.php",
   "supports": {
     "innerBlocks": true,

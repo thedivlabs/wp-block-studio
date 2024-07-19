@@ -1,20 +1,22 @@
 import {useBlockProps} from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
-import ServerSideRender from '@wordpress/server-side-render'
 import metadata from "../block.json"
 
 registerBlockType(metadata.name, {
-    edit: (props) => {
+    edit: ( { attributes, setAttributes, isSelected } ) => {
+        const blockProps = useBlockProps();
+
+        const { content, mySetting } = attributes;
+
         return (
-            <>
-                <ServerSideRender
-                    block={metadata.name}
-                />
-            </>
+            <div { ...blockProps }>
+                { content }
+            </div>
         );
     },
-    save() {
-        return null; // Nothing to save here..
+    save: ()=> {
+        const blockProps = useBlockProps.save();
+        return <div { ...blockProps }> Your block. </div>;
     }
 })
 

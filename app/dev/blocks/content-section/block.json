@@ -3,9 +3,11 @@
   "title": "Content Section",
   "description": "Display a content section with inner blocks",
   "editorScript": "file:./js/edit.js",
-  "viewScript": "file:./js/block.js",
-  "style": "file:./css/block.scss",
-  "render": "file:./block.php",
+  "attributes": {
+    "content": {
+      "type": "string"
+    }
+  },
   "supports": {
     "innerBlocks": true,
     "color": {

@@ -1,1 +1,1 @@
-console.log('block scripts');
+console.log('qqqq');

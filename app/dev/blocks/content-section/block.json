@@ -2,50 +2,10 @@
   "name": "wpbs/content-section",
   "title": "Content Section",
   "description": "Display a content section with inner blocks",
+  "viewScript": "file:./js/block.js",
   "editorScript": "file:./js/edit.js",
   "style": "file:./css/block.scss",
-  "supports": {
-    "innerBlocks": true,
-    "color": {
-      "background": true,
-      "text": true,
-      "link": false,
-      "gradients": true,
-      "__experimentalSkipSerialization": true
-    },
-    "spacing": {
-      "blockGap": true,
-      "padding": true,
-      "margin": true,
-      "__experimentalSkipSerialization": true
-    }
-  },
-  "styles": [
-    {
-      "name": "split",
-      "label": "Split"
-    },
-    {
-      "name": "card",
-      "label": "Card"
-    },
-    {
-      "name": "card-reverse",
-      "label": "Card Reverse"
-    },
-    {
-      "name": "sidebar",
-      "label": "Sidebar"
-    },
-    {
-      "name": "sidebar-reverse",
-      "label": "Sidebar Reverse"
-    },
-    {
-      "name": "block",
-      "label": "Block"
-    }
-  ]
+  "icon": "editor-kitchensink"
 }
 
 

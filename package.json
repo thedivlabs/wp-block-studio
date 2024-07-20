@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.13",
     "@wordpress/block-editor": "^13.3.0",
     "@wordpress/blocks": "^13.3.0",
@@ -7,12 +8,26 @@
     "@wordpress/create-block": "^4.46.0",
     "@wordpress/scripts": "^28.3.0",
     "@wordpress/server-side-render": "^5.3.0",
-    "tailwindcss": "^3.4.6"
+    "gulp": "^5.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.77.8",
+    "webpack-stream": "^7.0.0"
   },
   "scripts": {
-    "wp": "wp-scripts start --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/ --watch",
-    "tailwind": "tailwindcss -i ./app/dev/scss/theme.scss -o ./app/public/wp-content/themes/wp-block-studio/dist/css/theme.min.css --watch --minify",
+    "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/ --watch",
     "start": "npm run wp & npm run tailwind",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tailwind": "tailwindcss -i ./app/dev/scss/theme.scss -o ./app/public/wp-content/themes/wp-block-studio/dist/css/theme.min.css --minify"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.39",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.0",
+    "tailwindcss": "^3.4.6"
   }
 }

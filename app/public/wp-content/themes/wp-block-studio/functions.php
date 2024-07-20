@@ -26,6 +26,6 @@ add_action( 'init', function () {
 } );
 
 add_action( 'wp_enqueue_scripts', function () {
-	wp_register_style( 'wpbs-theme', get_stylesheet_directory_uri() . '/dist/css/theme.min.css' );
+	wp_register_style( 'wpbs-theme', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
 	wp_enqueue_style( 'wpbs-theme' );
 } );

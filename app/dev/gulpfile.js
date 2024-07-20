@@ -34,7 +34,7 @@ gulp.task('theme_css', function () {
 
 gulp.task('blocks_css', function () {
     return gulp.src([
-        './blocks/**/scss/block.scss'
+        './blocks/**/css/block.scss'
     ], {base: "."})
         .pipe(sass({
             includePaths: scss_include_paths,

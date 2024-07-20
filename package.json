@@ -10,7 +10,7 @@
     "tailwindcss": "^3.4.6"
   },
   "scripts": {
-    "wp": "wp-scripts start --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/",
+    "wp": "wp-scripts start --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/ --watch",
     "tailwind": "tailwindcss -i ./app/dev/scss/theme.scss -o ./app/public/wp-content/themes/wp-block-studio/dist/css/theme.min.css --watch --minify",
     "start": "npm run wp & npm run tailwind",
     "test": "echo \"Error: no test specified\" && exit 1"

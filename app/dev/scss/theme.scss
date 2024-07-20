@@ -1,8 +1,4 @@
-@tailwind base;
-@layer base {
-  @import "core/base";
-}
-@tailwind components;
-@tailwind utilities;
-
+@import "core/base.scss";
+@import "core/components.scss";
+@import "core/utilities.scss";
 

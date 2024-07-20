@@ -1,7 +1,12 @@
-body {
-  padding:0 !important;
-  margin: 0 !important;
-  background: darkcyan;
-  color:white;
+@import 'tailwindcss/base';
+@layer base {
+  body {
+    padding:0 !important;
+    margin: 0 !important;
+    background: darkcyan;
+    color:white;
+  }
 }
+
+
 

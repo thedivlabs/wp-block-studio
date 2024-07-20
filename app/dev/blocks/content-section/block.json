@@ -1,8 +1,9 @@
 {
-  "name": "divlabs/content-section",
+  "name": "wpbs/content-section",
   "title": "Content Section",
   "description": "Display a content section with inner blocks",
   "editorScript": "file:./js/edit.js",
+  "style": "file:./css/block.scss",
   "supports": {
     "innerBlocks": true,
     "color": {

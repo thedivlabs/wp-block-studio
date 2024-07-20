@@ -1,15 +1,10 @@
-
-
-import {useBlockProps,InspectorControls,RichText} from "@wordpress/block-editor"
+import {useBlockProps,InspectorControls,RichText,InnerBlocks} from "@wordpress/block-editor"
 import {SelectControl,ToggleControl,PanelBody} from "@wordpress/components"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
 registerBlockType(metadata.name, {
     attributes: {
-        content: {
-            type: 'string'
-        },
         toggleField: {
             type: 'boolean'
         },
@@ -20,14 +15,9 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes}) => {
         const blockProps = useBlockProps();
         const {
-            content,
             toggleField,
             selectField,
         } = attributes;
-
-        function onChangeContent( newContent ) {
-            setAttributes( { content: newContent } );
-        }
 
         function onChangeToggleField( newValue ) {
             setAttributes( { toggleField: newValue } );
@@ -61,25 +51,22 @@ registerBlockType(metadata.name, {
                     </PanelBody>
                 </InspectorControls>
 
-                <RichText
-                    { ...blockProps }
-                    key="editable"
-                    tagName="p"
-                    onChange={ onChangeContent }
-                    value={ content }
-                />
+                <section { ...blockProps } className={'wpbs-content-section'}>
+                    <div className={'container wpbs-container'}>
+                        <InnerBlocks />
+                    </div>
+                </section>
             </>
         )
     },
-    save: ({attributes}) =>{
-        const {
-            content,
-        } = attributes;
+    save: () =>{
         const blockProps = useBlockProps.save();
 
         return (
             <section { ...blockProps } className={'wpbs-content-section'}>
-                <RichText.Content value={ content } tagName={'div'} className={'container wpbs-container'} />
+                <div className={'container wpbs-container'}>
+                    <InnerBlocks.Content />
+                </div>
             </section>
         );
     }

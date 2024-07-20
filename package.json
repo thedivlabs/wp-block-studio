@@ -8,26 +8,21 @@
     "@wordpress/create-block": "^4.46.0",
     "@wordpress/scripts": "^28.3.0",
     "@wordpress/server-side-render": "^5.3.0",
-    "css-loader": "^7.1.2",
     "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-minify": "^3.1.0",
     "gulp-postcss": "^10.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
-    "postcss-loader": "^8.1.1",
-    "postcss-nested": "^6.2.0",
     "postcss-nesting": "^12.1.5",
-    "postcss-preset-env": "^9.6.0",
     "sass": "^1.77.8",
-    "style-loader": "^4.0.0",
     "webpack-stream": "^7.0.0"
   },
   "scripts": {
     "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/ --watch",
     "start": "npm run wp & npm run tailwind",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tailwind": "postcss ./app/dev/scss/theme.scss --use autoprefixer -o ./app/public/wp-content/themes/wp-block-studio/dist/css/theme.min.css build --watch"
+    "tailwind": "postcss -c ./app/dev/postcss.config.js -i ./app/dev/scss/theme.scss -o ./app/public/wp-content/themes/wp-block-studio/dist/css/theme.min.css --watch --minify"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",

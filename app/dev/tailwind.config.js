@@ -1,6 +1,6 @@
 module.exports = {
   content: [
-      './app/dev/**/*.{js,scss}',
+      './**/*.{js,scss}',
   ],
   theme: {
     extend: {},

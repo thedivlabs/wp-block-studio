@@ -3,11 +3,6 @@
   "title": "Content Section",
   "description": "Display a content section with inner blocks",
   "editorScript": "file:./js/edit.js",
-  "attributes": {
-    "content": {
-      "type": "string"
-    }
-  },
   "supports": {
     "innerBlocks": true,
     "color": {

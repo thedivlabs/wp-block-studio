@@ -7,6 +7,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
 registerBlockType(metadata.name, {
+    apiVersion: 3,
     supports:{
         innerBlocks:true,
         color:{
@@ -66,6 +67,7 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps({
+            className: 'wpbs-content-section w-full',
             style:{
 
             }
@@ -123,7 +125,7 @@ registerBlockType(metadata.name, {
                     </PanelBody>
                 </InspectorControls>
 
-                <section { ...blockProps } className={'wpbs-content-section w-full'}>
+                <section { ...blockProps }>
                     <div className={'container wpbs-container'}>
                         <InnerBlocks />
                     </div>
@@ -132,10 +134,12 @@ registerBlockType(metadata.name, {
         )
     },
     save: () =>{
-        const blockProps = useBlockProps.save();
+        const blockProps = useBlockProps.save({
+            className: 'wpbs-content-section w-full',
+        });
 
         return (
-            <section { ...blockProps } className={'wpbs-content-section w-full'}>
+            <section { ...blockProps }>
                 <div className={'container wpbs-container'}>
                     <InnerBlocks.Content />
                 </div>

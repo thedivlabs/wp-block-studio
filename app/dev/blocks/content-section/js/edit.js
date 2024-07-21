@@ -7,6 +7,7 @@ import {SelectControl, ToggleControl, PanelBody, Button} from "@wordpress/compon
 import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
+import AttachmentImage from '../../../js/components/AttachmentImage'
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -171,8 +172,6 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: 'wpbs-content-section w-full',
         });
-
-        const {attributes} = props;
 
         return (
             <section {...blockProps}>

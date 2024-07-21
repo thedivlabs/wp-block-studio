@@ -3,11 +3,10 @@ import {
     __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
     __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
 } from "@wordpress/block-editor"
-import {SelectControl, ToggleControl, PanelBody, Button} from "@wordpress/components"
+import {SelectControl, ToggleControl, PanelBody, Button, BaseControl, useBaseControlProps} from "@wordpress/components"
 import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import AttachmentImage from '../../../js/components/AttachmentImage'
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -94,6 +93,7 @@ registerBlockType(metadata.name, {
             setAttributes({background_image: {}});
         }
 
+
         return (
             <>
                 <InspectorControls group="color">
@@ -112,36 +112,39 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <InspectorControls>
                     <PanelBody title={'Settings Test'}>
-                        <MediaUpload
-                            onSelect={(media) =>
-                                setAttributes({
-                                    background_image: {
-                                        id: media.id,
-                                        url: media.url
-                                    }
-                                })
-                            }
-                            allowedTypes={['image']}
-                            value={background_image}
-                            render={({open}) => {
-                                if(background_image && 'url' in background_image) {
-                                    return <img src={background_image.url}
-                                                onClick={toggle_image_field}
-                                                style={{
-                                                    cursor:'pointer',
-                                                    width: '60px',
-                                                    objectFit: 'cover',
-                                                    height: '60px'
-                                                }}/>;
-                                } else {
-                                    return <Button onClick={open}>
-                                        Choose Image
-                                    </Button>
+                        <BaseControl >
+                            <MediaUpload
+                                onSelect={(media) =>
+                                    setAttributes({
+                                        background_image: {
+                                            id: media.id,
+                                            url: media.url
+                                        }
+                                    })
                                 }
+                                allowedTypes={['image']}
+                                value={background_image}
+                                render={({open}) => {
+                                    if(background_image && 'url' in background_image) {
+                                        return <img src={background_image.url}
+                                                    onClick={toggle_image_field}
+                                                    style={{
+                                                        cursor:'pointer',
+                                                        width: '60px',
+                                                        objectFit: 'cover',
+                                                        height: '60px'
+                                                    }}/>;
+                                    } else {
+                                        return <Button onClick={open} style={{border: '1px solid gray'}}>
+                                            Choose Image
+                                        </Button>
+                                    }
 
 
-                            }}
-                        />
+                                }}
+                            />
+                        </BaseControl>
+
 
                         <ToggleControl
                             label="Toggle Field"

@@ -1,28 +1,30 @@
-import {useBlockProps,InspectorControls,RichText,InnerBlocks,withColors,
+import {
+    useBlockProps, InspectorControls, RichText, InnerBlocks, withColors,
     __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
     __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
 } from "@wordpress/block-editor"
-import {SelectControl,ToggleControl,PanelBody} from "@wordpress/components"
+import {SelectControl, ToggleControl, PanelBody, Button} from "@wordpress/components"
+import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
-    supports:{
-        innerBlocks:true,
-        color:{
+    supports: {
+        innerBlocks: true,
+        color: {
             background: true,
             text: true,
             link: true,
             gradients: true,
         },
-        spacing:{
+        spacing: {
             blockGap: true,
             padding: true,
             margin: true,
         },
     },
-    styles:[
+    styles: [
         {
             name: 'split',
             label: 'Split'
@@ -49,8 +51,11 @@ registerBlockType(metadata.name, {
         }
     ],
     attributes: {
-        custom_color:{
+        custom_color: {
             type: 'string'
+        },
+        background_image: {
+            type: 'object'
         },
         toggleField: {
             type: 'boolean'
@@ -59,89 +64,120 @@ registerBlockType(metadata.name, {
             type: 'string'
         }
     },
-    edit: ({attributes, setAttributes,style,clientId}) => {
+    edit: ({attributes, setAttributes, style, clientId}) => {
         const {
             custom_color,
+            background_image,
             toggleField,
             selectField,
         } = attributes;
 
+        const replaceMediaUpload = () => MediaUpload;
+
         const blockProps = useBlockProps({
             className: 'wpbs-content-section w-full',
-            style:{
-
-            }
+            style: {}
         });
 
         const colorGradientSettings = useMultipleOriginColorsAndGradients();
 
-        function onChangeToggleField( newValue ) {
-            setAttributes( { toggleField: newValue } );
+        function onChangeToggleField(newValue) {
+            setAttributes({toggleField: newValue});
         }
 
-        function onChangeSelectField( newValue ) {
-            setAttributes( { selectField: newValue } );
+        function onChangeSelectField(newValue) {
+            setAttributes({selectField: newValue});
+        }
+
+        function onChangeImage(newValue) {
+            setAttributes({selectField: newValue});
+        }
+
+        function preview_image() {
+
+
+            console.log(attributes.background_image);
+
+            if('url' in attributes.background_image){
+                return (<img src={attributes.background_image.url} style={{width:'60px',objectFit:'cover',height:'60px'}} />)
+            } else {
+                return 'Choose Background Image'
+            }
+
         }
 
         return (
             <>
                 <InspectorControls group="color">
                     <ColorGradientSettingsDropdown
-                        settings={ [ {
+                        settings={[{
                             label: 'Custom Color',
                             colorValue: custom_color,
-                            onColorChange: ( value ) => {
-                                setAttributes( {
-                                    custom_color: value
-                                } );
-                            }
-                        } ] }
-                        panelId={ clientId }
-                        hasColorsOrGradients={ true }
-                        disableCustomColors={ false }
+                            onColorChange: {onChangeImage}
+                        }]}
+                        panelId={clientId}
+                        hasColorsOrGradients={true}
+                        disableCustomColors={false}
                         __experimentalIsRenderedInSidebar
-                        { ...colorGradientSettings }
+                        {...colorGradientSettings}
                     />
                 </InspectorControls>
                 <InspectorControls>
-                    <PanelBody title={ 'Settings Test' }>
+                    <PanelBody title={'Settings Test'}>
+                        <MediaUpload
+                            onSelect={(media) =>
+                                setAttributes({
+                                    background_image: {
+                                        id: media.id,
+                                        url: media.url
+                                    }
+                                })
+                            }
+                            allowedTypes={['image']}
+                            value={background_image}
+                            render={({open}) => (
+                                <Button onClick={open}>{preview_image()}</Button>
+                            )}
+                        />
 
                         <ToggleControl
                             label="Toggle Field"
-                            checked={ toggleField }
-                            onChange={ onChangeToggleField }
+                            checked={toggleField}
+                            onChange={onChangeToggleField}
                         />
 
                         <SelectControl
                             label="Select Control"
-                            value={ selectField }
-                            options={ [
-                                { value: 'a', label: 'Option A' },
-                                { value: 'b', label: 'Option B' },
-                                { value: 'c', label: 'Option C' },
-                            ] }
-                            onChange={ onChangeSelectField }
+                            value={selectField}
+                            options={[
+                                {value: 'a', label: 'Option A'},
+                                {value: 'b', label: 'Option B'},
+                                {value: 'c', label: 'Option C'},
+                            ]}
+                            onChange={onChangeSelectField}
                         />
                     </PanelBody>
                 </InspectorControls>
 
-                <section { ...blockProps }>
+                <section {...blockProps}>
                     <div className={'container wpbs-container'}>
-                        <InnerBlocks />
+                        <InnerBlocks/>
                     </div>
                 </section>
             </>
         )
     },
-    save: () =>{
+    save: (props) => {
         const blockProps = useBlockProps.save({
             className: 'wpbs-content-section w-full',
         });
 
+        const {attributes} = props;
+
         return (
-            <section { ...blockProps }>
+            <section {...blockProps}>
                 <div className={'container wpbs-container'}>
-                    <InnerBlocks.Content />
+                    <InnerBlocks.Content/>
                 </div>
             </section>
         );

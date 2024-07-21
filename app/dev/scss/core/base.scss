@@ -1,10 +1,9 @@
 @tailwind base;
 @layer base {
-  body {
+  body, html {
     padding:0 !important;
     margin: 0 !important;
-    background: darkcyan;
-    color:white;
+    font-family: sans-serif;
   }
 }
 

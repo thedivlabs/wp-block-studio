@@ -90,21 +90,8 @@ registerBlockType(metadata.name, {
             setAttributes({selectField: newValue});
         }
 
-        function onChangeImage(newValue) {
-            setAttributes({selectField: newValue});
-        }
-
-        function preview_image() {
-
-
-            console.log(attributes.background_image);
-
-            if('url' in attributes.background_image){
-                return (<img src={attributes.background_image.url} style={{width:'60px',objectFit:'cover',height:'60px'}} />)
-            } else {
-                return 'Choose Background Image'
-            }
-
+        function toggle_image_field() {
+            setAttributes({background_image: {}});
         }
 
         return (
@@ -114,7 +101,7 @@ registerBlockType(metadata.name, {
                         settings={[{
                             label: 'Custom Color',
                             colorValue: custom_color,
-                            onColorChange: {onChangeImage}
+                            onColorChange: (color_value => setAttributes({custom_color: color_value}))
                         }]}
                         panelId={clientId}
                         hasColorsOrGradients={true}
@@ -136,9 +123,24 @@ registerBlockType(metadata.name, {
                             }
                             allowedTypes={['image']}
                             value={background_image}
-                            render={({open}) => (
-                                <Button onClick={open}>{preview_image()}</Button>
-                            )}
+                            render={({open}) => {
+                                if(background_image && 'url' in background_image) {
+                                    return <img src={background_image.url}
+                                                onClick={toggle_image_field}
+                                                style={{
+                                                    cursor:'pointer',
+                                                    width: '60px',
+                                                    objectFit: 'cover',
+                                                    height: '60px'
+                                                }}/>;
+                                } else {
+                                    return <Button onClick={open}>
+                                        Choose Image
+                                    </Button>
+                                }
+
+
+                            }}
                         />
 
                         <ToggleControl

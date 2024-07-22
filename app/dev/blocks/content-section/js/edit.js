@@ -90,6 +90,7 @@ registerBlockType(metadata.name, {
 
         return (
             <>
+                <Background></Background>
                 <InspectorControls>
                     <PanelBody title={'Layout'}>
 

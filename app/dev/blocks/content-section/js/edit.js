@@ -98,7 +98,6 @@ registerBlockType(metadata.name, {
 
         function bg_handler(settings){
             setAttributes({background: settings});
-            console.log(settings);
         }
 
         return (

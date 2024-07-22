@@ -83,6 +83,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, style, clientId}) => {
         const {
+            background,
             height,
             align,
             justify,
@@ -95,19 +96,15 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
-
-
-        const [bg,setBg] = useState({});
-
         return (
             <>
                 <InspectorControls>
                     <PanelBody title={'Layout'}>
                         <Background
-                            settings={bg}
+                            settings={background}
                             pushSettings={(settings)=> {
-                                setBg(settings);
-                                console.log(settings);
+                                setAttributes({background: settings});
+                                console.log(attributes);
                             }}
                         ></Background>
                         <ToggleControl

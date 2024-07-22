@@ -104,7 +104,7 @@ registerBlockType(metadata.name, {
                             settings={background}
                             pushSettings={(settings)=> {
                                 setAttributes({background: settings});
-                                console.log(attributes);
+                                console.log(background);
                             }}
                         ></Background>
                         <ToggleControl

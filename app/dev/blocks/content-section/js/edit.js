@@ -8,6 +8,7 @@ import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import { useState } from 'react';
+import Background from 'components/Background';
 
 
 registerBlockType(metadata.name, {
@@ -89,7 +90,6 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-
                 <InspectorControls>
                     <PanelBody title={'Layout'}>
 

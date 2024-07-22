@@ -3,10 +3,12 @@ import {
     __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
     __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
 } from "@wordpress/block-editor"
-import {SelectControl, ToggleControl, PanelBody, Button, BaseControl, useBaseControlProps} from "@wordpress/components"
+import {Dropdown,SelectControl, ToggleControl, PanelBody,RangeControl, Button, BaseControl, useBaseControlProps } from "@wordpress/components"
 import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
+import { useState } from 'react';
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -51,116 +53,61 @@ registerBlockType(metadata.name, {
         }
     ],
     attributes: {
-        custom_color: {
+        height: {
             type: 'string'
         },
-        background_image: {
-            type: 'object'
+        align: {
+            type: 'string'
         },
-        toggleField: {
+        justify: {
+            type: 'string'
+        },
+        container: {
+            type: 'string'
+        },
+        grow: {
             type: 'boolean'
         },
-        selectField: {
-            type: 'string'
+        background: {
+            type: 'object'
         }
     },
     edit: ({attributes, setAttributes, style, clientId}) => {
         const {
-            custom_color,
-            background_image,
-            toggleField,
-            selectField,
+            height,
+            align,
+            justify,
+            container,
+            grow
         } = attributes;
-
-        const replaceMediaUpload = () => MediaUpload;
 
         const blockProps = useBlockProps({
             className: 'wpbs-content-section w-full',
             style: {}
         });
 
-        const colorGradientSettings = useMultipleOriginColorsAndGradients();
-
-        function onChangeToggleField(newValue) {
-            setAttributes({toggleField: newValue});
-        }
-
-        function onChangeSelectField(newValue) {
-            setAttributes({selectField: newValue});
-        }
-
-        function toggle_image_field() {
-            setAttributes({background_image: {}});
-        }
-
 
         return (
             <>
-                <InspectorControls group="color">
-                    <ColorGradientSettingsDropdown
-                        settings={[{
-                            label: 'Custom Color',
-                            colorValue: custom_color,
-                            onColorChange: (color_value => setAttributes({custom_color: color_value}))
-                        }]}
-                        panelId={clientId}
-                        hasColorsOrGradients={true}
-                        disableCustomColors={false}
-                        __experimentalIsRenderedInSidebar
-                        {...colorGradientSettings}
-                    />
-                </InspectorControls>
+
                 <InspectorControls>
-                    <PanelBody title={'Settings Test'}>
-                        <BaseControl >
-                            <MediaUpload
-                                onSelect={(media) =>
-                                    setAttributes({
-                                        background_image: {
-                                            id: media.id,
-                                            url: media.url
-                                        }
-                                    })
-                                }
-                                allowedTypes={['image']}
-                                value={background_image}
-                                render={({open}) => {
-                                    if(background_image && 'url' in background_image) {
-                                        return <img src={background_image.url}
-                                                    onClick={toggle_image_field}
-                                                    style={{
-                                                        cursor:'pointer',
-                                                        width: '60px',
-                                                        objectFit: 'cover',
-                                                        height: '60px'
-                                                    }}/>;
-                                    } else {
-                                        return <Button onClick={open} style={{border: '1px solid gray'}}>
-                                            Choose Image
-                                        </Button>
-                                    }
-
-
-                                }}
-                            />
-                        </BaseControl>
-
+                    <PanelBody title={'Layout'}>
 
                         <ToggleControl
-                            label="Toggle Field"
-                            checked={toggleField}
-                            onChange={onChangeToggleField}
+                            label="Grow"
+                            checked={grow}
+                            onChange={(value)=>setAttributes({grow: value})}
                         />
 
                         <SelectControl
                             label="Select Control"
-                            value={selectField}
+                            //value={'selectField'}
                             options={[
                                 {value: 'a', label: 'Option A'},
                                 {value: 'b', label: 'Option B'},
                                 {value: 'c', label: 'Option C'},
                             ]}
-                            onChange={onChangeSelectField}
+                            //onChange={onChangeSelectField}
                         />
                     </PanelBody>
                 </InspectorControls>

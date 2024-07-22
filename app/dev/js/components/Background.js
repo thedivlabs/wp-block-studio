@@ -27,10 +27,11 @@ function Background({settings,pushSettings}) {
 
     const [defaultSettings, setDefaultSettings] = useState(settings);
 
-    const [testing, setTesting] = useState(defaultSettings.type);
+    const [testing, setTesting] = useState();
 
     function updateSettings (prop, val) {
-        setDefaultSettings(Object.assign(settings, {[prop]:val}));
+        setTesting(val);
+        setDefaultSettings(Object.assign(defaultSettings, {[prop]:val}));
         pushSettings(defaultSettings);
     }
 
@@ -41,7 +42,6 @@ function Background({settings,pushSettings}) {
                 checked={testing}
                 onChange={(value) => {
                     updateSettings('type', value);
-                    setTesting(value)
                 }}
             />
         </div>

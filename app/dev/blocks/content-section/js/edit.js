@@ -3,13 +3,21 @@ import {
     __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
     __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
 } from "@wordpress/block-editor"
-import {Dropdown,SelectControl, ToggleControl, PanelBody,RangeControl, Button, BaseControl, useBaseControlProps } from "@wordpress/components"
+import {
+    Dropdown,
+    SelectControl,
+    ToggleControl,
+    PanelBody,
+    RangeControl,
+    Button,
+    BaseControl,
+    useBaseControlProps
+} from "@wordpress/components"
 import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import { useState } from 'react';
-import Background from 'components/Background';
-
+import {useState} from 'react';
+import Background from '../../../js/components/Background';
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -83,21 +91,29 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps({
-            className: 'wpbs-content-section w-full',
+            className: 'wpbs-content-section w-full flex flex-col',
             style: {}
         });
 
 
+
+        const [bg,setBg] = useState({});
+
         return (
             <>
-                <Background></Background>
                 <InspectorControls>
                     <PanelBody title={'Layout'}>
-
+                        <Background
+                            settings={bg}
+                            pushSettings={(settings)=> {
+                                setBg(settings);
+                                console.log(settings);
+                            }}
+                        ></Background>
                         <ToggleControl
                             label="Grow"
                             checked={grow}
-                            onChange={(value)=>setAttributes({grow: value})}
+                            onChange={(value) => setAttributes({grow: value})}
                         />
 
                         <SelectControl

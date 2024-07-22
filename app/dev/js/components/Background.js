@@ -1,17 +1,19 @@
-import React, { useState } from "react"
+import React, {useState} from "react"
+import {useBlockProps} from '@wordpress/block-editor'
+import {ToggleControl} from "@wordpress/components";
 
-function Background() {
+function Background({settings,pushSettings}) {
 
-    const settings = {
+    const [defaultSettings, setDefaultSettings] = useState({
         type: '',
         pattern_image: '',
         image_mobile: '',
         image_large: '',
         video_mobile: '',
         video_large: '',
-        loading: '',
+        loading: 'xxxxx',
         opacity: '',
-        repeat: '',
+        repeat: 'xxxx',
         blend: '',
         width_mobile: '',
         width_large: '',
@@ -19,11 +21,28 @@ function Background() {
         overlay_large: '',
         mask_mobile: '',
         mask_large: '',
+    });
 
+    const [testing, setTesting] = useState(false);
+
+    function updateSettings (prop, val, callback) {
+        callback(val);
+        setDefaultSettings(Object.assign(defaultSettings, {[prop]:val}));
+        pushSettings(defaultSettings);
     }
 
+
+
     return (
-        <></>
+        <div>
+            <ToggleControl
+                label="Testing"
+                checked={testing}
+                onChange={(value) => {
+                    updateSettings('type', value, setTesting);
+                }}
+            />
+        </div>
     )
 }
 

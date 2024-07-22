@@ -1,13 +1,29 @@
 import React, { useState } from "react"
 
 function Background() {
-    const [clickCount, setClickCount] = useState(0)
+
+    const settings = {
+        type: '',
+        pattern_image: '',
+        image_mobile: '',
+        image_large: '',
+        video_mobile: '',
+        video_large: '',
+        loading: '',
+        opacity: '',
+        repeat: '',
+        blend: '',
+        width_mobile: '',
+        width_large: '',
+        overlay_mobile: '',
+        overlay_large: '',
+        mask_mobile: '',
+        mask_large: '',
+
+    }
 
     return (
-        <div className="example-react-component" onClick={() => setClickCount(prev => prev + 1)}>
-            <h1>Hello from React!</h1>
-            <p>You have clicked on this component {clickCount} times.</p>
-        </div>
+        <></>
     )
 }
 

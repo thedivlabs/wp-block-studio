@@ -25,13 +25,13 @@ function Background({settings,pushSettings}) {
         mask_large: '',
     }*/
 
-    const [defaultSettings, setDefaultSettings] = useState(settings);
+    const [defaultSettings, setDefaultSettings] = useState();
 
     const [testing, setTesting] = useState();
 
     function updateSettings (prop, val) {
         setTesting(val);
-        setDefaultSettings(Object.assign(defaultSettings, {[prop]:val}));
+        setDefaultSettings(Object.assign(settings,defaultSettings, {[prop]:val}));
         pushSettings(defaultSettings);
     }
 

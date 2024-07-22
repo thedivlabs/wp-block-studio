@@ -78,7 +78,10 @@ registerBlockType(metadata.name, {
             type: 'boolean'
         },
         background: {
-            type: 'object'
+            type: 'object',
+            default: {
+                type: 'false'
+            }
         }
     },
     edit: ({attributes, setAttributes, style, clientId}) => {
@@ -106,7 +109,7 @@ registerBlockType(metadata.name, {
                 <InspectorControls>
                     <PanelBody title={'Layout'}>
                         <Background
-                            settings={background || {}}
+                            settings={background}
                             pushSettings={bg_handler}
                         ></Background>
                         <ToggleControl

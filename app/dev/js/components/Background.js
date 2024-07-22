@@ -5,16 +5,17 @@ import {ToggleControl} from "@wordpress/components";
 function Background({settings,pushSettings}) {
 
 
-    const [defaultSettings, setDefaultSettings] = useState(Object.assign({
+
+    /*{
         type: '',
         pattern_image: '',
         image_mobile: '',
         image_large: '',
         video_mobile: '',
         video_large: '',
-        loading: 'xxxxx',
+        loading: '',
         opacity: '',
-        repeat: 'xxxx',
+        repeat: '',
         blend: '',
         width_mobile: '',
         width_large: '',
@@ -22,7 +23,9 @@ function Background({settings,pushSettings}) {
         overlay_large: '',
         mask_mobile: '',
         mask_large: '',
-    }, settings));
+    }*/
+
+    const [defaultSettings, setDefaultSettings] = useState(settings);
 
     const [testing, setTesting] = useState(defaultSettings.type);
 

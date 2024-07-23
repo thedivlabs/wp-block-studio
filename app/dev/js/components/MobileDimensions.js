@@ -1,5 +1,11 @@
 import React, {useState} from "react"
-import {__experimentalBoxControl as BoxControl} from "@wordpress/components";
+import {
+    BaseControl,
+    useBaseControlProps,
+    PanelBody,
+    PanelRow,
+    __experimentalBoxControl as BoxControl
+} from "@wordpress/components";
 
 function MobileDimensions({settings, pushSettings}) {
 
@@ -31,24 +37,27 @@ function MobileDimensions({settings, pushSettings}) {
         pushSettings(Object.assign({}, settings, {[attr]: val}));
     }
 
-    const [ padding, setPadding ] = useState( {
+    const [padding, setPadding] = useState({
         top: undefined,
         left: undefined,
         right: undefined,
         bottom: undefined,
-    } );
+    });
 
     return (
         <>
             <BoxControl
+                inputProps={{}}
+                __next40pxDefaultSize={true}
                 label={'Mobile Padding'}
-                splitOnAxis={true}
+                splitOnAxis
                 values={padding}
-                sides={['vertical','horizontal']}
+                sides={['vertical', 'horizontal']}
                 onChange={(values) => {
                     updateSettings('padding', values, setPadding)
                 }}
             />
+
         </>
     )
 }

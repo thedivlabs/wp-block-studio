@@ -5,6 +5,7 @@ import {
     SelectControl,
     ToggleControl,
     PanelBody,
+    PanelRow,
     RangeControl,
 } from "@wordpress/components"
 import {MediaUpload} from "@wordpress/media-utils"
@@ -106,13 +107,13 @@ registerBlockType(metadata.name, {
                     <PanelBody title={'Layout'}>
 
 
-
                         <MobileDimensions
                             settings={mobile_dimensions}
                             pushSettings={(value) => {
                                 setAttributes({mobile_dimensions: value})
                             }}
                         ></MobileDimensions>
+
 
                         <Background
                             settings={background}

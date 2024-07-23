@@ -31,6 +31,23 @@ gulp.task('theme_css', function () {
         .pipe(cleanCSS())
         .pipe(gulp.dest('../public/wp-content/themes/wp-block-studio/dist/'))
 });
+gulp.task('admin_css', function () {
+    return gulp.src([
+        './scss/admin.scss',
+    ])
+        .pipe(sass({
+            includePaths: './scss/includes/',
+            //outputStyle: 'compressed'
+        }, {}).on('error', sass.logError))
+        .pipe(postcss([
+            tailwindcss('./tailwind.config.js')
+        ], false))
+        .pipe(rename({
+            extname: ".min.css",
+        }))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest('../public/wp-content/themes/wp-block-studio/dist/'))
+});
 
 gulp.task('blocks_css', function () {
     return gulp.src([
@@ -59,7 +76,7 @@ gulp.task('blocks_css', function () {
 /* RUN TASKS */
 
 gulp.task('build', gulp.series([
-    'theme_css','blocks_css',
+    'theme_css','admin_css','blocks_css',
 ]));
 
 gulp.task('default', function () {

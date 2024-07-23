@@ -12,6 +12,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {useState} from 'react';
 import Background from '../../../js/components/Background';
+import MobileDimensions from '../../../js/components/MobileDimensions';
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -76,10 +77,14 @@ registerBlockType(metadata.name, {
         },
         background: {
             type: 'object'
+        },
+        mobile_dimensions: {
+            type: 'object'
         }
     },
     edit: ({attributes, setAttributes}) => {
         const {
+            mobile_dimensions,
             background,
             align,
             justify,
@@ -92,8 +97,6 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
-        const [paddingSize, setPaddingSize] = useState('');
-
         return (
             <>
 
@@ -103,6 +106,13 @@ registerBlockType(metadata.name, {
                     <PanelBody title={'Layout'}>
 
 
+
+                        <MobileDimensions
+                            settings={mobile_dimensions}
+                            pushSettings={(value) => {
+                                setAttributes({mobile_dimensions: value})
+                            }}
+                        ></MobileDimensions>
 
                         <Background
                             settings={background}

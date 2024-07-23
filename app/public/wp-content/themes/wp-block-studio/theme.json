@@ -40,6 +40,29 @@
       "defaultGradients": true,
       "customGradient": true,
       "custom": true
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "Roboto",
+          "slug": "roboto",
+          "name": "Roboto",
+          "fontFace": [
+            {
+              "fontFamily": "Roboto",
+              "fontWeight": "400",
+              "fontStyle": "normal",
+              "src": [ "file:./assets/fonts/Roboto-Regular.ttf" ]
+            },
+            {
+              "fontFamily": "Roboto",
+              "fontWeight": "700",
+              "fontStyle": "normal",
+              "src": [ "file:./assets/fonts/Roboto-Bold.ttf" ]
+            }
+          ]
+        }
+      ]
     }
   },
   "styles": {
@@ -84,42 +107,10 @@
           "width": "",
           "style": ""
         }
-      },
-      "h1": {
-        "typography": {
-          "fontWeight": "var:custom|typography|heading|h-1|weight",
-          "fontSize": "var:custom|typography|heading|h-1|size",
-          "textTransform": "var:custom|typography|heading|h-1|transform"
-        }
-      },
-      "h2": {
-        "typography": {
-          "fontWeight": "var:custom|typography|heading|h-2|weight",
-          "fontSize": "var:custom|typography|heading|h-2|size",
-          "textTransform": "var:custom|typography|heading|h-2|transform"
-        }
-      },
-      "h3": {
-        "typography": {
-          "fontWeight": "var:custom|typography|heading|h-3|weight",
-          "fontSize": "var:custom|typography|heading|h-3|size",
-          "textTransform": "var:custom|typography|heading|h-3|transform"
-        }
-      },
-      "h4": {
-        "typography": {
-          "fontWeight": "var:custom|typography|heading|h-4|weight",
-          "fontSize": "var:custom|typography|heading|h-4|size",
-          "textTransform": "var:custom|typography|heading|h-4|transform"
-        }
-      },
-      "h5": {
-        "typography": {
-          "fontWeight": "var:custom|typography|heading|h-5|weight",
-          "fontSize": "var:custom|typography|heading|h-5|size",
-          "textTransform": "var:custom|typography|heading|h-5|transform"
-        }
       }
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--roboto)"
     }
   }
 }

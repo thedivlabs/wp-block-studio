@@ -1,5 +1,4 @@
 import React, {useState} from "react"
-import {useBlockProps} from '@wordpress/block-editor'
 import {ToggleControl} from "@wordpress/components";
 
 function Background({settings, pushSettings}) {

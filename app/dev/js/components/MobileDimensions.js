@@ -1,10 +1,8 @@
 import React, {useState} from "react"
 import {
-    BaseControl,
-    useBaseControlProps,
-    PanelBody,
     __experimentalGrid as Grid,
-    __experimentalBoxControl as BoxControl, RangeControl
+    __experimentalBoxControl as BoxControl,
+    __experimentalDimensionControl as DimensionControl, PanelBody
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 
@@ -32,10 +30,9 @@ function MobileDimensions({settings, pushSettings}) {
         bottom: undefined,
     });
 
-    const [gap, setGap] = useState(0);
+    const [gap, setGap] = useState('');
 
     return (
-
         <InspectorControls group={'styles'}>
             <PanelBody title={'Mobile'} initialOpen={false}>
                 <Grid columns={1} gap={6}>
@@ -54,18 +51,16 @@ function MobileDimensions({settings, pushSettings}) {
                         label={'Margin'}
                         values={margin}
                         onChange={(values) => {
-                            updateSettings('padding', values, setMargin)
+                            updateSettings('margin', values, setMargin)
                         }}
                     />
-                    <RangeControl
-                        __next40pxDefaultSize={true}
-                        label="Block Spacing"
-                        value={ gap }
+                    <DimensionControl
+                        label={ 'Block Spacing' }
                         onChange={(values) => {
                             updateSettings('gap', values, setGap)
                         }}
-                        min={ 0 }
-                        max={ 7 }
+                        sizes={wp.data.select('core/editor').getEditorSettings().spacingSizes}
+                        value={ gap }
                     />
                 </Grid>
             </PanelBody>

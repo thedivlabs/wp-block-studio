@@ -2,17 +2,11 @@ import {
     useBlockProps, InspectorControls, InnerBlocks,
 } from "@wordpress/block-editor"
 import {
-    SelectControl,
-    ToggleControl,
     PanelBody,
-    Panel,
-    RangeControl,
 } from "@wordpress/components"
-import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {useState} from 'react';
-import Background from '../../../js/components/Background';
+import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
 
 registerBlockType(metadata.name, {
@@ -101,52 +95,12 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <MobileDimensions
-                    settings={mobile_dimensions}
-                    pushSettings={(value) => {
-                        setAttributes({mobile_dimensions: value})
-                    }}
-                ></MobileDimensions>
-
-                <InspectorControls>
-
-
-
-
-                    <PanelBody title={'Background'}>
-                        <Background
-                            settings={background}
-                            pushSettings={(value) => {
-                                setAttributes({background: value})
-                            }}
-                        ></Background>
-                    </PanelBody>
-
-
-                    <PanelBody title={'Layout'}>
-
-
-
-
-
-
-                        <ToggleControl
-                            label="Grow"
-                            checked={grow}
-                            onChange={(value) => setAttributes({grow: value})}
-                        />
-
-                        <SelectControl
-                            label="Select Control"
-                            //value={'selectField'}
-                            options={[
-                                {value: 'a', label: 'Option A'},
-                                {value: 'b', label: 'Option B'},
-                                {value: 'c', label: 'Option C'},
-                            ]}
-                            //onChange={onChangeSelectField}
-                        />
-                    </PanelBody>
-                </InspectorControls>
+                settings={mobile_dimensions}
+                pushSettings={(value) => {
+                    setAttributes({mobile_dimensions: value})
+                }}
+            ></MobileDimensions>
+                
 
                 <section {...blockProps}>
                     <div className={'container wpbs-container'}>

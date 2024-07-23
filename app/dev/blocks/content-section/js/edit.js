@@ -78,13 +78,10 @@ registerBlockType(metadata.name, {
             type: 'boolean'
         },
         background: {
-            type: 'object',
-            default: {
-                type: 'false'
-            }
+            type: 'object'
         }
     },
-    edit: ({attributes, setAttributes, style, clientId}) => {
+    edit: ({attributes, setAttributes}) => {
         const {
             background,
             height,
@@ -99,18 +96,15 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
-        function bg_handler(settings){
-            setAttributes({background: settings});
-            console.log(settings);
-        }
-
         return (
             <>
                 <InspectorControls>
                     <PanelBody title={'Layout'}>
                         <Background
                             settings={background}
-                            pushSettings={bg_handler}
+                            pushSettings={(value) => {
+                                setAttributes({background:value})
+                            }}
                         ></Background>
                         <ToggleControl
                             label="Grow"

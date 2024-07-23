@@ -25,23 +25,32 @@ function Background({settings,pushSettings}) {
         mask_large: '',
     }*/
 
-    const [defaultSettings, setDefaultSettings] = useState();
 
-    const [testing, setTesting] = useState();
+    const [type, setType] = useState(settings.type || false);
 
-    function updateSettings (prop, val) {
-        setTesting(val);
-        setDefaultSettings(Object.assign(settings,defaultSettings, {[prop]:val}));
-        pushSettings(defaultSettings);
+    function updateSettings(attr,val,callback){
+        callback(val);
+        pushSettings(Object.assign({},settings, {[attr]:val}));
+
     }
 
     return (
         <div>
+
+
+
+
+
+
+
+
+
+
             <ToggleControl
                 label="Testing"
-                checked={testing}
+                checked={type}
                 onChange={(value) => {
-                    updateSettings('type', value);
+                    updateSettings('type',value,setType);
                 }}
             />
         </div>

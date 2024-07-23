@@ -27,8 +27,8 @@ add_action( 'init', function () {
 
 add_action( 'init', 'theme_assets' );
 add_action( 'wp_enqueue_scripts', 'view_assets' );
-add_action( 'enqueue_block_editor_assets', 'admin_assets' );
-//add_action( 'enqueue_block_assets', 'theme_assets' );
+//add_action( 'enqueue_block_editor_assets', 'admin_assets' );
+add_action( 'enqueue_block_assets', 'admin_assets' );
 
 function theme_assets(): void {
 	wp_register_style( 'wpbs-theme', get_stylesheet_directory_uri() . '/dist/theme.min.css' );

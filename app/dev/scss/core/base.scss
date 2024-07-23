@@ -1,9 +1,15 @@
 @tailwind base;
 @layer base {
   body, html {
-    padding:0 !important;
+    padding: 0 !important;
     margin: 0 !important;
     font-family: sans-serif;
+  }
+
+  p {
+    @apply
+    first:mt-0
+    last:mb-0
   }
 }
 

@@ -5,7 +5,7 @@ import {
     SelectControl,
     ToggleControl,
     PanelBody,
-    PanelRow,
+    Panel,
     RangeControl,
 } from "@wordpress/components"
 import {MediaUpload} from "@wordpress/media-utils"
@@ -100,27 +100,35 @@ registerBlockType(metadata.name, {
 
         return (
             <>
+                <MobileDimensions
+                    settings={mobile_dimensions}
+                    pushSettings={(value) => {
+                        setAttributes({mobile_dimensions: value})
+                    }}
+                ></MobileDimensions>
 
                 <InspectorControls>
 
 
-                    <PanelBody title={'Layout'}>
 
 
-                        <MobileDimensions
-                            settings={mobile_dimensions}
-                            pushSettings={(value) => {
-                                setAttributes({mobile_dimensions: value})
-                            }}
-                        ></MobileDimensions>
-
-
+                    <PanelBody title={'Background'}>
                         <Background
                             settings={background}
                             pushSettings={(value) => {
                                 setAttributes({background: value})
                             }}
                         ></Background>
+                    </PanelBody>
+
+
+                    <PanelBody title={'Layout'}>
+
+
+
+
+
+
                         <ToggleControl
                             label="Grow"
                             checked={grow}

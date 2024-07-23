@@ -3,31 +3,12 @@ import {
     BaseControl,
     useBaseControlProps,
     PanelBody,
-    PanelRow,
-    __experimentalBoxControl as BoxControl
+    __experimentalGrid as Grid,
+    __experimentalBoxControl as BoxControl, RangeControl
 } from "@wordpress/components";
+import {InspectorControls} from "@wordpress/block-editor";
 
 function MobileDimensions({settings, pushSettings}) {
-
-
-    /*{
-        type: '',
-        pattern_image: '',
-        image_mobile: '',
-        image_large: '',
-        video_mobile: '',
-        video_large: '',
-        loading: '',
-        opacity: '',
-        repeat: '',
-        blend: '',
-        width_mobile: '',
-        width_large: '',
-        overlay_mobile: '',
-        overlay_large: '',
-        mask_mobile: '',
-        mask_large: '',
-    }*/
 
 
     function updateSettings(attr, val, callback) {
@@ -44,21 +25,51 @@ function MobileDimensions({settings, pushSettings}) {
         bottom: undefined,
     });
 
-    return (
-        <>
-            <BoxControl
-                inputProps={{}}
-                __next40pxDefaultSize={true}
-                label={'Mobile Padding'}
-                splitOnAxis
-                values={padding}
-                sides={['vertical', 'horizontal']}
-                onChange={(values) => {
-                    updateSettings('padding', values, setPadding)
-                }}
-            />
+    const [margin, setMargin] = useState({
+        top: undefined,
+        left: undefined,
+        right: undefined,
+        bottom: undefined,
+    });
 
-        </>
+    const [gap, setGap] = useState(0);
+
+    return (
+
+        <InspectorControls group={'styles'}>
+            <PanelBody title={'Mobile'} initialOpen={false}>
+                <Grid columns={1} gap={6}>
+                    <BoxControl
+                        __next40pxDefaultSize={true}
+                        label={'Padding'}
+                        splitOnAxis
+                        values={padding}
+                        sides={['vertical', 'horizontal']}
+                        onChange={(values) => {
+                            updateSettings('padding', values, setPadding)
+                        }}
+                    />
+                    <BoxControl
+                        __next40pxDefaultSize={true}
+                        label={'Margin'}
+                        values={margin}
+                        onChange={(values) => {
+                            updateSettings('padding', values, setMargin)
+                        }}
+                    />
+                    <RangeControl
+                        __next40pxDefaultSize={true}
+                        label="Block Spacing"
+                        value={ gap }
+                        onChange={(values) => {
+                            updateSettings('gap', values, setGap)
+                        }}
+                        min={ 0 }
+                        max={ 7 }
+                    />
+                </Grid>
+            </PanelBody>
+        </InspectorControls>
     )
 }
 

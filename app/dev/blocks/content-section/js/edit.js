@@ -1,17 +1,11 @@
 import {
-    useBlockProps, InspectorControls, RichText, InnerBlocks, withColors,
-    __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
-    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
+    useBlockProps, InspectorControls, InnerBlocks,
 } from "@wordpress/block-editor"
 import {
-    Dropdown,
     SelectControl,
     ToggleControl,
     PanelBody,
     RangeControl,
-    Button,
-    BaseControl,
-    useBaseControlProps
 } from "@wordpress/components"
 import {MediaUpload} from "@wordpress/media-utils"
 import {registerBlockType} from "@wordpress/blocks"
@@ -65,6 +59,9 @@ registerBlockType(metadata.name, {
         height: {
             type: 'string'
         },
+        padding: {
+            type: 'string'
+        },
         align: {
             type: 'string'
         },
@@ -84,7 +81,6 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes}) => {
         const {
             background,
-            height,
             align,
             justify,
             container,
@@ -96,14 +92,22 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
+        const [paddingSize, setPaddingSize] = useState('');
+
         return (
             <>
+
                 <InspectorControls>
+
+
                     <PanelBody title={'Layout'}>
+
+
+
                         <Background
                             settings={background}
                             pushSettings={(value) => {
-                                setAttributes({background:value})
+                                setAttributes({background: value})
                             }}
                         ></Background>
                         <ToggleControl

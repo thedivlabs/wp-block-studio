@@ -145,7 +145,6 @@ function MobileStyles({blockProps, props}) {
         'paddingLeft' in props.attributes.mobile_dimensions ? '--wpbs-paddingLeft:' + props.attributes.mobile_dimensions.paddingLeft : false,
     ].join('; ');
 
-
     const margin = [
         'marginTop' in props.attributes.mobile_dimensions ? '--wpbs-marginTop:' + props.attributes.mobile_dimensions.marginTop : false,
         'marginRight' in props.attributes.mobile_dimensions ? '--wpbs-marginRight:' + props.attributes.mobile_dimensions.marginRight : false,

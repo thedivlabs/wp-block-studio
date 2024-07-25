@@ -119,9 +119,12 @@ function setMobileProps(blockProps, props) {
     }
     const blockSpacing = () => {
 
-        const attr = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? props.attributes.style.blockGap : false;
+        const attr = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? props.attributes.style.spacing.blockGap : false;
+        const defaultAttr = attr ? 'var(--wp--' + attr.replace('var:', '').replaceAll('|', '--') + ')' : null;
 
-        return 'blockSpacing' in props.attributes.mobile_dimensions ? attr ? 'var(--wpbs-blockSpacing, var(--wp--' + attr.replace('var:', '').replaceAll('|', '--') + '))' : 'var(--wpbs-blockSpacing)' : blockProps.style.blockSpacing;
+        return {
+            gap: 'blockSpacing' in props.attributes.mobile_dimensions ? attr ? 'var(--wpbs-blockSpacing,' + defaultAttr + ')' : 'var(--wpbs-blockSpacing)' : null
+        };
     }
 
     return {

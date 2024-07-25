@@ -68,23 +68,76 @@ function MobileDimensions({settings, pushSettings}) {
     )
 }
 
-function setMobileProps(props) {
+function setMobileProps(blockProps, props) {
 
     const blockPadding = () => {
-        return 'style' in props && 'paddingTop' in props.style ? 'var(--wpbs-paddingTop, ' + props.style.paddingTop + ')' : 'var(--wpbs-paddingTop)';
+
+        const paddingTop = 'style' in blockProps && 'paddingTop' in blockProps.style ? blockProps.style.paddingTop : undefined;
+        const paddingRight = 'style' in blockProps && 'paddingRight' in blockProps.style ? blockProps.style.paddingRight : undefined;
+        const paddingBottom = 'style' in blockProps && 'paddingRight' in blockProps.style ? blockProps.style.paddingRight : undefined;
+        const paddingLeft = 'style' in blockProps && 'paddingLeft' in blockProps.style ? blockProps.style.paddingLeft : undefined;
+
+        return {
+            paddingTop: paddingTop ? 'var(--wpbs-paddingTop, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-paddingTop)',
+            paddingRight: paddingRight ? 'var(--wpbs-paddingRight, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-paddingRight)',
+            paddingBottom: paddingBottom ? 'var(--wpbs-paddingBottom, ' + blockProps.style.paddingBottom + ')' : 'var(--wpbs-paddingBottom)',
+            paddingLeft: paddingLeft ? 'var(--wpbs-paddingLeft, ' + blockProps.style.paddingLeft + ')' : 'var(--wpbs-paddingLeft)',
+        };
+    }
+    const blockMargin = () => {
+
+        const marginTop = 'style' in blockProps && 'marginTop' in blockProps.style ? blockProps.style.marginTop : undefined;
+        const marginRight = 'style' in blockProps && 'marginRight' in blockProps.style ? blockProps.style.marginRight : undefined;
+        const marginBottom = 'style' in blockProps && 'marginBottom' in blockProps.style ? blockProps.style.marginBottom : undefined;
+        const marginLeft = 'style' in blockProps && 'marginLeft' in blockProps.style ? blockProps.style.marginLeft : undefined;
+
+        return {
+            marginTop: marginTop ? 'var(--wpbs-marginTop, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-marginTop)',
+            marginRight: marginRight ? 'var(--wpbs-marginRight, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-marginRight)',
+            marginBottom: marginBottom ? 'var(--wpbs-marginBottom, ' + blockProps.style.paddingBottom + ')' : 'var(--wpbs-marginBottom)',
+            marginLeft: marginLeft ? 'var(--wpbs-marginLeft, ' + blockProps.style.paddingLeft + ')' : 'var(--wpbs-marginLeft)',
+        };
+    }
+    const blockSpacing = () => {
+        const blockSpacing = 'style' in blockProps && 'gap' in blockProps.style ? blockProps.style.gap : undefined;
+
+        return blockSpacing ? 'var(--wpbs-gap, ' + blockProps.style.gap + ')' : 'var(--wpbs-gap)';
     }
 
     return {
-        ...props,
+        ...blockProps,
         style: {
-            ...props.style,
-            paddingTop: blockPadding()
+            ...blockProps.style,
+            ...blockPadding(),
+            ...blockMargin(),
+            ...blockSpacing()
         }
     }
 }
 
-function MobileStyles() {
-    return <style>{'@media (max-width: 768px) {.wpbs-content-section {--wpbs-paddingTop: 20rem}}'}</style>;
+function MobileStyles(blockProps) {
+
+    if (!'style' in blockProps) {
+        return false;
+    }
+
+    const padding = [
+        'paddingTop' in blockProps.style ? '--wpbs-paddingTop:' + blockProps.style.paddingTop : false,
+        'paddingRight' in blockProps.style ? '--wpbs-paddingRight:' + blockProps.style.paddingRight : false,
+        'paddingBottom' in blockProps.style ? '--wpbs-paddingBottom:' + blockProps.style.paddingBottom : false,
+        'paddingLeft' in blockProps.style ? '--wpbs-paddingLeft:' + blockProps.style.paddingLeft : false,
+    ].join('; ');
+
+    const margin = [
+        'marginTop' in blockProps.style ? '--wpbs-marginTop:' + blockProps.style.marginTop : false,
+        'marginRight' in blockProps.style ? '--wpbs-marginRight:' + blockProps.style.marginRight : false,
+        'marginBottom' in blockProps.style ? '--wpbs-marginBottom:' + blockProps.style.marginBottom : false,
+        'marginLeft' in blockProps.style ? '--wpbs-marginLeft:' + blockProps.style.marginLeft : false,
+    ].join('; ');
+
+    const css = [padding, margin].join(' ')
+
+    return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + {css} + '}}'}</style>;
 }
 
 

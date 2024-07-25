@@ -70,12 +70,16 @@ function MobileDimensions({settings, pushSettings}) {
 
 function setMobileProps(blockProps, props) {
 
+    if (blockProps.style === undefined || props.attributes.mobile_dimensions === undefined) {
+        return false;
+    }
+
     const blockPadding = () => {
 
-        const paddingTop = 'style' in blockProps && 'paddingTop' in blockProps.style ? blockProps.style.paddingTop : undefined;
-        const paddingRight = 'style' in blockProps && 'paddingRight' in blockProps.style ? blockProps.style.paddingRight : undefined;
-        const paddingBottom = 'style' in blockProps && 'paddingRight' in blockProps.style ? blockProps.style.paddingRight : undefined;
-        const paddingLeft = 'style' in blockProps && 'paddingLeft' in blockProps.style ? blockProps.style.paddingLeft : undefined;
+        const paddingTop = 'paddingTop' in blockProps.style ? blockProps.style.paddingTop : undefined;
+        const paddingRight = 'paddingRight' in blockProps.style ? blockProps.style.paddingRight : undefined;
+        const paddingBottom = 'paddingRight' in blockProps.style ? blockProps.style.paddingRight : undefined;
+        const paddingLeft = 'paddingLeft' in blockProps.style ? blockProps.style.paddingLeft : undefined;
 
         return {
             paddingTop: paddingTop ? 'var(--wpbs-paddingTop, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-paddingTop)',
@@ -86,10 +90,10 @@ function setMobileProps(blockProps, props) {
     }
     const blockMargin = () => {
 
-        const marginTop = 'style' in blockProps && 'marginTop' in blockProps.style ? blockProps.style.marginTop : undefined;
-        const marginRight = 'style' in blockProps && 'marginRight' in blockProps.style ? blockProps.style.marginRight : undefined;
-        const marginBottom = 'style' in blockProps && 'marginBottom' in blockProps.style ? blockProps.style.marginBottom : undefined;
-        const marginLeft = 'style' in blockProps && 'marginLeft' in blockProps.style ? blockProps.style.marginLeft : undefined;
+        const marginTop = 'marginTop' in blockProps.style ? blockProps.style.marginTop : undefined;
+        const marginRight = 'marginRight' in blockProps.style ? blockProps.style.marginRight : undefined;
+        const marginBottom = 'marginBottom' in blockProps.style ? blockProps.style.marginBottom : undefined;
+        const marginLeft = 'marginLeft' in blockProps.style ? blockProps.style.marginLeft : undefined;
 
         return {
             marginTop: marginTop ? 'var(--wpbs-marginTop, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-marginTop)',
@@ -99,7 +103,7 @@ function setMobileProps(blockProps, props) {
         };
     }
     const blockSpacing = () => {
-        const blockSpacing = 'style' in blockProps && 'gap' in blockProps.style ? blockProps.style.gap : undefined;
+        const blockSpacing = 'gap' in blockProps.style ? blockProps.style.gap : undefined;
 
         return blockSpacing ? 'var(--wpbs-gap, ' + blockProps.style.gap + ')' : 'var(--wpbs-gap)';
     }
@@ -115,11 +119,13 @@ function setMobileProps(blockProps, props) {
     }
 }
 
-function MobileStyles(blockProps) {
+function MobileStyles({blockProps, props}) {
 
-    if (!'style' in blockProps) {
+    if (blockProps.style === undefined || props.attributes.mobile_dimensions === undefined) {
         return false;
     }
+
+    console.log(props);
 
     const padding = [
         'paddingTop' in blockProps.style ? '--wpbs-paddingTop:' + blockProps.style.paddingTop : false,
@@ -127,6 +133,7 @@ function MobileStyles(blockProps) {
         'paddingBottom' in blockProps.style ? '--wpbs-paddingBottom:' + blockProps.style.paddingBottom : false,
         'paddingLeft' in blockProps.style ? '--wpbs-paddingLeft:' + blockProps.style.paddingLeft : false,
     ].join('; ');
+
 
     const margin = [
         'marginTop' in blockProps.style ? '--wpbs-marginTop:' + blockProps.style.marginTop : false,

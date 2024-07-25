@@ -25,7 +25,8 @@ registerBlockType(metadata.name, {
             blockGap: true,
             padding: true,
             margin: true,
-        },
+
+        }
     },
     styles: [
         {
@@ -118,14 +119,12 @@ registerBlockType(metadata.name, {
             className: 'wpbs-content-section w-full',
         });
 
-        console.log(props);
-
         return (
             <section {...setMobileProps(blockProps, props)}>
                 <div className={'container wpbs-container'}>
                     <InnerBlocks.Content/>
                 </div>
-                <MobileStyles props={blockProps}/>
+                <MobileStyles blockProps={blockProps} props={props}/>
             </section>
         );
     }

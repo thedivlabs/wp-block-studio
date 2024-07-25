@@ -30,7 +30,7 @@ function MobileDimensions({settings, pushSettings}) {
         bottom: 'marginBottom' in settings ? settings.marginBottom : undefined,
     });
 
-    const [gap, setGap] = useState('');
+    const [gap, setGap] = useState('blockSpacing' in settings ? settings.blockSpacing : '0');
 
     return (
         <InspectorControls group={'styles'}>

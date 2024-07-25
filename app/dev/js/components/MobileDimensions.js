@@ -68,4 +68,28 @@ function MobileDimensions({settings, pushSettings}) {
     )
 }
 
-export default MobileDimensions
+function setMobileProps(props) {
+
+    const blockPadding = () => {
+        return 'style' in props && 'paddingTop' in props.style ? 'var(--wpbs-paddingTop, ' + props.style.paddingTop + ')' : 'var(--wpbs-paddingTop)';
+    }
+
+    return {
+        ...props,
+        style: {
+            ...props.style,
+            paddingTop: blockPadding()
+        }
+    }
+}
+
+function MobileStyles() {
+    return <style>{'@media (max-width: 768px) {.wpbs-content-section {--wpbs-paddingTop: 20rem}}'}</style>;
+}
+
+
+export default MobileDimensions;
+
+export {setMobileProps, MobileStyles};
+
+

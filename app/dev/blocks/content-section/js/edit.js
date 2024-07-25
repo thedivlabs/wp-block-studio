@@ -8,6 +8,8 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
+import {setMobileProps} from 'Theme/MobileDimensions';
+import {MobileStyles} from 'Theme/MobileDimensions';
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -100,7 +102,8 @@ registerBlockType(metadata.name, {
                     pushSettings={(value) => {
                         setAttributes({mobile_dimensions: value});
                     }}
-                ></MobileDimensions>
+                >
+                </MobileDimensions>
 
                 <section {...blockProps}>
                     <div className={'container wpbs-container'}>
@@ -116,10 +119,11 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <section {...blockProps}>
+            <section {...setMobileProps(blockProps)}>
                 <div className={'container wpbs-container'}>
                     <InnerBlocks.Content/>
                 </div>
+                <MobileStyles/>
             </section>
         );
     }

@@ -25,6 +25,16 @@ add_action( 'init', function () {
 
 } );
 
+function console_log( $var ): bool {
+	return add_action( 'wp_footer', function () use ( $var ) {
+
+		$var = json_encode( $var );
+
+		echo "<script>console.log($var)</script>";
+
+	} );
+}
+
 add_action( 'init', 'theme_assets' );
 add_action( 'wp_enqueue_scripts', 'view_assets' );
 //add_action( 'enqueue_block_editor_assets', 'admin_assets' );
@@ -33,6 +43,17 @@ add_action( 'enqueue_block_assets', 'admin_assets' );
 function theme_assets(): void {
 	wp_register_style( 'wpbs-theme', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
 	wp_register_style( 'wpbs-admin', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
+
+	foreach ( glob( get_stylesheet_directory() . '/dist/blocks/**', GLOB_ONLYDIR ) as $dir ) {
+		if ( ! file_exists( $dir . '/block.min.css' ) ) {
+			continue;
+		}
+		$name = basename( $dir );
+		wp_register_style( join( '-', [
+			'wpbs',
+			$name
+		] ), get_stylesheet_directory_uri() . '/dist/blocks/' . $name . '/block.min.css' );
+	}
 }
 
 function admin_assets(): void {

@@ -92,15 +92,15 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
+
         return (
             <>
                 <MobileDimensions
-                settings={mobile_dimensions}
-                pushSettings={(value) => {
-                    setAttributes({mobile_dimensions: value})
-                }}
-            ></MobileDimensions>
-                
+                    settings={mobile_dimensions}
+                    pushSettings={(value) => {
+                        setAttributes({mobile_dimensions: value});
+                    }}
+                ></MobileDimensions>
 
                 <section {...blockProps}>
                     <div className={'container wpbs-container'}>

@@ -16,18 +16,18 @@ function MobileDimensions({settings, pushSettings}) {
         pushSettings(Object.assign({}, settings, {[attr]: val}));
     }
 
-    const [padding, setPadding] = useState({
+    const [padding, setPadding] = useState(settings.padding || {
         top: undefined,
         left: undefined,
         right: undefined,
-        bottom: undefined,
+        bottom: undefined
     });
 
-    const [margin, setMargin] = useState({
+    const [margin, setMargin] = useState(settings.margin || {
         top: undefined,
         left: undefined,
         right: undefined,
-        bottom: undefined,
+        bottom: undefined
     });
 
     const [gap, setGap] = useState('');
@@ -43,7 +43,7 @@ function MobileDimensions({settings, pushSettings}) {
                         values={padding}
                         sides={['vertical', 'horizontal']}
                         onChange={(values) => {
-                            updateSettings('padding', values, setPadding)
+                            updateSettings('padding', values, setPadding);
                         }}
                     />
                     <BoxControl
@@ -55,12 +55,12 @@ function MobileDimensions({settings, pushSettings}) {
                         }}
                     />
                     <DimensionControl
-                        label={ 'Block Spacing' }
+                        label={'Block Spacing'}
                         onChange={(values) => {
                             updateSettings('gap', values, setGap)
                         }}
                         sizes={wp.data.select('core/editor').getEditorSettings().spacingSizes}
-                        value={ gap }
+                        value={gap}
                     />
                 </Grid>
             </PanelBody>

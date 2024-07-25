@@ -17,17 +17,17 @@ function MobileDimensions({settings, pushSettings}) {
     }
 
     const [padding, setPadding] = useState({
-        top: settings.paddingTop,
-        left: settings.paddingLeft,
-        right: settings.paddingRight,
-        bottom: settings.paddingBottom
+        top: 'paddingTop' in settings ? settings.paddingTop : undefined,
+        left: 'paddingLeft' in settings ? settings.paddingLeft : undefined,
+        right: 'paddingRight' in settings ? settings.paddingRight : undefined,
+        bottom: 'paddingBottom' in settings ? settings.paddingBottom : undefined,
     });
 
     const [margin, setMargin] = useState({
-        top: settings.marginTop,
-        left: settings.marginLeft,
-        right: settings.marginRight,
-        bottom: settings.marginBottom
+        top: 'marginTop' in settings ? settings.marginTop : undefined,
+        left: 'marginLeft' in settings ? settings.marginLeft : undefined,
+        right: 'marginRight' in settings ? settings.marginRight : undefined,
+        bottom: 'marginBottom' in settings ? settings.marginBottom : undefined,
     });
 
     const [gap, setGap] = useState('');
@@ -82,7 +82,7 @@ function MobileDimensions({settings, pushSettings}) {
 
 function setMobileProps(blockProps, props) {
 
-    if (blockProps.style === undefined || props.attributes.mobile_dimensions === undefined) {
+    if (!blockProps.style || !props.attributes.mobile_dimensions) {
         return false;
     }
 
@@ -132,7 +132,7 @@ function setMobileProps(blockProps, props) {
 
 function MobileStyles({blockProps, props}) {
 
-    if (blockProps.style === undefined || props.attributes.mobile_dimensions === undefined) {
+    if (!blockProps.style || !props.attributes.mobile_dimensions) {
         return false;
     }
 
@@ -153,9 +153,9 @@ function MobileStyles({blockProps, props}) {
         'marginLeft' in props.attributes.mobile_dimensions ? '--wpbs-marginLeft:' + props.attributes.mobile_dimensions.marginLeft : false,
     ].join('; ');
 
-    const css = [padding, margin].join(' ')
+    const css_properties = [padding, margin].join(' ')
 
-    return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + {css} + '}}'}</style>;
+    return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + css_properties + '}}'}</style>;
 }
 
 

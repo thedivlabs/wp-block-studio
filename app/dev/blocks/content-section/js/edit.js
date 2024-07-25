@@ -99,7 +99,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <MobileDimensions
-                    settings={mobile_dimensions}
+                    settings={mobile_dimensions || {}}
                     pushSettings={(value) => {
                         setAttributes({mobile_dimensions: value});
                     }}

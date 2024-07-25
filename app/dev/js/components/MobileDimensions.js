@@ -86,6 +86,9 @@ function setMobileProps(blockProps, props) {
         return false;
     }
 
+    console.log(props);
+    console.log(blockProps);
+
     const blockPadding = () => {
 
         const paddingTop = 'paddingTop' in props.attributes.mobile_dimensions ? 'paddingTop' in blockProps.style ? 'var(--wpbs-paddingTop, ' + blockProps.style.paddingTop + ')' : 'var(--wpbs-paddingTop)' : blockProps.style.paddingTop;
@@ -116,7 +119,9 @@ function setMobileProps(blockProps, props) {
     }
     const blockSpacing = () => {
 
-        return 'blockSpacing' in props.attributes.mobile_dimensions ? 'blockSpacing' in blockProps.style ? 'var(--wpbs-blockSpacing, ' + blockProps.style.blockSpacing + ')' : 'var(--wpbs-blockSpacing)' : blockProps.style.blockSpacing;
+        const attr = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? props.attributes.style.blockGap : false;
+
+        return 'blockSpacing' in props.attributes.mobile_dimensions ? attr ? 'var(--wpbs-blockSpacing, var(--wp--' + attr.replace('var:', '').replaceAll('|', '--') + '))' : 'var(--wpbs-blockSpacing)' : blockProps.style.blockSpacing;
     }
 
     return {
@@ -136,23 +141,25 @@ function MobileStyles({blockProps, props}) {
         return false;
     }
 
-    console.log(props);
-
     const padding = [
-        'paddingTop' in props.attributes.mobile_dimensions ? '--wpbs-paddingTop:' + props.attributes.mobile_dimensions.paddingTop : false,
-        'paddingRight' in props.attributes.mobile_dimensions ? '--wpbs-paddingRight:' + props.attributes.mobile_dimensions.paddingRight : false,
-        'paddingBottom' in props.attributes.mobile_dimensions ? '--wpbs-paddingBottom:' + props.attributes.mobile_dimensions.paddingBottom : false,
-        'paddingLeft' in props.attributes.mobile_dimensions ? '--wpbs-paddingLeft:' + props.attributes.mobile_dimensions.paddingLeft : false,
-    ].join('; ');
+        'paddingTop' in props.attributes.mobile_dimensions ? '--wpbs-paddingTop:' + props.attributes.mobile_dimensions.paddingTop : null,
+        'paddingRight' in props.attributes.mobile_dimensions ? '--wpbs-paddingRight:' + props.attributes.mobile_dimensions.paddingRight : null,
+        'paddingBottom' in props.attributes.mobile_dimensions ? '--wpbs-paddingBottom:' + props.attributes.mobile_dimensions.paddingBottom : null,
+        'paddingLeft' in props.attributes.mobile_dimensions ? '--wpbs-paddingLeft:' + props.attributes.mobile_dimensions.paddingLeft : null,
+    ].filter(x => x !== null).join('; ');
 
     const margin = [
-        'marginTop' in props.attributes.mobile_dimensions ? '--wpbs-marginTop:' + props.attributes.mobile_dimensions.marginTop : false,
-        'marginRight' in props.attributes.mobile_dimensions ? '--wpbs-marginRight:' + props.attributes.mobile_dimensions.marginRight : false,
-        'marginBottom' in props.attributes.mobile_dimensions ? '--wpbs-marginBottom:' + props.attributes.mobile_dimensions.marginBottom : false,
-        'marginLeft' in props.attributes.mobile_dimensions ? '--wpbs-marginLeft:' + props.attributes.mobile_dimensions.marginLeft : false,
-    ].join('; ');
+        'marginTop' in props.attributes.mobile_dimensions ? '--wpbs-marginTop:' + props.attributes.mobile_dimensions.marginTop : null,
+        'marginRight' in props.attributes.mobile_dimensions ? '--wpbs-marginRight:' + props.attributes.mobile_dimensions.marginRight : null,
+        'marginBottom' in props.attributes.mobile_dimensions ? '--wpbs-marginBottom:' + props.attributes.mobile_dimensions.marginBottom : null,
+        'marginLeft' in props.attributes.mobile_dimensions ? '--wpbs-marginLeft:' + props.attributes.mobile_dimensions.marginLeft : null,
+    ].filter(x => x !== null).join('; ');
 
-    const css_properties = [padding, margin].join(' ')
+    const blockSpacing = [
+        'blockSpacing' in props.attributes.mobile_dimensions ? '--wpbs-blockSpacing:var(--wp--preset--spacing--' + props.attributes.mobile_dimensions.blockSpacing + ')' : false,
+    ];
+
+    const css_properties = [padding, margin, blockSpacing].join('; ')
 
     return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + css_properties + '}}'}</style>;
 }

@@ -7,28 +7,6 @@ import {
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 
-function getMobileProps(blockProps, props, attribute) {
-
-    const style = blockProps.style || {};
-    const mobile_dimensions = 'attributes' in props ? props.attributes.mobile_dimensions || {} : {};
-    const spacing = 'attributes' in props && 'style' in  props.attributes ? props.attributes.style.spacing || {} : {};
-    const blockSpacing = spacing.blockGap || false;
-
-    console.log(blockSpacing);
-    console.log(parseProp(blockSpacing));
-
-    if ('blockSpacing' in mobile_dimensions && mobile_dimensions.blockSpacing) {
-
-        const mobileGap = '--wpbs-blockSpacing:var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
-
-        console.log(mobileGap);
-
-    }
-
-    //const paddingTop = 'paddingTop' in style ? 'var(--wpbs-paddingTop, ' + (style.paddingTop || null) + ')' : 'var(--wpbs-paddingTop)';
-
-}
-
 function MobileDimensions({settings, pushSettings}) {
 
     function updateSettings(attributes, val, callback) {
@@ -107,8 +85,6 @@ function setMobileProps(blockProps, props) {
     const mobile_dimensions = props.attributes.mobile_dimensions || {};
     const style = blockProps.style || {};
 
-    getMobileProps(blockProps, props);
-
     const blockPadding = () => {
 
         const paddingTop = 'paddingTop' in style ? 'var(--wpbs-paddingTop, ' + (style.paddingTop || null) + ')' : 'var(--wpbs-paddingTop)';
@@ -144,14 +120,11 @@ function setMobileProps(blockProps, props) {
 
     const blockSpacing = () => {
 
-        const mobile_dimensions = props.attributes.mobile_dimensions || {};
-
-        const attr = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? props.attributes.style.spacing.blockGap : false;
-        const defaultAttr = attr ? 'var(--wp--' + attr.replace('var:', '').replaceAll('|', '--') + ')' : 0;
+        const gap = getGapProp(blockProps, props);
 
         return {
-            gap: 'blockSpacing' in mobile_dimensions ? 'var(--wpbs-blockSpacing,' + defaultAttr + ')' : 'var(--wpbs-blockSpacing)'
-        };
+            gap: gap
+        }
     }
 
     return {
@@ -159,7 +132,8 @@ function setMobileProps(blockProps, props) {
         style: {
             ...blockProps.style,
             ...blockPadding(),
-            ...blockMargin()
+            ...blockMargin(),
+            ...blockSpacing(),
         }
     }
 }
@@ -183,13 +157,35 @@ function MobileStyles({blockProps, props}) {
         '--wpbs-marginLeft:' + (mobile_dimensions.marginLeft || style.marginLeft || 0),
     ].join('; ');
 
-   /* const blockSpacing = [
-        '--wpbs-blockSpacing:var(--wp--preset--spacing--' + (mobile_dimensions.blockSpacing || 0) + ')',
-    ].join('; ');*/
+    const blockSpacing = '--wpbs-blockSpacing:' + getGapProp(blockProps, props);
 
-    const css_properties = [padding, margin].join('; ')
+    const css_properties = [padding, margin, blockSpacing].filter(x => x).join('; ')
 
     return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + css_properties + '}}'}</style>;
+}
+
+function getGapProp(blockProps, props) {
+
+
+    const mobile_dimensions = 'attributes' in props ? props.attributes.mobile_dimensions || {} : {};
+    const desktopGap = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? parseProp(props.attributes.style.spacing.blockGap) : false
+
+    let gap;
+
+    if (mobile_dimensions.blockSpacing) {
+
+        if (desktopGap) {
+            gap = 'var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ', ' + desktopGap + ')';
+        } else {
+            gap = 'var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
+        }
+
+    } else if (desktopGap) {
+        gap = desktopGap;
+    }
+
+    return gap;
+
 }
 
 

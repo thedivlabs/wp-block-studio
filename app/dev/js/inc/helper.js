@@ -7,11 +7,7 @@ const Helper = function Helper() {
 
 export function parseProp(prop) {
 
-    if(!prop){
-        return '';
-    }
-
-    if (prop === '0') {
+    if (prop === '0' || !prop) {
         return '0';
     }
 

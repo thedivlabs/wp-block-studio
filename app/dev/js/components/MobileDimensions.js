@@ -17,17 +17,17 @@ function MobileDimensions({settings, pushSettings}) {
     }
 
     const [padding, setPadding] = useState({
-        top: 'paddingTop' in settings ? settings.paddingTop : undefined,
-        left: 'paddingLeft' in settings ? settings.paddingLeft : undefined,
-        right: 'paddingRight' in settings ? settings.paddingRight : undefined,
-        bottom: 'paddingBottom' in settings ? settings.paddingBottom : undefined,
+        top: 'paddingTop' in settings ? settings.paddingTop : null,
+        left: 'paddingLeft' in settings ? settings.paddingLeft : null,
+        right: 'paddingRight' in settings ? settings.paddingRight : null,
+        bottom: 'paddingBottom' in settings ? settings.paddingBottom : null,
     });
 
     const [margin, setMargin] = useState({
-        top: 'marginTop' in settings ? settings.marginTop : undefined,
-        left: 'marginLeft' in settings ? settings.marginLeft : undefined,
-        right: 'marginRight' in settings ? settings.marginRight : undefined,
-        bottom: 'marginBottom' in settings ? settings.marginBottom : undefined,
+        top: 'marginTop' in settings ? settings.marginTop : null,
+        left: 'marginLeft' in settings ? settings.marginLeft : null,
+        right: 'marginRight' in settings ? settings.marginRight : null,
+        bottom: 'marginBottom' in settings ? settings.marginBottom : null,
     });
 
     const [gap, setGap] = useState(settings.blockSpacing || 0);

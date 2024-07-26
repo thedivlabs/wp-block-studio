@@ -85,12 +85,14 @@ function setMobileProps(blockProps, props) {
     const mobile_dimensions = props.attributes.mobile_dimensions || {};
     const style = blockProps.style || {};
 
+    console.log(style);
+
     const blockPadding = () => {
 
-        const paddingTop = 'paddingTop' in style ? 'var(--wpbs-paddingTop, ' + (style.paddingTop || 0) + ')' : 'var(--wpbs-paddingTop)';
-        const paddingRight = 'paddingRight' in style ? 'var(--wpbs-paddingRight, ' + (style.paddingRight || 0) + ')' : 'var(--wpbs-paddingRight)';
-        const paddingBottom = 'paddingBottom' in style ? 'var(--wpbs-paddingBottom, ' + (style.paddingBottom || 0) + ')' : 'var(--wpbs-paddingBottom)';
-        const paddingLeft = 'paddingLeft' in style ? 'var(--wpbs-paddingLeft, ' + (style.paddingLeft || 0) + ')' : 'var(--wpbs-paddingLeft)';
+        const paddingTop = 'paddingTop' in style ? 'var(--wpbs-paddingTop, ' + (style.paddingTop || null) + ')' : 'var(--wpbs-paddingTop)';
+        const paddingRight = 'paddingRight' in style ? 'var(--wpbs-paddingRight, ' + (style.paddingRight || null) + ')' : 'var(--wpbs-paddingRight)';
+        const paddingBottom = 'paddingBottom' in style ? 'var(--wpbs-paddingBottom, ' + (style.paddingBottom || null) + ')' : 'var(--wpbs-paddingBottom)';
+        const paddingLeft = 'paddingLeft' in style ? 'var(--wpbs-paddingLeft, ' + (style.paddingLeft || null) + ')' : 'var(--wpbs-paddingLeft)';
 
         return {
             paddingTop: paddingTop,
@@ -102,10 +104,10 @@ function setMobileProps(blockProps, props) {
 
     const blockMargin = () => {
 
-        const marginTop = 'marginTop' in style ? 'var(--wpbs-marginTop, ' + (style.marginTop || 0) + ')' : 'var(--wpbs-marginTop)';
-        const marginRight = 'marginRight' in style ? 'var(--wpbs-marginRight, ' + (style.marginRight || 0) + ')' : 'var(--wpbs-marginRight)';
-        const marginBottom = 'marginBottom' in style ? 'var(--wpbs-marginBottom, ' + (style.marginBottom || 0) + ')' : 'var(--wpbs-marginBottom)';
-        const marginLeft = 'marginLeft' in style ? 'var(--wpbs-marginLeft, ' + (style.marginLeft || 0) + ')' : 'var(--wpbs-marginLeft)';
+        const marginTop = 'marginTop' in style ? 'var(--wpbs-marginTop, ' + (style.marginTop || null) + ')' : 'var(--wpbs-marginTop)';
+        const marginRight = 'marginRight' in style ? 'var(--wpbs-marginRight, ' + (style.marginRight || null) + ')' : 'var(--wpbs-marginRight)';
+        const marginBottom = 'marginBottom' in style ? 'var(--wpbs-marginBottom, ' + (style.marginBottom || null) + ')' : 'var(--wpbs-marginBottom)';
+        const marginLeft = 'marginLeft' in style ? 'var(--wpbs-marginLeft, ' + (style.marginLeft || null) + ')' : 'var(--wpbs-marginLeft)';
 
         return {
             marginTop: marginTop,
@@ -139,19 +141,20 @@ function setMobileProps(blockProps, props) {
 function MobileStyles({blockProps, props}) {
 
     const mobile_dimensions = props.attributes.mobile_dimensions;
+    const style = blockProps.style;
 
     const padding = [
-        '--wpbs-paddingTop:' + (mobile_dimensions.paddingTop || 0),
-        '--wpbs-paddingRight:' + (mobile_dimensions.paddingRight || 0),
-        '--wpbs-paddingBottom:' + (mobile_dimensions.paddingBottom || 0),
-        '--wpbs-paddingLeft:' + (mobile_dimensions.paddingLeft || 0),
+        '--wpbs-paddingTop:' + (mobile_dimensions.paddingTop || style.paddingTop || 0),
+        '--wpbs-paddingRight:' + (mobile_dimensions.paddingRight || style.paddingRight || 0),
+        '--wpbs-paddingBottom:' + (mobile_dimensions.paddingBottom || style.paddingBottom || 0),
+        '--wpbs-paddingLeft:' + (mobile_dimensions.paddingLeft || style.paddingLeft || 0),
     ].join('; ');
 
     const margin = [
-        '--wpbs-marginTop:' + (mobile_dimensions.marginTop || 0),
-        '--wpbs-marginRight:' + (mobile_dimensions.marginRight || 0),
-        '--wpbs-marginBottom:' + (mobile_dimensions.marginBottom || 0),
-        '--wpbs-marginLeft:' + (mobile_dimensions.marginLeft || 0),
+        '--wpbs-marginTop:' + (mobile_dimensions.marginTop || style.marginTop || 0),
+        '--wpbs-marginRight:' + (mobile_dimensions.marginRight || style.marginRight || 0),
+        '--wpbs-marginBottom:' + (mobile_dimensions.marginBottom || style.marginBottom || 0),
+        '--wpbs-marginLeft:' + (mobile_dimensions.marginLeft || style.marginLeft || 0),
     ].join('; ');
 
     const blockSpacing = [

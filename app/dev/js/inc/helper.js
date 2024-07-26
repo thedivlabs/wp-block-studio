@@ -1,22 +1,27 @@
 import React, {useState} from "react"
 
-const Helper = ()=> {
+const Helper = function Helper() {
 
-    this.parseProp = (prop) => {
 
-        if (prop === '0') {
-            return '0';
-        }
+}
 
-        prop = typeof prop === 'string' ? prop : '';
+export function parseProp(prop) {
 
-        return [
-            'var(--wp--',
-            prop.replace('var:', '').replaceAll('|', '--'),
-            ')'
-        ].join();
-
+    if(!prop){
+        return '';
     }
+
+    if (prop === '0') {
+        return '0';
+    }
+
+    prop = typeof prop === 'string' ? prop : '';
+
+    return [
+        'var(--wp--',
+        prop.replace('var:', '').replaceAll('|', '--'),
+        ')'
+    ].join('');
 
 }
 

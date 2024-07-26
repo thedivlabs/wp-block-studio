@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import Helper from '../inc/helper'
+import {parseProp} from '../../js/inc/helper'
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
@@ -10,25 +10,27 @@ import {InspectorControls} from "@wordpress/block-editor";
 function getMobileProps(blockProps, props, attribute) {
 
     const style = blockProps.style || {};
-    const mobile_dimensions = props.attributes.mobile_dimensions || {};
-    const spacing = props.attributes.style.spacing || {};
+    const mobile_dimensions = 'attributes' in props ? props.attributes.mobile_dimensions || {} : {};
+    const spacing = 'attributes' in props && 'style' in  props.attributes ? props.attributes.style.spacing || {} : {};
     const blockSpacing = spacing.blockGap || false;
 
-
-    return false;
+    console.log(blockSpacing);
+    console.log(parseProp(blockSpacing));
 
     if ('blockSpacing' in mobile_dimensions) {
 
-        if (blockSpacing) {
-            const gap = [
-                '--wpbs-blockSpacing:var(',
-                '--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ',',
-                Helper.parseProp(blockSpacing),
-                ')'
-            ].join();
-        } else {
-            const gap = '--wpbs-blockSpacing:var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
-        }
+
+        const gap = blockSpacing ? [
+            '--wpbs-blockSpacing:var(',
+            '--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ',',
+            parseProp(blockSpacing),
+            ')'
+        ].join('') :
+            '--wpbs-blockSpacing:var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
+
+
+
+        console.log(gap);
 
 
     }
@@ -167,8 +169,7 @@ function setMobileProps(blockProps, props) {
         style: {
             ...blockProps.style,
             ...blockPadding(),
-            ...blockMargin(),
-            ...blockSpacing()
+            ...blockMargin()
         }
     }
 }
@@ -192,11 +193,11 @@ function MobileStyles({blockProps, props}) {
         '--wpbs-marginLeft:' + (mobile_dimensions.marginLeft || style.marginLeft || 0),
     ].join('; ');
 
-    const blockSpacing = [
+   /* const blockSpacing = [
         '--wpbs-blockSpacing:var(--wp--preset--spacing--' + (mobile_dimensions.blockSpacing || 0) + ')',
-    ].join('; ');
+    ].join('; ');*/
 
-    const css_properties = [padding, margin, blockSpacing].join('; ')
+    const css_properties = [padding, margin].join('; ')
 
     return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + css_properties + '}}'}</style>;
 }

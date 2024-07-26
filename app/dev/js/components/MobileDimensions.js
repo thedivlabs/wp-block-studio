@@ -1,4 +1,5 @@
 import React, {useState} from "react"
+import {parseProp} from '../inc/helper'
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
@@ -6,8 +7,39 @@ import {
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 
-function MobileDimensions({settings, pushSettings}) {
+function getMobileProps(blockProps, props, attribute) {
 
+    const style = blockProps.style || {};
+    const mobile_dimensions = props.attributes.mobile_dimensions || {};
+    const spacing = props.attributes.style.spacing || {};
+    const blockSpacing = spacing.blockGap || false;
+
+
+    console.log(parseProp(blockSpacing));
+
+    return false;
+
+    if ('blockSpacing' in mobile_dimensions) {
+
+        if (blockSpacing) {
+            const gap = [
+                '--wpbs-blockSpacing:var(',
+                '--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ',',
+                Helper.parseProp(blockSpacing),
+                ')'
+            ].join();
+        } else {
+            const gap = '--wpbs-blockSpacing:var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
+        }
+
+
+    }
+
+    //const paddingTop = 'paddingTop' in style ? 'var(--wpbs-paddingTop, ' + (style.paddingTop || null) + ')' : 'var(--wpbs-paddingTop)';
+
+}
+
+function MobileDimensions({settings, pushSettings}) {
 
     function updateSettings(attributes, val, callback) {
         if (callback) {
@@ -85,7 +117,7 @@ function setMobileProps(blockProps, props) {
     const mobile_dimensions = props.attributes.mobile_dimensions || {};
     const style = blockProps.style || {};
 
-    console.log(style);
+    getMobileProps(blockProps, props);
 
     const blockPadding = () => {
 

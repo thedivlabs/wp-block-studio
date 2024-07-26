@@ -121,7 +121,7 @@ registerBlockType(metadata.name, {
 
         return (
             <section {...setMobileProps(blockProps, props)}>
-                <div className={'container wpbs-container'}>
+                <div className={'container wpbs-container gap-inherit'}>
                     <InnerBlocks.Content/>
                 </div>
                 <MobileStyles blockProps={blockProps} props={props}/>

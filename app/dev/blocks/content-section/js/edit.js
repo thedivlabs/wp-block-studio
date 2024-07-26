@@ -2,13 +2,16 @@ import {
     useBlockProps, InspectorControls, InnerBlocks,
 } from "@wordpress/block-editor"
 import {
+    __experimentalGrid as Grid,
+    ToggleControl,
     PanelBody,
+    SelectControl,
 } from "@wordpress/components"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
-import MobileDimensions from '../../../js/components/MobileDimensions';
-import {setMobileProps,MobileStyles} from '../../../js/components/MobileDimensions';
+import MobileDimensions from 'Theme/MobileDimensions';
+import {setMobileProps, MobileStyles} from 'Theme/MobileDimensions';
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -24,35 +27,8 @@ registerBlockType(metadata.name, {
             blockGap: true,
             padding: true,
             margin: true,
-
         }
     },
-    styles: [
-        {
-            name: 'split',
-            label: 'Split'
-        },
-        {
-            name: 'card',
-            label: 'Card'
-        },
-        {
-            name: 'card-reverse',
-            label: 'Card Reverse'
-        },
-        {
-            name: 'sidebar',
-            label: 'Sidebar'
-        },
-        {
-            name: 'sidebar-reverse',
-            label: 'Sidebar Reverse'
-        },
-        {
-            name: 'block',
-            label: 'Block'
-        }
-    ],
     attributes: {
         height: {
             type: 'string'
@@ -83,16 +59,17 @@ registerBlockType(metadata.name, {
         const {
             mobile_dimensions,
             background,
-            align,
-            justify,
-            container,
-            grow
         } = attributes;
 
         const blockProps = useBlockProps({
             className: 'wpbs-content-section w-full flex flex-col',
             style: {}
         });
+
+        const [align, setAlign] = useState('top');
+        const [justify, setJustify] = useState('center');
+        const [container, setContainer] = useState('');
+        const [grow, setGrow] = useState(false);
 
 
         return (
@@ -104,6 +81,67 @@ registerBlockType(metadata.name, {
                     }}
                 >
                 </MobileDimensions>
+
+                <InspectorControls group={'styles'}>
+                    <PanelBody title={'Settings'} initialOpen={false}>
+                        <Grid columns={2} gap={4}>
+                            <SelectControl
+                                label="Align"
+                                value={align}
+                                options={[
+                                    {label: 'Big', value: '100%'},
+                                    {label: 'Medium', value: '50%'},
+                                    {label: 'Small', value: '25%'},
+                                ]}
+                                onChange={(value) => setAlign(value)}
+                                __nextHasNoMarginBottom
+                            />
+                            <SelectControl
+                                label="Justify"
+                                value={justify}
+                                options={[
+                                    {label: 'Big', value: '100%'},
+                                    {label: 'Medium', value: '50%'},
+                                    {label: 'Small', value: '25%'},
+                                ]}
+                                onChange={(value) => setJustify(value)}
+                                __nextHasNoMarginBottom
+                            />
+                            <SelectControl
+                                label="Container"
+                                value={container}
+                                options={[
+                                    {label: 'Big', value: '100%'},
+                                    {label: 'Medium', value: '50%'},
+                                    {label: 'Small', value: '25%'},
+                                ]}
+                                onChange={(value) => setContainer(value)}
+                                __nextHasNoMarginBottom
+                            />
+                            <SelectControl
+                                label="Container"
+                                value={container}
+                                options={[
+                                    {label: 'Big', value: '100%'},
+                                    {label: 'Medium', value: '50%'},
+                                    {label: 'Small', value: '25%'},
+                                ]}
+                                onChange={(value) => setContainer(value)}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Grow"
+                                checked={grow}
+                                onChange={(value) => {
+                                    setGrow(value);
+                                }}
+                            />
+                        </Grid>
+                    </PanelBody>
+                    <SelectControl>
+
+                    </SelectControl>
+                </InspectorControls>
 
                 <section {...blockProps}>
                     <div className={'container wpbs-container'}>

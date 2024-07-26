@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import {parseProp} from '../inc/helper'
+import Helper from '../inc/helper'
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
@@ -14,8 +14,6 @@ function getMobileProps(blockProps, props, attribute) {
     const spacing = props.attributes.style.spacing || {};
     const blockSpacing = spacing.blockGap || false;
 
-
-    console.log(parseProp(blockSpacing));
 
     return false;
 

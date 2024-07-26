@@ -17,21 +17,11 @@ function getMobileProps(blockProps, props, attribute) {
     console.log(blockSpacing);
     console.log(parseProp(blockSpacing));
 
-    if ('blockSpacing' in mobile_dimensions) {
+    if ('blockSpacing' in mobile_dimensions && mobile_dimensions.blockSpacing) {
 
+        const mobileGap = '--wpbs-blockSpacing:var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
 
-        const gap = blockSpacing ? [
-            '--wpbs-blockSpacing:var(',
-            '--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ',',
-            parseProp(blockSpacing),
-            ')'
-        ].join('') :
-            '--wpbs-blockSpacing:var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
-
-
-
-        console.log(gap);
-
+        console.log(mobileGap);
 
     }
 

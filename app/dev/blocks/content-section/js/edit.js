@@ -8,8 +8,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
-import {setMobileProps} from 'Theme/MobileDimensions';
-import {MobileStyles} from 'Theme/MobileDimensions';
+import {setMobileProps,MobileStyles} from '../../../js/components/MobileDimensions';
 
 registerBlockType(metadata.name, {
     apiVersion: 3,

@@ -104,6 +104,9 @@ function setMobileProps(blockProps, props) {
 
     const blockMargin = () => {
 
+        const mobile_dimensions = props.attributes.mobile_dimensions || {};
+        const style = blockProps.style || {};
+
         const marginTop = 'marginTop' in style ? 'var(--wpbs-marginTop, ' + (style.marginTop || null) + ')' : 'var(--wpbs-marginTop)';
         const marginRight = 'marginRight' in style ? 'var(--wpbs-marginRight, ' + (style.marginRight || null) + ')' : 'var(--wpbs-marginRight)';
         const marginBottom = 'marginBottom' in style ? 'var(--wpbs-marginBottom, ' + (style.marginBottom || null) + ')' : 'var(--wpbs-marginBottom)';
@@ -119,8 +122,10 @@ function setMobileProps(blockProps, props) {
 
     const blockSpacing = () => {
 
+        const mobile_dimensions = props.attributes.mobile_dimensions || {};
+
         const attr = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? props.attributes.style.spacing.blockGap : false;
-        const defaultAttr = attr ? 'var(--wp--' + attr.replace('var:', '').replaceAll('|', '--') + ')' : null;
+        const defaultAttr = attr ? 'var(--wp--' + attr.replace('var:', '').replaceAll('|', '--') + ')' : 0;
 
         return {
             gap: 'blockSpacing' in mobile_dimensions ? 'var(--wpbs-blockSpacing,' + defaultAttr + ')' : 'var(--wpbs-blockSpacing)'
@@ -140,8 +145,8 @@ function setMobileProps(blockProps, props) {
 
 function MobileStyles({blockProps, props}) {
 
-    const mobile_dimensions = props.attributes.mobile_dimensions;
-    const style = blockProps.style;
+    const mobile_dimensions = props.attributes.mobile_dimensions || {};
+    const style = blockProps.style || {};
 
     const padding = [
         '--wpbs-paddingTop:' + (mobile_dimensions.paddingTop || style.paddingTop || 0),

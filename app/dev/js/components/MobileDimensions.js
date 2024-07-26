@@ -17,17 +17,17 @@ function MobileDimensions({settings, pushSettings}) {
     }
 
     const [padding, setPadding] = useState({
-        top: 'paddingTop' in settings ? settings.paddingTop : null,
-        left: 'paddingLeft' in settings ? settings.paddingLeft : null,
-        right: 'paddingRight' in settings ? settings.paddingRight : null,
-        bottom: 'paddingBottom' in settings ? settings.paddingBottom : null,
+        top: settings.paddingTop || 0,
+        left: settings.paddingLeft || 0,
+        right: settings.paddingRight || 0,
+        bottom: settings.paddingBottom || 0,
     });
 
     const [margin, setMargin] = useState({
-        top: 'marginTop' in settings ? settings.marginTop : null,
-        left: 'marginLeft' in settings ? settings.marginLeft : null,
-        right: 'marginRight' in settings ? settings.marginRight : null,
-        bottom: 'marginBottom' in settings ? settings.marginBottom : null,
+        top: settings.marginTop || 0,
+        left: settings.marginLeft || 0,
+        right: settings.marginRight || 0,
+        bottom: settings.marginBottom || 0,
     });
 
     const [gap, setGap] = useState(settings.blockSpacing || 0);
@@ -159,7 +159,7 @@ function MobileStyles({blockProps, props}) {
     ].filter(x => x !== null).join('; ');
 
     const blockSpacing = [
-        'blockSpacing' in props.attributes.mobile_dimensions ? '--wpbs-blockSpacing:var(--wp--preset--spacing--' + props.attributes.mobile_dimensions.blockSpacing + ')' : false,
+        'blockSpacing' in props.attributes.mobile_dimensions ? '--wpbs-blockSpacing:var(--wp--preset--spacing--' + props.attributes.mobile_dimensions.blockSpacing + ')' : null,
     ];
 
     const css_properties = [padding, margin, blockSpacing].join('; ')

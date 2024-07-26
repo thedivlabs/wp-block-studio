@@ -118,23 +118,14 @@ registerBlockType(metadata.name, {
                                 onChange={(value) => setContainer(value)}
                                 __nextHasNoMarginBottom
                             />
-                            <SelectControl
-                                label="Container"
-                                value={container}
-                                options={[
-                                    {label: 'Big', value: '100%'},
-                                    {label: 'Medium', value: '50%'},
-                                    {label: 'Small', value: '25%'},
-                                ]}
-                                onChange={(value) => setContainer(value)}
-                                __nextHasNoMarginBottom
-                            />
                             <ToggleControl
                                 label="Grow"
                                 checked={grow}
                                 onChange={(value) => {
                                     setGrow(value);
                                 }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
                             />
                         </Grid>
                     </PanelBody>

@@ -35,7 +35,7 @@ function MobileDimensions({settings, pushSettings}) {
     return (
         <InspectorControls group={'styles'}>
             <PanelBody title={'Mobile'} initialOpen={false}>
-                <Grid columns={1} gap={6}>
+                <Grid columns={1} columnGap={20} rowGap={20}>
                     <BoxControl
                         __next40pxDefaultSize={true}
                         label={'Padding'}
@@ -196,7 +196,7 @@ function getGapProp(blockProps, props) {
     const desktopGap = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? parseProp(props.attributes.style.spacing.blockGap) : false
 
     let gap = 0;
-    
+
     if (mobile_dimensions.blockSpacing) {
 
         if (desktopGap) {

@@ -60,10 +60,10 @@ function classNames(element, attributes = {}) {
 
     switch (attributes.container) {
         case 'sm':
-            container = 'container container-sm';
+            container = 'container max-w-screen-lg';
             break;
-        case 'large':
-            container = 'container container-lg';
+        case 'lg':
+            container = 'container  max-w-screen-2xl';
             break;
         case 'none':
             container = false;

@@ -39,7 +39,7 @@ function Background({settings, pushSettings}) {
 
     return (
         <InspectorControls group={'styles'}>
-            <PanelBody title={'Mobile'} initialOpen={false}>
+            <PanelBody title={'Background'} initialOpen={false}>
                 <Grid columns={1} columnGap={20} rowGap={20}>
                     <SelectControl
                         label="Type"

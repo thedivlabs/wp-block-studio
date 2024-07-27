@@ -155,12 +155,12 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
-        const [align, setAlign] = useState('top');
-        const [justify, setJustify] = useState('center');
-        const [container, setContainer] = useState('');
-        const [grow, setGrow] = useState(false);
-        const [flex, setFlex] = useState(null);
-        const [wrap, setWrap] = useState(false);
+        const [align, setAlign] = useState(attributes.align || 'top');
+        const [justify, setJustify] = useState(attributes.align || 'center');
+        const [container, setContainer] = useState(attributes.align || '');
+        const [grow, setGrow] = useState(attributes.align || false);
+        const [flex, setFlex] = useState(attributes.align || null);
+        const [wrap, setWrap] = useState(attributes.align || false);
 
         return (
             <>
@@ -184,7 +184,7 @@ registerBlockType(metadata.name, {
                         <Grid columns={2} columnGap={20} rowGap={30}>
                             <SelectControl
                                 label="Align"
-                                value={attributes.align}
+                                value={align}
                                 options={[
                                     {label: 'Default', value: null},
                                     {label: 'Center', value: 'center'},
@@ -199,7 +199,7 @@ registerBlockType(metadata.name, {
                             />
                             <SelectControl
                                 label="Justify"
-                                value={attributes.justify}
+                                value={justify}
                                 options={[
                                     {label: 'Default', value: null},
                                     {label: 'Center', value: 'center'},
@@ -214,7 +214,7 @@ registerBlockType(metadata.name, {
                             />
                             <SelectControl
                                 label="Container"
-                                value={attributes.container}
+                                value={container}
                                 options={[
                                     {label: 'Default', value: null},
                                     {label: 'Large', value: 'lg'},
@@ -229,7 +229,7 @@ registerBlockType(metadata.name, {
                             />
                             <SelectControl
                                 label="Flex"
-                                value={attributes.flex}
+                                value={flex}
                                 options={[
                                     {label: 'Default', value: null},
                                     {label: 'Column', value: 'col'},
@@ -243,7 +243,7 @@ registerBlockType(metadata.name, {
                             />
                             <ToggleControl
                                 label="Grow"
-                                checked={attributes.grow}
+                                checked={grow}
                                 onChange={(value) => {
                                     setGrow(value);
                                     setAttributes({grow: value});
@@ -253,7 +253,7 @@ registerBlockType(metadata.name, {
                             />
                             <ToggleControl
                                 label="Wrap"
-                                checked={attributes.wrap}
+                                checked={wrap}
                                 onChange={(value) => {
                                     setWrap(value);
                                     setAttributes({wrap: value});

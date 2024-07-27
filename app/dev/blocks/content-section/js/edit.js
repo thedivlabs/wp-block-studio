@@ -173,7 +173,7 @@ registerBlockType(metadata.name, {
                 </MobileDimensions>
 
                 <Background
-                    settings={background}
+                    settings={background || {}}
                     pushSettings={(value) => {
                         setAttributes({background: value});
                     }}

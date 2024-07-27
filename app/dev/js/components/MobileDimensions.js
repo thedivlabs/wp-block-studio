@@ -7,7 +7,7 @@ import {
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 
-function MobileDimensions({settings, pushSettings}) {
+function MobileDimensions({settings = {}, pushSettings}) {
 
     function updateSettings(attributes, val, callback) {
         if (callback) {

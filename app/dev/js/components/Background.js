@@ -7,7 +7,7 @@ import {
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 
-function Background({settings, pushSettings}) {
+function Background({settings = {}, pushSettings}) {
 
 
     /*{

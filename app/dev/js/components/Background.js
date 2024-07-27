@@ -118,8 +118,6 @@ function Background({settings = {}, pushSettings}) {
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-                    </Grid>
-                    <Grid columns={2} columnGap={20} rowGap={20}>
                         <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={ true }>
                             <MediaUploadCheck>
                                 <MediaUpload
@@ -174,29 +172,33 @@ function Background({settings = {}, pushSettings}) {
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-                        <MediaUpload
-                            title={'Pattern'}
-                            onSelect={(value) => {
-                                updateSettings('pattern', value, setPattern);
-                            }}
-                            allowedTypes={['image']}
-                            value={pattern}
-                            render={({open}) => {
-                                if (pattern) {
-                                    return <>
-                                        <PreviewThumbnail
-                                            image={pattern || {}}
-                                            callback={() => {
-                                                updateSettings('pattern', null, setPattern)
-                                            }}
-                                        /></>;
-                                } else {
-                                    return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                        Choose Image
-                                    </Button>
-                                }
-                            }}
-                        />
+                        <BaseControl label={'Pattern'} __nextHasNoMarginBottom={ true }>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title={'Pattern'}
+                                    onSelect={(value) => {
+                                        updateSettings('pattern', value, setPattern);
+                                    }}
+                                    allowedTypes={['image']}
+                                    value={pattern}
+                                    render={({open}) => {
+                                        if (pattern) {
+                                            return <>
+                                                <PreviewThumbnail
+                                                    image={pattern || {}}
+                                                    callback={() => {
+                                                        updateSettings('pattern', null, setPattern)
+                                                    }}
+                                                /></>;
+                                        } else {
+                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
+                                                Choose Image
+                                            </Button>
+                                        }
+                                    }}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
                     </Grid>
                 </Grid>
             </PanelBody>

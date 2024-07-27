@@ -36,7 +36,8 @@ function Background({settings = {}, pushSettings}) {
     const [type, setType] = useState(settings.type || false);
     const [mobileImage, setMobileImage] = useState(settings.mobileImage || null);
     const [largeImage, setLargeImage] = useState(settings.largeImage || null);
-    const [video, setVideo] = useState(settings.video || false);
+    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo || false);
+    const [largeVideo, setLargeVideo] = useState(settings.largeVideo || false);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -118,22 +119,49 @@ function Background({settings = {}, pushSettings}) {
                         </BaseControl>
                     </Grid>
                     <Grid columns={2} columnGap={20} rowGap={20}>
-                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={ true }>
+                        <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={ true }>
                             <MediaUploadCheck>
                                 <MediaUpload
-                                    title={'Mobile Image'}
+                                    title={'Mobile Video'}
                                     onSelect={(value) => {
-                                        updateSettings('mobileImage', value, setMobileImage);
+                                        updateSettings('mobileVideo', value, setMobileVideo);
                                     }}
-                                    allowedTypes={['image']}
-                                    value={mobileImage}
+                                    allowedTypes={['mp4']}
+                                    value={mobileVideo}
                                     render={({open}) => {
-                                        if (mobileImage) {
+                                        if (mobileVideo) {
                                             return <>
                                                 <PreviewThumbnail
-                                                    image={mobileImage || {}}
+                                                    image={mobileVideo || {}}
                                                     callback={() => {
-                                                        updateSettings('mobileImage', null, setMobileImage)
+                                                        updateSettings('mobileVideo', null, setMobileVideo)
+                                                    }}
+                                                /></>;
+                                        } else {
+                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
+                                                Choose Image
+                                            </Button>
+                                        }
+                                    }}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
+                        <BaseControl label={'Large Video'} __nextHasNoMarginBottom={ true }>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title={'Large Video'}
+                                    onSelect={(value) => {
+                                        updateSettings('largeVideo', value, setLargeVideo);
+                                    }}
+                                    allowedTypes={['mp4']}
+                                    value={largeVideo}
+                                    render={({open}) => {
+                                        if (largeVideo) {
+                                            return <>
+                                                <PreviewThumbnail
+                                                    image={largeVideo || {}}
+                                                    callback={() => {
+                                                        updateSettings('largeVideo', null, setLargeVideo)
                                                     }}
                                                 /></>;
                                         } else {

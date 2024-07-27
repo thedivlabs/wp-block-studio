@@ -19,7 +19,7 @@ function classNames(element, attributes = {}) {
     let justify;
     let container;
 
-    switch(attributes.align){
+    switch (attributes.align) {
         case 'start':
             align = 'items-start';
             break;
@@ -33,21 +33,21 @@ function classNames(element, attributes = {}) {
             align = false;
     }
 
-    switch(attributes.justify){
+    switch (attributes.justify) {
         case 'start':
-            justify = 'content-start';
+            justify = 'justify-start';
             break;
         case 'center':
-            justify = 'content-center';
+            justify = 'justify-center';
             break;
         case 'end':
-            justify = 'content-end';
+            justify = 'justify-end';
             break;
         default:
             justify = false;
     }
 
-    switch(attributes.container){
+    switch (attributes.container) {
         case 'sm':
             container = 'container container-sm';
             break;
@@ -63,7 +63,7 @@ function classNames(element, attributes = {}) {
 
     if (element === 'section') {
         return [
-            'wpbs-content-section w-full flex flex-col',
+            'wpbs-content-section w-full flex flex-row',
             attributes.grow ? 'grow' : false,
             align,
             justify
@@ -137,7 +137,6 @@ registerBlockType(metadata.name, {
         const [container, setContainer] = useState('');
         const [grow, setGrow] = useState(false);
 
-
         return (
             <>
                 <MobileDimensions
@@ -153,7 +152,7 @@ registerBlockType(metadata.name, {
                         <Grid columns={2} gap={4}>
                             <SelectControl
                                 label="Align"
-                                value={align}
+                                value={attributes.align}
                                 options={[
                                     {label: 'Center', value: 'center'},
                                     {label: 'Start', value: 'start'},
@@ -167,7 +166,7 @@ registerBlockType(metadata.name, {
                             />
                             <SelectControl
                                 label="Justify"
-                                value={justify}
+                                value={attributes.justify}
                                 options={[
                                     {label: 'Center', value: 'center'},
                                     {label: 'Start', value: 'start'},
@@ -181,7 +180,7 @@ registerBlockType(metadata.name, {
                             />
                             <SelectControl
                                 label="Container"
-                                value={container}
+                                value={attributes.container}
                                 options={[
                                     {label: 'Large', value: 'lg'},
                                     {label: 'Small', value: 'sm'},
@@ -195,7 +194,7 @@ registerBlockType(metadata.name, {
                             />
                             <ToggleControl
                                 label="Grow"
-                                checked={grow}
+                                checked={attributes.grow}
                                 onChange={(value) => {
                                     setGrow(value);
                                     setAttributes({grow: value});
@@ -211,7 +210,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <section {...blockProps}>
-                    <div className={'container wpbs-container'}>
+                    <div className={classNames('container', attributes)}>
                         <InnerBlocks/>
                     </div>
                 </section>
@@ -225,7 +224,7 @@ registerBlockType(metadata.name, {
 
         return (
             <section {...setMobileProps(blockProps, props)}>
-                <div className={classNames('container')}>
+                <div className={classNames('container', props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
                 <MobileStyles blockProps={blockProps} props={props}/>

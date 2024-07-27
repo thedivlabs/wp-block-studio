@@ -74,9 +74,8 @@ function classNames(element, attributes = {}) {
 
     if (element === 'section') {
         return [
-            'wpbs-content-section w-full flex flex-row',
+            'wpbs-content-section w-full flex flex-row relative',
             attributes.grow ? 'grow' : false,
-            attributes.relative ? 'relative' : false,
             align,
             justify
         ].filter(x => x).join(' ');
@@ -85,7 +84,8 @@ function classNames(element, attributes = {}) {
         return [
             'wpbs-container gap-inherit',
             container,
-            flex
+            flex,
+            attributes.wrap ? 'flex-wrap' : false,
         ].filter(x => x).join(' ');
     }
 
@@ -133,7 +133,7 @@ registerBlockType(metadata.name, {
         grow: {
             type: 'boolean'
         },
-        relative: {
+        wrap: {
             type: 'boolean'
         },
         background: {
@@ -159,7 +159,7 @@ registerBlockType(metadata.name, {
         const [container, setContainer] = useState('');
         const [grow, setGrow] = useState(false);
         const [flex, setFlex] = useState(null);
-        const [relative, setRelative] = useState(false);
+        const [wrap, setWrap] = useState(false);
 
         return (
             <>
@@ -244,11 +244,11 @@ registerBlockType(metadata.name, {
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
-                                label="Relative"
-                                checked={attributes.relative}
+                                label="Wrap"
+                                checked={attributes.wrap}
                                 onChange={(value) => {
-                                    setRelative(value);
-                                    setAttributes({relative: value});
+                                    setWrap(value);
+                                    setAttributes({wrap: value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

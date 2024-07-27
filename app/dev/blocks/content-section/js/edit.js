@@ -13,6 +13,17 @@ import React, {useState} from 'react';
 import MobileDimensions from 'Theme/MobileDimensions';
 import {setMobileProps, MobileStyles} from 'Theme/MobileDimensions';
 
+function classNames(element) {
+    if (element === 'section') {
+        return 'wpbs-content-section w-full flex flex-col'
+    }
+    if (element === 'container') {
+        return 'container wpbs-container gap-inherit'
+    }
+
+    return '';
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     supports: {
@@ -62,7 +73,7 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps({
-            className: 'wpbs-content-section w-full flex flex-col',
+            className: classNames('section'),
             style: {}
         });
 
@@ -143,11 +154,13 @@ registerBlockType(metadata.name, {
         )
     },
     save: (props) => {
-        const blockProps = useBlockProps.save();
+        const blockProps = useBlockProps.save({
+            className: classNames('section')
+        });
 
         return (
             <section {...setMobileProps(blockProps, props)}>
-                <div className={'container wpbs-container gap-inherit'}>
+                <div className={classNames('container')}>
                     <InnerBlocks.Content/>
                 </div>
                 <MobileStyles blockProps={blockProps} props={props}/>

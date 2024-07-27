@@ -18,7 +18,7 @@ function classNames(element, attributes = {}) {
     if (element === 'section') {
         return [
             'wpbs-content-section w-full flex flex-col',
-            attributes.grow ? 'grow' : false
+            attributes.grow ? 'grow' : false,
         ].filter(x => x).join(' ');
     }
     if (element === 'container') {
@@ -106,9 +106,9 @@ registerBlockType(metadata.name, {
                                 label="Align"
                                 value={align}
                                 options={[
-                                    {label: 'Big', value: '100%'},
-                                    {label: 'Medium', value: '50%'},
-                                    {label: 'Small', value: '25%'},
+                                    {label: 'Center', value: 'center'},
+                                    {label: 'Start', value: 'start'},
+                                    {label: 'End', value: 'end'},
                                 ]}
                                 onChange={(value) => {
                                     setAlign(value);
@@ -120,9 +120,9 @@ registerBlockType(metadata.name, {
                                 label="Justify"
                                 value={justify}
                                 options={[
-                                    {label: 'Big', value: '100%'},
-                                    {label: 'Medium', value: '50%'},
-                                    {label: 'Small', value: '25%'},
+                                    {label: 'Center', value: 'center'},
+                                    {label: 'Start', value: 'start'},
+                                    {label: 'End', value: 'end'},
                                 ]}
                                 onChange={(value) => {
                                     setJustify(value);
@@ -134,9 +134,9 @@ registerBlockType(metadata.name, {
                                 label="Container"
                                 value={container}
                                 options={[
-                                    {label: 'Big', value: '100%'},
-                                    {label: 'Medium', value: '50%'},
-                                    {label: 'Small', value: '25%'},
+                                    {label: 'Large', value: 'large'},
+                                    {label: 'Small', value: 'small'},
+                                    {label: 'None', value: 'none'},
                                 ]}
                                 onChange={(value) => {
                                     setContainer(value);

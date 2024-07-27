@@ -4,8 +4,10 @@ import {
     PanelBody,
     SelectControl,
     ToggleControl,
+    Button,
 } from "@wordpress/components";
-import {InspectorControls} from "@wordpress/block-editor";
+import {InspectorControls,MediaUpload} from "@wordpress/block-editor";
+import { Component } from '@wordpress/element';
 
 function Background({settings = {}, pushSettings}) {
 
@@ -31,6 +33,7 @@ function Background({settings = {}, pushSettings}) {
 
 
     const [type, setType] = useState(settings.type || false);
+    const [image, setImage] = useState(settings.image || false);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -55,7 +58,22 @@ function Background({settings = {}, pushSettings}) {
                         }}
                         __nextHasNoMarginBottom
                     />
-
+                    <MediaUpload
+                        title={ 'Image'}
+                        onSelect={(value) => {
+                            updateSettings('image',value,setType);
+                        }}
+                        allowedTypes={ [ 'image' ] }
+                        value={ image }
+                        render={ ( { open } ) => (
+                            <Button
+                                className={ 'editor-post-featured-image__toggle' }
+                                onClick={ open }>
+                                { image && <img /> }
+                                { ! image && 'Set background image' }
+                            </Button>
+                        ) }
+                    />
                 </Grid>
             </PanelBody>
         </InspectorControls>

@@ -13,10 +13,12 @@ import React, {useState} from 'react';
 import MobileDimensions from 'Theme/MobileDimensions';
 import {setMobileProps, MobileStyles} from 'Theme/MobileDimensions';
 
-function classNames(element, props) {
+function classNames(element, attributes = {}) {
+
     if (element === 'section') {
         return [
-            'wpbs-content-section w-full flex flex-col'
+            'wpbs-content-section w-full flex flex-col',
+            attributes.grow ? 'grow' : false
         ].filter(x => x).join(' ');
     }
     if (element === 'container') {
@@ -77,7 +79,7 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps({
-            className: classNames('section'),
+            className: classNames('section', attributes),
             style: {}
         });
 
@@ -108,7 +110,10 @@ registerBlockType(metadata.name, {
                                     {label: 'Medium', value: '50%'},
                                     {label: 'Small', value: '25%'},
                                 ]}
-                                onChange={(value) => setAlign(value)}
+                                onChange={(value) => {
+                                    setAlign(value);
+                                    setAttributes({align: value});
+                                }}
                                 __nextHasNoMarginBottom
                             />
                             <SelectControl
@@ -119,7 +124,10 @@ registerBlockType(metadata.name, {
                                     {label: 'Medium', value: '50%'},
                                     {label: 'Small', value: '25%'},
                                 ]}
-                                onChange={(value) => setJustify(value)}
+                                onChange={(value) => {
+                                    setJustify(value);
+                                    setAttributes({justify: value});
+                                }}
                                 __nextHasNoMarginBottom
                             />
                             <SelectControl
@@ -130,7 +138,10 @@ registerBlockType(metadata.name, {
                                     {label: 'Medium', value: '50%'},
                                     {label: 'Small', value: '25%'},
                                 ]}
-                                onChange={(value) => setContainer(value)}
+                                onChange={(value) => {
+                                    setContainer(value);
+                                    setAttributes({container: value});
+                                }}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
@@ -138,6 +149,7 @@ registerBlockType(metadata.name, {
                                 checked={grow}
                                 onChange={(value) => {
                                     setGrow(value);
+                                    setAttributes({grow: value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -159,7 +171,7 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
         const blockProps = useBlockProps.save({
-            className: classNames('section')
+            className: classNames('section', props.attributes)
         });
 
         return (

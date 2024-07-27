@@ -1,12 +1,14 @@
 import React, {useState} from "react"
 import {
     __experimentalGrid as Grid,
+    BaseControl,
+    useBaseControlProps,
     PanelBody,
     SelectControl,
     ToggleControl,
     Button,
 } from "@wordpress/components";
-import {InspectorControls, MediaUpload} from "@wordpress/block-editor";
+import {InspectorControls, MediaUpload,MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 
 function Background({settings = {}, pushSettings}) {
@@ -31,9 +33,9 @@ function Background({settings = {}, pushSettings}) {
         mask_large: '',
     }*/
 
-
     const [type, setType] = useState(settings.type || false);
-    const [image, setImage] = useState(settings.image || null);
+    const [mobileImage, setMobileImage] = useState(settings.mobileImage || null);
+    const [largeImage, setLargeImage] = useState(settings.largeImage || null);
     const [video, setVideo] = useState(settings.video || false);
 
     function updateSettings(attr, val, callback) {
@@ -59,28 +61,62 @@ function Background({settings = {}, pushSettings}) {
                         }}
                         __nextHasNoMarginBottom
                     />
-                    <MediaUpload
-                        title={'Image'}
-                        onSelect={(value) => {
-                            updateSettings('image', value, setImage);
-                        }}
-                        allowedTypes={['image']}
-                        value={image}
-                        render={({open}) => {
-                            if (image) {
-                                return <PreviewThumbnail
-                                    image={image || {}}
-                                    callback={() => {
-                                        updateSettings('image', null, setImage)
+                    <Grid columns={2} columnGap={20} rowGap={20}>
+                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={ true }>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title={'Mobile Image'}
+                                    onSelect={(value) => {
+                                        updateSettings('mobileImage', value, setMobileImage);
                                     }}
-                                />;
-                            } else {
-                                return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                    Choose Image
-                                </Button>
-                            }
-                        }}
-                    />
+                                    allowedTypes={['image']}
+                                    value={mobileImage}
+                                    render={({open}) => {
+                                        if (mobileImage) {
+                                            return <>
+                                                <PreviewThumbnail
+                                                    image={mobileImage || {}}
+                                                    callback={() => {
+                                                        updateSettings('mobileImage', null, setMobileImage)
+                                                    }}
+                                                /></>;
+                                        } else {
+                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
+                                                Choose Image
+                                            </Button>
+                                        }
+                                    }}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
+                        <BaseControl label={'Large Image'} __nextHasNoMarginBottom={ true }>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title={'Large Image'}
+                                    onSelect={(value) => {
+                                        updateSettings('largeImage', value, setLargeImage);
+                                    }}
+                                    allowedTypes={['image']}
+                                    value={largeImage}
+                                    render={({open}) => {
+                                        if (largeImage) {
+                                            return <>
+                                                <PreviewThumbnail
+                                                    image={largeImage || {}}
+                                                    callback={() => {
+                                                        updateSettings('largeImage', null, setLargeImage)
+                                                    }}
+                                                /></>;
+                                        } else {
+                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
+                                                Choose Image
+                                            </Button>
+                                        }
+                                    }}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
+                    </Grid>
                 </Grid>
             </PanelBody>
         </InspectorControls>

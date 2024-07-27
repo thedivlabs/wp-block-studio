@@ -6,8 +6,8 @@ import {
     ToggleControl,
     Button,
 } from "@wordpress/components";
-import {InspectorControls,MediaUpload} from "@wordpress/block-editor";
-import { Component } from '@wordpress/element';
+import {InspectorControls, MediaUpload} from "@wordpress/block-editor";
+import {Component} from '@wordpress/element';
 
 function Background({settings = {}, pushSettings}) {
 
@@ -54,25 +54,36 @@ function Background({settings = {}, pushSettings}) {
                             {label: 'Pattern', value: 'pattern'},
                         ]}
                         onChange={(value) => {
-                            updateSettings('type',value,setType);
+                            updateSettings('type', value, setType);
                         }}
                         __nextHasNoMarginBottom
                     />
                     <MediaUpload
-                        title={ 'Image'}
+                        title={'Image'}
                         onSelect={(value) => {
-                            updateSettings('image',value,setType);
+                            updateSettings('image', value, setImage);
                         }}
-                        allowedTypes={ [ 'image' ] }
-                        value={ image }
-                        render={ ( { open } ) => (
-                            <Button
-                                className={ 'editor-post-featured-image__toggle' }
-                                onClick={ open }>
-                                { image && <img /> }
-                                { ! image && 'Set background image' }
-                            </Button>
-                        ) }
+                        allowedTypes={['image']}
+                        value={image}
+                        render={({open}) => {
+                            if (image && 'url' in image) {
+                                return <img src={image.url}
+                                            onClick={(e) => {
+                                                updateSettings('image', null, setImage);
+                                            }}
+                                            alt={''}
+                                            style={{
+                                                cursor: 'pointer',
+                                                width: '60px',
+                                                objectFit: 'cover',
+                                                height: '60px'
+                                            }}/>;
+                            } else {
+                                return <Button onClick={open} style={{border: '1px solid gray'}}>
+                                    Choose Image
+                                </Button>
+                            }
+                        }}
                     />
                 </Grid>
             </PanelBody>

@@ -117,6 +117,36 @@ function Background({settings = {}, pushSettings}) {
                             </MediaUploadCheck>
                         </BaseControl>
                     </Grid>
+                    <Grid columns={2} columnGap={20} rowGap={20}>
+                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={ true }>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title={'Mobile Image'}
+                                    onSelect={(value) => {
+                                        updateSettings('mobileImage', value, setMobileImage);
+                                    }}
+                                    allowedTypes={['image']}
+                                    value={mobileImage}
+                                    render={({open}) => {
+                                        if (mobileImage) {
+                                            return <>
+                                                <PreviewThumbnail
+                                                    image={mobileImage || {}}
+                                                    callback={() => {
+                                                        updateSettings('mobileImage', null, setMobileImage)
+                                                    }}
+                                                /></>;
+                                        } else {
+                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
+                                                Choose Image
+                                            </Button>
+                                        }
+                                    }}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
+
+                    </Grid>
                 </Grid>
             </PanelBody>
         </InspectorControls>

@@ -161,6 +161,8 @@ function MobileStyles({blockProps, props}) {
 
     const css_properties = [padding, margin, blockSpacing].filter(x => x).join('; ')
 
+    console.log(padding);
+
     return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + css_properties + '}}'}</style>;
 }
 
@@ -170,7 +172,7 @@ function getGapProp(blockProps, props) {
     const mobile_dimensions = 'attributes' in props ? props.attributes.mobile_dimensions || {} : {};
     const desktopGap = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? parseProp(props.attributes.style.spacing.blockGap) : false
 
-    let gap;
+    let gap = 0;
 
     if (mobile_dimensions.blockSpacing) {
 

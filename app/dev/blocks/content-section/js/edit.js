@@ -83,7 +83,7 @@ registerBlockType(metadata.name, {
                 </MobileDimensions>
 
                 <InspectorControls group={'styles'}>
-                    <PanelBody title={'Settings'} initialOpen={false}>
+                    <PanelBody title={'Layout'} initialOpen={false}>
                         <Grid columns={2} gap={4}>
                             <SelectControl
                                 label="Align"
@@ -143,9 +143,7 @@ registerBlockType(metadata.name, {
         )
     },
     save: (props) => {
-        const blockProps = useBlockProps.save({
-            className: 'wpbs-content-section w-full',
-        });
+        const blockProps = useBlockProps.save();
 
         return (
             <section {...setMobileProps(blockProps, props)}>

@@ -18,7 +18,18 @@ function classNames(element, attributes = {}) {
     let align;
     let justify;
     let container;
+    let flex;
 
+    switch (attributes.flex) {
+        case 'col':
+            flex = 'flex flex-col';
+            break;
+        case 'none':
+            flex = false;
+            break;
+        default:
+            flex = 'flex flex-row';
+    }
     switch (attributes.align) {
         case 'start':
             align = 'items-start';
@@ -72,7 +83,8 @@ function classNames(element, attributes = {}) {
     if (element === 'container') {
         return [
             'wpbs-container gap-inherit',
-            container
+            container,
+            flex
         ].filter(x => x).join(' ');
     }
 
@@ -93,6 +105,9 @@ registerBlockType(metadata.name, {
             blockGap: true,
             padding: true,
             margin: true,
+        },
+        typography: {
+            textAlign: true,
         }
     },
     attributes: {
@@ -100,6 +115,9 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         padding: {
+            type: 'string'
+        },
+        flex: {
             type: 'string'
         },
         align: {
@@ -136,6 +154,7 @@ registerBlockType(metadata.name, {
         const [justify, setJustify] = useState('center');
         const [container, setContainer] = useState('');
         const [grow, setGrow] = useState(false);
+        const [flex, setFlex] = useState(false);
 
         return (
             <>
@@ -154,6 +173,7 @@ registerBlockType(metadata.name, {
                                 label="Align"
                                 value={attributes.align}
                                 options={[
+                                    {label: 'Default', value: null},
                                     {label: 'Center', value: 'center'},
                                     {label: 'Start', value: 'start'},
                                     {label: 'End', value: 'end'},
@@ -168,6 +188,7 @@ registerBlockType(metadata.name, {
                                 label="Justify"
                                 value={attributes.justify}
                                 options={[
+                                    {label: 'Default', value: null},
                                     {label: 'Center', value: 'center'},
                                     {label: 'Start', value: 'start'},
                                     {label: 'End', value: 'end'},
@@ -182,6 +203,7 @@ registerBlockType(metadata.name, {
                                 label="Container"
                                 value={attributes.container}
                                 options={[
+                                    {label: 'Default', value: null},
                                     {label: 'Large', value: 'lg'},
                                     {label: 'Small', value: 'sm'},
                                     {label: 'None', value: 'none'},
@@ -189,6 +211,20 @@ registerBlockType(metadata.name, {
                                 onChange={(value) => {
                                     setContainer(value);
                                     setAttributes({container: value});
+                                }}
+                                __nextHasNoMarginBottom
+                            />
+                            <SelectControl
+                                label="Flex"
+                                value={attributes.flex}
+                                options={[
+                                    {label: 'Default', value: null},
+                                    {label: 'Column', value: 'col'},
+                                    {label: 'None', value: 'none'},
+                                ]}
+                                onChange={(value) => {
+                                    setFlex(value);
+                                    setAttributes({flex: value});
                                 }}
                                 __nextHasNoMarginBottom
                             />

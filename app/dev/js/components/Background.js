@@ -7,7 +7,7 @@ import {
     Button,
 } from "@wordpress/components";
 import {InspectorControls, MediaUpload} from "@wordpress/block-editor";
-import {Component} from '@wordpress/element';
+import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 
 function Background({settings = {}, pushSettings}) {
 
@@ -33,7 +33,8 @@ function Background({settings = {}, pushSettings}) {
 
 
     const [type, setType] = useState(settings.type || false);
-    const [image, setImage] = useState(settings.image || false);
+    const [image, setImage] = useState(settings.image || null);
+    const [video, setVideo] = useState(settings.video || false);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -66,20 +67,15 @@ function Background({settings = {}, pushSettings}) {
                         allowedTypes={['image']}
                         value={image}
                         render={({open}) => {
-                            if (image && 'url' in image) {
-                                return <img src={image.url}
-                                            onClick={(e) => {
-                                                updateSettings('image', null, setImage);
-                                            }}
-                                            alt={''}
-                                            style={{
-                                                cursor: 'pointer',
-                                                width: '60px',
-                                                objectFit: 'cover',
-                                                height: '60px'
-                                            }}/>;
+                            if (image) {
+                                return <PreviewThumbnail
+                                    image={image || {}}
+                                    callback={() => {
+                                        updateSettings('image', null, setImage)
+                                    }}
+                                />;
                             } else {
-                                return <Button onClick={open} style={{border: '1px solid gray'}}>
+                                return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
                                     Choose Image
                                 </Button>
                             }

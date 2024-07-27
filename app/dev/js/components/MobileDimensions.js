@@ -84,8 +84,22 @@ function setMobileProps(blockProps, props) {
 
     const mobile_dimensions = props.attributes.mobile_dimensions || {};
     const style = blockProps.style || {};
+    const gap = getGapProp(blockProps, props);
+
+    if (!Object.keys(mobile_dimensions).length) {
+        return blockProps;
+    }
 
     const blockPadding = () => {
+
+        if (![
+            mobile_dimensions.paddingTop || false,
+            mobile_dimensions.paddingRight || false,
+            mobile_dimensions.paddingBottom || false,
+            mobile_dimensions.paddingLeft || false,
+        ].filter(x => x).length) {
+            return {};
+        }
 
         const paddingTop = 'paddingTop' in style ? 'var(--wpbs-paddingTop, ' + (style.paddingTop || null) + ')' : 'var(--wpbs-paddingTop)';
         const paddingRight = 'paddingRight' in style ? 'var(--wpbs-paddingRight, ' + (style.paddingRight || null) + ')' : 'var(--wpbs-paddingRight)';
@@ -102,8 +116,14 @@ function setMobileProps(blockProps, props) {
 
     const blockMargin = () => {
 
-        const mobile_dimensions = props.attributes.mobile_dimensions || {};
-        const style = blockProps.style || {};
+        if (![
+            mobile_dimensions.marginTop || false,
+            mobile_dimensions.marginRight || false,
+            mobile_dimensions.marginBottom || false,
+            mobile_dimensions.marginLeft || false,
+        ].filter(x => x).length) {
+            return {};
+        }
 
         const marginTop = 'marginTop' in style ? 'var(--wpbs-marginTop, ' + (style.marginTop || null) + ')' : 'var(--wpbs-marginTop)';
         const marginRight = 'marginRight' in style ? 'var(--wpbs-marginRight, ' + (style.marginRight || null) + ')' : 'var(--wpbs-marginRight)';
@@ -120,9 +140,8 @@ function setMobileProps(blockProps, props) {
 
     const blockSpacing = () => {
 
-        const gap = getGapProp(blockProps, props);
 
-        return {
+        return gap === 0 ? {} : {
             gap: gap
         }
     }
@@ -143,25 +162,29 @@ function MobileStyles({blockProps, props}) {
     const mobile_dimensions = props.attributes.mobile_dimensions || {};
     const style = blockProps.style || {};
 
+    if (!Object.keys(mobile_dimensions).length) {
+        return false;
+    }
+
     const padding = [
-        '--wpbs-paddingTop:' + (mobile_dimensions.paddingTop || style.paddingTop || 0),
-        '--wpbs-paddingRight:' + (mobile_dimensions.paddingRight || style.paddingRight || 0),
-        '--wpbs-paddingBottom:' + (mobile_dimensions.paddingBottom || style.paddingBottom || 0),
-        '--wpbs-paddingLeft:' + (mobile_dimensions.paddingLeft || style.paddingLeft || 0),
-    ].join('; ');
+        mobile_dimensions.paddingTop ? '--wpbs-paddingTop:' + (mobile_dimensions.paddingTop || style.paddingTop || 0) : false,
+        mobile_dimensions.paddingRight ? '--wpbs-paddingRight:' + (mobile_dimensions.paddingRight || style.paddingRight || 0) : false,
+        mobile_dimensions.paddingBottom ? '--wpbs-paddingBottom:' + (mobile_dimensions.paddingBottom || style.paddingBottom || 0) : false,
+        mobile_dimensions.paddingLeft ? '--wpbs-paddingLeft:' + (mobile_dimensions.paddingLeft || style.paddingLeft || 0) : false,
+    ].filter(x => x);
 
     const margin = [
-        '--wpbs-marginTop:' + (mobile_dimensions.marginTop || style.marginTop || 0),
-        '--wpbs-marginRight:' + (mobile_dimensions.marginRight || style.marginRight || 0),
-        '--wpbs-marginBottom:' + (mobile_dimensions.marginBottom || style.marginBottom || 0),
-        '--wpbs-marginLeft:' + (mobile_dimensions.marginLeft || style.marginLeft || 0),
-    ].join('; ');
+        mobile_dimensions.marginTop ? '--wpbs-marginTop:' + (mobile_dimensions.marginTop || style.marginTop || 0) : false,
+        mobile_dimensions.marginRight ? '--wpbs-marginRight:' + (mobile_dimensions.marginRight || style.marginRight || 0) : false,
+        mobile_dimensions.marginBottom ? '--wpbs-marginBottom:' + (mobile_dimensions.marginBottom || style.marginBottom || 0) : false,
+        mobile_dimensions.marginLeft ? '--wpbs-marginLeft:' + (mobile_dimensions.marginLeft || style.marginLeft || 0) : false,
+    ].filter(x => x);
 
-    const blockSpacing = '--wpbs-blockSpacing:' + getGapProp(blockProps, props);
+    const gap = getGapProp(blockProps, props);
 
-    const css_properties = [padding, margin, blockSpacing].filter(x => x).join('; ')
+    const blockSpacing = gap ? '--wpbs-blockSpacing:' + gap : null;
 
-    console.log(padding);
+    const css_properties = [padding.join('; '), margin.join('; '), blockSpacing].filter(x => x).join('; ')
 
     return <style>{'@media (max-width: 768px) {.wpbs-content-section {' + css_properties + '}}'}</style>;
 }
@@ -173,11 +196,16 @@ function getGapProp(blockProps, props) {
     const desktopGap = 'attributes' in props && 'style' in props.attributes && 'spacing' in props.attributes.style ? parseProp(props.attributes.style.spacing.blockGap) : false
 
     let gap = 0;
-
+    
     if (mobile_dimensions.blockSpacing) {
 
         if (desktopGap) {
-            gap = 'var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ', ' + desktopGap + ')';
+            gap = [
+                'var(--wp--preset--spacing--',
+                mobile_dimensions.blockSpacing,
+                desktopGap !== '0' ? ', ' + desktopGap : false,
+                ')'
+            ].filter(x => x).join('');
         } else {
             gap = 'var(--wp--preset--spacing--' + mobile_dimensions.blockSpacing + ')';
         }
@@ -186,7 +214,7 @@ function getGapProp(blockProps, props) {
         gap = desktopGap;
     }
 
-    return gap;
+    return gap === 0 ? false : gap;
 
 }
 

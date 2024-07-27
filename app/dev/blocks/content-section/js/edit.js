@@ -76,6 +76,7 @@ function classNames(element, attributes = {}) {
         return [
             'wpbs-content-section w-full flex flex-row',
             attributes.grow ? 'grow' : false,
+            attributes.relative ? 'relative' : false,
             align,
             justify
         ].filter(x => x).join(' ');
@@ -132,6 +133,9 @@ registerBlockType(metadata.name, {
         grow: {
             type: 'boolean'
         },
+        relative: {
+            type: 'boolean'
+        },
         background: {
             type: 'object'
         },
@@ -154,7 +158,8 @@ registerBlockType(metadata.name, {
         const [justify, setJustify] = useState('center');
         const [container, setContainer] = useState('');
         const [grow, setGrow] = useState(false);
-        const [flex, setFlex] = useState(false);
+        const [flex, setFlex] = useState(null);
+        const [relative, setRelative] = useState(false);
 
         return (
             <>
@@ -234,6 +239,16 @@ registerBlockType(metadata.name, {
                                 onChange={(value) => {
                                     setGrow(value);
                                     setAttributes({grow: value});
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Relative"
+                                checked={attributes.relative}
+                                onChange={(value) => {
+                                    setRelative(value);
+                                    setAttributes({relative: value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

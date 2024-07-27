@@ -28,7 +28,7 @@ function classNames(element, attributes = {}) {
             flex = false;
             break;
         default:
-            flex = 'flex flex-row';
+            flex = 'flex flex-col sm:flex-row';
     }
     switch (attributes.align) {
         case 'start':

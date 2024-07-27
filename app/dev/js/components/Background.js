@@ -38,6 +38,7 @@ function Background({settings = {}, pushSettings}) {
     const [largeImage, setLargeImage] = useState(settings.largeImage || null);
     const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo || false);
     const [largeVideo, setLargeVideo] = useState(settings.largeVideo || false);
+    const [pattern, setPattern] = useState(settings.pattern || false);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -173,7 +174,29 @@ function Background({settings = {}, pushSettings}) {
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-
+                        <MediaUpload
+                            title={'Pattern'}
+                            onSelect={(value) => {
+                                updateSettings('pattern', value, setPattern);
+                            }}
+                            allowedTypes={['image']}
+                            value={pattern}
+                            render={({open}) => {
+                                if (pattern) {
+                                    return <>
+                                        <PreviewThumbnail
+                                            image={pattern || {}}
+                                            callback={() => {
+                                                updateSettings('pattern', null, setPattern)
+                                            }}
+                                        /></>;
+                                } else {
+                                    return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
+                                        Choose Image
+                                    </Button>
+                                }
+                            }}
+                        />
                     </Grid>
                 </Grid>
             </PanelBody>

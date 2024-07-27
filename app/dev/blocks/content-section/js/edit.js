@@ -15,15 +15,64 @@ import {setMobileProps, MobileStyles} from 'Theme/MobileDimensions';
 
 function classNames(element, attributes = {}) {
 
+    let align;
+    let justify;
+    let container;
+
+    switch(attributes.align){
+        case 'start':
+            align = 'items-start';
+            break;
+        case 'center':
+            align = 'items-center';
+            break;
+        case 'end':
+            align = 'items-end';
+            break;
+        default:
+            align = false;
+    }
+
+    switch(attributes.justify){
+        case 'start':
+            justify = 'content-start';
+            break;
+        case 'center':
+            justify = 'content-center';
+            break;
+        case 'end':
+            justify = 'content-end';
+            break;
+        default:
+            justify = false;
+    }
+
+    switch(attributes.container){
+        case 'sm':
+            container = 'container container-sm';
+            break;
+        case 'large':
+            container = 'container container-lg';
+            break;
+        case 'none':
+            container = false;
+            break;
+        default:
+            container = 'container';
+    }
+
     if (element === 'section') {
         return [
             'wpbs-content-section w-full flex flex-col',
             attributes.grow ? 'grow' : false,
+            align,
+            justify
         ].filter(x => x).join(' ');
     }
     if (element === 'container') {
         return [
-            'container wpbs-container gap-inherit'
+            'wpbs-container gap-inherit',
+            container
         ].filter(x => x).join(' ');
     }
 
@@ -134,8 +183,8 @@ registerBlockType(metadata.name, {
                                 label="Container"
                                 value={container}
                                 options={[
-                                    {label: 'Large', value: 'large'},
-                                    {label: 'Small', value: 'small'},
+                                    {label: 'Large', value: 'lg'},
+                                    {label: 'Small', value: 'sm'},
                                     {label: 'None', value: 'none'},
                                 ]}
                                 onChange={(value) => {

@@ -13,12 +13,16 @@ import React, {useState} from 'react';
 import MobileDimensions from 'Theme/MobileDimensions';
 import {setMobileProps, MobileStyles} from 'Theme/MobileDimensions';
 
-function classNames(element) {
+function classNames(element, props) {
     if (element === 'section') {
-        return 'wpbs-content-section w-full flex flex-col'
+        return [
+            'wpbs-content-section w-full flex flex-col'
+        ].filter(x => x).join(' ');
     }
     if (element === 'container') {
-        return 'container wpbs-container gap-inherit'
+        return [
+            'container wpbs-container gap-inherit'
+        ].filter(x => x).join(' ');
     }
 
     return '';

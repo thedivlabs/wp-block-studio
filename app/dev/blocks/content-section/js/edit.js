@@ -173,7 +173,7 @@ registerBlockType(metadata.name, {
 
                 <InspectorControls group={'styles'}>
                     <PanelBody title={'Layout'} initialOpen={false}>
-                        <Grid columns={2} gap={4}>
+                        <Grid columns={2} columnGap={20} rowGap={30}>
                             <SelectControl
                                 label="Align"
                                 value={attributes.align}

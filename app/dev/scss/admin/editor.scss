@@ -2,6 +2,7 @@
 
   &__post-title-wrapper {
     margin: 2rem 0 2rem !important;
+
     h1 {
       color: revert;
       font-size: revert;
@@ -12,10 +13,6 @@
   }
 }
 
-.block-editor-block-inspector {
-  .components-h-stack {
-    .components-base-control {
-      margin: 0 !important;
-    }
-  }
+.block-editor-block-inspector .components-base-control {
+  margin-bottom: auto;
 }

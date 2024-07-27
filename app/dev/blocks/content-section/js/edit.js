@@ -11,6 +11,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
+import Background from '../../../js/components/Background';
 import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensions';
 
 function classNames(element, attributes = {}) {
@@ -170,6 +171,13 @@ registerBlockType(metadata.name, {
                     }}
                 >
                 </MobileDimensions>
+
+                <Background
+                    settings={background}
+                    pushSettings={(value) => {
+                        setAttributes({background: value});
+                    }}
+                ></Background>
 
                 <InspectorControls group={'styles'}>
                     <PanelBody title={'Layout'} initialOpen={false}>

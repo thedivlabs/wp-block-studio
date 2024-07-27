@@ -1,5 +1,11 @@
 import React, {useState} from "react"
-import {ToggleControl} from "@wordpress/components";
+import {
+    __experimentalGrid as Grid,
+    PanelBody,
+    SelectControl,
+    ToggleControl,
+} from "@wordpress/components";
+import {InspectorControls} from "@wordpress/block-editor";
 
 function Background({settings, pushSettings}) {
 
@@ -32,17 +38,27 @@ function Background({settings, pushSettings}) {
     }
 
     return (
-        <div>
+        <InspectorControls group={'styles'}>
+            <PanelBody title={'Mobile'} initialOpen={false}>
+                <Grid columns={1} columnGap={20} rowGap={20}>
+                    <SelectControl
+                        label="Type"
+                        value={type}
+                        options={[
+                            {label: 'Default', value: null},
+                            {label: 'Image', value: 'image'},
+                            {label: 'Video', value: 'video'},
+                            {label: 'Pattern', value: 'pattern'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('type',value,setType);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
 
-
-            <ToggleControl
-                label="Testing"
-                checked={type}
-                onChange={(value) => {
-                    updateSettings('type', value, setType);
-                }}
-            />
-        </div>
+                </Grid>
+            </PanelBody>
+        </InspectorControls>
     )
 }
 

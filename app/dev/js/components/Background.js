@@ -8,10 +8,20 @@ import {
     ToggleControl,
     Button,
     RangeControl,
+    __experimentalToolsPanel as ToolsPanel,
+    __experimentalToolsPanelItem as ToolsPanelItem,
 } from "@wordpress/components";
-import {InspectorControls, MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
+import {
+    InspectorControls,
+    MediaUpload,
+    MediaUploadCheck,
+    withColors,
+} from "@wordpress/block-editor";
+import {
+    __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
+    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
+} from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
-
 
 export function BackgroundElement({settings}) {
 
@@ -46,16 +56,9 @@ function Background({
                             blend: false,
                             scale: 100,
                             opacity: 100,
-                        }, pushSettings
+                            overlay: {},
+                        }, pushSettings, clientId
                     }) {
-
-
-    /*{
-
-        opacity: '',
-        overlay_mobile: '',
-        overlay_large: '',
-    }*/
 
     const [type, setType] = useState(settings.type);
     const [mobileImage, setMobileImage] = useState(settings.mobileImage);
@@ -69,6 +72,7 @@ function Background({
     const [blend, setBlend] = useState(settings.blend);
     const [scale, setScale] = useState(settings.scale);
     const [opacity, setOpacity] = useState(settings.opacity);
+    const [overlay, setOverlay] = useState(settings.overlay || {});
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -88,252 +92,263 @@ function Background({
         textAlign: 'center',
     };
 
+    const colorGradientSettings = useMultipleOriginColorsAndGradients();
+    const overlayColorControl = <ColorGradientSettingsDropdown
+        settings={[{
+            label: 'Overlay',
+            colorValue: '',
+            onColorChange: (value => {
+                updateSettings('overlay', value, setOverlay);
+            })
+        }]}
+        panelId={clientId}
+        isShownByDefault={true}
+        hasColorsOrGradients={true}
+        disableCustomColors={false}
+        {...colorGradientSettings}
+    />;
+
     return (
 
-        <InspectorControls group={'styles'}>
-            <PanelBody title={'Background'} initialOpen={false}>
-                <Grid columns={1} columnGap={20} rowGap={20}>
+        <PanelBody title={'Background'} initialOpen={false}>
+            <Grid columns={1} columnGap={20} rowGap={20}>
+                <SelectControl
+                    label="Type"
+                    value={type}
+                    options={[
+                        {label: 'Default', value: null},
+                        {label: 'Image', value: 'image'},
+                        {label: 'Video', value: 'video'},
+                        {label: 'Pattern', value: 'pattern'},
+                    ]}
+                    onChange={(value) => {
+                        updateSettings('type', value, setType);
+                    }}
+                    __nextHasNoMarginBottom
+                />
+                <Grid columns={2} columnGap={20} rowGap={20}>
+                    <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Mobile Image'}
+                                onSelect={(value) => {
+                                    updateSettings('mobileImage', value, setMobileImage);
+                                }}
+                                allowedTypes={['image']}
+                                value={mobileImage}
+                                render={({open}) => {
+                                    if (mobileImage) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={mobileImage || {}}
+                                                callback={() => {
+                                                    updateSettings('mobileImage', null, setMobileImage)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                    <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Large Image'}
+                                onSelect={(value) => {
+                                    updateSettings('largeImage', value, setLargeImage);
+                                }}
+                                allowedTypes={['image']}
+                                value={largeImage}
+                                render={({open}) => {
+                                    if (largeImage) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={largeImage || {}}
+                                                callback={() => {
+                                                    updateSettings('largeImage', null, setLargeImage)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                    <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Mobile Video'}
+                                onSelect={(value) => {
+                                    updateSettings('mobileVideo', value, setMobileVideo);
+                                }}
+                                allowedTypes={['mp4']}
+                                value={mobileVideo}
+                                render={({open}) => {
+                                    if (mobileVideo) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={mobileVideo || {}}
+                                                callback={() => {
+                                                    updateSettings('mobileVideo', null, setMobileVideo)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                    <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Large Video'}
+                                onSelect={(value) => {
+                                    updateSettings('largeVideo', value, setLargeVideo);
+                                }}
+                                allowedTypes={['mp4']}
+                                value={largeVideo}
+                                render={({open}) => {
+                                    if (largeVideo) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={largeVideo || {}}
+                                                callback={() => {
+                                                    updateSettings('largeVideo', null, setLargeVideo)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                    <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Mobile Mask'}
+                                onSelect={(value) => {
+                                    updateSettings('mobileMask', value, setMobileMask);
+                                }}
+                                allowedTypes={['svg', 'image']}
+                                value={mobileMask}
+                                render={({open}) => {
+                                    if (mobileMask) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={mobileMask || {}}
+                                                callback={() => {
+                                                    updateSettings('mobileMask', null, setMobileMask)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                    <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Large Mask'}
+                                onSelect={(value) => {
+                                    updateSettings('largeMask', value, setLargeMask);
+                                }}
+                                allowedTypes={['svg', 'image']}
+                                value={largeMask}
+                                render={({open}) => {
+                                    if (largeMask) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={largeMask || {}}
+                                                callback={() => {
+                                                    updateSettings('largeMask', null, setLargeMask)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                </Grid>
+                <Grid columns={2} columnGap={20} rowGap={30}>
                     <SelectControl
-                        label="Type"
-                        value={type}
+                        label="Repeat"
+                        value={repeat}
                         options={[
                             {label: 'Default', value: null},
-                            {label: 'Image', value: 'image'},
-                            {label: 'Video', value: 'video'},
-                            {label: 'Pattern', value: 'pattern'},
+                            {label: 'None', value: 'none'},
+                            {label: 'Horizontal', value: 'horizontal'},
+                            {label: 'Vertical', value: 'vertical'},
                         ]}
                         onChange={(value) => {
-                            updateSettings('type', value, setType);
+                            updateSettings('repeat', value, setRepeat);
                         }}
                         __nextHasNoMarginBottom
                     />
-                    <Grid columns={2} columnGap={20} rowGap={20}>
-                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Mobile Image'}
-                                    onSelect={(value) => {
-                                        updateSettings('mobileImage', value, setMobileImage);
-                                    }}
-                                    allowedTypes={['image']}
-                                    value={mobileImage}
-                                    render={({open}) => {
-                                        if (mobileImage) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={mobileImage || {}}
-                                                    callback={() => {
-                                                        updateSettings('mobileImage', null, setMobileImage)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Large Image'}
-                                    onSelect={(value) => {
-                                        updateSettings('largeImage', value, setLargeImage);
-                                    }}
-                                    allowedTypes={['image']}
-                                    value={largeImage}
-                                    render={({open}) => {
-                                        if (largeImage) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={largeImage || {}}
-                                                    callback={() => {
-                                                        updateSettings('largeImage', null, setLargeImage)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Mobile Video'}
-                                    onSelect={(value) => {
-                                        updateSettings('mobileVideo', value, setMobileVideo);
-                                    }}
-                                    allowedTypes={['mp4']}
-                                    value={mobileVideo}
-                                    render={({open}) => {
-                                        if (mobileVideo) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={mobileVideo || {}}
-                                                    callback={() => {
-                                                        updateSettings('mobileVideo', null, setMobileVideo)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Large Video'}
-                                    onSelect={(value) => {
-                                        updateSettings('largeVideo', value, setLargeVideo);
-                                    }}
-                                    allowedTypes={['mp4']}
-                                    value={largeVideo}
-                                    render={({open}) => {
-                                        if (largeVideo) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={largeVideo || {}}
-                                                    callback={() => {
-                                                        updateSettings('largeVideo', null, setLargeVideo)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Mobile Mask'}
-                                    onSelect={(value) => {
-                                        updateSettings('mobileMask', value, setMobileMask);
-                                    }}
-                                    allowedTypes={['svg', 'image']}
-                                    value={mobileMask}
-                                    render={({open}) => {
-                                        if (mobileMask) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={mobileMask || {}}
-                                                    callback={() => {
-                                                        updateSettings('mobileMask', null, setMobileMask)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Large Mask'}
-                                    onSelect={(value) => {
-                                        updateSettings('largeMask', value, setLargeMask);
-                                    }}
-                                    allowedTypes={['svg', 'image']}
-                                    value={largeMask}
-                                    render={({open}) => {
-                                        if (largeMask) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={largeMask || {}}
-                                                    callback={() => {
-                                                        updateSettings('largeMask', null, setLargeMask)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                    </Grid>
-                    <Grid columns={2} columnGap={20} rowGap={30}>
-                        <SelectControl
-                            label="Repeat"
-                            value={repeat}
-                            options={[
-                                {label: 'Default', value: null},
-                                {label: 'None', value: 'none'},
-                                {label: 'Horizontal', value: 'horizontal'},
-                                {label: 'Vertical', value: 'vertical'},
-                            ]}
-                            onChange={(value) => {
-                                setRepeat(value);
-                                setAttributes({repeat: value});
-                            }}
-                            __nextHasNoMarginBottom
-                        />
-                        <SelectControl
-                            label="Blend"
-                            value={blend}
-                            options={[
-                                {label: 'Default', value: null},
-                                {label: 'Multiply', value: 'multiply'},
-                                {label: 'Screen', value: 'screen'},
-                                {label: 'Overlay', value: 'overlay'},
-                                {label: 'Soft Light', value: 'soft-light'},
-                            ]}
-                            onChange={(value) => {
-                                setBlend(value);
-                                setAttributes({blend: value});
-                            }}
-                            __nextHasNoMarginBottom
-                        />
-                    </Grid>
-                    <Grid columns={2} columnGap={20} rowGap={30}>
-                        <RangeControl
-                            __nextHasNoMarginBottom
-                            label="Scale"
-                            value={scale}
-                            onChange={(value) => {
-                                updateSettings('scale', value, setScale);
-                            }}
-                            withInputField={false}
-                            min={0}
-                            max={200}
-                            resetFallbackValue={100}
-                            allowReset={true}
-                        />
-                        <RangeControl
-                            __nextHasNoMarginBottom
-                            label="Opacity"
-                            value={opacity}
-                            onChange={(value) => {
-                                updateSettings('opacity', value, setOpacity);
-                            }}
-                            withInputField={false}
-                            min={0}
-                            max={100}
-                            resetFallbackValue={100}
-                            allowReset={true}
-                        />
-                    </Grid>
-                    <Grid columns={2} columnGap={20} rowGap={30}>
-                        <ToggleControl
-                            label="Eager"
-                            checked={eager}
-                            onChange={(value) => {
-                                updateSettings('eager', value, setEager);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                    </Grid>
+                    <SelectControl
+                        label="Blend"
+                        value={blend}
+                        options={[
+                            {label: 'Default', value: null},
+                            {label: 'Multiply', value: 'multiply'},
+                            {label: 'Screen', value: 'screen'},
+                            {label: 'Overlay', value: 'overlay'},
+                            {label: 'Soft Light', value: 'soft-light'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('blend', value, setBlend);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
                 </Grid>
-            </PanelBody>
-        </InspectorControls>
+                {overlayColorControl}
+                <Grid columns={1} columnGap={20} rowGap={20}>
+                    <RangeControl
+                        __nextHasNoMarginBottom
+                        label="Scale"
+                        value={scale}
+                        onChange={(value) => {
+                            updateSettings('scale', value, setScale);
+                        }}
+                        min={0}
+                        max={200}
+                        resetFallbackValue={100}
+                        allowReset={true}
+                    />
+                    <RangeControl
+                        __nextHasNoMarginBottom
+                        label="Opacity"
+                        value={opacity}
+                        onChange={(value) => {
+                            updateSettings('opacity', value, setOpacity);
+                        }}
+                        min={0}
+                        max={100}
+                        resetFallbackValue={100}
+                        allowReset={true}
+                    />
+                </Grid>
+                <Grid columns={2} columnGap={20} rowGap={30}>
+                    <ToggleControl
+                        label="Eager"
+                        checked={eager}
+                        onChange={(value) => {
+                            updateSettings('eager', value, setEager);
+                        }}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+            </Grid>
+        </PanelBody>
     )
 }
 

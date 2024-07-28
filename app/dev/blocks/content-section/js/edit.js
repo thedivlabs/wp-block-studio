@@ -4,8 +4,10 @@ import {
 import {
     __experimentalGrid as Grid,
     ToggleControl,
-    PanelBody,
     SelectControl,
+    PanelBody,
+    __experimentalToolsPanelItem as ToolsPanelItem,
+    __experimentalToolsPanel as ToolsPanel,
 } from "@wordpress/components"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -148,7 +150,7 @@ registerBlockType(metadata.name, {
             type: 'object'
         }
     },
-    edit: ({attributes, setAttributes}) => {
+    edit: ({attributes, setAttributes, clientId}) => {
         const {
             mobile_dimensions,
             background,
@@ -168,24 +170,29 @@ registerBlockType(metadata.name, {
         const [size, setSize] = useState(attributes.size || false);
         const [overflow, setOverflow] = useState(attributes.overflow || false);
 
+
+        const resetAll = () => {
+        };
+
+
         return (
             <>
-                <MobileDimensions
-                    settings={mobile_dimensions || {}}
-                    pushSettings={(value) => {
-                        setAttributes({mobile_dimensions: value});
-                    }}
-                >
-                </MobileDimensions>
-
-                <Background
-                    settings={background || {}}
-                    pushSettings={(value) => {
-                        setAttributes({background: value});
-                    }}
-                ></Background>
-
                 <InspectorControls group={'styles'}>
+
+                    <MobileDimensions
+                        settings={mobile_dimensions || {}}
+                        pushSettings={(value) => {
+                            setAttributes({mobile_dimensions: value});
+                        }}
+                    >
+                    </MobileDimensions>
+                    <Background
+                        settings={background || {}}
+                        pushSettings={(value) => {
+                            setAttributes({background: value});
+                        }}
+                        clientId={clientId}
+                    ></Background>
                     <PanelBody title={'Layout'} initialOpen={false}>
                         <Grid columns={1} columnGap={20} rowGap={30}>
                             <Grid columns={2} columnGap={20} rowGap={30}>
@@ -299,8 +306,9 @@ registerBlockType(metadata.name, {
                             </Grid>
                         </Grid>
                     </PanelBody>
-                </InspectorControls>
 
+
+                </InspectorControls>
                 <section {...blockProps}>
                     <div className={classNames('container', attributes)}>
                         <InnerBlocks/>
@@ -309,6 +317,8 @@ registerBlockType(metadata.name, {
                 <BackgroundElement
                     settings={background || {}}
                 ></BackgroundElement>
+
+
             </>
         )
     },

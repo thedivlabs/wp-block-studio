@@ -33,50 +33,48 @@ function MobileDimensions({settings = {}, pushSettings}) {
     const [gap, setGap] = useState(settings.blockSpacing || '0');
 
     return (
-        <InspectorControls group={'styles'}>
-            <PanelBody title={'Mobile'} initialOpen={false}>
-                <Grid columns={1} columnGap={20} rowGap={20}>
-                    <BoxControl
-                        __next40pxDefaultSize={true}
-                        label={'Padding'}
-                        splitOnAxis
-                        values={padding}
-                        sides={['vertical', 'horizontal']}
-                        onChange={(values) => {
-                            updateSettings({
-                                paddingTop: values.top,
-                                paddingRight: values.right,
-                                paddingBottom: values.bottom,
-                                paddingLeft: values.left,
-                            }, values, setPadding);
-                        }}
-                    />
-                    <BoxControl
-                        __next40pxDefaultSize={true}
-                        label={'Margin'}
-                        values={margin}
-                        onChange={(values) => {
-                            updateSettings({
-                                marginTop: values.top,
-                                marginRight: values.right,
-                                marginBottom: values.bottom,
-                                marginLeft: values.left,
-                            }, values, setMargin)
-                        }}
-                    />
-                    <DimensionControl
-                        label={'Block Spacing'}
-                        onChange={(values) => {
-                            updateSettings({
-                                blockSpacing: values
-                            }, values, setGap)
-                        }}
-                        sizes={wp.data.select('core/editor').getEditorSettings().spacingSizes}
-                        value={gap}
-                    />
-                </Grid>
-            </PanelBody>
-        </InspectorControls>
+        <PanelBody title={'Mobile'} initialOpen={false}>
+            <Grid columns={1} columnGap={20} rowGap={20}>
+                <BoxControl
+                    __next40pxDefaultSize={true}
+                    label={'Padding'}
+                    splitOnAxis
+                    values={padding}
+                    sides={['vertical', 'horizontal']}
+                    onChange={(values) => {
+                        updateSettings({
+                            paddingTop: values.top,
+                            paddingRight: values.right,
+                            paddingBottom: values.bottom,
+                            paddingLeft: values.left,
+                        }, values, setPadding);
+                    }}
+                />
+                <BoxControl
+                    __next40pxDefaultSize={true}
+                    label={'Margin'}
+                    values={margin}
+                    onChange={(values) => {
+                        updateSettings({
+                            marginTop: values.top,
+                            marginRight: values.right,
+                            marginBottom: values.bottom,
+                            marginLeft: values.left,
+                        }, values, setMargin)
+                    }}
+                />
+                <DimensionControl
+                    label={'Block Spacing'}
+                    onChange={(values) => {
+                        updateSettings({
+                            blockSpacing: values
+                        }, values, setGap)
+                    }}
+                    sizes={wp.data.select('core/editor').getEditorSettings().spacingSizes}
+                    value={gap}
+                />
+            </Grid>
+        </PanelBody>
     )
 }
 

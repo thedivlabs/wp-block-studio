@@ -137,6 +137,9 @@ registerBlockType(metadata.name, {
         wrap: {
             type: 'boolean'
         },
+        overflow: {
+            type: 'boolean'
+        },
         background: {
             type: 'object'
         },
@@ -162,6 +165,7 @@ registerBlockType(metadata.name, {
         const [flex, setFlex] = useState(attributes.align || null);
         const [wrap, setWrap] = useState(attributes.align || false);
         const [size, setSize] = useState(attributes.size || false);
+        const [overflow, setOverflow] = useState(attributes.overflow || false);
 
         return (
             <>
@@ -281,12 +285,19 @@ registerBlockType(metadata.name, {
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
+                                <ToggleControl
+                                    label="Overflow"
+                                    checked={overflow}
+                                    onChange={(value) => {
+                                        setOverflow(value);
+                                        setAttributes({overflow: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
                             </Grid>
                         </Grid>
                     </PanelBody>
-                    <SelectControl>
-
-                    </SelectControl>
                 </InspectorControls>
 
                 <section {...blockProps}>

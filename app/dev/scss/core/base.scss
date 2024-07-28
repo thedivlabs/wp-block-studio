@@ -33,6 +33,16 @@
     first:mt-0
     last:mb-0
   }
+
+  picture {
+
+    & > img {
+      object-fit: inherit;
+      @apply
+      w-full
+      h-full
+    }
+  }
 }
 
 

@@ -12,6 +12,7 @@ import metadata from "../block.json"
 import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
 import Background from '../../../js/components/Background';
+import {BackgroundElement} from '../../../js/components/Background';
 import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensions';
 
 function classNames(element, attributes = {}) {
@@ -305,6 +306,9 @@ registerBlockType(metadata.name, {
                         <InnerBlocks/>
                     </div>
                 </section>
+                <BackgroundElement
+                    settings={background || {}}
+                ></BackgroundElement>
             </>
         )
     },
@@ -313,12 +317,17 @@ registerBlockType(metadata.name, {
             className: classNames('section', props.attributes)
         });
 
+        const {background} = props.attributes;
+
         return (
             <section {...setMobileProps(blockProps, props)}>
                 <div className={classNames('container', props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
                 <MobileStyles blockProps={blockProps} props={props}/>
+                <BackgroundElement
+                    settings={background || {}}
+                ></BackgroundElement>
             </section>
         );
     }

@@ -55,9 +55,6 @@ function classNames(element, attributes = {}) {
         case 'end':
             justify = 'justify-end';
             break;
-        case 'between':
-            justify = 'justify-between';
-            break;
         default:
             justify = false;
     }
@@ -214,7 +211,6 @@ registerBlockType(metadata.name, {
                                         {label: 'Center', value: 'center'},
                                         {label: 'Start', value: 'start'},
                                         {label: 'End', value: 'end'},
-                                        {label: 'Between', value: 'between'},
                                     ]}
                                     onChange={(value) => {
                                         setJustify(value);

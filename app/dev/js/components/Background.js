@@ -6,24 +6,25 @@ import {
     SelectControl,
     ToggleControl,
     Button,
-    RangeControl
+    RangeControl,
+    CustomGradientPicker,
 } from "@wordpress/components";
 import {
     MediaUpload,
-    MediaUploadCheck,
+    MediaUploadCheck
 } from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 
-export function BackgroundElement({settings}) {
+export function BackgroundElement({settings = {}}) {
 
-    const {largeImage} = settings;
+    const image = settings.largeImage || {};
 
     return <div className={[
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none'
     ].filter(x => x).join(' ')}>
-        <img src={largeImage.url || '#'}
-             alt={largeImage.alt || ''}
+        <img src={image.url || '#'}
+             alt={image.alt || ''}
              aria-hidden={'true'}
              className={[
                  'wpbs-background__image',
@@ -33,37 +34,21 @@ export function BackgroundElement({settings}) {
     </div>;
 }
 
-function Background({
-                        settings = {
-                            type: false,
-                            mobileImage: null,
-                            largeImage: null,
-                            mobileVideo: false,
-                            largeVideo: false,
-                            largeMask: false,
-                            mobileMask: false,
-                            eager: false,
-                            repeat: false,
-                            blend: false,
-                            scale: 100,
-                            opacity: 100,
-                            overlay: {},
-                        }, pushSettings, clientId
-                    }) {
+function Background({settings = {}, pushSettings, clientId}) {
 
-    const [type, setType] = useState(settings.type);
-    const [mobileImage, setMobileImage] = useState(settings.mobileImage);
-    const [largeImage, setLargeImage] = useState(settings.largeImage);
-    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo);
-    const [largeVideo, setLargeVideo] = useState(settings.largeVideo);
-    const [largeMask, setLargeMask] = useState(settings.largeMask);
-    const [mobileMask, setMobileMask] = useState(settings.mobileMask);
-    const [eager, setEager] = useState(settings.eager);
-    const [repeat, setRepeat] = useState(settings.repeat);
-    const [blend, setBlend] = useState(settings.blend);
-    const [scale, setScale] = useState(settings.scale);
-    const [opacity, setOpacity] = useState(settings.opacity);
-    const [overlay, setOverlay] = useState(settings.overlay || {});
+    const [type, setType] = useState(settings.type || false);
+    const [mobileImage, setMobileImage] = useState(settings.mobileImage || {});
+    const [largeImage, setLargeImage] = useState(settings.largeImage || {});
+    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo || {});
+    const [largeVideo, setLargeVideo] = useState(settings.largeVideo || {});
+    const [largeMask, setLargeMask] = useState(settings.largeMask || {});
+    const [mobileMask, setMobileMask] = useState(settings.mobileMask || {});
+    const [eager, setEager] = useState(settings.eager || false);
+    const [repeat, setRepeat] = useState(settings.repeat || false);
+    const [blend, setBlend] = useState(settings.blend || null);
+    const [scale, setScale] = useState(settings.scale || '100');
+    const [opacity, setOpacity] = useState(settings.opacity || '100');
+    const [overlay, setOverlay] = useState(settings.overlay || 'linear-gradient(0deg, rgba(0,0,0,.8),rgba(0,0,0,.8))');
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -82,22 +67,6 @@ function Background({
         alignItems: 'center',
         textAlign: 'center',
     };
-
-    const colorGradientSettings = useMultipleOriginColorsAndGradients();
-    const overlayColorControl = <ColorGradientSettingsDropdown
-        settings={[{
-            label: 'Overlay',
-            colorValue: '',
-            onColorChange: (value => {
-                updateSettings('overlay', value, setOverlay);
-            })
-        }]}
-        panelId={clientId}
-        isShownByDefault={true}
-        hasColorsOrGradients={true}
-        disableCustomColors={false}
-        {...colorGradientSettings}
-    />;
 
     return (
 
@@ -269,6 +238,15 @@ function Background({
                         </MediaUploadCheck>
                     </BaseControl>
                 </Grid>
+                <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
+                    <CustomGradientPicker
+                        __experimentalIsRenderedInSidebar={true}
+                        value={ overlay }
+                        onChange={(value) => {
+                            updateSettings('overlay', value, setOverlay);
+                        }}
+                    />
+                </BaseControl>
                 <Grid columns={2} columnGap={20} rowGap={30}>
                     <SelectControl
                         label="Repeat"
@@ -300,7 +278,6 @@ function Background({
                         __nextHasNoMarginBottom
                     />
                 </Grid>
-                {overlayColorControl}
                 <Grid columns={1} columnGap={20} rowGap={20}>
                     <RangeControl
                         __nextHasNoMarginBottom

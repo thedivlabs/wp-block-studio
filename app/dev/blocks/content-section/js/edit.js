@@ -171,10 +171,6 @@ registerBlockType(metadata.name, {
         const [overflow, setOverflow] = useState(attributes.overflow || false);
 
 
-        const resetAll = () => {
-        };
-
-
         return (
             <>
                 <InspectorControls group={'styles'}>

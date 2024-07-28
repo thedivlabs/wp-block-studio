@@ -303,6 +303,8 @@ function Background({
                             withInputField={false}
                             min={0}
                             max={200}
+                            resetFallbackValue={100}
+                            allowReset={true}
                         />
                         <RangeControl
                             __nextHasNoMarginBottom
@@ -314,6 +316,8 @@ function Background({
                             withInputField={false}
                             min={0}
                             max={100}
+                            resetFallbackValue={100}
+                            allowReset={true}
                         />
                     </Grid>
                     <Grid columns={2} columnGap={20} rowGap={30}>

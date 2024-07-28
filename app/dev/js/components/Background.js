@@ -38,7 +38,6 @@ function Background({settings = {}, pushSettings}) {
     const [largeImage, setLargeImage] = useState(settings.largeImage || null);
     const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo || false);
     const [largeVideo, setLargeVideo] = useState(settings.largeVideo || false);
-    const [pattern, setPattern] = useState(settings.pattern || false);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -161,33 +160,6 @@ function Background({settings = {}, pushSettings}) {
                                                     image={largeVideo || {}}
                                                     callback={() => {
                                                         updateSettings('largeVideo', null, setLargeVideo)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                                Choose Image
-                                            </Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Pattern'} __nextHasNoMarginBottom={ true }>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Pattern'}
-                                    onSelect={(value) => {
-                                        updateSettings('pattern', value, setPattern);
-                                    }}
-                                    allowedTypes={['image']}
-                                    value={pattern}
-                                    render={({open}) => {
-                                        if (pattern) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={pattern || {}}
-                                                    callback={() => {
-                                                        updateSettings('pattern', null, setPattern)
                                                     }}
                                                 /></>;
                                         } else {

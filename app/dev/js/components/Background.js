@@ -18,7 +18,7 @@ export function BackgroundElement({settings}) {
 
     return <div className={[
         'wpbs-background',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
+        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none'
     ].filter(x => x).join(' ')}>
         <img src={largeImage.url || '#'}
              alt={largeImage.alt || ''}

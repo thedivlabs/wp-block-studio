@@ -1,4 +1,4 @@
-import {Button} from '@wordpress/components'
+import {Button, Icon} from '@wordpress/components'
 
 function PreviewThumbnail({image = {}, callback}) {
 
@@ -31,24 +31,25 @@ function PreviewThumbnail({image = {}, callback}) {
                 icon={'no-alt'}
                 style={{
                     position: 'absolute',
-                    top: '5px',
-                    right: '5px',
-                    zIndex: '10',
-                    width: '20px',
-                    height: '20px',
-                    lineHeight: '20px',
-                    borderRadius: '20px',
-                    backgroundColor: 'white',
-                    color: 'black',
-                    fontSize: '14px',
-                    overflow: 'hidden',
-                    padding: '0',
-                    margin: '0',
-                    textAlign: 'center',
+                    top: '7px',
+                    right: '7px',
+                    display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'center',
+                    zIndex: '10',
+                    padding: '0',
+                    pointerEvents: 'none',
+                    width: '26px',
+                    height: '26px',
+                    overflow: 'hidden',
+                    lineHeight: '26px',
+                    textAlign: 'center',
+                    backgroundColor: 'rgba(0,0,0,.7)',
+                    color: 'white',
                     minWidth: '0',
-                    pointerEvents: 'none'
-                }}></Button>
+                    minHeight: '0',
+                }}>
+            </Button>
         </div>
     )
 }

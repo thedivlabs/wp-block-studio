@@ -36,16 +36,12 @@ function Background({settings = {}, pushSettings}) {
 
     /*{
 
-        loading: '',
         opacity: '',
-        repeat: '',
         blend: '',
         width_mobile: '',
         width_large: '',
         overlay_mobile: '',
         overlay_large: '',
-        mask_mobile: '',
-        mask_large: '',
     }*/
 
     const [type, setType] = useState(settings.type || false);
@@ -55,6 +51,9 @@ function Background({settings = {}, pushSettings}) {
     const [largeVideo, setLargeVideo] = useState(settings.largeVideo || false);
     const [largeMask, setLargeMask] = useState(settings.largeMask || false);
     const [mobileMask, setMobileMask] = useState(settings.mobileMask || false);
+    const [eager, setEager] = useState(settings.eager || false);
+    const [repeat, setRepeat] = useState(settings.repeat || false);
+    const [blend, setBlend] = useState(settings.blend || false);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -244,6 +243,51 @@ function Background({settings = {}, pushSettings}) {
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
+                    </Grid>
+                    <Grid columns={2} columnGap={20} rowGap={30}>
+                        <SelectControl
+                            label="Repeat"
+                            value={repeat}
+                            options={[
+                                {label: 'Default', value: null},
+                                {label: 'None', value: 'none'},
+                                {label: 'Horizontal', value: 'horizontal'},
+                                {label: 'Vertical', value: 'vertical'},
+                            ]}
+                            onChange={(value) => {
+                                setRepeat(value);
+                                setAttributes({repeat: value});
+                            }}
+                            __nextHasNoMarginBottom
+                        />
+                        <SelectControl
+                            label="Blend"
+                            value={blend}
+                            options={[
+                                {label: 'Default', value: null},
+                                {label: 'Multiply', value: 'multiply'},
+                                {label: 'Screen', value: 'screen'},
+                                {label: 'Overlay', value: 'overlay'},
+                                {label: 'Soft Light', value: 'soft-light'},
+                            ]}
+                            onChange={(value) => {
+                                setBlend(value);
+                                setAttributes({blend: value});
+                            }}
+                            __nextHasNoMarginBottom
+                        />
+                    </Grid>
+                    <Grid columns={2} columnGap={20} rowGap={30}>
+                        <ToggleControl
+                            label="Eager"
+                            checked={eager}
+                            onChange={(value) => {
+                                setEager(value);
+                                setAttributes({eager: value});
+                            }}
+                            className={'flex items-center'}
+                            __nextHasNoMarginBottom
+                        />
                     </Grid>
                 </Grid>
             </PanelBody>

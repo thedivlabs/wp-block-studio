@@ -91,22 +91,21 @@ function Background({settings = {}, pushSettings, clientId}) {
     return (
 
         <PanelBody title={'Background'} initialOpen={false}>
-
-            <SelectControl
-                label="Type"
-                value={type}
-                options={[
-                    {label: 'Default', value: null},
-                    {label: 'Image', value: 'image'},
-                    {label: 'Video', value: 'video'},
-                    {label: 'Pattern', value: 'pattern'},
-                ]}
-                onChange={(value) => {
-                    updateSettings('type', value, setType);
-                }}
-                __nextHasNoMarginBottom
-            />
             <Grid columns={1} columnGap={20} rowGap={20}>
+                <SelectControl
+                    label="Type"
+                    value={type}
+                    options={[
+                        {label: 'Default', value: null},
+                        {label: 'Image', value: 'image'},
+                        {label: 'Video', value: 'video'},
+                        {label: 'Pattern', value: 'pattern'},
+                    ]}
+                    onChange={(value) => {
+                        updateSettings('type', value, setType);
+                    }}
+                    __nextHasNoMarginBottom
+                />
                 <Grid columns={2} columnGap={20} rowGap={20}>
                     <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                         <MediaUploadCheck>

@@ -83,7 +83,7 @@ function classNames(element, attributes = {}) {
     }
     if (element === 'container') {
         return [
-            'wpbs-container gap-inherit relative z-20',
+            'wpbs-container w-full gap-inherit relative z-20',
             container,
             flex,
             attributes.wrap ? 'flex-wrap' : false,

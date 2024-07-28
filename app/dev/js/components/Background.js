@@ -7,7 +7,7 @@ import {
     ToggleControl,
     Button,
     RangeControl,
-    CustomGradientPicker,
+    GradientPicker,
     __experimentalHeading as Heading,
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
@@ -51,7 +51,7 @@ function Background({settings = {}, pushSettings, clientId}) {
     const [blend, setBlend] = useState(settings.blend || null);
     const [scale, setScale] = useState(settings.scale || '100');
     const [opacity, setOpacity] = useState(settings.opacity || '100');
-    const [overlay, setOverlay] = useState(settings.overlay || 'linear-gradient(0deg, rgba(0,0,0,.8),rgba(0,0,0,.8))');
+    const [overlay, setOverlay] = useState(settings.overlay || 'linear-gradient(0deg, rgba(0,0,0,.3),rgba(0,0,0,.3))');
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -313,8 +313,9 @@ function Background({settings = {}, pushSettings, clientId}) {
                     />
                 </Grid>
                 <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
-                    <Heading>Overlay</Heading>
-                    <CustomGradientPicker
+                    <GradientPicker
+                        gradients={[]}
+                        clearable={false}
                         value={ overlay }
                         onChange={(value) => {
                             updateSettings('overlay', value, setOverlay);

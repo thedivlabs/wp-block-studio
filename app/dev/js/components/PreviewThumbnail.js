@@ -31,8 +31,8 @@ function PreviewThumbnail({image = {}, callback}) {
                 icon={'no-alt'}
                 style={{
                     position: 'absolute',
-                    top: '7px',
-                    right: '7px',
+                    top: '4px',
+                    right: '4px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -48,6 +48,7 @@ function PreviewThumbnail({image = {}, callback}) {
                     color: 'white',
                     minWidth: '0',
                     minHeight: '0',
+                    borderRadius: '4px'
                 }}>
             </Button>
         </div>

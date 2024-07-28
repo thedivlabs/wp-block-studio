@@ -15,12 +15,7 @@ function Background({settings = {}, pushSettings}) {
 
 
     /*{
-        type: '',
-        pattern_image: '',
-        image_mobile: '',
-        image_large: '',
-        video_mobile: '',
-        video_large: '',
+
         loading: '',
         opacity: '',
         repeat: '',

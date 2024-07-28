@@ -182,102 +182,106 @@ registerBlockType(metadata.name, {
 
                 <InspectorControls group={'styles'}>
                     <PanelBody title={'Layout'} initialOpen={false}>
-                        <Grid columns={2} columnGap={20} rowGap={30}>
-                            <SelectControl
-                                label="Align"
-                                value={align}
-                                options={[
-                                    {label: 'Default', value: null},
-                                    {label: 'Center', value: 'center'},
-                                    {label: 'Start', value: 'start'},
-                                    {label: 'End', value: 'end'},
-                                ]}
-                                onChange={(value) => {
-                                    setAlign(value);
-                                    setAttributes({align: value});
-                                }}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                label="Justify"
-                                value={justify}
-                                options={[
-                                    {label: 'Default', value: null},
-                                    {label: 'Center', value: 'center'},
-                                    {label: 'Start', value: 'start'},
-                                    {label: 'End', value: 'end'},
-                                ]}
-                                onChange={(value) => {
-                                    setJustify(value);
-                                    setAttributes({justify: value});
-                                }}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                label="Container"
-                                value={container}
-                                options={[
-                                    {label: 'Default', value: null},
-                                    {label: 'Large', value: 'lg'},
-                                    {label: 'Small', value: 'sm'},
-                                    {label: 'None', value: 'none'},
-                                ]}
-                                onChange={(value) => {
-                                    setContainer(value);
-                                    setAttributes({container: value});
-                                }}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                label="Size"
-                                value={size}
-                                options={[
-                                    {label: 'Default', value: null},
-                                    {label: 'Extra Small', value: 'xs'},
-                                    {label: 'Small', value: 'sm'},
-                                    {label: 'Large', value: 'lg'},
-                                    {label: 'Full', value: 'full'},
-                                ]}
-                                onChange={(value) => {
-                                    setContainer(value);
-                                    setAttributes({size: value});
-                                }}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                label="Flex"
-                                value={flex}
-                                options={[
-                                    {label: 'Default', value: null},
-                                    {label: 'Column', value: 'col'},
-                                    {label: 'None', value: 'none'},
-                                ]}
-                                onChange={(value) => {
-                                    setFlex(value);
-                                    setAttributes({flex: value});
-                                }}
-                                __nextHasNoMarginBottom
-                            />
-                            <ToggleControl
-                                label="Grow"
-                                checked={grow}
-                                onChange={(value) => {
-                                    setGrow(value);
-                                    setAttributes({grow: value});
-                                }}
-                                className={'flex items-center'}
-                                __nextHasNoMarginBottom
-                            />
-                            <ToggleControl
-                                label="Wrap"
-                                checked={wrap}
-                                onChange={(value) => {
-                                    setWrap(value);
-                                    setAttributes({wrap: value});
-                                }}
-                                className={'flex items-center'}
-                                __nextHasNoMarginBottom
-                            />
+                        <Grid columns={1} columnGap={20} rowGap={30}>
+                            <Grid columns={2} columnGap={20} rowGap={30}>
+                                <SelectControl
+                                    label="Align"
+                                    value={align}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                        {label: 'Center', value: 'center'},
+                                        {label: 'Start', value: 'start'},
+                                        {label: 'End', value: 'end'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setAlign(value);
+                                        setAttributes({align: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    label="Justify"
+                                    value={justify}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                        {label: 'Center', value: 'center'},
+                                        {label: 'Start', value: 'start'},
+                                        {label: 'End', value: 'end'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setJustify(value);
+                                        setAttributes({justify: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    label="Container"
+                                    value={container}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                        {label: 'Large', value: 'lg'},
+                                        {label: 'Small', value: 'sm'},
+                                        {label: 'None', value: 'none'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setContainer(value);
+                                        setAttributes({container: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    label="Size"
+                                    value={size}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                        {label: 'Extra Small', value: 'xs'},
+                                        {label: 'Small', value: 'sm'},
+                                        {label: 'Large', value: 'lg'},
+                                        {label: 'Full', value: 'full'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setContainer(value);
+                                        setAttributes({size: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    label="Flex"
+                                    value={flex}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                        {label: 'Column', value: 'col'},
+                                        {label: 'None', value: 'none'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setFlex(value);
+                                        setAttributes({flex: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                            </Grid>
+                            <Grid columns={2} columnGap={20} rowGap={30}>
+                                <ToggleControl
+                                    label="Grow"
+                                    checked={grow}
+                                    onChange={(value) => {
+                                        setGrow(value);
+                                        setAttributes({grow: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
+                                <ToggleControl
+                                    label="Wrap"
+                                    checked={wrap}
+                                    onChange={(value) => {
+                                        setWrap(value);
+                                        setAttributes({wrap: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
+                            </Grid>
                         </Grid>
                     </PanelBody>
                     <SelectControl>

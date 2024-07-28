@@ -32,7 +32,22 @@ export function BackgroundElement({settings}) {
     </div>;
 }
 
-function Background({settings = {}, pushSettings}) {
+function Background({
+                        settings = {
+                            type: false,
+                            mobileImage: null,
+                            largeImage: null,
+                            mobileVideo: false,
+                            largeVideo: false,
+                            largeMask: false,
+                            mobileMask: false,
+                            eager: false,
+                            repeat: false,
+                            blend: false,
+                            scale: 100,
+                            opacity: 100,
+                        }, pushSettings
+                    }) {
 
 
     /*{
@@ -42,18 +57,18 @@ function Background({settings = {}, pushSettings}) {
         overlay_large: '',
     }*/
 
-    const [type, setType] = useState(settings.type || false);
-    const [mobileImage, setMobileImage] = useState(settings.mobileImage || null);
-    const [largeImage, setLargeImage] = useState(settings.largeImage || null);
-    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo || false);
-    const [largeVideo, setLargeVideo] = useState(settings.largeVideo || false);
-    const [largeMask, setLargeMask] = useState(settings.largeMask || false);
-    const [mobileMask, setMobileMask] = useState(settings.mobileMask || false);
-    const [eager, setEager] = useState(settings.eager || false);
-    const [repeat, setRepeat] = useState(settings.repeat || false);
-    const [blend, setBlend] = useState(settings.blend || false);
-    const [scale, setScale] = useState(settings.scale || 100);
-    const [opacity, setOpacity] = useState(settings.opacity || 100);
+    const [type, setType] = useState(settings.type);
+    const [mobileImage, setMobileImage] = useState(settings.mobileImage);
+    const [largeImage, setLargeImage] = useState(settings.largeImage);
+    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo);
+    const [largeVideo, setLargeVideo] = useState(settings.largeVideo);
+    const [largeMask, setLargeMask] = useState(settings.largeMask);
+    const [mobileMask, setMobileMask] = useState(settings.mobileMask);
+    const [eager, setEager] = useState(settings.eager);
+    const [repeat, setRepeat] = useState(settings.repeat);
+    const [blend, setBlend] = useState(settings.blend);
+    const [scale, setScale] = useState(settings.scale);
+    const [opacity, setOpacity] = useState(settings.opacity);
 
     function updateSettings(attr, val, callback) {
         callback(val);

@@ -52,8 +52,8 @@ function Background({settings = {}, pushSettings}) {
     const [eager, setEager] = useState(settings.eager || false);
     const [repeat, setRepeat] = useState(settings.repeat || false);
     const [blend, setBlend] = useState(settings.blend || false);
-    const [scale, setScale] = useState(settings.scale || 0);
-    const [opacity, setOpacity] = useState(settings.opacity || 0);
+    const [scale, setScale] = useState(settings.scale || 100);
+    const [opacity, setOpacity] = useState(settings.opacity || 100);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -286,9 +286,8 @@ function Background({settings = {}, pushSettings}) {
                                 updateSettings('scale', value, setScale);
                             }}
                             withInputField={false}
-                            min={25}
+                            min={0}
                             max={200}
-                            type={'stepper'}
                         />
                         <RangeControl
                             __nextHasNoMarginBottom
@@ -298,9 +297,8 @@ function Background({settings = {}, pushSettings}) {
                                 updateSettings('opacity', value, setOpacity);
                             }}
                             withInputField={false}
-                            min={25}
-                            max={200}
-                            type={'stepper'}
+                            min={0}
+                            max={100}
                         />
                     </Grid>
                     <Grid columns={2} columnGap={20} rowGap={30}>

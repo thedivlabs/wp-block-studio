@@ -113,7 +113,7 @@ registerBlockType(metadata.name, {
         }
     },
     attributes: {
-        height: {
+        size: {
             type: 'string'
         },
         padding: {
@@ -161,6 +161,7 @@ registerBlockType(metadata.name, {
         const [grow, setGrow] = useState(attributes.align || false);
         const [flex, setFlex] = useState(attributes.align || null);
         const [wrap, setWrap] = useState(attributes.align || false);
+        const [size, setSize] = useState(attributes.size || false);
 
         return (
             <>
@@ -224,6 +225,22 @@ registerBlockType(metadata.name, {
                                 onChange={(value) => {
                                     setContainer(value);
                                     setAttributes({container: value});
+                                }}
+                                __nextHasNoMarginBottom
+                            />
+                            <SelectControl
+                                label="Size"
+                                value={size}
+                                options={[
+                                    {label: 'Default', value: null},
+                                    {label: 'Extra Small', value: 'xs'},
+                                    {label: 'Small', value: 'sm'},
+                                    {label: 'Large', value: 'lg'},
+                                    {label: 'Full', value: 'full'},
+                                ]}
+                                onChange={(value) => {
+                                    setContainer(value);
+                                    setAttributes({size: value});
                                 }}
                                 __nextHasNoMarginBottom
                             />

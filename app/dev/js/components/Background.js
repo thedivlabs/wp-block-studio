@@ -8,7 +8,7 @@ import {
     ToggleControl,
     Button,
 } from "@wordpress/components";
-import {InspectorControls, MediaUpload,MediaUploadCheck} from "@wordpress/block-editor";
+import {InspectorControls, MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 
 function Background({settings = {}, pushSettings}) {
@@ -39,6 +39,17 @@ function Background({settings = {}, pushSettings}) {
         pushSettings(Object.assign({}, settings, {[attr]: val}));
     }
 
+    const buttonStyle = {
+        border: '1px dashed lightgray',
+        width: '100%',
+        height: 'auto',
+        aspectRatio: '16/9',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+    };
+
     return (
         <InspectorControls group={'styles'}>
             <PanelBody title={'Background'} initialOpen={false}>
@@ -58,7 +69,7 @@ function Background({settings = {}, pushSettings}) {
                         __nextHasNoMarginBottom
                     />
                     <Grid columns={2} columnGap={20} rowGap={20}>
-                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={ true }>
+                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
                                     title={'Mobile Image'}
@@ -77,15 +88,13 @@ function Background({settings = {}, pushSettings}) {
                                                     }}
                                                 /></>;
                                         } else {
-                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                                Choose Image
-                                            </Button>
+                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
                                         }
                                     }}
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-                        <BaseControl label={'Large Image'} __nextHasNoMarginBottom={ true }>
+                        <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
                                     title={'Large Image'}
@@ -104,15 +113,13 @@ function Background({settings = {}, pushSettings}) {
                                                     }}
                                                 /></>;
                                         } else {
-                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                                Choose Image
-                                            </Button>
+                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
                                         }
                                     }}
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-                        <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={ true }>
+                        <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
                                     title={'Mobile Video'}
@@ -131,15 +138,13 @@ function Background({settings = {}, pushSettings}) {
                                                     }}
                                                 /></>;
                                         } else {
-                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                                Choose Image
-                                            </Button>
+                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
                                         }
                                     }}
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-                        <BaseControl label={'Large Video'} __nextHasNoMarginBottom={ true }>
+                        <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
                                     title={'Large Video'}
@@ -158,9 +163,7 @@ function Background({settings = {}, pushSettings}) {
                                                     }}
                                                 /></>;
                                         } else {
-                                            return <Button onClick={open} style={{border: '1px dashed lightgray'}}>
-                                                Choose Image
-                                            </Button>
+                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
                                         }
                                     }}
                                 />

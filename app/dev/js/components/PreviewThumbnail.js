@@ -6,11 +6,10 @@ function PreviewThumbnail({image = {}, callback}) {
         <div style={{
             width: '100%',
             display: 'flex',
-            backgroundColor: '#efefef',
-            borderRadius: '4px',
-            padding: '5px',
             position: 'relative',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            aspectRatio: '16/9',
+            overflow: 'hidden',
         }}
              onClick={() => {
                  if (callback) {
@@ -23,17 +22,17 @@ function PreviewThumbnail({image = {}, callback}) {
                  style={{
                      cursor: 'pointer',
                      width: '100%',
+                     height: '100%',
                      objectFit: 'cover',
                      borderRadius: '4px',
-                     aspectRatio: '16/9',
                      pointerEvents: 'none'
                  }}/>
             <Button
                 icon={'no-alt'}
                 style={{
                     position: 'absolute',
-                    top: '10px',
-                    right: '10px',
+                    top: '5px',
+                    right: '5px',
                     zIndex: '10',
                     width: '20px',
                     height: '20px',

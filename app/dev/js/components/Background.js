@@ -39,19 +39,35 @@ export function BackgroundElement({settings = {}}) {
 
 function Background({settings = {}, pushSettings, clientId}) {
 
-    const [type, setType] = useState(settings.type || false);
-    const [mobileImage, setMobileImage] = useState(settings.mobileImage || {});
-    const [largeImage, setLargeImage] = useState(settings.largeImage || {});
-    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo || {});
-    const [largeVideo, setLargeVideo] = useState(settings.largeVideo || {});
-    const [largeMask, setLargeMask] = useState(settings.largeMask || {});
-    const [mobileMask, setMobileMask] = useState(settings.mobileMask || {});
-    const [eager, setEager] = useState(settings.eager || false);
-    const [repeat, setRepeat] = useState(settings.repeat || false);
-    const [blend, setBlend] = useState(settings.blend || null);
-    const [scale, setScale] = useState(settings.scale || '100');
-    const [opacity, setOpacity] = useState(settings.opacity || '100');
-    const [overlay, setOverlay] = useState(settings.overlay || 'linear-gradient(0deg, rgba(0,0,0,.3),rgba(0,0,0,.3))');
+    settings = Object.assign({},{
+        type: false,
+        mobileImage: {},
+        largeImage: {},
+        mobileVideo: {},
+        largeVideo: {},
+        largeMask: {},
+        mobileMask: {},
+        eager: false,
+        repeat: null,
+        blend: null,
+        scale: '100',
+        opacity: '100',
+        overlay: 'linear-gradient(0deg, rgba(0,0,0,.3),rgba(0,0,0,.3))',
+    },settings)
+
+    const [type, setType] = useState(settings.type);
+    const [mobileImage, setMobileImage] = useState(settings.mobileImage);
+    const [largeImage, setLargeImage] = useState(settings.largeImage);
+    const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo);
+    const [largeVideo, setLargeVideo] = useState(settings.largeVideo);
+    const [largeMask, setLargeMask] = useState(settings.largeMask);
+    const [mobileMask, setMobileMask] = useState(settings.mobileMask);
+    const [eager, setEager] = useState(settings.eager);
+    const [repeat, setRepeat] = useState(settings.repeat);
+    const [blend, setBlend] = useState(settings.blend);
+    const [scale, setScale] = useState(settings.scale);
+    const [opacity, setOpacity] = useState(settings.opacity);
+    const [overlay, setOverlay] = useState(settings.overlay);
 
     function updateSettings(attr, val, callback) {
         callback(val);

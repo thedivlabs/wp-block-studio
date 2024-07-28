@@ -7,6 +7,7 @@ import {
     SelectControl,
     ToggleControl,
     Button,
+    RangeControl,
 } from "@wordpress/components";
 import {InspectorControls, MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
@@ -37,9 +38,6 @@ function Background({settings = {}, pushSettings}) {
     /*{
 
         opacity: '',
-        blend: '',
-        width_mobile: '',
-        width_large: '',
         overlay_mobile: '',
         overlay_large: '',
     }*/
@@ -54,6 +52,8 @@ function Background({settings = {}, pushSettings}) {
     const [eager, setEager] = useState(settings.eager || false);
     const [repeat, setRepeat] = useState(settings.repeat || false);
     const [blend, setBlend] = useState(settings.blend || false);
+    const [scale, setScale] = useState(settings.scale || 0);
+    const [opacity, setOpacity] = useState(settings.opacity || 0);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -278,12 +278,37 @@ function Background({settings = {}, pushSettings}) {
                         />
                     </Grid>
                     <Grid columns={2} columnGap={20} rowGap={30}>
+                        <RangeControl
+                            __nextHasNoMarginBottom
+                            label="Scale"
+                            value={scale}
+                            onChange={(value) => {
+                                updateSettings('scale', value, setScale);
+                            }}
+                            withInputField={false}
+                            min={25}
+                            max={200}
+                            type={'stepper'}
+                        />
+                        <RangeControl
+                            __nextHasNoMarginBottom
+                            label="Opacity"
+                            value={opacity}
+                            onChange={(value) => {
+                                updateSettings('opacity', value, setOpacity);
+                            }}
+                            withInputField={false}
+                            min={25}
+                            max={200}
+                            type={'stepper'}
+                        />
+                    </Grid>
+                    <Grid columns={2} columnGap={20} rowGap={30}>
                         <ToggleControl
                             label="Eager"
                             checked={eager}
                             onChange={(value) => {
-                                setEager(value);
-                                setAttributes({eager: value});
+                                updateSettings('eager', value, setEager);
                             }}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom

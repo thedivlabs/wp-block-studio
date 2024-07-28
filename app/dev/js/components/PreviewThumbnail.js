@@ -2,6 +2,30 @@ import {Button, Icon} from '@wordpress/components'
 
 function PreviewThumbnail({image = {}, callback}) {
 
+    console.log(image.url);
+
+    const thumbnailStyle = {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        borderRadius: '4px',
+        pointerEvents: 'none'
+    }
+
+    let thumbnail;
+
+    if('video' === image.type){
+        thumbnail = <video preload={'metadata'} style={thumbnailStyle}>
+            <source src={image.url || '#'}
+            type={'video/mp4'}
+            />
+        </video>
+    } else {
+        thumbnail = <img src={image.url || '#'}
+                         alt={''}
+                         style={thumbnailStyle}/>
+    }
+
     return (
         <div style={{
             width: '100%',
@@ -17,16 +41,7 @@ function PreviewThumbnail({image = {}, callback}) {
                  }
              }}
         >
-            <img src={image.url || '#'}
-                 alt={''}
-                 style={{
-                     cursor: 'pointer',
-                     width: '100%',
-                     height: '100%',
-                     objectFit: 'cover',
-                     borderRadius: '4px',
-                     pointerEvents: 'none'
-                 }}/>
+            {thumbnail}
             <Button
                 icon={'no-alt'}
                 style={{

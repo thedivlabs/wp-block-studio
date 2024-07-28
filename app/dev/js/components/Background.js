@@ -164,7 +164,7 @@ function Background({settings = {}, pushSettings, clientId}) {
                                 onSelect={(value) => {
                                     updateSettings('mobileVideo', value, setMobileVideo);
                                 }}
-                                allowedTypes={['mp4']}
+                                allowedTypes={['video']}
                                 value={mobileVideo}
                                 render={({open}) => {
                                     if (mobileVideo) {
@@ -189,7 +189,7 @@ function Background({settings = {}, pushSettings, clientId}) {
                                 onSelect={(value) => {
                                     updateSettings('largeVideo', value, setLargeVideo);
                                 }}
-                                allowedTypes={['mp4']}
+                                allowedTypes={['video']}
                                 value={largeVideo}
                                 render={({open}) => {
                                     if (largeVideo) {

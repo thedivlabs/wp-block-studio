@@ -90,7 +90,6 @@ function Background({settings = {}, pushSettings, clientId}) {
                 }}
                 __nextHasNoMarginBottom
             />
-            <Heading>Images</Heading>
             <Grid columns={1} columnGap={20} rowGap={20}>
                 <Grid columns={2} columnGap={20} rowGap={20}>
                     <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>

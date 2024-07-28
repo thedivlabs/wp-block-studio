@@ -2,24 +2,15 @@ import React, {useState} from "react"
 import {
     __experimentalGrid as Grid,
     BaseControl,
-    useBaseControlProps,
     PanelBody,
     SelectControl,
     ToggleControl,
     Button,
-    RangeControl,
-    __experimentalToolsPanel as ToolsPanel,
-    __experimentalToolsPanelItem as ToolsPanelItem,
+    RangeControl
 } from "@wordpress/components";
 import {
-    InspectorControls,
     MediaUpload,
     MediaUploadCheck,
-    withColors,
-} from "@wordpress/block-editor";
-import {
-    __experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
-    __experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients
 } from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 

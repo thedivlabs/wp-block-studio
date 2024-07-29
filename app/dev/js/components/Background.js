@@ -347,6 +347,15 @@ function Background({settings = {}, pushSettings, clientId}) {
                         className={'flex items-center'}
                         __nextHasNoMarginBottom
                     />
+                    <ToggleControl
+                        label="Force"
+                        checked={force}
+                        onChange={(value) => {
+                            updateSettings('force', value, setForce);
+                        }}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
                 </Grid>
                 <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
                     <GradientPicker

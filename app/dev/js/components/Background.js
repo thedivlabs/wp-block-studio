@@ -17,29 +17,26 @@ import {
     MediaUploadCheck
 } from "@wordpress/block-editor";
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
+import Picture from '../../js/components/picture';
 
 export function BackgroundElement({settings = {}}) {
-
-    const image = settings.largeImage || {};
-
+    
     return <div className={[
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none'
     ].filter(x => x).join(' ')}>
-        <img src={image.url || '#'}
-             alt={image.alt || ''}
-             aria-hidden={'true'}
-             className={[
-                 'wpbs-background__image',
-                 'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
-             ].filter(x => x).join(' ')}
-        />
+        <Picture mobile={settings.mobileImage} large={settings.largeImage} settings={{
+            className: [
+                'wpbs-background__image',
+                'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
+            ].filter(x => x).join(' ')
+        }}/>
     </div>;
 }
 
 function Background({settings = {}, pushSettings, clientId}) {
 
-    settings = Object.assign({},{
+    settings = Object.assign({}, {
         type: false,
         mobileImage: {},
         largeImage: {},
@@ -53,7 +50,7 @@ function Background({settings = {}, pushSettings, clientId}) {
         scale: '100',
         opacity: '100',
         overlay: 'linear-gradient(0deg, rgba(0,0,0,.3),rgba(0,0,0,.3))',
-    },settings)
+    }, settings)
 
     const [type, setType] = useState(settings.type);
     const [mobileImage, setMobileImage] = useState(settings.mobileImage);
@@ -330,7 +327,7 @@ function Background({settings = {}, pushSettings, clientId}) {
                     <GradientPicker
                         gradients={[]}
                         clearable={false}
-                        value={ overlay }
+                        value={overlay}
                         onChange={(value) => {
                             updateSettings('overlay', value, setOverlay);
                         }}

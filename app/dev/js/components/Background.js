@@ -88,7 +88,7 @@ function Background({settings = {}, pushSettings}) {
         blend: null,
         scale: '100',
         opacity: '100',
-        overlay: 'linear-gradient(0deg, rgba(0,0,0,.3),rgba(0,0,0,.3))',
+        overlay: 'light',
     }, settings)
 
     const [type, setType] = useState(settings.type);
@@ -373,7 +373,26 @@ function Background({settings = {}, pushSettings}) {
                 </Grid>
                 <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
                     <GradientPicker
-                        gradients={[]}
+                        gradients={[
+                            {
+                                name: 'Transparent',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                slug: 'transparent',
+                            },
+                            {
+                                name: 'Light',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                slug: 'light',
+                            },
+                            {
+                                name: 'Strong',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                slug: 'Strong',
+                            }
+                        ]}
                         clearable={false}
                         value={overlay}
                         onChange={(value) => {

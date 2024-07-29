@@ -17,10 +17,8 @@ import Background from '../../../js/components/Background';
 import {BackgroundElement} from '../../../js/components/Background';
 import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensions';
 
-function classNames(element, attributes = {}) {
 
-    let align;
-    let justify;
+function containerClassNames(attributes = {}) {
     let container;
     let flex;
 
@@ -34,6 +32,54 @@ function classNames(element, attributes = {}) {
         default:
             flex = 'flex flex-col sm:flex-row';
     }
+    switch (attributes.container) {
+        case 'sm':
+            container = 'container max-w-screen-lg';
+            break;
+        case 'lg':
+            container = 'container  max-w-screen-2xl';
+            break;
+        case 'none':
+            container = false;
+            break;
+        default:
+            container = 'container';
+    }
+    return [
+        'wpbs-container w-full gap-inherit relative z-20',
+        container,
+        flex,
+        attributes.wrap ? 'flex-wrap' : false,
+    ].filter(x => x).join(' ');
+
+}
+
+function sectionClassNames(attributes = {}) {
+
+    let align;
+    let justify;
+    let size;
+
+    switch (attributes.size) {
+        case 'xs':
+            size = 'min-h-section-xs';
+            break;
+        case 'sm':
+            size = 'min-h-section-sm';
+            break;
+        case 'md':
+            size = 'min-h-section-md';
+            break;
+        case 'lg':
+            size = 'min-h-section-lg';
+            break;
+        case 'full':
+            size = 'min-h-section-full';
+            break;
+        default:
+            size = false;
+    }
+
     switch (attributes.align) {
         case 'start':
             align = 'items-start';
@@ -62,38 +108,15 @@ function classNames(element, attributes = {}) {
             justify = false;
     }
 
-    switch (attributes.container) {
-        case 'sm':
-            container = 'container max-w-screen-lg';
-            break;
-        case 'lg':
-            container = 'container  max-w-screen-2xl';
-            break;
-        case 'none':
-            container = false;
-            break;
-        default:
-            container = 'container';
-    }
 
-    if (element === 'section') {
-        return [
-            'wpbs-content-section w-full flex flex-row relative',
-            attributes.grow ? 'grow' : false,
-            align,
-            justify
-        ].filter(x => x).join(' ');
-    }
-    if (element === 'container') {
-        return [
-            'wpbs-container w-full gap-inherit relative z-20',
-            container,
-            flex,
-            attributes.wrap ? 'flex-wrap' : false,
-        ].filter(x => x).join(' ');
-    }
-
-    return '';
+    return [
+        'wpbs-content-section w-full flex flex-row relative',
+        attributes.grow ? 'grow' : false,
+        align,
+        justify,
+        size,
+        !attributes.overflow ? 'overflow-hidden' : false,
+    ].filter(x => x).join(' ');
 }
 
 registerBlockType(metadata.name, {
@@ -157,7 +180,7 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps({
-            className: classNames('section', attributes),
+            className: sectionClassNames(attributes),
             style: {}
         });
 
@@ -173,22 +196,14 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <InspectorControls group={'styles'}>
+                <section {...blockProps}>
+                    <div className={containerClassNames(attributes)}>
+                        <InnerBlocks/>
+                    </div>
+                    <BackgroundElement settings={background || {}}/>
+                </section>
 
-                    <MobileDimensions
-                        settings={mobile_dimensions || {}}
-                        pushSettings={(value) => {
-                            setAttributes({mobile_dimensions: value});
-                        }}
-                    >
-                    </MobileDimensions>
-                    <Background
-                        settings={background || {}}
-                        pushSettings={(value) => {
-                            setAttributes({background: value});
-                        }}
-                        clientId={clientId}
-                    ></Background>
+                <InspectorControls group={'styles'}>
                     <PanelBody title={'Layout'} initialOpen={false}>
                         <Grid columns={1} columnGap={20} rowGap={30}>
                             <Grid columns={2} columnGap={20} rowGap={30}>
@@ -244,11 +259,12 @@ registerBlockType(metadata.name, {
                                         {label: 'Default', value: null},
                                         {label: 'Extra Small', value: 'xs'},
                                         {label: 'Small', value: 'sm'},
+                                        {label: 'Medium', value: 'md'},
                                         {label: 'Large', value: 'lg'},
                                         {label: 'Full', value: 'full'},
                                     ]}
                                     onChange={(value) => {
-                                        setContainer(value);
+                                        setSize(value);
                                         setAttributes({size: value});
                                     }}
                                     __nextHasNoMarginBottom
@@ -303,31 +319,36 @@ registerBlockType(metadata.name, {
                         </Grid>
                     </PanelBody>
 
+                    <Background
+                        settings={background || {}}
+                        pushSettings={(value) => {
+                            setAttributes({background: value});
+                        }}
+                        clientId={clientId}
+                    ></Background>
+
+                    <MobileDimensions
+                        settings={mobile_dimensions || {}}
+                        pushSettings={(value) => {
+                            setAttributes({mobile_dimensions: value});
+                        }}
+                    >
+                    </MobileDimensions>
 
                 </InspectorControls>
-                <section {...blockProps}>
-                    <div className={classNames('container', attributes)}>
-                        <InnerBlocks/>
-                    </div>
-                </section>
-                <BackgroundElement
-                    settings={background || {}}
-                ></BackgroundElement>
-
-
             </>
         )
     },
     save: (props) => {
         const blockProps = useBlockProps.save({
-            className: classNames('section', props.attributes)
+            className: sectionClassNames(props.attributes)
         });
 
         const {background} = props.attributes;
 
         return (
             <section {...setMobileProps(blockProps, props)}>
-                <div className={classNames('container', props.attributes)}>
+                <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
                 <MobileStyles blockProps={blockProps} props={props}/>

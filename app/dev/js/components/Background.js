@@ -37,6 +37,22 @@ export function BackgroundElement({settings = {}}) {
             repeat = false;
     }
 
+    const {mobileMask, largeMask} = settings;
+
+    let mobileMaskSrc;
+    let largeMaskSrc;
+
+    if (settings.force) {
+        mobileMaskSrc = mobileMaskSrc.url || largeMaskSrc.url || 'none';
+        largeMaskSrc = largeMaskSrc.url || mobileMaskSrc.url || 'none';
+    } else {
+        mobileMaskSrc = mobileMaskSrc.url || 'none';
+        largeMaskSrc = largeMaskSrc.url || 'none';
+    }
+
+    const MaskStyle = mobileMaskSrc === 'none' ? false :
+        <style>{'@media (max-width: 768px) {.wpbs-content-section {mask-image:url('+mobileMaskSrc+')}}'}</style>;
+
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none',
@@ -46,6 +62,7 @@ export function BackgroundElement({settings = {}}) {
     const bgStyle = {
         backgroundSize: (settings.scale || '100') + '%',
         opacity: (settings.opacity || '100') + '%',
+        maskImage: largeMaskSrc,
     }
 
     const overlayClass = [
@@ -74,7 +91,11 @@ export function BackgroundElement({settings = {}}) {
 
             const {largeVideo: largeVideo = '#', mobileVideo: mobileVideo = '#'} = settings;
 
-            const src = window.matchMedia("(min-width: 960px)").matches ? largeVideo.url : mobileVideo.url;
+            if (!largeVideo && !mobileVideo) {
+                return false;
+            }
+
+            const src = window.matchMedia("(min-width: 960px)").matches ? largeVideo.url || '#' : mobileVideo.url || '#';
 
             return <video className={videoClass} muted autoPlay loop>
                 <source src={src || '#'} type="video/mp4"/>
@@ -316,6 +337,7 @@ function Background({settings = {}, pushSettings}) {
                     <SelectControl
                         label="Repeat"
                         value={repeat}
+                        disabled={type !== 'pattern'}
                         options={[
                             {label: 'Default', value: null},
                             {label: 'None', value: 'none'},
@@ -347,6 +369,7 @@ function Background({settings = {}, pushSettings}) {
                     <RangeControl
                         __nextHasNoMarginBottom
                         label="Scale"
+                        disabled={type !== 'pattern'}
                         value={scale}
                         onChange={(value) => {
                             updateSettings('scale', value, setScale);

@@ -8,9 +8,6 @@ import {
     Button,
     RangeControl,
     GradientPicker,
-    __experimentalHeading as Heading,
-    __experimentalToolsPanel as ToolsPanel,
-    __experimentalToolsPanelItem as ToolsPanelItem,
 } from "@wordpress/components";
 import {
     MediaUpload,
@@ -37,22 +34,6 @@ export function BackgroundElement({settings = {}}) {
             repeat = false;
     }
 
-    const {mobileMask, largeMask} = settings;
-
-    let mobileMaskSrc;
-    let largeMaskSrc;
-
-    if (settings.force) {
-        mobileMaskSrc = mobileMaskSrc.url || largeMaskSrc.url || 'none';
-        largeMaskSrc = largeMaskSrc.url || mobileMaskSrc.url || 'none';
-    } else {
-        mobileMaskSrc = mobileMaskSrc.url || 'none';
-        largeMaskSrc = largeMaskSrc.url || 'none';
-    }
-
-    const MaskStyle = mobileMaskSrc === 'none' ? false :
-        <style>{'@media (max-width: 768px) {.wpbs-content-section {mask-image:url('+mobileMaskSrc+')}}'}</style>;
-
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none',
@@ -61,8 +42,7 @@ export function BackgroundElement({settings = {}}) {
 
     const bgStyle = {
         backgroundSize: (settings.scale || '100') + '%',
-        opacity: (settings.opacity || '100') + '%',
-        maskImage: largeMaskSrc,
+        opacity: (settings.opacity || '100') + '%'
     }
 
     const overlayClass = [
@@ -119,8 +99,6 @@ function Background({settings = {}, pushSettings}) {
         largeImage: {},
         mobileVideo: {},
         largeVideo: {},
-        largeMask: {},
-        mobileMask: {},
         eager: false,
         force: false,
         repeat: null,
@@ -135,8 +113,6 @@ function Background({settings = {}, pushSettings}) {
     const [largeImage, setLargeImage] = useState(settings.largeImage);
     const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo);
     const [largeVideo, setLargeVideo] = useState(settings.largeVideo);
-    const [largeMask, setLargeMask] = useState(settings.largeMask);
-    const [mobileMask, setMobileMask] = useState(settings.mobileMask);
     const [eager, setEager] = useState(settings.eager);
     const [force, setForce] = useState(settings.force);
     const [repeat, setRepeat] = useState(settings.repeat);
@@ -273,56 +249,6 @@ function Background({settings = {}, pushSettings}) {
                                                 image={largeVideo || {}}
                                                 callback={() => {
                                                     updateSettings('largeVideo', null, setLargeVideo)
-                                                }}
-                                            /></>;
-                                    } else {
-                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                    }
-                                }}
-                            />
-                        </MediaUploadCheck>
-                    </BaseControl>
-                    <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
-                        <MediaUploadCheck>
-                            <MediaUpload
-                                title={'Mobile Mask'}
-                                onSelect={(value) => {
-                                    updateSettings('mobileMask', value, setMobileMask);
-                                }}
-                                allowedTypes={['svg', 'image']}
-                                value={mobileMask}
-                                render={({open}) => {
-                                    if (mobileMask) {
-                                        return <>
-                                            <PreviewThumbnail
-                                                image={mobileMask || {}}
-                                                callback={() => {
-                                                    updateSettings('mobileMask', null, setMobileMask)
-                                                }}
-                                            /></>;
-                                    } else {
-                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                    }
-                                }}
-                            />
-                        </MediaUploadCheck>
-                    </BaseControl>
-                    <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
-                        <MediaUploadCheck>
-                            <MediaUpload
-                                title={'Large Mask'}
-                                onSelect={(value) => {
-                                    updateSettings('largeMask', value, setLargeMask);
-                                }}
-                                allowedTypes={['svg', 'image']}
-                                value={largeMask}
-                                render={({open}) => {
-                                    if (largeMask) {
-                                        return <>
-                                            <PreviewThumbnail
-                                                image={largeMask || {}}
-                                                callback={() => {
-                                                    updateSettings('largeMask', null, setLargeMask)
                                                 }}
                                             /></>;
                                     } else {

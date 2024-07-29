@@ -52,14 +52,38 @@ export function BackgroundElement({settings = {}}) {
         'wpbs-background__overlay pointer-events-none absolute top-0 left-0 w-full h-full z-50'
     ].filter(x => x).join(' ');
 
+    const videoClass = [
+        'wpbs-background__video',
+        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none',
+    ].filter(x => x).join(' ');
+
+    const imageClass = [
+        'wpbs-background__image',
+        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
+    ].filter(x => x).join(' ');
+
+    function Media() {
+        if (settings.type === 'image') {
+            return <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
+                force: settings.force || false,
+                className: imageClass
+            }}/>;
+        }
+
+        if (settings.type === 'video') {
+
+            const {largeVideo: largeVideo = '#', mobileVideo: mobileVideo = '#'} = settings;
+
+            const src = window.matchMedia("(min-width: 960px)").matches ? largeVideo.url : mobileVideo.url;
+
+            return <video className={videoClass} muted autoPlay loop>
+                <source src={src || '#'} type="video/mp4"/>
+            </video>
+        }
+    }
+
     return <div className={bgClass} style={bgStyle}>
-        <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
-            force: settings.force || false,
-            className: [
-                'wpbs-background__image',
-                'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
-            ].filter(x => x).join(' ')
-        }}/>
+        <Media/>
         <div className={overlayClass} style={{
             background: settings.overlay || 'transparent'
         }}/>

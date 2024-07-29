@@ -23,7 +23,10 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
 
     const className = [
         'wpbs-picture',
-        settings.className || false
+        settings.className || false,
+        !urlLarge ? 'lg:hidden' : false,
+        !urlMedium ? 'md:hidden' : false,
+        !urlMobile ? 'max-md:hidden' : false,
     ].filter(x => x).join(' ');
 
 

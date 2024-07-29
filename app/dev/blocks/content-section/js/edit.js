@@ -6,8 +6,6 @@ import {
     ToggleControl,
     SelectControl,
     PanelBody,
-    __experimentalToolsPanelItem as ToolsPanelItem,
-    __experimentalToolsPanel as ToolsPanel,
 } from "@wordpress/components"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"

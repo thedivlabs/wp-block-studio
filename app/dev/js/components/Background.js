@@ -69,6 +69,7 @@ function Background({settings = {}, pushSettings, clientId}) {
         largeMask: {},
         mobileMask: {},
         eager: false,
+        force: false,
         repeat: null,
         blend: null,
         scale: '100',
@@ -84,6 +85,7 @@ function Background({settings = {}, pushSettings, clientId}) {
     const [largeMask, setLargeMask] = useState(settings.largeMask);
     const [mobileMask, setMobileMask] = useState(settings.mobileMask);
     const [eager, setEager] = useState(settings.eager);
+    const [force, setForce] = useState(settings.force);
     const [repeat, setRepeat] = useState(settings.repeat);
     const [blend, setBlend] = useState(settings.blend);
     const [scale, setScale] = useState(settings.scale);
@@ -107,7 +109,6 @@ function Background({settings = {}, pushSettings, clientId}) {
         alignItems: 'center',
         textAlign: 'center',
     };
-
 
     return (
 

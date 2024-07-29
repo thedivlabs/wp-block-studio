@@ -2,8 +2,6 @@ import {Button, Icon} from '@wordpress/components'
 
 function PreviewThumbnail({image = {}, callback}) {
 
-    console.log(image.url);
-
     const thumbnailStyle = {
         width: '100%',
         height: '100%',
@@ -14,10 +12,10 @@ function PreviewThumbnail({image = {}, callback}) {
 
     let thumbnail;
 
-    if('video' === image.type){
+    if ('video' === image.type) {
         thumbnail = <video preload={'metadata'} style={thumbnailStyle}>
             <source src={image.url || '#'}
-            type={'video/mp4'}
+                    type={'video/mp4'}
             />
         </video>
     } else {

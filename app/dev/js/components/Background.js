@@ -20,12 +20,36 @@ import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 import Picture from '../../js/components/picture';
 
 export function BackgroundElement({settings = {}}) {
-    
-    return <div className={[
+
+    let repeat;
+
+    switch (settings.repeat) {
+        case 'none':
+            repeat = 'bg-no-repeat';
+            break;
+        case 'horizontal':
+            repeat = 'bg-repeat-x';
+            break;
+        case 'vertical':
+            repeat = 'bg-repeat-y';
+            break;
+        default:
+            repeat = false;
+    }
+
+    const bgClass = [
         'wpbs-background',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none'
-    ].filter(x => x).join(' ')}>
-        <Picture mobile={settings.mobileImage} large={settings.largeImage} settings={{
+        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none',
+        settings.blend ? 'mix-blend-' + settings.blend : false
+    ].filter(x => x).join(' ');
+
+    const bgStyle = {
+        backgroundSize: (settings.scale || '100') + '%',
+        opacity: (settings.opacity || '100') + '%',
+    }
+
+    return <div className={bgClass} style={bgStyle}>
+        <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
             className: [
                 'wpbs-background__image',
                 'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'

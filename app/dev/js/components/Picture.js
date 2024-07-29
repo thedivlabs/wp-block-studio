@@ -3,9 +3,19 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
     const {medium: mobileMedium = {}, large: mobileLarge = {}} = mobile.sizes || {};
     const {medium: largeMedium = {}, large: largeLarge = {}} = large.sizes || {};
 
-    const urlLarge = largeLarge.url || mobileLarge.url || false;
-    const urlMedium = largeMedium.url || mobileMedium.url || false;
-    const urlMobile = mobileMedium.url || largeLarge.url || false;
+    let urlLarge;
+    let urlMedium;
+    let urlMobile;
+
+    if(!settings.force){
+        urlLarge = largeLarge.url || mobileLarge.url || false;
+        urlMedium = largeMedium.url || mobileMedium.url || false;
+        urlMobile = mobileMedium.url || largeLarge.url || false;
+    } else {
+        urlLarge = largeLarge.url || false;
+        urlMedium = largeMedium.url || false;
+        urlMobile = mobileMedium.url || false;
+    }
 
     if (!urlLarge && !urlMobile) {
         return false;

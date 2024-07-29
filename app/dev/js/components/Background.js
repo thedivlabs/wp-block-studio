@@ -59,12 +59,31 @@ export function BackgroundElement({settings = {}}) {
         'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
     ].filter(x => x).join(' ');
 
+    const patternClass = [
+        'wpbs-background__pattern',
+        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0',
+        repeat
+    ].filter(x => x).join(' ');
+
     function Media() {
         if (settings.type === 'image') {
             return <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
                 force: settings.force || false,
                 className: imageClass
             }}/>;
+        }
+
+        if (settings.type === 'pattern') {
+
+            const patternMobileSrc = settings.mobileImage ? settings.mobileImage.url || false : 'none';
+            const patternLargeSrc = settings.largeImage ? settings.largeImage.url || false : 'none';
+
+            const patternImage = window.matchMedia('(min-width:960px)').matches ? patternLargeSrc : patternMobileSrc;
+
+            return <div className={patternClass} style={{
+                backgroundImage: 'url('+patternImage+')',
+                backgroundSize: settings.scale ? settings.scale + '%' : 'auto'
+            }} />;
         }
 
         if (settings.type === 'video') {

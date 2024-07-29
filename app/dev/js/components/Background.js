@@ -48,6 +48,10 @@ export function BackgroundElement({settings = {}}) {
         opacity: (settings.opacity || '100') + '%',
     }
 
+    const overlayClass = [
+        'wpbs-background__overlay pointer-events-none absolute top-0 left-0 w-full h-full z-50'
+    ].filter(x => x).join(' ');
+
     return <div className={bgClass} style={bgStyle}>
         <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
             force: settings.force || false,
@@ -56,20 +60,10 @@ export function BackgroundElement({settings = {}}) {
                 'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
             ].filter(x => x).join(' ')
         }}/>
-        <OverlayElement settings={settings}/>
+        <div className={overlayClass} style={{
+            background: settings.overlay || 'transparent'
+        }}/>
     </div>;
-}
-
-function OverlayElement({settings = {}}) {
-
-    const className = [
-        'wpbs-background__overlay pointer-events-none absolute top-0 left-0 w-full h-full z-50'
-    ].filter(x => x).join(' ');
-
-    return <div className={className} style={{
-        background: settings.overlay || 'transparent'
-    }}/>
-
 }
 
 function Background({settings = {}, pushSettings}) {

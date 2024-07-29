@@ -56,7 +56,20 @@ export function BackgroundElement({settings = {}}) {
                 'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
             ].filter(x => x).join(' ')
         }}/>
+        {overlayElement}
     </div>;
+}
+
+function overlayElement({settings = {}}) {
+
+    const className = [
+        'wpbs-background__overlay pointer-events-none absolute top-0 left-0 w-full h-full z-50'
+    ].filter(x => x).join(' ');
+
+    return <div className={className} style={{
+        backgroundColor: settings.overlay || 'transparent'
+    }}/>
+
 }
 
 function Background({settings = {}, pushSettings}) {
@@ -369,8 +382,7 @@ function Background({settings = {}, pushSettings}) {
                     />
                 </BaseControl>
             </Grid>
-
-
+            
         </PanelBody>
     )
 }

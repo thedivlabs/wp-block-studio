@@ -50,6 +50,7 @@ export function BackgroundElement({settings = {}}) {
 
     return <div className={bgClass} style={bgStyle}>
         <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
+            force: settings.force,
             className: [
                 'wpbs-background__image',
                 'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
@@ -58,7 +59,7 @@ export function BackgroundElement({settings = {}}) {
     </div>;
 }
 
-function Background({settings = {}, pushSettings, clientId}) {
+function Background({settings = {}, pushSettings}) {
 
     settings = Object.assign({}, {
         type: false,

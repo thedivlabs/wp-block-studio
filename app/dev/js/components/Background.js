@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState,useEffect} from "react"
 import {
     __experimentalGrid as Grid,
     BaseControl,
@@ -16,7 +16,7 @@ import {
 import PreviewThumbnail from '../../js/components/PreviewThumbnail';
 import Picture from '../../js/components/picture';
 
-export function BackgroundElement({settings = {}}) {
+export function BackgroundElement({settings = {}, blockProps}) {
 
     let repeat;
 
@@ -114,7 +114,7 @@ export function BackgroundElement({settings = {}}) {
         <Media/>
         <div className={overlayClass} style={{
             background: settings.overlay || 'transparent'
-        }}/>
+        }} />
     </div>;
 }
 

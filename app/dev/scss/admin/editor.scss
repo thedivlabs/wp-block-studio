@@ -1,5 +1,19 @@
 .editor-visual-editor {
 
+  .editor-styles-wrapper {
+    @apply
+    flex
+    flex-col
+    ;
+
+    & > .wp-block-post-content {
+      @apply
+      flex
+      flex-col
+      grow
+    }
+  }
+
   &__post-title-wrapper {
     margin: 2rem 0 2rem !important;
 

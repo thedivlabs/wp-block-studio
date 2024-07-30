@@ -1,32 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const responsiveVideos = [...document.querySelectorAll('video:has(source[data-media])')];
+    function responsiveVideoSrc(video){
+        [...video.querySelectorAll('source')].forEach((source)=>{
+            const mq = source.dataset.media;
 
-    let resizeObserver = new ResizeObserver(() => {
+            if (!mq) {
+                source.remove();
+                return false;
+            }
 
-        responsiveVideos.forEach((video) => {
-            video.autoplay = true;
-            [...video.querySelectorAll('source')].forEach((source)=>{
-                const mq = source.dataset.media;
+            if (window.matchMedia(mq).matches) {
+                source.src = source.dataset.src;
+            } else {
+                source.src = '#';
+            }
+        })
+        video.load();
+    }
 
-                if (!mq) {
-                    source.remove();
-                    return false;
-                }
+    let timer;
 
-                if (window.matchMedia(mq).matches) {
-                    source.src = source.dataset.src;
-                } else {
-                    source.src = '#';
-                }
-            })
-            video.load();
-        });
+    let observerSize = new ResizeObserver((entries)=>{
+
+        clearTimeout(timer);
+        timer = setTimeout(()=>{
+            entries.forEach((entry)=>{
+                responsiveVideoSrc(entry.target);
+            });
+        },500);
+
 
     });
 
-    // Add a listener to body
-    resizeObserver.observe(document.getElementsByTagName('body')[0]);
+    let observerIntersection = new IntersectionObserver((entries, observer)=>{
+        entries.forEach((entry)=>{
+            if (entry.isIntersecting) {
+                responsiveVideoSrc(entry.target);
+                observerSize.observe(entry.target);
+                observerIntersection.unobserve(entry.target);
+            }
+        });
+
+    }, {
+        root: null,
+        rootMargin: "90px",
+        threshold: 1.0,
+    });
+
+    [...document.querySelectorAll('video:has(source[data-media])')].forEach((video)=>{
+        observerIntersection.observe(video);
+    });
 
 });
 

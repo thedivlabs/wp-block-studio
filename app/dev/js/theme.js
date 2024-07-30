@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const responsiveVideos = [...document.querySelectorAll('video source[data-src]')];
+    const responsiveVideos = [...document.querySelectorAll('video source')];
 
     let resizeObserver = new ResizeObserver(() => {
 
@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const mq = source.dataset.media;
 
             if(!mq){
+                source.removeAttribute('src');
                 return false;
             }
 
@@ -20,7 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
         });
-
+        responsiveVideos.forEach((source)=>{
+            source.closest('video').play();
+        });
     });
 
     // Add a listener to body

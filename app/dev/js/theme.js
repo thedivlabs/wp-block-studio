@@ -1,29 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const responsiveVideos = [...document.querySelectorAll('video source')];
+    const responsiveVideos = [...document.querySelectorAll('video:has(source[data-media])')];
 
     let resizeObserver = new ResizeObserver(() => {
 
-        responsiveVideos.forEach((source)=>{
+        responsiveVideos.forEach((video) => {
+            [...video.querySelectorAll('source')].forEach((source)=>{
+                const mq = source.dataset.media;
 
-            const mq = source.dataset.media;
+                if (!mq) {
+                    source.remove();
+                    return false;
+                }
 
-            if(!mq){
-                source.removeAttribute('src');
-                return false;
-            }
-
-            if(window.matchMedia(mq).matches){
-                source.src = source.dataset.src;
-                source.closest('video').load();
-            } else {
-                source.removeAttribute('src');
-            }
-
+                if (window.matchMedia(mq).matches) {
+                    source.src = source.dataset.src;
+                } else {
+                    source.src = '#';
+                }
+            })
+            video.load();
+            setTimeout(()=>{
+                video.play();
+            },2000);
         });
-        responsiveVideos.forEach((source)=>{
-            source.closest('video').play();
-        });
+
     });
 
     // Add a listener to body

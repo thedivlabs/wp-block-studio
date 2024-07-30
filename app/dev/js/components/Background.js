@@ -103,11 +103,14 @@ export function BackgroundElement({settings = {}, blockProps}) {
                 largeVideo = largeVideo || {};
             }
 
-            const fallback = [largeVideo.url || mobileVideo.url || '', '#t=1'].join('')
 
-            return <video className={videoClass} muted loop>
+
+
+
+            return <video className={videoClass} muted loop autoPlay={true} >
                 <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'} />
                 <source data-src={(mobileVideo.url || '#')} type="video/mp4" data-media={'(min-width:240px) and (max-width:959px)'} />
+                <source src={'#'}/>
             </video>
         }
     }

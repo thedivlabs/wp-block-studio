@@ -94,6 +94,11 @@ export function BackgroundElement({settings = {}}) {
             videoMobile = videoMobile === null ? {} : videoMobile;
             videoLarge = videoLarge === null ? {} : videoLarge;
 
+            if(!settings.force){
+                videoMobile = videoMobile || videoLarge || {};
+                videoLarge = videoLarge || videoMobile || {};
+            }
+
             if (!videoLarge && !videoMobile) {
                 return false;
             }

@@ -89,23 +89,23 @@ export function BackgroundElement({settings = {}}) {
         if (settings.type === 'video') {
 
 
-            let {mobileVideo:videoMobile = {},largeVideo:videoLarge = {}} = settings || {};
+            let {mobileVideo = {},largeVideo = {}} = settings;
 
-            videoMobile = videoMobile === null ? {} : videoMobile;
-            videoLarge = videoLarge === null ? {} : videoLarge;
-
-            if(!settings.force){
-                videoMobile = videoMobile || videoLarge || {};
-                videoLarge = videoLarge || videoMobile || {};
-            }
-
-            if (!videoLarge && !videoMobile) {
+            if (!largeVideo && !mobileVideo) {
                 return false;
             }
 
+            if(!settings.force){
+                mobileVideo = mobileVideo || largeVideo || false;
+                largeVideo = largeVideo || mobileVideo || false;
+            } else {
+                mobileVideo = mobileVideo || {};
+                largeVideo = largeVideo || {};
+            }
+
             return <video className={videoClass} muted autoPlay loop>
-                <source data-src={(videoLarge.url || videoMobile.url || '#')} type="video/mp4" data-media={'(min-width:960px)'} />
-                <source data-src={(videoMobile.url || '#')} type="video/mp4" data-media={'(min-width:240px)'} />
+                <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'} />
+                <source data-src={(mobileVideo.url || '#')} type="video/mp4" data-media={'(min-width:240px)'} />
             </video>
         }
     }

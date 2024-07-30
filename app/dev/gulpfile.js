@@ -72,11 +72,40 @@ gulp.task('blocks_css', function () {
         .pipe(gulp.dest('../public/wp-content/themes/wp-block-studio/dist/blocks/'))
 });
 
+gulp.task('js', function () {
+    return gulp
+        .src('./js/')
+        .pipe(
+            webpack({
+                entry: {
+                    theme: './js/theme.js',
+                },
+                output: {
+                    filename: "[name].min.js",
+                },
+                module: {
+                    rules: [{
+                        test: /.(js|jsx)$/,
+                        exclude: /node_modules/,
+                        use: {
+                            loader: 'babel-loader',
+                            options: {
+                                presets: ["@babel/preset-env", "@babel/preset-react"]
+                            }
+                        },
+                    }]
+                },
+                mode: 'production'
+            })
+        )
+        .pipe(gulp.dest('../public/wp-content/themes/wp-block-studio/dist/'));
+});
+
 
 /* RUN TASKS */
 
 gulp.task('build', gulp.series([
-    'theme_css','admin_css','blocks_css',
+    'theme_css','admin_css','blocks_css', 'js',
 ]));
 
 gulp.task('default', function () {

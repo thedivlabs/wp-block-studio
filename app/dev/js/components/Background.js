@@ -88,16 +88,19 @@ export function BackgroundElement({settings = {}}) {
 
         if (settings.type === 'video') {
 
-            const {largeVideo: largeVideo = '#', mobileVideo: mobileVideo = '#'} = settings;
 
-            if (!largeVideo && !mobileVideo) {
+            let {mobileVideo:videoMobile = {},largeVideo:videoLarge = {}} = settings || {};
+
+            videoMobile = videoMobile === null ? {} : videoMobile;
+            videoLarge = videoLarge === null ? {} : videoLarge;
+
+            if (!videoLarge && !videoMobile) {
                 return false;
             }
 
-            const src = window.matchMedia("(min-width: 960px)").matches ? largeVideo.url || '#' : mobileVideo.url || '#';
-
             return <video className={videoClass} muted autoPlay loop>
-                <source src={src || '#'} type="video/mp4"/>
+                <source data-src={(videoLarge.url || videoMobile.url || '#')} type="video/mp4" data-media={'(min-width:960px)'} />
+                <source data-src={(videoMobile.url || '#')} type="video/mp4" data-media={'(min-width:240px)'} />
             </video>
         }
     }

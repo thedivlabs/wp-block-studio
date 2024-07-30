@@ -41,8 +41,9 @@ add_action( 'wp_enqueue_scripts', 'view_assets' );
 add_action( 'enqueue_block_assets', 'admin_assets' );
 
 function theme_assets(): void {
-	wp_register_style( 'wpbs-theme', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
-	wp_register_style( 'wpbs-admin', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
+	wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
+	wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
+	wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', ['jquery'] );
 
 	foreach ( glob( get_stylesheet_directory() . '/dist/blocks/**', GLOB_ONLYDIR ) as $dir ) {
 		if ( ! file_exists( $dir . '/block.min.css' ) ) {
@@ -57,10 +58,12 @@ function theme_assets(): void {
 }
 
 function admin_assets(): void {
-	wp_enqueue_style( 'wpbs-theme' );
-	wp_enqueue_style( 'wpbs-admin' );
+	wp_enqueue_style( 'wpbs-theme-css' );
+	wp_enqueue_style( 'wpbs-admin-css' );
+	wp_enqueue_script( 'wpbs-theme-js' );
 }
 
 function view_assets(): void {
-	wp_enqueue_style( 'wpbs-theme' );
+	wp_enqueue_style( 'wpbs-theme-css' );
+	wp_enqueue_script( 'wpbs-theme-js' );
 }

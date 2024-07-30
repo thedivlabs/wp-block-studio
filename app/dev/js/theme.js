@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let resizeObserver = new ResizeObserver(() => {
 
         responsiveVideos.forEach((video) => {
+            video.autoplay = true;
             [...video.querySelectorAll('source')].forEach((source)=>{
                 const mq = source.dataset.media;
 
@@ -20,9 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             video.load();
-            setTimeout(()=>{
-                video.play();
-            },2000);
         });
 
     });

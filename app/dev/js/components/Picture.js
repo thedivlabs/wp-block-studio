@@ -31,9 +31,9 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
 
 
     return <picture className={className}>
-        <source src={urlLarge || '#'} media={'@media screen and (min-width: 1140px)'}/>
-        <source src={urlMedium || '#'} media={'@media screen and (min-width: 960px)'}/>
-        <source src={urlMobile || '#'} media={'@media screen and (min-width: 0px)'}/>
+        <source srcSet={urlLarge || '#'} media={'(min-width: 1140px)'}/>
+        <source srcSet={urlMedium || '#'} media={'(min-width: 960px)'}/>
+        <source srcSet={urlMobile || '#'} media={'(min-width: 10px)'}/>
         <img src={urlLarge} alt={large.alt || mobile.alt || ''} aria-hidden={'true'}
              loading={settings.eager ? 'eager' : 'lazy'}/>
     </picture>;

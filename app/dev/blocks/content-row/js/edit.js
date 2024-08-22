@@ -18,18 +18,7 @@ import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensi
 
 function containerClassNames(attributes = {}) {
     let container;
-    let flex;
 
-    switch (attributes.flex) {
-        case 'col':
-            flex = 'flex flex-col';
-            break;
-        case 'none':
-            flex = false;
-            break;
-        default:
-            flex = 'flex flex-col sm:flex-row';
-    }
     switch (attributes.container) {
         case 'sm':
             container = 'container max-w-screen-lg';
@@ -43,19 +32,16 @@ function containerClassNames(attributes = {}) {
         default:
             container = 'container';
     }
+
     return [
         'wpbs-container w-full gap-inherit relative z-20',
         container,
-        flex,
-        attributes.wrap ? 'flex-wrap' : false,
     ].filter(x => x).join(' ');
 
 }
 
 function componentClassNames(attributes = {}) {
 
-    let align;
-    let justify;
     let size;
 
     switch (attributes.size) {
@@ -78,40 +64,9 @@ function componentClassNames(attributes = {}) {
             size = false;
     }
 
-    switch (attributes.align) {
-        case 'start':
-            align = 'items-start';
-            break;
-        case 'center':
-            align = 'items-center';
-            break;
-        case 'end':
-            align = 'items-end';
-            break;
-        default:
-            align = false;
-    }
-
-    switch (attributes.justify) {
-        case 'start':
-            justify = 'justify-start';
-            break;
-        case 'center':
-            justify = 'justify-center';
-            break;
-        case 'end':
-            justify = 'justify-end';
-            break;
-        default:
-            justify = false;
-    }
-
 
     return [
-        'wpbs-content-section w-full flex flex-row relative',
-        attributes.grow ? 'grow' : false,
-        align,
-        justify,
+        'wpbs-content-row',
         size,
         !attributes.overflow ? 'overflow-hidden' : false,
     ].filter(x => x).join(' ');
@@ -141,6 +96,9 @@ registerBlockType(metadata.name, {
         size: {
             type: 'string'
         },
+        container: {
+            type: 'string'
+        },
         overflow: {
             type: 'boolean'
         },
@@ -161,65 +119,30 @@ registerBlockType(metadata.name, {
         } = attributes;
 
         const blockProps = useBlockProps({
-            className: sectionClassNames(attributes),
+            className: componentClassNames(attributes),
             style: {}
         });
 
-        const [align, setAlign] = useState(attributes.align || 'top');
-        const [justify, setJustify] = useState(attributes.align || 'center');
-        const [container, setContainer] = useState(attributes.align || '');
-        const [grow, setGrow] = useState(attributes.align || false);
-        const [flex, setFlex] = useState(attributes.align || null);
-        const [wrap, setWrap] = useState(attributes.align || false);
+        const [container, setContainer] = useState(attributes.container || '');
         const [size, setSize] = useState(attributes.size || false);
         const [overflow, setOverflow] = useState(attributes.overflow || false);
 
 
         return (
             <>
-                <section {...blockProps}
-                         data-wp-interactive='wpbs/content-section'
+                <div {...blockProps}
+                     data-wp-interactive='wpbs/content-row'
                 >
                     <div className={containerClassNames(attributes)}>
                         <InnerBlocks/>
                     </div>
                     <BackgroundElement settings={background || {}}/>
-                </section>
+                </div>
 
                 <InspectorControls group={'styles'}>
                     <PanelBody title={'Layout'} initialOpen={false}>
                         <Grid columns={1} columnGap={20} rowGap={30}>
                             <Grid columns={2} columnGap={20} rowGap={30}>
-                                <SelectControl
-                                    label="Align"
-                                    value={align}
-                                    options={[
-                                        {label: 'Default', value: null},
-                                        {label: 'Center', value: 'center'},
-                                        {label: 'Start', value: 'start'},
-                                        {label: 'End', value: 'end'},
-                                    ]}
-                                    onChange={(value) => {
-                                        setAlign(value);
-                                        setAttributes({align: value});
-                                    }}
-                                    __nextHasNoMarginBottom
-                                />
-                                <SelectControl
-                                    label="Justify"
-                                    value={justify}
-                                    options={[
-                                        {label: 'Default', value: null},
-                                        {label: 'Center', value: 'center'},
-                                        {label: 'Start', value: 'start'},
-                                        {label: 'End', value: 'end'},
-                                    ]}
-                                    onChange={(value) => {
-                                        setJustify(value);
-                                        setAttributes({justify: value});
-                                    }}
-                                    __nextHasNoMarginBottom
-                                />
                                 <SelectControl
                                     label="Container"
                                     value={container}
@@ -235,6 +158,7 @@ registerBlockType(metadata.name, {
                                     }}
                                     __nextHasNoMarginBottom
                                 />
+
                                 <SelectControl
                                     label="Size"
                                     value={size}
@@ -252,42 +176,9 @@ registerBlockType(metadata.name, {
                                     }}
                                     __nextHasNoMarginBottom
                                 />
-                                <SelectControl
-                                    label="Flex"
-                                    value={flex}
-                                    options={[
-                                        {label: 'Default', value: null},
-                                        {label: 'Column', value: 'col'},
-                                        {label: 'None', value: 'none'},
-                                    ]}
-                                    onChange={(value) => {
-                                        setFlex(value);
-                                        setAttributes({flex: value});
-                                    }}
-                                    __nextHasNoMarginBottom
-                                />
+
                             </Grid>
                             <Grid columns={2} columnGap={20} rowGap={30}>
-                                <ToggleControl
-                                    label="Grow"
-                                    checked={grow}
-                                    onChange={(value) => {
-                                        setGrow(value);
-                                        setAttributes({grow: value});
-                                    }}
-                                    className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
-                                <ToggleControl
-                                    label="Wrap"
-                                    checked={wrap}
-                                    onChange={(value) => {
-                                        setWrap(value);
-                                        setAttributes({wrap: value});
-                                    }}
-                                    className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
                                 <ToggleControl
                                     label="Overflow"
                                     checked={overflow}
@@ -324,7 +215,7 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
         const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes)
+            className: componentClassNames(props.attributes)
         });
 
         const {background} = props.attributes;

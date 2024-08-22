@@ -6,13 +6,6 @@ export default function Helper() {
 
 }
 
-export function updateSettings(attr, val, callback) {
-    callback(val);
-    if (pushSettings) {
-        pushSettings(Object.assign({}, settings, {[attr]: val}));
-    }
-}
-
 export function parseProp(prop) {
 
     if (prop === '0' || !prop) {

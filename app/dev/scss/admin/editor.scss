@@ -4,12 +4,17 @@
   & > .components-tab-panel__tabs {
     @apply
     bg-gray-100
-    after:h-1
+    ;
+
+    & > button:after {
+      height: 2px;
+      @apply
+      bg-transparent
+    }
   }
 
   & > .components-tab-panel__tab-content {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 16px;
   }
 }
 

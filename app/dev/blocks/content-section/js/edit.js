@@ -120,6 +120,7 @@ function sectionClassNames(attributes = {}) {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     supports: {
+        interactivity: true,
         innerBlocks: true,
         color: {
             background: true,
@@ -194,7 +195,9 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <section {...blockProps}>
+                <section {...blockProps}
+                         data-wp-interactive='wpbs/content-section'
+                >
                     <div className={containerClassNames(attributes)}>
                         <InnerBlocks/>
                     </div>
@@ -345,7 +348,9 @@ registerBlockType(metadata.name, {
         const {background} = props.attributes;
 
         return (
-            <section {...setMobileProps(blockProps, props)}>
+            <section {...setMobileProps(blockProps, props)}
+                     data-wp-interactive='wpbs/content-section'
+            >
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>

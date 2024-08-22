@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react"
+import React, {useState, useEffect} from "react"
 import {
     __experimentalGrid as Grid,
     BaseControl,
@@ -81,21 +81,21 @@ export function BackgroundElement({settings = {}, blockProps}) {
             const patternImage = window.matchMedia('(min-width:960px)').matches ? patternLargeSrc : patternMobileSrc;
 
             return <div className={patternClass} style={{
-                backgroundImage: 'url('+patternImage+')',
+                backgroundImage: 'url(' + patternImage + ')',
                 backgroundSize: settings.scale ? settings.scale + '%' : 'auto'
-            }} />;
+            }}/>;
         }
 
         if (settings.type === 'video') {
 
 
-            let {mobileVideo = {},largeVideo = {}} = settings;
+            let {mobileVideo = {}, largeVideo = {}} = settings;
 
             if (!largeVideo && !mobileVideo) {
                 return false;
             }
 
-            if(!settings.force){
+            if (!settings.force) {
                 mobileVideo = mobileVideo || largeVideo || false;
                 largeVideo = largeVideo || mobileVideo || false;
             } else {
@@ -103,9 +103,10 @@ export function BackgroundElement({settings = {}, blockProps}) {
                 largeVideo = largeVideo || {};
             }
 
-            return <video className={videoClass} muted loop autoPlay={true} >
-                <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'} />
-                <source data-src={(mobileVideo.url || '#')} type="video/mp4" data-media={'(min-width:240px) and (max-width:959px)'} />
+            return <video className={videoClass} muted loop autoPlay={true}>
+                <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'}/>
+                <source data-src={(mobileVideo.url || '#')} type="video/mp4"
+                        data-media={'(min-width:240px) and (max-width:959px)'}/>
                 <source src={'#'}/>
             </video>
         }
@@ -115,7 +116,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
         <Media/>
         <div className={overlayClass} style={{
             background: settings.overlay || 'transparent'
-        }} />
+        }}/>
     </div>;
 }
 

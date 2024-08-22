@@ -22,6 +22,7 @@ add_theme_support( 'border' );
 add_action( 'init', function () {
 
 	register_block_type( get_stylesheet_directory() . '/blocks/content-section/' );
+	register_block_type( get_stylesheet_directory() . '/blocks/content-row/' );
 
 } );
 

@@ -1,4 +1,20 @@
+.wpbs-tab-panel {
+  margin: 0 -16px;
+
+  & > .components-tab-panel__tabs {
+    @apply
+    bg-gray-100
+    after:h-1
+  }
+
+  & > .components-tab-panel__tab-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 .editor-visual-editor {
+
 
   .editor-styles-wrapper {
     @apply

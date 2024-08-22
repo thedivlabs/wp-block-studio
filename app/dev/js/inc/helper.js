@@ -1,6 +1,16 @@
-const Helper = function Helper() {
+export default function Helper() {
 
+    this.testing = () => {
+        console.log('qqqqqq');
+    }
 
+}
+
+export function updateSettings(attr, val, callback) {
+    callback(val);
+    if (pushSettings) {
+        pushSettings(Object.assign({}, settings, {[attr]: val}));
+    }
 }
 
 export function parseProp(prop) {
@@ -18,5 +28,3 @@ export function parseProp(prop) {
     ].join('');
 
 }
-
-export default Helper

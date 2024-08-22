@@ -1,0 +1,14 @@
+{
+  "name": "wpbs/content-row",
+  "title": "Content Row",
+  "description": "Display a content row",
+  "viewScript": "file:./js/block.js",
+  "editorScript": "file:./js/edit.js",
+  "script": "file:./js/block.js",
+  "style": [
+    "wpbs-content-row"
+  ],
+  "icon": "table-row-after"
+}
+
+

@@ -1,15 +1,23 @@
 .wpbs-tab-panel {
   margin: 0 -16px;
 
+  .components-panel__body-title + & {
+    margin-bottom: 0 !important;
+  }
+
   & > .components-tab-panel__tabs {
     @apply
     bg-gray-100
     ;
 
-    & > button:after {
-      height: 2px;
-      @apply
-      bg-transparent
+    & > button {
+
+      &.active-tab {
+
+        &:after {
+          height: 2px;
+        }
+      }
     }
   }
 

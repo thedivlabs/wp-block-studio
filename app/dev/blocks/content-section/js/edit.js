@@ -21,20 +21,23 @@ function containerClassNames(attributes = {}) {
     let {flex, container} = attributes;
 
 
+    switch (container) {
+        case 'sm':
+            container = 'w-full container max-w-screen-lg';
+            break;
+        case 'lg':
+            container = 'w-full container max-w-screen-2xl';
+            break;
+        case 'none':
+            container = null;
+            break;
+        default:
+            container = 'w-full container';
+    }
+
     return [
         'wpbs-container gap-inherit relative z-20',
-        (container) => {
-            switch (container) {
-                case 'sm':
-                    return 'w-full container max-w-screen-lg';
-                case 'lg':
-                    return 'w-full container max-w-screen-2xl';
-                case 'none':
-                    return null;
-                default:
-                    return 'w-full container';
-            }
-        },
+        container,
         FlexStyles({flex}),
     ].filter(x => x).join(' ');
 

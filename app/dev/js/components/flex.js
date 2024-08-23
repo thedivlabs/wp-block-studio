@@ -32,7 +32,7 @@ function Flex({settings = {}, pushSettings}) {
         basisMobile: null,
         growMobile: null,
         shrinkMobile: null,
-    }, settings)
+    }, settings);
 
     const [direction, setDirection] = useState(settings.direction);
     const [align, setAlign] = useState(settings.align);

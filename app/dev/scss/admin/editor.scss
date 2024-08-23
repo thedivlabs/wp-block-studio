@@ -1,7 +1,7 @@
 .wpbs-tab-panel {
   margin: 0 -16px;
 
-  .components-panel__body-title + & {
+  .components-panel__body-title:has(+ &) {
     margin-bottom: 0 !important;
   }
 

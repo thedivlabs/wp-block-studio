@@ -44,8 +44,8 @@ function Flex({settings = {}, pushSettings}) {
     const [directionMobile, setDirectionMobile] = useState(settings.directionMobile);
     const [alignMobile, setAlignMobile] = useState(settings.alignMobile);
     const [justifyMobile, setJustifyMobile] = useState(settings.justifyMobile);
-    const [wrapMobile, setBasisMobile] = useState(settings.wrapMobile);
-    const [basisMobile, setWrapMobile] = useState(settings.basisMobile);
+    const [wrapMobile, setWrapMobile] = useState(settings.wrapMobile);
+    const [basisMobile, setBasisMobile] = useState(settings.basisMobile);
     const [growMobile, setGrowMobile] = useState(settings.growMobile);
 
     function updateSettings(attr, val, callback) {

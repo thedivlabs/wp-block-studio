@@ -33,14 +33,14 @@ function MobileDimensions({settings = {}, pushSettings}) {
     const [gap, setGap] = useState(settings.blockSpacing || '0');
 
     return (
-        <PanelBody title={'Mobile'} initialOpen={false}>
+        <PanelBody title={'Mobile Dimensions'} initialOpen={false}>
             <Grid columns={1} columnGap={20} rowGap={20}>
                 <BoxControl
                     __next40pxDefaultSize={true}
                     label={'Padding'}
-                    splitOnAxis
+                    //splitOnAxis
                     values={padding}
-                    sides={['vertical', 'horizontal']}
+                    sides={['top', 'right', 'bottom', 'left', 'horizontal', 'vertical']}
                     onChange={(values) => {
                         updateSettings({
                             paddingTop: values.top,

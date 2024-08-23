@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react"
 
 
-import {TabPanel, Tab} from '@wordpress/components'
+import {TabPanel} from '@wordpress/components'
 
 
 import {
@@ -14,7 +14,7 @@ import {
     GradientPicker,
 } from "@wordpress/components";
 
-function Flex({settings = {}, pushSettings}) {
+export function Flex({settings = {}, pushSettings, clientId}) {
 
     settings = Object.assign({}, {
         direction: null,
@@ -22,16 +22,12 @@ function Flex({settings = {}, pushSettings}) {
         justify: null,
         wrap: null,
         basis: null,
-        grow: null,
-        shrink: null,
 
         directionMobile: null,
         alignMobile: null,
         justifyMobile: null,
         wrapMobile: null,
         basisMobile: null,
-        growMobile: null,
-        shrinkMobile: null,
     }, settings);
 
     const [direction, setDirection] = useState(settings.direction);
@@ -39,14 +35,12 @@ function Flex({settings = {}, pushSettings}) {
     const [justify, setJustify] = useState(settings.justify);
     const [basis, setBasis] = useState(settings.basis);
     const [wrap, setWrap] = useState(settings.wrap);
-    const [grow, setGrow] = useState(settings.grow);
 
     const [directionMobile, setDirectionMobile] = useState(settings.directionMobile);
     const [alignMobile, setAlignMobile] = useState(settings.alignMobile);
     const [justifyMobile, setJustifyMobile] = useState(settings.justifyMobile);
     const [wrapMobile, setWrapMobile] = useState(settings.wrapMobile);
     const [basisMobile, setBasisMobile] = useState(settings.basisMobile);
-    const [growMobile, setGrowMobile] = useState(settings.growMobile);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -55,153 +49,6 @@ function Flex({settings = {}, pushSettings}) {
         }
     }
 
-    const Tabs = {
-        desktop: <>
-            <SelectControl
-                label="Direction"
-                value={direction}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('direction', value, setDirection);
-                }}
-                __nextHasNoMarginBottom
-            />
-            <SelectControl
-                label="Align"
-                value={align}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('align', value, setAlign);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <SelectControl
-                label="Justify"
-                value={justify}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('justify', value, setJustify);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <SelectControl
-                label="Basis"
-                value={basis}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('basis', value, setBasis);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <ToggleControl
-                label="Grow"
-                checked={grow}
-                onChange={(value) => {
-                    updateSettings('grow', value, setGrow);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-
-            <ToggleControl
-                label="Wrap"
-                checked={wrap}
-                onChange={(value) => {
-                    updateSettings('wrap', value, setWrap);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            /></>,
-        mobile: <>
-            <SelectControl
-                label="Direction"
-                value={directionMobile}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('directionMobile', value, setDirectionMobile);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <SelectControl
-                label="Align"
-                value={alignMobile}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('alignMobile', value, setAlignMobile);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <SelectControl
-                label="Justify"
-                value={justifyMobile}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('justifyMobile', value, setJustifyMobile);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <SelectControl
-                label="Basis"
-                value={basisMobile}
-                options={[
-                    {label: 'Default', value: null},
-                ]}
-                onChange={(value) => {
-                    updateSettings('basisMobile', value, setBasisMobile);
-                }}
-                __nextHasNoMarginBottom
-            />
-
-            <ToggleControl
-                label="Grow"
-                checked={growMobile}
-                onChange={(value) => {
-                    updateSettings('growMobile', value, setGrowMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-
-            <ToggleControl
-                label="Wrap"
-                checked={wrapMobile}
-                onChange={(value) => {
-                    updateSettings('wrapMobile', value, setWrapMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            /></>
-    };
-
-    function renderTabs(tab) {
-        if (tab.name === 'desktop') {
-            return Tabs.desktop;
-        }
-
-        if (tab.name === 'mobile') {
-            return Tabs.mobile;
-        }
-    }
 
     return (
         <PanelBody title={'Flex'}>
@@ -225,7 +72,64 @@ function Flex({settings = {}, pushSettings}) {
                 {
                     (tab) => {
                         return <Grid columns={2} columnGap={20} rowGap={20}>
-                            {renderTabs(tab)}
+                            <>
+                                <SelectControl
+                                    label="Direction"
+                                    value={tab.name === 'mobile' ? directionMobile : direction}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                    ]}
+                                    onChange={(value) => {
+                                        updateSettings(tab.name === 'mobile' ? 'directionMobile' : 'direction', value, tab.name === 'mobile' ? setDirectionMobile : setDirection);
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    label="Align"
+                                    value={tab.name === 'mobile' ? alignMobile : align}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                    ]}
+                                    onChange={(value) => {
+                                        updateSettings(tab.name === 'mobile' ? 'alignMobile' : 'align', value, tab.name === 'mobile' ? setAlignMobile : setAlign);
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+
+                                <SelectControl
+                                    label="Justify"
+                                    value={tab.name === 'mobile' ? justifyMobile : justify}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                    ]}
+                                    onChange={(value) => {
+                                        updateSettings(tab.name === 'mobile' ? 'justifyMobile' : 'justify', value, tab.name === 'mobile' ? setJustifyMobile : setJustify);
+
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+
+                                <SelectControl
+                                    label="Basis"
+                                    value={tab.name === 'mobile' ? basisMobile : basis}
+                                    options={[
+                                        {label: 'Default', value: null},
+                                    ]}
+                                    onChange={(value) => {
+                                        updateSettings(tab.name === 'mobile' ? 'basisMobile' : 'basis', value, tab.name === 'mobile' ? setBasisMobile : setBasis);
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+
+                                <ToggleControl
+                                    label="Wrap"
+                                    checked={tab.name === 'mobile' ? wrapMobile : wrap}
+                                    onChange={(value) => {
+                                        updateSettings(tab.name === 'mobile' ? 'wrapMobile' : 'wrap', value, tab.name === 'mobile' ? setWrapMobile : setWrap);
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                /></>
                         </Grid>
 
                     }
@@ -236,4 +140,62 @@ function Flex({settings = {}, pushSettings}) {
     )
 }
 
-export default Flex;
+export function FlexStyles({flex = {}}) {
+    console.log(flex);
+
+    let styles = [];
+
+    switch (flex.align) {
+        case 'start':
+            styles.push('items-start')
+            break;
+        case 'center':
+            styles.push('items-center')
+            break;
+        case 'end':
+            styles.push('items-end')
+            break;
+    }
+
+    switch (flex.alignMobile) {
+        case 'start':
+            styles.push('max-lg:items-start')
+            break;
+        case 'center':
+            styles.push('max-lg:items-center')
+            break;
+        case 'end':
+            styles.push('max-lg:items-end')
+            break;
+    }
+
+    switch (flex.align) {
+        case 'start':
+            styles.push('items-start')
+            break;
+        case 'center':
+            styles.push('items-center')
+            break;
+        case 'end':
+            styles.push('items-end')
+            break;
+    }
+
+    switch (flex.alignMobile) {
+        case 'start':
+            styles.push('max-lg:items-start')
+            break;
+        case 'center':
+            styles.push('max-lg:items-center')
+            break;
+        case 'end':
+            styles.push('max-lg:items-end')
+            break;
+    }
+
+    /*const styles = [
+        flex.align ? flex.align
+    ].filter(x => x).join(' ');*/
+
+    return 'flex';
+}

@@ -105,8 +105,7 @@ function sectionClassNames(attributes = {}) {
         default:
             justify = false;
     }
-
-
+    
     return [
         'wpbs-content-section w-full flex flex-row relative',
         attributes.grow ? 'grow' : false,

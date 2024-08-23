@@ -11,7 +11,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
-import Flex from '../../../js/components/flex';
+import {Flex, FlexStyles} from '../../../js/components/flex';
 import Background from '../../../js/components/Background';
 import {BackgroundElement} from '../../../js/components/Background';
 import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensions';
@@ -19,6 +19,8 @@ import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensi
 
 function containerClassNames(attributes = {}) {
     let container;
+
+    const {flex} = attributes;
 
     switch (attributes.container) {
         case 'sm':
@@ -37,6 +39,7 @@ function containerClassNames(attributes = {}) {
     return [
         'wpbs-container w-full gap-inherit relative z-20',
         container,
+        FlexStyles({flex}),
     ].filter(x => x).join(' ');
 
 }
@@ -115,6 +118,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
         const {
+            flex,
             mobile_dimensions,
             background,
         } = attributes;
@@ -128,7 +132,6 @@ registerBlockType(metadata.name, {
         const [size, setSize] = useState(attributes.size || false);
         const [overflow, setOverflow] = useState(attributes.overflow || false);
 
-
         return (
             <>
                 <div {...blockProps}
@@ -141,6 +144,7 @@ registerBlockType(metadata.name, {
                 </div>
 
                 <InspectorControls group={'styles'}>
+
                     <PanelBody title={'Layout'} initialOpen={false}>
                         <Grid columns={1} columnGap={20} rowGap={30}>
                             <Grid columns={2} columnGap={20} rowGap={30}>
@@ -194,7 +198,13 @@ registerBlockType(metadata.name, {
                         </Grid>
                     </PanelBody>
 
-                    <Flex/>
+                    <Flex
+                        settings={flex}
+                        pushSettings={(value) => {
+                            setAttributes({flex: value});
+                        }}
+                        clientId={clientId}
+                    />
 
                     <Background
                         settings={background || {}}

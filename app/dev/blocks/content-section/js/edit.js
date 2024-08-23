@@ -11,54 +11,47 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import MobileDimensions from '../../../js/components/MobileDimensions';
+import {Flex, FlexStyles} from '../../../js/components/Flex';
 import Background from '../../../js/components/Background';
 import {BackgroundElement} from '../../../js/components/Background';
 import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensions';
 
 
 function containerClassNames(attributes = {}) {
-    let container;
-    let flex;
+    let {flex, container} = attributes;
 
-    switch (attributes.flex) {
-        case 'col':
-            flex = 'flex flex-col';
-            break;
-        case 'none':
-            flex = false;
-            break;
-        default:
-            flex = 'flex flex-col sm:flex-row';
-    }
-    switch (attributes.container) {
-        case 'sm':
-            container = 'container max-w-screen-lg';
-            break;
-        case 'lg':
-            container = 'container  max-w-screen-2xl';
-            break;
-        case 'none':
-            container = false;
-            break;
-        default:
-            container = 'container';
-    }
+
     return [
-        'wpbs-container w-full gap-inherit relative z-20',
-        container,
-        flex,
-        attributes.wrap ? 'flex-wrap' : false,
+        'wpbs-container gap-inherit relative z-20',
+        (container) => {
+            switch (container) {
+                case 'sm':
+                    return 'w-full container max-w-screen-lg';
+                case 'lg':
+                    return 'w-full container max-w-screen-2xl';
+                case 'none':
+                    return null;
+                default:
+                    return 'w-full container';
+            }
+        },
+        FlexStyles({flex}),
     ].filter(x => x).join(' ');
 
 }
 
 function sectionClassNames(attributes = {}) {
 
-    let align;
-    let justify;
-    let size;
+    let {
+        overflow,
+        grow,
+        align,
+        justify,
+        size
+    } = attributes;
 
-    switch (attributes.size) {
+
+    switch (size) {
         case 'xs':
             size = 'min-h-section-xs';
             break;
@@ -78,7 +71,7 @@ function sectionClassNames(attributes = {}) {
             size = false;
     }
 
-    switch (attributes.align) {
+    switch (align) {
         case 'start':
             align = 'items-start';
             break;
@@ -92,7 +85,7 @@ function sectionClassNames(attributes = {}) {
             align = false;
     }
 
-    switch (attributes.justify) {
+    switch (justify) {
         case 'start':
             justify = 'justify-start';
             break;
@@ -105,14 +98,14 @@ function sectionClassNames(attributes = {}) {
         default:
             justify = false;
     }
-    
+
     return [
-        'wpbs-content-section w-full flex flex-row relative',
-        attributes.grow ? 'grow' : false,
+        'wpbs-content-section w-full flex relative',
+        grow ? 'grow' : false,
         align,
         justify,
         size,
-        !attributes.overflow ? 'overflow-hidden' : false,
+        !overflow ? 'overflow-hidden' : false,
     ].filter(x => x).join(' ');
 }
 
@@ -140,12 +133,6 @@ registerBlockType(metadata.name, {
         size: {
             type: 'string'
         },
-        padding: {
-            type: 'string'
-        },
-        flex: {
-            type: 'string'
-        },
         align: {
             type: 'string'
         },
@@ -158,8 +145,8 @@ registerBlockType(metadata.name, {
         grow: {
             type: 'boolean'
         },
-        wrap: {
-            type: 'boolean'
+        flex: {
+            type: 'object'
         },
         overflow: {
             type: 'boolean'
@@ -173,6 +160,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
         const {
+            flex,
             mobile_dimensions,
             background,
         } = attributes;
@@ -186,8 +174,6 @@ registerBlockType(metadata.name, {
         const [justify, setJustify] = useState(attributes.align || 'center');
         const [container, setContainer] = useState(attributes.align || '');
         const [grow, setGrow] = useState(attributes.align || false);
-        const [flex, setFlex] = useState(attributes.align || null);
-        const [wrap, setWrap] = useState(attributes.align || false);
         const [size, setSize] = useState(attributes.size || false);
         const [overflow, setOverflow] = useState(attributes.overflow || false);
 
@@ -269,20 +255,6 @@ registerBlockType(metadata.name, {
                                     }}
                                     __nextHasNoMarginBottom
                                 />
-                                <SelectControl
-                                    label="Flex"
-                                    value={flex}
-                                    options={[
-                                        {label: 'Default', value: null},
-                                        {label: 'Column', value: 'col'},
-                                        {label: 'None', value: 'none'},
-                                    ]}
-                                    onChange={(value) => {
-                                        setFlex(value);
-                                        setAttributes({flex: value});
-                                    }}
-                                    __nextHasNoMarginBottom
-                                />
                             </Grid>
                             <Grid columns={2} columnGap={20} rowGap={30}>
                                 <ToggleControl
@@ -291,16 +263,6 @@ registerBlockType(metadata.name, {
                                     onChange={(value) => {
                                         setGrow(value);
                                         setAttributes({grow: value});
-                                    }}
-                                    className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
-                                <ToggleControl
-                                    label="Wrap"
-                                    checked={wrap}
-                                    onChange={(value) => {
-                                        setWrap(value);
-                                        setAttributes({wrap: value});
                                     }}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
@@ -318,7 +280,13 @@ registerBlockType(metadata.name, {
                             </Grid>
                         </Grid>
                     </PanelBody>
-
+                    <Flex
+                        settings={flex}
+                        pushSettings={(value) => {
+                            setAttributes({flex: value});
+                        }}
+                        clientId={clientId}
+                    />
                     <Background
                         settings={background || {}}
                         pushSettings={(value) => {

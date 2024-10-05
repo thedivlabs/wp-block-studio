@@ -1,0 +1,22 @@
+{
+  "name": "wpbs/content-column",
+  "title": "Content Column",
+  "description": "Display a content column",
+  "viewScript": "file:./js/block.js",
+  "editorScript": "file:./js/edit.js",
+  "script": "file:./js/block.js",
+  "style": [
+    "wpbs-content-column"
+  ],
+  "supports": {
+    "innerBlocks": true
+  },
+  "attributes": {
+    "layout": {
+      "type": "object"
+    }
+  },
+  "icon": "table-row-after"
+}
+
+

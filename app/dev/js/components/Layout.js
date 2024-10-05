@@ -75,7 +75,6 @@ export function Layout({settings = {}, pushSettings, clientId}) {
     const [overflowMobile, setOverflowMobile] = useState(settings.overflowMobile);
     const [wrapMobile, setWrapMobile] = useState(settings.wrapMobile);
 
-
     function updateSettings(attr, val, callback) {
         callback(val);
         if (pushSettings) {
@@ -100,9 +99,8 @@ export function Layout({settings = {}, pushSettings, clientId}) {
 
     });
 
-
     return (
-        <PanelBody title={'Flex'}>
+        <PanelBody title={'Layout'}>
             <TabPanel
                 className="wpbs-tab-panel"
                 activeClass="active-tab"

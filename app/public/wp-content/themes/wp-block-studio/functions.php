@@ -21,8 +21,11 @@ add_theme_support( 'border' );
 
 add_action( 'init', function () {
 
-	register_block_type( get_stylesheet_directory() . '/blocks/content-section/' );
-	register_block_type( get_stylesheet_directory() . '/blocks/content-row/' );
+	$block_dirs = glob( get_stylesheet_directory() . '/blocks/*', GLOB_ONLYDIR );
+	
+	foreach ( $block_dirs as $block_dir ) {
+		register_block_type( $block_dir );
+	}
 
 } );
 

@@ -8,7 +8,7 @@ import {
 } from "@wordpress/components";
 import {updateSettings} from '../inc/helper'
 
-export function Layout({settings = {}, pushSettings, clientId}) {
+export function Layout({settings = {}, update, clientId}) {
 
     settings = Object.assign({}, {
         display: null,
@@ -34,70 +34,34 @@ export function Layout({settings = {}, pushSettings, clientId}) {
         wrapMobile: null,
     }, settings);
 
-    const options = {
-        display: [
-            {label: 'Row', value: 'row'},
-            {label: 'Row Reverse', value: 'row-reverse'},
-            {label: 'Column', value: 'column'},
-            {label: 'Column Reverse', value: 'column-reverse'},
-            {label: 'None', value: 'none'},
-        ],
-        align: [],
-        justify: [],
-        height: [],
-        width: [],
-        maxWidth: [],
-        space: [],
-        position: [],
-        overflow: [],
-        wrap: [],
+    function updateSettings(attr, val) {
+        update(Object.assign({}, settings, {[attr]: val}));
     }
 
-    const [display, setDisplay] = useState(settings.display);
-    const [align, setAlign] = useState(settings.align);
-    const [justify, setJustify] = useState(settings.justify);
-    const [height, setHeight] = useState(settings.height);
-    const [width, setWidth] = useState(settings.width);
-    const [maxWidth, setMaxWidth] = useState(settings.maxWidth);
-    const [space, setSpace] = useState(settings.space);
-    const [position, setPosition] = useState(settings.position);
-    const [overflow, setOverflow] = useState(settings.overflow);
-    const [wrap, setWrap] = useState(settings.wrap);
+    function Panels(tab) {
+        return <>
+            <SelectControl
+                label={'Justify'}
+                value={tab.name === 'mobile' ? settings.justifyMobile : settings.justify}
+                options={[
+                    {label: 'Default', value: null},
+                    {label: 'Start', value: 'start'},
+                    {label: 'Center', value: 'center'},
+                    {label: 'End', value: 'end'},
+                ]}
+                onChange={(value) => {
+                    if (tab.name === 'mobile') {
+                        updateSettings('justifyMobile', value);
+                    } else {
+                        updateSettings('justify', value);
+                    }
 
-    const [displayMobile, setDisplayMobile] = useState(settings.displayMobile);
-    const [alignMobile, setAlignMobile] = useState(settings.alignMobile);
-    const [justifyMobile, setJustifyMobile] = useState(settings.justifyMobile);
-    const [heightMobile, setHeightMobile] = useState(settings.heightMobile);
-    const [widthMobile, setWidthMobile] = useState(settings.widthMobile);
-    const [maxWidthMobile, setMaxWidthMobile] = useState(settings.maxWidthMobile);
-    const [spaceMobile, setSpaceMobile] = useState(settings.spaceMobile);
-    const [positionMobile, setPositionMobile] = useState(settings.positionMobile);
-    const [overflowMobile, setOverflowMobile] = useState(settings.overflowMobile);
-    const [wrapMobile, setWrapMobile] = useState(settings.wrapMobile);
-
-    function updateSettings(attr, val, callback) {
-        callback(val);
-        if (pushSettings) {
-            pushSettings(Object.assign({}, settings, {[attr]: val}));
-        }
+                }}
+                __nextHasNoMarginBottom
+            />
+        </>;
     }
 
-    const panels = () => Object.entries(options).forEach((entry) => {
-        const [key, value] = entry;
-
-        const name = key.replace(/([a-z])([A-Z])/g, '$1 $2').split(" ");
-
-        return <SelectControl
-            label={name}
-            value={key}
-            options={options[key]}
-            onChange={(value) => {
-                updateSettings(key, value, this['set' + name]);
-            }}
-            __nextHasNoMarginBottom
-        />
-
-    });
 
     return (
         <PanelBody title={'Layout'}>
@@ -123,7 +87,7 @@ export function Layout({settings = {}, pushSettings, clientId}) {
                         return <>
                             <Grid columns={1} columnGap={30} rowGap={20}>
                                 <Grid columns={2} columnGap={20} rowGap={20}>
-                                    {[...panels]}
+                                    {Panels(tab)}
                                 </Grid>
                             </Grid>
                         </>

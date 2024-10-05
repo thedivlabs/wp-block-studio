@@ -9,7 +9,22 @@
     "wpbs-content-column"
   ],
   "supports": {
-    "innerBlocks": true
+    "interactivity": true,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": true,
+      "padding": true,
+      "margin": true
+    },
+    "typography": {
+      "textAlign": true
+    }
   },
   "attributes": {
     "layout": {

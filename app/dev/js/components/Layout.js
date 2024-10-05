@@ -39,6 +39,12 @@ export function Layout({settings = {}, update, clientId}) {
                 value={tab.name === 'mobile' ? settings.displayMobile : settings.display}
                 options={[
                     {label: 'Default', value: null},
+                    {label: 'Row', value: 'row'},
+                    {label: 'Row Reverse', value: 'row-reverse'},
+                    {label: 'Column', value: 'column'},
+                    {label: 'Column Reverse', value: 'column-reverse'},
+                    {label: 'Block', value: 'block'},
+                    {label: 'None', value: 'none'},
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
@@ -156,7 +162,7 @@ export function Layout({settings = {}, update, clientId}) {
 
 
     return (
-        <PanelBody title={'Layout'}>
+        <PanelBody title={'Layout'} initialOpen={false}>
             <TabPanel
                 className="wpbs-tab-panel"
                 activeClass="active-tab"

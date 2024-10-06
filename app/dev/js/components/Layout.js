@@ -51,24 +51,20 @@ export function LayoutProps(props) {
     }
 
     let className = [
-        'padding' in props.attributes.layout.mobile ? '--has-mobile-padding' : null,
-        'margin' in props.attributes.layout.mobile ? '--has-mobile-margin' : null,
+        'padding' in props.attributes.dimensions.mobile ? '--has-mobile-padding' : null,
+        'margin' in props.attributes.dimensions.mobile ? '--has-mobile-margin' : null,
     ].filter(c => c);
 
-    if ('padding' in props.attributes.layout.mobile) {
-        [...props.attributes.layout.mobile.padding].forEach((v, k) => {
+    if ('padding' in props.attributes.dimensions.mobile) {
+        Object.entries(props.attributes.dimensions.mobile.padding).forEach((v, k) => {
             style['--column-mobile-padding-' + k] = v;
         })
     }
-    if ('margin' in props.attributes.layout.mobile) {
-        [...props.attributes.layout.mobile.margin].forEach((v, k) => {
+    if ('margin' in props.attributes.dimensions.mobile) {
+        Object.entries(props.attributes.dimensions.mobile.margin).forEach((v, k) => {
             style['--column-mobile-margin-' + k] = v;
         })
     }
-
-    style = style.length ? style.map((v,k) =>{
-        return [k,v].join(':');
-    }).join('; ') : '';
 
     return {
         className: className.join(' '),

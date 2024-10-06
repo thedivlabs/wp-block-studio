@@ -4,12 +4,19 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
-import {Layout} from 'Components/Layout'
+import {Layout, LayoutProps} from 'Components/Layout'
 import {Dimensions} from 'Components/Dimensions'
 
-const classNames = [
-    'wpbs-column',
-].filter(x => x).join(' ');
+
+function className(props) {
+
+    const layoutProps = LayoutProps(props);
+
+    return [
+        'wpbs-column',
+        layoutProps.className
+    ].filter(x => x).join(' ');
+}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -19,7 +26,7 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const blockProps = useBlockProps({
-            classNames: classNames,
+            className: className(props),
             style: {}
         });
 
@@ -48,7 +55,16 @@ registerBlockType(metadata.name, {
 
     save: (props) => {
 
-        const blockProps = useBlockProps.save();
+        const layoutStyle = LayoutProps(props).style;
+
+        const blockProps = useBlockProps.save({
+            ...props,
+            className: className(props),
+            style: {
+                ...props.style,
+                layoutStyle
+            }
+        });
 
         return <div {...blockProps}><InnerBlocks.Content/></div>;
     }

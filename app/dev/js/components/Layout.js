@@ -8,9 +8,9 @@ import {
     __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
 
-export function Layout({settings = {}, update}) {
+export function Layout({attr = {}, update}) {
 
-    settings = Object.assign({}, {
+    const defaultSettings = Object.assign({}, {
         desktop: {
             display: null,
             align: null,
@@ -31,11 +31,17 @@ export function Layout({settings = {}, update}) {
             overflow: null,
             wrap: null,
         }
-    }, settings);
+    }, attr);
 
-    function updateSettings(tab, attr, val) {
-        settings[tab].attr = val;
-        update(settings);
+    const [settings, setSettings] = useState(defaultSettings);
+
+    console.log(settings)
+
+    function updateSettings(tab, prop, val) {
+        let result = settings;
+        result[tab][prop] = val;
+        setSettings(result);
+        update(result);
     }
 
     const options = {
@@ -55,7 +61,7 @@ export function Layout({settings = {}, update}) {
             {label: 'End', value: 'end'},
             {label: 'Stretch', value: 'stretch'},
         ],
-        justify:[
+        justify: [
             {label: 'Default', value: null},
             {label: 'Start', value: 'start'},
             {label: 'Center', value: 'center'},
@@ -63,32 +69,32 @@ export function Layout({settings = {}, update}) {
             {label: 'Between', value: 'between'},
             {label: 'Around', value: 'around'},
         ],
-        space:[
+        space: [
             {label: 'Default', value: null},
             {label: 'Grow', value: 'grow'},
             {label: 'Shrink', value: 'shrink'},
             {label: 'No Grow', value: 'no-grow'},
             {label: 'No Shrink', value: 'no-shrink'},
         ],
-        position:[
+        position: [
             {label: 'Default', value: null},
             {label: 'Relative', value: 'relative'},
             {label: 'Absolute', value: 'absolute'},
         ],
-        overflow:[
+        overflow: [
             {label: 'Default', value: null},
             {label: 'Hidden', value: 'hidden'},
             {label: 'Visible', value: 'visible'},
         ],
-        wrap:[
+        wrap: [
             {label: 'Default', value: null},
             {label: 'Wrap', value: 'wrap'},
             {label: 'No Wrap', value: 'no-wrap'},
         ]
-    }
+    };
 
     function Panels(tab) {
-        return <>
+        return <Grid columns={2} columnGap={20} rowGap={30}>
             <SelectControl
                 label={'Display'}
                 value={settings[tab.name].display}
@@ -160,7 +166,7 @@ export function Layout({settings = {}, update}) {
                 }}
                 __nextHasNoMarginBottom
             />
-        </>
+        </Grid>
     }
 
     return (

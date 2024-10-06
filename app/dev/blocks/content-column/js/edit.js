@@ -28,10 +28,10 @@ registerBlockType(metadata.name, {
             <>
                 <InspectorControls group={'styles'}>
                     <Layout
-                        settings={layout}
+                        attr={layout}
                         update={(value) => {
-                            setAttributes({layout: value});
                             setLayout(value);
+                            setAttributes({'layout': value});
                         }}
                     />
                 </InspectorControls>

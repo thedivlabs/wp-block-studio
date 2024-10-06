@@ -123,12 +123,12 @@ export function Dimensions({attr = {}, update}) {
             />
             <BoxControl
                 label="Margin"
-                values={settings[tab.name].margin || {}}
                 units={[
                     {value: 'px', label: 'px', default: 0},
                     {value: 'rem', label: 'rem', default: 0},
                     {value: '%', label: '%', default: 0},
                     {value: 'vsh', label: 'vsh', default: 0},
+                    {value: 'vsw', label: 'vsw', default: 0},
                 ]}
                 onChange={(value) => {
                     updateSettings(tab.name, 'margin', value);

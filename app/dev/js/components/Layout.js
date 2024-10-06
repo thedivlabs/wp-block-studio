@@ -9,7 +9,7 @@ import {
 } from "@wordpress/components";
 
 export function LayoutProps(props) {
-
+    
     if (
         !('layout' in props.attributes) ||
         !('desktop' in props.attributes.layout) ||

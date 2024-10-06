@@ -6,10 +6,24 @@ import {
     PanelBody,
     __experimentalBoxControl as BoxControl,
 } from "@wordpress/components";
-import {
-    HeightControl
-} from '@wordpress/block-editor';
 
+export function DimensionsProps(props) {
+
+    let style = {
+        //'--column-display': props.attributes.layout.desktop.display,
+    };
+
+    let className = [
+        'padding' in props.attributes.dimensions.mobile ? '--has-mobile-padding' : null,
+        'margin' in props.attributes.dimensions.mobile ? '--has-mobile-margin' : null,
+    ].filter(c => c);
+
+    return {
+        className: className.join(' '),
+        style: style
+    };
+
+}
 
 export function Dimensions({attr = {}, update}) {
 

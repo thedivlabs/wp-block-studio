@@ -5,16 +5,18 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import {Layout, LayoutProps} from 'Components/Layout'
-import {Dimensions} from 'Components/Dimensions'
+import {Dimensions, DimensionsProps} from 'Components/Dimensions'
 
 
 function className(props) {
 
     const layoutProps = LayoutProps(props);
+    const dimensionsProps = DimensionsProps(props);
 
     return [
         'wpbs-column',
-        layoutProps.className
+        layoutProps.className,
+        dimensionsProps.className,
     ].filter(x => x).join(' ');
 }
 
@@ -56,13 +58,15 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const layoutStyle = LayoutProps(props).style;
+        const dimensionsStyle = DimensionsProps(props).style;
 
         const blockProps = useBlockProps.save({
             ...props,
             className: className(props),
             style: {
                 ...props.style,
-                layoutStyle
+                layoutStyle,
+                dimensionsStyle
             }
         });
 

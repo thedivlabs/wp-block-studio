@@ -17,8 +17,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        const [layout, setLayout] = useState(attributes.layout || {});
-
         const blockProps = useBlockProps({
             classNames: classNames,
             style: {}
@@ -28,9 +26,8 @@ registerBlockType(metadata.name, {
             <>
                 <InspectorControls group={'styles'}>
                     <Layout
-                        attr={layout}
+                        attr={attributes.layout}
                         update={(value) => {
-                            setLayout(value);
                             setAttributes({'layout': value});
                         }}
                     />

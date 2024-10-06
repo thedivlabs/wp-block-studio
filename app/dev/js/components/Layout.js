@@ -35,8 +35,6 @@ export function Layout({attr = {}, update}) {
 
     const [settings, setSettings] = useState(defaultSettings);
 
-    console.log(settings)
-
     function updateSettings(tab, prop, val) {
         let result = settings;
         result[tab][prop] = val;

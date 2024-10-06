@@ -28,7 +28,7 @@ registerBlockType(metadata.name, {
         const layoutStyles = LayoutProps(props).style;
         const dimensionStyles = DimensionsProps(props).style;
 
-        const blockProps = useBlockProps.save({
+        const blockProps = useBlockProps({
             ...props,
             className: componentClassAttr(props),
             style: {

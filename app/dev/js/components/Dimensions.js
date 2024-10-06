@@ -40,7 +40,7 @@ export function Dimensions({attr = {}, update}) {
         update(result);
     }
 
-    function Fields(tab){
+    function Fields(tab) {
         return <Grid columns={2} columnGap={20} rowGap={30}>
             <UnitControl
                 label="Height"

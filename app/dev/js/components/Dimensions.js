@@ -26,8 +26,8 @@ export function Dimensions({attr = {}, update}) {
             gap: null,
             maxWidth: null,
             basis: null,
-            padding: null,
-            margin: null,
+            padding: {},
+            margin: {},
         }
     }, attr);
 

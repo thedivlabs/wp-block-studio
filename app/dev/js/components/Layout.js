@@ -10,14 +10,25 @@ import {
 
 export function LayoutProps(props) {
 
+    if (
+        !('layout' in props.attributes) ||
+        !('desktop' in props.attributes.layout) ||
+        !('mobile' in props.attributes.layout)
+    ) {
+        return {
+            className: '',
+            style: {}
+        };
+    }
+
     let style = {
-        '--column-display': props.attributes.layout.desktop.display,
-        '--column-align': props.attributes.layout.desktop.align,
-        '--column-justify': props.attributes.layout.desktop.justify,
-        '--column-height': props.attributes.layout.desktop.height,
-        '--column-width': props.attributes.layout.desktop.width,
-        '--column-maxWidth': props.attributes.layout.desktop.maxWidth,
-        '--column-basis': props.attributes.layout.desktop.basis,
+        '--column-display': props.attributes.layout.desktop.display || null,
+        '--column-align': props.attributes.layout.desktop.align || null,
+        '--column-justify': props.attributes.layout.desktop.justify || null,
+        '--column-height': props.attributes.layout.desktop.height || null,
+        '--column-width': props.attributes.layout.desktop.width || null,
+        '--column-maxWidth': props.attributes.layout.desktop.maxWidth || null,
+        '--column-basis': props.attributes.layout.desktop.basis || null,
     };
 
     switch (props.attributes.layout.desktop.space) {

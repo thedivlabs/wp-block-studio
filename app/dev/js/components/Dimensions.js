@@ -9,6 +9,17 @@ import {
 
 export function DimensionsProps(props) {
 
+    if (
+        !('dimensions' in props.attributes) ||
+        !('desktop' in props.attributes.dimensions) ||
+        !('mobile' in props.attributes.dimensions)
+    ) {
+        return {
+            className: '',
+            style: {}
+        };
+    }
+
     let style = {
         //'--column-display': props.attributes.layout.desktop.display,
     };

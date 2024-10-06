@@ -1,12 +1,13 @@
 import React, {useState} from "react"
-import {TabPanel} from '@wordpress/components'
 import {
+    TabPanel,
     __experimentalGrid as Grid,
     PanelBody,
     SelectControl,
     ToggleControl,
     __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
+
 
 export function Layout({attr = {}, update}) {
 
@@ -178,17 +179,18 @@ export function Layout({attr = {}, update}) {
                     {
                         name: 'desktop',
                         title: 'Desktop',
-                        className: 'desktop'
+                        className: 'desktop-tab'
                     },
                     {
                         name: 'mobile',
                         title: 'Mobile',
                         className: 'mobile'
                     },
-                ]}>
-                {(tab) => {
+                ]}
+                children={(tab) => {
                     return Panels(tab);
                 }}
+            >
             </TabPanel>
         </PanelBody>
 

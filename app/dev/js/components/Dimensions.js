@@ -1,9 +1,10 @@
 import React, {useState} from "react"
 import {TabPanel} from '@wordpress/components'
 import {
+    __experimentalUnitControl as UnitControl,
     __experimentalGrid as Grid,
     PanelBody,
-    BoxControl,
+    __experimentalBoxControl as BoxControl,
 } from "@wordpress/components";
 import {
     HeightControl
@@ -16,7 +17,6 @@ export function Dimensions({attr = {}, update}) {
         desktop: {
             height: null,
             width: null,
-            gap: null,
             maxWidth: null,
             basis: null,
         },
@@ -40,31 +40,35 @@ export function Dimensions({attr = {}, update}) {
         update(result);
     }
 
-    function Panels(tab) {
-        return <Grid columns={1} columnGap={20} rowGap={30}>
-            <HeightControl
-                label={'Height'}
+    function Fields(tab){
+        return <Grid columns={2} columnGap={20} rowGap={30}>
+            <UnitControl
+                label="Height"
+                isResetValueOnUnitChange={true}
                 onChange={(value) => {
                     updateSettings(tab.name, 'height', value);
                 }}
                 value={settings[tab.name].height}
             />
-            <HeightControl
-                label={'Width'}
+            <UnitControl
+                label="Width"
+                isResetValueOnUnitChange={true}
                 onChange={(value) => {
                     updateSettings(tab.name, 'width', value);
                 }}
                 value={settings[tab.name].width}
             />
-            <HeightControl
-                label={'Max-Width'}
+            <UnitControl
+                label="Max-Width"
+                isResetValueOnUnitChange={true}
                 onChange={(value) => {
                     updateSettings(tab.name, 'maxWidth', value);
                 }}
                 value={settings[tab.name].maxWidth}
             />
-            <HeightControl
-                label={'Basis'}
+            <UnitControl
+                label="Basis"
+                isResetValueOnUnitChange={true}
                 onChange={(value) => {
                     updateSettings(tab.name, 'basis', value);
                 }}
@@ -73,55 +77,27 @@ export function Dimensions({attr = {}, update}) {
         </Grid>
     }
 
+    function Panels(tab) {
+        return Fields(tab);
+    }
+
     function PanelsMobile(tab) {
         return <Grid columns={1} columnGap={20} rowGap={30}>
             <BoxControl
                 label="Padding"
+                values={settings[tab.name].padding}
                 onChange={(value) => {
                     updateSettings(tab.name, 'padding', value);
                 }}
             />
             <BoxControl
                 label="Margin"
+                values={settings[tab.name].margin}
                 onChange={(value) => {
                     updateSettings(tab.name, 'margin', value);
                 }}
             />
-            <HeightControl
-                label={'Gap'}
-                onChange={(value) => {
-                    updateSettings(tab.name, 'gap', value);
-                }}
-                value={settings[tab.name].gap}
-            />
-            <HeightControl
-                label={'Height'}
-                onChange={(value) => {
-                    updateSettings(tab.name, 'height', value);
-                }}
-                value={settings[tab.name].height}
-            />
-            <HeightControl
-                label={'Width'}
-                onChange={(value) => {
-                    updateSettings(tab.name, 'width', value);
-                }}
-                value={settings[tab.name].width}
-            />
-            <HeightControl
-                label={'Max-Width'}
-                onChange={(value) => {
-                    updateSettings(tab.name, 'maxWidth', value);
-                }}
-                value={settings[tab.name].maxWidth}
-            />
-            <HeightControl
-                label={'Basis'}
-                onChange={(value) => {
-                    updateSettings(tab.name, 'basis', value);
-                }}
-                value={settings[tab.name].basis}
-            />
+            {Fields(tab)}
         </Grid>
     }
 

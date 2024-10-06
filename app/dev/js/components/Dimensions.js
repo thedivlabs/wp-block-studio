@@ -85,14 +85,14 @@ export function Dimensions({attr = {}, update}) {
         return <Grid columns={1} columnGap={20} rowGap={30}>
             <BoxControl
                 label="Padding"
-                values={settings[tab.name].padding}
+                values={settings[tab.name].padding || {}}
                 onChange={(value) => {
                     updateSettings(tab.name, 'padding', value);
                 }}
             />
             <BoxControl
                 label="Margin"
-                values={settings[tab.name].margin}
+                values={settings[tab.name].margin || {}}
                 onChange={(value) => {
                     updateSettings(tab.name, 'margin', value);
                 }}

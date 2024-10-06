@@ -29,4 +29,22 @@
     flex-wrap: var(--column-mobile-wrap, var(--column-wrap));
   }
 
+  &.--has-mobile-padding {
+    @media screen and (max-width: 768px) {
+      padding-top: var(--column-mobile-padding-top);
+      padding-right: var(--column-mobile-padding-right);
+      padding-bottom: var(--column-mobile-padding-bottom);
+      padding-left: var(--column-mobile-padding-left);
+    }
+  }
+
+  &.--has-mobile-margin {
+    @media screen and (max-width: 768px) {
+      margin-top: var(--column-mobile-padding-top);
+      margin-right: var(--column-mobile-padding-right);
+      margin-bottom: var(--column-mobile-padding-bottom);
+      margin-left: var(--column-mobile-padding-left);
+    }
+  }
+
 }

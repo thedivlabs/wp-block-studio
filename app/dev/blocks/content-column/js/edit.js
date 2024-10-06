@@ -30,8 +30,8 @@ registerBlockType(metadata.name, {
                     <Layout
                         settings={layout}
                         update={(value) => {
-                            setLayout(value);
                             setAttributes({layout: value});
+                            setLayout(value);
                         }}
                     />
                 </InspectorControls>

@@ -8,45 +8,33 @@ import {
     __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
 
-export function Layout({settings = {}, update, clientId}) {
+export function Layout({settings = {}, update}) {
 
-    const [display, setDisplay] = useState(settings.display || null);
-    const [align, setAlign] = useState(settings.align || null);
-    const [justify, setJustify] = useState(settings.justify || null);
-    const [space, setSpace] = useState(settings.space || null);
-    const [position, setPosition] = useState(settings.position || null);
-    const [zIndex, setZIndex] = useState(settings.zIndex || null);
-    const [overflow, setOverflow] = useState(settings.overflow || null);
-    const [wrap, setWrap] = useState(settings.wrap || null);
-    const [displayMobile, setDisplayMobile] = useState(settings.displayMobile || null);
-    const [alignMobile, setAlignMobile] = useState(settings.alignMobile || null);
-    const [justifyMobile, setJustifyMobile] = useState(settings.justifyMobile || null);
-    const [spaceMobile, setSpaceMobile] = useState(settings.spaceMobile || null);
-    const [positionMobile, setPositionMobile] = useState(settings.positionMobile || null);
-    const [zIndexMobile, setZIndexMobile] = useState(settings.zIndexMobile || null);
-    const [overflowMobile, setOverflowMobile] = useState(settings.overflowMobile || null);
-    const [wrapMobile, setWrapMobile] = useState(settings.wrapMobile || null);
+    settings = Object.assign({}, {
+        display: null,
+        align: null,
+        justify: null,
+        space: null, // flex-grow
+        position: null,
+        zIndex: null,
+        overflow: null,
+        wrap: null,
+        displayMobile: null,
+        alignMobile: null,
+        justifyMobile: null,
+        spaceMobile: null, // flex-grow
+        positionMobile: null,
+        zIndexMobile: null,
+        overflowMobile: null,
+        wrapMobile: null,
+    }, settings);
 
     function updateSettings(attr, val) {
-        update({
-            display: display,
-            align: align,
-            justify: justify,
-            space: space,
-            position: position,
-            zIndex: zIndex,
-            overflow: overflow,
-            wrap: wrap,
-            displayMobile: displayMobile,
-            alignMobile: alignMobile,
-            justifyMobile: justifyMobile,
-            spaceMobile: spaceMobile,
-            positionMobile: positionMobile,
-            zIndexMobile: zIndexMobile,
-            overflowMobile: overflowMobile,
-            wrapMobile: wrapMobile,
-        });
+        settings[attr] = val;
+        update(settings);
     }
+
+    console.log(settings);
 
     function Panels(tab) {
         return <>
@@ -64,10 +52,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setDisplayMobile(value);
                         updateSettings('displayMobile', value);
                     } else {
-                        setDisplay(value);
                         updateSettings('display', value);
                     }
 
@@ -86,10 +72,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setAlignMobile(value);
                         updateSettings('alignMobile', value);
                     } else {
-                        setAlign(value);
                         updateSettings('align', value);
                     }
                 }}
@@ -108,10 +92,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setJustifyMobile(value);
                         updateSettings('justifyMobile', value);
                     } else {
-                        setJustify(value);
                         updateSettings('justify', value);
                     }
 
@@ -130,10 +112,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setSpaceMobile(value);
                         updateSettings('spaceMobile', value);
                     } else {
-                        setSpace(value);
                         updateSettings('space', value);
                     }
 
@@ -150,10 +130,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setPositionMobile(value);
                         updateSettings('positionMobile', value);
                     } else {
-                        setPosition(value);
                         updateSettings('position', value);
                     }
 
@@ -165,10 +143,8 @@ export function Layout({settings = {}, update, clientId}) {
                 value={tab.name === 'mobile' ? settings.zIndexMobile : settings.zIndex}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setZIndexMobile(value);
                         updateSettings('zIndexMobile', value);
                     } else {
-                        setZIndex(value);
                         updateSettings('zIndex', value);
                     }
                 }}
@@ -184,10 +160,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setOverflowMobile(value);
                         updateSettings('overflowMobile', value);
                     } else {
-                        setOverflow(value);
                         updateSettings('overflow', value);
                     }
 
@@ -204,10 +178,8 @@ export function Layout({settings = {}, update, clientId}) {
                 ]}
                 onChange={(value) => {
                     if (tab.name === 'mobile') {
-                        setWrapMobile(value);
                         updateSettings('wrapMobile', value);
                     } else {
-                        setWrap(value);
                         updateSettings('wrap', value);
                     }
 

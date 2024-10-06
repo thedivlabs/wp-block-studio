@@ -8,16 +8,24 @@ import {Layout, LayoutProps} from 'Components/Layout'
 import {Dimensions, DimensionsProps} from 'Components/Dimensions'
 
 
-function className(props) {
+function componentClasses(props) {
 
-    const layoutProps = LayoutProps(props);
-    const dimensionsProps = DimensionsProps(props);
+    const layoutClassName = LayoutProps(props).className;
+    const dimensionsClassName = DimensionsProps(props).className;
 
     return [
         'wpbs-column',
-        layoutProps.className,
-        dimensionsProps.className,
+        layoutClassName,
+        dimensionsClassName,
     ].filter(x => x).join(' ');
+}
+
+function componentStyles(props) {
+
+    const layoutStyle = LayoutProps(props).style;
+    const dimensionsStyle = DimensionsProps(props).style;
+
+    return {...{},layoutStyle,dimensionsStyle};
 }
 
 registerBlockType(metadata.name, {
@@ -57,16 +65,14 @@ registerBlockType(metadata.name, {
 
     save: (props) => {
 
-        const layoutStyle = LayoutProps(props).style;
-        const dimensionsStyle = DimensionsProps(props).style;
+        const componentStyles = componentStyles(props);
 
         const blockProps = useBlockProps.save({
             ...props,
-            className: className(props),
+            className: componentClasses(props),
             style: {
                 ...props.style,
-                layoutStyle,
-                dimensionsStyle
+                componentStyles
             }
         });
 

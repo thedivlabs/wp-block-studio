@@ -8,6 +8,74 @@ import {
     __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
 
+export function LayoutProps(props) {
+
+    let style = {
+        '--column-display': props.attributes.layout.desktop.display,
+        '--column-align': props.attributes.layout.desktop.align,
+        '--column-justify': props.attributes.layout.desktop.justify,
+        '--column-height': props.attributes.layout.desktop.height,
+        '--column-width': props.attributes.layout.desktop.width,
+        '--column-maxWidth': props.attributes.layout.desktop.maxWidth,
+        '--column-basis': props.attributes.layout.desktop.basis,
+    };
+
+    switch (props.attributes.layout.desktop.space) {
+        case 'grow':
+            style['--column-grow'] = '1';
+            break;
+        case 'no-grow':
+            style['--column-grow'] = '0';
+            break;
+        case 'shrink':
+            style['--column-shrink'] = '1';
+            break;
+        case 'no-shrink':
+            style['--column-shrink'] = '0';
+            break;
+    }
+
+    switch (props.attributes.layout.mobile.space) {
+        case 'grow':
+            style['--column-mobile-grow'] = '1';
+            break;
+        case 'no-grow':
+            style['--column-mobile-grow'] = '0';
+            break;
+        case 'shrink':
+            style['--column-mobile-shrink'] = '1';
+            break;
+        case 'no-shrink':
+            style['--column-mobile-shrink'] = '0';
+            break;
+    }
+
+    let className = [
+        'padding' in props.attributes.layout.mobile ? '--has-mobile-padding' : null,
+        'margin' in props.attributes.layout.mobile ? '--has-mobile-margin' : null,
+    ].filter(c => c);
+
+    if ('padding' in props.attributes.layout.mobile) {
+        [...props.attributes.layout.mobile.padding].forEach((v, k) => {
+            style['--column-mobile-padding-' + k] = v;
+        })
+    }
+    if ('margin' in props.attributes.layout.mobile) {
+        [...props.attributes.layout.mobile.margin].forEach((v, k) => {
+            style['--column-mobile-margin-' + k] = v;
+        })
+    }
+
+    style = style.length ? style.map((v,k) =>{
+        return [k,v].join(':');
+    }).join('; ') : '';
+
+    return {
+        className: className.join(' '),
+        style: style
+    };
+
+}
 
 export function Layout({attr = {}, update}) {
 

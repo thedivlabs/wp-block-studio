@@ -56,13 +56,13 @@ export function LayoutProps(props) {
     ].filter(c => c);
 
     if ('padding' in props.attributes.dimensions.mobile) {
-        Object.entries(props.attributes.dimensions.mobile.padding).forEach((v, k) => {
-            style['--column-mobile-padding-' + k] = v;
+        Object.entries(props.attributes.dimensions.mobile.padding).forEach((v) => {
+            style['--column-mobile-padding-' + v[0]] = v[1];
         })
     }
     if ('margin' in props.attributes.dimensions.mobile) {
-        Object.entries(props.attributes.dimensions.mobile.margin).forEach((v, k) => {
-            style['--column-mobile-margin-' + k] = v;
+        Object.entries(props.attributes.dimensions.mobile.margin).forEach((v) => {
+            style['--column-mobile-margin-' + v[0]] = v[1];
         })
     }
 

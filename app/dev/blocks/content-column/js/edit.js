@@ -6,15 +6,9 @@ import metadata from "../block.json"
 import React, {useState} from 'react';
 import {Layout} from 'Components/Layout'
 
-function componentClassNames(attributes = {}) {
-
-    const classNames = [
-        'wpbs-column',
-    ].filter(x => x);
-
-    return classNames.join(' ');
-
-}
+const classNames = [
+    'wpbs-column',
+].filter(x => x).join(' ');
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -26,7 +20,7 @@ registerBlockType(metadata.name, {
         const [layout, setLayout] = useState(attributes.layout || {});
 
         const blockProps = useBlockProps({
-            className: componentClassNames(props.attributes),
+            classNames: classNames,
             style: {}
         });
 
@@ -41,7 +35,7 @@ registerBlockType(metadata.name, {
                         }}
                     />
                 </InspectorControls>
-                <div {...blockProps} data-wp-interactive='wpbs/content-row'>
+                <div {...blockProps} data-wp-interactive='wpbs/content-column'>
                     <InnerBlocks/>
                 </div>
             </>
@@ -50,14 +44,9 @@ registerBlockType(metadata.name, {
 
     save: (props) => {
 
-        return (
-            <div {...props}
-                 data-wp-interactive='wpbs/content-column'
-            >
-                <InnerBlocks.Content/>
+        const blockProps = useBlockProps.save();
 
-            </div>
-        );
+        return <div {...blockProps}><InnerBlocks.Content/></div>;
     }
 })
 

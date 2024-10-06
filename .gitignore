@@ -8,6 +8,7 @@ package-lock.json
 !/gulpfile.js
 !/package.json
 !/tailwind.config.js
+!/webpack.config.js
 
 !app/
 !app/dev/

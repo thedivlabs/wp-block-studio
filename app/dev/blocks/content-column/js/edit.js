@@ -8,25 +8,15 @@ import {Layout, LayoutProps} from 'Components/Layout'
 import {Dimensions, DimensionsProps} from 'Components/Dimensions'
 
 
-function componentClasses(props) {
-
-    const layoutClassName = LayoutProps(props).className;
-    const dimensionsClassName = DimensionsProps(props).className;
+function componentClassAttr(props) {
 
     return [
         'wpbs-column',
-        layoutClassName,
-        dimensionsClassName,
+        LayoutProps(props).className,
+        DimensionsProps(props).className,
     ].filter(x => x).join(' ');
 }
 
-function componentStyles(props) {
-
-    const layoutStyle = LayoutProps(props).style;
-    const dimensionsStyle = DimensionsProps(props).style;
-
-    return Object.assign({}, layoutStyle, dimensionsStyle);
-}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -35,9 +25,17 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        const blockProps = useBlockProps({
-            className: className(props),
-            style: {}
+        const layoutStyles = LayoutProps(props).style;
+        const dimensionStyles = DimensionsProps(props).style;
+
+        const blockProps = useBlockProps.save({
+            ...props,
+            className: componentClassAttr(props),
+            style: {
+                ...props.style,
+                ...layoutStyles,
+                ...dimensionStyles
+            }
         });
 
         return (
@@ -65,14 +63,16 @@ registerBlockType(metadata.name, {
 
     save: (props) => {
 
-        const componentStyles = componentStyles(props);
+        const layoutStyles = LayoutProps(props).style;
+        const dimensionStyles = DimensionsProps(props).style;
 
         const blockProps = useBlockProps.save({
             ...props,
-            className: componentClasses(props),
+            className: componentClassAttr(props),
             style: {
                 ...props.style,
-                componentStyles
+                ...layoutStyles,
+                ...dimensionStyles
             }
         });
 

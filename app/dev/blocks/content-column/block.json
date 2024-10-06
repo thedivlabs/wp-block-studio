@@ -29,6 +29,9 @@
   "attributes": {
     "layout": {
       "type": "object"
+    },
+    "dimensions": {
+      "type": "object"
     }
   },
   "icon": "table-row-after"

@@ -5,6 +5,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
 import {Layout} from 'Components/Layout'
+import {Dimensions} from 'Components/Dimensions'
 
 const classNames = [
     'wpbs-column',
@@ -29,6 +30,12 @@ registerBlockType(metadata.name, {
                         attr={attributes.layout}
                         update={(value) => {
                             setAttributes({'layout': value});
+                        }}
+                    />
+                    <Dimensions
+                        attr={attributes.dimensions}
+                        update={(value) => {
+                            setAttributes({'dimensions': value});
                         }}
                     />
                 </InspectorControls>

@@ -36,7 +36,7 @@ export function Layout({settings = {}, update}) {
 
     console.log(settings);
 
-    function Panels(tab) {
+    /*function Panels(tab) {
         return <>
             <SelectControl
                 label={'Display'}
@@ -189,6 +189,50 @@ export function Layout({settings = {}, update}) {
 
 
         </>;
+    }*/
+
+    function Panels() {
+        return <>
+            <SelectControl
+                label={'Display'}
+                value={settings.display}
+                options={[
+                    {label: 'Default', value: null},
+                    {label: 'Row', value: 'row'},
+                    {label: 'Row Reverse', value: 'row-reverse'},
+                    {label: 'Column', value: 'column'},
+                    {label: 'Column Reverse', value: 'column-reverse'},
+                    {label: 'Block', value: 'block'},
+                    {label: 'None', value: 'none'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('display', value);
+
+                }}
+                __nextHasNoMarginBottom
+            />
+        </>;
+    }
+    function PanelsMobile() {
+        return <>
+            <SelectControl
+                label={'Display'}
+                value={settings.displayMobile}
+                options={[
+                    {label: 'Default', value: null},
+                    {label: 'Row', value: 'row'},
+                    {label: 'Row Reverse', value: 'row-reverse'},
+                    {label: 'Column', value: 'column'},
+                    {label: 'Column Reverse', value: 'column-reverse'},
+                    {label: 'Block', value: 'block'},
+                    {label: 'None', value: 'none'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('displayMobile', value);
+                }}
+                __nextHasNoMarginBottom
+            />
+        </>;
     }
 
 
@@ -203,25 +247,16 @@ export function Layout({settings = {}, update}) {
                     {
                         name: 'desktop',
                         title: 'Desktop',
-                        className: 'desktop'
+                        className: 'desktop',
+                        content: Panels()
                     },
                     {
                         name: 'mobile',
                         title: 'Mobile',
-                        className: 'mobile'
+                        className: 'mobile',
+                        content: PanelsMobile()
                     },
                 ]}>
-                {
-                    (tab) => {
-                        return <>
-                            <Grid columns={1} columnGap={30} rowGap={20}>
-                                <Grid columns={2} columnGap={20} rowGap={20}>
-                                    {Panels(tab)}
-                                </Grid>
-                            </Grid>
-                        </>
-                    }
-                }
             </TabPanel>
         </PanelBody>
 

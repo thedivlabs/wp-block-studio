@@ -191,20 +191,24 @@ export function Layout({settings = {}, update}) {
         </>;
     }*/
 
+    const options = {
+        display: [
+            {label: 'Default', value: null},
+            {label: 'Row', value: 'row'},
+            {label: 'Row Reverse', value: 'row-reverse'},
+            {label: 'Column', value: 'column'},
+            {label: 'Column Reverse', value: 'column-reverse'},
+            {label: 'Block', value: 'block'},
+            {label: 'None', value: 'none'},
+        ]
+    }
+
     function Panels() {
         return <>
             <SelectControl
                 label={'Display'}
                 value={settings.display}
-                options={[
-                    {label: 'Default', value: null},
-                    {label: 'Row', value: 'row'},
-                    {label: 'Row Reverse', value: 'row-reverse'},
-                    {label: 'Column', value: 'column'},
-                    {label: 'Column Reverse', value: 'column-reverse'},
-                    {label: 'Block', value: 'block'},
-                    {label: 'None', value: 'none'},
-                ]}
+                options={options.display}
                 onChange={(value) => {
                     updateSettings('display', value);
 
@@ -218,15 +222,7 @@ export function Layout({settings = {}, update}) {
             <SelectControl
                 label={'Display'}
                 value={settings.displayMobile}
-                options={[
-                    {label: 'Default', value: null},
-                    {label: 'Row', value: 'row'},
-                    {label: 'Row Reverse', value: 'row-reverse'},
-                    {label: 'Column', value: 'column'},
-                    {label: 'Column Reverse', value: 'column-reverse'},
-                    {label: 'Block', value: 'block'},
-                    {label: 'None', value: 'none'},
-                ]}
+                options={options.display}
                 onChange={(value) => {
                     updateSettings('displayMobile', value);
                 }}

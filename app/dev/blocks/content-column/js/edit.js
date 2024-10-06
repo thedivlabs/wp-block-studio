@@ -25,7 +25,7 @@ function componentStyles(props) {
     const layoutStyle = LayoutProps(props).style;
     const dimensionsStyle = DimensionsProps(props).style;
 
-    return {...{},layoutStyle,dimensionsStyle};
+    return Object.assign({}, layoutStyle, dimensionsStyle);
 }
 
 registerBlockType(metadata.name, {

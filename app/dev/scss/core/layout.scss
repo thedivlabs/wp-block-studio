@@ -1,0 +1,304 @@
+.--layout-bg {
+  background-color: var(--bg-color, transparent) !important;
+}
+
+.--layout-text-color {
+  color: var(--text-color, inherit) !important;
+}
+
+.--layout-font_size {
+  font-size: var(----layout-font_size, inherit) !important;
+}
+
+.--layout-line_height {
+  line-height: var(--layout-line_height, normal) !important;
+}
+
+.--layout-grow {
+  flex-grow: var(--layout-grow, initial);
+}
+
+.--layout-shrink {
+  flex-shrink: var(--layout-shrink, initial);
+}
+
+.--layout-shape {
+  aspect-ratio: var(--layout-shape, initial);
+}
+
+.--layout-display {
+
+  display: var(--layout-display);
+
+  &:not(.has-container) {
+    display: var(--layout-display);
+  }
+
+  &.has-container > .container {
+    display: var(--layout-display);
+  }
+}
+
+.--layout-direction {
+  flex-direction: var(--layout-direction);
+
+  &:not(.has-container) {
+    flex-direction: var(--layout-direction);
+  }
+
+  &.has-container > .container {
+    flex-direction: var(--layout-direction);
+  }
+}
+
+.--layout-align {
+  align-items: var(--layout-align);
+
+  &:not(.has-container) {
+    align-items: var(--layout-align);
+  }
+
+  &.has-container > .container {
+    align-items: var(--layout-align);
+  }
+}
+
+.--layout-justify {
+  justify-content: var(--layout-justify);
+
+  &:not(.has-container) {
+    justify-content: var(--layout-justify);
+  }
+
+  &.has-container > .container {
+    justify-content: var(--layout-justify);
+  }
+}
+
+.--layout-width {
+  width: var(--layout-width) !important;
+}
+
+.--layout-max_width {
+  max-width: var(--layout-max_width) !important;
+}
+
+.--layout-height-full {
+  min-height: var(--wp--custom--screen);
+}
+
+.--layout-height,
+.--layout-height_custom {
+  height: var(--layout-height, auto);
+}
+
+.--layout-flex_wrap {
+  flex-wrap: var(--layout-flex_wrap);
+
+  &:not(.has-container) {
+    flex-wrap: var(--layout-flex_wrap);
+  }
+
+  &.has-container > .container {
+    flex-wrap: var(--layout-flex_wrap);
+  }
+}
+
+.--layout-gap {
+  column-gap: var(--layout-column-gap, var(--layout-row-gap));
+  row-gap: var(--layout-row-gap, var(--layout-column-gap));
+
+  &:not(.has-container) {
+    column-gap: var(--layout-column-gap, var(--layout-row-gap));
+    row-gap: var(--layout-row-gap, var(--layout-column-gap));
+  }
+
+  &.has-container > .container {
+    column-gap: var(--layout-column-gap, var(--layout-row-gap));
+    row-gap: var(--layout-row-gap, var(--layout-column-gap));
+  }
+}
+
+.--layout-position {
+  position: var(--layout-position) !important;
+}
+
+.--layout-order {
+  order: var(--layout-order);
+}
+
+.--layout-top {
+  top: var(--layout-top);
+}
+
+.--layout-right {
+  right: var(--layout-right);
+}
+
+.--layout-bottom {
+  bottom: var(--layout-bottom);
+}
+
+.--layout-left {
+  left: var(--layout-left);
+}
+
+.--layout-opacity {
+  opacity: var(--layout-opacity);
+}
+
+.--layout-basis {
+  flex-basis: var(--layout-basis);
+}
+
+.--layout-zindex {
+  z-index: var(--layout-zindex);
+}
+
+.--layout-overflow {
+  overflow: var(--layout-overflow) !important;
+}
+
+.--layout-text_align {
+  text-align: var(--layout-text_align) !important;
+}
+
+.--layout-translate {
+  transform: translate(var(--layout-translate-left, 0px), var(--layout-translate-top, 0px));
+}
+
+.--layout-outline {
+  outline: var(--layout-outline, none);
+}
+
+.--layout-outline_offset {
+  outline-offset: var(--layout-outline_offset, 0);
+}
+
+.--layout-container {
+
+  &-xs:not(.has-container),
+  &-xs.has-container > .container {
+    max-width: var(--wp--custom--container--xs);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &-sm:not(.has-container),
+  &-sm.has-container > .container {
+    max-width: var(--wp--custom--container--sm);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &-md:not(.has-container),
+  &-md.has-container > .container {
+    max-width: var(--wp--custom--container--md);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &-lg:not(.has-container),
+  &-lg.has-container > .container {
+    max-width: var(--wp--custom--container--lg);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &-normal:not(.has-container),
+  &-normal.has-container > .container {
+    max-width: var(--wp--custom--container--2-xl);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &-none:not(.has-container),
+  &-none.has-container > .container {
+    max-width: 100%;
+  }
+
+}
+
+
+.--layout-translate-hover.--layout-scale-hover {
+  &:hover {
+    transform: translate(var(--layout-translate-hover-left, 0px), var(--layout-translate-hover-top, 0px)) scale(var(--layout-scale-hover));
+  }
+}
+
+.--layout-translate-hover {
+  &:hover {
+    transform: translate(var(--layout-translate-hover-left, 0px), var(--layout-translate-hover-top, 0px));
+  }
+}
+
+.--layout-scale-hover {
+  &:hover {
+    transform: scale(var(--layout-scale-hover));
+  }
+}
+
+.--layout-border_color-hover {
+  &:hover {
+    border-color: var(--layout-border_color-hover) !important;
+  }
+}
+
+.--layout-text-hover {
+  &:hover {
+    color: var(--layout-text-hover) !important;
+  }
+}
+
+.--layout-background-hover {
+  &:hover {
+    background-color: var(--layout-background-hover) !important;
+  }
+}
+
+.--layout-links-hover a {
+  &:hover {
+    color: var(--layout-links-hover) !important;
+  }
+}
+
+.--layout-opacity-hover {
+  &:hover {
+    opacity: var(--layout-opacity-hover);
+  }
+}
+
+.--layout-padding-hover-top {
+  &:hover {
+    padding-top: var(--layout-padding-hover-top) !important;
+  }
+}
+
+.--layout-padding-hover-right {
+  &:hover {
+    padding-right: var(--layout-padding-hover-right) !important;
+  }
+}
+
+.--layout-padding-hover-bottom {
+  &:hover {
+    padding-bottom: var(--layout-padding-hover-bottom) !important;
+  }
+}
+
+.--layout-padding-hover-left {
+  &:hover {
+    padding-left: var(--layout-padding-hover-left) !important;
+  }
+}
+
+
+.--layout-translate-hover,
+.--layout-scale-hover,
+.--layout-padding-hover,
+.--layout-opacity-hover,
+.--layout-background-hover,
+.--layout-text-hover,
+.--layout-border_color-hover {
+  transition-property: transform, opacity, color, background-color, border-color;
+}

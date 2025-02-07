@@ -1,17 +1,11 @@
 import {createHigherOrderComponent} from "@wordpress/compose";
-import {useState} from "react";
 import {
     InspectorControls,
-    useBlockProps, PanelColorSettings, BlockEdit,
+    PanelColorSettings, BlockEdit,
 } from "@wordpress/block-editor";
 import {
-    __experimentalGrid as Grid,
-    PanelBody,
-    ColorPalette,
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
-    __experimentalUnitControl as UnitControl,
-    __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
 
 import Outline from 'Components/Outline';
@@ -310,6 +304,18 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
         setAttributes({padding_hover: ''});
         setAttributes({translate_hover: ''});
     };
+
+
+    /*createHigherOrderComponent((BlockEdit) => {
+
+        return (props) => {
+
+            return <></>;
+        };
+
+    }, 'withClientIdClassName')*/
+
+
     return <>
         <BlockEdit key="edit" {...blockProps} />
         <InspectorControls group="styles">
@@ -842,7 +848,14 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                         slug: 'background_mobile',
                         label: 'Background Mobile'
                     }
-                ]}
+                ].map((color_control) => {
+                    return {
+                        value: attributes[color_control.slug],
+                        onChange: (color) => setAttributes({[color_control.slug]: color}),
+                        label: color_control.label.trim(),
+                        isShownByDefault: false
+                    }
+                })}
             />
 
 

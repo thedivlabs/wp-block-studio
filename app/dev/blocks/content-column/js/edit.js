@@ -4,8 +4,6 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
-import {Layout, LayoutProps} from 'Components/Layout'
-import {Dimensions, DimensionsProps} from 'Components/Dimensions'
 
 
 function componentClassAttr(props) {

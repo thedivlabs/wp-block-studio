@@ -10,11 +10,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React, {useState} from 'react';
-import MobileDimensions from '../../../js/components/MobileDimensions';
-import {Flex, FlexStyles} from '../../../js/components/Flex';
-import Background from '../../../js/components/Background';
-import {BackgroundElement} from '../../../js/components/Background';
-import {setMobileProps, MobileStyles} from '../../../js/components/MobileDimensions';
+import Background from 'Components/Background';
 
 
 function containerClassNames(attributes = {}) {
@@ -131,7 +127,7 @@ registerBlockType(metadata.name, {
         const [container, setContainer] = useState(attributes.container || '');
         const [size, setSize] = useState(attributes.size || false);
         const [overflow, setOverflow] = useState(attributes.overflow || false);
-        
+
         return (
             <>
                 <div {...blockProps}

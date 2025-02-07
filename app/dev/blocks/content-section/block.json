@@ -2,10 +2,51 @@
   "name": "wpbs/content-section",
   "title": "Content Section",
   "description": "Display a content section with inner blocks",
-  "viewScript": "file:./js/block.js",
+  "supports": {
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true,
+      "__experimentalSkipSerialization": true
+    },
+    "dimensions": {
+      "minHeight": true,
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true,
+      "__experimentalSkipSerialization": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true,
+      "__experimentalSkipSerialization": true
+    },
+    "typography": {
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "styles": [
+    {
+      "name": "prose",
+      "label": "Prose"
+    }
+  ],
   "editorScript": "file:./js/edit.js",
-  "script": "file:./js/block.js",
-  "style": ["wpbs-content-section"],
+  "style": [
+    "wpbs-content-section"
+  ],
   "icon": "editor-kitchensink"
 }
 

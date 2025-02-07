@@ -14,35 +14,35 @@ import {
     __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
 
-import Outline from './js/components/Outline';
-import Display from './js/components/Display';
-import Align from './js/components/Align';
-import Justify from './js/components/Justify';
-import Height from './js/components/Height';
-import HeightCustom from './js/components/HeightCustom';
-import Container from './js/components/Container';
-import FlexWrap from './js/components/FlexWrap';
-import Space from './js/components/Space';
-import Position from './js/components/Position';
-import ZIndex from './js/components/ZIndex';
-import Overflow from './js/components/Overflow';
-import Padding from './js/components/Padding';
-import Margin from './js/components/Margin';
-import Gap from './js/components/Gap';
-import Breakpoint from './js/components/Breakpoint';
-import Width from './js/components/Width';
-import TextAlign from './js/components/TextAlign';
-import Shape from './js/components/Shape';
-import Translate from './js/components/Translate';
-import FontSize from './js/components/FontSize';
-import LineHeight from './js/components/LineHeight';
-import OutlineOffset from './js/components/OutlineOffset';
-import Opacity from './js/components/Opacity';
-import BoxPosition from './js/components/BoxPosition';
-import Basis from './js/components/Basis';
-import Order from './js/components/Order';
-import Rounded from './js/components/Rounded';
-import Scale from './js/components/Scale';
+import Outline from 'Components/Outline';
+import Display from 'Components/Display';
+import Align from 'Components/Align';
+import Justify from 'Components/Justify';
+import Height from 'Components/Height';
+import HeightCustom from 'Components/HeightCustom';
+import Container from 'Components/Container';
+import FlexWrap from 'Components/FlexWrap';
+import Space from 'Components/Space';
+import Position from 'Components/Position';
+import ZIndex from 'Components/ZIndex';
+import Overflow from 'Components/Overflow';
+import Padding from 'Components/Padding';
+import Margin from 'Components/Margin';
+import Gap from 'Components/Gap';
+import Breakpoint from 'Components/Breakpoint';
+import Width from 'Components/Width';
+import TextAlign from 'Components/TextAlign';
+import Shape from 'Components/Shape';
+import Translate from 'Components/Translate';
+import FontSize from 'Components/FontSize';
+import LineHeight from 'Components/LineHeight';
+import OutlineOffset from 'Components/OutlineOffset';
+import Opacity from 'Components/Opacity';
+import BoxPosition from 'Components/BoxPosition';
+import Basis from 'Components/Basis';
+import Order from 'Components/Order';
+import Rounded from 'Components/Rounded';
+import Scale from 'Components/Scale';
 
 wp.hooks.addFilter(
     'editor.BlockEdit',

@@ -13,8 +13,8 @@ import {
     MediaUpload,
     MediaUploadCheck
 } from "@wordpress/block-editor";
-import PreviewThumbnail from '../../js/components/PreviewThumbnail';
-import Picture from '../../js/components/picture';
+import PreviewThumbnail from 'Components/PreviewThumbnail';
+import Picture from 'Components/picture';
 
 export function BackgroundElement({settings = {}, blockProps}) {
 
@@ -120,7 +120,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
     </div>;
 }
 
-function Background({settings = {}, pushSettings}) {
+export function Background({settings = {}, pushSettings}) {
 
     settings = Object.assign({}, {
         type: false,
@@ -401,5 +401,3 @@ function Background({settings = {}, pushSettings}) {
         </PanelBody>
     )
 }
-
-export default Background;

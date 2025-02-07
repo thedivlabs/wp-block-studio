@@ -4,7 +4,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutProps} from "Components/Layout"
-import React, {useState} from 'react';
+import React from 'react';
 
 function sectionClassNames(attributes = {}) {
 

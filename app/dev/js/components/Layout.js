@@ -37,6 +37,17 @@ import Basis from 'Components/Basis';
 import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 
+export function LayoutProps(attributes) {
+
+    console.log(attributes);
+
+    const style = {};
+
+    return {
+        style : style
+    };
+}
+
 export function LayoutAttributes() {
     return {
         display: {

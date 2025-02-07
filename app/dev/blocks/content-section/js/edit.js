@@ -3,7 +3,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes} from "Components/Layout"
+import {Layout, LayoutAttributes, LayoutProps} from "Components/Layout"
 import React, {useState} from 'react';
 
 function sectionClassNames(attributes = {}) {
@@ -33,6 +33,7 @@ registerBlockType(metadata.name, {
         const {} = attributes;
 
         const blockProps = useBlockProps({
+            ...LayoutProps(attributes),
             className: sectionClassNames(attributes),
             style: {}
         });

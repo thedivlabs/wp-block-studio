@@ -23,7 +23,7 @@ function containerClassNames(attributes = {}) {
 
     return [
         'wpbs-container gap-inherit relative z-20',
-        attributes['offset-header'] ? 'offset-header' : false,
+        attributes.offsetHeader ? 'offset-header' : false,
     ].filter(x => x).join(' ');
 
 }
@@ -47,7 +47,6 @@ registerBlockType(metadata.name, {
         const resetAll_options = () => {
             setAttributes({'offsetHeader': false});
         };
-
 
         return (
             <>

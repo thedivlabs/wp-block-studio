@@ -1,7 +1,7 @@
 export default function Helper() {
 
     this.testing = () => {
-        console.log('qqqqqq');
+        console.log('testing...');
     }
 
 }

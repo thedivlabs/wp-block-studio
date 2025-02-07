@@ -8,13 +8,10 @@
       "background": true,
       "text": true,
       "link": true,
-      "gradients": true,
-      "__experimentalSkipSerialization": true
+      "gradients": true
     },
     "dimensions": {
-      "minHeight": true,
-      "__experimentalSkipSerialization": true,
-      "__experimentalDefaultControls": true
+      "minHeight": true
     },
     "spacing": {
       "blockGap": [
@@ -22,14 +19,12 @@
         "vertical"
       ],
       "padding": true,
-      "margin": true,
-      "__experimentalSkipSerialization": true
+      "margin": true
     },
     "__experimentalBorder": {
       "size": true,
       "color": true,
-      "radius": true,
-      "__experimentalSkipSerialization": true
+      "radius": true
     },
     "typography": {
       "textAlign": true,

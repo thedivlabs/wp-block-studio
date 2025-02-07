@@ -3,6 +3,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
+import {Layout, LayoutAttributes} from "Components/Layout"
 import React, {useState} from 'react';
 
 function sectionClassNames(attributes = {}) {
@@ -25,7 +26,8 @@ registerBlockType(metadata.name, {
     attributes: {
         'offset-header': {
             type: 'string'
-        }
+        },
+        ...LayoutAttributes()
     },
     edit: ({attributes, setAttributes, clientId}) => {
         const {} = attributes;
@@ -35,9 +37,9 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
-
         return (
             <>
+                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <section {...blockProps}
                          data-wp-interactive='wpbs/content-section'
                 >

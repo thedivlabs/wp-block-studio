@@ -1,10 +1,16 @@
 import {
-    useBlockProps, InspectorControls, InnerBlocks,
+    useBlockProps,
+    InspectorControls,
+    InnerBlocks,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutProps} from "Components/Layout"
-import React from 'react';
+import {
+    __experimentalToolsPanel as ToolsPanel,
+    __experimentalToolsPanelItem as ToolsPanelItem,
+    ToggleControl
+} from "@wordpress/components";
 
 function sectionClassNames(attributes = {}) {
 
@@ -17,6 +23,7 @@ function containerClassNames(attributes = {}) {
 
     return [
         'wpbs-container gap-inherit relative z-20',
+        attributes['offset-header'] ? 'offset-header' : false,
     ].filter(x => x).join(' ');
 
 }
@@ -24,13 +31,12 @@ function containerClassNames(attributes = {}) {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
-        'offset-header': {
-            type: 'string'
-        },
-        ...LayoutAttributes()
+        ...LayoutAttributes(),
+        offsetHeader: {
+            type: 'boolean'
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
-        const {} = attributes;
 
         const blockProps = useBlockProps({
             ...LayoutProps(attributes),
@@ -38,9 +44,33 @@ registerBlockType(metadata.name, {
             style: {}
         });
 
+        const resetAll_options = () => {
+            setAttributes({'offsetHeader': false});
+        };
+
+
         return (
             <>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
+                <InspectorControls group="styles">
+                    <ToolsPanel label={'Options'} resetAll={resetAll_options} cols={1} style={{gap: '20px'}}>
+                        <ToolsPanelItem
+                            style={{gridColumn: 'span 2'}}
+                            hasValue={() => !!attributes.offsetHeader}
+                            label={'Offset Header'}
+                            onDeselect={() => setAttributes({offsetHeader: false})}
+                        >
+                            <ToggleControl
+                                __nextHasNoMarginBottom
+                                checked={attributes.offsetHeader}
+                                label="Offset Header"
+                                onChange={(newValue) => {
+                                    setAttributes({offsetHeader: newValue})
+                                }}
+                            />
+                        </ToolsPanelItem>
+                    </ToolsPanel>
+                </InspectorControls>
                 <section {...blockProps}
                          data-wp-interactive='wpbs/content-section'
                 >

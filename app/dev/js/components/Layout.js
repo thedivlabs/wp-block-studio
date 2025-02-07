@@ -1,4 +1,3 @@
-import {createHigherOrderComponent} from "@wordpress/compose";
 import {
     InspectorControls,
     PanelColorSettings, BlockEdit,
@@ -39,12 +38,12 @@ import Rounded from 'Components/Rounded';
 
 export function LayoutProps(attributes) {
 
-    console.log(attributes);
+    //console.log(attributes);
 
     const style = {};
 
     return {
-        style : style
+        style: style
     };
 }
 
@@ -316,17 +315,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
         setAttributes({translate_hover: ''});
     };
 
-
-    /*createHigherOrderComponent((BlockEdit) => {
-
-        return (props) => {
-
-            return <></>;
-        };
-
-    }, 'withClientIdClassName')*/
-
-
     return <>
         <BlockEdit key="edit" {...blockProps} />
         <InspectorControls group="styles">
@@ -549,6 +537,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
 
             </ToolsPanel>
+
             <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}

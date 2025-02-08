@@ -198,6 +198,23 @@ const blockAttributes = {
         opacityHover: {
             type: 'integer'
         }
+    },
+    colors: {
+        textHover: {
+            type: 'string'
+        },
+        backgroundHover: {
+            type: 'string'
+        },
+        borderColorHover: {
+            type: 'string'
+        },
+        textMobile: {
+            type: 'string'
+        },
+        backgroundMobile: {
+            type: 'string'
+        },
     }
 };
 
@@ -213,7 +230,7 @@ export function LayoutProps(attributes) {
 }
 
 export function LayoutAttributes() {
-    return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover);
+    return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors);
 }
 
 export function Layout({blockProps, attributes = {}, setAttributes}) {

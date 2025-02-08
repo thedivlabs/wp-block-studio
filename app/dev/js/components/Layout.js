@@ -36,53 +36,12 @@ import Basis from 'Components/Basis';
 import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 
-export function LayoutProps(attributes) {
-
-    //console.log(attributes);
-
-    const style = {};
-
-    return {
-        style: style
-    };
-}
-
-export function LayoutAttributes() {
-    return {
+const attributes = {
+    layout: {
         display: {
             type: 'string'
         },
-        flex_wrap: {
-            type: 'string'
-        },
-        outline_offset: {
-            type: 'string'
-        },
-        basis: {
-            type: 'integer'
-        },
-        text_mobile: {
-            type: 'string'
-        },
-        background_mobile: {
-            type: 'string'
-        },
-        basis_mobile: {
-            type: 'integer'
-        },
-        rounded_mobile: {
-            type: 'integer'
-        },
-        opacity: {
-            type: 'integer'
-        },
-        opacity_mobile: {
-            type: 'integer'
-        },
-        width: {
-            type: 'string'
-        },
-        max_width: {
+        container: {
             type: 'string'
         },
         align: {
@@ -91,7 +50,16 @@ export function LayoutAttributes() {
         justify: {
             type: 'string'
         },
-        shape: {
+        opacity: {
+            type: 'integer'
+        },
+        basis: {
+            type: 'integer'
+        },
+        width: {
+            type: 'string'
+        },
+        max_width: {
             type: 'string'
         },
         height: {
@@ -100,7 +68,7 @@ export function LayoutAttributes() {
         height_custom: {
             type: 'string'
         },
-        container: {
+        flex_wrap: {
             type: 'string'
         },
         space: {
@@ -109,7 +77,7 @@ export function LayoutAttributes() {
         position: {
             type: 'string'
         },
-        position_mobile: {
+        zindex: {
             type: 'string'
         },
         top: {
@@ -124,6 +92,65 @@ export function LayoutAttributes() {
         left: {
             type: 'string'
         },
+        overflow: {
+            type: 'string'
+        },
+        shape: {
+            type: 'string'
+        },
+        order: {
+            type: 'string'
+        },
+        translate: {
+            type: 'object'
+        },
+        outline: {
+            type: 'object'
+        },
+    },
+    mobile: {
+        display_mobile: {
+            type: 'string'
+        },
+        breakpoint: {
+            type: 'string'
+        },
+        align_mobile: {
+            type: 'string'
+        },
+        justify_mobile: {
+            type: 'string'
+        },
+        opacity_mobile: {
+            type: 'string'
+        },
+        basis_mobile: {
+            type: 'integer'
+        },
+        width_mobile: {
+            type: 'string'
+        },
+        max_width_mobile: {
+            type: 'string'
+        },
+        height_mobile: {
+            type: 'string'
+        },
+        height_custom_mobile: {
+            type: 'string'
+        },
+        space_mobile: {
+            type: 'string'
+        },
+        shape_mobile: {
+            type: 'string'
+        },
+        position_mobile: {
+            type: 'string'
+        },
+        zindex_mobile: {
+            type: 'string'
+        },
         top_mobile: {
             type: 'string'
         },
@@ -136,44 +163,11 @@ export function LayoutAttributes() {
         left_mobile: {
             type: 'string'
         },
-        overflow: {
+        order_mobile: {
             type: 'string'
         },
-        font_size_mobile: {
-            type: 'string'
-        },
-        line_height_mobile: {
-            type: 'string'
-        },
-        display_mobile: {
-            type: 'string'
-        },
-        flex_wrap_mobile: {
-            type: 'string'
-        },
-        text_align_mobile: {
-            type: 'string'
-        },
-        align_mobile: {
-            type: 'string'
-        },
-        justify_mobile: {
-            type: 'string'
-        },
-        height_mobile: {
-            type: 'string'
-        },
-        height_custom_mobile: {
-            type: 'string'
-        },
-        container_mobile: {
-            type: 'string'
-        },
-        space_mobile: {
-            type: 'string'
-        },
-        overflow_mobile: {
-            type: 'string'
+        translate_mobile: {
+            type: 'object'
         },
         padding_mobile: {
             type: 'object'
@@ -184,66 +178,42 @@ export function LayoutAttributes() {
         gap_mobile: {
             type: 'object'
         },
-        width_mobile: {
-            type: 'string'
-        },
-        max_width_mobile: {
-            type: 'string'
-        },
-        breakpoint: {
-            type: 'string'
-        },
-        zindex: {
-            type: 'string'
-        },
-        zindex_mobile: {
-            type: 'string'
-        },
-        order: {
-            type: 'string'
-        },
-        order_mobile: {
-            type: 'string'
-        },
-        shape_mobile: {
-            type: 'string'
-        },
-        translate: {
-            type: 'object'
-        },
-        translate_mobile: {
-            type: 'object'
-        },
-
-        outline: {
-            type: 'object'
-        },
-
-        text_hover: {
-            type: 'string'
-        },
-        background_hover: {
-            type: 'string'
-        },
-        border_color_hover: {
-            type: 'string'
-        },
-        scale_hover: {
+        rounded_mobile: {
             type: 'integer'
         },
+        font_size_mobile: {
+            type: 'string'
+        },
+        line_height_mobile: {
+            type: 'string'
+        },
+        text_align_mobile: {
+            type: 'string'
+        },
+        flex_wrap_mobile: {
+            type: 'string'
+        },
+    },
+    hover: {
         opacity_hover: {
             type: 'integer'
-        },
-
-        padding_hover: {
-            type: 'object'
-        },
-        translate_hover: {
-            type: 'object'
-        },
-
+        }
     }
+};
 
+export function LayoutProps(attributes) {
+
+    //console.log(attributes);
+
+    const style = {};
+
+    return {
+        style: style
+    };
+}
+
+export function LayoutAttributes() {
+    return Object.assign({}, attributes.layout, attributes.mobile, attributes.hover);
 }
 
 export function Layout({blockProps, attributes = {}, setAttributes}) {
@@ -311,10 +281,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
     const resetAll_hover = () => {
         setAttributes({
-            scale_hover: undefined,
             opacity_hover: undefined,
-            padding_hover: undefined,
-            translate_hover: undefined,
         });
     };
 

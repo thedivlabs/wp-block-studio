@@ -38,11 +38,11 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const blockProps = useBlockProps({
-            ...LayoutProps(attributes),
+
+        const blockProps = useBlockProps(Object.assign({}, {
             className: sectionClassNames(attributes),
             style: {}
-        });
+        }, LayoutProps(attributes)));
 
         const resetAll_options = () => {
             setAttributes({'offsetHeader': false});
@@ -81,9 +81,10 @@ registerBlockType(metadata.name, {
         )
     },
     save: (props) => {
-        const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes)
-        });
+        const blockProps = useBlockProps.save(Object.assign({}, {
+            className: sectionClassNames(props.attributes),
+            style: {}
+        }, LayoutProps(props.attributes)));
 
         return (
             <section {...blockProps}

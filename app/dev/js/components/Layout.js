@@ -36,7 +36,7 @@ import Basis from 'Components/Basis';
 import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 
-const attributes = {
+const blockAttributes = {
     layout: {
         display: {
             type: 'string'
@@ -213,21 +213,21 @@ export function LayoutProps(attributes) {
 }
 
 export function LayoutAttributes() {
-    return Object.assign({}, attributes.layout, attributes.mobile, attributes.hover);
+    return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover);
 }
 
 export function Layout({blockProps, attributes = {}, setAttributes}) {
 
     const resetAll_layout = () => {
-        setAttributes(Object.keys(attributes.layout).reduce((o, key) => ({ ...o, [key]: undefined}), {}));
+        Object.keys(blockAttributes.layout).reduce((o, key) => ({ ...o, [key]: undefined}), {})
     };
 
     const resetAll_layout_mobile = () => {
-        setAttributes(Object.keys(attributes.mobile).reduce((o, key) => ({ ...o, [key]: undefined}), {}));
+        Object.keys(blockAttributes.mobile).reduce((o, key) => ({ ...o, [key]: undefined}), {})
     };
 
     const resetAll_hover = () => {
-        setAttributes(Object.keys(attributes.hover).reduce((o, key) => ({ ...o, [key]: undefined}), {}));
+        Object.keys(blockAttributes.hover).reduce((o, key) => ({ ...o, [key]: undefined}), {})
     };
 
     return <>

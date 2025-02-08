@@ -225,9 +225,6 @@ export function LayoutAttributes() {
         background_hover: {
             type: 'string'
         },
-        links_hover: {
-            type: 'string'
-        },
         border_color_hover: {
             type: 'string'
         },
@@ -837,10 +834,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     {
                         slug: 'background_hover',
                         label: 'Background Hover'
-                    },
-                    {
-                        slug: 'links_hover',
-                        label: 'Links Hover'
                     },
                     {
                         slug: 'border_color_hover',

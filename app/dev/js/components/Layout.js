@@ -59,16 +59,16 @@ const blockAttributes = {
         width: {
             type: 'string'
         },
-        max_width: {
+        maxWidth: {
             type: 'string'
         },
         height: {
             type: 'string'
         },
-        height_custom: {
+        heightCustom: {
             type: 'string'
         },
-        flex_wrap: {
+        flexWrap: {
             type: 'string'
         },
         space: {
@@ -77,7 +77,7 @@ const blockAttributes = {
         position: {
             type: 'string'
         },
-        zindex: {
+        zIndex: {
             type: 'string'
         },
         top: {
@@ -109,88 +109,88 @@ const blockAttributes = {
         },
     },
     mobile: {
-        display_mobile: {
+        displayMobile: {
             type: 'string'
         },
         breakpoint: {
             type: 'string'
         },
-        align_mobile: {
+        alignMobile: {
             type: 'string'
         },
-        justify_mobile: {
+        justifyMobile: {
             type: 'string'
         },
-        opacity_mobile: {
+        opacityMobile: {
             type: 'string'
         },
-        basis_mobile: {
+        basisMobile: {
             type: 'integer'
         },
-        width_mobile: {
+        widthMobile: {
             type: 'string'
         },
-        max_width_mobile: {
+        maxWidthMobile: {
             type: 'string'
         },
-        height_mobile: {
+        heightMobile: {
             type: 'string'
         },
-        height_custom_mobile: {
+        heightCustomMobile: {
             type: 'string'
         },
-        space_mobile: {
+        spaceMobile: {
             type: 'string'
         },
-        shape_mobile: {
+        shapeMobile: {
             type: 'string'
         },
-        position_mobile: {
+        positionMobile: {
             type: 'string'
         },
-        zindex_mobile: {
+        zIndexMobile: {
             type: 'string'
         },
-        top_mobile: {
+        topMobile: {
             type: 'string'
         },
-        right_mobile: {
+        rightMobile: {
             type: 'string'
         },
-        bottom_mobile: {
+        bottomMobile: {
             type: 'string'
         },
-        left_mobile: {
+        leftMobile: {
             type: 'string'
         },
-        order_mobile: {
+        orderMobile: {
             type: 'string'
         },
-        translate_mobile: {
+        translateMobile: {
             type: 'object'
         },
-        padding_mobile: {
+        paddingMobile: {
             type: 'object'
         },
-        margin_mobile: {
+        marginMobile: {
             type: 'object'
         },
-        gap_mobile: {
+        gapMobile: {
             type: 'object'
         },
-        rounded_mobile: {
+        roundedMobile: {
             type: 'integer'
         },
-        font_size_mobile: {
+        fontSizeMobile: {
             type: 'string'
         },
-        line_height_mobile: {
+        lineHeightMobile: {
             type: 'string'
         },
-        text_align_mobile: {
+        textAlignMobile: {
             type: 'string'
         },
-        flex_wrap_mobile: {
+        flexWrapMobile: {
             type: 'string'
         },
     },
@@ -203,7 +203,7 @@ const blockAttributes = {
 
 export function LayoutProps(attributes) {
 
-    //console.log(attributes);
+    console.log(attributes);
 
     const style = {};
 
@@ -219,15 +219,15 @@ export function LayoutAttributes() {
 export function Layout({blockProps, attributes = {}, setAttributes}) {
 
     const resetAll_layout = () => {
-        Object.keys(blockAttributes.layout).reduce((o, key) => ({ ...o, [key]: undefined}), {})
+        Object.keys(blockAttributes.layout).reduce((o, key) => ({...o, [key]: undefined}), {})
     };
 
     const resetAll_layout_mobile = () => {
-        Object.keys(blockAttributes.mobile).reduce((o, key) => ({ ...o, [key]: undefined}), {})
+        Object.keys(blockAttributes.mobile).reduce((o, key) => ({...o, [key]: undefined}), {})
     };
 
     const resetAll_hover = () => {
-        Object.keys(blockAttributes.hover).reduce((o, key) => ({ ...o, [key]: undefined}), {})
+        Object.keys(blockAttributes.hover).reduce((o, key) => ({...o, [key]: undefined}), {})
     };
 
     return <>

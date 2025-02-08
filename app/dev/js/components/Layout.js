@@ -220,7 +220,20 @@ const blockAttributes = {
 
 export function LayoutProps(attributes) {
 
+    //console.log(attributes);
+
+    const block_attrs = new Set(Object.keys(attributes));
+    const layout_attrs = (new Set(Object.keys(blockAttributes.layout))).intersection(block_attrs);
+    const mobile_attrs = (new Set(Object.keys(blockAttributes.mobile))).intersection(block_attrs);
+    const hover_attrs = (new Set(Object.keys(blockAttributes.hover))).intersection(block_attrs);
+    const colors_attrs = (new Set(Object.keys(blockAttributes.colors))).intersection(block_attrs);
+
+
     console.log(attributes);
+    /*console.log(layout_attrs);
+    console.log(mobile_attrs);
+    console.log(hover_attrs);
+    console.log(colors_attrs);*/
 
     const style = {};
 

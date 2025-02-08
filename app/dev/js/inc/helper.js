@@ -4,7 +4,11 @@ export function parseProp(prop) {
         return '0';
     }
 
-    prop = typeof prop === 'string' ? prop : '';
+    prop = typeof prop === 'string' ? prop : false;
+
+    if (!prop) {
+        return false
+    }
 
     return [
         'var(--wp--',

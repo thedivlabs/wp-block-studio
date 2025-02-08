@@ -236,15 +236,15 @@ export function LayoutAttributes() {
 export function Layout({blockProps, attributes = {}, setAttributes}) {
 
     const resetAll_layout = () => {
-        Object.keys(blockAttributes.layout).reduce((o, key) => ({...o, [key]: undefined}), {})
+        setAttributes(Object.keys(blockAttributes.layout).reduce((o, key) => ({...o, [key]: undefined}), {}))
     };
 
     const resetAll_layout_mobile = () => {
-        Object.keys(blockAttributes.mobile).reduce((o, key) => ({...o, [key]: undefined}), {})
+        setAttributes(Object.keys(blockAttributes.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
     };
 
     const resetAll_hover = () => {
-        Object.keys(blockAttributes.hover).reduce((o, key) => ({...o, [key]: undefined}), {})
+        setAttributes(Object.keys(blockAttributes.hover).reduce((o, key) => ({...o, [key]: undefined}), {}))
     };
 
     return <>

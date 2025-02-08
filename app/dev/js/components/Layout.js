@@ -811,7 +811,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
             <ToolsPanel label={'Hover'} resetAll={resetAll_hover}>
                 <ToolsPanelItem
-                    style={{gridColumn: 'span 1'}}
+                    style={{gridColumn: 'span 2'}}
                     hasValue={() => !!attributes.opacity_hover || ''}
                     label={'Opacity'}
                     onDeselect={() => setAttributes({opacity_hover: ''})}

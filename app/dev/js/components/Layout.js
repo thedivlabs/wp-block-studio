@@ -331,7 +331,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    style={{gridColumn: 'span 1'}}
+                    style={{gridColumn: 'span 2'}}
                     hasValue={() => !!attributes.opacity || ''}
                     label={'Opacity'}
                     onDeselect={() => setAttributes({opacity: ''})}
@@ -341,7 +341,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    style={{gridColumn: 'span 1'}}
+                    style={{gridColumn: 'span 2'}}
                     hasValue={() => !!attributes.basis || ''}
                     label={'Basis'}
                     onDeselect={() => setAttributes({basis: ''})}
@@ -550,7 +550,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    style={{gridColumn: 'span 1'}}
+                    style={{gridColumn: 'span 2'}}
                     hasValue={() => !!attributes.opacity_mobile || ''}
                     label={'Opacity'}
                     onDeselect={() => setAttributes({opacity_mobile: ''})}
@@ -560,7 +560,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    style={{gridColumn: 'span 1'}}
+                    style={{gridColumn: 'span 2'}}
                     hasValue={() => !!attributes.basis_mobile || ''}
                     label={'Basis'}
                     onDeselect={() => setAttributes({basis_mobile: ''})}

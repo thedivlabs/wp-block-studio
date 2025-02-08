@@ -12,7 +12,7 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
     const [bottom, setBottom] = useState(bottomValue);
     const [left, setLeft] = useState(leftValue);
 
-    return <Grid columns={4} columnGap={20} rowGap={0} style={{gridColumnStart: 1, gridColumnEnd: -1}}>
+    return <Grid columns={2} columnGap={20} rowGap={20} style={{gridColumnStart: 1, gridColumnEnd: -1}}>
 
         <UnitControl
             label={'Top'}
@@ -20,7 +20,7 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
                 setTop(newValue);
-                callback(newValue,right,bottom,left);
+                callback(newValue, right, bottom, left);
             }}
             __next40pxDefaultSize
         />
@@ -30,7 +30,7 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
                 setRight(newValue);
-                callback(top,newValue,bottom,left);
+                callback(top, newValue, bottom, left);
             }}
             __next40pxDefaultSize
         />
@@ -40,7 +40,7 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
                 setBottom(newValue);
-                callback(top,right,newValue,left);
+                callback(top, right, newValue, left);
             }}
             __next40pxDefaultSize
         />
@@ -50,7 +50,7 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
                 setLeft(newValue);
-                callback(top,right,bottom,newValue);
+                callback(top, right, bottom, newValue);
             }}
             __next40pxDefaultSize
         />

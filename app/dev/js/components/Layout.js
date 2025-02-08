@@ -228,16 +228,32 @@ export function LayoutProps(attributes) {
     const hoverAttrs = (new Set(Object.keys(blockAttributes.hover))).intersection(blockAttrs);
     const colorsAttrs = (new Set(Object.keys(blockAttributes.colors))).intersection(blockAttrs);
 
+    const regex = /([A-Z])/g;
 
-    console.log(attributes);
+    //console.log(attributes);
     /*console.log(layout_attrs);
     console.log(mobile_attrs);
     console.log(hover_attrs);
     console.log(colors_attrs);*/
 
+    const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
+        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+    }));
 
-    const style = {};
+    const mobileProps = Object.fromEntries([...mobileAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
+        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+    }));
 
+    const hoverProps = Object.fromEntries([...hoverAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
+        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+    }));
+
+    const colorsProps = Object.fromEntries([...colorsAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
+        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+    }));
+
+    const style = Object.assign({}, layoutProps, mobileProps, hoverProps, colorsProps);
+    
     return {
         style: style
     };

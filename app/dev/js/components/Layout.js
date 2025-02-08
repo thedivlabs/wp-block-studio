@@ -219,70 +219,15 @@ export function LayoutAttributes() {
 export function Layout({blockProps, attributes = {}, setAttributes}) {
 
     const resetAll_layout = () => {
-        setAttributes({
-            display: undefined,
-            container: undefined,
-            align: undefined,
-            justify: undefined,
-            opacity: undefined,
-            basis: undefined,
-            width: undefined,
-            max_width: undefined,
-            height: undefined,
-            height_custom: undefined,
-            flex_wrap: undefined,
-            space: undefined,
-            position: undefined,
-            zindex: undefined,
-            top: undefined,
-            right: undefined,
-            bottom: undefined,
-            left: undefined,
-            overflow: undefined,
-            shape: undefined,
-            order: undefined,
-            translate: undefined,
-            outline: undefined,
-        })
+        setAttributes(Object.keys(attributes.layout).reduce((o, key) => ({ ...o, [key]: undefined}), {}));
     };
 
     const resetAll_layout_mobile = () => {
-        setAttributes({
-            display_mobile: undefined,
-            breakpoint: undefined,
-            align_mobile: undefined,
-            justify_mobile: undefined,
-            opacity_mobile: undefined,
-            basis_mobile: undefined,
-            width_mobile: undefined,
-            max_width_mobile: undefined,
-            height_mobile: undefined,
-            height_custom_mobile: undefined,
-            space_mobile: undefined,
-            shape_mobile: undefined,
-            position_mobile: undefined,
-            zindex_mobile: undefined,
-            top_mobile: undefined,
-            right_mobile: undefined,
-            bottom_mobile: undefined,
-            left_mobile: undefined,
-            order_mobile: undefined,
-            translate_mobile: undefined,
-            padding_mobile: undefined,
-            margin_mobile: undefined,
-            gap_mobile: undefined,
-            rounded_mobile: undefined,
-            font_size_mobile: undefined,
-            line_height_mobile: undefined,
-            text_align_mobile: undefined,
-            flex_wrap_mobile: undefined,
-        });
+        setAttributes(Object.keys(attributes.mobile).reduce((o, key) => ({ ...o, [key]: undefined}), {}));
     };
 
     const resetAll_hover = () => {
-        setAttributes({
-            opacity_hover: undefined,
-        });
+        setAttributes(Object.keys(attributes.hover).reduce((o, key) => ({ ...o, [key]: undefined}), {}));
     };
 
     return <>

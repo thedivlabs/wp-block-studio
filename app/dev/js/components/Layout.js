@@ -195,7 +195,7 @@ const blockAttributes = {
         },
     },
     hover: {
-        opacity_hover: {
+        opacityHover: {
             type: 'integer'
         }
     }
@@ -307,13 +307,13 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.max_width || ''}
+                    hasValue={() => !!attributes.maxWidth || ''}
                     label={'Max-Width'}
-                    onDeselect={() => setAttributes({max_width: ''})}
+                    onDeselect={() => setAttributes({maxWidth: ''})}
                 >
-                    <Width label={'Max-Width'} defaultValue={attributes.max_width || ''}
+                    <Width label={'Max-Width'} defaultValue={attributes.maxWidth || ''}
                            callback={(newValue) => {
-                               setAttributes({max_width: newValue});
+                               setAttributes({maxWidth: newValue});
                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -328,22 +328,22 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.height_custom || ''}
+                    hasValue={() => !!attributes.heightCustom || ''}
                     label={'Height Custom'}
-                    onDeselect={() => setAttributes({height_custom: ''})}
+                    onDeselect={() => setAttributes({heightCustom: ''})}
                 >
-                    <HeightCustom defaultValue={attributes.height_custom || ''} callback={(newValue) => {
-                        setAttributes({height_custom: newValue});
+                    <HeightCustom defaultValue={attributes.heightCustom || ''} callback={(newValue) => {
+                        setAttributes({heightCustom: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.flex_wrap || ''}
+                    hasValue={() => !!attributes.flexWrap || ''}
                     label={'Flex Wrap'}
-                    onDeselect={() => setAttributes({flex_wrap: ''})}
+                    onDeselect={() => setAttributes({flexWrap: ''})}
                 >
-                    <FlexWrap defaultValue={attributes.flex_wrap || ''} callback={(newValue) => {
-                        setAttributes({flex_wrap: newValue});
+                    <FlexWrap defaultValue={attributes.flexWrap || ''} callback={(newValue) => {
+                        setAttributes({flexWrap: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -368,12 +368,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.zindex || ''}
+                    hasValue={() => !!attributes.zIndex || ''}
                     label={'Z-Index'}
-                    onDeselect={() => setAttributes({zindex: ''})}
+                    onDeselect={() => setAttributes({zIndex: ''})}
                 >
-                    <ZIndex defaultValue={attributes.zindex || ''} callback={(newValue) => {
-                        setAttributes({zindex: newValue});
+                    <ZIndex defaultValue={attributes.zIndex || ''} callback={(newValue) => {
+                        setAttributes({zIndex: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -422,12 +422,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.outline_offset || ''}
+                    hasValue={() => !!attributes.outlineOffset || ''}
                     label={'Outline Offset'}
-                    onDeselect={() => setAttributes({outline_offset: ''})}
+                    onDeselect={() => setAttributes({outlineOffset: ''})}
                 >
-                    <OutlineOffset defaultValue={attributes.outline_offset || ''} callback={(newValue) => {
-                        setAttributes({outline_offset: newValue});
+                    <OutlineOffset defaultValue={attributes.outlineOffset || ''} callback={(newValue) => {
+                        setAttributes({outlineOffset: newValue});
                     }}/>
                 </ToolsPanelItem>
 
@@ -456,12 +456,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
             <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.display_mobile || ''}
+                    hasValue={() => !!attributes.displayMobile || ''}
                     label={'Display'}
-                    onDeselect={() => setAttributes({display_mobile: ''})}
+                    onDeselect={() => setAttributes({displayMobile: ''})}
                 >
-                    <Display defaultValue={attributes.display_mobile || ''} callback={(newValue) => {
-                        setAttributes({display_mobile: newValue});
+                    <Display defaultValue={attributes.displayMobile || ''} callback={(newValue) => {
+                        setAttributes({displayMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -476,247 +476,247 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.align_mobile || ''}
+                    hasValue={() => !!attributes.alignMobile || ''}
                     label={'Align'}
-                    onDeselect={() => setAttributes({align_mobile: ''})}
+                    onDeselect={() => setAttributes({alignMobile: ''})}
                 >
-                    <Align defaultValue={attributes.align_mobile || ''} callback={(newValue) => {
-                        setAttributes({align_mobile: newValue});
+                    <Align defaultValue={attributes.alignMobile || ''} callback={(newValue) => {
+                        setAttributes({alignMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.justify_mobile || ''}
+                    hasValue={() => !!attributes.justifyMobile || ''}
                     label={'Justify'}
-                    onDeselect={() => setAttributes({justify_mobile: ''})}
+                    onDeselect={() => setAttributes({justifyMobile: ''})}
                 >
-                    <Justify defaultValue={attributes.justify_mobile || ''} callback={(newValue) => {
-                        setAttributes({justify_mobile: newValue});
+                    <Justify defaultValue={attributes.justifyMobile || ''} callback={(newValue) => {
+                        setAttributes({justifyMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes.opacity_mobile || ''}
+                    hasValue={() => !!attributes.opacityMobile || ''}
                     label={'Opacity'}
-                    onDeselect={() => setAttributes({opacity_mobile: ''})}
+                    onDeselect={() => setAttributes({opacityMobile: ''})}
                 >
-                    <Opacity defaultValue={attributes.opacity_mobile || 100} callback={(newValue) => {
-                        setAttributes({opacity_mobile: newValue});
+                    <Opacity defaultValue={attributes.opacityMobile || 100} callback={(newValue) => {
+                        setAttributes({opacityMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes.basis_mobile || ''}
+                    hasValue={() => !!attributes.basisMobile || ''}
                     label={'Basis'}
-                    onDeselect={() => setAttributes({basis_mobile: ''})}
+                    onDeselect={() => setAttributes({basisMobile: ''})}
                 >
-                    <Basis defaultValue={attributes.basis_mobile || ''} callback={(newValue) => {
-                        setAttributes({basis_mobile: newValue});
+                    <Basis defaultValue={attributes.basisMobile || ''} callback={(newValue) => {
+                        setAttributes({basisMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.width_mobile || ''}
+                    hasValue={() => !!attributes.widthMobile || ''}
                     label={'Width'}
-                    onDeselect={() => setAttributes({width_mobile: ''})}
+                    onDeselect={() => setAttributes({widthMobile: ''})}
                 >
-                    <Width defaultValue={attributes.width_mobile || ''} callback={(newValue) => {
-                        setAttributes({width_mobile: newValue});
+                    <Width defaultValue={attributes.widthMobile || ''} callback={(newValue) => {
+                        setAttributes({widthMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.max_width_mobile || ''}
+                    hasValue={() => !!attributes.maxWidthMobile || ''}
                     label={'Max-Width'}
-                    onDeselect={() => setAttributes({max_width_mobile: ''})}
+                    onDeselect={() => setAttributes({maxWidthMobile: ''})}
                 >
-                    <Width label={'Max-Width'} defaultValue={attributes.max_width_mobile || ''}
+                    <Width label={'Max-Width'} defaultValue={attributes.maxWidthMobile || ''}
                            callback={(newValue) => {
-                               setAttributes({max_width_mobile: newValue});
+                               setAttributes({maxWidthMobile: newValue});
                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.height_mobile || ''}
+                    hasValue={() => !!attributes.heightMobile || ''}
                     label={'Height'}
-                    onDeselect={() => setAttributes({height_mobile: ''})}
+                    onDeselect={() => setAttributes({heightMobile: ''})}
                 >
-                    <Height defaultValue={attributes.height_mobile || ''} callback={(newValue) => {
-                        setAttributes({height_mobile: newValue});
+                    <Height defaultValue={attributes.heightMobile || ''} callback={(newValue) => {
+                        setAttributes({heightMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.height_custom_mobile || ''}
+                    hasValue={() => !!attributes.heightCustomMobile || ''}
                     label={'Height Custom'}
-                    onDeselect={() => setAttributes({height_custom_mobile: ''})}
+                    onDeselect={() => setAttributes({heightCustomMobile: ''})}
                 >
-                    <HeightCustom defaultValue={attributes.height_custom_mobile || ''}
+                    <HeightCustom defaultValue={attributes.heightCustomMobile || ''}
                                   callback={(newValue) => {
-                                      setAttributes({height_custom_mobile: newValue});
+                                      setAttributes({heightCustomMobile: newValue});
                                   }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.space_mobile || ''}
+                    hasValue={() => !!attributes.spaceMobile || ''}
                     label={'Space'}
-                    onDeselect={() => setAttributes({space_mobile: ''})}
+                    onDeselect={() => setAttributes({spaceMobile: ''})}
                 >
-                    <Space defaultValue={attributes.space_mobile || ''} callback={(newValue) => {
-                        setAttributes({space_mobile: newValue});
+                    <Space defaultValue={attributes.spaceMobile || ''} callback={(newValue) => {
+                        setAttributes({spaceMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.shape_mobile || ''}
+                    hasValue={() => !!attributes.shapeMobile || ''}
                     label={'Shape'}
-                    onDeselect={() => setAttributes({shape_mobile: ''})}
+                    onDeselect={() => setAttributes({shapeMobile: ''})}
                 >
-                    <Shape defaultValue={attributes.shape_mobile || ''} callback={(newValue) => {
-                        setAttributes({shape_mobile: newValue});
+                    <Shape defaultValue={attributes.shapeMobile || ''} callback={(newValue) => {
+                        setAttributes({shapeMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.flex_wrap_mobile || ''}
+                    hasValue={() => !!attributes.flexWrapMobile || ''}
                     label={'Flex Wrap'}
-                    onDeselect={() => setAttributes({flex_wrap_mobile: ''})}
+                    onDeselect={() => setAttributes({flexWrapMobile: ''})}
                 >
-                    <FlexWrap defaultValue={attributes.flex_wrap_mobile || ''} callback={(newValue) => {
-                        setAttributes({flex_wrap_mobile: newValue});
+                    <FlexWrap defaultValue={attributes.flexWrapMobile || ''} callback={(newValue) => {
+                        setAttributes({flexWrapMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.position_mobile || ''}
+                    hasValue={() => !!attributes.positionMobile || ''}
                     label={'Position'}
-                    onDeselect={() => setAttributes({position_mobile: ''})}
+                    onDeselect={() => setAttributes({positionMobile: ''})}
                 >
-                    <Position defaultValue={attributes.position_mobile || ''} callback={(newValue) => {
-                        setAttributes({position_mobile: newValue});
+                    <Position defaultValue={attributes.positionMobile || ''} callback={(newValue) => {
+                        setAttributes({positionMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.zindex_mobile || ''}
+                    hasValue={() => !!attributes.zIndexMobile || ''}
                     label={'Z-Index'}
-                    onDeselect={() => setAttributes({zindex_mobile: ''})}
+                    onDeselect={() => setAttributes({zIndexMobile: ''})}
                 >
-                    <ZIndex defaultValue={attributes.zindex_mobile || ''} callback={(newValue) => {
-                        setAttributes({zindex_mobile: newValue});
+                    <ZIndex defaultValue={attributes.zIndexMobile || ''} callback={(newValue) => {
+                        setAttributes({zIndexMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes.top_mobile || !!attributes.right_mobile || !!attributes.bottom_mobile || !!attributes.left_mobile || ''}
+                    hasValue={() => !!attributes.topMobile || !!attributes.rightMobile || !!attributes.bottomMobile || !!attributes.leftMobile || ''}
                     label={'Box Position'}
                     onDeselect={() => setAttributes({
-                        top_mobile: '',
-                        right_mobile: '',
-                        bottom_mobile: '',
-                        left_mobile: ''
+                        topMobile: '',
+                        rightMobile: '',
+                        bottomMobile: '',
+                        leftMobile: ''
                     })}
                 >
-                    <BoxPosition topValue={attributes.top_mobile || ''}
-                                 rightValue={attributes.right_mobile || ''}
-                                 bottomValue={attributes.bottom_mobile || ''}
-                                 leftValue={attributes.left_mobile || ''}
+                    <BoxPosition topValue={attributes.topMobile || ''}
+                                 rightValue={attributes.rightMobile || ''}
+                                 bottomValue={attributes.bottomMobile || ''}
+                                 leftValue={attributes.leftMobile || ''}
                                  callback={(top, right, bottom, left) => {
                                      setAttributes({
-                                         top_mobile: top,
-                                         right_mobile: right,
-                                         bottom_mobile: bottom,
-                                         left_mobile: left
+                                         topMobile: top,
+                                         rightMobile: right,
+                                         bottomMobile: bottom,
+                                         leftMobile: left
                                      });
                                  }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.order_mobile || undefined}
+                    hasValue={() => !!attributes.orderMobile || undefined}
                     label={'Order'}
-                    onDeselect={() => setAttributes({order_mobile: undefined})}
+                    onDeselect={() => setAttributes({orderMobile: undefined})}
                 >
-                    <Order defaultValue={attributes.order_mobile || undefined} callback={(newValue) => {
-                        setAttributes({order_mobile: newValue});
+                    <Order defaultValue={attributes.orderMobile || undefined} callback={(newValue) => {
+                        setAttributes({orderMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes.translate_mobile || undefined}
+                    hasValue={() => !!attributes.translateMobile || undefined}
                     label={'Translate'}
-                    onDeselect={() => setAttributes({translate_mobile: undefined})}
+                    onDeselect={() => setAttributes({translateMobile: undefined})}
                 >
                     <Translate label={'Translate'}
-                               defaultValue={attributes.translate_mobile || {}}
+                               defaultValue={attributes.translateMobile || {}}
                                callback={(newValue) => {
-                                   setAttributes({translate_mobile: newValue});
+                                   setAttributes({translateMobile: newValue});
                                }}/>
                 </ToolsPanelItem>
 
                 <ToolsPanelItem
-                    hasValue={() => !!attributes.padding_mobile || undefined}
+                    hasValue={() => !!attributes.paddingMobile || undefined}
                     label={'Padding'}
-                    onDeselect={() => setAttributes({padding_mobile: undefined})}
+                    onDeselect={() => setAttributes({paddingMobile: undefined})}
                 >
-                    <Padding defaultValue={attributes.padding_mobile || {}} callback={(newValue) => {
-                        setAttributes({padding_mobile: newValue});
+                    <Padding defaultValue={attributes.paddingMobile || {}} callback={(newValue) => {
+                        setAttributes({paddingMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes.margin_mobile || undefined}
+                    hasValue={() => !!attributes.marginMobile || undefined}
                     label={'Margin'}
-                    onDeselect={() => setAttributes({margin_mobile: undefined})}
+                    onDeselect={() => setAttributes({marginMobile: undefined})}
                 >
-                    <Margin defaultValue={attributes.margin_mobile || {}} callback={(newValue) => {
-                        setAttributes({margin_mobile: newValue});
+                    <Margin defaultValue={attributes.marginMobile || {}} callback={(newValue) => {
+                        setAttributes({marginMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes.gap_mobile || undefined}
+                    hasValue={() => !!attributes.gapMobile || undefined}
                     label={'Gap'}
-                    onDeselect={() => setAttributes({gap_mobile: undefined})}
+                    onDeselect={() => setAttributes({gapMobile: undefined})}
                 >
-                    <Gap defaultValue={attributes.gap_mobile || {}} callback={(newValue) => {
-                        setAttributes({gap_mobile: newValue});
+                    <Gap defaultValue={attributes.gapMobile || {}} callback={(newValue) => {
+                        setAttributes({gapMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes.rounded_mobile || undefined}
+                    hasValue={() => !!attributes.roundedMobile || undefined}
                     label={'Rounded'}
-                    onDeselect={() => setAttributes({rounded_mobile: undefined})}
+                    onDeselect={() => setAttributes({roundedMobile: undefined})}
                 >
-                    <Rounded defaultValue={attributes.rounded_mobile || {}} callback={(newValue) => {
-                        setAttributes({rounded_mobile: newValue});
+                    <Rounded defaultValue={attributes.roundedMobile || {}} callback={(newValue) => {
+                        setAttributes({roundedMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
 
 
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.font_size_mobile || ''}
+                    hasValue={() => !!attributes.fontSizeMobile || ''}
                     label={'Font Size'}
-                    onDeselect={() => setAttributes({font_size_mobile: ''})}
+                    onDeselect={() => setAttributes({fontSizeMobile: ''})}
                 >
-                    <FontSize defaultValue={attributes.font_size_mobile || ''} callback={(newValue) => {
-                        setAttributes({font_size_mobile: newValue});
+                    <FontSize defaultValue={attributes.fontSizeMobile || ''} callback={(newValue) => {
+                        setAttributes({fontSizeMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.line_height_mobile || ''}
+                    hasValue={() => !!attributes.lineHeightMobile || ''}
                     label={'Line Height'}
-                    onDeselect={() => setAttributes({line_height_mobile: ''})}
+                    onDeselect={() => setAttributes({lineHeightMobile: ''})}
                 >
-                    <LineHeight defaultValue={attributes.line_height_mobile || ''} callback={(newValue) => {
-                        setAttributes({line_height_mobile: newValue});
+                    <LineHeight defaultValue={attributes.lineHeightMobile || ''} callback={(newValue) => {
+                        setAttributes({lineHeightMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.text_align_mobile || ''}
+                    hasValue={() => !!attributes.textAlignMobile || ''}
                     label={'Text Align'}
-                    onDeselect={() => setAttributes({text_align_mobile: ''})}
+                    onDeselect={() => setAttributes({textAlignMobile: ''})}
                 >
-                    <TextAlign defaultValue={attributes.text_align_mobile || ''} callback={(newValue) => {
-                        setAttributes({text_align_mobile: newValue});
+                    <TextAlign defaultValue={attributes.textAlignMobile || ''} callback={(newValue) => {
+                        setAttributes({textAlignMobile: newValue});
                     }}/>
                 </ToolsPanelItem>
             </ToolsPanel>
@@ -724,12 +724,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
             <ToolsPanel label={'Hover'} resetAll={resetAll_hover}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes.opacity_hover || ''}
+                    hasValue={() => !!attributes.opacityHover || ''}
                     label={'Opacity'}
-                    onDeselect={() => setAttributes({opacity_hover: ''})}
+                    onDeselect={() => setAttributes({opacityHover: ''})}
                 >
-                    <Opacity defaultValue={attributes.opacity_hover || ''} callback={(newValue) => {
-                        setAttributes({opacity_hover: newValue});
+                    <Opacity defaultValue={attributes.opacityHover || ''} callback={(newValue) => {
+                        setAttributes({opacityHover: newValue});
                     }}/>
                 </ToolsPanelItem>
             </ToolsPanel>
@@ -740,23 +740,23 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 __experimentalIsRenderedInSidebar
                 colorSettings={[
                     {
-                        slug: 'text_hover',
+                        slug: 'textHover',
                         label: 'Text Hover'
                     },
                     {
-                        slug: 'background_hover',
+                        slug: 'backgroundHover',
                         label: 'Background Hover'
                     },
                     {
-                        slug: 'border_color_hover',
+                        slug: 'borderColorHover',
                         label: 'Border Hover'
                     },
                     {
-                        slug: 'text_mobile',
+                        slug: 'textMobile',
                         label: 'Text Mobile'
                     },
                     {
-                        slug: 'background_mobile',
+                        slug: 'backgroundMobile',
                         label: 'Background Mobile'
                     }
                 ].map((color_control) => {

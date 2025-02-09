@@ -223,38 +223,28 @@ export function LayoutProps(attributes) {
     //console.log(attributes);
 
     const blockAttrs = new Set(Object.keys(attributes));
-    const layoutAttrs = (new Set(Object.keys(blockAttributes.layout))).intersection(blockAttrs);
-    const mobileAttrs = (new Set(Object.keys(blockAttributes.mobile))).intersection(blockAttrs);
-    const hoverAttrs = (new Set(Object.keys(blockAttributes.hover))).intersection(blockAttrs);
-    const colorsAttrs = (new Set(Object.keys(blockAttributes.colors))).intersection(blockAttrs);
+    const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
 
     const regex = /([A-Z])/g;
 
-    //console.log(attributes);
-    /*console.log(layout_attrs);
-    console.log(mobile_attrs);
-    console.log(hover_attrs);
-    console.log(colors_attrs);*/
-
-    const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'string' && ![
+    const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
         'container'
-    ].includes(attr)).map(attr => {
+    ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
         return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
     }));
 
-    //console.log(layoutProps);
+    const objectProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'object').sort().map(attr => {
+        return Object.keys(attributes[attr]).map(subAttr => {
+            return ['--layout-' + attr.replace(regex, '-$1').toLowerCase() + '-' + subAttr, attributes[attr][subAttr]];
+        });
+    }).flat());
 
-    const mobileProps = Object.fromEntries([...mobileAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
-    }));
+    const combinedProps = Object.assign({}, layoutProps, objectProps);
 
-    const hoverProps = Object.fromEntries([...hoverAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
-    }));
+    console.log(layoutProps);
+    console.log(objectProps);
 
-    const colorsProps = Object.fromEntries([...colorsAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
-    }));
+    return {};
 
     const classes = [...layoutAttrs, ...mobileAttrs, ...hoverAttrs, ...colorsAttrs].map(attr => {
 

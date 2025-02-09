@@ -236,26 +236,53 @@ export function LayoutProps(attributes) {
     console.log(hover_attrs);
     console.log(colors_attrs);*/
 
-    const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+    const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'string' && ![
+        'container'
+    ].includes(attr)).map(attr => {
+        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
     }));
 
+    //console.log(layoutProps);
+
     const mobileProps = Object.fromEntries([...mobileAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
     }));
 
     const hoverProps = Object.fromEntries([...hoverAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
     }));
 
     const colorsProps = Object.fromEntries([...colorsAttrs].filter(attr => typeof attributes[attr] === 'string').map(attr => {
-        return ['--' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
+        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
     }));
 
-    const style = Object.assign({}, layoutProps, mobileProps, hoverProps, colorsProps);
-    
+    const classes = [...layoutAttrs, ...mobileAttrs, ...hoverAttrs, ...colorsAttrs].map(attr => {
+
+        const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
+
+        if (attr === 'container') {
+            return ['--layout', prop, attributes[attr]].join('-');
+        }
+
+
+        if (typeof attributes[attr] === 'object') {
+
+            return Object.keys(attributes[attr]).map(subAttr => {
+                return '--layout-' + prop + '-' + subAttr;
+            }).join(' ');
+        }
+
+        if (![].includes(attr)) {
+            console.log(prop);
+            return '--layout-' + prop;
+        }
+
+
+    }).filter(attr => attr !== null);
+
     return {
-        style: style
+        style: Object.assign({}, layoutProps, mobileProps, hoverProps, colorsProps),
+        className: classes.join(' ')
     };
 }
 

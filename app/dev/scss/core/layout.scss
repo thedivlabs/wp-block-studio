@@ -6,12 +6,12 @@
   color: var(--text-color, inherit) !important;
 }
 
-.--layout-font_size {
-  font-size: var(----layout-font_size, inherit) !important;
+.--layout-font-size {
+  font-size: var(----layout-font-size, inherit) !important;
 }
 
-.--layout-line_height {
-  line-height: var(--layout-line_height, normal) !important;
+.--layout-line-height {
+  line-height: var(--layout-line-height, normal) !important;
 }
 
 .--layout-grow {
@@ -79,8 +79,8 @@
   width: var(--layout-width) !important;
 }
 
-.--layout-max_width {
-  max-width: var(--layout-max_width) !important;
+.--layout-max-width {
+  max-width: var(--layout-max-width) !important;
 }
 
 .--layout-height-full {
@@ -88,19 +88,19 @@
 }
 
 .--layout-height,
-.--layout-height_custom {
+.--layout-height-custom {
   height: var(--layout-height, auto);
 }
 
-.--layout-flex_wrap {
-  flex-wrap: var(--layout-flex_wrap);
+.--layout-flex-wrap {
+  flex-wrap: var(--layout-flex-wrap);
 
   &:not(.has-container) {
-    flex-wrap: var(--layout-flex_wrap);
+    flex-wrap: var(--layout-flex-wrap);
   }
 
   &.has-container > .container {
-    flex-wrap: var(--layout-flex_wrap);
+    flex-wrap: var(--layout-flex-wrap);
   }
 }
 
@@ -159,8 +159,8 @@
   overflow: var(--layout-overflow) !important;
 }
 
-.--layout-text_align {
-  text-align: var(--layout-text_align) !important;
+.--layout-text-align {
+  text-align: var(--layout-text-align) !important;
 }
 
 .--layout-translate {
@@ -171,8 +171,8 @@
   outline: var(--layout-outline, none);
 }
 
-.--layout-outline_offset {
-  outline-offset: var(--layout-outline_offset, 0);
+.--layout-outline-offset {
+  outline-offset: var(--layout-outline-offset, 0);
 }
 
 .--layout-container {
@@ -238,9 +238,9 @@
   }
 }
 
-.--layout-border_color-hover {
+.--layout-border-color-hover {
   &:hover {
-    border-color: var(--layout-border_color-hover) !important;
+    border-color: var(--layout-border-color-hover) !important;
   }
 }
 
@@ -299,6 +299,6 @@
 .--layout-opacity-hover,
 .--layout-background-hover,
 .--layout-text-hover,
-.--layout-border_color-hover {
+.--layout-border-color-hover {
   transition-property: transform, opacity, color, background-color, border-color;
 }

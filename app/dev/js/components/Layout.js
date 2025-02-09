@@ -228,7 +228,9 @@ export function LayoutProps(attributes) {
     const regex = /([A-Z])/g;
 
     const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
-        'container'
+        'container',
+        'display',
+        'space'
     ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
         return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
     }));
@@ -249,6 +251,56 @@ export function LayoutProps(attributes) {
             return ['--layout', prop, attributes[attr]].join('-');
         }
 
+        if (attr === 'space') {
+            return ['--layout', attributes[attr]].join('-');
+        }
+
+        if (attr === 'display') {
+
+            let displayProp;
+            let directionProp;
+
+            switch (attributes[attr]) {
+                case 'block':
+                    displayProp = 'block';
+                    directionProp = false;
+                    break;
+                case 'inline-block':
+                    displayProp = 'inline-block';
+                    directionProp = false;
+                    break;
+                case 'inline':
+                    displayProp = 'inline';
+                    directionProp = false;
+                    break;
+                case 'none':
+                    displayProp = 'none';
+                    directionProp = false;
+                    break;
+                case 'flex-row':
+                    displayProp = 'flex';
+                    directionProp = 'row';
+                    break;
+                case 'flex-row-reverse':
+                    displayProp = 'flex';
+                    directionProp = 'row-reverse';
+                    break;
+                case 'flex-column':
+                    displayProp = 'flex';
+                    directionProp = 'column';
+                    break;
+                case 'flex-column-reverse':
+                    displayProp = 'flex';
+                    directionProp = 'column-reverse';
+                    break;
+
+            }
+
+            return [
+                displayProp ? ['--layout', prop, displayProp].join('-') : false,
+                directionProp ? ['--layout', 'flex-direction', directionProp].join('-') : false,
+            ].filter(p => p);
+        }
 
         if (typeof attributes[attr] === 'object') {
 

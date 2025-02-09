@@ -227,33 +227,24 @@ export function LayoutProps(attributes) {
 
     const regex = /([A-Z])/g;
 
-    const layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
+    let layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
         'container',
         'display',
-        'space'
+        'space',
     ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
-        return ['--layout-' + attr.replace(regex, '-$1').toLowerCase(), attributes[attr]];
-    }));
-
-    const objectProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'object').sort().map(attr => {
-        return Object.keys(attributes[attr]).map(subAttr => {
-            return ['--layout-' + attr.replace(regex, '-$1').toLowerCase() + '-' + subAttr, attributes[attr][subAttr]];
-        });
-    }).flat());
-
-    const combinedProps = Object.assign({}, layoutProps, objectProps);
-
-    const classes = [...layoutAttrs].map(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
 
-        if (attr === 'container') {
-            return ['--layout', prop, attributes[attr]].join('-');
-        }
+        return ['--layout-' + prop, attributes[attr]];
+    }));
 
-        if (attr === 'space') {
-            return ['--layout', attributes[attr]].join('-');
-        }
+
+    [...layoutAttrs].filter(attr => [
+        'display',
+    ].includes(attr) && typeof attributes[attr] === 'string').sort().forEach(attr => {
+
+        const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
+        const key = ['--layout', prop].join('-');
 
         if (attr === 'display') {
 
@@ -296,11 +287,37 @@ export function LayoutProps(attributes) {
 
             }
 
-            return [
-                displayProp ? ['--layout', prop, displayProp].join('-') : false,
-                directionProp ? ['--layout', 'flex-direction', directionProp].join('-') : false,
-            ].filter(p => p);
+            layoutProps[key] = displayProp;
+
+            if (directionProp) {
+                layoutProps['--layout-direction'] = directionProp;
+            }
+
         }
+
+    });
+
+
+    const objectProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'object').sort().map(attr => {
+        return Object.keys(attributes[attr]).map(subAttr => {
+            return ['--layout-' + attr.replace(regex, '-$1').toLowerCase() + '-' + subAttr, attributes[attr][subAttr]];
+        });
+    }).flat());
+
+    const combinedProps = Object.assign({}, layoutProps, objectProps);
+
+    const classes = [...layoutAttrs].map(attr => {
+
+        const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
+
+        if (attr === 'container') {
+            return ['--layout', prop, attributes[attr]].join('-');
+        }
+
+        if (attr === 'space') {
+            return ['--layout', attributes[attr]].join('-');
+        }
+
 
         if (typeof attributes[attr] === 'object') {
 

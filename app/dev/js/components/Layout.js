@@ -241,12 +241,7 @@ export function LayoutProps(attributes) {
 
     const combinedProps = Object.assign({}, layoutProps, objectProps);
 
-    console.log(layoutProps);
-    console.log(objectProps);
-
-    return {};
-
-    const classes = [...layoutAttrs, ...mobileAttrs, ...hoverAttrs, ...colorsAttrs].map(attr => {
+    const classes = [...layoutAttrs].map(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
 
@@ -263,15 +258,17 @@ export function LayoutProps(attributes) {
         }
 
         if (![].includes(attr)) {
-            console.log(prop);
             return '--layout-' + prop;
         }
 
 
-    }).filter(attr => attr !== null);
+    }).flat().filter(attr => attr !== null);
+
+    console.log(combinedProps);
+    console.log(classes);
 
     return {
-        style: Object.assign({}, layoutProps, mobileProps, hoverProps, colorsProps),
+        style: combinedProps,
         className: classes.join(' ')
     };
 }

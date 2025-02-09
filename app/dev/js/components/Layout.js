@@ -223,14 +223,18 @@ export function LayoutProps(attributes) {
     //console.log(attributes);
 
     const blockAttrs = new Set(Object.keys(attributes));
-    const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
+    const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
 
     const regex = /([A-Z])/g;
 
+    let mobileProps = {};
     let layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
         'container',
+        'containerMobile',
         'display',
+        'displayMobile',
         'space',
+        'spaceMobile',
     ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
@@ -241,6 +245,9 @@ export function LayoutProps(attributes) {
 
     [...layoutAttrs].filter(attr => [
         'display',
+        'displayMobile',
+        'space',
+        'spaceMobile',
     ].includes(attr) && typeof attributes[attr] === 'string').sort().forEach(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
@@ -291,6 +298,26 @@ export function LayoutProps(attributes) {
 
             if (directionProp) {
                 layoutProps['--layout-direction'] = directionProp;
+            }
+
+        }
+
+        if (attr === 'space') {
+
+            switch (attributes[attr]) {
+                case 'grow':
+                    layoutProps['--layout-grow'] = '1';
+                    break;
+                case 'no-grow':
+                    layoutProps['--layout-grow'] = '0';
+                    break;
+                case 'shrink':
+                    layoutProps['--layout-shrink'] = '1';
+                    break;
+                case 'no-shrink':
+                    layoutProps['--layout-shrink'] = '0';
+                    break;
+
             }
 
         }

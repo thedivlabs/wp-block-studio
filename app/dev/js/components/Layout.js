@@ -224,17 +224,15 @@ export function LayoutProps(attributes) {
 
     const blockAttrs = new Set(Object.keys(attributes));
     const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
+    const mobileAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.mobile)))).intersection(blockAttrs);
 
     const regex = /([A-Z])/g;
 
     let mobileProps = {};
     let layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
         'container',
-        'containerMobile',
         'display',
-        'displayMobile',
         'space',
-        'spaceMobile',
     ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
@@ -245,9 +243,7 @@ export function LayoutProps(attributes) {
 
     [...layoutAttrs].filter(attr => [
         'display',
-        'displayMobile',
         'space',
-        'spaceMobile',
     ].includes(attr) && typeof attributes[attr] === 'string').sort().forEach(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;

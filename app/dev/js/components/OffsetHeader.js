@@ -1,6 +1,6 @@
 import {
-    __experimentalBoxControl as BoxControl,
-} from '@wordpress/components';
+    __experimentalUnitControl as UnitControl,
+} from "@wordpress/components";
 import {useState} from "react";
 
 
@@ -8,15 +8,17 @@ function OffsetHeader({defaultValue, callback}) {
 
     const [value, setValue] = useState(defaultValue);
 
-    return <BoxControl
+    return <UnitControl
         label={'Offset Header'}
-        values={value}
+        value={value}
+        isResetValueOnUnitChange={true}
         onChange={(newValue) => {
             setValue(newValue);
             callback(newValue);
         }}
-        __nextHasNoMarginBottom={true}
+        __next40pxDefaultSize
     />;
 }
 
 export default OffsetHeader;
+

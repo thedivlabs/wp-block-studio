@@ -50,10 +50,9 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="styles">
                     <ToolsPanel label={'Options'} resetAll={resetAll_options} cols={1} style={{gap: '20px'}}>
                         <ToolsPanelItem
-                            style={{gridColumn: 'span 2'}}
-                            hasValue={() => !!attributes.offsetHeader}
+                            hasValue={() => !!attributes['wpbs-offset-header']}
                             label={'Offset Header'}
-                            onDeselect={() => setAttributes({offsetHeader: false})}
+                            onDeselect={() => setAttributes({['wpbs-offset-header']: false})}
                         >
                             <OffsetHeader defaultValue={attributes['wpbs-offset-header'] || undefined}
                                           callback={(newValue) => {

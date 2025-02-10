@@ -49,10 +49,10 @@ const blockAttributes = {
         'wpbs-container': {
             type: 'string'
         },
-        'wpbs-align': {
+        'wpbs-align-items': {
             type: 'string'
         },
-        'wpbs-justify': {
+        'wpbs-justify-content': {
             type: 'string'
         },
         'wpbs-opacity': {
@@ -123,10 +123,10 @@ const blockAttributes = {
         'wpbs-breakpoint': {
             type: 'string'
         },
-        'wpbs-align-mobile': {
+        'wpbs-align-items-mobile': {
             type: 'string'
         },
-        'wpbs-justify-mobile': {
+        'wpbs-justify-content-mobile': {
             type: 'string'
         },
         'wpbs-opacity-mobile': {
@@ -288,22 +288,22 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-align'] || ''}
+                    hasValue={() => !!attributes['wpbs-align-items'] || ''}
                     label={'Align'}
-                    onDeselect={() => setAttributes({['wpbs-align']: ''})}
+                    onDeselect={() => setAttributes({['wpbs-align-items']: ''})}
                 >
-                    <Align defaultValue={attributes['wpbs-align'] || null} callback={(newValue) => {
-                        setAttributes({['wpbs-align']: newValue});
+                    <Align defaultValue={attributes['wpbs-align-items'] || null} callback={(newValue) => {
+                        setAttributes({['wpbs-align-items']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-justify'] || ''}
+                    hasValue={() => !!attributes['wpbs-justify-content'] || ''}
                     label={'Justify'}
-                    onDeselect={() => setAttributes({['wpbs-justify']: ''})}
+                    onDeselect={() => setAttributes({['wpbs-justify-content']: ''})}
                 >
-                    <Justify defaultValue={attributes['wpbs-justify'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-justify']: newValue});
+                    <Justify defaultValue={attributes['wpbs-justify-content'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-justify-content']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -537,22 +537,22 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-align-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-align-items-mobile'] || ''}
                     label={'Align'}
-                    onDeselect={() => setAttributes({['wpbs-align-mobile']: ''})}
+                    onDeselect={() => setAttributes({['wpbs-align-items-mobile']: ''})}
                 >
-                    <Align defaultValue={attributes['wpbs-align-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-align-mobile']: newValue});
+                    <Align defaultValue={attributes['wpbs-align-items-mobile'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-align-items-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-justify-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-justify-content-mobile'] || ''}
                     label={'Justify'}
-                    onDeselect={() => setAttributes({['wpbs-justify-mobile']: ''})}
+                    onDeselect={() => setAttributes({['wpbs-justify-content-mobile']: ''})}
                 >
-                    <Justify defaultValue={attributes['wpbs-justify-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-justify-mobile']: newValue});
+                    <Justify defaultValue={attributes['wpbs-justify-content-mobile'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-justify-content-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem

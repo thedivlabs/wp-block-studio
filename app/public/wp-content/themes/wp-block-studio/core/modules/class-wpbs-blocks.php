@@ -51,27 +51,32 @@ class WPBS_Blocks {
 			$css .= $prop . ':' . $value . ';';
 		}
 
-		if ( ! empty( $attributes_mobile ) ) {
-
-			$css .= '@media and screen and (max-width: ' . $breakpoint . ') {';
-
-			foreach ( $attributes_mobile as $prop => $value ) {
-
-				$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
-
-				$css .= $prop . ':' . $value . ';';
-			}
-
-			$css .= '}';
-		}
 
 		$data = join( ' ', [ $selector, '{', $css, '}' ] );
 
 		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
 
-		WPBS::console_log( $attributes_layout );
-		WPBS::console_log( $attributes_mobile );
+		add_action( 'wp_head', function () use ( $attributes_mobile, $breakpoint, $selector ) {
 
+			if ( ! empty( $attributes_mobile ) ) {
+				echo '<style id="xxxxxx">';
+				echo '@media (max-width: ' . $breakpoint . ') { ';
+
+				echo $selector . ' {';
+
+				foreach ( $attributes_mobile as $prop => $value ) {
+
+					$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
+
+					echo $prop . ':' . $value . ';';
+				}
+
+				echo '}';
+				echo '}';
+				echo '</style>';
+			}
+
+		}, 40 );
 
 	}
 

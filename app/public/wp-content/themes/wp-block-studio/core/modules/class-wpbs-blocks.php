@@ -25,21 +25,23 @@ class WPBS_Blocks {
 
 		$selector = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
 
-		$attributes = array_filter( $attributes, function($k){
-			return str_starts_with($k, 'wpbs');
+		$attributes_layout = array_filter( $attributes, function ( $k ) {
+			return str_starts_with( $k, 'wpbs' ) && ! str_contains( 'mobile', $k );
+		}, ARRAY_FILTER_USE_KEY );
+
+		$attributes_mobile = array_filter( $attributes, function ( $k ) {
+			return str_starts_with( $k, 'wpbs' ) && str_contains( 'mobile', $k );
 		}, ARRAY_FILTER_USE_KEY );
 
 		$css = '';
-
 
 
 		$data = join( ' ', [ $selector, '{', $css, '}' ] );
 
 		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
 
-		WPBS::console_log( $selector );
-		WPBS::console_log( $attributes );
-		WPBS::console_log( $block );
+		WPBS::console_log( $attributes_layout );
+		WPBS::console_log( $attributes_mobile );
 
 
 	}

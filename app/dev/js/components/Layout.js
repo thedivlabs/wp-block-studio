@@ -507,6 +507,16 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
             <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-breakpoint'] || ''}
+                    label={'Breakpoint'}
+                    onDeselect={() => setAttributes({['wpbs-breakpoint']: ''})}
+                >
+                    <Breakpoint defaultValue={attributes['wpbs-breakpoint'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-breakpoint']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-display-mobile'] || ''}
                     label={'Display'}
                     onDeselect={() => setAttributes({['wpbs-display-mobile']: ''})}
@@ -517,12 +527,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-breakpoint'] || ''}
-                    label={'Breakpoint'}
-                    onDeselect={() => setAttributes({['wpbs-breakpoint']: ''})}
+                    hasValue={() => !!attributes['wpbs-flex-direction-mobile'] || ''}
+                    label={'Direction'}
+                    onDeselect={() => setAttributes({['wpbs-flex-direction-mobile']: ''})}
                 >
-                    <Breakpoint defaultValue={attributes['wpbs-breakpoint'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-breakpoint']: newValue});
+                    <FlexDirection defaultValue={attributes['wpbs-flex-direction-mobile'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-flex-direction-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -629,12 +639,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-shape-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-aspect-ratio-mobile'] || ''}
                     label={'Shape'}
-                    onDeselect={() => setAttributes({['wpbs-shape-mobile']: ''})}
+                    onDeselect={() => setAttributes({['wpbs-aspect-ratio-mobile']: ''})}
                 >
-                    <Shape defaultValue={attributes['wpbs-shape-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-shape-mobile']: newValue});
+                    <Shape defaultValue={attributes['wpbs-aspect-ratio-mobile'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-aspect-ratio-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem

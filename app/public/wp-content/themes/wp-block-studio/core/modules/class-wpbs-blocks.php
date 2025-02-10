@@ -32,20 +32,27 @@ class WPBS_Blocks {
 
 		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
 
-		$attributes_layout = array_filter( $attributes, function ( $k ) {
-
-			if ( in_array( $k, [
-				'wpbs-container'
-			] ) ) {
+		$attributes_layout = array_filter( $attributes, function ( $v, $k ) {
+			WPBS::console_log( $k );
+			if ( ! is_string( $v ) || in_array( $k, [
+					'wpbs-container'
+				] ) ) {
 				return false;
 			}
 
 			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
-		}, ARRAY_FILTER_USE_KEY );
+		}, ARRAY_FILTER_USE_BOTH );
 
-		$attributes_mobile = array_filter( $attributes, function ( $k ) {
+		$attributes_mobile = array_filter( $attributes, function ( $v, $k  ) {
+
+			if ( ! is_string( $v ) || in_array( $k, [
+					'wpbs-container'
+				] ) ) {
+				return false;
+			}
+
 			return str_starts_with( $k, 'wpbs' ) && str_contains( $k, 'mobile' );
-		}, ARRAY_FILTER_USE_KEY );
+		}, ARRAY_FILTER_USE_BOTH );
 
 		$css = '';
 

@@ -25,7 +25,13 @@ class WPBS_Blocks {
 
 		$selector = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
 
+		$attributes = array_filter( $attributes, function($k){
+			return str_starts_with($k, 'wpbs');
+		}, ARRAY_FILTER_USE_KEY );
+
 		$css = '';
+
+
 
 		$data = join( ' ', [ $selector, '{', $css, '}' ] );
 

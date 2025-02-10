@@ -103,7 +103,7 @@ const blockAttributes = {
         'wpbs-overflow': {
             type: 'string'
         },
-        'wpbs-shape': {
+        'wpbs-aspect-ratio': {
             type: 'string'
         },
         'wpbs-order': {
@@ -156,7 +156,7 @@ const blockAttributes = {
         'wpbs-flex-direction-mobile': {
             type: 'string'
         },
-        'wpbs-shape-mobile': {
+        'wpbs-aspect-ratio-mobile': {
             type: 'string'
         },
         'wpbs-position-mobile': {
@@ -452,12 +452,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-shape'] || ''}
+                    hasValue={() => !!attributes['wpbs-aspect-ratio'] || ''}
                     label={'Shape'}
-                    onDeselect={() => setAttributes({['wpbs-shape']: ''})}
+                    onDeselect={() => setAttributes({['wpbs-aspect-ratio']: ''})}
                 >
-                    <Shape defaultValue={attributes['wpbs-shape'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-shape']: newValue});
+                    <Shape defaultValue={attributes['wpbs-aspect-ratio'] || ''} callback={(newValue) => {
+                        setAttributes({['wpbs-aspect-ratio']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem

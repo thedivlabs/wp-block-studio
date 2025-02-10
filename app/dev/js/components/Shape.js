@@ -11,11 +11,11 @@ function Shape({defaultValue, callback}) {
         value={value}
         options={[
             {label: 'Select', value: ''},
-            {label: 'Square', value: 'square'},
-            {label: 'Video', value: 'video'},
-            {label: 'Photo', value: 'photo'},
-            {label: 'Tele', value: 'tele'},
-            {label: 'Tall', value: 'tall'},
+            {label: 'Square', value: '1/1'},
+            {label: 'Video', value: '16/9'},
+            {label: 'Photo', value: '10/8'},
+            {label: 'Tele', value: '5/6'},
+            {label: 'Tall', value: '1/1.4'},
             {label: 'Auto', value: 'auto'},
         ]}
         onChange={(newValue) => {

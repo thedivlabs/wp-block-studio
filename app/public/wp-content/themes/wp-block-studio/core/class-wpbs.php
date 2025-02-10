@@ -136,7 +136,7 @@ class WPBS {
 	static function get_acf_load_paths(): array {
 
 		$acf_json_paths = array_unique( array_merge(
-			glob( self::$path . 'core/acf-json', GLOB_ONLYDIR )
+			glob( self::$path . 'acf-json', GLOB_ONLYDIR )
 		) );
 
 		sort( $acf_json_paths );

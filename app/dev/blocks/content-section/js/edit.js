@@ -48,7 +48,7 @@ registerBlockType(metadata.name, {
         });
 
         const resetAll_options = () => {
-            setAttributes({'offsetHeader': false});
+            setAttributes({'offset-header': false});
         };
 
         return (

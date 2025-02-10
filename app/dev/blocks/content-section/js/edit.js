@@ -11,6 +11,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     ToggleControl
 } from "@wordpress/components";
+import OffsetHeader from "Components/OffsetHeader";
 
 function sectionClassNames(attributes = {}) {
 
@@ -23,7 +24,6 @@ function containerClassNames(attributes = {}) {
 
     return [
         'wpbs-container container gap-inherit relative z-20',
-        attributes.offsetHeader ? 'offset-header' : false,
     ].filter(x => x).join(' ');
 
 }
@@ -31,10 +31,7 @@ function containerClassNames(attributes = {}) {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
-        ...LayoutAttributes(),
-        offsetHeader: {
-            type: 'boolean'
-        }
+        ...LayoutAttributes()
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -58,14 +55,10 @@ registerBlockType(metadata.name, {
                             label={'Offset Header'}
                             onDeselect={() => setAttributes({offsetHeader: false})}
                         >
-                            <ToggleControl
-                                __nextHasNoMarginBottom
-                                checked={attributes.offsetHeader}
-                                label="Offset Header"
-                                onChange={(newValue) => {
-                                    setAttributes({offsetHeader: newValue})
-                                }}
-                            />
+                            <OffsetHeader defaultValue={attributes['wpbs-offset-header'] || undefined}
+                                          callback={(newValue) => {
+                                              setAttributes({['wpbs-offset-header']: newValue});
+                                          }}/>
                         </ToolsPanelItem>
                     </ToolsPanel>
                 </InspectorControls>

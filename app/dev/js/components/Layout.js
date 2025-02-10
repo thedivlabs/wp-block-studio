@@ -37,6 +37,7 @@ import BoxPosition from 'Components/BoxPosition';
 import Basis from 'Components/Basis';
 import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
+import OffsetHeader from "Components/OffsetHeader";
 
 const blockAttributes = {
     layout: {
@@ -114,6 +115,9 @@ const blockAttributes = {
         },
         'wpbs-outline': {
             type: 'object'
+        },
+        'wpbs-offset-header': {
+            type: 'string'
         },
     },
     mobile: {
@@ -207,6 +211,9 @@ const blockAttributes = {
         'wpbs-flex-wrap-mobile': {
             type: 'string'
         },
+        'wpbs-offset-header-mobile': {
+            type: 'string'
+        },
     },
     hover: {
         'wpbs-opacity-hover': {
@@ -258,37 +265,38 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
             <ToolsPanel label={'Layout'} resetAll={resetAll_layout}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-display'] || ''}
+                    hasValue={() => !!attributes['wpbs-display'] || undefined}
                     label={'Display'}
                     onDeselect={() => setAttributes({['wpbs-display']: ''})}
                 >
-                    <Display defaultValue={attributes['wpbs-display'] || ''} callback={(newValue) => {
+                    <Display defaultValue={attributes['wpbs-display'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-display']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-flex-direction'] || ''}
+                    hasValue={() => !!attributes['wpbs-flex-direction'] || undefined}
                     label={'Direction'}
                     onDeselect={() => setAttributes({['wpbs-flex-direction']: ''})}
                 >
-                    <FlexDirection defaultValue={attributes['wpbs-flex-direction'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-flex-direction']: newValue});
-                    }}/>
+                    <FlexDirection defaultValue={attributes['wpbs-flex-direction'] || undefined}
+                                   callback={(newValue) => {
+                                       setAttributes({['wpbs-flex-direction']: newValue});
+                                   }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-container'] || ''}
+                    hasValue={() => !!attributes['wpbs-container'] || undefined}
                     label={'Container'}
                     onDeselect={() => setAttributes({['wpbs-container']: ''})}
                 >
-                    <Container defaultValue={attributes['wpbs-container'] || ''} callback={(newValue) => {
+                    <Container defaultValue={attributes['wpbs-container'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-container']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-align-items'] || ''}
+                    hasValue={() => !!attributes['wpbs-align-items'] || undefined}
                     label={'Align'}
                     onDeselect={() => setAttributes({['wpbs-align-items']: ''})}
                 >
@@ -298,17 +306,17 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-justify-content'] || ''}
+                    hasValue={() => !!attributes['wpbs-justify-content'] || undefined}
                     label={'Justify'}
                     onDeselect={() => setAttributes({['wpbs-justify-content']: ''})}
                 >
-                    <Justify defaultValue={attributes['wpbs-justify-content'] || ''} callback={(newValue) => {
+                    <Justify defaultValue={attributes['wpbs-justify-content'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-justify-content']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-opacity'] || ''}
+                    hasValue={() => !!attributes['wpbs-opacity'] || undefined}
                     label={'Opacity'}
                     onDeselect={() => setAttributes({['wpbs-opacity']: ''})}
                 >
@@ -318,107 +326,107 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-basis'] || ''}
+                    hasValue={() => !!attributes['wpbs-basis'] || undefined}
                     label={'Basis'}
                     onDeselect={() => setAttributes({['wpbs-basis']: ''})}
                 >
-                    <Basis defaultValue={attributes['wpbs-basis'] || ''} callback={(newValue) => {
+                    <Basis defaultValue={attributes['wpbs-basis'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-basis']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-width'] || ''}
+                    hasValue={() => !!attributes['wpbs-width'] || undefined}
                     label={'Width'}
                     onDeselect={() => setAttributes({['wpbs-width']: ''})}
                 >
-                    <Width defaultValue={attributes['wpbs-width'] || ''} callback={(newValue) => {
+                    <Width defaultValue={attributes['wpbs-width'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-width']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-max-width'] || ''}
+                    hasValue={() => !!attributes['wpbs-max-width'] || undefined}
                     label={'Max-Width'}
                     onDeselect={() => setAttributes({['wpbs-max-width']: ''})}
                 >
-                    <Width label={'Max-Width'} defaultValue={attributes['wpbs-max-width'] || ''}
+                    <Width label={'Max-Width'} defaultValue={attributes['wpbs-max-width'] || undefined}
                            callback={(newValue) => {
                                setAttributes({['wpbs-max-width']: newValue});
                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-height'] || ''}
+                    hasValue={() => !!attributes['wpbs-height'] || undefined}
                     label={'Height'}
                     onDeselect={() => setAttributes({['wpbs-height']: ''})}
                 >
-                    <Height defaultValue={attributes['wpbs-height'] || ''} callback={(newValue) => {
+                    <Height defaultValue={attributes['wpbs-height'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-height']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-height-custom'] || ''}
+                    hasValue={() => !!attributes['wpbs-height-custom'] || undefined}
                     label={'Height Custom'}
                     onDeselect={() => setAttributes({['wpbs-height-custom']: ''})}
                 >
-                    <HeightCustom defaultValue={attributes['wpbs-height-custom'] || ''} callback={(newValue) => {
+                    <HeightCustom defaultValue={attributes['wpbs-height-custom'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-height-custom']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-flex-wrap'] || ''}
+                    hasValue={() => !!attributes['wpbs-flex-wrap'] || undefined}
                     label={'Flex Wrap'}
                     onDeselect={() => setAttributes({['wpbs-flex-wrap']: ''})}
                 >
-                    <FlexWrap defaultValue={attributes['wpbs-flex-wrap'] || ''} callback={(newValue) => {
+                    <FlexWrap defaultValue={attributes['wpbs-flex-wrap'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-flex-wrap']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-grow'] || ''}
+                    hasValue={() => !!attributes['wpbs-grow'] || undefined}
                     label={'Grow'}
                     onDeselect={() => setAttributes({['wpbs-grow']: ''})}
                 >
-                    <Grow defaultValue={attributes['wpbs-grow'] || ''} callback={(newValue) => {
+                    <Grow defaultValue={attributes['wpbs-grow'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-grow']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-shrink'] || ''}
+                    hasValue={() => !!attributes['wpbs-shrink'] || undefined}
                     label={'Shrink'}
                     onDeselect={() => setAttributes({['wpbs-shrink']: ''})}
                 >
-                    <Shrink defaultValue={attributes['wpbs-shrink'] || ''} callback={(newValue) => {
+                    <Shrink defaultValue={attributes['wpbs-shrink'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-shrink']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-position'] || ''}
+                    hasValue={() => !!attributes['wpbs-position'] || undefined}
                     label={'Position'}
                     onDeselect={() => setAttributes({['wpbs-position']: ''})}
                 >
-                    <Position defaultValue={attributes['wpbs-position'] || ''} callback={(newValue) => {
+                    <Position defaultValue={attributes['wpbs-position'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-position']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-z-index'] || ''}
+                    hasValue={() => !!attributes['wpbs-z-index'] || undefined}
                     label={'Z-Index'}
                     onDeselect={() => setAttributes({['wpbs-z-index']: ''})}
                 >
-                    <ZIndex defaultValue={attributes['wpbs-z-index'] || ''} callback={(newValue) => {
+                    <ZIndex defaultValue={attributes['wpbs-z-index'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-z-index']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes['wpbs-top'] || !!attributes['wpbs-right'] || !!attributes['wpbs-bottom'] || !!attributes['wpbs-left'] || ''}
+                    hasValue={() => !!attributes['wpbs-top'] || !!attributes['wpbs-right'] || !!attributes['wpbs-bottom'] || !!attributes['wpbs-left'] || undefined}
                     label={'Box Position'}
                     onDeselect={() => setAttributes({
                         ['wpbs-top']: '',
@@ -427,10 +435,10 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                         ['wpbs-left']: ''
                     })}
                 >
-                    <BoxPosition topValue={attributes['wpbs-top'] || ''}
-                                 rightValue={attributes['wpbs-right'] || ''}
-                                 bottomValue={attributes['wpbs-bottom'] || ''}
-                                 leftValue={attributes['wpbs-left'] || ''}
+                    <BoxPosition topValue={attributes['wpbs-top'] || undefined}
+                                 rightValue={attributes['wpbs-right'] || undefined}
+                                 bottomValue={attributes['wpbs-bottom'] || undefined}
+                                 leftValue={attributes['wpbs-left'] || undefined}
                                  callback={(top, right, bottom, left) => {
                                      setAttributes({
                                          ['wpbs-top']: top,
@@ -442,21 +450,21 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-overflow'] || ''}
+                    hasValue={() => !!attributes['wpbs-overflow'] || undefined}
                     label={'Overflow'}
                     onDeselect={() => setAttributes({['wpbs-overflow']: ''})}
                 >
-                    <Overflow defaultValue={attributes['wpbs-overflow'] || ''} callback={(newValue) => {
+                    <Overflow defaultValue={attributes['wpbs-overflow'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-overflow']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-aspect-ratio'] || ''}
+                    hasValue={() => !!attributes['wpbs-aspect-ratio'] || undefined}
                     label={'Shape'}
                     onDeselect={() => setAttributes({['wpbs-aspect-ratio']: ''})}
                 >
-                    <Shape defaultValue={attributes['wpbs-aspect-ratio'] || ''} callback={(newValue) => {
+                    <Shape defaultValue={attributes['wpbs-aspect-ratio'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-aspect-ratio']: newValue});
                     }}/>
                 </ToolsPanelItem>
@@ -473,13 +481,14 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-outline-offset'] || ''}
+                    hasValue={() => !!attributes['wpbs-outline-offset'] || undefined}
                     label={'Outline Offset'}
                     onDeselect={() => setAttributes({['wpbs-outline-offset']: ''})}
                 >
-                    <OutlineOffset defaultValue={attributes['wpbs-outline-offset'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-outline-offset']: newValue});
-                    }}/>
+                    <OutlineOffset defaultValue={attributes['wpbs-outline-offset'] || undefined}
+                                   callback={(newValue) => {
+                                       setAttributes({['wpbs-outline-offset']: newValue});
+                                   }}/>
                 </ToolsPanelItem>
 
                 <ToolsPanelItem
@@ -507,77 +516,79 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
             <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-breakpoint'] || ''}
+                    hasValue={() => !!attributes['wpbs-breakpoint'] || undefined}
                     label={'Breakpoint'}
                     onDeselect={() => setAttributes({['wpbs-breakpoint']: ''})}
                 >
-                    <Breakpoint defaultValue={attributes['wpbs-breakpoint'] || ''} callback={(newValue) => {
+                    <Breakpoint defaultValue={attributes['wpbs-breakpoint'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-breakpoint']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-display-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-display-mobile'] || undefined}
                     label={'Display'}
                     onDeselect={() => setAttributes({['wpbs-display-mobile']: ''})}
                 >
-                    <Display defaultValue={attributes['wpbs-display-mobile'] || ''} callback={(newValue) => {
+                    <Display defaultValue={attributes['wpbs-display-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-display-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-flex-direction-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-flex-direction-mobile'] || undefined}
                     label={'Direction'}
                     onDeselect={() => setAttributes({['wpbs-flex-direction-mobile']: ''})}
                 >
-                    <FlexDirection defaultValue={attributes['wpbs-flex-direction-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-flex-direction-mobile']: newValue});
-                    }}/>
+                    <FlexDirection defaultValue={attributes['wpbs-flex-direction-mobile'] || undefined}
+                                   callback={(newValue) => {
+                                       setAttributes({['wpbs-flex-direction-mobile']: newValue});
+                                   }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-align-items-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-align-items-mobile'] || undefined}
                     label={'Align'}
                     onDeselect={() => setAttributes({['wpbs-align-items-mobile']: ''})}
                 >
-                    <Align defaultValue={attributes['wpbs-align-items-mobile'] || ''} callback={(newValue) => {
+                    <Align defaultValue={attributes['wpbs-align-items-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-align-items-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-justify-content-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-justify-content-mobile'] || undefined}
                     label={'Justify'}
                     onDeselect={() => setAttributes({['wpbs-justify-content-mobile']: ''})}
                 >
-                    <Justify defaultValue={attributes['wpbs-justify-content-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-justify-content-mobile']: newValue});
-                    }}/>
+                    <Justify defaultValue={attributes['wpbs-justify-content-mobile'] || undefined}
+                             callback={(newValue) => {
+                                 setAttributes({['wpbs-justify-content-mobile']: newValue});
+                             }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-grow-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-grow-mobile'] || undefined}
                     label={'Grow'}
                     onDeselect={() => setAttributes({['wpbs-grow-mobile']: ''})}
                 >
-                    <Grow defaultValue={attributes['wpbs-grow-mobile'] || ''} callback={(newValue) => {
+                    <Grow defaultValue={attributes['wpbs-grow-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-grow-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-shrink-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-shrink-mobile'] || undefined}
                     label={'Shrink'}
                     onDeselect={() => setAttributes({['wpbs-shrink-mobile']: ''})}
                 >
-                    <Shrink defaultValue={attributes['wpbs-shrink-mobile'] || ''} callback={(newValue) => {
+                    <Shrink defaultValue={attributes['wpbs-shrink-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-shrink-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-opacity-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-opacity-mobile'] || undefined}
                     label={'Opacity'}
                     onDeselect={() => setAttributes({['wpbs-opacity-mobile']: ''})}
                 >
@@ -587,98 +598,98 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-basis-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-basis-mobile'] || undefined}
                     label={'Basis'}
                     onDeselect={() => setAttributes({['wpbs-basis-mobile']: ''})}
                 >
-                    <Basis defaultValue={attributes['wpbs-basis-mobile'] || ''} callback={(newValue) => {
+                    <Basis defaultValue={attributes['wpbs-basis-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-basis-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-width-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-width-mobile'] || undefined}
                     label={'Width'}
                     onDeselect={() => setAttributes({['wpbs-width-mobile']: ''})}
                 >
-                    <Width defaultValue={attributes['wpbs-width-mobile'] || ''} callback={(newValue) => {
+                    <Width defaultValue={attributes['wpbs-width-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-width-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-max-width-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-max-width-mobile'] || undefined}
                     label={'Max-Width'}
                     onDeselect={() => setAttributes({['wpbs-max-width-mobile']: ''})}
                 >
-                    <Width label={'Max-Width'} defaultValue={attributes['wpbs-max-width-mobile'] || ''}
+                    <Width label={'Max-Width'} defaultValue={attributes['wpbs-max-width-mobile'] || undefined}
                            callback={(newValue) => {
                                setAttributes({['wpbs-max-width-mobile']: newValue});
                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-height-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-height-mobile'] || undefined}
                     label={'Height'}
                     onDeselect={() => setAttributes({['wpbs-height-mobile']: ''})}
                 >
-                    <Height defaultValue={attributes['wpbs-height-mobile'] || ''} callback={(newValue) => {
+                    <Height defaultValue={attributes['wpbs-height-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-height-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-height-custom-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-height-custom-mobile'] || undefined}
                     label={'Height Custom'}
                     onDeselect={() => setAttributes({['wpbs-height-custom-mobile']: ''})}
                 >
-                    <HeightCustom defaultValue={attributes['wpbs-height-custom-mobile'] || ''}
+                    <HeightCustom defaultValue={attributes['wpbs-height-custom-mobile'] || undefined}
                                   callback={(newValue) => {
                                       setAttributes({['wpbs-height-custom-mobile']: newValue});
                                   }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-aspect-ratio-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-aspect-ratio-mobile'] || undefined}
                     label={'Shape'}
                     onDeselect={() => setAttributes({['wpbs-aspect-ratio-mobile']: ''})}
                 >
-                    <Shape defaultValue={attributes['wpbs-aspect-ratio-mobile'] || ''} callback={(newValue) => {
+                    <Shape defaultValue={attributes['wpbs-aspect-ratio-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-aspect-ratio-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-flex-wrap-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-flex-wrap-mobile'] || undefined}
                     label={'Flex Wrap'}
                     onDeselect={() => setAttributes({['wpbs-flex-wrap-mobile']: ''})}
                 >
-                    <FlexWrap defaultValue={attributes['wpbs-flex-wrap-mobile'] || ''} callback={(newValue) => {
+                    <FlexWrap defaultValue={attributes['wpbs-flex-wrap-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-flex-wrap-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-position-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-position-mobile'] || undefined}
                     label={'Position'}
                     onDeselect={() => setAttributes({['wpbs-position-mobile']: ''})}
                 >
-                    <Position defaultValue={attributes['wpbs-position-mobile'] || ''} callback={(newValue) => {
+                    <Position defaultValue={attributes['wpbs-position-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-position-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-z-index-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-z-index-mobile'] || undefined}
                     label={'Z-Index'}
                     onDeselect={() => setAttributes({['wpbs-z-index-mobile']: ''})}
                 >
-                    <ZIndex defaultValue={attributes['wpbs-z-index-mobile'] || ''} callback={(newValue) => {
+                    <ZIndex defaultValue={attributes['wpbs-z-index-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-z-index-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes['wpbs-top-mobile'] || !!attributes['wpbs-right-mobile'] || !!attributes['wpbs-bottom-mobile'] || !!attributes['wpbs-left-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-top-mobile'] || !!attributes['wpbs-right-mobile'] || !!attributes['wpbs-bottom-mobile'] || !!attributes['wpbs-left-mobile'] || undefined}
                     label={'Box Position'}
                     onDeselect={() => setAttributes({
                         ['wpbs-top-mobile']: '',
@@ -687,10 +698,10 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                         ['wpbs-left-mobile']: ''
                     })}
                 >
-                    <BoxPosition topValue={attributes['wpbs-top-mobile'] || ''}
-                                 rightValue={attributes['wpbs-right-mobile'] || ''}
-                                 bottomValue={attributes['wpbs-bottom-mobile'] || ''}
-                                 leftValue={attributes['wpbs-left-mobile'] || ''}
+                    <BoxPosition topValue={attributes['wpbs-top-mobile'] || undefined}
+                                 rightValue={attributes['wpbs-right-mobile'] || undefined}
+                                 bottomValue={attributes['wpbs-bottom-mobile'] || undefined}
+                                 leftValue={attributes['wpbs-left-mobile'] || undefined}
                                  callback={(top, right, bottom, left) => {
                                      setAttributes({
                                          ['wpbs-top-mobile']: top,
@@ -762,44 +773,47 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-font-size-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-font-size-mobile'] || undefined}
                     label={'Font Size'}
                     onDeselect={() => setAttributes({['wpbs-font-size-mobile']: ''})}
                 >
-                    <FontSize defaultValue={attributes['wpbs-font-size-mobile'] || ''} callback={(newValue) => {
+                    <FontSize defaultValue={attributes['wpbs-font-size-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-font-size-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-line-height-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-line-height-mobile'] || undefined}
                     label={'Line Height'}
                     onDeselect={() => setAttributes({['wpbs-line-height-mobile']: ''})}
                 >
-                    <LineHeight defaultValue={attributes['wpbs-line-height-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-line-height-mobile']: newValue});
-                    }}/>
+                    <LineHeight defaultValue={attributes['wpbs-line-height-mobile'] || undefined}
+                                callback={(newValue) => {
+                                    setAttributes({['wpbs-line-height-mobile']: newValue});
+                                }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-text-align-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-text-align-mobile'] || undefined}
                     label={'Text Align'}
                     onDeselect={() => setAttributes({['wpbs-text-align-mobile']: ''})}
                 >
-                    <TextAlign defaultValue={attributes['wpbs-text-align-mobile'] || ''} callback={(newValue) => {
-                        setAttributes({['wpbs-text-align-mobile']: newValue});
-                    }}/>
+                    <TextAlign defaultValue={attributes['wpbs-text-align-mobile'] || undefined}
+                               callback={(newValue) => {
+                                   setAttributes({['wpbs-text-align-mobile']: newValue});
+                               }}/>
                 </ToolsPanelItem>
+
             </ToolsPanel>
 
             <ToolsPanel label={'Hover'} resetAll={resetAll_hover}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-opacity-mobile'] || ''}
+                    hasValue={() => !!attributes['wpbs-opacity-mobile'] || undefined}
                     label={'Opacity'}
                     onDeselect={() => setAttributes({['wpbs-opacity-mobile']: ''})}
                 >
-                    <Opacity defaultValue={attributes['wpbs-opacity-mobile'] || ''} callback={(newValue) => {
+                    <Opacity defaultValue={attributes['wpbs-opacity-mobile'] || undefined} callback={(newValue) => {
                         setAttributes({['wpbs-opacity-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>

@@ -9,6 +9,7 @@ import {
 
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
+import FlexDirection from 'Components/FlexDirection';
 import Align from 'Components/Align';
 import Justify from 'Components/Justify';
 import Height from 'Components/Height';
@@ -79,9 +80,6 @@ const blockAttributes = {
             type: 'string'
         },
         shrink: {
-            type: 'string'
-        },
-        direction: {
             type: 'string'
         },
         position: {
@@ -239,7 +237,7 @@ export function LayoutProps(attributes) {
     //console.log(attributes);
 
     const blockAttrs = new Set(Object.keys(attributes));
-    const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
+    const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
     const mobileAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.mobile)))).intersection(blockAttrs);
 
     const regex = /([A-Z])/g;
@@ -271,16 +269,16 @@ export function LayoutProps(attributes) {
         }
 
 
-        if (typeof attributes[attr] === 'object') {
+        /* if (typeof attributes[attr] === 'object') {
 
-            return Object.keys(attributes[attr]).map(subAttr => {
-                return '--layout-' + prop + '-' + subAttr;
-            }).join(' ');
-        }
+             return Object.keys(attributes[attr]).map(subAttr => {
+                 return '--layout-' + prop + '-' + subAttr;
+             }).join(' ');
+         }*/
 
-        if (![].includes(attr)) {
-            return '--layout-' + prop;
-        }
+        /* if (![].includes(attr)) {
+             return '--layout-' + prop;
+         }*/
 
 
     }).flat().filter(attr => attr !== null);
@@ -334,7 +332,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     label={'Direction'}
                     onDeselect={() => setAttributes({flexDirection: ''})}
                 >
-                    <Display defaultValue={attributes.flexDirection || ''} callback={(newValue) => {
+                    <FlexDirection defaultValue={attributes.flexDirection || ''} callback={(newValue) => {
                         setAttributes({flexDirection: newValue});
                     }}/>
                 </ToolsPanelItem>

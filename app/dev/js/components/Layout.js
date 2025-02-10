@@ -232,66 +232,6 @@ const blockAttributes = {
     }
 };
 
-export function LayoutProps(attributes) {
-
-    //console.log(attributes);
-
-    const blockAttrs = new Set(Object.keys(attributes));
-    const layoutAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors)))).intersection(blockAttrs);
-    const mobileAttrs = (new Set(Object.keys(Object.assign({}, blockAttributes.mobile)))).intersection(blockAttrs);
-
-    const regex = /([A-Z])/g;
-
-    let mobileProps = {};
-    let layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
-        'container',
-    ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
-
-        const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
-
-        return ['--layout-' + prop, attributes[attr]];
-    }));
-
-    const objectProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'object').sort().map(attr => {
-        return Object.keys(attributes[attr]).map(subAttr => {
-            return ['--layout-' + attr.replace(regex, '-$1').toLowerCase() + '-' + subAttr, attributes[attr][subAttr]];
-        });
-    }).flat());
-
-    const combinedProps = Object.assign({}, layoutProps, objectProps);
-
-    const classes = [...layoutAttrs].map(attr => {
-
-        const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
-
-        if (attr === 'container') {
-            return ['--layout', prop].join('-');
-        }
-
-
-        if (typeof attributes[attr] === 'object') {
-
-            return Object.keys(attributes[attr]).map(subAttr => {
-                return '--layout-' + prop + '-' + subAttr;
-            }).join(' ');
-        }
-
-        if (![].includes(attr)) {
-            return '--layout-' + prop;
-        }
-
-
-    }).flat().filter(attr => attr !== null);
-
-    //console.log(combinedProps);
-    //console.log(classes);
-    //console.log(mobileAttrs);
-
-    return {
-        style: combinedProps,
-        className: classes.join(' ')
-    };
-}
 
 export function LayoutAttributes() {
     return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors);

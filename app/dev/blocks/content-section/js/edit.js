@@ -5,7 +5,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutProps} from "Components/Layout"
+import {Layout, LayoutAttributes} from "Components/Layout"
 import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
@@ -38,11 +38,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const layoutProps = LayoutProps(attributes);
 
         const blockProps = useBlockProps({
-            className: [sectionClassNames(attributes), layoutProps.className].join(' '),
-            style: Object.assign({}, layoutProps.style)
+            className: sectionClassNames(attributes),
         });
 
         const resetAll_options = () => {
@@ -83,11 +81,9 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const layoutProps = LayoutProps(props.attributes);
 
         const blockProps = useBlockProps.save({
-            className: [sectionClassNames(props.attributes), layoutProps.className].join(' '),
-            style: Object.assign({}, layoutProps.style)
+            className: sectionClassNames(props.attributes),
         });
 
         return (

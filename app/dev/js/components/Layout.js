@@ -269,16 +269,16 @@ export function LayoutProps(attributes) {
         }
 
 
-        /* if (typeof attributes[attr] === 'object') {
+        if (typeof attributes[attr] === 'object') {
 
-             return Object.keys(attributes[attr]).map(subAttr => {
-                 return '--layout-' + prop + '-' + subAttr;
-             }).join(' ');
-         }*/
+            return Object.keys(attributes[attr]).map(subAttr => {
+                return '--layout-' + prop + '-' + subAttr;
+            }).join(' ');
+        }
 
-        /* if (![].includes(attr)) {
-             return '--layout-' + prop;
-         }*/
+        if (![].includes(attr)) {
+            return '--layout-' + prop;
+        }
 
 
     }).flat().filter(attr => attr !== null);

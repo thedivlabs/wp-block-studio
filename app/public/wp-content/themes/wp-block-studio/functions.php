@@ -22,7 +22,7 @@ add_theme_support( 'border' );
 add_action( 'init', function () {
 
 	$block_dirs = glob( get_stylesheet_directory() . '/blocks/*', GLOB_ONLYDIR );
-	
+
 	foreach ( $block_dirs as $block_dir ) {
 		register_block_type( $block_dir );
 	}
@@ -50,14 +50,14 @@ function theme_assets(): void {
 	wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js' );
 
 	foreach ( glob( get_stylesheet_directory() . '/dist/blocks/**', GLOB_ONLYDIR ) as $dir ) {
-		if ( ! file_exists( $dir . '/block.min.css' ) ) {
+		if ( ! file_exists( $dir . '/block.css' ) ) {
 			continue;
 		}
 		$name = basename( $dir );
 		wp_register_style( join( '-', [
 			'wpbs',
 			$name
-		] ), get_stylesheet_directory_uri() . '/dist/blocks/' . $name . '/block.min.css' );
+		] ), get_stylesheet_directory_uri() . '/dist/blocks/' . $name . '/block.css' );
 	}
 }
 
@@ -74,3 +74,25 @@ function view_assets(): void {
 function editor_assets(): void {
 	add_editor_style();
 }
+
+add_filter( 'register_block_type_args', function ( $args, $block_type ) {
+
+
+	if ( str_starts_with( $block_type, 'wpbs' ) ) {
+
+		$args['render_callback'] = function ( $attributes, $content, $block ) {
+
+			add_action( 'wp_head', function () use ( $attributes, $block ) {
+				echo '<script>console.log(' . json_encode( $attributes ) . ')</script>';
+				echo '<script>console.log(' . json_encode( $block ) . ')</script>';
+			} );
+
+			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, '*{background: blue !important;}' );
+
+			return $content;
+		};
+	}
+
+	return $args;
+
+}, 10, 3 );

@@ -39,9 +39,7 @@
     }
   ],
   "editorScript": "file:./js/edit.js",
-  "style": [
-    "wpbs-content-section"
-  ],
+  "style": "file:./js/edit.css",
   "icon": "editor-kitchensink"
 }
 

@@ -29,10 +29,7 @@ class WPBS_Blocks {
 			$selector = $selector . $block->block_type->selectors['root'];
 		}
 
-		$breakpoint = match ( $attributes['wpbs-breakpoint'] ?? false ) {
-			'lg' => '1200px',
-			default => '768px'
-		};
+		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][$attributes['wpbs-breakpoint'] ?? 'normal'] ?? '';
 
 		$attributes_layout = array_filter( $attributes, function ( $k ) {
 			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
@@ -59,8 +56,8 @@ class WPBS_Blocks {
 		add_action( 'wp_head', function () use ( $attributes_mobile, $breakpoint, $selector ) {
 
 			if ( ! empty( $attributes_mobile ) ) {
-				echo '<style id="xxxxxx">';
-				echo '@media (max-width: ' . $breakpoint . ') { ';
+				echo '<style>';
+				echo '@media (max-width: calc(' . $breakpoint . ' - 1px)) { ';
 
 				echo $selector . ' {';
 

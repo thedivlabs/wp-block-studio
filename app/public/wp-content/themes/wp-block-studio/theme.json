@@ -326,6 +326,16 @@
           ]
         }
       ]
+    },
+    "custom": {
+      "breakpoints": {
+        "mobile": "768px",
+        "sm": "1040px",
+        "md": "1200px",
+        "normal": "1304px",
+        "lg": "1404px",
+        "xl": "1500px"
+      }
     }
   },
   "styles": {

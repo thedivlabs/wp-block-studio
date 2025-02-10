@@ -23,7 +23,7 @@ class WPBS_Blocks {
 
 	private function layout_styles( $attributes, $block ): void {
 
-		$selector = $block->block_type->selectors['root'] ?? false;
+		$selector = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
 
 		$css = '';
 

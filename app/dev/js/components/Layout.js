@@ -15,7 +15,8 @@ import Height from 'Components/Height';
 import HeightCustom from 'Components/HeightCustom';
 import Container from 'Components/Container';
 import FlexWrap from 'Components/FlexWrap';
-import Space from 'Components/Space';
+import Grow from 'Components/Grow';
+import Shrink from 'Components/Shrink';
 import Position from 'Components/Position';
 import ZIndex from 'Components/ZIndex';
 import Overflow from 'Components/Overflow';
@@ -74,7 +75,13 @@ const blockAttributes = {
         flexWrap: {
             type: 'string'
         },
-        space: {
+        grow: {
+            type: 'string'
+        },
+        shrink: {
+            type: 'string'
+        },
+        direction: {
             type: 'string'
         },
         position: {
@@ -142,7 +149,13 @@ const blockAttributes = {
         heightCustomMobile: {
             type: 'string'
         },
-        spaceMobile: {
+        growMobile: {
+            type: 'string'
+        },
+        shrinkMobile: {
+            type: 'string'
+        },
+        flexDirectionMobile: {
             type: 'string'
         },
         shapeMobile: {
@@ -234,94 +247,12 @@ export function LayoutProps(attributes) {
     let mobileProps = {};
     let layoutProps = Object.fromEntries([...layoutAttrs].filter(attr => ![
         'container',
-        'display',
-        'space',
     ].includes(attr) && typeof attributes[attr] === 'string').sort().map(attr => {
 
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
 
         return ['--layout-' + prop, attributes[attr]];
     }));
-
-    [...layoutAttrs].filter(attr => [
-        'display',
-        'space',
-    ].includes(attr) && typeof attributes[attr] === 'string').sort().forEach(attr => {
-
-        const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
-        const key = ['--layout', prop].join('-');
-
-        if (attr === 'display') {
-
-            let displayProp;
-            let directionProp;
-
-            switch (attributes[attr]) {
-                case 'block':
-                    displayProp = 'block';
-                    directionProp = false;
-                    break;
-                case 'inline-block':
-                    displayProp = 'inline-block';
-                    directionProp = false;
-                    break;
-                case 'inline':
-                    displayProp = 'inline';
-                    directionProp = false;
-                    break;
-                case 'none':
-                    displayProp = 'none';
-                    directionProp = false;
-                    break;
-                case 'flex-row':
-                    displayProp = 'flex';
-                    directionProp = 'row';
-                    break;
-                case 'flex-row-reverse':
-                    displayProp = 'flex';
-                    directionProp = 'row-reverse';
-                    break;
-                case 'flex-column':
-                    displayProp = 'flex';
-                    directionProp = 'column';
-                    break;
-                case 'flex-column-reverse':
-                    displayProp = 'flex';
-                    directionProp = 'column-reverse';
-                    break;
-
-            }
-
-            layoutProps[key] = displayProp;
-
-            if (directionProp) {
-                layoutProps['--layout-direction'] = directionProp;
-            }
-
-        }
-
-        if (attr === 'space') {
-
-            switch (attributes[attr]) {
-                case 'grow':
-                    layoutProps['--layout-grow'] = '1';
-                    break;
-                case 'no-grow':
-                    layoutProps['--layout-grow'] = '0';
-                    break;
-                case 'shrink':
-                    layoutProps['--layout-shrink'] = '1';
-                    break;
-                case 'no-shrink':
-                    layoutProps['--layout-shrink'] = '0';
-                    break;
-
-            }
-
-        }
-
-    });
-
 
     const objectProps = Object.fromEntries([...layoutAttrs].filter(attr => typeof attributes[attr] === 'object').sort().map(attr => {
         return Object.keys(attributes[attr]).map(subAttr => {
@@ -337,10 +268,6 @@ export function LayoutProps(attributes) {
 
         if (attr === 'container') {
             return ['--layout', prop].join('-');
-        }
-
-        if (attr === 'space') {
-            return ['--layout', attributes[attr]].join('-');
         }
 
 
@@ -514,12 +441,22 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.space || ''}
-                    label={'Space'}
-                    onDeselect={() => setAttributes({space: ''})}
+                    hasValue={() => !!attributes.grow || ''}
+                    label={'Grow'}
+                    onDeselect={() => setAttributes({grow: ''})}
                 >
-                    <Space defaultValue={attributes.space || ''} callback={(newValue) => {
-                        setAttributes({space: newValue});
+                    <Grow defaultValue={attributes.grow || ''} callback={(newValue) => {
+                        setAttributes({grow: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes.shrink || ''}
+                    label={'Shrink'}
+                    onDeselect={() => setAttributes({shrink: ''})}
+                >
+                    <Shrink defaultValue={attributes.shrink || ''} callback={(newValue) => {
+                        setAttributes({shrink: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -661,6 +598,26 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes.growMobile || ''}
+                    label={'Grow'}
+                    onDeselect={() => setAttributes({growMobile: ''})}
+                >
+                    <Grow defaultValue={attributes.growMobile || ''} callback={(newValue) => {
+                        setAttributes({growMobile: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes.shrinkMobile || ''}
+                    label={'Shrink'}
+                    onDeselect={() => setAttributes({shrinkMobile: ''})}
+                >
+                    <Shrink defaultValue={attributes.shrinkMobile || ''} callback={(newValue) => {
+                        setAttributes({shrinkMobile: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
                     hasValue={() => !!attributes.opacityMobile || ''}
                     label={'Opacity'}
@@ -721,16 +678,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                                   callback={(newValue) => {
                                       setAttributes({heightCustomMobile: newValue});
                                   }}/>
-                </ToolsPanelItem>
-                <ToolsPanelItem
-                    style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes.spaceMobile || ''}
-                    label={'Space'}
-                    onDeselect={() => setAttributes({spaceMobile: ''})}
-                >
-                    <Space defaultValue={attributes.spaceMobile || ''} callback={(newValue) => {
-                        setAttributes({spaceMobile: newValue});
-                    }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}

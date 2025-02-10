@@ -16,7 +16,8 @@ import OffsetHeader from "Components/OffsetHeader";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-content-section w-full flex relative'
+        'wpbs-content-section w-full flex relative',
+        attributes['offset-header'] ? 'offset-header' : false,
     ].filter(x => x).join(' ');
 }
 
@@ -31,7 +32,10 @@ function containerClassNames(attributes = {}) {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
-        ...LayoutAttributes()
+        ...LayoutAttributes(),
+        'offset-header': {
+            type: 'string'
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -48,15 +52,15 @@ registerBlockType(metadata.name, {
             <>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <InspectorControls group="styles">
-                    <ToolsPanel label={'Options'} resetAll={resetAll_options} cols={1} style={{gap: '20px'}}>
+                    <ToolsPanel label={'Options'} resetAll={resetAll_options} style={{gap: '20px'}}>
                         <ToolsPanelItem
-                            hasValue={() => !!attributes['wpbs-offset-header']}
+                            hasValue={() => !!attributes['offset-header']}
                             label={'Offset Header'}
-                            onDeselect={() => setAttributes({['wpbs-offset-header']: false})}
+                            onDeselect={() => setAttributes({['offset-header']: false})}
                         >
-                            <OffsetHeader defaultValue={attributes['wpbs-offset-header'] || undefined}
+                            <OffsetHeader defaultValue={attributes['offset-header'] || undefined}
                                           callback={(newValue) => {
-                                              setAttributes({['wpbs-offset-header']: newValue});
+                                              setAttributes({['offset-header']: newValue});
                                           }}/>
                         </ToolsPanelItem>
                     </ToolsPanel>

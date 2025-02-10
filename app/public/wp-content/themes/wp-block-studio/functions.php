@@ -5,6 +5,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+require_once __DIR__ . '/core/modules/class-wpbs-blocks.php';
+
 add_theme_support( 'custom-spacing' );
 add_theme_support( 'custom-units' );
 add_theme_support( 'block-template-parts' );
@@ -18,26 +20,6 @@ add_theme_support( 'border' );
 //add_theme_support( 'editor-color-palette' );
 //add_theme_support( 'editor-gradient-presets' );
 
-
-add_action( 'init', function () {
-
-	$block_dirs = glob( get_stylesheet_directory() . '/blocks/*', GLOB_ONLYDIR );
-
-	foreach ( $block_dirs as $block_dir ) {
-		register_block_type( $block_dir );
-	}
-
-} );
-
-function console_log( $var ): bool {
-	return add_action( 'wp_footer', function () use ( $var ) {
-
-		$var = json_encode( $var );
-
-		echo "<script>console.log($var)</script>";
-
-	} );
-}
 
 add_action( 'init', 'theme_assets' );
 add_action( 'wp_enqueue_scripts', 'view_assets' );

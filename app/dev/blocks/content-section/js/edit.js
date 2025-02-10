@@ -11,7 +11,6 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     ToggleControl
 } from "@wordpress/components";
-import '../scss/block.scss';
 
 function sectionClassNames(attributes = {}) {
 

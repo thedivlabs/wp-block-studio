@@ -21,7 +21,7 @@ class WPBS {
 	private function __construct() {
 
 		self::$transient_base = 'wpbs';
-		self::$path           = trailingslashit( get_template_directory() );
+		self::$path           = trailingslashit( __DIR__ );
 		self::$dist_path      = ( is_child_theme() ? trailingslashit( get_stylesheet_directory() ) : self::$path ) . 'dist/';
 		self::$dist_uri       = get_stylesheet_directory_uri() . '/dist';
 
@@ -91,7 +91,7 @@ class WPBS {
 
 	public function init_theme(): void {
 
-		require_once self::$path . 'core/modules/class-wpbs-blocks.php';
+		require_once self::$path . 'modules/class-wpbs-blocks.php';
 
 		self::$blocks = WPBS_Blocks::init();
 

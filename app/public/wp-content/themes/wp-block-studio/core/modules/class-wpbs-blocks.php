@@ -23,13 +23,14 @@ class WPBS_Blocks {
 
 	private function layout_styles( $attributes, $block ): void {
 
+
 		$selector = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? false );
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
 			$selector = $selector . $block->block_type->selectors['root'];
 		}
 
-		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][$attributes['wpbs-breakpoint'] ?? 'normal'] ?? '';
+		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
 
 		$attributes_layout = array_filter( $attributes, function ( $k ) {
 			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );

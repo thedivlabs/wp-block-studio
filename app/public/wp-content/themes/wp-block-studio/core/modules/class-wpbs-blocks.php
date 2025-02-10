@@ -23,7 +23,13 @@ class WPBS_Blocks {
 
 	private function layout_styles( $attributes, $block ): void {
 
-		$selector   = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
+		$formatted_name = str_replace( '/', '-', $block->block_type->name ?? false );
+		$selector = '.wp-block-' . $formatted_name;
+
+		if ( ! empty( $block->block_type->selectors['root'] ) ) {
+			$selector = $selector . $block->block_type->selectors['root'];
+		}
+
 		$breakpoint = match ( $attributes['wpbs-breakpoint'] ?? false ) {
 			'lg' => '1200px',
 			default => '768px'

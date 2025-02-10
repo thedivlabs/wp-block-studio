@@ -26,11 +26,11 @@ class WPBS_Blocks {
 		$selector = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
 
 		$attributes_layout = array_filter( $attributes, function ( $k ) {
-			return str_starts_with( $k, 'wpbs' ) && ! str_contains( 'mobile', $k );
+			return str_starts_with( 'wpbs', $k ) && ( ! str_contains( 'mobile', $k ) );
 		}, ARRAY_FILTER_USE_KEY );
 
 		$attributes_mobile = array_filter( $attributes, function ( $k ) {
-			return str_starts_with( $k, 'wpbs' ) && str_contains( 'mobile', $k );
+			return str_starts_with( 'wpbs', $k ) && str_contains( 'mobile', $k );
 		}, ARRAY_FILTER_USE_KEY );
 
 		$css = '';

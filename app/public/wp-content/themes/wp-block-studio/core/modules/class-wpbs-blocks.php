@@ -33,9 +33,9 @@ class WPBS_Blocks {
 		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
 
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) {
-			WPBS::console_log( $k );
 			if ( ! is_string( $v ) || in_array( $k, [
-					'wpbs-container'
+					'wpbs-container',
+					'wpbs-translate',
 				] ) ) {
 				return false;
 			}
@@ -43,10 +43,13 @@ class WPBS_Blocks {
 			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
 		}, ARRAY_FILTER_USE_BOTH );
 
-		$attributes_mobile = array_filter( $attributes, function ( $v, $k  ) {
+		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) {
 
 			if ( ! is_string( $v ) || in_array( $k, [
-					'wpbs-container'
+					'wpbs-translate-mobile',
+					'wpbs-padding-mobile',
+					'wpbs-margin-mobile',
+					'wpbs-gap-mobile',
 				] ) ) {
 				return false;
 			}
@@ -60,7 +63,7 @@ class WPBS_Blocks {
 
 			$prop = str_replace( 'wpbs-', '', $prop );
 
-			$css .= $prop . ':' . $value . ';';
+			$css .= $prop . ':' . $this->parse_style( $value ) . ';';
 		}
 
 
@@ -80,7 +83,7 @@ class WPBS_Blocks {
 
 					$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
 
-					echo $prop . ':' . $value . ';';
+					echo $prop . ':' . $this->parse_style( $value ) . ';';
 				}
 
 				echo '}';
@@ -111,6 +114,29 @@ class WPBS_Blocks {
 		foreach ( $block_dirs as $block_dir ) {
 			register_block_type( $block_dir );
 		}
+	}
+
+	public function parse_style( string $attr = '', bool $property = true ): string|bool|array {
+
+		if ( empty( $attr ) ) {
+			return false;
+		}
+
+		if ( str_contains( $attr, '#' ) ) {
+			return str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
+		}
+
+		if ( ! str_contains( $attr, '|' ) && ! str_contains( $attr, 'wp' ) && ! str_contains( $attr, '--' ) ) {
+			return $attr;
+		}
+
+		if ( $property ) {
+			return 'var(' . '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $attr ) . ')';
+		}
+
+		return '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $attr );
+
+
 	}
 
 	public static function init(): WPBS_Blocks {

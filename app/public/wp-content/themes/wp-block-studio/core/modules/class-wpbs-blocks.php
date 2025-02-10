@@ -23,18 +23,42 @@ class WPBS_Blocks {
 
 	private function layout_styles( $attributes, $block ): void {
 
-		$selector = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
+		$selector   = $block->block_type->selectors['root'] ?? '.' . str_replace( '/', '-', $block->block_type->name ?? false );
+		$breakpoint = match ( $attributes['wpbs-breakpoint'] ?? false ) {
+			'lg' => '1200px',
+			default => '768px'
+		};
 
 		$attributes_layout = array_filter( $attributes, function ( $k ) {
-			return str_starts_with( 'wpbs', $k ) && ( ! str_contains( 'mobile', $k ) );
+			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
 		}, ARRAY_FILTER_USE_KEY );
 
 		$attributes_mobile = array_filter( $attributes, function ( $k ) {
-			return str_starts_with( 'wpbs', $k ) && str_contains( 'mobile', $k );
+			return str_starts_with( $k, 'wpbs' ) && str_contains( $k, 'mobile' );
 		}, ARRAY_FILTER_USE_KEY );
 
 		$css = '';
 
+		foreach ( $attributes_layout as $prop => $value ) {
+
+			$prop = str_replace( 'wpbs-', '', $prop );
+
+			$css .= $prop . ':' . $value . ';';
+		}
+
+		if ( ! empty( $attributes_mobile ) ) {
+
+			$css .= '@media and screen and (max-width: ' . $breakpoint . ') {';
+
+			foreach ( $attributes_mobile as $prop => $value ) {
+
+				$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
+
+				$css .= $prop . ':' . $value . ';';
+			}
+
+			$css .= '}';
+		}
 
 		$data = join( ' ', [ $selector, '{', $css, '}' ] );
 

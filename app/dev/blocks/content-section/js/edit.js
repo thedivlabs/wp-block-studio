@@ -22,7 +22,7 @@ function sectionClassNames(attributes = {}) {
 function containerClassNames(attributes = {}) {
 
     return [
-        'wpbs-container gap-inherit relative z-20',
+        'wpbs-container container gap-inherit relative z-20',
         attributes.offsetHeader ? 'offset-header' : false,
     ].filter(x => x).join(' ');
 

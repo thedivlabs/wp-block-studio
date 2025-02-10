@@ -41,6 +41,9 @@ const blockAttributes = {
         display: {
             type: 'string'
         },
+        flexDirection: {
+            type: 'string'
+        },
         container: {
             type: 'string'
         },
@@ -240,7 +243,6 @@ export function LayoutProps(attributes) {
         return ['--layout-' + prop, attributes[attr]];
     }));
 
-
     [...layoutAttrs].filter(attr => [
         'display',
         'space',
@@ -334,7 +336,7 @@ export function LayoutProps(attributes) {
         const prop = typeof attr === 'string' ? attr.replace(regex, '-$1').toLowerCase() : attr;
 
         if (attr === 'container') {
-            return ['--layout', prop, attributes[attr]].join('-');
+            return ['--layout', prop].join('-');
         }
 
         if (attr === 'space') {
@@ -356,8 +358,9 @@ export function LayoutProps(attributes) {
 
     }).flat().filter(attr => attr !== null);
 
-    console.log(combinedProps);
-    console.log(classes);
+    //console.log(combinedProps);
+    //console.log(classes);
+    //console.log(mobileAttrs);
 
     return {
         style: combinedProps,
@@ -396,6 +399,16 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 >
                     <Display defaultValue={attributes.display || ''} callback={(newValue) => {
                         setAttributes({display: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes.flexDirection || ''}
+                    label={'Direction'}
+                    onDeselect={() => setAttributes({flexDirection: ''})}
+                >
+                    <Display defaultValue={attributes.flexDirection || ''} callback={(newValue) => {
+                        setAttributes({flexDirection: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem

@@ -2,20 +2,19 @@ import {SelectControl} from "@wordpress/components";
 import {useState} from "react";
 
 
-function Display({defaultValue, callback}) {
+function FlexDirection({defaultValue, callback}) {
 
     const [value, setValue] = useState(defaultValue);
 
     return <SelectControl
-        label={'Display'}
+        label={'Direction'}
         value={value}
         options={[
             {label: 'Select', value: ''},
-            {label: 'Flex', value: 'flex'},
-            {label: 'Block', value: 'block'},
-            {label: 'Inline Flex', value: 'inline-flex'},
-            {label: 'Inline Block', value: 'inline-block'},
-            {label: 'None', value: 'none'},
+            {label: 'Row', value: 'row'},
+            {label: 'Column', value: 'column'},
+            {label: 'Row Reverse', value: 'row-reverse'},
+            {label: 'Column Reverse', value: 'column-reverse'},
         ]}
         onChange={(newValue) => {
             setValue(newValue);
@@ -26,4 +25,4 @@ function Display({defaultValue, callback}) {
     />;
 }
 
-export default Display;
+export default FlexDirection;

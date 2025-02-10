@@ -42,6 +42,9 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
+            style: {
+                '--offset-header': attributes['offset-header'] ? attributes['offset-header'] : '0px'
+            }
         });
 
         const resetAll_options = () => {

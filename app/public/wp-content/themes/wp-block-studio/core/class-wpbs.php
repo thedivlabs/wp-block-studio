@@ -9,6 +9,7 @@ class WPBS {
 	private static WPBS $instance;
 
 	public static string $path;
+	public static string $core_path;
 	public static string $nonce;
 	public static string $nonce_id;
 	public static string $transient_base;
@@ -21,9 +22,10 @@ class WPBS {
 	private function __construct() {
 
 		self::$transient_base = 'wpbs';
-		self::$path           = trailingslashit( __DIR__ );
+		self::$path           = trailingslashit( get_template_directory() );
+		self::$core_path      = self::$path . 'core/';
 		self::$dist_path      = ( is_child_theme() ? trailingslashit( get_stylesheet_directory() ) : self::$path ) . 'dist/';
-		self::$dist_uri       = get_stylesheet_directory_uri() . '/dist';
+		self::$dist_uri       = str_replace( get_stylesheet_directory(), get_stylesheet_directory_uri(), self::$dist_path );
 
 		$this->set_nonce();
 
@@ -91,7 +93,7 @@ class WPBS {
 
 	public function init_theme(): void {
 
-		require_once self::$path . 'modules/class-wpbs-blocks.php';
+		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
 
 		self::$blocks = WPBS_Blocks::init();
 

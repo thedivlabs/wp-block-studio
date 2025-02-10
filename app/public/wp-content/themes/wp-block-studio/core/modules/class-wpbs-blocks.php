@@ -33,6 +33,13 @@ class WPBS_Blocks {
 		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
 
 		$attributes_layout = array_filter( $attributes, function ( $k ) {
+
+			if ( in_array( $k, [
+				'wpbs-container'
+			] ) ) {
+				return false;
+			}
+
 			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
 		}, ARRAY_FILTER_USE_KEY );
 

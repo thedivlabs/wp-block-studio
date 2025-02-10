@@ -31,8 +31,15 @@ class WPBS {
 			self::clear_transients();
 		}
 
-		add_action( 'acf/init', [ $this, 'init_theme' ], 10 );
+		add_action( 'init', [ $this, 'theme_support' ] );
+		add_action( 'init', [ $this, 'theme_assets' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
+		add_action( 'enqueue_block_assets', [ $this, 'admin_assets' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
+
+		add_action( 'acf/init', [ $this, 'init_theme' ] );
 		add_action( 'acf/init', [ $this, 'init_hook' ], 30 );
+
 		add_action( 'wp_after_insert_post', [ $this, 'clear_transients' ], 100 );
 		add_filter( 'acf/settings/load_json', [ $this, 'load_json' ], 100 );
 		add_filter( 'acf/settings/save_json', [ $this, 'save_json' ] );
@@ -41,9 +48,50 @@ class WPBS {
 
 	}
 
+	public function theme_assets(): void {
+		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
+		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
+		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js' );
+
+	}
+
+	public function admin_assets(): void {
+		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_style( 'wpbs-admin-css' );
+	}
+
+
+	public function editor_assets(): void {
+		add_editor_style();
+	}
+
+	public function view_assets(): void {
+		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_script( 'wpbs-theme-js' );
+	}
+
+
+	public function theme_support(): void {
+
+		add_theme_support( 'custom-spacing' );
+		add_theme_support( 'custom-units' );
+		add_theme_support( 'block-template-parts' );
+		add_theme_support( 'core-block-patterns' );
+		add_theme_support( 'custom-background' );
+		add_theme_support( 'editor-styles' );
+		add_theme_support( 'post-thumbnails' );
+		add_theme_support( 'appearance-tools' );
+		add_theme_support( 'wp-block-styles' );
+		add_theme_support( 'border' );
+		//add_theme_support( 'editor-color-palette' );
+		//add_theme_support( 'editor-gradient-presets' );
+
+	}
+
+
 	public function init_theme(): void {
 
-		require_once self::$path . 'modules/class-wpbs-blocks.php';
+		require_once self::$path . 'core/modules/class-wpbs-blocks.php';
 
 		self::$blocks = WPBS_Blocks::init();
 
@@ -174,7 +222,7 @@ class WPBS {
 		] );
 		self::$nonce    = wp_create_nonce( self::$nonce_id );
 	}
-	
+
 	public static function init(): WPBS {
 		if ( empty( self::$instance ) ) {
 			self::$instance = new WPBS();

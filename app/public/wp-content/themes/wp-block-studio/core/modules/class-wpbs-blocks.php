@@ -16,12 +16,26 @@ class WPBS_Blocks {
 
 	public function render_block( $attributes, $content, $block ): string {
 
-		WPBS::console_log( $attributes, 'attributes' );
-		WPBS::console_log( $block, 'attributes' );
-
-		//wp_add_inline_style( $block->block_type->style_handles[0] ?? false, '*{background: blue !important;}' );
+		$this->layout_styles( $attributes, $block );
 
 		return $content;
+	}
+
+	private function layout_styles( $attributes, $block ): void {
+
+		$selector = $block->block_type->selectors['root'] ?? false;
+
+		$css = '';
+
+		$data = join( ' ', [ $selector, '{', $css, '}' ] );
+
+		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
+
+		WPBS::console_log( $selector );
+		WPBS::console_log( $attributes );
+		WPBS::console_log( $block );
+
+
 	}
 
 	public function block_args( $args, $block_type ): array {

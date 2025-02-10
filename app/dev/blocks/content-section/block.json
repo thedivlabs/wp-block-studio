@@ -2,6 +2,9 @@
   "name": "wpbs/content-section",
   "title": "Content Section",
   "description": "Display a content section with inner blocks",
+  "selectors": {
+    "root": ".wpbs-content-section"
+  },
   "supports": {
     "innerBlocks": true,
     "color": {

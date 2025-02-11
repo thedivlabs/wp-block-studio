@@ -34,13 +34,8 @@ class WPBS_Layout {
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) {
 
 			if ( in_array( $k, [
-				'wpbs-translate-mobile',
-				'wpbs-padding-mobile',
-				'wpbs-margin-mobile',
-				'wpbs-gap-mobile',
-				'wpbs-height-mobile',
-				'wpbs-height-custom-mobile',
-				'wpbs-border-radius-mobile',
+				//'wpbs-translate-mobile',
+				//'wpbs-border-radius-mobile',
 				'wpbs-breakpoint',
 			] ) ) {
 				return false;
@@ -90,9 +85,44 @@ class WPBS_Layout {
 
 				foreach ( $attributes_mobile as $prop => $value ) {
 
-					$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
+					if ( is_string( $value ) ) {
+						$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
 
-					echo $prop . ':' . WPBS::parse_style( $value ) . ';';
+						echo $prop . ':' . WPBS::parse_style( $value ) . ';';
+					}
+
+					echo match ( $prop ) {
+						'wpbs-translate-mobile' => 'transform:translate(' . join( ', ', [
+								$prop['left'] ?? '0px',
+								$prop['top'] ?? '0px'
+							] ) . ');',
+						'wpbs-height-mobile' => 'height:' . ( $attributes_mobile['wpbs-height-custom-mobile'] ?? $prop ) . ';',
+						'wpbs-height-custom-mobile' => 'height:' . $prop . ';',
+						'wpbs-rounded' => 'border-radius:' . join( ' ', [
+								$prop['top'] ?? '0px',
+								$prop['right'] ?? '0px',
+								$prop['bottom'] ?? '0px',
+								$prop['left'] ?? '0px',
+							] ) . ';',
+						'wpbs-padding-mobile' => join( '; ', array_filter( [
+							! empty( $prop['top'] ) ? 'padding-top:' . $prop['top'] : null,
+							! empty( $prop['right'] ) ? 'padding-right:' . $prop['right'] : null,
+							! empty( $prop['bottom'] ) ? 'padding-bottom:' . $prop['bottom'] : null,
+							! empty( $prop['left'] ) ? 'padding-left:' . $prop['left'] : null,
+						] ) ),
+						'wpbs-margin-mobile' => join( '; ', array_filter( [
+							! empty( $prop['top'] ) ? 'margin-top:' . $prop['top'] : null,
+							! empty( $prop['right'] ) ? 'margin-right:' . $prop['right'] : null,
+							! empty( $prop['bottom'] ) ? 'margin-bottom:' . $prop['bottom'] : null,
+							! empty( $prop['left'] ) ? 'margin-left:' . $prop['left'] : null,
+						] ) ),
+						'wpbs-gap-mobile' => join( '; ', array_filter( [
+							! empty( $prop['top'] ) ? 'column-gap:' . $prop['top'] : null,
+							! empty( $prop['left'] ) ? 'row-gap:' . $prop['left'] : null,
+						] ) ),
+						default => null
+					};
+
 				}
 
 				echo '}';

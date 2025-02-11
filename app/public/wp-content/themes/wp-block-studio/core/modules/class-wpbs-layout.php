@@ -23,8 +23,8 @@ class WPBS_Layout {
 
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) {
 			if ( in_array( $k, [
-					'wpbs-container',
-				] ) ) {
+				'wpbs-container',
+			] ) ) {
 				return false;
 			}
 
@@ -53,7 +53,7 @@ class WPBS_Layout {
 
 		foreach ( $attributes_layout as $prop => $value ) {
 
-			if(empty($value)){
+			if ( empty( $value ) ) {
 				continue;
 			}
 
@@ -63,9 +63,12 @@ class WPBS_Layout {
 				$css .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 			}
 
-			$css .= match($prop){
-				'wpbs-translate' => 'transform:translate('.join(', ', [$prop['left'] ?? '0px', $prop['top'] ?? '0px']).');',
-				'wpbs-height' => 'height:' . ($attributes_layout['wpbs-height-custom'] ?? $prop) . ';',
+			$css .= match ( $prop ) {
+				'wpbs-translate' => 'transform:translate(' . join( ', ', [
+						$prop['left'] ?? '0px',
+						$prop['top'] ?? '0px'
+					] ) . ');',
+				'wpbs-height' => 'height:' . ( $attributes_layout['wpbs-height-custom'] ?? $prop ) . ';',
 				'wpbs-height-custom' => 'height:' . $prop . ';',
 				default => null
 			};

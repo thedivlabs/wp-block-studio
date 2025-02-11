@@ -4,11 +4,11 @@ import {useState} from "react";
 
 function Opacity({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue || '');
+    const [value, setValue] = useState(defaultValue || '');
 
     return <RangeControl
         label="Opacity"
-        step={1}
+        step={.1}
         withInputField={true}
         allowReset={true}
         isShiftStepEnabled
@@ -20,8 +20,8 @@ function Opacity({defaultValue, callback}) {
         }}
         __next40pxDefaultSize
         __nextHasNoMarginBottom
-        min={ 0 }
-        max={ 100 }
+        min={0}
+        max={1}
     />;
 }
 

@@ -103,20 +103,20 @@ class WPBS_Layout {
 								$value['left'] ?? '0px',
 							] ) . ';',
 						'wpbs-padding-mobile' => join( '; ', array_filter( [
-							! empty( $value['top'] ) ? 'padding-top:' . $value['top'] : null,
-							! empty( $value['right'] ) ? 'padding-right:' . $value['right'] : null,
-							! empty( $value['bottom'] ) ? 'padding-bottom:' . $value['bottom'] : null,
-							! empty( $value['left'] ) ? 'padding-left:' . $value['left'] : null,
+							! empty( $value['top'] ) ? 'padding-top:' . $value['top'] . ';' : null,
+							! empty( $value['right'] ) ? 'padding-right:' . $value['right'] . ';' : null,
+							! empty( $value['bottom'] ) ? 'padding-bottom:' . $value['bottom'] . ';' : null,
+							! empty( $value['left'] ) ? 'padding-left:' . $value['left'] . ';' : null,
 						] ) ),
 						'wpbs-margin-mobile' => join( '; ', array_filter( [
-							! empty( $value['top'] ) ? 'margin-top:' . $value['top'] : null,
-							! empty( $value['right'] ) ? 'margin-right:' . $value['right'] : null,
-							! empty( $value['bottom'] ) ? 'margin-bottom:' . $value['bottom'] : null,
-							! empty( $value['left'] ) ? 'margin-left:' . $value['left'] : null,
+							! empty( $value['top'] ) ? 'margin-top:' . $value['top'] . ';' : null,
+							! empty( $value['right'] ) ? 'margin-right:' . $value['right'] . ';' : null,
+							! empty( $value['bottom'] ) ? 'margin-bottom:' . $value['bottom'] . ';' : null,
+							! empty( $value['left'] ) ? 'margin-left:' . $value['left'] . ';' : null,
 						] ) ),
 						'wpbs-gap-mobile' => join( '; ', array_filter( [
-							! empty( $value['top'] ) ? 'column-gap:' . $value['top'] : null,
-							! empty( $value['left'] ) ? 'row-gap:' . $value['left'] : null,
+							! empty( $value['top'] ) ? 'column-gap:' . $value['top'] . ';' : null,
+							! empty( $value['left'] ) ? 'row-gap:' . $value['left'] . ';' : null,
 						] ) ),
 						default => null
 					};

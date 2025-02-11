@@ -101,11 +101,15 @@ class WPBS_Layout {
 
 		add_action( 'wp_head', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector ) {
 
-			if ( empty( $attributes_mobile ) && empty( $attributes_color ) ) {
+			if ( empty( $attributes_mobile ) && empty( $attributes_color ) && empty( $attributes['wpbs-opacity-hover'] ) ) {
 				return;
 			}
 
 			echo '<style>';
+
+			if ( ! empty( $attributes['wpbs-opacity-hover'] ) ) {
+				echo $selector . ':hover' . '{opacity: ' . $attributes['wpbs-opacity-hover'] . '}';
+			}
 
 
 			foreach ( $attributes_color ?? [] as $prop => $value ) {

@@ -824,12 +824,12 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
             <ToolsPanel label={'Hover'} resetAll={resetAll_hover}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-opacity-mobile']}
+                    hasValue={() => !!attributes['wpbs-opacity-hover']}
                     label={'Opacity'}
-                    onDeselect={() => setAttributes({['wpbs-opacity-mobile']: undefined})}
+                    onDeselect={() => setAttributes({['wpbs-opacity-hover']: undefined})}
                 >
-                    <Opacity defaultValue={attributes['wpbs-opacity-mobile']} callback={(newValue) => {
-                        setAttributes({['wpbs-opacity-mobile']: newValue});
+                    <Opacity defaultValue={attributes['wpbs-opacity-hover']} callback={(newValue) => {
+                        setAttributes({['wpbs-opacity-hover']: newValue});
                     }}/>
                 </ToolsPanelItem>
             </ToolsPanel>

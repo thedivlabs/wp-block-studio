@@ -99,15 +99,16 @@ class WPBS_Layout {
 
 		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
 
-		add_action( 'wp_head', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector ) {
+		add_action( 'wp_head', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes ) {
 
 			if ( empty( $attributes_mobile ) && empty( $attributes_color ) && empty( $attributes['wpbs-opacity-hover'] ) ) {
 				return;
 			}
 
 			echo '<style>';
-
+			
 			if ( ! empty( $attributes['wpbs-opacity-hover'] ) ) {
+
 				echo $selector . ':hover' . '{opacity: ' . $attributes['wpbs-opacity-hover'] . '}';
 			}
 

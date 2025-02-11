@@ -35,7 +35,6 @@ class WPBS_Layout {
 		}, ARRAY_FILTER_USE_BOTH );;
 
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) use ( $attributes_color ) {
-			WPBS::console_log( $attributes_color );
 			if (
 				in_array( $k, array_merge( array_keys( $attributes_color ), [ 'wpbs-container' ] ) ) ||
 				str_contains( $k, 'mobile' ) ||

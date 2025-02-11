@@ -239,9 +239,14 @@ export function LayoutAttributes() {
 }
 
 export function LayoutClasses(attributes) {
-    console.log(attributes);
-    //return '';
-    return [...Object.keys(attributes)].map(attr => {
+
+    let classes = [];
+
+    if (Object.keys(attributes).some(attr => blockAttributes.layout[attr])) {
+        classes.push('has-layout');
+    }
+
+    classes = [...classes, ...[...Object.keys(attributes)].map(attr => {
         switch (attr) {
             case 'wpbs-container':
                 if (attributes[attr] === 'normal') {
@@ -249,7 +254,9 @@ export function LayoutClasses(attributes) {
                 }
                 return 'container-' + attributes[attr]
         }
-    }).filter(x => x).join(' ');
+    }).filter(x => x)];
+
+    return classes.join(' ');
 }
 
 export function Layout({blockProps, attributes = {}, setAttributes}) {

@@ -51,7 +51,7 @@ class WPBS_Layout {
 			}
 
 			if ( is_string( $value ) && ! in_array( $prop, [
-					'breakpoint',
+					'wpbs-breakpoint',
 					'wpbs-translate',
 					'wpbs-height-custom',
 					'wpbs-height'
@@ -67,7 +67,7 @@ class WPBS_Layout {
 						$value['top'] ?? '0px'
 					] ) . ');',
 				'wpbs-height' => 'height:' . ( $attributes_layout['wpbs-height-custom'] ?? $value ) . ';',
-				'wpbs-height-custom' => 'height:' . $value . ';',
+				'wpbs-height-custom' => empty( $attributes_layout['wpbs-height'] ) ? 'height:' . $value . ';' : null,
 				default => null
 			};
 

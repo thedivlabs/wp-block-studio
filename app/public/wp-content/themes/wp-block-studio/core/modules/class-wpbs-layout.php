@@ -34,8 +34,6 @@ class WPBS_Layout {
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) {
 
 			if ( in_array( $k, [
-				//'wpbs-translate-mobile',
-				//'wpbs-border-radius-mobile',
 				'wpbs-breakpoint',
 			] ) ) {
 				return false;

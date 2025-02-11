@@ -16,83 +16,9 @@ class WPBS_Blocks {
 
 	public function render_block( $attributes, $content, $block ): string {
 
-		$this->layout_styles( $attributes, $block );
+		WPBS_Layout::layout_styles( $attributes, $block );
 
 		return $content;
-	}
-
-	private function layout_styles( $attributes, $block ): void {
-
-
-		$selector = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? false );
-
-		if ( ! empty( $block->block_type->selectors['root'] ) ) {
-			$selector = $selector . $block->block_type->selectors['root'];
-		}
-
-		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
-
-		$attributes_layout = array_filter( $attributes, function ( $v, $k ) {
-			if ( ! is_string( $v ) || in_array( $k, [
-					'wpbs-container',
-					'wpbs-translate',
-				] ) ) {
-				return false;
-			}
-
-			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
-		}, ARRAY_FILTER_USE_BOTH );
-
-		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) {
-
-			if ( ! is_string( $v ) || in_array( $k, [
-					'wpbs-translate-mobile',
-					'wpbs-padding-mobile',
-					'wpbs-margin-mobile',
-					'wpbs-gap-mobile',
-				] ) ) {
-				return false;
-			}
-
-			return str_starts_with( $k, 'wpbs' ) && str_contains( $k, 'mobile' );
-		}, ARRAY_FILTER_USE_BOTH );
-
-		$css = '';
-
-		foreach ( $attributes_layout as $prop => $value ) {
-
-			$prop = str_replace( 'wpbs-', '', $prop );
-
-			$css .= $prop . ':' . $this->parse_style( $value ) . ';';
-		}
-
-
-		$data = join( ' ', [ $selector, '{', $css, '}' ] );
-
-		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
-
-		add_action( 'wp_head', function () use ( $attributes_mobile, $breakpoint, $selector ) {
-
-			if ( ! empty( $attributes_mobile ) ) {
-				echo '<style>';
-				echo '@media (max-width: calc(' . $breakpoint . ' - 1px)) { ';
-
-				echo $selector . ' {';
-
-				foreach ( $attributes_mobile as $prop => $value ) {
-
-					$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
-
-					echo $prop . ':' . $this->parse_style( $value ) . ';';
-				}
-
-				echo '}';
-				echo '}';
-				echo '</style>';
-			}
-
-		}, 40 );
-
 	}
 
 	public function block_args( $args, $block_type ): array {
@@ -114,29 +40,6 @@ class WPBS_Blocks {
 		foreach ( $block_dirs as $block_dir ) {
 			register_block_type( $block_dir );
 		}
-	}
-
-	public function parse_style( string $attr = '', bool $property = true ): string|bool|array {
-
-		if ( empty( $attr ) ) {
-			return false;
-		}
-
-		if ( str_contains( $attr, '#' ) ) {
-			return str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
-		}
-
-		if ( ! str_contains( $attr, '|' ) && ! str_contains( $attr, 'wp' ) && ! str_contains( $attr, '--' ) ) {
-			return $attr;
-		}
-
-		if ( $property ) {
-			return 'var(' . '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $attr ) . ')';
-		}
-
-		return '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $attr );
-
-
 	}
 
 	public static function init(): WPBS_Blocks {

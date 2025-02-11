@@ -16,7 +16,6 @@ class WPBS {
 	public static string $dist_path;
 	public static string $dist_uri;
 
-	public static WPBS_Blocks $blocks;
 	public static int|bool $pid = false;
 
 	private function __construct() {
@@ -94,8 +93,10 @@ class WPBS {
 	public function init_theme(): void {
 
 		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
+		require_once self::$core_path . 'modules/class-wpbs-layout.php';
 
-		self::$blocks = WPBS_Blocks::init();
+		WPBS_Blocks::init();
+		WPBS_Layout::init();
 
 		do_action( 'wpbs_init' );
 	}
@@ -256,6 +257,29 @@ class WPBS {
 			echo "console.log($result)";
 			echo "</script>";
 		}, 900 );
+
+
+	}
+
+	public static function parse_style( string $attr = '', bool $property = true ): string|bool|array {
+
+		if ( empty( $attr ) ) {
+			return false;
+		}
+
+		if ( str_contains( $attr, '#' ) ) {
+			return str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
+		}
+
+		if ( ! str_contains( $attr, '|' ) && ! str_contains( $attr, 'wp' ) && ! str_contains( $attr, '--' ) ) {
+			return $attr;
+		}
+
+		if ( $property ) {
+			return 'var(' . '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $attr ) . ')';
+		}
+
+		return '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $attr );
 
 
 	}

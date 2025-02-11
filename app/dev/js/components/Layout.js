@@ -243,7 +243,7 @@ export function LayoutClasses(attributes) {
             case 'wpbs-container':
                 return 'container-' + attributes[attr]
         }
-    });
+    }).join(' ');
 }
 
 export function Layout({blockProps, attributes = {}, setAttributes}) {

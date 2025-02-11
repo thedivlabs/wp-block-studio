@@ -218,7 +218,7 @@ const blockAttributes = {
         'wpbs-text-color-hover': {
             type: 'string'
         },
-        'wpbs-background-color-hove': {
+        'wpbs-background-color-hover': {
             type: 'string'
         },
         'wpbs-border-color-hover': {

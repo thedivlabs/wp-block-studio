@@ -50,7 +50,12 @@ class WPBS_Layout {
 				continue;
 			}
 
-			if ( is_string( $value ) ) {
+			if ( is_string( $value ) && ! in_array( $prop, [
+					'breakpoint',
+					'wpbs-translate',
+					'wpbs-height-custom',
+					'wpbs-height'
+				] ) ) {
 				$prop = str_replace( 'wpbs-', '', $prop );
 
 				$css .= $prop . ':' . WPBS::parse_style( $value ) . ';';
@@ -83,7 +88,18 @@ class WPBS_Layout {
 
 				foreach ( $attributes_mobile as $prop => $value ) {
 
-					if ( is_string( $value ) ) {
+					if ( is_string( $value ) && ! in_array( $prop, [
+							'breakpoint',
+							'wpbs-translate',
+							'wpbs-height-custom',
+							'wpbs-height',
+							'wpbs-translate-mobile',
+							'wpbs-height-mobile',
+							'wpbs-height-custom-mobile',
+							'wpbs-rounded',
+							'wpbs-padding-mobile',
+							'wpbs-margin-mobile',
+						] ) ) {
 						$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
 
 						echo $prop . ':' . WPBS::parse_style( $value ) . ';';

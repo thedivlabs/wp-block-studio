@@ -22,11 +22,8 @@ class WPBS_Layout {
 		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
 
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) {
-			if ( ! is_string( $v ) || in_array( $k, [
+			if ( in_array( $k, [
 					'wpbs-container',
-					'wpbs-translate',
-					'wpbs-height-custom',
-					'wpbs-height',
 				] ) ) {
 				return false;
 			}
@@ -36,16 +33,16 @@ class WPBS_Layout {
 
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) {
 
-			if ( ! is_string( $v ) || in_array( $k, [
-					'wpbs-translate-mobile',
-					'wpbs-padding-mobile',
-					'wpbs-margin-mobile',
-					'wpbs-gap-mobile',
-					'wpbs-height-mobile',
-					'wpbs-height-custom-mobile',
-					'wpbs-border-radius-mobile',
-					'wpbs-breakpoint',
-				] ) ) {
+			if ( in_array( $k, [
+				'wpbs-translate-mobile',
+				'wpbs-padding-mobile',
+				'wpbs-margin-mobile',
+				'wpbs-gap-mobile',
+				'wpbs-height-mobile',
+				'wpbs-height-custom-mobile',
+				'wpbs-border-radius-mobile',
+				'wpbs-breakpoint',
+			] ) ) {
 				return false;
 			}
 
@@ -56,9 +53,23 @@ class WPBS_Layout {
 
 		foreach ( $attributes_layout as $prop => $value ) {
 
-			$prop = str_replace( 'wpbs-', '', $prop );
+			if(empty($value)){
+				continue;
+			}
 
-			$css .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			if ( is_string( $value ) ) {
+				$prop = str_replace( 'wpbs-', '', $prop );
+
+				$css .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			}
+
+			$css .= match($prop){
+				'wpbs-translate' => 'transform:translate('.join(', ', [$prop['left'] ?? '0px', $prop['top'] ?? '0px']).');',
+				'wpbs-height' => 'height:' . ($attributes_layout['wpbs-height-custom'] ?? $prop) . ';',
+				'wpbs-height-custom' => 'height:' . $prop . ';',
+				default => null
+			};
+
 		}
 
 

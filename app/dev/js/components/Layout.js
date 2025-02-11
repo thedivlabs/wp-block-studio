@@ -237,6 +237,14 @@ const blockAttributes = {
 export function LayoutAttributes() {
     return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors);
 }
+export function LayoutClasses(attributes) {
+    return [...attributes].map(attr => {
+        switch(attr) {
+            case 'wpbs-container':
+                return 'container-' + attributes[attr]
+        }
+    });
+}
 
 export function Layout({blockProps, attributes = {}, setAttributes}) {
 

@@ -5,7 +5,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes} from "Components/Layout"
+import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
@@ -16,8 +16,9 @@ import OffsetHeader from "Components/OffsetHeader";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-content-section w-full flex relative',
+        'wpbs-content-section w-full flex relative has-container',
         attributes['offset-header'] ? 'offset-header' : false,
+        LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
 

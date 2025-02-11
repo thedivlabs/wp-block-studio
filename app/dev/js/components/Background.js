@@ -56,7 +56,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const imageClass = [
         'wpbs-background__image',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0'
+        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 [&>img]:w-full [&>img]:h-full'
     ].filter(x => x).join(' ');
 
     const patternClass = [
@@ -153,7 +153,7 @@ export function Background({settings = {}, pushSettings}) {
     function updateSettings(attr, val, callback) {
         callback(val);
         if (pushSettings) {
-            pushSettings(Object.assign({}, settings, {[attr]: val}));
+            pushSettings({background: Object.assign({}, settings, {[attr]: val})});
         }
     }
 

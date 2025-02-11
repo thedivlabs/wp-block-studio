@@ -12,6 +12,7 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import OffsetHeader from "Components/OffsetHeader";
+import {Background, BackgroundElement} from "Components/Background";
 
 function sectionClassNames(attributes = {}) {
 
@@ -34,6 +35,9 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...LayoutAttributes(),
+        'background': {
+            type: 'object'
+        },
         'offset-header': {
             type: 'string'
         }
@@ -54,6 +58,9 @@ registerBlockType(metadata.name, {
 
         return (
             <>
+                <InspectorControls group="styles">
+                    <Background settings={attributes.background || {}} pushSettings={setAttributes}></Background>
+                </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <InspectorControls group="styles">
                     <ToolsPanel label={'Options'} resetAll={resetAll_options} style={{gap: '20px'}}>
@@ -75,6 +82,8 @@ registerBlockType(metadata.name, {
                     <div className={containerClassNames(attributes)}>
                         <InnerBlocks/>
                     </div>
+
+                    <BackgroundElement settings={attributes.background} blockProps={blockProps} />
                 </section>
             </>
         )
@@ -96,6 +105,7 @@ registerBlockType(metadata.name, {
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
+                <BackgroundElement settings={props.attributes.background} blockProps={blockProps} />
             </section>
         );
     }

@@ -25,6 +25,8 @@ class WPBS_Layout {
 			if ( ! is_string( $v ) || in_array( $k, [
 					'wpbs-container',
 					'wpbs-translate',
+					'wpbs-height-custom',
+					'wpbs-height',
 				] ) ) {
 				return false;
 			}
@@ -39,6 +41,10 @@ class WPBS_Layout {
 					'wpbs-padding-mobile',
 					'wpbs-margin-mobile',
 					'wpbs-gap-mobile',
+					'wpbs-height-mobile',
+					'wpbs-height-custom-mobile',
+					'wpbs-border-radius-mobile',
+					'wpbs-breakpoint',
 				] ) ) {
 				return false;
 			}

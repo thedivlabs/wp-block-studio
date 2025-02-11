@@ -77,10 +77,10 @@ const blockAttributes = {
         'wpbs-flex-wrap': {
             type: 'string'
         },
-        'wpbs-grow': {
+        'wpbs-flex-grow': {
             type: 'string'
         },
-        'wpbs-shrink': {
+        'wpbs-flex-shrink': {
             type: 'string'
         },
         'wpbs-position': {
@@ -148,10 +148,10 @@ const blockAttributes = {
         'wpbs-height-custom-mobile': {
             type: 'string'
         },
-        'wpbs-grow-mobile': {
+        'wpbs-flex-grow-mobile': {
             type: 'string'
         },
-        'wpbs-shrink-mobile': {
+        'wpbs-flex-shrink-mobile': {
             type: 'string'
         },
         'wpbs-flex-direction-mobile': {
@@ -381,22 +381,22 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-grow']}
+                    hasValue={() => !!attributes['wpbs-flex-grow']}
                     label={'Grow'}
-                    onDeselect={() => setAttributes({['wpbs-grow']: undefined})}
+                    onDeselect={() => setAttributes({['wpbs-flex-grow']: undefined})}
                 >
-                    <Grow defaultValue={attributes['wpbs-grow']} callback={(newValue) => {
-                        setAttributes({['wpbs-grow']: newValue});
+                    <Grow defaultValue={attributes['wpbs-flex-grow']} callback={(newValue) => {
+                        setAttributes({['wpbs-flex-grow']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-shrink']}
+                    hasValue={() => !!attributes['wpbs-flex-shrink']}
                     label={'Shrink'}
-                    onDeselect={() => setAttributes({['wpbs-shrink']: undefined})}
+                    onDeselect={() => setAttributes({['wpbs-flex-shrink']: undefined})}
                 >
-                    <Shrink defaultValue={attributes['wpbs-shrink']} callback={(newValue) => {
-                        setAttributes({['wpbs-shrink']: newValue});
+                    <Shrink defaultValue={attributes['wpbs-flex-shrink']} callback={(newValue) => {
+                        setAttributes({['wpbs-flex-shrink']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
@@ -562,22 +562,22 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-grow-mobile']}
+                    hasValue={() => !!attributes['wpbs-flex-grow-mobile']}
                     label={'Grow'}
-                    onDeselect={() => setAttributes({['wpbs-grow-mobile']: undefined})}
+                    onDeselect={() => setAttributes({['wpbs-flex-grow-mobile']: undefined})}
                 >
-                    <Grow defaultValue={attributes['wpbs-grow-mobile']} callback={(newValue) => {
-                        setAttributes({['wpbs-grow-mobile']: newValue});
+                    <Grow defaultValue={attributes['wpbs-flex-grow-mobile']} callback={(newValue) => {
+                        setAttributes({['wpbs-flex-grow-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-shrink-mobile']}
+                    hasValue={() => !!attributes['wpbs-flex-shrink-mobile']}
                     label={'Shrink'}
-                    onDeselect={() => setAttributes({['wpbs-shrink-mobile']: undefined})}
+                    onDeselect={() => setAttributes({['wpbs-flex-shrink-mobile']: undefined})}
                 >
-                    <Shrink defaultValue={attributes['wpbs-shrink-mobile']} callback={(newValue) => {
-                        setAttributes({['wpbs-shrink-mobile']: newValue});
+                    <Shrink defaultValue={attributes['wpbs-flex-shrink-mobile']} callback={(newValue) => {
+                        setAttributes({['wpbs-flex-shrink-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem

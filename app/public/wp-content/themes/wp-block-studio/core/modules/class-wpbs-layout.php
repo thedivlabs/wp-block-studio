@@ -71,7 +71,7 @@ class WPBS_Layout {
 				continue;
 			}
 
-			if ( is_string( $value ) && ! in_array( $prop, [
+			if ( ! is_array( $value ) && ! in_array( $prop, [
 					'wpbs-breakpoint',
 					'wpbs-translate',
 					'wpbs-height-custom',
@@ -106,7 +106,7 @@ class WPBS_Layout {
 			}
 
 			echo '<style>';
-			
+
 			if ( ! empty( $attributes['wpbs-opacity-hover'] ) ) {
 
 				echo $selector . ':hover' . '{opacity: ' . $attributes['wpbs-opacity-hover'] . '}';

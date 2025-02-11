@@ -12,6 +12,9 @@ class WPBS_Layout {
 
 	public static function layout_styles( $attributes, $block ): void {
 
+		if ( ! is_array( $attributes ) ) {
+			return;
+		}
 
 		$selector = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? false );
 
@@ -20,26 +23,46 @@ class WPBS_Layout {
 		}
 
 		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
+		
+		$attributes_color = array_filter( $attributes, function ( $v, $k ) {
+			return in_array( $k, [
+				'wpbs-text-color-hover',
+				'wpbs-background-color-hover',
+				'wpbs-border-color-hover',
+				'wpbs-text-color-mobile',
+				'wpbs-background-color-mobile',
+			] );
+		}, ARRAY_FILTER_USE_BOTH );;
 
-		$attributes_layout = array_filter( $attributes, function ( $v, $k ) {
-			if ( in_array( $k, [
-				'wpbs-container',
-			] ) ) {
+		$attributes_layout = array_filter( $attributes, function ( $v, $k ) use ( $attributes_color ) {
+
+			if (
+				in_array( $k, [ 'wpbs-container' ] ) ||
+				in_array( $k, $attributes_color ) ||
+				str_contains( $k, 'mobile' ) ||
+				! str_starts_with( $k, 'wpbs' )
+			) {
 				return false;
+			} else {
+				return true;
 			}
 
-			return str_starts_with( $k, 'wpbs' ) && ( ! str_contains( $k, 'mobile' ) );
 		}, ARRAY_FILTER_USE_BOTH );
 
-		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) {
 
-			if ( in_array( $k, [
-				'wpbs-breakpoint',
-			] ) ) {
+		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) use ( $attributes_layout ) {
+
+			if (
+				in_array( $k, [ 'wpbs-breakpoint' ] ) ||
+				in_array( $k, $attributes_layout ) ||
+				! str_starts_with( $k, 'wpbs' ) ||
+				! str_contains( $k, 'mobile' )
+			) {
 				return false;
+			} else {
+				return true;
 			}
 
-			return str_starts_with( $k, 'wpbs' ) && str_contains( $k, 'mobile' );
 		}, ARRAY_FILTER_USE_BOTH );
 
 		$css = '';

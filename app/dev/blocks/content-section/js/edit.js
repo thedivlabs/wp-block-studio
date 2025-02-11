@@ -60,9 +60,6 @@ registerBlockType(metadata.name, {
             <>
                 <InspectorControls group="styles">
                     <Background settings={attributes.background || {}} pushSettings={setAttributes}></Background>
-                </InspectorControls>
-                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
-                <InspectorControls group="styles">
                     <ToolsPanel label={'Options'} resetAll={resetAll_options} style={{gap: '20px'}}>
                         <ToolsPanelItem
                             hasValue={() => !!attributes['offset-header']}
@@ -76,6 +73,7 @@ registerBlockType(metadata.name, {
                         </ToolsPanelItem>
                     </ToolsPanel>
                 </InspectorControls>
+                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <section {...blockProps}
                          data-wp-interactive='wpbs/content-section'
                 >

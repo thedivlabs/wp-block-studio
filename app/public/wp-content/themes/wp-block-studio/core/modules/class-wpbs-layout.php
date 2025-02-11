@@ -58,11 +58,11 @@ class WPBS_Layout {
 
 			$css .= match ( $prop ) {
 				'wpbs-translate' => 'transform:translate(' . join( ', ', [
-						$prop['left'] ?? '0px',
-						$prop['top'] ?? '0px'
+						$value['left'] ?? '0px',
+						$value['top'] ?? '0px'
 					] ) . ');',
-				'wpbs-height' => 'height:' . ( $attributes_layout['wpbs-height-custom'] ?? $prop ) . ';',
-				'wpbs-height-custom' => 'height:' . $prop . ';',
+				'wpbs-height' => 'height:' . ( $attributes_layout['wpbs-height-custom'] ?? $value ) . ';',
+				'wpbs-height-custom' => 'height:' . $value . ';',
 				default => null
 			};
 
@@ -91,32 +91,32 @@ class WPBS_Layout {
 
 					echo match ( $prop ) {
 						'wpbs-translate-mobile' => 'transform:translate(' . join( ', ', [
-								$prop['left'] ?? '0px',
-								$prop['top'] ?? '0px'
+								$value['left'] ?? '0px',
+								$value['top'] ?? '0px'
 							] ) . ');',
-						'wpbs-height-mobile' => 'height:' . ( $attributes_mobile['wpbs-height-custom-mobile'] ?? $prop ) . ';',
-						'wpbs-height-custom-mobile' => 'height:' . $prop . ';',
+						'wpbs-height-mobile' => 'height:' . ( $attributes_mobile['wpbs-height-custom-mobile'] ?? $value ) . ';',
+						'wpbs-height-custom-mobile' => 'height:' . $value . ';',
 						'wpbs-rounded' => 'border-radius:' . join( ' ', [
-								$prop['top'] ?? '0px',
-								$prop['right'] ?? '0px',
-								$prop['bottom'] ?? '0px',
-								$prop['left'] ?? '0px',
+								$value['top'] ?? '0px',
+								$value['right'] ?? '0px',
+								$value['bottom'] ?? '0px',
+								$value['left'] ?? '0px',
 							] ) . ';',
 						'wpbs-padding-mobile' => join( '; ', array_filter( [
-							! empty( $prop['top'] ) ? 'padding-top:' . $prop['top'] : null,
-							! empty( $prop['right'] ) ? 'padding-right:' . $prop['right'] : null,
-							! empty( $prop['bottom'] ) ? 'padding-bottom:' . $prop['bottom'] : null,
-							! empty( $prop['left'] ) ? 'padding-left:' . $prop['left'] : null,
+							! empty( $value['top'] ) ? 'padding-top:' . $value['top'] : null,
+							! empty( $value['right'] ) ? 'padding-right:' . $value['right'] : null,
+							! empty( $value['bottom'] ) ? 'padding-bottom:' . $value['bottom'] : null,
+							! empty( $value['left'] ) ? 'padding-left:' . $value['left'] : null,
 						] ) ),
 						'wpbs-margin-mobile' => join( '; ', array_filter( [
-							! empty( $prop['top'] ) ? 'margin-top:' . $prop['top'] : null,
-							! empty( $prop['right'] ) ? 'margin-right:' . $prop['right'] : null,
-							! empty( $prop['bottom'] ) ? 'margin-bottom:' . $prop['bottom'] : null,
-							! empty( $prop['left'] ) ? 'margin-left:' . $prop['left'] : null,
+							! empty( $value['top'] ) ? 'margin-top:' . $value['top'] : null,
+							! empty( $value['right'] ) ? 'margin-right:' . $value['right'] : null,
+							! empty( $value['bottom'] ) ? 'margin-bottom:' . $value['bottom'] : null,
+							! empty( $value['left'] ) ? 'margin-left:' . $value['left'] : null,
 						] ) ),
 						'wpbs-gap-mobile' => join( '; ', array_filter( [
-							! empty( $prop['top'] ) ? 'column-gap:' . $prop['top'] : null,
-							! empty( $prop['left'] ) ? 'row-gap:' . $prop['left'] : null,
+							! empty( $value['top'] ) ? 'column-gap:' . $value['top'] : null,
+							! empty( $value['left'] ) ? 'row-gap:' . $value['left'] : null,
 						] ) ),
 						default => null
 					};

@@ -249,10 +249,10 @@ export function LayoutClasses(attributes) {
     classes = [...classes, ...[...Object.keys(attributes)].map(attr => {
         switch (attr) {
             case 'wpbs-container':
-                if (attributes[attr] === 'normal') {
-                    return 'container';
-                }
-                return 'container-' + attributes[attr]
+                /*if (attributes[attr] === 'normal') {
+                    return 'layout-container';
+                }*/
+                return 'layout-container-' + attributes[attr]
         }
     }).filter(x => x)];
 

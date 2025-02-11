@@ -335,6 +335,233 @@
         "normal": "1304px",
         "lg": "1404px",
         "xl": "1500px"
+      },
+      "container": {
+        "xs": "640px",
+        "sm": "920px",
+        "md": "1040px",
+        "lg": "1280px",
+        "xl": "1344px",
+        "2-xl": "1404px"
+      },
+      "header": {
+        "position": "fixed",
+        "height": {
+          "xs": "70px",
+          "sm": "80px",
+          "lg": "80px",
+          "xl": "90px"
+        },
+        "offset": {
+          "xs": "1.5rem",
+          "sm": "2rem",
+          "lg": "3rem"
+        },
+        "color": {
+          "bg": "var:preset|color|dark",
+          "float": "transparent"
+        },
+        "reverse": {
+          "color": "rgba(255,255,255,.9)",
+          "hover": "rgba(255,255,255,1)"
+        }
+      },
+      "form": {
+        "default": {
+          "container": {
+            "align": "inherit",
+            "gap": {
+              "row": "1rem",
+              "col": ".5rem",
+              "wrapper": "1.5rem"
+            }
+          },
+          "label": {
+            "text-transform": "uppercase",
+            "font-size": ".7rem",
+            "color": "black",
+            "weight": "normal",
+            "gap": ".4rem"
+          },
+          "input": {
+            "padding": "0 0 .2rem",
+            "font-size": "16px !important",
+            "height": "2.4rem",
+            "color": {
+              "background": "transparent",
+              "text": "black",
+              "placeholder": "var:preset|color|light-500"
+            },
+            "border": {
+              "color": "var:preset|color|primary",
+              "width": "0 0 1px",
+              "radius": "0",
+              "style": "solid"
+            },
+            "focus": {
+              "color": {
+                "background": "transparent",
+                "text": "black"
+              },
+              "border": {
+                "color": "var:preset|color|primary-hover"
+              }
+            },
+            "error": {
+              "color": {
+                "background": "#fff8f8",
+                "text": "inherit",
+                "placeholder": "red"
+              },
+              "border": {
+                "color": "red"
+              }
+            }
+          },
+          "checkbox": {
+            "height": "1.2rem",
+            "icon": "",
+            "color": {
+              "background": "#fafafa",
+              "text": "gray"
+            },
+            "border": {
+              "width": "1px",
+              "color": "var:preset|color|light",
+              "style": "solid",
+              "radius": "4px"
+            },
+            "active": {
+              "icon": "\\f00c",
+              "color": {
+                "background": "var:preset|color|primary",
+                "text": "white"
+              },
+              "border": {
+                "color": "var:preset|color|primary"
+              }
+            }
+          },
+          "radio": {
+            "icon": "'\\f00c'",
+            "border": {
+              "radius": "4px"
+            }
+          },
+          "button": {
+            "width": "auto",
+            "height": "auto",
+            "padding": ".4rem 1rem",
+            "text-transform": "none",
+            "font-size": "inherit",
+            "icon": "\"\\f061\"",
+            "color": {
+              "background": "var:preset|color|primary-600",
+              "text": "white",
+              "icon": "inherit"
+            },
+            "border": {
+              "color": "var:preset|color|primary-600",
+              "width": "1px",
+              "radius": "4px"
+            },
+            "hover": {
+              "color": {
+                "background": "var:preset|color|primary-hover",
+                "text": "white"
+              },
+              "border": {
+                "color": "var:preset|color|primary-hover"
+              }
+            }
+          }
+        },
+        "dark": {
+          "label": {
+            "color": "inherit",
+            "weight": "normal",
+            "gap": "5px"
+          },
+          "input": {
+            "padding": "0 0 .4rem",
+            "color": {
+              "background": "transparent",
+              "text": "white",
+              "placeholder": "white"
+            },
+            "border": {
+              "color": "var:preset|color|primary",
+              "width": "0 0 1px",
+              "style": "solid",
+              "radius": "0"
+            },
+            "focus": {
+              "color": {
+                "background": "transparent"
+              },
+              "border": {
+                "color": "var:preset|color|primary-hover"
+              }
+            },
+            "error": {
+              "color": {
+                "background": "#fff8f8",
+                "text": "inherit",
+                "placeholder": "red"
+              },
+              "border": {
+                "color": "red"
+              }
+            }
+          },
+          "checkbox": {
+            "color": {
+              "background": "transparent",
+              "text": "gray"
+            },
+            "border": {
+              "color": "var:preset|color|primary"
+            },
+            "active": {
+              "color": {
+                "background": "var:preset|color|primary",
+                "text": "white"
+              },
+              "border": {
+                "color": "var:preset|color|primary"
+              }
+            }
+          },
+          "button": {
+            "icon": "\"\\f061\"",
+            "color": {
+              "background": "var:preset|color|primary-600",
+              "text": "white",
+              "icon": "white"
+            },
+            "border": {
+              "color": "var:preset|color|primary-600"
+            },
+            "hover": {
+              "color": {
+                "background": "var:preset|color|primary-hover",
+                "text": "white"
+              },
+              "border": {
+                "color": "var:preset|color|primary-hover"
+              }
+            }
+          }
+        },
+        "inline": {
+          "container": {
+            "align": "inherit",
+            "gap": {
+              "row": ".7rem",
+              "wrapper": "1rem"
+            }
+          }
+        }
       }
     }
   },

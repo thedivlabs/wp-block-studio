@@ -51,8 +51,7 @@ class WPBS_Layout {
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) use ( $attributes_layout ) {
 
 			if (
-				in_array( $k, [ 'wpbs-breakpoint' ] ) ||
-				in_array( $k, array_keys( $attributes_layout ) ) ||
+				in_array( $k, array_merge( array_keys( $attributes_layout ), [ 'wpbs-breakpoint' ] ) ) ||
 				! str_starts_with( $k, 'wpbs' ) ||
 				! str_contains( $k, 'mobile' )
 			) {

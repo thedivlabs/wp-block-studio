@@ -567,7 +567,7 @@
   },
   "styles": {
     "spacing": {
-      "blockGap": "1.5rem",
+      "blockGap": "",
       "padding": {
         "top": "2rem",
         "right": "2rem",

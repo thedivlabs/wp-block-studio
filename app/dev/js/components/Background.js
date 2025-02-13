@@ -36,7 +36,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const bgClass = [
         'wpbs-background',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none',
+        'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
         settings.blend ? 'mix-blend-' + settings.blend : false
     ].filter(x => x).join(' ');
 
@@ -45,23 +45,59 @@ export function BackgroundElement({settings = {}, blockProps}) {
         opacity: (settings.opacity || '100') + '%'
     }
 
+    const mediaPosition = (posAttr) => {
+
+        let result = '';
+
+        switch (posAttr) {
+            case 'top-right':
+                result = 'top-0 right-0';
+                break;
+            case 'bottom-left':
+                result = 'bottom-0 left-0'
+                break;
+            case 'bottom-right':
+                result = 'bottom-0 right-0';
+                break;
+            default:
+                result = 'top-0 left-0';
+        }
+
+        return result;
+    };
+
+    const mediaStyle = () => {
+
+        return {
+            width: (settings.width || 100) + '%',
+            height: (settings.height || 100) + '%',
+        };
+    };
+
     const overlayClass = [
-        'wpbs-background__overlay pointer-events-none absolute top-0 left-0 w-full h-full z-50'
+        'wpbs-background__overlay absolute top-0 left-0 w-full h-full z-50'
+    ].filter(x => x).join(' ');
+
+    const mediaClass = [
+        'wpbs-background__media absolute z-0',
+        mediaPosition(settings.position)
     ].filter(x => x).join(' ');
 
     const videoClass = [
-        'wpbs-background__video',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 pointer-events-none',
+        ...mediaClass,
+        'wpbs-background__media--video',
     ].filter(x => x).join(' ');
 
     const imageClass = [
-        'wpbs-background__image',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0 [&>img]:w-full [&>img]:h-full'
+        ...mediaClass,
+        'wpbs-background__media--image',
+        'object-cover [&>img]:w-full [&>img]:h-full [&>img]:object-cover'
     ].filter(x => x).join(' ');
 
     const patternClass = [
-        'wpbs-background__pattern',
-        'absolute top-0 left-0 w-full h-full z-0 object-cover !m-0',
+        ...mediaClass,
+        'wpbs-background__media--pattern',
+        'object-cover',
         repeat
     ].filter(x => x).join(' ');
 
@@ -149,6 +185,10 @@ export function Background({settings = {}, pushSettings}) {
     const [scale, setScale] = useState(settings.scale);
     const [opacity, setOpacity] = useState(settings.opacity);
     const [overlay, setOverlay] = useState(settings.overlay);
+
+    const [position, setPosition] = useState(settings.position);
+    const [width, setWidth] = useState(settings.width);
+    const [height, setHeight] = useState(settings.height);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -319,6 +359,21 @@ export function Background({settings = {}, pushSettings}) {
                         }}
                         __nextHasNoMarginBottom
                     />
+                    <SelectControl
+                        label="Position"
+                        value={position}
+                        options={[
+                            {label: 'Default', value: null},
+                            {label: 'Top Left', value: 'top-left'},
+                            {label: 'Top Right', value: 'top-right'},
+                            {label: 'Bottom Left', value: 'bottom-left'},
+                            {label: 'Bottom Right', value: 'bottom-right'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('position', value, setPosition);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
                 </Grid>
                 <Grid columns={1} columnGap={20} rowGap={20}>
                     <RangeControl
@@ -340,6 +395,30 @@ export function Background({settings = {}, pushSettings}) {
                         value={opacity}
                         onChange={(value) => {
                             updateSettings('opacity', value, setOpacity);
+                        }}
+                        min={0}
+                        max={100}
+                        resetFallbackValue={100}
+                        allowReset={true}
+                    />
+                    <RangeControl
+                        __nextHasNoMarginBottom
+                        label="Width"
+                        value={width}
+                        onChange={(value) => {
+                            updateSettings('width', value, setWidth);
+                        }}
+                        min={0}
+                        max={100}
+                        resetFallbackValue={100}
+                        allowReset={true}
+                    />
+                    <RangeControl
+                        __nextHasNoMarginBottom
+                        label="Height"
+                        value={height}
+                        onChange={(value) => {
+                            updateSettings('height', value, setHeight);
                         }}
                         min={0}
                         max={100}

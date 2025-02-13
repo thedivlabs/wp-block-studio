@@ -26,6 +26,7 @@ import Margin from 'Components/Margin';
 import Gap from 'Components/Gap';
 import Breakpoint from 'Components/Breakpoint';
 import Width from 'Components/Width';
+import WidthCustom from 'Components/WidthCustom';
 import TextAlign from 'Components/TextAlign';
 import Shape from 'Components/Shape';
 import Translate from 'Components/Translate';
@@ -63,6 +64,9 @@ const blockAttributes = {
             type: 'integer'
         },
         'wpbs-width': {
+            type: 'string'
+        },
+        'wpbs-width-custom': {
             type: 'string'
         },
         'wpbs-max-width': {
@@ -137,6 +141,9 @@ const blockAttributes = {
             type: 'integer'
         },
         'wpbs-width-mobile': {
+            type: 'string'
+        },
+        'wpbs-width-custom-mobile': {
             type: 'string'
         },
         'wpbs-max-width-mobile': {
@@ -361,14 +368,24 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-width-custom']}
+                    label={'Width Custom'}
+                    onDeselect={() => setAttributes({['wpbs-width-custom']: undefined})}
+                >
+                    <WidthCustom defaultValue={attributes['wpbs-width-custom']} callback={(newValue) => {
+                        setAttributes({['wpbs-width-custom']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-max-width']}
                     label={'Max-Width'}
                     onDeselect={() => setAttributes({['wpbs-max-width']: undefined})}
                 >
-                    <Width label={'Max-Width'} defaultValue={attributes['wpbs-max-width']}
-                           callback={(newValue) => {
-                               setAttributes({['wpbs-max-width']: newValue});
-                           }}/>
+                    <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-max-width']}
+                                 callback={(newValue) => {
+                                     setAttributes({['wpbs-max-width']: newValue});
+                                 }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -633,14 +650,24 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-width-custom-mobile']}
+                    label={'Width Custom'}
+                    onDeselect={() => setAttributes({['wpbs-width-custom-mobile']: undefined})}
+                >
+                    <WidthCustom defaultValue={attributes['wpbs-width-custom-mobile']} callback={(newValue) => {
+                        setAttributes({['wpbs-width-custom-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-max-width-mobile']}
                     label={'Max-Width'}
                     onDeselect={() => setAttributes({['wpbs-max-width-mobile']: undefined})}
                 >
-                    <Width label={'Max-Width'} defaultValue={attributes['wpbs-max-width-mobile']}
-                           callback={(newValue) => {
-                               setAttributes({['wpbs-max-width-mobile']: newValue});
-                           }}/>
+                    <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-max-width-mobile']}
+                                 callback={(newValue) => {
+                                     setAttributes({['wpbs-max-width-mobile']: newValue});
+                                 }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}

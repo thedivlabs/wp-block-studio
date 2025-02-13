@@ -1,22 +1,28 @@
 import {
-    __experimentalUnitControl as UnitControl
-} from '@wordpress/components';
+    SelectControl,
+} from "@wordpress/components";
 import {useState} from "react";
 
 
-function Width({defaultValue, callback, label = 'Width'}) {
+function Width({defaultValue, callback}) {
 
     const [value, setValue] = useState(defaultValue);
 
-    return <UnitControl
-        label={label}
+    return <SelectControl
+        label={'Width'}
         value={value}
-        isResetValueOnUnitChange={true}
+        options={[
+            {label: 'Select', value: ''},
+            {label: 'Auto', value: 'auto'},
+            {label: 'Fit', value: 'fit-content'},
+            {label: 'Full', value: '100%'},
+        ]}
         onChange={(newValue) => {
             setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize
+        __nextHasNoMarginBottom
     />;
 }
 

@@ -17,7 +17,6 @@ function sectionClassNames(attributes = {}) {
 
     return [
         'wpbs-layout-element w-full flex relative has-container',
-        attributes['offset-header'] ? 'offset-header' : false,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -45,7 +44,7 @@ registerBlockType(metadata.name, {
         });
 
         const resetAll_options = () => {
-            //setAttributes({'offset-header': false});
+            
         };
 
         return (

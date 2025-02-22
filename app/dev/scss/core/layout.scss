@@ -1,4 +1,4 @@
-.layout-container {
+.wpbs-container {
 
   &-xs:not(.has-container),
   &-xs.has-container > .container {
@@ -34,7 +34,7 @@
     margin-left: auto;
     margin-right: auto;
   }
-  
+
   &-none:not(.has-container),
   &-none.has-container > .container {
     max-width: 100%;

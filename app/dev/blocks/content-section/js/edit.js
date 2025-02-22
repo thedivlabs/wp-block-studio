@@ -17,7 +17,7 @@ import {Background, BackgroundElement} from "Components/Background";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-content-section w-full flex relative has-container',
+        'wpbs-layout-element w-full flex relative has-container',
         attributes['offset-header'] ? 'offset-header' : false,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -81,7 +81,7 @@ registerBlockType(metadata.name, {
                         <InnerBlocks/>
                     </div>
 
-                    <BackgroundElement settings={attributes.background} blockProps={blockProps} />
+                    <BackgroundElement settings={attributes.background} blockProps={blockProps}/>
                 </section>
             </>
         )
@@ -103,7 +103,7 @@ registerBlockType(metadata.name, {
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
-                <BackgroundElement settings={props.attributes.background} blockProps={blockProps} />
+                <BackgroundElement settings={props.attributes.background} blockProps={blockProps}/>
             </section>
         );
     }

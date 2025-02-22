@@ -1,9 +1,9 @@
 {
-  "name": "wpbs/content-section",
-  "title": "Content Section",
-  "description": "Display a content section with inner blocks",
+  "name": "wpbs/layout-element",
+  "title": "Layout Element",
+  "description": "Display a layout element",
   "selectors": {
-    "root": ".wpbs-content-section"
+    "root": ".wpbs-layout-element"
   },
   "supports": {
     "innerBlocks": true,
@@ -12,9 +12,6 @@
       "text": true,
       "link": true,
       "gradients": true
-    },
-    "dimensions": {
-      "minHeight": true
     },
     "spacing": {
       "blockGap": [
@@ -25,22 +22,20 @@
       "margin": true
     },
     "__experimentalBorder": {
+      "style": true,
       "size": true,
       "color": true,
       "radius": true
     },
     "typography": {
+      "__experimentalFontStyle": true,
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
       "textAlign": true,
       "fontSize": true,
       "lineHeight": true
     }
   },
-  "styles": [
-    {
-      "name": "prose",
-      "label": "Prose"
-    }
-  ],
   "editorScript": "file:./js/edit.js",
   "style": "file:./js/edit.css",
   "icon": "editor-kitchensink"

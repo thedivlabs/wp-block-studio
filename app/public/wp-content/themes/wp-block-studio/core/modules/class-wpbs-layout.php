@@ -22,21 +22,21 @@ class WPBS_Layout {
 			$selector = $selector . $block->block_type->selectors['root'];
 		}
 
-		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-breakpoint'] ?? 'normal' ] ?? '';
+		$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
 
 		$attributes_color = array_filter( $attributes, function ( $v, $k ) {
 			return in_array( $k, [
-				'wpbs-text-color-hover',
-				'wpbs-background-color-hover',
-				'wpbs-border-color-hover',
-				'wpbs-text-color-mobile',
-				'wpbs-background-color-mobile',
+				'wpbs-layout-text-color-hover',
+				'wpbs-layout-background-color-hover',
+				'wpbs-layout-border-color-hover',
+				'wpbs-layout-text-color-mobile',
+				'wpbs-layout-background-color-mobile',
 			] );
 		}, ARRAY_FILTER_USE_BOTH );;
 
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) use ( $attributes_color ) {
 			if (
-				in_array( $k, array_merge( array_keys( $attributes_color ), [ 'wpbs-container' ] ) ) ||
+				in_array( $k, array_merge( array_keys( $attributes_color ), [ 'wpbs-layout-container' ] ) ) ||
 				str_contains( $k, 'mobile' ) ||
 				! str_starts_with( $k, 'wpbs' )
 			) {
@@ -51,7 +51,7 @@ class WPBS_Layout {
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) use ( $attributes_layout ) {
 
 			if (
-				in_array( $k, array_merge( array_keys( $attributes_layout ), [ 'wpbs-breakpoint' ] ) ) ||
+				in_array( $k, array_merge( array_keys( $attributes_layout ), [ 'wpbs-layout-breakpoint' ] ) ) ||
 				! str_starts_with( $k, 'wpbs' ) ||
 				! str_contains( $k, 'mobile' )
 			) {
@@ -71,23 +71,23 @@ class WPBS_Layout {
 			}
 
 			if ( ! is_array( $value ) && ! in_array( $prop, [
-					'wpbs-breakpoint',
-					'wpbs-translate',
-					'wpbs-height-custom',
-					'wpbs-height'
+					'wpbs-layout-breakpoint',
+					'wpbs-layout-translate',
+					'wpbs-layout-height-custom',
+					'wpbs-layout-height'
 				] ) ) {
-				$prop = str_replace( 'wpbs-', '', $prop );
+				$prop = str_replace( 'wpbs-layout-', '', $prop );
 
 				$css .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 			}
 
 			$css .= match ( $prop ) {
-				'wpbs-translate' => 'transform:translate(' . join( ', ', [
+				'wpbs-layout-translate' => 'transform:translate(' . join( ', ', [
 						$value['left'] ?? '0px',
 						$value['top'] ?? '0px'
 					] ) . ');',
-				'wpbs-height' => 'height:' . ( $attributes_layout['wpbs-height-custom'] ?? $value ) . ';',
-				'wpbs-height-custom' => empty( $attributes_layout['wpbs-height'] ) ? 'height:' . $value . ';' : null,
+				'wpbs-layout-height' => 'height:' . ( $attributes_layout['wpbs-layout-height-custom'] ?? $value ) . ';',
+				'wpbs-layout-height-custom' => empty( $attributes_layout['wpbs-layout-height'] ) ? 'height:' . $value . ';' : null,
 				default => null
 			};
 
@@ -100,30 +100,30 @@ class WPBS_Layout {
 
 		add_action( 'wp_head', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes ) {
 
-			if ( empty( $attributes_mobile ) && empty( $attributes_color ) && empty( $attributes['wpbs-opacity-hover'] ) ) {
+			if ( empty( $attributes_mobile ) && empty( $attributes_color ) && empty( $attributes['wpbs-layout-opacity-hover'] ) ) {
 				return;
 			}
 
 			echo '<style>';
 
-			if ( ! empty( $attributes['wpbs-opacity-hover'] ) ) {
+			if ( ! empty( $attributes['wpbs-layout-opacity-hover'] ) ) {
 
-				echo $selector . ':hover' . '{opacity: ' . $attributes['wpbs-opacity-hover'] . '}';
+				echo $selector . ':hover' . '{opacity: ' . $attributes['wpbs-layout-opacity-hover'] . '}';
 			}
 
 
 			foreach ( $attributes_color ?? [] as $prop => $value ) {
 
 				echo match ( $prop ) {
-					'wpbs-text-color-hover' => join( ' ', [
+					'wpbs-layout-text-color-hover' => join( ' ', [
 						$selector . ':hover',
 						'{color: ' . $value . ' !important}'
 					] ),
-					'wpbs-border-color-hover' => join( ' ', [
+					'wpbs-layout-border-color-hover' => join( ' ', [
 						$selector . ':hover',
 						'{border-color: ' . $value . ' !important}'
 					] ),
-					'wpbs-background-color-hover' => join( ' ', [
+					'wpbs-layout-background-color-hover' => join( ' ', [
 						$selector . ':hover',
 						'{background-color: ' . $value . ' !important}'
 					] ),
@@ -140,47 +140,47 @@ class WPBS_Layout {
 
 				if ( is_string( $value ) && ! in_array( $prop, [
 						'breakpoint',
-						'wpbs-translate',
-						'wpbs-height-custom',
-						'wpbs-height',
-						'wpbs-translate-mobile',
-						'wpbs-height-mobile',
-						'wpbs-height-custom-mobile',
-						'wpbs-rounded',
-						'wpbs-padding-mobile',
-						'wpbs-margin-mobile',
+						'wpbs-layout-translate',
+						'wpbs-layout-height-custom',
+						'wpbs-layout-height',
+						'wpbs-layout-translate-mobile',
+						'wpbs-layout-height-mobile',
+						'wpbs-layout-height-custom-mobile',
+						'wpbs-layout-rounded',
+						'wpbs-layout-padding-mobile',
+						'wpbs-layout-margin-mobile',
 					] ) ) {
-					$prop = str_replace( [ 'wpbs-', '-mobile' ], '', $prop );
+					$prop = str_replace( [ 'wpbs-layout-', '-mobile' ], '', $prop );
 
 					echo $prop . ':' . WPBS::parse_style( $value ) . ';';
 				}
 
 				echo match ( $prop ) {
-					'wpbs-translate-mobile' => 'transform:translate(' . join( ', ', [
+					'wpbs-layout-translate-mobile' => 'transform:translate(' . join( ', ', [
 							$value['left'] ?? '0px',
 							$value['top'] ?? '0px'
 						] ) . ');',
-					'wpbs-height-mobile' => 'height:' . ( $attributes_mobile['wpbs-height-custom-mobile'] ?? $value ) . ';',
-					'wpbs-height-custom-mobile' => 'height:' . $value . ';',
-					'wpbs-rounded' => 'border-radius:' . join( ' ', [
+					'wpbs-layout-height-mobile' => 'height:' . ( $attributes_mobile['wpbs-layout-height-custom-mobile'] ?? $value ) . ';',
+					'wpbs-layout-height-custom-mobile' => 'height:' . $value . ';',
+					'wpbs-layout-rounded' => 'border-radius:' . join( ' ', [
 							$value['top'] ?? '0px !important',
 							$value['right'] ?? '0px !important',
 							$value['bottom'] ?? '0px !important',
 							$value['left'] ?? '0px !important',
 						] ) . ';',
-					'wpbs-padding-mobile' => join( '; ', array_filter( [
+					'wpbs-layout-padding-mobile' => join( '; ', array_filter( [
 						! empty( $value['top'] ) ? 'padding-top:' . $value['top'] . ' !important;' : null,
 						! empty( $value['right'] ) ? 'padding-right:' . $value['right'] . ' !important;' : null,
 						! empty( $value['bottom'] ) ? 'padding-bottom:' . $value['bottom'] . ' !important;' : null,
 						! empty( $value['left'] ) ? 'padding-left:' . $value['left'] . ' !important;' : null,
 					] ) ),
-					'wpbs-margin-mobile' => join( '; ', array_filter( [
+					'wpbs-layout-margin-mobile' => join( '; ', array_filter( [
 						! empty( $value['top'] ) ? 'margin-top:' . $value['top'] . ' !important;' : null,
 						! empty( $value['right'] ) ? 'margin-right:' . $value['right'] . ' !important;' : null,
 						! empty( $value['bottom'] ) ? 'margin-bottom:' . $value['bottom'] . ' !important;' : null,
 						! empty( $value['left'] ) ? 'margin-left:' . $value['left'] . ' !important;' : null,
 					] ) ),
-					'wpbs-gap-mobile' => join( '; ', array_filter( [
+					'wpbs-layout-gap-mobile' => join( '; ', array_filter( [
 						! empty( $value['top'] ) ? 'column-gap:' . $value['top'] . ' !important;' : null,
 						! empty( $value['left'] ) ? 'row-gap:' . $value['left'] . ' !important;' : null,
 					] ) ),
@@ -194,8 +194,8 @@ class WPBS_Layout {
 			foreach ( $attributes_color ?? [] as $prop => $value ) {
 
 				echo match ( $prop ) {
-					'wpbs-text-color-mobile' => join( ' ', [ $selector, '{color: ' . $value . ' !important}' ] ),
-					'wpbs-background-color-mobile' => join( ' ', [
+					'wpbs-layout-text-color-mobile' => join( ' ', [ $selector, '{color: ' . $value . ' !important}' ] ),
+					'wpbs-layout-background-color-mobile' => join( ' ', [
 						$selector,
 						'{background-color: ' . $value . ' !important}'
 					] ),

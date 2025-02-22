@@ -801,6 +801,16 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout-offset-header-mobile']}
+                    label={'Offset Header'}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: false})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header-mobile'] || undefined}
+                                  callback={(newValue) => {
+                                      setAttributes({['wpbs-layout-offset-header-mobile']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-margin-mobile']}
                     label={'Margin'}
                     onDeselect={() => setAttributes({['wpbs-layout-margin-mobile']: undefined})}

@@ -1,6 +1,6 @@
 .wpbs-layout-container {
 
-  & > .container {
+  &.wpbs-has-container > .container {
     display: inherit;
     flex-direction: inherit;
     justify-content: inherit;

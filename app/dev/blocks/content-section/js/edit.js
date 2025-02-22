@@ -11,7 +11,6 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     ToggleControl
 } from "@wordpress/components";
-import OffsetHeader from "Components/OffsetHeader";
 import {Background, BackgroundElement} from "Components/Background";
 
 function sectionClassNames(attributes = {}) {
@@ -26,7 +25,7 @@ function sectionClassNames(attributes = {}) {
 function containerClassNames(attributes = {}) {
 
     return [
-        'wpbs-container container gap-inherit relative z-20',
+        'wpbs-layout-container container gap-inherit relative z-20',
     ].filter(x => x).join(' ');
 
 }
@@ -37,41 +36,22 @@ registerBlockType(metadata.name, {
         ...LayoutAttributes(),
         'background': {
             type: 'object'
-        },
-        'offset-header': {
-            type: 'string'
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
-            style: {
-                '--offset-header': attributes['offset-header']
-            }
         });
 
         const resetAll_options = () => {
-            setAttributes({'offset-header': false});
+            //setAttributes({'offset-header': false});
         };
 
         return (
             <>
                 <InspectorControls group="styles">
                     <Background settings={attributes.background || {}} pushSettings={setAttributes}></Background>
-                    <ToolsPanel label={'Options'} resetAll={resetAll_options} style={{gap: '20px'}}>
-                        <ToolsPanelItem
-                            hasValue={() => !!attributes['offset-header']}
-                            label={'Offset Header'}
-                            onDeselect={() => setAttributes({['offset-header']: false})}
-                        >
-                            <OffsetHeader defaultValue={attributes['offset-header'] || undefined}
-                                          callback={(newValue) => {
-                                              setAttributes({['offset-header']: newValue});
-                                          }}/>
-                        </ToolsPanelItem>
-                    </ToolsPanel>
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <section {...blockProps}

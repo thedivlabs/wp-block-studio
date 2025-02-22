@@ -42,6 +42,9 @@ import OffsetHeader from "Components/OffsetHeader";
 
 const blockAttributes = {
     layout: {
+        'wpbs-layout-offset-header': {
+            type: 'boolean'
+        },
         'wpbs-layout-display': {
             type: 'string'
         },
@@ -122,6 +125,9 @@ const blockAttributes = {
         }
     },
     mobile: {
+        'wpbs-layout-offset-header-mobile': {
+            type: 'boolean'
+        },
         'wpbs-layout-display-mobile': {
             type: 'string'
         },
@@ -456,6 +462,16 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     <ZIndex defaultValue={attributes['wpbs-layout-z-index']} callback={(newValue) => {
                         setAttributes({['wpbs-layout-z-index']: newValue});
                     }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout-offset-header']}
+                    label={'Offset Header'}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: false})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header'] || undefined}
+                                  callback={(newValue) => {
+                                      setAttributes({['wpbs-layout-offset-header']: newValue});
+                                  }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-top'] || !!attributes['wpbs-layout-right'] || !!attributes['wpbs-layout-bottom'] || !!attributes['wpbs-layout-left']}

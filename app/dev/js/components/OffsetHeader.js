@@ -1,22 +1,22 @@
 import {
-    __experimentalUnitControl as UnitControl,
+    ToggleControl
 } from "@wordpress/components";
-import {useState} from "react";
+import React, {useState} from "react";
 
 
 function OffsetHeader({defaultValue, callback}) {
 
     const [value, setValue] = useState(defaultValue);
 
-    return <UnitControl
+    return <ToggleControl
         label={'Offset Header'}
-        value={value}
-        isResetValueOnUnitChange={true}
+        checked={value}
         onChange={(newValue) => {
             setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize
+        __nextHasNoMarginBottom
     />;
 }
 

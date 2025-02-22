@@ -248,6 +248,7 @@ const blockAttributes = {
 
 
 export function LayoutAttributes() {
+
     return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors);
 }
 
@@ -268,7 +269,6 @@ export function LayoutClasses(attributes) {
                 return 'wpbs-layout-offset-header';
 
             case 'wpbs-layout-container':
-                console.log(attributes[attr]);
                 if (attributes[attr] === 'normal') {
                     return 'wpbs-layout-container';
                 }

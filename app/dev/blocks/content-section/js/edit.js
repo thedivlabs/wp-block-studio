@@ -6,11 +6,6 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {
-    __experimentalToolsPanel as ToolsPanel,
-    __experimentalToolsPanelItem as ToolsPanelItem,
-    ToggleControl
-} from "@wordpress/components";
 import {Background, BackgroundElement} from "Components/Background";
 
 function sectionClassNames(attributes = {}) {
@@ -24,7 +19,7 @@ function sectionClassNames(attributes = {}) {
 function containerClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-container container gap-inherit relative z-20',
+        'container relative z-20',
     ].filter(x => x).join(' ');
 
 }
@@ -44,7 +39,7 @@ registerBlockType(metadata.name, {
         });
 
         const resetAll_options = () => {
-            
+
         };
 
         return (
@@ -54,7 +49,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <section {...blockProps}
-                         data-wp-interactive='wpbs/content-section'
+                         data-wp-interactive='wpbs/wpbs-layout-element'
                 >
                     <div className={containerClassNames(attributes)}>
                         <InnerBlocks/>
@@ -77,7 +72,7 @@ registerBlockType(metadata.name, {
 
         return (
             <section {...blockProps}
-                     data-wp-interactive='wpbs/content-section'
+                     data-wp-interactive='wpbs/wpbs-layout-element'
             >
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>

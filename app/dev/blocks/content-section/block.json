@@ -22,13 +22,11 @@
       "margin": true
     },
     "__experimentalBorder": {
-      "style": true,
       "size": true,
       "color": true,
       "radius": true
     },
     "typography": {
-      "__experimentalFontStyle": true,
       "__experimentalFontFamily": true,
       "__experimentalFontWeight": true,
       "textAlign": true,

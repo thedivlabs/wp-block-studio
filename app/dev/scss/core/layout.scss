@@ -1,4 +1,12 @@
-.wpbs-container {
+.wpbs-layout-container {
+
+  & > .container {
+    display: inherit;
+    flex-direction: inherit;
+    justify-content: inherit;
+    align-items: inherit;
+    gap: inherit;
+  }
 
   &-xs:not(.has-container),
   &-xs.has-container > .container {

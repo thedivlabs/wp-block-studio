@@ -261,11 +261,11 @@ export function LayoutClasses(attributes) {
 
     classes = [...classes, ...[...Object.keys(attributes)].map(attr => {
         switch (attr) {
-            case 'wpbs-container':
+            case 'wpbs-layout-container':
                 /*if (attributes[attr] === 'normal') {
                     return 'layout-container';
                 }*/
-                return 'wpbs-container-' + attributes[attr]
+                return 'wpbs-layout-container-' + attributes[attr]
         }
     }).filter(x => x)];
 
@@ -803,7 +803,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-offset-header-mobile']}
                     label={'Offset Header'}
-                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: false})}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: undefined})}
                 >
                     <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header-mobile'] || undefined}
                                   callback={(newValue) => {

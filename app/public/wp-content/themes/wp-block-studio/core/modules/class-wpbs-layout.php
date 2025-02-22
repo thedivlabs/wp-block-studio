@@ -94,8 +94,7 @@ class WPBS_Layout {
 			};
 
 		}
-
-		$block->attributes['style']['spacing']['padding']['top'] = '10px';
+		
 		if ( ! empty( $block->attributes['wpbs-layout-offset-header'] ) ) {
 
 			$css .= 'padding-top:calc(var(--wpbs-header-height, 0) + ' . WPBS::parse_style( $block->attributes['style']['spacing']['padding']['top'] ?? false ) . ')) !important';

@@ -98,7 +98,7 @@ class WPBS_Layout {
 		$block->attributes['style']['spacing']['padding']['top'] = '10px';
 		if ( ! empty( $block->attributes['wpbs-layout-offset-header'] ) ) {
 
-			$css .= 'padding-top:calc(var(--wpbs-header-height, 0px) + ' . WPBS::parse_style( $block->attributes['style']['spacing']['padding']['top'] ?? false ) . ')) !important';
+			$css .= 'padding-top:calc(var(--wpbs-header-height, 0) + ' . WPBS::parse_style( $block->attributes['style']['spacing']['padding']['top'] ?? false ) . ')) !important';
 		}
 
 
@@ -177,7 +177,7 @@ class WPBS_Layout {
 							$value['left'] ?? '0px !important',
 						] ) . ';',
 					'wpbs-layout-padding-mobile' => join( '; ', array_filter( [
-						! empty( $value['top'] ) ? 'padding-top:' . ( ! empty( $block->attributes['wpbs-layout-offset-header'] ) ? 'calc(var(--wpbs-header-height, 0px) + ' . $value['top'] . '))' : $value['top'] ) . ' !important;' : null,
+						! empty( $value['top'] ) ? 'padding-top:' . ( ! empty( $block->attributes['wpbs-layout-offset-header'] ) ? 'calc(var(--wpbs-header-height, 0) + ' . $value['top'] . '))' : $value['top'] ) . ' !important;' : null,
 						! empty( $value['right'] ) ? 'padding-right:' . $value['right'] . ' !important;' : null,
 						! empty( $value['bottom'] ) ? 'padding-bottom:' . $value['bottom'] . ' !important;' : null,
 						! empty( $value['left'] ) ? 'padding-left:' . $value['left'] . ' !important;' : null,

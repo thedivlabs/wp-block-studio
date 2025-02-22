@@ -9,43 +9,43 @@
     flex-wrap: inherit;
   }
 
-  &-xs:not(.has-container),
-  &-xs.has-container > .container {
+  &-xs:not(.wpbs-has-container),
+  &-xs.wpbs-has-container > .container {
     max-width: var(--wp--custom--container--xs);
     margin-left: auto;
     margin-right: auto;
   }
 
-  &-sm:not(.has-container),
-  &-sm.has-container > .container {
+  &-sm:not(.wpbs-has-container),
+  &-sm.wpbs-has-container > .container {
     max-width: var(--wp--custom--container--sm);
     margin-left: auto;
     margin-right: auto;
   }
 
-  &-md:not(.has-container),
-  &-md.has-container > .container {
+  &-md:not(.wpbs-has-container),
+  &-md.wpbs-has-container > .container {
     max-width: var(--wp--custom--container--lg);
     margin-left: auto;
     margin-right: auto;
   }
 
-  &-normal:not(.has-container),
-  &-normal.has-container > .container {
+  &-normal:not(.wpbs-has-container),
+  &-normal.wpbs-has-container > .container {
     max-width: var(--wp--custom--container--xl);
     margin-left: auto;
     margin-right: auto;
   }
 
-  &-lg:not(.has-container),
-  &-lg.has-container > .container {
+  &-lg:not(.wpbs-has-container),
+  &-lg.wpbs-has-container > .container {
     max-width: var(--wp--custom--container--2-xl);
     margin-left: auto;
     margin-right: auto;
   }
 
-  &-none:not(.has-container),
-  &-none.has-container > .container {
+  &-none:not(.wpbs-has-container),
+  &-none.wpbs-has-container > .container {
     max-width: 100%;
   }
 

@@ -11,7 +11,7 @@ import {Background, BackgroundElement} from "Components/Background";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-element w-full flex relative has-container',
+        'wpbs-layout-element wpbs-has-container w-full flex relative',
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }

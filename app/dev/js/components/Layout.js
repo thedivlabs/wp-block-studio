@@ -256,16 +256,23 @@ export function LayoutClasses(attributes) {
     let classes = [];
 
     if (Object.keys(attributes).some(attr => blockAttributes.layout[attr])) {
-        classes.push('has-layout');
+        //classes.push('has-layout');
     }
 
     classes = [...classes, ...[...Object.keys(attributes)].map(attr => {
+        if (!attributes[attr]) {
+            return false;
+        }
         switch (attr) {
+            case 'wpbs-layout-offset-header':
+                return 'wpbs-layout-offset-header';
+
             case 'wpbs-layout-container':
-                /*if (attributes[attr] === 'normal') {
-                    return 'layout-container';
-                }*/
-                return 'wpbs-layout-container-' + attributes[attr]
+                console.log(attributes[attr]);
+                if (attributes[attr] === 'normal') {
+                    return 'wpbs-layout-container';
+                }
+                return ['wpbs-layout-container', attributes[attr]].filter(x => x).join('-')
         }
     }).filter(x => x)];
 
@@ -466,7 +473,7 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-offset-header']}
                     label={'Offset Header'}
-                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: false})}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: undefined})}
                 >
                     <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header'] || undefined}
                                   callback={(newValue) => {

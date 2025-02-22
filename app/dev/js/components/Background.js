@@ -480,3 +480,9 @@ export function Background({settings = {}, pushSettings}) {
         </PanelBody>
     )
 }
+
+export const backgroundAttributes = {
+    'background': {
+        type: 'object'
+    }
+}

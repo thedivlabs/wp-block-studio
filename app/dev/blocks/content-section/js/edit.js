@@ -6,7 +6,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {Background, BackgroundElement} from "Components/Background";
+import {Background, BackgroundElement, backgroundAttributes} from "Components/Background";
 
 function sectionClassNames(attributes = {}) {
 
@@ -28,9 +28,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...LayoutAttributes(),
-        'background': {
-            type: 'object'
-        }
+        ...backgroundAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -65,9 +63,6 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
-            style: {
-                '--offset-header': props.attributes['offset-header']
-            }
         });
 
         return (

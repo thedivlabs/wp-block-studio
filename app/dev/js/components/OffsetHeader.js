@@ -10,9 +10,7 @@ function OffsetHeader({defaultValue, callback}) {
 
     return <ToggleControl
         label={'Offset Header'}
-        checked={() => {
-            return typeof value === 'boolean' ? value : true
-        }}
+        checked={value}
         onChange={(newValue) => {
             setValue(newValue);
             callback(newValue);

@@ -170,10 +170,10 @@ export function Background({settings = {}, pushSettings}) {
 
     settings = Object.assign({}, {
         type: undefined,
-        mobileImage: {},
-        largeImage: {},
-        mobileVideo: {},
-        largeVideo: {},
+        mobileImage: undefined,
+        largeImage: undefined,
+        mobileVideo: undefined,
+        largeVideo: undefined,
         eager: undefined,
         force: undefined,
         repeat: undefined,
@@ -231,7 +231,7 @@ export function Background({settings = {}, pushSettings}) {
                     label="Type"
                     value={type}
                     options={[
-                        {label: 'Default', value: null},
+                        {label: 'Default', value: undefined},
                         {label: 'Image', value: 'image'},
                         {label: 'Video', value: 'video'},
                         {label: 'Pattern', value: 'pattern'},
@@ -257,7 +257,7 @@ export function Background({settings = {}, pushSettings}) {
                                             <PreviewThumbnail
                                                 image={mobileImage || {}}
                                                 callback={() => {
-                                                    updateSettings('mobileImage', null, setMobileImage)
+                                                    updateSettings('mobileImage', undefined, setMobileImage)
                                                 }}
                                             /></>;
                                     } else {
@@ -282,7 +282,7 @@ export function Background({settings = {}, pushSettings}) {
                                             <PreviewThumbnail
                                                 image={largeImage || {}}
                                                 callback={() => {
-                                                    updateSettings('largeImage', null, setLargeImage)
+                                                    updateSettings('largeImage', undefined, setLargeImage)
                                                 }}
                                             /></>;
                                     } else {
@@ -307,7 +307,7 @@ export function Background({settings = {}, pushSettings}) {
                                             <PreviewThumbnail
                                                 image={mobileVideo || {}}
                                                 callback={() => {
-                                                    updateSettings('mobileVideo', null, setMobileVideo)
+                                                    updateSettings('mobileVideo', undefined, setMobileVideo)
                                                 }}
                                             /></>;
                                     } else {
@@ -332,7 +332,7 @@ export function Background({settings = {}, pushSettings}) {
                                             <PreviewThumbnail
                                                 image={largeVideo || {}}
                                                 callback={() => {
-                                                    updateSettings('largeVideo', null, setLargeVideo)
+                                                    updateSettings('largeVideo', undefined, setLargeVideo)
                                                 }}
                                             /></>;
                                     } else {
@@ -349,7 +349,7 @@ export function Background({settings = {}, pushSettings}) {
                         value={repeat}
                         disabled={type !== 'pattern'}
                         options={[
-                            {label: 'Default', value: null},
+                            {label: 'Default', value: undefined},
                             {label: 'None', value: 'none'},
                             {label: 'Horizontal', value: 'horizontal'},
                             {label: 'Vertical', value: 'vertical'},
@@ -363,7 +363,7 @@ export function Background({settings = {}, pushSettings}) {
                         label="Blend"
                         value={blend}
                         options={[
-                            {label: 'Default', value: null},
+                            {label: 'Default', value: undefined},
                             {label: 'Multiply', value: 'multiply'},
                             {label: 'Screen', value: 'screen'},
                             {label: 'Overlay', value: 'overlay'},
@@ -378,7 +378,7 @@ export function Background({settings = {}, pushSettings}) {
                         label="Position"
                         value={position}
                         options={[
-                            {label: 'Default', value: null},
+                            {label: 'Default', value: undefined},
                             {label: 'Center', value: 'center'},
                             {label: 'Top Left', value: 'top-left'},
                             {label: 'Top Right', value: 'top-right'},

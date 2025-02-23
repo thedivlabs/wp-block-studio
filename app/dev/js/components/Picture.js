@@ -7,7 +7,7 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
     let urlMedium;
     let urlMobile;
 
-    if(!settings.force){
+    if (!settings.force) {
         urlLarge = largeLarge.url || mobileLarge.url || false;
         urlMedium = largeMedium.url || mobileMedium.url || false;
         urlMobile = mobileMedium.url || largeLarge.url || false;
@@ -29,6 +29,9 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
         !urlMobile ? 'max-md:hidden' : false,
     ].filter(x => x).join(' ');
 
+    if (!urlLarge && !urlMobile) {
+        return false;
+    }
 
     return <picture className={className} style={settings.style || {}}>
         <source srcSet={urlLarge || '#'} media={'(min-width: 1140px)'}/>

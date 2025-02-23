@@ -105,13 +105,13 @@ class WPBS_Layout {
 
 		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
 
-		add_action( 'wp_head', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes ) {
+		add_action( 'wp_enqueue_scripts', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes, $data ) {
 
 			self::render_style_tag( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes );
 
 		}, 40 );
-		
-		add_action( 'admin_head', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes ) {
+
+		add_action( 'admin_enqueue_scripts', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes, $data ) {
 
 			self::render_style_tag( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes );
 

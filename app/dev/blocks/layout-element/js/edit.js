@@ -49,7 +49,7 @@ registerBlockType(metadata.name, {
 
         };
 
-        const ElementTag = attributes.tagName;
+        const ElementTag = attributes.tagName || 'div';
 
         return (
             <>
@@ -65,7 +65,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
                 <ElementTag {...blockProps}
-                         data-wp-interactive='wpbs/wpbs-layout-element'
+                            data-wp-interactive='wpbs/wpbs-layout-element'
                 >
                     <div className={containerClassNames(attributes)}>
                         <InnerBlocks/>
@@ -83,11 +83,11 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
-        const ElementTag = props.attributes.tagName;
+        const ElementTag = props.attributes.tagName || 'div';
 
         return (
             <ElementTag {...blockProps}
-                     data-wp-interactive='wpbs/wpbs-layout-element'
+                        data-wp-interactive='wpbs/wpbs-layout-element'
             >
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>

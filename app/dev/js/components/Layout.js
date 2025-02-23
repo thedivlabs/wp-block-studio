@@ -419,6 +419,16 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-min-height']}
+                    label={'Min-Height'}
+                    onDeselect={() => setAttributes({['wpbs-layout-min-height']: undefined})}
+                >
+                    <MinHeight defaultValue={attributes['wpbs-layout-min-height']} callback={(newValue) => {
+                        setAttributes({['wpbs-layout-min-height']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout-height-custom']}
                     label={'Height Custom'}
                     onDeselect={() => setAttributes({['wpbs-layout-height-custom']: undefined})}
@@ -707,6 +717,16 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                 >
                     <Height defaultValue={attributes['wpbs-layout-height-mobile']} callback={(newValue) => {
                         setAttributes({['wpbs-layout-height-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-min-height-mobile']}
+                    label={'Min-Height'}
+                    onDeselect={() => setAttributes({['wpbs-layout-min-height-mobile']: undefined})}
+                >
+                    <MinHeight defaultValue={attributes['wpbs-layout-min-height-mobile']} callback={(newValue) => {
+                        setAttributes({['wpbs-layout-min-height-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem

@@ -88,7 +88,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
     const imageClass = [
         'wpbs-background__media--image',
         '[&_img]:w-full [&_img]:h-full',
-        settings.objectPosition
+        settings.origin
     ].filter(x => x).join(' ');
 
     const patternClass = [
@@ -179,7 +179,7 @@ export function Background({settings = {}, pushSettings}) {
         repeat: undefined,
         blend: undefined,
         position: undefined,
-        objectPosition: undefined,
+        origin: undefined,
         contain: undefined,
         scale: '100',
         opacity: '100',
@@ -200,7 +200,7 @@ export function Background({settings = {}, pushSettings}) {
     const [overlay, setOverlay] = useState(settings.overlay);
 
     const [position, setPosition] = useState(settings.position);
-    const [objectPosition, setObjectPosition] = useState(settings.objectPosition);
+    const [origin, setOrigin] = useState(settings.origin);
     const [contain, setContain] = useState(settings.contain);
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
@@ -391,8 +391,8 @@ export function Background({settings = {}, pushSettings}) {
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
-                        label="Image Position"
-                        value={objectPosition}
+                        label="Origin"
+                        value={origin}
                         disabled={type !== 'image'}
                         options={[
                             {label: 'Default', value: undefined},
@@ -407,7 +407,7 @@ export function Background({settings = {}, pushSettings}) {
                             {label: 'Bottom Right', value: '[&_img]:object-right-bottom'},
                         ]}
                         onChange={(value) => {
-                            updateSettings('objectPosition', value, setObjectPosition);
+                            updateSettings('origin', value, setOrigin);
                         }}
                         __nextHasNoMarginBottom
                     />

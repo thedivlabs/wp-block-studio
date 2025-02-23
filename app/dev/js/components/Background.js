@@ -87,7 +87,8 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const imageClass = [
         'wpbs-background__media--image',
-        'object-cover [&_img]:w-full [&_img]:h-full [&_img]:object-cover'
+        'object-cover [&_img]:w-full [&_img]:h-full',
+        settings.contain
     ].filter(x => x).join(' ');
 
     const patternClass = [
@@ -391,7 +392,8 @@ export function Background({settings = {}, pushSettings}) {
                         value={contain}
                         disabled={type !== 'image'}
                         options={[
-                            {label: 'Default', value: 'center'},
+                            {label: 'Default', value: '[&_img]:object-cover [&_img]:object-center'},
+                            {label: 'Center', value: '[&_img]:object-contain [&_img]:object-center'},
                             {label: 'Top', value: '[&_img]:object-contain [&_img]:object-top'},
                             {label: 'Right', value: '[&_img]:object-contain [&_img]:object-right'},
                             {label: 'Bottom', value: '[&_img]:object-contain [&_img]:object-bottom'},

@@ -5,6 +5,8 @@ import {
 import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
+    __experimentalGrid as Grid,
+    __experimentalSpacer as Spacer,
 } from "@wordpress/components";
 
 import Outline from 'Components/Outline';
@@ -488,16 +490,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes['wpbs-layout-offset-header']}
-                    label={'Offset Header'}
-                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: undefined})}
-                >
-                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header'] || undefined}
-                                  callback={(newValue) => {
-                                      setAttributes({['wpbs-layout-offset-header']: newValue});
-                                  }}/>
-                </ToolsPanelItem>
-                <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-top'] || !!attributes['wpbs-layout-right'] || !!attributes['wpbs-layout-bottom'] || !!attributes['wpbs-layout-left']}
                     label={'Box Position'}
                     onDeselect={() => setAttributes({
@@ -582,6 +574,19 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                         setAttributes({['wpbs-layout-outline']: newValue});
                     }}/>
                 </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    style={{paddingTop: '1rem'}}
+                    hasValue={() => !!attributes['wpbs-layout-offset-header']}
+                    label={'Offset Header'}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: undefined})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header'] || undefined}
+                                  callback={(newValue) => {
+                                      setAttributes({['wpbs-layout-offset-header']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+
 
             </ToolsPanel>
 
@@ -835,16 +840,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
-                    hasValue={() => !!attributes['wpbs-layout-offset-header-mobile']}
-                    label={'Offset Header'}
-                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: undefined})}
-                >
-                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header-mobile'] || undefined}
-                                  callback={(newValue) => {
-                                      setAttributes({['wpbs-layout-offset-header-mobile']: newValue});
-                                  }}/>
-                </ToolsPanelItem>
-                <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-margin-mobile']}
                     label={'Margin'}
                     onDeselect={() => setAttributes({['wpbs-layout-margin-mobile']: undefined})}
@@ -872,8 +867,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                                  setAttributes({['wpbs-layout-border-radius-mobile']: newValue});
                              }}/>
                 </ToolsPanelItem>
-
-
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout-font-size-mobile']}
@@ -906,7 +899,17 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                                    setAttributes({['wpbs-layout-text-align-mobile']: newValue});
                                }}/>
                 </ToolsPanelItem>
-
+                <ToolsPanelItem
+                    style={{paddingTop: '1rem'}}
+                    hasValue={() => !!attributes['wpbs-layout-offset-header-mobile']}
+                    label={'Offset Header'}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: undefined})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header-mobile'] || undefined}
+                                  callback={(newValue) => {
+                                      setAttributes({['wpbs-layout-offset-header-mobile']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
             </ToolsPanel>
 
             <ToolsPanel label={'Hover'} resetAll={resetAll_hover}>

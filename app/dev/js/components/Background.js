@@ -87,7 +87,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const imageClass = [
         'wpbs-background__media--image',
-        'object-cover [&>img]:w-full [&>img]:h-full [&>img]:object-cover'
+        'object-cover [&_img]:w-full [&_img]:h-full [&_img]:object-cover'
     ].filter(x => x).join(' ');
 
     const patternClass = [
@@ -195,6 +195,7 @@ export function Background({settings = {}, pushSettings}) {
     const [overlay, setOverlay] = useState(settings.overlay);
 
     const [position, setPosition] = useState(settings.position);
+    const [contain, setContain] = useState(settings.contain);
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
 
@@ -380,6 +381,26 @@ export function Background({settings = {}, pushSettings}) {
                         ]}
                         onChange={(value) => {
                             updateSettings('position', value, setPosition);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        label="Contain"
+                        value={contain}
+                        disabled={type !== 'image'}
+                        options={[
+                            {label: 'Default', value: 'center'},
+                            {label: 'Top', value: '[&_img]:object-contain [&_img]:object-top'},
+                            {label: 'Right', value: '[&_img]:object-contain [&_img]:object-right'},
+                            {label: 'Bottom', value: '[&_img]:object-contain [&_img]:object-bottom'},
+                            {label: 'Left', value: '[&_img]:object-contain [&_img]:object-left'},
+                            {label: 'Top Left', value: '[&_img]:object-contain [&_img]:object-left-top'},
+                            {label: 'Top Right', value: '[&_img]:object-contain [&_img]:object-right-top'},
+                            {label: 'Bottom Left', value: '[&_img]:object-contain [&_img]:object-left-bottom'},
+                            {label: 'Bottom Right', value: '[&_img]:object-contain [&_img]:object-right-bottom'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('contain', value, setContain);
                         }}
                         __nextHasNoMarginBottom
                     />

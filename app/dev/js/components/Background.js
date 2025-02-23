@@ -87,8 +87,8 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const imageClass = [
         'wpbs-background__media--image',
-        'object-cover [&_img]:w-full [&_img]:h-full',
-        settings.contain
+        '[&_img]:w-full [&_img]:h-full',
+        settings.objectPosition
     ].filter(x => x).join(' ');
 
     const patternClass = [
@@ -100,7 +100,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
     let mediaClass = [
         'wpbs-background__media absolute z-0 overflow-hidden',
         mediaPosition(settings.position),
-        settings.cover ? '[&_img]:object-cover' : '[&_img]:object-contain'
+        !settings.contain ? '[&_img]:object-cover' : '[&_img]:object-contain'
     ];
 
     function Media() {
@@ -179,8 +179,8 @@ export function Background({settings = {}, pushSettings}) {
         repeat: undefined,
         blend: undefined,
         position: undefined,
+        objectPosition: undefined,
         contain: undefined,
-        cover: undefined,
         scale: '100',
         opacity: '100',
         overlay: 'light',
@@ -200,8 +200,8 @@ export function Background({settings = {}, pushSettings}) {
     const [overlay, setOverlay] = useState(settings.overlay);
 
     const [position, setPosition] = useState(settings.position);
+    const [objectPosition, setObjectPosition] = useState(settings.objectPosition);
     const [contain, setContain] = useState(settings.contain);
-    const [cover, setCover] = useState(settings.cover);
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
 
@@ -391,8 +391,8 @@ export function Background({settings = {}, pushSettings}) {
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
-                        label="Contain"
-                        value={contain}
+                        label="Image Position"
+                        value={objectPosition}
                         disabled={type !== 'image'}
                         options={[
                             {label: 'Default', value: undefined},
@@ -407,7 +407,7 @@ export function Background({settings = {}, pushSettings}) {
                             {label: 'Bottom Right', value: '[&_img]:object-right-bottom'},
                         ]}
                         onChange={(value) => {
-                            updateSettings('contain', value, setContain);
+                            updateSettings('objectPosition', value, setObjectPosition);
                         }}
                         __nextHasNoMarginBottom
                     />
@@ -463,7 +463,7 @@ export function Background({settings = {}, pushSettings}) {
                         allowReset={true}
                     />
                 </Grid>
-                <Grid columns={3} columnGap={15} rowGap={30}>
+                <Grid columns={2} columnGap={15} rowGap={30}>
                     <ToggleControl
                         label="Eager"
                         checked={eager}
@@ -483,10 +483,10 @@ export function Background({settings = {}, pushSettings}) {
                         __nextHasNoMarginBottom
                     />
                     <ToggleControl
-                        label="Cover"
-                        checked={cover}
+                        label="Contain"
+                        checked={contain}
                         onChange={(value) => {
-                            updateSettings('cover', value, setCover);
+                            updateSettings('contain', value, setContain);
                         }}
                         className={'flex items-center'}
                         __nextHasNoMarginBottom

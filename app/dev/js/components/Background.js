@@ -141,9 +141,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
                 largeVideo = largeVideo || {};
             }
 
-            return <video className={videoClass} muted loop autoPlay={true} style={{
-                ...mediaStyle()
-            }}>
+            return <video className={videoClass} muted loop autoPlay={true} style={mediaStyle()}>
                 <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'}/>
                 <source data-src={(mobileVideo.url || '#')} type="video/mp4"
                         data-media={'(min-width:240px) and (max-width:959px)'}/>

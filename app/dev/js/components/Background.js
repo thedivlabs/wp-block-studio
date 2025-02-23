@@ -42,7 +42,6 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const bgStyle = {
         backgroundSize: (settings.scale || '100') + '%',
-        opacity: (settings.opacity || '100') + '%'
     }
 
     const mediaPosition = (posAttr) => {
@@ -74,6 +73,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
         return {
             width: (settings.width || 100) + '%',
             height: (settings.height || 100) + '%',
+            opacity: (settings.opacity || '100') + '%'
         }
     };
 

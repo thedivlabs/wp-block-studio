@@ -99,7 +99,8 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     let mediaClass = [
         'wpbs-background__media absolute z-0 overflow-hidden',
-        mediaPosition(settings.position)
+        mediaPosition(settings.position),
+        settings.cover ? '[&_img]:object-cover' : '[&_img]:object-contain'
     ];
 
     function Media() {
@@ -179,6 +180,7 @@ export function Background({settings = {}, pushSettings}) {
         blend: undefined,
         position: undefined,
         contain: undefined,
+        cover: undefined,
         scale: '100',
         opacity: '100',
         overlay: 'light',
@@ -199,6 +201,7 @@ export function Background({settings = {}, pushSettings}) {
 
     const [position, setPosition] = useState(settings.position);
     const [contain, setContain] = useState(settings.contain);
+    const [cover, setCover] = useState(settings.cover);
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
 
@@ -392,16 +395,16 @@ export function Background({settings = {}, pushSettings}) {
                         value={contain}
                         disabled={type !== 'image'}
                         options={[
-                            {label: 'Default', value: '[&_img]:object-cover [&_img]:object-center'},
-                            {label: 'Center', value: '[&_img]:object-contain [&_img]:object-center'},
-                            {label: 'Top', value: '[&_img]:object-contain [&_img]:object-top'},
-                            {label: 'Right', value: '[&_img]:object-contain [&_img]:object-right'},
-                            {label: 'Bottom', value: '[&_img]:object-contain [&_img]:object-bottom'},
-                            {label: 'Left', value: '[&_img]:object-contain [&_img]:object-left'},
-                            {label: 'Top Left', value: '[&_img]:object-contain [&_img]:object-left-top'},
-                            {label: 'Top Right', value: '[&_img]:object-contain [&_img]:object-right-top'},
-                            {label: 'Bottom Left', value: '[&_img]:object-contain [&_img]:object-left-bottom'},
-                            {label: 'Bottom Right', value: '[&_img]:object-contain [&_img]:object-right-bottom'},
+                            {label: 'Default', value: undefined},
+                            {label: 'Center', value: '[&_img]:object-center'},
+                            {label: 'Top', value: '[&_img]:object-top'},
+                            {label: 'Right', value: '[&_img]:object-right'},
+                            {label: 'Bottom', value: '[&_img]:object-bottom'},
+                            {label: 'Left', value: '[&_img]:object-left'},
+                            {label: 'Top Left', value: '[&_img]:object-left-top'},
+                            {label: 'Top Right', value: '[&_img]:object-right-top'},
+                            {label: 'Bottom Left', value: '[&_img]:object-left-bottom'},
+                            {label: 'Bottom Right', value: '[&_img]:object-right-bottom'},
                         ]}
                         onChange={(value) => {
                             updateSettings('contain', value, setContain);
@@ -460,7 +463,7 @@ export function Background({settings = {}, pushSettings}) {
                         allowReset={true}
                     />
                 </Grid>
-                <Grid columns={2} columnGap={20} rowGap={30}>
+                <Grid columns={3} columnGap={15} rowGap={30}>
                     <ToggleControl
                         label="Eager"
                         checked={eager}
@@ -475,6 +478,15 @@ export function Background({settings = {}, pushSettings}) {
                         checked={force}
                         onChange={(value) => {
                             updateSettings('force', value, setForce);
+                        }}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                    <ToggleControl
+                        label="Cover"
+                        checked={cover}
+                        onChange={(value) => {
+                            updateSettings('cover', value, setCover);
                         }}
                         className={'flex items-center'}
                         __nextHasNoMarginBottom

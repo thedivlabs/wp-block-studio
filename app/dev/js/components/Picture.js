@@ -30,7 +30,7 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
     ].filter(x => x).join(' ');
 
 
-    return <picture className={className}>
+    return <picture className={className} style={settings.style || {}}>
         <source srcSet={urlLarge || '#'} media={'(min-width: 1140px)'}/>
         <source srcSet={urlMedium || '#'} media={'(min-width: 960px)'}/>
         <source srcSet={urlMobile || '#'} media={'(min-width: 10px)'}/>

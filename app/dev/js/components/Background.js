@@ -84,18 +84,18 @@ export function BackgroundElement({settings = {}, blockProps}) {
     ].filter(x => x).join(' ');
 
     const videoClass = [
-        ...mediaClass,
+        mediaClass,
         'wpbs-background__media--video',
     ].filter(x => x).join(' ');
 
     const imageClass = [
-        ...mediaClass,
+        mediaClass,
         'wpbs-background__media--image',
         'object-cover [&>img]:w-full [&>img]:h-full [&>img]:object-cover'
     ].filter(x => x).join(' ');
 
     const patternClass = [
-        ...mediaClass,
+        mediaClass,
         'wpbs-background__media--pattern',
         'object-cover',
         repeat
@@ -105,7 +105,8 @@ export function BackgroundElement({settings = {}, blockProps}) {
         if (settings.type === 'image') {
             return <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
                 force: settings.force || false,
-                className: imageClass
+                className: imageClass,
+                style: mediaStyle()
             }}/>;
         }
 
@@ -118,7 +119,8 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
             return <div className={patternClass} style={{
                 backgroundImage: 'url(' + patternImage + ')',
-                backgroundSize: settings.scale ? settings.scale + '%' : 'auto'
+                backgroundSize: settings.scale ? settings.scale + '%' : 'auto',
+                ...mediaStyle()
             }}/>;
         }
 
@@ -139,7 +141,9 @@ export function BackgroundElement({settings = {}, blockProps}) {
                 largeVideo = largeVideo || {};
             }
 
-            return <video className={videoClass} muted loop autoPlay={true}>
+            return <video className={videoClass} muted loop autoPlay={true} style={{
+                ...mediaStyle()
+            }}>
                 <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'}/>
                 <source data-src={(mobileVideo.url || '#')} type="video/mp4"
                         data-media={'(min-width:240px) and (max-width:959px)'}/>

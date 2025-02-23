@@ -10,6 +10,7 @@
     "@wordpress/data": "^10.3.0",
     "@wordpress/editor": "^14.4.0",
     "@wordpress/element": "^6.4.0",
+    "@wordpress/icons": "^10.18.0",
     "@wordpress/interactivity": "^6.5.0",
     "@wordpress/media-utils": "^5.3.0",
     "@wordpress/private-apis": "^1.9.0",

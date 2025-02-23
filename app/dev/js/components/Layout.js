@@ -39,6 +39,7 @@ import Basis from 'Components/Basis';
 import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 import OffsetHeader from "Components/OffsetHeader";
+import MinHeight from "Components/MinHeight";
 
 const blockAttributes = {
     layout: {
@@ -76,6 +77,9 @@ const blockAttributes = {
             type: 'string'
         },
         'wpbs-layout-height': {
+            type: 'string'
+        },
+        'wpbs-layout-min-height': {
             type: 'string'
         },
         'wpbs-layout-height-custom': {
@@ -156,6 +160,9 @@ const blockAttributes = {
             type: 'string'
         },
         'wpbs-layout-height-mobile': {
+            type: 'string'
+        },
+        'wpbs-layout-min-height-mobile': {
             type: 'string'
         },
         'wpbs-layout-height-custom-mobile': {

@@ -37,6 +37,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
+        settings.blend ? 'bg-inherit' : false,
     ].filter(x => x).join(' ');
 
     const bgStyle = {

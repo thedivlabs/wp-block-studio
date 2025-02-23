@@ -37,7 +37,6 @@ export function BackgroundElement({settings = {}, blockProps}) {
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
-        settings.blend ? 'mix-blend-' + settings.blend : false
     ].filter(x => x).join(' ');
 
     const bgStyle = {
@@ -73,7 +72,8 @@ export function BackgroundElement({settings = {}, blockProps}) {
         return {
             width: (settings.width || 100) + '%',
             height: (settings.height || 100) + '%',
-            opacity: (settings.opacity || '100') + '%'
+            opacity: (settings.opacity || '100') + '%',
+            mixBlendMode: settings.blend
         }
     };
 

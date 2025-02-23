@@ -1,29 +1,5 @@
-.wpbs-tab-panel {
-  margin: 0 -16px;
-
-  .components-panel__body-title:has(+ &) {
-    margin-bottom: 0 !important;
-  }
-
-  & > .components-tab-panel__tabs {
-    @apply
-    bg-gray-100
-    ;
-
-    & > button {
-
-      &.active-tab {
-
-        &:after {
-          height: 2px;
-        }
-      }
-    }
-  }
-
-  & > .components-tab-panel__tab-content {
-    padding: 16px;
-  }
+:root :where(.editor-styles-wrapper):after {
+  content: none !important;
 }
 
 .editor-visual-editor {

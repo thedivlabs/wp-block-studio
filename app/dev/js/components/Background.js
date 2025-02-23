@@ -50,6 +50,9 @@ export function BackgroundElement({settings = {}, blockProps}) {
         let result = '';
 
         switch (posAttr) {
+            case 'center':
+                result = 'top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2';
+                break;
             case 'top-right':
                 result = 'top-0 right-0';
                 break;
@@ -366,6 +369,7 @@ export function Background({settings = {}, pushSettings}) {
                         value={position}
                         options={[
                             {label: 'Default', value: null},
+                            {label: 'Center', value: 'center'},
                             {label: 'Top Left', value: 'top-left'},
                             {label: 'Top Right', value: 'top-right'},
                             {label: 'Bottom Left', value: 'bottom-left'},

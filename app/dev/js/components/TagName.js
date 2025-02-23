@@ -1,0 +1,28 @@
+import {SelectControl} from "@wordpress/components";
+import {useState} from "react";
+
+
+export function TagName({defaultValue, callback}) {
+
+    const [value, setValue] = useState(defaultValue);
+
+    return <SelectControl
+        value={value}
+        label={'HTML element'}
+        options={[
+            {label: 'Default (<div>)', value: 'div'},
+            {label: '<header>', value: 'header'},
+            {label: '<main>', value: 'main'},
+            {label: '<section>', value: 'section'},
+            {label: '<article>', value: 'article'},
+            {label: '<aside>', value: 'aside'},
+            {label: '<footer>', value: 'footer'},
+        ]}
+        onChange={(newValue) => {
+            setValue(newValue);
+            callback(newValue);
+        }}
+        __next40pxDefaultSize
+        __nextHasNoMarginBottom
+    />;
+}

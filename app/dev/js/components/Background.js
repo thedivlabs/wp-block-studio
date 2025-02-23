@@ -74,61 +74,60 @@ export function BackgroundElement({settings = {}, blockProps}) {
         return {
             width: (settings.width || 100) + '%',
             height: (settings.height || 100) + '%',
-        };
+        }
     };
 
     const overlayClass = [
         'wpbs-background__overlay absolute top-0 left-0 w-full h-full z-50'
     ].filter(x => x).join(' ');
 
-    const mediaClass = [
-        'wpbs-background__media absolute z-0',
-        mediaPosition(settings.position)
-    ].filter(x => x).join(' ');
-
     const videoClass = [
-        mediaClass,
         'wpbs-background__media--video',
     ].filter(x => x).join(' ');
 
     const imageClass = [
-        mediaClass,
         'wpbs-background__media--image',
         'object-cover [&>img]:w-full [&>img]:h-full [&>img]:object-cover'
     ].filter(x => x).join(' ');
 
     const patternClass = [
-        mediaClass,
         'wpbs-background__media--pattern',
         'object-cover',
         repeat
     ].filter(x => x).join(' ');
 
+    let mediaClass = [
+        'wpbs-background__media absolute z-0 overflow-hidden',
+        mediaPosition(settings.position)
+    ];
+
     function Media() {
+
+        let MediaElement;
+
         if (settings.type === 'image') {
-            return <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
+            mediaClass.push(imageClass);
+            MediaElement = <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
                 force: settings.force || false,
-                className: imageClass,
-                style: mediaStyle()
             }}/>;
         }
 
         if (settings.type === 'pattern') {
-
+            mediaClass.push(patternClass);
             const patternMobileSrc = settings.mobileImage ? settings.mobileImage.url || false : 'none';
             const patternLargeSrc = settings.largeImage ? settings.largeImage.url || false : 'none';
 
             const patternImage = window.matchMedia('(min-width:960px)').matches ? patternLargeSrc : patternMobileSrc;
 
-            return <div className={patternClass} style={{
+            MediaElement = <div style={{
                 backgroundImage: 'url(' + patternImage + ')',
                 backgroundSize: settings.scale ? settings.scale + '%' : 'auto',
-                ...mediaStyle()
             }}/>;
         }
 
         if (settings.type === 'video') {
 
+            mediaClass.push(videoClass);
 
             let {mobileVideo = {}, largeVideo = {}} = settings;
 
@@ -144,20 +143,24 @@ export function BackgroundElement({settings = {}, blockProps}) {
                 largeVideo = largeVideo || {};
             }
 
-            return <video className={videoClass} muted loop autoPlay={true} style={mediaStyle()}>
+            MediaElement = <video muted loop autoPlay={true}>
                 <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'}/>
                 <source data-src={(mobileVideo.url || '#')} type="video/mp4"
                         data-media={'(min-width:240px) and (max-width:959px)'}/>
                 <source src={'#'}/>
             </video>
         }
+
+        return <div className={mediaClass.filter(x => x).join(' ')} style={mediaStyle()}>
+            {MediaElement}
+            <div className={overlayClass} style={{
+                background: settings.overlay || 'transparent'
+            }}/>
+        </div>;
     }
 
     return <div className={bgClass} style={bgStyle}>
         <Media/>
-        <div className={overlayClass} style={{
-            background: settings.overlay || 'transparent'
-        }}/>
     </div>;
 }
 

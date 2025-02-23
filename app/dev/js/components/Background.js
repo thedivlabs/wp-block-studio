@@ -167,15 +167,17 @@ export function BackgroundElement({settings = {}, blockProps}) {
 export function Background({settings = {}, pushSettings}) {
 
     settings = Object.assign({}, {
-        type: false,
+        type: undefined,
         mobileImage: {},
         largeImage: {},
         mobileVideo: {},
         largeVideo: {},
-        eager: false,
-        force: false,
-        repeat: null,
-        blend: null,
+        eager: undefined,
+        force: undefined,
+        repeat: undefined,
+        blend: undefined,
+        position: undefined,
+        contain: undefined,
         scale: '100',
         opacity: '100',
         overlay: 'light',

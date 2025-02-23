@@ -36,7 +36,7 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
     return <picture className={className} style={settings.style || {}}>
         <source srcSet={urlLarge || '#'} media={'(min-width: 1140px)'}/>
         <source srcSet={urlMedium || '#'} media={'(min-width: 960px)'}/>
-        <source srcSet={urlMobile || '#'} media={'(min-width: 10px)'}/>
+        <source srcSet={urlMobile || '#'} media={'(min-width: 32px)'}/>
         <img src={urlLarge} alt={large.alt || mobile.alt || ''} aria-hidden={'true'}
              loading={settings.eager ? 'eager' : 'lazy'}/>
     </picture>;

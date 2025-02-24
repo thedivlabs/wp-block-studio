@@ -368,7 +368,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Mask Origin"
                 value={maskOrigin}
-                disabled={!mask}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Center', value: 'center'},
@@ -389,7 +388,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Mask Size"
                 value={maskSize}
-                disabled={!mask}
                 options={[
                     {label: 'Default', value: 'contain'},
                     {label: 'Cover', value: 'cover'},
@@ -428,7 +426,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Repeat"
                 value={repeat}
-                disabled={type !== 'pattern'}
                 options={[
                     {label: 'Default', value: undefined},
                     {label: 'None', value: 'none'},
@@ -595,7 +592,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Mask Origin"
                 value={maskOriginMobile}
-                disabled={!mask}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Center', value: 'center'},
@@ -616,7 +612,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Mask Size"
                 value={maskSizeMobile}
-                disabled={!mask}
                 options={[
                     {label: 'Default', value: 'contain'},
                     {label: 'Cover', value: 'cover'},
@@ -655,7 +650,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Repeat"
                 value={repeatMobile}
-                disabled={type !== 'pattern'}
                 options={[
                     {label: 'Default', value: undefined},
                     {label: 'None', value: 'none'},
@@ -887,7 +881,6 @@ export function Background({settings = {}, pushSettings}) {
                         <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
-                                    disabled={!mask}
                                     title={'Mobile Mask'}
                                     onSelect={(value) => {
                                         updateSettings('maskImageMobile', value, setMaskImageMobile);
@@ -913,7 +906,6 @@ export function Background({settings = {}, pushSettings}) {
                         <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
-                                    disabled={!mask}
                                     title={'Large Mask'}
                                     onSelect={(value) => {
                                         updateSettings('maskImageLarge', value, setMaskImageLarge);

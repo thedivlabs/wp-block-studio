@@ -709,7 +709,8 @@ export function Background({settings = {}, pushSettings}) {
                     }}
                     __nextHasNoMarginBottom
                 />
-                <Grid columns={2} columnGap={20} rowGap={20}>
+                <Grid columns={2} columnGap={20} rowGap={20}
+                      style={{display: type !== 'image' && type !== 'pattern' ? 'none' : null}}>
                     <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                         <MediaUploadCheck>
                             <MediaUpload

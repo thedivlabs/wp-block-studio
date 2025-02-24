@@ -70,12 +70,26 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
     const mediaStyle = () => {
 
-        return {
+        let styles = {
             width: (settings.width || 100) + '%',
             height: (settings.height || 100) + '%',
             opacity: (settings.opacity || '100') + '%',
-            mixBlendMode: settings.blend
+            mixBlendMode: settings.blend,
+        };
+
+        console.log(settings);
+
+        if (settings.maskMobile || settings.maskLarge) {
+            styles = Object.assign({}, styles, {
+                '--mask-image': 'url(' + (settings.maskMobile || settings.maskLarge).sizes.large.url + ')',
+                maskImage: 'var(--mask-image, none)',
+                maskRepeat: 'no-repeat',
+                maskSize: settings.maskSize || 'contain',
+                maskPosition: settings.maskOrigin,
+            })
         }
+
+        return styles;
     };
 
     const overlayClass = [
@@ -183,10 +197,10 @@ export function Background({settings = {}, pushSettings}) {
         origin: undefined,
         contain: undefined,
         mask: undefined,
-        mobileMask: undefined,
-        largeMask: undefined,
+        maskMobile: undefined,
+        maskLarge: undefined,
         maskOrigin: undefined,
-        maskFit: undefined,
+        maskSize: undefined,
         scale: '100',
         opacity: '100',
         overlay: 'light',
@@ -212,10 +226,10 @@ export function Background({settings = {}, pushSettings}) {
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
 
-    const [mobileMask, setMobileMask] = useState(settings.mobileMask);
-    const [largeMask, setLargeMask] = useState(settings.largeMask);
+    const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
+    const [maskLarge, setMaskLarge] = useState(settings.maskLarge);
     const [maskOrigin, setMaskOrigin] = useState(settings.maskOrigin);
-    const [maskFit, setMaskFit] = useState(settings.maskFit);
+    const [maskSize, setMaskSize] = useState(settings.maskSize);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -527,17 +541,17 @@ export function Background({settings = {}, pushSettings}) {
                                 disabled={!mask}
                                 title={'Mobile Mask'}
                                 onSelect={(value) => {
-                                    updateSettings('mobileMask', value, setMobileMask);
+                                    updateSettings('maskMobile', value, setMaskMobile);
                                 }}
                                 allowedTypes={['image']}
-                                value={mobileMask}
+                                value={maskMobile}
                                 render={({open}) => {
-                                    if (mobileMask) {
+                                    if (maskMobile) {
                                         return <>
                                             <PreviewThumbnail
-                                                image={mobileMask || {}}
+                                                image={maskMobile || {}}
                                                 callback={() => {
-                                                    updateSettings('mobileMask', undefined, setMobileMask)
+                                                    updateSettings('maskMobile', undefined, setMaskMobile)
                                                 }}
                                             /></>;
                                     } else {
@@ -553,17 +567,17 @@ export function Background({settings = {}, pushSettings}) {
                                 disabled={!mask}
                                 title={'Large Mask'}
                                 onSelect={(value) => {
-                                    updateSettings('largeMask', value, setLargeMask);
+                                    updateSettings('maskLarge', value, setMaskLarge);
                                 }}
                                 allowedTypes={['image']}
-                                value={largeMask}
+                                value={maskLarge}
                                 render={({open}) => {
-                                    if (largeMask) {
+                                    if (maskLarge) {
                                         return <>
                                             <PreviewThumbnail
-                                                image={largeMask || {}}
+                                                image={maskLarge || {}}
                                                 callback={() => {
-                                                    updateSettings('largeMask', undefined, setLargeMask)
+                                                    updateSettings('maskLarge', undefined, setMaskLarge)
                                                 }}
                                             /></>;
                                     } else {
@@ -584,10 +598,10 @@ export function Background({settings = {}, pushSettings}) {
                             {label: 'Right', value: 'right'},
                             {label: 'Bottom', value: 'bottom'},
                             {label: 'Left', value: 'left'},
-                            {label: 'Top Left', value: 'top-left'},
-                            {label: 'Top Right', value: 'top-right'},
-                            {label: 'Bottom Left', value: 'bottom-left'},
-                            {label: 'Bottom Right', value: 'bottom-right'},
+                            {label: 'Top Left', value: 'top left'},
+                            {label: 'Top Right', value: 'top right'},
+                            {label: 'Bottom Left', value: 'bottom left'},
+                            {label: 'Bottom Right', value: 'bottom right'},
                         ]}
                         onChange={(value) => {
                             updateSettings('maskOrigin', value, setMaskOrigin);
@@ -595,16 +609,16 @@ export function Background({settings = {}, pushSettings}) {
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
-                        label="Mask Fit"
-                        value={maskFit}
+                        label="Mask Size"
+                        value={maskSize}
                         disabled={!mask}
                         options={[
                             {label: 'Default', value: undefined},
-                            {label: 'Contain', value: 'center'},
+                            {label: 'Cover', value: 'cover'},
                             {label: 'Fill', value: 'fill'},
                         ]}
                         onChange={(value) => {
-                            updateSettings('maskFit', value, setMaskFit);
+                            updateSettings('maskSize', value, setMaskSize);
                         }}
                         __nextHasNoMarginBottom
                     />

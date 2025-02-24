@@ -1,6 +1,6 @@
 function Picture({mobile = {}, large = {}, settings = {}}) {
 
-    console.log(wp.data.select( 'core').getMedia( large.id ));
+    //console.log(wp.data.select( 'core').getMedia( large.id ));
 
     const {medium: mobileLarge = {}} = mobile.sizes || {};
     const {large: largeLarge = {}} = large.sizes || {};

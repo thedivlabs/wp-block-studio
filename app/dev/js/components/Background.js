@@ -489,7 +489,6 @@ export function Background({settings = {}, pushSettings}) {
                     label="Type"
                     value={type}
                     options={[
-                        {label: 'None', value: ''},
                         {label: 'Image', value: 'image'},
                         {label: 'Video', value: 'video'},
                         {label: 'Pattern', value: 'pattern'},

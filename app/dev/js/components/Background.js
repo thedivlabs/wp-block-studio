@@ -78,13 +78,13 @@ export function BackgroundElement({settings = {}, blockProps}) {
             mixBlendMode: settings.blend,
         };
 
-        if (settings.maskMobile) {
+        if (settings.maskImageMobile) {
             styles = Object.assign({}, styles, {
-                '--mask-image-mobile': 'url(' + (settings.maskMobile).sizes.large.url + ')',
+                '--mask-image-mobile': 'url(' + (settings.maskImageMobile).sizes.large.url + ')',
             })
         }
 
-        if (settings.maskLarge || settings.maskMobile) {
+        if (settings.maskImageLarge || settings.maskImageMobile) {
             styles = Object.assign({}, styles, {
                 maskImage: 'var(--mask-image, none)',
                 maskRepeat: 'no-repeat',
@@ -199,13 +199,14 @@ export function Background({settings = {}, pushSettings}) {
         largeImage: undefined,
         mobileVideo: undefined,
         largeVideo: undefined,
-        maskMobile: undefined,
-        maskLarge: undefined,
+        maskImageMobile: undefined,
+        maskImageLarge: undefined,
         eager: undefined,
         force: undefined,
         fixed: undefined,
-        mask: undefined,
 
+        mask: undefined,
+        contain: undefined,
         size: undefined,
         blend: undefined,
         position: undefined,
@@ -217,8 +218,10 @@ export function Background({settings = {}, pushSettings}) {
         opacity: undefined,
         width: undefined,
         height: undefined,
-        overlay: undefined,
+        overlay: {},
 
+        maskMobile: undefined,
+        containMobile: undefined,
         sizeMobile: undefined,
         blendMobile: undefined,
         positionMobile: undefined,
@@ -230,7 +233,7 @@ export function Background({settings = {}, pushSettings}) {
         opacityMobile: undefined,
         widthMobile: undefined,
         heightMobile: undefined,
-        overlayMobile: [],
+        overlayMobile: {},
 
     }, settings)
 
@@ -239,13 +242,14 @@ export function Background({settings = {}, pushSettings}) {
     const [largeImage, setLargeImage] = useState(settings.largeImage);
     const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo);
     const [largeVideo, setLargeVideo] = useState(settings.largeVideo);
-    const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
-    const [maskLarge, setMaskLarge] = useState(settings.maskLarge);
+    const [maskImageMobile, setMaskImageMobile] = useState(settings.maskImageMobile);
+    const [maskImageLarge, setMaskImageLarge] = useState(settings.maskImageLarge);
     const [eager, setEager] = useState(settings.eager);
     const [force, setForce] = useState(settings.force);
     const [fixed, setFixed] = useState(settings.fixed);
-    const [mask, setMask] = useState(settings.mask);
 
+    const [mask, setMask] = useState(settings.mask);
+    const [contain, setContain] = useState(settings.contain);
     const [size, setSize] = useState(settings.size);
     const [blend, setBlend] = useState(settings.blend);
     const [position, setPosition] = useState(settings.position);
@@ -259,6 +263,8 @@ export function Background({settings = {}, pushSettings}) {
     const [height, setHeight] = useState(settings.height);
     const [overlay, setOverlay] = useState(settings.overlay);
 
+    const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
+    const [containMobile, setContainMobile] = useState(settings.containMobile);
     const [sizeMobile, setSizeMobile] = useState(settings.sizeMobile);
     const [blendMobile, setBlendMobile] = useState(settings.blendMobile);
     const [positionMobile, setPositionMobile] = useState(settings.positionMobile);
@@ -360,7 +366,6 @@ export function Background({settings = {}, pushSettings}) {
             />
         </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
-
 
             <SelectControl
                 label="Mask Origin"
@@ -491,7 +496,7 @@ export function Background({settings = {}, pushSettings}) {
                         slug: 'Strong',
                     }
                 ]}
-                clearable={false}
+                clearable={true}
                 value={overlay}
                 onChange={(value) => {
                     updateSettings('overlay', value, setOverlay);
@@ -499,7 +504,6 @@ export function Background({settings = {}, pushSettings}) {
             />
         </BaseControl>
     </Grid>
-
 
     const tabMobile = <Grid columns={1} columnGap={20} rowGap={20}>
         <Grid columns={2} columnGap={20} rowGap={30}>
@@ -569,13 +573,13 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
 
 
             <SelectControl
                 label="Mask Origin"
                 value={maskOriginMobile}
-                disabled={!maskMobile}
+                disabled={!mask}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Center', value: 'center'},
@@ -596,7 +600,7 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Mask Size"
                 value={maskSizeMobile}
-                disabled={!maskMobile}
+                disabled={!mask}
                 options={[
                     {label: 'Default', value: 'contain'},
                     {label: 'Cover', value: 'cover'},
@@ -701,7 +705,7 @@ export function Background({settings = {}, pushSettings}) {
                         slug: 'Strong',
                     }
                 ]}
-                clearable={false}
+                clearable={true}
                 value={overlayMobile}
                 onChange={(value) => {
                     updateSettings('overlayMobile', value, setOverlayMobile);
@@ -852,17 +856,17 @@ export function Background({settings = {}, pushSettings}) {
                                     disabled={!mask}
                                     title={'Mobile Mask'}
                                     onSelect={(value) => {
-                                        updateSettings('maskMobile', value, setMaskMobile);
+                                        updateSettings('maskImageMobile', value, setMaskImageMobile);
                                     }}
                                     allowedTypes={['image']}
-                                    value={maskMobile}
+                                    value={maskImageMobile}
                                     render={({open}) => {
-                                        if (maskMobile) {
+                                        if (maskImageMobile) {
                                             return <>
                                                 <PreviewThumbnail
-                                                    image={maskMobile || {}}
+                                                    image={maskImageMobile || {}}
                                                     callback={() => {
-                                                        updateSettings('maskMobile', undefined, setMaskMobile)
+                                                        updateSettings('maskImageMobile', undefined, setMaskImageMobile)
                                                     }}
                                                 /></>;
                                         } else {
@@ -878,17 +882,17 @@ export function Background({settings = {}, pushSettings}) {
                                     disabled={!mask}
                                     title={'Large Mask'}
                                     onSelect={(value) => {
-                                        updateSettings('maskLarge', value, setMaskLarge);
+                                        updateSettings('maskImageLarge', value, setMaskImageLarge);
                                     }}
                                     allowedTypes={['image']}
-                                    value={maskLarge}
+                                    value={maskImageLarge}
                                     render={({open}) => {
-                                        if (maskLarge) {
+                                        if (maskImageLarge) {
                                             return <>
                                                 <PreviewThumbnail
-                                                    image={maskLarge || {}}
+                                                    image={maskImageLarge || {}}
                                                     callback={() => {
-                                                        updateSettings('maskLarge', undefined, setMaskLarge)
+                                                        updateSettings('maskImageLarge', undefined, setMaskLarge)
                                                     }}
                                                 /></>;
                                         } else {

@@ -125,7 +125,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
     let mediaClass = [
         'wpbs-background__media absolute z-0 overflow-hidden',
         mediaPosition(settings.position),
-        !settings.contain ? '[&_img]:object-cover' : '[&_img]:object-contain'
+        //!settings.contain ? '[&_img]:object-cover' : '[&_img]:object-contain'
     ];
 
     function Media() {
@@ -205,7 +205,7 @@ export function Background({settings = {}, pushSettings}) {
         force: undefined,
 
         mask: undefined,
-        contain: undefined,
+        fixed: undefined,
         size: undefined,
         blend: undefined,
         position: undefined,
@@ -220,7 +220,7 @@ export function Background({settings = {}, pushSettings}) {
         overlay: {},
 
         maskMobile: undefined,
-        containMobile: undefined,
+        fixedMobile: undefined,
         sizeMobile: undefined,
         blendMobile: undefined,
         positionMobile: undefined,
@@ -247,7 +247,7 @@ export function Background({settings = {}, pushSettings}) {
     const [force, setForce] = useState(settings.force);
 
     const [mask, setMask] = useState(settings.mask);
-    const [contain, setContain] = useState(settings.contain);
+    const [fixed, setFixed] = useState(settings.fixed);
     const [size, setSize] = useState(settings.size);
     const [blend, setBlend] = useState(settings.blend);
     const [position, setPosition] = useState(settings.position);
@@ -262,7 +262,7 @@ export function Background({settings = {}, pushSettings}) {
     const [overlay, setOverlay] = useState(settings.overlay);
 
     const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
-    const [containMobile, setContainMobile] = useState(settings.containMobile);
+    const [fixedMobile, setFixedMobile] = useState(settings.fixedMobile);
     const [sizeMobile, setSizeMobile] = useState(settings.sizeMobile);
     const [blendMobile, setBlendMobile] = useState(settings.blendMobile);
     const [positionMobile, setPositionMobile] = useState(settings.positionMobile);
@@ -366,10 +366,10 @@ export function Background({settings = {}, pushSettings}) {
         <Grid columns={2} columnGap={15} rowGap={30}
               style={{padding: '1rem 0'}}>
             <ToggleControl
-                label="Contain"
-                checked={contain}
+                label="Fixed"
+                checked={fixed}
                 onChange={(value) => {
-                    updateSettings('contain', value, setContain);
+                    updateSettings('fixed', value, setFixed);
                 }}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
@@ -595,10 +595,10 @@ export function Background({settings = {}, pushSettings}) {
         <Grid columns={2} columnGap={15} rowGap={30}
               style={{padding: '1rem 0'}}>
             <ToggleControl
-                label="Contain"
-                checked={containMobile}
+                label="Fixed"
+                checked={fixedMobile}
                 onChange={(value) => {
-                    updateSettings('containMobile', value, setContainMobile);
+                    updateSettings('fixedMobile', value, setFixedMobile);
                 }}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom

@@ -615,7 +615,8 @@ export function Background({settings = {}, pushSettings}) {
                         options={[
                             {label: 'Default', value: undefined},
                             {label: 'Cover', value: 'cover'},
-                            {label: 'Fill', value: 'fill'},
+                            {label: 'Vertical', value: 'auto 100%'},
+                            {label: 'Horizontal', value: '100% auto'},
                         ]}
                         onChange={(value) => {
                             updateSettings('maskSize', value, setMaskSize);

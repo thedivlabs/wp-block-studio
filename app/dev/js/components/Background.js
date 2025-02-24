@@ -263,7 +263,7 @@ export function Background({settings = {}, pushSettings}) {
     };
 
     const tabDesktop = <Grid columns={1} columnGap={20} rowGap={20}>
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !type ? 'none' : null}}>
+        <Grid columns={2} columnGap={20} rowGap={30}>
             <SelectControl
                 label="Size"
                 value={size}

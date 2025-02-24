@@ -199,24 +199,38 @@ export function Background({settings = {}, pushSettings}) {
         largeImage: undefined,
         mobileVideo: undefined,
         largeVideo: undefined,
-        eager: undefined,
-        force: undefined,
-        mask: undefined,
-        fixed: undefined,
         maskMobile: undefined,
         maskLarge: undefined,
+        eager: undefined,
+        force: undefined,
+        fixed: undefined,
+        mask: undefined,
 
         size: undefined,
-        repeat: undefined,
         blend: undefined,
         position: undefined,
         origin: undefined,
         maskOrigin: undefined,
         maskSize: undefined,
+        repeat: undefined,
         scale: undefined,
         opacity: undefined,
+        width: undefined,
+        height: undefined,
         overlay: undefined,
 
+        sizeMobile: undefined,
+        blendMobile: undefined,
+        positionMobile: undefined,
+        originMobile: undefined,
+        maskOriginMobile: undefined,
+        maskSizeMobile: undefined,
+        repeatMobile: undefined,
+        scaleMobile: undefined,
+        opacityMobile: undefined,
+        widthMobile: undefined,
+        heightMobile: undefined,
+        overlayMobile: [],
 
     }, settings)
 
@@ -225,26 +239,39 @@ export function Background({settings = {}, pushSettings}) {
     const [largeImage, setLargeImage] = useState(settings.largeImage);
     const [mobileVideo, setMobileVideo] = useState(settings.mobileVideo);
     const [largeVideo, setLargeVideo] = useState(settings.largeVideo);
-    const [eager, setEager] = useState(settings.eager);
-    const [force, setForce] = useState(settings.force);
-    const [repeat, setRepeat] = useState(settings.repeat);
-    const [blend, setBlend] = useState(settings.blend);
-    const [scale, setScale] = useState(settings.scale);
-    const [opacity, setOpacity] = useState(settings.opacity);
-    const [overlay, setOverlay] = useState(settings.overlay);
-
-    const [position, setPosition] = useState(settings.position);
-    const [origin, setOrigin] = useState(settings.origin);
-    const [size, setSize] = useState(settings.size);
-    const [mask, setMask] = useState(settings.mask);
-    const [fixed, setFixed] = useState(settings.fixed);
-    const [width, setWidth] = useState(settings.width);
-    const [height, setHeight] = useState(settings.height);
-
     const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
     const [maskLarge, setMaskLarge] = useState(settings.maskLarge);
+    const [eager, setEager] = useState(settings.eager);
+    const [force, setForce] = useState(settings.force);
+    const [fixed, setFixed] = useState(settings.fixed);
+    const [mask, setMask] = useState(settings.mask);
+
+    const [size, setSize] = useState(settings.size);
+    const [blend, setBlend] = useState(settings.blend);
+    const [position, setPosition] = useState(settings.position);
+    const [origin, setOrigin] = useState(settings.origin);
     const [maskOrigin, setMaskOrigin] = useState(settings.maskOrigin);
     const [maskSize, setMaskSize] = useState(settings.maskSize);
+    const [repeat, setRepeat] = useState(settings.repeat);
+    const [scale, setScale] = useState(settings.scale);
+    const [opacity, setOpacity] = useState(settings.opacity);
+    const [width, setWidth] = useState(settings.width);
+    const [height, setHeight] = useState(settings.height);
+    const [overlay, setOverlay] = useState(settings.overlay);
+
+    const [sizeMobile, setSizeMobile] = useState(settings.sizeMobile);
+    const [blendMobile, setBlendMobile] = useState(settings.blendMobile);
+    const [positionMobile, setPositionMobile] = useState(settings.positionMobile);
+    const [originMobile, setOriginMobile] = useState(settings.originMobile);
+    const [maskOriginMobile, setMaskOriginMobile] = useState(settings.maskOriginMobile);
+    const [maskSizeMobile, setMaskSizeMobile] = useState(settings.maskSizeMobile);
+    const [repeatMobile, setRepeatMobile] = useState(settings.repeatMobile);
+    const [scaleMobile, setScaleMobile] = useState(settings.scaleMobile);
+    const [opacityMobile, setOpacityMobile] = useState(settings.opacityMobile);
+    const [widthMobile, setWidthMobile] = useState(settings.widthMobile);
+    const [heightMobile, setHeightMobile] = useState(settings.heightMobile);
+    const [overlayMobile, setOverlayMobile] = useState(settings.overlayMobile);
+
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -473,7 +500,215 @@ export function Background({settings = {}, pushSettings}) {
         </BaseControl>
     </Grid>
 
-    const tabMobile = tabDesktop;
+
+    const tabMobile = <Grid columns={1} columnGap={20} rowGap={20}>
+        <Grid columns={2} columnGap={20} rowGap={30}>
+            <SelectControl
+                label="Size"
+                value={sizeMobile}
+                options={[
+                    {label: 'Default', value: 'contain'},
+                    {label: 'Cover', value: 'cover'},
+                    {label: 'Vertical', value: 'auto 100%'},
+                    {label: 'Horizontal', value: '100% auto'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('sizeMobile', value, setSizeMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label="Blend"
+                value={blendMobile}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Multiply', value: 'multiply'},
+                    {label: 'Screen', value: 'screen'},
+                    {label: 'Overlay', value: 'overlay'},
+                    {label: 'Soft Light', value: 'soft-light'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('blendMobile', value, setBlendMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label="Position"
+                value={positionMobile}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Center', value: 'center'},
+                    {label: 'Top Left', value: 'top-left'},
+                    {label: 'Top Right', value: 'top-right'},
+                    {label: 'Bottom Left', value: 'bottom-left'},
+                    {label: 'Bottom Right', value: 'bottom-right'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('positionMobile', value, setPositionMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label="Origin"
+                value={originMobile}
+                options={[
+                    {label: 'Default', value: undefined},
+                    {label: 'Center', value: '[&_img]:object-center'},
+                    {label: 'Top', value: '[&_img]:object-top'},
+                    {label: 'Right', value: '[&_img]:object-right'},
+                    {label: 'Bottom', value: '[&_img]:object-bottom'},
+                    {label: 'Left', value: '[&_img]:object-left'},
+                    {label: 'Top Left', value: '[&_img]:object-left-top'},
+                    {label: 'Top Right', value: '[&_img]:object-right-top'},
+                    {label: 'Bottom Left', value: '[&_img]:object-left-bottom'},
+                    {label: 'Bottom Right', value: '[&_img]:object-right-bottom'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('originMobile', value, setOriginMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
+
+
+            <SelectControl
+                label="Mask Origin"
+                value={maskOriginMobile}
+                disabled={!maskMobile}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Center', value: 'center'},
+                    {label: 'Top', value: 'top'},
+                    {label: 'Right', value: 'right'},
+                    {label: 'Bottom', value: 'bottom'},
+                    {label: 'Left', value: 'left'},
+                    {label: 'Top Left', value: 'top left'},
+                    {label: 'Top Right', value: 'top right'},
+                    {label: 'Bottom Left', value: 'bottom left'},
+                    {label: 'Bottom Right', value: 'bottom right'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('maskOriginMobile', value, setMaskOriginMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label="Mask Size"
+                value={maskSizeMobile}
+                disabled={!maskMobile}
+                options={[
+                    {label: 'Default', value: 'contain'},
+                    {label: 'Cover', value: 'cover'},
+                    {label: 'Vertical', value: 'auto 100%'},
+                    {label: 'Horizontal', value: '100% auto'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('maskSizeMobile', value, setMaskSizeMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+
+        </Grid>
+
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
+            <SelectControl
+                label="Repeat"
+                value={repeatMobile}
+                disabled={type !== 'pattern'}
+                options={[
+                    {label: 'Default', value: undefined},
+                    {label: 'None', value: 'none'},
+                    {label: 'Horizontal', value: 'horizontal'},
+                    {label: 'Vertical', value: 'vertical'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('repeatMobile', value, setRepeatMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+
+        <Grid columns={1} columnGap={20} rowGap={20}>
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Scale"
+                value={scaleMobile}
+                onChange={(value) => {
+                    updateSettings('scaleMobile', value, setScaleMobile);
+                }}
+                min={0}
+                max={200}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Opacity"
+                value={opacityMobile}
+                onChange={(value) => {
+                    updateSettings('opacityMobile', value, setOpacityMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Width"
+                value={widthMobile}
+                onChange={(value) => {
+                    updateSettings('widthMobile', value, setWidthMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Height"
+                value={heightMobile}
+                onChange={(value) => {
+                    updateSettings('heightMobile', value, setHeightMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+        </Grid>
+        <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
+            <GradientPicker
+                gradients={[
+                    {
+                        name: 'Transparent',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                        slug: 'transparent',
+                    },
+                    {
+                        name: 'Light',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                        slug: 'light',
+                    },
+                    {
+                        name: 'Strong',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                        slug: 'Strong',
+                    }
+                ]}
+                clearable={false}
+                value={overlayMobile}
+                onChange={(value) => {
+                    updateSettings('overlayMobile', value, setOverlayMobile);
+                }}
+            />
+        </BaseControl>
+    </Grid>
 
 
     const tabs = {

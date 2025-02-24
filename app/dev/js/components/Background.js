@@ -613,7 +613,7 @@ export function Background({settings = {}, pushSettings}) {
                         value={maskSize}
                         disabled={!mask}
                         options={[
-                            {label: 'Default', value: undefined},
+                            {label: 'Default', value: 'contain'},
                             {label: 'Cover', value: 'cover'},
                             {label: 'Vertical', value: 'auto 100%'},
                             {label: 'Horizontal', value: '100% auto'},

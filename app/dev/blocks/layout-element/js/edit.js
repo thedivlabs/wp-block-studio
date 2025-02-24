@@ -16,7 +16,7 @@ import {
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-element wpbs-has-container w-full flex relative',
+        'wpbs-layout-element wpbs-layout-container wpbs-has-container w-full flex relative',
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }

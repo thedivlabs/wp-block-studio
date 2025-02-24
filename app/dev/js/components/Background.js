@@ -363,27 +363,6 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-        <Grid columns={2} columnGap={15} rowGap={30}
-              style={{padding: '1rem 0'}}>
-            <ToggleControl
-                label="Fixed"
-                checked={fixed}
-                onChange={(value) => {
-                    updateSettings('fixed', value, setFixed);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-            <ToggleControl
-                label="Mask"
-                checked={mask}
-                onChange={(value) => {
-                    updateSettings('mask', value, setMask);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-        </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
 
             <SelectControl
@@ -424,7 +403,27 @@ export function Background({settings = {}, pushSettings}) {
             />
 
         </Grid>
-
+        <Grid columns={2} columnGap={15} rowGap={30}
+              style={{padding: '1rem 0'}}>
+            <ToggleControl
+                label="Fixed"
+                checked={fixed}
+                onChange={(value) => {
+                    updateSettings('fixed', value, setFixed);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+            <ToggleControl
+                label="Mask"
+                checked={mask}
+                onChange={(value) => {
+                    updateSettings('mask', value, setMask);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
                 label="Repeat"
@@ -592,30 +591,7 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-        <Grid columns={2} columnGap={15} rowGap={30}
-              style={{padding: '1rem 0'}}>
-            <ToggleControl
-                label="Fixed"
-                checked={fixedMobile}
-                onChange={(value) => {
-                    updateSettings('fixedMobile', value, setFixedMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-            <ToggleControl
-                label="Mask"
-                checked={maskMobile}
-                onChange={(value) => {
-                    updateSettings('maskMobile', value, setMaskMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-        </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
-
-
             <SelectControl
                 label="Mask Origin"
                 value={maskOriginMobile}
@@ -654,7 +630,27 @@ export function Background({settings = {}, pushSettings}) {
             />
 
         </Grid>
-
+        <Grid columns={2} columnGap={15} rowGap={30}
+              style={{padding: '1rem 0'}}>
+            <ToggleControl
+                label="Fixed"
+                checked={fixedMobile}
+                onChange={(value) => {
+                    updateSettings('fixedMobile', value, setFixedMobile);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+            <ToggleControl
+                label="Mask"
+                checked={maskMobile}
+                onChange={(value) => {
+                    updateSettings('maskMobile', value, setMaskMobile);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
                 label="Repeat"

@@ -42,7 +42,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
     ].filter(x => x).join(' ');
 
     const bgStyle = {
-        backgroundSize: (settings.scale || '100') + '%',
+        backgroundSize: settings.scale ? settings.scale + '%' : settings.size || '100%',
     }
 
     const mediaPosition = (posAttr) => {
@@ -148,7 +148,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
             MediaElement = <div style={{
                 backgroundImage: 'url(' + patternImage + ')',
-                backgroundSize: settings.scale ? settings.scale + '%' : 'auto',
+                backgroundSize: settings.scale ? settings.scale + '%' : settings.size || 'auto',
             }}/>;
         }
 
@@ -213,9 +213,9 @@ export function Background({settings = {}, pushSettings}) {
         maskLarge: undefined,
         maskOrigin: undefined,
         maskSize: undefined,
-        scale: '100',
-        opacity: '100',
-        overlay: 'light',
+        scale: undefined,
+        opacity: undefined,
+        overlay: undefined,
     }, settings)
 
     const [type, setType] = useState(settings.type);
@@ -312,7 +312,6 @@ export function Background({settings = {}, pushSettings}) {
             <SelectControl
                 label="Origin"
                 value={origin}
-                disabled={type !== 'image'}
                 options={[
                     {label: 'Default', value: undefined},
                     {label: 'Center', value: '[&_img]:object-center'},
@@ -395,7 +394,6 @@ export function Background({settings = {}, pushSettings}) {
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Scale"
-                disabled={type !== 'pattern'}
                 value={scale}
                 onChange={(value) => {
                     updateSettings('scale', value, setScale);

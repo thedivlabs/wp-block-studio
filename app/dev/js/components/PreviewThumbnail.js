@@ -1,13 +1,13 @@
 import {Button, Icon} from '@wordpress/components'
 
-function PreviewThumbnail({image = {}, callback}) {
+function PreviewThumbnail({image = {}, callback, style = {}}) {
 
     const thumbnailStyle = {
         width: '100%',
         height: '100%',
         objectFit: 'cover',
         borderRadius: '4px',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
     }
 
     let thumbnail;
@@ -32,6 +32,7 @@ function PreviewThumbnail({image = {}, callback}) {
             cursor: 'pointer',
             aspectRatio: '16/9',
             overflow: 'hidden',
+            ...style,
         }}
              onClick={() => {
                  if (callback) {

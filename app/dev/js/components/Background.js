@@ -589,6 +589,32 @@ export function Background({settings = {}, pushSettings}) {
             />
         </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
+            <MediaUploadCheck>
+                <MediaUpload
+                    title={'Mobile Mask'}
+                    onSelect={(value) => {
+                        updateSettings('maskImageMobile', value, setMaskImageMobile);
+                    }}
+                    allowedTypes={['image']}
+                    value={maskImageMobile}
+                    render={({open}) => {
+                        if (maskImageMobile) {
+                            return <>
+                                <PreviewThumbnail
+                                    image={maskImageMobile || {}}
+                                    callback={() => {
+                                        updateSettings('maskImageMobile', undefined, setMaskImageMobile)
+                                    }}
+                                    style={{
+                                        gridColumn: '1 / -1',
+                                    }}
+                                /></>;
+                        } else {
+                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                        }
+                    }}
+                />
+            </MediaUploadCheck>
             <SelectControl
                 label="Mask Origin"
                 value={maskOriginMobile}
@@ -878,31 +904,7 @@ export function Background({settings = {}, pushSettings}) {
                     </Grid>
 
                     <Grid columns={2} columnGap={20} rowGap={20} style={{display: !mask ? 'none' : null,}}>
-                        <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Mobile Mask'}
-                                    onSelect={(value) => {
-                                        updateSettings('maskImageMobile', value, setMaskImageMobile);
-                                    }}
-                                    allowedTypes={['image']}
-                                    value={maskImageMobile}
-                                    render={({open}) => {
-                                        if (maskImageMobile) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={maskImageMobile || {}}
-                                                    callback={() => {
-                                                        updateSettings('maskImageMobile', undefined, setMaskImageMobile)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
+
                         <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload

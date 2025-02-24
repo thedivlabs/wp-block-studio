@@ -201,12 +201,14 @@ export function Background({settings = {}, pushSettings}) {
         largeVideo: undefined,
         eager: undefined,
         force: undefined,
+        mask: undefined,
+        fixed: undefined,
+
+        size: undefined,
         repeat: undefined,
         blend: undefined,
         position: undefined,
         origin: undefined,
-        contain: undefined,
-        mask: undefined,
         maskMobile: undefined,
         maskLarge: undefined,
         maskOrigin: undefined,
@@ -231,8 +233,9 @@ export function Background({settings = {}, pushSettings}) {
 
     const [position, setPosition] = useState(settings.position);
     const [origin, setOrigin] = useState(settings.origin);
-    const [contain, setContain] = useState(settings.contain);
+    const [size, setSize] = useState(settings.size);
     const [mask, setMask] = useState(settings.mask);
+    const [fixed, setFixed] = useState(settings.fixed);
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
 
@@ -262,14 +265,14 @@ export function Background({settings = {}, pushSettings}) {
     const tabDesktop = <Grid columns={1} columnGap={20} rowGap={20}>
         <Grid columns={2} columnGap={20} rowGap={30}>
             <SelectControl
-                label="Repeat"
+                label="Size"
                 value={repeat}
                 disabled={type !== 'pattern'}
                 options={[
-                    {label: 'Default', value: undefined},
-                    {label: 'None', value: 'none'},
-                    {label: 'Horizontal', value: 'horizontal'},
-                    {label: 'Vertical', value: 'vertical'},
+                    {label: 'Default', value: 'contain'},
+                    {label: 'Cover', value: 'cover'},
+                    {label: 'Vertical', value: 'auto 100%'},
+                    {label: 'Horizontal', value: '100% auto'},
                 ]}
                 onChange={(value) => {
                     updateSettings('repeat', value, setRepeat);
@@ -328,6 +331,10 @@ export function Background({settings = {}, pushSettings}) {
                 }}
                 __nextHasNoMarginBottom
             />
+        </Grid>
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
+
+
             <SelectControl
                 label="Mask Origin"
                 value={maskOrigin}
@@ -364,7 +371,27 @@ export function Background({settings = {}, pushSettings}) {
                 }}
                 __nextHasNoMarginBottom
             />
+
         </Grid>
+
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
+            <SelectControl
+                label="Repeat"
+                value={repeat}
+                disabled={type !== 'pattern'}
+                options={[
+                    {label: 'Default', value: undefined},
+                    {label: 'None', value: 'none'},
+                    {label: 'Horizontal', value: 'horizontal'},
+                    {label: 'Vertical', value: 'vertical'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('repeat', value, setRepeat);
+                }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+
         <Grid columns={1} columnGap={20} rowGap={20}>
             <RangeControl
                 __nextHasNoMarginBottom
@@ -450,14 +477,13 @@ export function Background({settings = {}, pushSettings}) {
     const tabMobile = <Grid columns={1} columnGap={20} rowGap={20}>
         <Grid columns={2} columnGap={20} rowGap={30}>
             <SelectControl
-                label="Repeat Mobile"
+                label="Size"
                 value={repeat}
-                disabled={type !== 'pattern'}
                 options={[
-                    {label: 'Default', value: undefined},
-                    {label: 'None', value: 'none'},
-                    {label: 'Horizontal', value: 'horizontal'},
-                    {label: 'Vertical', value: 'vertical'},
+                    {label: 'Default', value: 'contain'},
+                    {label: 'Cover', value: 'cover'},
+                    {label: 'Vertical', value: 'auto 100%'},
+                    {label: 'Horizontal', value: '100% auto'},
                 ]}
                 onChange={(value) => {
                     updateSettings('repeat', value, setRepeat);
@@ -465,7 +491,7 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
-                label="Blend Mobile"
+                label="Blend"
                 value={blend}
                 options={[
                     {label: 'Default', value: ''},
@@ -480,7 +506,7 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
-                label="Position Mobile"
+                label="Position"
                 value={position}
                 options={[
                     {label: 'Default', value: ''},
@@ -496,7 +522,7 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
-                label="Origin Mobile"
+                label="Origin"
                 value={origin}
                 disabled={type !== 'image'}
                 options={[
@@ -516,8 +542,12 @@ export function Background({settings = {}, pushSettings}) {
                 }}
                 __nextHasNoMarginBottom
             />
+        </Grid>
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
+
+
             <SelectControl
-                label="Mask Origin Mobile"
+                label="Mask Origin"
                 value={maskOrigin}
                 disabled={!mask}
                 options={[
@@ -538,7 +568,7 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
-                label="Mask Size Mobile"
+                label="Mask Size"
                 value={maskSize}
                 disabled={!mask}
                 options={[
@@ -552,11 +582,31 @@ export function Background({settings = {}, pushSettings}) {
                 }}
                 __nextHasNoMarginBottom
             />
+
         </Grid>
+
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
+            <SelectControl
+                label="Repeat"
+                value={repeat}
+                disabled={type !== 'pattern'}
+                options={[
+                    {label: 'Default', value: undefined},
+                    {label: 'None', value: 'none'},
+                    {label: 'Horizontal', value: 'horizontal'},
+                    {label: 'Vertical', value: 'vertical'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('repeat', value, setRepeat);
+                }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+
         <Grid columns={1} columnGap={20} rowGap={20}>
             <RangeControl
                 __nextHasNoMarginBottom
-                label="Scale Mobile"
+                label="Scale"
                 disabled={type !== 'pattern'}
                 value={scale}
                 onChange={(value) => {
@@ -569,7 +619,7 @@ export function Background({settings = {}, pushSettings}) {
             />
             <RangeControl
                 __nextHasNoMarginBottom
-                label="Opacity Mobile"
+                label="Opacity"
                 value={opacity}
                 onChange={(value) => {
                     updateSettings('opacity', value, setOpacity);
@@ -581,7 +631,7 @@ export function Background({settings = {}, pushSettings}) {
             />
             <RangeControl
                 __nextHasNoMarginBottom
-                label="Width Mobile"
+                label="Width"
                 value={width}
                 onChange={(value) => {
                     updateSettings('width', value, setWidth);
@@ -593,7 +643,7 @@ export function Background({settings = {}, pushSettings}) {
             />
             <RangeControl
                 __nextHasNoMarginBottom
-                label="Height Mobile"
+                label="Height"
                 value={height}
                 onChange={(value) => {
                     updateSettings('height', value, setHeight);
@@ -604,7 +654,7 @@ export function Background({settings = {}, pushSettings}) {
                 allowReset={true}
             />
         </Grid>
-        <BaseControl label={'Overlay Mobile'} __nextHasNoMarginBottom={true}>
+        <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
             <GradientPicker
                 gradients={[
                     {
@@ -634,6 +684,7 @@ export function Background({settings = {}, pushSettings}) {
             />
         </BaseControl>
     </Grid>
+
 
     const tabs = {
         mobile: tabMobile,
@@ -836,10 +887,10 @@ export function Background({settings = {}, pushSettings}) {
                         __nextHasNoMarginBottom
                     />
                     <ToggleControl
-                        label="Contain"
-                        checked={contain}
+                        label="fixed"
+                        checked={fixed}
                         onChange={(value) => {
-                            updateSettings('contain', value, setContain);
+                            updateSettings('fixed', value, setFixed);
                         }}
                         className={'flex items-center'}
                         __nextHasNoMarginBottom

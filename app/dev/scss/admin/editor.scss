@@ -42,7 +42,7 @@
   @apply
   flex
   flex-col
-  gap-3
+  gap-4
   ;
 
   .components-tab-panel__tabs {
@@ -61,6 +61,7 @@
     border-gray-400
     block
     text-left
+    h-auto
     ;
 
     &.active {

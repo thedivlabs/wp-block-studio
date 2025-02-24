@@ -77,17 +77,21 @@ export function BackgroundElement({settings = {}, blockProps}) {
             mixBlendMode: settings.blend,
         };
 
-        console.log(settings);
-
-        if (settings.maskMobile || settings.maskLarge) {
+        if (settings.maskLarge) {
             styles = Object.assign({}, styles, {
-                '--mask-image': 'url(' + (settings.maskMobile || settings.maskLarge).sizes.large.url + ')',
+                '--mask-image': 'url(' + (settings.maskLarge).sizes.large.url + ')',
                 maskImage: 'var(--mask-image, none)',
                 maskRepeat: 'no-repeat',
                 maskSize: settings.maskSize || 'contain',
                 maskPosition: settings.maskOrigin,
             })
         }
+
+        Object.keys(styles).forEach((key) => {
+            if (!styles[key].length) {
+                delete styles[key];
+            }
+        })
 
         return styles;
     };
@@ -389,7 +393,7 @@ export function Background({settings = {}, pushSettings}) {
                         label="Blend"
                         value={blend}
                         options={[
-                            {label: 'Default', value: undefined},
+                            {label: 'Default', value: ''},
                             {label: 'Multiply', value: 'multiply'},
                             {label: 'Screen', value: 'screen'},
                             {label: 'Overlay', value: 'overlay'},
@@ -404,7 +408,7 @@ export function Background({settings = {}, pushSettings}) {
                         label="Position"
                         value={position}
                         options={[
-                            {label: 'Default', value: undefined},
+                            {label: 'Default', value: ''},
                             {label: 'Center', value: 'center'},
                             {label: 'Top Left', value: 'top-left'},
                             {label: 'Top Right', value: 'top-right'},
@@ -592,7 +596,7 @@ export function Background({settings = {}, pushSettings}) {
                         value={maskOrigin}
                         disabled={!mask}
                         options={[
-                            {label: 'Default', value: undefined},
+                            {label: 'Default', value: ''},
                             {label: 'Center', value: 'center'},
                             {label: 'Top', value: 'top'},
                             {label: 'Right', value: 'right'},

@@ -47,6 +47,12 @@ class WPBS_Layout {
 
 		}, ARRAY_FILTER_USE_BOTH );
 
+		$attributes_background_mobile = array_filter( $attributes['background'] ?? [], function ( $k ) {
+			return str_contains( $k, 'mobile' );
+		}, ARRAY_FILTER_USE_KEY );
+
+		//WPBS::console_log( $attributes_background_mobile );
+
 
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) use ( $attributes_layout ) {
 
@@ -61,6 +67,7 @@ class WPBS_Layout {
 			}
 
 		}, ARRAY_FILTER_USE_BOTH );
+
 
 		$css = '';
 

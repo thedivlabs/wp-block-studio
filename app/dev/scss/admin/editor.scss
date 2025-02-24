@@ -36,3 +36,38 @@
 .block-editor-block-inspector .components-base-control {
   margin-bottom: auto;
 }
+
+
+.wpbs-editor-tabs {
+  @apply
+  flex
+  flex-col
+  gap-3
+  ;
+
+  .components-tab-panel__tabs {
+    @apply
+    flex
+  }
+
+  .components-tab-panel__tabs-item {
+    @apply
+    flex-1
+    p-0
+    pb-2
+    border-solid
+    border-0
+    border-b-2
+    border-gray-400
+    block
+    text-left
+    ;
+
+    &.active {
+      @apply
+      border-b-blue-700
+      text-blue-700
+    }
+  }
+
+}

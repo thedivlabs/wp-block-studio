@@ -760,6 +760,12 @@ export function Background({settings = {}, pushSettings}) {
                             />
                         </MediaUploadCheck>
                     </BaseControl>
+
+
+                </Grid>
+                <Grid columns={2} columnGap={20} rowGap={20} style={{display: type !== 'video' ? 'none' : null}}>
+
+
                     <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
                         <MediaUploadCheck>
                             <MediaUpload
@@ -908,8 +914,8 @@ export function Background({settings = {}, pushSettings}) {
 
 
                 <TabPanel
-                    className="wpbs-background-tabs"
-                    activeClass="active-tab"
+                    className="wpbs-editor-tabs"
+                    activeClass="active"
                     orientation="horizontal"
                     initialTabName="desktop"
                     tabs={[

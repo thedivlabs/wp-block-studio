@@ -59,10 +59,16 @@
     border-0
     border-b-2
     border-gray-400
+    text-gray-400
     block
     text-left
     h-auto
     ;
+
+    &:hover:not(.active) {
+      @apply
+      text-black
+    }
 
     &.active {
       @apply

@@ -77,6 +77,12 @@ export function BackgroundElement({settings = {}, blockProps}) {
             mixBlendMode: settings.blend,
         };
 
+        if (settings.maskMobile) {
+            styles = Object.assign({}, styles, {
+                '--mask-image-mobile': 'url(' + (settings.maskMobile).sizes.large.url + ')',
+            })
+        }
+
         if (settings.maskLarge) {
             styles = Object.assign({}, styles, {
                 '--mask-image': 'url(' + (settings.maskLarge).sizes.large.url + ')',

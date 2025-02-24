@@ -591,7 +591,7 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
             <SelectControl
                 label="Mask Origin"
                 value={maskOriginMobile}
@@ -668,7 +668,6 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-
         <Grid columns={1} columnGap={20} rowGap={20}>
             <RangeControl
                 __nextHasNoMarginBottom

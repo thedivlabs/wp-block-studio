@@ -185,6 +185,8 @@ export function Background({settings = {}, pushSettings}) {
         mask: undefined,
         mobileMask: undefined,
         largeMask: undefined,
+        maskOrigin: undefined,
+        maskFit: undefined,
         scale: '100',
         opacity: '100',
         overlay: 'light',
@@ -212,6 +214,8 @@ export function Background({settings = {}, pushSettings}) {
 
     const [mobileMask, setMobileMask] = useState(settings.mobileMask);
     const [largeMask, setLargeMask] = useState(settings.largeMask);
+    const [maskOrigin, setMaskOrigin] = useState(settings.maskOrigin);
+    const [maskFit, setMaskFit] = useState(settings.maskFit);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -510,10 +514,17 @@ export function Background({settings = {}, pushSettings}) {
                     />
                 </Grid>
                 <Grid columns={2} columnGap={20} rowGap={30}
-                      style={{display: !mask ? 'none' : null, paddingTop: '20px', borderTop: '1px solid lightgray'}}>
+                      style={{
+                          display: !mask ? 'none' : null,
+                          paddingTop: '20px',
+                          paddingBottom: '20px',
+                          borderTop: '1px solid lightgray',
+                          borderBottom: '1px solid lightgray'
+                      }}>
                     <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
                         <MediaUploadCheck>
                             <MediaUpload
+                                disabled={!mask}
                                 title={'Mobile Mask'}
                                 onSelect={(value) => {
                                     updateSettings('mobileMask', value, setMobileMask);
@@ -539,6 +550,7 @@ export function Background({settings = {}, pushSettings}) {
                     <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
                         <MediaUploadCheck>
                             <MediaUpload
+                                disabled={!mask}
                                 title={'Large Mask'}
                                 onSelect={(value) => {
                                     updateSettings('largeMask', value, setLargeMask);
@@ -561,6 +573,41 @@ export function Background({settings = {}, pushSettings}) {
                             />
                         </MediaUploadCheck>
                     </BaseControl>
+                    <SelectControl
+                        label="Mask Origin"
+                        value={maskOrigin}
+                        disabled={!mask}
+                        options={[
+                            {label: 'Default', value: undefined},
+                            {label: 'Center', value: 'center'},
+                            {label: 'Top', value: 'top'},
+                            {label: 'Right', value: 'right'},
+                            {label: 'Bottom', value: 'bottom'},
+                            {label: 'Left', value: 'left'},
+                            {label: 'Top Left', value: 'top-left'},
+                            {label: 'Top Right', value: 'top-right'},
+                            {label: 'Bottom Left', value: 'bottom-left'},
+                            {label: 'Bottom Right', value: 'bottom-right'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('maskOrigin', value, setMaskOrigin);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        label="Mask Fit"
+                        value={maskFit}
+                        disabled={!mask}
+                        options={[
+                            {label: 'Default', value: undefined},
+                            {label: 'Contain', value: 'center'},
+                            {label: 'Fill', value: 'fill'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('maskFit', value, setMaskFit);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
                 </Grid>
                 <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
                     <GradientPicker

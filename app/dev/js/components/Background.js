@@ -203,7 +203,6 @@ export function Background({settings = {}, pushSettings}) {
         maskImageLarge: undefined,
         eager: undefined,
         force: undefined,
-        fixed: undefined,
 
         mask: undefined,
         contain: undefined,
@@ -246,7 +245,6 @@ export function Background({settings = {}, pushSettings}) {
     const [maskImageLarge, setMaskImageLarge] = useState(settings.maskImageLarge);
     const [eager, setEager] = useState(settings.eager);
     const [force, setForce] = useState(settings.force);
-    const [fixed, setFixed] = useState(settings.fixed);
 
     const [mask, setMask] = useState(settings.mask);
     const [contain, setContain] = useState(settings.contain);
@@ -362,6 +360,27 @@ export function Background({settings = {}, pushSettings}) {
                 onChange={(value) => {
                     updateSettings('origin', value, setOrigin);
                 }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+        <Grid columns={2} columnGap={15} rowGap={30}
+              style={{padding: '1rem 0'}}>
+            <ToggleControl
+                label="Contain"
+                checked={contain}
+                onChange={(value) => {
+                    updateSettings('contain', value, setContain);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+            <ToggleControl
+                label="Mask"
+                checked={mask}
+                onChange={(value) => {
+                    updateSettings('mask', value, setMask);
+                }}
+                className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
         </Grid>
@@ -570,6 +589,27 @@ export function Background({settings = {}, pushSettings}) {
                 onChange={(value) => {
                     updateSettings('originMobile', value, setOriginMobile);
                 }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+        <Grid columns={2} columnGap={15} rowGap={30}
+              style={{padding: '1rem 0'}}>
+            <ToggleControl
+                label="Contain"
+                checked={containMobile}
+                onChange={(value) => {
+                    updateSettings('containMobile', value, setContainMobile);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+            <ToggleControl
+                label="Mask"
+                checked={maskMobile}
+                onChange={(value) => {
+                    updateSettings('maskMobile', value, setMaskMobile);
+                }}
+                className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
         </Grid>
@@ -796,7 +836,6 @@ export function Background({settings = {}, pushSettings}) {
                     <Grid columns={2} columnGap={20} rowGap={20}
                           style={{display: type !== 'video' ? 'none' : null}}>
 
-
                         <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload
@@ -920,24 +959,6 @@ export function Background({settings = {}, pushSettings}) {
                             checked={force}
                             onChange={(value) => {
                                 updateSettings('force', value, setForce);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                        <ToggleControl
-                            label="fixed"
-                            checked={fixed}
-                            onChange={(value) => {
-                                updateSettings('fixed', value, setFixed);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                        <ToggleControl
-                            label="Mask"
-                            checked={mask}
-                            onChange={(value) => {
-                                updateSettings('mask', value, setMask);
                             }}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom

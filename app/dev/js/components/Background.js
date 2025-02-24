@@ -637,7 +637,7 @@ export function Background({settings = {}, pushSettings}) {
 
     const tabs = {
         mobile: tabMobile,
-        desktop: tabMobile,
+        desktop: tabDesktop,
     }
 
     return (

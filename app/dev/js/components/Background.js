@@ -182,6 +182,9 @@ export function Background({settings = {}, pushSettings}) {
         position: undefined,
         origin: undefined,
         contain: undefined,
+        mask: undefined,
+        mobileMask: undefined,
+        largeMask: undefined,
         scale: '100',
         opacity: '100',
         overlay: 'light',
@@ -203,8 +206,12 @@ export function Background({settings = {}, pushSettings}) {
     const [position, setPosition] = useState(settings.position);
     const [origin, setOrigin] = useState(settings.origin);
     const [contain, setContain] = useState(settings.contain);
+    const [mask, setMask] = useState(settings.mask);
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
+
+    const [mobileMask, setMobileMask] = useState(settings.mobileMask);
+    const [largeMask, setLargeMask] = useState(settings.largeMask);
 
     function updateSettings(attr, val, callback) {
         callback(val);
@@ -492,6 +499,68 @@ export function Background({settings = {}, pushSettings}) {
                         className={'flex items-center'}
                         __nextHasNoMarginBottom
                     />
+                    <ToggleControl
+                        label="Mask"
+                        checked={mask}
+                        onChange={(value) => {
+                            updateSettings('mask', value, setMask);
+                        }}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+                <Grid columns={2} columnGap={20} rowGap={30}
+                      style={{display: !mask ? 'none' : null, paddingTop: '20px', borderTop: '1px solid lightgray'}}>
+                    <BaseControl label={'Mobile Mask'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Mobile Mask'}
+                                onSelect={(value) => {
+                                    updateSettings('mobileMask', value, setMobileMask);
+                                }}
+                                allowedTypes={['image']}
+                                value={mobileMask}
+                                render={({open}) => {
+                                    if (mobileMask) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={mobileMask || {}}
+                                                callback={() => {
+                                                    updateSettings('mobileMask', undefined, setMobileMask)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
+                    <BaseControl label={'Large Mask'} __nextHasNoMarginBottom={true}>
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={'Large Mask'}
+                                onSelect={(value) => {
+                                    updateSettings('largeMask', value, setLargeMask);
+                                }}
+                                allowedTypes={['image']}
+                                value={largeMask}
+                                render={({open}) => {
+                                    if (largeMask) {
+                                        return <>
+                                            <PreviewThumbnail
+                                                image={largeMask || {}}
+                                                callback={() => {
+                                                    updateSettings('largeMask', undefined, setLargeMask)
+                                                }}
+                                            /></>;
+                                    } else {
+                                        return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                                    }
+                                }}
+                            />
+                        </MediaUploadCheck>
+                    </BaseControl>
                 </Grid>
                 <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
                     <GradientPicker

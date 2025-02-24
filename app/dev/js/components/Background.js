@@ -607,6 +607,8 @@ export function Background({settings = {}, pushSettings}) {
                                     }}
                                     style={{
                                         gridColumn: '1 / -1',
+                                        objectFit: 'contain',
+                                        backgroundColor: 'rgba(0,0,0,0.1)',
                                     }}
                                 /></>;
                         } else {

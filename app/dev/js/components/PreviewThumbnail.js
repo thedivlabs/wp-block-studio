@@ -5,8 +5,7 @@ function PreviewThumbnail({image = {}, callback, style = {}}) {
     const thumbnailStyle = {
         width: '100%',
         height: '100%',
-        objectFit: 'cover',
-        borderRadius: '4px',
+        objectFit: 'inherit',
         pointerEvents: 'none',
     }
 
@@ -32,6 +31,8 @@ function PreviewThumbnail({image = {}, callback, style = {}}) {
             cursor: 'pointer',
             aspectRatio: '16/9',
             overflow: 'hidden',
+            objectFit: 'cover',
+            borderRadius: '4px',
             ...style,
         }}
              onClick={() => {

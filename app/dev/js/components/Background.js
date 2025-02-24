@@ -612,7 +612,9 @@ export function Background({settings = {}, pushSettings}) {
                                     }}
                                 /></>;
                         } else {
-                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
+                            return <Button onClick={open} style={Object.assign({}, buttonStyle, {
+                                gridColumn: '1 / -1',
+                            })}>Choose Mask Image</Button>
                         }
                     }}
                 />

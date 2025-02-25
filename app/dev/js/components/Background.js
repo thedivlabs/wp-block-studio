@@ -280,7 +280,7 @@ export function Background({settings = {}, pushSettings}) {
     function updateSettings(attr, val, callback) {
         callback(val);
         if (pushSettings) {
-            pushSettings({background: Object.assign({}, settings, {[attr]: val})});
+            pushSettings({'wpbs-background': Object.assign({}, settings, {[attr]: val})});
         }
     }
 
@@ -1004,7 +1004,7 @@ export function Background({settings = {}, pushSettings}) {
 }
 
 export const backgroundAttributes = {
-    'background': {
+    'wpbs-background': {
         type: 'object'
     }
 }

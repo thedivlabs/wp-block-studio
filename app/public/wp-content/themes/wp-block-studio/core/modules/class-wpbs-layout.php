@@ -32,7 +32,7 @@ class WPBS_Layout {
 				'wpbs-layout-text-color-mobile',
 				'wpbs-layout-background-color-mobile',
 			] );
-		}, ARRAY_FILTER_USE_BOTH );;
+		}, ARRAY_FILTER_USE_BOTH );
 
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) use ( $attributes_color ) {
 			if (

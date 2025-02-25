@@ -71,9 +71,8 @@
     }
 
     &.active {
-      @apply
-      border-b-blue-700
-      text-blue-700
+      border-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+      color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
     }
   }
 

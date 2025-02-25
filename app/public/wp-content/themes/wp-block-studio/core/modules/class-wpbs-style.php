@@ -275,9 +275,7 @@ class WPBS_Style {
 		$css_layout = ! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null;
 		$css_hover  = ! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null;
 		$css_mobile = ! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null;
-
-		$style_element = '<style>' . join( ' ', array_filter( [ $css_layout, $css_hover, $css_mobile ] ) ) . '</style>';
-
+		
 		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, join( ' ', array_filter( [
 			$css_layout,
 			$css_hover,

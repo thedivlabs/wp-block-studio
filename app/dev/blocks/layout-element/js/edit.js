@@ -7,7 +7,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, backgroundAttributes} from "Components/Background";
-import {TagName} from "Components/TagName";
+import {ElementTagSettings, ElementTag} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
@@ -49,7 +49,7 @@ registerBlockType(metadata.name, {
 
         };
 
-        const ElementTag = attributes.tagName || 'div';
+        const ElementTagName = ElementTag(attributes);
 
         return (
             <>
@@ -59,13 +59,11 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={20} rowGap={20} style={{paddingTop: '20px'}}>
-                        <TagName defaultValue={attributes.tagName} callback={(newValue) => {
-                            setAttributes({['tagName']: newValue});
-                        }}></TagName>
+                        <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
-                <ElementTag {...blockProps}
+                <ElementTagName {...blockProps}
                             data-wp-interactive='wpbs/wpbs-layout-element'
                 >
                     <div className={containerClassNames(attributes)}>
@@ -73,7 +71,7 @@ registerBlockType(metadata.name, {
                     </div>
 
                     <Background settings={attributes} blockProps={blockProps}/>
-                </ElementTag>
+                </ElementTagName>
             </>
         )
     },
@@ -84,17 +82,17 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
-        const ElementTag = props.attributes.tagName || 'div';
+        const ElementTagName = ElementTag(props.attributes);
 
         return (
-            <ElementTag {...blockProps}
+            <ElementTagName {...blockProps}
                         data-wp-interactive='wpbs/wpbs-layout-element'
             >
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
                 <Background settings={props.attributes} blockProps={blockProps}/>
-            </ElementTag>
+            </ElementTagName>
         );
     }
 })

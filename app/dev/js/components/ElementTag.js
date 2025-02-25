@@ -1,10 +1,17 @@
 import {SelectControl} from "@wordpress/components";
 import {useState} from "react";
 
+const prop = 'wpbs-element-tag';
 
-export function TagName({defaultValue, callback}) {
+export function ElementTag({attributes}) {
 
-    const [value, setValue] = useState(defaultValue);
+
+    return attributes[prop] || 'div';
+}
+
+export function ElementTagSettings({attributes, callback}) {
+
+    const [value, setValue] = useState(attributes[prop]);
 
     return <SelectControl
         value={value}
@@ -20,9 +27,10 @@ export function TagName({defaultValue, callback}) {
         ]}
         onChange={(newValue) => {
             setValue(newValue);
-            callback(newValue);
+            callback({[prop]: newValue});
         }}
         __next40pxDefaultSize
         __nextHasNoMarginBottom
     />;
 }
+

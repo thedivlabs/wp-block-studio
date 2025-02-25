@@ -19,88 +19,10 @@ import Picture from 'Components/picture';
 
 export function BackgroundElement({settings = {}, blockProps}) {
 
-    let repeat;
-
-    switch (settings.repeat) {
-        case 'none':
-            repeat = 'bg-no-repeat';
-            break;
-        case 'horizontal':
-            repeat = 'bg-repeat-x';
-            break;
-        case 'vertical':
-            repeat = 'bg-repeat-y';
-            break;
-        default:
-            repeat = false;
-    }
-
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
-        settings.blend ? 'bg-inherit' : false,
     ].filter(x => x).join(' ');
-
-    const bgStyle = {
-        backgroundSize: settings.scale ? settings.scale + '%' : settings.size || '100%',
-    }
-
-    const mediaPosition = (posAttr) => {
-
-        let result = '';
-
-        switch (posAttr) {
-            case 'center':
-                result = 'top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2';
-                break;
-            case 'top-right':
-                result = 'top-0 right-0';
-                break;
-            case 'bottom-left':
-                result = 'bottom-0 left-0'
-                break;
-            case 'bottom-right':
-                result = 'bottom-0 right-0';
-                break;
-            default:
-                result = 'top-0 left-0';
-        }
-
-        return result;
-    };
-
-    const mediaStyle = () => {
-
-        let styles = {
-            width: (settings.width || 100) + '%',
-            height: (settings.height || 100) + '%',
-            opacity: (settings.opacity || '100') + '%',
-            mixBlendMode: settings.blend,
-        };
-
-        if (settings.maskImageMobile) {
-            styles = Object.assign({}, styles, {
-                '--mask-image-mobile': 'url(' + (settings.maskImageMobile).sizes.large.url + ')',
-            })
-        }
-
-        if (settings.maskImageLarge || settings.maskImageMobile) {
-            styles = Object.assign({}, styles, {
-                maskImage: 'var(--mask-image, none)',
-                maskRepeat: 'no-repeat',
-                maskSize: settings.maskSize || 'contain',
-                maskPosition: settings.maskOrigin,
-            })
-        }
-
-        Object.keys(styles).forEach((key) => {
-            if (!styles[key] || styles[key] === '') {
-                delete styles[key];
-            }
-        })
-
-        return styles;
-    };
 
     const overlayClass = [
         'wpbs-background__overlay absolute top-0 left-0 w-full h-full z-50'
@@ -113,19 +35,15 @@ export function BackgroundElement({settings = {}, blockProps}) {
     const imageClass = [
         'wpbs-background__media--image',
         '[&_img]:w-full [&_img]:h-full',
-        settings.origin
     ].filter(x => x).join(' ');
 
     const patternClass = [
         'wpbs-background__media--pattern',
         'object-cover',
-        repeat
     ].filter(x => x).join(' ');
 
     let mediaClass = [
         'wpbs-background__media absolute z-0 overflow-hidden',
-        mediaPosition(settings.position),
-        //!settings.contain ? '[&_img]:object-cover' : '[&_img]:object-contain'
     ];
 
     function Media() {
@@ -148,7 +66,6 @@ export function BackgroundElement({settings = {}, blockProps}) {
 
             MediaElement = <div style={{
                 backgroundImage: 'url(' + patternImage + ')',
-                backgroundSize: settings.scale ? settings.scale + '%' : settings.size || 'auto',
             }}/>;
         }
 

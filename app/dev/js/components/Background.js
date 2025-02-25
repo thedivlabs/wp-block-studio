@@ -94,7 +94,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
         }
 
         Object.keys(styles).forEach((key) => {
-            if (!styles[key].length) {
+            if (!styles[key] || styles[key] === '') {
                 delete styles[key];
             }
         })
@@ -829,6 +829,7 @@ export function Background({settings = {}, pushSettings}) {
                     label="Type"
                     value={type}
                     options={[
+                        {label: 'Default', value: ''},
                         {label: 'Image', value: 'image'},
                         {label: 'Video', value: 'video'},
                         {label: 'Pattern', value: 'pattern'},

@@ -1,8 +1,8 @@
 <?php
 
-class WPBS_Layout {
+class WPBS_Style {
 
-	private static WPBS_Layout $instance;
+	private static WPBS_Style $instance;
 
 	private function __construct() {
 
@@ -10,7 +10,7 @@ class WPBS_Layout {
 	}
 
 
-	public static function layout_styles( $attributes, $block ): void {
+	public static function block_styles( $attributes, $block ): void {
 
 		if ( ! is_array( $attributes ) ) {
 			return;
@@ -34,6 +34,16 @@ class WPBS_Layout {
 			] );
 		}, ARRAY_FILTER_USE_BOTH );
 
+		$attributes_background = array_filter( $attributes['wpbs-background'] ?? [], function ( $v, $k ) {
+
+			$prop = WPBS::parse_prop( $k );
+
+			return ! ( str_contains( $prop, 'mobile' ) || ! str_starts_with( $prop, 'wpbs' ) );
+
+		}, ARRAY_FILTER_USE_BOTH );
+
+		WPBS::console_log( $attributes_background );
+
 		$attributes_layout = array_filter( $attributes, function ( $v, $k ) use ( $attributes_color ) {
 			if (
 				in_array( $k, array_merge( array_keys( $attributes_color ), [ 'wpbs-layout-container' ] ) ) ||
@@ -46,13 +56,6 @@ class WPBS_Layout {
 			}
 
 		}, ARRAY_FILTER_USE_BOTH );
-
-		$attributes_background_mobile = array_filter( $attributes['background'] ?? [], function ( $k ) {
-			return str_contains( $k, 'mobile' );
-		}, ARRAY_FILTER_USE_KEY );
-
-		//WPBS::console_log( $attributes_background_mobile );
-
 
 		$attributes_mobile = array_filter( $attributes, function ( $v, $k ) use ( $attributes_layout ) {
 
@@ -132,11 +135,6 @@ class WPBS_Layout {
 		}
 
 		echo '<style>';
-
-		if ( ! empty( $attributes['wpbs-layout-opacity-hover'] ) ) {
-
-			echo $selector . ':hover' . '{opacity: ' . $attributes['wpbs-layout-opacity-hover'] . '}';
-		}
 
 
 		foreach ( $attributes_color ?? [] as $prop => $value ) {
@@ -240,9 +238,9 @@ class WPBS_Layout {
 	}
 
 
-	public static function init(): WPBS_Layout {
+	public static function init(): WPBS_Style {
 		if ( empty( self::$instance ) ) {
-			self::$instance = new WPBS_Layout();
+			self::$instance = new WPBS_Style();
 		}
 
 		return self::$instance;

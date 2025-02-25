@@ -93,10 +93,10 @@ class WPBS {
 	public function init_theme(): void {
 
 		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
-		require_once self::$core_path . 'modules/class-wpbs-layout.php';
+		require_once self::$core_path . 'modules/class-wpbs-style.php';
 
 		WPBS_Blocks::init();
-		WPBS_Layout::init();
+		WPBS_Style::init();
 
 		do_action( 'wpbs_init' );
 	}
@@ -289,6 +289,21 @@ class WPBS {
 		return array_values( array_filter( array_map( function ( $class ) {
 			return str_contains( $class, 'is-style-' ) ? str_replace( 'is-style-', '', $class ) : null;
 		}, explode( ' ', $block->attributes['className'] ?? '' ) ) ) )[0] ?? false;
+	}
+
+	public static function parse_prop( $prop ): string|false {
+
+		if ( ! is_string( $prop ) ) {
+			return false;
+		}
+
+
+		$prop = preg_split( '/(?=[A-Z])/', $prop );
+		unset( $prop[0] );
+
+		return strtolower( str_replace( ' ', '-', implode( ' ', $prop ) ) );
+
+
 	}
 
 

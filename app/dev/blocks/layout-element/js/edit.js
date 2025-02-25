@@ -54,7 +54,8 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <InspectorControls group="styles">
-                    <Background settings={attributes.background || {}} pushSettings={setAttributes}></Background>
+                    <Background settings={attributes['wpbs-background'] || {}}
+                                pushSettings={setAttributes}></Background>
                 </InspectorControls>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={20} rowGap={20} style={{paddingTop: '20px'}}>
@@ -71,7 +72,7 @@ registerBlockType(metadata.name, {
                         <InnerBlocks/>
                     </div>
 
-                    <BackgroundElement settings={attributes.background} blockProps={blockProps}/>
+                    <BackgroundElement settings={attributes['wpbs-background']} blockProps={blockProps}/>
                 </ElementTag>
             </>
         )
@@ -92,7 +93,7 @@ registerBlockType(metadata.name, {
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
-                <BackgroundElement settings={props.attributes.background} blockProps={blockProps}/>
+                <BackgroundElement settings={props.attributes['wpbs-background']} blockProps={blockProps}/>
             </ElementTag>
         );
     }

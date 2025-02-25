@@ -16,7 +16,7 @@ class WPBS_Blocks {
 
 	public function render_block( $attributes, $content, $block ): string {
 
-		WPBS_Layout::layout_styles( $attributes, $block );
+		WPBS_Style::block_styles( $attributes, $block );
 
 		return $content;
 	}

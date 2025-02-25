@@ -251,10 +251,7 @@ const blockAttributes = {
 };
 
 
-export function LayoutAttributes() {
-
-    return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
-}
+export const LayoutAttributes = Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
 
 export function LayoutClasses(attributes) {
 

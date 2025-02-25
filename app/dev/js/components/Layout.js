@@ -258,7 +258,7 @@ export function LayoutClasses(attributes) {
     let classes = [];
 
     if (Object.keys(attributes).some(attr => blockAttributes.layout[attr])) {
-        //classes.push('has-layout');
+        classes.push('has-layout');
     }
 
     classes = [...classes, ...[...Object.keys(attributes)].map(attr => {
@@ -266,8 +266,6 @@ export function LayoutClasses(attributes) {
             return false;
         }
         switch (attr) {
-            case 'wpbs-layout-offset-header':
-                return 'wpbs-layout-offset-header';
 
             case 'wpbs-layout-container':
                 if (attributes[attr] === 'normal') {

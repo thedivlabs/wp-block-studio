@@ -73,7 +73,7 @@ class WPBS_Style {
 			return str_starts_with( $k, 'wpbs-layout' ) &&
 			       ! is_array( $attributes[ $k ] ) &&
 			       ! ( str_contains( $k, 'mobile' ) || str_contains( $k, 'hover' ) ) &&
-			       ! in_array( $k, array_keys( $special_attributes ) );
+			       ! in_array( $k, array_merge( array_keys( $special_attributes ), [ 'wpbs-layout-breakpoint' ] ) );
 
 		}, ARRAY_FILTER_USE_KEY );
 
@@ -196,7 +196,7 @@ class WPBS_Style {
 			       str_contains( $k, 'mobile' ) &&
 			       ! is_array( $attributes[ $k ] ) &&
 			       ! str_contains( $k, 'hover' ) &&
-			       ! in_array( $k, array_keys( $special_attributes ) );
+			       ! in_array( $k, array_merge( array_keys( $special_attributes ), [ 'wpbs-layout-breakpoint' ] ) );
 
 		}, ARRAY_FILTER_USE_KEY );
 
@@ -273,30 +273,21 @@ class WPBS_Style {
 		}
 
 		$css_layout = ! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null;
+		$css_hover  = ! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null;
+		$css_mobile = ! empty( $css_mobile ) ? '@media screen and (max-width: ' . $breakpoint . ') { ' . $selector . ' {' . $css_mobile . '}}' : null;
 
-		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css_layout );
+		$style_element = '<style>' . join( ' ', array_filter( [ $css_layout, $css_hover, $css_mobile ] ) ) . '</style>';
+
+		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, join( ' ', array_filter( [
+			$css_layout,
+			$css_hover,
+			$css_mobile
+		] ) ) );
 
 		unset( $css_layout );
-
-		$css_hover  = ! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null;
-		$css_mobile = ! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null;
-
-		$style_element = '<style>' . join( ' ', array_filter( [ $css_hover, $css_mobile ] ) ) . '</style>';
-
 		unset( $css_hover );
 		unset( $css_mobile );
-
-		add_action( 'wp_enqueue_scripts', function () use ( $style_element ) {
-
-			echo $style_element;
-
-		}, 40 );
-
-		add_action( 'admin_enqueue_scripts', function () use ( $style_element ) {
-
-			echo $style_element;
-
-		}, 40 );
+		
 	}
 
 

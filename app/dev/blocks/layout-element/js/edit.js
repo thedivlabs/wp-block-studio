@@ -2,6 +2,7 @@ import {
     useBlockProps,
     InspectorControls,
     InnerBlocks,
+    useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -31,6 +32,9 @@ function containerClassNames(attributes = {}) {
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
+    supports: {
+        layout: false
+    },
     attributes: {
         ...LayoutAttributes,
         ...BackgroundAttributes,
@@ -48,6 +52,11 @@ registerBlockType(metadata.name, {
 
         const ElementTagName = ElementTag(attributes);
 
+        const innerBlocksProps = useInnerBlocksProps({
+            className: containerClassNames(attributes)
+        });
+
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -63,9 +72,7 @@ registerBlockType(metadata.name, {
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs/wpbs-layout-element'
                 >
-                    <div className={containerClassNames(attributes)}>
-                        <InnerBlocks/>
-                    </div>
+                    <div {...innerBlocksProps}/>
 
                     <Background settings={attributes} blockProps={blockProps}/>
                 </ElementTagName>
@@ -81,13 +88,16 @@ registerBlockType(metadata.name, {
 
         const ElementTagName = ElementTag(props.attributes);
 
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className: containerClassNames(props.attributes)
+        });
+
         return (
             <ElementTagName {...blockProps}
                             data-wp-interactive='wpbs/wpbs-layout-element'
             >
-                <div className={containerClassNames(props.attributes)}>
-                    <InnerBlocks.Content/>
-                </div>
+                <div {...innerBlocksProps}/>
+
                 <Background settings={props.attributes} blockProps={blockProps}/>
             </ElementTagName>
         );

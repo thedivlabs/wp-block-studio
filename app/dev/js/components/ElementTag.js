@@ -3,8 +3,14 @@ import {useState} from "react";
 
 const prop = 'wpbs-element-tag';
 
-export function ElementTag({attributes}) {
+export const ElementTagAttributes = {
+    'wpbs-element-tag': {
+        type: 'string',
+        defaultValue: 'div'
+    }
+}
 
+export function ElementTag(attributes) {
 
     return attributes[prop] || 'div';
 }

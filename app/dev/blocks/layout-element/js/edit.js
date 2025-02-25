@@ -7,7 +7,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, backgroundAttributes} from "Components/Background";
-import {ElementTagSettings, ElementTag} from "Components/ElementTag";
+import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
@@ -34,10 +34,7 @@ registerBlockType(metadata.name, {
     attributes: {
         ...LayoutAttributes(),
         ...backgroundAttributes,
-        tagName: {
-            type: 'string',
-            defaultValue: 'div',
-        }
+        ...ElementTagAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
 

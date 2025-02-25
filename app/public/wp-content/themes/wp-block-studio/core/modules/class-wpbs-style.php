@@ -45,7 +45,7 @@ class WPBS_Style {
 			'hover'  => self::hover_styles( $attributes, $block ),
 		];
 
-		self::render_style_tag( $styles, $selector, $breakpoint );
+		self::render_styles( $styles, $selector, $breakpoint );
 
 	}
 
@@ -237,7 +237,7 @@ class WPBS_Style {
 
 	}
 
-	public static function render_style_tag( $css ): void {
+	public static function render_styles( $css ): void {
 
 		if ( empty( $styles ) || empty( $selector ) ) {
 			return;
@@ -247,13 +247,13 @@ class WPBS_Style {
 
 		add_action( 'wp_enqueue_scripts', function () use ( $styles, $selector ) {
 
-			self::render_style_tag( $styles, $selector );
+			//self::render_style_tag( $styles, $selector );
 
 		}, 40 );
 
 		add_action( 'admin_enqueue_scripts', function () use ( $styles, $selector, $breakpoint ) {
 
-			self::render_style_tag( $styles, $breakpoint, $selector );
+			//self::render_style_tag( $styles, $breakpoint, $selector );
 
 		}, 40 );
 

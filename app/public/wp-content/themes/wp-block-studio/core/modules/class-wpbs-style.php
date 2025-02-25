@@ -40,8 +40,10 @@ class WPBS_Style {
 		$breakpoint = self::get_breakpoint( $attributes );
 
 		$layout_styles = self::layout_styles( $attributes, $block ); // css[]: prop => value
+		$hover_styles  = self::hover_styles( $attributes, $block ); // css[]: prop => value
 
 		WPBS::console_log( $layout_styles );
+		WPBS::console_log( $hover_styles );
 
 		//$data = join( ' ', [ $selector, '{', $css, '}' ] );
 
@@ -136,6 +138,39 @@ class WPBS_Style {
 
 		return $styles;
 
+	}
+
+	private static function hover_styles( $attributes, $block ): array|false {
+
+		if ( empty( $attributes ) ) {
+			return false;
+		}
+
+		$hover_attributes = array_filter( $attributes, function ( $k ) use ( $attributes ) {
+
+			return str_starts_with( $k, 'wpbs-layout' ) &&
+			       str_contains( $k, 'hover' ) &&
+			       ! is_array( $attributes[ $k ] ) &&
+			       ! str_contains( $k, 'mobile' );
+
+		}, ARRAY_FILTER_USE_KEY );
+
+		$styles = [];
+
+		foreach ( $hover_attributes as $prop => $value ) {
+
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			$prop_name = str_replace( 'wpbs-layout-', '', $prop );
+
+			$styles[ $prop_name ] = WPBS::parse_style( $value );
+
+		}
+
+		return $styles;
+
 		/*
 		 *
 
@@ -162,6 +197,7 @@ class WPBS_Style {
 
 		return $styles;*/
 	}
+
 
 	public static function render_style_tag( $css ): void {
 

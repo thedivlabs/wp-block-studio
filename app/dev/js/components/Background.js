@@ -116,12 +116,6 @@ export function Background({settings = {}, blockProps}) {
 
 export function BackgroundSettings({settings = {}, pushSettings}) {
 
-    settings = settings['wpbs-background'];
-
-    if (!settings) {
-        return false;
-    }
-
     settings = Object.assign({}, {
         type: undefined,
         mobileImage: undefined,
@@ -163,7 +157,7 @@ export function BackgroundSettings({settings = {}, pushSettings}) {
         heightMobile: undefined,
         overlayMobile: {},
 
-    }, settings)
+    }, settings['wpbs-background'])
 
     const [type, setType] = useState(settings.type);
     const [mobileImage, setMobileImage] = useState(settings.mobileImage);

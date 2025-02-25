@@ -39,29 +39,13 @@ class WPBS_Style {
 		$selector   = self::get_selector( $block );
 		$breakpoint = self::get_breakpoint( $attributes );
 
-		$layout_styles = self::layout_styles( $attributes, $block ); // css[]: prop => value
-		$hover_styles  = self::hover_styles( $attributes, $block ); // css[]: prop => value
-		$mobile_styles = self::mobile_styles( $attributes, $block ); // css[]: prop => value
+		$styles = [
+			'layout' => self::layout_styles( $attributes, $block ),
+			'mobile' => self::mobile_styles( $attributes, $block ),
+			'hover'  => self::hover_styles( $attributes, $block ),
+		];
 
-		WPBS::console_log( $layout_styles );
-		WPBS::console_log( $hover_styles );
-		WPBS::console_log( $mobile_styles );
-
-		//$data = join( ' ', [ $selector, '{', $css, '}' ] );
-
-		/*wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
-
-		add_action( 'wp_enqueue_scripts', function () use ( $css ) {
-
-			self::render_style_tag( $css );
-
-		}, 40 );
-
-		add_action( 'admin_enqueue_scripts', function () use ( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes, $data ) {
-
-			self::render_style_tag( $attributes_mobile, $attributes_color, $breakpoint, $selector, $attributes );
-
-		}, 40 );*/
+		self::render_style_tag( $styles, $selector, $breakpoint );
 
 	}
 
@@ -214,7 +198,7 @@ class WPBS_Style {
 			}
 
 			$prop_name = str_replace( [ 'wpbs-layout-', '-mobile' ], '', $prop );
-			
+
 			$prop_name = match ( $prop_name ) {
 				'text-color' => 'color',
 				default => $prop_name
@@ -255,9 +239,23 @@ class WPBS_Style {
 
 	public static function render_style_tag( $css ): void {
 
-		if ( empty( $css ) || empty( $selector ) ) {
+		if ( empty( $styles ) || empty( $selector ) ) {
 			return;
 		}
+
+		//wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
+
+		add_action( 'wp_enqueue_scripts', function () use ( $styles, $selector ) {
+
+			self::render_style_tag( $styles, $selector );
+
+		}, 40 );
+
+		add_action( 'admin_enqueue_scripts', function () use ( $styles, $selector, $breakpoint ) {
+
+			self::render_style_tag( $styles, $breakpoint, $selector );
+
+		}, 40 );
 
 		echo '<style>';
 

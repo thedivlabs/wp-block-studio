@@ -32,10 +32,6 @@ class WPBS_Style {
 			return;
 		}
 
-		$attributes = array_filter( $attributes, function ( $k ) {
-			return str_starts_with( $k, 'wpbs' );
-		}, ARRAY_FILTER_USE_KEY );
-
 		$selector   = self::get_selector( $block );
 		$breakpoint = self::get_breakpoint( $attributes );
 
@@ -54,6 +50,11 @@ class WPBS_Style {
 		if ( empty( $attributes ) ) {
 			return false;
 		}
+
+		$style_attributes = array_filter( [
+			'column-gap' => $attributes['style']['spacing']['blockGap']['top'] ?? null,
+			'row-gap'    => $attributes['style']['spacing']['blockGap']['left'] ?? null,
+		] );
 
 		$special_attributes = array_filter( $attributes, function ( $k ) {
 			return in_array( $k, [
@@ -77,6 +78,16 @@ class WPBS_Style {
 		}, ARRAY_FILTER_USE_KEY );
 
 		$styles = [];
+
+		foreach ( $style_attributes as $prop => $value ) {
+
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			$styles[ $prop ] = WPBS::parse_style( $value );
+
+		}
 
 		foreach ( $layout_attributes as $prop => $value ) {
 
@@ -250,15 +261,15 @@ class WPBS_Style {
 		$css_mobile = '';
 
 		foreach ( $styles['layout'] ?? [] as $prop => $value ) {
-			$css_layout .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			$css_layout .= $prop . ':' . $value . ';';
 		}
 
 		foreach ( $styles['hover'] ?? [] as $prop => $value ) {
-			$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			$css_hover .= $prop . ':' . $value . ' !important;';
 		}
 
 		foreach ( $styles['mobile'] ?? [] as $prop => $value ) {
-			$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			$css_mobile .= $prop . ':' . $value . ';';
 		}
 
 		$css_layout = ! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null;

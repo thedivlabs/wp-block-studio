@@ -32,9 +32,6 @@ function containerClassNames(attributes = {}) {
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
-    supports: {
-        layout: false
-    },
     attributes: {
         ...LayoutAttributes,
         ...BackgroundAttributes,

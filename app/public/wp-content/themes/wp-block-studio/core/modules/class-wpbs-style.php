@@ -45,7 +45,7 @@ class WPBS_Style {
 			'hover'  => self::hover_styles( $attributes, $block ),
 		];
 
-		self::render_styles( $styles, $selector, $breakpoint );
+		self::render_styles( $styles, $selector, $block, $breakpoint );
 
 	}
 
@@ -237,108 +237,55 @@ class WPBS_Style {
 
 	}
 
-	public static function render_styles( $styles, $selector, $breakpoint = false ): void {
+	public static function render_styles( $styles, $selector, $block, $breakpoint = false ): void {
 
 		if ( empty( $styles ) || empty( $selector ) ) {
 			return;
 		}
 
-		//wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $data );
+		$styles = array_merge( [], $styles, apply_filters( 'wpbs_block_styles', [], $selector ) );
 
-		add_action( 'wp_enqueue_scripts', function () use ( $styles, $selector ) {
+		$css_layout = '';
+		$css_hover  = '';
+		$css_mobile = '';
 
-			//self::render_style_tag( $styles, $selector );
-
-		}, 40 );
-
-		add_action( 'admin_enqueue_scripts', function () use ( $styles, $selector, $breakpoint ) {
-
-			//self::render_style_tag( $styles, $breakpoint, $selector );
-
-		}, 40 );
-
-		echo '<style>';
-
-		/*echo $css;
-
-		echo '@media (max-width: calc(' . $breakpoint . ' - 1px)) { ';
-
-		echo $selector . ' {';
-
-		foreach ( $attributes_mobile ?? [] as $prop => $value ) {
-
-			if ( is_string( $value ) && ! in_array( $prop, [
-					'breakpoint',
-					'wpbs-layout-translate',
-					'wpbs-layout-offset-header-mobile',
-					'wpbs-layout-height-custom',
-					'wpbs-layout-height',
-					'wpbs-layout-translate-mobile',
-					'wpbs-layout-height-mobile',
-					'wpbs-layout-height-custom-mobile',
-					'wpbs-layout-rounded',
-					'wpbs-layout-padding-mobile',
-					'wpbs-layout-margin-mobile',
-				] ) ) {
-				$prop = str_replace( [ 'wpbs-layout-', '-mobile' ], '', $prop );
-
-				echo $prop . ':' . WPBS::parse_style( $value ) . ';';
-			}
-
-			echo match ( $prop ) {
-				'wpbs-layout-translate-mobile' => 'transform:translate(' . join( ', ', [
-						$value['left'] ?? '0px',
-						$value['top'] ?? '0px'
-					] ) . ');',
-				'wpbs-layout-height-mobile' => 'height:' . ( $attributes_mobile['wpbs-layout-height-custom-mobile'] ?? $value ) . ';',
-				'wpbs-layout-height-custom-mobile' => 'height:' . $value . ';',
-				'wpbs-layout-rounded' => 'border-radius:' . join( ' ', [
-						$value['top'] ?? '0px !important',
-						$value['right'] ?? '0px !important',
-						$value['bottom'] ?? '0px !important',
-						$value['left'] ?? '0px !important',
-					] ) . ';',
-				'wpbs-layout-padding-mobile' => join( '; ', array_filter( [
-					! empty( $value['top'] ) ? 'padding-top:' . ( ! empty( $attributes_mobile['wpbs-layout-offset-header-mobile'] ) ? 'calc(var(--wpbs-header-height, 0px) + ' . $value['top'] . ')' : $value['top'] ) . ' !important;' : null,
-					! empty( $value['right'] ) ? 'padding-right:' . $value['right'] . ' !important;' : null,
-					! empty( $value['bottom'] ) ? 'padding-bottom:' . $value['bottom'] . ' !important;' : null,
-					! empty( $value['left'] ) ? 'padding-left:' . $value['left'] . ' !important;' : null,
-				] ) ),
-				'wpbs-layout-margin-mobile' => join( '; ', array_filter( [
-					! empty( $value['top'] ) ? 'margin-top:' . $value['top'] . ' !important;' : null,
-					! empty( $value['right'] ) ? 'margin-right:' . $value['right'] . ' !important;' : null,
-					! empty( $value['bottom'] ) ? 'margin-bottom:' . $value['bottom'] . ' !important;' : null,
-					! empty( $value['left'] ) ? 'margin-left:' . $value['left'] . ' !important;' : null,
-				] ) ),
-				'wpbs-layout-gap-mobile' => join( '; ', array_filter( [
-					! empty( $value['top'] ) ? 'column-gap:' . $value['top'] . ' !important;' : null,
-					! empty( $value['left'] ) ? 'row-gap:' . $value['left'] . ' !important;' : null,
-				] ) ),
-				default => null
-			};
-
-		}*/
-
-		/*echo '}';
-
-		foreach ( $attributes_color ?? [] as $prop => $value ) {
-
-			echo match ( $prop ) {
-				'wpbs-layout-text-color-mobile' => join( ' ', [ $selector, '{color: ' . $value . ' !important}' ] ),
-				'wpbs-layout-background-color-mobile' => join( ' ', [
-					$selector,
-					'{background-color: ' . $value . ' !important}'
-				] ),
-				default => null
-			};
-
+		foreach ( $styles['layout'] ?? [] as $prop => $value ) {
+			$css_layout .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 		}
 
+		foreach ( $styles['hover'] ?? [] as $prop => $value ) {
+			$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+		}
 
-		echo '}';*/
+		foreach ( $styles['mobile'] ?? [] as $prop => $value ) {
+			$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+		}
 
+		$css_layout = ! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null;
 
-		echo '</style>';
+		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css_layout );
+
+		unset( $css_layout );
+
+		$css_hover  = ! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null;
+		$css_mobile = ! empty( $css_mobile ) ? '@media (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null;
+
+		$style_element = '<style>' . join( ' ', array_filter( [ $css_hover, $css_mobile ] ) ) . '</style>';
+
+		unset( $css_hover );
+		unset( $css_mobile );
+
+		add_action( 'wp_enqueue_scripts', function () use ( $style_element ) {
+
+			echo $style_element;
+
+		}, 40 );
+
+		add_action( 'admin_enqueue_scripts', function () use ( $style_element ) {
+
+			echo $style_element;
+
+		}, 40 );
 	}
 
 

@@ -363,65 +363,8 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
 
-            <SelectControl
-                label="Mask Origin"
-                value={maskOrigin}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Center', value: 'center'},
-                    {label: 'Top', value: 'top'},
-                    {label: 'Right', value: 'right'},
-                    {label: 'Bottom', value: 'bottom'},
-                    {label: 'Left', value: 'left'},
-                    {label: 'Top Left', value: 'top left'},
-                    {label: 'Top Right', value: 'top right'},
-                    {label: 'Bottom Left', value: 'bottom left'},
-                    {label: 'Bottom Right', value: 'bottom right'},
-                ]}
-                onChange={(value) => {
-                    updateSettings('maskOrigin', value, setMaskOrigin);
-                }}
-                __nextHasNoMarginBottom
-            />
-            <SelectControl
-                label="Mask Size"
-                value={maskSize}
-                options={[
-                    {label: 'Default', value: 'contain'},
-                    {label: 'Cover', value: 'cover'},
-                    {label: 'Vertical', value: 'auto 100%'},
-                    {label: 'Horizontal', value: '100% auto'},
-                ]}
-                onChange={(value) => {
-                    updateSettings('maskSize', value, setMaskSize);
-                }}
-                __nextHasNoMarginBottom
-            />
 
-        </Grid>
-        <Grid columns={2} columnGap={15} rowGap={30}
-              style={{padding: '1rem 0'}}>
-            <ToggleControl
-                label="Fixed"
-                checked={fixed}
-                onChange={(value) => {
-                    updateSettings('fixed', value, setFixed);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-            <ToggleControl
-                label="Mask"
-                checked={mask}
-                onChange={(value) => {
-                    updateSettings('mask', value, setMask);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-        </Grid>
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
                 label="Repeat"
@@ -489,6 +432,68 @@ export function Background({settings = {}, pushSettings}) {
                 allowReset={true}
             />
         </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={30}
+              style={{padding: '1rem 0'}}>
+            <ToggleControl
+                label="Fixed"
+                checked={fixed}
+                onChange={(value) => {
+                    updateSettings('fixed', value, setFixed);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+            <ToggleControl
+                label="Mask"
+                checked={mask}
+                onChange={(value) => {
+                    updateSettings('mask', value, setMask);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
+
+            <SelectControl
+                label="Mask Origin"
+                value={maskOrigin}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Center', value: 'center'},
+                    {label: 'Top', value: 'top'},
+                    {label: 'Right', value: 'right'},
+                    {label: 'Bottom', value: 'bottom'},
+                    {label: 'Left', value: 'left'},
+                    {label: 'Top Left', value: 'top left'},
+                    {label: 'Top Right', value: 'top right'},
+                    {label: 'Bottom Left', value: 'bottom left'},
+                    {label: 'Bottom Right', value: 'bottom right'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('maskOrigin', value, setMaskOrigin);
+                }}
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label="Mask Size"
+                value={maskSize}
+                options={[
+                    {label: 'Default', value: 'contain'},
+                    {label: 'Cover', value: 'cover'},
+                    {label: 'Vertical', value: 'auto 100%'},
+                    {label: 'Horizontal', value: '100% auto'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('maskSize', value, setMaskSize);
+                }}
+                __nextHasNoMarginBottom
+            />
+
+        </Grid>
+
         <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
             <GradientPicker
                 gradients={[
@@ -588,6 +593,96 @@ export function Background({settings = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
+
+        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
+            <SelectControl
+                label="Repeat"
+                value={repeatMobile}
+                options={[
+                    {label: 'Default', value: undefined},
+                    {label: 'None', value: 'none'},
+                    {label: 'Horizontal', value: 'horizontal'},
+                    {label: 'Vertical', value: 'vertical'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('repeatMobile', value, setRepeatMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+        <Grid columns={1} columnGap={20} rowGap={20}>
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Scale"
+                value={scaleMobile}
+                onChange={(value) => {
+                    updateSettings('scaleMobile', value, setScaleMobile);
+                }}
+                min={0}
+                max={200}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Opacity"
+                value={opacityMobile}
+                onChange={(value) => {
+                    updateSettings('opacityMobile', value, setOpacityMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Width"
+                value={widthMobile}
+                onChange={(value) => {
+                    updateSettings('widthMobile', value, setWidthMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Height"
+                value={heightMobile}
+                onChange={(value) => {
+                    updateSettings('heightMobile', value, setHeightMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={100}
+                allowReset={true}
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={30}
+              style={{padding: '1rem 0'}}>
+            <ToggleControl
+                label="Fixed"
+                checked={fixedMobile}
+                onChange={(value) => {
+                    updateSettings('fixedMobile', value, setFixedMobile);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+            <ToggleControl
+                label="Mask"
+                checked={maskMobile}
+                onChange={(value) => {
+                    updateSettings('maskMobile', value, setMaskMobile);
+                }}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+
         <Grid columns={2} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
             <MediaUploadCheck>
                 <MediaUpload
@@ -655,93 +750,7 @@ export function Background({settings = {}, pushSettings}) {
             />
 
         </Grid>
-        <Grid columns={2} columnGap={15} rowGap={30}
-              style={{padding: '1rem 0'}}>
-            <ToggleControl
-                label="Fixed"
-                checked={fixedMobile}
-                onChange={(value) => {
-                    updateSettings('fixedMobile', value, setFixedMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-            <ToggleControl
-                label="Mask"
-                checked={maskMobile}
-                onChange={(value) => {
-                    updateSettings('maskMobile', value, setMaskMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-        </Grid>
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
-            <SelectControl
-                label="Repeat"
-                value={repeatMobile}
-                options={[
-                    {label: 'Default', value: undefined},
-                    {label: 'None', value: 'none'},
-                    {label: 'Horizontal', value: 'horizontal'},
-                    {label: 'Vertical', value: 'vertical'},
-                ]}
-                onChange={(value) => {
-                    updateSettings('repeatMobile', value, setRepeatMobile);
-                }}
-                __nextHasNoMarginBottom
-            />
-        </Grid>
-        <Grid columns={1} columnGap={20} rowGap={20}>
-            <RangeControl
-                __nextHasNoMarginBottom
-                label="Scale"
-                value={scaleMobile}
-                onChange={(value) => {
-                    updateSettings('scaleMobile', value, setScaleMobile);
-                }}
-                min={0}
-                max={200}
-                resetFallbackValue={100}
-                allowReset={true}
-            />
-            <RangeControl
-                __nextHasNoMarginBottom
-                label="Opacity"
-                value={opacityMobile}
-                onChange={(value) => {
-                    updateSettings('opacityMobile', value, setOpacityMobile);
-                }}
-                min={0}
-                max={100}
-                resetFallbackValue={100}
-                allowReset={true}
-            />
-            <RangeControl
-                __nextHasNoMarginBottom
-                label="Width"
-                value={widthMobile}
-                onChange={(value) => {
-                    updateSettings('widthMobile', value, setWidthMobile);
-                }}
-                min={0}
-                max={100}
-                resetFallbackValue={100}
-                allowReset={true}
-            />
-            <RangeControl
-                __nextHasNoMarginBottom
-                label="Height"
-                value={heightMobile}
-                onChange={(value) => {
-                    updateSettings('heightMobile', value, setHeightMobile);
-                }}
-                min={0}
-                max={100}
-                resetFallbackValue={100}
-                allowReset={true}
-            />
-        </Grid>
+
         <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
             <GradientPicker
                 gradients={[

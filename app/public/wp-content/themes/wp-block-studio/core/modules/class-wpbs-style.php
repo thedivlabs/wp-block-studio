@@ -279,7 +279,7 @@ class WPBS_Style {
 		unset( $css_layout );
 
 		$css_hover  = ! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null;
-		$css_mobile = ! empty( $css_mobile ) ? '@media (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null;
+		$css_mobile = ! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null;
 
 		$style_element = '<style>' . join( ' ', array_filter( [ $css_hover, $css_mobile ] ) ) . '</style>';
 

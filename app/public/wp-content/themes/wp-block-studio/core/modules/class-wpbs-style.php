@@ -165,39 +165,18 @@ class WPBS_Style {
 				continue;
 			}
 
-			$prop_name = str_replace( 'wpbs-layout-', '', $prop );
+			$prop_name = str_replace( [ 'wpbs-layout-', '-hover' ], '', $prop );
+
+			$prop_name = match ( $prop_name ) {
+				'text-color' => 'color',
+				default => $prop_name
+			};
 
 			$styles[ $prop_name ] = WPBS::parse_style( $value );
 
 		}
 
 		return $styles;
-
-		/*
-		 *
-
-		foreach ( $attributes_color as $prop => $value ) {
-
-			$styles['desktop'][ $prop ] = match ( $prop ) {
-				'wpbs-layout-text-color-hover' => join( ' ', [
-					$selector . ':hover',
-					'{color: ' . $value . ' !important}'
-				] ),
-				'wpbs-layout-border-color-hover' => join( ' ', [
-					$selector . ':hover',
-					'{border-color: ' . $value . ' !important}'
-				] ),
-				'wpbs-layout-background-color-hover' => join( ' ', [
-					$selector . ':hover',
-					'{background-color: ' . $value . ' !important}'
-				] ),
-				default => null
-			};
-
-
-		}
-
-		return $styles;*/
 	}
 
 	private static function mobile_styles( $attributes, $block ): array|false {
@@ -234,7 +213,12 @@ class WPBS_Style {
 				continue;
 			}
 
-			$prop_name = str_replace( 'wpbs-layout-', '', $prop );
+			$prop_name = str_replace( [ 'wpbs-layout-', '-mobile' ], '', $prop );
+			
+			$prop_name = match ( $prop_name ) {
+				'text-color' => 'color',
+				default => $prop_name
+			};
 
 			$styles[ $prop_name ] = WPBS::parse_style( $value );
 

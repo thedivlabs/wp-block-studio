@@ -231,11 +231,6 @@ const blockAttributes = {
             type: 'string'
         }
     },
-    hover: {
-        'wpbs-layout-opacity-hover': {
-            type: 'integer'
-        }
-    },
     colors: {
         'wpbs-layout-text-color-hover': {
             type: 'string'
@@ -258,7 +253,7 @@ const blockAttributes = {
 
 export function LayoutAttributes() {
 
-    return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.hover, blockAttributes.colors);
+    return Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
 }
 
 export function LayoutClasses(attributes) {
@@ -296,10 +291,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
     const resetAll_layout_mobile = () => {
         setAttributes(Object.keys(blockAttributes.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
-    };
-
-    const resetAll_hover = () => {
-        setAttributes(Object.keys(blockAttributes.hover).reduce((o, key) => ({...o, [key]: undefined}), {}))
     };
 
     return <>
@@ -909,19 +900,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
                                   callback={(newValue) => {
                                       setAttributes({['wpbs-layout-offset-header-mobile']: newValue});
                                   }}/>
-                </ToolsPanelItem>
-            </ToolsPanel>
-
-            <ToolsPanel label={'Hover'} resetAll={resetAll_hover}>
-                <ToolsPanelItem
-                    style={{gridColumn: 'span 2'}}
-                    hasValue={() => !!attributes['wpbs-layout-opacity-hover']}
-                    label={'Opacity'}
-                    onDeselect={() => setAttributes({['wpbs-layout-opacity-hover']: undefined})}
-                >
-                    <Opacity defaultValue={attributes['wpbs-layout-opacity-hover']} callback={(newValue) => {
-                        setAttributes({['wpbs-layout-opacity-hover']: newValue});
-                    }}/>
                 </ToolsPanelItem>
             </ToolsPanel>
 

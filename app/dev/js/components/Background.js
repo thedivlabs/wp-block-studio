@@ -738,7 +738,7 @@ export function Background({settings = {}, pushSettings}) {
                                         }}
                                     /></>;
                             } else {
-                                return <Button onClick={open}>Choose Mask Image</Button>
+                                return <Button onClick={open} style={buttonStyle}>Choose Mask Image</Button>
                             }
                         }}
                     />

@@ -924,8 +924,6 @@ export function BackgroundSettings({settings = {}, pushSettings}) {
                             (tab) => (<>{tabs[tab.name]}</>)
                         }
                     </TabPanel>
-
-
                 </Grid>
             </Grid>
 

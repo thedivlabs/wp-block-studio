@@ -6,7 +6,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {Background, BackgroundElement, backgroundAttributes} from "Components/Background";
+import {Background, BackgroundSettings, backgroundAttributes} from "Components/Background";
 import {TagName} from "Components/TagName";
 import {
     __experimentalGrid as Grid,
@@ -54,8 +54,8 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <InspectorControls group="styles">
-                    <Background settings={attributes['wpbs-background'] || {}}
-                                pushSettings={setAttributes}></Background>
+                    <BackgroundSettings settings={attributes['wpbs-background'] || {}}
+                                pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={20} rowGap={20} style={{paddingTop: '20px'}}>
@@ -72,7 +72,7 @@ registerBlockType(metadata.name, {
                         <InnerBlocks/>
                     </div>
 
-                    <BackgroundElement settings={attributes['wpbs-background']} blockProps={blockProps}/>
+                    <Background settings={attributes['wpbs-background']} blockProps={blockProps}/>
                 </ElementTag>
             </>
         )

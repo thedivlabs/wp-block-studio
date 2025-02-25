@@ -17,7 +17,7 @@ import {
 import PreviewThumbnail from 'Components/PreviewThumbnail';
 import Picture from 'Components/picture';
 
-export function BackgroundElement({settings = {}, blockProps}) {
+export function Background({settings = {}, blockProps}) {
 
     const bgClass = [
         'wpbs-background',
@@ -95,7 +95,7 @@ export function BackgroundElement({settings = {}, blockProps}) {
             </video>
         }
 
-        return <div className={mediaClass.filter(x => x).join(' ')} style={mediaStyle()}>
+        return <div className={mediaClass.filter(x => x).join(' ')}>
             {MediaElement}
             <div className={overlayClass} style={{
                 background: settings.overlay || 'transparent'
@@ -103,12 +103,12 @@ export function BackgroundElement({settings = {}, blockProps}) {
         </div>;
     }
 
-    return <div className={bgClass} style={bgStyle}>
+    return <div className={bgClass}>
         <Media/>
     </div>;
 }
 
-export function Background({settings = {}, pushSettings}) {
+export function BackgroundSettings({settings = {}, pushSettings}) {
 
     settings = Object.assign({}, {
         type: undefined,

@@ -22,6 +22,15 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
                 setTop(newValue);
                 callback(newValue, right, bottom, left);
             }}
+            units={[
+                {value: 'px', label: 'px', default: 0},
+                {value: '%', label: '%', default: 0},
+                {value: 'em', label: 'em', default: 0},
+                {value: 'rem', label: 'rem', default: 0},
+                {value: 'vh', label: 'vh', default: 0},
+                {value: 'vw', label: 'vw', default: 0},
+                {value: 'ch', label: 'ch', default: 0},
+            ]}
             __next40pxDefaultSize
         />
         <UnitControl
@@ -32,6 +41,15 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
                 setRight(newValue);
                 callback(top, newValue, bottom, left);
             }}
+            units={[
+                {value: 'px', label: 'px', default: 0},
+                {value: '%', label: '%', default: 0},
+                {value: 'em', label: 'em', default: 0},
+                {value: 'rem', label: 'rem', default: 0},
+                {value: 'vh', label: 'vh', default: 0},
+                {value: 'vw', label: 'vw', default: 0},
+                {value: 'ch', label: 'ch', default: 0},
+            ]}
             __next40pxDefaultSize
         />
         <UnitControl
@@ -42,6 +60,15 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
                 setBottom(newValue);
                 callback(top, right, newValue, left);
             }}
+            units={[
+                {value: 'px', label: 'px', default: 0},
+                {value: '%', label: '%', default: 0},
+                {value: 'em', label: 'em', default: 0},
+                {value: 'rem', label: 'rem', default: 0},
+                {value: 'vh', label: 'vh', default: 0},
+                {value: 'vw', label: 'vw', default: 0},
+                {value: 'ch', label: 'ch', default: 0},
+            ]}
             __next40pxDefaultSize
         />
         <UnitControl
@@ -52,6 +79,15 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
                 setLeft(newValue);
                 callback(top, right, bottom, newValue);
             }}
+            units={[
+                {value: 'px', label: 'px', default: 0},
+                {value: '%', label: '%', default: 0},
+                {value: 'em', label: 'em', default: 0},
+                {value: 'rem', label: 'rem', default: 0},
+                {value: 'vh', label: 'vh', default: 0},
+                {value: 'vw', label: 'vw', default: 0},
+                {value: 'ch', label: 'ch', default: 0},
+            ]}
             __next40pxDefaultSize
         />
 

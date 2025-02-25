@@ -15,7 +15,9 @@ function Gap({defaultValue, callback}) {
             {value: '%', label: '%', default: 0},
             {value: 'em', label: 'em', default: 0},
             {value: 'rem', label: 'rem', default: 0},
+            {value: 'vh', label: 'vh', default: 0},
             {value: 'vw', label: 'vw', default: 0},
+            {value: 'ch', label: 'ch', default: 0},
         ]}
         values={value}
         sides={['top', 'left']}

@@ -90,7 +90,6 @@ class WPBS_Style {
 
 		$styles = [];
 
-
 		foreach ( $layout_attributes as $prop => $value ) {
 
 			if ( empty( $value ) ) {
@@ -103,24 +102,42 @@ class WPBS_Style {
 
 		}
 
+		foreach ( $special_attributes as $prop => $value ) {
+
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			switch ( $prop ) {
+				case 'wpbs-layout-height':
+				case 'wpbs-layout-height-custom':
+					$styles['height'] = $attributes['wpbs-layout-height-custom'] ?? $attributes['wpbs-layout-height'] ?? null;
+					break;
+				case 'wpbs-layout-width':
+				case 'wpbs-layout-width-custom':
+					$styles['width'] = $attributes['wpbs-layout-width-custom'] ?? $attributes['wpbs-layout-width'] ?? null;
+					break;
+				case 'wpbs-layout-translate':
+					$styles['transform'] = 'translate(' . join( ', ', [
+							$attributes['wpbs-layout-translate']['top'] ?? '0px',
+							$attributes['wpbs-layout-translate']['left'] ?? '0px'
+						] ) . ')';
+					break;
+				case 'wpbs-layout-offset-header':
+					$styles['padding-top'] = 'calc(' . join( ' + ', [
+							WPBS::parse_style( $block->attributes['style']['spacing']['padding']['top'] ?? '0px' ),
+							'var(--wpbs-header-height, 0px)'
+						] ) . ')';
+					break;
+			}
+
+		}
+
 
 		return $styles;
 
-		/*$styles[ $prop_name ] = match ( $prop ) {
-			'wpbs-layout-translate' => 'transform:translate(' . join( ', ', [
-					$value['left'] ?? '0px',
-					$value['top'] ?? '0px'
-				] ) . ');',
-			'wpbs-layout-height' => 'height:' . ( $attributes_layout['wpbs-layout-height-custom'] ?? $value ) . ';',
-			'wpbs-layout-height-custom' => empty( $attributes_layout['wpbs-layout-height'] ) ? 'height:' . $value . ';' : null,
-			default => null
-		};
-
-
-		if ( ! empty( $attributes_layouts['wpbs-layout-offset-header'] ) ) {
-
-			$styles['desktop']['padding-top'] = 'padding-top:calc(var(--wpbs-header-height, 0px) + ' . WPBS::parse_style( $block->attributes['style']['spacing']['padding']['top'] ?? false ) . ') !important;';
-		}
+		/*
+		 *
 
 		foreach ( $attributes_color as $prop => $value ) {
 

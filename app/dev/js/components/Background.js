@@ -19,6 +19,12 @@ import Picture from 'Components/picture';
 
 export function Background({settings = {}, blockProps}) {
 
+    settings = settings['wpbs-background'];
+
+    if (!settings) {
+        return false;
+    }
+
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
@@ -109,6 +115,12 @@ export function Background({settings = {}, blockProps}) {
 }
 
 export function BackgroundSettings({settings = {}, pushSettings}) {
+
+    settings = settings['wpbs-background'];
+
+    if (!settings) {
+        return false;
+    }
 
     settings = Object.assign({}, {
         type: undefined,

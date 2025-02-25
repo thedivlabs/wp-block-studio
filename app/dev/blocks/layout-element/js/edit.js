@@ -72,7 +72,7 @@ registerBlockType(metadata.name, {
                         <InnerBlocks/>
                     </div>
 
-                    <Background settings={attributes['wpbs-background']} blockProps={blockProps}/>
+                    <Background settings={attributes} blockProps={blockProps}/>
                 </ElementTag>
             </>
         )
@@ -93,7 +93,7 @@ registerBlockType(metadata.name, {
                 <div className={containerClassNames(props.attributes)}>
                     <InnerBlocks.Content/>
                 </div>
-                <BackgroundElement settings={props.attributes['wpbs-background']} blockProps={blockProps}/>
+                <Background settings={props.attributes} blockProps={blockProps}/>
             </ElementTag>
         );
     }

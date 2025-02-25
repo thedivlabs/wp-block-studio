@@ -237,7 +237,7 @@ class WPBS_Style {
 
 	}
 
-	public static function render_styles( $css ): void {
+	public static function render_styles( $styles, $selector, $breakpoint = false ): void {
 
 		if ( empty( $styles ) || empty( $selector ) ) {
 			return;

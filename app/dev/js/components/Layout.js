@@ -4,9 +4,7 @@ import {
 } from "@wordpress/block-editor";
 import {
     __experimentalToolsPanel as ToolsPanel,
-    __experimentalToolsPanelItem as ToolsPanelItem,
-    __experimentalGrid as Grid,
-    __experimentalSpacer as Spacer,
+    __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
 
 import Outline from 'Components/Outline';

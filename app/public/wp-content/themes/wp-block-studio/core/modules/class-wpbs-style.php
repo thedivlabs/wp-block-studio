@@ -41,9 +41,11 @@ class WPBS_Style {
 
 		$layout_styles = self::layout_styles( $attributes, $block ); // css[]: prop => value
 		$hover_styles  = self::hover_styles( $attributes, $block ); // css[]: prop => value
+		$mobile_styles = self::mobile_styles( $attributes, $block ); // css[]: prop => value
 
 		WPBS::console_log( $layout_styles );
 		WPBS::console_log( $hover_styles );
+		WPBS::console_log( $mobile_styles );
 
 		//$data = join( ' ', [ $selector, '{', $css, '}' ] );
 
@@ -198,6 +200,74 @@ class WPBS_Style {
 		return $styles;*/
 	}
 
+	private static function mobile_styles( $attributes, $block ): array|false {
+
+		if ( empty( $attributes ) ) {
+			return false;
+		}
+
+		$special_attributes = array_filter( $attributes, function ( $k ) {
+			return in_array( $k, [
+				'wpbs-layout-width-mobile',
+				'wpbs-layout-width-custom-mobile',
+				'wpbs-layout-height-mobile',
+				'wpbs-layout-height-custom-mobile',
+				'wpbs-layout-translate-mobile',
+			] );
+		}, ARRAY_FILTER_USE_KEY );
+
+		$mobile_attributes = array_filter( $attributes, function ( $k ) use ( $special_attributes, $attributes ) {
+
+			return str_starts_with( $k, 'wpbs-layout' ) &&
+			       str_contains( $k, 'mobile' ) &&
+			       ! is_array( $attributes[ $k ] ) &&
+			       ! str_contains( $k, 'hover' ) &&
+			       ! in_array( $k, array_keys( $special_attributes ) );
+
+		}, ARRAY_FILTER_USE_KEY );
+
+		$styles = [];
+
+		foreach ( $mobile_attributes as $prop => $value ) {
+
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			$prop_name = str_replace( 'wpbs-layout-', '', $prop );
+
+			$styles[ $prop_name ] = WPBS::parse_style( $value );
+
+		}
+
+		foreach ( $special_attributes as $prop => $value ) {
+
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			switch ( $prop ) {
+				case 'wpbs-layout-height-mobile':
+				case 'wpbs-layout-height-custom-mobile':
+					$styles['height'] = $attributes['wpbs-layout-height-custom-mobile'] ?? $attributes['wpbs-layout-height-mobile'] ?? null;
+					break;
+				case 'wpbs-layout-width-mobile':
+				case 'wpbs-layout-width-custom-mobile':
+					$styles['width'] = $attributes['wpbs-layout-width-custom-mobile'] ?? $attributes['wpbs-layout-width-mobile'] ?? null;
+					break;
+				case 'wpbs-layout-translate-mobile':
+					$styles['transform'] = 'translate(' . join( ', ', [
+							$attributes['wpbs-layout-translate-mobile']['top'] ?? '0px',
+							$attributes['wpbs-layout-translate-mobile']['left'] ?? '0px'
+						] ) . ')';
+					break;
+			}
+
+		}
+
+		return $styles;
+
+	}
 
 	public static function render_style_tag( $css ): void {
 
@@ -207,7 +277,7 @@ class WPBS_Style {
 
 		echo '<style>';
 
-		echo $css;
+		/*echo $css;
 
 		echo '@media (max-width: calc(' . $breakpoint . ' - 1px)) { ';
 
@@ -265,9 +335,9 @@ class WPBS_Style {
 				default => null
 			};
 
-		}
+		}*/
 
-		echo '}';
+		/*echo '}';
 
 		foreach ( $attributes_color ?? [] as $prop => $value ) {
 
@@ -283,7 +353,7 @@ class WPBS_Style {
 		}
 
 
-		echo '}';
+		echo '}';*/
 
 
 		echo '</style>';

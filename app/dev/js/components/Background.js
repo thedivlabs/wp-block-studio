@@ -140,7 +140,7 @@ export function BackgroundSettings({settings = {}, pushSettings}) {
         opacity: undefined,
         width: undefined,
         height: undefined,
-        overlay: {},
+        overlay: undefined,
 
         maskMobile: undefined,
         fixedMobile: undefined,
@@ -155,7 +155,7 @@ export function BackgroundSettings({settings = {}, pushSettings}) {
         opacityMobile: undefined,
         widthMobile: undefined,
         heightMobile: undefined,
-        overlayMobile: {},
+        overlayMobile: undefined,
 
     }, settings['wpbs-background'])
 

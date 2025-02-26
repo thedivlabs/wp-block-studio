@@ -42,7 +42,6 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
 
-        console.log(BackgroundAttributes);
         console.log(attributes);
 
         const blockProps = useBlockProps({

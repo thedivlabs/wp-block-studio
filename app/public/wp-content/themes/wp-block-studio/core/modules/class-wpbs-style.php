@@ -26,10 +26,10 @@ class WPBS_Style {
 	}
 
 
-	public static function block_styles( $attributes, $block ): void {
+	public static function block_styles( $attributes, $block ): string|false {
 
 		if ( ! is_array( $attributes ) ) {
-			return;
+			return false;
 		}
 
 		$selector   = self::get_selector( $block );
@@ -41,7 +41,7 @@ class WPBS_Style {
 			'hover'  => self::hover_styles( $attributes, $block ),
 		];
 
-		self::render_styles( $styles, $selector, $block, $breakpoint );
+		return self::render_styles( $styles, $selector, $block, $breakpoint );
 
 	}
 
@@ -85,7 +85,7 @@ class WPBS_Style {
 				continue;
 			}
 
-			$styles[ $prop ] = WPBS::parse_style( $value );
+			$styles[ $prop ] = $value;
 
 		}
 
@@ -97,7 +97,7 @@ class WPBS_Style {
 
 			$prop_name = str_replace( 'wpbs-layout-', '', $prop );
 
-			$styles[ $prop_name ] = WPBS::parse_style( $value );
+			$styles[ $prop_name ] = $value;
 
 		}
 
@@ -118,8 +118,8 @@ class WPBS_Style {
 					break;
 				case 'wpbs-layout-translate':
 					$styles['transform'] = 'translate(' . join( ', ', [
-							$attributes['wpbs-layout-translate']['top'] ?? '0px',
-							$attributes['wpbs-layout-translate']['left'] ?? '0px'
+							WPBS::parse_style( $attributes['wpbs-layout-translate']['top'] ?? '0px' ),
+							WPBS::parse_style( $attributes['wpbs-layout-translate']['left'] ?? '0px' )
 						] ) . ')';
 					break;
 				case 'wpbs-layout-offset-header':
@@ -167,7 +167,7 @@ class WPBS_Style {
 				default => $prop_name
 			};
 
-			$styles[ $prop_name ] = WPBS::parse_style( $value );
+			$styles[ $prop_name ] = $value;
 
 		}
 
@@ -215,7 +215,7 @@ class WPBS_Style {
 				default => $prop_name
 			};
 
-			$styles[ $prop_name ] = WPBS::parse_style( $value );
+			$styles[ $prop_name ] = $value;
 
 		}
 
@@ -236,8 +236,8 @@ class WPBS_Style {
 					break;
 				case 'wpbs-layout-translate-mobile':
 					$styles['transform'] = 'translate(' . join( ', ', [
-							$attributes['wpbs-layout-translate-mobile']['top'] ?? '0px',
-							$attributes['wpbs-layout-translate-mobile']['left'] ?? '0px'
+							WPBS::parse_style( $attributes['wpbs-layout-translate-mobile']['top'] ?? '0px' ),
+							WPBS::parse_style( $attributes['wpbs-layout-translate-mobile']['left'] ?? '0px' )
 						] ) . ')';
 					break;
 			}
@@ -248,10 +248,10 @@ class WPBS_Style {
 
 	}
 
-	public static function render_styles( $styles, $selector, $block, $breakpoint = false ): void {
+	public static function render_styles( $styles, $selector, $block, $breakpoint = false ): string|false {
 
 		if ( empty( $styles ) || empty( $selector ) ) {
-			return;
+			return false;
 		}
 
 		$styles = array_merge( [], $styles, apply_filters( 'wpbs_block_styles', [], $selector ) );
@@ -261,30 +261,30 @@ class WPBS_Style {
 		$css_mobile = '';
 
 		foreach ( $styles['layout'] ?? [] as $prop => $value ) {
-			$css_layout .= $prop . ':' . $value . ';';
+			$css_layout .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 		}
 
 		foreach ( $styles['hover'] ?? [] as $prop => $value ) {
-			$css_hover .= $prop . ':' . $value . ' !important;';
+			$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
 		}
 
 		foreach ( $styles['mobile'] ?? [] as $prop => $value ) {
-			$css_mobile .= $prop . ':' . $value . ';';
+			$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 		}
 
-		$css_layout = ! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null;
-		$css_hover  = ! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null;
-		$css_mobile = ! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null;
-		
-		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, join( ' ', array_filter( [
-			$css_layout,
-			$css_hover,
-			$css_mobile
-		] ) ) );
+		$css = join( ' ', array_filter( [
+			! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null,
+			! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
+			! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
+		] ) );
 
 		unset( $css_layout );
 		unset( $css_hover );
 		unset( $css_mobile );
+
+		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
+
+		return $css;
 
 	}
 

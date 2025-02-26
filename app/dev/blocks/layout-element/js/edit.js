@@ -73,6 +73,7 @@ registerBlockType(metadata.name, {
 
                     <Background settings={attributes} blockProps={blockProps}/>
                 </ElementTagName>
+                <style type="text/css">{attributes['wpbs-css']}</style>
             </>
         )
     },

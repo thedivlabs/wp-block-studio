@@ -36,6 +36,7 @@
   },
   "editorScript": "file:./js/edit.js",
   "style": "file:./js/edit.css",
+  "editorStyle": "file:./js/edit.css",
   "icon": "editor-kitchensink"
 }
 

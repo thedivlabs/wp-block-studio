@@ -6,7 +6,7 @@ class WPBS_Style {
 
 	private function __construct() {
 
-		
+
 		add_action( 'rest_api_init', function () {
 			register_rest_route( 'wpbs/v1', "/layout-styles/",
 				[
@@ -278,15 +278,15 @@ class WPBS_Style {
 		$css_hover  = '';
 		$css_mobile = '';
 
-		foreach ( $styles['layout'] ?? [] as $prop => $value ) {
+		foreach ( $styles['layout'] ?? [] ?: [] as $prop => $value ) {
 			$css_layout .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 		}
 
-		foreach ( $styles['hover'] ?? [] as $prop => $value ) {
+		foreach ( $styles['hover'] ?? [] ?: [] as $prop => $value ) {
 			$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
 		}
 
-		foreach ( $styles['mobile'] ?? [] as $prop => $value ) {
+		foreach ( $styles['mobile'] ?? [] ?: [] as $prop => $value ) {
 			$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 		}
 

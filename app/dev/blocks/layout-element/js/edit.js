@@ -41,6 +41,10 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+
+        console.log(BackgroundAttributes);
+        console.log(attributes);
+
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
         });
@@ -58,7 +62,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <InspectorControls group="styles">
-                    <BackgroundSettings settings={attributes['wpbs-background'] || {}}
+                    <BackgroundSettings attributes={attributes || {}}
                                         pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
                 <InspectorControls group="advanced">
@@ -72,7 +76,7 @@ registerBlockType(metadata.name, {
                 >
                     <div {...innerBlocksProps}/>
 
-                    <Background settings={attributes} blockProps={blockProps}/>
+                    <Background attributes={attributes} blockProps={blockProps}/>
 
                     <LayoutStyle attributes={attributes} blockProps={blockProps}/>
 

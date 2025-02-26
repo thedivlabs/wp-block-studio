@@ -17,9 +17,9 @@ import {
 import PreviewThumbnail from 'Components/PreviewThumbnail';
 import Picture from 'Components/picture';
 
-export function Background({settings = {}, blockProps}) {
+export function Background({attributes = {}, blockProps}) {
 
-    settings = settings['wpbs-background'];
+    const {['wpbs-background']: settings} = attributes;
 
     if (!settings) {
         return false;
@@ -114,9 +114,9 @@ export function Background({settings = {}, blockProps}) {
     </div>;
 }
 
-export function BackgroundSettings({settings = {}, pushSettings}) {
+export function BackgroundSettings({attributes = {}, pushSettings}) {
 
-    settings = Object.assign({}, {
+    const settings = Object.assign({}, {
         type: undefined,
         mobileImage: undefined,
         largeImage: undefined,
@@ -157,7 +157,7 @@ export function BackgroundSettings({settings = {}, pushSettings}) {
         heightMobile: undefined,
         overlayMobile: undefined,
 
-    }, settings['wpbs-background'])
+    }, attributes['wpbs-background'])
 
     const [type, setType] = useState(settings.type);
     const [mobileImage, setMobileImage] = useState(settings.mobileImage);
@@ -201,8 +201,10 @@ export function BackgroundSettings({settings = {}, pushSettings}) {
 
 
     function updateSettings(attr, val, callback) {
+
         callback(val);
         if (pushSettings) {
+            console.log(attr);
             pushSettings({'wpbs-background': Object.assign({}, settings, {[attr]: val})});
         }
     }

@@ -20,8 +20,6 @@ export function LayoutStyle({attributes, clientId, blockProps}) {
         },
     }).then((response) => {
         const el = document.querySelector(selector);
-        //console.log(blockProps);
-        console.log(el);
         el.innerHTML = response;
     });
 

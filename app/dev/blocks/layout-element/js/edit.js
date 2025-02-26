@@ -42,7 +42,8 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
 
-        console.log(attributes);
+        //console.log(attributes);
+        console.log(clientId);
 
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
@@ -77,7 +78,7 @@ registerBlockType(metadata.name, {
 
                     <Background attributes={attributes} blockProps={blockProps}/>
 
-                    <LayoutStyle attributes={attributes} blockProps={blockProps}/>
+                    <LayoutStyle attributes={attributes} clientId={clientId} blockProps={blockProps}/>
 
                 </ElementTagName>
             </>

@@ -6,9 +6,23 @@ class WPBS_Style {
 
 	private function __construct() {
 
-
-		add_filter( 'register_block_type_args', [ $this, 'style_block_args' ], 10, 3 );
 		
+		add_action( 'rest_api_init', function () {
+			register_rest_route( 'wpbs/v1', "/layout-styles/",
+				[
+					'methods'             => 'POST',
+					'permission_callback' => '__return_true',
+					'accept_json'         => true,
+					'callback'            => [ $this, 'render_layout_styles' ]
+				]
+			);
+		} );
+
+	}
+
+	public function render_layout_styles( WP_REST_Request $request ): string|false {
+
+		return WPBS_Style::block_styles( $request['attributes'] ?? false, $request['selector'] ?? false );
 
 	}
 

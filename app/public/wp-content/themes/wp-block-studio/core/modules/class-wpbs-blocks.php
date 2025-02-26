@@ -16,7 +16,7 @@ class WPBS_Blocks {
 
 	public function render_block( $attributes, $content, $block ): string {
 
-		WPBS_Style::block_styles( $attributes, $block );
+		$css = WPBS_Style::block_styles( $attributes, $block );
 
 		return $content;
 	}
@@ -38,6 +38,7 @@ class WPBS_Blocks {
 		$block_dirs = glob( WPBS::$path . '/blocks/*', GLOB_ONLYDIR );
 
 		foreach ( $block_dirs as $block_dir ) {
+
 			register_block_type( $block_dir );
 		}
 	}

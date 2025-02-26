@@ -7,7 +7,11 @@ class WPBS_Style {
 	private function __construct() {
 
 
+		add_filter( 'register_block_type_args', [ $this, 'style_block_args' ], 10, 3 );
+		
+
 	}
+
 
 	private static function get_selector( $block ): string {
 
@@ -32,20 +36,20 @@ class WPBS_Style {
 			return false;
 		}
 
-		$selector   = self::get_selector( $block );
+		$selector   = is_string( $block ) ? $block : self::get_selector( $block );
 		$breakpoint = self::get_breakpoint( $attributes );
 
 		$styles = [
-			'layout' => self::layout_styles( $attributes, $block ),
-			'mobile' => self::mobile_styles( $attributes, $block ),
-			'hover'  => self::hover_styles( $attributes, $block ),
+			'layout' => self::layout_styles( $attributes ),
+			'mobile' => self::mobile_styles( $attributes ),
+			'hover'  => self::hover_styles( $attributes ),
 		];
 
-		return self::render_styles( $styles, $selector, $block, $breakpoint );
+		return self::render_styles( $styles, $selector, is_string( $block ) ? false : $block, $breakpoint );
 
 	}
 
-	private static function layout_styles( $attributes, $block ): array|false {
+	private static function layout_styles( $attributes ): array|false {
 
 		if ( empty( $attributes ) ) {
 			return false;
@@ -124,7 +128,7 @@ class WPBS_Style {
 					break;
 				case 'wpbs-layout-offset-header':
 					$styles['padding-top'] = 'calc(' . join( ' + ', [
-							WPBS::parse_style( $block->attributes['style']['spacing']['padding']['top'] ?? '0px' ),
+							WPBS::parse_style( $attributes['style']['spacing']['padding']['top'] ?? '0px' ),
 							'var(--wpbs-header-height, 0px)'
 						] ) . ')';
 					break;
@@ -137,7 +141,7 @@ class WPBS_Style {
 
 	}
 
-	private static function hover_styles( $attributes, $block ): array|false {
+	private static function hover_styles( $attributes ): array|false {
 
 		if ( empty( $attributes ) ) {
 			return false;
@@ -174,7 +178,7 @@ class WPBS_Style {
 		return $styles;
 	}
 
-	private static function mobile_styles( $attributes, $block ): array|false {
+	private static function mobile_styles( $attributes ): array|false {
 
 		if ( empty( $attributes ) ) {
 			return false;
@@ -248,7 +252,7 @@ class WPBS_Style {
 
 	}
 
-	public static function render_styles( $styles, $selector, $block, $breakpoint = false ): string|false {
+	public static function render_styles( $styles, $selector, $block = false, $breakpoint = false ): string|false {
 
 		if ( empty( $styles ) || empty( $selector ) ) {
 			return false;
@@ -282,7 +286,9 @@ class WPBS_Style {
 		unset( $css_hover );
 		unset( $css_mobile );
 
-		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
+		if ( $block ) {
+			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
+		}
 
 		return $css;
 

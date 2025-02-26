@@ -9,9 +9,11 @@ import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
+import {LayoutStyle} from "Components/LayoutStyle";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
+import ServerSideRender from '@wordpress/server-side-render';
 
 
 function sectionClassNames(attributes = {}) {
@@ -53,7 +55,6 @@ registerBlockType(metadata.name, {
             className: containerClassNames(attributes)
         });
 
-
         return (
             <>
                 <InspectorControls group="styles">
@@ -72,8 +73,10 @@ registerBlockType(metadata.name, {
                     <div {...innerBlocksProps}/>
 
                     <Background settings={attributes} blockProps={blockProps}/>
+
+                    <LayoutStyle attributes={attributes} blockProps={blockProps}/>
+
                 </ElementTagName>
-                <style type="text/css">{attributes['wpbs-css']}</style>
             </>
         )
     },

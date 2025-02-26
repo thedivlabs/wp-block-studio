@@ -32,14 +32,14 @@ class WPBS {
 			self::clear_transients();
 		}
 
-		add_action( 'init', [ $this, 'theme_support' ] );
-		add_action( 'init', [ $this, 'theme_assets' ] );
+		add_action( 'init', [ $this, 'theme_support' ], 15 );
+		add_action( 'init', [ $this, 'theme_assets' ], 20 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
-		add_action( 'acf/init', [ $this, 'init_hook' ], 30 );
+		add_action( 'acf/init', [ $this, 'init_hook' ] );
 
 		add_action( 'wp_after_insert_post', [ $this, 'clear_transients' ], 100 );
 		add_filter( 'acf/settings/load_json', [ $this, 'load_json' ], 100 );
@@ -94,9 +94,11 @@ class WPBS {
 
 		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
 		require_once self::$core_path . 'modules/class-wpbs-style.php';
+		require_once self::$core_path . 'modules/class-wpbs-endpoints.php';
 
 		WPBS_Blocks::init();
 		WPBS_Style::init();
+		WPBS_Endpoints::init();
 
 		do_action( 'wpbs_init' );
 	}

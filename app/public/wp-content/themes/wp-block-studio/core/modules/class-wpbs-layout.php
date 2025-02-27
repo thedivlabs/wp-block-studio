@@ -6,36 +6,46 @@ class WPBS_Layout {
 	public array $mobile = [];
 	public array $hover = [];
 
+	private array $attributes = [];
+
 	function __construct( $attributes ) {
 
 		if ( ! is_array( $attributes ) ) {
 			return;
 		}
 
-		$this->desktop = $this->desktop_styles( $attributes );
-		$this->mobile  = $this->mobile_styles( $attributes );
-		$this->hover   = $this->hover_styles( $attributes );
+		$this->attributes = $attributes;
+
+		unset( $attributes );
+
+		$this->desktop = $this->desktop();
+		$this->mobile  = $this->mobile();
+		$this->hover   = $this->hover();
+
+		unset( $this->attributes );
 
 	}
 
-	public function styles( $breakpoint = 'desktop' ): array {
-		return [
-
-		];
+	public function styles(): array {
+		return array_merge( apply_filters( 'wpbs_block_styles_layout',  [
+			'desktop' => $this->desktop,
+			'mobile'  => $this->mobile,
+			'hover'   => $this->hover,
+		] ) );
 	}
 
-	private function desktop_styles( $attributes ): array|false {
+	private function desktop(): array|false {
 
-		if ( empty( $attributes ) ) {
+		if ( empty( $this->attributes ) ) {
 			return false;
 		}
 
 		$style_attributes = array_filter( [
-			'column-gap' => $attributes['style']['spacing']['blockGap']['top'] ?? null,
-			'row-gap'    => $attributes['style']['spacing']['blockGap']['left'] ?? null,
+			'column-gap' => $this->attributes['style']['spacing']['blockGap']['top'] ?? null,
+			'row-gap'    => $this->attributes['style']['spacing']['blockGap']['left'] ?? null,
 		] );
 
-		$special_attributes = array_filter( $attributes, function ( $k ) {
+		$special_attributes = array_filter( $this->attributes, function ( $k ) {
 			return in_array( $k, [
 				'wpbs-layout-container',
 				'wpbs-layout-width',
@@ -47,10 +57,10 @@ class WPBS_Layout {
 			] );
 		}, ARRAY_FILTER_USE_KEY );
 
-		$layout_attributes = array_filter( $attributes, function ( $k ) use ( $special_attributes, $attributes ) {
+		$layout_attributes = array_filter( $this->attributes, function ( $k ) use ( $special_attributes ) {
 
 			return str_starts_with( $k, 'wpbs-layout' ) &&
-			       ! is_array( $attributes[ $k ] ) &&
+			       ! is_array( $this->attributes[ $k ] ) &&
 			       ! ( str_contains( $k, 'mobile' ) || str_contains( $k, 'hover' ) ) &&
 			       ! in_array( $k, array_merge( array_keys( $special_attributes ), [ 'wpbs-layout-breakpoint' ] ) );
 
@@ -89,21 +99,21 @@ class WPBS_Layout {
 			switch ( $prop ) {
 				case 'wpbs-layout-height':
 				case 'wpbs-layout-height-custom':
-					$styles['height'] = $attributes['wpbs-layout-height-custom'] ?? $attributes['wpbs-layout-height'] ?? null;
+					$styles['height'] = $this->attributes['wpbs-layout-height-custom'] ?? $this->attributes['wpbs-layout-height'] ?? null;
 					break;
 				case 'wpbs-layout-width':
 				case 'wpbs-layout-width-custom':
-					$styles['width'] = $attributes['wpbs-layout-width-custom'] ?? $attributes['wpbs-layout-width'] ?? null;
+					$styles['width'] = $this->attributes['wpbs-layout-width-custom'] ?? $this->attributes['wpbs-layout-width'] ?? null;
 					break;
 				case 'wpbs-layout-translate':
 					$styles['transform'] = 'translate(' . join( ', ', [
-							WPBS::parse_style( $attributes['wpbs-layout-translate']['top'] ?? '0px' ),
-							WPBS::parse_style( $attributes['wpbs-layout-translate']['left'] ?? '0px' )
+							WPBS::parse_style( $this->attributes['wpbs-layout-translate']['top'] ?? '0px' ),
+							WPBS::parse_style( $this->attributes['wpbs-layout-translate']['left'] ?? '0px' )
 						] ) . ')';
 					break;
 				case 'wpbs-layout-offset-header':
 					$styles['padding-top'] = 'calc(' . join( ' + ', [
-							WPBS::parse_style( $attributes['style']['spacing']['padding']['top'] ?? '0px' ),
+							WPBS::parse_style( $this->attributes['style']['spacing']['padding']['top'] ?? '0px' ),
 							'var(--wpbs-header-height, 0px)'
 						] ) . ')';
 					break;
@@ -115,17 +125,17 @@ class WPBS_Layout {
 
 	}
 
-	private function hover_styles( $attributes ): array|false {
+	private function hover(): array|false {
 
-		if ( empty( $attributes ) ) {
+		if ( empty( $this->attributes ) ) {
 			return false;
 		}
 
-		$hover_attributes = array_filter( $attributes, function ( $k ) use ( $attributes ) {
+		$hover_attributes = array_filter( $this->attributes, function ( $k ) {
 
 			return str_starts_with( $k, 'wpbs-layout' ) &&
 			       str_contains( $k, 'hover' ) &&
-			       ! is_array( $attributes[ $k ] ) &&
+			       ! is_array( $this->attributes[ $k ] ) &&
 			       ! str_contains( $k, 'mobile' );
 
 		}, ARRAY_FILTER_USE_KEY );
@@ -152,13 +162,13 @@ class WPBS_Layout {
 		return $styles;
 	}
 
-	private function mobile_styles( $attributes ): array|false {
+	private function mobile(): array|false {
 
-		if ( empty( $attributes ) ) {
+		if ( empty( $this->attributes ) ) {
 			return false;
 		}
 
-		$special_attributes = array_filter( $attributes, function ( $k ) {
+		$special_attributes = array_filter( $this->attributes, function ( $k ) {
 			return in_array( $k, [
 				'wpbs-layout-width-mobile',
 				'wpbs-layout-width-custom-mobile',
@@ -168,11 +178,11 @@ class WPBS_Layout {
 			] );
 		}, ARRAY_FILTER_USE_KEY );
 
-		$mobile_attributes = array_filter( $attributes, function ( $k ) use ( $special_attributes, $attributes ) {
+		$mobile_attributes = array_filter( $this->attributes, function ( $k ) use ( $special_attributes ) {
 
 			return str_starts_with( $k, 'wpbs-layout' ) &&
 			       str_contains( $k, 'mobile' ) &&
-			       ! is_array( $attributes[ $k ] ) &&
+			       ! is_array( $this->attributes[ $k ] ) &&
 			       ! str_contains( $k, 'hover' ) &&
 			       ! in_array( $k, array_merge( array_keys( $special_attributes ), [ 'wpbs-layout-breakpoint' ] ) );
 
@@ -206,16 +216,16 @@ class WPBS_Layout {
 			switch ( $prop ) {
 				case 'wpbs-layout-height-mobile':
 				case 'wpbs-layout-height-custom-mobile':
-					$styles['height'] = $attributes['wpbs-layout-height-custom-mobile'] ?? $attributes['wpbs-layout-height-mobile'] ?? null;
+					$styles['height'] = $this->attributes['wpbs-layout-height-custom-mobile'] ?? $this->attributes['wpbs-layout-height-mobile'] ?? null;
 					break;
 				case 'wpbs-layout-width-mobile':
 				case 'wpbs-layout-width-custom-mobile':
-					$styles['width'] = $attributes['wpbs-layout-width-custom-mobile'] ?? $attributes['wpbs-layout-width-mobile'] ?? null;
+					$styles['width'] = $this->attributes['wpbs-layout-width-custom-mobile'] ?? $this->attributes['wpbs-layout-width-mobile'] ?? null;
 					break;
 				case 'wpbs-layout-translate-mobile':
 					$styles['transform'] = 'translate(' . join( ', ', [
-							WPBS::parse_style( $attributes['wpbs-layout-translate-mobile']['top'] ?? '0px' ),
-							WPBS::parse_style( $attributes['wpbs-layout-translate-mobile']['left'] ?? '0px' )
+							WPBS::parse_style( $this->attributes['wpbs-layout-translate-mobile']['top'] ?? '0px' ),
+							WPBS::parse_style( $this->attributes['wpbs-layout-translate-mobile']['left'] ?? '0px' )
 						] ) . ')';
 					break;
 			}

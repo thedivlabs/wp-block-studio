@@ -1,27 +1,26 @@
 import apiFetch from '@wordpress/api-fetch';
 
 
-export function LayoutStyle({attributes, clientId, blockProps}) {
+import React, {useState, useEffect} from 'react';
 
-    if (!clientId) {
-        //return false;
-    }
-
-    console.log(clientId);
-
-    const selector = '[data-block="' + clientId + '"] > style#wpbs-layout-styles';
-
-    apiFetch({
-        path: '/wpbs/v1/layout-styles/',
-        method: 'POST',
-        data: {
-            attributes: attributes,
-            selector: selector
-        },
-    }).then((response) => {
-        const el = document.querySelector(selector);
-        el.innerHTML = response;
+export const LayoutStyle = ({attributes, clientId}) => {
+    const [css, setCss] = useState([]);
+    const selector = '#block-' + clientId;
+    useEffect(() => {
+        apiFetch({
+            path: '/wpbs/v1/layout-styles/',
+            method: 'POST',
+            data: {
+                attributes: attributes,
+                selector: selector
+            },
+        })
+            .then((data) => {
+                setCss(data);
+            })
     });
 
-    return <style id={'wpbs-layout-styles'} style={{display: 'none'}}/>;
-}
+    return (
+        <style id={'wpbs-layout-styles'} style={{display: 'none'}}>{css}</style>
+    );
+};

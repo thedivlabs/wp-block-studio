@@ -272,15 +272,15 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 value={origin}
                 options={[
                     {label: 'Default', value: undefined},
-                    {label: 'Center', value: '[&_img]:object-center'},
-                    {label: 'Top', value: '[&_img]:object-top'},
-                    {label: 'Right', value: '[&_img]:object-right'},
-                    {label: 'Bottom', value: '[&_img]:object-bottom'},
-                    {label: 'Left', value: '[&_img]:object-left'},
-                    {label: 'Top Left', value: '[&_img]:object-left-top'},
-                    {label: 'Top Right', value: '[&_img]:object-right-top'},
-                    {label: 'Bottom Left', value: '[&_img]:object-left-bottom'},
-                    {label: 'Bottom Right', value: '[&_img]:object-right-bottom'},
+                    {label: 'Center', value: 'center'},
+                    {label: 'Top', value: 'top'},
+                    {label: 'Right', value: 'right'},
+                    {label: 'Bottom', value: 'bottom'},
+                    {label: 'Left', value: 'left'},
+                    {label: 'Top Left', value: 'left top'},
+                    {label: 'Top Right', value: 'right top'},
+                    {label: 'Bottom Left', value: 'left bottom'},
+                    {label: 'Bottom Right', value: 'right bottom'},
                 ]}
                 onChange={(value) => {
                     updateSettings('origin', value, setOrigin);
@@ -533,15 +533,15 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 value={originMobile}
                 options={[
                     {label: 'Default', value: undefined},
-                    {label: 'Center', value: '[&_img]:object-center'},
-                    {label: 'Top', value: '[&_img]:object-top'},
-                    {label: 'Right', value: '[&_img]:object-right'},
-                    {label: 'Bottom', value: '[&_img]:object-bottom'},
-                    {label: 'Left', value: '[&_img]:object-left'},
-                    {label: 'Top Left', value: '[&_img]:object-left-top'},
-                    {label: 'Top Right', value: '[&_img]:object-right-top'},
-                    {label: 'Bottom Left', value: '[&_img]:object-left-bottom'},
-                    {label: 'Bottom Right', value: '[&_img]:object-right-bottom'},
+                    {label: 'Center', value: 'center'},
+                    {label: 'Top', value: 'top'},
+                    {label: 'Right', value: 'right'},
+                    {label: 'Bottom', value: 'bottom'},
+                    {label: 'Left', value: 'left'},
+                    {label: 'Top Left', value: 'left top'},
+                    {label: 'Top Right', value: 'right top'},
+                    {label: 'Bottom Left', value: 'left bottom'},
+                    {label: 'Bottom Right', value: 'right bottom'},
                 ]}
                 onChange={(value) => {
                     updateSettings('originMobile', value, setOriginMobile);

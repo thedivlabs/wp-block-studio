@@ -27,8 +27,12 @@ class WPBS_Background {
 
 	public function styles(): array {
 		return apply_filters( 'wpbs_block_styles_background', [
-			'desktop' => $this->desktop,
-			'mobile'  => $this->mobile,
+			'selector' => '.wpbs-background',
+			'props'    => true,
+			'styles'   => [
+				'desktop' => $this->desktop,
+				'mobile'  => $this->mobile,
+			]
 		] );
 	}
 

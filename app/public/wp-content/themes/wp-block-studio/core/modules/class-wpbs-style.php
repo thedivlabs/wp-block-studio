@@ -49,60 +49,72 @@ class WPBS_Style {
 			return false;
 		}
 
-		$selector   = is_string( $block ) ? $block : self::get_selector( $block );
 		$breakpoint = self::get_breakpoint( $attributes );
 
-		$styles = [
+		$components = [
 			'layout'     => ( new WPBS_Layout( $attributes ) )->styles(),
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
 
-		//WPBS::console_log( $attributes );
-		//WPBS::console_log( $styles );
+		//PBS::console_log( $attributes );
 
-		$styles = [
-			'desktop' => array_merge( [], ...array_filter( array_column( $styles, 'desktop' ) ) ),
-			'mobile'  => array_merge( [], ...array_filter( array_column( $styles, 'mobile' ) ) ),
-			'hover'   => array_merge( [], ...array_filter( array_column( $styles, 'hover' ) ) ),
-		];
+		$css = '';
 
-		return self::render_styles( $styles, $selector, is_string( $block ) ? false : $block, $breakpoint );
+		foreach ( $components as $component => $data ) {
 
-	}
+			$selector = trim( join( ' ', [
+				is_string( $block ) ? $block : self::get_selector( $block ),
+				$data['selector'] ?? null
+			] ) );
 
-	public static function render_styles( $styles, $selector, $block = false, $breakpoint = false ): string|false {
+			$styles = [
+				'desktop' => array_merge( [], ...array_filter( array_column( $data ?? [], 'desktop' ) ) ),
+				'mobile'  => array_merge( [], ...array_filter( array_column( $data ?? [], 'mobile' ) ) ),
+				'hover'   => array_merge( [], ...array_filter( array_column( $data ?? [], 'hover' ) ) ),
+			];
 
-		if ( empty( $styles ) || empty( $selector ) ) {
-			return false;
+			if ( empty( $styles ) || empty( $selector ) ) {
+				return false;
+			}
+
+			$styles = apply_filters( 'wpbs_block_styles_all', $styles, $selector );
+
+			$css_desktop = '';
+			$css_hover   = '';
+			$css_mobile  = '';
+
+			foreach ( $styles['desktop'] ?? [] ?: [] as $prop => $value ) {
+
+				$prop = ! empty( $data['props'] ) ? '--' . $prop : $prop;
+
+				$css_desktop .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			}
+
+			foreach ( $styles['hover'] ?? [] ?: [] as $prop => $value ) {
+
+				$prop = ! empty( $data['props'] ) ? '--' . $prop : $prop;
+
+				$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
+			}
+
+			foreach ( $styles['mobile'] ?? [] ?: [] as $prop => $value ) {
+
+				$prop = ! empty( $data['props'] ) ? '--' . $prop : $prop;
+
+				$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+			}
+
+			$css .= join( ' ', array_filter( [
+				! empty( $css_desktop ) ? $selector . '{' . $css_desktop . '}' : null,
+				! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
+				! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
+			] ) );
+
+			unset( $css_desktop );
+			unset( $css_hover );
+			unset( $css_mobile );
+
 		}
-
-		$styles = apply_filters( 'wpbs_block_styles_all', $styles, $selector );
-
-		$css_desktop = '';
-		$css_hover   = '';
-		$css_mobile  = '';
-
-		foreach ( $styles['desktop'] ?? [] ?: [] as $prop => $value ) {
-			$css_desktop .= $prop . ':' . WPBS::parse_style( $value ) . ';';
-		}
-
-		foreach ( $styles['hover'] ?? [] ?: [] as $prop => $value ) {
-			$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
-		}
-
-		foreach ( $styles['mobile'] ?? [] ?: [] as $prop => $value ) {
-			$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
-		}
-
-		$css = join( ' ', array_filter( [
-			! empty( $css_desktop ) ? $selector . '{' . $css_desktop . '}' : null,
-			! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
-			! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
-		] ) );
-
-		unset( $css_desktop );
-		unset( $css_hover );
-		unset( $css_mobile );
 
 		if ( $block ) {
 			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );

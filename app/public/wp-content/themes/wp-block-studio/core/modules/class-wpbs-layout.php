@@ -28,9 +28,13 @@ class WPBS_Layout {
 
 	public function styles(): array {
 		return apply_filters( 'wpbs_block_styles_layout', [
-			'desktop' => $this->desktop,
-			'mobile'  => $this->mobile,
-			'hover'   => $this->hover,
+			'selector' => false,
+			'props'    => false,
+			'styles'   => [
+				'desktop' => $this->desktop,
+				'mobile'  => $this->mobile,
+				'hover'   => $this->hover,
+			]
 		] );
 	}
 

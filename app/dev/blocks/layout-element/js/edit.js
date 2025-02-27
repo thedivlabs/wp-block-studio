@@ -99,7 +99,7 @@ registerBlockType(metadata.name, {
             >
                 <div {...innerBlocksProps}/>
 
-                <Background settings={props.attributes} blockProps={blockProps}/>
+                <Background attributes={props.attributes} blockProps={blockProps}/>
             </ElementTagName>
         );
     }

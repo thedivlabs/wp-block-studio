@@ -271,8 +271,8 @@ class WPBS {
 			return false;
 		}
 
-		if ( str_contains( $attr, '#' ) ) {
-			return str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
+		if ( preg_match( '/^#[a-f0-9]{6}$/i', $attr ) ) {
+			return $attr;
 		}
 
 		if ( ! str_contains( $attr, '|' ) && ! str_contains( $attr, 'wp' ) && ! str_contains( $attr, '--' ) ) {

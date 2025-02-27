@@ -275,7 +275,7 @@ class WPBS {
 			return $attr;
 		}
 
-		if ( str_contains( $attr, 'var:' ) ) {
+		if ( str_contains( $attr, '#' ) ) {
 			return str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
 		}
 

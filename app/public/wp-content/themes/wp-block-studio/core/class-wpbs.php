@@ -271,8 +271,12 @@ class WPBS {
 			return false;
 		}
 
-		if ( preg_match( '/^#[a-f0-9]{6}$/i', $attr ) ) {
+		if ( preg_match( '/^#[a-f0-9]{6}$/i', $attr ) || str_contains( $attr, 'rgb' ) ) {
 			return $attr;
+		}
+
+		if ( str_contains( $attr, 'var:' ) ) {
+			return str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
 		}
 
 		if ( ! str_contains( $attr, '|' ) && ! str_contains( $attr, 'wp' ) && ! str_contains( $attr, '--' ) ) {

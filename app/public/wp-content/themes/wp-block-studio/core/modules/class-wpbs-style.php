@@ -55,7 +55,9 @@ class WPBS_Style {
 			'layout'     => ( new WPBS_Layout( $attributes ) )->styles(),
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
-		
+
+		WPBS::console_log($components);
+
 		$css = '';
 
 		foreach ( $components as $component => $data ) {
@@ -107,8 +109,6 @@ class WPBS_Style {
 				! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
 				! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
 			] ) );
-
-			WPBS::console_log( $css_desktop );
 
 			unset( $css_desktop );
 			unset( $css_hover );

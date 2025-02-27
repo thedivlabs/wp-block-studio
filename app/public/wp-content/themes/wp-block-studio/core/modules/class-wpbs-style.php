@@ -28,8 +28,8 @@ class WPBS_Style {
 
 
 	private static function get_selector( $block ): string {
-
-		$selector = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
+		
+		$selector = ! empty( $block->attributes['className'] ) ? '.' . $block->attributes['className'] : '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
 			$selector = $selector . $block->block_type->selectors['root'];
@@ -64,6 +64,9 @@ class WPBS_Style {
 				is_string( $block ) ? $block : self::get_selector( $block ),
 				$data['selector'] ?? null
 			] ) );
+
+			//WPBS::console_log( $selector );
+			//WPBS::console_log( $block );
 
 			$styles = [
 				'desktop' => array_merge( [], ...array_filter( array_column( $data ?? [], 'desktop' ) ) ),
@@ -101,8 +104,6 @@ class WPBS_Style {
 				! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
 				! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
 			] ) );
-
-			WPBS::console_log( $css_desktop );
 
 			unset( $css_desktop );
 			unset( $css_hover );

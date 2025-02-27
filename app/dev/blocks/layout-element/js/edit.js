@@ -1,7 +1,6 @@
 import {
     useBlockProps,
     InspectorControls,
-    InnerBlocks,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -13,7 +12,6 @@ import {LayoutStyle} from "Components/LayoutStyle";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
-import ServerSideRender from '@wordpress/server-side-render';
 
 
 function sectionClassNames(attributes = {}) {

@@ -1,7 +1,21 @@
 .wpbs-background {
 
   &__media {
-    
+
+
+    &:after {
+
+      background: var(--overlay, transparent);
+
+      @apply
+      content-['']
+      block
+      absolute
+      top-0
+      left-0
+      w-full
+      h-full
+    }
   }
 
 }

@@ -30,10 +30,6 @@ export function Background({attributes = {}, blockProps}) {
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
     ].filter(x => x).join(' ');
 
-    const overlayClass = [
-        'wpbs-background__overlay absolute top-0 left-0 w-full h-full z-50'
-    ].filter(x => x).join(' ');
-
     const videoClass = [
         'wpbs-background__media--video',
     ].filter(x => x).join(' ');
@@ -58,21 +54,10 @@ export function Background({attributes = {}, blockProps}) {
 
         if (settings.type === 'image') {
             mediaClass.push(imageClass);
-            MediaElement = <Picture mobile={settings.mobileImage || {}} large={settings.largeImage || {}} settings={{
-                force: settings.force || false,
-            }}/>;
         }
 
         if (settings.type === 'pattern') {
             mediaClass.push(patternClass);
-            const patternMobileSrc = settings.mobileImage ? settings.mobileImage.url || false : 'none';
-            const patternLargeSrc = settings.largeImage ? settings.largeImage.url || false : 'none';
-
-            const patternImage = window.matchMedia('(min-width:960px)').matches ? patternLargeSrc : patternMobileSrc;
-
-            MediaElement = <div style={{
-                backgroundImage: 'url(' + patternImage + ')',
-            }}/>;
         }
 
         if (settings.type === 'video') {
@@ -103,9 +88,6 @@ export function Background({attributes = {}, blockProps}) {
 
         return <div className={mediaClass.filter(x => x).join(' ')}>
             {MediaElement}
-            <div className={overlayClass} style={{
-                background: settings.overlay || 'transparent'
-            }}/>
         </div>;
     }
 
@@ -204,7 +186,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
 
         callback(val);
         if (pushSettings) {
-            console.log(attr);
             pushSettings({'wpbs-background': Object.assign({}, settings, {[attr]: val})});
         }
     }

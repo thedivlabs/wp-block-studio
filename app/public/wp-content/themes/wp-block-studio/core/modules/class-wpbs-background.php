@@ -28,7 +28,6 @@ class WPBS_Background {
 	public function styles(): array {
 		return apply_filters( 'wpbs_block_styles_background', [
 			'selector' => '.wpbs-background',
-			'props'    => true,
 			'styles'   => [
 				'desktop' => $this->desktop,
 				'mobile'  => $this->mobile,
@@ -66,7 +65,7 @@ class WPBS_Background {
 
 			$value = str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) );
 
-			$styles[ $prop ] = $value;
+			$styles[ '--' . $prop ] = $value;
 
 		}
 

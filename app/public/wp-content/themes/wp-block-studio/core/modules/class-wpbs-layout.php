@@ -29,7 +29,6 @@ class WPBS_Layout {
 	public function styles(): array {
 		return apply_filters( 'wpbs_block_styles_layout', [
 			'selector' => false,
-			'props'    => false,
 			'styles'   => [
 				'desktop' => $this->desktop,
 				'mobile'  => $this->mobile,

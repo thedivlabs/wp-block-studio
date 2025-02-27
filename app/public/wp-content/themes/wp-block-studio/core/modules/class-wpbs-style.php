@@ -55,7 +55,7 @@ class WPBS_Style {
 			'layout'     => ( new WPBS_Layout( $attributes ) )->styles(),
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
-		
+
 		$css = '';
 
 		foreach ( $components as $component => $data ) {
@@ -83,21 +83,15 @@ class WPBS_Style {
 
 			foreach ( $styles['desktop'] ?? [] ?: [] as $prop => $value ) {
 
-				$prop = ! empty( $data['props'] ) ? '--' . $prop : $prop;
-
 				$css_desktop .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 			}
 
 			foreach ( $styles['hover'] ?? [] ?: [] as $prop => $value ) {
 
-				$prop = ! empty( $data['props'] ) ? '--' . $prop : $prop;
-
 				$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
 			}
 
 			foreach ( $styles['mobile'] ?? [] ?: [] as $prop => $value ) {
-
-				$prop = ! empty( $data['props'] ) ? '--' . $prop : $prop;
 
 				$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
 			}

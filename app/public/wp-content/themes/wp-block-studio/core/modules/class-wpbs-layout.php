@@ -1,68 +1,30 @@
 <?php
 
-class WPBS_Style {
+class WPBS_Layout {
 
-	private static WPBS_Style $instance;
+	public array $desktop = [];
+	public array $mobile = [];
+	public array $hover = [];
 
-	private function __construct() {
-
-
-		add_action( 'rest_api_init', function () {
-			register_rest_route( 'wpbs/v1', "/layout-styles/",
-				[
-					'methods'             => 'POST',
-					'permission_callback' => '__return_true',
-					'accept_json'         => true,
-					'callback'            => [ $this, 'render_layout_styles' ]
-				]
-			);
-		} );
-
-	}
-
-	public function render_layout_styles( WP_REST_Request $request ): string|false {
-
-		return WPBS_Style::block_styles( $request['attributes'] ?? false, $request['selector'] ?? false );
-
-	}
-
-
-	private static function get_selector( $block ): string {
-
-		$selector = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
-
-		if ( ! empty( $block->block_type->selectors['root'] ) ) {
-			$selector = $selector . $block->block_type->selectors['root'];
-		}
-
-		return $selector;
-	}
-
-	private static function get_breakpoint( $attributes ): string {
-
-		return wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
-	}
-
-	public static function block_styles( $attributes, $block ): string|false {
+	function __construct( $attributes ) {
 
 		if ( ! is_array( $attributes ) ) {
-			return false;
+			return;
 		}
 
-		$selector   = is_string( $block ) ? $block : self::get_selector( $block );
-		$breakpoint = self::get_breakpoint( $attributes );
-
-		$styles = [
-			'layout' => self::layout_styles( $attributes ),
-			'mobile' => self::mobile_styles( $attributes ),
-			'hover'  => self::hover_styles( $attributes ),
-		];
-
-		return self::render_styles( $styles, $selector, is_string( $block ) ? false : $block, $breakpoint );
+		$this->desktop = $this->desktop_styles( $attributes );
+		$this->mobile  = $this->mobile_styles( $attributes );
+		$this->hover   = $this->hover_styles( $attributes );
 
 	}
 
-	private static function layout_styles( $attributes ): array|false {
+	public function styles( $breakpoint = 'desktop' ): array {
+		return [
+
+		];
+	}
+
+	private function desktop_styles( $attributes ): array|false {
 
 		if ( empty( $attributes ) ) {
 			return false;
@@ -149,12 +111,11 @@ class WPBS_Style {
 
 		}
 
-
 		return $styles;
 
 	}
 
-	private static function hover_styles( $attributes ): array|false {
+	private function hover_styles( $attributes ): array|false {
 
 		if ( empty( $attributes ) ) {
 			return false;
@@ -191,7 +152,7 @@ class WPBS_Style {
 		return $styles;
 	}
 
-	private static function mobile_styles( $attributes ): array|false {
+	private function mobile_styles( $attributes ): array|false {
 
 		if ( empty( $attributes ) ) {
 			return false;
@@ -263,57 +224,6 @@ class WPBS_Style {
 
 		return $styles;
 
-	}
-
-	public static function render_styles( $styles, $selector, $block = false, $breakpoint = false ): string|false {
-
-		if ( empty( $styles ) || empty( $selector ) ) {
-			return false;
-		}
-
-		$styles = array_merge( [], $styles, apply_filters( 'wpbs_block_styles', [], $selector ) );
-
-		$css_layout = '';
-		$css_hover  = '';
-		$css_mobile = '';
-
-		foreach ( $styles['layout'] ?? [] ?: [] as $prop => $value ) {
-			$css_layout .= $prop . ':' . WPBS::parse_style( $value ) . ';';
-		}
-
-		foreach ( $styles['hover'] ?? [] ?: [] as $prop => $value ) {
-			$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
-		}
-
-		foreach ( $styles['mobile'] ?? [] ?: [] as $prop => $value ) {
-			$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
-		}
-
-		$css = join( ' ', array_filter( [
-			! empty( $css_layout ) ? $selector . '{' . $css_layout . '}' : null,
-			! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
-			! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
-		] ) );
-
-		unset( $css_layout );
-		unset( $css_hover );
-		unset( $css_mobile );
-
-		if ( $block ) {
-			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
-		}
-
-		return $css;
-
-	}
-
-
-	public static function init(): WPBS_Style {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new WPBS_Style();
-		}
-
-		return self::$instance;
 	}
 
 }

@@ -19,7 +19,7 @@ class WPBS_Background {
 		unset( $attributes );
 
 		$this->desktop = $this->desktop();
-		//$this->mobile  = $this->mobile();
+		$this->mobile  = $this->mobile();
 
 		unset( $this->attributes );
 

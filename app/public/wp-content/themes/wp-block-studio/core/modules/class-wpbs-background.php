@@ -64,6 +64,8 @@ class WPBS_Background {
 				continue;
 			}
 
+			$value = str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) );
+
 			$styles[ $prop ] = $value;
 
 		}

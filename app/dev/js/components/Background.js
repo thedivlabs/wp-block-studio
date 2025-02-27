@@ -49,7 +49,7 @@ export function Background({attributes = {}, blockProps}) {
     ].filter(x => x).join(' ');
 
     let mediaClass = [
-        'wpbs-background__media absolute z-0 overflow-hidden',
+        'wpbs-background__media absolute z-0 overflow-hidden w-full h-full',
     ];
 
     function Media() {

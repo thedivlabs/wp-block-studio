@@ -56,7 +56,7 @@ class WPBS_Style {
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
 
-		//PBS::console_log( $attributes );
+		WPBS::console_log( $components );
 
 		$css = '';
 

@@ -41,10 +41,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-
-        //console.log(attributes);
-        //console.log(clientId);
-
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
         });

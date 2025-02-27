@@ -54,7 +54,16 @@ class WPBS_Style {
 
 		$styles = [
 			'layout'     => ( new WPBS_Layout( $attributes ) )->styles(),
-			'background' => [],
+			'background' => ( new WPBS_Background( $attributes ) )->styles(),
+		];
+
+		//WPBS::console_log( $attributes );
+		//WPBS::console_log( $styles );
+
+		$styles = [
+			'desktop' => array_merge( [], ...array_filter( array_column( $styles, 'desktop' ) ) ),
+			'mobile'  => array_merge( [], ...array_filter( array_column( $styles, 'mobile' ) ) ),
+			'hover'   => array_merge( [], ...array_filter( array_column( $styles, 'hover' ) ) ),
 		];
 
 		return self::render_styles( $styles, $selector, is_string( $block ) ? false : $block, $breakpoint );
@@ -70,8 +79,8 @@ class WPBS_Style {
 		$styles = apply_filters( 'wpbs_block_styles_all', $styles, $selector );
 
 		$css_desktop = '';
-		$css_hover  = '';
-		$css_mobile = '';
+		$css_hover   = '';
+		$css_mobile  = '';
 
 		foreach ( $styles['desktop'] ?? [] ?: [] as $prop => $value ) {
 			$css_desktop .= $prop . ':' . WPBS::parse_style( $value ) . ';';

@@ -27,11 +27,11 @@ class WPBS_Layout {
 	}
 
 	public function styles(): array {
-		return array_merge( apply_filters( 'wpbs_block_styles_layout',  [
+		return apply_filters( 'wpbs_block_styles_layout', [
 			'desktop' => $this->desktop,
 			'mobile'  => $this->mobile,
 			'hover'   => $this->hover,
-		] ) );
+		] );
 	}
 
 	private function desktop(): array|false {

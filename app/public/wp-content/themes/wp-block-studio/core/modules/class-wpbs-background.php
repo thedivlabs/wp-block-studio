@@ -44,6 +44,8 @@ class WPBS_Background {
 		$this->desktop = $this->desktop();
 		$this->mobile  = $this->mobile();
 
+		WPBS::console_log( $this->desktop );
+
 		unset( $this->attributes );
 
 	}
@@ -62,7 +64,7 @@ class WPBS_Background {
 		] );
 	}
 
-	private function image_set(): array|false {
+	private function image_set( $mobile = false ): string|false {
 
 		$force = ! empty( $this->attributes['force'] );
 
@@ -78,39 +80,38 @@ class WPBS_Background {
 		$large_webp  = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $large_src ) . '.webp' ) ? $large_src . '.webp' : false;
 		$mobile_webp = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $mobile_src ) . '.webp' ) ? $mobile_src . '.webp' : false;
 
-
-		/*$large_webp = realpath(get_attached_file($large_id, true)) . '.webp';
-		$mobile_webp = realpath(get_attached_file($mobile_id, true)) . '.webp';*/
-
 		if ( empty( $large_src ) && empty( $mobile_src ) ) {
 			return false;
 		}
 
-		$image_set_large  = array_filter( [
-			$large_webp ? join(' ', [
-				$large_webp,
-				'type(webp)'
-			]) : null,
-			join(' ', [
-				$large_src,
-				'type(image)'
-			]),
-			$mobile_webp ? join(' ', [
-				$mobile_webp,
-				'type(image/webp)'
-			]) : null,
-			join(' ', [
-				$mobile_src,
-				'type(image)'
-			]),
-		] );
-		$image_set_mobile = [];
+		$image_set_large = implode( ', ', array_filter( [
+			$large_webp ? join( ' ', [
+				'url("' . $large_webp . '")',
+				'type("image/webp")'
+			] ) : null,
+			join( ' ', [
+				'url("' . $large_src . '")',
+				'type("image/jpg")'
+			] ),
+		] ) );
 
+		$image_set_mobile = implode( ', ', array_filter( [
+			$mobile_webp ? join( ' ', [
+				'url("' . $mobile_webp . '")',
+				'type("image/webp")'
+			] ) : null,
+			join( ' ', [
+				'url("' . $mobile_src . '")',
+				'type("image/jpg")'
+			] ),
+		] ) );
 
-		return [
-			'--image-large'  => 'image-set(' . implode( ', ', $image_set_large ) . ')',
-			'--image-mobile' => 'image-set(' . implode( ', ', $image_set_mobile ) . ')',
-		];
+		
+		if ( ! $mobile ) {
+			return 'image-set(' . $image_set_large . ')';
+		} else {
+			return 'image-set(' . $image_set_mobile . ')';
+		}
 
 
 	}
@@ -120,6 +121,12 @@ class WPBS_Background {
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
 			return str_contains( strtolower( $k ), 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
+
+		}, ARRAY_FILTER_USE_KEY );
+
+		$special_attributes = array_filter( $this->attributes, function ( $k ) {
+
+			return str_contains( strtolower( $k ), 'mobile' ) && in_array( $k, $this->special );
 
 		}, ARRAY_FILTER_USE_KEY );
 
@@ -138,25 +145,27 @@ class WPBS_Background {
 
 		}
 
-		return $styles;
+		//return array_merge( $styles, $this->special( $special_attributes ) );
+		return array_merge( $styles, $this->special( $special_attributes ) );
 
 	}
 
-	private function special(): array {
+	private function special( $attributes ): array|false {
 
-		$styles = [];
+		$props = [];
 
-		foreach ( $this->special as $prop => $value ) {
-
+		foreach ( $attributes as $prop => $value ) {
 			switch ( $prop ) {
 				case 'mobileImage':
-					$styles['--image-mobile'] = 'url(' . $value . ')';
-
+					$props['--image'] = $this->image_set( true );
+					break;
+				case 'largeImage':
+					$props['--image'] = $this->image_set();
+					break;
 			}
-
 		}
 
-		return $styles;
+		return $props;
 
 	}
 
@@ -170,6 +179,12 @@ class WPBS_Background {
 
 		}, ARRAY_FILTER_USE_KEY );
 
+		$special_attributes = array_filter( $this->attributes, function ( $k ) {
+
+			return ! str_contains( strtolower( $k ), 'mobile' ) && in_array( $k, $this->special );
+
+		}, ARRAY_FILTER_USE_KEY );
+
 		$styles = [];
 
 		foreach ( $attributes as $prop => $value ) {
@@ -185,7 +200,7 @@ class WPBS_Background {
 
 		}
 
-		return array_merge( $styles, $this->special() );
+		return array_merge( $styles, $this->special( $special_attributes ) );
 
 	}
 

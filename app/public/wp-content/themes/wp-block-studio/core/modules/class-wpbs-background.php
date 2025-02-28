@@ -8,21 +8,22 @@ class WPBS_Background {
 
 	private array $attributes = [];
 	private array $special = [
-		'eager',
-		'fixed',
-		'force',
-		'largeImage',
-		'mobileImage',
-		'largeVideo',
-		'mobileVideo',
-		'mask',
-		'maskImageLarge',
-		'maskImageMobile',
 		'type',
+		'mobileImage',
+		'largeImage',
+		'mobileVideo',
+		'largeVideo',
+		'maskImageMobile',
+		'maskImageLarge',
+		'eager',
+		'force',
+		'mask',
+		'fixed',
 		'scale',
 		'opacity',
 		'width',
 		'height',
+		'maskMobile',
 		'scaleMobile',
 		'opacityMobile',
 		'widthMobile',
@@ -60,11 +61,25 @@ class WPBS_Background {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
-			return str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
+			return str_contains( strtolower( $k ), 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
 
 		}, ARRAY_FILTER_USE_KEY );
 
 		$styles = [];
+
+		foreach ( $attributes as $prop => $value ) {
+
+			if ( empty( $value ) ) {
+				continue;
+			}
+
+			$value = str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) );
+
+			$value = preg_split( '/(?=[A-Z])/', $value );
+
+			$styles[ '--' . $prop ] = $value;
+
+		}
 
 		return $styles;
 
@@ -89,7 +104,7 @@ class WPBS_Background {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
-			return ! str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
+			return ! str_contains( strtolower( $k ), 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
 
 		}, ARRAY_FILTER_USE_KEY );
 

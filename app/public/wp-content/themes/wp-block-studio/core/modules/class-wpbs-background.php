@@ -12,9 +12,12 @@ class WPBS_Background {
 		'fixed',
 		'force',
 		'largeImage',
+		'mobileImage',
+		'largeVideo',
+		'mobileVideo',
 		'mask',
 		'maskImageLarge',
-		'mobileImage',
+		'maskImageMobile',
 		'type',
 	];
 
@@ -46,9 +49,12 @@ class WPBS_Background {
 	}
 
 	private function mobile(): array|false {
-		if ( empty( $this->attributes ) ) {
-			return false;
-		}
+
+		$attributes = array_filter( $this->attributes, function ( $k ) {
+
+			return str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special_attributes );
+
+		}, ARRAY_FILTER_USE_KEY );
 
 		$styles = [];
 
@@ -75,7 +81,7 @@ class WPBS_Background {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
-			return ! str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] );
+			return ! str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special_attributes );
 
 		}, ARRAY_FILTER_USE_KEY );
 

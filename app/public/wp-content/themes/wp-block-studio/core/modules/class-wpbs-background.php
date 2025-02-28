@@ -162,7 +162,22 @@ class WPBS_Background {
 					break;
 				case 'maskImageMobile':
 				case 'maskImageLarge':
-					$props['--mask-image'] = 'url('.( wp_get_attachment_image_src( $value['id'] ?? false )[0] ?? false).')';
+					$props['--mask-image'] = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false )[0] ?? false ) . ')';
+					break;
+				case 'fixed':
+					$props['--attachment'] = 'fixed';
+					break;
+				case 'scale':
+				case 'scaleMobile':
+				case 'opacity':
+				case 'opacityMobile':
+					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = intval( $value ) / 100;
+					break;
+				case 'width':
+				case 'widthMobile':
+				case 'height':
+				case 'heightMobile':
+					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = $value . '%';
 					break;
 			}
 		}

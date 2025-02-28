@@ -62,23 +62,34 @@ class WPBS_Background {
 		] );
 	}
 
-	private function image_set( $large, $mobile ): string|false {
+	private function image_set( $large_image, $mobile_image ): array|false {
 
 		$force = ! empty( $this->attributes['force'] );
-		$resolution = ! empty( $this->attributes['large'] ) ? 'large' : null;
 
 		$large_id  = $force ? $large['id'] ?? false : ( $large['id'] ?? $mobile['id'] ?? false );
 		$mobile_id = $force ? $mobile['id'] ?? false : ( $mobile['id'] ?? $large['id'] ?? false );
+
+		$large_src = wp_get_attachment_image_src( $large_id, $this->attributes['resolution'] ?? 'large' );
+		$mobile_src = wp_get_attachment_image_src( $mobile_id, $this->attributes['resolutionMobile'] ?? 'large' );
+
+		/*$large_webp = realpath(get_attached_file($large_id, true)) . '.webp';
+		$mobile_webp = realpath(get_attached_file($mobile_id, true)) . '.webp';*/
 
 		if ( empty( $large_id ) && empty( $mobile_id ) ) {
 			return false;
 		}
 
-		$image_set = array_filter([
-
+		$image_set_large = array_filter([
+			//$large_webp ? '' : null,
 		]);
+		$image_set_mobile = [];
 
-		return 'image-set(' . implode(', ', $image_set) . ')';
+
+
+		return [
+			'--image-large' => 'image-set(' . implode(', ', $image_set_large) . ')',
+			'--image-mobile' => 'image-set(' . implode(', ', $image_set_mobile) . ')',
+		];
 
 
 	}

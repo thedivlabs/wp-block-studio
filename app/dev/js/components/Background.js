@@ -109,6 +109,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         eager: undefined,
         force: undefined,
         large: undefined,
+        fixed: undefined,
 
 
         size: undefined,
@@ -124,7 +125,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         height: undefined,
         overlay: undefined,
         mask: undefined,
-        fixed: undefined,
 
 
         sizeMobile: undefined,

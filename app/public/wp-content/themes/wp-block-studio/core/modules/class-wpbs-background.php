@@ -19,6 +19,14 @@ class WPBS_Background {
 		'maskImageLarge',
 		'maskImageMobile',
 		'type',
+		'scale',
+		'opacity',
+		'width',
+		'height',
+		'scaleMobile',
+		'opacityMobile',
+		'widthMobile',
+		'heightMobile',
 	];
 
 	function __construct( $attributes ) {

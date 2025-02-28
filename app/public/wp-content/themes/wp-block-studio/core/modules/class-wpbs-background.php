@@ -53,7 +53,7 @@ class WPBS_Background {
 	}
 
 	private function parse_prop( $value ): string {
-		return strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', str_replace('Mobile', '', $value) ) ) ) );
+		return strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', str_replace( 'Mobile', '', $value ) ) ) ) );
 	}
 
 	public function styles(): array {
@@ -147,7 +147,7 @@ class WPBS_Background {
 
 		}
 
-		$styles['--mask-image'] = !empty($this->attributes['maskImageMobile']) ? 'url('.$this->attributes['maskImageMobile'].')' : 'none';
+		$styles['--mask-image'] = ! empty( $this->attributes['maskImageMobile']['id'] ) ? 'url(' . wp_get_attachment_image_src( $this->attributes['maskImageMobile']['id'] )[0] . ')' : 'none';
 
 		return array_merge( $styles, $this->special( $special_attributes ) );
 
@@ -176,8 +176,8 @@ class WPBS_Background {
 					break;
 				case 'scaleMobile':
 				case 'sizeMobile':
-					$scaleMobile           = ! empty( $attributes['scaleMobile'] ) ? intval( $attributes['scaleMobile'] ) . '%' : null;
-					$sizeMobile            = $attributes['sizeMobile'] ?? null;
+					$scaleMobile     = ! empty( $attributes['scaleMobile'] ) ? intval( $attributes['scaleMobile'] ) . '%' : null;
+					$sizeMobile      = $attributes['sizeMobile'] ?? null;
 					$props['--size'] = $scaleMobile ?? $sizeMobile;
 					break;
 				case 'width':
@@ -252,7 +252,7 @@ class WPBS_Background {
 
 		}
 
-		$styles['--mask-image'] = !empty($this->attributes['maskImageLarge']) ? 'url('.$this->attributes['maskImageLarge'].')' : 'none';
+		$styles['--mask-image'] = ! empty( $this->attributes['maskImageLarge']['id'] ) ? 'url(' . wp_get_attachment_image_src( $this->attributes['maskImageLarge']['id'] )[0] . ')' : 'none';
 
 		return array_merge( $styles, $this->special( $special_attributes ) );
 

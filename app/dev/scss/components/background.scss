@@ -10,7 +10,7 @@
     background-size: var(--scale, var(--size, cover));
     background-blend-mode: var(--blend, none);
     background-attachment: var(--attachment, initial);
-    background-position: var(origin, center);
+    background-position: var(--origin, center);
     top: var(--top, 0);
     left: var(--left, 0);
     opacity: var(--opacity, 1);

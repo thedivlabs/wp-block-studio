@@ -62,7 +62,7 @@ class WPBS_Background {
 		] );
 	}
 
-	private function image_set( $mobile = false ): string|false {
+	private function image_set( $is_mobile = false ): string|false {
 
 		$force = ! empty( $this->attributes['force'] );
 
@@ -105,7 +105,7 @@ class WPBS_Background {
 		] ) );
 
 
-		if ( ! $mobile ) {
+		if ( ! $is_mobile ) {
 			return 'image-set(' . $image_set_large . ')';
 		} else {
 			return 'image-set(' . $image_set_mobile . ')';

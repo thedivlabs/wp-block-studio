@@ -7,6 +7,16 @@ class WPBS_Background {
 	public array $hover = [];
 
 	private array $attributes = [];
+	private array $special_attributes = [
+		'eager',
+		'fixed',
+		'force',
+		'largeImage',
+		'mask',
+		'maskImageLarge',
+		'mobileImage',
+		'type',
+	];
 
 	function __construct( $attributes ) {
 
@@ -46,6 +56,20 @@ class WPBS_Background {
 
 	}
 
+	private function special_attributes(): array|false {
+
+		$attributes = array_filter( $this->attributes, function ( $k ) {
+
+			return true;
+
+		}, ARRAY_FILTER_USE_KEY );
+
+		WPBS::console_log( $attributes );
+
+		return (array) $attributes;
+
+	}
+
 	private function desktop(): array|false {
 
 
@@ -68,6 +92,8 @@ class WPBS_Background {
 			$styles[ '--' . $prop ] = $value;
 
 		}
+
+		$special_attributes = $this->special_attributes();
 
 
 		/*foreach ( $special_attributes as $prop => $value ) {

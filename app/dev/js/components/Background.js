@@ -294,7 +294,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Scale"
                 value={scale}
                 onChange={(value) => {
-                    updateSettings('scale', value, setScale);
+                    updateSettings('scale', value / 100, setScale);
                 }}
                 min={0}
                 max={200}
@@ -306,7 +306,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Opacity"
                 value={opacity}
                 onChange={(value) => {
-                    updateSettings('opacity', value, setOpacity);
+                    updateSettings('opacity', value / 100, setOpacity);
                 }}
                 min={0}
                 max={100}
@@ -318,7 +318,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Width"
                 value={width}
                 onChange={(value) => {
-                    updateSettings('width', value, setWidth);
+                    updateSettings('width', value + '%', setWidth);
                 }}
                 min={0}
                 max={100}
@@ -330,7 +330,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Height"
                 value={height}
                 onChange={(value) => {
-                    updateSettings('height', value, setHeight);
+                    updateSettings('height', value + '%', setHeight);
                 }}
                 min={0}
                 max={100}
@@ -553,7 +553,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Scale"
                 value={scaleMobile}
                 onChange={(value) => {
-                    updateSettings('scaleMobile', value, setScaleMobile);
+                    updateSettings('scaleMobile', value / 100, setScaleMobile);
                 }}
                 min={0}
                 max={200}
@@ -565,7 +565,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Opacity"
                 value={opacityMobile}
                 onChange={(value) => {
-                    updateSettings('opacityMobile', value, setOpacityMobile);
+                    updateSettings('opacityMobile', value / 100, setOpacityMobile);
                 }}
                 min={0}
                 max={100}
@@ -577,7 +577,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Width"
                 value={widthMobile}
                 onChange={(value) => {
-                    updateSettings('widthMobile', value, setWidthMobile);
+                    updateSettings('widthMobile', value + '%', setWidthMobile);
                 }}
                 min={0}
                 max={100}
@@ -589,7 +589,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Height"
                 value={heightMobile}
                 onChange={(value) => {
-                    updateSettings('heightMobile', value, setHeightMobile);
+                    updateSettings('heightMobile', value + '%', setHeightMobile);
                 }}
                 min={0}
                 max={100}

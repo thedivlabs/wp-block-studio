@@ -108,10 +108,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         maskImageLarge: undefined,
         eager: undefined,
         force: undefined,
-        large: undefined,
         fixed: undefined,
 
 
+        resolution: undefined,
         size: undefined,
         blend: undefined,
         position: undefined,
@@ -127,6 +127,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         mask: undefined,
 
 
+        resolutionMobile: undefined,
         sizeMobile: undefined,
         blendMobile: undefined,
         positionMobile: undefined,
@@ -152,10 +153,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [maskImageLarge, setMaskImageLarge] = useState(settings.maskImageLarge);
     const [eager, setEager] = useState(settings.eager);
     const [force, setForce] = useState(settings.force);
-    const [large, setLarge] = useState(settings.large);
 
     const [mask, setMask] = useState(settings.mask);
     const [fixed, setFixed] = useState(settings.fixed);
+    const [resolution, setResolution] = useState(settings.resolution);
     const [size, setSize] = useState(settings.size);
     const [blend, setBlend] = useState(settings.blend);
     const [position, setPosition] = useState(settings.position);
@@ -170,6 +171,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [overlay, setOverlay] = useState(settings.overlay);
 
     const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
+    const [resolutionMobile, setResolutionMobile] = useState(settings.resolutionMobile);
     const [sizeMobile, setSizeMobile] = useState(settings.sizeMobile);
     const [blendMobile, setBlendMobile] = useState(settings.blendMobile);
     const [positionMobile, setPositionMobile] = useState(settings.positionMobile);
@@ -205,6 +207,21 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
 
     const tabDesktop = <Grid columns={1} columnGap={20} rowGap={20}>
         <Grid columns={2} columnGap={20} rowGap={30}>
+            <SelectControl
+                label="Resolution"
+                value={resolution}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Small', value: 'small'},
+                    {label: 'Medium', value: 'medium'},
+                    {label: 'Large', value: 'large'},
+                    {label: 'Full', value: 'full'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('resolution', value, setResolution);
+                }}
+                __nextHasNoMarginBottom
+            />
             <SelectControl
                 label="Size"
                 value={size}
@@ -457,6 +474,21 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
 
     const tabMobile = <Grid columns={1} columnGap={20} rowGap={20}>
         <Grid columns={2} columnGap={20} rowGap={30}>
+            <SelectControl
+                label="Resolution"
+                value={resolutionMobile}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Small', value: 'small'},
+                    {label: 'Medium', value: 'medium'},
+                    {label: 'Large', value: 'large'},
+                    {label: 'Full', value: 'full'},
+                ]}
+                onChange={(value) => {
+                    updateSettings('resolutionMobile', value, setResolutionMobile);
+                }}
+                __nextHasNoMarginBottom
+            />
             <SelectControl
                 label="Size"
                 value={sizeMobile}
@@ -857,15 +889,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                             checked={force}
                             onChange={(value) => {
                                 updateSettings('force', value, setForce);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                        <ToggleControl
-                            label="Large"
-                            checked={large}
-                            onChange={(value) => {
-                                updateSettings('large', value, setLarge);
                             }}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom

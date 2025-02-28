@@ -63,6 +63,7 @@ class WPBS_Background {
 	private function image_set( $large, $mobile ): string|false {
 
 		$force = ! empty( $this->attributes['force'] );
+		$resolution = ! empty( $this->attributes['large'] ) ? 'large' : null;
 
 		$large_id  = $force ? $large['id'] ?? false : ( $large['id'] ?? $mobile['id'] ?? false );
 		$mobile_id = $force ? $mobile['id'] ?? false : ( $mobile['id'] ?? $large['id'] ?? false );

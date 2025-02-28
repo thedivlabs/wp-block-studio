@@ -4,7 +4,7 @@
     mask-image: var(--mask-image, none);
     mask-repeat: no-repeat;
     mask-size: var(--mask-size, contain);
-    mask-origin: var(--mask-origin, center);
+    mask-position: var(--mask-origin, center);
     background-image: var(--image, none);
     background-repeat: var(--repeat, no-repeat);
     background-size: var(--size, cover) var(--scale, auto);

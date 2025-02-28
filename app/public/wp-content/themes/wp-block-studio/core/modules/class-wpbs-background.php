@@ -60,6 +60,26 @@ class WPBS_Background {
 		] );
 	}
 
+	private function image_set( $large, $mobile ): string|false {
+
+		$force = ! empty( $this->attributes['force'] );
+
+		$large_id  = $force ? $large['id'] ?? false : ( $large['id'] ?? $mobile['id'] ?? false );
+		$mobile_id = $force ? $mobile['id'] ?? false : ( $mobile['id'] ?? $large['id'] ?? false );
+
+		if ( empty( $large_id ) && empty( $mobile_id ) ) {
+			return false;
+		}
+
+		$image_set = array_filter([
+
+		]);
+
+		return 'image-set(' . implode(', ', $image_set) . ')';
+
+
+	}
+
 	private function mobile(): array|false {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {

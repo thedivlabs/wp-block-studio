@@ -108,9 +108,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         maskImageLarge: undefined,
         eager: undefined,
         force: undefined,
+        large: undefined,
 
-        mask: undefined,
-        fixed: undefined,
+
         size: undefined,
         blend: undefined,
         position: undefined,
@@ -123,8 +123,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         width: undefined,
         height: undefined,
         overlay: undefined,
+        mask: undefined,
+        fixed: undefined,
 
-        maskMobile: undefined,
+
         sizeMobile: undefined,
         blendMobile: undefined,
         positionMobile: undefined,
@@ -136,6 +138,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         opacityMobile: undefined,
         widthMobile: undefined,
         heightMobile: undefined,
+        maskMobile: undefined,
         overlayMobile: undefined,
 
     }, attributes['wpbs-background'])
@@ -149,6 +152,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [maskImageLarge, setMaskImageLarge] = useState(settings.maskImageLarge);
     const [eager, setEager] = useState(settings.eager);
     const [force, setForce] = useState(settings.force);
+    const [large, setLarge] = useState(settings.large);
 
     const [mask, setMask] = useState(settings.mask);
     const [fixed, setFixed] = useState(settings.fixed);
@@ -853,6 +857,15 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                             checked={force}
                             onChange={(value) => {
                                 updateSettings('force', value, setForce);
+                            }}
+                            className={'flex items-center'}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label="Large"
+                            checked={large}
+                            onChange={(value) => {
+                                updateSettings('large', value, setLarge);
                             }}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom

@@ -44,8 +44,6 @@ class WPBS_Background {
 		$this->desktop = $this->desktop();
 		$this->mobile  = $this->mobile();
 
-		WPBS::console_log( $this->desktop );
-
 		unset( $this->attributes );
 
 	}
@@ -106,7 +104,7 @@ class WPBS_Background {
 			] ),
 		] ) );
 
-		
+
 		if ( ! $mobile ) {
 			return 'image-set(' . $image_set_large . ')';
 		} else {

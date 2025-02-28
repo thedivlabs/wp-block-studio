@@ -28,7 +28,7 @@ class WPBS_Style {
 
 
 	private static function get_selector( $block ): string {
-		
+
 		$selector = ! empty( $block->attributes['className'] ) ? '.' . $block->attributes['className'] : '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
@@ -64,9 +64,6 @@ class WPBS_Style {
 				is_string( $block ) ? $block : self::get_selector( $block ),
 				$data['selector'] ?? null
 			] ) );
-
-			//WPBS::console_log( $selector );
-			//WPBS::console_log( $block );
 
 			$styles = [
 				'desktop' => array_merge( [], ...array_filter( array_column( $data ?? [], 'desktop' ) ) ),

@@ -15,6 +15,8 @@ class WPBS_Background {
 		'maskImageMobile',
 		'maskImageLarge',
 		'resolution',
+		'position',
+		'positionMobile',
 		'eager',
 		'force',
 		'mask',
@@ -179,6 +181,30 @@ class WPBS_Background {
 				case 'heightMobile':
 					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = $value . '%';
 					break;
+				case 'position':
+					switch($value){
+						case 'top-left':
+							$props['--top'] = '0';
+							$props['--left'] = '0';
+							break;
+						case 'top-right':
+							$props['--top'] = '0';
+							$props['--right'] = '0';
+							break;
+						case 'bottom-right':
+							$props['--bottom'] = '0';
+							$props['--right'] = '0';
+							break;
+						case 'bottom-left':
+							$props['--bottom'] = '0';
+							$props['--left'] = '0';
+							break;
+						case 'center':
+							$props['--top'] = '50%';
+							$props['--left'] = '50%';
+							$props['--transform'] = 'translate(-50%,-50%)';
+							break;
+					}
 			}
 		}
 

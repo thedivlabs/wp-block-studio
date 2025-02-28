@@ -78,9 +78,6 @@ class WPBS_Background {
 		$large_webp  = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $large_src ) . '.webp' ) ? $large_src . '.webp' : false;
 		$mobile_webp = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $mobile_src ) . '.webp' ) ? $mobile_src . '.webp' : false;
 
-		WPBS::console_log( $large_src . '.webp' );
-		WPBS::console_log( $mobile_webp );
-
 
 		/*$large_webp = realpath(get_attached_file($large_id, true)) . '.webp';
 		$mobile_webp = realpath(get_attached_file($mobile_id, true)) . '.webp';*/
@@ -90,7 +87,22 @@ class WPBS_Background {
 		}
 
 		$image_set_large  = array_filter( [
-			//$large_webp ? '' : null,
+			$large_webp ? join(' ', [
+				$large_webp,
+				'type(webp)'
+			]) : null,
+			join(' ', [
+				$large_src,
+				'type(image)'
+			]),
+			$mobile_webp ? join(' ', [
+				$mobile_webp,
+				'type(image/webp)'
+			]) : null,
+			join(' ', [
+				$mobile_src,
+				'type(image)'
+			]),
 		] );
 		$image_set_mobile = [];
 

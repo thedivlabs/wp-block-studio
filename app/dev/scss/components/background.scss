@@ -7,7 +7,7 @@
     mask-position: var(--mask-origin, center);
     background-image: var(--image, none);
     background-repeat: var(--repeat, no-repeat);
-    background-size: var(--size, cover) var(--scale, auto);
+    background-size: var(--scale, var(--size, cover));
     background-blend-mode: var(--blend, none);
     background-attachment: var(--attachment);
     top: var(--top, 0);

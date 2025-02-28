@@ -7,7 +7,7 @@ class WPBS_Background {
 	public array $hover = [];
 
 	private array $attributes = [];
-	private array $special_attributes = [
+	private array $special = [
 		'eager',
 		'fixed',
 		'force',
@@ -60,7 +60,7 @@ class WPBS_Background {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
-			return str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special_attributes );
+			return str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
 
 		}, ARRAY_FILTER_USE_KEY );
 
@@ -70,7 +70,7 @@ class WPBS_Background {
 
 	}
 
-	private function special_attributes(): array|false {
+	private function special(): array|false {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
@@ -80,7 +80,7 @@ class WPBS_Background {
 
 		WPBS::console_log( $attributes );
 
-		return (array) $attributes;
+		return $attributes;
 
 	}
 
@@ -89,7 +89,7 @@ class WPBS_Background {
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 
-			return ! str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special_attributes );
+			return ! str_contains( $k, 'mobile' ) && ! is_array( $this->attributes[ $k ] ) && ! in_array( $k, $this->special );
 
 		}, ARRAY_FILTER_USE_KEY );
 
@@ -107,7 +107,7 @@ class WPBS_Background {
 
 		}
 
-		$special_attributes = $this->special_attributes();
+		$special_attributes = $this->special();
 
 
 		/*foreach ( $special_attributes as $prop => $value ) {

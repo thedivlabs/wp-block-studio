@@ -125,7 +125,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         overlay: undefined,
 
         maskMobile: undefined,
-        fixedMobile: undefined,
         sizeMobile: undefined,
         blendMobile: undefined,
         positionMobile: undefined,
@@ -167,7 +166,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [overlay, setOverlay] = useState(settings.overlay);
 
     const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
-    const [fixedMobile, setFixedMobile] = useState(settings.fixedMobile);
     const [sizeMobile, setSizeMobile] = useState(settings.sizeMobile);
     const [blendMobile, setBlendMobile] = useState(settings.blendMobile);
     const [positionMobile, setPositionMobile] = useState(settings.positionMobile);
@@ -341,15 +339,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
 
         <Grid columns={2} columnGap={15} rowGap={30}
               style={{padding: '1rem 0'}}>
-            <ToggleControl
-                label="Fixed"
-                checked={fixed}
-                onChange={(value) => {
-                    updateSettings('fixed', value, setFixed);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
             <ToggleControl
                 label="Mask"
                 checked={mask}

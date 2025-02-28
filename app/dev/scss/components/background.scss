@@ -1,6 +1,8 @@
 .wpbs-background {
+  background-color:inherit;
 
   &__media {
+    background-color:inherit;
     mask-image: var(--mask-image, none);
     mask-repeat: no-repeat;
     mask-size: var(--mask-size, contain);

@@ -590,15 +590,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         <Grid columns={2} columnGap={15} rowGap={30}
               style={{padding: '1rem 0'}}>
             <ToggleControl
-                label="Fixed"
-                checked={fixedMobile}
-                onChange={(value) => {
-                    updateSettings('fixedMobile', value, setFixedMobile);
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-            <ToggleControl
                 label="Mask"
                 checked={maskMobile}
                 onChange={(value) => {
@@ -862,6 +853,15 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                             checked={force}
                             onChange={(value) => {
                                 updateSettings('force', value, setForce);
+                            }}
+                            className={'flex items-center'}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label="Fixed"
+                            checked={fixed}
+                            onChange={(value) => {
+                                updateSettings('fixed', value, setFixed);
                             }}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom

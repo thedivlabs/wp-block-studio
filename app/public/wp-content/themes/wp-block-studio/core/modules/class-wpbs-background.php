@@ -4,7 +4,6 @@ class WPBS_Background {
 
 	public array $desktop = [];
 	public array $mobile = [];
-	public array $hover = [];
 
 	private array $attributes = [];
 	private array $special = [
@@ -47,6 +46,10 @@ class WPBS_Background {
 
 	}
 
+	private function parse_prop( $value ): string {
+		return strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) ) );
+	}
+
 	public function styles(): array {
 		return apply_filters( 'wpbs_block_styles_background', [
 			'selector' => '.wpbs-background',
@@ -73,8 +76,8 @@ class WPBS_Background {
 				continue;
 			}
 
-			$value = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) ) );
-			$prop  = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $prop ) ) ) );
+			$value = $this->parse_prop( $value );
+			$prop  = $this->parse_prop( $prop );
 
 			$styles[ '--' . $prop ] = $value;
 
@@ -84,17 +87,21 @@ class WPBS_Background {
 
 	}
 
-	private function special(): array|false {
+	private function special(): array {
 
-		$attributes = array_filter( $this->attributes, function ( $k ) {
+		$styles = [];
 
-			return true;
+		foreach ( $this->special as $prop => $value ) {
 
-		}, ARRAY_FILTER_USE_KEY );
+			switch ( $prop ) {
+				case 'mobileImage':
+					$styles['--image-mobile'] = 'url(' . $value . ')';
 
-		WPBS::console_log( $attributes );
+			}
 
-		return $attributes;
+		}
+
+		return $styles;
 
 	}
 
@@ -115,48 +122,14 @@ class WPBS_Background {
 				continue;
 			}
 
-			$value = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) ) );
-			$prop  = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $prop ) ) ) );
+			$value = $this->parse_prop( $value );
+			$prop  = $this->parse_prop( $prop );
 
 			$styles[ '--' . $prop ] = $value;
 
 		}
 
-		$special_attributes = $this->special();
-
-
-		/*foreach ( $special_attributes as $prop => $value ) {
-
-			if ( empty( $value ) ) {
-				continue;
-			}
-
-			switch ( $prop ) {
-				case 'wpbs-layout-height':
-				case 'wpbs-layout-height-custom':
-					$styles['height'] = $this->attributes['wpbs-layout-height-custom'] ?? $this->attributes['wpbs-layout-height'] ?? null;
-					break;
-				case 'wpbs-layout-width':
-				case 'wpbs-layout-width-custom':
-					$styles['width'] = $this->attributes['wpbs-layout-width-custom'] ?? $this->attributes['wpbs-layout-width'] ?? null;
-					break;
-				case 'wpbs-layout-translate':
-					$styles['transform'] = 'translate(' . join( ', ', [
-							WPBS::parse_style( $this->attributes['wpbs-layout-translate']['top'] ?? '0px' ),
-							WPBS::parse_style( $this->attributes['wpbs-layout-translate']['left'] ?? '0px' )
-						] ) . ')';
-					break;
-				case 'wpbs-layout-offset-header':
-					$styles['padding-top'] = 'calc(' . join( ' + ', [
-							WPBS::parse_style( $this->attributes['style']['spacing']['padding']['top'] ?? '0px' ),
-							'var(--wpbs-header-height, 0px)'
-						] ) . ')';
-					break;
-			}
-
-		}*/
-
-		return $styles;
+		return array_merge( $styles, $this->special() );
 
 	}
 

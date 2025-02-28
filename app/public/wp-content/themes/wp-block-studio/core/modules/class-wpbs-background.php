@@ -73,9 +73,8 @@ class WPBS_Background {
 				continue;
 			}
 
-			$value = str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) );
-
-			$value = preg_split( '/(?=[A-Z])/', $value );
+			$value = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) ) );
+			$prop  = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $prop ) ) ) );
 
 			$styles[ '--' . $prop ] = $value;
 
@@ -116,7 +115,8 @@ class WPBS_Background {
 				continue;
 			}
 
-			$value = str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) );
+			$value = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $value ) ) ) );
+			$prop  = strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', $prop ) ) ) );
 
 			$styles[ '--' . $prop ] = $value;
 

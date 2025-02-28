@@ -173,7 +173,7 @@ class WPBS_Background {
 				case 'scaleMobile':
 				case 'opacity':
 				case 'opacityMobile':
-					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = intval( $value ) / 100;
+					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = intval( $value ) . '%';
 					break;
 				case 'width':
 				case 'widthMobile':

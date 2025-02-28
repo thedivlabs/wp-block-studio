@@ -9,6 +9,7 @@
     background-repeat: var(--repeat, no-repeat);
     background-size: var(--size, cover) var(--scale, auto);
     background-blend-mode: var(--blend, none);
+    background-attachment: var(--attachment);
     top: var(--top, 0);
     left: var(--left, 0);
     opacity: var(--opacity, 1);

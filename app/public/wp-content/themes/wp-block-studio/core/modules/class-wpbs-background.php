@@ -160,6 +160,10 @@ class WPBS_Background {
 				case 'largeImage':
 					$props['--image'] = $this->image_set();
 					break;
+				case 'maskImageMobile':
+				case 'maskImageLarge':
+					$props['--mask-image'] = 'url('.( wp_get_attachment_image_src( $value['id'] ?? false )[0] ?? false).')';
+					break;
 			}
 		}
 

@@ -22,6 +22,7 @@ class WPBS_Background {
 		'mask',
 		'fixed',
 		'scale',
+		'size',
 		'opacity',
 		'width',
 		'height',
@@ -173,7 +174,11 @@ class WPBS_Background {
 				case 'scaleMobile':
 				case 'opacity':
 				case 'opacityMobile':
-					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = intval( $value ) . '%';
+				case 'size':
+				case 'sizeMobile':
+					$scale = !empty($attributes['scale']) ? intval($attributes['scale']) . '%' : null;
+					$size = $attributes['size'] ?? null;
+					$props[ '--size' ] = $scale ?? $size;
 					break;
 				case 'width':
 				case 'widthMobile':

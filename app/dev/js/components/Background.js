@@ -482,7 +482,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     {label: 'Small', value: 'small'},
                     {label: 'Medium', value: 'medium'},
                     {label: 'Large', value: 'large'},
-                    {label: 'Full', value: 'full'},
+                    {label: 'Extra Large', value: 'xlarge'},
                 ]}
                 onChange={(value) => {
                     updateSettings('resolutionMobile', value, setResolutionMobile);

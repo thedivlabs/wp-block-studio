@@ -62,33 +62,42 @@ class WPBS_Background {
 		] );
 	}
 
-	private function image_set( $large_image, $mobile_image ): array|false {
+	private function image_set(): array|false {
 
 		$force = ! empty( $this->attributes['force'] );
+
+		$large  = $this->attributes['largeImage'] ?? false;
+		$mobile = $this->attributes['mobileImage'] ?? false;
 
 		$large_id  = $force ? $large['id'] ?? false : ( $large['id'] ?? $mobile['id'] ?? false );
 		$mobile_id = $force ? $mobile['id'] ?? false : ( $mobile['id'] ?? $large['id'] ?? false );
 
-		$large_src = wp_get_attachment_image_src( $large_id, $this->attributes['resolution'] ?? 'large' );
-		$mobile_src = wp_get_attachment_image_src( $mobile_id, $this->attributes['resolutionMobile'] ?? 'large' );
+		$large_src  = wp_get_attachment_image_src( $large_id, $this->attributes['resolution'] ?? 'large' )[0] ?? false;
+		$mobile_src = wp_get_attachment_image_src( $mobile_id, $this->attributes['resolutionMobile'] ?? 'large' )[0] ?? false;
+
+		$large_webp  = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $large_src ) . '.webp' ) ? $large_src . '.webp' : false;
+		$mobile_webp = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $mobile_src ) . '.webp' ) ? $mobile_src . '.webp' : false;
+
+		WPBS::console_log( $large_src . '.webp' );
+		WPBS::console_log( $mobile_webp );
+
 
 		/*$large_webp = realpath(get_attached_file($large_id, true)) . '.webp';
 		$mobile_webp = realpath(get_attached_file($mobile_id, true)) . '.webp';*/
 
-		if ( empty( $large_id ) && empty( $mobile_id ) ) {
+		if ( empty( $large_src ) && empty( $mobile_src ) ) {
 			return false;
 		}
 
-		$image_set_large = array_filter([
+		$image_set_large  = array_filter( [
 			//$large_webp ? '' : null,
-		]);
+		] );
 		$image_set_mobile = [];
 
 
-
 		return [
-			'--image-large' => 'image-set(' . implode(', ', $image_set_large) . ')',
-			'--image-mobile' => 'image-set(' . implode(', ', $image_set_mobile) . ')',
+			'--image-large'  => 'image-set(' . implode( ', ', $image_set_large ) . ')',
+			'--image-mobile' => 'image-set(' . implode( ', ', $image_set_mobile ) . ')',
 		];
 
 
@@ -141,6 +150,7 @@ class WPBS_Background {
 
 	private function desktop(): array|false {
 
+		$this->image_set();
 
 		$attributes = array_filter( $this->attributes, function ( $k ) {
 

@@ -316,7 +316,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={200}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
             <RangeControl
@@ -581,7 +581,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={200}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
             <RangeControl

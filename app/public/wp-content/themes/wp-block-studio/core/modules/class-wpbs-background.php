@@ -147,7 +147,7 @@ class WPBS_Background {
 
 		}
 
-		$styles['--mask-image'] = $this->attributes['maskImageMobile'] ?? 'none';
+		$styles['--mask-image'] = !empty($this->attributes['maskImageMobile']) ? 'url('.$this->attributes['maskImageMobile'].')' : 'none';
 
 		return array_merge( $styles, $this->special( $special_attributes ) );
 
@@ -252,7 +252,7 @@ class WPBS_Background {
 
 		}
 
-		$styles['--mask-image'] = $this->attributes['maskImageLarge'] ?? 'none';
+		$styles['--mask-image'] = !empty($this->attributes['maskImageLarge']) ? 'url('.$this->attributes['maskImageLarge'].')' : 'none';
 
 		return array_merge( $styles, $this->special( $special_attributes ) );
 

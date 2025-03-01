@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, {useState} from "react"
 import {
     __experimentalGrid as Grid,
     BaseControl,
@@ -15,9 +15,8 @@ import {
     MediaUploadCheck
 } from "@wordpress/block-editor";
 import PreviewThumbnail from 'Components/PreviewThumbnail';
-import Picture from 'Components/picture';
 
-export function Background({attributes = {}, blockProps}) {
+export function Background({attributes = {}}) {
 
     const {['wpbs-background']: settings} = attributes;
 
@@ -215,7 +214,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     {label: 'Small', value: 'small'},
                     {label: 'Medium', value: 'medium'},
                     {label: 'Large', value: 'large'},
-                    {label: 'Extra Large', value: 'xlarge'},                ]}
+                    {label: 'Extra Large', value: 'xlarge'},]}
                 onChange={(value) => {
                     updateSettings('resolution', value, setResolution);
                 }}

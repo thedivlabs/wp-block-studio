@@ -22,7 +22,7 @@ function sectionClassNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function containerClassNames(attributes = {}) {
+function containerClassNames() {
 
     return [
         'container relative z-20',
@@ -43,9 +43,9 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(attributes),
         });
 
-        const resetAll_options = () => {
+        /*const resetAll_options = () => {
 
-        };
+        };*/
 
         const ElementTagName = ElementTag(attributes);
 
@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
                 >
                     <div {...innerBlocksProps}/>
 
-                    <Background attributes={attributes} blockProps={blockProps}/>
+                    <Background attributes={attributes}/>
 
                     <LayoutStyle attributes={attributes} clientId={clientId}/>
 

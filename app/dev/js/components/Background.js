@@ -32,7 +32,7 @@ export function Background({attributes = {}}) {
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
         !settings.eager ? 'responsive-bg' : null,
-        !settings.mask ? 'mask' : null,
+        settings.mask ? 'mask' : null,
     ].filter(x => x).join(' ');
 
     const videoClass = [

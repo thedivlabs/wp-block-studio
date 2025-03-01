@@ -28,10 +28,12 @@ export function Background({attributes = {}}) {
         return false;
     }
 
+    const isEager = settings.eager && !document.body.classList.contains('block-editor-page');
+
     const bgClass = [
         'wpbs-background',
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
-        !settings.eager && !document.body.classList.contains('block-editor-page') ? 'responsive-bg' : null
+        isEager ? null : 'responsive-bg'
     ].filter(x => x).join(' ');
 
     const videoClass = [

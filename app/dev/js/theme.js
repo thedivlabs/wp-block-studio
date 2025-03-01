@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function responsiveBackgroundSrc(element) {
-
-        element.classList.remove('eager');
+console.log(element);
+        element.classList.remove('lazy');
     }
 
     let timer;
@@ -58,10 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, {
         root: null,
         rootMargin: "90px",
-        threshold: 1.0,
+        threshold: 0,
     });
 
-    [...document.querySelectorAll('video:has(source[data-media]),.wpbs-background.eager')].forEach((video) => {
+    [...document.querySelectorAll('video:has(source[data-media]),.wpbs-background.lazy')].forEach((video) => {
         observerIntersection.observe(video);
     });
 

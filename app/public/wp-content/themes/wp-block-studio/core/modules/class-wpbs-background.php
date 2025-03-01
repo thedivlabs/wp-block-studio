@@ -197,7 +197,7 @@ class WPBS_Background {
 					break;
 				case 'fade':
 				case 'fadeMobile':
-					$props[ '--fade'] = 'linear-gradient(to bottom, #000000ff '.($value . '%').', #00000000 100%)';
+					$props['--fade'] = 'linear-gradient(to bottom, #000000ff '.($value . '%').', #00000000 100%)';
 					break;
 				case 'position':
 					switch ( $value ) {

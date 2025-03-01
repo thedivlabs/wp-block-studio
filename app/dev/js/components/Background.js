@@ -30,7 +30,7 @@ export function Background({attributes = {}}) {
     ].filter(x => x).join(' ');
 
     const videoClass = [
-        'wpbs-background__media--video',
+        'wpbs-background__media--video flex [&_video]:w-full [&_video]:h-full [&_video]:object-cover',
     ].filter(x => x).join(' ');
 
     const imageClass = [
@@ -40,7 +40,7 @@ export function Background({attributes = {}}) {
 
     const patternClass = [
         'wpbs-background__media--pattern',
-        'object-cover',
+        '[&_img]:w-full [&_img]:h-full',
     ].filter(x => x).join(' ');
 
     let mediaClass = [

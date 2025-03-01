@@ -1,13 +1,15 @@
 .wpbs-background {
   background-color: inherit;
 
-  &__media {
-    background-color: var(--color, inherit);
-
+  &--mask &__media {
     mask-image: var(--mask-image, none);
     mask-repeat: no-repeat;
     mask-size: var(--mask-size, contain);
     mask-position: var(--mask-origin, center);
+  }
+
+  &__media {
+    background-color: var(--color, inherit);
     top: var(--top, 0);
     left: var(--left, 0);
 
@@ -39,6 +41,7 @@
 
 
     &:before {
+      mask-image: var(--fade, none);
       background-color: inherit;
       opacity: var(--opacity, 1);
       background-image: var(--image, none);

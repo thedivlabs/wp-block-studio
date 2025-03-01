@@ -33,6 +33,8 @@ class WPBS_Background {
 		'opacityMobile',
 		'widthMobile',
 		'heightMobile',
+		'fade',
+		'fadeMobile',
 	];
 
 	function __construct( $attributes ) {
@@ -192,6 +194,10 @@ class WPBS_Background {
 				case 'opacity':
 				case 'opacityMobile':
 					$props[ '--' . str_replace( 'Mobile', '', $prop ) ] = intval( $value ) / 100;
+					break;
+				case 'fade':
+				case 'fadeMobile':
+					$props[ '--fade'] = 'linear-gradient(to bottom, #000000ff '.($value . '%').', #00000000 100%)';
 					break;
 				case 'position':
 					switch ( $value ) {

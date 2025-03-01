@@ -325,6 +325,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     {
                         slug: 'color',
                         label: 'Color',
+                        value: color,
                         onChange: (color) => updateSettings('color', color, setColor),
                         isShownByDefault: true
                     }
@@ -595,6 +596,19 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
         <Grid columns={1} columnGap={20} rowGap={20}>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'colorMobile',
+                        label: 'Color',
+                        value: colorMobile,
+                        onChange: (color) => updateSettings('colorMobile', color, setColorMobile),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Scale"

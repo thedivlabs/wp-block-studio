@@ -51,6 +51,7 @@
 
   &__media--video video {
     mix-blend-mode: var(--blend, none);
+    opacity: var(--opacity, 1);
   }
 
 }

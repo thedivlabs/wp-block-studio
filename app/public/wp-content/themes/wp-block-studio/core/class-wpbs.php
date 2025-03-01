@@ -288,7 +288,8 @@ class WPBS {
 			return '--wp--' . $result;
 		}
 
-		return preg_replace( '/\s+/', '|', $attr );
+		//return preg_replace( '/\s+/', '|', $attr );
+		return $attr;
 
 	}
 

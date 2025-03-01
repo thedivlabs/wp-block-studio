@@ -322,13 +322,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     updateSettings('maxHeight', value, setMaxHeight);
                 }}
                 units={[
-                    {value: 'px', label: 'px', default: 0},
-                    {value: '%', label: '%', default: 0},
-                    {value: 'em', label: 'em', default: 0, step: .1},
-                    {value: 'rem', label: 'rem', default: 0, step: .1},
                     {value: 'vh', label: 'vh', default: 0},
-                    {value: 'vw', label: 'vw', default: 0},
-                    {value: 'ch', label: 'ch', default: 0},
                 ]}
                 __next40pxDefaultSize
             />
@@ -642,13 +636,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     updateSettings('maxHeightMobile', value, setMaxHeightMobile);
                 }}
                 units={[
-                    {value: 'px', label: 'px', default: 0},
-                    {value: '%', label: '%', default: 0},
-                    {value: 'em', label: 'em', default: 0, step: .1},
-                    {value: 'rem', label: 'rem', default: 0, step: .1},
                     {value: 'vh', label: 'vh', default: 0},
-                    {value: 'vw', label: 'vw', default: 0},
-                    {value: 'ch', label: 'ch', default: 0},
                 ]}
                 __next40pxDefaultSize
             />

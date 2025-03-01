@@ -65,6 +65,8 @@
   }
 
   &__media--video video {
+    max-height: var(--max-height, 100%);
+    mask-image: var(--fade, none);
     mix-blend-mode: var(--blend, none);
     opacity: var(--opacity, 1);
   }

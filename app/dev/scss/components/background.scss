@@ -1,8 +1,8 @@
 .wpbs-background {
-  background-color:inherit;
+  background-color: inherit;
 
   &__media {
-    background-color:inherit;
+    background-color: inherit;
     mask-image: var(--mask-image, none);
     mask-repeat: no-repeat;
     mask-size: var(--mask-size, contain);
@@ -18,7 +18,7 @@
     opacity: var(--opacity, 1);
     width: var(--width, 100%);
     height: var(--height, 100%);
-    transform:var(--transform, none);
+    transform: var(--transform, none);
 
 
     &:after {
@@ -34,6 +34,10 @@
       w-full
       h-full
     }
+  }
+
+  &__media--video {
+    mix-blend-mode: var(--blend, none);
   }
 
 }

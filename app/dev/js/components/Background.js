@@ -15,6 +15,10 @@ import {
     MediaUploadCheck
 } from "@wordpress/block-editor";
 import PreviewThumbnail from 'Components/PreviewThumbnail';
+import {
+    InspectorControls,
+    PanelColorSettings, BlockEdit,
+} from "@wordpress/block-editor";
 
 export function Background({attributes = {}}) {
 
@@ -123,6 +127,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         width: undefined,
         height: undefined,
         overlay: undefined,
+        color: undefined,
         mask: undefined,
 
 
@@ -138,6 +143,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         opacityMobile: undefined,
         widthMobile: undefined,
         heightMobile: undefined,
+        colorMobile: undefined,
         maskMobile: undefined,
         overlayMobile: undefined,
 
@@ -153,6 +159,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [eager, setEager] = useState(settings.eager);
     const [force, setForce] = useState(settings.force);
 
+    const [color, setColor] = useState(settings.color);
     const [mask, setMask] = useState(settings.mask);
     const [fixed, setFixed] = useState(settings.fixed);
     const [resolution, setResolution] = useState(settings.resolution);
@@ -169,6 +176,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [height, setHeight] = useState(settings.height);
     const [overlay, setOverlay] = useState(settings.overlay);
 
+    const [colorMobile, setColorMobile] = useState(settings.colorMobile);
     const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
     const [resolutionMobile, setResolutionMobile] = useState(settings.resolutionMobile);
     const [sizeMobile, setSizeMobile] = useState(settings.sizeMobile);
@@ -310,6 +318,18 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         </Grid>
 
         <Grid columns={1} columnGap={20} rowGap={20}>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'color',
+                        label: 'Color',
+                        onChange: (color) => updateSettings('color', color, setColor),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Scale"

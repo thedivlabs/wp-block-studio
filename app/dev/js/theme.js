@@ -40,13 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let observerIntersection = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                if (entry.tagName === 'video') {
+
+                if (entry.target.tagName === 'VIDEO') {
                     responsiveVideoSrc(entry.target);
                     observerSize.observe(entry.target);
                     observerIntersection.unobserve(entry.target);
                 }
 
-                if (entry.classList.contains('wpbs-background')) {
+                if (entry.target.classList.contains('wpbs-background')) {
                     responsiveBackgroundSrc(entry.target);
                     observerIntersection.unobserve(entry.target);
                 }

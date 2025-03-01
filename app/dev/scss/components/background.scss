@@ -2,6 +2,7 @@
   background-color: inherit;
 
   &__media {
+    background-color: var(--color, inherit);
     mask-image: var(--mask-image, none);
     mask-repeat: no-repeat;
     mask-size: var(--mask-size, contain);
@@ -15,7 +16,6 @@
 
     &:before {
       opacity: var(--opacity, 1);
-      background-color: var(--color, inherit);
       background-image: var(--image, none);
       background-repeat: var(--repeat, no-repeat);
       background-size: var(--scale, var(--size, cover));

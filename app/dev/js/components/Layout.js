@@ -6,7 +6,6 @@ import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
-import {LayoutStyle} from "Components/LayoutStyle";
 
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';

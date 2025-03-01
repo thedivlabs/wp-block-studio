@@ -1,12 +1,11 @@
 import {
     useBlockProps,
     InspectorControls,
-    useInnerBlocksProps, BlockEdit,
+    BlockEdit,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {LayoutStyle} from "Components/LayoutStyle";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
@@ -31,8 +30,6 @@ registerBlockType(metadata.name, {
             className: classNames(attributes),
         });
 
-        const ElementTagName = ElementTag(attributes);
-
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
@@ -53,20 +50,12 @@ registerBlockType(metadata.name, {
             className: classNames(props.attributes),
         });
 
-        const ElementTagName = ElementTag(props.attributes);
-
-        const innerBlocksProps = useInnerBlocksProps.save({
-            className: containerClassNames()
-        });
-
         return (
-            <ElementTagName {...blockProps}
-                            data-wp-interactive='wpbs/wpbs-layout-element'
+            <figure {...blockProps}
+                    data-wp-interactive='wpbs/wpbs-layout-element'
             >
-                <div {...innerBlocksProps}/>
 
-                <Background attributes={props.attributes} blockProps={blockProps}/>
-            </ElementTagName>
+            </figure>
         );
     }
 })

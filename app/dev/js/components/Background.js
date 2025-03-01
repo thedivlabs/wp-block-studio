@@ -16,8 +16,8 @@ import {
 } from "@wordpress/block-editor";
 import PreviewThumbnail from 'Components/PreviewThumbnail';
 import {
-    InspectorControls,
-    PanelColorSettings, BlockEdit,
+
+    PanelColorSettings,
 } from "@wordpress/block-editor";
 
 export function Background({attributes = {}}) {

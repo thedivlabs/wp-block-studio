@@ -66,7 +66,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
                 <ElementTagName {...blockProps}
-                                data-wp-interactive='wpbs/wpbs-layout-element'
+                                data-wp-interactive='wpbs-layout-element'
                 >
                     <div {...innerBlocksProps}/>
 

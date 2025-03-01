@@ -6,6 +6,7 @@
     "root": ".wpbs-layout-element"
   },
   "supports": {
+    "interactivity": true,
     "innerBlocks": true,
     "color": {
       "background": true,

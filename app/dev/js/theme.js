@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    function responsiveVideoSrc(video){
-        [...video.querySelectorAll('source')].forEach((source)=>{
+    function responsiveVideoSrc(video) {
+        [...video.querySelectorAll('source')].forEach((source) => {
             const mq = source.dataset.media;
 
             if (!mq) {
@@ -20,20 +20,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let timer;
 
-    let observerSize = new ResizeObserver((entries)=>{
+    let observerSize = new ResizeObserver((entries) => {
 
         clearTimeout(timer);
-        timer = setTimeout(()=>{
-            entries.forEach((entry)=>{
+        timer = setTimeout(() => {
+            entries.forEach((entry) => {
                 responsiveVideoSrc(entry.target);
             });
-        },500);
+        }, 500);
 
 
     });
 
-    let observerIntersection = new IntersectionObserver((entries, observer)=>{
-        entries.forEach((entry)=>{
+    let observerIntersection = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 responsiveVideoSrc(entry.target);
                 observerSize.observe(entry.target);
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 1.0,
     });
 
-    [...document.querySelectorAll('video:has(source[data-media])')].forEach((video)=>{
+    [...document.querySelectorAll('video:has(source[data-media])')].forEach((video) => {
         observerIntersection.observe(video);
     });
 

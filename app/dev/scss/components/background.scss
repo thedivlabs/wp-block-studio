@@ -2,23 +2,35 @@
   background-color: inherit;
 
   &__media {
-    background-color: inherit;
     mask-image: var(--mask-image, none);
     mask-repeat: no-repeat;
     mask-size: var(--mask-size, contain);
     mask-position: var(--mask-origin, center);
-    background-image: var(--image, none);
-    background-repeat: var(--repeat, no-repeat);
-    background-size: var(--scale, var(--size, cover));
-    background-blend-mode: var(--blend, none);
-    background-attachment: var(--attachment, initial);
-    background-position: var(--origin, center);
     top: var(--top, 0);
     left: var(--left, 0);
-    opacity: var(--opacity, 1);
+
     width: var(--width, 100%);
     height: var(--height, 100%);
     transform: var(--transform, none);
+
+    &:before {
+      opacity: var(--opacity, 1);
+      background-color: var(--color, inherit);
+      background-image: var(--image, none);
+      background-repeat: var(--repeat, no-repeat);
+      background-size: var(--scale, var(--size, cover));
+      background-blend-mode: var(--blend, none);
+      background-attachment: var(--attachment, initial);
+      background-position: var(--origin, center);
+      @apply
+      content-['']
+      absolute
+      top-0
+      left-0
+      w-full
+      h-full
+      z-0
+    }
 
 
     &:after {
@@ -33,6 +45,7 @@
       left-0
       w-full
       h-full
+      z-10
     }
   }
 

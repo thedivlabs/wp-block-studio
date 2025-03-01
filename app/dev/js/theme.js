@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function responsiveBackgroundSrc(element) {
-console.log(element);
+
         element.classList.remove('lazy');
     }
 

@@ -158,6 +158,9 @@ class WPBS_Background {
 		$props = [];
 
 		foreach ( $attributes as $prop => $value ) {
+			if ( empty( $value ) ) {
+				continue;
+			}
 			switch ( $prop ) {
 				case 'mobileImage':
 					$props['--image'] = $this->image_set( true );

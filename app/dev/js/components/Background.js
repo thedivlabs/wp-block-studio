@@ -901,8 +901,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                             __nextHasNoMarginBottom
                         />
                     </Grid>
-
-
+                    
                     <TabPanel
                         className="wpbs-editor-tabs"
                         activeClass="active"

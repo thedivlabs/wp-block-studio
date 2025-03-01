@@ -30,9 +30,9 @@ export function Background({attributes = {}}) {
 
     const bgClass = [
         'wpbs-background',
-        'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
+        settings.mask ? 'wpbs-background--mask' : null,
         !settings.eager ? 'responsive-bg' : null,
-        settings.mask ? 'mask' : null,
+        'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
     ].filter(x => x).join(' ');
 
     const videoClass = [

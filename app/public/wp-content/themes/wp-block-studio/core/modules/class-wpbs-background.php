@@ -140,7 +140,7 @@ class WPBS_Background {
 				continue;
 			}
 
-			$value = $this->parse_prop( $value );
+			$value = WPBS::parse_style( $value );
 			$prop  = $this->parse_prop( $prop );
 
 			$styles[ '--' . $prop ] = $value;
@@ -245,7 +245,7 @@ class WPBS_Background {
 				continue;
 			}
 
-			$value = $this->parse_prop( $value );
+			$value = WPBS::parse_style( $value );
 			$prop  = $this->parse_prop( $prop );
 
 			$styles[ '--' . $prop ] = $value;

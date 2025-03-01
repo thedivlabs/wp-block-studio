@@ -273,7 +273,7 @@ class WPBS {
 			return false;
 		}
 
-		if ( preg_match( '/^#[a-f0-9]{6}$/i', $attr ) ) {
+		if ( preg_match( '/^#[a-f0-9]{8}$/i', $attr ) ) {
 			return $attr;
 		}
 

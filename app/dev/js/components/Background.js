@@ -326,7 +326,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         slug: 'color',
                         label: 'Color',
                         value: color,
-                        onChange: (color) => updateSettings('color', color, setColor),
+                        onChange: (color) => {
+                            updateSettings('color', color, setColor)
+                        },
                         isShownByDefault: true
                     }
                 ]}

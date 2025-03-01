@@ -33,8 +33,8 @@
     }
   }
 
-  &:not(.responsive-bg) &__media--image,
-  &:not(.responsive-bg) &__media--patern,
+  &:not(.eager) &__media--image,
+  &:not(.eager) &__media--patern,
   .block-editor-page &__media--image,
   .block-editor-page &__media--patern,
   {

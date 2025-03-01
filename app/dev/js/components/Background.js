@@ -130,6 +130,8 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         overlay: undefined,
         color: undefined,
         mask: undefined,
+        fade: undefined,
+        maxHeight: undefined,
 
 
         resolutionMobile: undefined,
@@ -147,6 +149,8 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         colorMobile: undefined,
         maskMobile: undefined,
         overlayMobile: undefined,
+        fadeMobile: undefined,
+        maxHeightMobile: undefined,
 
     }, attributes['wpbs-background'])
 
@@ -177,6 +181,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [width, setWidth] = useState(settings.width);
     const [height, setHeight] = useState(settings.height);
     const [overlay, setOverlay] = useState(settings.overlay);
+    const [fade, setFade] = useState(settings.fade);
 
 
     const [maxHeightMobile, setMaxHeightMobile] = useState(settings.maxHeightMobile);
@@ -195,6 +200,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [widthMobile, setWidthMobile] = useState(settings.widthMobile);
     const [heightMobile, setHeightMobile] = useState(settings.heightMobile);
     const [overlayMobile, setOverlayMobile] = useState(settings.overlayMobile);
+    const [fadeMobile, setFadeMobile] = useState(settings.fadeMobile);
 
 
     function updateSettings(attr, val, callback) {
@@ -383,7 +389,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={100}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
             <RangeControl
@@ -395,7 +401,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={100}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
             <RangeControl
@@ -407,7 +413,19 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={100}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Fade"
+                value={fade}
+                onChange={(value) => {
+                    updateSettings('fade', value, setFade);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
         </Grid>
@@ -687,7 +705,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={100}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
             <RangeControl
@@ -699,7 +717,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={100}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
             <RangeControl
@@ -711,7 +729,19 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 }}
                 min={0}
                 max={100}
-                resetFallbackValue={100}
+                resetFallbackValue={undefined}
+                allowReset={true}
+            />
+            <RangeControl
+                __nextHasNoMarginBottom
+                label="Fade"
+                value={fadeMobile}
+                onChange={(value) => {
+                    updateSettings('fadeMobile', value, setFadeMobile);
+                }}
+                min={0}
+                max={100}
+                resetFallbackValue={undefined}
                 allowReset={true}
             />
         </Grid>

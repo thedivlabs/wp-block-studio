@@ -240,9 +240,13 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Multiply', value: 'multiply'},
+                    {label: 'Luminosity', value: 'luminosity'},
                     {label: 'Screen', value: 'screen'},
                     {label: 'Overlay', value: 'overlay'},
                     {label: 'Soft Light', value: 'soft-light'},
+                    {label: 'Hard Light', value: 'hard-light'},
+                    {label: 'Difference', value: 'difference'},
+                    {label: 'Color Burn', value: 'color-burn'},
                 ]}
                 onChange={(value) => {
                     updateSettings('blend', value, setBlend);
@@ -901,7 +905,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                             __nextHasNoMarginBottom
                         />
                     </Grid>
-                    
+
                     <TabPanel
                         className="wpbs-editor-tabs"
                         activeClass="active"

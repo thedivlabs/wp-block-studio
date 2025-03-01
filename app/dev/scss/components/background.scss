@@ -15,6 +15,7 @@
     transform: var(--transform, none);
 
     &:before {
+      background-color: inherit;
       opacity: var(--opacity, 1);
       background-image: var(--image, none);
       background-repeat: var(--repeat, no-repeat);

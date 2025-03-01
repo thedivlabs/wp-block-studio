@@ -1,6 +1,7 @@
 import React, {useState} from "react"
 import {
     __experimentalGrid as Grid,
+    __experimentalUnitControl as UnitControl,
     BaseControl,
     PanelBody,
     SelectControl,
@@ -16,7 +17,6 @@ import {
 } from "@wordpress/block-editor";
 import PreviewThumbnail from 'Components/PreviewThumbnail';
 import {
-
     PanelColorSettings,
 } from "@wordpress/block-editor";
 
@@ -168,6 +168,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [blend, setBlend] = useState(settings.blend);
     const [position, setPosition] = useState(settings.position);
     const [origin, setOrigin] = useState(settings.origin);
+    const [maxHeight, setMaxHeight] = useState(settings.maxHeight);
     const [maskOrigin, setMaskOrigin] = useState(settings.maskOrigin);
     const [maskSize, setMaskSize] = useState(settings.maskSize);
     const [repeat, setRepeat] = useState(settings.repeat);
@@ -177,6 +178,8 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     const [height, setHeight] = useState(settings.height);
     const [overlay, setOverlay] = useState(settings.overlay);
 
+
+    const [maxHeightMobile, setMaxHeightMobile] = useState(settings.maxHeightMobile);
     const [colorMobile, setColorMobile] = useState(settings.colorMobile);
     const [maskMobile, setMaskMobile] = useState(settings.maskMobile);
     const [resolutionMobile, setResolutionMobile] = useState(settings.resolutionMobile);
@@ -297,6 +300,24 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     updateSettings('origin', value, setOrigin);
                 }}
                 __nextHasNoMarginBottom
+            />
+            <UnitControl
+                label={'Max Height'}
+                value={maxHeight}
+                isResetValueOnUnitChange={true}
+                onChange={(value) => {
+                    updateSettings('maxHeight', value, setMaxHeight);
+                }}
+                units={[
+                    {value: 'px', label: 'px', default: 0},
+                    {value: '%', label: '%', default: 0},
+                    {value: 'em', label: 'em', default: 0, step:.1},
+                    {value: 'rem', label: 'rem', default: 0, step:.1},
+                    {value: 'vh', label: 'vh', default: 0},
+                    {value: 'vw', label: 'vw', default: 0},
+                    {value: 'ch', label: 'ch', default: 0},
+                ]}
+                __next40pxDefaultSize
             />
         </Grid>
 
@@ -579,6 +600,24 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     updateSettings('originMobile', value, setOriginMobile);
                 }}
                 __nextHasNoMarginBottom
+            />
+            <UnitControl
+                label={'Max Height'}
+                value={maxHeightMobile}
+                isResetValueOnUnitChange={true}
+                onChange={(value) => {
+                    updateSettings('maxHeightMobile', value, setMaxHeightMobile);
+                }}
+                units={[
+                    {value: 'px', label: 'px', default: 0},
+                    {value: '%', label: '%', default: 0},
+                    {value: 'em', label: 'em', default: 0, step:.1},
+                    {value: 'rem', label: 'rem', default: 0, step:.1},
+                    {value: 'vh', label: 'vh', default: 0},
+                    {value: 'vw', label: 'vw', default: 0},
+                    {value: 'ch', label: 'ch', default: 0},
+                ]}
+                __next40pxDefaultSize
             />
         </Grid>
 

@@ -50,7 +50,7 @@ registerBlockType(metadata.name, {
         const ElementTagName = ElementTag(attributes);
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: containerClassNames(attributes)
+            className: containerClassNames()
         });
 
         return (
@@ -88,7 +88,7 @@ registerBlockType(metadata.name, {
         const ElementTagName = ElementTag(props.attributes);
 
         const innerBlocksProps = useInnerBlocksProps.save({
-            className: containerClassNames(props.attributes)
+            className: containerClassNames()
         });
 
         return (

@@ -273,18 +273,22 @@ class WPBS {
 			return false;
 		}
 
-		if ( preg_match( '/^#[a-f0-9]{6}$/i', $attr ) || str_contains( $attr, 'rgb' ) || ! str_contains( $attr, 'var:' ) ) {
+		if ( preg_match( '/^#[a-f0-9]{6}$/i', $attr ) ) {
 			return $attr;
 		}
 
-		$result = str_replace( [ 'var:', '|', ' ', 'preset', 'color' ], '', $attr );
+		if ( str_contains( $attr, 'var:' ) ) {
 
-		if ( $property ) {
-			return 'var(' . '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $result ) . ')';
+			$result = str_replace( [ 'var:', '|', ' ' ], [ '', '--', '' ], $attr );
+
+			if ( $property ) {
+				return 'var(' . '--wp--' . $result . ')';
+			}
+
+			return '--wp--' . $result;
 		}
 
-		return '--wp--' . str_replace( [ 'var:', '|' ], [ '', '--' ], $result );
-
+		return preg_replace( '/\s+/', '|', $attr );
 
 	}
 
@@ -303,6 +307,7 @@ class WPBS {
 
 
 		$prop = preg_split( '/(?=[A-Z])/', $prop );
+
 		unset( $prop[0] );
 
 		return strtolower( str_replace( ' ', '-', implode( ' ', $prop ) ) );

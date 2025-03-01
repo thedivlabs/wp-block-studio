@@ -216,9 +216,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         textAlign: 'center',
     };
 
-    const tabDesktop = <Grid columns={1} columnGap={20} rowGap={20}>
-        <Grid columns={2} columnGap={20} rowGap={30}>
+    const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
             <SelectControl
+                __next40pxDefaultSize
                 label="Resolution"
                 value={resolution}
                 options={[
@@ -233,6 +234,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Size"
                 value={size}
                 options={[
@@ -247,6 +249,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Blend"
                 value={blend}
                 options={[
@@ -266,6 +269,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Position"
                 value={position}
                 options={[
@@ -282,6 +286,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize__next40pxDefaultSize
                 label="Origin"
                 value={origin}
                 options={[
@@ -300,6 +305,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     updateSettings('origin', value, setOrigin);
                 }}
                 __nextHasNoMarginBottom
+                __next40pxDefaultSize
             />
             <UnitControl
                 label={'Max Height'}
@@ -311,8 +317,8 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 units={[
                     {value: 'px', label: 'px', default: 0},
                     {value: '%', label: '%', default: 0},
-                    {value: 'em', label: 'em', default: 0, step:.1},
-                    {value: 'rem', label: 'rem', default: 0, step:.1},
+                    {value: 'em', label: 'em', default: 0, step: .1},
+                    {value: 'rem', label: 'rem', default: 0, step: .1},
                     {value: 'vh', label: 'vh', default: 0},
                     {value: 'vw', label: 'vw', default: 0},
                     {value: 'ch', label: 'ch', default: 0},
@@ -322,8 +328,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         </Grid>
 
 
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
+        <Grid columns={2} columnGap={15} rowGap={20} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
+                __next40pxDefaultSize
                 label="Repeat"
                 value={repeat}
                 options={[
@@ -339,7 +346,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
 
-        <Grid columns={1} columnGap={20} rowGap={20}>
+        <Grid columns={1} columnGap={15} rowGap={20}>
             <PanelColorSettings
                 enableAlpha
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
@@ -405,7 +412,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
 
-        <Grid columns={2} columnGap={15} rowGap={30}
+        <Grid columns={2} columnGap={15} rowGap={20}
               style={{padding: '1rem 0'}}>
             <ToggleControl
                 label="Mask"
@@ -418,7 +425,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
 
-        <Grid columns={1} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !mask ? 'none' : null}}>
 
             <BaseControl label={'Mask Image'} __nextHasNoMarginBottom={true}>
                 <MediaUploadCheck>
@@ -450,8 +457,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 </MediaUploadCheck>
             </BaseControl>
 
-            <Grid columns={2} columnGap={20} rowGap={30} style={{display: !mask ? 'none' : null}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !mask ? 'none' : null}}>
                 <SelectControl
+                    __next40pxDefaultSize
                     label="Mask Origin"
                     value={maskOrigin}
                     options={[
@@ -472,6 +480,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     __nextHasNoMarginBottom
                 />
                 <SelectControl
+                    __next40pxDefaultSize
                     label="Mask Size"
                     value={maskSize}
                     options={[
@@ -519,9 +528,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         </BaseControl>
     </Grid>
 
-    const tabMobile = <Grid columns={1} columnGap={20} rowGap={20}>
-        <Grid columns={2} columnGap={20} rowGap={30}>
+    const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
             <SelectControl
+                __next40pxDefaultSize
                 label="Resolution"
                 value={resolutionMobile}
                 options={[
@@ -537,6 +547,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Size"
                 value={sizeMobile}
                 options={[
@@ -551,6 +562,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Blend"
                 value={blendMobile}
                 options={[
@@ -566,6 +578,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Position"
                 value={positionMobile}
                 options={[
@@ -582,6 +595,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
             <SelectControl
+                __next40pxDefaultSize
                 label="Origin"
                 value={originMobile}
                 options={[
@@ -611,8 +625,8 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 units={[
                     {value: 'px', label: 'px', default: 0},
                     {value: '%', label: '%', default: 0},
-                    {value: 'em', label: 'em', default: 0, step:.1},
-                    {value: 'rem', label: 'rem', default: 0, step:.1},
+                    {value: 'em', label: 'em', default: 0, step: .1},
+                    {value: 'rem', label: 'rem', default: 0, step: .1},
                     {value: 'vh', label: 'vh', default: 0},
                     {value: 'vw', label: 'vw', default: 0},
                     {value: 'ch', label: 'ch', default: 0},
@@ -621,8 +635,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
 
-        <Grid columns={2} columnGap={20} rowGap={30} style={{display: type !== 'pattern' ? 'none' : null}}>
+        <Grid columns={2} columnGap={15} rowGap={20} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
+                __next40pxDefaultSize
                 label="Repeat"
                 value={repeatMobile}
                 options={[
@@ -637,7 +652,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 __nextHasNoMarginBottom
             />
         </Grid>
-        <Grid columns={1} columnGap={20} rowGap={20}>
+        <Grid columns={1} columnGap={15} rowGap={20}>
             <PanelColorSettings
                 enableAlpha
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
@@ -701,7 +716,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
 
-        <Grid columns={2} columnGap={15} rowGap={30}
+        <Grid columns={2} columnGap={15} rowGap={20}
               style={{padding: '1rem 0'}}>
             <ToggleControl
                 label="Mask"
@@ -714,7 +729,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
             />
         </Grid>
 
-        <Grid columns={1} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !maskMobile ? 'none' : null}}>
             <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true} gridColumn={'1/-1'}>
                 <MediaUploadCheck>
                     <MediaUpload
@@ -744,8 +759,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     />
                 </MediaUploadCheck>
             </BaseControl>
-            <Grid columns={2} columnGap={20} rowGap={30} style={{display: !maskMobile ? 'none' : null}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !maskMobile ? 'none' : null}}>
                 <SelectControl
+                    __next40pxDefaultSize
                     label="Mask Origin"
                     value={maskOriginMobile}
                     options={[
@@ -766,6 +782,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     __nextHasNoMarginBottom
                 />
                 <SelectControl
+                    __next40pxDefaultSize
                     label="Mask Size"
                     value={maskSizeMobile}
                     options={[
@@ -824,8 +841,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
     return (
 
         <PanelBody title={'Background'} initialOpen={false}>
-            <Grid columns={1} columnGap={20} rowGap={20}>
+            <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl
+                    __next40pxDefaultSize
                     label="Type"
                     value={type}
                     options={[
@@ -839,9 +857,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     }}
                     __nextHasNoMarginBottom
                 />
-                <Grid columns={1} columnGap={20} rowGap={20} style={{display: !type ? 'none' : null}}>
+                <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
 
-                    <Grid columns={2} columnGap={20} rowGap={20}
+                    <Grid columns={2} columnGap={15} rowGap={20}
                           style={{display: type !== 'image' && type !== 'pattern' ? 'none' : null}}>
                         <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
@@ -896,7 +914,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
 
 
                     </Grid>
-                    <Grid columns={2} columnGap={20} rowGap={20}
+                    <Grid columns={2} columnGap={15} rowGap={20}
                           style={{display: type !== 'video' ? 'none' : null}}>
 
                         <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
@@ -951,7 +969,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         </BaseControl>
                     </Grid>
 
-                    <Grid columns={2} columnGap={15} rowGap={30}
+                    <Grid columns={2} columnGap={15} rowGap={20}
                           style={{padding: '1rem 0'}}>
                         <ToggleControl
                             label="Eager"

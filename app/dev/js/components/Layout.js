@@ -291,7 +291,7 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
         <BlockEdit key="edit" {...blockProps} />
         <InspectorControls group="styles">
 
-            <ToolsPanel label={'Layout'} resetAll={resetAll_layout}>
+            <ToolsPanel label={'Layout'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout-display']}

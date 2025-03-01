@@ -59,7 +59,7 @@ registerBlockType(metadata.name, {
                                         pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
                 <InspectorControls group="advanced">
-                    <Grid columns={1} columnGap={20} rowGap={20} style={{paddingTop: '20px'}}>
+                    <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>

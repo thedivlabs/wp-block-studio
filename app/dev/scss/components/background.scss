@@ -31,8 +31,8 @@
     }
   }
 
-  &__media--image,
-  &__media--patern
+  &:not(.responsive-bg) &__media--image,
+  &:not(.responsive-bg) &__media--patern
   {
 
 

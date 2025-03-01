@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
         video.load();
     }
 
+    function responsiveBackgroundSrc(element) {
+
+        element.classList.remove('responsive-bg');
+    }
+
     let timer;
 
     let observerSize = new ResizeObserver((entries) => {
@@ -35,9 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let observerIntersection = new IntersectionObserver((entries, observer) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                responsiveVideoSrc(entry.target);
-                observerSize.observe(entry.target);
-                observerIntersection.unobserve(entry.target);
+                if (entry.tagName === 'video') {
+                    responsiveVideoSrc(entry.target);
+                    observerSize.observe(entry.target);
+                    observerIntersection.unobserve(entry.target);
+                }
+
+                if (entry.classList.contains('wpbs-background')) {
+                    responsiveBackgroundSrc(entry.target);
+                    observerIntersection.unobserve(entry.target);
+                }
+
             }
         });
 
@@ -47,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 1.0,
     });
 
-    [...document.querySelectorAll('video:has(source[data-media])')].forEach((video) => {
+    [...document.querySelectorAll('video:has(source[data-media]),.wpbs-background.responsive-bg')].forEach((video) => {
         observerIntersection.observe(video);
     });
 

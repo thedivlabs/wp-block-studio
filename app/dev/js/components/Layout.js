@@ -6,6 +6,7 @@ import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
+import {LayoutStyle} from "Components/LayoutStyle";
 
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
@@ -40,6 +41,7 @@ import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 import OffsetHeader from "Components/OffsetHeader";
 import MinHeight from "Components/MinHeight";
+import {LayoutStyle} from "Components/LayoutStyle";
 
 const blockAttributes = {
     layout: {
@@ -276,7 +278,7 @@ export function LayoutClasses(attributes) {
     return classes.join(' ');
 }
 
-export function Layout({blockProps, attributes = {}, setAttributes}) {
+export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
 
     const resetAll_layout = () => {
         setAttributes(Object.keys(blockAttributes.layout).reduce((o, key) => ({...o, [key]: undefined}), {}))
@@ -933,5 +935,6 @@ export function Layout({blockProps, attributes = {}, setAttributes}) {
 
 
         </InspectorControls>
+        <LayoutStyle attributes={attributes} clientId={clientId}/>
     </>;
 }

@@ -1,0 +1,46 @@
+{
+  "name": "wpbs/figure",
+  "title": "Figure",
+  "description": "Display a figure element",
+  "selectors": {
+    "root": ".wpbs-figure"
+  },
+  "allowedBlocks": [
+    "wpbs/figure"
+  ],
+  "supports": {
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./js/edit.js",
+  "style": "file:./js/edit.css",
+  "editorStyle": "file:./js/edit.css",
+  "icon": "format-image"
+}
+
+

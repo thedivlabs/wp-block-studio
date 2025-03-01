@@ -8,7 +8,6 @@ import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
-import {LayoutStyle} from "Components/LayoutStyle";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
@@ -64,15 +63,14 @@ registerBlockType(metadata.name, {
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>
-                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}></Layout>
+                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
+                        clientId={clientId}></Layout>
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs/wpbs-layout-element'
                 >
                     <div {...innerBlocksProps}/>
 
                     <Background attributes={attributes}/>
-
-                    <LayoutStyle attributes={attributes} clientId={clientId}/>
 
                 </ElementTagName>
             </>

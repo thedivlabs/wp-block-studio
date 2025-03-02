@@ -44,11 +44,6 @@ export function Background({attributes = {}}) {
         '[&_img]:w-full [&_img]:h-full',
     ].filter(x => x).join(' ');
 
-    const patternClass = [
-        'wpbs-background__media--pattern',
-        '[&_img]:w-full [&_img]:h-full',
-    ].filter(x => x).join(' ');
-
     let mediaClass = [
         'wpbs-background__media absolute z-0 overflow-hidden w-full h-full',
     ];
@@ -59,10 +54,6 @@ export function Background({attributes = {}}) {
 
         if (settings.type === 'image') {
             mediaClass.push(imageClass);
-        }
-
-        if (settings.type === 'pattern') {
-            mediaClass.push(patternClass);
         }
 
         if (settings.type === 'video') {
@@ -326,10 +317,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 ]}
                 __next40pxDefaultSize
             />
-        </Grid>
-
-
-        <Grid columns={2} columnGap={15} rowGap={20} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
                 __next40pxDefaultSize
                 label="Repeat"
@@ -640,9 +627,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 ]}
                 __next40pxDefaultSize
             />
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20} style={{display: type !== 'pattern' ? 'none' : null}}>
             <SelectControl
                 __next40pxDefaultSize
                 label="Repeat"
@@ -869,7 +853,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         {label: 'Select', value: ''},
                         {label: 'Image', value: 'image'},
                         {label: 'Video', value: 'video'},
-                        {label: 'Pattern', value: 'pattern'},
                     ]}
                     onChange={(value) => {
                         updateSettings('type', value, setType);
@@ -879,7 +862,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
 
                     <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{display: type !== 'image' && type !== 'pattern' ? 'none' : null}}>
+                          style={{display: type !== 'image' ? 'none' : null}}>
                         <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload

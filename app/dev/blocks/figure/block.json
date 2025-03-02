@@ -17,10 +17,6 @@
       "gradients": true
     },
     "spacing": {
-      "blockGap": [
-        "horizontal",
-        "vertical"
-      ],
       "padding": true,
       "margin": true
     },
@@ -28,13 +24,6 @@
       "size": true,
       "color": true,
       "radius": true
-    },
-    "typography": {
-      "__experimentalFontFamily": true,
-      "__experimentalFontWeight": true,
-      "textAlign": true,
-      "fontSize": true,
-      "lineHeight": true
     }
   },
   "editorScript": "file:./js/edit.js",

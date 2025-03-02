@@ -101,7 +101,7 @@ function Media({attributes}) {
     const classNames = [
         'wpbs-figure__media'
     ].filter(x => x).join(' ');
-    console.log(attributes);
+
     const Content = () => {
         switch (attributes['wpbs-type']) {
             case 'image':
@@ -331,7 +331,7 @@ registerBlockType(metadata.name, {
                                 </Grid>
                                 <Grid columns={2} columnGap={15} rowGap={20}
                                       style={{display: !mask ? 'none' : null}}>
-                                    <BaseControl>
+                                    <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true}>
                                         <MediaUploadCheck>
                                             <MediaUpload
                                                 title={'Mask Mobile'}
@@ -343,7 +343,7 @@ registerBlockType(metadata.name, {
                                                 value={maskImageMobile}
                                                 render={({open}) => {
                                                     return <PreviewThumbnail
-                                                        image={maskImage || {}}
+                                                        image={maskImageMobile || {}}
                                                         callback={() => {
                                                             setMaskImageMobile(undefined);
                                                             setAttributes({['wpbs-maskImageMobile']: undefined});
@@ -358,7 +358,7 @@ registerBlockType(metadata.name, {
                                             />
                                         </MediaUploadCheck>
                                     </BaseControl>
-                                    <BaseControl title={'Mask Large'}>
+                                    <BaseControl label={'Mask Large'} __nextHasNoMarginBottom={true}>
                                         <MediaUploadCheck>
                                             <MediaUpload
                                                 title={'Mask Large'}

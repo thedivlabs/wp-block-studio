@@ -38,10 +38,7 @@ const blockAttributes = {
     largeVideo: {
         type: 'object'
     },
-    maskImageMobile: {
-        type: 'object'
-    },
-    maskImageLarge: {
+    maskImage: {
         type: 'object'
     },
     eager: {
@@ -51,6 +48,9 @@ const blockAttributes = {
         type: 'boolean'
     },
     mask: {
+        type: 'boolean'
+    },
+    maskMobile: {
         type: 'boolean'
     },
     resolution: {
@@ -103,6 +103,7 @@ registerBlockType(metadata.name, {
         const [featureImage, setFeatureImage] = useState(attributes.featureImage);
 
         const [mask, setMask] = useState(attributes.mask);
+        const [maskMobile, setMaskMobile] = useState(attributes.maskMobile);
         const [resolution, setResolution] = useState(attributes.resolution);
         const [size, setSize] = useState(attributes.size);
         const [blend, setBlend] = useState(attributes.blend);
@@ -299,34 +300,46 @@ registerBlockType(metadata.name, {
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom
                                     />
-                                </Grid>
-
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title={'Mask Image'}
-                                        onSelect={(value) => {
-                                            setMaskImage(value);
-                                            setAttributes({maskImage: value});
+                                    <ToggleControl
+                                        label="Mask Mobile"
+                                        checked={maskMobile}
+                                        onChange={(value) => {
+                                            setMask(value);
+                                            setAttributes({maskMobile: value});
                                         }}
-                                        allowedTypes={['image']}
-                                        value={maskImage}
-                                        render={({open}) => {
-                                            return <PreviewThumbnail
-                                                image={maskImage || {}}
-                                                callback={() => {
-                                                    setMaskImage(undefined);
-                                                    setAttributes({maskImage: undefined});
-                                                }}
-                                                style={{
-                                                    objectFit: 'contain',
-                                                    backgroundColor: 'rgba(0,0,0,0.1)',
-                                                }}
-                                                onClick={open}
-                                            />;
-                                        }}
+                                        className={'flex items-center'}
+                                        __nextHasNoMarginBottom
                                     />
-                                </MediaUploadCheck>
-                                <Grid columns={2} columnGap={15} rowGap={20} style={{display: !maskMobile ? 'none' : null}}>
+                                </Grid>
+                                <Grid columns={2} columnGap={15} rowGap={20}
+                                      style={{padding: '1rem 0', display: !mask ? 'none' : null}}>
+
+                                    <MediaUploadCheck>
+                                        <MediaUpload
+                                            title={'Mask Image'}
+                                            onSelect={(value) => {
+                                                setMaskImage(value);
+                                                setAttributes({maskImage: value});
+                                            }}
+                                            allowedTypes={['image']}
+                                            value={maskImage}
+                                            render={({open}) => {
+                                                return <PreviewThumbnail
+                                                    image={maskImage || {}}
+                                                    callback={() => {
+                                                        setMaskImage(undefined);
+                                                        setAttributes({maskImage: undefined});
+                                                    }}
+                                                    style={{
+                                                        objectFit: 'contain',
+                                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                                    }}
+                                                    onClick={open}
+                                                />;
+                                            }}
+                                        />
+                                    </MediaUploadCheck>
+
                                     <SelectControl
                                         __next40pxDefaultSize
                                         label="Mask Origin"
@@ -365,6 +378,7 @@ registerBlockType(metadata.name, {
                                         }}
                                         __nextHasNoMarginBottom
                                     />
+
                                 </Grid>
                             </Grid>
                         </Grid>

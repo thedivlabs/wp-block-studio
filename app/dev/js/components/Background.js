@@ -203,17 +203,6 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
         }
     }
 
-    const buttonStyle = {
-        border: '1px dashed lightgray',
-        width: '100%',
-        height: 'auto',
-        aspectRatio: '16/9',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-    };
-
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
             <SelectControl
@@ -437,21 +426,17 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         allowedTypes={['image']}
                         value={maskImageLarge}
                         render={({open}) => {
-                            if (maskImageLarge) {
-                                return <>
-                                    <PreviewThumbnail
-                                        image={maskImageLarge || {}}
-                                        callback={() => {
-                                            updateSettings('maskImageLarge', undefined, setMaskImageLarge)
-                                        }}
-                                        style={{
-                                            objectFit: 'contain',
-                                            backgroundColor: 'rgba(0,0,0,0.1)',
-                                        }}
-                                    /></>;
-                            } else {
-                                return <Button onClick={open} style={buttonStyle}>Choose Mask Image</Button>
-                            }
+                            return <PreviewThumbnail
+                                image={maskImageLarge || {}}
+                                callback={() => {
+                                    updateSettings('maskImageLarge', undefined, setMaskImageLarge)
+                                }}
+                                style={{
+                                    objectFit: 'contain',
+                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                }}
+                                onClick={open}
+                            />;
                         }}
                     />
                 </MediaUploadCheck>
@@ -743,21 +728,17 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         allowedTypes={['image']}
                         value={maskImageMobile}
                         render={({open}) => {
-                            if (maskImageMobile) {
-                                return <>
-                                    <PreviewThumbnail
-                                        image={maskImageMobile || {}}
-                                        callback={() => {
-                                            updateSettings('maskImageMobile', undefined, setMaskImageMobile)
-                                        }}
-                                        style={{
-                                            objectFit: 'contain',
-                                            backgroundColor: 'rgba(0,0,0,0.1)',
-                                        }}
-                                    /></>;
-                            } else {
-                                return <Button onClick={open} style={buttonStyle}>Choose Mask Image</Button>
-                            }
+                            return <PreviewThumbnail
+                                image={maskImageMobile || {}}
+                                callback={() => {
+                                    updateSettings('maskImageMobile', undefined, setMaskImageMobile)
+                                }}
+                                style={{
+                                    objectFit: 'contain',
+                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                }}
+                                onClick={open}
+                            />;
                         }}
                     />
                 </MediaUploadCheck>
@@ -873,17 +854,13 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     allowedTypes={['image']}
                                     value={mobileImage}
                                     render={({open}) => {
-                                        if (mobileImage) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={mobileImage || {}}
-                                                    callback={() => {
-                                                        updateSettings('mobileImage', undefined, setMobileImage)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
+                                        return <PreviewThumbnail
+                                            image={mobileImage || {}}
+                                            callback={() => {
+                                                updateSettings('mobileImage', undefined, setMobileImage)
+                                            }}
+                                            onClick={open}
+                                        />;
                                     }}
                                 />
                             </MediaUploadCheck>
@@ -898,17 +875,13 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     allowedTypes={['image']}
                                     value={largeImage}
                                     render={({open}) => {
-                                        if (largeImage) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={largeImage || {}}
-                                                    callback={() => {
-                                                        updateSettings('largeImage', undefined, setLargeImage)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
+                                        return <PreviewThumbnail
+                                            image={largeImage || {}}
+                                            callback={() => {
+                                                updateSettings('largeImage', undefined, setLargeImage)
+                                            }}
+                                            onClick={open}
+                                        />;
                                     }}
                                 />
                             </MediaUploadCheck>
@@ -929,17 +902,13 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     allowedTypes={['video']}
                                     value={mobileVideo}
                                     render={({open}) => {
-                                        if (mobileVideo) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={mobileVideo || {}}
-                                                    callback={() => {
-                                                        updateSettings('mobileVideo', undefined, setMobileVideo)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
+                                        return <PreviewThumbnail
+                                            image={mobileVideo || {}}
+                                            callback={() => {
+                                                updateSettings('mobileVideo', undefined, setMobileVideo)
+                                            }}
+                                            onClick={open}
+                                        />;
                                     }}
                                 />
                             </MediaUploadCheck>
@@ -954,17 +923,13 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     allowedTypes={['video']}
                                     value={largeVideo}
                                     render={({open}) => {
-                                        if (largeVideo) {
-                                            return <>
-                                                <PreviewThumbnail
-                                                    image={largeVideo || {}}
-                                                    callback={() => {
-                                                        updateSettings('largeVideo', undefined, setLargeVideo)
-                                                    }}
-                                                /></>;
-                                        } else {
-                                            return <Button onClick={open} style={buttonStyle}>Choose Image</Button>
-                                        }
+                                        return <PreviewThumbnail
+                                            image={largeVideo || {}}
+                                            callback={() => {
+                                                updateSettings('largeVideo', undefined, setLargeVideo)
+                                            }}
+                                            onClick={open}
+                                        />;
                                     }}
                                 />
                             </MediaUploadCheck>

@@ -1,6 +1,7 @@
 import {Button, Icon} from '@wordpress/components'
+import React from "react";
 
-function PreviewThumbnail({image = {}, callback, style = {}}) {
+function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
 
     const thumbnailStyle = {
         width: '100%',
@@ -8,6 +9,17 @@ function PreviewThumbnail({image = {}, callback, style = {}}) {
         objectFit: 'inherit',
         pointerEvents: 'none',
     }
+
+    const emptyStyle = {
+        border: '1px dashed lightgray',
+        width: '100%',
+        height: 'auto',
+        aspectRatio: '16/9',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+    };
 
     let thumbnail;
 
@@ -23,8 +35,10 @@ function PreviewThumbnail({image = {}, callback, style = {}}) {
                          style={thumbnailStyle}/>
     }
 
-    return (
-        <div style={{
+    if (image.url === undefined) {
+        return <Button onClick={onClick} style={emptyStyle}>Choose Image</Button>
+    } else {
+        return <div style={{
             width: '100%',
             display: 'flex',
             position: 'relative',
@@ -35,11 +49,11 @@ function PreviewThumbnail({image = {}, callback, style = {}}) {
             borderRadius: '4px',
             ...style,
         }}
-             onClick={() => {
-                 if (callback) {
-                     callback(image);
-                 }
-             }}
+                    onClick={() => {
+                        if (callback) {
+                            callback(image);
+                        }
+                    }}
         >
             {thumbnail}
             <Button
@@ -67,7 +81,9 @@ function PreviewThumbnail({image = {}, callback, style = {}}) {
                 }}>
             </Button>
         </div>
-    )
+    }
+
+
 }
 
 export default PreviewThumbnail

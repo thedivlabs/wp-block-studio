@@ -132,7 +132,7 @@ registerBlockType(metadata.name, {
             force: force,
             eager: eager,
             resolution: resolution,
-            breakpoint: attributes['wpbs-breakpoint'] || false,
+            breakpoint: attributes['wpbs-breakpoint'],
         }
 
         return (
@@ -319,7 +319,7 @@ registerBlockType(metadata.name, {
             resolution,
             mobileImage,
             largeImage,
-            ['wpbs-breakpoint']: breakpoint = false,
+            ['wpbs-breakpoint']: breakpoint,
         } = props.attributes;
 
 

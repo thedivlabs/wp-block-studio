@@ -26,8 +26,6 @@ function Picture({mobile = {}, large = {}, settings = {},}) {
     const className = [
         'wpbs-picture',
         settings.className || false,
-        !urlLarge ? 'lg:hidden' : false,
-        !urlMobile ? 'max-md:hidden' : false,
     ].filter(x => x).join(' ');
 
     if (!urlLarge && !urlMobile) {
@@ -38,7 +36,9 @@ function Picture({mobile = {}, large = {}, settings = {},}) {
         <source srcSet={urlLarge || '#'} media={'(min-width: ' + settings.breakpoint + ')'}/>
         <source srcSet={urlMobile || '#'} media={'(min-width: 32px)'}/>
         <img src={urlLarge} alt={large.alt || mobile.alt || ''} aria-hidden={'true'}
-             loading={settings.eager ? 'eager' : 'lazy'}/>
+             loading={settings.eager ? 'eager' : 'lazy'}
+             
+        />
     </picture>;
 }
 

@@ -25,74 +25,74 @@ function classNames(attributes = {}) {
 }
 
 const blockAttributes = {
-    type: {
+    'wpbs-type': {
         type: 'string'
     },
-    mobileImage: {
+    'wpbs-mobileImage': {
         type: 'object'
     },
-    largeImage: {
+    'wpbs-largeImage': {
         type: 'object'
     },
-    breakpoint: {
+    'wpbs-breakpoint': {
         type: 'string'
     },
-    mobileVideo: {
+    'wpbs-mobileVideo': {
         type: 'object'
     },
-    video: {
+    'wpbs-video': {
         type: 'object'
     },
-    maskImage: {
+    'wpbs-maskImage': {
         type: 'object'
     },
-    eager: {
+    'wpbs-eager': {
         type: 'boolean'
     },
-    force: {
+    'wpbs-force': {
         type: 'boolean'
     },
-    mask: {
+    'wpbs-mask': {
         type: 'boolean'
     },
-    maskMobile: {
+    'wpbs-maskMobile': {
         type: 'boolean'
     },
-    resolution: {
+    'wpbs-resolution': {
         type: 'string'
     },
-    size: {
+    'wpbs-size': {
         type: 'string'
     },
-    blend: {
+    'wpbs-blend': {
         type: 'string'
     },
-    origin: {
+    'wpbs-origin': {
         type: 'string'
     },
-    maskOrigin: {
+    'wpbs-maskOrigin': {
         type: 'string'
     },
-    maskSize: {
+    'wpbs-maskSize': {
         type: 'string'
     },
-    overlay: {
+    'wpbs-overlay': {
         type: 'string'
     },
-    link: {
+    'wpbs-link': {
         type: 'object'
     },
-    featureImage: {
+    'wpbs-featureImage': {
         type: 'boolean'
     },
 }
 
 function getSettings(attributes = {}) {
     return {
-        force: attributes.force,
-        eager: attributes.eager,
-        resolution: attributes.resolution,
-        breakpoint: attributes.breakpoint,
+        force: attributes['wpbs-force'],
+        eager: attributes['wpbs-eager'],
+        resolution: attributes['wpbs-resolution'],
+        breakpoint: attributes['wpbs-breakpoint'],
     };
 }
 
@@ -101,11 +101,12 @@ function Media({attributes}) {
     const classNames = [
         'wpbs-figure__media'
     ].filter(x => x).join(' ');
-
+    console.log(attributes);
     const Content = () => {
-        switch (attributes.type) {
+        switch (attributes['wpbs-type']) {
             case 'image':
-                return <Picture mobile={attributes.mobileImage} large={attributes.largeImage}
+
+                return <Picture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
                                 settings={getSettings(attributes)}></Picture>;
             case 'video':
                 return <></>;
@@ -114,9 +115,9 @@ function Media({attributes}) {
         }
     }
 
-    if (attributes.link) {
-        return <a class={classNames} href={attributes.link.url} target={attributes.link.target}
-                  rel={attributes.link.rel}>
+    if (attributes['wpbs-link']) {
+        return <a class={classNames} href={attributes['wpbs-link'].url} target={attributes['wpbs-link'].target}
+                  rel={attributes['wpbs-link'].rel}>
             <Content/>
         </a>
     } else {
@@ -136,27 +137,27 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        setAttributes({breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal']});
+        setAttributes({['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal']});
 
-        const [type, setType] = useState(attributes.type);
-        const [mobileImage, setMobileImage] = useState(attributes.mobileImage);
-        const [largeImage, setLargeImage] = useState(attributes.largeImage);
-        const [video, setVideo] = useState(attributes.video);
-        const [maskImage, setMaskImage] = useState(attributes.maskImage);
-        const [eager, setEager] = useState(attributes.eager);
-        const [force, setForce] = useState(attributes.force);
-        const [link, setLink] = useState(attributes.link);
-        const [featureImage, setFeatureImage] = useState(attributes.featureImage);
+        const [type, setType] = useState(attributes['wpbs-type']);
+        const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileImage']);
+        const [largeImage, setLargeImage] = useState(attributes['wpbs-largeImage']);
+        const [video, setVideo] = useState(attributes['wpbs-video']);
+        const [maskImage, setMaskImage] = useState(attributes['wpbs-maskImage']);
+        const [eager, setEager] = useState(attributes['wpbs-eager']);
+        const [force, setForce] = useState(attributes['wpbs-force']);
+        const [link, setLink] = useState(attributes['wpbs-link']);
+        //const [featureImage, setFeatureImage] = useState(attributes.featureImage);
 
-        const [mask, setMask] = useState(attributes.mask);
-        const [maskMobile, setMaskMobile] = useState(attributes.maskMobile);
-        const [resolution, setResolution] = useState(attributes.resolution);
-        const [size, setSize] = useState(attributes.size);
-        const [blend, setBlend] = useState(attributes.blend);
-        const [origin, setOrigin] = useState(attributes.origin);
-        const [maskOrigin, setMaskOrigin] = useState(attributes.maskOrigin);
-        const [maskSize, setMaskSize] = useState(attributes.maskSize);
-        const [overlay, setOverlay] = useState(attributes.overlay);
+        const [mask, setMask] = useState(attributes['wpbs-mask']);
+        const [maskMobile, setMaskMobile] = useState(attributes['wpbs-maskMobile']);
+        const [resolution, setResolution] = useState(attributes['wpbs-resolution']);
+        const [size, setSize] = useState(attributes['wpbs-size']);
+        const [blend, setBlend] = useState(attributes['wpbs-blend']);
+        const [origin, setOrigin] = useState(attributes['wpbs-origin']);
+        const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
+        const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
+        const [overlay, setOverlay] = useState(attributes['wpbs-overlay']);
 
         const buttonStyle = {
             border: '1px dashed lightgray',
@@ -170,10 +171,10 @@ registerBlockType(metadata.name, {
         };
 
         const blockStyle = {
-            '--figure-type': type,
+            /*'--figure-type': type,
             '--figure-mask': mask,
             '--figure-mask-origin': maskOrigin,
-            '--figure-mask-size': maskSize,
+            '--figure-mask-size': maskSize,*/
         }
 
         const blockProps = useBlockProps({
@@ -204,7 +205,7 @@ registerBlockType(metadata.name, {
                                 ]}
                                 onChange={(value) => {
                                     setType(value);
-                                    setAttributes({type: value});
+                                    setAttributes({['wpbs-type']: value});
                                 }}
                                 __nextHasNoMarginBottom
                             />
@@ -218,7 +219,7 @@ registerBlockType(metadata.name, {
                                                 title={'Mobile Image'}
                                                 onSelect={(value) => {
                                                     setMobileImage(value);
-                                                    setAttributes({mobileImage: value});
+                                                    setAttributes({['wpbs-mobileImage']: value});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={mobileImage}
@@ -227,7 +228,7 @@ registerBlockType(metadata.name, {
                                                         image={mobileImage || {}}
                                                         callback={() => {
                                                             setMobileImage(undefined);
-                                                            setAttributes({mobileImage: undefined});
+                                                            setAttributes({['wpbs-mobileImage']: undefined});
                                                         }}
                                                         onClick={open}
                                                     />;
@@ -241,7 +242,7 @@ registerBlockType(metadata.name, {
                                                 title={'Large Image'}
                                                 onSelect={(value) => {
                                                     setLargeImage(value);
-                                                    setAttributes({largeImage: value});
+                                                    setAttributes({['wpbs-largeImage']: value});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={largeImage}
@@ -251,7 +252,7 @@ registerBlockType(metadata.name, {
                                                             image={largeImage || {}}
                                                             callback={() => {
                                                                 setLargeImage(undefined);
-                                                                setAttributes({largeImage: undefined});
+                                                                setAttributes({['wpbs-largeImage']: undefined});
                                                             }}
                                                             onClick={open}
                                                         />;
@@ -275,7 +276,7 @@ registerBlockType(metadata.name, {
                                                 title={'Video'}
                                                 onSelect={(value) => {
                                                     setVideo(value);
-                                                    setAttributes({video: value});
+                                                    setAttributes({['wpbs-video']: value});
                                                 }}
                                                 allowedTypes={['video']}
                                                 value={video}
@@ -284,7 +285,7 @@ registerBlockType(metadata.name, {
                                                         image={video || {}}
                                                         callback={() => {
                                                             setVideo(undefined);
-                                                            setAttributes({video: undefined});
+                                                            setAttributes({['wpbs-video']: undefined});
                                                         }}
                                                         onClick={open}
                                                     />;
@@ -301,7 +302,7 @@ registerBlockType(metadata.name, {
                                         checked={eager}
                                         onChange={(value) => {
                                             setEager(value);
-                                            setAttributes({eager: value});
+                                            setAttributes({['wpbs-eager']: value});
                                         }}
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom
@@ -311,7 +312,7 @@ registerBlockType(metadata.name, {
                                         checked={force}
                                         onChange={(value) => {
                                             setForce(value);
-                                            setAttributes({force: value});
+                                            setAttributes({['wpbs-force']: value});
                                         }}
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom
@@ -321,7 +322,7 @@ registerBlockType(metadata.name, {
                                         checked={mask}
                                         onChange={(value) => {
                                             setMask(value);
-                                            setAttributes({mask: value});
+                                            setAttributes({['wpbs-mask']: value});
                                         }}
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom
@@ -331,7 +332,7 @@ registerBlockType(metadata.name, {
                                         checked={maskMobile}
                                         onChange={(value) => {
                                             setMaskMobile(value);
-                                            setAttributes({maskMobile: value});
+                                            setAttributes({['wpbs-maskMobile']: value});
                                         }}
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom
@@ -345,7 +346,7 @@ registerBlockType(metadata.name, {
                                                 title={'Mask Image'}
                                                 onSelect={(value) => {
                                                     setMaskImage(value);
-                                                    setAttributes({maskImage: value});
+                                                    setAttributes({['wpbs-maskImage']: value});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImage}
@@ -354,7 +355,7 @@ registerBlockType(metadata.name, {
                                                         image={maskImage || {}}
                                                         callback={() => {
                                                             setMaskImage(undefined);
-                                                            setAttributes({maskImage: undefined});
+                                                            setAttributes({['wpbs-maskImage']: undefined});
                                                         }}
                                                         style={{
                                                             objectFit: 'contain',
@@ -384,7 +385,7 @@ registerBlockType(metadata.name, {
                                         ]}
                                         onChange={(value) => {
                                             setMaskOrigin(value);
-                                            setAttributes({maskOrigin: value});
+                                            setAttributes({['wpbs-maskOrigin']: value});
                                         }}
                                         __nextHasNoMarginBottom
                                     />
@@ -400,7 +401,7 @@ registerBlockType(metadata.name, {
                                         ]}
                                         onChange={(value) => {
                                             setMaskSize(value);
-                                            setAttributes({maskSize: value});
+                                            setAttributes({['wpbs-maskSize']: value});
                                         }}
                                         __nextHasNoMarginBottom
                                     />

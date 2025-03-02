@@ -6,7 +6,6 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {Row} from "@wordpress/compose"
 import {
     __experimentalHStack as HStack,
     __experimentalGrid as Grid, BaseControl, Button, PanelBody, SelectControl, ToggleControl,
@@ -14,6 +13,7 @@ import {
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useState} from "react";
+import {useSettings} from '@wordpress/block-editor';
 
 
 function classNames(attributes = {}) {
@@ -33,6 +33,9 @@ const blockAttributes = {
     },
     largeImage: {
         type: 'object'
+    },
+    breakpoint: {
+        type: 'string'
     },
     mobileVideo: {
         type: 'object'
@@ -84,6 +87,15 @@ const blockAttributes = {
     },
 }
 
+function getSettings(attributes = {}) {
+    return {
+        force: attributes.force,
+        eager: attributes.eager,
+        resolution: attributes.resolution,
+        breakpoint: attributes.breakpoint,
+    };
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -92,6 +104,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+        const [{breakpoints}] = useSettings(['custom']);
+
+        setAttributes({breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal']});
 
         const [type, setType] = useState(attributes.type);
         const [mobileImage, setMobileImage] = useState(attributes.mobileImage);
@@ -125,17 +140,19 @@ registerBlockType(metadata.name, {
             textAlign: 'center',
         };
 
+        const blockStyle = {
+            '--figure-type': type,
+            '--figure-mask': mask,
+            '--figure-mask-origin': maskOrigin,
+            '--figure-mask-size': maskSize,
+        }
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
+            style: {
+                ...blockStyle,
+            }
         });
-
-        const settings = {
-            force: force,
-            eager: eager,
-            resolution: resolution,
-            breakpoint: attributes['wpbs-breakpoint'],
-        }
 
         return (
             <>
@@ -306,7 +323,7 @@ registerBlockType(metadata.name, {
                                         label="Mask Mobile"
                                         checked={maskMobile}
                                         onChange={(value) => {
-                                            setMask(value);
+                                            setMaskMobile(value);
                                             setAttributes({maskMobile: value});
                                         }}
                                         className={'flex items-center'}
@@ -391,7 +408,8 @@ registerBlockType(metadata.name, {
                         clientId={clientId}></Layout>
 
                 <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
-                    <Picture mobile={mobileImage} large={largeImage} settings={settings}></Picture>
+                    <Picture mobile={mobileImage} large={largeImage}
+                             settings={getSettings(attributes)}></Picture>
                 </figure>
 
             </>
@@ -399,31 +417,14 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
         });
 
-        const {
-            force,
-            eager,
-            resolution,
-            mobileImage,
-            largeImage,
-            ['wpbs-breakpoint']: breakpoint,
-        } = props.attributes;
-
-
-        const settings = {
-            force: force,
-            eager: eager,
-            resolution: resolution,
-            breakpoint: breakpoint,
-        }
-
         return (
             <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
-                <Picture mobile={mobileImage} large={largeImage} settings={settings}></Picture>
+                <Picture mobile={props.attributes.mobileImage} large={props.attributes.largeImage}
+                         settings={getSettings(props.attributes)}></Picture>
             </figure>
         );
     }

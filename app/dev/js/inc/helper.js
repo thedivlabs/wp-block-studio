@@ -17,3 +17,7 @@ export function parseProp(prop) {
     ].join('');
 
 }
+
+export function breakpoint(prop) {
+    
+}

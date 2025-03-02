@@ -1,13 +1,11 @@
-function Picture({mobile = {}, large = {}, settings = {}}) {
+function Picture({mobile = {}, large = {}, settings = {},}) {
 
-    //console.log(wp.data.select( 'core').getMedia( large.id ));
-    
     const {
         resolution: sizeMobile = 'medium',
         resolution: sizeLarge = 'large',
         breakpoint: breakpoint = '960px'
     } = settings;
-
+    
     const {[sizeMobile]: mobileLarge = {}} = mobile.sizes || {};
     const {[sizeLarge]: largeLarge = {}} = large.sizes || {};
 

@@ -3,9 +3,8 @@ function Picture({mobile = {}, large = {}, settings = {},}) {
     const {
         resolution: sizeMobile = 'medium',
         resolution: sizeLarge = 'large',
-        breakpoint: breakpoint = '960px'
     } = settings;
-    
+
     const {[sizeMobile]: mobileLarge = {}} = mobile.sizes || {};
     const {[sizeLarge]: largeLarge = {}} = large.sizes || {};
 
@@ -36,7 +35,7 @@ function Picture({mobile = {}, large = {}, settings = {},}) {
     }
 
     return <picture className={className} style={settings.style || {}}>
-        <source srcSet={urlLarge || '#'} media={'(min-width: ' + breakpoint + ')'}/>
+        <source srcSet={urlLarge || '#'} media={'(min-width: ' + settings.breakpoint + ')'}/>
         <source srcSet={urlMobile || '#'} media={'(min-width: 32px)'}/>
         <img src={urlLarge} alt={large.alt || mobile.alt || ''} aria-hidden={'true'}
              loading={settings.eager ? 'eager' : 'lazy'}/>

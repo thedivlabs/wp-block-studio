@@ -44,13 +44,13 @@ const blockAttributes = {
         type: 'object'
     },
     eager: {
-        type: 'bool'
+        type: 'boolean'
     },
     force: {
-        type: 'bool'
+        type: 'boolean'
     },
     mask: {
-        type: 'bool'
+        type: 'boolean'
     },
     resolution: {
         type: 'string'
@@ -69,6 +69,12 @@ const blockAttributes = {
     },
     overlay: {
         type: 'string'
+    },
+    link: {
+        type: 'object'
+    },
+    featureImage: {
+        type: 'boolean'
     },
 }
 
@@ -90,6 +96,8 @@ registerBlockType(metadata.name, {
         const [maskImageLarge, setMaskImageLarge] = useState(attributes.maskImageLarge);
         const [eager, setEager] = useState(attributes.eager);
         const [force, setForce] = useState(attributes.force);
+        const [link, setLink] = useState(attributes.link);
+        const [featureImage, setFeatureImage] = useState(attributes.featureImage);
 
         const [mask, setMask] = useState(attributes.mask);
         const [resolution, setResolution] = useState(attributes.resolution);

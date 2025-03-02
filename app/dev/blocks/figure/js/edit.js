@@ -6,8 +6,10 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {Row} from "@wordpress/compose"
 import {
-    __experimentalGrid as Grid, BaseControl, Button, PanelBody, SelectControl, TabPanel, ToggleControl,
+    __experimentalHStack as HStack,
+    __experimentalGrid as Grid, BaseControl, Button, PanelBody, SelectControl, ToggleControl,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
@@ -312,34 +314,34 @@ registerBlockType(metadata.name, {
                                     />
                                 </Grid>
                                 <Grid columns={2} columnGap={15} rowGap={20}
-                                      style={{padding: '1rem 0', display: !mask ? 'none' : null}}>
-
-                                    <MediaUploadCheck>
-                                        <MediaUpload
-                                            title={'Mask Image'}
-                                            onSelect={(value) => {
-                                                setMaskImage(value);
-                                                setAttributes({maskImage: value});
-                                            }}
-                                            allowedTypes={['image']}
-                                            value={maskImage}
-                                            render={({open}) => {
-                                                return <PreviewThumbnail
-                                                    image={maskImage || {}}
-                                                    callback={() => {
-                                                        setMaskImage(undefined);
-                                                        setAttributes({maskImage: undefined});
-                                                    }}
-                                                    style={{
-                                                        objectFit: 'contain',
-                                                        backgroundColor: 'rgba(0,0,0,0.1)',
-                                                    }}
-                                                    onClick={open}
-                                                />;
-                                            }}
-                                        />
-                                    </MediaUploadCheck>
-
+                                      style={{display: !mask ? 'none' : null}}>
+                                    <HStack style={{gridColumn: '1/-1'}}>
+                                        <MediaUploadCheck>
+                                            <MediaUpload
+                                                title={'Mask Image'}
+                                                onSelect={(value) => {
+                                                    setMaskImage(value);
+                                                    setAttributes({maskImage: value});
+                                                }}
+                                                allowedTypes={['image']}
+                                                value={maskImage}
+                                                render={({open}) => {
+                                                    return <PreviewThumbnail
+                                                        image={maskImage || {}}
+                                                        callback={() => {
+                                                            setMaskImage(undefined);
+                                                            setAttributes({maskImage: undefined});
+                                                        }}
+                                                        style={{
+                                                            objectFit: 'contain',
+                                                            backgroundColor: 'rgba(0,0,0,0.1)',
+                                                        }}
+                                                        onClick={open}
+                                                    />;
+                                                }}
+                                            />
+                                        </MediaUploadCheck>
+                                    </HStack>
                                     <SelectControl
                                         __next40pxDefaultSize
                                         label="Mask Origin"

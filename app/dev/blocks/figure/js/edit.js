@@ -96,8 +96,7 @@ registerBlockType(metadata.name, {
         const [largeImage, setLargeImage] = useState(attributes.largeImage);
         const [mobileVideo, setMobileVideo] = useState(attributes.mobileVideo);
         const [largeVideo, setLargeVideo] = useState(attributes.largeVideo);
-        const [maskImageMobile, setMaskImageMobile] = useState(attributes.maskImageMobile);
-        const [maskImageLarge, setMaskImageLarge] = useState(attributes.maskImageLarge);
+        const [maskImage, setMaskImage] = useState(attributes.maskImage);
         const [eager, setEager] = useState(attributes.eager);
         const [force, setForce] = useState(attributes.force);
         const [link, setLink] = useState(attributes.link);
@@ -288,6 +287,82 @@ registerBlockType(metadata.name, {
                                             setAttributes({force: value});
                                         }}
                                         className={'flex items-center'}
+                                        __nextHasNoMarginBottom
+                                    />
+                                    <ToggleControl
+                                        label="Mask"
+                                        checked={mask}
+                                        onChange={(value) => {
+                                            setMask(value);
+                                            setAttributes({mask: value});
+                                        }}
+                                        className={'flex items-center'}
+                                        __nextHasNoMarginBottom
+                                    />
+                                </Grid>
+
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title={'Mask Image'}
+                                        onSelect={(value) => {
+                                            setMaskImage(value);
+                                            setAttributes({maskImage: value});
+                                        }}
+                                        allowedTypes={['image']}
+                                        value={maskImage}
+                                        render={({open}) => {
+                                            return <PreviewThumbnail
+                                                image={maskImage || {}}
+                                                callback={() => {
+                                                    setMaskImage(undefined);
+                                                    setAttributes({maskImage: undefined});
+                                                }}
+                                                style={{
+                                                    objectFit: 'contain',
+                                                    backgroundColor: 'rgba(0,0,0,0.1)',
+                                                }}
+                                                onClick={open}
+                                            />;
+                                        }}
+                                    />
+                                </MediaUploadCheck>
+                                <Grid columns={2} columnGap={15} rowGap={20} style={{display: !maskMobile ? 'none' : null}}>
+                                    <SelectControl
+                                        __next40pxDefaultSize
+                                        label="Mask Origin"
+                                        value={maskOrigin}
+                                        options={[
+                                            {label: 'Default', value: ''},
+                                            {label: 'Center', value: 'center'},
+                                            {label: 'Top', value: 'top'},
+                                            {label: 'Right', value: 'right'},
+                                            {label: 'Bottom', value: 'bottom'},
+                                            {label: 'Left', value: 'left'},
+                                            {label: 'Top Left', value: 'top left'},
+                                            {label: 'Top Right', value: 'top right'},
+                                            {label: 'Bottom Left', value: 'bottom left'},
+                                            {label: 'Bottom Right', value: 'bottom right'},
+                                        ]}
+                                        onChange={(value) => {
+                                            setMaskOrigin(value);
+                                            setAttributes({maskOrigin: value});
+                                        }}
+                                        __nextHasNoMarginBottom
+                                    />
+                                    <SelectControl
+                                        __next40pxDefaultSize
+                                        label="Mask Size"
+                                        value={maskSize}
+                                        options={[
+                                            {label: 'Default', value: 'contain'},
+                                            {label: 'Cover', value: 'cover'},
+                                            {label: 'Vertical', value: 'auto 100%'},
+                                            {label: 'Horizontal', value: '100% auto'},
+                                        ]}
+                                        onChange={(value) => {
+                                            setMaskSize(value);
+                                            setAttributes({maskSize: value});
+                                        }}
                                         __nextHasNoMarginBottom
                                     />
                                 </Grid>

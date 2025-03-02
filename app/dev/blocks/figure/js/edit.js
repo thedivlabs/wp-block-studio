@@ -40,7 +40,7 @@ const blockAttributes = {
     mobileVideo: {
         type: 'object'
     },
-    largeVideo: {
+    video: {
         type: 'object'
     },
     maskImage: {
@@ -96,6 +96,18 @@ function getSettings(attributes = {}) {
     };
 }
 
+function Media({attributes}) {
+    switch (attributes.type) {
+        case 'image':
+            return <Picture mobile={attributes.mobileImage} large={attributes.largeImage}
+                            settings={getSettings(attributes)}></Picture>;
+        case 'video':
+            return <></>;
+        default:
+            return false
+    }
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -111,8 +123,7 @@ registerBlockType(metadata.name, {
         const [type, setType] = useState(attributes.type);
         const [mobileImage, setMobileImage] = useState(attributes.mobileImage);
         const [largeImage, setLargeImage] = useState(attributes.largeImage);
-        const [mobileVideo, setMobileVideo] = useState(attributes.mobileVideo);
-        const [largeVideo, setLargeVideo] = useState(attributes.largeVideo);
+        const [video, setVideo] = useState(attributes.video);
         const [maskImage, setMaskImage] = useState(attributes.maskImage);
         const [eager, setEager] = useState(attributes.eager);
         const [force, setForce] = useState(attributes.force);
@@ -153,6 +164,7 @@ registerBlockType(metadata.name, {
                 ...blockStyle,
             }
         });
+
 
         return (
             <>
@@ -239,45 +251,22 @@ registerBlockType(metadata.name, {
                                 <Grid columns={2} columnGap={15} rowGap={20}
                                       style={{display: type !== 'video' ? 'none' : null}}>
 
-                                    <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
+                                    <BaseControl label={'Video'} __nextHasNoMarginBottom={true}>
                                         <MediaUploadCheck>
                                             <MediaUpload
-                                                title={'Mobile Video'}
+                                                title={'Video'}
                                                 onSelect={(value) => {
-                                                    setMobileVideo(value);
-                                                    setAttributes({mobileVideo: value});
+                                                    setVideo(value);
+                                                    setAttributes({video: value});
                                                 }}
                                                 allowedTypes={['video']}
-                                                value={mobileVideo}
+                                                value={video}
                                                 render={({open}) => {
                                                     return <PreviewThumbnail
-                                                        image={mobileVideo || {}}
+                                                        image={video || {}}
                                                         callback={() => {
-                                                            setMobileVideo(undefined);
-                                                            setAttributes({mobileVideo: undefined});
-                                                        }}
-                                                        onClick={open}
-                                                    />;
-                                                }}
-                                            />
-                                        </MediaUploadCheck>
-                                    </BaseControl>
-                                    <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                title={'Large Video'}
-                                                onSelect={(value) => {
-                                                    setLargeVideo(value);
-                                                    setAttributes({largeVideo: value});
-                                                }}
-                                                allowedTypes={['video']}
-                                                value={largeVideo}
-                                                render={({open}) => {
-                                                    return <PreviewThumbnail
-                                                        image={largeVideo || {}}
-                                                        callback={() => {
-                                                            setLargeVideo(undefined);
-                                                            setAttributes({largeVideo: undefined});
+                                                            setVideo(undefined);
+                                                            setAttributes({video: undefined});
                                                         }}
                                                         onClick={open}
                                                     />;
@@ -408,8 +397,7 @@ registerBlockType(metadata.name, {
                         clientId={clientId}></Layout>
 
                 <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
-                    <Picture mobile={mobileImage} large={largeImage}
-                             settings={getSettings(attributes)}></Picture>
+                    <Media attributes={attributes}/>
                 </figure>
 
             </>
@@ -423,8 +411,7 @@ registerBlockType(metadata.name, {
 
         return (
             <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
-                <Picture mobile={props.attributes.mobileImage} large={props.attributes.largeImage}
-                         settings={getSettings(props.attributes)}></Picture>
+                <Media attributes={props.attributes}/>
             </figure>
         );
     }

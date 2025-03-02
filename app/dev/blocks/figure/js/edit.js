@@ -55,6 +55,9 @@ const blockAttributes = {
     resolution: {
         type: 'string'
     },
+    size: {
+        type: 'string'
+    },
     blend: {
         type: 'string'
     },
@@ -101,6 +104,7 @@ registerBlockType(metadata.name, {
 
         const [mask, setMask] = useState(attributes.mask);
         const [resolution, setResolution] = useState(attributes.resolution);
+        const [size, setSize] = useState(attributes.size);
         const [blend, setBlend] = useState(attributes.blend);
         const [origin, setOrigin] = useState(attributes.origin);
         const [maskOrigin, setMaskOrigin] = useState(attributes.maskOrigin);

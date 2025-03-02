@@ -339,7 +339,7 @@ registerBlockType(metadata.name, {
                                                 setAttributes({['wpbs-maskImageMobile']: value});
                                             }}
                                             allowedTypes={['image']}
-                                            value={maskImage}
+                                            value={maskImageMobile}
                                             render={({open}) => {
                                                 return <PreviewThumbnail
                                                     image={maskImage || {}}

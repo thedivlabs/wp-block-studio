@@ -1,9 +1,15 @@
 function Picture({mobile = {}, large = {}, settings = {}}) {
 
     //console.log(wp.data.select( 'core').getMedia( large.id ));
+    
+    const {
+        resolution: sizeMobile = 'medium',
+        resolution: sizeLarge = 'large',
+        breakpoint: breakpoint = '960px'
+    } = settings;
 
-    const {medium: mobileLarge = {}} = mobile.sizes || {};
-    const {large: largeLarge = {}} = large.sizes || {};
+    const {[sizeMobile]: mobileLarge = {}} = mobile.sizes || {};
+    const {[sizeLarge]: largeLarge = {}} = large.sizes || {};
 
     let urlLarge;
     let urlMobile;
@@ -32,7 +38,7 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
     }
 
     return <picture className={className} style={settings.style || {}}>
-        <source srcSet={urlLarge || '#'} media={'(min-width: 960px)'}/>
+        <source srcSet={urlLarge || '#'} media={'(min-width: ' + breakpoint + ')'}/>
         <source srcSet={urlMobile || '#'} media={'(min-width: 32px)'}/>
         <img src={urlLarge} alt={large.alt || mobile.alt || ''} aria-hidden={'true'}
              loading={settings.eager ? 'eager' : 'lazy'}/>

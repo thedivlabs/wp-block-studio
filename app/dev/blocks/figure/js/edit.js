@@ -97,14 +97,32 @@ function getSettings(attributes = {}) {
 }
 
 function Media({attributes}) {
-    switch (attributes.type) {
-        case 'image':
-            return <Picture mobile={attributes.mobileImage} large={attributes.largeImage}
-                            settings={getSettings(attributes)}></Picture>;
-        case 'video':
-            return <></>;
-        default:
-            return false
+
+    const classNames = [
+        'wpbs-figure__media'
+    ].filter(x => x).join(' ');
+
+    const Content = () => {
+        switch (attributes.type) {
+            case 'image':
+                return <Picture mobile={attributes.mobileImage} large={attributes.largeImage}
+                                settings={getSettings(attributes)}></Picture>;
+            case 'video':
+                return <></>;
+            default:
+                return false
+        }
+    }
+
+    if (attributes.link) {
+        return <a class={classNames} href={attributes.link.url} target={attributes.link.target}
+                  rel={attributes.link.rel}>
+            <Content/>
+        </a>
+    } else {
+        return <div class={classNames}>
+            <Content/>
+        </div>;
     }
 }
 

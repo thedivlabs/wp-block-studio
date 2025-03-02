@@ -331,56 +331,60 @@ registerBlockType(metadata.name, {
                                 </Grid>
                                 <Grid columns={2} columnGap={15} rowGap={20}
                                       style={{display: !mask ? 'none' : null}}>
-                                    <MediaUploadCheck>
-                                        <MediaUpload
-                                            title={'Mask Mobile'}
-                                            onSelect={(value) => {
-                                                setMaskImage(value);
-                                                setAttributes({['wpbs-maskImageMobile']: value});
-                                            }}
-                                            allowedTypes={['image']}
-                                            value={maskImageMobile}
-                                            render={({open}) => {
-                                                return <PreviewThumbnail
-                                                    image={maskImage || {}}
-                                                    callback={() => {
-                                                        setMaskImageMobile(undefined);
-                                                        setAttributes({['wpbs-maskImageMobile']: undefined});
-                                                    }}
-                                                    style={{
-                                                        objectFit: 'contain',
-                                                        backgroundColor: 'rgba(0,0,0,0.1)',
-                                                    }}
-                                                    onClick={open}
-                                                />;
-                                            }}
-                                        />
-                                    </MediaUploadCheck>
-                                    <MediaUploadCheck>
-                                        <MediaUpload
-                                            title={'Mask Large'}
-                                            onSelect={(value) => {
-                                                setMaskImage(value);
-                                                setAttributes({['wpbs-maskImage']: value});
-                                            }}
-                                            allowedTypes={['image']}
-                                            value={maskImage}
-                                            render={({open}) => {
-                                                return <PreviewThumbnail
-                                                    image={maskImage || {}}
-                                                    callback={() => {
-                                                        setMaskImage(undefined);
-                                                        setAttributes({['wpbs-maskImage']: undefined});
-                                                    }}
-                                                    style={{
-                                                        objectFit: 'contain',
-                                                        backgroundColor: 'rgba(0,0,0,0.1)',
-                                                    }}
-                                                    onClick={open}
-                                                />;
-                                            }}
-                                        />
-                                    </MediaUploadCheck>
+                                    <BaseControl>
+                                        <MediaUploadCheck>
+                                            <MediaUpload
+                                                title={'Mask Mobile'}
+                                                onSelect={(value) => {
+                                                    setMaskImageMobile(value);
+                                                    setAttributes({['wpbs-maskImageMobile']: value});
+                                                }}
+                                                allowedTypes={['image']}
+                                                value={maskImageMobile}
+                                                render={({open}) => {
+                                                    return <PreviewThumbnail
+                                                        image={maskImage || {}}
+                                                        callback={() => {
+                                                            setMaskImageMobile(undefined);
+                                                            setAttributes({['wpbs-maskImageMobile']: undefined});
+                                                        }}
+                                                        style={{
+                                                            objectFit: 'contain',
+                                                            backgroundColor: 'rgba(0,0,0,0.1)',
+                                                        }}
+                                                        onClick={open}
+                                                    />;
+                                                }}
+                                            />
+                                        </MediaUploadCheck>
+                                    </BaseControl>
+                                    <BaseControl title={'Mask Large'}>
+                                        <MediaUploadCheck>
+                                            <MediaUpload
+                                                title={'Mask Large'}
+                                                onSelect={(value) => {
+                                                    setMaskImage(value);
+                                                    setAttributes({['wpbs-maskImage']: value});
+                                                }}
+                                                allowedTypes={['image']}
+                                                value={maskImage}
+                                                render={({open}) => {
+                                                    return <PreviewThumbnail
+                                                        image={maskImage || {}}
+                                                        callback={() => {
+                                                            setMaskImage(undefined);
+                                                            setAttributes({['wpbs-maskImage']: undefined});
+                                                        }}
+                                                        style={{
+                                                            objectFit: 'contain',
+                                                            backgroundColor: 'rgba(0,0,0,0.1)',
+                                                        }}
+                                                        onClick={open}
+                                                    />;
+                                                }}
+                                            />
+                                        </MediaUploadCheck>
+                                    </BaseControl>
                                     <SelectControl
                                         __next40pxDefaultSize
                                         label="Mask Origin"

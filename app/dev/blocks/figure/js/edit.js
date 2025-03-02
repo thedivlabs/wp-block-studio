@@ -38,7 +38,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
                 <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
-
+                    xxxx
                 </figure>
             </>
         )
@@ -51,10 +51,8 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <figure {...blockProps}
-                    data-wp-interactive='wpbs/wpbs-layout-element'
-            >
-
+            <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
+                xxxx
             </figure>
         );
     }

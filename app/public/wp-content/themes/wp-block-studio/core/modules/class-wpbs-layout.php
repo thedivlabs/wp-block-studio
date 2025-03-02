@@ -2,9 +2,9 @@
 
 class WPBS_Layout {
 
-	public array $desktop = [];
-	public array $mobile = [];
-	public array $hover = [];
+	public array|bool $desktop = [];
+	public array|bool $mobile = [];
+	public array|bool $hover = [];
 
 	private array $attributes = [];
 

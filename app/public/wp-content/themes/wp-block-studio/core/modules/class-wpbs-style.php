@@ -53,6 +53,7 @@ class WPBS_Style {
 
 		$components = [
 			'layout'     => ( new WPBS_Layout( $attributes ) )->styles(),
+			'props'      => ( new WPBS_Props( $attributes ) )->styles(),
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
 

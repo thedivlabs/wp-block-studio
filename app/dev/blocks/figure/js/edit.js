@@ -49,13 +49,11 @@ const blockAttributes = {
     'wpbs-maskImageMobile': {
         type: 'object',
     },
-    'wpbs-layout-mask-image': {
-        type: 'string',
-        default: 'none'
+    'wpbs-prop-figure-mask': {
+        type: 'string'
     },
-    'wpbs-layout-mask-image-mobile': {
+    'wpbs-prop-figure-mask-mobile': {
         type: 'string',
-        default: 'none'
     },
     'wpbs-eager': {
         type: 'boolean'
@@ -110,6 +108,19 @@ function Media({attributes}) {
         'wpbs-figure__media'
     ].filter(x => x).join(' ');
 
+    let mediaStyle = {};
+
+    if (attributes['wpbs-mask']) {
+        mediaStyle = {
+            ...mediaStyle,
+            maskRepeat: 'no-repeat',
+            maskImage: 'var(--figure-mask, none)',
+            maskSize: attributes['wpbs-maskSize'] || 'contain',
+            maskPosition: attributes['wpbs-maskOrigin'] || 'center',
+        }
+
+    }
+
     const Content = () => {
         switch (attributes['wpbs-type']) {
             case 'image':
@@ -125,11 +136,11 @@ function Media({attributes}) {
 
     if (attributes['wpbs-link']) {
         return <a class={classNames} href={attributes['wpbs-link'].url} target={attributes['wpbs-link'].target}
-                  rel={attributes['wpbs-link'].rel}>
+                  rel={attributes['wpbs-link'].rel} style={mediaStyle}>
             <Content/>
         </a>
     } else {
-        return <div class={classNames}>
+        return <div class={classNames} style={mediaStyle}>
             <Content/>
         </div>;
     }
@@ -143,9 +154,28 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+        console.log(attributes);
+
         const [{breakpoints}] = useSettings(['custom']);
 
-        setAttributes({['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal']});
+        setAttributes({
+            ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
+        });
+
+        if (attributes['wpbs-mask']) {
+
+            if (attributes['wpbs-maskImage']) {
+                setAttributes({
+                    ['wpbs-prop-figure-mask']: 'url(' + attributes['wpbs-maskImage'].url + ')',
+                });
+            }
+            if (attributes['wpbs-maskImageMobile']) {
+                setAttributes({
+                    ['wpbs-prop-figure-mask-mobile']: 'url(' + attributes['wpbs-maskImageMobile'].url + ')',
+                });
+            }
+
+        }
 
         const [type, setType] = useState(attributes['wpbs-type']);
         const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileImage']);
@@ -347,7 +377,6 @@ registerBlockType(metadata.name, {
                                                     setMaskImageMobile(value);
                                                     setAttributes({
                                                         ['wpbs-maskImageMobile']: value,
-                                                        ['wpbs-layout-mask-image-mobile']: 'url(' + value.url + ')'
                                                     });
                                                 }}
                                                 allowedTypes={['image']}
@@ -359,7 +388,6 @@ registerBlockType(metadata.name, {
                                                             setMaskImageMobile(undefined);
                                                             setAttributes({
                                                                 ['wpbs-maskImageMobile']: undefined,
-                                                                ['wpbs-layout-mask-image-mobile']: 'none'
                                                             });
                                                         }}
                                                         style={{
@@ -380,7 +408,6 @@ registerBlockType(metadata.name, {
                                                     setMaskImage(value);
                                                     setAttributes({
                                                         ['wpbs-maskImage']: value,
-                                                        ['wpbs-layout-mask-image']: 'url(' + value.url + ')'
                                                     });
                                                 }}
                                                 allowedTypes={['image']}
@@ -388,11 +415,10 @@ registerBlockType(metadata.name, {
                                                 render={({open}) => {
                                                     return <PreviewThumbnail
                                                         image={maskImage || {}}
-                                                        callback={(value) => {
+                                                        callback={() => {
                                                             setMaskImage(undefined);
                                                             setAttributes({
                                                                 ['wpbs-maskImage']: undefined,
-                                                                ['wpbs-layout-mask-image']: 'none'
                                                             });
                                                         }}
                                                         style={{

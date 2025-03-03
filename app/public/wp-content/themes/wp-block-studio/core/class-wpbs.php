@@ -96,6 +96,7 @@ class WPBS {
 		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
 		require_once self::$core_path . 'modules/class-wpbs-style.php';
 		require_once self::$core_path . 'modules/class-wpbs-layout.php';
+		require_once self::$core_path . 'modules/class-wpbs-props.php';
 		require_once self::$core_path . 'modules/class-wpbs-background.php';
 		require_once self::$core_path . 'modules/class-wpbs-endpoints.php';
 

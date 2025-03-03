@@ -361,7 +361,6 @@ registerBlockType(metadata.name, {
                                                                 ['wpbs-maskImageMobile']: undefined,
                                                                 ['wpbs-layout-mask-image-mobile']: 'none'
                                                             });
-                                                            console.log(attributes);
                                                         }}
                                                         style={{
                                                             objectFit: 'contain',

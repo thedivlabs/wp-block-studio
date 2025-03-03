@@ -49,6 +49,12 @@ const blockAttributes = {
     'wpbs-maskImageMobile': {
         type: 'object'
     },
+    'wpbs-layout-mask-image': {
+        type: 'string'
+    },
+    'wpbs-layout-mask-image-mobile': {
+        type: 'string'
+    },
     'wpbs-eager': {
         type: 'boolean'
     },
@@ -338,6 +344,7 @@ registerBlockType(metadata.name, {
                                                 onSelect={(value) => {
                                                     setMaskImageMobile(value);
                                                     setAttributes({['wpbs-maskImageMobile']: value});
+                                                    setAttributes({['wpbs-layout-mask-image-mobile']: 'url(' + value.url + ')'});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImageMobile}
@@ -365,6 +372,7 @@ registerBlockType(metadata.name, {
                                                 onSelect={(value) => {
                                                     setMaskImage(value);
                                                     setAttributes({['wpbs-maskImage']: value});
+                                                    setAttributes({['wpbs-layout-mask-image']: 'url(' + value.url + ')'});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImage}

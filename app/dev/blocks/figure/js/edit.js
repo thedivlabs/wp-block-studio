@@ -47,13 +47,15 @@ const blockAttributes = {
         type: 'object'
     },
     'wpbs-maskImageMobile': {
-        type: 'object'
+        type: 'object',
     },
     'wpbs-layout-mask-image': {
-        type: 'string'
+        type: 'string',
+        default: 'none'
     },
     'wpbs-layout-mask-image-mobile': {
-        type: 'string'
+        type: 'string',
+        default: 'none'
     },
     'wpbs-eager': {
         type: 'boolean'

@@ -16,13 +16,11 @@ class WPBS_Layout {
 
 		$this->attributes = $attributes;
 
-		WPBS::console_log($attributes);
 		unset( $attributes );
 
 		$this->desktop = $this->desktop();
 		$this->mobile  = $this->mobile();
 		$this->hover   = $this->hover();
-
 
 		unset( $this->attributes );
 

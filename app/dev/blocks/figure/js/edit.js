@@ -154,8 +154,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        console.log(attributes);
-
         const [{breakpoints}] = useSettings(['custom']);
 
         setAttributes({
@@ -164,16 +162,13 @@ registerBlockType(metadata.name, {
 
         if (attributes['wpbs-mask']) {
 
-            if (attributes['wpbs-maskImage']) {
-                setAttributes({
-                    ['wpbs-prop-figure-mask']: 'url(' + attributes['wpbs-maskImage'].url + ')',
-                });
-            }
-            if (attributes['wpbs-maskImageMobile']) {
-                setAttributes({
-                    ['wpbs-prop-figure-mask-mobile']: 'url(' + attributes['wpbs-maskImageMobile'].url + ')',
-                });
-            }
+            setAttributes({
+                ['wpbs-prop-figure-mask']: attributes['wpbs-maskImage'] ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
+            });
+
+            setAttributes({
+                ['wpbs-prop-figure-mask-mobile']: attributes['wpbs-maskImageMobile'] ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
+            });
 
         }
 

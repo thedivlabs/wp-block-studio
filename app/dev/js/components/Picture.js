@@ -32,12 +32,24 @@ function Picture({mobile = {}, large = {}, settings = {},}) {
         return false;
     }
 
+    const srcAttr = settings.eager ? 'src' : 'data-src';
+    const srcsetAttr = settings.eager ? 'srcset' : 'data-srcset';
+
     return <picture className={className} style={settings.style || {}}>
-        <source srcSet={urlLarge || '#'} media={'(min-width: ' + settings.breakpoint + ')'}/>
-        <source srcSet={urlMobile || '#'} media={'(min-width: 32px)'}/>
-        <img src={urlLarge} alt={large.alt || mobile.alt || ''} aria-hidden={'true'}
-             loading={settings.eager ? 'eager' : 'lazy'}
-             
+        <source {...{
+            [srcsetAttr]: urlLarge || '#',
+            media: '(min-width: ' + settings.breakpoint + ')',
+        }}/>
+        <source {...{
+            [srcsetAttr]: urlMobile || '#',
+            media: '(min-width: 32px)',
+        }}/>
+        <img {...{
+            [srcAttr]: urlMobile || '#',
+            alt: large.alt || mobile.alt || '',
+            ariaHidden: true,
+            loading: settings.eager ? 'eager' : 'lazy'
+        }}
         />
     </picture>;
 }

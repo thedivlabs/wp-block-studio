@@ -336,14 +336,6 @@
         "lg": "1404px",
         "xl": "1500px"
       },
-      "container": {
-        "xs": "640px",
-        "sm": "920px",
-        "md": "1040px",
-        "lg": "1280px",
-        "xl": "1344px",
-        "2-xl": "1404px"
-      },
       "header": {
         "position": "fixed",
         "height": {

@@ -15,9 +15,7 @@ function Breakpoint({defaultValue, callback}) {
             {label: 'Small', value: 'sm'},
             {label: 'Medium', value: 'md'},
             {label: 'Large', value: 'lg'},
-            {label: 'Extra Large', value: 'xl'},
-            {label: '2XL', value: '2xl'},
-            {label: '3XL', value: '3xl'},
+            {label: 'Extra Large', value: 'xl'}
         ]}
         onChange={(newValue) => {
             setValue(newValue);

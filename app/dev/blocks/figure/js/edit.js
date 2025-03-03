@@ -345,8 +345,10 @@ registerBlockType(metadata.name, {
                                                 title={'Mask Mobile'}
                                                 onSelect={(value) => {
                                                     setMaskImageMobile(value);
-                                                    setAttributes({['wpbs-maskImageMobile']: value});
-                                                    setAttributes({['wpbs-layout-mask-image-mobile']: 'url(' + value.url + ')'});
+                                                    setAttributes({
+                                                        ['wpbs-maskImageMobile']: value,
+                                                        ['wpbs-layout-mask-image-mobile']: 'url(' + value.url + ')'
+                                                    });
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImageMobile}
@@ -355,8 +357,11 @@ registerBlockType(metadata.name, {
                                                         image={maskImageMobile || {}}
                                                         callback={() => {
                                                             setMaskImageMobile(undefined);
-                                                            setAttributes({['wpbs-maskImageMobile']: undefined});
-                                                            setAttributes({['wpbs-layout-mask-image-mobile']: undefined});
+                                                            setAttributes({
+                                                                ['wpbs-maskImageMobile']: undefined,
+                                                                ['wpbs-layout-mask-image-mobile']: 'none'
+                                                            });
+                                                            console.log(attributes);
                                                         }}
                                                         style={{
                                                             objectFit: 'contain',
@@ -374,18 +379,22 @@ registerBlockType(metadata.name, {
                                                 title={'Mask Large'}
                                                 onSelect={(value) => {
                                                     setMaskImage(value);
-                                                    setAttributes({['wpbs-maskImage']: value});
-                                                    setAttributes({['wpbs-layout-mask-image']: 'url(' + value.url + ')'});
+                                                    setAttributes({
+                                                        ['wpbs-maskImage']: value,
+                                                        ['wpbs-layout-mask-image']: 'url(' + value.url + ')'
+                                                    });
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImage}
                                                 render={({open}) => {
                                                     return <PreviewThumbnail
                                                         image={maskImage || {}}
-                                                        callback={() => {
+                                                        callback={(value) => {
                                                             setMaskImage(undefined);
-                                                            setAttributes({['wpbs-maskImage']: undefined});
-                                                            setAttributes({['wpbs-layout-mask-image']: undefined});
+                                                            setAttributes({
+                                                                ['wpbs-maskImage']: undefined,
+                                                                ['wpbs-layout-mask-image']: 'none'
+                                                            });
                                                         }}
                                                         style={{
                                                             objectFit: 'contain',

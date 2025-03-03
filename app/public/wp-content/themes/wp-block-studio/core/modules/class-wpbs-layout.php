@@ -16,11 +16,13 @@ class WPBS_Layout {
 
 		$this->attributes = $attributes;
 
+		WPBS::console_log($attributes);
 		unset( $attributes );
 
 		$this->desktop = $this->desktop();
 		$this->mobile  = $this->mobile();
 		$this->hover   = $this->hover();
+
 
 		unset( $this->attributes );
 
@@ -205,6 +207,8 @@ class WPBS_Layout {
 				'text-color' => 'color',
 				default => $prop_name
 			};
+
+
 
 			$styles[ $prop_name ] = $value;
 

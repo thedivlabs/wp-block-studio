@@ -346,7 +346,7 @@ registerBlockType(metadata.name, {
                                                 onSelect={(value) => {
                                                     setMaskImageMobile(value);
                                                     setAttributes({['wpbs-maskImageMobile']: value});
-                                                    setAttributes({['wpbs-layout-mask-image-mobile']: (value.url ? 'url(' + value.url + ')' : 'none')});
+                                                    setAttributes({['wpbs-layout-mask-image-mobile']: 'url(' + value.url + ')'});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImageMobile}
@@ -356,6 +356,7 @@ registerBlockType(metadata.name, {
                                                         callback={() => {
                                                             setMaskImageMobile(undefined);
                                                             setAttributes({['wpbs-maskImageMobile']: undefined});
+                                                            setAttributes({['wpbs-layout-mask-image-mobile']: undefined});
                                                         }}
                                                         style={{
                                                             objectFit: 'contain',
@@ -374,7 +375,7 @@ registerBlockType(metadata.name, {
                                                 onSelect={(value) => {
                                                     setMaskImage(value);
                                                     setAttributes({['wpbs-maskImage']: value});
-                                                    setAttributes({['wpbs-layout-mask-image']: (value.url ? 'url(' + value.url + ')' : 'none')});
+                                                    setAttributes({['wpbs-layout-mask-image']: 'url(' + value.url + ')'});
                                                 }}
                                                 allowedTypes={['image']}
                                                 value={maskImage}
@@ -384,6 +385,7 @@ registerBlockType(metadata.name, {
                                                         callback={() => {
                                                             setMaskImage(undefined);
                                                             setAttributes({['wpbs-maskImage']: undefined});
+                                                            setAttributes({['wpbs-layout-mask-image']: undefined});
                                                         }}
                                                         style={{
                                                             objectFit: 'contain',

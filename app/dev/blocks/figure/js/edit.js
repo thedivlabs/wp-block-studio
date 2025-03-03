@@ -212,6 +212,8 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
+            'data-wp-interactive': 'wpbs-figure',
+            'data-wp-run': 'callbacks.isInView',
             style: {
                 ...blockStyle,
             }

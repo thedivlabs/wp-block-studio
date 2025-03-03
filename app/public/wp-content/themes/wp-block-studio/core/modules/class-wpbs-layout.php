@@ -62,7 +62,7 @@ class WPBS_Layout {
 
 		$layout_attributes = array_filter( $this->attributes, function ( $k ) use ( $special_attributes ) {
 
-			return str_starts_with( $k, 'wpbs' ) &&
+			return str_starts_with( $k, 'wpbs-layout' ) &&
 			       ! is_array( $this->attributes[ $k ] ) &&
 			       ! ( str_contains( $k, 'mobile' ) || str_contains( $k, 'hover' ) ) &&
 			       ! in_array( $k, array_merge( array_keys( $special_attributes ), [ 'wpbs-layout-breakpoint' ] ) );

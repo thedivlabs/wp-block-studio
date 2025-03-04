@@ -38,7 +38,7 @@ class WPBS_Style {
 		return $selector;
 	}
 
-	private static function get_breakpoint( $attributes ): string {
+	public static function get_breakpoint( $attributes ): string {
 
 		return wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
 	}

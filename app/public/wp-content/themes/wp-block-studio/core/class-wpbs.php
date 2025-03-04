@@ -37,6 +37,7 @@ class WPBS {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
+		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 30 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
@@ -314,6 +315,132 @@ class WPBS {
 
 		return strtolower( str_replace( ' ', '-', implode( ' ', $prop ) ) );
 
+
+	}
+
+	public function pre_load_critical(): void {
+
+		global $wp_scripts;
+		global $wp_styles;
+
+		$preconnect_sources        = apply_filters( 'wpbs_preconnect_sources', [] );
+		$preload_sources           = apply_filters( 'wpbs_preload_sources', [] );
+		$preload_images            = apply_filters( 'wpbs_preload_images', [] );
+		$preload_images_responsive = apply_filters( 'wpbs_preload_images_responsive', [] );
+
+		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
+			$url = parse_url( $src );
+			if ( ! empty( $url['host'] ) ) {
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
+			}
+		}
+
+		foreach ( array_unique( array_filter( $preload_sources ) ) as $src ) {
+			$url = parse_url( $src );
+
+			if ( ! empty( $url['host'] ) ) {
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
+				echo '<link rel="preload" href="' . $src . '">';
+			}
+		}
+
+		foreach ( array_unique( array_filter( $preload_images ) ) as $image ) {
+
+			if ( empty( $image['id'] ) ) {
+				continue;
+			}
+
+			$src          = wp_get_attachment_image_src( $image['id'], $image['size'] ?? 'large' )[0] ?? false;
+			$image_srcset = wp_get_attachment_image_srcset( $image['id'] );
+			$path         = str_replace( home_url(), ABSPATH, $src );
+			$webp         = file_exists( $path . '.webp' );
+
+			echo '<link rel="preload" as="image"';
+
+			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
+
+			//echo 'media="(max-width: 992px)"';
+
+			if ( $image_srcset ) {
+				echo 'imagesrcset="' . $image_srcset . '"';
+			}
+
+			if ( $webp ) {
+				echo 'type="image/webp"';
+			}
+
+			echo '/>';
+
+		}
+
+		foreach ( array_unique( array_filter( $preload_images_responsive ) ) as $image ) {
+
+			$src  = wp_get_attachment_image_src( $image['large'], $image['size'] ?? 'large' )[0] ?? false;
+			$path = str_replace( home_url(), ABSPATH, $src );
+			$webp = file_exists( $path . '.webp' );
+
+			$src_mobile  = wp_get_attachment_image_src( $image['mobile'], $image['size'] ?? 'large' )[0] ?? false;
+			$path_mobile = str_replace( home_url(), ABSPATH, $src );
+			$webp_mobile = file_exists( $path_mobile . '.webp' );
+
+			echo '<link rel="preload" as="image"';
+
+			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
+
+			if ( ! empty( $image['breakpoint'] ) && ! empty( $image['mobile'] ) ) {
+				echo 'media="(min-width: ' . $image['breakpoint'] . ')"';
+			}
+
+			if ( $webp ) {
+				echo 'type="image/webp"';
+			}
+
+			echo '/>';
+
+			if ( ! empty( $image['breakpoint'] ) ) {
+				echo '<link rel="preload" as="image"';
+
+				echo 'href="' . ( $webp_mobile ? $src_mobile . '.webp' : $src_mobile ) . '"';
+
+				echo 'media="(max-width: calc(' . $image['breakpoint'] . ' - 1px))"';
+
+				if ( $webp_mobile ) {
+					echo 'type="image/webp"';
+				}
+
+				echo '/>';
+			}
+
+
+		}
+
+
+		$default_styles = [
+			//'wpbs-sandbox-bundle',
+		];
+
+		$default_scripts = [
+			'jquery',
+			'jquery-migrate',
+			//'wpbs-sandbox',
+			//'wpbs-sandbox-fontawesome',
+		];
+
+		$preload_scripts = array_values( array_filter( array_map( function ( $slug ) use ( $wp_scripts, $default_scripts ) {
+			return in_array( $slug, $default_scripts ) ? $wp_scripts->registered[ $slug ]->src ?? '' : [];
+		}, $wp_scripts->queue ?? [] ) ) );
+
+		$preload_styles = array_values( array_filter( array_map( function ( $slug ) use ( $wp_styles, $default_styles ) {
+			return in_array( $slug, $default_styles ) ? $wp_styles->registered[ $slug ]->src ?? '' : [];
+		}, $wp_styles->queue ?? [] ) ) );
+
+		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_scripts', $preload_scripts ) ) ) as $url ) {
+			echo '<link rel="preload" as="script" href="' . $url . '">';
+		}
+
+		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_styles', $preload_styles ) ) ) as $url ) {
+			echo '<link rel="preload" as="style" href="' . $url . '">';
+		}
 
 	}
 

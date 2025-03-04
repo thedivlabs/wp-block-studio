@@ -45,12 +45,30 @@ class WPBS_Background {
 
 		$this->attributes = $attributes['wpbs-background'];
 
-		unset( $attributes );
+
+		if ( ! empty( $this->attributes['eager'] ) ) {
+
+			add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {
+
+				WPBS::console_log( $attributes );
+
+				$images[] = array_merge( $images, array_filter( [
+					'mobile'     => $this->attributes['mobileImage']['id'] ?? null,
+					'large'      => $this->attributes['largeImage']['id'] ?? null,
+					'size'       => $this->attributes['resolution'] ?? null,
+					'breakpoint' => WPBS_Style::get_breakpoint( $attributes ),
+				] ) );
+
+				return $images;
+			} );
+		}
+
+		//unset( $attributes );
 
 		$this->desktop = $this->desktop();
 		$this->mobile  = $this->mobile();
 
-		unset( $this->attributes );
+		//unset( $this->attributes );
 
 	}
 

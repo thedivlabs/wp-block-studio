@@ -37,7 +37,7 @@ class WPBS {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
-		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 30 );
+		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
@@ -383,7 +383,7 @@ class WPBS {
 			$path_mobile = str_replace( home_url(), ABSPATH, $src );
 			$webp_mobile = file_exists( $path_mobile . '.webp' );
 
-			echo '<link rel="preload" as="image"';
+			echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
 
 			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
 
@@ -398,7 +398,7 @@ class WPBS {
 			echo '/>';
 
 			if ( ! empty( $image['breakpoint'] ) ) {
-				echo '<link rel="preload" as="image"';
+				echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
 
 				echo 'href="' . ( $webp_mobile ? $src_mobile . '.webp' : $src_mobile ) . '"';
 

@@ -50,12 +50,10 @@ class WPBS_Background {
 
 			add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {
 
-				WPBS::console_log( $attributes );
-
 				$images[] = array_merge( $images, array_filter( [
-					'mobile'     => $this->attributes['mobileImage']['id'] ?? null,
-					'large'      => $this->attributes['largeImage']['id'] ?? null,
-					'size'       => $this->attributes['resolution'] ?? null,
+					'mobile'     => $attributes['wpbs-background']['mobileImage']['id'] ?? null,
+					'large'      => $attributes['wpbs-background']['largeImage']['id'] ?? null,
+					'size'       => $attributes['wpbs-background']['resolution'] ?? null,
 					'breakpoint' => WPBS_Style::get_breakpoint( $attributes ),
 				] ) );
 
@@ -63,12 +61,12 @@ class WPBS_Background {
 			} );
 		}
 
-		//unset( $attributes );
+		unset( $attributes );
 
 		$this->desktop = $this->desktop();
 		$this->mobile  = $this->mobile();
 
-		//unset( $this->attributes );
+		unset( $this->attributes );
 
 	}
 

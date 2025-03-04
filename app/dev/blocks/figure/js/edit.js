@@ -11,7 +11,9 @@ import {
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
+
+
 import {useSettings} from '@wordpress/block-editor';
 
 function classNames(attributes = {}) {
@@ -155,10 +157,6 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        setAttributes({
-            ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
-        });
-
         if (attributes['wpbs-mask']) {
 
             setAttributes({
@@ -216,6 +214,51 @@ registerBlockType(metadata.name, {
             style: {
                 ...blockStyle,
             }
+        });
+
+        const observed = useRef(null);
+
+        useEffect(() => {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    for (let entry of entries) {
+                        // if 90% of the section is visible
+                        if (entry.isIntersecting) {
+                            // update the active state to the visible section
+
+                            entry.target.querySelectorAll('[data-src],[data-srcset]').forEach(el => {
+                                if(el.dataset.src){
+                                    el.src = el.dataset.src;
+                                    delete el.dataset('src');
+                                }
+                                if(el.dataset.srcset){
+                                    el.srcset = el.dataset.srcset;
+                                    delete el.dataset('srcset');
+                                }
+                            })
+
+                        }
+                    }
+                },
+                {
+                    // root property defaults to the browser viewport
+
+                    // intersection ratio (90% of section must be visibile)
+                    threshold: 0.9
+                })
+
+            observer.observe(observed.current)
+
+            return () => {
+                observer.unobserve(observer.current);
+            };
+
+        }, [observed]);
+
+
+
+        setAttributes({
+            ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
         });
 
         return (
@@ -474,7 +517,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
+                <figure {...blockProps} ref={observed} data-wp-interactive='wpbs/wpbs-figure'>
                     <Media attributes={attributes}/>
                 </figure>
 

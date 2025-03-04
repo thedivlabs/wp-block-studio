@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 0,
     });
 
-    [...document.querySelectorAll('video:has(source[data-media]),.wpbs-background.lazy')].forEach((video) => {
+    [...document.querySelectorAll('video:has(source[data-media]):has(source[data-src]),.wpbs-background.lazy')].forEach((video) => {
         observerIntersection.observe(video);
     });
 

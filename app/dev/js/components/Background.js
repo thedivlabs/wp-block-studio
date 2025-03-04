@@ -79,13 +79,12 @@ export function Background({attributes = {}}) {
 
             MediaElement = <video muted loop autoPlay={true}>
                 <source {...{
-                    [srcAttr]: largeVideo.url || '#',
+                    [srcAttr]: largeVideo.url ? largeVideo.url : '#',
                     type: 'video/mp4',
                     'data-media': '(min-width:960px)'
                 }}/>
-
                 <source {...{
-                    [srcAttr]: mobileVideo.url || '#',
+                    [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
                     type: 'video/mp4',
                     'data-media': '(min-width:240px) and (max-width:959px)'
                 }}/>

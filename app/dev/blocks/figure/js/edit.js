@@ -7,14 +7,12 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
-    __experimentalHStack as HStack,
     __experimentalGrid as Grid, BaseControl, Button, PanelBody, SelectControl, ToggleControl,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSettings} from '@wordpress/block-editor';
-
 
 function classNames(attributes = {}) {
 
@@ -146,6 +144,7 @@ function Media({attributes}) {
     }
 }
 
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -218,7 +217,6 @@ registerBlockType(metadata.name, {
                 ...blockStyle,
             }
         });
-
 
         return (
             <>

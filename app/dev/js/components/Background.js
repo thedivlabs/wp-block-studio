@@ -75,10 +75,21 @@ export function Background({attributes = {}}) {
                 largeVideo = largeVideo || {};
             }
 
+            const srcAttr = settings.eager ? 'src' : 'data-src';
+
             MediaElement = <video muted loop autoPlay={true}>
-                <source data-src={(largeVideo.url || '#')} type="video/mp4" data-media={'(min-width:960px)'}/>
-                <source data-src={(mobileVideo.url || '#')} type="video/mp4"
-                        data-media={'(min-width:240px) and (max-width:959px)'}/>
+                <source {...{
+                    [srcAttr]: largeVideo.url || '#',
+                    type: 'video/mp4',
+                    'data-media': '(min-width:960px)'
+                }}/>
+
+                <source {...{
+                    [srcAttr]: mobileVideo.url || '#',
+                    type: 'video/mp4',
+                    'data-media': '(min-width:240px) and (max-width:959px)'
+                }}/>
+
                 <source src={'#'}/>
             </video>
         }

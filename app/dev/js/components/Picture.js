@@ -37,8 +37,16 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
 
     return <picture className={className} style={settings.style || {}}>
         <source {...{
+            [srcsetAttr]: urlLarge ? urlLarge + '.webp' : '#',
+            media: '(min-width: ' + settings.breakpoint + ')',
+        }}/>
+        <source {...{
             [srcsetAttr]: urlLarge || '#',
             media: '(min-width: ' + settings.breakpoint + ')',
+        }}/>
+        <source {...{
+            [srcsetAttr]: urlMobile ? urlMobile + '.webp' : '#',
+            media: '(min-width: 32px)',
         }}/>
         <source {...{
             [srcsetAttr]: urlMobile || '#',

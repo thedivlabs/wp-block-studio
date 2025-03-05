@@ -1,4 +1,8 @@
+import ResponsiveMedia from './util/ResponsiveMedia';
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    ResponsiveMedia({ref: false});
 
     function responsiveVideoSrc(video) {
         [...video.querySelectorAll('source')].forEach((source) => {

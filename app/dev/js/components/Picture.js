@@ -32,8 +32,8 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
         return false;
     }
 
-    const srcAttr = settings.eager ? 'src' : 'src'; // data-src
-    const srcsetAttr = settings.eager ? 'srcset' : 'srcset'; // data-srcset
+    const srcAttr = settings.eager ? 'src' : 'data-src'; // data-src
+    const srcsetAttr = settings.eager ? 'srcset' : 'data-srcset'; // data-srcset
 
     return <picture className={className} style={settings.style || {}}>
         <source {...{

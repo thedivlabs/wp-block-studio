@@ -38,19 +38,19 @@ function Picture({mobile = {}, large = {}, settings = {}}) {
     return <picture className={className} style={settings.style || {}}>
         <source {...{
             [srcsetAttr]: urlLarge ? urlLarge + '.webp' : '#',
-            'data-media': '(min-width: ' + settings.breakpoint + ')',
+            media: '(min-width: ' + settings.breakpoint + ')',
         }}/>
         <source {...{
             [srcsetAttr]: urlLarge || '#',
-            'data-media': '(min-width: ' + settings.breakpoint + ')',
+            media: '(min-width: ' + settings.breakpoint + ')',
         }}/>
         <source {...{
             [srcsetAttr]: urlMobile ? urlMobile + '.webp' : '#',
-            'data-media': '(min-width: 32px)',
+            media: '(min-width: 32px)',
         }}/>
         <source {...{
             [srcsetAttr]: urlMobile || '#',
-            'data-media': '(min-width: 32px)',
+            media: '(min-width: 32px)',
         }}/>
         <img {...{
             [srcAttr]: urlMobile || '#',

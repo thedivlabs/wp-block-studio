@@ -8,12 +8,12 @@ export default function ResponsiveMedia({ref = false}) {
         if (media.dataset.src) {
             media.setAttribute('src', media.dataset.src);
             media.removeAttribute('data-src');
-            media.removeAttribute('data-media');
+            //media.removeAttribute('data-media');
         }
         if (media.dataset.srcset) {
             media.setAttribute('srcset', media.dataset.srcset);
             media.removeAttribute('data-srcset');
-            media.removeAttribute('data-media');
+            //media.removeAttribute('data-media');
         }
     }
 
@@ -42,7 +42,7 @@ export default function ResponsiveMedia({ref = false}) {
                         observerSize.observe(entry.target);
                     }
 
-                    //observer.unobserve(entry.target);
+                    observer.unobserve(entry.target);
 
                 }
             }
@@ -57,14 +57,12 @@ export default function ResponsiveMedia({ref = false}) {
     if (ref) {
         [...ref.querySelectorAll(selector)].forEach(media => {
 
-            console.log(media);
             observer.observe(media)
         })
     } else {
 
 
         [...document.querySelectorAll(selector)].forEach(media => {
-
 
             observer.observe(media)
         })

@@ -322,7 +322,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Repeat"
                 value={repeat}
                 options={[
-                    {label: 'None', value: 'none'},
+                    {label: 'None', value: undefined},
                     {label: 'Default', value: 'repeat'},
                     {label: 'Horizontal', value: 'repeat-x'},
                     {label: 'Vertical', value: 'repeat-y'},
@@ -628,7 +628,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Repeat"
                 value={repeatMobile}
                 options={[
-                    {label: 'None', value: 'none'},
+                    {label: 'None', value: undefined},
                     {label: 'Default', value: 'repeat'},
                     {label: 'Horizontal', value: 'repeat-x'},
                     {label: 'Vertical', value: 'repeat-y'},

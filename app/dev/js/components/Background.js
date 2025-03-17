@@ -322,10 +322,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Repeat"
                 value={repeat}
                 options={[
-                    {label: 'Default', value: undefined},
                     {label: 'None', value: 'none'},
-                    {label: 'Horizontal', value: 'horizontal'},
-                    {label: 'Vertical', value: 'vertical'},
+                    {label: 'Default', value: 'repeat'},
+                    {label: 'Horizontal', value: 'repeat-x'},
+                    {label: 'Vertical', value: 'repeat-y'},
                 ]}
                 onChange={(value) => {
                     updateSettings('repeat', value, setRepeat);
@@ -628,10 +628,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                 label="Repeat"
                 value={repeatMobile}
                 options={[
-                    {label: 'Default', value: undefined},
                     {label: 'None', value: 'none'},
-                    {label: 'Horizontal', value: 'horizontal'},
-                    {label: 'Vertical', value: 'vertical'},
+                    {label: 'Default', value: 'repeat'},
+                    {label: 'Horizontal', value: 'repeat-x'},
+                    {label: 'Vertical', value: 'repeat-y'},
                 ]}
                 onChange={(value) => {
                     updateSettings('repeatMobile', value, setRepeatMobile);

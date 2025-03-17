@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
                 >
                     <div {...innerBlocksProps}/>
 
-                    <Background attributes={attributes} />
+                    <Background attributes={attributes}/>
 
                 </ElementTagName>
             </>
@@ -91,7 +91,6 @@ registerBlockType(metadata.name, {
 
         return (
             <ElementTagName {...blockProps}
-                            data-wp-interactive='wpbs/wpbs-layout-element'
             >
                 <div {...innerBlocksProps}/>
 

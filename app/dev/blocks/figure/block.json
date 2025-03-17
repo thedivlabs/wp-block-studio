@@ -6,6 +6,7 @@
     "root": ".wpbs-figure"
   },
   "supports": {
+    "interactivity": true,
     "color": {
       "background": true,
       "text": true,
@@ -23,6 +24,7 @@
     }
   },
   "editorScript": "file:./js/edit.js",
+  "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
   "icon": "format-image"

@@ -11,7 +11,7 @@ import {
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
-import React, {useEffect, useState, useRef} from "react";
+import React, {useState} from "react";
 //import ResponsiveMedia from 'Dev/util/ResponsiveMedia'
 
 
@@ -477,7 +477,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <figure {...blockProps} >
+                <figure {...blockProps}>
                     <Media attributes={attributes}/>
                 </figure>
 
@@ -491,7 +491,7 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <figure {...blockProps} >
+            <figure {...blockProps} data-wp-interactive="wpbs" data-wp-init="callbacks.startCountdown">
                 <Media attributes={props.attributes}/>
             </figure>
         );

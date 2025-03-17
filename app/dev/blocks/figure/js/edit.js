@@ -12,7 +12,7 @@ import {
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useEffect, useState, useRef} from "react";
-import ResponsiveMedia from 'Dev/util/ResponsiveMedia'
+//import ResponsiveMedia from 'Dev/util/ResponsiveMedia'
 
 
 import {useSettings} from '@wordpress/block-editor';
@@ -202,28 +202,20 @@ registerBlockType(metadata.name, {
         };
 
         const blockStyle = {
-            /*'--figure-type': type,
+            '--figure-type': type,
             '--figure-mask': mask,
             '--figure-mask-origin': maskOrigin,
-            '--figure-mask-size': maskSize,*/
+            '--figure-mask-size': maskSize,
         }
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
-            'data-wp-interactive': 'wpbs-figure',
-            'data-wp-run': 'callbacks.isInView',
+            //'data-wp-interactive': 'wpbs-figure',
+            //'data-wp-run': 'callbacks.isInView',
             style: {
                 ...blockStyle,
             }
         });
-
-        const ref = useRef(false);
-
-        useEffect(() => {
-            return ResponsiveMedia({ref: ref.current})
-
-        }, [ref.current]);
-
 
         setAttributes({
             ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
@@ -485,7 +477,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <figure {...blockProps} ref={ref} data-wp-interactive='wpbs/wpbs-figure'>
+                <figure {...blockProps} >
                     <Media attributes={attributes}/>
                 </figure>
 
@@ -499,7 +491,7 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <figure {...blockProps} data-wp-interactive='wpbs/wpbs-figure'>
+            <figure {...blockProps} >
                 <Media attributes={props.attributes}/>
             </figure>
         );

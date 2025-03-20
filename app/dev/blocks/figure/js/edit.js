@@ -2,6 +2,7 @@ import {
     useBlockProps,
     InspectorControls,
     BlockEdit, MediaUploadCheck, MediaUpload,
+    __experimentalLinkControl as LinkControl,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -139,7 +140,7 @@ function Media({attributes, editor = false}) {
         }
     }
 
-    if (attributes['wpbs-link']) {
+    if (attributes['wpbs-link'] && !editor) {
         return <a class={classNames} href={attributes['wpbs-link'].url} target={attributes['wpbs-link'].target}
                   rel={attributes['wpbs-link'].rel} style={mediaStyle}>
             <Content/>
@@ -316,6 +317,38 @@ registerBlockType(metadata.name, {
 
 
                                 </Grid>
+
+                                <LinkControl
+                                    searchInputPlaceholder="Search here..."
+                                    value={link}
+                                    settings={[
+                                        {
+                                            id: 'opensInNewTab',
+                                            title: 'New tab?',
+                                        },
+                                        {
+                                            id: 'customDifferentSetting',
+                                            title: 'Has this custom setting?'
+                                        }
+                                    ]}
+                                    onChange={(newValue) => {
+                                        setAttributes({['wpbs-link']: newValue});
+                                        setLink(newValue);
+                                    }}
+                                    withCreateSuggestion={true}
+                                    createSuggestion={(inputValue) => setAttributes({
+                                        post: {
+                                            ...attributes.post,
+                                            title: inputValue,
+                                            type: "custom-url",
+                                            id: Date.now(),
+                                            url: inputValue
+                                        }
+                                    })}
+                                    css={{minWidth: '0px'}}
+
+                                >
+                                </LinkControl>
 
                                 <Overlay defaultValue={attributes['wpbs-overlay']} callback={(newValue) => {
                                     setAttributes({['wpbs-overlay']: newValue});

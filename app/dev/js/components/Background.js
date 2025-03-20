@@ -21,7 +21,7 @@ import {
     PanelColorSettings,
 } from "@wordpress/block-editor";
 
-export function Background({attributes = {}}) {
+export function Background({attributes = {}, editor = false}) {
 
     const {['wpbs-background']: settings} = attributes;
 
@@ -75,7 +75,13 @@ export function Background({attributes = {}}) {
                 largeVideo = largeVideo || {};
             }
 
-            const srcAttr = settings.eager ? 'src' : 'data-src';
+            let srcAttr;
+
+            if (editor === true) {
+                srcAttr = 'src';
+            } else {
+                srcAttr = settings.eager ? 'src' : 'data-src';
+            }
 
             MediaElement = <video muted loop autoPlay={true}>
                 <source {...{

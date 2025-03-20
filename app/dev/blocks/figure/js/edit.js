@@ -103,7 +103,7 @@ function getSettings(attributes = {}) {
     };
 }
 
-function Media({attributes}) {
+function Media({attributes, editor = false}) {
 
     const classNames = [
         'wpbs-figure__media'
@@ -127,7 +127,7 @@ function Media({attributes}) {
             case 'image':
 
                 return <Picture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
-                                settings={getSettings(attributes)}></Picture>;
+                                settings={getSettings(attributes)} editor={editor}></Picture>;
             case 'video':
                 return <></>;
             default:
@@ -478,7 +478,7 @@ registerBlockType(metadata.name, {
                         clientId={clientId}></Layout>
 
                 <figure {...blockProps}>
-                    <Media attributes={attributes}/>
+                    <Media attributes={attributes} editor={true}/>
                 </figure>
 
             </>
@@ -492,7 +492,7 @@ registerBlockType(metadata.name, {
 
         return (
             <figure {...blockProps} data-wp-interactive="wpbs" data-wp-init="callbacks.startCountdown">
-                <Media attributes={props.attributes}/>
+                <Media attributes={props.attributes} editor={false}/>
             </figure>
         );
     }

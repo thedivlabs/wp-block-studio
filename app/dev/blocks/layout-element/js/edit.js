@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
                 >
                     <div {...innerBlocksProps}/>
 
-                    <Background attributes={attributes}/>
+                    <Background attributes={attributes} editor={true}/>
 
                 </ElementTagName>
             </>
@@ -94,7 +94,7 @@ registerBlockType(metadata.name, {
             >
                 <div {...innerBlocksProps}/>
 
-                <Background attributes={props.attributes}/>
+                <Background attributes={props.attributes} editor={false}/>
             </ElementTagName>
         );
     }

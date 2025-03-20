@@ -1,4 +1,4 @@
-function Video({mobile = {}, large = {}, settings = {}}) {
+function Video({mobile = {}, large = {}, settings = {}, editor = false}) {
 
     const {
         resolution: sizeMobile = 'medium',
@@ -32,8 +32,16 @@ function Video({mobile = {}, large = {}, settings = {}}) {
         return false;
     }
 
-    const srcAttr = settings.eager ? 'src' : 'src'; // data-src
-    const srcsetAttr = settings.eager ? 'srcset' : 'srcset'; // data-srcset
+    let srcAttr;
+    let srcsetAttr;
+
+    if (editor === true) {
+        srcAttr = 'src';
+        srcsetAttr = 'srcset';
+    } else {
+        srcAttr = settings.eager ? 'src' : 'data-src';
+        srcsetAttr = settings.eager ? 'srcset' : 'data-srcset';
+    }
 
     return <picture className={className} style={settings.style || {}}>
         <source {...{

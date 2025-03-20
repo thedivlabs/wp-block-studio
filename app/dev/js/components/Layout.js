@@ -42,6 +42,8 @@ import OffsetHeader from "Components/OffsetHeader";
 import MinHeight from "Components/MinHeight";
 import {LayoutStyle} from "Components/LayoutStyle";
 import MaxHeight from "Components/MaxHeight";
+import MinHeightCustom from "Components/MinHeightCustom";
+import MaxHeightCustom from "Components/MaxHeightCustom";
 
 const blockAttributes = {
     layout: {
@@ -449,9 +451,10 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                     label={'Min-Height Custom'}
                     onDeselect={() => setAttributes({['wpbs-layout-min-height-custom']: undefined})}
                 >
-                    <MinHeight defaultValue={attributes['wpbs-layout-min-height-custom']} callback={(newValue) => {
-                        setAttributes({['wpbs-layout-min-height-custom']: newValue});
-                    }}/>
+                    <MinHeightCustom defaultValue={attributes['wpbs-layout-min-height-custom']}
+                                     callback={(newValue) => {
+                                         setAttributes({['wpbs-layout-min-height-custom']: newValue});
+                                     }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -469,9 +472,10 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                     label={'Max-Height Custom'}
                     onDeselect={() => setAttributes({['wpbs-layout-max-height-custom']: undefined})}
                 >
-                    <MaxHeight defaultValue={attributes['wpbs-layout-max-height-custom']} callback={(newValue) => {
-                        setAttributes({['wpbs-layout-max-height-custom']: newValue});
-                    }}/>
+                    <MaxHeightCustom defaultValue={attributes['wpbs-layout-max-height-custom']}
+                                     callback={(newValue) => {
+                                         setAttributes({['wpbs-layout-max-height-custom']: newValue});
+                                     }}/>
                 </ToolsPanelItem>
 
                 <ToolsPanelItem

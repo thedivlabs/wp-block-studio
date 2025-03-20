@@ -55,6 +55,10 @@ class WPBS_Layout {
 				'wpbs-layout-width-custom',
 				'wpbs-layout-height',
 				'wpbs-layout-height-custom',
+				'wpbs-layout-min-height',
+				'wpbs-layout-min-height-custom',
+				'wpbs-layout-max-height',
+				'wpbs-layout-max-height-custom',
 				'wpbs-layout-offset-header',
 				'wpbs-layout-translate',
 			] );
@@ -102,15 +106,15 @@ class WPBS_Layout {
 			switch ( $prop ) {
 				case 'wpbs-layout-height':
 				case 'wpbs-layout-height-custom':
-					$styles['height'] = $this->attributes['wpbs-layout-height-custom'] ?? $this->attributes['wpbs-layout-height'] ?? null;
+					$styles['height'] = $this->parse_special( 'height', $this->attributes['wpbs-layout-height-custom'] ?? $this->attributes['wpbs-layout-height'] ?? null );
 					break;
-				case 'wpbs-min-layout-height':
-				case 'wpbs-min-layout-height-custom':
-					$styles['min-height'] = $this->attributes['wpbs-layout-min-height-custom'] ?? $this->attributes['wpbs-layout-min-height'] ?? null;
+				case 'wpbs-layout-min-height':
+				case 'wpbs-layout-min-height-custom':
+					$styles['min-height'] = $this->parse_special( 'min-height', $this->attributes['wpbs-layout-min-height-custom'] ?? $this->attributes['wpbs-layout-min-height'] ?? null );
 					break;
-				case 'wpbs-max-layout-height':
-				case 'wpbs-max-layout-height-custom':
-					$styles['max-height'] = $this->attributes['wpbs-layout-min-height-custom'] ?? $this->attributes['wpbs-layout-min-height'] ?? null;
+				case 'wpbs-layout-max-height':
+				case 'wpbs-layout-max-height-custom':
+					$styles['max-height'] = $this->parse_special( 'max-height', $this->attributes['wpbs-layout-min-height-custom'] ?? $this->attributes['wpbs-layout-min-height'] ?? null );
 					break;
 				case 'wpbs-layout-width':
 				case 'wpbs-layout-width-custom':
@@ -257,6 +261,27 @@ class WPBS_Layout {
 		}
 
 		return $styles;
+
+	}
+
+	private function parse_special( $prop = false, $value = false ): string|false {
+
+		if ( empty( $prop ) || empty( $value ) || ! is_string( $prop ) || ! is_string( $value ) ) {
+			return false;
+		}
+
+		switch ( $prop ) {
+			case 'height':
+			case 'min-height':
+			case 'max-height':
+				$value = match ( $value ) {
+					'screen' => 'calc(100svh - var(--wpbs-header-height, 0px))',
+					default => $value
+				};
+				break;
+		}
+
+		return $value;
 
 	}
 

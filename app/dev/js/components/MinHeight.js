@@ -1,31 +1,28 @@
 import {
-    __experimentalUnitControl as UnitControl,
+    SelectControl,
 } from "@wordpress/components";
 import {useState} from "react";
 
 
 function MinHeight({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || null);
+    const [value, setValue] = useState(defaultValue);
 
-    return <UnitControl
+    return <SelectControl
         label={'Min-Height'}
         value={value}
-        isResetValueOnUnitChange={true}
+        options={[
+            {label: 'Select', value: ''},
+            {label: 'Screen', value: 'screen'},
+            {label: 'Full', value: '100%'},
+            {label: 'Auto', value: 'auto'},
+        ]}
         onChange={(newValue) => {
             setValue(newValue);
             callback(newValue);
         }}
-        units={[
-            {value: 'px', label: 'px', default: 0},
-            {value: '%', label: '%', default: 0},
-            {value: 'em', label: 'em', default: 0},
-            {value: 'rem', label: 'rem', default: 0},
-            {value: 'vh', label: 'vh', default: 0},
-            {value: 'vw', label: 'vw', default: 0},
-            {value: 'ch', label: 'ch', default: 0},
-        ]}
         __next40pxDefaultSize
+        __nextHasNoMarginBottom
     />;
 }
 

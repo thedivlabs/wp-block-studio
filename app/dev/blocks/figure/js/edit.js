@@ -20,7 +20,7 @@ import {useSettings} from '@wordpress/block-editor';
 function classNames(attributes = {}) {
 
     return [
-        'wpbs-figure',
+        'wpbs-figure flex items-center justify-center',
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }

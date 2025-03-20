@@ -12,10 +12,14 @@ import {
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useState} from "react";
-//import ResponsiveMedia from 'Dev/util/ResponsiveMedia'
 
 
 import {useSettings} from '@wordpress/block-editor';
+import Blend from "Components/Blend";
+import Origin from "Components/Origin";
+import Resolution from "Components/Resolution";
+import Size from "Components/Size";
+import Overlay from "Components/Overlay";
 
 function classNames(attributes = {}) {
 
@@ -179,16 +183,11 @@ registerBlockType(metadata.name, {
         const [eager, setEager] = useState(attributes['wpbs-eager']);
         const [force, setForce] = useState(attributes['wpbs-force']);
         const [link, setLink] = useState(attributes['wpbs-link']);
-        //const [featureImage, setFeatureImage] = useState(attributes.featureImage);
+        const [featureImage, setFeatureImage] = useState(attributes.featureImage);
 
         const [mask, setMask] = useState(attributes['wpbs-mask']);
-        const [resolution, setResolution] = useState(attributes['wpbs-resolution']);
-        const [size, setSize] = useState(attributes['wpbs-size']);
-        const [blend, setBlend] = useState(attributes['wpbs-blend']);
-        const [origin, setOrigin] = useState(attributes['wpbs-origin']);
         const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
         const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
-        const [overlay, setOverlay] = useState(attributes['wpbs-overlay']);
 
         const buttonStyle = {
             border: '1px dashed lightgray',
@@ -302,7 +301,26 @@ registerBlockType(metadata.name, {
                                     </BaseControl>
 
 
+                                    <Blend defaultValue={attributes['wpbs-blend']} callback={(newValue) => {
+                                        setAttributes({['wpbs-blend']: newValue});
+                                    }}/>
+                                    <Origin defaultValue={attributes['wpbs-origin']} callback={(newValue) => {
+                                        setAttributes({['wpbs-origin']: newValue});
+                                    }}/>
+                                    <Resolution defaultValue={attributes['wpbs-resolution']} callback={(newValue) => {
+                                        setAttributes({['wpbs-resolution']: newValue});
+                                    }}/>
+                                    <Size defaultValue={attributes['wpbs-size']} callback={(newValue) => {
+                                        setAttributes({['wpbs-size']: newValue});
+                                    }}/>
+
+
                                 </Grid>
+
+                                <Overlay defaultValue={attributes['wpbs-overlay']} callback={(newValue) => {
+                                    setAttributes({['wpbs-overlay']: newValue});
+                                }}/>
+
                                 <Grid columns={2} columnGap={15} rowGap={20}
                                       style={{display: type !== 'video' ? 'none' : null}}>
 
@@ -329,7 +347,10 @@ registerBlockType(metadata.name, {
                                             />
                                         </MediaUploadCheck>
                                     </BaseControl>
+
+
                                 </Grid>
+
 
                                 <Grid columns={2} columnGap={15} rowGap={20}
                                       style={{padding: '1rem 0'}}>
@@ -359,6 +380,16 @@ registerBlockType(metadata.name, {
                                         onChange={(value) => {
                                             setMask(value);
                                             setAttributes({['wpbs-mask']: value});
+                                        }}
+                                        className={'flex items-center'}
+                                        __nextHasNoMarginBottom
+                                    />
+                                    <ToggleControl
+                                        label="Feature"
+                                        checked={featureImage}
+                                        onChange={(value) => {
+                                            setFeatureImage(value);
+                                            setAttributes({['wpbs-featureImage']: value});
                                         }}
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom

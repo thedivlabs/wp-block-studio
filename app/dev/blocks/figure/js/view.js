@@ -1,8 +1,9 @@
-import {store, getContext} from '@wordpress/interactivity';
+import {store, getContext, getElement} from '@wordpress/interactivity';
 
-store('wpbs', {
+const {state} = store('wpbs', {
     callbacks: {
         startCountdown: () => {
+            const {ref} = getElement();
             console.log('startCountdown...');
         },
     },

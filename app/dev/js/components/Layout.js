@@ -41,6 +41,7 @@ import Rounded from 'Components/Rounded';
 import OffsetHeader from "Components/OffsetHeader";
 import MinHeight from "Components/MinHeight";
 import {LayoutStyle} from "Components/LayoutStyle";
+import MaxHeight from "Components/MaxHeight";
 
 const blockAttributes = {
     layout: {
@@ -80,10 +81,19 @@ const blockAttributes = {
         'wpbs-layout-height': {
             type: 'string'
         },
+        'wpbs-layout-height-custom': {
+            type: 'string'
+        },
         'wpbs-layout-min-height': {
             type: 'string'
         },
-        'wpbs-layout-height-custom': {
+        'wpbs-layout-min-height-custom': {
+            type: 'string'
+        },
+        'wpbs-layout-max-height': {
+            type: 'string'
+        },
+        'wpbs-layout-max-height-custom': {
             type: 'string'
         },
         'wpbs-layout-flex-wrap': {
@@ -163,10 +173,19 @@ const blockAttributes = {
         'wpbs-layout-height-mobile': {
             type: 'string'
         },
+        'wpbs-layout-height-custom-mobile': {
+            type: 'string'
+        },
         'wpbs-layout-min-height-mobile': {
             type: 'string'
         },
-        'wpbs-layout-height-custom-mobile': {
+        'wpbs-layout-min-height-custom-mobile': {
+            type: 'string'
+        },
+        'wpbs-layout-max-height-mobile': {
+            type: 'string'
+        },
+        'wpbs-layout-max-height-custom-mobile': {
             type: 'string'
         },
         'wpbs-layout-flex-grow-mobile': {
@@ -406,6 +425,16 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-height-custom']}
+                    label={'Height Custom'}
+                    onDeselect={() => setAttributes({['wpbs-layout-height-custom']: undefined})}
+                >
+                    <HeightCustom defaultValue={attributes['wpbs-layout-height-custom']} callback={(newValue) => {
+                        setAttributes({['wpbs-layout-height-custom']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout-min-height']}
                     label={'Min-Height'}
                     onDeselect={() => setAttributes({['wpbs-layout-min-height']: undefined})}
@@ -416,14 +445,35 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
-                    hasValue={() => !!attributes['wpbs-layout-height-custom']}
-                    label={'Height Custom'}
-                    onDeselect={() => setAttributes({['wpbs-layout-height-custom']: undefined})}
+                    hasValue={() => !!attributes['wpbs-layout-min-height-custom']}
+                    label={'Min-Height Custom'}
+                    onDeselect={() => setAttributes({['wpbs-layout-min-height-custom']: undefined})}
                 >
-                    <HeightCustom defaultValue={attributes['wpbs-layout-height-custom']} callback={(newValue) => {
-                        setAttributes({['wpbs-layout-height-custom']: newValue});
+                    <MinHeight defaultValue={attributes['wpbs-layout-min-height-custom']} callback={(newValue) => {
+                        setAttributes({['wpbs-layout-min-height-custom']: newValue});
                     }}/>
                 </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-max-height']}
+                    label={'Max-Height'}
+                    onDeselect={() => setAttributes({['wpbs-layout-max-height']: undefined})}
+                >
+                    <MaxHeight defaultValue={attributes['wpbs-layout-max-height']} callback={(newValue) => {
+                        setAttributes({['wpbs-layout-max-height']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-max-height-custom']}
+                    label={'Max-Height Custom'}
+                    onDeselect={() => setAttributes({['wpbs-layout-max-height-custom']: undefined})}
+                >
+                    <MaxHeight defaultValue={attributes['wpbs-layout-max-height-custom']} callback={(newValue) => {
+                        setAttributes({['wpbs-layout-max-height-custom']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout-flex-wrap']}

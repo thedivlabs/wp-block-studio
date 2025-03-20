@@ -104,6 +104,14 @@ class WPBS_Layout {
 				case 'wpbs-layout-height-custom':
 					$styles['height'] = $this->attributes['wpbs-layout-height-custom'] ?? $this->attributes['wpbs-layout-height'] ?? null;
 					break;
+				case 'wpbs-min-layout-height':
+				case 'wpbs-min-layout-height-custom':
+					$styles['min-height'] = $this->attributes['wpbs-layout-min-height-custom'] ?? $this->attributes['wpbs-layout-min-height'] ?? null;
+					break;
+				case 'wpbs-max-layout-height':
+				case 'wpbs-max-layout-height-custom':
+					$styles['max-height'] = $this->attributes['wpbs-layout-min-height-custom'] ?? $this->attributes['wpbs-layout-min-height'] ?? null;
+					break;
 				case 'wpbs-layout-width':
 				case 'wpbs-layout-width-custom':
 					$styles['width'] = $this->attributes['wpbs-layout-width-custom'] ?? $this->attributes['wpbs-layout-width'] ?? null;
@@ -177,6 +185,10 @@ class WPBS_Layout {
 				'wpbs-layout-width-custom-mobile',
 				'wpbs-layout-height-mobile',
 				'wpbs-layout-height-custom-mobile',
+				'wpbs-layout-min-height-mobile',
+				'wpbs-layout-min-height-custom-mobile',
+				'wpbs-layout-max-height-mobile',
+				'wpbs-layout-max-height-custom-mobile',
 				'wpbs-layout-translate-mobile',
 			] );
 		}, ARRAY_FILTER_USE_KEY );
@@ -207,7 +219,6 @@ class WPBS_Layout {
 			};
 
 
-
 			$styles[ $prop_name ] = $value;
 
 		}
@@ -222,6 +233,14 @@ class WPBS_Layout {
 				case 'wpbs-layout-height-mobile':
 				case 'wpbs-layout-height-custom-mobile':
 					$styles['height'] = $this->attributes['wpbs-layout-height-custom-mobile'] ?? $this->attributes['wpbs-layout-height-mobile'] ?? null;
+					break;
+				case 'wpbs-layout-min-height-mobile':
+				case 'wpbs-layout-min-height-custom-mobile':
+					$styles['min-height'] = $this->attributes['wpbs-layout-min-height-custom-mobile'] ?? $this->attributes['wpbs-layout-min-height-mobile'] ?? null;
+					break;
+				case 'wpbs-layout-max-height-mobile':
+				case 'wpbs-layout-max-height-custom-mobile':
+					$styles['max-height'] = $this->attributes['wpbs-layout-max-height-custom-mobile'] ?? $this->attributes['wpbs-layout-max-height-mobile'] ?? null;
 					break;
 				case 'wpbs-layout-width-mobile':
 				case 'wpbs-layout-width-custom-mobile':

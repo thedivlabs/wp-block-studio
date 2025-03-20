@@ -30,6 +30,7 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
                 {value: 'vh', label: 'vh', default: 0},
                 {value: 'vw', label: 'vw', default: 0},
                 {value: 'ch', label: 'ch', default: 0},
+                {value: 'hdr', label: 'header', default: 1},
             ]}
             __next40pxDefaultSize
         />

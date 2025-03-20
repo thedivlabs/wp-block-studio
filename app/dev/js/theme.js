@@ -22,6 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
         video.load();
     }
 
+    function responsiveImageSrc(image) {
+        if(image.dataset.src){
+            image.src = image.dataset.src;
+            image.removeAttribute('data-src');
+        }
+        if(image.dataset.srcset){
+            image.srcset = image.dataset.srcset;
+            image.removeAttribute('data-srcset');
+        }
+    }
+
     function responsiveBackgroundSrc(element) {
 
         element.classList.remove('lazy');
@@ -49,10 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     responsiveVideoSrc(entry.target);
                     observerSize.observe(entry.target);
                     observerIntersection.unobserve(entry.target);
-                }
-
-                if (entry.target.classList.contains('wpbs-background')) {
+                } else if (entry.target.classList.contains('wpbs-background')) {
                     responsiveBackgroundSrc(entry.target);
+                    observerIntersection.unobserve(entry.target);
+                } else {
+                    responsiveImageSrc(entry.target);
                     observerIntersection.unobserve(entry.target);
                 }
 
@@ -65,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 0,
     });
 
-    [...document.querySelectorAll('video:has(source[data-media]):has(source[data-src]),.wpbs-background.lazy')].forEach((video) => {
-        observerIntersection.observe(video);
+    [...document.querySelectorAll('[data-src],[data-srcset],video:has(source[data-media]):has(source[data-src]),.wpbs-background.lazy')].forEach((media) => {
+        observerIntersection.observe(media);
     });
 
 });

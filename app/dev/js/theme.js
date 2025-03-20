@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function responsiveImageSrc(image) {
-        if(image.dataset.src){
+        if (image.dataset.src) {
             image.src = image.dataset.src;
             image.removeAttribute('data-src');
         }
-        if(image.dataset.srcset){
+        if (image.dataset.srcset) {
             image.srcset = image.dataset.srcset;
             image.removeAttribute('data-srcset');
         }

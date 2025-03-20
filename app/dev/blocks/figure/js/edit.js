@@ -491,7 +491,7 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <figure {...blockProps} data-wp-interactive="wpbs" data-wp-init="callbacks.startCountdown">
+            <figure {...blockProps} data-wp-interactive="wpbs" data-wp-init="callbacks.observe">
                 <Media attributes={props.attributes} editor={false}/>
             </figure>
         );

@@ -375,13 +375,17 @@ class WPBS {
 
 		foreach ( array_unique( array_filter( $preload_images_responsive ) ) as $image ) {
 
-			$src  = wp_get_attachment_image_src( $image['large'], $image['size'] ?? 'large' )[0] ?? false;
+			$src  = wp_get_attachment_image_src( $image['large'] ?? false, $image['size'] ?? 'large' )[0] ?? false;
 			$path = str_replace( home_url(), ABSPATH, $src );
 			$webp = file_exists( $path . '.webp' );
 
-			$src_mobile  = wp_get_attachment_image_src( $image['mobile'], $image['size'] ?? 'large' )[0] ?? false;
+			$src_mobile  = wp_get_attachment_image_src( $image['mobile'] ?? false, $image['size'] ?? 'large' )[0] ?? false;
 			$path_mobile = str_replace( home_url(), ABSPATH, $src );
 			$webp_mobile = file_exists( $path_mobile . '.webp' );
+
+			if ( empty( $src ) && empty( $src_mobile ) ) {
+				continue;
+			}
 
 			echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
 

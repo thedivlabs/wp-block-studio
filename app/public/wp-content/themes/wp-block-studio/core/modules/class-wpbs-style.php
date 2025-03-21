@@ -29,13 +29,11 @@ class WPBS_Style {
 
 	private static function get_selector( $block ): string {
 
-		$selector = ! empty( $block->attributes['className'] ) ? '.' . $block->attributes['className'] : '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
+		$selector = ! empty( $block->attributes['className'] ) ? '.' . $block->attributes['className'] : ( ! empty( $block->attributes['className'] ) ? '.' . $block->attributes['className'] : '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' ) );
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
 			$selector = $selector . $block->block_type->selectors['root'];
 		}
-
-		WPBS::console_log( $selector );
 
 		return $selector;
 	}

@@ -5,7 +5,7 @@ import {customLink} from "@wordpress/icons";
 
 function Link({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || 0);
+    const [value, setValue] = useState(defaultValue);
 
     return <BlockControls>
         <ToolbarGroup>
@@ -31,7 +31,7 @@ function Link({defaultValue, callback}) {
                                     setValue(newValue);
                                     callback(newValue);
                                 }}
-                                withCreateSuggestion={true}
+                                //withCreateSuggestion={true}
                             ></LinkControl>
                         </MenuItem>
                     </MenuGroup>

@@ -18,7 +18,7 @@ import {
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useState} from "react";
-
+import {useRef, useEffect} from 'react';
 
 import {useSettings} from '@wordpress/block-editor';
 import Blend from "Components/Blend";
@@ -27,10 +27,13 @@ import Resolution from "Components/Resolution";
 import Overlay from "Components/Overlay";
 import Link from "Components/Link";
 
+import {useInstanceId} from "@wordpress/compose";
+
 function classNames(attributes = {}) {
 
     return [
         'wpbs-figure flex items-center justify-center relative',
+        attributes.instanceId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -127,11 +130,9 @@ function getSettings(attributes = {}) {
 
 function Media({attributes, editor = false, props = {}}) {
 
-    const {className: propsClasses} = props;
 
     const classNames = [
         'wpbs-figure__media w-full h-full overflow-hidden',
-        propsClasses
     ].filter(x => x).join(' ');
 
     let mediaStyle = {
@@ -155,7 +156,8 @@ function Media({attributes, editor = false, props = {}}) {
     }
 
     if (attributes['wpbs-link'] && !editor) {
-        return <a class={classNames} href={attributes['wpbs-link'].url} target={attributes['wpbs-link'].target}
+        return <a class={classNames} href={attributes['wpbs-link'].url}
+                  target={attributes['wpbs-link'].opensInNewTab ? '_blank' : '_self'}
                   rel={attributes['wpbs-link'].rel} style={mediaStyle}>
             <Content/>
         </a>
@@ -173,7 +175,15 @@ registerBlockType(metadata.name, {
         ...LayoutAttributes,
         ...blockAttributes
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: (props) => {
+        
+        const {attributes, setAttributes, clientId} = props;
+
+        const instanceId = useInstanceId(registerBlockType, 'wpbs-figure');
+
+        useEffect(() => {
+            setAttributes({instanceId: instanceId});
+        }, [instanceId]);
 
         const [{breakpoints}] = useSettings(['custom']);
 
@@ -212,13 +222,14 @@ registerBlockType(metadata.name, {
         };
 
         const blockProps = useBlockProps({
-            //className: classNames(attributes),
+            className: classNames(attributes),
             //'data-wp-interactive': 'wpbs-figure',
             //'data-wp-run': 'callbacks.isInView',
             style: {
                 ...blockStyles(attributes),
             }
         });
+
 
         setAttributes({
             ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
@@ -519,13 +530,11 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            //className: classNames(props.attributes),
+            className: classNames(props.attributes),
             style: {
                 ...blockStyles(props.attributes),
             }
         });
-
-        console.log(blockProps);
 
 
         return (

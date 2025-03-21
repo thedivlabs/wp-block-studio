@@ -1,8 +1,7 @@
 import {
     useBlockProps,
     InspectorControls,
-    BlockEdit, MediaUploadCheck, MediaUpload,
-    __experimentalLinkControl as LinkControl, BlockControls,
+    BlockEdit, MediaUploadCheck, MediaUpload
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -11,17 +10,14 @@ import {
     __experimentalGrid as Grid,
     BaseControl,
     Button,
-    DropdownMenu, MenuGroup, MenuItem,
     PanelBody,
     SelectControl,
     ToggleControl,
-    Toolbar, ToolbarGroup,
-    ToolbarItem,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useState} from "react";
-import {customLink} from "@wordpress/icons";
+
 
 import {useSettings} from '@wordpress/block-editor';
 import Blend from "Components/Blend";
@@ -29,6 +25,7 @@ import Origin from "Components/Origin";
 import Resolution from "Components/Resolution";
 import Size from "Components/Size";
 import Overlay from "Components/Overlay";
+import Link from "Components/Link";
 
 function classNames(attributes = {}) {
 
@@ -232,49 +229,9 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
-                <BlockControls>
-                    <ToolbarGroup>
-                        <DropdownMenu
-                            icon={customLink}
-                            label={'Link'}
-                        >
-                            {({onClose}) => (
-                                <MenuGroup>
-                                    <MenuItem
-
-                                    >
-                                        <LinkControl
-                                            searchInputPlaceholder="Search here..."
-                                            value={link}
-                                            settings={[
-                                                {
-                                                    id: 'opensInNewTab',
-                                                    title: 'New tab?',
-                                                }
-                                            ]}
-                                            onChange={(newValue) => {
-                                                setAttributes({['wpbs-link']: newValue});
-                                                setLink(newValue);
-                                            }}
-                                            withCreateSuggestion={true}
-                                            createSuggestion={(inputValue) => setAttributes({
-                                                post: {
-                                                    ...attributes.post,
-                                                    title: inputValue,
-                                                    type: "custom-url",
-                                                    id: Date.now(),
-                                                    url: inputValue
-                                                }
-                                            })}
-                                            css={{minWidth: '0px'}}
-
-                                        ></LinkControl>
-                                    </MenuItem>
-                                </MenuGroup>
-                            )}
-                        </DropdownMenu>
-                    </ToolbarGroup>
-                </BlockControls>
+                <Link defaultValue={attributes['wpbs-link']} callback={(newValue) => {
+                    setAttributes({['wpbs-link']: newValue});
+                }}/>
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
@@ -364,10 +321,7 @@ registerBlockType(metadata.name, {
                                     <Size defaultValue={attributes['wpbs-size']} callback={(newValue) => {
                                         setAttributes({['wpbs-size']: newValue});
                                     }}/>
-
-
                                 </Grid>
-
 
                                 <Overlay defaultValue={attributes['wpbs-overlay']} callback={(newValue) => {
                                     setAttributes({['wpbs-overlay']: newValue});

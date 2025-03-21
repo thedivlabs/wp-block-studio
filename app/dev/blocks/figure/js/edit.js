@@ -2,18 +2,26 @@ import {
     useBlockProps,
     InspectorControls,
     BlockEdit, MediaUploadCheck, MediaUpload,
-    __experimentalLinkControl as LinkControl,
+    __experimentalLinkControl as LinkControl, BlockControls,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
-    __experimentalGrid as Grid, BaseControl, Button, PanelBody, SelectControl, ToggleControl,
+    __experimentalGrid as Grid,
+    BaseControl,
+    Button,
+    DropdownMenu, MenuGroup, MenuItem,
+    PanelBody,
+    SelectControl,
+    ToggleControl,
+    Toolbar, ToolbarGroup,
+    ToolbarItem,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useState} from "react";
-
+import {customLink} from "@wordpress/icons";
 
 import {useSettings} from '@wordpress/block-editor';
 import Blend from "Components/Blend";
@@ -224,7 +232,49 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
+                <BlockControls>
+                    <ToolbarGroup>
+                        <DropdownMenu
+                            icon={customLink}
+                            label={'Link'}
+                        >
+                            {({onClose}) => (
+                                <MenuGroup>
+                                    <MenuItem
 
+                                    >
+                                        <LinkControl
+                                            searchInputPlaceholder="Search here..."
+                                            value={link}
+                                            settings={[
+                                                {
+                                                    id: 'opensInNewTab',
+                                                    title: 'New tab?',
+                                                }
+                                            ]}
+                                            onChange={(newValue) => {
+                                                setAttributes({['wpbs-link']: newValue});
+                                                setLink(newValue);
+                                            }}
+                                            withCreateSuggestion={true}
+                                            createSuggestion={(inputValue) => setAttributes({
+                                                post: {
+                                                    ...attributes.post,
+                                                    title: inputValue,
+                                                    type: "custom-url",
+                                                    id: Date.now(),
+                                                    url: inputValue
+                                                }
+                                            })}
+                                            css={{minWidth: '0px'}}
+
+                                        ></LinkControl>
+                                    </MenuItem>
+                                </MenuGroup>
+                            )}
+                        </DropdownMenu>
+                    </ToolbarGroup>
+                </BlockControls>
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
@@ -318,37 +368,6 @@ registerBlockType(metadata.name, {
 
                                 </Grid>
 
-                                <LinkControl
-                                    searchInputPlaceholder="Search here..."
-                                    value={link}
-                                    settings={[
-                                        {
-                                            id: 'opensInNewTab',
-                                            title: 'New tab?',
-                                        },
-                                        {
-                                            id: 'customDifferentSetting',
-                                            title: 'Has this custom setting?'
-                                        }
-                                    ]}
-                                    onChange={(newValue) => {
-                                        setAttributes({['wpbs-link']: newValue});
-                                        setLink(newValue);
-                                    }}
-                                    withCreateSuggestion={true}
-                                    createSuggestion={(inputValue) => setAttributes({
-                                        post: {
-                                            ...attributes.post,
-                                            title: inputValue,
-                                            type: "custom-url",
-                                            id: Date.now(),
-                                            url: inputValue
-                                        }
-                                    })}
-                                    css={{minWidth: '0px'}}
-
-                                >
-                                </LinkControl>
 
                                 <Overlay defaultValue={attributes['wpbs-overlay']} callback={(newValue) => {
                                     setAttributes({['wpbs-overlay']: newValue});

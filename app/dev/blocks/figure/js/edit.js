@@ -114,9 +114,6 @@ const blockAttributes = {
     'wpbs-link': {
         type: 'object'
     },
-    'wpbs-featureImage': {
-        type: 'boolean'
-    },
 }
 
 function getSettings(attributes = {}) {
@@ -191,16 +188,16 @@ registerBlockType(metadata.name, {
         const [link, setLink] = useState(attributes['wpbs-link']);
         const [contain, setContain] = useState(attributes.contain);
 
-        const [mask, setMask] = useState(attributes['wpbs-mask']);
+        const [mask, setMask] = useState(attributes['wpbs-mask'] || false);
         const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
         const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
 
         setAttributes({
-            ['wpbs-prop-figure-mask']: maskImage && mask === true ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
+            ['wpbs-prop-figure-mask']: maskImage && mask ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
         });
 
         setAttributes({
-            ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask === true ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
+            ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
         });
 
         const buttonStyle = {
@@ -318,9 +315,6 @@ registerBlockType(metadata.name, {
                                     }}/>
                                     <Resolution defaultValue={attributes['wpbs-resolution']} callback={(newValue) => {
                                         setAttributes({['wpbs-resolution']: newValue});
-                                    }}/>
-                                    <Size defaultValue={attributes['wpbs-size']} callback={(newValue) => {
-                                        setAttributes({['wpbs-size']: newValue});
                                     }}/>
                                 </Grid>
 

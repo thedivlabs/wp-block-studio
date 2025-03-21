@@ -180,7 +180,7 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const instanceId = useInstanceId(registerBlockType, 'wpbs-figure');
-
+        
         useEffect(() => {
             setAttributes({instanceId: instanceId});
         }, [instanceId]);

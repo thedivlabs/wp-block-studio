@@ -24,7 +24,6 @@ import {useSettings} from '@wordpress/block-editor';
 import Blend from "Components/Blend";
 import Origin from "Components/Origin";
 import Resolution from "Components/Resolution";
-import Size from "Components/Size";
 import Overlay from "Components/Overlay";
 import Link from "Components/Link";
 
@@ -94,8 +93,8 @@ const blockAttributes = {
     'wpbs-resolution': {
         type: 'string'
     },
-    'wpbs-size': {
-        type: 'string'
+    'wpbs-contain': {
+        type: 'boolean'
     },
     'wpbs-blend': {
         type: 'string'
@@ -134,13 +133,13 @@ function Media({attributes, editor = false, props = {}}) {
     const {className: propsClasses} = props;
 
     const classNames = [
-        'wpbs-figure__media',
+        'wpbs-figure__media w-full h-full overflow-hidden',
         propsClasses
     ].filter(x => x).join(' ');
 
     let mediaStyle = {
         ['mix-blend-mode']: attributes['wpbs-blend'] || null,
-        ['object-fit']: attributes['wpbs-size'] || null,
+        ['object-fit']: attributes['wpbs-contain'] ? 'contain' : 'cover',
     };
 
     mediaStyle = {
@@ -190,7 +189,7 @@ registerBlockType(metadata.name, {
         const [eager, setEager] = useState(attributes['wpbs-eager']);
         const [force, setForce] = useState(attributes['wpbs-force']);
         const [link, setLink] = useState(attributes['wpbs-link']);
-        const [featureImage, setFeatureImage] = useState(attributes.featureImage);
+        const [contain, setContain] = useState(attributes.contain);
 
         const [mask, setMask] = useState(attributes['wpbs-mask']);
         const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
@@ -393,11 +392,11 @@ registerBlockType(metadata.name, {
                                         __nextHasNoMarginBottom
                                     />
                                     <ToggleControl
-                                        label="Feature"
-                                        checked={featureImage}
+                                        label="Contain"
+                                        checked={contain}
                                         onChange={(value) => {
-                                            setFeatureImage(value);
-                                            setAttributes({['wpbs-featureImage']: value});
+                                            setContain(value);
+                                            setAttributes({['wpbs-contain']: value});
                                         }}
                                         className={'flex items-center'}
                                         __nextHasNoMarginBottom

@@ -1,3 +1,4 @@
+import '../scss/block.scss';
 import {
     useBlockProps,
     __experimentalUseColorProps as useColorProps,
@@ -31,7 +32,7 @@ import Link from "Components/Link";
 function classNames(attributes = {}) {
 
     return [
-        'wpbs-figure flex items-center justify-center',
+        'wpbs-figure flex items-center justify-center relative',
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -217,7 +218,8 @@ registerBlockType(metadata.name, {
             maskRepeat: 'no-repeat',
             maskImage: 'var(--figure-mask, none)',
             maskSize: attributes['wpbs-maskSize'] || 'contain',
-            maskPosition: attributes['wpbs-maskOrigin'] || 'center'
+            maskPosition: attributes['wpbs-maskOrigin'] || 'center',
+            '--overlay': attributes['wpbs-overlay']
         }
 
         const blockProps = useBlockProps({
@@ -540,7 +542,8 @@ registerBlockType(metadata.name, {
             maskRepeat: 'no-repeat',
             maskImage: 'var(--figure-mask, none)',
             maskSize: props.attributes['wpbs-maskSize'] || 'contain',
-            maskPosition: props.attributes['wpbs-maskOrigin'] || 'center'
+            maskPosition: props.attributes['wpbs-maskOrigin'] || 'center',
+            '--overlay': props.attributes['wpbs-overlay']
         }
 
         const blockProps = useBlockProps.save({

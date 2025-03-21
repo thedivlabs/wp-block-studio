@@ -32,15 +32,6 @@ function Link({defaultValue, callback}) {
                                     callback(newValue);
                                 }}
                                 withCreateSuggestion={true}
-                                createSuggestion={(inputValue) => setAttributes({
-                                    post: {
-                                        ...attributes.post,
-                                        title: inputValue,
-                                        type: "custom-url",
-                                        id: Date.now(),
-                                        url: inputValue
-                                    }
-                                })}
                             ></LinkControl>
                         </MenuItem>
                     </MenuGroup>

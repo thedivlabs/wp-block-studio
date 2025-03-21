@@ -175,11 +175,11 @@ registerBlockType(metadata.name, {
         if (attributes['wpbs-mask']) {
 
             setAttributes({
-                ['wpbs-prop-figure-mask']: attributes['wpbs-maskImage'] ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
+                ['wpbs-prop-figure-mask']: attributes['wpbs-maskImage'] && attributes['wpbs-mask'] ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
             });
 
             setAttributes({
-                ['wpbs-prop-figure-mask-mobile']: attributes['wpbs-maskImageMobile'] ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
+                ['wpbs-prop-figure-mask-mobile']: attributes['wpbs-maskImageMobile'] && attributes['wpbs-mask'] ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
             });
 
         }

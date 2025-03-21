@@ -176,7 +176,7 @@ registerBlockType(metadata.name, {
         ...blockAttributes
     },
     edit: (props) => {
-        
+
         const {attributes, setAttributes, clientId} = props;
 
         const instanceId = useInstanceId(registerBlockType, 'wpbs-figure');
@@ -251,7 +251,6 @@ registerBlockType(metadata.name, {
                                 options={[
                                     {label: 'Select', value: ''},
                                     {label: 'Image', value: 'image'},
-                                    {label: 'Video', value: 'video'},
                                     {label: 'Lottie', value: 'lottie'},
                                     {label: 'Icon', value: 'icon'},
                                 ]}

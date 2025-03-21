@@ -35,6 +35,8 @@ class WPBS_Style {
 			$selector = $selector . $block->block_type->selectors['root'];
 		}
 
+		WPBS::console_log( $selector );
+
 		return $selector;
 	}
 

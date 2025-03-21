@@ -93,7 +93,7 @@ class WPBS_Props {
 			$styles[ '--' . $prop_name ] = $value;
 
 		}
-		
+
 		return $styles;
 
 	}

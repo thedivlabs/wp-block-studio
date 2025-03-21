@@ -212,7 +212,7 @@ registerBlockType(metadata.name, {
         };
 
         const blockProps = useBlockProps({
-            className: classNames(attributes),
+            //className: classNames(attributes),
             //'data-wp-interactive': 'wpbs-figure',
             //'data-wp-run': 'callbacks.isInView',
             style: {
@@ -519,11 +519,13 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: classNames(props.attributes),
+            //className: classNames(props.attributes),
             style: {
                 ...blockStyles(props.attributes),
             }
         });
+
+        console.log(blockProps);
 
 
         return (

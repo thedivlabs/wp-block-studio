@@ -4,6 +4,9 @@
   "name": "wpbs/figure",
   "title": "Figure",
   "description": "Display a figure element",
+  "selectors": {
+    "root": ".wpbs-figure"
+  },
   "supports": {
     "interactivity": true,
     "color": {

@@ -1,5 +1,6 @@
 import {
     useBlockProps,
+    __experimentalUseColorProps as useColorProps,
     InspectorControls,
     BlockEdit, MediaUploadCheck, MediaUpload
 } from "@wordpress/block-editor"
@@ -113,21 +114,23 @@ function getSettings(attributes = {}) {
     };
 }
 
-function Media({attributes, editor = false}) {
+function Media({attributes, editor = false, props = {}}) {
+
+    const {className: propsClasses} = props;
 
     const classNames = [
-        'wpbs-figure__media'
+        'wpbs-figure__media',
+        propsClasses
     ].filter(x => x).join(' ');
 
-    let mediaStyle = {};
+    let mediaStyle = {
+        ['mix-blend-mode']: attributes['wpbs-blend'] || null,
+        ['object-fit']: attributes['wpbs-size'] || null,
+    };
 
     if (attributes['wpbs-mask']) {
         mediaStyle = {
             ...mediaStyle,
-            maskRepeat: 'no-repeat',
-            maskImage: 'var(--figure-mask, none)',
-            maskSize: attributes['wpbs-maskSize'] || 'contain',
-            maskPosition: attributes['wpbs-maskOrigin'] || 'center',
         }
 
     }
@@ -211,6 +214,10 @@ registerBlockType(metadata.name, {
             '--figure-mask': mask,
             '--figure-mask-origin': maskOrigin,
             '--figure-mask-size': maskSize,
+            maskRepeat: 'no-repeat',
+            maskImage: 'var(--figure-mask, none)',
+            maskSize: attributes['wpbs-maskSize'] || 'contain',
+            maskPosition: attributes['wpbs-maskOrigin'] || 'center'
         }
 
         const blockProps = useBlockProps({
@@ -221,6 +228,8 @@ registerBlockType(metadata.name, {
                 ...blockStyle,
             }
         });
+
+        const colorProps = useColorProps(attributes);
 
         setAttributes({
             ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
@@ -523,9 +532,24 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
+        const blockStyle = {
+            '--figure-type': props.attributes.type,
+            '--figure-mask': props.attributes.mask,
+            '--figure-mask-origin': props.attributes.maskOrigin,
+            '--figure-mask-size': props.attributes.maskSize,
+            maskRepeat: 'no-repeat',
+            maskImage: 'var(--figure-mask, none)',
+            maskSize: props.attributes['wpbs-maskSize'] || 'contain',
+            maskPosition: props.attributes['wpbs-maskOrigin'] || 'center'
+        }
+
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
+            style: {
+                ...blockStyle,
+            }
         });
+
 
         return (
             <figure {...blockProps} data-wp-interactive="wpbs" data-wp-init="callbacks.observe">

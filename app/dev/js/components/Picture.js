@@ -43,7 +43,10 @@ function Picture({mobile = {}, large = {}, settings = {}, editor = false}) {
         srcsetAttr = settings.eager ? 'srcset' : 'data-srcset';
     }
 
-    return <picture className={className} style={settings.style || {}}>
+    return <picture className={className} style={{
+        ...settings.style || {},
+        ['object-fit']: 'inherit'
+    }}>
         <source {...{
             [srcsetAttr]: urlLarge ? urlLarge + '.webp' : '#',
             media: '(min-width: ' + settings.breakpoint + ')',

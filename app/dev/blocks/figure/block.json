@@ -1,10 +1,9 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "wpbs/figure",
   "title": "Figure",
   "description": "Display a figure element",
-  "selectors": {
-    "root": ".wpbs-figure"
-  },
   "supports": {
     "interactivity": true,
     "color": {

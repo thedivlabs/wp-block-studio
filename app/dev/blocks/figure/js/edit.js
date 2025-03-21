@@ -1,7 +1,6 @@
 import '../scss/block.scss';
 import {
     useBlockProps,
-    __experimentalUseColorProps as useColorProps,
     InspectorControls,
     BlockEdit, MediaUploadCheck, MediaUpload
 } from "@wordpress/block-editor"
@@ -35,6 +34,21 @@ function classNames(attributes = {}) {
         'wpbs-figure flex items-center justify-center relative',
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
+}
+
+function blockStyles(attributes = {}) {
+
+    return {
+        '--figure-type': attributes.type,
+        //'--figure-mask': attributes.mask,
+        '--figure-mask-origin': attributes.maskOrigin,
+        '--figure-mask-size': attributes.maskSize,
+        maskRepeat: 'no-repeat',
+        maskImage: 'var(--figure-mask, none)',
+        maskSize: attributes['wpbs-maskSize'] || 'contain',
+        maskPosition: attributes['wpbs-maskOrigin'] || 'center',
+        '--overlay': attributes['wpbs-overlay']
+    };
 }
 
 const blockAttributes = {
@@ -129,11 +143,8 @@ function Media({attributes, editor = false, props = {}}) {
         ['object-fit']: attributes['wpbs-size'] || null,
     };
 
-    if (attributes['wpbs-mask']) {
-        mediaStyle = {
-            ...mediaStyle,
-        }
-
+    mediaStyle = {
+        ...mediaStyle,
     }
 
     const Content = () => {
@@ -142,8 +153,6 @@ function Media({attributes, editor = false, props = {}}) {
 
                 return <Picture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
                                 settings={getSettings(attributes)} editor={editor}></Picture>;
-            case 'video':
-                return <></>;
             default:
                 return false
         }
@@ -172,18 +181,6 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        if (attributes['wpbs-mask']) {
-
-            setAttributes({
-                ['wpbs-prop-figure-mask']: attributes['wpbs-maskImage'] && attributes['wpbs-mask'] ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
-            });
-
-            setAttributes({
-                ['wpbs-prop-figure-mask-mobile']: attributes['wpbs-maskImageMobile'] && attributes['wpbs-mask'] ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
-            });
-
-        }
-
         const [type, setType] = useState(attributes['wpbs-type']);
         const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileImage']);
         const [largeImage, setLargeImage] = useState(attributes['wpbs-largeImage']);
@@ -199,6 +196,14 @@ registerBlockType(metadata.name, {
         const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
         const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
 
+        setAttributes({
+            ['wpbs-prop-figure-mask']: maskImage && mask === true ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
+        });
+
+        setAttributes({
+            ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask === true ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
+        });
+
         const buttonStyle = {
             border: '1px dashed lightgray',
             width: '100%',
@@ -210,28 +215,14 @@ registerBlockType(metadata.name, {
             textAlign: 'center',
         };
 
-        const blockStyle = {
-            '--figure-type': type,
-            '--figure-mask': mask,
-            '--figure-mask-origin': maskOrigin,
-            '--figure-mask-size': maskSize,
-            maskRepeat: 'no-repeat',
-            maskImage: 'var(--figure-mask, none)',
-            maskSize: attributes['wpbs-maskSize'] || 'contain',
-            maskPosition: attributes['wpbs-maskOrigin'] || 'center',
-            '--overlay': attributes['wpbs-overlay']
-        }
-
         const blockProps = useBlockProps({
             className: classNames(attributes),
             //'data-wp-interactive': 'wpbs-figure',
             //'data-wp-run': 'callbacks.isInView',
             style: {
-                ...blockStyle,
+                ...blockStyles(attributes),
             }
         });
-
-        const colorProps = useColorProps(attributes);
 
         setAttributes({
             ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
@@ -240,7 +231,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
-                <Link defaultValue={attributes['wpbs-link']} callback={(newValue) => {
+                <Link defaultValue={link} callback={(newValue) => {
                     setAttributes({['wpbs-link']: newValue});
                 }}/>
                 <InspectorControls group="styles">
@@ -534,22 +525,10 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const blockStyle = {
-            '--figure-type': props.attributes.type,
-            '--figure-mask': props.attributes.mask,
-            '--figure-mask-origin': props.attributes.maskOrigin,
-            '--figure-mask-size': props.attributes.maskSize,
-            maskRepeat: 'no-repeat',
-            maskImage: 'var(--figure-mask, none)',
-            maskSize: props.attributes['wpbs-maskSize'] || 'contain',
-            maskPosition: props.attributes['wpbs-maskOrigin'] || 'center',
-            '--overlay': props.attributes['wpbs-overlay']
-        }
-
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             style: {
-                ...blockStyle,
+                ...blockStyles(props.attributes),
             }
         });
 

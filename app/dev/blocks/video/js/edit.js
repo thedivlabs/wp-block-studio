@@ -38,7 +38,7 @@ const blockAttributes = {
     'wpbs-eager': {
         type: 'boolean'
     },
-    'wpbs-autoplay': {
+    'wpbs-modal': {
         type: 'boolean'
     },
     'wpbs-overlay': {
@@ -84,7 +84,7 @@ registerBlockType(metadata.name, {
 
         const [posterImage, setPosterImage] = useState(attributes['wpbs-posterImage']);
         const [eager, setEager] = useState(attributes['wpbs-eager']);
-        const [autoplay, setAutoplay] = useState(attributes['wpbs-autoplay']);
+        const [modal, setModal] = useState(attributes['wpbs-modal']);
         const [overlay, setOverlay] = useState(attributes['wpbs-overlay']);
         const [shareLink, setShareLink] = useState(attributes['wpbs-shareLink']);
         const [platform, setPlatform] = useState(attributes['wpbs-platform']);
@@ -205,10 +205,10 @@ registerBlockType(metadata.name, {
                                 />
                                 <ToggleControl
                                     label="Autoplay"
-                                    checked={autoplay}
+                                    checked={modal}
                                     onChange={(value) => {
-                                        setAutoplay(value);
-                                        setAttributes({['wpbs-autoplay']: value});
+                                        setModal(value);
+                                        setAttributes({['wpbs-modal']: value});
                                     }}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom

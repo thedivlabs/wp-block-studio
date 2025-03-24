@@ -69,7 +69,7 @@ function Media({attributes, editor = false}) {
     return <div class={mediaClasses}>
         <Picture mobile={attributes['wpbs-posterImage']}
                  settings={{
-                     resolution:attributes.resolution,
+                     resolution: attributes.resolution,
                      className: 'w-full h-full absolute top-0 left-0 z-0',
                      eager: attributes.eager
                  }} editor={editor}></Picture>
@@ -94,7 +94,6 @@ registerBlockType(metadata.name, {
         const [shareLink, setShareLink] = useState(attributes['wpbs-shareLink']);
         const [platform, setPlatform] = useState(attributes['wpbs-platform']);
         const [title, setTitle] = useState(attributes['wpbs-title']);
-        const [resolution, setResolution] = useState(attributes['wpbs-resolution']);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
 
@@ -111,7 +110,7 @@ registerBlockType(metadata.name, {
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
-                        <Grid columns={1} columnGap={15} rowGap={20} >
+                        <Grid columns={1} columnGap={15} rowGap={20}>
 
 
                             <Grid columns={1} columnGap={15} rowGap={20}>
@@ -140,7 +139,7 @@ registerBlockType(metadata.name, {
                                     value={shareLink}
                                     className={'col-span-full'}
                                     onChange={(value) => {
-                                        setAttributes({['wpbs-shareLink']:value});
+                                        setAttributes({['wpbs-shareLink']: value});
                                         setShareLink(value);
                                     }}
                                 />
@@ -152,7 +151,7 @@ registerBlockType(metadata.name, {
                                     value={title}
                                     className={'col-span-full'}
                                     onChange={(value) => {
-                                        setAttributes({['wpbs-title']:value});
+                                        setAttributes({['wpbs-title']: value});
                                         setTitle(value);
                                     }}
                                 />
@@ -203,7 +202,6 @@ registerBlockType(metadata.name, {
                             </BaseControl>
 
                             <Resolution defaultValue={attributes['wpbs-resolution']} callback={(newValue) => {
-                                setResolution(newValue);
                                 setAttributes({['wpbs-resolution']: newValue});
                             }}/>
 

@@ -4,7 +4,7 @@ import React, {useState} from "react";
 
 function Resolution({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || 0);
+    const [value, setValue] = useState(defaultValue || '');
 
     return <SelectControl
         label={'Resolution'}

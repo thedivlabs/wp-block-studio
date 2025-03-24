@@ -264,7 +264,12 @@ registerBlockType(metadata.name, {
                                                     alt: value.alt,
                                                     sizes: value.sizes,
                                                 });
-                                                setAttributes({['wpbs-mobileImage']: value});
+                                                setAttributes({['wpbs-mobileImage']: {
+                                                        id: value.id,
+                                                        url: value.url,
+                                                        alt: value.alt,
+                                                        sizes: value.sizes,
+                                                    }});
                                             }}
                                             allowedTypes={['image']}
                                             value={mobileImage}
@@ -292,7 +297,12 @@ registerBlockType(metadata.name, {
                                                     alt: value.alt,
                                                     sizes: value.sizes,
                                                 });
-                                                setAttributes({['wpbs-largeImage']: value});
+                                                setAttributes({['wpbs-largeImage']: {
+                                                        id: value.id,
+                                                        url: value.url,
+                                                        alt: value.alt,
+                                                        sizes: value.sizes,
+                                                    }});
                                             }}
                                             allowedTypes={['image']}
                                             value={largeImage}

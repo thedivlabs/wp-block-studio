@@ -31,7 +31,9 @@ class WPBS_Style {
 
 		$default = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
 
-		$selector = $block->attributes['className'] ?? $block->attributes['uniqueId'] ?? $default;
+		$selector = $block->attributes['className'] ?? $block->attributes['uniqueId'] ?? null;
+
+		$selector = $selector ? '.' . join( '.', explode( ' ', $selector ) ) : $default;
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
 			$selector = $selector . $block->block_type->selectors['root'];

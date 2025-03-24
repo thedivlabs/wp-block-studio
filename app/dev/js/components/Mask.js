@@ -4,7 +4,7 @@ import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {imageButtonStyle} from "Inc/helper";
 
-function Mask({mobileValue, largeValue, originValue, sizeValue, callback}) {
+function Mask({mobileValue, largeValue, originValue, sizeValue, callback, styles = {}}) {
 
     const [mobile, setMobile] = useState(mobileValue);
     const [large, setLarge] = useState(largeValue);
@@ -12,7 +12,7 @@ function Mask({mobileValue, largeValue, originValue, sizeValue, callback}) {
     const [size, setSize] = useState(sizeValue);
 
     return <>
-        <Grid columns={2} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20} style={{...styles}}>
             <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true}>
                 <MediaUploadCheck>
                     <MediaUpload

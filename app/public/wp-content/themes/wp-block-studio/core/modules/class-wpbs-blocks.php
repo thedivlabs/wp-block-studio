@@ -14,7 +14,12 @@ class WPBS_Blocks {
 	}
 
 	public function render_block( $attributes, $content, $block ): string {
-		
+
+WPBS::console_log($attributes);
+
+		$block->attributes['className'] = !empty($block->attributes['className']) ? $block->attributes['className'] : wp_get_elements_class_name($block);
+		$attributes['className'] = !empty($attributes['className']) ? $attributes['className'] : wp_get_elements_class_name($block);
+
 		$css = WPBS_Style::block_styles( $attributes, $block );
 
 		return $content;

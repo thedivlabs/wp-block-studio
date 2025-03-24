@@ -17,8 +17,7 @@ import {
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
-import React, {useState} from "react";
-import {useRef, useEffect} from 'react';
+import React, {useEffect, useState} from "react";
 
 import {useSettings} from '@wordpress/block-editor';
 import Blend from "Components/Blend";
@@ -26,14 +25,15 @@ import Origin from "Components/Origin";
 import Resolution from "Components/Resolution";
 import Overlay from "Components/Overlay";
 import Link from "Components/Link";
+import {useInstanceId, withInstanceId} from '@wordpress/compose';
 
-import {useInstanceId} from "@wordpress/compose";
 
-function classNames(attributes = {}) {
+function blockClasses(attributes = {}) {
+
 
     return [
         'wpbs-figure flex items-center justify-center relative',
-        attributes.instanceId,
+        attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -131,7 +131,7 @@ function getSettings(attributes = {}) {
 function Media({attributes, editor = false, props = {}}) {
 
 
-    const classNames = [
+    const mediaClasses = [
         'wpbs-figure__media w-full h-full overflow-hidden',
     ].filter(x => x).join(' ');
 
@@ -156,13 +156,13 @@ function Media({attributes, editor = false, props = {}}) {
     }
 
     if (attributes['wpbs-link'] && !editor) {
-        return <a class={classNames} href={attributes['wpbs-link'].url}
+        return <a class={mediaClasses} href={attributes['wpbs-link'].url}
                   target={attributes['wpbs-link'].opensInNewTab ? '_blank' : '_self'}
                   rel={attributes['wpbs-link'].rel} style={mediaStyle}>
             <Content/>
         </a>
     } else {
-        return <div class={classNames} style={mediaStyle}>
+        return <div class={mediaClasses} style={mediaStyle}>
             <Content/>
         </div>;
     }
@@ -172,18 +172,11 @@ function Media({attributes, editor = false, props = {}}) {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
+        ...metadata.attributes,
         ...LayoutAttributes,
         ...blockAttributes
     },
-    edit: (props) => {
-
-        const {attributes, setAttributes, clientId} = props;
-
-        const instanceId = useInstanceId(registerBlockType, 'wpbs-figure');
-        
-        useEffect(() => {
-            setAttributes({instanceId: instanceId});
-        }, [instanceId]);
+    edit: ({attributes, setAttributes, clientId}) => {
 
         const [{breakpoints}] = useSettings(['custom']);
 
@@ -202,13 +195,16 @@ registerBlockType(metadata.name, {
         const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
         const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
 
-        setAttributes({
-            ['wpbs-prop-figure-mask']: maskImage && mask ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
-        });
+        const uniqueId = useInstanceId(BlockEdit, 'wpbs-figure');
 
         setAttributes({
-            ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none',
+            ['wpbs-prop-figure-mask']: maskImage && mask ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
+            ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none'
         });
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId});
+        }, []);
 
         const buttonStyle = {
             border: '1px dashed lightgray',
@@ -221,315 +217,315 @@ registerBlockType(metadata.name, {
             textAlign: 'center',
         };
 
+
         const blockProps = useBlockProps({
-            className: classNames(attributes),
-            //'data-wp-interactive': 'wpbs-figure',
-            //'data-wp-run': 'callbacks.isInView',
+            className: blockClasses(attributes),
+            'data-wp-interactive': 'wpbs',
+            'data-wp-init': 'callbacks.observe',
             style: {
                 ...blockStyles(attributes),
             }
         });
 
-
         setAttributes({
             ['wpbs-breakpoint']: breakpoints[attributes['wpbs-layout-breakpoint'] || 'normal'],
         });
 
-        return (
-            <>
-                <BlockEdit key="edit" {...blockProps} />
-                <Link defaultValue={link} callback={(newValue) => {
-                    setAttributes({['wpbs-link']: newValue});
-                }}/>
-                <InspectorControls group="styles">
-                    <PanelBody initialOpen={true}>
-                        <Grid columns={1} columnGap={15} rowGap={20}>
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Type"
-                                value={type}
-                                options={[
-                                    {label: 'Select', value: ''},
-                                    {label: 'Image', value: 'image'},
-                                    {label: 'Lottie', value: 'lottie'},
-                                    {label: 'Icon', value: 'icon'},
-                                ]}
-                                onChange={(value) => {
-                                    setType(value);
-                                    setAttributes({['wpbs-type']: value});
-                                }}
-                                __nextHasNoMarginBottom
-                            />
-                            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
+        return <>
+            <BlockEdit key="edit" {...blockProps} />
+            <Link defaultValue={link} callback={(newValue) => {
+                setAttributes({['wpbs-link']: newValue});
+            }}/>
+            <InspectorControls group="styles">
+                <PanelBody initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Type"
+                            value={type}
+                            options={[
+                                {label: 'Select', value: ''},
+                                {label: 'Image', value: 'image'},
+                                {label: 'Lottie', value: 'lottie'},
+                                {label: 'Icon', value: 'icon'},
+                            ]}
+                            onChange={(value) => {
+                                setType(value);
+                                setAttributes({['wpbs-type']: value});
+                            }}
+                            __nextHasNoMarginBottom
+                        />
+                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
 
-                                <Grid columns={2} columnGap={15} rowGap={20}
-                                      style={{display: type !== 'image' ? 'none' : null}}>
-                                    <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                title={'Mobile Image'}
-                                                onSelect={(value) => {
-                                                    setMobileImage(value);
-                                                    setAttributes({['wpbs-mobileImage']: value});
-                                                }}
-                                                allowedTypes={['image']}
-                                                value={mobileImage}
-                                                render={({open}) => {
+                            <Grid columns={2} columnGap={15} rowGap={20}
+                                  style={{display: type !== 'image' ? 'none' : null}}>
+                                <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
+                                    <MediaUploadCheck>
+                                        <MediaUpload
+                                            title={'Mobile Image'}
+                                            onSelect={(value) => {
+                                                setMobileImage(value);
+                                                setAttributes({['wpbs-mobileImage']: value});
+                                            }}
+                                            allowedTypes={['image']}
+                                            value={mobileImage}
+                                            render={({open}) => {
+                                                return <PreviewThumbnail
+                                                    image={mobileImage || {}}
+                                                    callback={() => {
+                                                        setMobileImage(undefined);
+                                                        setAttributes({['wpbs-mobileImage']: undefined});
+                                                    }}
+                                                    onClick={open}
+                                                />;
+                                            }}
+                                        />
+                                    </MediaUploadCheck>
+                                </BaseControl>
+                                <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
+                                    <MediaUploadCheck>
+                                        <MediaUpload
+                                            title={'Large Image'}
+                                            onSelect={(value) => {
+                                                setLargeImage(value);
+                                                setAttributes({['wpbs-largeImage']: value});
+                                            }}
+                                            allowedTypes={['image']}
+                                            value={largeImage}
+                                            render={({open}) => {
+                                                if (largeImage) {
                                                     return <PreviewThumbnail
-                                                        image={mobileImage || {}}
+                                                        image={largeImage || {}}
                                                         callback={() => {
-                                                            setMobileImage(undefined);
-                                                            setAttributes({['wpbs-mobileImage']: undefined});
+                                                            setLargeImage(undefined);
+                                                            setAttributes({['wpbs-largeImage']: undefined});
                                                         }}
                                                         onClick={open}
                                                     />;
-                                                }}
-                                            />
-                                        </MediaUploadCheck>
-                                    </BaseControl>
-                                    <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                title={'Large Image'}
-                                                onSelect={(value) => {
-                                                    setLargeImage(value);
-                                                    setAttributes({['wpbs-largeImage']: value});
-                                                }}
-                                                allowedTypes={['image']}
-                                                value={largeImage}
-                                                render={({open}) => {
-                                                    if (largeImage) {
-                                                        return <PreviewThumbnail
-                                                            image={largeImage || {}}
-                                                            callback={() => {
-                                                                setLargeImage(undefined);
-                                                                setAttributes({['wpbs-largeImage']: undefined});
-                                                            }}
-                                                            onClick={open}
-                                                        />;
-                                                    } else {
-                                                        return <Button onClick={open} style={buttonStyle}>Choose
-                                                            Image</Button>
-                                                    }
-                                                }}
-                                            />
-                                        </MediaUploadCheck>
-                                    </BaseControl>
+                                                } else {
+                                                    return <Button onClick={open} style={buttonStyle}>Choose
+                                                        Image</Button>
+                                                }
+                                            }}
+                                        />
+                                    </MediaUploadCheck>
+                                </BaseControl>
 
 
-                                    <Blend defaultValue={attributes['wpbs-blend']} callback={(newValue) => {
-                                        setAttributes({['wpbs-blend']: newValue});
-                                    }}/>
-                                    <Origin defaultValue={attributes['wpbs-origin']} callback={(newValue) => {
-                                        setAttributes({['wpbs-origin']: newValue});
-                                    }}/>
-                                    <Resolution defaultValue={attributes['wpbs-resolution']} callback={(newValue) => {
-                                        setAttributes({['wpbs-resolution']: newValue});
-                                    }}/>
-                                </Grid>
-
-                                <Overlay defaultValue={attributes['wpbs-overlay']} callback={(newValue) => {
-                                    setAttributes({['wpbs-overlay']: newValue});
+                                <Blend defaultValue={attributes['wpbs-blend']} callback={(newValue) => {
+                                    setAttributes({['wpbs-blend']: newValue});
                                 }}/>
+                                <Origin defaultValue={attributes['wpbs-origin']} callback={(newValue) => {
+                                    setAttributes({['wpbs-origin']: newValue});
+                                }}/>
+                                <Resolution defaultValue={attributes['wpbs-resolution']} callback={(newValue) => {
+                                    setAttributes({['wpbs-resolution']: newValue});
+                                }}/>
+                            </Grid>
 
-                                <Grid columns={2} columnGap={15} rowGap={20}
-                                      style={{display: type !== 'video' ? 'none' : null}}>
+                            <Overlay defaultValue={attributes['wpbs-overlay']} callback={(newValue) => {
+                                setAttributes({['wpbs-overlay']: newValue});
+                            }}/>
 
-                                    <BaseControl label={'Video'} __nextHasNoMarginBottom={true}>
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                title={'Video'}
-                                                onSelect={(value) => {
-                                                    setVideo(value);
-                                                    setAttributes({['wpbs-video']: value});
-                                                }}
-                                                allowedTypes={['video']}
-                                                value={video}
-                                                render={({open}) => {
-                                                    return <PreviewThumbnail
-                                                        image={video || {}}
-                                                        callback={() => {
-                                                            setVideo(undefined);
-                                                            setAttributes({['wpbs-video']: undefined});
-                                                        }}
-                                                        onClick={open}
-                                                    />;
-                                                }}
-                                            />
-                                        </MediaUploadCheck>
-                                    </BaseControl>
+                            <Grid columns={2} columnGap={15} rowGap={20}
+                                  style={{display: type !== 'video' ? 'none' : null}}>
+
+                                <BaseControl label={'Video'} __nextHasNoMarginBottom={true}>
+                                    <MediaUploadCheck>
+                                        <MediaUpload
+                                            title={'Video'}
+                                            onSelect={(value) => {
+                                                setVideo(value);
+                                                setAttributes({['wpbs-video']: value});
+                                            }}
+                                            allowedTypes={['video']}
+                                            value={video}
+                                            render={({open}) => {
+                                                return <PreviewThumbnail
+                                                    image={video || {}}
+                                                    callback={() => {
+                                                        setVideo(undefined);
+                                                        setAttributes({['wpbs-video']: undefined});
+                                                    }}
+                                                    onClick={open}
+                                                />;
+                                            }}
+                                        />
+                                    </MediaUploadCheck>
+                                </BaseControl>
 
 
-                                </Grid>
+                            </Grid>
 
 
-                                <Grid columns={2} columnGap={15} rowGap={20}
-                                      style={{padding: '1rem 0'}}>
-                                    <ToggleControl
-                                        label="Eager"
-                                        checked={eager}
-                                        onChange={(value) => {
-                                            setEager(value);
-                                            setAttributes({['wpbs-eager']: value});
-                                        }}
-                                        className={'flex items-center'}
-                                        __nextHasNoMarginBottom
-                                    />
-                                    <ToggleControl
-                                        label="Force"
-                                        checked={force}
-                                        onChange={(value) => {
-                                            setForce(value);
-                                            setAttributes({['wpbs-force']: value});
-                                        }}
-                                        className={'flex items-center'}
-                                        __nextHasNoMarginBottom
-                                    />
-                                    <ToggleControl
-                                        label="Mask"
-                                        checked={mask}
-                                        onChange={(value) => {
-                                            setMask(value);
-                                            setAttributes({['wpbs-mask']: value});
-                                        }}
-                                        className={'flex items-center'}
-                                        __nextHasNoMarginBottom
-                                    />
-                                    <ToggleControl
-                                        label="Contain"
-                                        checked={contain}
-                                        onChange={(value) => {
-                                            setContain(value);
-                                            setAttributes({['wpbs-contain']: value});
-                                        }}
-                                        className={'flex items-center'}
-                                        __nextHasNoMarginBottom
-                                    />
+                            <Grid columns={2} columnGap={15} rowGap={20}
+                                  style={{padding: '1rem 0'}}>
+                                <ToggleControl
+                                    label="Eager"
+                                    checked={eager}
+                                    onChange={(value) => {
+                                        setEager(value);
+                                        setAttributes({['wpbs-eager']: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
+                                <ToggleControl
+                                    label="Force"
+                                    checked={force}
+                                    onChange={(value) => {
+                                        setForce(value);
+                                        setAttributes({['wpbs-force']: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
+                                <ToggleControl
+                                    label="Mask"
+                                    checked={mask}
+                                    onChange={(value) => {
+                                        setMask(value);
+                                        setAttributes({['wpbs-mask']: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
+                                <ToggleControl
+                                    label="Contain"
+                                    checked={contain}
+                                    onChange={(value) => {
+                                        setContain(value);
+                                        setAttributes({['wpbs-contain']: value});
+                                    }}
+                                    className={'flex items-center'}
+                                    __nextHasNoMarginBottom
+                                />
 
-                                </Grid>
-                                <Grid columns={2} columnGap={15} rowGap={20}
-                                      style={{display: !mask ? 'none' : null}}>
-                                    <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true}>
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                title={'Mask Mobile'}
-                                                onSelect={(value) => {
-                                                    setMaskImageMobile(value);
-                                                    setAttributes({
-                                                        ['wpbs-maskImageMobile']: value,
-                                                    });
-                                                }}
-                                                allowedTypes={['image']}
-                                                value={maskImageMobile}
-                                                render={({open}) => {
-                                                    return <PreviewThumbnail
-                                                        image={maskImageMobile || {}}
-                                                        callback={() => {
-                                                            setMaskImageMobile(undefined);
-                                                            setAttributes({
-                                                                ['wpbs-maskImageMobile']: undefined,
-                                                            });
-                                                        }}
-                                                        style={{
-                                                            objectFit: 'contain',
-                                                            backgroundColor: 'rgba(0,0,0,0.1)',
-                                                        }}
-                                                        onClick={open}
-                                                    />;
-                                                }}
-                                            />
-                                        </MediaUploadCheck>
-                                    </BaseControl>
-                                    <BaseControl label={'Mask Large'} __nextHasNoMarginBottom={true}>
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                title={'Mask Large'}
-                                                onSelect={(value) => {
-                                                    setMaskImage(value);
-                                                    setAttributes({
-                                                        ['wpbs-maskImage']: value,
-                                                    });
-                                                }}
-                                                allowedTypes={['image']}
-                                                value={maskImage}
-                                                render={({open}) => {
-                                                    return <PreviewThumbnail
-                                                        image={maskImage || {}}
-                                                        callback={() => {
-                                                            setMaskImage(undefined);
-                                                            setAttributes({
-                                                                ['wpbs-maskImage']: undefined,
-                                                            });
-                                                        }}
-                                                        style={{
-                                                            objectFit: 'contain',
-                                                            backgroundColor: 'rgba(0,0,0,0.1)',
-                                                        }}
-                                                        onClick={open}
-                                                    />;
-                                                }}
-                                            />
-                                        </MediaUploadCheck>
-                                    </BaseControl>
-                                    <SelectControl
-                                        __next40pxDefaultSize
-                                        label="Mask Origin"
-                                        value={maskOrigin}
-                                        options={[
-                                            {label: 'Default', value: ''},
-                                            {label: 'Center', value: 'center'},
-                                            {label: 'Top', value: 'top'},
-                                            {label: 'Right', value: 'right'},
-                                            {label: 'Bottom', value: 'bottom'},
-                                            {label: 'Left', value: 'left'},
-                                            {label: 'Top Left', value: 'top left'},
-                                            {label: 'Top Right', value: 'top right'},
-                                            {label: 'Bottom Left', value: 'bottom left'},
-                                            {label: 'Bottom Right', value: 'bottom right'},
-                                        ]}
-                                        onChange={(value) => {
-                                            setMaskOrigin(value);
-                                            setAttributes({['wpbs-maskOrigin']: value});
-                                        }}
-                                        __nextHasNoMarginBottom
-                                    />
-                                    <SelectControl
-                                        __next40pxDefaultSize
-                                        label="Mask Size"
-                                        value={maskSize}
-                                        options={[
-                                            {label: 'Default', value: 'contain'},
-                                            {label: 'Cover', value: 'cover'},
-                                            {label: 'Vertical', value: 'auto 100%'},
-                                            {label: 'Horizontal', value: '100% auto'},
-                                        ]}
-                                        onChange={(value) => {
-                                            setMaskSize(value);
-                                            setAttributes({['wpbs-maskSize']: value});
-                                        }}
-                                        __nextHasNoMarginBottom
-                                    />
+                            </Grid>
+                            <Grid columns={2} columnGap={15} rowGap={20}
+                                  style={{display: !mask ? 'none' : null}}>
+                                <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true}>
+                                    <MediaUploadCheck>
+                                        <MediaUpload
+                                            title={'Mask Mobile'}
+                                            onSelect={(value) => {
+                                                setMaskImageMobile(value);
+                                                setAttributes({
+                                                    ['wpbs-maskImageMobile']: value,
+                                                });
+                                            }}
+                                            allowedTypes={['image']}
+                                            value={maskImageMobile}
+                                            render={({open}) => {
+                                                return <PreviewThumbnail
+                                                    image={maskImageMobile || {}}
+                                                    callback={() => {
+                                                        setMaskImageMobile(undefined);
+                                                        setAttributes({
+                                                            ['wpbs-maskImageMobile']: undefined,
+                                                        });
+                                                    }}
+                                                    style={{
+                                                        objectFit: 'contain',
+                                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                                    }}
+                                                    onClick={open}
+                                                />;
+                                            }}
+                                        />
+                                    </MediaUploadCheck>
+                                </BaseControl>
+                                <BaseControl label={'Mask Large'} __nextHasNoMarginBottom={true}>
+                                    <MediaUploadCheck>
+                                        <MediaUpload
+                                            title={'Mask Large'}
+                                            onSelect={(value) => {
+                                                setMaskImage(value);
+                                                setAttributes({
+                                                    ['wpbs-maskImage']: value,
+                                                });
+                                            }}
+                                            allowedTypes={['image']}
+                                            value={maskImage}
+                                            render={({open}) => {
+                                                return <PreviewThumbnail
+                                                    image={maskImage || {}}
+                                                    callback={() => {
+                                                        setMaskImage(undefined);
+                                                        setAttributes({
+                                                            ['wpbs-maskImage']: undefined,
+                                                        });
+                                                    }}
+                                                    style={{
+                                                        objectFit: 'contain',
+                                                        backgroundColor: 'rgba(0,0,0,0.1)',
+                                                    }}
+                                                    onClick={open}
+                                                />;
+                                            }}
+                                        />
+                                    </MediaUploadCheck>
+                                </BaseControl>
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label="Mask Origin"
+                                    value={maskOrigin}
+                                    options={[
+                                        {label: 'Default', value: ''},
+                                        {label: 'Center', value: 'center'},
+                                        {label: 'Top', value: 'top'},
+                                        {label: 'Right', value: 'right'},
+                                        {label: 'Bottom', value: 'bottom'},
+                                        {label: 'Left', value: 'left'},
+                                        {label: 'Top Left', value: 'top left'},
+                                        {label: 'Top Right', value: 'top right'},
+                                        {label: 'Bottom Left', value: 'bottom left'},
+                                        {label: 'Bottom Right', value: 'bottom right'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setMaskOrigin(value);
+                                        setAttributes({['wpbs-maskOrigin']: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label="Mask Size"
+                                    value={maskSize}
+                                    options={[
+                                        {label: 'Default', value: 'contain'},
+                                        {label: 'Cover', value: 'cover'},
+                                        {label: 'Vertical', value: 'auto 100%'},
+                                        {label: 'Horizontal', value: '100% auto'},
+                                    ]}
+                                    onChange={(value) => {
+                                        setMaskSize(value);
+                                        setAttributes({['wpbs-maskSize']: value});
+                                    }}
+                                    __nextHasNoMarginBottom
+                                />
 
-                                </Grid>
                             </Grid>
                         </Grid>
-                    </PanelBody>
-                </InspectorControls>
+                    </Grid>
+                </PanelBody>
+            </InspectorControls>
 
-                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        clientId={clientId}></Layout>
+            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
+                    clientId={clientId}></Layout>
 
-                <figure {...blockProps}>
-                    <Media attributes={attributes} editor={true}/>
-                </figure>
+            <figure {...blockProps}>
+                <Media attributes={attributes} editor={true}/>
+            </figure>
 
-            </>
-        )
+        </>;
     },
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: classNames(props.attributes),
+            className: blockClasses(props.attributes),
+            'data-wp-interactive': 'wpbs',
+            'data-wp-init': 'callbacks.observe',
             style: {
                 ...blockStyles(props.attributes),
             }
@@ -537,7 +533,7 @@ registerBlockType(metadata.name, {
 
 
         return (
-            <figure {...blockProps} data-wp-interactive="wpbs" data-wp-init="callbacks.observe">
+            <figure {...blockProps} >
                 <Media attributes={props.attributes} editor={false}/>
             </figure>
         );

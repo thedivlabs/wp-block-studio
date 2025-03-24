@@ -4,10 +4,16 @@
   "name": "wpbs/figure",
   "title": "Figure",
   "description": "Display a figure element",
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
   "selectors": {
     "root": ".wpbs-figure"
   },
   "supports": {
+    "layout": false,
     "interactivity": true,
     "color": {
       "background": true,

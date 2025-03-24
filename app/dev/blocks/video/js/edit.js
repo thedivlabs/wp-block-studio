@@ -108,7 +108,7 @@ registerBlockType(metadata.name, {
                         <Grid columns={1} columnGap={15} rowGap={20} >
 
 
-                            <Grid columns={2} columnGap={15} rowGap={20}>
+                            <Grid columns={1} columnGap={15} rowGap={20}>
 
                                 <SelectControl
                                     __next40pxDefaultSize

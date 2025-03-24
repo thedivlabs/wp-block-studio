@@ -1,0 +1,88 @@
+@use 'includes';
+
+.wpbs-modal {
+
+  backdrop-filter: grayscale(.8) blur(7px);
+  -webkit-backdrop-filter: grayscale(.8) blur(7px);
+
+  @include includes.mq('2xl') {
+    backdrop-filter: grayscale(.8) blur(5px);
+    -webkit-backdrop-filter: grayscale(.8) blur(5px);
+  }
+
+  &:before {
+    transition-timing-function: linear !important;
+    @apply
+    content-['']
+    fixed
+    top-0
+    left-0
+    w-full
+    h-full
+    bg-black/70
+    z-0
+    pointer-events-none
+  }
+
+  &.active {
+    @apply
+    opacity-100
+    pointer-events-auto
+    duration-500
+    ease-linear
+  }
+
+  &--full &__container {
+    padding: 0 !important;
+    @apply
+    w-full
+    h-full
+  }
+
+  &__container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    grid-template-columns: 100%;
+    @apply
+    w-full
+    grid
+    transition-all
+    delay-0
+    opacity-0
+    m-auto
+    bg-transparent
+    z-20
+    translate-y-28
+    max-h-full
+    overflow-auto
+    justify-start
+    items-center
+    ease-out
+    duration-500
+    min-h-full
+    ;
+
+    & > * {
+      @apply
+      pointer-events-auto
+    }
+
+    @include includes.mq('xl') {
+      padding-bottom: min(7vh, 7rem) !important;
+    }
+  }
+
+  &.active > &__container,
+  &.active > &__container {
+    transition: opacity .4s linear .3s, transform .4s ease-out .3s !important;
+    @apply
+    opacity-100
+    translate-y-0
+  }
+
+  &.active &__close {
+    @apply
+    opacity-70
+  }
+
+}

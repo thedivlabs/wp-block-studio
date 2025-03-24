@@ -1,24 +1,24 @@
-import Modals from 'Modules/modals'
-import Loader from 'Modules/loader'
+import Modals from './modules/modals'
+import Loader from './modules/loader'
 
 
-
-class WPBS{
+class WPBS_Theme {
 
     static modals;
     static loader;
 
-    constructor(){
+    constructor() {
+
         this.modals = Modals;
         this.loader = Loader;
 
         this.modals.init();
         this.loader.init();
 
-        init();
+        this.init();
     }
 
-    static init(){
+    init() {
         document.addEventListener('DOMContentLoaded', () => {
 
             function responsiveVideoSrc(video) {
@@ -88,7 +88,7 @@ class WPBS{
     }
 }
 
-new WPBS();
+window.WPBS = new WPBS_Theme();
 
 
 

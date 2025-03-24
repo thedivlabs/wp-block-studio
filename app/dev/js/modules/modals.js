@@ -3,7 +3,7 @@ export default class Modals {
     static init() {
 
         this.modal = document.createElement('div');
-        this.modal.classList.add('wpbs-modal', 'fixed', 'top-0', 'left-0', 'z-modal', 'flex', 'h-full', 'w-full', 'justify-center', 'items-start', 'overflow-hidden', 'opacity-0', 'transition-opacity', 'duration-300', 'pointer-events-none');
+        this.modal.classList.add('wpbs-modal', 'fixed', 'top-0', 'left-0', 'flex', 'h-full', 'w-full', 'justify-center', 'items-start', 'overflow-hidden', 'opacity-0', 'transition-opacity', 'duration-300', 'pointer-events-none','z-modal');
 
         const container = document.createElement('div');
         container.classList.add('wpbs-modal__container', 'px-4', 'pt-8', 'pb-12');
@@ -19,7 +19,7 @@ export default class Modals {
         this.toggle_selector = '.' + this.toggle_class;
 
 
-        document.body.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
 
             const button = e.target.closest(this.toggle_selector);
 
@@ -52,7 +52,7 @@ export default class Modals {
         document.body.classList.remove('wpbs-body-lock');
         document.removeEventListener('keydown', this.keypress_handler);
 
-        Loader.loader({
+        WPBS.loader.toggle({
             remove: true
         });
 
@@ -101,7 +101,7 @@ export default class Modals {
 
     static keypress_handler(e) {
         if (e.keyCode === 27) {
-            DIVLABS.modal(false, {
+            this.modal(false, {
                 remove: true
             });
         }
@@ -109,7 +109,7 @@ export default class Modals {
 
     static show_modal(selector, args = {}) {
 
-        DIVLABS.loader({
+        WPBS.loader.toggle({
             remove: true
         });
 
@@ -155,8 +155,6 @@ export default class Modals {
         setTimeout(() => {
 
             document.body.classList.add('wpbs-body-lock');
-            DIVLABS.sliders(modal);
-            DIVLABS.video.load_responsive();
 
             setTimeout(() => {
                 modal.classList.add('active');

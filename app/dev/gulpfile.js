@@ -10,7 +10,7 @@ const node_path = require("path");
 //To Minify CSS files
 
 
-const scss_include_paths = [ './includes'];
+const scss_include_paths = [ './scss/includes'];
 
 /* SCSS */
 
@@ -19,7 +19,7 @@ gulp.task('theme_css', function () {
         './scss/theme.scss',
     ])
         .pipe(sass({
-            includePaths: './scss/includes/',
+            loadPaths: scss_include_paths,
             //outputStyle: 'compressed'
         }, {}).on('error', sass.logError))
         .pipe(postcss([
@@ -36,7 +36,7 @@ gulp.task('admin_css', function () {
         './scss/admin.scss',
     ])
         .pipe(sass({
-            includePaths: './scss/includes/',
+            loadPaths: scss_include_paths,
             //outputStyle: 'compressed'
         }, {}).on('error', sass.logError))
         .pipe(postcss([
@@ -54,7 +54,7 @@ gulp.task('blocks_css', function () {
         './blocks/**/css/block.scss'
     ], {base: "."})
         .pipe(sass({
-            includePaths: scss_include_paths,
+            loadPaths: scss_include_paths,
             //outputStyle: 'compressed'
         },false).on('error', sass.logError))
         .pipe(postcss([

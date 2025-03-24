@@ -253,7 +253,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observe'
+            'data-wp-on--click': 'callbacks.videoModal'
         });
 
 

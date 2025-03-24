@@ -105,7 +105,7 @@ registerBlockType(metadata.name, {
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
-                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
+                        <Grid columns={1} columnGap={15} rowGap={20} >
 
 
                             <Grid columns={2} columnGap={15} rowGap={20}>

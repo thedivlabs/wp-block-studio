@@ -25,7 +25,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative',
+        'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -59,7 +59,7 @@ function Media({attributes, editor = false}) {
 
 
     const mediaClasses = [
-        'wpbs-video__media w-full h-full overflow-hidden',
+        'wpbs-video__media w-full h-full overflow-hidden relative',
     ].filter(x => x).join(' ');
 
     return <div class={mediaClasses}>

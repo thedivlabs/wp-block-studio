@@ -59,7 +59,7 @@ function Media({attributes, editor = false}) {
 
 
     const mediaClasses = [
-        'wpbs-video__media w-full h-full overflow-hidden relative',
+        'wpbs-video__media w-full h-full overflow-hidden relative object-cover object-center',
     ].filter(x => x).join(' ');
 
     return <div class={mediaClasses}>

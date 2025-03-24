@@ -25,7 +25,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-video flex items-center justify-center relative',
+        'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

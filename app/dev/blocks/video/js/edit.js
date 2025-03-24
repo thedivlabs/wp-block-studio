@@ -1,4 +1,3 @@
-import '../scss/block.scss';
 import {
     useBlockProps,
     InspectorControls,
@@ -20,13 +19,9 @@ import Picture from "Components/Picture";
 import React, {useEffect, useState} from "react";
 
 import {useSettings} from '@wordpress/block-editor';
-import Blend from "Components/Blend";
-import Origin from "Components/Origin";
-import Resolution from "Components/Resolution";
 import Overlay from "Components/Overlay";
-import Link from "Components/Link";
 import {imageButtonStyle} from "Inc/helper";
-import {useInstanceId, withInstanceId} from '@wordpress/compose';
+import {useInstanceId} from '@wordpress/compose';
 
 
 function blockClasses(attributes = {}) {

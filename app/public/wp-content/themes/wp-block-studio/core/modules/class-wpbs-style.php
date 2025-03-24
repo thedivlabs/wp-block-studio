@@ -36,7 +36,7 @@ class WPBS_Style {
 		$selector = $selector ? '.' . join( '.', explode( ' ', $selector ) ) : $default;
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
-			//$selector = $selector . $block->block_type->selectors['root'];
+			$selector = $selector . $block->block_type->selectors['root'];
 		}
 
 		return $selector;

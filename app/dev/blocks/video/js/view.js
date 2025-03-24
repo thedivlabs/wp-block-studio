@@ -1,10 +1,14 @@
-import {store, getElement} from '@wordpress/interactivity';
+import {store, getElement,getContext} from '@wordpress/interactivity';
 
 const {state} = store('wpbs', {
     callbacks: {
         videoModal: () => {
             const {ref: element} = getElement();
-            console.log('Video toggle');
+            const {url,title} = getContext();
+
+            console.log(url);
+            console.log(title);
+
             WPBS.modals.toggle_modal(false, {
                 template: jQuery('<div/>',{
                     class:'test-modal'

@@ -26,7 +26,7 @@ import Resolution from "Components/Resolution";
 import Overlay from "Components/Overlay";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
-
+import {imageButtonStyle} from "Inc/helper";
 
 function blockClasses(attributes = {}) {
 
@@ -42,13 +42,6 @@ function blockStyles(attributes = {}) {
 
     return {
         '--figure-type': attributes.type,
-        //'--figure-mask': attributes.mask,
-        '--figure-mask-origin': attributes.maskOrigin,
-        '--figure-mask-size': attributes.maskSize,
-        maskRepeat: 'no-repeat',
-        maskImage: 'var(--figure-mask, none)',
-        maskSize: attributes['wpbs-maskSize'] || 'contain',
-        maskPosition: attributes['wpbs-maskOrigin'] || 'center',
         '--overlay': attributes['wpbs-overlay']
     };
 }
@@ -66,25 +59,10 @@ const blockAttributes = {
     'wpbs-breakpoint': {
         type: 'string'
     },
-    'wpbs-maskImage': {
-        type: 'object'
-    },
-    'wpbs-maskImageMobile': {
-        type: 'object',
-    },
-    'wpbs-prop-figure-mask': {
-        type: 'string'
-    },
-    'wpbs-prop-figure-mask-mobile': {
-        type: 'string',
-    },
     'wpbs-eager': {
         type: 'boolean'
     },
     'wpbs-force': {
-        type: 'boolean'
-    },
-    'wpbs-mask': {
         type: 'boolean'
     },
     'wpbs-resolution': {
@@ -97,12 +75,6 @@ const blockAttributes = {
         type: 'string'
     },
     'wpbs-origin': {
-        type: 'string'
-    },
-    'wpbs-maskOrigin': {
-        type: 'string'
-    },
-    'wpbs-maskSize': {
         type: 'string'
     },
     'wpbs-overlay': {
@@ -178,16 +150,10 @@ registerBlockType(metadata.name, {
         const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileImage']);
         const [largeImage, setLargeImage] = useState(attributes['wpbs-largeImage']);
         const [video, setVideo] = useState(attributes['wpbs-video']);
-        const [maskImage, setMaskImage] = useState(attributes['wpbs-maskImage']);
-        const [maskImageMobile, setMaskImageMobile] = useState(attributes['wpbs-maskImageMobile']);
         const [eager, setEager] = useState(attributes['wpbs-eager']);
         const [force, setForce] = useState(attributes['wpbs-force']);
         const [link, setLink] = useState(attributes['wpbs-link']);
         const [contain, setContain] = useState(attributes.contain);
-
-        const [mask, setMask] = useState(attributes['wpbs-mask'] || false);
-        const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
-        const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
@@ -195,27 +161,9 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
-        setAttributes({
-            ['wpbs-prop-figure-mask']: maskImage && mask ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
-            ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none'
-        });
-
-        const buttonStyle = {
-            border: '1px dashed lightgray',
-            width: '100%',
-            height: 'auto',
-            aspectRatio: '16/9',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            textAlign: 'center',
-        };
-
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
-            //'data-wp-interactive': 'wpbs',
-            //'data-wp-init': 'callbacks.observe',
             style: {
                 ...blockStyles(attributes),
             }
@@ -325,7 +273,7 @@ registerBlockType(metadata.name, {
                                                         onClick={open}
                                                     />;
                                                 } else {
-                                                    return <Button onClick={open} style={buttonStyle}>Choose
+                                                    return <Button onClick={open} style={imageButtonStyle}>Choose
                                                         Image</Button>
                                                 }
                                             }}
@@ -403,16 +351,6 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                 />
                                 <ToggleControl
-                                    label="Mask"
-                                    checked={mask}
-                                    onChange={(value) => {
-                                        setMask(value);
-                                        setAttributes({['wpbs-mask']: value});
-                                    }}
-                                    className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
-                                <ToggleControl
                                     label="Contain"
                                     checked={contain}
                                     onChange={(value) => {
@@ -420,126 +358,6 @@ registerBlockType(metadata.name, {
                                         setAttributes({['wpbs-contain']: value});
                                     }}
                                     className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
-
-                            </Grid>
-                            <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{display: !mask ? 'none' : null}}>
-                                <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true}>
-                                    <MediaUploadCheck>
-                                        <MediaUpload
-                                            title={'Mask Mobile'}
-                                            onSelect={(value) => {
-                                                setMaskImageMobile({
-                                                    type:value.type,
-                                                    id: value.id,
-                                                    url: value.url,
-                                                });
-                                                setAttributes({
-                                                    ['wpbs-maskImageMobile']: {
-                                                        type:value.type,
-                                                        id: value.id,
-                                                        url: value.url,
-                                                    },
-                                                });
-                                            }}
-                                            allowedTypes={['image']}
-                                            value={maskImageMobile}
-                                            render={({open}) => {
-                                                return <PreviewThumbnail
-                                                    image={maskImageMobile || {}}
-                                                    callback={() => {
-                                                        setMaskImageMobile(undefined);
-                                                        setAttributes({
-                                                            ['wpbs-maskImageMobile']: undefined,
-                                                        });
-                                                    }}
-                                                    style={{
-                                                        objectFit: 'contain',
-                                                        backgroundColor: 'rgba(0,0,0,0.1)',
-                                                    }}
-                                                    onClick={open}
-                                                />;
-                                            }}
-                                        />
-                                    </MediaUploadCheck>
-                                </BaseControl>
-                                <BaseControl label={'Mask Large'} __nextHasNoMarginBottom={true}>
-                                    <MediaUploadCheck>
-                                        <MediaUpload
-                                            title={'Mask Large'}
-                                            onSelect={(value) => {
-                                                setMaskImage({
-                                                    type:value.type,
-                                                    id: value.id,
-                                                    url: value.url,
-                                                });
-                                                setAttributes({
-                                                    ['wpbs-maskImage']: {
-                                                        type:value.type,
-                                                        id: value.id,
-                                                        url: value.url,
-                                                    },
-                                                });
-                                            }}
-                                            allowedTypes={['image']}
-                                            value={maskImage}
-                                            render={({open}) => {
-                                                return <PreviewThumbnail
-                                                    image={maskImage || {}}
-                                                    callback={() => {
-                                                        setMaskImage(undefined);
-                                                        setAttributes({
-                                                            ['wpbs-maskImage']: undefined,
-                                                        });
-                                                    }}
-                                                    style={{
-                                                        objectFit: 'contain',
-                                                        backgroundColor: 'rgba(0,0,0,0.1)',
-                                                    }}
-                                                    onClick={open}
-                                                />;
-                                            }}
-                                        />
-                                    </MediaUploadCheck>
-                                </BaseControl>
-                                <SelectControl
-                                    __next40pxDefaultSize
-                                    label="Mask Origin"
-                                    value={maskOrigin}
-                                    options={[
-                                        {label: 'Default', value: ''},
-                                        {label: 'Center', value: 'center'},
-                                        {label: 'Top', value: 'top'},
-                                        {label: 'Right', value: 'right'},
-                                        {label: 'Bottom', value: 'bottom'},
-                                        {label: 'Left', value: 'left'},
-                                        {label: 'Top Left', value: 'top left'},
-                                        {label: 'Top Right', value: 'top right'},
-                                        {label: 'Bottom Left', value: 'bottom left'},
-                                        {label: 'Bottom Right', value: 'bottom right'},
-                                    ]}
-                                    onChange={(value) => {
-                                        setMaskOrigin(value);
-                                        setAttributes({['wpbs-maskOrigin']: value});
-                                    }}
-                                    __nextHasNoMarginBottom
-                                />
-                                <SelectControl
-                                    __next40pxDefaultSize
-                                    label="Mask Size"
-                                    value={maskSize}
-                                    options={[
-                                        {label: 'Default', value: 'contain'},
-                                        {label: 'Cover', value: 'cover'},
-                                        {label: 'Vertical', value: 'auto 100%'},
-                                        {label: 'Horizontal', value: '100% auto'},
-                                    ]}
-                                    onChange={(value) => {
-                                        setMaskSize(value);
-                                        setAttributes({['wpbs-maskSize']: value});
-                                    }}
                                     __nextHasNoMarginBottom
                                 />
 

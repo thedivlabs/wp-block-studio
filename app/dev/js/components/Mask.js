@@ -1,38 +1,63 @@
-import {__experimentalGrid as Grid, BaseControl, Button, SelectControl} from "@wordpress/components";
+import {__experimentalGrid as Grid, BaseControl, SelectControl} from "@wordpress/components";
 import React, {useState} from "react";
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {imageButtonStyle} from "Inc/helper";
 
-function Mask({mobileValue, largeValue, originValue, sizeValue, callback, styles = {}}) {
+function Mask({
+                  imageValue = {},
+                  originValue = '',
+                  sizeValue = '',
+                  callback,
+                  styles = {}
+              }) {
 
-    const [mobile, setMobile] = useState(mobileValue);
-    const [large, setLarge] = useState(largeValue);
-    const [origin, setOrigin] = useState(originValue);
-    const [size, setSize] = useState(sizeValue);
+    const [image, setMobile] = useState(imageValue);
+    const [origin, setLarge] = useState(originValue);
+    const [size, setOrigin] = useState(sizeValue);
+
+    const originOptions = [
+        {label: 'Default', value: ''},
+        {label: 'Center', value: 'center'},
+        {label: 'Top', value: 'top'},
+        {label: 'Right', value: 'right'},
+        {label: 'Bottom', value: 'bottom'},
+        {label: 'Left', value: 'left'},
+        {label: 'Top Left', value: 'top left'},
+        {label: 'Top Right', value: 'top right'},
+        {label: 'Bottom Left', value: 'bottom left'},
+        {label: 'Bottom Right', value: 'bottom right'},
+    ];
+
+    const sizeOptions = [
+        {label: 'Default', value: 'contain'},
+        {label: 'Cover', value: 'cover'},
+        {label: 'Vertical', value: 'auto 100%'},
+        {label: 'Horizontal', value: '100% auto'},
+    ];
 
     return <>
-        <Grid columns={2} columnGap={15} rowGap={20} style={{...styles}}>
-            <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true}>
+        <Grid columns={1} columnGap={15} rowGap={20} style={{gridColumn:'1/-1'}}>
+            <BaseControl label={'Image'} __nextHasNoMarginBottom={true}>
                 <MediaUploadCheck>
                     <MediaUpload
-                        title={'Mask Mobile'}
+                        title={'Mask Image'}
                         onSelect={(value) => {
-                            setMobile({
+                            setImage({
                                 type: value.type,
                                 id: value.id,
                                 url: value.url,
                             });
-                            callback(mobile, large, origin, size);
+                            callback(image, origin, size);
                         }}
                         allowedTypes={['image']}
-                        value={mobile}
+                        value={image}
                         render={({open}) => {
                             return <PreviewThumbnail
-                                image={mobile || {}}
+                                image={image || {}}
                                 callback={() => {
-                                    setMobile(undefined);
-                                    callback(mobile, large, origin, size);
+                                    setImage(undefined);
+                                    callback(image, origin, size);
                                 }}
                                 style={imageButtonStyle}
                                 onClick={open}
@@ -41,72 +66,28 @@ function Mask({mobileValue, largeValue, originValue, sizeValue, callback, styles
                     />
                 </MediaUploadCheck>
             </BaseControl>
-            <BaseControl label={'Mask Large'} __nextHasNoMarginBottom={true}>
-                <MediaUploadCheck>
-                    <MediaUpload
-                        title={'Mask Large'}
-                        onSelect={(value) => {
-                            setLarge({
-                                type: value.type,
-                                id: value.id,
-                                url: value.url,
-                            });
-                            callback(mobile, large, origin, size);
-                        }}
-                        allowedTypes={['image']}
-                        value={large}
-                        render={({open}) => {
-                            return <PreviewThumbnail
-                                image={large || {}}
-                                callback={() => {
-                                    setLarge(undefined);
-                                    callback(mobile, large, origin, size);
-                                }}
-                                style={{
-                                    objectFit: 'contain',
-                                    backgroundColor: 'rgba(0,0,0,0.1)',
-                                }}
-                                onClick={open}
-                            />;
-                        }}
-                    />
-                </MediaUploadCheck>
-            </BaseControl>
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20} style={{...styles}}>
             <SelectControl
                 __next40pxDefaultSize
-                label="Mask Origin"
+                label="Origin"
                 value={origin}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Center', value: 'center'},
-                    {label: 'Top', value: 'top'},
-                    {label: 'Right', value: 'right'},
-                    {label: 'Bottom', value: 'bottom'},
-                    {label: 'Left', value: 'left'},
-                    {label: 'Top Left', value: 'top left'},
-                    {label: 'Top Right', value: 'top right'},
-                    {label: 'Bottom Left', value: 'bottom left'},
-                    {label: 'Bottom Right', value: 'bottom right'},
-                ]}
+                options={originOptions}
                 onChange={(value) => {
                     setOrigin(value);
-                    callback(mobile, large, origin, size);
+                    callback(image, origin, size);
                 }}
                 __nextHasNoMarginBottom
             />
             <SelectControl
                 __next40pxDefaultSize
-                label="Mask Size"
+                label="Size"
                 value={size}
-                options={[
-                    {label: 'Default', value: 'contain'},
-                    {label: 'Cover', value: 'cover'},
-                    {label: 'Vertical', value: 'auto 100%'},
-                    {label: 'Horizontal', value: '100% auto'},
-                ]}
+                options={sizeOptions}
                 onChange={(value) => {
                     setSize(value);
-                    callback(mobile, large, origin, size);
+                    callback(image, origin, size);
                 }}
                 __nextHasNoMarginBottom
             />

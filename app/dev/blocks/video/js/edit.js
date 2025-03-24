@@ -134,7 +134,7 @@ registerBlockType(metadata.name, {
                                     value={shareLink}
                                     className={'col-span-full'}
                                     onChange={(value) => {
-                                        setAttributes({shareLink:value});
+                                        setAttributes({['wpbs-shareLink']:value});
                                         setShareLink(value);
                                     }}
                                 />
@@ -146,7 +146,7 @@ registerBlockType(metadata.name, {
                                     value={title}
                                     className={'col-span-full'}
                                     onChange={(value) => {
-                                        setAttributes({title:value});
+                                        setAttributes({['wpbs-title']:value});
                                         setTitle(value);
                                     }}
                                 />

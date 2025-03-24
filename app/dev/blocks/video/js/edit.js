@@ -22,6 +22,7 @@ import {useSettings} from '@wordpress/block-editor';
 import Overlay from "Components/Overlay";
 import {imageButtonStyle} from "Inc/helper";
 import {useInstanceId} from '@wordpress/compose';
+import Resolution from "Components/Resolution";
 
 function blockClasses(attributes = {}) {
     return [
@@ -40,6 +41,9 @@ const blockAttributes = {
     },
     'wpbs-modal': {
         type: 'boolean'
+    },
+    'wpbs-resolution': {
+        type: 'string'
     },
     'wpbs-overlay': {
         type: 'string'
@@ -65,6 +69,7 @@ function Media({attributes, editor = false}) {
     return <div class={mediaClasses}>
         <Picture mobile={attributes['wpbs-posterImage']}
                  settings={{
+                     resolution:attributes.resolution,
                      className: 'w-full h-full absolute top-0 left-0 z-0',
                      eager: attributes.eager
                  }} editor={editor}></Picture>
@@ -89,6 +94,7 @@ registerBlockType(metadata.name, {
         const [shareLink, setShareLink] = useState(attributes['wpbs-shareLink']);
         const [platform, setPlatform] = useState(attributes['wpbs-platform']);
         const [title, setTitle] = useState(attributes['wpbs-title']);
+        const [resolution, setResolution] = useState(attributes['wpbs-resolution']);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
 
@@ -196,6 +202,10 @@ registerBlockType(metadata.name, {
                                 </MediaUploadCheck>
                             </BaseControl>
 
+                            <Resolution defaultValue={attributes['wpbs-resolution']} callback={(newValue) => {
+                                setResolution(newValue);
+                                setAttributes({['wpbs-resolution']: newValue});
+                            }}/>
 
                             <Grid columns={2} columnGap={15} rowGap={20}
                                   style={{padding: '1rem 0'}}>

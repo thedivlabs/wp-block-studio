@@ -259,17 +259,21 @@ registerBlockType(metadata.name, {
                                             title={'Mobile Image'}
                                             onSelect={(value) => {
                                                 setMobileImage({
+                                                    type: value.type,
                                                     id: value.id,
                                                     url: value.url,
                                                     alt: value.alt,
                                                     sizes: value.sizes,
                                                 });
-                                                setAttributes({['wpbs-mobileImage']: {
+                                                setAttributes({
+                                                    ['wpbs-mobileImage']: {
+                                                        type: value.type,
                                                         id: value.id,
                                                         url: value.url,
                                                         alt: value.alt,
                                                         sizes: value.sizes,
-                                                    }});
+                                                    }
+                                                });
                                             }}
                                             allowedTypes={['image']}
                                             value={mobileImage}
@@ -292,17 +296,21 @@ registerBlockType(metadata.name, {
                                             title={'Large Image'}
                                             onSelect={(value) => {
                                                 setLargeImage({
+                                                    type:value.type,
                                                     id: value.id,
                                                     url: value.url,
                                                     alt: value.alt,
                                                     sizes: value.sizes,
                                                 });
-                                                setAttributes({['wpbs-largeImage']: {
+                                                setAttributes({
+                                                    ['wpbs-largeImage']: {
+                                                        type:value.type,
                                                         id: value.id,
                                                         url: value.url,
                                                         alt: value.alt,
                                                         sizes: value.sizes,
-                                                    }});
+                                                    }
+                                                });
                                             }}
                                             allowedTypes={['image']}
                                             value={largeImage}
@@ -424,13 +432,15 @@ registerBlockType(metadata.name, {
                                             title={'Mask Mobile'}
                                             onSelect={(value) => {
                                                 setMaskImageMobile({
-                                                    id:value.id,
-                                                    url:value.url,
+                                                    type:value.type,
+                                                    id: value.id,
+                                                    url: value.url,
                                                 });
                                                 setAttributes({
                                                     ['wpbs-maskImageMobile']: {
-                                                        id:value.id,
-                                                        url:value.url,
+                                                        type:value.type,
+                                                        id: value.id,
+                                                        url: value.url,
                                                     },
                                                 });
                                             }}
@@ -461,13 +471,15 @@ registerBlockType(metadata.name, {
                                             title={'Mask Large'}
                                             onSelect={(value) => {
                                                 setMaskImage({
-                                                    id:value.id,
-                                                    url:value.url,
+                                                    type:value.type,
+                                                    id: value.id,
+                                                    url: value.url,
                                                 });
                                                 setAttributes({
                                                     ['wpbs-maskImage']: {
-                                                        id:value.id,
-                                                        url:value.url,
+                                                        type:value.type,
+                                                        id: value.id,
+                                                        url: value.url,
                                                     },
                                                 });
                                             }}

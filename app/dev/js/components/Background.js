@@ -438,8 +438,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         title={'Mask Desktop'}
                         onSelect={(value) => {
                             updateSettings('maskImageLarge', {
-                                id:value.id,
-                                url:value.url,
+                                type: value.type,
+                                id: value.id,
+                                url: value.url,
                             }, setMaskImageLarge);
                         }}
                         allowedTypes={['image']}
@@ -743,8 +744,9 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                         title={'Mask Image'}
                         onSelect={(value) => {
                             updateSettings('maskImageMobile', {
-                                id:value.id,
-                                url:value.url,
+                                type: value.type,
+                                id: value.id,
+                                url: value.url,
                             }, setMaskImageMobile);
                         }}
                         allowedTypes={['image']}
@@ -872,6 +874,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     title={'Mobile Image'}
                                     onSelect={(value) => {
                                         updateSettings('mobileImage', {
+                                            type: value.type,
                                             id: value.id,
                                             url: value.url,
                                         }, setMobileImage);
@@ -896,6 +899,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     title={'Large Image'}
                                     onSelect={(value) => {
                                         updateSettings('largeImage', {
+                                            type: value.type,
                                             id: value.id,
                                             url: value.url,
                                         }, setLargeImage);

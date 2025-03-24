@@ -204,7 +204,7 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                 />
                                 <ToggleControl
-                                    label="Autoplay"
+                                    label="Modal"
                                     checked={modal}
                                     onChange={(value) => {
                                         setModal(value);

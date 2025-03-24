@@ -77,7 +77,7 @@ export function Background({attributes = {}, editor = false}) {
             let srcAttr;
 
             if (editor === true) {
-                srcAttr = 'src';
+                srcAttr = 'data-src';
             } else {
                 srcAttr = settings.eager ? 'src' : 'data-src';
             }
@@ -865,7 +865,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                 <MediaUpload
                                     title={'Mobile Image'}
                                     onSelect={(value) => {
-                                        updateSettings('mobileImage', value, setMobileImage);
+                                        updateSettings('mobileImage', {
+                                            id: value.id,
+                                            url: value.url,
+                                        }, setMobileImage);
                                     }}
                                     allowedTypes={['image']}
                                     value={mobileImage}
@@ -886,7 +889,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                 <MediaUpload
                                     title={'Large Image'}
                                     onSelect={(value) => {
-                                        updateSettings('largeImage', value, setLargeImage);
+                                        updateSettings('largeImage', {
+                                            id: value.id,
+                                            url: value.url,
+                                        }, setLargeImage);
                                     }}
                                     allowedTypes={['image']}
                                     value={largeImage}
@@ -913,7 +919,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                 <MediaUpload
                                     title={'Mobile Video'}
                                     onSelect={(value) => {
-                                        updateSettings('mobileVideo', value, setMobileVideo);
+                                        updateSettings('mobileVideo', {
+                                            id: value.id,
+                                            url: value.url,
+                                        }, setMobileVideo);
                                     }}
                                     allowedTypes={['video']}
                                     value={mobileVideo}
@@ -934,7 +943,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                 <MediaUpload
                                     title={'Large Video'}
                                     onSelect={(value) => {
-                                        updateSettings('largeVideo', value, setLargeVideo);
+                                        updateSettings('largeVideo', {
+                                            id: value.id,
+                                            url: value.url,
+                                        }, setLargeVideo);
                                     }}
                                     allowedTypes={['video']}
                                     value={largeVideo}

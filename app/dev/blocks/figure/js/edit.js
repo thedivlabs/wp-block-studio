@@ -264,7 +264,12 @@ registerBlockType(metadata.name, {
                                         <MediaUpload
                                             title={'Mobile Image'}
                                             onSelect={(value) => {
-                                                setMobileImage(value);
+                                                setMobileImage({
+                                                    id: value.id,
+                                                    url: value.url,
+                                                    alt: value.alt,
+                                                    sizes: value.sizes,
+                                                });
                                                 setAttributes({['wpbs-mobileImage']: value});
                                             }}
                                             allowedTypes={['image']}
@@ -287,7 +292,12 @@ registerBlockType(metadata.name, {
                                         <MediaUpload
                                             title={'Large Image'}
                                             onSelect={(value) => {
-                                                setLargeImage(value);
+                                                setLargeImage({
+                                                    id: value.id,
+                                                    url: value.url,
+                                                    alt: value.alt,
+                                                    sizes: value.sizes,
+                                                });
                                                 setAttributes({['wpbs-largeImage']: value});
                                             }}
                                             allowedTypes={['image']}

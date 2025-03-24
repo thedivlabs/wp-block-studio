@@ -10,7 +10,7 @@
     }
   },
   "selectors": {
-    "root": ".wpbs-figure"
+    "root": ".wpbs-video"
   },
   "supports": {
     "layout": false,

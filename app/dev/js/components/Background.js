@@ -437,7 +437,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     <MediaUpload
                         title={'Mask Desktop'}
                         onSelect={(value) => {
-                            updateSettings('maskImageLarge', value, setMaskImageLarge);
+                            updateSettings('maskImageLarge', {
+                                id:value.id,
+                                url:value.url,
+                            }, setMaskImageLarge);
                         }}
                         allowedTypes={['image']}
                         value={maskImageLarge}
@@ -739,7 +742,10 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                     <MediaUpload
                         title={'Mask Image'}
                         onSelect={(value) => {
-                            updateSettings('maskImageMobile', value, setMaskImageMobile);
+                            updateSettings('maskImageMobile', {
+                                id:value.id,
+                                url:value.url,
+                            }, setMaskImageMobile);
                         }}
                         allowedTypes={['image']}
                         value={maskImageMobile}

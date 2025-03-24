@@ -66,12 +66,6 @@ const blockAttributes = {
     'wpbs-breakpoint': {
         type: 'string'
     },
-    'wpbs-mobileVideo': {
-        type: 'object'
-    },
-    'wpbs-video': {
-        type: 'object'
-    },
     'wpbs-maskImage': {
         type: 'object'
     },
@@ -419,9 +413,15 @@ registerBlockType(metadata.name, {
                                         <MediaUpload
                                             title={'Mask Mobile'}
                                             onSelect={(value) => {
-                                                setMaskImageMobile(value);
+                                                setMaskImageMobile({
+                                                    id:value.id,
+                                                    url:value.url,
+                                                });
                                                 setAttributes({
-                                                    ['wpbs-maskImageMobile']: value,
+                                                    ['wpbs-maskImageMobile']: {
+                                                        id:value.id,
+                                                        url:value.url,
+                                                    },
                                                 });
                                             }}
                                             allowedTypes={['image']}
@@ -450,9 +450,15 @@ registerBlockType(metadata.name, {
                                         <MediaUpload
                                             title={'Mask Large'}
                                             onSelect={(value) => {
-                                                setMaskImage(value);
+                                                setMaskImage({
+                                                    id:value.id,
+                                                    url:value.url,
+                                                });
                                                 setAttributes({
-                                                    ['wpbs-maskImage']: value,
+                                                    ['wpbs-maskImage']: {
+                                                        id:value.id,
+                                                        url:value.url,
+                                                    },
                                                 });
                                             }}
                                             allowedTypes={['image']}

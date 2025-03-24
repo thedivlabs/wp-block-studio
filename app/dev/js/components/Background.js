@@ -7,7 +7,6 @@ import {
     PanelBody,
     SelectControl,
     ToggleControl,
-    Button,
     RangeControl,
     GradientPicker,
     TabPanel,

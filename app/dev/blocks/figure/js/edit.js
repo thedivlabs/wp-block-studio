@@ -195,16 +195,16 @@ registerBlockType(metadata.name, {
         const [maskOrigin, setMaskOrigin] = useState(attributes['wpbs-maskOrigin']);
         const [maskSize, setMaskSize] = useState(attributes['wpbs-maskSize']);
 
-        const uniqueId = useInstanceId(BlockEdit, 'wpbs-figure');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId});
+        }, []);
 
         setAttributes({
             ['wpbs-prop-figure-mask']: maskImage && mask ? 'url(' + attributes['wpbs-maskImage'].url + ')' : 'none',
             ['wpbs-prop-figure-mask-mobile']: maskImageMobile && mask ? 'url(' + attributes['wpbs-maskImageMobile'].url + ')' : 'none'
         });
-
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
 
         const buttonStyle = {
             border: '1px dashed lightgray',
@@ -220,8 +220,8 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
-            'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observe',
+            //'data-wp-interactive': 'wpbs',
+            //'data-wp-init': 'callbacks.observe',
             style: {
                 ...blockStyles(attributes),
             }

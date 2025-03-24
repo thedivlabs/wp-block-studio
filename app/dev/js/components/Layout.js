@@ -309,7 +309,6 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
     };
 
     return <>
-        <BlockEdit key="edit" {...blockProps} />
         <InspectorControls group="styles">
 
             <ToolsPanel label={'Layout'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>

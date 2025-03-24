@@ -11,6 +11,8 @@ import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/E
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
+import {useInstanceId} from "@wordpress/compose";
+import {useEffect} from "react";
 
 
 function sectionClassNames(attributes = {}) {
@@ -32,11 +34,18 @@ function containerClassNames() {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
+        ...metadata.attributes,
         ...LayoutAttributes,
         ...BackgroundAttributes,
         ...ElementTagAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
+
+        const uniqueId = useInstanceId({}, 'wpbs-layout-element');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId});
+        }, []);
 
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),

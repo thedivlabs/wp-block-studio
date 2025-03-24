@@ -69,9 +69,9 @@ function Media({attributes, editor = false}) {
     return <div class={mediaClasses}>
         <Picture mobile={attributes['wpbs-posterImage']}
                  settings={{
-                     resolution: attributes.resolution,
+                     resolution: attributes['wpbs-resolution'],
                      className: 'w-full h-full absolute top-0 left-0 z-0',
-                     eager: attributes.eager
+                     eager: attributes['wpbs-eager']
                  }} editor={editor}></Picture>
     </div>
 }

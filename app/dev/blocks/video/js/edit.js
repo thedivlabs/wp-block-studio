@@ -133,7 +133,10 @@ registerBlockType(metadata.name, {
                                     label="Share Link"
                                     value={shareLink}
                                     className={'col-span-full'}
-                                    onChange={(value) => setShareLink(value)}
+                                    onChange={(value) => {
+                                        setAttributes({shareLink:value});
+                                        setShareLink(value);
+                                    }}
                                 />
 
                                 <TextControl
@@ -142,7 +145,10 @@ registerBlockType(metadata.name, {
                                     label="Title"
                                     value={title}
                                     className={'col-span-full'}
-                                    onChange={(value) => setTitle(value)}
+                                    onChange={(value) => {
+                                        setAttributes({title:value});
+                                        setTitle(value);
+                                    }}
                                 />
 
                             </Grid>

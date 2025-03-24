@@ -33,6 +33,7 @@
   },
   "editorScript": "file:./js/edit.js",
   "viewScriptModule": "file:./js/view.js",
+  "style": "file:./js/edit.css",
   "icon": "format-image"
 }
 

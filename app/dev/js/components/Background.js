@@ -77,7 +77,7 @@ export function Background({attributes = {}, editor = false}) {
             let srcAttr;
 
             if (editor === true) {
-                srcAttr = 'data-src';
+                srcAttr = 'src';
             } else {
                 srcAttr = settings.eager ? 'src' : 'data-src';
             }
@@ -926,6 +926,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     title={'Mobile Video'}
                                     onSelect={(value) => {
                                         updateSettings('mobileVideo', {
+                                            type: value.type,
                                             id: value.id,
                                             url: value.url,
                                         }, setMobileVideo);
@@ -950,6 +951,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
                                     title={'Large Video'}
                                     onSelect={(value) => {
                                         updateSettings('largeVideo', {
+                                            type: value.type,
                                             id: value.id,
                                             url: value.url,
                                         }, setLargeVideo);

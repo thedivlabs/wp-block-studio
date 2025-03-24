@@ -19,6 +19,7 @@ function sectionClassNames(attributes = {}) {
 
     return [
         'wpbs-layout-element wpbs-layout-container wpbs-has-container w-full flex relative',
+        attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }

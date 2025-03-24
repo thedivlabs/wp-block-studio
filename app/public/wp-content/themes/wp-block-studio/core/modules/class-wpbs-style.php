@@ -29,7 +29,9 @@ class WPBS_Style {
 
 	private static function get_selector( $block ): string {
 
-		$selector = ! empty( $block->attributes['className'] ) ? '.' . join( '.', explode( ' ', $block->attributes['className'] ) ) : ( ! empty( $block->attributes['className'] ) ? '.' . $block->attributes['className'] : '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' ) );
+		$default = '.wp-block-' . str_replace( '/', '-', $block->block_type->name ?? '' );
+
+		$selector = $block->attributes['className'] ?? $block->attributes['uniqueId'] ?? $default;
 
 		if ( ! empty( $block->block_type->selectors['root'] ) ) {
 			$selector = $selector . $block->block_type->selectors['root'];

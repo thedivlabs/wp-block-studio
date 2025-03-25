@@ -5,11 +5,6 @@
   "selectors": {
     "root": ".wpbs-layout-element"
   },
-  "attributes": {
-    "uniqueId": {
-      "type": "string"
-    }
-  },
   "supports": {
     "interactivity": true,
     "innerBlocks": true,

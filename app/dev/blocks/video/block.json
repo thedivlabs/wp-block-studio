@@ -4,11 +4,6 @@
   "name": "wpbs/video",
   "title": "Video Element",
   "description": "Display a video element",
-  "attributes": {
-    "uniqueId": {
-      "type": "string"
-    }
-  },
   "selectors": {
     "root": ".wpbs-video"
   },

@@ -112,19 +112,15 @@ class WPBS_Layout {
 
 			switch ( $prop ) {
 				case 'wpbs-layout-mask-image':
-					$styles['mask-image']  = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false, 'full' )[0] ?? '#' ) . ')';
-					$styles['mask-repeat'] = 'no-repeat';
-					break;
-				case 'wpbs-layout-mask-size':
-					$styles['mask-size'] = match ( $value ) {
+					$styles['mask-image']    = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false, 'full' )[0] ?? '#' ) . ')';
+					$styles['mask-repeat']   = 'no-repeat';
+					$styles['mask-size']     = match ( $this->attributes['wpbs-layout-mask-size'] ?? false ) {
 						'cover' => 'cover',
 						'horizontal' => '100% auto',
 						'vertical' => 'auto 100%',
 						default => 'contain'
 					};
-					break;
-				case 'wpbs-layout-mask-origin':
-					$styles['mask-position'] = $value;
+					$styles['mask-position'] = $this->attributes['wpbs-layout-mask-origin'] ?? 'center center';
 					break;
 				case 'wpbs-layout-height':
 				case 'wpbs-layout-height-custom':
@@ -260,19 +256,15 @@ class WPBS_Layout {
 
 			switch ( $prop ) {
 				case 'wpbs-layout-mask-image-mobile':
-					$styles['mask-image']  = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false, 'full' )[0] ?? '#' ) . ')';
-					$styles['mask-repeat'] = 'no-repeat';
-					break;
-				case 'wpbs-layout-mask-size-mobile':
-					$styles['mask-size'] = match ( $value ) {
+					$styles['mask-image']    = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false, 'full' )[0] ?? '#' ) . ')';
+					$styles['mask-repeat']   = 'no-repeat';
+					$styles['mask-size']     = match ( $this->attributes['wpbs-layout-mask-size-mobile'] ?? false ) {
 						'cover' => 'cover',
 						'horizontal' => '100% auto',
 						'vertical' => 'auto 100%',
 						default => 'contain'
 					};
-					break;
-				case 'wpbs-layout-mask-origin-mobile':
-					$styles['mask-position'] = $value;
+					$styles['mask-position'] = $this->attributes['wpbs-layout-mask-origin-mobile'] ?? 'center center';
 					break;
 				case 'wpbs-layout-height-mobile':
 				case 'wpbs-layout-height-custom-mobile':

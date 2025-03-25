@@ -26,7 +26,7 @@ import Resolution from "Components/Resolution";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden',
+        'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden cursor-pointer',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

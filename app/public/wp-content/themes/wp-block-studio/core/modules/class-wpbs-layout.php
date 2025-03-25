@@ -24,6 +24,10 @@ class WPBS_Layout {
 
 		unset( $this->attributes );
 
+		if ( ! empty( $this->desktop['mask-image'] ) && empty( $this->mobile['mask-image'] ) ) {
+			$this->mobile['mask-image'] = 'none';
+		}
+
 	}
 
 	public function styles(): array {

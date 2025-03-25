@@ -66,7 +66,13 @@ function Media({attributes, editor = false}) {
         'wpbs-video__media w-full h-full overflow-hidden relative object-cover object-center',
     ].filter(x => x).join(' ');
 
-    return <div class={mediaClasses}>
+    const mediaProps = Object.fromEntries(Object.entries({
+        '--overlay': attributes['wpbs-overlay'],
+    }).filter(([_, v]) => v != null));
+
+
+
+    return <div class={mediaClasses} style={mediaProps}>
         <Picture mobile={attributes['wpbs-posterImage']}
                  settings={{
                      resolution: attributes['wpbs-resolution'],
@@ -84,8 +90,6 @@ registerBlockType(metadata.name, {
         ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
-
-        const [{breakpoints}] = useSettings(['custom']);
 
         const [posterImage, setPosterImage] = useState(attributes['wpbs-posterImage']);
         const [eager, setEager] = useState(attributes['wpbs-eager']);
@@ -111,10 +115,7 @@ registerBlockType(metadata.name, {
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
-
-
                             <Grid columns={1} columnGap={15} rowGap={20}>
-
                                 <SelectControl
                                     __next40pxDefaultSize
                                     label="Platform"
@@ -155,7 +156,6 @@ registerBlockType(metadata.name, {
                                         setTitle(value);
                                     }}
                                 />
-
                             </Grid>
 
                             <BaseControl label={'Poster Image'} __nextHasNoMarginBottom={true}>

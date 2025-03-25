@@ -653,7 +653,10 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                             size
                         ) => {
                             setAttributes({
-                                ['wpbs-layout-mask-image-large']: image,
+                                ['wpbs-layout-mask-image-large']: {
+                                    id:image.id,
+                                    url:image.url
+                                },
                                 ['wpbs-layout-mask-origin-large']: origin,
                                 ['wpbs-layout-mask-size-large']: size
                             });

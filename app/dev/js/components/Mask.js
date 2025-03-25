@@ -2,14 +2,12 @@ import {__experimentalGrid as Grid, BaseControl, SelectControl} from "@wordpress
 import React, {useState} from "react";
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
-import {imageButtonStyle} from "Inc/helper";
 
 function Mask({
                   imageValue,
                   originValue,
                   sizeValue,
-                  callback,
-                  styles
+                  callback
               }) {
 
     const [image, setImage] = useState(imageValue);

@@ -1,14 +1,33 @@
 .wpbs-video {
 
+  &__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 1/1;
+    z-index: 20;
+    transition: color .3s ease;
+    font-size: 4rem;
+    line-height: 1;
+    color: rgba(255, 255, 255, .5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .6);
+  }
+
+  &:hover &__media {
+    &:after {
+      opacity: .5;
+    }
+  }
+
+  &:hover &__button {
+    color: rgba(255, 255, 255, .9);
+  }
 
   &__media {
-
-    &:hover {
-
-      &:after {
-        opacity: .5;
-      }
-    }
 
     &:after {
       content: '';

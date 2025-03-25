@@ -75,6 +75,9 @@ function Media({attributes, editor = false}) {
 
 
     return <div class={mediaClasses} style={mediaProps}>
+        <button type={'button'} class={'wpbs-video__button'}>
+            <i class="fa-solid fa-circle-play"></i>
+        </button>
         <Picture mobile={attributes['wpbs-posterImage']}
                  settings={{
                      resolution: attributes['wpbs-resolution'],

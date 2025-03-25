@@ -18,8 +18,10 @@ function Link({defaultValue, callback}) {
                         <MenuItem
 
                         >
+                            Link:
                             <LinkControl
                                 searchInputPlaceholder="Search here..."
+
                                 value={value}
                                 settings={[
                                     {

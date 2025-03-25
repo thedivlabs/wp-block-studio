@@ -993,14 +993,10 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                     }}
                 >
                     <Mask
-                        imageValue={attributes['wpbs-layout-mask-image-mobile'] || ''}
-                        originValue={attributes['wpbs-layout-mask-origin-mobile'] || ''}
-                        sizeValue={attributes['wpbs-layout-mask-size-mobile'] || ''}
-                        callback={(
-                            image,
-                            origin,
-                            size
-                        ) => {
+                        imageValue={attributes['wpbs-layout-mask-image-mobile']}
+                        originValue={attributes['wpbs-layout-mask-origin-mobile']}
+                        sizeValue={attributes['wpbs-layout-mask-size-mobile']}
+                        callback={(image, origin, size) => {
                             setAttributes({
                                 ['wpbs-layout-mask-image-mobile']: image,
                                 ['wpbs-layout-mask-origin-mobile']: origin,

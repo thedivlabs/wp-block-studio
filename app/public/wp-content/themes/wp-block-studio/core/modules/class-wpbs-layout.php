@@ -108,7 +108,8 @@ class WPBS_Layout {
 
 			switch ( $prop ) {
 				case 'wpbs-layout-mask-image':
-					$styles['mask-image'] = 'url(' . wp_get_attachment_image_src( $value, 'full' ) . ')';
+					$styles['mask-image']  = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false, 'full' )[0] ?? '#' ) . ')';
+					$styles['mask-repeat'] = 'no-repeat';
 					break;
 				case 'wpbs-layout-mask-size':
 					$styles['mask-size'] = match ( $value ) {
@@ -255,7 +256,8 @@ class WPBS_Layout {
 
 			switch ( $prop ) {
 				case 'wpbs-layout-mask-image-mobile':
-					$styles['mask-image'] = 'url(' . wp_get_attachment_image_src( $value, 'full' ) . ')';
+					$styles['mask-image']  = 'url(' . ( wp_get_attachment_image_src( $value['id'] ?? false, 'full' )[0] ?? '#' ) . ')';
+					$styles['mask-repeat'] = 'no-repeat';
 					break;
 				case 'wpbs-layout-mask-size-mobile':
 					$styles['mask-size'] = match ( $value ) {

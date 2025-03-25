@@ -3,16 +3,25 @@
 
   &__media {
 
+    &:hover {
+
+      &:after {
+        opacity: .2;
+      }
+    }
+
     &:after {
       content: '';
       background: var(--overlay, rgba(0, 0, 0, .5));
-      @apply
-      block
-      absolute
-      top-0
-      left-0
-      w-full
-      h-full
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      transition: opacity .3s ease;
+      opacity: 1;
     }
   }
 }

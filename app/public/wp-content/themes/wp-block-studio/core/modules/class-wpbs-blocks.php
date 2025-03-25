@@ -28,11 +28,6 @@ class WPBS_Blocks {
 
 			$block = register_block_type( $block_dir, [
 				'render_callback' => [ $this, 'render_block' ],
-				'attributes'      => [
-					'uniqueId' => [
-						'type' => 'string',
-					]
-				]
 			] );
 		}
 	}

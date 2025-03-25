@@ -42,7 +42,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId({}, 'wpbs-layout-element');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});

@@ -1,5 +1,18 @@
 .wpbs-video {
 
 
+  &__media {
 
+    &:after {
+      content: '';
+      background: var(--overlay, rgba(0, 0, 0, .5));
+      @apply
+      block
+      absolute
+      top-0
+      left-0
+      w-full
+      h-full
+    }
+  }
 }

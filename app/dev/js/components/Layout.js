@@ -633,12 +633,14 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                 </ToolsPanelItem>
 
                 <ToolsPanelItem
-                    hasValue={() => !!attributes['wpbs-layout-mask-image-large'] || !!attributes['wpbs-layout-mask-origin-large'] || !!attributes['wpbs-layout-mask-size-large']}
+                    hasValue={() => !!attributes['wpbs-layout-mask-image-large']}
                     label={'Mask'}
                     onDeselect={() => {
-                        setAttributes({['wpbs-layout-mask-image-large']: undefined});
-                        setAttributes({['wpbs-layout-mask-origin-large']: undefined});
-                        setAttributes({['wpbs-layout-mask-size-large']: undefined});
+                        setAttributes({
+                            ['wpbs-layout-mask-image-large']: undefined,
+                            ['wpbs-layout-mask-origin-large']: undefined,
+                            ['wpbs-layout-mask-size-large']: undefined
+                        });
                     }}
                 >
                     <Mask
@@ -646,14 +648,16 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                         originValue={attributes['wpbs-layout-mask-origin-large'] || ''}
                         sizeValue={attributes['wpbs-layout-mask-size-large'] || ''}
                         callback={(
-                            imageLarge,
-                            originLarge,
-                            sizeLarge
+                            image,
+                            origin,
+                            size
                         ) => {
-                        setAttributes({['wpbs-layout-mask-image-large']: imageLarge});
-                        setAttributes({['wpbs-layout-mask-origin-large']: originLarge});
-                        setAttributes({['wpbs-layout-mask-size-large']: sizeLarge});
-                    }}/>
+                            setAttributes({
+                                ['wpbs-layout-mask-image-large']: image,
+                                ['wpbs-layout-mask-origin-large']: origin,
+                                ['wpbs-layout-mask-size-large']: size
+                            });
+                        }}/>
                 </ToolsPanelItem>
 
                 <ToolsPanelItem
@@ -982,12 +986,14 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                 </ToolsPanelItem>
 
                 <ToolsPanelItem
-                    hasValue={() => !!attributes['wpbs-layout-mask-image-mobile'] || !!attributes['wpbs-layout-mask-origin-mobile'] || !!attributes['wpbs-layout-mask-size-mobile']}
+                    hasValue={() => !!attributes['wpbs-layout-mask-image-mobile']}
                     label={'Mask'}
                     onDeselect={() => {
-                        setAttributes({['wpbs-layout-mask-image-mobile']: undefined});
-                        setAttributes({['wpbs-layout-mask-origin-mobile']: undefined});
-                        setAttributes({['wpbs-layout-mask-size-mobile']: undefined});
+                        setAttributes({
+                            ['wpbs-layout-mask-image-mobile']: undefined,
+                            ['wpbs-layout-mask-origin-mobile']: undefined,
+                            ['wpbs-layout-mask-size-mobile']: undefined
+                        });
                     }}
                 >
                     <Mask
@@ -995,13 +1001,15 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                         originValue={attributes['wpbs-layout-mask-origin-mobile'] || ''}
                         sizeValue={attributes['wpbs-layout-mask-size-mobile'] || ''}
                         callback={(
-                            imageMobile,
-                            originMobile,
-                            sizeMobile
+                            image,
+                            origin,
+                            size
                         ) => {
-                            setAttributes({['wpbs-layout-mask-image-mobile']: imageMobile});
-                            setAttributes({['wpbs-layout-mask-origin-mobile']: originMobile});
-                            setAttributes({['wpbs-layout-mask-size-mobile']: sizeMobile});
+                            setAttributes({
+                                ['wpbs-layout-mask-image-mobile']: image,
+                                ['wpbs-layout-mask-origin-mobile']: origin,
+                                ['wpbs-layout-mask-size-mobile']: size
+                            });
                         }}/>
                 </ToolsPanelItem>
 

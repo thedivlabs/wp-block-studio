@@ -5,16 +5,16 @@ import PreviewThumbnail from "Components/PreviewThumbnail";
 import {imageButtonStyle} from "Inc/helper";
 
 function Mask({
-                  imageValue = {},
-                  originValue = '',
-                  sizeValue = '',
+                  imageValue,
+                  originValue,
+                  sizeValue,
                   callback,
-                  styles = {}
+                  styles
               }) {
 
-    const [image, setMobile] = useState(imageValue);
-    const [origin, setLarge] = useState(originValue);
-    const [size, setOrigin] = useState(sizeValue);
+    const [image, setImage] = useState(imageValue);
+    const [origin, setOrigin] = useState(originValue);
+    const [size, setSize] = useState(sizeValue);
 
     const originOptions = [
         {label: 'Default', value: ''},
@@ -59,14 +59,16 @@ function Mask({
                                     setImage(undefined);
                                     callback(image, origin, size);
                                 }}
-                                style={imageButtonStyle}
+                                style={{
+                                    objectFit:'contain'
+                                }}
                                 onClick={open}
                             />;
                         }}
                     />
                 </MediaUploadCheck>
             </BaseControl>
-        </Grid>
+
 
         <Grid columns={2} columnGap={15} rowGap={20} style={{...styles}}>
             <SelectControl
@@ -91,6 +93,7 @@ function Mask({
                 }}
                 __nextHasNoMarginBottom
             />
+        </Grid>
         </Grid>
     </>
 

@@ -647,16 +647,9 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                         imageValue={attributes['wpbs-layout-mask-image-large']}
                         originValue={attributes['wpbs-layout-mask-origin-large']}
                         sizeValue={attributes['wpbs-layout-mask-size-large']}
-                        callback={(
-                            image,
-                            origin,
-                            size
-                        ) => {
+                        callback={(image, origin, size) => {
                             setAttributes({
-                                ['wpbs-layout-mask-image-large']: {
-                                    id:image.id,
-                                    url:image.url
-                                },
+                                ['wpbs-layout-mask-image-large']: image,
                                 ['wpbs-layout-mask-origin-large']: origin,
                                 ['wpbs-layout-mask-size-large']: size
                             });

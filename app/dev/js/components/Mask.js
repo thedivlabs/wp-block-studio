@@ -35,18 +35,21 @@ function Mask({
     ];
 
     return <>
-        <Grid columns={1} columnGap={15} rowGap={20} style={{gridColumn:'1/-1'}}>
-            <BaseControl label={'Image'} __nextHasNoMarginBottom={true}>
+        <Grid columns={1} columnGap={15} rowGap={20} style={{gridColumn: '1/-1'}}>
+            <BaseControl label={'Mask Image'} __nextHasNoMarginBottom={true}>
                 <MediaUploadCheck>
                     <MediaUpload
                         title={'Mask Image'}
                         onSelect={(value) => {
-                            setImage({
+                            const imageProps = {
                                 type: value.type,
                                 id: value.id,
                                 url: value.url,
-                            });
-                            callback(image, origin, size);
+                                alt: value.alt,
+                                sizes: value.sizes,
+                            };
+                            setImage(imageProps);
+                            callback(imageProps, origin, size);
                         }}
                         allowedTypes={['image']}
                         value={image}
@@ -58,7 +61,7 @@ function Mask({
                                     callback(image, origin, size);
                                 }}
                                 style={{
-                                    objectFit:'contain'
+                                    objectFit: 'contain'
                                 }}
                                 onClick={open}
                             />;
@@ -68,30 +71,30 @@ function Mask({
             </BaseControl>
 
 
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            <SelectControl
-                __next40pxDefaultSize
-                label="Origin"
-                value={origin}
-                options={originOptions}
-                onChange={(value) => {
-                    setOrigin(value);
-                    callback(image, origin, size);
-                }}
-                __nextHasNoMarginBottom
-            />
-            <SelectControl
-                __next40pxDefaultSize
-                label="Size"
-                value={size}
-                options={sizeOptions}
-                onChange={(value) => {
-                    setSize(value);
-                    callback(image, origin, size);
-                }}
-                __nextHasNoMarginBottom
-            />
-        </Grid>
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <SelectControl
+                    __next40pxDefaultSize
+                    label="Origin"
+                    value={origin}
+                    options={originOptions}
+                    onChange={(value) => {
+                        setOrigin(value);
+                        callback(image, value, size);
+                    }}
+                    __nextHasNoMarginBottom
+                />
+                <SelectControl
+                    __next40pxDefaultSize
+                    label="Size"
+                    value={size}
+                    options={sizeOptions}
+                    onChange={(value) => {
+                        setSize(value);
+                        callback(image, origin, value);
+                    }}
+                    __nextHasNoMarginBottom
+                />
+            </Grid>
         </Grid>
     </>
 

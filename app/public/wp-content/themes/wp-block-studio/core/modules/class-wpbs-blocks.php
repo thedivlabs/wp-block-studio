@@ -34,8 +34,6 @@ class WPBS_Blocks {
 					]
 				]
 			] );
-
-			WPBS::console_log( $block );
 		}
 	}
 

@@ -18,6 +18,42 @@ class WPBS_Theme {
         this.init();
     }
 
+    observeMedia(refElement) {
+        if (!refElement) {
+            return false;
+        }
+
+        let observerIntersection = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+
+                    const media = entry.target;
+                    observerIntersection.unobserve(entry.target);
+
+                    if (media.dataset.src) {
+                        media.src = media.dataset.src;
+                        media.removeAttribute('data-src');
+                    }
+
+                    if (media.dataset.srcset) {
+                        media.srcset = media.dataset.srcset;
+                        media.removeAttribute('data-srcset');
+                    }
+
+                }
+            });
+
+        }, {
+            root: null,
+            rootMargin: "90px",
+            threshold: 0,
+        });
+
+        [...refElement.querySelectorAll('[data-src],[data-srcset]')].forEach((media) => {
+            observerIntersection.observe(media);
+        });
+    }
+
     init() {
         document.addEventListener('DOMContentLoaded', () => {
 

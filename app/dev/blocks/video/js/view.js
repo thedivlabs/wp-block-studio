@@ -32,5 +32,10 @@ const {state} = store('wpbs', {
             });
 
         },
+        observe: () => {
+            const {ref: element} = getElement();
+            WPBS.observeMedia(element);
+        },
     },
+
 });

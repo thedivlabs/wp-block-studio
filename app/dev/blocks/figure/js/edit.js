@@ -26,7 +26,7 @@ import Resolution from "Components/Resolution";
 import Overlay from "Components/Overlay";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
-import {imageButtonStyle} from "Inc/helper";
+import {imageButtonStyle} from "Includes/helper";
 
 function blockClasses(attributes = {}) {
 
@@ -244,7 +244,7 @@ registerBlockType(metadata.name, {
                                             title={'Large Image'}
                                             onSelect={(value) => {
                                                 setLargeImage({
-                                                    type:value.type,
+                                                    type: value.type,
                                                     id: value.id,
                                                     url: value.url,
                                                     alt: value.alt,
@@ -252,7 +252,7 @@ registerBlockType(metadata.name, {
                                                 });
                                                 setAttributes({
                                                     ['wpbs-largeImage']: {
-                                                        type:value.type,
+                                                        type: value.type,
                                                         id: value.id,
                                                         url: value.url,
                                                         alt: value.alt,

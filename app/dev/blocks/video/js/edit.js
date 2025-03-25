@@ -22,7 +22,7 @@ import React, {useEffect, useState} from "react";
 
 import {useSettings} from '@wordpress/block-editor';
 import Overlay from "Components/Overlay";
-import {imageButtonStyle} from "Inc/helper";
+import {imageButtonStyle} from "Includes/helper";
 import {useInstanceId} from '@wordpress/compose';
 import Resolution from "Components/Resolution";
 
@@ -71,7 +71,6 @@ function Media({attributes, editor = false}) {
     const mediaProps = Object.fromEntries(Object.entries({
         '--overlay': attributes['wpbs-overlay'],
     }).filter(([_, v]) => v != null));
-
 
 
     return <div class={mediaClasses} style={mediaProps}>
@@ -258,6 +257,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
+            'data-wp-init': 'callbacks.observe',
             'data-wp-on--click': 'callbacks.videoModal',
             'data-wp-context': JSON.stringify({
                 url: props.attributes['wpbs-shareLink'],

@@ -13,12 +13,13 @@ function extendScriptConfig(config) {
         ...config,
         // Add non-module config extensions here...
         resolve: {
+            ...wordpressConfig.resolve,
             alias: {
+                Includes: path.resolve(__dirname, 'app/dev/js/inc/'),
                 Dev: path.resolve(__dirname, 'app/dev/js'),
                 Style: path.resolve(__dirname, 'app/dev/scss'),
                 Components: path.resolve(__dirname, 'app/dev/js/components'),
                 Modules: path.resolve(__dirname, 'app/dev/js/modules'),
-                Inc: path.resolve(__dirname, 'app/dev/js/inc'),
             }
         }
     };

@@ -50,6 +50,9 @@ class WPBS_Layout {
 
 		$special_attributes = array_filter( $this->attributes, function ( $k ) {
 			return in_array( $k, [
+				'wpbs-layout-mask-image',
+				'wpbs-layout-mask-size',
+				'wpbs-layout-mask-origin',
 				'wpbs-layout-container',
 				'wpbs-layout-width',
 				'wpbs-layout-width-custom',
@@ -104,6 +107,20 @@ class WPBS_Layout {
 			}
 
 			switch ( $prop ) {
+				case 'wpbs-layout-mask-image':
+					$styles['mask-image'] = 'url(' . wp_get_attachment_image_src( $value, 'full' ) . ')';
+					break;
+				case 'wpbs-layout-mask-size':
+					$styles['mask-size'] = match ( $value ) {
+						'cover' => 'cover',
+						'horizontal' => '100% auto',
+						'vertical' => 'auto 100%',
+						default => 'contain'
+					};
+					break;
+				case 'wpbs-layout-mask-origin':
+					$styles['mask-position'] = $value;
+					break;
 				case 'wpbs-layout-height':
 				case 'wpbs-layout-height-custom':
 					$styles['height'] = $this->parse_special( 'height', $this->attributes['wpbs-layout-height-custom'] ?? $this->attributes['wpbs-layout-height'] ?? null );
@@ -185,6 +202,9 @@ class WPBS_Layout {
 
 		$special_attributes = array_filter( $this->attributes, function ( $k ) {
 			return in_array( $k, [
+				'wpbs-layout-mask-image-mobile',
+				'wpbs-layout-mask-origin-mobile',
+				'wpbs-layout-mask-size-mobile',
 				'wpbs-layout-width-mobile',
 				'wpbs-layout-width-custom-mobile',
 				'wpbs-layout-height-mobile',
@@ -234,6 +254,20 @@ class WPBS_Layout {
 			}
 
 			switch ( $prop ) {
+				case 'wpbs-layout-mask-image-mobile':
+					$styles['mask-image'] = 'url(' . wp_get_attachment_image_src( $value, 'full' ) . ')';
+					break;
+				case 'wpbs-layout-mask-size-mobile':
+					$styles['mask-size'] = match ( $value ) {
+						'cover' => 'cover',
+						'horizontal' => '100% auto',
+						'vertical' => 'auto 100%',
+						default => 'contain'
+					};
+					break;
+				case 'wpbs-layout-mask-origin-mobile':
+					$styles['mask-position'] = $value;
+					break;
 				case 'wpbs-layout-height-mobile':
 				case 'wpbs-layout-height-custom-mobile':
 					$styles['height'] = $this->attributes['wpbs-layout-height-custom-mobile'] ?? $this->attributes['wpbs-layout-height-mobile'] ?? null;

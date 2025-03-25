@@ -54,19 +54,10 @@ const blockAttributes = {
         'wpbs-layout-display': {
             type: 'string'
         },
-        'wpbs-layout-mask-image-mobile': {
-            type: 'object'
-        },
         'wpbs-layout-mask-image-large': {
             type: 'object'
         },
-        'wpbs-layout-mask-origin-mobile': {
-            type: 'string'
-        },
         'wpbs-layout-mask-origin-large': {
-            type: 'string'
-        },
-        'wpbs-layout-mask-size-mobile': {
             type: 'string'
         },
         'wpbs-layout-mask-size-large': {
@@ -161,6 +152,15 @@ const blockAttributes = {
         }
     },
     mobile: {
+        'wpbs-layout-mask-image-mobile': {
+            type: 'object'
+        },
+        'wpbs-layout-mask-origin-mobile': {
+            type: 'string'
+        },
+        'wpbs-layout-mask-size-mobile': {
+            type: 'string'
+        },
         'wpbs-layout-offset-header-mobile': {
             type: 'boolean'
         },
@@ -644,9 +644,9 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                     }}
                 >
                     <Mask
-                        imageValue={attributes['wpbs-layout-mask-image-large'] || ''}
-                        originValue={attributes['wpbs-layout-mask-origin-large'] || ''}
-                        sizeValue={attributes['wpbs-layout-mask-size-large'] || ''}
+                        imageValue={attributes['wpbs-layout-mask-image-large']}
+                        originValue={attributes['wpbs-layout-mask-origin-large']}
+                        sizeValue={attributes['wpbs-layout-mask-size-large']}
                         callback={(
                             image,
                             origin,

@@ -68,7 +68,7 @@ function Mask({
             </BaseControl>
 
 
-        <Grid columns={2} columnGap={15} rowGap={20} style={{...styles}}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
             <SelectControl
                 __next40pxDefaultSize
                 label="Origin"

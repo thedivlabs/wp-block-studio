@@ -613,6 +613,18 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                 </ToolsPanelItem>
 
                 <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-offset-header']}
+                    label={'Offset Header'}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: undefined})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header'] || undefined}
+                                  callback={(newValue) => {
+                                      setAttributes({['wpbs-layout-offset-header']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-translate']}
                     label={'Translate'}
                     onDeselect={() => setAttributes({['wpbs-layout-translate']: undefined})}
@@ -656,17 +668,7 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                         }}/>
                 </ToolsPanelItem>
 
-                <ToolsPanelItem
-                    style={{paddingTop: '1rem'}}
-                    hasValue={() => !!attributes['wpbs-layout-offset-header']}
-                    label={'Offset Header'}
-                    onDeselect={() => setAttributes({['wpbs-layout-offset-header']: undefined})}
-                >
-                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header'] || undefined}
-                                  callback={(newValue) => {
-                                      setAttributes({['wpbs-layout-offset-header']: newValue});
-                                  }}/>
-                </ToolsPanelItem>
+
 
 
             </ToolsPanel>
@@ -899,6 +901,20 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                         setAttributes({['wpbs-layout-order-mobile']: newValue});
                     }}/>
                 </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout-offset-header-mobile']}
+                    label={'Offset Header'}
+                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: undefined})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header-mobile'] || undefined}
+                                  callback={(newValue) => {
+                                      setAttributes({['wpbs-layout-offset-header-mobile']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+
+
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout-translate-mobile']}
                     label={'Translate'}
@@ -1005,17 +1021,7 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                         }}/>
                 </ToolsPanelItem>
 
-                <ToolsPanelItem
-                    style={{paddingTop: '1rem'}}
-                    hasValue={() => !!attributes['wpbs-layout-offset-header-mobile']}
-                    label={'Offset Header'}
-                    onDeselect={() => setAttributes({['wpbs-layout-offset-header-mobile']: undefined})}
-                >
-                    <OffsetHeader defaultValue={attributes['wpbs-layout-offset-header-mobile'] || undefined}
-                                  callback={(newValue) => {
-                                      setAttributes({['wpbs-layout-offset-header-mobile']: newValue});
-                                  }}/>
-                </ToolsPanelItem>
+
             </ToolsPanel>
 
             <PanelColorSettings

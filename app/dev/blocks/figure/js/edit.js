@@ -82,7 +82,7 @@ const blockAttributes = {
     },
     'wpbs-link': {
         type: 'object'
-    },
+    }
 }
 
 function getSettings(attributes = {}) {
@@ -98,7 +98,7 @@ function Media({attributes, editor = false, props = {}}) {
 
 
     const mediaClasses = [
-        'wpbs-figure__media w-full h-full overflow-hidden',
+        'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
     ].filter(x => x).join(' ');
 
     let mediaStyle = {
@@ -336,6 +336,18 @@ registerBlockType(metadata.name, {
                                     onChange={(value) => {
                                         setEager(value);
                                         setAttributes({['wpbs-eager']: value});
+
+                                        if (value) {
+                                            setAttributes({
+                                                preload: [
+                                                    {
+                                                        mobile: !!attributes['wpbs-mobileImage'] ? attributes['wpbs-mobileImage'].id : null,
+                                                        large: !!attributes['wpbs-largeImage'] ? attributes['wpbs-largeImage'].id : null,
+                                                        size: attributes['wpbs-resolution'] || null
+                                                    }
+                                                ]
+                                            });
+                                        }
                                     }}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom

@@ -6,8 +6,8 @@
   }
 
   &__media {
-    &:after {
-
+    &:before {
+      border-radius: inherit;
       background: var(--overlay, transparent);
       content: '';
       display: block;

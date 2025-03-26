@@ -1,10 +1,18 @@
 @tailwind utilities;
 @layer utilities {
 
+  .rounded {
+
+    &-inherit {
+      border-radius: inherit;
+    }
+
+  }
+
   .aspect {
 
     &-video {
-      aspect-ratio:16/9;
+      aspect-ratio: 16/9;
     }
 
   }

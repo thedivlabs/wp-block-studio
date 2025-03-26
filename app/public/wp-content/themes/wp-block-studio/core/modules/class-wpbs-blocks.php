@@ -11,13 +11,48 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
+
 	}
 
 	public function render_block( $attributes, $content, $block ): string {
 
 		$css = WPBS_Style::block_styles( $attributes, $block );
 
+		self::preload_images( $block );
+
 		return $content;
+	}
+
+	private static function preload_images( $block ): void {
+
+		add_action( 'wp_head', function () use ( $block ) {
+			$breakpoint = WPBS_Style::get_breakpoint( $block->attributes );
+
+			WPBS::console_log( $breakpoint );
+
+			foreach ( $block->attributes['preload'] ?? [] as $image ) {
+
+				$mobile_id    = $image['mobile']['id'] ?? false;
+				$mobile_src   = wp_get_attachment_image_src( $mobile_id, $image['size'] ?? 'full' )[0] ?? false;
+				$mobile_query = '(max-width: calc(' . $breakpoint . ' - 1px))';
+
+				if ( ! empty( $mobile_src ) ) {
+					echo '<link rel="preload" href="' . esc_url( $mobile_src ) . '" as="image" media="' . $mobile_query . '">';
+				}
+
+				$large_id    = $image['large']['id'] ?? false;
+				$large_src   = wp_get_attachment_image_src( $large_id, $image['size'] ?? 'full' )[0] ?? false;
+				$large_query = '(min-width: ' . $breakpoint . ')';
+
+				if ( ! empty( $mobile_src ) ) {
+					echo '<link rel="preload" href="' . esc_url( $large_src ) . '" as="image" media="' . $large_query . '">';
+				}
+
+
+			}
+		} );
+
+
 	}
 
 	public function register_blocks(): void {

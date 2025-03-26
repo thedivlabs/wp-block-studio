@@ -73,21 +73,20 @@ function Media({attributes, editor = false}) {
         '--overlay': attributes['wpbs-overlay'],
     }).filter(([_, v]) => v != null));
 
-    const vid = !!attributes['wpbs-shareLink'] ? (new URL(attributes['wpbs-shareLink'])).pathname : false;
-    const url = attributes['wpbs-posterImage'].url || (vid ? 'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg' : false);
+    const vid = (!!attributes['wpbs-shareLink'] ? (new URL(attributes['wpbs-shareLink'])).pathname : '').replace(/^\/+/g, '');
+    const posterClasses = 'w-full !h-full absolute top-0 left-0 z-0 object-cover';
 
     return <div class={mediaClasses} style={mediaProps}>
         <button type={'button'} class={'wpbs-video__button'}>
             <i class="fa-solid fa-circle-play"></i>
         </button>
-        <Picture mobile={attributes['wpbs-posterImage'] || {
-            url: url
-        }}
-                 settings={{
-                     resolution: attributes['wpbs-resolution'],
-                     className: 'w-full h-full absolute top-0 left-0 z-0',
-                     eager: attributes['wpbs-eager']
-                 }} editor={editor}></Picture>
+        {!!attributes['wpbs-posterImage'] ? <Picture mobile={attributes['wpbs-posterImage']} settings={{
+                resolution: attributes['wpbs-resolution'],
+                className: posterClasses,
+                eager: attributes['wpbs-eager']
+            }} editor={editor}></Picture> :
+            <img src={'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg'} class={posterClasses} alt={''}
+                 aria-hidden={'true'} loading={!!attributes['wpbs-eager'] ? 'eager' : 'lazy'}/>}
     </div>
 }
 
@@ -263,7 +262,7 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observe',
-            'data-wp-on--click': 'callbacks.videoModal',
+            'data-wp-on-async--click': 'callbacks.videoModal',
             'data-wp-context': JSON.stringify({
                 url: props.attributes['wpbs-shareLink'],
                 title: props.attributes['wpbs-title'],

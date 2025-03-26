@@ -54,7 +54,7 @@ const {state} = store('wpbs', {
 
 
         },
-        observe: () => {
+        observeVideo: () => {
             const {ref: element} = getElement();
             WPBS.observeMedia(element);
         },

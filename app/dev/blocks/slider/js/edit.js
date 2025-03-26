@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
         }, []);
 
         const blockProps = useBlockProps({
-            className: [blockClasses(attributes), 'min-h-[10rem] bg-[rgba(0,0,0,.3)]'].join(' ')
+            className: blockClasses(attributes)
         });
 /*
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
@@ -121,7 +121,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observe'
+            'data-wp-init': 'callbacks.observeSlider'
         });
 
         //const innerBlocksProps = useInnerBlocksProps.save(blockProps);

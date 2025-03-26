@@ -272,7 +272,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observe',
+            'data-wp-init': 'callbacks.observeVideo',
             'data-wp-on-async--click': 'callbacks.videoModal',
             'data-wp-context': JSON.stringify({
                 url: props.attributes['wpbs-shareLink'],

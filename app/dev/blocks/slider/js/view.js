@@ -3,7 +3,7 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 const {state} = store('wpbs', {
     callbacks: {
-        observe: () => {
+        observeSlider: () => {
             const {ref: element} = getElement();
 
             let observerIntersection = new IntersectionObserver((entries, observer) => {

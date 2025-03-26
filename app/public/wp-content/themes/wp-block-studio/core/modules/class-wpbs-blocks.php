@@ -11,7 +11,7 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		add_action( 'wp_head', [ $this, 'preload_images' ] );
+		//add_action( 'wp_head', [ $this, 'preload_images' ] );
 
 	}
 
@@ -19,20 +19,31 @@ class WPBS_Blocks {
 
 		$css = WPBS_Style::block_styles( $attributes, $block );
 
-		add_filter( 'wpbs_preload_images', function ( $images ) use ( $block ) {
-			return array_merge( $images, array_map( function ( $image ) use ( $block ) {
+		/*add_filter( 'wpbs_preload_block_images', function ( $images ) use ( $block ) {
+
+			$block_images = array_map( function ( $image ) use ( $block ) {
 				return array_merge( $image, [
 					'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
 				] );
-			}, $block['preload'] ?? [] ) );
-		} );
+			}, $block->attributes['preload'] ?? [] );
+
+			$merged_images = array_merge( $images, $block_images );
+			WPBS::console_log($merged_images);
+			return $merged_images;
+
+
+
+			//return [];
+		} );*/
 
 		return $content;
 	}
 
-	public function preload_images( $block ): void {
+	public function preload_images(): void {
 
-		$images = apply_filters( 'wpbs_preload_images', [] );
+		$images = apply_filters( 'wpbs_preload_block_images', [] );
+
+		//WPBS::console_log($images);
 
 		foreach ( $images as $image ) {
 

@@ -326,7 +326,7 @@ class WPBS {
 		$preconnect_sources        = apply_filters( 'wpbs_preconnect_sources', [] );
 		$preload_sources           = apply_filters( 'wpbs_preload_sources', [] );
 		$preload_images            = apply_filters( 'wpbs_preload_images', [] );
-		$preload_images_responsive = apply_filters( 'wpbs_preload_images_responsive', [] );
+		$preload_images_responsive = array_values( array_unique( self::clean_array( apply_filters( 'wpbs_preload_images_responsive', [] ) ), SORT_REGULAR ) );
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
@@ -375,39 +375,61 @@ class WPBS {
 
 		echo '<!-- Block images preload responsive -->';
 
-		foreach ( array_unique( array_filter( $preload_images_responsive ), SORT_REGULAR ) as $image ) {
+		/*$breakpoints   = array_values( array_unique( array_column( $preload_images_responsive, 'breakpoint' ) ) );
+		$mobile_images = [];
+		$large_images  = [];
+
+		foreach ( $breakpoints as $bp ) {
+			$large_images[ $bp ] = array_map( function ( $img ) {
+				unset( $img['mobile'], $img['breakpoint'] );
+
+				return $img;
+			}, array_filter( $preload_images_responsive, function ( $img ) use ( $bp ) {
+				return $img['breakpoint'] === $bp && ! empty( $img['large'] );
+			} ) );
+
+		}
+		foreach ( $breakpoints as $bp ) {
+			$mobile_images[ $bp ] = array_map( function ( $img ) {
+				unset( $img['large'], $img['breakpoint'] );
+
+				return $img;
+			}, array_filter( $preload_images_responsive, function ( $img ) use ( $bp ) {
+				return $img['breakpoint'] === $bp && ! empty( $img['mobile'] );
+			} ) );
+
+		}*/
+
+
+		foreach ( $preload_images_responsive as $image ) {
 
 			if ( empty( $image['breakpoint'] ) ) {
 				continue;
 			}
 
-			$src  = wp_get_attachment_image_src( $image['large'] ?? false, $image['size'] ?? 'large' )[0] ?? false;
+			$src  = ! empty( $image['large'] ) ? wp_get_attachment_image_src( $image['large'], $image['size'] ?? 'large' )[0] ?? false : false;
 			$path = str_replace( home_url(), ABSPATH, $src );
 			$webp = file_exists( $path . '.webp' );
 
-			$src_mobile  = wp_get_attachment_image_src( $image['mobile'] ?? false, $image['size'] ?? 'large' )[0] ?? false;
+			$src_mobile  = ! empty( $image['mobile'] ) ? wp_get_attachment_image_src( $image['mobile'], $image['size'] ?? 'large' )[0] ?? false : false;
 			$path_mobile = str_replace( home_url(), ABSPATH, $src );
 			$webp_mobile = file_exists( $path_mobile . '.webp' );
 
-			if ( empty( $src ) && empty( $src_mobile ) ) {
-				continue;
-			}
+			if ( ! empty( $src ) ) {
+				echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
 
-			echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
+				echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
 
-			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
-
-			if ( ! empty( $image['breakpoint'] ) && ! empty( $image['mobile'] ) ) {
 				echo 'media="(min-width: ' . $image['breakpoint'] . ')"';
+
+				if ( $webp ) {
+					echo 'type="image/webp"';
+				}
+
+				echo '/>';
 			}
 
-			if ( $webp ) {
-				echo 'type="image/webp"';
-			}
-
-			echo '/>';
-
-			if ( ! empty( $image['breakpoint'] ) ) {
+			if ( ! empty( $src_mobile ) ) {
 				echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
 
 				echo 'href="' . ( $webp_mobile ? $src_mobile . '.webp' : $src_mobile ) . '"';
@@ -454,6 +476,26 @@ class WPBS {
 
 	}
 
+
+	public function clean_array( $array, &$ref_array = [] ): array {
+		$array = ! empty( $array ) ? $array : $ref_array;
+		if ( ! is_array( $array ) ) {
+			return [];
+		}
+		foreach ( $array as $key => &$value ) {
+			if ( is_array( $value ) ) {
+				$value = self::clean_array( false, $value );
+			}
+			if (
+				empty( $value ) ||
+				( empty( $key ) && $key !== 0 )
+			) {
+				unset( $array[ $key ] );
+			}
+		}
+
+		return $array;
+	}
 
 }
 

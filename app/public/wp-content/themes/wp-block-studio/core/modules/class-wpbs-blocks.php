@@ -30,7 +30,7 @@ class WPBS_Blocks {
 			
 			foreach ( $block->attributes['preload'] ?? [] as $image ) {
 
-				$mobile_id    = $image['mobile']['id'] ?? false;
+				$mobile_id    = $image['mobile'] ?? false;
 				$mobile_src   = wp_get_attachment_image_src( $mobile_id, $image['size'] ?? 'full' )[0] ?? false;
 				$mobile_query = '(max-width: calc(' . $breakpoint . ' - 1px))';
 
@@ -38,11 +38,11 @@ class WPBS_Blocks {
 					echo '<link rel="preload" href="' . esc_url( $mobile_src ) . '" as="image" media="' . $mobile_query . '">';
 				}
 
-				$large_id    = $image['large']['id'] ?? false;
+				$large_id    = $image['large'] ?? false;
 				$large_src   = wp_get_attachment_image_src( $large_id, $image['size'] ?? 'full' )[0] ?? false;
 				$large_query = '(min-width: ' . $breakpoint . ')';
 
-				if ( ! empty( $mobile_src ) ) {
+				if ( ! empty( $large_src ) ) {
 					echo '<link rel="preload" href="' . esc_url( $large_src ) . '" as="image" media="' . $large_query . '">';
 				}
 

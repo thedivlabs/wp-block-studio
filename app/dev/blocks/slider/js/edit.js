@@ -22,7 +22,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider flex',
+        'wpbs-slider swiper w-full',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -49,7 +49,7 @@ registerBlockType(metadata.name, {
         const [slidesMobile, setSlidesMobile] = useState(attributes['wpbs-slides-mobile']);
         const [slidesLarge, setSlidesLarge] = useState(attributes['wpbs-slides-large']);
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -105,7 +105,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.init'
+            'data-wp-init': 'callbacks.observe'
         });
 
 

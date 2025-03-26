@@ -44,7 +44,7 @@ registerBlockType(metadata.name, {
 
         const [title, setTitle] = useState(attributes['wpbs-title']);
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});

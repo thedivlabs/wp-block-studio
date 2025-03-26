@@ -54,6 +54,7 @@ class WPBS_Theme {
         });
     }
 
+
     init() {
         document.addEventListener('DOMContentLoaded', () => {
 

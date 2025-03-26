@@ -20,7 +20,6 @@ import PreviewThumbnail from "Components/PreviewThumbnail";
 import Picture from "Components/Picture";
 import React, {useEffect, useState} from "react";
 
-import {useSettings} from '@wordpress/block-editor';
 import Overlay from "Components/Overlay";
 import {imageButtonStyle} from "Includes/helper";
 import {useInstanceId} from '@wordpress/compose';

@@ -1,0 +1,120 @@
+import '../scss/block.scss';
+
+import {
+    useBlockProps,
+    InspectorControls,
+    BlockEdit,
+    InnerBlocks
+} from "@wordpress/block-editor"
+import {registerBlockType} from "@wordpress/blocks"
+import metadata from "../block.json"
+import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {
+    __experimentalGrid as Grid,
+    Button,
+    PanelBody,
+    SelectControl, TextControl,
+    ToggleControl,
+    __experimentalNumberControl as NumberControl
+} from "@wordpress/components";
+import React, {useEffect, useState} from "react";
+import {useInstanceId} from '@wordpress/compose';
+
+function blockClasses(attributes = {}) {
+    return [
+        'wpbs-slider flex',
+        attributes.uniqueId,
+        LayoutClasses(attributes)
+    ].filter(x => x).join(' ');
+}
+
+const blockAttributes = {
+    'wpbs-slides-mobile': {
+        type: 'string'
+    },
+    'wpbs-slides-large': {
+        type: 'string'
+    },
+}
+
+registerBlockType(metadata.name, {
+    apiVersion: 3,
+    attributes: {
+        ...metadata.attributes,
+        ...LayoutAttributes,
+        ...blockAttributes
+    },
+    edit: ({attributes, setAttributes, clientId}) => {
+
+        const [slidesMobile, setSlidesMobile] = useState(attributes['wpbs-slides-mobile']);
+        const [slidesLarge, setSlidesLarge] = useState(attributes['wpbs-slides-large']);
+
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId});
+        }, []);
+
+        const blockProps = useBlockProps({
+            className: blockClasses(attributes),
+        });
+
+        return <>
+            <BlockEdit key="edit" {...blockProps} />
+            <InspectorControls group="styles">
+                <PanelBody initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <NumberControl
+                            __next40pxDefaultSize
+                            isShiftStepEnabled={ true }
+                            onChange={ (newValue)=>{
+                                setAttributes({['wpbs-slides-mobile']: newValue});
+                                setSlidesMobile(newValue);
+                            } }
+                            shiftStep={ 10 }
+                            value={ slidesMobile }
+                        />
+                        <NumberControl
+                            __next40pxDefaultSize
+                            isShiftStepEnabled={ true }
+                            onChange={ (newValue)=>{
+                                setAttributes({['wpbs-slides-large']: newValue});
+                                setSlidesLarge(newValue);
+                            } }
+                            shiftStep={ 10 }
+                            value={ slidesLarge }
+                        />
+                    </Grid>
+
+                    </Grid>
+                </PanelBody>
+            </InspectorControls>
+
+            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
+                    clientId={clientId}></Layout>
+
+
+            <div {...blockProps} >
+                <InnerBlocks/>
+            </div>
+        </>;
+    },
+    save: (props) => {
+
+        const blockProps = useBlockProps.save({
+            className: blockClasses(props.attributes),
+            'data-wp-interactive': 'wpbs',
+            'data-wp-init': 'callbacks.init'
+        });
+
+
+        return (
+            <div {...blockProps} >
+                <InnerBlocks.Content/>
+            </div>
+        );
+    }
+})
+
+

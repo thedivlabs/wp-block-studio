@@ -1,23 +1,22 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wpbs/video",
-  "title": "Video Element",
-  "description": "Display a video element",
+  "name": "wpbs/slide",
+  "title": "Slide",
+  "description": "Display a slide element",
   "selectors": {
-    "root": ".wpbs-video"
+    "root": ".wpbs-slide"
   },
+  "parent": [
+    "wpbs/slider"
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "preload": {
-      "type": "array"
     }
   },
   "supports": {
-    "layout": false,
-    "interactivity": true,
+    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,
@@ -37,7 +36,7 @@
   "editorScript": "file:./js/edit.js",
   "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
-  "icon": "format-video"
+  "icon": "slides"
 }
 
 

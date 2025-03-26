@@ -11,8 +11,6 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		//add_action( 'wp_head', [ $this, 'preload_images' ] );
-
 	}
 
 	public function render_block( $attributes, $content, $block ): string {

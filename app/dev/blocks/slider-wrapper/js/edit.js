@@ -1,10 +1,8 @@
-import '../scss/block.scss';
-
 import {
     useBlockProps,
     InspectorControls,
     BlockEdit,
-    InnerBlocks
+    InnerBlocks, useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -21,47 +19,31 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slide swiper-slide flex',
-        attributes.uniqueId,
-        LayoutClasses(attributes)
+        'wpbs-slider-wrapper swiper-wrapper',
     ].filter(x => x).join(' ');
-}
-
-const blockAttributes = {
-    'wpbs-title': {
-        type: 'string'
-    },
 }
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LayoutAttributes,
-        ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
-
-        const [title, setTitle] = useState(attributes['wpbs-title']);
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
-
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
         });
 
+       /* const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            template: [
+                [ 'wpbs/slide', { content: 'Content Slide' } ],
+            ]
+        });*/
+
         return <>
             <BlockEdit key="edit" {...blockProps} />
 
-            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    clientId={clientId}></Layout>
-
-
-            <div {...blockProps} >
+            <div {...blockProps}>
                 <InnerBlocks/>
             </div>
         </>;
@@ -72,8 +54,10 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
         });
 
+        //const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+
         return (
-            <div {...blockProps} >
+            <div {...blockProps}>
                 <InnerBlocks.Content/>
             </div>
         );

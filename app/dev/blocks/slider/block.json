@@ -13,7 +13,7 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/slide",
+    "wpbs/slider-wrapper",
     "wpbs/layout-element",
     "wpbs/slider-navigation"
   ],

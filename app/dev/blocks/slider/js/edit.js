@@ -24,7 +24,7 @@ import {useDispatch, useSelect} from "@wordpress/data";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider overflow-hidden w-full relative',
+        'wpbs-slider swiper overflow-hidden w-full relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -58,13 +58,21 @@ registerBlockType(metadata.name, {
 
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs
-
             });
         }, []);
 
         const blockProps = useBlockProps({
             className: [blockClasses(attributes), 'min-h-[10rem] bg-[rgba(0,0,0,.3)]'].join(' ')
         });
+/*
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            template: [
+                [ 'wpbs/layout-element', { content: 'Slider Header.' } ],
+                [ 'wpbs/slider-wrapper', {  } ],
+
+            ]
+        });*/
+
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
@@ -100,10 +108,9 @@ registerBlockType(metadata.name, {
 
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
+
             <div {...blockProps}>
-                <div className={'swiper-wrapper'}>
-                    <InnerBlocks allowedBlocks={['wpbs/slide']}/>
-                </div>
+                <InnerBlocks/>
             </div>
 
         </>;
@@ -112,20 +119,16 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps.save({
-            ...props.attributes,
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observe'
         });
 
+        //const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
         return (
-            <div {...blockProps} >
-                <div className={'swiper-wrapper'}>
-                    <InnerBlocks.Content
-                        allowedBlocks={['wpbs/slide']}
-                    />
-                </div>
+            <div {...blockProps}>
+                <InnerBlocks.Content/>
             </div>
         );
     }

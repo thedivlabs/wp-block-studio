@@ -8,7 +8,7 @@
     "root": ".wpbs-slide"
   },
   "parent": [
-    "wpbs/slider"
+    "wpbs/slider-wrapper"
   ],
   "attributes": {
     "uniqueId": {

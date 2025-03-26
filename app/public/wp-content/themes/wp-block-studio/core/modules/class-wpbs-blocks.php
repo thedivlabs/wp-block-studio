@@ -27,7 +27,7 @@ class WPBS_Blocks {
 
 		add_action( 'wp_head', function () use ( $block ) {
 			$breakpoint = WPBS_Style::get_breakpoint( $block->attributes );
-			
+
 			foreach ( $block->attributes['preload'] ?? [] as $image ) {
 
 				$mobile_id    = $image['mobile'] ?? false;
@@ -40,7 +40,7 @@ class WPBS_Blocks {
 
 				$large_id    = $image['large'] ?? false;
 				$large_src   = wp_get_attachment_image_src( $large_id, $image['size'] ?? 'full' )[0] ?? false;
-				$large_query = '(min-width: ' . $breakpoint . ')';
+				$large_query = $mobile_src ? '(min-width: ' . $breakpoint . ')' : null;
 
 				if ( ! empty( $large_src ) ) {
 					echo '<link rel="preload" href="' . esc_url( $large_src ) . '" as="image" media="' . $large_query . '">';

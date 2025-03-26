@@ -221,6 +221,18 @@ registerBlockType(metadata.name, {
                                     onChange={(value) => {
                                         setEager(value);
                                         setAttributes({['wpbs-eager']: value});
+
+                                        if (value) {
+                                            setAttributes({
+                                                preload: [
+                                                    {
+                                                        large: !!attributes['wpbs-posterImage'] ? attributes['wpbs-posterImage'].id : null,
+                                                        size: attributes['wpbs-resolution'] || null
+                                                    }
+                                                ]
+                                            });
+                                        }
+
                                     }}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom

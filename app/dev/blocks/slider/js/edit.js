@@ -4,7 +4,7 @@ import {
     useBlockProps,
     InspectorControls,
     BlockEdit,
-    InnerBlocks
+    InnerBlocks, useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -53,39 +53,49 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
+
+            const swiper = new Swiper('#block-' + clientId, {
+
+                createElements:true,
+                navigation: {
+                    enabled:true
+                },
+            });
         }, []);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
         });
 
+        const innerBlocksProps = useInnerBlocksProps( blockProps, {} );
+
         return <>
             <BlockEdit key="edit" {...blockProps} />
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <NumberControl
-                            __next40pxDefaultSize
-                            isShiftStepEnabled={ true }
-                            onChange={ (newValue)=>{
-                                setAttributes({['wpbs-slides-mobile']: newValue});
-                                setSlidesMobile(newValue);
-                            } }
-                            shiftStep={ 10 }
-                            value={ slidesMobile }
-                        />
-                        <NumberControl
-                            __next40pxDefaultSize
-                            isShiftStepEnabled={ true }
-                            onChange={ (newValue)=>{
-                                setAttributes({['wpbs-slides-large']: newValue});
-                                setSlidesLarge(newValue);
-                            } }
-                            shiftStep={ 10 }
-                            value={ slidesLarge }
-                        />
-                    </Grid>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            <NumberControl
+                                __next40pxDefaultSize
+                                isShiftStepEnabled={true}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-slides-mobile']: newValue});
+                                    setSlidesMobile(newValue);
+                                }}
+                                shiftStep={10}
+                                value={slidesMobile}
+                            />
+                            <NumberControl
+                                __next40pxDefaultSize
+                                isShiftStepEnabled={true}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-slides-large']: newValue});
+                                    setSlidesLarge(newValue);
+                                }}
+                                shiftStep={10}
+                                value={slidesLarge}
+                            />
+                        </Grid>
 
                     </Grid>
                 </PanelBody>
@@ -94,9 +104,8 @@ registerBlockType(metadata.name, {
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
 
-
             <div {...blockProps} >
-                <InnerBlocks/>
+                <div {...innerBlocksProps} className={'swiper-wrapper'}></div>
             </div>
         </>;
     },
@@ -111,7 +120,9 @@ registerBlockType(metadata.name, {
 
         return (
             <div {...blockProps} >
-                <InnerBlocks.Content/>
+                <div className={'swiper-wrapper'}>
+                    <InnerBlocks.Content/>
+                </div>
             </div>
         );
     }

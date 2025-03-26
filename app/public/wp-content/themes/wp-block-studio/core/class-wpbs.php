@@ -55,6 +55,10 @@ class WPBS {
 		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
 		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [ 'jquery' ] );
 
+		/* Swiper */
+		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
+		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [ 'jquery' ] );
+
 	}
 
 	public function admin_assets(): void {
@@ -65,6 +69,8 @@ class WPBS {
 
 	public function editor_assets(): void {
 		add_editor_style();
+		wp_enqueue_style( 'wpbs-swiper-css' );
+		wp_enqueue_script( 'wpbs-swiper-js' );
 	}
 
 	public function view_assets(): void {

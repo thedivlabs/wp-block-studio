@@ -11,26 +11,50 @@ const {state} = store('wpbs', {
 
                         observerIntersection.unobserve(entry.target);
 
-                        if (typeof window.Swiper !== 'function') {
+                        async function initLib(){
+                            if (typeof window.Swiper !== 'function') {
 
-                            let stylesheet = document.createElement('link');
-                            stylesheet.id = 'wpbs-swiper-styles';
-                            stylesheet.rel = 'stylesheet';
-                            stylesheet.type = 'text/css';
-                            stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-
-                            let script_tag = document.createElement('script');
-                            script_tag.id = 'wpbs-swiper-js';
-                            script_tag.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-                            script_tag.defer = true;
-
-                            document.head.appendChild(stylesheet);
-                            document.body.appendChild(script_tag);
-
-                            console.log(script_tag);
+                                let stylesheet = document.createElement('link');
+                                stylesheet.id = 'wpbs-swiper-styles';
+                                stylesheet.rel = 'stylesheet';
+                                stylesheet.type = 'text/css';
+                                stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
 
 
+
+                                document.head.appendChild(stylesheet);
+
+
+                                return new Promise((resolve, reject) => {
+                                    const script_tag = document.createElement('script');
+                                    script_tag.id = 'wpbs-swiper-js';
+                                    script_tag.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+                                    script_tag.defer = true;
+                                    script_tag.onload = resolve;
+                                    script_tag.onerror = reject;
+                                    document.body.appendChild(script_tag);
+                                });
+
+
+
+                            } else {
+                                return true;
+                            }
                         }
+
+                        initLib().then(() => {
+                            const swiper = new Swiper(element, {
+
+                                createElements:true,
+                                navigation: {
+                                    enabled:true
+                                },
+                            });
+                        })
+
+
+
+
 
                     }
                 });

@@ -62,16 +62,16 @@ registerBlockType(metadata.name, {
         }, []);
 
         const blockProps = useBlockProps({
-            className: blockClasses(attributes)
+            className: [blockClasses(attributes), 'min-h-[10rem] bg-[rgba(0,0,0,.3)]'].join(' ')
         });
-/*
+
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
                 [ 'wpbs/layout-element', { content: 'Slider Header.' } ],
                 [ 'wpbs/slider-wrapper', {  } ],
 
             ]
-        });*/
+        });
 
 
         return <>
@@ -109,9 +109,7 @@ registerBlockType(metadata.name, {
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
 
-            <div {...blockProps}>
-                <InnerBlocks/>
-            </div>
+            <div {...innerBlocksProps}></div>
 
         </>;
     },
@@ -124,12 +122,10 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observeSlider'
         });
 
-        //const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
         return (
-            <div {...blockProps}>
-                <InnerBlocks.Content/>
-            </div>
+            <div {...innerBlocksProps}></div>
         );
     }
 })

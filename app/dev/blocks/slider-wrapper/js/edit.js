@@ -34,18 +34,17 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-       /* const innerBlocksProps = useInnerBlocksProps(blockProps, {
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
                 [ 'wpbs/slide', { content: 'Content Slide' } ],
             ]
-        });*/
+        });
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
 
-            <div {...blockProps}>
-                <InnerBlocks/>
-            </div>
+            <div {...innerBlocksProps}></div>
+
         </>;
     },
     save: (props) => {
@@ -54,12 +53,10 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
         });
 
-        //const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
         return (
-            <div {...blockProps}>
-                <InnerBlocks.Content/>
-            </div>
+            <div {...innerBlocksProps}></div>
         );
     }
 })

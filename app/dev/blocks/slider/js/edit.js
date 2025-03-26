@@ -19,6 +19,7 @@ import {
 } from "@wordpress/components";
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
+import {swiperDefaultProps} from "Includes/helper";
 
 function blockClasses(attributes = {}) {
     return [
@@ -55,11 +56,8 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
 
             const swiper = new Swiper('#block-' + clientId, {
+                ...swiperDefaultProps
 
-                createElements:true,
-                navigation: {
-                    enabled:true
-                },
             });
         }, []);
 
@@ -67,7 +65,7 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps( blockProps, {} );
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {});
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

@@ -18,6 +18,13 @@ export function parseProp(prop) {
 
 }
 
+export const swiperDefaultProps = {
+    createElements:true,
+    navigation: {
+        enabled:true
+    },
+};
+
 export function breakpoint(prop) {
 
 }

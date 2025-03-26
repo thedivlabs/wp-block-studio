@@ -1,4 +1,5 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
+import {swiperDefaultProps} from "Includes/helper";
 
 const {state} = store('wpbs', {
     callbacks: {
@@ -11,7 +12,7 @@ const {state} = store('wpbs', {
 
                         observerIntersection.unobserve(entry.target);
 
-                        async function initLib(){
+                        async function initLib() {
                             if (typeof window.Swiper !== 'function') {
 
                                 let stylesheet = document.createElement('link');
@@ -20,10 +21,7 @@ const {state} = store('wpbs', {
                                 stylesheet.type = 'text/css';
                                 stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
 
-
-
                                 document.head.appendChild(stylesheet);
-
 
                                 return new Promise((resolve, reject) => {
                                     const script_tag = document.createElement('script');
@@ -36,7 +34,6 @@ const {state} = store('wpbs', {
                                 });
 
 
-
                             } else {
                                 return true;
                             }
@@ -44,17 +41,9 @@ const {state} = store('wpbs', {
 
                         initLib().then(() => {
                             const swiper = new Swiper(element, {
-
-                                createElements:true,
-                                navigation: {
-                                    enabled:true
-                                },
+                                ...swiperDefaultProps
                             });
                         })
-
-
-
-
 
                     }
                 });

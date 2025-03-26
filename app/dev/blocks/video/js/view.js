@@ -18,7 +18,7 @@ const {state} = store('wpbs', {
 
             const vid = (new URL(url)).pathname;
             const isModal = element.classList.contains('wpbs-video--modal');
-            const classes = [
+            const classNames = [
                 'divlabs-video-player',
                 isModal ? 'w-full aspect-video' : 'w-full h-full',
             ].filter(x => x).join(' ');
@@ -39,7 +39,7 @@ const {state} = store('wpbs', {
             });
 
             const component = jQuery('<div />', {
-                class: classes,
+                class: classNames,
             }).append(player);
 
 

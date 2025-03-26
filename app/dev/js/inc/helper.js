@@ -31,4 +31,8 @@ export const imageButtonStyle = {
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-};
+}
+
+export function checkKey() {
+    const domain = false;
+}

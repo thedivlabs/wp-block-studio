@@ -4,12 +4,22 @@ const {state} = store('wpbs', {
     callbacks: {
         videoModal: () => {
             const {ref: element} = getElement();
-            const {url, title} = getContext();
-            const embed_base = 'https://www.youtube.com/embed/';
+            const {url, title, platform} = getContext();
+
+            if (!element.classList.contains('--modal')) {
+                return false;
+            }
+
+            const baseURL = {
+                'rumble': 'https://rumble.com/embed/',
+                'youtube': 'https://www.youtube.com/embed/',
+                'vimeo': 'https://player.vimeo.com/video/',
+            }
+
             const vid = (new URL(url)).pathname;
 
             const player = jQuery('<iframe />', {
-                src: embed_base + vid + '?autoplay=1&enablejsapi=1&rel=0',
+                src: baseURL[platform || 'youtube'] + vid + '?autoplay=1&enablejsapi=1&rel=0',
                 allow: 'autoplay;',
                 allowFullScreen: true,
                 title: 'YouTube video player',

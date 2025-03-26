@@ -262,6 +262,7 @@ registerBlockType(metadata.name, {
             'data-wp-context': JSON.stringify({
                 url: props.attributes['wpbs-shareLink'],
                 title: props.attributes['wpbs-title'],
+                platform: props.attributes['wpbs-platform'],
             }),
         });
 

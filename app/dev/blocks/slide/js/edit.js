@@ -1,10 +1,8 @@
-import '../scss/block.scss';
-
 import {
     useBlockProps,
     InspectorControls,
     BlockEdit,
-    InnerBlocks
+    InnerBlocks, useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -21,7 +19,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slide swiper-slide flex',
+        'wpbs-slide swiper-slide h-full w-full flex',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -54,6 +52,8 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
+        const innerBlocksProps = useInnerBlocksProps(blockProps);
+
         return <>
             <BlockEdit key="edit" {...blockProps} />
 
@@ -61,9 +61,7 @@ registerBlockType(metadata.name, {
                     clientId={clientId}></Layout>
 
 
-            <div {...blockProps} >
-                <InnerBlocks/>
-            </div>
+            <div {...innerBlocksProps}></div>
         </>;
     },
     save: (props) => {
@@ -72,10 +70,10 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
         });
 
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+
         return (
-            <div {...blockProps} >
-                <InnerBlocks.Content/>
-            </div>
+            <div {...innerBlocksProps}></div>
         );
     }
 })

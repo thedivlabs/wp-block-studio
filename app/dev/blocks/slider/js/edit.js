@@ -19,11 +19,12 @@ import {
 } from "@wordpress/components";
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
-import {swiperDefaultProps} from "Includes/helper";
+import {swiperDefaultArgs} from "Includes/helper";
+import {useDispatch, useSelect} from "@wordpress/data";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider swiper w-full',
+        'wpbs-slider overflow-hidden w-full relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -56,16 +57,14 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
 
             const swiper = new Swiper('#block-' + clientId, {
-                ...swiperDefaultProps
+                ...swiperDefaultArgs
 
             });
         }, []);
 
         const blockProps = useBlockProps({
-            className: blockClasses(attributes),
+            className: [blockClasses(attributes), 'min-h-[10rem] bg-[rgba(0,0,0,.3)]'].join(' ')
         });
-
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {});
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
@@ -101,15 +100,19 @@ registerBlockType(metadata.name, {
 
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
-
-            <div {...blockProps} >
-                <div {...innerBlocksProps} className={'swiper-wrapper'}></div>
+            <div {...blockProps}>
+                <div className={'swiper-wrapper'}>
+                    <InnerBlocks allowedBlocks={['wpbs/slide']}/>
+                </div>
             </div>
+
         </>;
     },
     save: (props) => {
 
+
         const blockProps = useBlockProps.save({
+            ...props.attributes,
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observe'
@@ -119,7 +122,9 @@ registerBlockType(metadata.name, {
         return (
             <div {...blockProps} >
                 <div className={'swiper-wrapper'}>
-                    <InnerBlocks.Content/>
+                    <InnerBlocks.Content
+                        allowedBlocks={['wpbs/slide']}
+                    />
                 </div>
             </div>
         );

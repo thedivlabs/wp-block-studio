@@ -1,16 +1,23 @@
 import Modals from './modules/modals'
 import Loader from './modules/loader'
+import {swiperDefaultArgs} from "./inc/helper";
 
 
 class WPBS_Theme {
 
     static modals;
     static loader;
+    static swiper;
 
     constructor() {
 
         this.modals = Modals;
         this.loader = Loader;
+        this.swiper = {
+            args: {
+                ...swiperDefaultArgs
+            }
+        };
 
         this.modals.init();
         this.loader.init();

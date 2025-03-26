@@ -1,5 +1,5 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
-import {swiperDefaultProps} from "Includes/helper";
+
 
 const {state} = store('wpbs', {
     callbacks: {
@@ -40,8 +40,11 @@ const {state} = store('wpbs', {
                         }
 
                         initLib().then(() => {
+
+                            const {args: defaultArgs} = WPBS.swiper;
+
                             const swiper = new Swiper(element, {
-                                ...swiperDefaultProps
+                                ...defaultArgs
                             });
                         })
 

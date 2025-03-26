@@ -18,10 +18,10 @@ export function parseProp(prop) {
 
 }
 
-export const swiperDefaultProps = {
-    createElements:true,
+export const swiperDefaultArgs = {
+    createElements: true,
     navigation: {
-        enabled:true
+        enabled: true
     },
 };
 

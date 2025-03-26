@@ -11,6 +11,7 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
+		add_action( 'wp_head', [ $this, 'preload_images' ] );
 
 	}
 
@@ -18,37 +19,41 @@ class WPBS_Blocks {
 
 		$css = WPBS_Style::block_styles( $attributes, $block );
 
-		self::preload_images( $block );
+		add_filter( 'wpbs_preload_images', function ( $images ) use ( $block ) {
+			return array_merge( $images, array_map( function ( $image ) use ( $block ) {
+				return array_merge( $image, [
+					'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
+				] );
+			}, $block['preload'] ?? [] ) );
+		} );
 
 		return $content;
 	}
 
-	private static function preload_images( $block ): void {
+	public function preload_images( $block ): void {
 
-		add_action( 'wp_head', function () use ( $block ) {
-			$breakpoint = WPBS_Style::get_breakpoint( $block->attributes );
+		$images = apply_filters( 'wpbs_preload_images', [] );
 
-			foreach ( $block->attributes['preload'] ?? [] as $image ) {
+		foreach ( $images as $image ) {
 
-				$mobile_id    = $image['mobile'] ?? false;
-				$mobile_src   = wp_get_attachment_image_src( $mobile_id, $image['size'] ?? 'full' )[0] ?? false;
-				$mobile_query = '(max-width: calc(' . $breakpoint . ' - 1px))';
+			$mobile_id    = $image['mobile'] ?? false;
+			$mobile_src   = wp_get_attachment_image_src( $mobile_id, $image['size'] ?? 'full' )[0] ?? false;
+			$mobile_query = ! empty( $image['breakpoint'] ) ? '(max-width: calc(' . $image['breakpoint'] . ' - 1px))' : null;
 
-				if ( ! empty( $mobile_src ) ) {
-					echo '<link rel="preload" href="' . esc_url( $mobile_src ) . '" as="image" media="' . $mobile_query . '">';
-				}
-
-				$large_id    = $image['large'] ?? false;
-				$large_src   = wp_get_attachment_image_src( $large_id, $image['size'] ?? 'full' )[0] ?? false;
-				$large_query = $mobile_src ? '(min-width: ' . $breakpoint . ')' : null;
-
-				if ( ! empty( $large_src ) ) {
-					echo '<link rel="preload" href="' . esc_url( $large_src ) . '" as="image" media="' . $large_query . '">';
-				}
-
-
+			if ( ! empty( $mobile_src ) ) {
+				echo '<link rel="preload" href="' . esc_url( $mobile_src ) . '" as="image" media="' . $mobile_query . '">';
 			}
-		} );
+
+			$large_id    = $image['large'] ?? false;
+			$large_src   = wp_get_attachment_image_src( $large_id, $image['size'] ?? 'full' )[0] ?? false;
+			$large_query = $mobile_src && ! empty( $image['breakpoint'] ) ? '(min-width: ' . $image['breakpoint'] . ')' : null;
+
+			if ( ! empty( $large_src ) ) {
+				echo '<link rel="preload" href="' . esc_url( $large_src ) . '" as="image" media="' . $large_query . '">';
+			}
+
+
+		}
 
 
 	}

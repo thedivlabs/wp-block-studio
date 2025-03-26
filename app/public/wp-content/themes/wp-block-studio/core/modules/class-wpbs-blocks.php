@@ -27,12 +27,7 @@ class WPBS_Blocks {
 		foreach ( $block_dirs as $block_dir ) {
 
 			$block = register_block_type( $block_dir, [
-				'render_callback' => [ $this, 'render_block' ],
-				'attributes'      => [
-					'uniqueId' => [
-						'type' => 'string',
-					]
-				]
+				'render_callback' => [ $this, 'render_block' ]
 			] );
 		}
 	}

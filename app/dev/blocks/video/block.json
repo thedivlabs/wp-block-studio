@@ -7,6 +7,11 @@
   "selectors": {
     "root": ".wpbs-video"
   },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
   "supports": {
     "layout": false,
     "interactivity": true,

@@ -27,9 +27,7 @@ class WPBS_Blocks {
 
 		add_action( 'wp_head', function () use ( $block ) {
 			$breakpoint = WPBS_Style::get_breakpoint( $block->attributes );
-
-			WPBS::console_log( $breakpoint );
-
+			
 			foreach ( $block->attributes['preload'] ?? [] as $image ) {
 
 				$mobile_id    = $image['mobile']['id'] ?? false;

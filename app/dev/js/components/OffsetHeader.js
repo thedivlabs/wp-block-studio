@@ -1,5 +1,5 @@
 import {
-    ToggleControl
+    __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";
 import React, {useState} from "react";
 
@@ -8,15 +8,16 @@ function OffsetHeader({defaultValue, callback}) {
 
     const [value, setValue] = useState(defaultValue);
 
-    return <ToggleControl
+    return <NumberControl
         label={'Offset Header'}
-        checked={value}
+        value={value}
+        min={0}
+        isDragEnabled={false}
         onChange={(newValue) => {
             setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize
-        __nextHasNoMarginBottom
     />;
 }
 

@@ -49,7 +49,7 @@ import Mask from "Components/Mask";
 const blockAttributes = {
     layout: {
         'wpbs-layout-offset-header': {
-            type: 'boolean'
+            type: 'string'
         },
         'wpbs-layout-display': {
             type: 'string'
@@ -162,7 +162,7 @@ const blockAttributes = {
             type: 'string'
         },
         'wpbs-layout-offset-header-mobile': {
-            type: 'boolean'
+            type: 'string'
         },
         'wpbs-layout-display-mobile': {
             type: 'string'

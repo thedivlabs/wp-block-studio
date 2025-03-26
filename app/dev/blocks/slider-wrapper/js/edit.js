@@ -19,7 +19,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider-wrapper swiper-wrapper',
+        'wpbs-slider-wrapper swiper-wrapper flex items-stretch',
     ].filter(x => x).join(' ');
 }
 

@@ -6,7 +6,7 @@ const {state} = store('wpbs', {
             const {ref: element} = getElement();
             const {url, title, platform} = getContext();
 
-            if (!element.classList.contains('--modal')) {
+            if (!element.classList.contains('wpbs-video--modal')) {
                 return false;
             }
 

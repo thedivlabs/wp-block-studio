@@ -1,0 +1,98 @@
+@use 'includes';
+
+:root {
+  --wpbs-header-height: var(--wp--custom--header--height--xs);
+
+  --wpbs-header-offset: var(--wpbs-header-height);
+
+  @include includes.mq('sm') {
+    --wpbs-header-height: var(--wp--custom--header--height--sm);
+  }
+  @include includes.mq('lg') {
+    --wpbs-header-height: var(--wp--custom--header--height--lg);
+  }
+  @include includes.mq('xl') {
+    --wpbs-header-height: var(--wp--custom--header--height--xl);
+  }
+}
+
+
+.wpbs-site-header {
+  height: var(--wpbs-header-height);
+  z-index: 90;
+  background-color: var(--wp--custom--header--color--bg, transparent);
+  @apply
+  relative
+  top-0
+  left-0
+  w-full
+  flex
+  items-stretch
+  transition-transform
+  duration-500
+  ;
+
+  &--sticky {
+    @apply
+    fixed
+  }
+
+  &--float {
+    background-color: var(--wp--custom--header--color--float);
+    @apply
+    absolute
+  }
+
+  &--reverse:is(&--float) {
+    color: var(--wp--custom--header--reverse--color, white) !important;
+
+    * {
+      color: var(--wp--custom--header--reverse--color, white) !important;
+      border-color: var(--wp--custom--header--reverse--color, white) !important;
+      transition: color .2s, border-color .2s;
+
+      &:hover {
+        color: var(--wp--custom--header--reverse--hover, white) !important;
+        border-color: var(--wp--custom--header--reverse--hover, white) !important;
+      }
+    }
+  }
+
+  .wpbs-logo {
+    @apply
+    block;
+
+    &--reverse {
+      @apply
+      hidden
+    }
+  }
+
+  &.animating {
+    @apply
+    -translate-y-full
+  }
+
+}
+
+body.--header-sticky > .wp-site-blocks {
+  padding-top: var(--wpbs-header-height);
+}
+
+:root:has(body.--header-float) {
+  --wpbs-header-offset: 0px;
+}
+
+body.--header-float .wp-site-blocks {
+  @apply
+  pt-0
+}
+
+/*
+body.--header-float .wpbs-float-offset {
+  padding-top: calc(var(--wpbs-header-offset) + var(--padding-top, 0px)) !important;
+}
+
+body.--header-float .wpbs-float-offset {
+  padding-top: calc(var(--wpbs-header-offset) + var(--padding-top, 0px)) !important;
+}*/

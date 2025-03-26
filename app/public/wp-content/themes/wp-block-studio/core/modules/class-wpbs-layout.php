@@ -148,7 +148,7 @@ class WPBS_Layout {
 					$styles['padding-top'] = 'calc(' . join( ' + ', [
 							WPBS::parse_style( $this->attributes['style']['spacing']['padding']['top'] ?? '0px' ),
 							'var(--wpbs-header-height, 0px)'
-						] ) . ')';
+						] ) . ') !important';
 					break;
 			}
 

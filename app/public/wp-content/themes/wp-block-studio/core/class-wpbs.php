@@ -373,10 +373,13 @@ class WPBS {
 
 		}
 
-		echo '<!-- Block responsive CSS -->';
+		echo '<!-- Block images preload responsive -->';
 
 		foreach ( array_unique( array_filter( $preload_images_responsive ), SORT_REGULAR ) as $image ) {
 
+			if ( empty( $image['breakpoint'] ) ) {
+				continue;
+			}
 
 			$src  = wp_get_attachment_image_src( $image['large'] ?? false, $image['size'] ?? 'large' )[0] ?? false;
 			$path = str_replace( home_url(), ABSPATH, $src );

@@ -1,21 +1,11 @@
 import {
     useBlockProps,
-    InspectorControls,
     BlockEdit,
-    InnerBlocks, useInnerBlocksProps
+    useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {
-    __experimentalGrid as Grid,
-    Button,
-    PanelBody,
-    SelectControl, TextControl,
-    ToggleControl,
-} from "@wordpress/components";
-import React, {useEffect, useState} from "react";
-import {useInstanceId} from '@wordpress/compose';
+import React from "react";
 
 function blockClasses(attributes = {}) {
     return [

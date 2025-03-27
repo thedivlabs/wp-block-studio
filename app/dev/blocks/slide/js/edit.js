@@ -13,7 +13,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slide swiper-slide !h-auto grow w-full flex',
+        'wpbs-slide swiper-slide wpbs-has-container !h-auto grow w-full !flex',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -75,7 +75,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save( {
-            className: 'wpbs-slide__container w-full m-auto container relative z-20',
+            className: 'wpbs-slide__container w-full !m-auto container relative z-20',
         });
 
         return (

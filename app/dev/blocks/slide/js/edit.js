@@ -1,8 +1,7 @@
 import {
     useBlockProps,
-    InspectorControls,
     BlockEdit,
-    InnerBlocks, useInnerBlocksProps
+    useInnerBlocksProps, InspectorControls
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -48,14 +47,17 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps( {
+        const innerBlocksProps = useInnerBlocksProps({}, {
             className: 'wpbs-slide__container wpbs-container',
         });
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
-            <BackgroundSettings attributes={attributes || {}}
-                                pushSettings={setAttributes}></BackgroundSettings>
+
+            <InspectorControls group="styles">
+                <BackgroundSettings attributes={attributes || {}}
+                                    pushSettings={setAttributes}></BackgroundSettings>
+            </InspectorControls>
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
 
@@ -72,7 +74,7 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps({
+        const innerBlocksProps = useInnerBlocksProps.save({}, {
             className: 'wpbs-slide__container wpbs-container',
         });
 

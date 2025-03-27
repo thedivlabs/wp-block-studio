@@ -12,8 +12,8 @@
     background-color: var(--color, inherit);
     top: var(--top, 0);
     left: var(--left, 0);
-    right: var(--right, unset);
-    bottom: var(--bottom, unset);
+    right: var(--right, auto);
+    bottom: var(--bottom, auto);
 
     width: var(--width, 100%);
     height: var(--height, 100%);

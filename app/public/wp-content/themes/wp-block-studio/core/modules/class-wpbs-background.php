@@ -226,14 +226,14 @@ class WPBS_Background {
 						case 'top-right':
 							$props['--top']    = '0px';
 							$props['--right']  = '0px';
-							$props['--bottom'] = 'unset';
-							$props['--left']   = 'unset';
+							$props['--bottom'] = 'auto';
+							$props['--left']   = 'auto';
 							break;
 						case 'bottom-right':
 							$props['--bottom'] = '0px';
 							$props['--right']  = '0px';
-							$props['--top']    = 'unset';
-							$props['--left']   = 'unset';
+							$props['--top']    = 'auto';
+							$props['--left']   = 'auto';
 							break;
 						case 'bottom-left':
 							$props['--bottom'] = '0px';

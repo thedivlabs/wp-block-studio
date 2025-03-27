@@ -72,7 +72,9 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
         return (
-            <div {...innerBlocksProps}></div>
+            <div {...innerBlocksProps}>
+                <Background attributes={props.attributes}/>
+            </div>
         );
     }
 })

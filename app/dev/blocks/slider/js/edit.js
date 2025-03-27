@@ -24,7 +24,7 @@ import {useDispatch, useSelect} from "@wordpress/data";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider swiper overflow-hidden w-full relative flex flex-col',
+        'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

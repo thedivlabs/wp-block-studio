@@ -218,24 +218,34 @@ class WPBS_Background {
 				case 'position':
 					switch ( $value ) {
 						case 'top-left':
-							$props['--top']  = '0';
-							$props['--left'] = '0';
+							$props['--top']    = '0px';
+							$props['--left']   = '0px';
+							$props['--bottom'] = 'auto';
+							$props['--right']  = 'auto';
 							break;
 						case 'top-right':
-							$props['--top']   = '0';
-							$props['--right'] = '0';
+							$props['--top']    = '0px';
+							$props['--right']  = '0px';
+							$props['--bottom'] = 'unset';
+							$props['--left']   = 'unset';
 							break;
 						case 'bottom-right':
-							$props['--bottom'] = '0';
-							$props['--right']  = '0';
+							$props['--bottom'] = '0px';
+							$props['--right']  = '0px';
+							$props['--top']    = 'unset';
+							$props['--left']   = 'unset';
 							break;
 						case 'bottom-left':
-							$props['--bottom'] = '0';
-							$props['--left']   = '0';
+							$props['--bottom'] = '0px';
+							$props['--left']   = '0px';
+							$props['--top']    = 'unset';
+							$props['--right']  = 'unset';
 							break;
 						case 'center':
 							$props['--top']       = '50%';
 							$props['--left']      = '50%';
+							$props['--bottom']    = 'unset';
+							$props['--right']     = 'unset';
 							$props['--transform'] = 'translate(-50%,-50%)';
 							break;
 					}

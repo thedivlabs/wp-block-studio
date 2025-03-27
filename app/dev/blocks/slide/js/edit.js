@@ -7,13 +7,8 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
-import {
-    __experimentalGrid as Grid,
-    Button,
-    PanelBody,
-    SelectControl, TextControl,
-    ToggleControl,
-} from "@wordpress/components";
+import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
+
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 
@@ -36,6 +31,7 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...LayoutAttributes,
+        ...BackgroundAttributes,
         ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
@@ -56,12 +52,15 @@ registerBlockType(metadata.name, {
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
-
+            <BackgroundSettings attributes={attributes || {}}
+                                pushSettings={setAttributes}></BackgroundSettings>
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
 
 
-            <div {...innerBlocksProps}></div>
+            <div {...innerBlocksProps}>
+                <Background attributes={attributes} editor={true}/>
+            </div>
         </>;
     },
     save: (props) => {

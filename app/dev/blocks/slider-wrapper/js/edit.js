@@ -9,7 +9,7 @@ import React from "react";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider-wrapper swiper-wrapper !flex !items-stretch h-auto grow min-w-full',
+        'wpbs-slider-wrapper swiper-wrapper !flex !items-stretch !h-auto grow min-w-full',
     ].filter(x => x).join(' ');
 }
 

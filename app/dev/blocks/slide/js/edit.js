@@ -13,7 +13,7 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slide swiper-slide wpbs-has-container !h-auto grow w-full !flex',
+        'wpbs-slide swiper-slide wpbs-layout-container wpbs-has-container !h-auto grow w-full !flex',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

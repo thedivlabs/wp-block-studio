@@ -48,7 +48,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-slide__container w-full m-auto container relative z-20',
+            className: 'wpbs-slide__container w-full container relative z-20',
         });
 
         return <>
@@ -75,7 +75,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save( {
-            className: 'wpbs-slide__container w-full !m-auto container relative z-20',
+            className: 'wpbs-slide__container w-full container relative z-20',
         });
 
         return (

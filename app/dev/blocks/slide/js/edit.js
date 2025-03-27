@@ -48,7 +48,9 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps);
+        const innerBlocksProps = useInnerBlocksProps( {
+            className: 'wpbs-slide__container wpbs-container',
+        });
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
@@ -57,10 +59,11 @@ registerBlockType(metadata.name, {
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>
 
-
-            <div {...innerBlocksProps}>
+            <div {...blockProps}>
+                <div {...innerBlocksProps}></div>
                 <Background attributes={attributes} editor={true}/>
             </div>
+
         </>;
     },
     save: (props) => {
@@ -69,10 +72,14 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const innerBlocksProps = useInnerBlocksProps({
+            className: 'wpbs-slide__container wpbs-container',
+        });
 
         return (
-            <div {...innerBlocksProps}>
+
+            <div {...blockProps}>
+                <div {...innerBlocksProps}></div>
                 <Background attributes={props.attributes}/>
             </div>
         );

@@ -48,7 +48,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({}, {
-            className: 'wpbs-slide__container wpbs-container',
+            className: 'wpbs-slide__container w-full m-auto wpbs-container',
         });
 
         return <>
@@ -75,7 +75,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({}, {
-            className: 'wpbs-slide__container wpbs-container',
+            className: 'wpbs-slide__container w-full m-auto wpbs-container',
         });
 
         return (

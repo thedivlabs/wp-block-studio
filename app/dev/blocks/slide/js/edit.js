@@ -47,8 +47,8 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps({}, {
-            className: 'wpbs-slide__container w-full m-auto wpbs-container',
+        const innerBlocksProps = useInnerBlocksProps({
+            className: 'wpbs-slide__container w-full m-auto container relative z-20',
         });
 
         return <>
@@ -74,8 +74,8 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save({}, {
-            className: 'wpbs-slide__container w-full m-auto wpbs-container',
+        const innerBlocksProps = useInnerBlocksProps.save( {
+            className: 'wpbs-slide__container w-full m-auto container relative z-20',
         });
 
         return (

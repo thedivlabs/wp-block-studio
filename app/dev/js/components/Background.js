@@ -20,7 +20,7 @@ import {
     PanelColorSettings,
 } from "@wordpress/block-editor";
 
-export function Background({attributes = {}, editor = false}) {
+export function Background({attributes = {}, className = false, editor = false}) {
 
     const {['wpbs-background']: settings} = attributes;
 
@@ -33,6 +33,7 @@ export function Background({attributes = {}, editor = false}) {
         settings.mask ? 'wpbs-background--mask' : null,
         !settings.eager ? 'lazy' : null,
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
+        className
     ].filter(x => x).join(' ');
 
     const videoClass = [

@@ -1,7 +1,7 @@
 import {
     useBlockProps,
     InspectorControls,
-    useInnerBlocksProps, InnerBlocks,
+    useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -18,10 +18,18 @@ import {useEffect} from "react";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-element w-full flex relative',
+        'wpbs-layout-section wpbs-layout-container wpbs-has-container w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
+}
+
+function containerClassNames() {
+
+    return [
+        'container relative z-20',
+    ].filter(x => x).join(' ');
+
 }
 
 registerBlockType(metadata.name, {
@@ -34,7 +42,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-section');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -45,6 +53,10 @@ registerBlockType(metadata.name, {
         });
 
         const ElementTagName = ElementTag(attributes);
+
+        const innerBlocksProps = useInnerBlocksProps({
+            className: containerClassNames()
+        });
 
         return (
             <>
@@ -60,11 +72,11 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
                 <ElementTagName {...blockProps}
-                                data-wp-interactive='wpbs-layout-element'
+                                data-wp-interactive='wpbs-layout-section'
                 >
-                    <InnerBlocks/>
+                    <div {...innerBlocksProps}/>
 
-                    <Background attributes={props.attributes} className={'z-[-1]'} editor={true}/>
+                    <Background attributes={attributes} editor={true}/>
 
                 </ElementTagName>
             </>
@@ -79,12 +91,16 @@ registerBlockType(metadata.name, {
 
         const ElementTagName = ElementTag(props.attributes);
 
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className: containerClassNames()
+        });
+
         return (
             <ElementTagName {...blockProps}
             >
-                <InnerBlocks.Content/>
+                <div {...innerBlocksProps}/>
 
-                <Background attributes={props.attributes} className={'z-[-1]'} editor={false}/>
+                <Background attributes={props.attributes} editor={false}/>
             </ElementTagName>
         );
     }

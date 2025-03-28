@@ -3,13 +3,13 @@ export default class Modals {
     static init() {
 
         this.modal = document.createElement('div');
-        this.modal.classList.add('wpbs-modal', 'fixed', 'top-0', 'left-0', 'flex', 'h-full', 'w-full', 'justify-center', 'items-start', 'overflow-hidden', 'opacity-0', 'transition-opacity', 'duration-300', 'pointer-events-none','z-modal');
+        this.modal.className = 'wpbs-modal fixed top-0 left-0 flex h-full w-full justify-center items-start overflow-hidden opacity-0 transition-opacity duration-300 pointer-events-none z-modal';
 
         const container = document.createElement('div');
-        container.classList.add('wpbs-modal__container', 'px-4', 'pt-8', 'pb-12');
+        container.className = 'wpbs-modal__container px-4 pt-8 pb-12 flex flex-col items-center justify-start';
 
         const button = document.createElement('button');
-        button.classList.add('wpbs-modal__close', 'wpbs-modal-toggle', 'fixed', 'top-3', 'right-3', 'z-50', 'flex', 'aspect-square', 'h-8', 'cursor-pointer', 'items-center', 'justify-center', 'text-center', 'text-2xl', 'leading-none', 'text-white', 'transform-opacity', 'duration-300', 'ease-in-out', 'bg-black/50', 'rounded-sm', 'hover:bg-primary-hover');
+        button.className = 'wpbs-modal__close wpbs-modal-toggle fixed top-3 right-3 z-50 flex aspect-square h-8 cursor-pointer items-center justify-center text-center text-2xl leading-none text-white transform-opacity duration-300 ease-in-out bg-black/50 rounded-sm hover:bg-primary-hover';
         button.innerHTML = '<i class="fa-light fa-xmark"></i>';
 
         this.modal.append(button);

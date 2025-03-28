@@ -16,15 +16,21 @@ const {state} = store('wpbs', {
                 'vimeo': 'https://player.vimeo.com/video/',
             }
 
+            const queryString = {
+                'rumble': '',
+                'youtube': '?autoplay=1&enablejsapi=1&rel=0',
+                'vimeo': '',
+            }
+
             const vid = (new URL(url)).pathname;
             const isModal = element.classList.contains('wpbs-video--modal');
             const classNames = [
                 'divlabs-video-player',
-                isModal ? 'w-full h-auto max-h-full max-w-full aspect-video m-auto' : 'w-full h-full',
+                isModal ? 'w-[96rem] h-auto max-h-full max-w-full aspect-video m-auto' : 'w-full h-full',
             ].filter(x => x).join(' ');
 
             const player = jQuery('<iframe />', {
-                src: baseURL[platform || 'youtube'] + vid + '?autoplay=1&enablejsapi=1&rel=0',
+                src: baseURL[platform || 'youtube'] + vid + queryString[platform],
                 allow: 'autoplay;',
                 allowFullScreen: true,
                 title: 'YouTube video player',

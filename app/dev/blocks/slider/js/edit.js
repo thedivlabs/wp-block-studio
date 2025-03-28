@@ -125,35 +125,35 @@ registerBlockType(metadata.name, {
         const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
         let sliderArgs = {
-            slidesPerView: slidesMobile || slidesLarge || 1,
-            slidesPerGroup: groupMobile || groupLarge || 1,
-            spaceBetween: marginMobile || marginLarge || null,
-            autoplay: autoplay ? {
-                delay: autoplay * 1000,
-                pauseOnMouseEnter: !!hoverPause
+            slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
+            slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
+            spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
+            autoplay: attributes['wpbs-autoplay'] ? {
+                delay: attributes['wpbs-autoplay'] * 1000,
+                pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
             } : false,
-            speed: transition ? transition * 100 : null,
-            pagination: pagination ? {
+            speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
+            pagination: attributes['wpbs-pagination'] ? {
                 enabled: true,
                 el: '.swiper-pagination',
-                type: pagination
+                type: attributes['wpbs-pagination']
             } : false,
-            effect: effect || null,
-            freeMode: !!freeMode,
-            centeredSlides: !!centered,
-            loop: !!loop,
-            rewind: !!loop ? false : !!rewind,
-            initialSlide: !!fromEnd ? 99 : null,
+            effect: attributes['wpbs-effect'] || 'slide',
+            freeMode: !!attributes['wpbs-effect'],
+            centeredSlides: !!attributes['wpbs-centered'],
+            loop: !!attributes['wpbs-loop'],
+            rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
+            initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
             breakpoints: {}
         };
 
         let breakpointArgs = {
-            slidesPerView: slidesMobile && slidesLarge ? slidesLarge : null,
-            slidesPerGroup: groupMobile && groupLarge ? groupLarge : null,
-            spaceBetween: marginMobile && marginLarge ? marginLarge : null,
+            slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
+            slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
+            spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
         };
 
-        if (!!collapse) {
+        if (!!attributes['wpbs-collapse']) {
             sliderArgs.enabled = false;
             breakpointArgs.enabled = true;
         }
@@ -172,6 +172,7 @@ registerBlockType(metadata.name, {
                 uniqueId: uniqueId,
                 swiperArgs: sliderArgs
             });
+
 
         }, []);
 

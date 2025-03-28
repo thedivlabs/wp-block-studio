@@ -18,7 +18,7 @@ function BlockContent({props, attributes}) {
 
     const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
 
-    const buttonClass = 'wpbs-slider-nav__btn pointer-events-all';
+    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto';
 
     const prevClass = [
         buttonClass,

@@ -84,50 +84,6 @@ const blockAttributes = {
     },
 }
 
-function sliderArgs(attributes = {}) {
-return {};
-    let args = {
-        slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
-        slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
-        spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || '0px',
-        autoplay: attributes['wpbs-autoplay'] ? {
-            delay: attributes['wpbs-autoplay'] * 1000,
-            pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
-        } : false,
-        speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
-        pagination: attributes['wpbs-pagination'] ? {
-            enabled: true,
-            el: '.swiper-pagination',
-            type: attributes['wpbs-pagination']
-        } : false,
-        effect: attributes['wpbs-effect'] || null,
-        freeMode: !!attributes['wpbs-effect'],
-        centeredSlides: !!attributes['wpbs-centered'],
-        loop: !!attributes['wpbs-loop'],
-        rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
-        initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
-        breakpoints: {}
-    };
-
-    let breakpointArgs = {
-        slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
-        slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
-        spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
-    };
-
-    if (!!attributes['wpbs-collapse']) {
-        args.enabled = false;
-        breakpointArgs.enabled = true;
-    }
-
-    args.breakpoints[attributes.breakpoint] = {
-        ...breakpointArgs
-    };
-
-
-    return args;
-}
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -165,22 +121,60 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
+        const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'];
+
+        let sliderArgs = {
+            slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
+            slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
+            spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || '0px',
+            autoplay: attributes['wpbs-autoplay'] ? {
+                delay: attributes['wpbs-autoplay'] * 1000,
+                pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
+            } : false,
+            speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
+            pagination: attributes['wpbs-pagination'] ? {
+                enabled: true,
+                el: '.swiper-pagination',
+                type: attributes['wpbs-pagination']
+            } : false,
+            effect: attributes['wpbs-effect'] || null,
+            freeMode: !!attributes['wpbs-effect'],
+            centeredSlides: !!attributes['wpbs-centered'],
+            loop: !!attributes['wpbs-loop'],
+            rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
+            initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
+            breakpoints: {}
+        };
+
+        let breakpointArgs = {
+            slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
+            slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
+            spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
+        };
+
+        if (!!attributes['wpbs-collapse']) {
+            sliderArgs.enabled = false;
+            breakpointArgs.enabled = true;
+        }
+
+        sliderArgs.breakpoints[breakpoint] = {
+            ...breakpointArgs
+        };
+
         useEffect(() => {
 
             setAttributes({
                 uniqueId: uniqueId,
-                breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'],
+                swiperArgs: sliderArgs
             });
 
 
         }, []);
 
-        if ('Swiper' in window) {
-            const swiper = new Swiper('#block-' + clientId, {
-                ...swiperDefaultArgs,
-                ...sliderArgs(attributes),
-            });
-        }
+        const swiper = new Swiper('#block-' + clientId, {
+            ...swiperDefaultArgs,
+            ...attributes.swiperArgs
+        });
 
         const blockProps = useBlockProps({
             className: [
@@ -437,7 +431,7 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
                 args: {
-                    ...sliderArgs(props.attributes)
+                    ...props.attributes.swiperArgs
                 }
             })
         });

@@ -112,9 +112,11 @@ function sliderArgs(attributes = {}) {
         spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
     };
 
-    args[attributes.breakpoint] = {
+    args.breakpoints[attributes.breakpoint] = {
         ...breakpointArgs
     };
+
+    console.log(args);
 
     return Object.fromEntries(
         Object.entries(args)

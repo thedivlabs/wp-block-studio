@@ -38,6 +38,27 @@ export const swiperDefaultArgs = {
     passiveListeners: true,
     grabCursor: true,
     uniqueNavElements: true,
+    on: {
+        afterInit: (swiper) => {
+            if (swiper.slides.length < 2) {
+                swiper.disable();
+            }
+            if (swiper.autoplay.running) {
+                swiper.autoplay.pause();
+                setTimeout(() => {
+                    swiper.autoplay.resume();
+                }, 5000);
+            }
+        },
+        paginationUpdate: (swiper, paginationEl) => {
+
+            if (swiper.isBeginning) {
+                swiper.el.classList.add('swiper--start');
+            } else {
+                swiper.el.classList.remove('swiper--start');
+            }
+        }
+    }
 };
 
 export function breakpoint(prop) {

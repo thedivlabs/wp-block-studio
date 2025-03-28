@@ -4,7 +4,7 @@ import {
     useBlockProps,
     InspectorControls,
     BlockEdit,
-    useInnerBlocksProps
+    useInnerBlocksProps, useSettings
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -33,12 +33,53 @@ const blockAttributes = {
     'wpbs-slides-large': {
         type: 'string'
     },
+    'wpbs-group-mobile': {
+        type: 'string'
+    },
+    'wpbs-group-large': {
+        type: 'string'
+    },
+    'wpbs-margin-mobile': {
+        type: 'string'
+    },
+    'wpbs-margin-large': {
+        type: 'string'
+    },
+    'wpbs-autoplay': {
+        type: 'string'
+    },
+    'wpbs-hover-pause': {
+        type: 'boolean'
+    },
+    'wpbs-fade-in': {
+        type: 'boolean'
+    },
+    'wpbs-free-mode': {
+        type: 'boolean'
+    },
+    'wpbs-centered': {
+        type: 'boolean'
+    },
+    'wpbs-collapse': {
+        type: 'boolean'
+    },
+    'wpbs-loop': {
+        type: 'boolean'
+    },
+    'wpbs-dim': {
+        type: 'boolean'
+    },
+    'wpbs-from-end': {
+        type: 'boolean'
+    },
 }
 
-function sliderArgs(attributes = {}) {
+function sliderArgs(attributes = {}, breakpoints) {
+
+    console.log(attributes);
 
     return {
-        pagination:false
+        //pagination:false
     };
 }
 
@@ -56,8 +97,15 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
+        const [{breakpoints}] = useSettings(['custom']);
+
         useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
+
+
+            setAttributes({
+                uniqueId: uniqueId,
+                breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'lg'],
+            });
 
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs,
@@ -120,13 +168,12 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
-                args:{
+                args: {
                     ...sliderArgs(props.attributes)
                 }
             })

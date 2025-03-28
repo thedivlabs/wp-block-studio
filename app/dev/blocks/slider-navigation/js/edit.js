@@ -9,8 +9,12 @@ import {useInstanceId} from "@wordpress/compose";
 import {useEffect} from "react";
 
 function blockClasses(attributes = {}) {
+
+    const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
+
     return [
         'wpbs-slider-nav pointer-events-none z-50 flex items-center justify-center gap-4',
+        !isGroupStyle ? '!absolute top-0 left-0 w-full h-full' : 'relative',
     ].filter(x => x).join(' ');
 }
 
@@ -32,7 +36,7 @@ function BlockContent({props, attributes}) {
     ].filter(x => x).join(' ');
     const paginationClass = [
         'wpbs-slider-nav__pagination swiper-pagination inline-flex items-center justify-center !w-fit max-w-full shrink gap-1 h-auto leading-none empty:hidden',
-        !isGroupStyle ? 'absolute left-1/2 bottom-2 -translate-x-1/2' : '!relative !transform-none !left-auto !top-auto !right-auto !bottom-auto'
+        !isGroupStyle ? 'absolute !top-auto !right-auto !left-1/2 !bottom-2 !-translate-x-1/2' : '!relative !transform-none !left-auto !top-auto !right-auto !bottom-auto'
     ].filter(x => x).join(' ');
 
     return <div {...props}>

@@ -170,9 +170,6 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 uniqueId: uniqueId,
-            });
-
-            setAttributes({
                 swiperArgs: sliderArgs
             });
 

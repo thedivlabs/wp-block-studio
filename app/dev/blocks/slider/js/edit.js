@@ -215,7 +215,8 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-autoplay']: newValue});
                                     setAutoplay(newValue);
                                 }}
-                                shiftStep={500}
+                                shiftStep={5000}
+                                step={1000}
                                 value={autoplay}
                             />
                             <NumberControl
@@ -226,7 +227,8 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-transition']: newValue});
                                     setTransition(newValue);
                                 }}
-                                shiftStep={100}
+                                step={100}
+                                shiftStep={500}
                                 value={transition}
                             />
                             <UnitControl

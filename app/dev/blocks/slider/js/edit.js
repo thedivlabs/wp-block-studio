@@ -12,7 +12,11 @@ import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     PanelBody,
-    __experimentalNumberControl as NumberControl, SelectControl, __experimentalBoxControl as BoxControl, ToggleControl
+    __experimentalNumberControl as NumberControl,
+    SelectControl,
+    __experimentalBoxControl as BoxControl,
+    ToggleControl,
+    __experimentalUnitControl as UnitControl
 } from "@wordpress/components";
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
@@ -225,29 +229,34 @@ registerBlockType(metadata.name, {
                                 shiftStep={100}
                                 value={transition}
                             />
-
-                            <BoxControl
+                            <UnitControl
                                 label={'Margin Mobile'}
-                                values={marginMobile}
+                                value={marginMobile}
+                                isResetValueOnUnitChange={true}
                                 units={[
-                                    {value: 'px', label: 'px', default: 10}
+                                    {value: 'px', label: 'px', default: 0},
                                 ]}
+                                __next40pxDefaultSize
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-margin-mobile']: newValue});
                                     setMarginMobile(newValue);
                                 }}
                             />
-                            <BoxControl
+                            <UnitControl
                                 label={'Margin Large'}
-                                values={marginLarge}
+                                value={marginLarge}
+                                isResetValueOnUnitChange={true}
                                 units={[
-                                    {value: 'px', label: 'px', default: 10}
+                                    {value: 'px', label: 'px', default: 0},
                                 ]}
+                                __next40pxDefaultSize
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-margin-large']: newValue});
                                     setMarginLarge(newValue);
                                 }}
                             />
+
+
                             <SelectControl
                                 label={'Pagination'}
                                 value={pagination}

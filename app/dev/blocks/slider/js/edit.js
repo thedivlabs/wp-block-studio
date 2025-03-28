@@ -177,7 +177,7 @@ registerBlockType(metadata.name, {
 
         const swiper = new Swiper('#block-' + clientId, {
             ...swiperDefaultArgs,
-            ...sliderArgs
+            ...attributes.swiperArgs
         });
 
         const blockProps = useBlockProps({

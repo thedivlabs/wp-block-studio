@@ -162,9 +162,9 @@ registerBlockType(metadata.name, {
             ...breakpointArgs
         };
 
-        sliderArgs = Object.fromEntries(
+        /*sliderArgs = Object.fromEntries(
             Object.entries(sliderArgs)
-                .filter(([_, value]) => value !== null));
+                .filter(([_, value]) => value !== null));*/
 
         useEffect(() => {
 

@@ -51,6 +51,9 @@ const blockAttributes = {
     'wpbs-transition': {
         type: 'string'
     },
+    'wpbs-pagination': {
+        type: 'string'
+    },
     'wpbs-hover-pause': {
         type: 'boolean'
     },
@@ -106,6 +109,7 @@ registerBlockType(metadata.name, {
 
         const [autoplay, setAutoplay] = useState(attributes['wpbs-autoplay']);
         const [transition, setTransition] = useState(attributes['wpbs-transition']);
+        const [pagination, setPagination] = useState(attributes['wpbs-pagination']);
 
         const [hoverPause, setHoverPause] = useState(attributes['wpbs-hover-pause']);
         const [fadeIn, setFadeIn] = useState(attributes['wpbs-fade-in']);
@@ -179,7 +183,7 @@ registerBlockType(metadata.name, {
                                 isShiftStepEnabled={true}
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-group-mobile']: newValue});
-                                    setSlidesLarge(newValue);
+                                    setGroupMobile(newValue);
                                 }}
                                 shiftStep={10}
                                 value={groupMobile}
@@ -190,7 +194,7 @@ registerBlockType(metadata.name, {
                                 isShiftStepEnabled={true}
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-group-large']: newValue});
-                                    setSlidesLarge(newValue);
+                                    setGroupLarge(newValue);
                                 }}
                                 shiftStep={10}
                                 value={groupLarge}
@@ -215,7 +219,7 @@ registerBlockType(metadata.name, {
                                     setTransition(newValue);
                                 }}
                                 shiftStep={100}
-                                value={autoplay}
+                                value={transition}
                             />
 
                             <BoxControl
@@ -239,6 +243,21 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-margin-large']: newValue});
                                     setMarginLarge(newValue);
                                 }}
+                            />
+                            <SelectControl
+                                label={'Pagination'}
+                                value={pagination}
+                                options={[
+                                    {label: 'Default', value: 'none'},
+                                    {label: 'Progress Bar', value: 'progress'},
+                                    {label: 'Dots', value: 'dots'},
+                                ]}
+                                onChange={(newValue) => {
+                                    setPagination(newValue);
+                                    setAttributes({['wpbs-pagination']: newValue});
+                                }}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
                             />
                         </Grid>
 

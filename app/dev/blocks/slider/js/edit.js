@@ -111,7 +111,7 @@ function sliderArgs(attributes = {}) {
         centeredSlides: !!attributes['wpbs-centered'],
         loop: !!attributes['wpbs-loop'],
         rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
-        initialSlide: !!attributes['wpbs-from-end'] ? 999 : null,
+        initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
         breakpoints: {}
     };
 

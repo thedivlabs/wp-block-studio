@@ -1,0 +1,9 @@
+@use 'includes';
+
+.swiper {
+
+  .swiper-pagination {
+    width: min(5rem,100%) !important;
+  }
+
+}

@@ -98,13 +98,17 @@ function sliderArgs(attributes = {}) {
             pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
         } : false,
         speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
-        pagination: attributes['wpbs-pagination'] ? null : false,
+        pagination: attributes['wpbs-pagination'] ? {
+            enabled: true,
+            el: '.swiper-pagination',
+            type: attributes['wpbs-pagination']
+        } : false,
         effect: attributes['wpbs-effect'] || null,
         freeMode: !!attributes['wpbs-effect'],
         centeredSlides: !!attributes['wpbs-centered'],
         loop: !!attributes['wpbs-loop'],
         initialSlide: !!attributes['wpbs-from-end'] ? 999 : null,
-        breakpoints:{}
+        breakpoints: {}
     };
 
     let breakpointArgs = {

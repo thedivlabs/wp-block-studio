@@ -6,6 +6,8 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import React from "react";
+import {useInstanceId} from "@wordpress/compose";
+import {useEffect} from "react";
 
 function blockClasses(attributes = {}) {
     return [
@@ -21,6 +23,12 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
     },
     edit: ({attributes, setAttributes, clientId}) => {
+
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId});
+        }, []);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),

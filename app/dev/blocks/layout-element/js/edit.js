@@ -18,7 +18,7 @@ import {useEffect} from "react";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-element w-full flex relative',
+        'wpbs-layout-element w-full block relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

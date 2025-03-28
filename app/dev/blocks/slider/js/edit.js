@@ -104,6 +104,7 @@ function sliderArgs(attributes = {}) {
         centeredSlides: !!attributes['wpbs-centered'],
         loop: !!attributes['wpbs-loop'],
         initialSlide: !!attributes['wpbs-from-end'] ? 999 : null,
+        breakpoints:{}
     };
 
     let breakpointArgs = {
@@ -115,8 +116,6 @@ function sliderArgs(attributes = {}) {
     args.breakpoints[attributes.breakpoint] = {
         ...breakpointArgs
     };
-
-    console.log(args);
 
     return Object.fromEntries(
         Object.entries(args)
@@ -163,7 +162,7 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 uniqueId: uniqueId,
-                breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'lg'],
+                breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'],
             });
 
             const swiper = new Swiper('#block-' + clientId, {

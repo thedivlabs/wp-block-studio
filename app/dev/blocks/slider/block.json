@@ -32,7 +32,10 @@
     },
     "spacing": {
       "padding": true,
-      "margin": true
+      "margin": true,
+      "blockGap": [
+        "horizontal"
+      ]
     },
     "__experimentalBorder": {
       "size": true,

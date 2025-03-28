@@ -12,7 +12,7 @@ import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     PanelBody,
-    __experimentalNumberControl as NumberControl
+    __experimentalNumberControl as NumberControl, SelectControl, __experimentalBoxControl as BoxControl, ToggleControl
 } from "@wordpress/components";
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
@@ -46,6 +46,9 @@ const blockAttributes = {
         type: 'string'
     },
     'wpbs-autoplay': {
+        type: 'string'
+    },
+    'wpbs-transition': {
         type: 'string'
     },
     'wpbs-hover-pause': {
@@ -95,6 +98,24 @@ registerBlockType(metadata.name, {
         const [slidesMobile, setSlidesMobile] = useState(attributes['wpbs-slides-mobile']);
         const [slidesLarge, setSlidesLarge] = useState(attributes['wpbs-slides-large']);
 
+        const [groupMobile, setGroupMobile] = useState(attributes['wpbs-group-mobile']);
+        const [groupLarge, setGroupLarge] = useState(attributes['wpbs-group-large']);
+
+        const [marginMobile, setMarginMobile] = useState(attributes['wpbs-margin-mobile'] || '');
+        const [marginLarge, setMarginLarge] = useState(attributes['wpbs-margin-large']) || '';
+
+        const [autoplay, setAutoplay] = useState(attributes['wpbs-autoplay']);
+        const [transition, setTransition] = useState(attributes['wpbs-transition']);
+
+        const [hoverPause, setHoverPause] = useState(attributes['wpbs-hover-pause']);
+        const [fadeIn, setFadeIn] = useState(attributes['wpbs-fade-in']);
+        const [freeMode, setFreeMode] = useState(attributes['wpbs-free-mode']);
+        const [centered, setCentered] = useState(attributes['wpbs-centered']);
+        const [collapse, setCollapse] = useState(attributes['wpbs-collapse']);
+        const [loop, setLoop] = useState(attributes['wpbs-loop']);
+        const [dim, setDim] = useState(attributes['wpbs-dim']);
+        const [fromEnd, setFromEnd] = useState(attributes['wpbs-from-end']);
+
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         const [{breakpoints}] = useSettings(['custom']);
@@ -131,6 +152,7 @@ registerBlockType(metadata.name, {
                     <Grid columns={1} columnGap={15} rowGap={20}>
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             <NumberControl
+                                label={'Slides Mobile'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
                                 onChange={(newValue) => {
@@ -141,6 +163,7 @@ registerBlockType(metadata.name, {
                                 value={slidesMobile}
                             />
                             <NumberControl
+                                label={'Slides Large'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
                                 onChange={(newValue) => {
@@ -149,6 +172,86 @@ registerBlockType(metadata.name, {
                                 }}
                                 shiftStep={10}
                                 value={slidesLarge}
+                            />
+                            <NumberControl
+                                label={'Group Mobile'}
+                                __next40pxDefaultSize
+                                isShiftStepEnabled={true}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-group-mobile']: newValue});
+                                    setSlidesLarge(newValue);
+                                }}
+                                shiftStep={10}
+                                value={groupMobile}
+                            />
+                            <NumberControl
+                                label={'Group Large'}
+                                __next40pxDefaultSize
+                                isShiftStepEnabled={true}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-group-large']: newValue});
+                                    setSlidesLarge(newValue);
+                                }}
+                                shiftStep={10}
+                                value={groupLarge}
+                            />
+                            <NumberControl
+                                label={'Autoplay'}
+                                __next40pxDefaultSize
+                                isShiftStepEnabled={true}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-autoplay']: newValue});
+                                    setAutoplay(newValue);
+                                }}
+                                shiftStep={500}
+                                value={autoplay}
+                            />
+                            <NumberControl
+                                label={'Transition'}
+                                __next40pxDefaultSize
+                                isShiftStepEnabled={true}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-transition']: newValue});
+                                    setTransition(newValue);
+                                }}
+                                shiftStep={100}
+                                value={autoplay}
+                            />
+
+                            <BoxControl
+                                label={'Margin Mobile'}
+                                values={marginMobile}
+                                units={[
+                                    {value: 'px', label: 'px', default: 10}
+                                ]}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-margin-mobile']: newValue});
+                                    setMarginMobile(newValue);
+                                }}
+                            />
+                            <BoxControl
+                                label={'Margin Large'}
+                                values={marginLarge}
+                                units={[
+                                    {value: 'px', label: 'px', default: 10}
+                                ]}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-margin-large']: newValue});
+                                    setMarginLarge(newValue);
+                                }}
+                            />
+                        </Grid>
+
+                        <Grid columns={2} columnGap={15} rowGap={20}
+                              style={{padding: '1rem 0'}}>
+                            <ToggleControl
+                                label="Mask"
+                                checked={mask}
+                                onChange={(value) => {
+                                    updateSettings('mask', value, setMask);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
                             />
                         </Grid>
 

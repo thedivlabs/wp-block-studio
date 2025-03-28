@@ -89,20 +89,28 @@ const blockAttributes = {
 
 function sliderArgs(attributes = {}) {
 
-    let args = {};
+    let args = {
+        slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || null,
+        slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || null,
+        spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
+        autoplay: attributes['wpbs-autoplay'] ? {
+            delay: attributes['wpbs-autoplay'] * 1000,
+            pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
+        } : false,
+        speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
+        pagination: attributes['wpbs-pagination'] ? null : false,
+        effect: attributes['wpbs-effect'] || null,
+        freeMode: !!attributes['wpbs-effect'],
+        centeredSlides: !!attributes['wpbs-centered'],
+        loop: !!attributes['wpbs-loop'],
+        initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
+    };
 
     let breakpointArgs = {};
 
-    breakpointArgs = Object.fromEntries(
-        Object.entries(breakpointArgs)
-            .filter(([_, value]) => value));
-
-    if (breakpointArgs) {
-        args[attributes.breakpoint] = {
-            ...breakpointArgs
-        };
-    }
-
+    args[attributes.breakpoint] = {
+        ...breakpointArgs
+    };
 
     return Object.fromEntries(
         Object.entries(args)

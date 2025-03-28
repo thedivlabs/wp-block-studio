@@ -166,11 +166,12 @@ registerBlockType(metadata.name, {
             Object.entries(sliderArgs)
                 .filter(([_, value]) => value !== null));
 
+        setAttributes({swiperArgs: sliderArgs});
+
         useEffect(() => {
 
             setAttributes({
-                uniqueId: uniqueId,
-                swiperArgs: sliderArgs
+                uniqueId: uniqueId
             });
 
 

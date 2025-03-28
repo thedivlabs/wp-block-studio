@@ -13,7 +13,13 @@
     .swiper-wrapper {
       display: flex !important;
       flex-direction: column !important;
+      justify-content: flex-start !important;
       gap: inherit !important;
+    }
+
+    .swiper-slide {
+      flex-grow: 0 !important;
+      height: auto !important;
     }
   }
 

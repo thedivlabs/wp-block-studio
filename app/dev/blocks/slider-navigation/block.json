@@ -15,6 +15,12 @@
       "type": "string"
     }
   },
+  "styles": [
+    {
+      "name": "group",
+      "label": "Group"
+    }
+  ],
   "supports": {
     "color": {
       "background": true,

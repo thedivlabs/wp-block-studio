@@ -1,7 +1,6 @@
 import {
     useBlockProps,
     BlockEdit,
-    useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -11,11 +10,40 @@ import {useEffect} from "react";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider-navigation',
+        'wpbs-slider-nav pointer-events-none z-50',
     ].filter(x => x).join(' ');
 }
 
-const BlockContent = <>NAVIGATION</>;
+function BlockContent({props, attributes}) {
+
+    const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
+
+    const buttonClass = 'wpbs-slider-nav__btn pointer-events-all';
+
+    const prevClass = [
+        buttonClass,
+        'wpbs-slider-nav__btn--prev'
+    ].filter(x => x).join(' ');
+    const nextClass = [
+        buttonClass,
+        'wpbs-slider-nav__btn--next'
+    ].filter(x => x).join(' ');
+    const paginationClass = [
+        'wpbs-slider-nav__pagination swiper-pagination'
+    ].filter(x => x).join(' ');
+
+    return <div {...props}>
+        <button type="button" className={prevClass}>
+            <i class="fa-light fa-arrow-left"></i>
+            <span class="screen-reader-text">Previous Slide</span>
+        </button>
+        <div className={paginationClass}></div>
+        <button type="button" className={nextClass}>
+            <i class="fa-light fa-arrow-right"></i>
+            <span class="screen-reader-text">Next Slide</span>
+        </button>
+    </div>;
+}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -24,7 +52,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-wpbs-slider-nav');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -34,15 +62,9 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/slide', {content: 'Content Slide'}],
-            ]
-        });
-
         return <>
             <BlockEdit key="edit" {...blockProps} />
-            <BlockContent/>
+            <BlockContent props={blockProps} attributes={attributes}/>
         </>;
     },
     save: (props) => {
@@ -52,7 +74,7 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <BlockContent/>
+            <BlockContent props={blockProps} attributes={props.attributes}/>
         );
     }
 })

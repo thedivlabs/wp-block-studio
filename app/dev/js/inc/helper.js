@@ -19,10 +19,25 @@ export function parseProp(prop) {
 }
 
 export const swiperDefaultArgs = {
-    createElements: true,
+    createElements: false,
     navigation: {
-        enabled: true
+        enabled: true,
+        nextEl: '.wpbs-slider-nav__btn.wpbs-slider-nav__btn--next',
+        prevEl: '.wpbs-slider-nav__btn.wpbs-slider-nav__btn--prev',
     },
+    pagination: {
+        enabled: true,
+        el: '.swiper-pagination',
+    },
+    watchSlidesProgress: true,
+    updateOnWindowResize: true,
+    simulateTouch: true,
+    slidesPerView: 1,
+    spaceBetween: 0,
+    watchOverflow: true,
+    passiveListeners: true,
+    grabCursor: true,
+    uniqueNavElements: true,
 };
 
 export function breakpoint(prop) {

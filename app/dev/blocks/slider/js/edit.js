@@ -282,8 +282,8 @@ registerBlockType(metadata.name, {
                                 value={pagination}
                                 options={[
                                     {label: 'Default', value: 'none'},
-                                    {label: 'Progress Bar', value: 'progress'},
-                                    {label: 'Dots', value: 'dots'},
+                                    {label: 'Progress Bar', value: 'progressbar'},
+                                    {label: 'Bullets', value: 'bullets'},
                                 ]}
                                 onChange={(newValue) => {
                                     setPagination(newValue);

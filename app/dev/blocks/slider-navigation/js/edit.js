@@ -22,7 +22,7 @@ function BlockContent({props, attributes}) {
 
     const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
 
-    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto h-[1.2em] aspect-square flex items-center text-center text-lg shrink-0';
+    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto h-[1.2em] aspect-square flex items-center justify-center text-center shrink-0';
 
     const prevClass = [
         buttonClass,

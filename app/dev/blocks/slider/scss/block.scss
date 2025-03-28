@@ -1,3 +1,11 @@
 .wpbs-slider {
 
+  .swiper-pagination-progressbar {
+    width: min(5rem, 100%) !important;
+  }
+
+  &.swiper-disabled .swiper-wrapper {
+    display: block !important;
+  }
+
 }

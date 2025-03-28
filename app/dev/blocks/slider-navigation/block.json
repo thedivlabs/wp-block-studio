@@ -22,6 +22,9 @@
     }
   ],
   "supports": {
+    "typography": {
+      "fontSize": true
+    },
     "color": {
       "background": true,
       "text": true,

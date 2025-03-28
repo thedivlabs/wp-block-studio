@@ -46,6 +46,16 @@ registerBlockType(metadata.name, {
 
         const ElementTagName = ElementTag(attributes);
 
+        function Content() {
+            if (!!attributes['wpbs-background']) {
+                return <div className={'wpbs-layout-wrapper w-full h-full'}>
+                    <InnerBlocks.Content/>
+                </div>;
+            } else {
+                return <InnerBlocks.Content/>;
+            }
+        }
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -62,11 +72,9 @@ registerBlockType(metadata.name, {
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs-layout-element'
                 >
-                    <div className={'wpbs-layout-wrapper w-full h-full'}>
-                        <InnerBlocks/>
-                    </div>
+                    <Content/>
 
-                    <Background attributes={attributes} className={'z-[-1]'} editor={true}/>
+                    <Background attributes={attributes} editor={true}/>
 
                 </ElementTagName>
             </>
@@ -81,14 +89,23 @@ registerBlockType(metadata.name, {
 
         const ElementTagName = ElementTag(props.attributes);
 
+        function Content() {
+            if (!!props.attributes['wpbs-background']) {
+                return <div className={'wpbs-layout-wrapper w-full h-full'}>
+                    <InnerBlocks.Content/>
+                </div>;
+            } else {
+                return <InnerBlocks.Content/>;
+            }
+        }
+
         return (
             <ElementTagName {...blockProps}
             >
-                <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks.Content/>
-                </div>
 
-                <Background attributes={props.attributes} className={'z-[-1]'} editor={false}/>
+                <Content/>
+
+                <Background attributes={props.attributes} editor={false}/>
             </ElementTagName>
         );
     }

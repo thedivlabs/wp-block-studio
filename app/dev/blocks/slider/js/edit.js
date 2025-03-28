@@ -26,6 +26,7 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
         attributes.uniqueId,
+        !!attributes.collapse ? 'wpbs-slider--collapse' : null,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -121,13 +122,22 @@ function sliderArgs(attributes = {}) {
         spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
     };
 
+    if (!!attributes['wpbs-collapse']) {
+        args.enabled = false;
+        breakpointArgs.enabled = true;
+    }
+
     args.breakpoints[attributes.breakpoint] = {
         ...breakpointArgs
     };
 
-    return Object.fromEntries(
+    const mergedArgs = Object.fromEntries(
         Object.entries(args)
-            .filter(([_, value]) => value));
+            .filter(([_, value]) => value !== null));
+
+    console.log(mergedArgs);
+
+    return mergedArgs;
 }
 
 registerBlockType(metadata.name, {
@@ -181,7 +191,10 @@ registerBlockType(metadata.name, {
         }, []);
 
         const blockProps = useBlockProps({
-            className: [blockClasses(attributes), 'min-h-[10rem] bg-[rgba(0,0,0,.3)]'].join(' ')
+            className: [
+                blockClasses(attributes),
+                'min-h-[10rem] bg-[rgba(0,0,0,.3)]'
+            ].join(' ')
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {

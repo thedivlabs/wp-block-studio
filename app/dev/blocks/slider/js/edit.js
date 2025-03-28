@@ -135,8 +135,6 @@ function sliderArgs(attributes = {}) {
         Object.entries(args)
             .filter(([_, value]) => value !== null));
 
-    console.log(mergedArgs);
-
     return mergedArgs;
 }
 

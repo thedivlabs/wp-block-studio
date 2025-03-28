@@ -110,7 +110,7 @@ function sliderArgs(attributes = {}) {
         freeMode: !!attributes['wpbs-effect'],
         centeredSlides: !!attributes['wpbs-centered'],
         loop: !!attributes['wpbs-loop'],
-        rewind: !!attributes['wpbs-rewind'],
+        rewind: !attributes['wpbs-loop'] ? !!attributes['wpbs-rewind'] : false,
         initialSlide: !!attributes['wpbs-from-end'] ? 999 : null,
         breakpoints: {}
     };

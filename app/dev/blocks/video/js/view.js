@@ -26,7 +26,7 @@ const {state} = store('wpbs', {
             const isModal = element.classList.contains('wpbs-video--modal');
             const classNames = [
                 'divlabs-video-player',
-                isModal ? 'w-[96rem] h-auto max-h-full max-w-full aspect-video m-auto' : 'w-full h-full',
+                isModal ? 'w-[80rem] overflow-hidden h-auto max-h-full max-w-full aspect-video m-auto relative' : 'w-full h-full',
             ].filter(x => x).join(' ');
 
             const player = jQuery('<iframe />', {
@@ -37,7 +37,8 @@ const {state} = store('wpbs', {
                 frameBorder: 0,
                 width: '100%',
                 height: '100%',
-            }).css({opacity: 0, transition: 'opacity .5s'}).on('load', function () {
+                class: 'absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-500'
+            }).on('load', function () {
                 jQuery(this).css({opacity: 1});
                 WPBS.loader.toggle({
                     remove: true

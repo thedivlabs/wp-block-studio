@@ -10,7 +10,7 @@ import {useEffect} from "react";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slider-nav pointer-events-none z-50',
+        'wpbs-slider-nav pointer-events-none z-50 flex items-center justify-center gap-4',
     ].filter(x => x).join(' ');
 }
 
@@ -18,7 +18,7 @@ function BlockContent({props, attributes}) {
 
     const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
 
-    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto';
+    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto h-[1.2em] aspect-square flex items-center text-center text-lg';
 
     const prevClass = [
         buttonClass,

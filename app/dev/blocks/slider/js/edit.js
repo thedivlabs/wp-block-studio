@@ -54,7 +54,6 @@ registerBlockType(metadata.name, {
 
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs,
-                pagination: false
             });
         }, []);
 

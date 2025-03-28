@@ -5,7 +5,9 @@ const {state} = store('wpbs', {
     callbacks: {
         observeSlider: () => {
             const {ref: element} = getElement();
-            const {args} = getContext();
+            let {args} = getContext();
+
+            args = JSON.parse(JSON.stringify(args))
 
             let observerIntersection = new IntersectionObserver((entries, observer) => {
                 entries.forEach((entry) => {
@@ -43,9 +45,6 @@ const {state} = store('wpbs', {
                         initLib().then(() => {
 
                             const {args: defaultArgs} = WPBS.swiper;
-
-                            console.log({...args});
-
                             const swiper = new Swiper(element, {
                                 ...defaultArgs,
                                 ...args,

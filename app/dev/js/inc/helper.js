@@ -40,6 +40,11 @@ export const swiperDefaultArgs = {
     uniqueNavElements: true,
     on: {
         afterInit: (swiper) => {
+            if(swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
             if (swiper.slides.length < 2) {
                 swiper.disable();
             }
@@ -56,6 +61,13 @@ export const swiperDefaultArgs = {
                 swiper.el.classList.add('swiper--start');
             } else {
                 swiper.el.classList.remove('swiper--start');
+            }
+        },
+        resize: (swiper) => {
+            if(swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
             }
         }
     }

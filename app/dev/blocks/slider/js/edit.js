@@ -121,12 +121,12 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'];
+        const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
         let sliderArgs = {
             slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
             slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
-            spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || '0px',
+            spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
             autoplay: attributes['wpbs-autoplay'] ? {
                 delay: attributes['wpbs-autoplay'] * 1000,
                 pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
@@ -160,6 +160,10 @@ registerBlockType(metadata.name, {
         sliderArgs.breakpoints[breakpoint] = {
             ...breakpointArgs
         };
+
+        sliderArgs = Object.fromEntries(
+            Object.entries(sliderArgs)
+                .filter(([_, value]) => value !== null));
 
         useEffect(() => {
 

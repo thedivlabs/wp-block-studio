@@ -1,22 +1,16 @@
 import '../scss/block.scss';
 
-import {
-    useBlockProps,
-    InspectorControls,
-    BlockEdit,
-    useInnerBlocksProps, useSettings
-} from "@wordpress/block-editor"
+import {BlockEdit, InspectorControls, useBlockProps, useInnerBlocksProps, useSettings} from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
-    PanelBody,
     __experimentalNumberControl as NumberControl,
+    __experimentalUnitControl as UnitControl,
+    PanelBody,
     SelectControl,
-    __experimentalBoxControl as BoxControl,
-    ToggleControl,
-    __experimentalUnitControl as UnitControl
+    ToggleControl
 } from "@wordpress/components";
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
@@ -26,7 +20,6 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
         attributes.uniqueId,
-        !!attributes.collapse ? 'wpbs-slider--collapse' : null,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -92,11 +85,11 @@ const blockAttributes = {
 }
 
 function sliderArgs(attributes = {}) {
-
+return {};
     let args = {
-        slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || null,
-        slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || null,
-        spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
+        slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
+        slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
+        spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || '0px',
         autoplay: attributes['wpbs-autoplay'] ? {
             delay: attributes['wpbs-autoplay'] * 1000,
             pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
@@ -134,6 +127,8 @@ function sliderArgs(attributes = {}) {
     const mergedArgs = Object.fromEntries(
         Object.entries(args)
             .filter(([_, value]) => value !== null));
+
+    //console.log(mergedArgs);
 
     return mergedArgs;
 }
@@ -182,16 +177,18 @@ registerBlockType(metadata.name, {
                 breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'],
             });
 
+        }, []);
+
+        if ('Swiper' in window) {
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs,
                 ...sliderArgs(attributes),
             });
-        }, []);
+        }
 
         const blockProps = useBlockProps({
             className: [
-                blockClasses(attributes),
-                'min-h-[10rem] bg-[rgba(0,0,0,.3)]'
+                blockClasses(attributes)
             ].join(' ')
         });
 
@@ -432,8 +429,6 @@ registerBlockType(metadata.name, {
                     clientId={clientId}></Layout>
 
             <div {...innerBlocksProps}></div>
-
-
         </>;
 
 

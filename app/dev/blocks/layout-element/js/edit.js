@@ -41,7 +41,7 @@ registerBlockType(metadata.name, {
         }, []);
 
         const blockProps = useBlockProps({
-            className: [sectionClassNames(attributes), 'min-h-8'].join(' '),
+            className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
 
         const ElementTagName = ElementTag(attributes);

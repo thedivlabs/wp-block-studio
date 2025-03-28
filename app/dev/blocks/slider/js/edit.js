@@ -103,7 +103,7 @@ function sliderArgs(attributes = {}) {
         freeMode: !!attributes['wpbs-effect'],
         centeredSlides: !!attributes['wpbs-centered'],
         loop: !!attributes['wpbs-loop'],
-        initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
+        initialSlide: !!attributes['wpbs-from-end'] ? 999 : null,
     };
 
     let breakpointArgs = {};

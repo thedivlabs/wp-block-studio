@@ -54,6 +54,7 @@ registerBlockType(metadata.name, {
 
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs,
+                pagination: false
             });
         }, []);
 
@@ -116,7 +117,12 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observeSlider'
+            'data-wp-init': 'callbacks.observeSlider',
+            'data-wp-context': JSON.stringify({
+                args:{
+                    pagination: false
+                }
+            })
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

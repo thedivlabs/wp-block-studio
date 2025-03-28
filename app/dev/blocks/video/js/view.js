@@ -26,7 +26,7 @@ const {state} = store('wpbs', {
             const isModal = element.classList.contains('wpbs-video--modal');
             const classNames = [
                 'divlabs-video-player',
-                isModal ? 'w-auto overflow-hidden h-[min(90vh,90vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
+                isModal ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
             ].filter(x => x).join(' ');
 
             const player = jQuery('<iframe />', {

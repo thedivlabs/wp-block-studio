@@ -64,7 +64,7 @@ registerBlockType(metadata.name, {
                 >
                     <InnerBlocks/>
 
-                    <Background attributes={props.attributes} className={'z-[-1]'} editor={true}/>
+                    <Background attributes={attributes} className={'z-[-1]'} editor={true}/>
 
                 </ElementTagName>
             </>

@@ -20,7 +20,7 @@ import {
     PanelColorSettings,
 } from "@wordpress/block-editor";
 
-export function Background({attributes = {}, className = false, editor = false}) {
+export function Background({attributes = {}, className = '', editor = false}) {
 
     const {['wpbs-background']: settings} = attributes;
 

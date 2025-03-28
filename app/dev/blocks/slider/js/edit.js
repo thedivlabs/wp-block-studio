@@ -245,10 +245,81 @@ registerBlockType(metadata.name, {
                         <Grid columns={2} columnGap={15} rowGap={20}
                               style={{padding: '1rem 0'}}>
                             <ToggleControl
-                                label="Mask"
-                                checked={mask}
-                                onChange={(value) => {
-                                    updateSettings('mask', value, setMask);
+                                label="Hover Pause"
+                                checked={!!hoverPause}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-hover-pause']: newValue});
+                                    setHoverPause(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Fade In"
+                                checked={!!fadeIn}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-fade-in']: newValue});
+                                    setFadeIn(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Free Mode"
+                                checked={!!freeMode}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-free-mode']: newValue});
+                                    setFreeMode(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Centered"
+                                checked={!!centered}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-centered']: newValue});
+                                    setCentered(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Collapse"
+                                checked={!!collapse}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-collapse']: newValue});
+                                    setCollapse(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Loop"
+                                checked={!!loop}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-loop']: newValue});
+                                    setLoop(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Dim"
+                                checked={!!dim}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-dim']: newValue});
+                                    setDim(newValue);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="From End"
+                                checked={!!fromEnd}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-from-end']: newValue});
+                                    setFromEnd(newValue);
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

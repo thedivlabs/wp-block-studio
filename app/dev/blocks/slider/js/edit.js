@@ -87,13 +87,26 @@ const blockAttributes = {
     },
 }
 
-function sliderArgs(attributes = {}, breakpoints) {
+function sliderArgs(attributes = {}) {
 
-    console.log(attributes);
+    let args = {};
 
-    return {
-        //pagination:false
-    };
+    let breakpointArgs = {};
+
+    breakpointArgs = Object.fromEntries(
+        Object.entries(breakpointArgs)
+            .filter(([_, value]) => value));
+
+    if (breakpointArgs) {
+        args[attributes.breakpoint] = {
+            ...breakpointArgs
+        };
+    }
+
+
+    return Object.fromEntries(
+        Object.entries(args)
+            .filter(([_, value]) => value));
 }
 
 registerBlockType(metadata.name, {
@@ -133,7 +146,6 @@ registerBlockType(metadata.name, {
         const [{breakpoints}] = useSettings(['custom']);
 
         useEffect(() => {
-
 
             setAttributes({
                 uniqueId: uniqueId,

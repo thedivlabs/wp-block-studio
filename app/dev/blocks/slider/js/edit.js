@@ -166,12 +166,11 @@ registerBlockType(metadata.name, {
             Object.entries(sliderArgs)
                 .filter(([_, value]) => value !== null));
 
-        setAttributes({swiperArgs: sliderArgs});
-
         useEffect(() => {
 
             setAttributes({
-                uniqueId: uniqueId
+                uniqueId: uniqueId,
+                swiperArgs: sliderArgs
             });
 
 
@@ -179,7 +178,7 @@ registerBlockType(metadata.name, {
 
         const swiper = new Swiper('#block-' + clientId, {
             ...swiperDefaultArgs,
-            ...attributes.swiperArgs
+            ...sliderArgs
         });
 
         const blockProps = useBlockProps({

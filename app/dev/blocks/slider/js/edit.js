@@ -166,6 +166,8 @@ registerBlockType(metadata.name, {
             Object.entries(sliderArgs)
                 .filter(([_, value]) => value !== null));
 
+        console.log(sliderArgs);
+
         useEffect(() => {
 
             setAttributes({

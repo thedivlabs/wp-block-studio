@@ -35,6 +35,13 @@ const blockAttributes = {
     },
 }
 
+function sliderArgs(attributes = {}) {
+
+    return {
+        pagination:false
+    };
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -54,6 +61,7 @@ registerBlockType(metadata.name, {
 
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs,
+                ...sliderArgs,
             });
         }, []);
 
@@ -119,7 +127,7 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
                 args:{
-                    pagination: false
+                    ...sliderArgs
                 }
             })
         });

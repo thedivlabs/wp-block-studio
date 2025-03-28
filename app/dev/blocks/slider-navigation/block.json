@@ -1,30 +1,24 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wpbs/slider",
-  "title": "Slider",
-  "description": "Display a slider element",
+  "name": "wpbs/slider-navigation",
+  "title": "Slider Navigation",
+  "description": "Display the slider navigation element",
   "selectors": {
-    "root": ".wpbs-slider"
+    "root": ".wpbs-slider-navigation"
   },
+  "ancestor": [
+    "wpbs/slider"
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string"
     }
   },
-  "allowedBlocks": [
-    "wpbs/slider-wrapper",
-    "wpbs/layout-element",
-    "wpbs/layout-section",
-    "wpbs/slider-navigation"
-  ],
   "supports": {
-    "innerBlocks": true,
-    "interactivity": true,
     "color": {
       "background": true,
       "text": true,
-      "link": true,
       "gradients": true
     },
     "spacing": {
@@ -38,7 +32,6 @@
     }
   },
   "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "icon": "slides"
 }

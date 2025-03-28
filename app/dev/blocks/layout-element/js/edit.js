@@ -62,7 +62,9 @@ registerBlockType(metadata.name, {
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs-layout-element'
                 >
-                    <InnerBlocks/>
+                    <div className={'wpbs-layout-wrapper w-full h-full'}>
+                        <InnerBlocks/>
+                    </div>
 
                     <Background attributes={attributes} className={'z-[-1]'} editor={true}/>
 
@@ -82,7 +84,9 @@ registerBlockType(metadata.name, {
         return (
             <ElementTagName {...blockProps}
             >
-                <InnerBlocks.Content/>
+                <div className={'wpbs-layout-wrapper w-full h-full'}>
+                    <InnerBlocks.Content/>
+                </div>
 
                 <Background attributes={props.attributes} className={'z-[-1]'} editor={false}/>
             </ElementTagName>

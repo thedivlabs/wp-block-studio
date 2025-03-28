@@ -22,14 +22,17 @@ function BlockContent({props, attributes}) {
 
     const prevClass = [
         buttonClass,
-        'wpbs-slider-nav__btn--prev'
+        'wpbs-slider-nav__btn--prev',
+        !isGroupStyle ? 'absolute top-1/2 left-2 -translate-y-1/2' : null
     ].filter(x => x).join(' ');
     const nextClass = [
         buttonClass,
-        'wpbs-slider-nav__btn--next'
+        'wpbs-slider-nav__btn--next',
+        !isGroupStyle ? 'absolute top-1/2 right-2 -translate-y-1/2' : null
     ].filter(x => x).join(' ');
     const paginationClass = [
-        'wpbs-slider-nav__pagination swiper-pagination'
+        'wpbs-slider-nav__pagination swiper-pagination',
+        !isGroupStyle ? 'absolute left-1/2 bottom-2 -translate-x-1/2' : null
     ].filter(x => x).join(' ');
 
     return <div {...props}>

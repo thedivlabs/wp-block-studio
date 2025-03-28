@@ -61,7 +61,7 @@ registerBlockType(metadata.name, {
 
             const swiper = new Swiper('#block-' + clientId, {
                 ...swiperDefaultArgs,
-                ...sliderArgs,
+                ...sliderArgs(attributes),
             });
         }, []);
 
@@ -127,7 +127,7 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
                 args:{
-                    ...sliderArgs
+                    ...sliderArgs(props.attributes)
                 }
             })
         });

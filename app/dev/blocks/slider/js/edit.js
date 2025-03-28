@@ -67,8 +67,7 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
-                [ 'wpbs/slider-wrapper', {  } ],
-
+                ['wpbs/slider-wrapper', {}],
             ]
         });
 
@@ -110,7 +109,10 @@ registerBlockType(metadata.name, {
 
             <div {...innerBlocksProps}></div>
 
+
         </>;
+
+
     },
     save: (props) => {
 

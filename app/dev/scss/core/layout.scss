@@ -1,13 +1,15 @@
+.wpbs-layout-container.wpbs-has-container > .container,
+.wpbs-layout-wrapper {
+  display: inherit;
+  flex-direction: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  gap: inherit;
+  flex-wrap: inherit;
+}
+
 .wpbs-layout-container {
 
-  &.wpbs-has-container > .container {
-    display: inherit;
-    flex-direction: inherit;
-    justify-content: inherit;
-    align-items: inherit;
-    gap: inherit;
-    flex-wrap: inherit;
-  }
 
   &-xs:not(.wpbs-has-container),
   &-xs.wpbs-has-container > .container {

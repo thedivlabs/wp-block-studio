@@ -173,12 +173,11 @@ registerBlockType(metadata.name, {
                 swiperArgs: sliderArgs
             });
 
-
         }, []);
 
         const swiper = new Swiper('#block-' + clientId, {
             ...swiperDefaultArgs,
-            ...attributes.swiperArgs
+            ...sliderArgs
         });
 
         const blockProps = useBlockProps({

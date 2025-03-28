@@ -20,6 +20,7 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
         attributes.uniqueId,
+        !!attributes['wpbs-collapse'] ? 'wpbs-slider--collapse' : null,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }

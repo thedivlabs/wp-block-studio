@@ -171,7 +171,6 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-slides-mobile']: newValue});
                                     setSlidesMobile(newValue);
                                 }}
-                                shiftStep={10}
                                 value={slidesMobile}
                             />
                             <NumberControl
@@ -182,7 +181,6 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-slides-large']: newValue});
                                     setSlidesLarge(newValue);
                                 }}
-                                shiftStep={10}
                                 value={slidesLarge}
                             />
                             <NumberControl
@@ -193,7 +191,6 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-group-mobile']: newValue});
                                     setGroupMobile(newValue);
                                 }}
-                                shiftStep={10}
                                 value={groupMobile}
                             />
                             <NumberControl
@@ -204,7 +201,6 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-group-large']: newValue});
                                     setGroupLarge(newValue);
                                 }}
-                                shiftStep={10}
                                 value={groupLarge}
                             />
                             <NumberControl
@@ -215,8 +211,7 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-autoplay']: newValue});
                                     setAutoplay(newValue);
                                 }}
-                                shiftStep={5000}
-                                step={1000}
+                                step={1}
                                 value={autoplay}
                             />
                             <NumberControl
@@ -227,8 +222,7 @@ registerBlockType(metadata.name, {
                                     setAttributes({['wpbs-transition']: newValue});
                                     setTransition(newValue);
                                 }}
-                                step={100}
-                                shiftStep={500}
+                                step={1}
                                 value={transition}
                             />
                             <UnitControl

@@ -106,7 +106,11 @@ function sliderArgs(attributes = {}) {
         initialSlide: !!attributes['wpbs-from-end'] ? 999 : null,
     };
 
-    let breakpointArgs = {};
+    let breakpointArgs = {
+        slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
+        slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
+        spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
+    };
 
     args[attributes.breakpoint] = {
         ...breakpointArgs

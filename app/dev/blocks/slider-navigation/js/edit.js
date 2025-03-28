@@ -18,7 +18,7 @@ function BlockContent({props, attributes}) {
 
     const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
 
-    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto h-[1.2em] aspect-square flex items-center text-center text-lg';
+    const buttonClass = 'wpbs-slider-nav__btn pointer-events-auto h-[1.2em] aspect-square flex items-center text-center text-lg shrink-0';
 
     const prevClass = [
         buttonClass,
@@ -31,8 +31,8 @@ function BlockContent({props, attributes}) {
         !isGroupStyle ? 'absolute top-1/2 right-2 -translate-y-1/2' : null
     ].filter(x => x).join(' ');
     const paginationClass = [
-        'wpbs-slider-nav__pagination swiper-pagination',
-        !isGroupStyle ? 'absolute left-1/2 bottom-2 -translate-x-1/2' : null
+        'wpbs-slider-nav__pagination swiper-pagination inline-flex items-center justify-center',
+        !isGroupStyle ? 'absolute left-1/2 bottom-2 -translate-x-1/2' : '!relative !transform-none !w-fit max-w-full shrink gap-1 h-auto leading-none !left-auto !top-auto !right-auto !bottom-auto'
     ].filter(x => x).join(' ');
 
     return <div {...props}>

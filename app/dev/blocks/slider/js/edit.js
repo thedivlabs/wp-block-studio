@@ -124,13 +124,8 @@ return {};
         ...breakpointArgs
     };
 
-    const mergedArgs = Object.fromEntries(
-        Object.entries(args)
-            .filter(([_, value]) => value !== null));
 
-    //console.log(mergedArgs);
-
-    return mergedArgs;
+    return args;
 }
 
 registerBlockType(metadata.name, {
@@ -176,6 +171,7 @@ registerBlockType(metadata.name, {
                 uniqueId: uniqueId,
                 breakpoint: breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'],
             });
+
 
         }, []);
 

@@ -54,6 +54,9 @@ const blockAttributes = {
     'wpbs-pagination': {
         type: 'string'
     },
+    'wpbs-effect': {
+        type: 'string'
+    },
     'wpbs-hover-pause': {
         type: 'boolean'
     },
@@ -110,6 +113,7 @@ registerBlockType(metadata.name, {
         const [autoplay, setAutoplay] = useState(attributes['wpbs-autoplay']);
         const [transition, setTransition] = useState(attributes['wpbs-transition']);
         const [pagination, setPagination] = useState(attributes['wpbs-pagination']);
+        const [effect, setEffect] = useState(attributes['wpbs-effect']);
 
         const [hoverPause, setHoverPause] = useState(attributes['wpbs-hover-pause']);
         const [fadeIn, setFadeIn] = useState(attributes['wpbs-fade-in']);
@@ -255,6 +259,21 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setPagination(newValue);
                                     setAttributes({['wpbs-pagination']: newValue});
+                                }}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                            <SelectControl
+                                label={'Effect'}
+                                value={effect}
+                                options={[
+                                    {label: 'Default', value: ''},
+                                    {label: 'Fade', value: 'fade'},
+                                    {label: 'Flip', value: 'flip'},
+                                ]}
+                                onChange={(newValue) => {
+                                    setEffect(newValue);
+                                    setAttributes({['wpbs-effect']: newValue});
                                 }}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom

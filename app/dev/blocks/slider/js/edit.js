@@ -127,9 +127,9 @@ registerBlockType(metadata.name, {
 
             let sliderArgs = {
                 enabled: true,
-                slidesPerView: slidesMobile || slidesLarge ? parseInt(slidesMobile || slidesLarge) : 1,
+                slidesPerView: slidesMobile || slidesLarge ? parseInt((slidesMobile || slidesLarge)) : 1,
                 slidesPerGroup: groupMobile || groupLarge ? parseInt(groupMobile || groupLarge) : 1,
-                spaceBetween: marginMobile || marginLarge ? parseInt(marginMobile || marginLarge) : null,
+                spaceBetween: marginMobile || marginLarge ? parseInt((marginMobile || marginLarge).replace('px', '')) : null,
                 autoplay: autoplay ? {
                     delay: autoplay * 1000,
                     pauseOnMouseEnter: !!hoverPause
@@ -155,7 +155,7 @@ registerBlockType(metadata.name, {
             let breakpointArgs = {
                 slidesPerView: slidesMobile && slidesLarge ? parseInt(slidesLarge) : null,
                 slidesPerGroup: groupMobile && groupLarge ? parseInt(groupLarge) : null,
-                spaceBetween: marginMobile && marginLarge ? parseInt(marginLarge) : null,
+                spaceBetween: marginMobile && marginLarge ? parseInt(marginLarge.replace('px', '')) : null,
             };
 
             if (!!collapse) {

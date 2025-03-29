@@ -83,6 +83,9 @@ const blockAttributes = {
     'wpbs-rewind': {
         type: 'boolean'
     },
+    'swiperArgs': {
+        type: 'object'
+    },
 }
 
 registerBlockType(metadata.name, {
@@ -112,7 +115,7 @@ registerBlockType(metadata.name, {
         const [fadeIn, setFadeIn] = useState(attributes['wpbs-fade-in']);
         const [freeMode, setFreeMode] = useState(attributes['wpbs-free-mode']);
         const [centered, setCentered] = useState(attributes['wpbs-centered']);
-        const [collapse, setCollapse] = useState(attributes['wpbs-collapse']);
+        const [collapse, setCollapse] = useState(attributes['wpbs-collapse'] || false);
         const [loop, setLoop] = useState(attributes['wpbs-loop']);
         const [dim, setDim] = useState(attributes['wpbs-dim']);
         const [fromEnd, setFromEnd] = useState(attributes['wpbs-from-end']);
@@ -122,33 +125,37 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        function getSliderArgs() {
+        let sliderArgs = {};
+
+        let swiper;
+
+        function updateSlider() {
+
             const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
             let sliderArgs = {
-                enabled: true,
-                slidesPerView: slidesMobile || slidesLarge ? parseInt((slidesMobile || slidesLarge)) : 1,
-                slidesPerGroup: groupMobile || groupLarge ? parseInt(groupMobile || groupLarge) : 1,
-                spaceBetween: marginMobile || marginLarge ? parseInt((marginMobile || marginLarge).replace('px', '')) : null,
-                autoplay: autoplay ? {
-                    delay: autoplay * 1000,
-                    pauseOnMouseEnter: !!hoverPause
+                slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
+                slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
+                spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
+                autoplay: attributes['wpbs-autoplay'] ? {
+                    delay: attributes['wpbs-autoplay'] * 1000,
+                    pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
                 } : false,
-                speed: transition ? transition * 100 : 400,
-                pagination: pagination ? {
+                speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
+                pagination: attributes['wpbs-pagination'] ? {
                     enabled: true,
                     el: '.swiper-pagination',
-                    type: pagination
+                    type: attributes['wpbs-pagination']
                 } : false,
-                effect: effect || 'slide',
-                fadeEffect: effect !== 'fade' ? null : {
+                effect: attributes['wpbs-effect'] || 'slide',
+                fadeEffect: attributes['wpbs-effect'] !== 'fade' ? null : {
                     crossFade: true
                 },
-                freeMode: !!freeMode,
-                centeredSlides: !!centered,
-                loop: !!loop,
-                rewind: !!loop ? false : !!rewind,
-                initialSlide: !!fromEnd ? 99 : null,
+                freeMode: !!attributes['wpbs-effect'],
+                centeredSlides: !!attributes['wpbs-centered'],
+                loop: !!attributes['wpbs-loop'],
+                rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
+                initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
                 breakpoints: {}
             };
 
@@ -158,7 +165,15 @@ registerBlockType(metadata.name, {
                 spaceBetween: marginMobile && marginLarge ? parseInt(marginLarge.replace('px', '')) : null,
             };
 
-            if (!!collapse) {
+            sliderArgs = Object.fromEntries(
+                Object.entries(sliderArgs)
+                    .filter(([_, value]) => value !== null));
+
+            breakpointArgs = Object.fromEntries(
+                Object.entries(breakpointArgs)
+                    .filter(([_, value]) => value !== null));
+
+            if (collapse !== false) {
                 sliderArgs.enabled = false;
                 breakpointArgs.enabled = true;
             }
@@ -167,31 +182,9 @@ registerBlockType(metadata.name, {
                 ...breakpointArgs
             };
 
-            sliderArgs = Object.fromEntries(
-                Object.entries(sliderArgs)
-                    .filter(([_, value]) => value !== null));
+            setAttributes({swiperArgs: sliderArgs});
 
-            return sliderArgs;
         }
-
-        let swiper;
-
-        function updateSlider() {
-
-            console.log(swiper);
-
-            if (swiper) {
-                swiper.destroy(true);
-            }
-
-            swiper = new Swiper('.' + uniqueId, {
-                ...swiperDefaultArgs,
-                ...getSliderArgs()
-            });
-        }
-
-        updateSlider();
-
 
         useEffect(() => {
 
@@ -199,10 +192,32 @@ registerBlockType(metadata.name, {
                 uniqueId: uniqueId,
             });
 
+            updateSlider();
+
         }, []);
 
-        //console.log(swiper);
-        //console.log(getSliderArgs());
+        useEffect(() => {
+
+            const selector = '.' + uniqueId;
+
+            if (swiper !== undefined) {
+                swiper.params = {
+                    ...swiper.params,
+                    ...sliderArgs
+                }
+
+                swiper.update();
+            } else {
+
+                swiper = new Swiper(selector, {
+                    ...swiperDefaultArgs,
+                    ...sliderArgs
+                });
+
+            }
+
+
+        }, [swiper]);
 
 
         const blockProps = useBlockProps({
@@ -406,8 +421,8 @@ registerBlockType(metadata.name, {
                                 label="Collapse"
                                 checked={!!collapse}
                                 onChange={(newValue) => {
-                                    setAttributes({['wpbs-collapse']: newValue});
-                                    setCollapse(newValue);
+                                    setAttributes({['wpbs-collapse']: !!newValue});
+                                    setCollapse(!!newValue);
                                     updateSlider();
                                 }}
                                 className={'flex items-center'}

@@ -13,7 +13,7 @@ function blockClasses(attributes = {}) {
     const isGroupStyle = (attributes.className || '').split(' ').includes('is-style-group');
 
     return [
-        'wpbs-slider-nav pointer-events-none z-50 flex items-center justify-center gap-4',
+        'wpbs-slider-nav !pointer-events-none z-50 flex items-center justify-center gap-4',
         !isGroupStyle ? '!absolute top-0 left-0 w-full h-full' : 'relative',
     ].filter(x => x).join(' ');
 }

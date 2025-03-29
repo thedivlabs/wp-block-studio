@@ -177,11 +177,13 @@ registerBlockType(metadata.name, {
         let swiper;
 
         function updateSlider() {
+
+            console.log(swiper);
+
             if (swiper) {
                 swiper.destroy(true);
             }
-            console.log(uniqueId);
-            console.log(getSliderArgs());
+
             swiper = new Swiper('.' + uniqueId, {
                 ...swiperDefaultArgs,
                 ...getSliderArgs()

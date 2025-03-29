@@ -134,28 +134,29 @@ registerBlockType(metadata.name, {
             const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
             let sliderArgs = {
-                slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
-                slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
-                spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
-                autoplay: attributes['wpbs-autoplay'] ? {
-                    delay: attributes['wpbs-autoplay'] * 1000,
-                    pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
+                enabled: true,
+                slidesPerView: slidesMobile || slidesLarge ? parseInt((slidesMobile || slidesLarge)) : 1,
+                slidesPerGroup: groupMobile || groupLarge ? parseInt(groupMobile || groupLarge) : 1,
+                spaceBetween: marginMobile || marginLarge ? parseInt((marginMobile || marginLarge).replace('px', '')) : null,
+                autoplay: autoplay ? {
+                    delay: autoplay * 1000,
+                    pauseOnMouseEnter: !!hoverPause
                 } : false,
-                speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
-                pagination: attributes['wpbs-pagination'] ? {
+                speed: transition ? transition * 100 : 400,
+                pagination: pagination ? {
                     enabled: true,
                     el: '.swiper-pagination',
-                    type: attributes['wpbs-pagination']
+                    type: pagination
                 } : false,
-                effect: attributes['wpbs-effect'] || 'slide',
-                fadeEffect: attributes['wpbs-effect'] !== 'fade' ? null : {
+                effect: effect || 'slide',
+                fadeEffect: effect !== 'fade' ? null : {
                     crossFade: true
                 },
-                freeMode: !!attributes['wpbs-effect'],
-                centeredSlides: !!attributes['wpbs-centered'],
-                loop: !!attributes['wpbs-loop'],
-                rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
-                initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
+                freeMode: !!freeMode,
+                centeredSlides: !!centered,
+                loop: !!loop,
+                rewind: !!loop ? false : !!rewind,
+                initialSlide: !!fromEnd ? 99 : null,
                 breakpoints: {}
             };
 
@@ -164,6 +165,11 @@ registerBlockType(metadata.name, {
                 slidesPerGroup: groupMobile && groupLarge ? parseInt(groupLarge) : null,
                 spaceBetween: marginMobile && marginLarge ? parseInt(marginLarge.replace('px', '')) : null,
             };
+
+            if (!!collapse) {
+                sliderArgs.enabled = false;
+                breakpointArgs.enabled = true;
+            }
 
             sliderArgs = Object.fromEntries(
                 Object.entries(sliderArgs)
@@ -217,7 +223,7 @@ registerBlockType(metadata.name, {
             }
 
 
-        }, [swiper]);
+        }, [swiper,sliderArgs]);
 
 
         const blockProps = useBlockProps({

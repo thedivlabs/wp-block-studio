@@ -117,32 +117,33 @@ registerBlockType(metadata.name, {
         const [dim, setDim] = useState(attributes['wpbs-dim']);
         const [fromEnd, setFromEnd] = useState(attributes['wpbs-from-end']);
         const [rewind, setRewind] = useState(attributes['wpbs-rewind']);
-        const [swiperArgs, setSwiperArgs] = useState(attributes['swiperArgs'] || {});
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
+        function getSliderArgs() {
+            const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
-        let sliderArgs;
-
-        function updateSlider(){
-            sliderArgs = {
-                slidesPerView: slidesMobile || slidesLarge || 1,
-                slidesPerGroup: groupMobile || groupLarge || 1,
-                spaceBetween: marginMobile || marginLarge || null,
+            let sliderArgs = {
+                enabled: true,
+                slidesPerView: slidesMobile || slidesLarge ? parseInt(slidesMobile || slidesLarge) : 1,
+                slidesPerGroup: groupMobile || groupLarge ? parseInt(groupMobile || groupLarge) : 1,
+                spaceBetween: marginMobile || marginLarge ? parseInt(marginMobile || marginLarge) : null,
                 autoplay: autoplay ? {
                     delay: autoplay * 1000,
                     pauseOnMouseEnter: !!hoverPause
                 } : false,
-                speed: transition ? transition * 100 : null,
+                speed: transition ? transition * 100 : 400,
                 pagination: pagination ? {
                     enabled: true,
                     el: '.swiper-pagination',
                     type: pagination
                 } : false,
                 effect: effect || 'slide',
+                fadeEffect: effect !== 'fade' ? null : {
+                    crossFade: true
+                },
                 freeMode: !!freeMode,
                 centeredSlides: !!centered,
                 loop: !!loop,
@@ -152,9 +153,9 @@ registerBlockType(metadata.name, {
             };
 
             let breakpointArgs = {
-                slidesPerView: slidesMobile && slidesLarge ? slidesLarge : null,
-                slidesPerGroup: groupMobile && groupLarge ? groupLarge : null,
-                spaceBetween: marginMobile && marginLarge ? marginLarge : null,
+                slidesPerView: slidesMobile && slidesLarge ? parseInt(slidesLarge) : null,
+                slidesPerGroup: groupMobile && groupLarge ? parseInt(groupLarge) : null,
+                spaceBetween: marginMobile && marginLarge ? parseInt(marginLarge) : null,
             };
 
             if (!!collapse) {
@@ -166,24 +167,29 @@ registerBlockType(metadata.name, {
                 ...breakpointArgs
             };
 
-            /*sliderArgs = Object.fromEntries(
-                    Object.entries(sliderArgs)
-                        .filter(([_, value]) => value !== null));*/
+            sliderArgs = Object.fromEntries(
+                Object.entries(sliderArgs)
+                    .filter(([_, value]) => value !== null));
 
-            setSwiperArgs(sliderArgs);
-
-            setAttributes({
-                swiperArgs: sliderArgs
-            });
-
-            swiper.params = swiperArgs;
-
-            swiper.update();
+            return sliderArgs;
         }
 
-        console.log(swiperArgs);
-
         let swiper;
+
+        function updateSlider() {
+            if (swiper) {
+                swiper.destroy(true);
+            }
+            console.log(uniqueId);
+            console.log(getSliderArgs());
+            swiper = new Swiper('.' + uniqueId, {
+                ...swiperDefaultArgs,
+                ...getSliderArgs()
+            });
+        }
+
+        updateSlider();
+
 
         useEffect(() => {
 
@@ -191,12 +197,10 @@ registerBlockType(metadata.name, {
                 uniqueId: uniqueId,
             });
 
-            swiper = new Swiper('.' + uniqueId, {
-                ...swiperDefaultArgs,
-                ...sliderArgs
-            });
-
         }, []);
+
+        //console.log(swiper);
+        //console.log(getSliderArgs());
 
 
         const blockProps = useBlockProps({

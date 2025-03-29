@@ -117,6 +117,7 @@ registerBlockType(metadata.name, {
         const [dim, setDim] = useState(attributes['wpbs-dim']);
         const [fromEnd, setFromEnd] = useState(attributes['wpbs-from-end']);
         const [rewind, setRewind] = useState(attributes['wpbs-rewind']);
+        const [swiperArgs, setSwiperArgs] = useState(attributes['swiperArgs'] || {});
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
@@ -124,62 +125,79 @@ registerBlockType(metadata.name, {
 
         const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
-        let sliderArgs = {
-            slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
-            slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
-            spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] || null,
-            autoplay: attributes['wpbs-autoplay'] ? {
-                delay: attributes['wpbs-autoplay'] * 1000,
-                pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
-            } : false,
-            speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
-            pagination: attributes['wpbs-pagination'] ? {
-                enabled: true,
-                el: '.swiper-pagination',
-                type: attributes['wpbs-pagination']
-            } : false,
-            effect: attributes['wpbs-effect'] || 'slide',
-            freeMode: !!attributes['wpbs-effect'],
-            centeredSlides: !!attributes['wpbs-centered'],
-            loop: !!attributes['wpbs-loop'],
-            rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
-            initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
-            breakpoints: {}
-        };
+        let sliderArgs;
 
-        let breakpointArgs = {
-            slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
-            slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
-            spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
-        };
+        function updateSlider(){
+            sliderArgs = {
+                slidesPerView: slidesMobile || slidesLarge || 1,
+                slidesPerGroup: groupMobile || groupLarge || 1,
+                spaceBetween: marginMobile || marginLarge || null,
+                autoplay: autoplay ? {
+                    delay: autoplay * 1000,
+                    pauseOnMouseEnter: !!hoverPause
+                } : false,
+                speed: transition ? transition * 100 : null,
+                pagination: pagination ? {
+                    enabled: true,
+                    el: '.swiper-pagination',
+                    type: pagination
+                } : false,
+                effect: effect || 'slide',
+                freeMode: !!freeMode,
+                centeredSlides: !!centered,
+                loop: !!loop,
+                rewind: !!loop ? false : !!rewind,
+                initialSlide: !!fromEnd ? 99 : null,
+                breakpoints: {}
+            };
 
-        if (!!attributes['wpbs-collapse']) {
-            sliderArgs.enabled = false;
-            breakpointArgs.enabled = true;
+            let breakpointArgs = {
+                slidesPerView: slidesMobile && slidesLarge ? slidesLarge : null,
+                slidesPerGroup: groupMobile && groupLarge ? groupLarge : null,
+                spaceBetween: marginMobile && marginLarge ? marginLarge : null,
+            };
+
+            if (!!collapse) {
+                sliderArgs.enabled = false;
+                breakpointArgs.enabled = true;
+            }
+
+            sliderArgs.breakpoints[breakpoint] = {
+                ...breakpointArgs
+            };
+
+            /*sliderArgs = Object.fromEntries(
+                    Object.entries(sliderArgs)
+                        .filter(([_, value]) => value !== null));*/
+
+            setSwiperArgs(sliderArgs);
+
+            setAttributes({
+                swiperArgs: sliderArgs
+            });
+
+            swiper.params = swiperArgs;
+
+            swiper.update();
         }
 
-        sliderArgs.breakpoints[breakpoint] = {
-            ...breakpointArgs
-        };
+        console.log(swiperArgs);
 
-        /*sliderArgs = Object.fromEntries(
-            Object.entries(sliderArgs)
-                .filter(([_, value]) => value !== null));*/
+        let swiper;
 
         useEffect(() => {
 
             setAttributes({
                 uniqueId: uniqueId,
-                swiperArgs: sliderArgs
             });
 
+            swiper = new Swiper('.' + uniqueId, {
+                ...swiperDefaultArgs,
+                ...sliderArgs
+            });
 
         }, []);
 
-        const swiper = new Swiper('#block-' + clientId, {
-            ...swiperDefaultArgs,
-            ...attributes.swiperArgs
-        });
 
         const blockProps = useBlockProps({
             className: [
@@ -207,6 +225,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-slides-mobile']: newValue});
                                     setSlidesMobile(newValue);
+                                    updateSlider();
                                 }}
                                 value={slidesMobile}
                             />
@@ -217,6 +236,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-slides-large']: newValue});
                                     setSlidesLarge(newValue);
+                                    updateSlider();
                                 }}
                                 value={slidesLarge}
                             />
@@ -227,6 +247,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-group-mobile']: newValue});
                                     setGroupMobile(newValue);
+                                    updateSlider();
                                 }}
                                 value={groupMobile}
                             />
@@ -237,6 +258,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-group-large']: newValue});
                                     setGroupLarge(newValue);
+                                    updateSlider();
                                 }}
                                 value={groupLarge}
                             />
@@ -247,6 +269,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-autoplay']: newValue});
                                     setAutoplay(newValue);
+                                    updateSlider();
                                 }}
                                 step={1}
                                 value={autoplay}
@@ -258,6 +281,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-transition']: newValue});
                                     setTransition(newValue);
+                                    updateSlider();
                                 }}
                                 step={1}
                                 value={transition}
@@ -273,6 +297,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-margin-mobile']: newValue});
                                     setMarginMobile(newValue);
+                                    updateSlider();
                                 }}
                             />
                             <UnitControl
@@ -286,6 +311,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-margin-large']: newValue});
                                     setMarginLarge(newValue);
+                                    updateSlider();
                                 }}
                             />
 
@@ -301,6 +327,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setPagination(newValue);
                                     setAttributes({['wpbs-pagination']: newValue});
+                                    updateSlider();
                                 }}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
@@ -316,6 +343,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setEffect(newValue);
                                     setAttributes({['wpbs-effect']: newValue});
+                                    updateSlider();
                                 }}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
@@ -330,6 +358,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-hover-pause']: newValue});
                                     setHoverPause(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -340,6 +369,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-fade-in']: newValue});
                                     setFadeIn(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -350,6 +380,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-free-mode']: newValue});
                                     setFreeMode(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -360,6 +391,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-centered']: newValue});
                                     setCentered(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -370,6 +402,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-collapse']: newValue});
                                     setCollapse(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -380,6 +413,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-loop']: newValue});
                                     setLoop(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -390,6 +424,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-dim']: newValue});
                                     setDim(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -400,6 +435,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-from-end']: newValue});
                                     setFromEnd(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -410,6 +446,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-rewind']: newValue});
                                     setRewind(newValue);
+                                    updateSlider();
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

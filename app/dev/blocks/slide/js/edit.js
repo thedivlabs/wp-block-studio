@@ -16,6 +16,7 @@ import {__experimentalGrid as Grid, BaseControl, Button, PanelBody, ToggleContro
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
 import Resolution from "Components/Resolution.js";
+import Picture from "Components/picture.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -23,6 +24,26 @@ function blockClasses(attributes = {}) {
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
+}
+
+function BlockContent(isImageSlide,attributes,innerBlocksProps,isEditor = false){
+    if(isImageSlide){
+        return <Picture
+            mobile={attributes['wpbs-imageMobile']}
+            large={attributes['wpbs-imageLarge']}
+            settings={{
+                eager: !!attributes['wpbs-eager'],
+                force: !!attributes['wpbs-force'],
+                className: 'w-full h-full object-cover',
+                sizeLarge: attributes['wpbs-resolution'],
+            }}
+        ></Picture>;
+    } else {
+        return <>
+            <div {...innerBlocksProps}></div>
+            <Background attributes={props.attributes} editor={isEditor}/>
+        </>;
+    }
 }
 
 const blockAttributes = {
@@ -213,8 +234,7 @@ registerBlockType(metadata.name, {
                     clientId={clientId}></Layout>
 
             <div {...blockProps}>
-                <div {...innerBlocksProps}></div>
-                <Background attributes={attributes} editor={true}/>
+                <BlockContent isImageSlide={isImageSlide} attributes={props.attributes} innerBlocksProps={innerBlocksProps} editor={true}/>
             </div>
 
         </>;
@@ -229,11 +249,12 @@ registerBlockType(metadata.name, {
             className: 'wpbs-slide__container w-full h-full container relative z-20',
         });
 
+        const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');
+
         return (
 
             <div {...blockProps}>
-                <div {...innerBlocksProps}></div>
-                <Background attributes={props.attributes}/>
+                <BlockContent isImageSlide={isImageSlide} attributes={props.attributes} innerBlocksProps={innerBlocksProps}/>
             </div>
         );
     }

@@ -47,12 +47,12 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
                 className: 'w-full h-full !object-cover absolute top-0 left-0',
                 sizeLarge: resolution,
             }}
-            editor={isEditor}
+            editor={!!isEditor}
         ></ResponsivePicture>;
     } else {
         return <>
             <div {...innerBlocksProps}></div>
-            <Background attributes={attributes} editor={isEditor}/>
+            <Background attributes={attributes} editor={!!isEditor}/>
         </>;
     }
 }
@@ -246,7 +246,7 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
-                              editor={true}/>
+                              isEditor={true}/>
             </div>
 
         </>;
@@ -269,7 +269,7 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={props.attributes}
-                              innerBlocksProps={innerBlocksProps} editor={false}/>
+                              innerBlocksProps={innerBlocksProps} isEditor={false}/>
             </div>
         );
     }

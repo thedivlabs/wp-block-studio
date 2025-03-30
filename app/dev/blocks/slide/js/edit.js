@@ -26,8 +26,8 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function BlockContent(isImageSlide,attributes,innerBlocksProps,isEditor = false){
-    console.log(attributes);
+function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = false}){
+
     if(isImageSlide){
 
         const {

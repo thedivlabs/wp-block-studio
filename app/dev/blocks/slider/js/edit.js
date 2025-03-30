@@ -122,6 +122,12 @@ function getArgs(attributes) {
         breakpoints: {}
     };
 
+    let breakpointArgs = {
+        slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
+        slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
+        spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
+    };
+
     if (args.effect === 'fade') {
         args.fadeEffect = {
             crossFade: true
@@ -131,13 +137,12 @@ function getArgs(attributes) {
         args.spaceBetween = 0;
         args.freeMode = false;
         args.loop = false;
-    }
 
-    let breakpointArgs = {
-        slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
-        slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
-        spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
-    };
+        breakpointArgs.slidesPerView = 1;
+        breakpointArgs.slidesPerGroup = 1;
+        breakpointArgs.spaceBetween = 0;
+
+    }
 
     if (!!attributes['wpbs-collapse']) {
         args.enabled = false;
@@ -180,7 +185,7 @@ registerBlockType(metadata.name, {
         const [autoplay, setAutoplay] = useState(attributes['wpbs-autoplay']);
         const [transition, setTransition] = useState(attributes['wpbs-transition']);
         const [pagination, setPagination] = useState(attributes['wpbs-pagination']);
-        const [effect, setEffect] = useState(attributes['wpbs-effect']);
+        const [effect, setEffect] = useState(attributes['wpbs-effect'] || 'slide');
 
         const [hoverPause, setHoverPause] = useState(attributes['wpbs-hover-pause']);
         const [fadeIn, setFadeIn] = useState(attributes['wpbs-fade-in']);
@@ -202,21 +207,25 @@ registerBlockType(metadata.name, {
         function updateSlider() {
 
             const args = getArgs(attributes);
-
-            setAttributes({['wpbs-prop-slides']: attributes['wpbs-slidesLarge'] || attributes['wpbs-slidesMobile'] || '1'});
-            setAttributes({['wpbs-prop-slides-mobile']: attributes['wpbs-slidesMobile'] || attributes['wpbs-slidesLarge'] || '1'});
-            setAttributes({breakpoint: breakpoint});
-            setAttributes({swiperArgs: args});
+            setAttributes({
+                ['wpbs-prop-slides']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slidesLarge'] || attributes['wpbs-slidesMobile'] || '1',
+                ['wpbs-prop-slides-mobile']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slidesMobile'] || attributes['wpbs-slidesLarge'] || '1',
+                breakpoint: breakpoint,
+                swiperArgs: args
+            });
             setSwiperArgs(args);
 
         }
 
         useEffect(() => {
 
+            const args = getArgs(attributes);
+            setSwiperArgs(args);
+
             setAttributes({
                 uniqueId: uniqueId,
-                ['wpbs-prop-slides']: attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
-                ['wpbs-prop-slides-mobile']: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
+                ['wpbs-prop-slides']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
+                ['wpbs-prop-slides-mobile']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
             });
 
         }, []);

@@ -128,7 +128,7 @@ function getArgs(attributes) {
         spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
     };
 
-    if (args.effect === 'fade') {
+    if (args.effect !== 'slide') {
         args.fadeEffect = {
             crossFade: true
         }
@@ -160,7 +160,7 @@ function getArgs(attributes) {
     args.breakpoints[breakpoint] = {
         ...breakpointArgs
     };
-    
+
     return args;
 }
 

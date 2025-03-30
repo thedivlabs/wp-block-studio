@@ -1,17 +1,19 @@
 import {
     useBlockProps,
     InspectorControls,
-    useInnerBlocksProps, InnerBlocks,
+    InnerBlocks,
 } from "@wordpress/block-editor"
-import {registerBlockType} from "@wordpress/blocks"
+import {registerBlockType, cloneBlock} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
+
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import {useEffect} from "react";
+import {dispatch, useSelect} from "@wordpress/data";
 
 
 function sectionClassNames(attributes = {}) {
@@ -42,16 +44,17 @@ registerBlockType(metadata.name, {
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
 
-
-        function Content() {
-            if (!!attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks/>
-                </div>;
+        const innerBlocks = useSelect((select) => select('core/block-editor').getBlock(clientId).innerBlocks, []);
+        const appenderToUse = () => {
+            if (innerBlocks.length < 2) {
+                return (
+                    <InnerBlocks.DefaultBlockAppender/>
+                );
             } else {
-                return <InnerBlocks/>;
+                return false;
             }
         }
+
 
         return (
             <>
@@ -61,9 +64,10 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
+
                 <div {...blockProps}>
 
-                    <Content/>
+                    <InnerBlocks renderAppender={() => appenderToUse()}/>
 
                     <Background attributes={attributes} editor={true}/>
 
@@ -78,20 +82,10 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
-        function Content() {
-            if (!!props.attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-wrapper'}>
-                    <InnerBlocks.Content/>
-                </div>;
-            } else {
-                return <InnerBlocks.Content/>;
-            }
-        }
-
         return (
             <div {...blockProps}>
 
-                <Content/>
+                <InnerBlocks.Content/>
 
                 <Background attributes={props.attributes} editor={false}/>
             </div>

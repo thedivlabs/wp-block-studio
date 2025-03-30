@@ -51,8 +51,6 @@ const {state} = store('wpbs', {
                                 ...args,
                             }
 
-                            console.log(mergedArgs);
-
                             const swiper = new Swiper(element, mergedArgs);
                         })
 

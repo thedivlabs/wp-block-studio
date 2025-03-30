@@ -27,15 +27,25 @@ function blockClasses(attributes = {}) {
 }
 
 function BlockContent(isImageSlide,attributes,innerBlocksProps,isEditor = false){
+    console.log(attributes);
     if(isImageSlide){
+
+        const {
+            ['wpbs-mobileImage']:mobileImage,
+            ['wpbs-largeImage']:largeImage,
+            ['wpbs-eager']:eager,
+            ['wpbs-force']:force,
+            ['wpbs-resolution']:resolution,
+        } = attributes;
+
         return <Picture
-            mobile={attributes['wpbs-imageMobile'] || false}
-            large={attributes['wpbs-imageLarge'] || false}
+            mobile={mobileImage}
+            large={largeImage}
             settings={{
-                eager: !!attributes['wpbs-eager'],
-                force: !!attributes['wpbs-force'],
+                eager: !!eager,
+                force: !!force,
                 className: 'w-full h-full object-cover',
-                sizeLarge: attributes['wpbs-resolution'] || false,
+                sizeLarge: resolution,
             }}
         ></Picture>;
     } else {
@@ -234,7 +244,7 @@ registerBlockType(metadata.name, {
                     clientId={clientId}></Layout>
 
             <div {...blockProps}>
-                <BlockContent isImageSlide={isImageSlide} attributes={props.attributes} innerBlocksProps={innerBlocksProps} editor={true}/>
+                <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps} editor={true}/>
             </div>
 
         </>;

@@ -4,7 +4,7 @@ const {state} = store('wpbs', {
     callbacks: {
         observe: () => {
             const {ref: element} = getElement();
-console.log('xxxxx');
+
             WPBS.observeMedia(element);
 
         },

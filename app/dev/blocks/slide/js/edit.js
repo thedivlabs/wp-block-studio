@@ -26,16 +26,16 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = false}){
+function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = false}) {
 
-    if(isImageSlide){
+    if (isImageSlide) {
 
         const {
-            ['wpbs-mobileSlideImage']:mobileImage,
-            ['wpbs-largeSlideImage']:largeImage,
-            ['wpbs-eagerSlide']:eager,
-            ['wpbs-forceSlide']:force,
-            ['wpbs-resolutionSlide']:resolution,
+            ['wpbs-mobileSlideImage']: mobileImage,
+            ['wpbs-largeSlideImage']: largeImage,
+            ['wpbs-eagerSlide']: eager,
+            ['wpbs-forceSlide']: force,
+            ['wpbs-resolutionSlide']: resolution,
         } = attributes;
 
         return <Picture
@@ -47,6 +47,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
                 className: 'w-full h-full !object-cover absolute top-0 left-0',
                 sizeLarge: resolution,
             }}
+            editor={isEditor}
         ></Picture>;
     } else {
         return <>
@@ -244,7 +245,8 @@ registerBlockType(metadata.name, {
                     clientId={clientId}></Layout>
 
             <div {...blockProps}>
-                <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps} editor={true}/>
+                <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
+                              editor={true}/>
             </div>
 
         </>;
@@ -253,6 +255,8 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
+            'data-wp-interactive': 'wpbs-slide',
+            'data-wp-init': 'callbacks.observe',
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({
@@ -264,7 +268,8 @@ registerBlockType(metadata.name, {
         return (
 
             <div {...blockProps}>
-                <BlockContent isImageSlide={isImageSlide} attributes={props.attributes} innerBlocksProps={innerBlocksProps}/>
+                <BlockContent isImageSlide={isImageSlide} attributes={props.attributes}
+                              innerBlocksProps={innerBlocksProps}/>
             </div>
         );
     }

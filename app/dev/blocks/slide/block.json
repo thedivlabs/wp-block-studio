@@ -16,11 +16,14 @@
     }
   },
   "styles": [
-    { "name": "image", "label": "Image" }
-
+    {
+      "name": "image",
+      "label": "Image"
+    }
   ],
   "supports": {
     "innerBlocks": true,
+    "interactivity": true,
     "color": {
       "background": true,
       "text": true,

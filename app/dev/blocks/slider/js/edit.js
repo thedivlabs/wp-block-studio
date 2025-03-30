@@ -205,6 +205,9 @@ registerBlockType(metadata.name, {
                 ...swiperDefaultArgs,
                 ...args
             };
+
+            delete (mergedArgs.on);
+
             const blockId = 'block-' + clientId;
             const selector = '#' + blockId;
 
@@ -212,7 +215,7 @@ registerBlockType(metadata.name, {
 
             if ('swiper' in block) {
 
-                block.swiper.destroy(true);
+                block.swiper.destroy();
             }
 
             const swiper = new Swiper(selector, mergedArgs);

@@ -49,10 +49,10 @@ registerBlockType(metadata.name, {
         function Content() {
             if (!!attributes['wpbs-background']) {
                 return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks.Content/>
+                    <InnerBlocks/>
                 </div>;
             } else {
-                return <InnerBlocks.Content/>;
+                return <InnerBlocks/>;
             }
         }
 

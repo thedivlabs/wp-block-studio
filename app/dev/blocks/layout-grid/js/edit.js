@@ -7,7 +7,6 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
-import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
@@ -30,7 +29,6 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LayoutAttributes,
         ...BackgroundAttributes,
-        ...ElementTagAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -48,10 +46,10 @@ registerBlockType(metadata.name, {
         function Content() {
             if (!!attributes['wpbs-background']) {
                 return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks.Content/>
+                    <InnerBlocks/>
                 </div>;
             } else {
-                return <InnerBlocks.Content/>;
+                return <InnerBlocks/>;
             }
         }
 
@@ -63,7 +61,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
-                <div {...blockProps} data-wp-interactive='wpbs-layout-grid'>
+                <div {...blockProps}>
 
                     <Content/>
 

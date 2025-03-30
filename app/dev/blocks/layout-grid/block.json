@@ -11,8 +11,6 @@
     }
   },
   "supports": {
-    "layout": false,
-    "interactivity": true,
     "innerBlocks": true,
     "color": {
       "background": true,

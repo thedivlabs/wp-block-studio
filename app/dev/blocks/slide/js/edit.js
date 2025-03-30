@@ -197,6 +197,7 @@ registerBlockType(metadata.name, {
         return <>
             <BlockEdit key="edit" {...blockProps} />
 
+            <Controls/>
 
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                     clientId={clientId}></Layout>

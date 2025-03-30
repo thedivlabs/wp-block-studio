@@ -20,7 +20,9 @@ import ResponsivePicture from "Components/ResponsivePicture.js";
 
 function blockClasses(attributes = {}) {
     return [
-        'wpbs-slide swiper-slide wpbs-layout-container wpbs-has-container !h-auto grow w-full !flex flex-col shrink-0 relative',
+        'wpbs-slide',
+        (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
+        'swiper-slide wpbs-layout-container wpbs-has-container !h-auto grow w-full !flex flex-col shrink-0 relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

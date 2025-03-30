@@ -113,7 +113,7 @@ function getArgs(attributes) {
             el: '.swiper-pagination',
             type: attributes['wpbs-pagination']
         } : false,
-        effect: attributes['wpbs-effect'] || null,
+        effect: attributes['wpbs-effect'] || 'slide',
         freeMode: !!attributes['wpbs-effect'],
         centeredSlides: !!attributes['wpbs-centered'],
         loop: !!attributes['wpbs-loop'],
@@ -121,6 +121,17 @@ function getArgs(attributes) {
         initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
         breakpoints: {}
     };
+
+    if (args.effect === 'fade') {
+        args.fadeEffect = {
+            crossFade: true
+        }
+        args.slidesPerView = 1;
+        args.slidesPerGroup = 1;
+        args.spaceBetween = 0;
+        args.freeMode = false;
+        args.loop = false;
+    }
 
     let breakpointArgs = {
         slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
@@ -207,7 +218,7 @@ registerBlockType(metadata.name, {
                 ['wpbs-prop-slides']: attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
                 ['wpbs-prop-slides-mobile']: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
             });
-            
+
         }, []);
 
         useEffect(() => {

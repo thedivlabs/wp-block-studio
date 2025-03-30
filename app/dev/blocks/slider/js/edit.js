@@ -160,7 +160,7 @@ function getArgs(attributes) {
     args.breakpoints[breakpoint] = {
         ...breakpointArgs
     };
-
+    
     return args;
 }
 
@@ -218,9 +218,6 @@ registerBlockType(metadata.name, {
         }
 
         useEffect(() => {
-
-            const args = getArgs(attributes);
-            setSwiperArgs(args);
 
             setAttributes({
                 uniqueId: uniqueId,

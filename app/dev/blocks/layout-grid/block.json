@@ -11,7 +11,7 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/layout-grid-item"
+    "wpbs/layout-grid-card"
   ],
   "supports": {
     "innerBlocks": true,

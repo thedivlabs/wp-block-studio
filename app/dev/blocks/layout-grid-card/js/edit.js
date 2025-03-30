@@ -19,7 +19,7 @@ import {useSelect} from "@wordpress/data";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-grid-item w-full block relative',
+        'wpbs-layout-grid-card w-full block relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -34,7 +34,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-item');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});

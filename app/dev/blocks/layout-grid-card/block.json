@@ -1,9 +1,9 @@
 {
-  "name": "wpbs/layout-grid-item",
-  "title": "Layout Grid Item",
-  "description": "Display a layout grid item",
+  "name": "wpbs/layout-grid-card",
+  "title": "Grid Card",
+  "description": "Display a layout grid card",
   "selectors": {
-    "root": ".wpbs-layout-grid-item"
+    "root": ".wpbs-layout-grid-card"
   },
   "attributes": {
     "uniqueId": {

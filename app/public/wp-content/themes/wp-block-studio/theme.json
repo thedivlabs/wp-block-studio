@@ -240,16 +240,6 @@
           "slug": "light-500",
           "color": "#A3A3A3",
           "name": "Light 500"
-        },
-        {
-          "slug": "#000",
-          "color": "#000",
-          "name": "Black"
-        },
-        {
-          "slug": "#fff",
-          "color": "#fff",
-          "name": "White"
         }
       ],
       "gradients": [

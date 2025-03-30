@@ -27,6 +27,12 @@ function blockClasses(attributes = {}) {
 }
 
 const blockAttributes = {
+    'wpbs-prop-slides': {
+        type: 'string'
+    },
+    'wpbs-prop-slides-mobile': {
+        type: 'string'
+    },
     'wpbs-slides-mobile': {
         type: 'string'
     },
@@ -89,6 +95,59 @@ const blockAttributes = {
     },
 }
 
+function getArgs(attributes) {
+
+    const breakpoint = attributes.breakpoint || 992;
+
+    let args = {
+        slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
+        slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
+        spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] ? (attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large']).replace('px', '') : null,
+        autoplay: attributes['wpbs-autoplay'] ? {
+            delay: attributes['wpbs-autoplay'] * 1000,
+            pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
+        } : false,
+        speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
+        pagination: attributes['wpbs-pagination'] ? {
+            enabled: true,
+            el: '.swiper-pagination',
+            type: attributes['wpbs-pagination']
+        } : false,
+        effect: attributes['wpbs-effect'] || null,
+        freeMode: !!attributes['wpbs-effect'],
+        centeredSlides: !!attributes['wpbs-centered'],
+        loop: !!attributes['wpbs-loop'],
+        rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
+        initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
+        breakpoints: {}
+    };
+
+    let breakpointArgs = {
+        slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
+        slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
+        spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
+    };
+
+    if (!!attributes['wpbs-collapse']) {
+        args.enabled = false;
+        breakpointArgs.enabled = true;
+    }
+
+    args = Object.fromEntries(
+        Object.entries(args)
+            .filter(([_, value]) => value !== null));
+
+    breakpointArgs = Object.fromEntries(
+        Object.entries(breakpointArgs)
+            .filter(([_, value]) => value !== null));
+
+    args.breakpoints[breakpoint] = {
+        ...breakpointArgs
+    };
+
+    return args;
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -127,63 +186,15 @@ registerBlockType(metadata.name, {
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        function getArgs() {
-
-            const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
-
-            let args = {
-                slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
-                slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
-                spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] ? (attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large']).replace('px', '') : null,
-                autoplay: attributes['wpbs-autoplay'] ? {
-                    delay: attributes['wpbs-autoplay'] * 1000,
-                    pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
-                } : false,
-                speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
-                pagination: attributes['wpbs-pagination'] ? {
-                    enabled: true,
-                    el: '.swiper-pagination',
-                    type: attributes['wpbs-pagination']
-                } : false,
-                effect: attributes['wpbs-effect'] || null,
-                freeMode: !!attributes['wpbs-effect'],
-                centeredSlides: !!attributes['wpbs-centered'],
-                loop: !!attributes['wpbs-loop'],
-                rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
-                initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
-                breakpoints: {}
-            };
-
-            let breakpointArgs = {
-                slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
-                slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
-                spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
-            };
-
-            if (!!collapse) {
-                args.enabled = false;
-                breakpointArgs.enabled = true;
-            }
-
-            args = Object.fromEntries(
-                Object.entries(args)
-                    .filter(([_, value]) => value !== null));
-
-            breakpointArgs = Object.fromEntries(
-                Object.entries(breakpointArgs)
-                    .filter(([_, value]) => value !== null));
-
-            args.breakpoints[breakpoint] = {
-                ...breakpointArgs
-            };
-
-            return args;
-        }
+        const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
         function updateSlider() {
 
-            const args = getArgs();
+            const args = getArgs(attributes);
 
+            setAttributes({['wpbs-prop-slides']: attributes['wpbs-slidesLarge'] || attributes['wpbs-slidesMobile'] || '1'});
+            setAttributes({['wpbs-prop-slides-mobile']: attributes['wpbs-slidesMobile'] || attributes['wpbs-slidesLarge'] || '1'});
+            setAttributes({breakpoint: breakpoint});
             setAttributes({swiperArgs: args});
             setSwiperArgs(args);
 
@@ -193,13 +204,15 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 uniqueId: uniqueId,
+                ['wpbs-prop-slides']: attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
+                ['wpbs-prop-slides-mobile']: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
             });
+            
         }, []);
-
 
         useEffect(() => {
 
-            const args = getArgs();
+            const args = getArgs(attributes);
 
             const mergedArgs = {
                 ...swiperDefaultArgs,
@@ -498,9 +511,7 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
-                args: {
-                    ...props.attributes.swiperArgs
-                }
+                args: getArgs(props.attributes)
             })
         });
 

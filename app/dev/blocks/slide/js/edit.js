@@ -1,3 +1,5 @@
+import '../scss/block.scss';
+
 import {
     useBlockProps,
     BlockEdit,

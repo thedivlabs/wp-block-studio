@@ -16,7 +16,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
-import Picture from "Components/Picture";
+import ResponsivePicture from "Components/ResponsivePicture.js";
 import React, {useEffect, useState} from "react";
 
 import {useSettings} from '@wordpress/block-editor';
@@ -114,8 +114,8 @@ function Media({attributes, editor = false, props = {}}) {
         switch (attributes['wpbs-type']) {
             case 'image':
 
-                return <Picture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
-                                settings={getSettings(attributes)} editor={editor}></Picture>;
+                return <ResponsivePicture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
+                                          settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
             default:
                 return false
         }

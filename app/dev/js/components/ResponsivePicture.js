@@ -1,4 +1,4 @@
-function Picture({mobile = {}, large = {}, settings = {}, editor = false}) {
+function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = false}) {
 
     const {
         resolution: sizeMobile = 'medium',
@@ -73,4 +73,4 @@ function Picture({mobile = {}, large = {}, settings = {}, editor = false}) {
     </picture>;
 }
 
-export default Picture;
+export default ResponsivePicture;

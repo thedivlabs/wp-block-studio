@@ -17,7 +17,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
-import Picture from "Components/Picture";
+import ResponsivePicture from "Components/ResponsivePicture.js";
 import React, {useEffect, useState} from "react";
 
 import Overlay from "Components/Overlay";
@@ -79,11 +79,11 @@ function Media({attributes, editor = false}) {
         <button type={'button'} class={'wpbs-video__button'}>
             <i class="fa-solid fa-circle-play"></i>
         </button>
-        {!!attributes['wpbs-posterImage'] ? <Picture mobile={attributes['wpbs-posterImage']} settings={{
+        {!!attributes['wpbs-posterImage'] ? <ResponsivePicture mobile={attributes['wpbs-posterImage']} settings={{
                 resolution: attributes['wpbs-resolution'],
                 className: posterClasses,
                 eager: attributes['wpbs-eager']
-            }} editor={editor}></Picture> :
+            }} editor={editor}></ResponsivePicture> :
             <img src={'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg'} class={posterClasses} alt={''}
                  aria-hidden={'true'} loading={!!attributes['wpbs-eager'] ? 'eager' : 'lazy'}/>}
     </div>

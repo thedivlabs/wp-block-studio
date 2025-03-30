@@ -16,7 +16,7 @@ import {__experimentalGrid as Grid, BaseControl, Button, PanelBody, ToggleContro
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
 import Resolution from "Components/Resolution.js";
-import Picture from "Components/picture.js";
+import ResponsivePicture from "Components/ResponsivePicture.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -38,7 +38,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
             ['wpbs-resolutionSlide']: resolution,
         } = attributes;
 
-        return <Picture
+        return <ResponsivePicture
             mobile={mobileImage}
             large={largeImage}
             settings={{
@@ -48,7 +48,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
                 sizeLarge: resolution,
             }}
             editor={isEditor}
-        ></Picture>;
+        ></ResponsivePicture>;
     } else {
         return <>
             <div {...innerBlocksProps}></div>
@@ -269,7 +269,7 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={props.attributes}
-                              innerBlocksProps={innerBlocksProps}/>
+                              innerBlocksProps={innerBlocksProps} editor={false}/>
             </div>
         );
     }

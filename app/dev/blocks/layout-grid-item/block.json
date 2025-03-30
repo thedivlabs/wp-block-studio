@@ -1,17 +1,17 @@
 {
-  "name": "wpbs/layout-grid",
-  "title": "Layout Grid",
-  "description": "Display a layout grid",
+  "name": "wpbs/layout-grid-item",
+  "title": "Layout Grid Item",
+  "description": "Display a layout grid item",
   "selectors": {
-    "root": ".wpbs-layout-grid"
+    "root": ".wpbs-layout-grid-item"
   },
   "attributes": {
     "uniqueId": {
       "type": "string"
     }
   },
-  "allowedBlocks": [
-    "wpbs/layout-grid-item"
+  "parent": [
+    "wpbs/layout-grid"
   ],
   "supports": {
     "innerBlocks": true,

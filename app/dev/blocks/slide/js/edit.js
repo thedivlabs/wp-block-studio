@@ -29,13 +29,13 @@ function blockClasses(attributes = {}) {
 function BlockContent(isImageSlide,attributes,innerBlocksProps,isEditor = false){
     if(isImageSlide){
         return <Picture
-            mobile={attributes['wpbs-imageMobile']}
-            large={attributes['wpbs-imageLarge']}
+            mobile={attributes['wpbs-imageMobile'] || false}
+            large={attributes['wpbs-imageLarge'] || false}
             settings={{
                 eager: !!attributes['wpbs-eager'],
                 force: !!attributes['wpbs-force'],
                 className: 'w-full h-full object-cover',
-                sizeLarge: attributes['wpbs-resolution'],
+                sizeLarge: attributes['wpbs-resolution'] || false,
             }}
         ></Picture>;
     } else {

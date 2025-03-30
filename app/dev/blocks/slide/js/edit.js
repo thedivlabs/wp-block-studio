@@ -41,7 +41,7 @@ function BlockContent(isImageSlide,attributes,innerBlocksProps,isEditor = false)
     } else {
         return <>
             <div {...innerBlocksProps}></div>
-            <Background attributes={props.attributes} editor={isEditor}/>
+            <Background attributes={attributes} editor={isEditor}/>
         </>;
     }
 }

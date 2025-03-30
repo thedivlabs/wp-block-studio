@@ -73,12 +73,14 @@ registerBlockType(metadata.name, {
             className: 'wpbs-slide__container w-full h-full container relative z-20',
         });
 
+        const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');
+
         return <>
             <BlockEdit key="edit" {...blockProps} />
             <InspectorControls group="styles">
-                <BackgroundSettings attributes={attributes || {}}
+                <BackgroundSettings attributes={attributes || {}} className={isImageSlide ? '!hidden' : null}
                                     pushSettings={setAttributes}></BackgroundSettings>
-                <PanelBody initialOpen={true} title={'Image'}>
+                <PanelBody initialOpen={true} title={'Image'} className={!isImageSlide ? '!hidden' : null}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>

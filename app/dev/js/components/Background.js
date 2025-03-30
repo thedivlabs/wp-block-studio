@@ -109,7 +109,7 @@ export function Background({attributes = {}, className = '', editor = false}) {
     </div>;
 }
 
-export function BackgroundSettings({attributes = {}, pushSettings}) {
+export function BackgroundSettings({attributes = {}, pushSettings, className = null}) {
 
     const settings = Object.assign({}, {
         type: undefined,
@@ -849,7 +849,7 @@ export function BackgroundSettings({attributes = {}, pushSettings}) {
 
     return (
 
-        <PanelBody title={'Background'} initialOpen={false}>
+        <PanelBody title={'Background'} initialOpen={false} className={className}>
             <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl
                     __next40pxDefaultSize

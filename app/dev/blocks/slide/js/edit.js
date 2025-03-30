@@ -44,7 +44,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
             settings={{
                 eager: !!eager,
                 force: !!force,
-                className: 'w-full h-full object-cover',
+                className: 'w-full h-full !object-cover absolute top-0 left-0',
                 sizeLarge: resolution,
             }}
         ></Picture>;

@@ -31,11 +31,11 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
     if(isImageSlide){
 
         const {
-            ['wpbs-mobileImage']:mobileImage,
-            ['wpbs-largeImage']:largeImage,
-            ['wpbs-eager']:eager,
-            ['wpbs-force']:force,
-            ['wpbs-resolution']:resolution,
+            ['wpbs-mobileSlideImage']:mobileImage,
+            ['wpbs-largeSlideImage']:largeImage,
+            ['wpbs-eagerSlide']:eager,
+            ['wpbs-forceSlide']:force,
+            ['wpbs-resolutionSlide']:resolution,
         } = attributes;
 
         return <Picture
@@ -57,19 +57,19 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
 }
 
 const blockAttributes = {
-    'wpbs-mobileImage': {
+    'wpbs-mobileSlideImage': {
         type: 'object'
     },
-    'wpbs-largeImage': {
+    'wpbs-largeSlideImage': {
         type: 'object'
     },
-    'wpbs-resolution': {
+    'wpbs-resolutionSlide': {
         type: 'string'
     },
-    'wpbs-eager': {
+    'wpbs-eagerSlide': {
         type: 'boolean'
     },
-    'wpbs-force': {
+    'wpbs-forceSlide': {
         type: 'boolean'
     },
 }
@@ -84,11 +84,11 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileImage']);
-        const [largeImage, setLargeImage] = useState(attributes['wpbs-largeImage']);
-        const [resolution, setResolution] = useState(attributes['wpbs-resolution']);
-        const [eager, setEager] = useState(attributes['wpbs-eager']);
-        const [force, setForce] = useState(attributes['wpbs-force']);
+        const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileSlideImage']);
+        const [largeImage, setLargeImage] = useState(attributes['wpbs-largeSlideImage']);
+        const [resolution, setResolution] = useState(attributes['wpbs-resolutionSlide']);
+        const [eager, setEager] = useState(attributes['wpbs-eagerSlide']);
+        const [force, setForce] = useState(attributes['wpbs-forceSlide']);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
 
@@ -127,7 +127,7 @@ registerBlockType(metadata.name, {
                                                 sizes: value.sizes,
                                             });
                                             setAttributes({
-                                                ['wpbs-mobileImage']: {
+                                                ['wpbs-mobileSlideImage']: {
                                                     type: value.type,
                                                     id: value.id,
                                                     url: value.url,
@@ -143,7 +143,7 @@ registerBlockType(metadata.name, {
                                                 image={mobileImage || {}}
                                                 callback={() => {
                                                     setMobileImage(undefined);
-                                                    setAttributes({['wpbs-mobileImage']: undefined});
+                                                    setAttributes({['wpbs-mobileSlideImage']: undefined});
                                                 }}
                                                 onClick={open}
                                             />;
@@ -164,7 +164,7 @@ registerBlockType(metadata.name, {
                                                 sizes: value.sizes,
                                             });
                                             setAttributes({
-                                                ['wpbs-largeImage']: {
+                                                ['wpbs-largeSlideImage']: {
                                                     type: value.type,
                                                     id: value.id,
                                                     url: value.url,
@@ -181,7 +181,7 @@ registerBlockType(metadata.name, {
                                                     image={largeImage || {}}
                                                     callback={() => {
                                                         setLargeImage(undefined);
-                                                        setAttributes({['wpbs-largeImage']: undefined});
+                                                        setAttributes({['wpbs-largeSlideImage']: undefined});
                                                     }}
                                                     onClick={open}
                                                 />;
@@ -195,7 +195,7 @@ registerBlockType(metadata.name, {
                             </BaseControl>
 
                             <Resolution defaultValue={resolution} callback={(newValue) => {
-                                setAttributes({['wpbs-resolution']: newValue});
+                                setAttributes({['wpbs-resolutionSlide']: newValue});
                                 setResolution(newValue)
                             }}/>
                         </Grid>
@@ -207,15 +207,15 @@ registerBlockType(metadata.name, {
                                 checked={eager}
                                 onChange={(value) => {
                                     setEager(value);
-                                    setAttributes({['wpbs-eager']: value});
+                                    setAttributes({['wpbs-eagerSlide']: value});
 
                                     if (value) {
                                         setAttributes({
                                             preload: [
                                                 {
-                                                    mobile: !!attributes['wpbs-mobileImage'] ? attributes['wpbs-mobileImage'].id : null,
-                                                    large: !!attributes['wpbs-largeImage'] ? attributes['wpbs-largeImage'].id : null,
-                                                    size: attributes['wpbs-resolution'] || null
+                                                    mobile: !!attributes['wpbs-mobileSlideImage'] ? attributes['wpbs-mobileSlideImage'].id : null,
+                                                    large: !!attributes['wpbs-largeSlideImage'] ? attributes['wpbs-largeSlideImage'].id : null,
+                                                    size: attributes['wpbs-resolutionSlide'] || null
                                                 }
                                             ]
                                         });
@@ -230,7 +230,7 @@ registerBlockType(metadata.name, {
                                 checked={force}
                                 onChange={(value) => {
                                     setForce(value);
-                                    setAttributes({['wpbs-force']: value});
+                                    setAttributes({['wpbs-forceSlide']: value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

@@ -45,12 +45,7 @@ const {state} = store('wpbs', {
                         initLib().then(() => {
 
                             const {args: defaultArgs} = WPBS.swiper;
-
-                            console.log({
-                                ...defaultArgs,
-                                ...args,
-                            });
-
+                            
                             const swiper = new Swiper(element, {
                                 ...defaultArgs,
                                 ...args,

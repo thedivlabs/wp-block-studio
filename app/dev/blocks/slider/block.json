@@ -10,6 +10,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "wpbs-transition": {
+      "type": "string"
     }
   },
   "allowedBlocks": [

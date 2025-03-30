@@ -15,6 +15,7 @@ import {
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {swiperDefaultArgs} from "Includes/helper";
+import {select, useSelect} from "@wordpress/data";
 
 function blockClasses(attributes = {}) {
     return [
@@ -120,75 +121,71 @@ registerBlockType(metadata.name, {
         const [dim, setDim] = useState(attributes['wpbs-dim']);
         const [fromEnd, setFromEnd] = useState(attributes['wpbs-from-end']);
         const [rewind, setRewind] = useState(attributes['wpbs-rewind']);
+        const [swiperArgs, setSwiperArgs] = useState(attributes.swiperArgs || {});
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         const [{breakpoints}] = useSettings(['custom']);
 
-        let sliderArgs = {};
-
-        let swiper;
-
-        function updateSlider() {
+        function getArgs() {
 
             const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
 
-            let sliderArgs = {
-                enabled: true,
-                slidesPerView: slidesMobile || slidesLarge ? parseInt((slidesMobile || slidesLarge)) : 1,
-                slidesPerGroup: groupMobile || groupLarge ? parseInt(groupMobile || groupLarge) : 1,
-                spaceBetween: marginMobile || marginLarge ? parseInt((marginMobile || marginLarge).replace('px', '')) : null,
-                autoplay: autoplay ? {
-                    delay: autoplay * 1000,
-                    pauseOnMouseEnter: !!hoverPause
+            let args = {
+                slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
+                slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
+                spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] ? (attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large']).replace('px', '') : null,
+                autoplay: attributes['wpbs-autoplay'] ? {
+                    delay: attributes['wpbs-autoplay'] * 1000,
+                    pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
                 } : false,
-                speed: transition ? transition * 100 : 400,
-                pagination: pagination ? {
+                speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
+                pagination: attributes['wpbs-pagination'] ? {
                     enabled: true,
                     el: '.swiper-pagination',
-                    type: pagination
+                    type: attributes['wpbs-pagination']
                 } : false,
-                effect: effect || 'slide',
-                fadeEffect: effect !== 'fade' ? null : {
-                    crossFade: true
-                },
-                freeMode: !!freeMode,
-                centeredSlides: !!centered,
-                loop: !!loop,
-                rewind: !!loop ? false : !!rewind,
-                initialSlide: !!fromEnd ? 99 : null,
+                effect: attributes['wpbs-effect'] || null,
+                freeMode: !!attributes['wpbs-effect'],
+                centeredSlides: !!attributes['wpbs-centered'],
+                loop: !!attributes['wpbs-loop'],
+                rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
+                initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
                 breakpoints: {}
             };
 
             let breakpointArgs = {
-                slidesPerView: slidesMobile && slidesLarge ? parseInt(slidesLarge) : null,
-                slidesPerGroup: groupMobile && groupLarge ? parseInt(groupLarge) : null,
-                spaceBetween: marginMobile && marginLarge ? parseInt(marginLarge.replace('px', '')) : null,
+                slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
+                slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
+                spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
             };
 
             if (!!collapse) {
-                sliderArgs.enabled = false;
+                args.enabled = false;
                 breakpointArgs.enabled = true;
             }
 
-            sliderArgs = Object.fromEntries(
-                Object.entries(sliderArgs)
+            args = Object.fromEntries(
+                Object.entries(args)
                     .filter(([_, value]) => value !== null));
 
             breakpointArgs = Object.fromEntries(
                 Object.entries(breakpointArgs)
                     .filter(([_, value]) => value !== null));
 
-            if (collapse !== false) {
-                sliderArgs.enabled = false;
-                breakpointArgs.enabled = true;
-            }
-
-            sliderArgs.breakpoints[breakpoint] = {
+            args.breakpoints[breakpoint] = {
                 ...breakpointArgs
             };
 
-            setAttributes({swiperArgs: sliderArgs});
+            return args;
+        }
+
+        function updateSlider() {
+
+            const args = getArgs();
+
+            setAttributes({swiperArgs: args});
+            setSwiperArgs(args);
 
         }
 
@@ -197,33 +194,31 @@ registerBlockType(metadata.name, {
             setAttributes({
                 uniqueId: uniqueId,
             });
-
-            updateSlider();
-
         }, []);
+
 
         useEffect(() => {
 
-            const selector = '.' + uniqueId;
+            const args = getArgs();
 
-            if (swiper !== undefined) {
-                swiper.params = {
-                    ...swiper.params,
-                    ...sliderArgs
-                }
+            const mergedArgs = {
+                ...swiperDefaultArgs,
+                ...args
+            };
+            const blockId = 'block-' + clientId;
+            const selector = '#' + blockId;
 
-                swiper.update();
-            } else {
+            const block = document.getElementById(blockId);
 
-                swiper = new Swiper(selector, {
-                    ...swiperDefaultArgs,
-                    ...sliderArgs
-                });
+            if ('swiper' in block) {
 
+                block.swiper.destroy(true);
             }
 
+            const swiper = new Swiper(selector, mergedArgs);
 
-        }, [swiper,sliderArgs]);
+
+        }, [swiperArgs]);
 
 
         const blockProps = useBlockProps({
@@ -252,7 +247,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-slides-mobile']: newValue});
                                     setSlidesMobile(newValue);
-                                    updateSlider();
+                                    updateSlider({});
                                 }}
                                 value={slidesMobile}
                             />
@@ -308,6 +303,7 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-transition']: newValue});
                                     setTransition(newValue);
+
                                     updateSlider();
                                 }}
                                 step={1}

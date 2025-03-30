@@ -128,21 +128,21 @@ function getArgs(attributes) {
         spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
     };
 
-    if (args.effect !== 'slide') {
-        args.fadeEffect = {
-            crossFade: true
-        }
-        args.slidesPerView = 1;
-        args.slidesPerGroup = 1;
-        args.spaceBetween = 0;
-        args.freeMode = false;
-        args.loop = false;
+    /*   if (args.effect !== 'slide') {
+           args.fadeEffect = {
+               crossFade: true
+           }
+           args.slidesPerView = 1;
+           args.slidesPerGroup = 1;
+           args.spaceBetween = 0;
+           args.freeMode = false;
+           args.loop = false;
 
-        breakpointArgs.slidesPerView = 1;
-        breakpointArgs.slidesPerGroup = 1;
-        breakpointArgs.spaceBetween = 0;
+           breakpointArgs.slidesPerView = 1;
+           breakpointArgs.slidesPerGroup = 1;
+           breakpointArgs.spaceBetween = 0;
 
-    }
+       }*/
 
     if (!!attributes['wpbs-collapse']) {
         args.enabled = false;
@@ -208,8 +208,8 @@ registerBlockType(metadata.name, {
 
             const args = getArgs(attributes);
             setAttributes({
-                ['wpbs-prop-slides']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slidesLarge'] || attributes['wpbs-slidesMobile'] || '1',
-                ['wpbs-prop-slides-mobile']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slidesMobile'] || attributes['wpbs-slidesLarge'] || '1',
+                ['wpbs-prop-slides']: attributes['wpbs-slidesLarge'] || attributes['wpbs-slidesMobile'] || '1',
+                ['wpbs-prop-slides-mobile']: attributes['wpbs-slidesMobile'] || attributes['wpbs-slidesLarge'] || '1',
                 breakpoint: breakpoint,
                 swiperArgs: args
             });
@@ -221,8 +221,8 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 uniqueId: uniqueId,
-                ['wpbs-prop-slides']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
-                ['wpbs-prop-slides-mobile']: attributes['wpbs-effect'] === 'fade' ? 1 : attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
+                ['wpbs-prop-slides']: attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
+                ['wpbs-prop-slides-mobile']: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
             });
 
         }, []);
@@ -240,6 +240,7 @@ registerBlockType(metadata.name, {
 
             const blockId = 'block-' + clientId;
             const selector = '#' + blockId;
+            const selectorAlt = '.' + uniqueId;
 
             const block = document.getElementById(blockId);
 
@@ -247,8 +248,11 @@ registerBlockType(metadata.name, {
 
                 block.swiper.destroy();
             }
+            
+            if ('Swiper' in window && selector) {
 
-            const swiper = new Swiper(selector, mergedArgs);
+                const swiper = new Swiper(selectorAlt, mergedArgs);
+            }
 
 
         }, [swiperArgs]);

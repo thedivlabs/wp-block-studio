@@ -67,7 +67,9 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <InnerBlocks renderAppender={() => appenderToUse()}/>
+                    <InnerBlocks renderAppender={() => appenderToUse()} template={[
+                        ['wpbs/layout-grid-card', {content: 'Content Card'}],
+                    ]}/>
 
                     <Background attributes={attributes} editor={true}/>
 

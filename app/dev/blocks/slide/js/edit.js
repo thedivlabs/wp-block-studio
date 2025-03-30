@@ -27,10 +27,10 @@ function blockClasses(attributes = {}) {
 
 const blockAttributes = {
     'wpbs-mobileImage': {
-        type: 'string'
+        type: 'object'
     },
     'wpbs-largeImage': {
-        type: 'string'
+        type: 'object'
     },
     'wpbs-resolution': {
         type: 'string'

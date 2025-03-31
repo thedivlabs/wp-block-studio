@@ -8,11 +8,21 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "postId": {
+      "type": "string"
+    },
+    "postType": {
+      "type": "string"
     }
   },
   "parent": [
     "wpbs/layout-grid"
   ],
+  "providesContext": {
+    "postId": "postId",
+    "postType": "postType"
+  },
   "supports": {
     "innerBlocks": true,
     "color": {

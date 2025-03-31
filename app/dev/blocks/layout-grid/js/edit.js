@@ -36,27 +36,48 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
+        const queryArgs = {
+            per_page: 8
+        };
+
+        const context = {
+            'wpbs/queryArgs': queryArgs,
+        };
+
+        const posts = useSelect((select) =>
+            select('core').getEntityRecords('postType', 'post', queryArgs));
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
-        /*  const hasInnerBlocks = useSelect((select) =>
-              select('core/editor').getBlock(clientId)?.innerBlocks.length > 0
-          );
 
-          useEffect(() => {
+        const hasInnerBlocks = useSelect((select) =>
+            select('core/editor').getBlock(clientId)?.innerBlocks.length > 0
+        );
 
+        const havePosts = posts && posts.length > 0;
 
-              const newBlock = createBlock('wpbs/layout-grid-card', {
-                  content: 'Testing 123'
-              });
+        useEffect(() => {
+            if (!posts) {
+                return;
+            }
 
-              dispatch('core/editor').insertBlock(newBlock, undefined, clientId);
+            const cardBlocks = posts.map((post) => {
+                return createBlock('wpbs/layout-grid-card', {
+                    postId: post.id,
+                    postType: post.type,
+                }, [
+                    createBlock('core/post-title',{
+                        postId: post.id,
+                        postType: post.type,
+                    })
+                ]);
+            });
 
-              console.log(newBlock);
+            dispatch('core/block-editor').replaceInnerBlocks(clientId, cardBlocks);
 
-          }, [hasInnerBlocks]);*/
+        }, [havePosts]);
 
 
         const blockProps = useBlockProps({
@@ -84,6 +105,9 @@ registerBlockType(metadata.name, {
         //console.log(innerBlocks);
 
 
+        if (!posts) return <p>Loading...</p>;
+        if (posts.length === 0) return <p>No posts found.</p>;
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -94,10 +118,6 @@ registerBlockType(metadata.name, {
                         clientId={clientId}></Layout>
 
                 <div {...blockProps}>
-
-                    {/*<InnerBlocks renderAppender={() => appenderToUse()} template={[
-                        ['wpbs/layout-grid-card', {content: 'Content Card'}],
-                    ]}/>*/}
 
                     <InnerBlocks/>
 

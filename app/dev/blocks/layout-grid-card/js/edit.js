@@ -12,7 +12,7 @@ import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 import {useSelect} from "@wordpress/data";
 
 
@@ -32,12 +32,21 @@ registerBlockType(metadata.name, {
         ...LayoutAttributes,
         ...BackgroundAttributes,
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: ({attributes, setAttributes, context, clientId}) => {
+
+
+        const curBlock = useSelect((select) =>
+            select('core/editor').getBlock(clientId)
+        )
+
+        //console.log(curBlock);
+
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
+
         }, []);
 
         const blockProps = useBlockProps({

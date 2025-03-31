@@ -198,7 +198,7 @@ registerBlockType(metadata.name, {
                 <div {...blockProps}>
 
                     <InnerBlocks
-                        renderAppender={ () => appenderToUse() }
+                        renderAppender={() => appenderToUse()}
                     />
 
                     <Background attributes={attributes} editor={true}/>
@@ -208,6 +208,8 @@ registerBlockType(metadata.name, {
         )
     },
     save: (props) => {
+
+        console.log(JSON.stringify(props.innerBlocks));
 
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),

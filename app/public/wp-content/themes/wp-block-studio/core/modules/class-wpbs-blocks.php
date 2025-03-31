@@ -11,6 +11,19 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
+		WPBS_Endpoints::add( '/grid/', false, [
+			'methods'  => 'POST',
+			'callback' => function ( WP_REST_Request $request ) {
+
+				$parameters = $request->get_json_params(); // Get data sent from JS
+
+				//$vars = $_POST;
+				return new WP_REST_Response( [ 'xxx', $parameters ], 200 );
+
+
+			},
+		] );
+
 	}
 
 	public function render_block( $attributes, $content, $block ): string {

@@ -36,7 +36,7 @@ registerBlockType(metadata.name, {
 
 
         const curBlock = useSelect((select) =>
-            select('core/editor').getBlock(clientId)
+            select('core/block-editor').getBlock(clientId)
         )
 
         //console.log(curBlock);

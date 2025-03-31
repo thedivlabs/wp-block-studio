@@ -121,8 +121,8 @@ registerBlockType(metadata.name, {
             per_page: 8,
         };
 
-        const posts = useSelect((select) =>
-            select('core').getEntityRecords('postType', 'post', queryArgs));
+        /*const posts = useSelect((select) =>
+            select('core').getEntityRecords('postType', 'post', queryArgs));*/
 
 
         useEffect(() => {
@@ -133,11 +133,11 @@ registerBlockType(metadata.name, {
         }, []);
 
 
-        const hasInnerBlocks = useSelect((select) =>
-            select('core/editor').getBlock(clientId)?.innerBlocks.length > 0
+        const curBlock = useSelect((select) =>
+            select('core/block-editor').getBlock(clientId)
         );
 
-        const havePosts = posts && posts.length > 0;
+        //const havePosts = posts && posts.length > 0;
 
         /*useEffect(() => {
             if (!posts) {
@@ -163,15 +163,15 @@ registerBlockType(metadata.name, {
         });
 
 
-        /*const appenderToUse = () => {
-            if (innerBlocks.length < 2) {
+        const appenderToUse = () => {
+            if (curBlock.innerBlocks.length) {
                 return (
                     <InnerBlocks.DefaultBlockAppender/>
                 );
             } else {
                 return false;
             }
-        }*/
+        }
 
         /*  innerBlocks = [...innerBlocks].map((block) => {
               //console.log(block);
@@ -183,8 +183,8 @@ registerBlockType(metadata.name, {
         //console.log(innerBlocks);
 
 
-        if (!posts) return <p>Loading...</p>;
-        if (posts.length === 0) return <p>No posts found.</p>;
+        /*if (!posts) return <p>Loading...</p>;
+        if (posts.length === 0) return <p>No posts found.</p>;*/
 
         return (
             <>
@@ -197,7 +197,9 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <InnerBlocks/>
+                    <InnerBlocks
+                        renderAppender={ () => appenderToUse() }
+                    />
 
                     <Background attributes={attributes} editor={true}/>
 

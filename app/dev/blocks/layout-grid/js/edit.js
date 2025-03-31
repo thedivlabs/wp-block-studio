@@ -3,7 +3,7 @@ import {
     InspectorControls,
     InnerBlocks,
 } from "@wordpress/block-editor"
-import {registerBlockType, cloneBlock} from "@wordpress/blocks"
+import {registerBlockType, cloneBlock, createBlock} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
@@ -36,16 +36,35 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
+
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
+
+        /*  const hasInnerBlocks = useSelect((select) =>
+              select('core/editor').getBlock(clientId)?.innerBlocks.length > 0
+          );
+
+          useEffect(() => {
+
+
+              const newBlock = createBlock('wpbs/layout-grid-card', {
+                  content: 'Testing 123'
+              });
+
+              dispatch('core/editor').insertBlock(newBlock, undefined, clientId);
+
+              console.log(newBlock);
+
+          }, [hasInnerBlocks]);*/
+
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
 
-        const innerBlocks = useSelect((select) => select('core/block-editor').getBlock(clientId).innerBlocks, []);
-        const appenderToUse = () => {
+
+        /*const appenderToUse = () => {
             if (innerBlocks.length < 2) {
                 return (
                     <InnerBlocks.DefaultBlockAppender/>
@@ -53,7 +72,16 @@ registerBlockType(metadata.name, {
             } else {
                 return false;
             }
-        }
+        }*/
+
+        /*  innerBlocks = [...innerBlocks].map((block) => {
+              //console.log(block);
+              //const wrapperBlock =
+
+          });*/
+
+
+        //console.log(innerBlocks);
 
 
         return (
@@ -67,9 +95,11 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <InnerBlocks renderAppender={() => appenderToUse()} template={[
+                    {/*<InnerBlocks renderAppender={() => appenderToUse()} template={[
                         ['wpbs/layout-grid-card', {content: 'Content Card'}],
-                    ]}/>
+                    ]}/>*/}
+
+                    <InnerBlocks/>
 
                     <Background attributes={attributes} editor={true}/>
 

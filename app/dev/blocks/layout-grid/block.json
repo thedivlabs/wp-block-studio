@@ -8,12 +8,16 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "queryArgs": {
+      "type": "object"
     }
   },
   "allowedBlocks": [
     "wpbs/layout-grid-card"
   ],
   "supports": {
+    "interactivity": true,
     "innerBlocks": true,
     "color": {
       "background": true,
@@ -43,6 +47,7 @@
     }
   },
   "editorScript": "file:./js/edit.js",
+  "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
   "icon": "grid-view"

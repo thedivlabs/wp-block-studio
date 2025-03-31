@@ -7,7 +7,7 @@ const {state} = store('wpbs', {
             const {ref: element} = getElement();
             let {args} = getContext();
 
-            args = JSON.parse(JSON.stringify(args))
+            args = JSON.parse(JSON.stringify(args));
 
             let observerIntersection = new IntersectionObserver((entries, observer) => {
                 entries.forEach((entry) => {

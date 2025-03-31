@@ -31,24 +31,105 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LayoutAttributes,
         ...BackgroundAttributes,
+        ['wpbs-columns-mobile']: {
+            type: 'string'
+        },
+        ['wpbs-columns-large']: {
+            type: 'string'
+        },
+        ['wpbs-masonry']: {
+            type: 'boolean'
+        },
+        ['wpbs-divider-style']: {
+            type: 'string'
+        },
+        ['wpbs-divider-color']: {
+            type: 'string'
+        },
+        ['wpbs-divider-size']: {
+            type: 'string'
+        },
+        ['wpbs-divider-icon']: {
+            type: 'string'
+        },
+        ['wpbs-divider-mobile']: {
+            type: 'boolean'
+        },
+        ['wpbs-pagination-size']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-label']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-rounded']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-bg-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-text-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-border-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-hover-bg-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-hover-text-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-hover-border-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-current-bg-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-current-border-color']: {
+            type: 'string'
+        },
+        ['wpbs-pagination-current-text-color']: {
+            type: 'string'
+        },
+        ['wpbs-loop-type']: {
+            type: 'string'
+        },
+        ['wpbs-loop-term']: {
+            type: 'string'
+        },
+        ['wpbs-loop-taxonomy']: {
+            type: 'string'
+        },
+        ['wpbs-loop-modifier']: {
+            type: 'string'
+        },
+        ['wpbs-loop-sort']: {
+            type: 'string'
+        },
+        ['wpbs-loop-current']: {
+            type: 'boolean'
+        },
+        ['wpbs-loop-suppress']: {
+            type: 'array'
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
         const queryArgs = {
-            per_page: 8
-        };
-
-        const context = {
-            'wpbs/queryArgs': queryArgs,
+            per_page: 8,
         };
 
         const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));
 
+
         useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
+            setAttributes({
+                uniqueId: uniqueId,
+                queryArgs: queryArgs
+            });
         }, []);
 
 
@@ -58,7 +139,7 @@ registerBlockType(metadata.name, {
 
         const havePosts = posts && posts.length > 0;
 
-        useEffect(() => {
+        /*useEffect(() => {
             if (!posts) {
                 return;
             }
@@ -68,16 +149,13 @@ registerBlockType(metadata.name, {
                     postId: post.id,
                     postType: post.type,
                 }, [
-                    createBlock('core/post-title',{
-                        postId: post.id,
-                        postType: post.type,
-                    })
+                    createBlock('core/post-title', {}),
                 ]);
             });
 
             dispatch('core/block-editor').replaceInnerBlocks(clientId, cardBlocks);
 
-        }, [havePosts]);
+        }, [havePosts]);*/
 
 
         const blockProps = useBlockProps({
@@ -129,13 +207,16 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
+            'data-wp-interactive': 'wpbs/grid',
+            'data-wp-init': 'callbacks.runQuery',
+            'data-wp-context': JSON.stringify({queryArgs: props.attributes.queryArgs || {}}),
         });
 
         return (
-            <div {...blockProps}>
+            <div {...blockProps}
+            >
 
                 <InnerBlocks.Content/>
 

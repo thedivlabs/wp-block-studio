@@ -35,9 +35,9 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, context, clientId}) => {
 
 
-        const curBlock = useSelect((select) =>
+/*        const curBlock = useSelect((select) =>
             select('core/block-editor').getBlock(clientId)
-        )
+        )*/
 
         //console.log(curBlock);
 
@@ -53,16 +53,6 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(attributes),
         });
 
-        function Content() {
-            if (!!attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks/>
-                </div>;
-            } else {
-                return <InnerBlocks/>;
-            }
-        }
-
         return (
             <>
                 <InspectorControls group="styles">
@@ -74,7 +64,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <Content/>
+                    <InnerBlocks/>
 
                     <Background attributes={attributes} editor={true}/>
 
@@ -89,20 +79,10 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
-        function Content() {
-            if (!!props.attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks.Content/>
-                </div>;
-            } else {
-                return <InnerBlocks.Content/>;
-            }
-        }
-
         return (
             <div {...blockProps}>
 
-                <Content/>
+                <InnerBlocks.Content/>
 
                 <Background attributes={props.attributes} editor={false}/>
             </div>

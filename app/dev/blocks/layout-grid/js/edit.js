@@ -133,8 +133,8 @@ registerBlockType(metadata.name, {
         }, []);
 
 
-        const curBlock = useSelect((select) =>
-            select('core/block-editor').getBlock(clientId)
+        const hasInnerBlocks = useSelect((select) =>
+            select('core/block-editor').getBlock(clientId)?.innerBlocks.length > 0
         );
 
         //const havePosts = posts && posts.length > 0;
@@ -164,7 +164,7 @@ registerBlockType(metadata.name, {
 
 
         const appenderToUse = () => {
-            if (curBlock.innerBlocks.length) {
+            if (!hasInnerBlocks) {
                 return (
                     <InnerBlocks.DefaultBlockAppender/>
                 );

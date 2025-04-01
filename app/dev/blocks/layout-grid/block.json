@@ -1,4 +1,6 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
   "name": "wpbs/layout-grid",
   "title": "Layout Grid",
   "description": "Display a layout grid",
@@ -54,7 +56,7 @@
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
   "icon": "grid-view",
-  "render_callback": "wpbs_layout_grid_render"
+  "render": "file:./render.php"
 }
 
 

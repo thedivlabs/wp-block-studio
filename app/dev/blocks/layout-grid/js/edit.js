@@ -175,6 +175,10 @@ registerBlockType(metadata.name, {
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
 
+        const innerBlocksProps = useInnerBlocksProps({
+            className:'wpbs-layout-grid__container'
+        },{});
+
 
         /* const appenderToUse = () => {
              if (!hasInnerBlocks) {
@@ -207,14 +211,9 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <div {...blockProps}>
-                    <InnerBlocks />
 
-                    <ServerSideRender
-                        skipBlockSupportAttributes
-                        block="wpbs/layout-grid"
-                        attributes={attributes}
-                        className={'wpbs-layout-grid__container'}
-                    />
+
+                    <div {...innerBlocksProps}/>
 
                     <Background attributes={attributes} editor={true}/>
 
@@ -231,10 +230,14 @@ registerBlockType(metadata.name, {
             'data-wp-context': JSON.stringify({queryArgs: props.attributes.queryArgs || {}}),
         });
 
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className:'wpbs-layout-grid__container',
+        },{});
+
         return (
             <div {...blockProps}>
 
-                <InnerBlocks.Content />
+                <div {...innerBlocksProps}/>
 
                 <Background attributes={props.attributes} editor={false}/>
             </div>

@@ -14,14 +14,6 @@ if ( class_exists( 'WPBS' ) ) {
 function wpbs_layout_grid_render( $attributes, $content, $block ): string|false {
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
-	WPBS::console_log($block_template);
-
-	if ( empty($block_template) ) {
-		return false;
-	}
-
-	WPBS::console_log( $block );
-	WPBS::console_log( [ $content ] );
 
 	$custom_query = $block->attributes['queryArgs'] ?? [];
 
@@ -31,19 +23,26 @@ function wpbs_layout_grid_render( $attributes, $content, $block ): string|false 
 	] );
 
 
-	return 'PPPQA';
-//	ob_start();
+	$new_content = '';
 
-	/*if ( $query->have_posts() ) {
+	if ( $query->have_posts() ) {
 		while ( $query->have_posts() ) {
 
-			echo render_block( $block_template );
+			$query->the_post();
+
+			global $post;
+
+			$new_block = new WP_Block( $block_template, [
+				'postId' => $post->ID,
+			] );
+
+			$new_content .= $new_block->render();
+
 		}
-	}*/
+	}
 
-	//$new_content = ob_get_clean();
 
-	return trim( $new_content ) ?? false;
+	return trim( $new_content );
 }
 
 

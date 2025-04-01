@@ -21,6 +21,12 @@
   "providesContext": {
     "wpbs/queryArgs": "queryArgs"
   },
+  "styles": [
+    {
+      "name": "loop",
+      "label": "Loop"
+    }
+  ],
   "supports": {
     "interactivity": true,
     "innerBlocks": true,

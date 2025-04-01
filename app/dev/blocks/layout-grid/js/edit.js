@@ -139,7 +139,7 @@ registerBlockType(metadata.name, {
                 uniqueId: uniqueId,
                 queryArgs: queryArgs,
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
-                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 3,
+                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1,
                 ['wpbs-prop-row-gap']: '0px',
             });
         }, []);

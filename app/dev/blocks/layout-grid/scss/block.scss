@@ -1,0 +1,9 @@
+.wpbs-layout-grid {
+
+
+  &__container > .wpbs-layout-grid-card {
+    width: 100%;
+    max-width: calc(100% - (var(--row-gap, 0px) * (var(--columns, 1) - 1)) / var(--columns));
+  }
+
+}

@@ -11,18 +11,6 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		WPBS_Endpoints::add( '/grid/', false, [
-			'methods'  => 'POST',
-			'callback' => function ( WP_REST_Request $request ) {
-
-				$parameters = $request->get_json_params(); // Get data sent from JS
-
-				//$vars = $_POST;
-				return new WP_REST_Response( [ 'xxx', $parameters ], 200 );
-
-
-			},
-		] );
 
 	}
 
@@ -52,9 +40,17 @@ class WPBS_Blocks {
 
 		foreach ( $block_dirs as $block_dir ) {
 
-			$block = register_block_type( $block_dir, [
+			$block_object = json_decode( file_get_contents( $block_dir . '/block.json' ), true );
+
+			if ( ! $block_object ) {
+				continue;
+			}
+
+			$args = [
 				'render_callback' => [ $this, 'render_block' ]
-			] );
+			];
+
+			$block = register_block_type( $block_dir, array_merge( [], $block_object, array_filter( $args ) ) );
 		}
 	}
 

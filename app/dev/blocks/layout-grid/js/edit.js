@@ -1,13 +1,15 @@
+import "../scss/block.scss";
+
 import {
     useBlockProps,
     InspectorControls,
-    InnerBlocks,
+    InnerBlocks, useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType, cloneBlock, createBlock} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
-
+import ServerSideRender from "@wordpress/server-side-render";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
@@ -19,7 +21,7 @@ import {dispatch, useSelect} from "@wordpress/data";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-grid w-full flex flex-wrap relative',
+        'wpbs-layout-grid w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -35,6 +37,12 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         ['wpbs-columns-large']: {
+            type: 'string'
+        },
+        ['wpbs-prop-columns']: {
+            type: 'string'
+        },
+        ['wpbs-prop-columns-mobile']: {
             type: 'string'
         },
         ['wpbs-masonry']: {
@@ -113,7 +121,9 @@ registerBlockType(metadata.name, {
             type: 'array'
         }
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: (props) => {
+
+        const {attributes, setAttributes, clientId} = props;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
@@ -127,14 +137,18 @@ registerBlockType(metadata.name, {
         useEffect(() => {
             setAttributes({
                 uniqueId: uniqueId,
-                queryArgs: queryArgs
+                queryArgs: queryArgs,
+                ['wpbs-prop-columns']: attributes['wpbs-columns-large'],
+                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'],
             });
+
+            console.log(props);
         }, []);
 
 
-        const hasInnerBlocks = useSelect((select) =>
+        /*const hasInnerBlocks = useSelect((select) =>
             select('core/block-editor').getBlock(clientId)?.innerBlocks.length > 0
-        );
+        );*/
 
         //const havePosts = posts && posts.length > 0;
 
@@ -162,15 +176,15 @@ registerBlockType(metadata.name, {
         });
 
 
-        const appenderToUse = () => {
-            if (!hasInnerBlocks) {
-                return (
-                    <InnerBlocks.DefaultBlockAppender/>
-                );
-            } else {
-                return false;
-            }
-        }
+        /* const appenderToUse = () => {
+             if (!hasInnerBlocks) {
+                 return (
+                     <InnerBlocks.DefaultBlockAppender/>
+                 );
+             } else {
+                 return false;
+             }
+         }*/
 
         /*  innerBlocks = [...innerBlocks].map((block) => {
               //console.log(block);
@@ -196,9 +210,6 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <InnerBlocks
-                        renderAppender={() => appenderToUse()}
-                    />
 
                     <Background attributes={attributes} editor={true}/>
 
@@ -208,8 +219,6 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        console.log(JSON.stringify(props.innerBlocks));
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
@@ -218,10 +227,8 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <div {...blockProps}
-            >
+            <div {...blockProps}>
 
-                <InnerBlocks.Content/>
 
                 <Background attributes={props.attributes} editor={false}/>
             </div>

@@ -16,6 +16,9 @@
   "allowedBlocks": [
     "wpbs/layout-grid-card"
   ],
+  "providesContext": {
+    "wpbs/queryArgs": "queryArgs"
+  },
   "supports": {
     "interactivity": true,
     "innerBlocks": true,

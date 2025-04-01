@@ -1,8 +1,19 @@
 <?php
 
 $attributes = $attributes ?? [];
-$block      = $block ?? ( (object) []);
+$block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
+
+function parse_wp_css_variable( $shorthand ) {
+	if ( ! str_starts_with( $shorthand, 'var:' ) ) {
+		return $shorthand;
+	}
+
+	return 'var(--wp--' . str_replace( '|', '--', substr( $shorthand, 4 ) ) . ')';
+}
+
+$attributes['wpbs-prop-row-gap'] = parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['left'] ?? '0px' );
+$attributes['wpbs-prop-col-gap'] = parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['top'] ?? '0px' );
 
 $css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false );
 
@@ -21,6 +32,12 @@ add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block 
 
 $block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
+if ( empty( $block_template ) ) {
+	echo 'No template';
+
+	return false;
+}
+
 $custom_query = $block->attributes['queryArgs'] ?? [];
 
 $query = new WP_Query( [
@@ -30,7 +47,26 @@ $query = new WP_Query( [
 
 $new_content = '';
 
+
 if ( $query->have_posts() ) {
+
+
+	while ( $query->have_posts() ) {
+		$query->the_post();
+
+		global $post;
+
+		$new_block = new WP_Block( $block_template, [
+			'postId' => $post->ID,
+		] );
+
+		WPBS::console_log( $block_template );
+
+		$new_content .= $new_block->render();
+	}
+}
+
+/*if ( $query->have_posts() ) {
 	while ( $query->have_posts() ) {
 
 		$query->the_post();
@@ -44,7 +80,7 @@ if ( $query->have_posts() ) {
 		$new_content .= $new_block->render();
 
 	}
-}
+}*/
 
 $block->inner_content[1] = trim( $new_content );
 

@@ -140,7 +140,7 @@ registerBlockType(metadata.name, {
                 queryArgs: queryArgs,
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 3,
-                ['wpbs-prop-row-gap']: props.attributes.style.spacing.blockGap.left || '0px',
+                ['wpbs-prop-row-gap']: '0px',
             });
 
             console.log(props);
@@ -177,7 +177,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-layout-grid__container  wpbs-layout-wrapper'
+            className: 'wpbs-layout-grid__container'
         }, {});
 
 
@@ -232,7 +232,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-layout-grid__container wpbs-layout-wrapper',
+            className: 'wpbs-layout-grid__container',
         }, {});
 
         return (

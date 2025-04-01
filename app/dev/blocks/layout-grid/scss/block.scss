@@ -1,9 +1,25 @@
 .wpbs-layout-grid {
-
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 
   &__container > .wpbs-layout-grid-card {
+    max-width: calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
+
+  }
+
+  &__container {
+    flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+
+
+    justify-content: inherit;
+    align-items: inherit;
+    row-gap: inherit;
+    column-gap: inherit;
     width: 100%;
-    max-width: calc((100% - (var(--row-gap, 0px) * (var(--columns, 1)))) / var(--columns, 1));
+
   }
 
 }

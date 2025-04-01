@@ -46,11 +46,19 @@ class WPBS_Blocks {
 				continue;
 			}
 
-			$args = [
-				'render_callback' => [ $this, 'render_block' ]
-			];
+			$args = [];
 
-			$block = register_block_type( $block_dir, array_merge( [], $block_object, array_filter( $args ) ) );
+
+			if ( empty( $block_object['render'] ) && empty( $block_object['render_callback'] ) ) {
+
+				$args['render_callback'] = [ $this, 'render_block' ];
+
+			}
+
+			$args = array_merge( [], $block_object, array_filter( $args ?? [] ) );
+
+			$block = register_block_type( $block_dir, $args );
+			WPBS::console_log( $block );
 		}
 	}
 

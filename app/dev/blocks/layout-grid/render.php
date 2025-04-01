@@ -9,7 +9,6 @@ $query = new WP_Query( [
 	'posts_per_page' => $custom_query['per_page'] ?? 2,
 ] );
 
-
 $new_content = '';
 
 if ( $query->have_posts() ) {
@@ -28,8 +27,6 @@ if ( $query->have_posts() ) {
 	}
 }
 
-echo join(' ', [
-	$block->inner_content[0] ?? '',
-	trim( $new_content ),
-	$block->inner_content[count($block->inner_content) - 1] ?? ''
-]);
+$block->inner_content[1] = trim( $new_content );
+
+echo join(' ', $block->inner_content);

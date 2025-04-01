@@ -19,7 +19,7 @@ import {dispatch, useSelect} from "@wordpress/data";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-grid w-full block relative',
+        'wpbs-layout-grid w-full flex flex-wrap relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -123,7 +123,6 @@ registerBlockType(metadata.name, {
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
-
 
         useEffect(() => {
             setAttributes({

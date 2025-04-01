@@ -1,5 +1,24 @@
 <?php
 
+$attributes = $attributes ?? [];
+$block      = $block ?? ( (object) []);
+$content    = $content ?? false;
+
+$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false );
+
+add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
+
+	$block_images = array_map( function ( $image ) use ( $block ) {
+		return array_merge( $image, [
+			'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
+		] );
+	}, $block->attributes['preload'] ?? [] );
+
+	return array_merge( $images, $block_images );
+
+
+} );
+
 $block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 $custom_query = $block->attributes['queryArgs'] ?? [];
@@ -29,4 +48,4 @@ if ( $query->have_posts() ) {
 
 $block->inner_content[1] = trim( $new_content );
 
-echo join(' ', $block->inner_content);
+echo join( ' ', $block->inner_content );

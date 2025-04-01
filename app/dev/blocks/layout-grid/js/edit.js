@@ -138,11 +138,12 @@ registerBlockType(metadata.name, {
             setAttributes({
                 uniqueId: uniqueId,
                 queryArgs: queryArgs,
-                ['wpbs-prop-columns']: attributes['wpbs-columns-large'],
-                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'],
+                ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
+                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 3,
+                ['wpbs-prop-row-gap']: props.attributes.style.spacing.blockGap.left || '0px',
             });
 
-            //console.log(props);
+            console.log(props);
         }, []);
 
 
@@ -176,8 +177,8 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className:'wpbs-layout-grid__container'
-        },{});
+            className: 'wpbs-layout-grid__container  wpbs-layout-wrapper'
+        }, {});
 
 
         /* const appenderToUse = () => {
@@ -231,8 +232,8 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({
-            className:'wpbs-layout-grid__container',
-        },{});
+            className: 'wpbs-layout-grid__container wpbs-layout-wrapper',
+        }, {});
 
         return (
             <div {...blockProps}>

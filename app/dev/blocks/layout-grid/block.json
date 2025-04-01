@@ -53,8 +53,8 @@
   "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
-  "render_callback": "wpbs_layout_grid_render",
-  "icon": "grid-view"
+  "icon": "grid-view",
+  "render_callback": "wpbs_layout_grid_render"
 }
 
 

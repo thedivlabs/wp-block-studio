@@ -207,11 +207,13 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <div {...blockProps}>
+                    <InnerBlocks />
 
                     <ServerSideRender
                         skipBlockSupportAttributes
                         block="wpbs/layout-grid"
                         attributes={attributes}
+                        className={'wpbs-layout-grid__container'}
                     />
 
                     <Background attributes={attributes} editor={true}/>
@@ -231,6 +233,8 @@ registerBlockType(metadata.name, {
 
         return (
             <div {...blockProps}>
+
+                <InnerBlocks.Content />
 
                 <Background attributes={props.attributes} editor={false}/>
             </div>

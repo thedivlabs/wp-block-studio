@@ -2,7 +2,7 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 const {state} = store('wpbs/grid', {
     callbacks: {
-        runQuery: async () => {
+        /*runQuery: async () => {
             const {ref: element} = getElement();
 
             const queryArgs = JSON.parse(JSON.stringify(getContext().queryArgs || {}));
@@ -28,7 +28,7 @@ const {state} = store('wpbs/grid', {
                 })
 
 
-        }
+        }*/
     },
 
 });

@@ -27,6 +27,22 @@ class WPBS_WP {
 
 		$this->shortcodes();
 
+		add_filter( 'rest_endpoints', [$this,'add_rest_method']);
+
+	}
+
+	public function add_rest_method( $endpoints ) {
+		if ( is_wp_version_compatible( '5.5' ) ) {
+			return $endpoints;
+		}
+
+		foreach ( $endpoints as $route => $handler ) {
+			if ( isset( $endpoints[ $route ][0] ) ) {
+				$endpoints[ $route ][0]['methods'] = [ WP_REST_Server::READABLE, WP_REST_Server::CREATABLE ];
+			}
+		}
+
+		return $endpoints;
 	}
 
 	public function shortcodes(): void {

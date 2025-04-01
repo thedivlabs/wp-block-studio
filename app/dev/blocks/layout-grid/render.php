@@ -4,16 +4,9 @@ $attributes = $attributes ?? [];
 $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
 
-function parse_wp_css_variable( $shorthand ) {
-	if ( ! str_starts_with( $shorthand, 'var:' ) ) {
-		return $shorthand;
-	}
 
-	return 'var(--wp--' . str_replace( '|', '--', substr( $shorthand, 4 ) ) . ')';
-}
-
-$attributes['wpbs-prop-row-gap'] = parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['left'] ?? '0px' );
-$attributes['wpbs-prop-col-gap'] = parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['top'] ?? '0px' );
+$attributes['wpbs-prop-row-gap'] = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['left'] ?? '0px' );
+$attributes['wpbs-prop-col-gap'] = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['top'] ?? '0px' );
 
 $is_loop = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 

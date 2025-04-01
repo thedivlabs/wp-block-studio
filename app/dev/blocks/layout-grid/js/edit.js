@@ -23,7 +23,7 @@ function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid w-full flex relative',
         attributes.uniqueId,
-        //LayoutClasses(attributes)
+        LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
 
@@ -31,7 +31,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        //...LayoutAttributes,
+        ...LayoutAttributes,
         ...BackgroundAttributes,
         ['wpbs-columns-mobile']: {
             type: 'string'
@@ -139,8 +139,7 @@ registerBlockType(metadata.name, {
                 uniqueId: uniqueId,
                 queryArgs: queryArgs,
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
-                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1,
-                ['wpbs-prop-row-gap']: '0px',
+                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
             });
         }, []);
 
@@ -208,6 +207,9 @@ registerBlockType(metadata.name, {
                     <BackgroundSettings attributes={attributes || {}}
                                         pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
+
+                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
+                        clientId={clientId}></Layout>
 
                 <div {...blockProps}>
 

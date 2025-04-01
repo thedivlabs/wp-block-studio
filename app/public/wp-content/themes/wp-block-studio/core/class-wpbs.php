@@ -503,5 +503,14 @@ class WPBS {
 		return $array;
 	}
 
+
+	public static function parse_wp_css_variable( $shorthand ) {
+		if ( ! str_starts_with( $shorthand, 'var:' ) ) {
+			return $shorthand;
+		}
+
+		return 'var(--wp--' . str_replace( '|', '--', substr( $shorthand, 4 ) ) . ')';
+	}
+
 }
 

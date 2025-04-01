@@ -60,8 +60,6 @@ if ( $query->have_posts() ) {
 			'postId' => $post->ID,
 		] );
 
-		WPBS::console_log( $block_template );
-
 		$new_content .= $new_block->render();
 	}
 }

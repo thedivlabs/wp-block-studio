@@ -142,8 +142,6 @@ registerBlockType(metadata.name, {
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 3,
                 ['wpbs-prop-row-gap']: '0px',
             });
-
-            console.log(props);
         }, []);
 
 

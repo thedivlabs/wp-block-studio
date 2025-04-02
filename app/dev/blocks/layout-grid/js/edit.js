@@ -242,7 +242,7 @@ registerBlockType(metadata.name, {
                 maxItems={100}
                 minItems={-1}
             />
-            <ComboboxControl
+            {/*<ComboboxControl
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
                 label="Select a country"
@@ -252,7 +252,7 @@ registerBlockType(metadata.name, {
                 }}
                 options={loopOptions.type}
                 value={loopType}
-            />
+            />*/}
             <SelectControl
                 label={'Term'}
                 value={term}
@@ -301,6 +301,13 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
+        loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType').map((postTypeObject) => {
+            return {
+                value: postTypeObject.name,
+                label: postTypeObject.label
+            }
+        }),[]);
+
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
@@ -312,12 +319,6 @@ registerBlockType(metadata.name, {
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
             });
-            loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType').map((postTypeObject) => {
-                return {
-                    value: postTypeObject.name,
-                    label: postTypeObject.label
-                }
-            }),[])
         }, []);
 
 

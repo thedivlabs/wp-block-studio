@@ -13,8 +13,17 @@ import ServerSideRender from "@wordpress/server-side-render";
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
-    __experimentalBorderControl as BorderControl, SelectControl, BaseControl, ToggleControl, TabPanel, PanelBody,
-    __experimentalNumberControl as NumberControl, __experimentalUnitControl as UnitControl, RangeControl, GradientPicker
+    __experimentalBorderControl as BorderControl,
+    SelectControl,
+    BaseControl,
+    ToggleControl,
+    TabPanel,
+    PanelBody,
+    __experimentalNumberControl as NumberControl,
+    __experimentalUnitControl as UnitControl,
+    RangeControl,
+    GradientPicker,
+    QueryControls
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -83,17 +92,11 @@ registerBlockType(metadata.name, {
         ['wpbs-loop-taxonomy']: {
             type: 'string'
         },
-        ['wpbs-loop-modifier']: {
-            type: 'string'
-        },
-        ['wpbs-loop-sort']: {
-            type: 'string'
-        },
         ['wpbs-loop-current']: {
             type: 'boolean'
         },
         ['wpbs-loop-suppress']: {
-            type: 'array'
+            type: 'string'
         }
     },
     edit: (props) => {
@@ -116,6 +119,10 @@ registerBlockType(metadata.name, {
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
+        const [loopType, setLoopType] = useState(attributes['wpbs-loop-type']);
+        const [term, setTerm] = useState(attributes['wpbs-loop-term']);
+        const [taxonomy, setTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
+        const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -217,11 +224,77 @@ registerBlockType(metadata.name, {
                 shouldSanitizeBorder
             />
         </Grid>;
-        const tabLoop = false;
+        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
+            <QueryControls
+                onNumberOfItemsChange={() => {}}
+                onOrderByChange={() => {}}
+                onOrderChange={() => {}}
+                order="desc"
+                orderBy="date"
+                numberOfItems={8}
+                maxItems={100}
+                minItems={-1}
+            />
+            <SelectControl
+                label={'Post Type'}
+                value={loopType}
+                options={[
+                    {label: 'Default', value: ''},
+                    {label: 'Post', value: 'post'},
+                ]}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-type']: newValue});
+                    setLoopType(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label={'Term'}
+                value={term}
+                options={[
+                    {label: 'Default', value: ''},
+                ]}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-term']: newValue});
+                    setTerm(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label={'Taxonomy'}
+                value={taxonomy}
+                options={[
+                    {label: 'Default', value: ''},
+                ]}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-taxonomy']: newValue});
+                    setTaxonomy(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
+                label={'Suppress'}
+                value={suppress}
+                options={[
+                    {label: 'Default', value: ''},
+                ]}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-suppress']: newValue});
+                    setSuppress(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+
+
+        </Grid>;
 
         const tabs = {
             options: tabOptions,
-            loop: tabOptions,
+            loop: tabLoop,
         }
 
         /*const posts = useSelect((select) =>

@@ -112,17 +112,20 @@ registerBlockType(metadata.name, {
         };
 
         let postTypeOptions = [];
+        let taxonomiesOptions = [];
 
-        const {postTypes} = useSelect((select) => {
+        const {postTypes,taxonomies} = useSelect((select) => {
             const {getPostTypes} = select('core');
+            const {getTaxonomies} = select('core');
 
             return {
                 postTypes: getPostTypes(),
+                taxonomies: getTaxonomies(),
             }
         })
 
         if (postTypes) {
-            postTypeOptions.push({value: 0, label: 'Select a page'})
+            postTypeOptions.push({value: 0, label: 'Select a post type'})
             postTypes.forEach((postType) => {
                 if (!postType.viewable || ['attachment'].includes(postType.slug)) {
                     return;
@@ -131,6 +134,18 @@ registerBlockType(metadata.name, {
             })
         } else {
             postTypeOptions.push({value: 0, label: 'Loading...'})
+        }
+
+        if (taxonomies) {
+            taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
+            taxonomies.forEach((postType) => {
+                /*if (!postType.viewable || ['attachment'].includes(postType.slug)) {
+                    return;
+                }*/
+                taxonomiesOptions.push({value: postType.name, label: postType.label})
+            })
+        } else {
+            taxonomiesOptions.push({value: 0, label: 'Loading...'})
         }
 
         const colors = useSelect('core/block-editor', []).getSettings().colors;
@@ -289,9 +304,7 @@ registerBlockType(metadata.name, {
             <SelectControl
                 label={'Taxonomy'}
                 value={taxonomy}
-                options={[
-                    {label: 'Default', value: ''},
-                ]}
+                options={taxonomies}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-taxonomy']: newValue});
                     setTaxonomy(newValue);

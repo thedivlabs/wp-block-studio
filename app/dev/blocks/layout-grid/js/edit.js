@@ -156,7 +156,7 @@ registerBlockType(metadata.name, {
 
                 const {getEntityRecords} = select('core');
 
-                taxonomies.filter((tax) => tax.slug === taxonomy).forEach((tax) => {
+                taxonomies.forEach((tax) => {
                     const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
 
                     if (terms && terms.length > 0) {
@@ -174,7 +174,7 @@ registerBlockType(metadata.name, {
             return {
                 terms: termsArray,
             }
-        }, [taxonomy]);
+        }, [taxonomiesOptions]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})

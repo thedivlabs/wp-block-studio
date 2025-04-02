@@ -210,7 +210,7 @@ registerBlockType(metadata.name, {
         useEffect(() => {
 
             setAttributes({
-               queryArgs:{
+                queryArgs:{
                    'post_type':loopPostType,
                    'term':loopTerm,
                    'taxonomy':loopTaxonomy,
@@ -221,7 +221,7 @@ registerBlockType(metadata.name, {
                }
             });
 
-        },[loopPostType ,loopTerm ,loopTaxonomy ,loopPageSize, loopMaxItems])
+        },[loopPostType ,loopTerm ,loopTaxonomy ,loopPageSize, loopMaxItems,loopOrderBy,loopOrder])
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>

@@ -123,13 +123,12 @@ registerBlockType(metadata.name, {
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
-        const [loopType, setLoopType] = useState(attributes['wpbs-loop-type']);
-        const [term, setTerm] = useState(attributes['wpbs-loop-term']);
-        const [taxonomy, setTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
+        const [loopPostType, setLoopPostType] = useState(attributes['wpbs-loop-type']);
+        const [loopTerm, setLoopTerm] = useState(attributes['wpbs-loop-term']);
+        const [loopTaxonomy, setLoopTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
         const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopMaxItems, setLoopMaxItems] = useState(attributes['wpbs-loop-max-items']);
-
 
         const queryArgs = {
             per_page: 8,
@@ -190,11 +189,11 @@ registerBlockType(metadata.name, {
 
         if (taxonomies) {
             taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
-            taxonomies.forEach((taxonomy) => {
-                if (!taxonomy.visibility.public) {
+            taxonomies.forEach((tax) => {
+                if (!tax.visibility.public) {
                     return;
                 }
-                taxonomiesOptions.push({value: taxonomy.slug, label: taxonomy.name})
+                taxonomiesOptions.push({value: tax.slug, label: tax.name})
             })
         } else {
             taxonomiesOptions.push({value: 0, label: 'Loading...'})
@@ -312,33 +311,33 @@ registerBlockType(metadata.name, {
         const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label={'Post Type'}
-                value={loopType}
+                value={loopPostType}
                 options={postTypeOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-type']: newValue});
-                    setLoopType(newValue);
+                    setLoopPostType(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
             <SelectControl
                 label={'Taxonomy'}
-                value={taxonomy}
+                value={loopTaxonomy}
                 options={taxonomiesOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-taxonomy']: newValue});
-                    setTaxonomy(newValue);
+                    setLoopTaxonomy(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
             <SelectControl
                 label={'Term'}
-                value={term}
+                value={loopTerm}
                 options={termsOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-term']: newValue});
-                    setTerm(newValue);
+                    setLoopTerm(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom

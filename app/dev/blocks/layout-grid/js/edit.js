@@ -13,6 +13,7 @@ import ServerSideRender from "@wordpress/server-side-render";
 import {
     __experimentalGrid as Grid,
     __experimentalBorderControl as BorderControl, SelectControl, BaseControl, ToggleControl, TabPanel, PanelBody,
+    __experimentalNumberControl as NumberControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -98,9 +99,13 @@ registerBlockType(metadata.name, {
             per_page: 8,
         };
 
-        const colors = useSelect('core/block-editor',[]).getSettings().colors;
+        const colors = useSelect('core/block-editor', []).getSettings().colors;
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
+        const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
+        const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
+        const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
+        const [dividerMobile, setDividerMobile] = useState(attributes['wpbs-divider-mobile']);
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
@@ -171,7 +176,7 @@ registerBlockType(metadata.name, {
 
         /*if (!posts) return <p>Loading...</p>;
         if (posts.length === 0) return <p>No posts found.</p>;*/
-console.log(colors);
+        console.log(colors);
         return (
             <>
                 <InspectorControls group="styles">
@@ -180,7 +185,47 @@ console.log(colors);
 
 
                     <PanelBody>
-                        <Grid columns={1} columnGap={15} rowGap={20} >
+                        <Grid columns={1} columnGap={15} rowGap={20}>
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                <NumberControl
+                                    __next40pxDefaultSize
+                                    isShiftStepEnabled={false}
+                                    onChange={(newValue) => {
+                                        setAttributes({['wpbs-columns-mobile']: newValue});
+                                        setColumnsMobile(newValue);
+                                    }}
+                                    value={columnsMobile}
+                                />
+                                <NumberControl
+                                    __next40pxDefaultSize
+                                    isShiftStepEnabled={false}
+                                    onChange={(newValue) => {
+                                        setAttributes({['wpbs-columns-large']: newValue});
+                                        setColumnsLarge(newValue);
+                                    }}
+                                    value={columnsLarge}
+                                />
+                            </Grid>
+                            <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Masonry"
+                                    checked={!!masonry}
+                                    onChange={(newValue) => {
+                                        setAttributes({['wpbs-masonry']: newValue});
+                                        setMasonry(newValue);
+                                    }}
+                                />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Divider Mobile"
+                                    checked={!!dividerMobile}
+                                    onChange={(newValue) => {
+                                        setAttributes({['wpbs-divider-mobile']: newValue});
+                                        setDividerMobile(newValue);
+                                    }}
+                                />
+                            </Grid>
                             <BorderControl
                                 __next40pxDefaultSize
                                 enableAlpha
@@ -199,7 +244,6 @@ console.log(colors);
                         </Grid>
 
                     </PanelBody>
-
 
 
                 </InspectorControls>

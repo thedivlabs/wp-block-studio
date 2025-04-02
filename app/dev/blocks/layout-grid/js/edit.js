@@ -185,9 +185,7 @@ console.log(colors);
                                 __next40pxDefaultSize
                                 enableAlpha
                                 enableStyle
-                                units={[
-                                    {value: 'px', label: 'px', default: 0},
-                                ]}
+                                disableUnits
                                 value={divider}
                                 colors={colors}
                                 __experimentalIsRenderedInSidebar={true}

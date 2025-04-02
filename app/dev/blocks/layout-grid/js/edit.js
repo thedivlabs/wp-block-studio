@@ -345,8 +345,6 @@ registerBlockType(metadata.name, {
             />
 
             <QueryControls
-                onNumberOfItemsChange={() => {
-                }}
                 onOrderByChange={() => {
                 }}
                 onOrderChange={() => {
@@ -375,6 +373,7 @@ registerBlockType(metadata.name, {
 
                 <NumberControl
                     label={'Max Results'}
+                    min={-1}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
@@ -387,6 +386,7 @@ registerBlockType(metadata.name, {
                 <NumberControl
                     label={'Page Size'}
                     __next40pxDefaultSize
+                    min={1}
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
                         setAttributes({['wpbs-loop-page-size']: newValue});

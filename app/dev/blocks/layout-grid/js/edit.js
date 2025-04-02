@@ -210,14 +210,14 @@ registerBlockType(metadata.name, {
         useEffect(() => {
 
             setAttributes({
-               ['wpbs-loop-query']:{
+               queryArgs:{
                    'post_type':loopPostType,
                    'term':loopTerm,
                    'taxonomy':loopTaxonomy,
                    'posts_per_page':loopPageSize,
                    'page_size':loopPageSize,
-                   'orderby':false,
-                   'order':false
+                   'orderby':loopOrderBy,
+                   'order':loopOrder
                }
             });
 

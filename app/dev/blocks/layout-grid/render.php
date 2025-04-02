@@ -26,6 +26,9 @@ add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block 
 } );
 
 if ( $is_loop ) {
+
+	WPBS::console_log($block->attributes);
+
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 	if ( empty( $block_template ) ) {

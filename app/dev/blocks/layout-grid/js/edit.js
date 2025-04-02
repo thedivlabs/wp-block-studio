@@ -177,6 +177,7 @@ registerBlockType(metadata.name, {
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
+            postTypeOptions.push({value: 'current', label: 'Current'})
             postTypes.forEach((postType) => {
                 if (!postType.viewable || ['attachment'].includes(postType.slug)) {
                     return;

@@ -179,13 +179,15 @@ console.log(colors);
                                         pushSettings={setAttributes}></BackgroundSettings>
 
 
-                    <PanelBody title={'Background'} initialOpen={false}>
+                    <PanelBody>
                         <Grid columns={1} columnGap={15} rowGap={20} >
                             <BorderControl
                                 __next40pxDefaultSize
                                 enableAlpha
                                 enableStyle
-                                disableUnits
+                                units={[
+                                    {value: 'px', label: 'px', default: 0},
+                                ]}
                                 value={divider}
                                 colors={colors}
                                 __experimentalIsRenderedInSidebar={true}

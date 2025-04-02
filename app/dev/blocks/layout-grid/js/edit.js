@@ -179,7 +179,7 @@ console.log(colors);
                                         pushSettings={setAttributes}></BackgroundSettings>
 
 
-                    <PanelBody title={'Background'} initialOpen={false} className={className}>
+                    <PanelBody title={'Background'} initialOpen={false}>
                         <Grid columns={1} columnGap={15} rowGap={20} >
                             <BorderControl
                                 __next40pxDefaultSize

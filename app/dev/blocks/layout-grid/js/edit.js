@@ -134,13 +134,15 @@ registerBlockType(metadata.name, {
 
             if (taxArray) {
 
-                taxArray.forEach((tax)=>{
+                taxArray.forEach((tax) => {
                     const terms = getEntityRecords('taxonomy', taxArray[0].slug);
+                    if (terms) {
+                        termsArray.push({value: 0, label: tax.name});
 
-                    termsArray.push({value:0,label:tax.name});
-                    terms.forEach((term)=>{
-                        termsArray.push({value:term.id,label:term.name});
-                    });
+                        terms.forEach((term) => {
+                            termsArray.push({value: term.id, label: term.name});
+                        });
+                    }
 
                 })
 

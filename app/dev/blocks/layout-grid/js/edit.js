@@ -115,15 +115,26 @@ registerBlockType(metadata.name, {
         let taxonomiesOptions = [];
         let termsOptions = [];
 
-        const {postTypes, taxonomies} = useSelect((select) => {
+        const {postTypes, taxonomies,terms} = useSelect((select) => {
             const {getPostTypes} = select('core');
             const {getTaxonomies} = select('core');
+            const {getEntityRecords} = select('core');
 
             const taxArray = getTaxonomies();
+            let termArray = [];
+
+            taxArray.forEach((tax) => {
+                const terms = getEntityRecords('taxonomy', tax.slug);
+                termArray.push({value: 0, label: tax.name});
+                terms.forEach((term) => {
+                    termArray.push({value: term.slug, label: term.name});
+                })
+            })
 
             return {
                 postTypes: getPostTypes(),
                 taxonomies: taxArray,
+                terms: termArray,
             }
         })
 
@@ -146,21 +157,17 @@ registerBlockType(metadata.name, {
                     return;
                 }
                 taxonomiesOptions.push({value: taxonomy.slug, label: taxonomy.name})
-
-                termsOptions.push({value: 0, label: taxonomy.name})
-                useSelect((select) => {
-                    select('core').getEntityRecords('taxonomy', tax.slug)
-                })?.forEach((term) => {
-                    return {
-                        value: term.slug,
-                        label: term.name
-                    }
-                })
-
             })
-            //console.log(taxonomies);
         } else {
             taxonomiesOptions.push({value: 0, label: 'Loading...'})
+        }
+        if (terms) {
+            termsOptions.push({value: 0, label: 'Select a taxonomy'})
+            terms.forEach((term) => {
+                termsOptions.push({value: term.slug, label: term.name})
+            })
+        } else {
+            termsOptions.push({value: 0, label: 'Loading...'})
         }
 
 
@@ -307,7 +314,7 @@ registerBlockType(metadata.name, {
             <SelectControl
                 label={'Term'}
                 value={term}
-                options={[]}
+                options={termsOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-term']: newValue});
                     setTerm(newValue);

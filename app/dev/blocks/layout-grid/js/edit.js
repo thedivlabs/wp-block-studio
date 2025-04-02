@@ -85,6 +85,12 @@ registerBlockType(metadata.name, {
         ['wpbs-pagination-label']: {
             type: 'string'
         },
+        ['wpbs-loop-orderby']: {
+            type: 'string'
+        },
+        ['wpbs-loop-order']: {
+            type: 'string'
+        },
         ['wpbs-loop-type']: {
             type: 'string'
         },
@@ -93,9 +99,6 @@ registerBlockType(metadata.name, {
         },
         ['wpbs-loop-taxonomy']: {
             type: 'string'
-        },
-        ['wpbs-loop-current']: {
-            type: 'boolean'
         },
         ['wpbs-loop-page-size']: {
             type: 'boolean'
@@ -129,10 +132,8 @@ registerBlockType(metadata.name, {
         const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopMaxItems, setLoopMaxItems] = useState(attributes['wpbs-loop-max-items']);
-
-        const queryArgs = {
-            per_page: 8,
-        };
+        const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
+        const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
 
         let postTypeOptions = [];
         let taxonomiesOptions = [];
@@ -205,6 +206,22 @@ registerBlockType(metadata.name, {
                 ...terms
             ];
         }
+
+        useEffect(() => {
+
+            setAttributes({
+               ['wpbs-loop-query']:{
+                   'post_type':loopPostType,
+                   'term':loopTerm,
+                   'taxonomy':loopTaxonomy,
+                   'posts_per_page':loopPageSize,
+                   'page_size':loopPageSize,
+                   'orderby':false,
+                   'order':false
+               }
+            });
+
+        },[loopPostType ,loopTerm ,loopTaxonomy ,loopPageSize, loopMaxItems])
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -345,12 +362,16 @@ registerBlockType(metadata.name, {
             />
 
             <QueryControls
-                onOrderByChange={() => {
+                onOrderByChange={(newValue) => {
+                    setAttributes({['wpbs-loop-orderby']: newValue});
+                    setLoopOrderBy(newValue);
                 }}
-                onOrderChange={() => {
+                onOrderChange={(newValue) => {
+                    setAttributes({['wpbs-loop-order']: newValue});
+                    setLoopOrder(newValue);
                 }}
-                order="desc"
-                orderBy="date"
+                order={loopOrder}
+                orderBy={loopOrderBy}
             />
 
 
@@ -420,7 +441,7 @@ registerBlockType(metadata.name, {
         useEffect(() => {
             setAttributes({
                 uniqueId: uniqueId,
-                queryArgs: queryArgs,
+                queryArgs: attributes.queryArgs,
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
             });

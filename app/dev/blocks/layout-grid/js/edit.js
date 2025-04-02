@@ -98,7 +98,7 @@ registerBlockType(metadata.name, {
             type: 'boolean'
         },
         ['wpbs-loop-suppress']: {
-            type: 'string'
+            type: 'array'
         }
     },
     edit: (props) => {
@@ -148,10 +148,10 @@ registerBlockType(metadata.name, {
 
                 const {getEntityRecords} = select('core');
 
-                taxonomies.forEach((tax) => {
+                taxonomies.filter((tax) => tax.slug === taxonomy).forEach((tax) => {
                     const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
 
-                    if (terms) {
+                    if (terms && terms.length > 0) {
                         termsArray.push({value: '', label: tax.name, disabled: true});
 
                         terms.forEach((term) => {
@@ -161,7 +161,6 @@ registerBlockType(metadata.name, {
                     }
 
                 })
-
             }
 
             return {
@@ -300,20 +299,9 @@ registerBlockType(metadata.name, {
                 shouldSanitizeBorder
             />
         </Grid>;
+
+
         const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
-            <QueryControls
-                onNumberOfItemsChange={() => {
-                }}
-                onOrderByChange={() => {
-                }}
-                onOrderChange={() => {
-                }}
-                order="desc"
-                orderBy="date"
-                numberOfItems={8}
-                maxItems={100}
-                minItems={-1}
-            />
             <SelectControl
                 label={'Post Type'}
                 value={loopType}
@@ -321,17 +309,6 @@ registerBlockType(metadata.name, {
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-type']: newValue});
                     setLoopType(newValue);
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-            <SelectControl
-                label={'Term'}
-                value={term}
-                options={termsOptions}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-term']: newValue});
-                    setTerm(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
@@ -348,18 +325,46 @@ registerBlockType(metadata.name, {
                 __nextHasNoMarginBottom
             />
             <SelectControl
-                label={'Suppress'}
-                value={suppress}
-                options={[
-                    {label: 'Default', value: ''},
-                ]}
+                label={'Term'}
+                value={term}
+                options={termsOptions}
                 onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-suppress']: newValue});
-                    setSuppress(newValue);
+                    setAttributes({['wpbs-loop-term']: newValue});
+                    setTerm(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
+
+            <QueryControls
+                onNumberOfItemsChange={() => {
+                }}
+                onOrderByChange={() => {
+                }}
+                onOrderChange={() => {
+                }}
+                order="desc"
+                orderBy="date"
+                numberOfItems={8}
+                maxItems={100}
+                minItems={-1}
+            />
+
+
+            {/*<FormTokenField
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+                __experimentalExpandOnFocus
+                __experimentalValidateInput
+
+                label={'Suppress'}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-suppress']: newValue});
+                    setSuppress(newValue);
+                }}
+                suggestions={['test']}
+                value={suppress}
+            />*/}
 
 
         </Grid>;

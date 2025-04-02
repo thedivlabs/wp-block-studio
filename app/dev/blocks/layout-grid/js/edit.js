@@ -115,19 +115,12 @@ registerBlockType(metadata.name, {
         let taxonomiesOptions = [];
         let termsOptions = [];
 
-        const {postTypes, taxonomies, terms} = useSelect((select) => {
+        const {postTypes, taxonomies} = useSelect((select) => {
             const {getPostTypes} = select('core');
             const {getTaxonomies} = select('core');
             const {getEntityRecords} = select('core');
 
             const taxArray = getTaxonomies();
-            /*let termArray = getTaxonomies().forEach((tax) => {
-                const terms = getEntityRecords('taxonomy', tax.slug);
-                termArray.push({value: 0, label: tax.name});
-                terms.forEach((term) => {
-                    termArray.push({value: term.slug, label: term.name});
-                })
-            });*/
 
             let termsArray = [];
 
@@ -155,6 +148,35 @@ registerBlockType(metadata.name, {
                 terms: termsArray,
             }
         })
+
+        const {terms} = useSelect((select) => {
+            const {getEntityRecords} = select('core');
+
+            let termsArray = [];
+
+
+            if (taxonomies) {
+
+                taxonomies.forEach((tax) => {
+                    const terms = getEntityRecords('taxonomy', tax.slug,{hide_empty:true});
+                    if (terms) {
+                        termsArray.push({value: '', label: tax.name, disabled: true});
+
+                        terms.forEach((term) => {
+
+                            termsArray.push({value: term.id, label: term.name});
+                        });
+                    }
+
+                })
+
+            }
+
+console.log(terms);
+            return {
+                terms: termsArray,
+            }
+        },[taxonomies]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})

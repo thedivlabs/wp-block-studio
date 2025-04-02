@@ -101,10 +101,10 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         ['wpbs-loop-page-size']: {
-            type: 'boolean'
+            type: 'string'
         },
         ['wpbs-loop-max-items']: {
-            type: 'boolean'
+            type: 'string'
         },
         ['wpbs-loop-suppress']: {
             type: 'array'

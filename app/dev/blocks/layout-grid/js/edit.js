@@ -115,26 +115,42 @@ registerBlockType(metadata.name, {
         let taxonomiesOptions = [];
         let termsOptions = [];
 
-        const {postTypes, taxonomies,terms} = useSelect((select) => {
+        const {postTypes, taxonomies, terms} = useSelect((select) => {
             const {getPostTypes} = select('core');
             const {getTaxonomies} = select('core');
             const {getEntityRecords} = select('core');
 
             const taxArray = getTaxonomies();
-            let termArray = [];
-
-            taxArray.forEach((tax) => {
+            /*let termArray = getTaxonomies().forEach((tax) => {
                 const terms = getEntityRecords('taxonomy', tax.slug);
                 termArray.push({value: 0, label: tax.name});
                 terms.forEach((term) => {
                     termArray.push({value: term.slug, label: term.name});
                 })
-            })
+            });*/
+
+            let termsArray = [];
+
+
+            if (taxArray) {
+
+                taxArray.forEach((tax)=>{
+                    const terms = getEntityRecords('taxonomy', taxArray[0].slug);
+
+                    termsArray.push({value:0,label:tax.name});
+                    terms.forEach((term)=>{
+                        termsArray.push({value:term.id,label:term.name});
+                    });
+
+                })
+
+            }
+
 
             return {
                 postTypes: getPostTypes(),
                 taxonomies: taxArray,
-                terms: termArray,
+                terms: termsArray,
             }
         })
 
@@ -162,12 +178,7 @@ registerBlockType(metadata.name, {
             taxonomiesOptions.push({value: 0, label: 'Loading...'})
         }
         if (terms) {
-            termsOptions.push({value: 0, label: 'Select a taxonomy'})
-            terms.forEach((term) => {
-                termsOptions.push({value: term.slug, label: term.name})
-            })
-        } else {
-            termsOptions.push({value: 0, label: 'Loading...'})
+            termsOptions = terms;
         }
 
 

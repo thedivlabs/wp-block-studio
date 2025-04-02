@@ -137,7 +137,6 @@ registerBlockType(metadata.name, {
         }
 
         if (taxonomies) {
-            console.log(taxonomies);
             taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
             taxonomies.forEach((taxonomy) => {
                 if (!taxonomy.visibility.public) {
@@ -305,7 +304,7 @@ registerBlockType(metadata.name, {
             <SelectControl
                 label={'Taxonomy'}
                 value={taxonomy}
-                options={taxonomies}
+                options={taxonomiesOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-taxonomy']: newValue});
                     setTaxonomy(newValue);

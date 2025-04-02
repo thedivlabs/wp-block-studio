@@ -62,7 +62,10 @@ registerBlockType(metadata.name, {
         ['wpbs-divider-icon-size']: {
             type: 'string'
         },
-        ['wpbs-divider-mobile']: {
+        ['wpbs-divider-icon-color']: {
+            type: 'string'
+        },
+        ['wpbs-mobile']: {
             type: 'boolean'
         },
         ['wpbs-pagination-size']: {
@@ -109,9 +112,10 @@ registerBlockType(metadata.name, {
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
         const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
-        const [dividerMobile, setDividerMobile] = useState(attributes['wpbs-divider-mobile']);
+        const [mobile, setMobile] = useState(attributes['wpbs-mobile']);
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
+        const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -149,10 +153,10 @@ registerBlockType(metadata.name, {
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Mobile"
-                    checked={!!dividerMobile}
+                    checked={!!mobile}
                     onChange={(newValue) => {
-                        setAttributes({['wpbs-divider-mobile']: newValue});
-                        setDividerMobile(newValue);
+                        setAttributes({['wpbs-mobile']: newValue});
+                        setMobile(newValue);
                     }}
                 />
                 <InputControl
@@ -181,6 +185,22 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                 />
             </Grid>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'icon-color',
+                        label: 'Icon Color',
+                        value: dividerIconColor,
+                        onChange: (newValue) => {
+                            setAttributes({['wpbs-divider-icon-color']: newValue});
+                            setDividerIconColor(newValue);
+                        },
+                        isShownByDefault: true
+                    }
+                ]}
+            />
             <BorderControl
                 __next40pxDefaultSize
                 enableAlpha

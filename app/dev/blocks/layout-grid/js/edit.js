@@ -276,9 +276,6 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <InspectorControls group="styles">
-                    <BackgroundSettings attributes={attributes || {}}
-                                        pushSettings={setAttributes}></BackgroundSettings>
-
 
                     <PanelBody>
 
@@ -305,6 +302,11 @@ registerBlockType(metadata.name, {
                         </TabPanel>
 
                     </PanelBody>
+
+
+                    <BackgroundSettings attributes={attributes || {}}
+                                        pushSettings={setAttributes}></BackgroundSettings>
+
 
 
                 </InspectorControls>

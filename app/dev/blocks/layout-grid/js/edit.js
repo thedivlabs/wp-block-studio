@@ -111,9 +111,20 @@ registerBlockType(metadata.name, {
             per_page: 8,
         };
 
-        let loopOptions = {
-            type: []
-        }
+
+        const postTypes = Object.fromEntries(
+            Object.entries((useSelect((select) =>
+                select('core').getPostTypes(), [])?.map((postTypeObject) => {
+                if (!postTypeObject.viewable || ['attachment'].includes(postTypeObject.slug)) {
+                    return false;
+                }
+
+                return {
+                    value: postTypeObject.slug,
+                    label: postTypeObject.name
+                }
+            })) || [])
+                .filter(([_, value]) => value !== false));
 
         const colors = useSelect('core/block-editor', []).getSettings().colors;
 
@@ -256,6 +267,17 @@ registerBlockType(metadata.name, {
                 value={loopType}
             />*/}
             <SelectControl
+                label={'Post Type'}
+                value={loopType}
+                options={postTypes}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-type']: newValue});
+                    setLoopType(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+            <SelectControl
                 label={'Term'}
                 value={term}
                 options={[
@@ -314,22 +336,6 @@ registerBlockType(metadata.name, {
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
 
-        let postTypes = useSelect((select) =>
-            select('core').getPostTypes({visibility: true}), []).map((postTypeObject) => {
-            if (!postTypeObject.viewable) {
-                return false;
-            }
-            return {
-                value: postTypeObject.name,
-                label: postTypeObject.label
-            }
-        });
-
-        Object.fromEntries(
-            Object.entries(args)
-                .filter(([_, value]) => value !== null))
-
-        console.log(postTypes);
 
         useEffect(() => {
             setAttributes({

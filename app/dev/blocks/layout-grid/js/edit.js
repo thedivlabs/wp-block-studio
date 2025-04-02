@@ -113,14 +113,17 @@ registerBlockType(metadata.name, {
 
         let postTypeOptions = [];
         let taxonomiesOptions = [];
+        let termsOptions = [];
 
-        const {postTypes,taxonomies} = useSelect((select) => {
+        const {postTypes, taxonomies} = useSelect((select) => {
             const {getPostTypes} = select('core');
             const {getTaxonomies} = select('core');
 
+            const taxArray = getTaxonomies();
+
             return {
                 postTypes: getPostTypes(),
-                taxonomies: getTaxonomies(),
+                taxonomies: taxArray,
             }
         })
 
@@ -143,10 +146,23 @@ registerBlockType(metadata.name, {
                     return;
                 }
                 taxonomiesOptions.push({value: taxonomy.slug, label: taxonomy.name})
+
+                termsOptions.push({value: 0, label: taxonomy.name})
+                useSelect((select) => {
+                    select('core').getEntityRecords('taxonomy', tax.slug)
+                })?.forEach((term) => {
+                    return {
+                        value: term.slug,
+                        label: term.name
+                    }
+                })
+
             })
+            //console.log(taxonomies);
         } else {
             taxonomiesOptions.push({value: 0, label: 'Loading...'})
         }
+
 
         const colors = useSelect('core/block-editor', []).getSettings().colors;
 
@@ -291,9 +307,7 @@ registerBlockType(metadata.name, {
             <SelectControl
                 label={'Term'}
                 value={term}
-                options={[
-                    {label: 'Default', value: ''},
-                ]}
+                options={[]}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-term']: newValue});
                     setTerm(newValue);

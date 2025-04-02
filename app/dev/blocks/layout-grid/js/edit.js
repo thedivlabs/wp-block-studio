@@ -109,6 +109,10 @@ registerBlockType(metadata.name, {
             per_page: 8,
         };
 
+        let loopOptions = {
+            type: []
+        }
+
         const colors = useSelect('core/block-editor', []).getSettings().colors;
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
@@ -297,9 +301,6 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
-        let loopOptions = {
-            type: []
-        }
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/

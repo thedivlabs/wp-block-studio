@@ -28,6 +28,8 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import {dispatch, useSelect} from "@wordpress/data";
+import {coreDataStore} from '@wordpress/core-data';
+
 import {ElementTagSettings} from "Components/ElementTag.js";
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 
@@ -301,16 +303,33 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
-        loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType'),[]).map((postTypeObject) => {
+        /*loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType'),[]).map((postTypeObject) => {
+            return {
+                value: postTypeObject.name,
+                label: postTypeObject.label
+            }
+        });*/
+
+
+        /*const posts = useSelect((select) =>
+            select('core').getEntityRecords('postType', 'post', queryArgs));*/
+
+        let postTypes = useSelect((select) =>
+            select('core').getPostTypes({visibility: true}), []).map((postTypeObject) => {
+            if (!postTypeObject.viewable) {
+                return false;
+            }
             return {
                 value: postTypeObject.name,
                 label: postTypeObject.label
             }
         });
 
+        Object.fromEntries(
+            Object.entries(args)
+                .filter(([_, value]) => value !== null))
 
-        /*const posts = useSelect((select) =>
-            select('core').getEntityRecords('postType', 'post', queryArgs));*/
+        console.log(postTypes);
 
         useEffect(() => {
             setAttributes({
@@ -319,6 +338,8 @@ registerBlockType(metadata.name, {
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
             });
+
+
         }, []);
 
 

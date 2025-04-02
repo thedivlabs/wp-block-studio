@@ -97,6 +97,12 @@ registerBlockType(metadata.name, {
         ['wpbs-loop-current']: {
             type: 'boolean'
         },
+        ['wpbs-loop-page-size']: {
+            type: 'boolean'
+        },
+        ['wpbs-loop-max-items']: {
+            type: 'boolean'
+        },
         ['wpbs-loop-suppress']: {
             type: 'array'
         }
@@ -121,6 +127,8 @@ registerBlockType(metadata.name, {
         const [term, setTerm] = useState(attributes['wpbs-loop-term']);
         const [taxonomy, setTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
         const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
+        const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
+        const [loopMaxItems, setLoopMaxItems] = useState(attributes['wpbs-loop-max-items']);
 
 
         const queryArgs = {
@@ -345,9 +353,6 @@ registerBlockType(metadata.name, {
                 }}
                 order="desc"
                 orderBy="date"
-                numberOfItems={8}
-                maxItems={100}
-                minItems={-1}
             />
 
 
@@ -365,6 +370,32 @@ registerBlockType(metadata.name, {
                 suggestions={['test']}
                 value={suppress}
             />*/}
+
+            <Grid columns={2} columnGap={15} rowGap={20}>
+
+                <NumberControl
+                    label={'Max Results'}
+                    __next40pxDefaultSize
+                    isShiftStepEnabled={false}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-loop-max-items']: newValue});
+                        setLoopMaxItems(newValue);
+                    }}
+                    value={loopMaxItems}
+                />
+
+                <NumberControl
+                    label={'Page Size'}
+                    __next40pxDefaultSize
+                    isShiftStepEnabled={false}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-loop-page-size']: newValue});
+                        setLoopPageSize(newValue);
+                    }}
+                    value={loopPageSize}
+                />
+
+            </Grid>
 
 
         </Grid>;

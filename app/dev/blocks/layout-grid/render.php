@@ -31,17 +31,20 @@ if ( $is_loop ) {
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
-	if ( empty( $block_template ) ) {
+	if ( empty( $block_template ) || empty($block->attributes['queryArgs']) ) {
 		echo 'No template';
 
 		return false;
 	}
 
-	$custom_query = $block->attributes['queryArgs'] ?? [];
+	$custom_query = &$block->attributes['queryArgs'];
 
 	$query = new WP_Query( [
-		'post_type'      => 'post',
-		'posts_per_page' => $custom_query['per_page'] ?? 2,
+		'post_type'      => $custom_query['post_type'] ?? 'post',
+		'posts_per_page' => $custom_query['posts_per_page'] ?? get_option( 'posts_per_page' ),
+		'order' => $custom_query['order'] ?? 'DESC',
+		'orderby' => $custom_query['orderby'] ?? 'date',
+		'no_found_rows' => true,
 	] );
 
 	$new_content = '';

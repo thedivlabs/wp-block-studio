@@ -111,20 +111,27 @@ registerBlockType(metadata.name, {
             per_page: 8,
         };
 
+        let postTypeOptions = [];
 
-        const postTypes = Object.fromEntries(
-            Object.entries((useSelect((select) =>
-                select('core').getPostTypes(), [])?.map((postTypeObject) => {
-                if (!postTypeObject.viewable || ['attachment'].includes(postTypeObject.slug)) {
-                    return false;
-                }
+        const {postTypes} = useSelect((select) => {
+            const {getPostTypes} = select('core');
 
-                return {
-                    value: postTypeObject.slug,
-                    label: postTypeObject.name
+            return {
+                postTypes: getPostTypes(),
+            }
+        })
+
+        if (postTypes) {
+            postTypeOptions.push({value: 0, label: 'Select a page'})
+            postTypes.forEach((postType) => {
+                if (!postType.viewable || ['attachment'].includes(postType.slug)) {
+                    return;
                 }
-            })) || [])
-                .filter(([_, value]) => value !== false));
+                postTypeOptions.push({value: postType.slug, label: postType.name})
+            })
+        } else {
+            postTypeOptions.push({value: 0, label: 'Loading...'})
+        }
 
         const colors = useSelect('core/block-editor', []).getSettings().colors;
 
@@ -255,21 +262,10 @@ registerBlockType(metadata.name, {
                 maxItems={100}
                 minItems={-1}
             />
-            {/*<ComboboxControl
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-                label="Select a country"
-                onChange={() => {
-                }}
-                onFilterValueChange={() => {
-                }}
-                options={loopOptions.type}
-                value={loopType}
-            />*/}
             <SelectControl
                 label={'Post Type'}
-                value={loopType}
-                options={postTypes}
+                value={attributes['wpbs-loop-type'] || ''}
+                options={postTypeOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-type']: newValue});
                     setLoopType(newValue);

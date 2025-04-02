@@ -3,7 +3,7 @@ import "../scss/block.scss";
 import {
     useBlockProps,
     InspectorControls,
-    InnerBlocks, useInnerBlocksProps,
+    InnerBlocks, useInnerBlocksProps, MediaUploadCheck, MediaUpload,
 } from "@wordpress/block-editor"
 import {registerBlockType, cloneBlock, createBlock} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -12,10 +12,13 @@ import {Background, BackgroundSettings, BackgroundAttributes} from "Components/B
 import ServerSideRender from "@wordpress/server-side-render";
 import {
     __experimentalGrid as Grid,
+    __experimentalBorderControl as BorderControl, SelectControl, BaseControl, ToggleControl, TabPanel, PanelBody,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {dispatch, useSelect} from "@wordpress/data";
+import {ElementTagSettings} from "Components/ElementTag.js";
+import PreviewThumbnail from "Components/PreviewThumbnail.js";
 
 
 function sectionClassNames(attributes = {}) {
@@ -48,14 +51,8 @@ registerBlockType(metadata.name, {
         ['wpbs-masonry']: {
             type: 'boolean'
         },
-        ['wpbs-divider-style']: {
-            type: 'string'
-        },
-        ['wpbs-divider-color']: {
-            type: 'string'
-        },
-        ['wpbs-divider-size']: {
-            type: 'string'
+        ['wpbs-divider']: {
+            type: 'object'
         },
         ['wpbs-divider-icon']: {
             type: 'string'
@@ -67,36 +64,6 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         ['wpbs-pagination-label']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-rounded']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-bg-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-text-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-border-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-hover-bg-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-hover-text-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-hover-border-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-current-bg-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-current-border-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-current-text-color']: {
             type: 'string'
         },
         ['wpbs-loop-type']: {
@@ -130,6 +97,10 @@ registerBlockType(metadata.name, {
         const queryArgs = {
             per_page: 8,
         };
+
+        const colors = useSelect('core/block-editor',[]).getSettings().colors;
+
+        const [divider, setDivider] = useState(attributes['wpbs-divider']);
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
@@ -200,12 +171,37 @@ registerBlockType(metadata.name, {
 
         /*if (!posts) return <p>Loading...</p>;
         if (posts.length === 0) return <p>No posts found.</p>;*/
-
+console.log(colors);
         return (
             <>
                 <InspectorControls group="styles">
                     <BackgroundSettings attributes={attributes || {}}
                                         pushSettings={setAttributes}></BackgroundSettings>
+
+
+                    <PanelBody title={'Background'} initialOpen={false} className={className}>
+                        <Grid columns={1} columnGap={15} rowGap={20} >
+                            <BorderControl
+                                __next40pxDefaultSize
+                                enableAlpha
+                                enableStyle
+                                disableUnits
+                                value={divider}
+                                colors={colors}
+                                __experimentalIsRenderedInSidebar={true}
+                                label="Divider"
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-divider']: newValue});
+                                    setDivider(newValue);
+                                }}
+                                shouldSanitizeBorder
+                            />
+                        </Grid>
+
+                    </PanelBody>
+
+
+
                 </InspectorControls>
 
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}

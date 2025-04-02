@@ -23,7 +23,7 @@ import {
     __experimentalUnitControl as UnitControl,
     RangeControl,
     GradientPicker,
-    QueryControls, FormTokenField
+    QueryControls, FormTokenField, ComboboxControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";

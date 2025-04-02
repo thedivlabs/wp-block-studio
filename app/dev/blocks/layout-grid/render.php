@@ -10,21 +10,6 @@ $attributes['wpbs-prop-col-gap'] = WPBS::parse_wp_css_variable( $attributes['sty
 
 $is_loop = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 
-$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false );
-
-add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
-
-	$block_images = array_map( function ( $image ) use ( $block ) {
-		return array_merge( $image, [
-			'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
-		] );
-	}, $block->attributes['preload'] ?? [] );
-
-	return array_merge( $images, $block_images );
-
-
-} );
-
 if ( $is_loop ) {
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
@@ -86,3 +71,30 @@ if ( $is_loop ) {
 } else {
 	echo $content;
 }
+
+$total = ! empty( $query ) ? count( $query->posts ?? [] ) : count( $block->parsed_block['innerBlocks'] ?? [] );
+
+function last_row( $cols, $total ): int {
+
+	$full_rows       = floor( $total / $cols );
+	$full_rows_total = $full_rows * $cols;
+	$diff            = $total - $full_rows_total;
+
+	return $diff ?: $cols;
+
+}
+
+$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false );
+
+add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
+
+	$block_images = array_map( function ( $image ) use ( $block ) {
+		return array_merge( $image, [
+			'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
+		] );
+	}, $block->attributes['preload'] ?? [] );
+
+	return array_merge( $images, $block_images );
+
+
+} );

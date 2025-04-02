@@ -107,6 +107,22 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
+        const colors = useSelect('core/block-editor', []).getSettings().colors;
+
+        const [divider, setDivider] = useState(attributes['wpbs-divider']);
+        const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
+        const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
+        const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
+        const [mobile, setMobile] = useState(attributes['wpbs-mobile']);
+        const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
+        const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
+        const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
+        const [loopType, setLoopType] = useState(attributes['wpbs-loop-type']);
+        const [term, setTerm] = useState(attributes['wpbs-loop-term']);
+        const [taxonomy, setTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
+        const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
+
+
         const queryArgs = {
             per_page: 8,
         };
@@ -118,47 +134,23 @@ registerBlockType(metadata.name, {
         const {postTypes, taxonomies} = useSelect((select) => {
             const {getPostTypes} = select('core');
             const {getTaxonomies} = select('core');
-            const {getEntityRecords} = select('core');
-
-            const taxArray = getTaxonomies();
-
-            let termsArray = [];
-
-
-            if (taxArray) {
-
-                taxArray.forEach((tax) => {
-                    const terms = getEntityRecords('taxonomy', taxArray[0].slug);
-                    if (terms) {
-                        termsArray.push({value: 0, label: tax.name});
-
-                        terms.forEach((term) => {
-                            termsArray.push({value: term.id, label: term.name});
-                        });
-                    }
-
-                })
-
-            }
-
 
             return {
                 postTypes: getPostTypes(),
-                taxonomies: taxArray,
-                terms: termsArray,
+                taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public),
             }
         })
 
         const {terms} = useSelect((select) => {
-            const {getEntityRecords} = select('core');
-
             let termsArray = [];
 
+            if (taxonomiesOptions && taxonomies) {
 
-            if (taxonomies) {
+                const {getEntityRecords} = select('core');
 
                 taxonomies.forEach((tax) => {
-                    const terms = getEntityRecords('taxonomy', tax.slug,{hide_empty:true});
+                    const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
+
                     if (terms) {
                         termsArray.push({value: '', label: tax.name, disabled: true});
 
@@ -172,11 +164,10 @@ registerBlockType(metadata.name, {
 
             }
 
-console.log(terms);
             return {
                 terms: termsArray,
             }
-        },[taxonomies]);
+        }, [taxonomy]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
@@ -202,24 +193,12 @@ console.log(terms);
             taxonomiesOptions.push({value: 0, label: 'Loading...'})
         }
         if (terms) {
-            termsOptions = terms;
+            termsOptions = [
+                {value: '', label: 'Select a term'},
+                ...terms
+            ];
         }
 
-
-        const colors = useSelect('core/block-editor', []).getSettings().colors;
-
-        const [divider, setDivider] = useState(attributes['wpbs-divider']);
-        const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
-        const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
-        const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
-        const [mobile, setMobile] = useState(attributes['wpbs-mobile']);
-        const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
-        const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
-        const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
-        const [loopType, setLoopType] = useState(attributes['wpbs-loop-type']);
-        const [term, setTerm] = useState(attributes['wpbs-loop-term']);
-        const [taxonomy, setTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
-        const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -337,7 +316,7 @@ console.log(terms);
             />
             <SelectControl
                 label={'Post Type'}
-                value={attributes['wpbs-loop-type'] || ''}
+                value={loopType}
                 options={postTypeOptions}
                 onChange={(newValue) => {
                     setAttributes({['wpbs-loop-type']: newValue});

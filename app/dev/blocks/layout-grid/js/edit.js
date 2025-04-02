@@ -301,12 +301,12 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
-        loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType').map((postTypeObject) => {
+        loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType'),[]).map((postTypeObject) => {
             return {
                 value: postTypeObject.name,
                 label: postTypeObject.label
             }
-        }),[]);
+        });
 
 
         /*const posts = useSelect((select) =>

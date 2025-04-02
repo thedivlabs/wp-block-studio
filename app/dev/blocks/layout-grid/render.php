@@ -27,11 +27,11 @@ add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block 
 
 if ( $is_loop ) {
 
-	WPBS::console_log($block->attributes);
+	WPBS::console_log( $block->attributes );
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
-	if ( empty( $block_template ) || empty($block->attributes['queryArgs']) ) {
+	if ( empty( $block_template ) || empty( $block->attributes['queryArgs'] ) ) {
 		echo 'No template';
 
 		return false;
@@ -42,10 +42,24 @@ if ( $is_loop ) {
 	$query = new WP_Query( [
 		'post_type'      => $custom_query['post_type'] ?? 'post',
 		'posts_per_page' => $custom_query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-		'order' => $custom_query['order'] ?? 'DESC',
-		'orderby' => $custom_query['orderby'] ?? 'date',
-		'no_found_rows' => true,
+		'order'          => $custom_query['order'] ?? 'DESC',
+		'orderby'        => $custom_query['orderby'] ?? 'date',
+		'no_found_rows'  => true,
 	] );
+
+	if (
+		! empty( $custom_query['term'] ) &&
+		$taxonomy = $custom_query['taxonomy'] ?? get_term( $custom_query['term'] )->term_id ?? false
+	) {
+
+		$custom_query['tax_query'] = [
+			[
+				'taxonomy' => $taxonomy,
+				'field'    => 'term_id',
+				'terms'    => $custom_query['term'],
+			]
+		];
+	}
 
 	$new_content = '';
 

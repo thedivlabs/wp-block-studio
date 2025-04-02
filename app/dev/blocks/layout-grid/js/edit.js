@@ -3,7 +3,7 @@ import "../scss/block.scss";
 import {
     useBlockProps,
     InspectorControls,
-    InnerBlocks, useInnerBlocksProps, MediaUploadCheck, MediaUpload,
+    InnerBlocks, useInnerBlocksProps, MediaUploadCheck, MediaUpload, PanelColorSettings,
 } from "@wordpress/block-editor"
 import {registerBlockType, cloneBlock, createBlock} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -11,9 +11,11 @@ import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import ServerSideRender from "@wordpress/server-side-render";
 import {
+    __experimentalUnitControl as UnitControl,
+    __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
     __experimentalBorderControl as BorderControl, SelectControl, BaseControl, ToggleControl, TabPanel, PanelBody,
-    __experimentalNumberControl as NumberControl
+    __experimentalNumberControl as NumberControl, __experimentalUnitControl as UnitControl, RangeControl, GradientPicker
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -56,6 +58,9 @@ registerBlockType(metadata.name, {
             type: 'object'
         },
         ['wpbs-divider-icon']: {
+            type: 'string'
+        },
+        ['wpbs-divider-icon-size']: {
             type: 'string'
         },
         ['wpbs-divider-mobile']: {
@@ -106,6 +111,154 @@ registerBlockType(metadata.name, {
         const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
         const [dividerMobile, setDividerMobile] = useState(attributes['wpbs-divider-mobile']);
+        const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
+        const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
+
+        const tabOptions = <>
+            <Grid columns={1} columnGap={15} rowGap={20}>
+                <Grid columns={2} columnGap={15} rowGap={20}>
+                    <NumberControl
+                        __next40pxDefaultSize
+                        isShiftStepEnabled={false}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-columns-mobile']: newValue});
+                            setColumnsMobile(newValue);
+                        }}
+                        value={columnsMobile}
+                    />
+                    <NumberControl
+                        __next40pxDefaultSize
+                        isShiftStepEnabled={false}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-columns-large']: newValue});
+                            setColumnsLarge(newValue);
+                        }}
+                        value={columnsLarge}
+                    />
+                </Grid>
+                <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                    <ToggleControl
+                        __nextHasNoMarginBottom
+                        label="Masonry"
+                        checked={!!masonry}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-masonry']: newValue});
+                            setMasonry(newValue);
+                        }}
+                    />
+                    <ToggleControl
+                        __nextHasNoMarginBottom
+                        label="Divider Mobile"
+                        checked={!!dividerMobile}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-divider-mobile']: newValue});
+                            setDividerMobile(newValue);
+                        }}
+                    />
+                    <InputControl
+                        __next40pxDefaultSize
+                        value={dividerIcon}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-divider-icon']: newValue});
+                            setDividerIcon(newValue);
+                        }}
+                    />
+                    <UnitControl
+                        label={'Icon Size'}
+                        value={dividerIconSize}
+                        isResetValueOnUnitChange={true}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-divider-icon-size']: newValue});
+                            setDividerIconSize(newValue);
+                        }}
+                        units={[
+                            {value: 'px', label: 'px', default: 0},
+                            {value: 'em', label: 'em', default: 0},
+                            {value: 'rem', label: 'rem', default: 0},
+                            {value: 'vw', label: 'vw', default: 0},
+                        ]}
+                        __next40pxDefaultSize
+                    />
+                </Grid>
+                <BorderControl
+                    __next40pxDefaultSize
+                    enableAlpha
+                    enableStyle
+                    disableUnits
+                    value={divider}
+                    colors={colors}
+                    __experimentalIsRenderedInSidebar={true}
+                    label="Divider"
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-divider']: newValue});
+                        setDivider(newValue);
+                    }}
+                    shouldSanitizeBorder
+                />
+            </Grid>
+        </>;
+        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <NumberControl
+                    __next40pxDefaultSize
+                    isShiftStepEnabled={false}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-columns-mobile']: newValue});
+                        setColumnsMobile(newValue);
+                    }}
+                    value={columnsMobile}
+                />
+                <NumberControl
+                    __next40pxDefaultSize
+                    isShiftStepEnabled={false}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-columns-large']: newValue});
+                        setColumnsLarge(newValue);
+                    }}
+                    value={columnsLarge}
+                />
+            </Grid>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Masonry"
+                    checked={!!masonry}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-masonry']: newValue});
+                        setMasonry(newValue);
+                    }}
+                />
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Divider Mobile"
+                    checked={!!dividerMobile}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-divider-mobile']: newValue});
+                        setDividerMobile(newValue);
+                    }}
+                />
+            </Grid>
+            <BorderControl
+                __next40pxDefaultSize
+                enableAlpha
+                enableStyle
+                disableUnits
+                value={divider}
+                colors={colors}
+                __experimentalIsRenderedInSidebar={true}
+                label="Divider"
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-divider']: newValue});
+                    setDivider(newValue);
+                }}
+                shouldSanitizeBorder
+            />
+        </Grid>;
+
+        const tabs = {
+            options: tabOptions,
+            loop: tabLoop,
+        }
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
@@ -176,7 +329,6 @@ registerBlockType(metadata.name, {
 
         /*if (!posts) return <p>Loading...</p>;
         if (posts.length === 0) return <p>No posts found.</p>;*/
-        console.log(colors);
         return (
             <>
                 <InspectorControls group="styles">
@@ -185,63 +337,28 @@ registerBlockType(metadata.name, {
 
 
                     <PanelBody>
-                        <Grid columns={1} columnGap={15} rowGap={20}>
-                            <Grid columns={2} columnGap={15} rowGap={20}>
-                                <NumberControl
-                                    __next40pxDefaultSize
-                                    isShiftStepEnabled={false}
-                                    onChange={(newValue) => {
-                                        setAttributes({['wpbs-columns-mobile']: newValue});
-                                        setColumnsMobile(newValue);
-                                    }}
-                                    value={columnsMobile}
-                                />
-                                <NumberControl
-                                    __next40pxDefaultSize
-                                    isShiftStepEnabled={false}
-                                    onChange={(newValue) => {
-                                        setAttributes({['wpbs-columns-large']: newValue});
-                                        setColumnsLarge(newValue);
-                                    }}
-                                    value={columnsLarge}
-                                />
-                            </Grid>
-                            <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
-                                <ToggleControl
-                                    __nextHasNoMarginBottom
-                                    label="Masonry"
-                                    checked={!!masonry}
-                                    onChange={(newValue) => {
-                                        setAttributes({['wpbs-masonry']: newValue});
-                                        setMasonry(newValue);
-                                    }}
-                                />
-                                <ToggleControl
-                                    __nextHasNoMarginBottom
-                                    label="Divider Mobile"
-                                    checked={!!dividerMobile}
-                                    onChange={(newValue) => {
-                                        setAttributes({['wpbs-divider-mobile']: newValue});
-                                        setDividerMobile(newValue);
-                                    }}
-                                />
-                            </Grid>
-                            <BorderControl
-                                __next40pxDefaultSize
-                                enableAlpha
-                                enableStyle
-                                disableUnits
-                                value={divider}
-                                colors={colors}
-                                __experimentalIsRenderedInSidebar={true}
-                                label="Divider"
-                                onChange={(newValue) => {
-                                    setAttributes({['wpbs-divider']: newValue});
-                                    setDivider(newValue);
-                                }}
-                                shouldSanitizeBorder
-                            />
-                        </Grid>
+
+                        <TabPanel
+                            className="wpbs-editor-tabs"
+                            activeClass="active"
+                            orientation="horizontal"
+                            initialTabName="options"
+                            tabs={[
+                                {
+                                    name: 'options',
+                                    title: 'Options',
+                                    className: 'tab-options',
+                                },
+                                {
+                                    name: 'loop',
+                                    title: 'Loop',
+                                    className: 'tab-loop',
+                                },
+                            ]}>
+                            {
+                                (tab) => (<>{tabs[tab.name]}</>)
+                            }
+                        </TabPanel>
 
                     </PanelBody>
 

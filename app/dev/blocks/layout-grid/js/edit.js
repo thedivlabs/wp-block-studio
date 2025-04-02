@@ -137,12 +137,13 @@ registerBlockType(metadata.name, {
         }
 
         if (taxonomies) {
+            console.log(taxonomies);
             taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
-            taxonomies.forEach((postType) => {
-                /*if (!postType.viewable || ['attachment'].includes(postType.slug)) {
+            taxonomies.forEach((taxonomy) => {
+                if (!taxonomy.visibility.public) {
                     return;
-                }*/
-                taxonomiesOptions.push({value: postType.name, label: postType.label})
+                }
+                taxonomiesOptions.push({value: taxonomy.slug, label: taxonomy.name})
             })
         } else {
             taxonomiesOptions.push({value: 0, label: 'Loading...'})

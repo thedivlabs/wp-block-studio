@@ -23,7 +23,7 @@ import {
     __experimentalUnitControl as UnitControl,
     RangeControl,
     GradientPicker,
-    QueryControls
+    QueryControls, FormTokenField
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -226,28 +226,28 @@ registerBlockType(metadata.name, {
         </Grid>;
         const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
             <QueryControls
-                onNumberOfItemsChange={() => {}}
-                onOrderByChange={() => {}}
-                onOrderChange={() => {}}
+                onNumberOfItemsChange={() => {
+                }}
+                onOrderByChange={() => {
+                }}
+                onOrderChange={() => {
+                }}
                 order="desc"
                 orderBy="date"
                 numberOfItems={8}
                 maxItems={100}
                 minItems={-1}
             />
-            <SelectControl
-                label={'Post Type'}
-                value={loopType}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Post', value: 'post'},
-                ]}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-type']: newValue});
-                    setLoopType(newValue);
-                }}
+            <ComboboxControl
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
+                label="Select a country"
+                onChange={() => {
+                }}
+                onFilterValueChange={() => {
+                }}
+                options={loopOptions.type}
+                value={loopType}
             />
             <SelectControl
                 label={'Term'}
@@ -297,6 +297,10 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
+        let loopOptions = {
+            type: []
+        }
+
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
 
@@ -307,6 +311,12 @@ registerBlockType(metadata.name, {
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
             });
+            loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType').map((postTypeObject) => {
+                return {
+                    value: postTypeObject.name,
+                    label: postTypeObject.label
+                }
+            }),[])
         }, []);
 
 
@@ -399,7 +409,6 @@ registerBlockType(metadata.name, {
 
                     <BackgroundSettings attributes={attributes || {}}
                                         pushSettings={setAttributes}></BackgroundSettings>
-
 
 
                 </InspectorControls>

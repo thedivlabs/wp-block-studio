@@ -11,7 +11,6 @@ import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import ServerSideRender from "@wordpress/server-side-render";
 import {
-    __experimentalUnitControl as UnitControl,
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
     __experimentalBorderControl as BorderControl, SelectControl, BaseControl, ToggleControl, TabPanel, PanelBody,
@@ -114,92 +113,10 @@ registerBlockType(metadata.name, {
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
 
-        const tabOptions = <>
-            <Grid columns={1} columnGap={15} rowGap={20}>
-                <Grid columns={2} columnGap={15} rowGap={20}>
-                    <NumberControl
-                        __next40pxDefaultSize
-                        isShiftStepEnabled={false}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-columns-mobile']: newValue});
-                            setColumnsMobile(newValue);
-                        }}
-                        value={columnsMobile}
-                    />
-                    <NumberControl
-                        __next40pxDefaultSize
-                        isShiftStepEnabled={false}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-columns-large']: newValue});
-                            setColumnsLarge(newValue);
-                        }}
-                        value={columnsLarge}
-                    />
-                </Grid>
-                <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
-                    <ToggleControl
-                        __nextHasNoMarginBottom
-                        label="Masonry"
-                        checked={!!masonry}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-masonry']: newValue});
-                            setMasonry(newValue);
-                        }}
-                    />
-                    <ToggleControl
-                        __nextHasNoMarginBottom
-                        label="Divider Mobile"
-                        checked={!!dividerMobile}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-divider-mobile']: newValue});
-                            setDividerMobile(newValue);
-                        }}
-                    />
-                    <InputControl
-                        __next40pxDefaultSize
-                        value={dividerIcon}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-divider-icon']: newValue});
-                            setDividerIcon(newValue);
-                        }}
-                    />
-                    <UnitControl
-                        label={'Icon Size'}
-                        value={dividerIconSize}
-                        isResetValueOnUnitChange={true}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-divider-icon-size']: newValue});
-                            setDividerIconSize(newValue);
-                        }}
-                        units={[
-                            {value: 'px', label: 'px', default: 0},
-                            {value: 'em', label: 'em', default: 0},
-                            {value: 'rem', label: 'rem', default: 0},
-                            {value: 'vw', label: 'vw', default: 0},
-                        ]}
-                        __next40pxDefaultSize
-                    />
-                </Grid>
-                <BorderControl
-                    __next40pxDefaultSize
-                    enableAlpha
-                    enableStyle
-                    disableUnits
-                    value={divider}
-                    colors={colors}
-                    __experimentalIsRenderedInSidebar={true}
-                    label="Divider"
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-divider']: newValue});
-                        setDivider(newValue);
-                    }}
-                    shouldSanitizeBorder
-                />
-            </Grid>
-        </>;
-        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
+        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <NumberControl
+                    label={'Columns Mobile'}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
@@ -209,6 +126,7 @@ registerBlockType(metadata.name, {
                     value={columnsMobile}
                 />
                 <NumberControl
+                    label={'Columns Large'}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
@@ -230,12 +148,37 @@ registerBlockType(metadata.name, {
                 />
                 <ToggleControl
                     __nextHasNoMarginBottom
-                    label="Divider Mobile"
+                    label="Mobile"
                     checked={!!dividerMobile}
                     onChange={(newValue) => {
                         setAttributes({['wpbs-divider-mobile']: newValue});
                         setDividerMobile(newValue);
                     }}
+                />
+                <InputControl
+                    label={'Divider Icon'}
+                    __next40pxDefaultSize
+                    value={dividerIcon}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-divider-icon']: newValue});
+                        setDividerIcon(newValue);
+                    }}
+                />
+                <UnitControl
+                    label={'Icon Size'}
+                    value={dividerIconSize}
+                    isResetValueOnUnitChange={true}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-divider-icon-size']: newValue});
+                        setDividerIconSize(newValue);
+                    }}
+                    units={[
+                        {value: 'px', label: 'px', default: 0},
+                        {value: 'em', label: 'em', default: 0},
+                        {value: 'rem', label: 'rem', default: 0},
+                        {value: 'vw', label: 'vw', default: 0},
+                    ]}
+                    __next40pxDefaultSize
                 />
             </Grid>
             <BorderControl
@@ -254,10 +197,11 @@ registerBlockType(metadata.name, {
                 shouldSanitizeBorder
             />
         </Grid>;
+        const tabLoop = false;
 
         const tabs = {
             options: tabOptions,
-            loop: tabLoop,
+            loop: tabOptions,
         }
 
         /*const posts = useSelect((select) =>

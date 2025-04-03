@@ -2,10 +2,9 @@ import "../scss/block.scss";
 
 import {
     useBlockProps,
-    InspectorControls,
-    InnerBlocks, useInnerBlocksProps, MediaUploadCheck, MediaUpload, PanelColorSettings, DefaultBlockAppender,
+    InspectorControls, useInnerBlocksProps, PanelColorSettings, DefaultBlockAppender,
 } from "@wordpress/block-editor"
-import {registerBlockType, cloneBlock, createBlock} from "@wordpress/blocks"
+import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
@@ -14,23 +13,16 @@ import {
     __experimentalGrid as Grid,
     __experimentalBorderControl as BorderControl,
     SelectControl,
-    BaseControl,
     ToggleControl,
     TabPanel,
     PanelBody,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    RangeControl,
-    GradientPicker,
-    QueryControls, FormTokenField, ComboboxControl
+    QueryControls
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
-import {dispatch, useSelect} from "@wordpress/data";
-import {coreDataStore} from '@wordpress/core-data';
-
-import {ElementTagSettings} from "Components/ElementTag.js";
-import PreviewThumbnail from "Components/PreviewThumbnail.js";
+import {useSelect} from "@wordpress/data";
 
 
 function sectionClassNames(attributes = {}) {
@@ -373,22 +365,6 @@ registerBlockType(metadata.name, {
                 orderBy={loopOrderBy}
             />
 
-
-            {/*<FormTokenField
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-                __experimentalExpandOnFocus
-                __experimentalValidateInput
-
-                label={'Suppress'}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-suppress']: newValue});
-                    setSuppress(newValue);
-                }}
-                suggestions={['test']}
-                value={suppress}
-            />*/}
-
             <Grid columns={2} columnGap={15} rowGap={20}>
 
                 <NumberControl
@@ -425,11 +401,6 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
-
-        /*const posts = useSelect((select) =>
-            select('core').getEntityRecords('postType', 'post', queryArgs));*/
-
-
         useEffect(() => {
             setAttributes({
                 uniqueId: uniqueId
@@ -449,9 +420,6 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
-            /*renderAppender: () => {
-                return ;
-            },*/
         });
 
         const innerBlocksProps = useInnerBlocksProps({

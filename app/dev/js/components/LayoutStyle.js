@@ -18,7 +18,7 @@ export const LayoutStyle = ({attributes, clientId}) => {
             .then((data) => {
                 setCss(data);
             })
-    });
+    },[attributes]);
 
     return (
         <style id={'wpbs-layout-styles'} style={{display: 'none'}}>{css}</style>

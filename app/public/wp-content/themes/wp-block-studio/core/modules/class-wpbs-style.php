@@ -47,7 +47,7 @@ class WPBS_Style {
 		return wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
 	}
 
-	public static function block_styles( $attributes, $block ): string|false {
+	public static function block_styles( $attributes, $block, $custom_css = '' ): string|false {
 
 		if ( ! is_array( $attributes ) ) {
 			return false;
@@ -112,6 +112,11 @@ class WPBS_Style {
 			unset( $css_mobile );
 
 		}
+
+		$css = join( ' ', array_filter( [
+			$css,
+			$custom_css
+		] ) );
 
 		if ( $block ) {
 			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );

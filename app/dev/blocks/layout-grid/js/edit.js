@@ -3,13 +3,12 @@ import "../scss/block.scss";
 import {
     useBlockProps,
     InspectorControls,
-    InnerBlocks, useInnerBlocksProps, MediaUploadCheck, MediaUpload, PanelColorSettings,
+    InnerBlocks, useInnerBlocksProps, MediaUploadCheck, MediaUpload, PanelColorSettings, DefaultBlockAppender,
 } from "@wordpress/block-editor"
 import {registerBlockType, cloneBlock, createBlock} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
-import ServerSideRender from "@wordpress/server-side-render";
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
@@ -210,18 +209,18 @@ registerBlockType(metadata.name, {
         useEffect(() => {
 
             setAttributes({
-                queryArgs:{
-                   'post_type':loopPostType,
-                   'term':loopTerm,
-                   'taxonomy':loopTaxonomy,
-                   'posts_per_page':loopPageSize,
-                   'page_size':loopPageSize,
-                   'orderby':loopOrderBy,
-                   'order':loopOrder
-               }
+                queryArgs: {
+                    'post_type': loopPostType,
+                    'term': loopTerm,
+                    'taxonomy': loopTaxonomy,
+                    'posts_per_page': loopPageSize,
+                    'page_size': loopPageSize,
+                    'orderby': loopOrderBy,
+                    'order': loopOrder
+                }
             });
 
-        },[loopPostType ,loopTerm ,loopTaxonomy ,loopPageSize, loopMaxItems,loopOrderBy,loopOrder])
+        }, [loopPostType, loopTerm, loopTaxonomy, loopPageSize, loopMaxItems, loopOrderBy, loopOrder]);
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -426,13 +425,6 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
         }
 
-        /*loopOptions.type = useSelect((select) => select('core').getEntityRecords('postType'),[]).map((postTypeObject) => {
-            return {
-                value: postTypeObject.name,
-                label: postTypeObject.label
-            }
-        });*/
-
 
         /*const posts = useSelect((select) =>
             select('core').getEntityRecords('postType', 'post', queryArgs));*/
@@ -440,72 +432,34 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({
-                uniqueId: uniqueId,
-                queryArgs: attributes.queryArgs,
+                uniqueId: uniqueId
+            });
+
+        }, []);
+
+        useEffect(() => {
+            setAttributes({
                 ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
                 ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
             });
 
 
-        }, []);
-
-
-        /*const hasInnerBlocks = useSelect((select) =>
-            select('core/block-editor').getBlock(clientId)?.innerBlocks.length > 0
-        );*/
-
-        //const havePosts = posts && posts.length > 0;
-
-        /*useEffect(() => {
-            if (!posts) {
-                return;
-            }
-
-            const cardBlocks = posts.map((post) => {
-                return createBlock('wpbs/layout-grid-card', {
-                    postId: post.id,
-                    postType: post.type,
-                }, [
-                    createBlock('core/post-title', {}),
-                ]);
-            });
-
-            dispatch('core/block-editor').replaceInnerBlocks(clientId, cardBlocks);
-
-        }, [havePosts]);*/
+        }, [columnsLarge, columnsMobile]);
 
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
+            /*renderAppender: () => {
+                return ;
+            },*/
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-layout-grid__container'
-        }, {});
+            className: 'wpbs-layout-grid__container',
+        }, {
+            renderAppender: false
+        });
 
-
-        /* const appenderToUse = () => {
-             if (!hasInnerBlocks) {
-                 return (
-                     <InnerBlocks.DefaultBlockAppender/>
-                 );
-             } else {
-                 return false;
-             }
-         }*/
-
-        /*  innerBlocks = [...innerBlocks].map((block) => {
-              //console.log(block);
-              //const wrapperBlock =
-
-          });*/
-
-
-        //console.log(innerBlocks);
-
-
-        /*if (!posts) return <p>Loading...</p>;
-        if (posts.length === 0) return <p>No posts found.</p>;*/
         return (
             <>
                 <InspectorControls group="styles">
@@ -552,6 +506,8 @@ registerBlockType(metadata.name, {
                     <div {...innerBlocksProps}/>
 
                     <Background attributes={attributes} editor={true}/>
+
+                    <DefaultBlockAppender rootClientId={clientId}/>
 
                 </div>
             </>

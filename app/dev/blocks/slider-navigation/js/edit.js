@@ -1,12 +1,17 @@
 import {
     useBlockProps,
-    BlockEdit,
+    BlockEdit, PanelColorSettings, InspectorControls,
 } from "@wordpress/block-editor"
+
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import React from "react";
 import {useInstanceId} from "@wordpress/compose";
-import {useEffect} from "react";
+import {
+    __experimentalGrid as Grid,
+    PanelBody,
+} from "@wordpress/components";
+import {useEffect, useState} from "react";
+
 
 function blockClasses(attributes = {}) {
 
@@ -16,6 +21,14 @@ function blockClasses(attributes = {}) {
         'wpbs-slider-nav !pointer-events-none z-50 flex items-center justify-center gap-4',
         !isGroupStyle ? '!absolute top-0 left-0 w-full h-full' : 'relative',
     ].filter(x => x).join(' ');
+}
+
+function blockStyles(attributes = {}) {
+    return Object.fromEntries(
+        Object.entries({
+            '--swiper-pagination-color': attributes['wpbs-pagination-color'],
+        }).filter(([key, value]) => value)
+    );
 }
 
 function BlockContent({props, attributes}) {
@@ -56,10 +69,15 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        'wpbs-pagination-color': {
+            type: 'string'
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-wpbs-slider-nav');
+
+        const [paginationColor, setPaginationColor] = useState(attributes['wpbs-pagination-color']);
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -67,10 +85,36 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
+            style: blockStyles(attributes)
         });
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
+
+            <InspectorControls group="styles">
+                <PanelBody initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
+                        <PanelColorSettings
+                            enableAlpha
+                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                            colorSettings={[
+                                {
+                                    slug: 'pagination-color',
+                                    label: 'Pagination',
+                                    value: paginationColor,
+                                    onChange: (newValue) => {
+                                        setAttributes({['wpbs-pagination-color']: newValue});
+                                        setPaginationColor(newValue);
+                                    },
+                                    isShownByDefault: true
+                                }
+                            ]}
+                        />
+                    </Grid>
+                </PanelBody>
+            </InspectorControls>
+
+
             <BlockContent props={blockProps} attributes={attributes}/>
         </>;
     },
@@ -78,6 +122,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
+            style: blockStyles(props.attributes)
         });
 
         return (

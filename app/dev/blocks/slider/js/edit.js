@@ -1,6 +1,13 @@
 import '../scss/block.scss';
 
-import {BlockEdit, InspectorControls, useBlockProps, useInnerBlocksProps, useSettings} from "@wordpress/block-editor"
+import {
+    BlockEdit,
+    InspectorControls,
+    PanelColorSettings,
+    useBlockProps,
+    useInnerBlocksProps,
+    useSettings
+} from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
@@ -248,7 +255,7 @@ registerBlockType(metadata.name, {
 
                 block.swiper.destroy();
             }
-            
+
             if ('Swiper' in window && selector) {
 
                 const swiper = new Swiper(selectorAlt, mergedArgs);
@@ -514,6 +521,8 @@ registerBlockType(metadata.name, {
                         </Grid>
 
                     </Grid>
+
+
                 </PanelBody>
             </InspectorControls>
 

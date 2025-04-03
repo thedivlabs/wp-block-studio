@@ -16,6 +16,7 @@ export const LayoutStyle = ({attributes, clientId}) => {
             },
         })
             .then((data) => {
+                console.log(data);
                 setCss(data);
             })
     }, [attributes]);

@@ -32,7 +32,7 @@ function blockClasses(attributes = {}) {
 
 
     return [
-        'wpbs-figure flex items-center justify-center relative',
+        'wpbs-figure flex items-center justify-center relative max-w-full max-h-full',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

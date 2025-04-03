@@ -24,7 +24,7 @@
 
     &:before {
       width: calc(100% + var(--column-gap, var(--row-gap, 0px)));
-      border-bottom: var(--divider-weight, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
+      border-bottom: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
       font-size: var(--divider-icon-size, min(2rem, calc(var(--row-gap, var(--column-gap, 0px)) - 1rem)));
       bottom: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2));
     }
@@ -32,7 +32,7 @@
     &:after {
       top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2));
       height: calc(100% + var(--row-gap, var(--column-gap, 0px)));
-      border-left: var(--divider-weight, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
+      border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
       content: var(--divider-icon-large, '');
       font-size: var(--divider-icon-size, min(2rem, calc(var(--column-gap, var(--row-gap, 0px)) - 1rem)));
     }

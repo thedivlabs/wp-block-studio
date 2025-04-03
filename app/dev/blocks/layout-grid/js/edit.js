@@ -38,8 +38,12 @@ function sectionClassNames(attributes = {}) {
 function sectionProps(attributes = {}) {
     return Object.fromEntries(
         Object.entries({
-            '--divider-width': attributes['wpbs-divider'].width
-        }).filter(([key, value]) => value !== null)
+            '--divider-width': attributes['wpbs-divider'].width,
+            '--divider-color': attributes['wpbs-divider'].color,
+            '--divider-icon': attributes['wpbs-divider-icon'],
+            '--divider-icon-size': attributes['wpbs-divider-icon-size'],
+            '--divider-icon-color': attributes['wpbs-divider-icon-color'],
+        }).filter(([key, value]) => value)
     );
 }
 

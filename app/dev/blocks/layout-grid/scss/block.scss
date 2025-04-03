@@ -3,8 +3,11 @@
   flex-direction: row;
   flex-wrap: wrap;
 
-  &__container > .wpbs-layout-grid-card {
+  .wpbs-layout-grid-card {
     max-width: calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
+  }
+
+  &--divider &__container > .wpbs-layout-grid-card {
 
     &:before,
     &:after {

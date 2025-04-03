@@ -26,12 +26,21 @@ import {useSelect} from "@wordpress/data";
 
 
 function sectionClassNames(attributes = {}) {
-
     return [
-        'wpbs-layout-grid w-full flex relative',
+        'wpbs-layout-grid',
+        attributes['wpbs-divider'] ? 'wpbs-layout-grid--divider' : null,
+        'w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
+}
+
+function sectionProps(attributes = {}) {
+    return Object.fromEntries(
+        Object.entries({
+            '--divider-width': attributes['wpbs-divider'].width
+        }).filter(([key, value]) => value !== null)
+    );
 }
 
 registerBlockType(metadata.name, {
@@ -138,7 +147,7 @@ registerBlockType(metadata.name, {
                 postTypes: getPostTypes(),
                 taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public),
             }
-        },[])
+        }, [])
 
         const {terms} = useSelect((select) => {
             let termsArray = [];
@@ -419,6 +428,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
+            style: sectionProps(attributes)
         });
 
         const innerBlocksProps = useInnerBlocksProps({
@@ -481,12 +491,12 @@ registerBlockType(metadata.name, {
         )
     },
     save: (props) => {
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'callbacks.runQuery',
             'data-wp-context': JSON.stringify({queryArgs: props.attributes.queryArgs || {}}),
+            style: sectionProps(props.attributes)
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({

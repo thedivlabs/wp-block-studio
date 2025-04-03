@@ -138,7 +138,7 @@ registerBlockType(metadata.name, {
                 postTypes: getPostTypes(),
                 taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public),
             }
-        })
+        },[])
 
         const {terms} = useSelect((select) => {
             let termsArray = [];
@@ -165,7 +165,7 @@ registerBlockType(metadata.name, {
             return {
                 terms: termsArray,
             }
-        }, [taxonomiesOptions]);
+        }, [taxonomies]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
@@ -315,7 +315,6 @@ registerBlockType(metadata.name, {
                 shouldSanitizeBorder
             />
         </Grid>;
-
 
         const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl

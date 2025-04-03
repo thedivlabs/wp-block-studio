@@ -26,7 +26,7 @@ function blockClasses(attributes = {}) {
 function blockStyles(attributes = {}) {
     return Object.fromEntries(
         Object.entries({
-            '--swiper-pagination-color': attributes['wpbs-pagination-color'],
+            '--swiper-pagination-color': attributes['wpbs-pagination-color'] || null,
         }).filter(([key, value]) => value)
     );
 }

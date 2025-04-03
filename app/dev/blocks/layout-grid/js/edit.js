@@ -36,10 +36,15 @@ function sectionClassNames(attributes = {}) {
 }
 
 function sectionProps(attributes = {}) {
+
+    const {['wpbs-divider']: divider = {}} = attributes;
+
+    const {width, color} = divider;
+
     return Object.fromEntries(
         Object.entries({
-            '--divider-width': attributes['wpbs-divider'].width,
-            '--divider-color': attributes['wpbs-divider'].color,
+            '--divider-width': width,
+            '--divider-color': color,
             '--divider-icon': attributes['wpbs-divider-icon'],
             '--divider-icon-size': attributes['wpbs-divider-icon-size'],
             '--divider-icon-color': attributes['wpbs-divider-icon-color'],

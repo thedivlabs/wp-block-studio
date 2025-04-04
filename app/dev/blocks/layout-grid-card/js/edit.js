@@ -96,7 +96,7 @@ registerBlockType(metadata.name, {
 
         const Content = () => {
 
-            if (!!attributes['wpbs-background']) {
+            if (!!props.attributes['wpbs-background']) {
                 return <div {...blockProps}>
 
                     <InnerBlocks.Content className={'wpbs-layout-grid-card__container wpbs-layout-wrapper'}/>

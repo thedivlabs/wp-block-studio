@@ -385,74 +385,81 @@ registerBlockType(metadata.name, {
             />
         </Grid>;
 
-        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
-            <SelectControl
-                label={'Post Type'}
-                value={loopPostType}
-                options={postTypeOptions}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-type']: newValue});
-                    setLoopPostType(newValue);
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-            <SelectControl
-                label={'Taxonomy'}
-                value={loopTaxonomy}
-                options={taxonomiesOptions}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-taxonomy']: newValue});
-                    setLoopTaxonomy(newValue);
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-            <SelectControl
-                label={'Term'}
-                value={loopTerm}
-                options={termsOptions}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-term']: newValue});
-                    setLoopTerm(newValue);
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
+        const tabLoop =
 
-            <SuppressPostsField/>
 
-            <QueryControls
-                onOrderByChange={(newValue) => {
-                    setAttributes({['wpbs-loop-orderby']: newValue});
-                    setLoopOrderBy(newValue);
-                }}
-                onOrderChange={(newValue) => {
-                    setAttributes({['wpbs-loop-order']: newValue});
-                    setLoopOrder(newValue);
-                }}
-                order={loopOrder}
-                orderBy={loopOrderBy}
-            />
-
-            <Grid columns={2} columnGap={15} rowGap={20}>
-
-                <NumberControl
-                    label={'Page Size'}
-                    __next40pxDefaultSize
-                    min={1}
-                    isShiftStepEnabled={false}
+            <Grid columns={1} columnGap={15} rowGap={20}>
+                <SelectControl
+                    label={'Post Type'}
+                    value={loopPostType}
+                    options={postTypeOptions}
                     onChange={(newValue) => {
-                        setAttributes({['wpbs-loop-page-size']: newValue});
-                        setLoopPageSize(newValue);
+                        setAttributes({['wpbs-loop-type']: newValue});
+                        setLoopPostType(newValue);
                     }}
-                    value={loopPageSize}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
+                <Grid columns={1} columnGap={15} rowGap={20} style={(attributes['wpbs-loop-type'] || '') === 'current' ? {opacity: .4, pointerEvents: 'none'} : {}}>
 
+                    <SelectControl
+                        label={'Taxonomy'}
+                        value={loopTaxonomy}
+                        options={taxonomiesOptions}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-loop-taxonomy']: newValue});
+                            setLoopTaxonomy(newValue);
+                        }}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        label={'Term'}
+                        value={loopTerm}
+                        options={termsOptions}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-loop-term']: newValue});
+                            setLoopTerm(newValue);
+                        }}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+
+                    <SuppressPostsField/>
+
+                    <QueryControls
+                        onOrderByChange={(newValue) => {
+                            setAttributes({['wpbs-loop-orderby']: newValue});
+                            setLoopOrderBy(newValue);
+                        }}
+                        onOrderChange={(newValue) => {
+                            setAttributes({['wpbs-loop-order']: newValue});
+                            setLoopOrder(newValue);
+                        }}
+                        order={loopOrder}
+                        orderBy={loopOrderBy}
+                    />
+
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+
+                        <NumberControl
+                            label={'Page Size'}
+                            __next40pxDefaultSize
+                            min={1}
+                            isShiftStepEnabled={false}
+                            onChange={(newValue) => {
+                                setAttributes({['wpbs-loop-page-size']: newValue});
+                                setLoopPageSize(newValue);
+                            }}
+                            value={loopPageSize}
+                        />
+
+                    </Grid>
+
+
+                </Grid>
             </Grid>
-
-
-        </Grid>;
+        ;
 
         const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
             <></>

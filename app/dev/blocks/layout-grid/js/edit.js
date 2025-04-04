@@ -507,16 +507,6 @@ registerBlockType(metadata.name, {
 
         }, []);
 
-        useEffect(() => {
-            setAttributes({
-                ['wpbs-prop-columns']: attributes['wpbs-columns-large'] || 3,
-                ['wpbs-prop-columns-small']: attributes['wpbs-columns-small'] || 2,
-                ['wpbs-prop-columns-mobile']: attributes['wpbs-columns-mobile'] || 1
-            });
-
-
-        }, [columnsLarge, columnsMobile,columnsSmall]);
-
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),

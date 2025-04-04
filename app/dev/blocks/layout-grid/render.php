@@ -52,7 +52,7 @@ if ( $is_loop ) {
 		];
 	}
 
-	$query = match(true){
+	$query = match ( true ) {
 		$attributes['wpbs-loop-type'] === 'current' => $wp_query,
 		default => new WP_Query( $query_args )
 	};
@@ -65,14 +65,22 @@ if ( $is_loop ) {
 		while ( $query->have_posts() ) {
 			$query->the_post();
 
-			global $post;
+			$query->setup_postdata( $query->post );
 
-			$new_block = new WP_Block( $block_template, [
-				'postId' => $post->ID,
-			] );
+			$new_block = new WP_Block( $block_template, array_filter( [
+				'postId' => get_the_ID(),
+			] ) );
+
+			$unique_id = 'wpbs-layout-grid-card-' . $query->current_post;
+
+			$new_block->inner_content[0] = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_content[0] );
+			$new_block->inner_html = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
+			$new_block->attributes['uniqueId'] = $unique_id;
 
 			$new_content .= $new_block->render();
 		}
+
+		wp_reset_postdata();
 	}
 
 	$block->inner_content[1] = trim( $new_content );

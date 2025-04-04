@@ -90,13 +90,13 @@ registerBlockType(metadata.name, {
         function Content() {
             if (!!props.attributes['wpbs-background']) {
                 return <div {...blockProps}>
-                    <div {...useInnerBlocksProps.save({
-                        className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
-                    })} />
+                    <div className={'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'}>
+                        <InnerBlocks.Content/>
+                    </div>
                     <Background attributes={props.attributes} editor={false}/>
                 </div>;
             } else {
-                return <div {...useInnerBlocksProps.save(blockProps)} />;
+                return <InnerBlocks.Content/>;
             }
         }
 

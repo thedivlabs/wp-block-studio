@@ -97,6 +97,7 @@ class WPBS_Background {
 		$featured_image_id = ( $this->attributes['type'] ?? false ) == 'featured-image' ? get_post_thumbnail_id( get_the_ID() ) : false;
 
 		if ( $featured_image_id ) {
+
 			$large_id  = $featured_image_id;
 			$mobile_id = $featured_image_id;
 		}

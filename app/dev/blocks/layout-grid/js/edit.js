@@ -292,38 +292,41 @@ registerBlockType(metadata.name, {
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={3} columnGap={15} rowGap={20}>
-                <NumberControl
-                    label={'Mobile'}
-                    __next40pxDefaultSize
-                    isShiftStepEnabled={false}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-columns-mobile']: newValue});
-                        setColumnsMobile(newValue);
-                    }}
-                    value={columnsMobile}
-                />
-                <NumberControl
-                    label={'Small'}
-                    __next40pxDefaultSize
-                    isShiftStepEnabled={false}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-columns-small']: newValue});
-                        setColumnsSmall(newValue);
-                    }}
-                    value={columnsSmall}
-                />
-                <NumberControl
-                    label={'Large'}
-                    __next40pxDefaultSize
-                    isShiftStepEnabled={false}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-columns-large']: newValue});
-                        setColumnsLarge(newValue);
-                    }}
-                    value={columnsLarge}
-                />
-            </Grid>
+            <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
+                <Grid columns={3} columnGap={15} rowGap={20}>
+                    <NumberControl
+                        label={'Mobile'}
+                        __next40pxDefaultSize
+                        isShiftStepEnabled={false}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-columns-mobile']: newValue});
+                            setColumnsMobile(newValue);
+                        }}
+                        value={columnsMobile}
+                    />
+                    <NumberControl
+                        label={'Small'}
+                        __next40pxDefaultSize
+                        isShiftStepEnabled={false}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-columns-small']: newValue});
+                            setColumnsSmall(newValue);
+                        }}
+                        value={columnsSmall}
+                    />
+                    <NumberControl
+                        label={'Large'}
+                        __next40pxDefaultSize
+                        isShiftStepEnabled={false}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-columns-large']: newValue});
+                            setColumnsLarge(newValue);
+                        }}
+                        value={columnsLarge}
+                    />
+                </Grid>
+            </BaseControl>
+
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
                     setAttributes({['wpbs-breakpoint-small']: newValue});

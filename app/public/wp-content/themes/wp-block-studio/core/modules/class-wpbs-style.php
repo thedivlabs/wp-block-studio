@@ -42,9 +42,11 @@ class WPBS_Style {
 		return $selector;
 	}
 
-	public static function get_breakpoint( $attributes ): string {
+	public static function get_breakpoint( $attributes = false ): string|array|false {
 
-		return wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
+		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? false;
+
+		return empty( $attributes ) ? $breakpoints : $breakpoints[ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
 	}
 
 	public static function block_styles( $attributes, $block, $custom_css = '' ): string|false {

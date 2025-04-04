@@ -5,13 +5,12 @@ global $wp_query;
 $attributes        = $attributes ?? [];
 $block             = $block ?? ( (object) [] );
 $content           = $content ?? false;
-$breakpoint_mobile = WPBS_Style::get_breakpoint( array_filter( [
-	'wpbs-layout-breakpoint' => $attributes['wpbs-breakpoint-mobile'] ?? 'xs',
-] ) );
-$breakpoint_large  = WPBS_Style::get_breakpoint( array_filter( [
-	'wpbs-layout-breakpoint' => $attributes['wpbs-layout-breakpoint'] ?? $attributes['wpbs-breakpoint-large'] ?? null,
-] ) );
-$selector          = match ( true ) {
+$breakpoints       = WPBS_Style::get_breakpoint();
+$breakpoint_mobile = $breakpoints[ $attributes['wpbs-breakpoint-mobile'] ?? 'xs' ];
+$breakpoint_small  = $breakpoints[ $attributes['wpbs-breakpoint-small'] ?? 'sm' ];
+$breakpoint_large  = $breakpoints[ $attributes['wpbs-layout-breakpoint'] ?? $attributes['wpbs-breakpoint-large'] ?? 'normal' ];
+
+$selector = match ( true ) {
 	! empty( $attributes['uniqueId'] ) => '.' . join( '.', explode( ' ', $attributes['uniqueId'] ) ),
 	! empty( $attributes['className'] ) => '.' . join( '.', explode( ' ', $attributes['className'] ) ),
 	default => false
@@ -108,6 +107,15 @@ $last_row_mobile = ( $total - ( floor( $total / $cols_mobile ) * $cols_mobile ) 
 $last_row_small  = ( $total - ( floor( $total / $cols_small ) * $cols_small ) ) ?: $cols_small;
 $last_row_large  = ( $total - ( floor( $total / $cols_large ) * $cols_large ) ) ?: $cols_large;
 
+WPBS::console_log( $breakpoints );
+WPBS::console_log( $selector );
+WPBS::console_log( $cols_mobile );
+WPBS::console_log( $cols_small );
+WPBS::console_log( $cols_large );
+WPBS::console_log( $breakpoint_mobile );
+WPBS::console_log( $breakpoint_small );
+WPBS::console_log( $breakpoint_large );
+
 $custom_css = '';
 
 if ( ! empty( $cols_mobile ) ) {
@@ -124,16 +132,16 @@ if ( ! empty( $cols_mobile ) ) {
 
 
 if ( ! empty( $cols_small ) ) {
-	$custom_css .= '@media screen and (min-width: ' . ( $breakpoint_mobile ) . ') {';
+
+	$custom_css .= '@media screen and (min-width: ' . $breakpoint_small . ') and (max-width: calc(' . $breakpoint_large . ' - 1px)) {';
 	$custom_css .= $selector . '{ --columns: ' . $cols_small . ' }';
 
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_small . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):not(:nth-of-type( -n+' . $last_row_small . ' )):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):after { height: 100% !important; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):before { content: none; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n+1 ):after { content: none; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n+1 ):before { width: ' . ( $cols_small > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%' ) . '; left: 0; }';
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_small . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)) !important; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):before { content: none; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n+1 ):after { content: none; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n+1 ):before { width: ' . ( $cols_small > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%' ) . ' !important;left: 0; }' . "\r\n";
 
 	$custom_css .= '} ';
 }
@@ -142,13 +150,14 @@ if ( ! empty( $cols_large ) ) {
 	$custom_css .= '@media screen and (min-width: ' . ( $breakpoint_large ) . ') {';
 	$custom_css .= $selector . '{ --columns: ' . $cols_large . ' }';
 
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_large . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):not(:nth-of-type( -n+' . $last_row_large . ' )):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):after { height: 100% !important; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):before { content: none; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):after { content: none; }';
-	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):before { width: ' . ( $cols_large > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%' ) . '; left: 0; }';
+
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_large . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):not(:nth-of-type( -n+' . $last_row_large . ' )):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):after { height: 100% !important; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):before { content: none; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):after { content: none; }' . "\r\n";
+	$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):before { width: ' . ( $cols_large > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%' ) . '; left: 0; }' . "\r\n";
 
 	$custom_css .= '} ';
 }

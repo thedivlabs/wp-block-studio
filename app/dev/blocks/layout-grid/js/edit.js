@@ -18,11 +18,12 @@ import {
     PanelBody,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    QueryControls, BaseControl, Button, FormTokenField
+    QueryControls, BaseControl, Button, FormTokenField, Spinner
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import {useSelect} from "@wordpress/data";
+import {store as coreStore} from '@wordpress/core-data';
 
 
 function sectionClassNames(attributes = {}) {
@@ -140,7 +141,7 @@ registerBlockType(metadata.name, {
         const [loopPostType, setLoopPostType] = useState(attributes['wpbs-loop-type']);
         const [loopTerm, setLoopTerm] = useState(attributes['wpbs-loop-term']);
         const [loopTaxonomy, setLoopTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
-        const [loopSuppress, setLoopSuppress] = useState(attributes['wpbs-loop-suppress'] || []);
+        const [loopSuppress, setLoopSuppress] = useState([]);
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
@@ -151,8 +152,8 @@ registerBlockType(metadata.name, {
         let termsOptions = [];
 
         const {postTypes, taxonomies} = useSelect((select) => {
-            const {getPostTypes} = select('core');
-            const {getTaxonomies} = select('core');
+            const {getPostTypes} = select(coreStore);
+            const {getTaxonomies} = select(coreStore);
 
             return {
                 postTypes: getPostTypes(),
@@ -165,7 +166,7 @@ registerBlockType(metadata.name, {
 
             if (taxonomiesOptions && taxonomies) {
 
-                const {getEntityRecords} = select('core');
+                const {getEntityRecords} = select(coreStore);
 
                 taxonomies.forEach((tax) => {
                     const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
@@ -187,7 +188,7 @@ registerBlockType(metadata.name, {
             }
         }, [taxonomies]);
 
-        const {suppressOptions = []} = useSelect((select) => {
+        /*const {suppressOptions = []} = useSelect((select) => {
 
             const {getEntityRecords} = select('core');
 
@@ -196,15 +197,71 @@ registerBlockType(metadata.name, {
             const queryResults = getEntityRecords('postType', postType, {})?.map((post) => {
                 return {
                     title: post.title.raw,
-                    id: post.id
+                    id: post.id.toString()
                 }
-            });
+            }, []);
+
+            console.log('queryResults');
+            console.log(queryResults);
+            console.log(loopSuppress);
 
             return {
                 suppressOptions: queryResults,
             }
 
-        }, [attributes['wpbs-loop-type']]);
+        });*/
+
+
+        const SuppressPostsField = () => {
+
+            const [loopSuppress, setLoopSuppress] = useState([]);
+
+            // Fetch posts
+            const posts = useSelect(
+                (select) =>
+                    select(coreStore).getEntityRecords('postType', 'post', {
+                        per_page: 100,
+                    }),
+                []
+            );
+
+            if (posts === undefined) return <Spinner/>;
+
+            // Suggestions (post titles)
+            const suggestions = posts?.map((post) => post.title.rendered);
+
+            // Map selected post titles back to their IDs
+            const handleChange = (selectedTitles) => {
+                const newIds = selectedTitles
+                    .map((title) => {
+                        const match = posts.find((post) => post.title.rendered === title);
+                        return match?.id;
+                    })
+                    .filter(Boolean);
+
+                setAttributes({['wpbs-loop-suppress']: newIds});
+                setLoopSuppress(newIds);
+            };
+
+            // Convert stored IDs to titles for display in the field
+            const selectedTitles = loopSuppress
+                .map((id) => {
+                    const post = posts.find((post) => post.id === id);
+                    return post?.title.rendered;
+                })
+                .filter(Boolean);
+
+            return (
+                <FormTokenField
+                    __experimentalExpandOnFocus={true}
+                    label="Suppress posts from loop"
+                    value={selectedTitles}
+                    suggestions={suggestions}
+                    onChange={handleChange}
+                    placeholder="Type post titles…"
+                />
+            );
+        }
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
@@ -389,36 +446,7 @@ registerBlockType(metadata.name, {
                 __nextHasNoMarginBottom
             />
 
-            <FormTokenField
-                value={loopSuppress}
-                suggestions={suppressOptions.map(opt => opt.id)}
-                displayTransform={(token) => {
-                    const post = suppressOptions.find(opt => opt.id === token);
-                    const result = !!post && post.title ? post.title : 'Loading...';
-                    console.log(result);
-                    return result;
-                }}
-                /*saveTransform={(token) => {
-                    const post = !!token && token.length > 0 ? suppressOptions.find(opt => opt.id === token) : false;
-                    console.log(token);
-                    console.log(post);
-                    return !!post && post.id ? post.id.toString() : 'Loading...';
-                }}*/
-                __experimentalExpandOnFocus={true}
-                onChange={(tokens) => {
-                    console.log(tokens);
-                    /*const posts = tokens.map((token) => {
-                        const post = suppressOptions.find(opt => opt.id === token);
-                        return {
-                            title: post.title,
-                            value: post.id,
-                        }
-                    })*/
-
-                    //setAttributes({['wpbs-loop-suppress']: posts});
-                    //setLoopSuppress(posts);
-                }}
-            />
+            <SuppressPostsField/>
 
             <QueryControls
                 onOrderByChange={(newValue) => {

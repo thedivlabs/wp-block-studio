@@ -214,8 +214,6 @@ registerBlockType(metadata.name, {
 
         const SuppressPostsField = () => {
 
-            const [loopSuppress, setLoopSuppress] = useState([]);
-
             // Fetch posts
             const posts = useSelect(
                 (select) =>
@@ -224,6 +222,10 @@ registerBlockType(metadata.name, {
                     }),
                 []
             );
+
+            console.log(posts);
+
+            return <></>;
 
             if (posts === undefined) return <Spinner/>;
 
@@ -239,12 +241,13 @@ registerBlockType(metadata.name, {
                     })
                     .filter(Boolean);
 
+                console.log(newIds);
+
                 setAttributes({['wpbs-loop-suppress']: newIds});
-                setLoopSuppress(newIds);
             };
 
             // Convert stored IDs to titles for display in the field
-            const selectedTitles = loopSuppress
+            const selectedTitles = attributes['wpbs-loop-suppress']
                 .map((id) => {
                     const post = posts.find((post) => post.id === id);
                     return post?.title.rendered;
@@ -262,6 +265,7 @@ registerBlockType(metadata.name, {
                 />
             );
         }
+
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})

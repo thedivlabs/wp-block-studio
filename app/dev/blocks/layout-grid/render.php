@@ -107,15 +107,6 @@ $last_row_mobile = ( $total - ( floor( $total / $cols_mobile ) * $cols_mobile ) 
 $last_row_small  = ( $total - ( floor( $total / $cols_small ) * $cols_small ) ) ?: $cols_small;
 $last_row_large  = ( $total - ( floor( $total / $cols_large ) * $cols_large ) ) ?: $cols_large;
 
-WPBS::console_log( $breakpoints );
-WPBS::console_log( $selector );
-WPBS::console_log( $cols_mobile );
-WPBS::console_log( $cols_small );
-WPBS::console_log( $cols_large );
-WPBS::console_log( $breakpoint_mobile );
-WPBS::console_log( $breakpoint_small );
-WPBS::console_log( $breakpoint_large );
-
 $custom_css = '';
 
 if ( ! empty( $cols_mobile ) ) {

@@ -7,7 +7,7 @@ $block             = $block ?? ( (object) [] );
 $content           = $content ?? false;
 $breakpoints       = WPBS_Style::get_breakpoint();
 $breakpoint_mobile = $breakpoints[ $attributes['wpbs-breakpoint-mobile'] ?? 'xs' ];
-$breakpoint_small  = $breakpoints[ $attributes['wpbs-breakpoint-small'] ?? 'sm' ];
+$breakpoint_small  = $breakpoints[ $attributes['wpbs-breakpoint-small'] ?? 'md' ];
 $breakpoint_large  = $breakpoints[ $attributes['wpbs-layout-breakpoint'] ?? $attributes['wpbs-breakpoint-large'] ?? 'normal' ];
 
 $selector = match ( true ) {

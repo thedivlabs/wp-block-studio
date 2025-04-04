@@ -319,9 +319,9 @@
     },
     "custom": {
       "breakpoints": {
-        "xs": "768px",
-        "sm": "1040px",
-        "md": "1200px",
+        "xs": "640px",
+        "sm": "768px",
+        "md": "1040px",
         "normal": "1304px",
         "lg": "1404px",
         "xl": "1500px"

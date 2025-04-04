@@ -189,20 +189,22 @@ registerBlockType(metadata.name, {
 
         const {suppressOptions = []} = useSelect((select) => {
 
-            const {getEntityRecords} = select('core')
+            const {getEntityRecords} = select('core');
 
-            const queryResults = getEntityRecords('postType', loopPostType || 'post', {})?.map((post) => {
+            const postType = attributes['wpbs-loop-type'] || 'post';
+
+            const queryResults = getEntityRecords('postType', postType, {})?.map((post) => {
                 return {
-                    title: post.title.rendered,
-                    value: post.id
+                    title: post.title.raw,
+                    id: post.id
                 }
             });
-            
+
             return {
                 suppressOptions: queryResults,
             }
 
-        }, [loopPostType]);
+        }, [attributes['wpbs-loop-type']]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
@@ -389,12 +391,26 @@ registerBlockType(metadata.name, {
 
             <FormTokenField
                 value={loopSuppress}
-                suggestions={suppressOptions.map(opt => opt.title)}
+                suggestions={suppressOptions.map(opt => opt.id)}
+                displayTransform={(token) => {
+                    const post = suppressOptions.find(opt => opt.id === token);
+                    return !!post && post.title ? post.title: 'Loading...';
+                }}
+               /* saveTransform={(token) => {
+
+                }}*/
                 __experimentalExpandOnFocus={true}
                 onChange={(tokens) => {
-                    console.log(tokens);
-                    setAttributes({['wpbs-loop-suppress']: tokens});
-                    setLoopSuppress(tokens);
+                    const posts = tokens.map((token) => {
+                        const post = suppressOptions.find(opt => opt.id === token);
+                        return {
+                            title: post.title,
+                            value: post.id,
+                        }
+                    })
+
+                    setAttributes({['wpbs-loop-suppress']: posts});
+                    setLoopSuppress(posts);
                 }}
             />
 

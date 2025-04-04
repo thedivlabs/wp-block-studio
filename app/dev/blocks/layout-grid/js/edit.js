@@ -292,7 +292,7 @@ registerBlockType(metadata.name, {
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
+            <Grid columns={3} columnGap={15} rowGap={20}>
                 <NumberControl
                     label={'Mobile'}
                     __next40pxDefaultSize
@@ -323,6 +323,8 @@ registerBlockType(metadata.name, {
                     }}
                     value={columnsLarge}
                 />
+            </Grid>
+            <Grid columns={2} columnGap={15} rowGap={20}>
                 <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
                     setAttributes({['wpbs-breakpoint-small']: newValue});
                     setBreakpointSmall(newValue);

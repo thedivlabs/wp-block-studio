@@ -53,7 +53,7 @@ export function Background({attributes = {}, className = '', editor = false}) {
 
         let MediaElement;
 
-        if (settings.type === 'image') {
+        if (settings.type === 'image' || settings.type === 'featured-image') {
             mediaClass.push(imageClass);
         }
 
@@ -858,6 +858,7 @@ export function BackgroundSettings({attributes = {}, pushSettings, className = n
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'Image', value: 'image'},
+                        {label: 'Featured Image', value: 'featured-image'},
                         {label: 'Video', value: 'video'},
                     ]}
                     onChange={(value) => {
@@ -868,7 +869,7 @@ export function BackgroundSettings({attributes = {}, pushSettings, className = n
                 <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
 
                     <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{display: type !== 'image' ? 'none' : null}}>
+                          style={{display: type !== 'image' && type !== 'featured-image' ? 'none' : null}}>
                         <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                             <MediaUploadCheck>
                                 <MediaUpload

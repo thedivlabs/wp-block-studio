@@ -94,8 +94,27 @@ class WPBS_Background {
 		$large_id  = $force ? $large['id'] ?? false : ( $large['id'] ?? $mobile['id'] ?? false );
 		$mobile_id = $force ? $mobile['id'] ?? false : ( $mobile['id'] ?? $large['id'] ?? false );
 
+		$featured_image_id = ( $this->attributes['type'] ?? false ) == 'featured-image' ? get_post_thumbnail_id( get_the_ID() ) : false;
+
+		if ( $featured_image_id ) {
+			$large_id  = $featured_image_id;
+			$mobile_id = $featured_image_id;
+		}
+
 		$large_src  = wp_get_attachment_image_src( $large_id, $this->attributes['resolution'] ?? 'large' )[0] ?? false;
 		$mobile_src = wp_get_attachment_image_src( $mobile_id, $this->attributes['resolutionMobile'] ?? 'large' )[0] ?? false;
+
+		if ( $featured_image_id ) {
+
+			if ( empty( $large_src ) && ! empty( $this->attributes['largeImage']['id'] ) ) {
+				$default_large_src = wp_get_attachment_image_src( $this->attributes['largeImage']['id'], $this->attributes['resolution'] ?? 'large' )[0] ?? false;
+				$large_src         = $default_large_src ?: $large_src;
+			}
+			if ( empty( $mobile_webp ) && ! empty( $this->attributes['mobileImage']['id'] ) ) {
+				$default_mobile_src = wp_get_attachment_image_src( $this->attributes['mobileImage']['id'], $this->attributes['resolutionMobile'] ?? 'large' )[0] ?? false;
+				$mobile_src         = $default_mobile_src ?: $mobile_src;
+			}
+		}
 
 		$large_webp  = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $large_src ) . '.webp' ) ? $large_src . '.webp' : false;
 		$mobile_webp = file_exists( str_replace( wp_upload_dir()['url'] ?? '', wp_get_upload_dir()['path'] ?? '', $mobile_src ) . '.webp' ) ? $mobile_src . '.webp' : false;

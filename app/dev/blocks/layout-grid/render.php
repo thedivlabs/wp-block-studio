@@ -2,16 +2,16 @@
 
 global $wp_query;
 
-$attributes = $attributes ?? [];
-$block      = $block ?? ( (object) [] );
-$content    = $content ?? false;
-$breakpoint_mobile = WPBS_Style::get_breakpoint( array_filter([
+$attributes        = $attributes ?? [];
+$block             = $block ?? ( (object) [] );
+$content           = $content ?? false;
+$breakpoint_mobile = WPBS_Style::get_breakpoint( array_filter( [
 	'wpbs-layout-breakpoint' => $attributes['wpbs-breakpoint-mobile'] ?? 'xs',
-]) );
-$breakpoint_large = WPBS_Style::get_breakpoint( array_filter([
+] ) );
+$breakpoint_large  = WPBS_Style::get_breakpoint( array_filter( [
 	'wpbs-layout-breakpoint' => $attributes['wpbs-layout-breakpoint'] ?? $attributes['wpbs-breakpoint-large'] ?? null,
-]) );
-$selector   = match ( true ) {
+] ) );
+$selector          = match ( true ) {
 	! empty( $attributes['className'] ) => '.' . join( '.', explode( ' ', $attributes['className'] ) ),
 	! empty( $attributes['uniqueId'] ) => '.' . join( '.', explode( ' ', $attributes['uniqueId'] ) ),
 	default => false
@@ -78,8 +78,8 @@ if ( $is_loop ) {
 
 			$unique_id = 'wpbs-layout-grid-card-' . $query->current_post;
 
-			$new_block->inner_content[0] = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_content[0] );
-			$new_block->inner_html = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
+			$new_block->inner_content[0]       = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_content[0] );
+			$new_block->inner_html             = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
 
 			$new_content .= $new_block->render();
@@ -99,14 +99,17 @@ if ( $is_loop ) {
 $total = ! empty( $query ) ? count( $query->posts ?? [] ) : count( $block->parsed_block['innerBlocks'] ?? [] );
 
 $cols_mobile     = intval( $attributes['wpbs-columns-mobile'] ?? 1 ) ?: 1;
+$cols_small      = intval( $attributes['wpbs-columns-small'] ?? 1 ) ?: 1;
 $cols_large      = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-mobile'] ?? 1 ) ?: 1;
 $last_row_mobile = ( $total - ( floor( $total / $cols_mobile ) * $cols_mobile ) ) ?: $cols_mobile;
+$last_row_small  = ( $total - ( floor( $total / $cols_small ) * $cols_small ) ) ?: $cols_small;
 $last_row_large  = ( $total - ( floor( $total / $cols_large ) * $cols_large ) ) ?: $cols_large;
 
 $custom_css = '';
 
 if ( ! empty( $cols_mobile ) ) {
-	$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint ) . ' - 1px)) {';
+	$custom_css .= $selector . '{ --columns: ' . $cols_mobile . ' }';
+	$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint_mobile ) . ' - 1px)) {';
 	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_mobile . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }';
 	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_mobile . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)) !important; }';
 	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_mobile . ' ):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }';
@@ -117,8 +120,24 @@ if ( ! empty( $cols_mobile ) ) {
 }
 
 
+if ( ! empty( $cols_small ) ) {
+	$custom_css .= $selector . '{ --columns: ' . $cols_small . ' }';
+	$custom_css .= '@media screen and (min-width: ' . ( $breakpoint_mobile ) . ') {';
+
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_small . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }';
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }';
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):not(:nth-of-type( -n+' . $last_row_small . ' )):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }';
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):after { height: 100% !important; }';
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_small . ' ):before { content: none; }';
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n+1 ):after { content: none; }';
+	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_small . 'n+1 ):before { width: ' . ( $cols_small > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%' ) . '; left: 0; }';
+
+	$custom_css .= '} ';
+}
+
 if ( ! empty( $cols_large ) ) {
-	$custom_css .= '@media screen and (min-width: ' . ( $breakpoint ) . ') {';
+	$custom_css .= $selector . '{ --columns: ' . $cols_large . ' }';
+	$custom_css .= '@media screen and (min-width: ' . ( $breakpoint_large ) . ') {';
 
 	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_large . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }';
 	$custom_css .= $selector . ' .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }';
@@ -135,11 +154,11 @@ if ( ! empty( $cols_large ) ) {
 $css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false, $custom_css );
 
 
-add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
+add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block, $breakpoint_large ) {
 
-	$block_images = array_map( function ( $image ) use ( $block ) {
+	$block_images = array_map( function ( $image ) use ( $block, $breakpoint_large ) {
 		return array_merge( $image, [
-			'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
+			'breakpoint' => $breakpoint_large
 		] );
 	}, $block->attributes['preload'] ?? [] );
 

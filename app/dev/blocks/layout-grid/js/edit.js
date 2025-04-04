@@ -112,13 +112,7 @@ registerBlockType(metadata.name, {
         ['wpbs-loop-page-size']: {
             type: 'string'
         },
-        ['wpbs-loop-max-items']: {
-            type: 'string'
-        },
         ['wpbs-loop-suppress']: {
-            type: 'array'
-        },
-        ['wpbs-gallery-images']: {
             type: 'array'
         }
     },
@@ -224,25 +218,16 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 queryArgs: {
-                    'post_type': loopPostType,
-                    'term': loopTerm,
-                    'taxonomy': loopTaxonomy,
-                    'posts_per_page': loopPageSize,
-                    'page_size': loopPageSize,
-                    'orderby': loopOrderBy,
-                    'order': loopOrder
+                    'post_type': attributes['wpbs-loop-type'],
+                    'term': attributes['wpbs-loop-term'],
+                    'taxonomy': attributes['wpbs-loop-taxonomy'],
+                    'posts_per_page': attributes['wpbs-loop-page-size'],
+                    'orderby': attributes['wpbs-loop-orderby'],
+                    'order': attributes['wpbs-loop-order']
                 }
             });
 
-        }, [loopPostType, loopTerm, loopTaxonomy, loopPageSize, loopMaxItems, loopOrderBy, loopOrder]);
-
-        const {galleryImageData} = useSelect(select => {
-            console.log(galleryImages);
-            return {
-                galleryImageData: attributes['wpbs-gallery-images']?.map(imgId => select('core').getMedia(imgId))
-            }
-
-        }, [attributes['wpbs-gallery-images']]);
+        }, [attributes['wpbs-loop-type'], attributes['wpbs-loop-term'], attributes['wpbs-loop-taxonomy'], attributes['wpbs-loop-page-size'], attributes['wpbs-loop-orderby'], attributes['wpbs-loop-order']]);
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -397,18 +382,6 @@ registerBlockType(metadata.name, {
             <Grid columns={2} columnGap={15} rowGap={20}>
 
                 <NumberControl
-                    label={'Max Results'}
-                    min={-1}
-                    __next40pxDefaultSize
-                    isShiftStepEnabled={false}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-loop-max-items']: newValue});
-                        setLoopMaxItems(newValue);
-                    }}
-                    value={loopMaxItems}
-                />
-
-                <NumberControl
                     label={'Page Size'}
                     __next40pxDefaultSize
                     min={1}
@@ -426,36 +399,7 @@ registerBlockType(metadata.name, {
         </Grid>;
 
         const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
-            <BaseControl label={props.label}>
-                <MediaUploadCheck>
-                    <MediaUpload
-                        onSelect={(media) => {
-                            const imageIds = media.map(obj => obj.id);
-                            console.log(imageIds);
-                            setAttributes({['wpbs-gallery-images']: imageIds});
-                            setGalleryImages(imageIds);
-                        }}
-                        allowedTypes={['image']}
-                        multiple="add"
-                        value={galleryImages}
-                        render={({open}) => {
-
-
-                            const gallery = galleryImageData || [];
-                            console.log(gallery);
-
-                            return <div>
-
-                                <div class={'w-full grid gap-2 grid-cols-2'}>
-                                    {gallery?.map(image => !!image && 'source_url' in image ?
-                                        <img src={image.source_url}/> : <></>)}
-                                </div>
-                                <Button variant="secondary" onClick={open}>Add images</Button>
-                            </div>
-                        }}
-                    />
-                </MediaUploadCheck>
-            </BaseControl>
+            <></>
         </Grid>;
 
         const tabs = {

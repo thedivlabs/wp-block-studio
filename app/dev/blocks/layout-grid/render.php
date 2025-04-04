@@ -33,6 +33,7 @@ if ( $is_loop ) {
 		'order'          => $custom_query['order'] ?? 'DESC',
 		'orderby'        => $custom_query['orderby'] ?? 'date',
 		'no_found_rows'  => true,
+		'post__not_in'   => $custom_query['post__not_in'] ?? [],
 	];
 
 	if (

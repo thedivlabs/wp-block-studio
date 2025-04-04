@@ -5,7 +5,12 @@ global $wp_query;
 $attributes = $attributes ?? [];
 $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
-$breakpoint = WPBS_Style::get_breakpoint( $attributes );
+$breakpoint_mobile = WPBS_Style::get_breakpoint( array_filter([
+	'wpbs-layout-breakpoint' => $attributes['wpbs-breakpoint-mobile'] ?? 'xs',
+]) );
+$breakpoint_large = WPBS_Style::get_breakpoint( array_filter([
+	'wpbs-layout-breakpoint' => $attributes['wpbs-layout-breakpoint'] ?? $attributes['wpbs-breakpoint-large'] ?? null,
+]) );
 $selector   = match ( true ) {
 	! empty( $attributes['className'] ) => '.' . join( '.', explode( ' ', $attributes['className'] ) ),
 	! empty( $attributes['uniqueId'] ) => '.' . join( '.', explode( ' ', $attributes['uniqueId'] ) ),

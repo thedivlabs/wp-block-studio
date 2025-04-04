@@ -63,10 +63,13 @@ registerBlockType(metadata.name, {
         ['wpbs-columns-mobile']: {
             type: 'string'
         },
+        ['wpbs-columns-small']: {
+            type: 'string'
+        },
         ['wpbs-columns-large']: {
             type: 'string'
         },
-        ['wpbs-breakpoint-mobile']: {
+        ['wpbs-breakpoint-small']: {
             type: 'string'
         },
         ['wpbs-breakpoint-large']: {
@@ -139,9 +142,10 @@ registerBlockType(metadata.name, {
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
+        const [columnsSmall, setColumnsSmall] = useState(attributes['wpbs-columns-small']);
         const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
         const [breakpointLarge, setBreakpointLarge] = useState(attributes['wpbs-breakpoint-large']);
-        const [breakpointMobile, setBreakpointMobile] = useState(attributes['wpbs-breakpoint-mobile']);
+        const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
         const [mobile, setMobile] = useState(attributes['wpbs-mobile']);
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
@@ -296,7 +300,7 @@ registerBlockType(metadata.name, {
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <NumberControl
-                    label={'Columns Mobile'}
+                    label={'Mobile'}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
@@ -306,7 +310,17 @@ registerBlockType(metadata.name, {
                     value={columnsMobile}
                 />
                 <NumberControl
-                    label={'Columns Large'}
+                    label={'Small'}
+                    __next40pxDefaultSize
+                    isShiftStepEnabled={false}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-columns-small']: newValue});
+                        setColumnsSmall(newValue);
+                    }}
+                    value={columnsSmall}
+                />
+                <NumberControl
+                    label={'Large'}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
@@ -315,9 +329,9 @@ registerBlockType(metadata.name, {
                     }}
                     value={columnsLarge}
                 />
-                <Breakpoint label={'Breakpoint Mobile'} defaultValue={breakpointMobile} callback={(newValue) => {
-                    setAttributes({['wpbs-breakpoint-mobile']: newValue});
-                    setBreakpointMobile(newValue);
+                <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
+                    setAttributes({['wpbs-breakpoint-small']: newValue});
+                    setBreakpointSmall(newValue);
                 }}/>
                 <Breakpoint label={'Breakpoint Large'} defaultValue={breakpointLarge} callback={(newValue) => {
                     setAttributes({['wpbs-breakpoint-large']: newValue});

@@ -30,7 +30,8 @@ import Breakpoint from 'Components/Breakpoint';
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        attributes['wpbs-divider'] ? 'wpbs-layout-grid--divider' : null,
+        !!attributes['wpbs-divider'] ? 'wpbs-layout-grid--divider' : null,
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry' : null,
         'w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
@@ -604,7 +605,8 @@ registerBlockType(metadata.name, {
         return (
             <div {...blockProps}>
 
-                <div {...innerBlocksProps}/>
+                <div {...innerBlocksProps} />
+
 
                 <Background attributes={props.attributes} editor={false}/>
             </div>

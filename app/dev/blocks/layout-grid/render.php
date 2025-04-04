@@ -1,5 +1,7 @@
 <?php
 
+global $wp_query;
+
 $attributes = $attributes ?? [];
 $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
@@ -50,7 +52,10 @@ if ( $is_loop ) {
 		];
 	}
 
-	$query = new WP_Query( $query_args );
+	$query = match(true){
+		$attributes['wpbs-loop-type'] === 'current' => $wp_query,
+		default => new WP_Query( $query_args )
+	};
 
 	$new_content = '';
 

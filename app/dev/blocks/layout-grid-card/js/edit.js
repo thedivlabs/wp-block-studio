@@ -53,13 +53,20 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(attributes),
         });
 
+        const innerBlockProps = useInnerBlocksProps({},{
+            className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
+        });
+
+        const mergedBlockProps = useInnerBlocksProps(blockProps);
+
         function Content() {
             if (!!attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'}>
-                    <InnerBlocks/>
+                return <div {...blockProps}>
+                    <div {...innerBlockProps} />
+                    <Background attributes={attributes} editor={true}/>
                 </div>;
             } else {
-                return <InnerBlocks/>;
+                return <div {...mergedBlockProps} />;
             }
         }
 
@@ -72,10 +79,8 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-
                 <Content/>
 
-                <Background attributes={attributes} editor={true}/>
             </>
         )
     },
@@ -86,22 +91,25 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
+        const innerBlockProps = useInnerBlocksProps.save({},{
+            className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
+        })
+
+        const mergedBlockProps = useInnerBlocksProps.save(blockProps);
+
         function Content() {
             if (!!props.attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'}>
-                    <InnerBlocks.Content/>
+                return <div {...blockProps}>
+                    <div {...innerBlockProps} />
+                    <Background props.attributes={props.attributes} editor={false}/>
                 </div>;
             } else {
-                return <InnerBlocks.Content/>;
+                return <div {...mergedBlockProps} />;
             }
         }
 
         return (
-            <div {...blockProps}>
-                <Content/>
-
-                <Background attributes={props.attributes} editor={false}/>
-            </div>
+            <Content/>
         );
     }
 })

@@ -96,7 +96,7 @@ registerBlockType(metadata.name, {
                     <Background attributes={props.attributes} editor={false}/>
                 </div>;
             } else {
-                return <InnerBlocks.Content/>;
+                return <div {...useInnerBlocksProps.save(blockProps)} />;
             }
         }
 

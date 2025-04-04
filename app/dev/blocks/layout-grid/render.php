@@ -76,7 +76,10 @@ if ( $is_loop ) {
 				'postId' => get_the_ID(),
 			] ) );
 
-			$unique_id = 'wpbs-layout-grid-card-' . $query->current_post;
+			$unique_id = join( ' ', array_filter( [
+				$new_block->attributes['uniqueId'] ?? null,
+				'wpbs-layout-grid-card-' . $query->current_post
+			] ) );
 
 			$new_block->inner_content[0]       = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_content[0] );
 			$new_block->inner_html             = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );

@@ -53,20 +53,16 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(attributes),
         });
 
-        const innerBlockProps = useInnerBlocksProps({},{
-            className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
-        });
-
-        const mergedBlockProps = useInnerBlocksProps(blockProps);
-
         function Content() {
             if (!!attributes['wpbs-background']) {
                 return <div {...blockProps}>
-                    <div {...innerBlockProps} />
+                    <div {...useInnerBlocksProps({
+                        className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
+                    })} />
                     <Background attributes={attributes} editor={true}/>
                 </div>;
             } else {
-                return <div {...mergedBlockProps} />;
+                return <div {...useInnerBlocksProps(blockProps)} />;
             }
         }
 
@@ -91,20 +87,16 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
-        const innerBlockProps = useInnerBlocksProps.save({},{
-            className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
-        })
-
-        const mergedBlockProps = useInnerBlocksProps.save(blockProps);
-
         function Content() {
             if (!!props.attributes['wpbs-background']) {
                 return <div {...blockProps}>
-                    <div {...innerBlockProps} />
-                    <Background props.attributes={props.attributes} editor={false}/>
+                    <div {...useInnerBlocksProps.save({
+                        className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
+                    })} />
+                    <Background attributes={props.attributes} editor={false}/>
                 </div>;
             } else {
-                return <div {...mergedBlockProps} />;
+                return <div {...useInnerBlocksProps.save(blockProps)} />;
             }
         }
 

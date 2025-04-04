@@ -52,23 +52,15 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
         });
-        const innerBlocksProps = useInnerBlocksProps(blockProps);
 
-        const Content = () => {
-
+        function Content() {
             if (!!attributes['wpbs-background']) {
-                return <div {...blockProps}>
-
-                    <InnerBlocks className={'wpbs-layout-grid-card__container wpbs-layout-wrapper'}/>
-
-                    <Background attributes={attributes} editor={true}/>
-
+                return <div className={'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'}>
+                    <InnerBlocks/>
                 </div>;
             } else {
-                return <div {...innerBlocksProps}/>;
+                return <InnerBlocks/>;
             }
-
-
         }
 
         return (
@@ -82,6 +74,8 @@ registerBlockType(metadata.name, {
 
 
                 <Content/>
+
+                <Background attributes={attributes} editor={true}/>
             </>
         )
     },
@@ -92,27 +86,22 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(props.attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps);
-
-        const Content = () => {
-
+        function Content() {
             if (!!props.attributes['wpbs-background']) {
-                return <div {...blockProps}>
-
-                    <InnerBlocks.Content className={'wpbs-layout-grid-card__container wpbs-layout-wrapper'}/>
-
-                    <Background attributes={props.attributes}/>
-
+                return <div className={'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'}>
+                    <InnerBlocks.Content/>
                 </div>;
             } else {
-                return <div {...innerBlocksProps}/>;
+                return <InnerBlocks.Content/>;
             }
-
-
         }
 
         return (
-            <Content/>
+            <div {...blockProps}>
+                <Content/>
+
+                <Background attributes={props.attributes} editor={false}/>
+            </div>
         );
     }
 })

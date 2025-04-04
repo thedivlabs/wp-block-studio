@@ -2,7 +2,7 @@ import "../scss/block.scss";
 
 import {
     useBlockProps,
-    InspectorControls, useInnerBlocksProps, PanelColorSettings, DefaultBlockAppender,
+    InspectorControls, useInnerBlocksProps, PanelColorSettings, DefaultBlockAppender, MediaUploadCheck, MediaUpload,
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -18,7 +18,7 @@ import {
     PanelBody,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    QueryControls
+    QueryControls, BaseControl, Button
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -117,6 +117,9 @@ registerBlockType(metadata.name, {
         },
         ['wpbs-loop-suppress']: {
             type: 'array'
+        },
+        ['wpbs-gallery-images']: {
+            type: 'array'
         }
     },
     edit: (props) => {
@@ -143,6 +146,7 @@ registerBlockType(metadata.name, {
         const [loopMaxItems, setLoopMaxItems] = useState(attributes['wpbs-loop-max-items']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
+        const [galleryImages, setGalleryImages] = useState(attributes['wpbs-gallery-images']);
 
         let postTypeOptions = [];
         let taxonomiesOptions = [];
@@ -231,6 +235,14 @@ registerBlockType(metadata.name, {
             });
 
         }, [loopPostType, loopTerm, loopTaxonomy, loopPageSize, loopMaxItems, loopOrderBy, loopOrder]);
+
+        const {galleryImageData} = useSelect(select => {
+            console.log(galleryImages);
+            return {
+                galleryImageData: attributes['wpbs-gallery-images']?.map(imgId => select('core').getMedia(imgId))
+            }
+
+        }, [attributes['wpbs-gallery-images']]);
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -413,9 +425,43 @@ registerBlockType(metadata.name, {
 
         </Grid>;
 
+        const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
+            <BaseControl label={props.label}>
+                <MediaUploadCheck>
+                    <MediaUpload
+                        onSelect={(media) => {
+                            const imageIds = media.map(obj => obj.id);
+                            console.log(imageIds);
+                            setAttributes({['wpbs-gallery-images']: imageIds});
+                            setGalleryImages(imageIds);
+                        }}
+                        allowedTypes={['image']}
+                        multiple="add"
+                        value={galleryImages}
+                        render={({open}) => {
+
+
+                            const gallery = galleryImageData || [];
+                            console.log(gallery);
+
+                            return <div>
+
+                                <div class={'w-full grid gap-2 grid-cols-2'}>
+                                    {gallery?.map(image => !!image && 'source_url' in image ?
+                                        <img src={image.source_url}/> : <></>)}
+                                </div>
+                                <Button variant="secondary" onClick={open}>Add images</Button>
+                            </div>
+                        }}
+                    />
+                </MediaUploadCheck>
+            </BaseControl>
+        </Grid>;
+
         const tabs = {
             options: tabOptions,
             loop: tabLoop,
+            gallery: tabGallery
         }
 
         useEffect(() => {
@@ -467,6 +513,11 @@ registerBlockType(metadata.name, {
                                     name: 'loop',
                                     title: 'Loop',
                                     className: 'tab-loop',
+                                },
+                                {
+                                    name: 'gallery',
+                                    title: 'Gallery',
+                                    className: 'tab-gallery',
                                 },
                             ]}>
                             {

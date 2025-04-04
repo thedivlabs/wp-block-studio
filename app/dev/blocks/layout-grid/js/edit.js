@@ -141,7 +141,6 @@ registerBlockType(metadata.name, {
         const [loopPostType, setLoopPostType] = useState(attributes['wpbs-loop-type']);
         const [loopTerm, setLoopTerm] = useState(attributes['wpbs-loop-term']);
         const [loopTaxonomy, setLoopTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
-        const [loopSuppress, setLoopSuppress] = useState([]);
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
@@ -188,31 +187,9 @@ registerBlockType(metadata.name, {
             }
         }, [taxonomies]);
 
-        /*const {suppressOptions = []} = useSelect((select) => {
-
-            const {getEntityRecords} = select('core');
-
-            const postType = attributes['wpbs-loop-type'] || 'post';
-
-            const queryResults = getEntityRecords('postType', postType, {})?.map((post) => {
-                return {
-                    title: post.title.raw,
-                    id: post.id.toString()
-                }
-            }, []);
-
-            console.log('queryResults');
-            console.log(queryResults);
-            console.log(loopSuppress);
-
-            return {
-                suppressOptions: queryResults,
-            }
-
-        });*/
-
-
         const SuppressPostsField = () => {
+
+            console.log(attributes['wpbs-loop-suppress']);
 
             // Fetch posts
             const posts = useSelect(
@@ -223,11 +200,7 @@ registerBlockType(metadata.name, {
                 []
             );
 
-            console.log(posts);
-
-            return <></>;
-
-            if (posts === undefined) return <Spinner/>;
+            if (posts === null || posts === undefined) return <Spinner/>;
 
             // Suggestions (post titles)
             const suggestions = posts?.map((post) => post.title.rendered);
@@ -241,13 +214,11 @@ registerBlockType(metadata.name, {
                     })
                     .filter(Boolean);
 
-                console.log(newIds);
-
                 setAttributes({['wpbs-loop-suppress']: newIds});
             };
 
             // Convert stored IDs to titles for display in the field
-            const selectedTitles = attributes['wpbs-loop-suppress']
+            const selectedTitles = (attributes['wpbs-loop-suppress'] || [])
                 .map((id) => {
                     const post = posts.find((post) => post.id === id);
                     return post?.title.rendered;
@@ -307,7 +278,8 @@ registerBlockType(metadata.name, {
                     'taxonomy': attributes['wpbs-loop-taxonomy'],
                     'posts_per_page': attributes['wpbs-loop-page-size'],
                     'orderby': attributes['wpbs-loop-orderby'],
-                    'order': attributes['wpbs-loop-order']
+                    'order': attributes['wpbs-loop-order'],
+                    'post__not_in': attributes['wpbs-loop-suppress'],
                 }
             });
 

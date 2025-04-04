@@ -189,8 +189,6 @@ registerBlockType(metadata.name, {
 
         const SuppressPostsField = () => {
 
-            console.log(attributes['wpbs-loop-suppress']);
-
             // Fetch posts
             const posts = useSelect(
                 (select) =>

@@ -194,10 +194,10 @@ registerBlockType(metadata.name, {
             // Fetch posts
             const posts = useSelect(
                 (select) =>
-                    select(coreStore).getEntityRecords('postType', 'post', {
+                    select(coreStore).getEntityRecords('postType', attributes['wpbs-loop-type'] || 'post', {
                         per_page: 100,
                     }),
-                []
+                [attributes['wpbs-loop-type']]
             );
 
             if (posts === null || posts === undefined) return <Spinner/>;

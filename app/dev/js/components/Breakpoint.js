@@ -2,12 +2,12 @@ import {SelectControl} from "@wordpress/components";
 import {useState} from "react";
 
 
-function Breakpoint({defaultValue, callback}) {
+function Breakpoint({defaultValue, callback, label='Breakpoint'}) {
 
     const [value, setValue] = useState(defaultValue);
 
     return <SelectControl
-        label={'Breakpoint'}
+        label={label}
         value={value}
         options={[
             {label: 'Select', value: ''},

@@ -24,6 +24,7 @@ import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
+import Breakpoint from 'Components/Breakpoint';
 
 
 function sectionClassNames(attributes = {}) {
@@ -63,6 +64,12 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         ['wpbs-columns-large']: {
+            type: 'string'
+        },
+        ['wpbs-breakpoint-mobile']: {
+            type: 'string'
+        },
+        ['wpbs-breakpoint-large']: {
             type: 'string'
         },
         ['wpbs-prop-columns']: {
@@ -133,6 +140,8 @@ registerBlockType(metadata.name, {
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
         const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
+        const [breakpointLarge, setBreakpointLarge] = useState(attributes['wpbs-breakpoint-large']);
+        const [breakpointMobile, setBreakpointMobile] = useState(attributes['wpbs-breakpoint-mobile']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
         const [mobile, setMobile] = useState(attributes['wpbs-mobile']);
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
@@ -306,6 +315,14 @@ registerBlockType(metadata.name, {
                     }}
                     value={columnsLarge}
                 />
+                <Breakpoint label={'Breakpoint Mobile'} defaultValue={breakpointMobile} callback={(newValue) => {
+                    setAttributes({['wpbs-breakpoint-mobile']: newValue});
+                    setBreakpointMobile(newValue);
+                }}/>
+                <Breakpoint label={'Breakpoint Large'} defaultValue={breakpointLarge} callback={(newValue) => {
+                    setAttributes({['wpbs-breakpoint-large']: newValue});
+                    setBreakpointLarge(newValue);
+                }}/>
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
                 <ToggleControl
@@ -400,7 +417,11 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-                <Grid columns={1} columnGap={15} rowGap={20} style={(attributes['wpbs-loop-type'] || '') === 'current' ? {opacity: .4, pointerEvents: 'none'} : {}}>
+                <Grid columns={1} columnGap={15} rowGap={20}
+                      style={(attributes['wpbs-loop-type'] || '') === 'current' ? {
+                          opacity: .4,
+                          pointerEvents: 'none'
+                      } : {}}>
 
                     <SelectControl
                         label={'Taxonomy'}

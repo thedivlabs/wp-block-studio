@@ -101,7 +101,7 @@ registerBlockType(metadata.name, {
 
                     <InnerBlocks.Content className={'wpbs-layout-grid-card__container wpbs-layout-wrapper'}/>
 
-                    <Background attributes={props.attributes} editor={true}/>
+                    <Background attributes={props.attributes}/>
 
                 </div>;
             } else {

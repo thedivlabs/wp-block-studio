@@ -98,9 +98,9 @@ if ( $is_loop ) {
 
 $total = ! empty( $query ) ? count( $query->posts ?? [] ) : count( $block->parsed_block['innerBlocks'] ?? [] );
 
-$cols_mobile     = intval( $attributes['wpbs-columns-mobile'] ?? 1 ) ?: 1;
-$cols_small      = intval( $attributes['wpbs-columns-small'] ?? 2 ) ?: 2;
-$cols_large      = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? 1 ) ?: 1;
+$cols_mobile     = intval( $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
+$cols_small      = intval( $attributes['wpbs-columns-small'] ?? false ) ?: 2;
+$cols_large      = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
 $last_row_mobile = ( $total - ( floor( $total / $cols_mobile ) * $cols_mobile ) ) ?: $cols_mobile;
 $last_row_small  = ( $total - ( floor( $total / $cols_small ) * $cols_small ) ) ?: $cols_small;
 $last_row_large  = ( $total - ( floor( $total / $cols_large ) * $cols_large ) ) ?: $cols_large;

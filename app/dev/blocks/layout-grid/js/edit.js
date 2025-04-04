@@ -18,7 +18,7 @@ import {
     PanelBody,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    QueryControls, BaseControl, Button
+    QueryControls, BaseControl, Button, FormTokenField
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -140,7 +140,7 @@ registerBlockType(metadata.name, {
         const [loopPostType, setLoopPostType] = useState(attributes['wpbs-loop-type']);
         const [loopTerm, setLoopTerm] = useState(attributes['wpbs-loop-term']);
         const [loopTaxonomy, setLoopTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
-        const [loopSuppress, setLoopSuppress] = useState(attributes['wpbs-loop-suppress']);
+        const [loopSuppress, setLoopSuppress] = useState(attributes['wpbs-loop-suppress'] || []);
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
@@ -187,15 +187,22 @@ registerBlockType(metadata.name, {
             }
         }, [taxonomies]);
 
-        const {suppressOptions} = useSelect((select) => {
+        const {suppressOptions = []} = useSelect((select) => {
 
             const {getEntityRecords} = select('core')
 
+            const queryResults = getEntityRecords('postType', loopPostType || 'post', {})?.map((post) => {
+                return {
+                    title: post.title.rendered,
+                    value: post.id
+                }
+            });
+            
             return {
-                suppressOptions: getEntityRecords('postType', attributes['wpbs-loop-type'], {}),
+                suppressOptions: queryResults,
             }
 
-        }, [attributes['wpbs-loop-type']]);
+        }, [loopPostType]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
@@ -382,8 +389,10 @@ registerBlockType(metadata.name, {
 
             <FormTokenField
                 value={loopSuppress}
-                suggestions={suppressOptions}
+                suggestions={suppressOptions.map(opt => opt.title)}
+                __experimentalExpandOnFocus={true}
                 onChange={(tokens) => {
+                    console.log(tokens);
                     setAttributes({['wpbs-loop-suppress']: tokens});
                     setLoopSuppress(tokens);
                 }}

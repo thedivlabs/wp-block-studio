@@ -394,23 +394,29 @@ registerBlockType(metadata.name, {
                 suggestions={suppressOptions.map(opt => opt.id)}
                 displayTransform={(token) => {
                     const post = suppressOptions.find(opt => opt.id === token);
-                    return !!post && post.title ? post.title: 'Loading...';
+                    const result = !!post && post.title ? post.title : 'Loading...';
+                    console.log(result);
+                    return result;
                 }}
-               /* saveTransform={(token) => {
-
+                /*saveTransform={(token) => {
+                    const post = !!token && token.length > 0 ? suppressOptions.find(opt => opt.id === token) : false;
+                    console.log(token);
+                    console.log(post);
+                    return !!post && post.id ? post.id.toString() : 'Loading...';
                 }}*/
                 __experimentalExpandOnFocus={true}
                 onChange={(tokens) => {
-                    const posts = tokens.map((token) => {
+                    console.log(tokens);
+                    /*const posts = tokens.map((token) => {
                         const post = suppressOptions.find(opt => opt.id === token);
                         return {
                             title: post.title,
                             value: post.id,
                         }
-                    })
+                    })*/
 
-                    setAttributes({['wpbs-loop-suppress']: posts});
-                    setLoopSuppress(posts);
+                    //setAttributes({['wpbs-loop-suppress']: posts});
+                    //setLoopSuppress(posts);
                 }}
             />
 

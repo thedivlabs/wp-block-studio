@@ -114,6 +114,9 @@ registerBlockType(metadata.name, {
         },
         ['wpbs-loop-suppress']: {
             type: 'array'
+        },
+        ['wpbs-gallery']: {
+            type: 'string'
         }
     },
     edit: (props) => {
@@ -122,7 +125,9 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
-        const colors = useSelect('core/block-editor', []).getSettings().colors;
+        const colors = useSelect((select) => {
+            return select('core/block-editor').getSettings().colors;
+        }, []);
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
@@ -135,12 +140,11 @@ registerBlockType(metadata.name, {
         const [loopPostType, setLoopPostType] = useState(attributes['wpbs-loop-type']);
         const [loopTerm, setLoopTerm] = useState(attributes['wpbs-loop-term']);
         const [loopTaxonomy, setLoopTaxonomy] = useState(attributes['wpbs-loop-taxonomy']);
-        const [suppress, setSuppress] = useState(attributes['wpbs-loop-suppress']);
+        const [loopSuppress, setLoopSuppress] = useState(attributes['wpbs-loop-suppress']);
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
-        const [loopMaxItems, setLoopMaxItems] = useState(attributes['wpbs-loop-max-items']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
-        const [galleryImages, setGalleryImages] = useState(attributes['wpbs-gallery-images']);
+        const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
         let postTypeOptions = [];
         let taxonomiesOptions = [];
@@ -182,6 +186,16 @@ registerBlockType(metadata.name, {
                 terms: termsArray,
             }
         }, [taxonomies]);
+
+        const {suppressOptions} = useSelect((select) => {
+
+            const {getEntityRecords} = select('core')
+
+            return {
+                suppressOptions: getEntityRecords('postType', attributes['wpbs-loop-type'], {}),
+            }
+
+        }, [attributes['wpbs-loop-type']]);
 
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
@@ -366,6 +380,15 @@ registerBlockType(metadata.name, {
                 __nextHasNoMarginBottom
             />
 
+            <FormTokenField
+                value={loopSuppress}
+                suggestions={suppressOptions}
+                onChange={(tokens) => {
+                    setAttributes({['wpbs-loop-suppress']: tokens});
+                    setLoopSuppress(tokens);
+                }}
+            />
+
             <QueryControls
                 onOrderByChange={(newValue) => {
                     setAttributes({['wpbs-loop-orderby']: newValue});
@@ -427,7 +450,10 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
-            style: sectionProps(attributes)
+            style: {
+                ...props.style,
+                ...sectionProps(attributes)
+            }
         });
 
         const innerBlocksProps = useInnerBlocksProps({
@@ -500,7 +526,10 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'callbacks.runQuery',
             'data-wp-context': JSON.stringify({queryArgs: props.attributes.queryArgs || {}}),
-            style: sectionProps(props.attributes)
+            style: {
+                ...props.style,
+                ...sectionProps(props.attributes)
+            }
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({

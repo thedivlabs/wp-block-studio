@@ -1,7 +1,7 @@
 import {
     useBlockProps,
     InspectorControls,
-    InnerBlocks,
+    InnerBlocks, useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -12,7 +12,7 @@ import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {useEffect, useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {useSelect} from "@wordpress/data";
 
 
@@ -35,9 +35,9 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, context, clientId}) => {
 
 
-/*        const curBlock = useSelect((select) =>
-            select('core/block-editor').getBlock(clientId)
-        )*/
+        /*        const curBlock = useSelect((select) =>
+                    select('core/block-editor').getBlock(clientId)
+                )*/
 
         //console.log(curBlock);
 
@@ -52,6 +52,24 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
         });
+        const innerBlocksProps = useInnerBlocksProps(blockProps);
+
+        const Content = () => {
+
+            if (!!attributes['wpbs-background']) {
+                return <div {...blockProps}>
+
+                    <InnerBlocks className={'wpbs-layout-grid-card__container wpbs-layout-wrapper'}/>
+
+                    <Background attributes={attributes} editor={true}/>
+
+                </div>;
+            } else {
+                return <div {...innerBlocksProps}/>;
+            }
+
+
+        }
 
         return (
             <>
@@ -62,13 +80,8 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <div {...blockProps}>
 
-                    <InnerBlocks/>
-
-                    <Background attributes={attributes} editor={true}/>
-
-                </div>
+                <Content/>
             </>
         )
     },

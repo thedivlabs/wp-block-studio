@@ -155,8 +155,8 @@ if ( ! empty( $cols_large ) ) {
 		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }' . "\r\n";
 		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):not(:nth-of-type( -n+' . $last_row_large . ' )):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }' . "\r\n";
 		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):after { height: 100% !important; }' . "\r\n";
-		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):before { content: none; }' . "\r\n";
-		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):after { content: none; }' . "\r\n";
+		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):before { content: none !important; }' . "\r\n";
+		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):after { content: none !important; }' . "\r\n";
 		$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' . $cols_large . 'n+1 ):before { width: ' . ( $cols_large > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%' ) . '; left: 0; }' . "\r\n";
 	}
 

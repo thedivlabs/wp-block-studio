@@ -68,7 +68,7 @@ function containerProps(attributes = {}) {
 
     if (!!attributes['wpbs-masonry']) {
         props['data-masonry'] = JSON.stringify({
-            //columnWidth: 'calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1))',
+            horizontalOrder: true,
             itemSelector: '.wpbs-layout-grid-card',
             columnWidth: '.wpbs-layout-grid-card',
             percentPosition: true,
@@ -81,6 +81,16 @@ function containerProps(attributes = {}) {
             ...props
         }).filter(([key, value]) => value)
     );
+}
+
+function MasonrySizer({attributes}) {
+
+    return !!attributes['wpbs-masonry'] ?
+        <span className={'gutter-sizer'}
+              style={{
+                  position: 'absolute',
+                  width: 'var(--row-gap, var(--column-gap, 0px))'
+              }}/> : false;
 }
 
 registerBlockType(metadata.name, {
@@ -595,14 +605,10 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-
                     <div {...innerBlocksProps}>
                         {children}
-                        <div className={'gutter-sizer'}
-                             style={{
-                                 position: 'absolute',
-                                 width: 'var(--row-gap, var(--column-gap, 0px))'
-                             }}/>
+
+                        <MasonrySizer attributes={attributes}/>
                     </div>
 
 
@@ -630,16 +636,13 @@ registerBlockType(metadata.name, {
             ...containerProps(props.attributes)
         }, {});
 
+
         return (
             <div {...blockProps}>
 
                 <div {...innerBlocksProps} >
                     {children}
-                    <div className={'gutter-sizer'}
-                         style={{
-                             position: 'absolute',
-                             width: 'var(--row-gap, var(--column-gap, 0px))'
-                         }}/>
+                    <MasonrySizer attributes={props.attributes}/>
                 </div>
 
 

@@ -310,7 +310,7 @@ registerBlockType(metadata.name, {
         }
 
         useEffect(() => {
-
+            
             setAttributes({
                 queryArgs: {
                     'post_type': attributes['wpbs-loop-type'],
@@ -323,7 +323,7 @@ registerBlockType(metadata.name, {
                 }
             });
 
-        }, [attributes['wpbs-loop-type'], attributes['wpbs-loop-term'], attributes['wpbs-loop-taxonomy'], attributes['wpbs-loop-page-size'], attributes['wpbs-loop-orderby'], attributes['wpbs-loop-order']]);
+        }, [attributes['wpbs-loop-suppress'], attributes['wpbs-loop-type'], attributes['wpbs-loop-term'], attributes['wpbs-loop-taxonomy'], attributes['wpbs-loop-page-size'], attributes['wpbs-loop-orderby'], attributes['wpbs-loop-order']]);
 
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>

@@ -39,9 +39,9 @@ if ( $is_loop ) {
 		'order'          => $custom_query['order'] ?? 'DESC',
 		'orderby'        => $custom_query['orderby'] ?? 'date',
 		'no_found_rows'  => true,
-		'post__not_in'   => $custom_query['post__not_in'] ?? [],
+		'post__not_in'   => array_map( 'intval', array_values( array_filter( array_column( $custom_query['post__not_in'] ?? [], 'value' ) ) ) ),
 	];
-
+	
 	if (
 		! empty( $custom_query['term'] ) &&
 		$taxonomy = $custom_query['taxonomy'] ?? get_term( $custom_query['term'] )->taxonomy ?? false

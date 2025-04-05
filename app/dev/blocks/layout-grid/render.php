@@ -90,8 +90,7 @@ if ( $is_loop ) {
 		wp_reset_postdata();
 	}
 
-	$block->inner_content[1] = trim( $new_content );
-	$block->inner_content[2] = trim( join( ' ', [
+	$new_content .= trim( join( ' ', [
 		'<nav class="wpbs-layout-grid-pagination">',
 		paginate_links( array(
 			'base'    => str_replace( 99999, '%#%', esc_url( get_pagenum_link( 99999 ) ) ),
@@ -101,6 +100,8 @@ if ( $is_loop ) {
 		) ),
 		'</nav>'
 	] ) );
+
+	$block->inner_content[1] = trim( $new_content );
 
 	echo join( ' ', $block->inner_content );
 

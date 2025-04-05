@@ -40,8 +40,8 @@ function sectionClassNames(attributes = {}) {
 
 function containerClassNames(attributes = {}) {
     return [
-        'wpbs-layout-grid__container',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
+        'wpbs-layout-grid__container relative',
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid__container--masonry masonry' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -58,6 +58,27 @@ function sectionProps(attributes = {}) {
             '--divider-icon': attributes['wpbs-divider-icon'],
             '--divider-icon-size': attributes['wpbs-divider-icon-size'],
             '--divider-icon-color': attributes['wpbs-divider-icon-color'],
+        }).filter(([key, value]) => value)
+    );
+}
+
+function containerProps(attributes = {}) {
+
+    let props = {};
+
+    if (!!attributes['wpbs-masonry']) {
+        props['data-masonry'] = JSON.stringify({
+            //columnWidth: 'calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1))',
+            itemSelector: '.wpbs-layout-grid-card',
+            columnWidth: '.wpbs-layout-grid-card',
+            percentPosition: true,
+            gutter: '.gutter-sizer'
+        })
+    }
+
+    return Object.fromEntries(
+        Object.entries({
+            ...props
         }).filter(([key, value]) => value)
     );
 }
@@ -529,8 +550,9 @@ registerBlockType(metadata.name, {
             }
         });
 
-        const innerBlocksProps = useInnerBlocksProps({
+        const {children, ...innerBlocksProps} = useInnerBlocksProps({
             className: containerClassNames(attributes),
+            ...containerProps(attributes),
         }, {
             renderAppender: false
         });
@@ -583,7 +605,15 @@ registerBlockType(metadata.name, {
                 <div {...blockProps}>
 
 
-                    <div {...innerBlocksProps}/>
+                    <div {...innerBlocksProps}>
+                        {children}
+                        <div className={'gutter-sizer'}
+                             style={{
+                                 position: 'absolute',
+                                 width: 'var(--row-gap, var(--column-gap, 0px))'
+                             }}/>
+                    </div>
+
 
                     <Background attributes={attributes} editor={true}/>
 
@@ -597,22 +627,29 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
-            'data-wp-init': 'callbacks.runQuery',
-            'data-wp-context': JSON.stringify({queryArgs: props.attributes.queryArgs || {}}),
+            'data-wp-init': 'callbacks.init',
             style: {
                 ...props.style,
                 ...sectionProps(props.attributes)
             }
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save({
+        const {children, ...innerBlocksProps} = useInnerBlocksProps.save({
             className: containerClassNames(props.attributes),
+            ...containerProps(props.attributes)
         }, {});
 
         return (
             <div {...blockProps}>
 
-                <div {...innerBlocksProps} />
+                <div {...innerBlocksProps} >
+                    {children}
+                    <div className={'gutter-sizer'}
+                         style={{
+                             position: 'absolute',
+                             width: 'var(--row-gap, var(--column-gap, 0px))'
+                         }}/>
+                </div>
 
 
                 <Background attributes={props.attributes} editor={false}/>

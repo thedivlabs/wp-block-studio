@@ -41,7 +41,7 @@ if ( $is_loop ) {
 		'no_found_rows'  => true,
 		'post__not_in'   => $custom_query['post__not_in'] ?? [],
 	];
-	
+
 	if (
 		! empty( $custom_query['term'] ) &&
 		$taxonomy = $custom_query['taxonomy'] ?? get_term( $custom_query['term'] )->taxonomy ?? false
@@ -91,8 +91,19 @@ if ( $is_loop ) {
 	}
 
 	$block->inner_content[1] = trim( $new_content );
+	$block->inner_content[2] = trim( join( ' ', [
+		'<nav class="wpbs-layout-grid-pagination">',
+		paginate_links( array(
+			'base'    => str_replace( 99999, '%#%', esc_url( get_pagenum_link( 99999 ) ) ),
+			'format'  => '?paged=%#%',
+			'current' => max( 1, get_query_var( 'paged' ) ),
+			'total'   => $query->max_num_pages
+		) ),
+		'</nav>'
+	] ) );
 
 	echo join( ' ', $block->inner_content );
+
 } else {
 	echo $content;
 }

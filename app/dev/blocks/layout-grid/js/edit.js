@@ -362,7 +362,7 @@ registerBlockType(metadata.name, {
                     setBreakpointLarge(newValue);
                 }}/>
             </Grid>
-            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Masonry"
@@ -423,7 +423,7 @@ registerBlockType(metadata.name, {
                 colorSettings={[
                     {
                         slug: 'icon-color',
-                        label: 'Icon Color',
+                        label: 'Divider Icon Color',
                         value: dividerIconColor,
                         onChange: (newValue) => {
                             setAttributes({['wpbs-divider-icon-color']: newValue});

@@ -3,7 +3,6 @@ import '../scss/block.scss';
 import {
     BlockEdit,
     InspectorControls,
-    PanelColorSettings,
     useBlockProps,
     useInnerBlocksProps,
     useSettings
@@ -22,7 +21,6 @@ import {
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {swiperDefaultArgs} from "Includes/helper";
-import {select, useSelect} from "@wordpress/data";
 
 function blockClasses(attributes = {}) {
     return [
@@ -71,9 +69,6 @@ const blockAttributes = {
         type: 'string'
     },
     'wpbs-hover-pause': {
-        type: 'boolean'
-    },
-    'wpbs-fade-in': {
         type: 'boolean'
     },
     'wpbs-free-mode': {
@@ -135,22 +130,6 @@ function getArgs(attributes) {
         spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
     };
 
-    /*   if (args.effect !== 'slide') {
-           args.fadeEffect = {
-               crossFade: true
-           }
-           args.slidesPerView = 1;
-           args.slidesPerGroup = 1;
-           args.spaceBetween = 0;
-           args.freeMode = false;
-           args.loop = false;
-
-           breakpointArgs.slidesPerView = 1;
-           breakpointArgs.slidesPerGroup = 1;
-           breakpointArgs.spaceBetween = 0;
-
-       }*/
-
     if (!!attributes['wpbs-collapse']) {
         args.enabled = false;
         breakpointArgs.enabled = true;
@@ -195,7 +174,6 @@ registerBlockType(metadata.name, {
         const [effect, setEffect] = useState(attributes['wpbs-effect'] || 'slide');
 
         const [hoverPause, setHoverPause] = useState(attributes['wpbs-hover-pause']);
-        const [fadeIn, setFadeIn] = useState(attributes['wpbs-fade-in']);
         const [freeMode, setFreeMode] = useState(attributes['wpbs-free-mode']);
         const [centered, setCentered] = useState(attributes['wpbs-centered']);
         const [collapse, setCollapse] = useState(attributes['wpbs-collapse'] || false);
@@ -425,17 +403,6 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => {
                                     setAttributes({['wpbs-hover-pause']: newValue});
                                     setHoverPause(newValue);
-                                    updateSlider();
-                                }}
-                                className={'flex items-center'}
-                                __nextHasNoMarginBottom
-                            />
-                            <ToggleControl
-                                label="Fade In"
-                                checked={!!fadeIn}
-                                onChange={(newValue) => {
-                                    setAttributes({['wpbs-fade-in']: newValue});
-                                    setFadeIn(newValue);
                                     updateSlider();
                                 }}
                                 className={'flex items-center'}

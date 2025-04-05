@@ -308,6 +308,7 @@ class WPBS_Layout {
 			case 'max-height':
 				$value = match ( $value ) {
 					'screen' => 'calc(100svh - var(--wpbs-header-height, 0px))',
+					'full-screen' => '100svh',
 					default => $value
 				};
 				break;

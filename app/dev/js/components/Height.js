@@ -6,7 +6,7 @@ import {useState} from "react";
 
 function Height({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
+    const [value, setValue] = useState(defaultValue);
 
     return <SelectControl
         label={'Height'}
@@ -14,6 +14,7 @@ function Height({defaultValue, callback}) {
         options={[
             {label: 'Select', value: ''},
             {label: 'Screen', value: 'screen'},
+            {label: 'Full Screen', value: 'full-screen'},
             {label: 'Full', value: '100%'},
             {label: 'Auto', value: 'auto'},
         ]}

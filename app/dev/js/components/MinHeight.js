@@ -14,6 +14,7 @@ function MinHeight({defaultValue, callback}) {
         options={[
             {label: 'Select', value: ''},
             {label: 'Screen', value: 'screen'},
+            {label: 'Full Screen', value: 'full-screen'},
             {label: 'Full', value: '100%'},
             {label: 'Auto', value: 'auto'},
         ]}

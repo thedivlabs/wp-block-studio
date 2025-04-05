@@ -31,10 +31,17 @@ function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
         !!attributes['wpbs-divider'] ? 'wpbs-layout-grid--divider' : null,
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry' : null,
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
+    ].filter(x => x).join(' ');
+}
+
+function containerClassNames(attributes = {}) {
+    return [
+        'wpbs-layout-grid__container',
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -523,7 +530,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-layout-grid__container',
+            className: containerClassNames(attributes),
         }, {
             renderAppender: false
         });
@@ -599,7 +606,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-layout-grid__container',
+            className: containerClassNames(props.attributes),
         }, {});
 
         return (

@@ -90,16 +90,18 @@ if ( $is_loop ) {
 		wp_reset_postdata();
 	}
 
-	$new_content .= trim( join( ' ', [
+	$pagination = paginate_links( array(
+		'base'    => str_replace( 99999, '%#%', esc_url( get_pagenum_link( 99999 ) ) ),
+		'format'  => '?paged=%#%',
+		'current' => max( 1, get_query_var( 'paged' ) ),
+		'total'   => $query->max_num_pages
+	) );
+
+	$new_content .= ! empty( $pagination ) ? trim( join( ' ', [
 		'<nav class="wpbs-layout-grid-pagination">',
-		paginate_links( array(
-			'base'    => str_replace( 99999, '%#%', esc_url( get_pagenum_link( 99999 ) ) ),
-			'format'  => '?paged=%#%',
-			'current' => max( 1, get_query_var( 'paged' ) ),
-			'total'   => $query->max_num_pages
-		) ),
+		$pagination,
 		'</nav>'
-	] ) );
+	] ) ) : '';
 
 	$block->inner_content[1] = trim( $new_content );
 

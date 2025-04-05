@@ -119,9 +119,6 @@ registerBlockType(metadata.name, {
         ['wpbs-divider-icon-color']: {
             type: 'string'
         },
-        ['wpbs-mobile']: {
-            type: 'boolean'
-        },
         ['wpbs-pagination-size']: {
             type: 'string'
         },
@@ -170,7 +167,6 @@ registerBlockType(metadata.name, {
         const [breakpointLarge, setBreakpointLarge] = useState(attributes['wpbs-breakpoint-large']);
         const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
-        const [mobile, setMobile] = useState(attributes['wpbs-mobile']);
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
@@ -374,15 +370,6 @@ registerBlockType(metadata.name, {
                     onChange={(newValue) => {
                         setAttributes({['wpbs-masonry']: newValue});
                         setMasonry(newValue);
-                    }}
-                />
-                <ToggleControl
-                    __nextHasNoMarginBottom
-                    label="Mobile"
-                    checked={!!mobile}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-mobile']: newValue});
-                        setMobile(newValue);
                     }}
                 />
                 <InputControl

@@ -362,7 +362,7 @@ registerBlockType(metadata.name, {
                     setBreakpointLarge(newValue);
                 }}/>
             </Grid>
-            <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Masonry"
@@ -372,6 +372,25 @@ registerBlockType(metadata.name, {
                         setMasonry(newValue);
                     }}
                 />
+            </Grid>
+            <BorderControl
+                __next40pxDefaultSize
+                enableAlpha
+                enableStyle
+                disableUnits
+                value={divider}
+                colors={colors}
+                __experimentalIsRenderedInSidebar={true}
+                label="Divider"
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-divider']: newValue});
+                    setDivider(newValue);
+                }}
+                shouldSanitizeBorder
+            />
+            <Grid columns={2} columnGap={15} rowGap={20}>
+
+
                 <InputControl
                     label={'Divider Icon'}
                     __next40pxDefaultSize
@@ -413,21 +432,6 @@ registerBlockType(metadata.name, {
                         isShownByDefault: true
                     }
                 ]}
-            />
-            <BorderControl
-                __next40pxDefaultSize
-                enableAlpha
-                enableStyle
-                disableUnits
-                value={divider}
-                colors={colors}
-                __experimentalIsRenderedInSidebar={true}
-                label="Divider"
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-divider']: newValue});
-                    setDivider(newValue);
-                }}
-                shouldSanitizeBorder
             />
         </Grid>;
 

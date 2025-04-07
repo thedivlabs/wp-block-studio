@@ -310,7 +310,7 @@ registerBlockType(metadata.name, {
         }
 
         useEffect(() => {
-            
+
             setAttributes({
                 queryArgs: {
                     'post_type': attributes['wpbs-loop-type'],
@@ -621,10 +621,28 @@ registerBlockType(metadata.name, {
         )
     },
     save: (props) => {
+
+        function serializeBlockForFrontend(block) {
+            return {
+                blockName: block.name,
+                attributes: block.attributes,
+                innerBlocks: block.innerBlocks.map(serializeBlockForFrontend),
+            };
+        }
+
+        const cardBlock = props?.innerBlocks?.[0];
+
+        const serializedCardTemplate = cardBlock
+            ? serializeBlockForFrontend(cardBlock)
+            : null;
+
+
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'callbacks.init',
+            'data-wp-context': JSON.stringify(props.attributes),
+            'data-innerblocks': JSON.stringify(serializedCardTemplate),
             style: {
                 ...props.style,
                 ...sectionProps(props.attributes)

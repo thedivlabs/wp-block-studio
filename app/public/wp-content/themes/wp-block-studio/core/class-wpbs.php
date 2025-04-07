@@ -62,6 +62,10 @@ class WPBS {
 		/* Masonry */
 		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [ 'jquery' ] );
 
+		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
+			'nonce' => wp_create_nonce( 'wp_rest' )
+		] );
+
 
 	}
 

@@ -1,6 +1,4 @@
 {
-  "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 3,
   "name": "wpbs/layout-grid",
   "title": "Layout Grid",
   "description": "Display a layout grid",
@@ -9,18 +7,104 @@
   },
   "attributes": {
     "uniqueId": {
-      "type": "string"
+      "type": "string",
+      "show_in_rest": true
     },
     "queryArgs": {
-      "type": "object"
+      "type": "object",
+      "show_in_rest": true
+    },
+    "cardTemplate": {
+      "type": "object",
+      "show_in_rest": true
+    },
+    "wpbs-columns-mobile": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-columns-small": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-columns-large": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-breakpoint-small": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-breakpoint-large": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-masonry": {
+      "type": "boolean",
+      "show_in_rest": true
+    },
+    "wpbs-divider": {
+      "type": "object",
+      "show_in_rest": true
+    },
+    "wpbs-divider-icon": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-divider-icon-size": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-divider-icon-color": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-pagination-size": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-pagination-label": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-orderby": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-order": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-type": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-term": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-taxonomy": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-page-size": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-loop-suppress": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "show_in_rest": true
+    },
+    "wpbs-gallery": {
+      "type": "string",
+      "show_in_rest": true
     }
   },
   "allowedBlocks": [
     "wpbs/layout-grid-card"
   ],
-  "providesContext": {
-    "wpbs/queryArgs": "queryArgs"
-  },
   "styles": [
     {
       "name": "loop",
@@ -28,6 +112,7 @@
     }
   ],
   "supports": {
+    "html": false,
     "layout": false,
     "interactivity": true,
     "innerBlocks": true,

@@ -76,10 +76,10 @@ const blockAttributes = {
             type: 'string'
         },
         'wpbs-layout-opacity': {
-            type: 'integer'
+            type: 'string'
         },
         'wpbs-layout-basis': {
-            type: 'integer'
+            type: 'string'
         },
         'wpbs-layout-width': {
             type: 'string'
@@ -180,7 +180,7 @@ const blockAttributes = {
             type: 'string'
         },
         'wpbs-layout-basis-mobile': {
-            type: 'integer'
+            type: 'string'
         },
         'wpbs-layout-width-mobile': {
             type: 'string'
@@ -255,7 +255,7 @@ const blockAttributes = {
             type: 'object'
         },
         'wpbs-layout-border-radius-mobile': {
-            type: 'integer'
+            type: 'string'
         },
         'wpbs-layout-font-size-mobile': {
             type: 'string'
@@ -667,8 +667,6 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                             });
                         }}/>
                 </ToolsPanelItem>
-
-
 
 
             </ToolsPanel>

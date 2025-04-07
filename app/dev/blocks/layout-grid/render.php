@@ -2,7 +2,7 @@
 
 global $wp_query;
 
-$attributes        = $attributes ?? [];
+$attributes        = array_filter( $attributes ?? [] );
 $block             = $block ?? ( (object) [] );
 $content           = $content ?? false;
 $breakpoints       = WPBS_Style::get_breakpoint();
@@ -23,7 +23,7 @@ $is_loop = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', 
 
 if ( $is_loop ) {
 
-	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
+	$block_template = ! empty( $attributes['cardTemplate'] ) ? $attributes['cardTemplate'] : $block->parsed_block['innerBlocks'][0] ?? false;
 
 	if ( empty( $block_template ) || empty( $block->attributes['queryArgs'] ) ) {
 		echo 'No template';
@@ -57,7 +57,7 @@ if ( $is_loop ) {
 	}
 
 	$query = match ( true ) {
-		$attributes['wpbs-loop-type'] === 'current' => $wp_query,
+		$attributes['wpbs-loop-type'] === 'current' && ! empty( $wp_query ) => $wp_query,
 		default => new WP_Query( $query_args )
 	};
 
@@ -71,9 +71,16 @@ if ( $is_loop ) {
 
 			$query->setup_postdata( $query->post );
 
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'postId' => get_the_ID(),
-			] ) );
+			if ( ! empty( $attributes['cardTemplate'] ) ) {
+				$new_block = new WP_Block( $attributes['cardTemplate']->parsed_block, array_filter( [
+					'postId' => get_the_ID(),
+				] ) );
+			} else {
+				$new_block = new WP_Block( $block_template, array_filter( [
+					'postId' => get_the_ID(),
+				] ) );
+			}
+
 
 			$unique_id = join( ' ', array_filter( [
 				$new_block->attributes['uniqueId'] ?? null,
@@ -83,6 +90,7 @@ if ( $is_loop ) {
 			$new_block->inner_content[0]       = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_content[0] );
 			$new_block->inner_html             = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
+
 
 			$new_content .= $new_block->render();
 		}
@@ -103,7 +111,12 @@ if ( $is_loop ) {
 		'</nav>'
 	] ) ) : '';
 
-	$block->inner_content[1] = trim( $new_content );
+
+	if ( ! empty( $attributes['cardTemplate'] ) ) {
+		echo $new_content;
+	} else {
+		$block->inner_content[1] = trim( $new_content );
+	}
 
 	echo join( ' ', $block->inner_content );
 

@@ -48,14 +48,14 @@ class WPBS_Blocks {
 
 			$args = [];
 
-			//WPBS::console_log(str_replace(['/','-'],'_',$block_object['name'] ?? ''));
-
 
 			if ( empty( $block_object['render'] ) && empty( $block_object['render_callback'] ) ) {
 
 				$args['render_callback'] = [ $this, 'render_block' ];
 
 			}
+
+			$args['attributes'] = array_merge( [], $block_object['attributes'] ?? [], WPBS_Style::get_style_attributes() );
 
 			$args = array_merge_recursive( [], $block_object, array_filter( $args ?? [] ) );
 

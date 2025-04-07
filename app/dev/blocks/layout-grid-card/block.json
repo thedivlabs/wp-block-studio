@@ -7,13 +7,16 @@
   },
   "attributes": {
     "uniqueId": {
-      "type": "string"
+      "type": "string",
+      "show_in_rest": true
     },
     "postId": {
-      "type": "string"
+      "type": "string",
+      "show_in_rest": true
     },
     "postType": {
-      "type": "string"
+      "type": "string",
+      "show_in_rest": true
     }
   },
   "parent": [
@@ -24,6 +27,8 @@
     "postType": "postType"
   },
   "supports": {
+    "html": false,
+    "interactivity": true,
     "innerBlocks": true,
     "color": {
       "background": true,
@@ -55,7 +60,9 @@
   "editorScript": "file:./js/edit.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
-  "icon": "grid-view"
+  "icon": "grid-view",
+  "render": "file:./render.php",
+  "viewScriptModule": "file:./js/view.js"
 }
 
 

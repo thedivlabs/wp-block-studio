@@ -12,7 +12,7 @@ const {state} = store('wpbs/grid', {
             //console.log(context);
             console.log(innerBlocks);
 
-            const response = await fetch('/wp-json/wp/v2/block-renderer/wpbs/layout-grid', {
+            /*const response = await fetch('/wp-json/wp/v2/block-renderer/wpbs/layout-grid', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const {state} = store('wpbs/grid', {
 
             container.innerHTML = result.rendered;
 
-            console.log(result);
+            console.log(result);*/
 
         }
     },

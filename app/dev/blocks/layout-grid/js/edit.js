@@ -624,8 +624,8 @@ registerBlockType(metadata.name, {
 
         function serializeBlockForFrontend(block) {
             return {
-                blockName: block.name,
-                attrs: block.attributes,
+                name: block.name,
+                attributes: block.attributes,
                 innerBlocks: block.innerBlocks.map(serializeBlockForFrontend),
             };
         }
@@ -636,14 +636,12 @@ registerBlockType(metadata.name, {
             ? serializeBlockForFrontend(cardBlock)
             : null;
 
-        console.log(serializedCardTemplate);
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'callbacks.init',
             'data-wp-context': JSON.stringify(props.attributes),
-            'data-innerblocks': JSON.stringify(serializedCardTemplate),
+            //'data-innerblocks': JSON.stringify(serializedCardTemplate),
             style: {
                 ...props.style,
                 ...sectionProps(props.attributes)

@@ -21,13 +21,9 @@ $attributes['wpbs-prop-column-gap'] = WPBS::parse_wp_css_variable( $attributes['
 
 $is_loop = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 
-
-WPBS::console_log( $block ?? false );
-
 if ( $is_loop ) {
 
-	$block_template = ! empty( $attributes['cardTemplate'] ) ? json_decode( $attributes['cardTemplate'], true ) : $block->parsed_block['innerBlocks'][0] ?? false;
-	//$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
+	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 	if ( empty( $block_template ) || empty( $block->attributes['queryArgs'] ) ) {
 		echo 'No template';
@@ -80,7 +76,6 @@ if ( $is_loop ) {
 				'postId' => get_the_ID(),
 			] ) );
 
-
 			$unique_id = join( ' ', array_filter( [
 				$new_block->attributes['uniqueId'] ?? null,
 				'wpbs-layout-grid-card-' . $query->current_post
@@ -90,11 +85,7 @@ if ( $is_loop ) {
 			$new_block->inner_html             = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
 
-			if ( ! empty( $attributes['cardTemplate'] ) ) {
-				echo render_block( json_decode( $attributes['cardTemplate'], true ) );
-			} else {
-				$new_content .= $new_block->render();
-			}
+			$new_content .= $new_block->render();
 
 		}
 
@@ -115,11 +106,7 @@ if ( $is_loop ) {
 	] ) ) : '';
 
 
-	if ( ! empty( $attributes['cardTemplate'] ) ) {
-		echo $new_content;
-	} else {
-		$block->inner_content[1] = trim( $new_content );
-	}
+	$block->inner_content[1] = trim( $new_content );
 
 	echo join( ' ', $block->inner_content );
 

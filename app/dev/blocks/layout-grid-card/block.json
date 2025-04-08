@@ -27,7 +27,6 @@
     "postType": "postType"
   },
   "supports": {
-    "html": false,
     "interactivity": true,
     "innerBlocks": true,
     "color": {
@@ -60,9 +59,7 @@
   "editorScript": "file:./js/edit.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
-  "icon": "grid-view",
-  "render": "file:./render.php",
-  "viewScriptModule": "file:./js/view.js"
+  "icon": "grid-view"
 }
 
 

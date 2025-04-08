@@ -7,7 +7,7 @@ const {state} = store('wpbs/grid', {
             const container = element.querySelector(':scope > .wpbs-layout-grid__container');
             const context = JSON.parse(JSON.stringify(getContext()));
 
-            const innerBlocks = JSON.parse(element.dataset.innerblocks);
+            const innerBlocks = element.dataset.innerblocks;
 
             //console.log(context);
             console.log(innerBlocks);
@@ -22,7 +22,7 @@ const {state} = store('wpbs/grid', {
                     name: 'wpbs/layout-grid',
                     attributes: {
                         ...context,
-                        cardTemplate: innerBlocks
+                        cardTemplate: innerBlocks,
                     },
                     context: 'edit',
                 }),
@@ -30,6 +30,7 @@ const {state} = store('wpbs/grid', {
 
             const result = await response.json();
 
+            container.innerHTML = result.rendered;
 
             console.log(result);
 

@@ -21,9 +21,13 @@ $attributes['wpbs-prop-column-gap'] = WPBS::parse_wp_css_variable( $attributes['
 
 $is_loop = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 
+
+WPBS::console_log( $block ?? false );
+
 if ( $is_loop ) {
 
-	$block_template = ! empty( $attributes['cardTemplate'] ) ? $attributes['cardTemplate'] : $block->parsed_block['innerBlocks'][0] ?? false;
+	$block_template = ! empty( $attributes['cardTemplate'] ) ? json_decode( $attributes['cardTemplate'], true ) : $block->parsed_block['innerBlocks'][0] ?? false;
+	//$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 	if ( empty( $block_template ) || empty( $block->attributes['queryArgs'] ) ) {
 		echo 'No template';
@@ -61,6 +65,7 @@ if ( $is_loop ) {
 		default => new WP_Query( $query_args )
 	};
 
+
 	$new_content = '';
 
 	if ( $query->have_posts() ) {
@@ -71,15 +76,9 @@ if ( $is_loop ) {
 
 			$query->setup_postdata( $query->post );
 
-			if ( ! empty( $attributes['cardTemplate'] ) ) {
-				$new_block = new WP_Block( $attributes['cardTemplate']->parsed_block, array_filter( [
-					'postId' => get_the_ID(),
-				] ) );
-			} else {
-				$new_block = new WP_Block( $block_template, array_filter( [
-					'postId' => get_the_ID(),
-				] ) );
-			}
+			$new_block = new WP_Block( $block_template, array_filter( [
+				'postId' => get_the_ID(),
+			] ) );
 
 
 			$unique_id = join( ' ', array_filter( [
@@ -91,8 +90,12 @@ if ( $is_loop ) {
 			$new_block->inner_html             = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
 
+			if ( ! empty( $attributes['cardTemplate'] ) ) {
+				echo render_block( json_decode( $attributes['cardTemplate'], true ) );
+			} else {
+				$new_content .= $new_block->render();
+			}
 
-			$new_content .= $new_block->render();
 		}
 
 		wp_reset_postdata();

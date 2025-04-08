@@ -625,7 +625,7 @@ registerBlockType(metadata.name, {
         function serializeBlockForFrontend(block) {
             return {
                 blockName: block.name,
-                attributes: block.attributes,
+                attrs: block.attributes,
                 innerBlocks: block.innerBlocks.map(serializeBlockForFrontend),
             };
         }
@@ -636,6 +636,7 @@ registerBlockType(metadata.name, {
             ? serializeBlockForFrontend(cardBlock)
             : null;
 
+        console.log(serializedCardTemplate);
 
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),

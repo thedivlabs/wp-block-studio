@@ -15,7 +15,7 @@
       "show_in_rest": true
     },
     "cardTemplate": {
-      "type": "object",
+      "type": "string",
       "show_in_rest": true
     },
     "wpbs-columns-mobile": {

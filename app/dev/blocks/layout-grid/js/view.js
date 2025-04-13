@@ -15,13 +15,6 @@ const {state} = store('wpbs/grid', {
 
             const nonce = 'wpbsData' in window ? window.wpbsData?.nonce : false;
 
-            console.log({
-                card: data.card,
-                attrs: data.attrs,
-                page: page,
-                nonce: nonce,
-            });
-
             const response = await fetch('/wp-json/wpbs/v1/layout-grid', {
                 method: 'POST',
                 headers: {

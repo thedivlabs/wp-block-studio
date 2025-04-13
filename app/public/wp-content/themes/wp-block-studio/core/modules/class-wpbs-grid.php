@@ -42,8 +42,54 @@ class WPBS_Grid {
 
 	}
 
-	public static function sanitize_block_template( $block ) {
-		return $block;
+	public static function recursive_sanitize( $input ) {
+		
+		if ( is_array( $input ) ) {
+			$sanitized = [];
+
+			foreach ( $input as $key => $value ) {
+
+				$sanitized_key = is_string( $key ) ? sanitize_text_field( $key ) : $key;
+
+				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
+			}
+
+			return $sanitized;
+
+		} elseif ( is_string( $input ) ) {
+			return sanitize_text_field( $input );
+
+		} elseif ( is_int( $input ) ) {
+			return intval( $input );
+
+		} elseif ( is_float( $input ) ) {
+			return floatval( $input );
+
+		} elseif ( is_bool( $input ) ) {
+			return (bool) $input;
+
+		} else {
+
+			return $input;
+		}
+	}
+
+	public static function sanitize_block_template( $block ): array {
+
+		return [
+			'blockName'    => $block['blockName'] ?? '',
+			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
+			'innerBlocks'  => array_map( [ __CLASS__, 'sanitize_block_template' ], $block['innerBlocks'] ?? [] ),
+			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
+			'innerContent' => array_map( function ( $item ) {
+				if ( is_string( $item ) ) {
+					return wp_kses_post( $item );
+				}
+
+				return null;
+			}, $block['innerContent'] ?? [] ),
+		];
+
 	}
 
 	public static function sanitize_loop_attrs( $attrs ): array {
@@ -237,7 +283,8 @@ class WPBS_Grid {
 			[
 				'status'   => 200,
 				'response' => ! empty( $new_content ) ? $new_content : false,
-				'last'     => $query->get( 'paged' ) >= $query->max_num_pages
+				'last'     => $query->get( 'paged' ) >= $query->max_num_pages,
+				'card'     => $card
 			]
 		);
 

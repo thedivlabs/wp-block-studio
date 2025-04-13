@@ -35,13 +35,6 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, context, clientId}) => {
 
 
-        /*        const curBlock = useSelect((select) =>
-                    select('core/block-editor').getBlock(clientId)
-                )*/
-
-        //console.log(curBlock);
-
-
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
         useEffect(() => {
@@ -66,6 +59,7 @@ registerBlockType(metadata.name, {
             }
         }
 
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -80,30 +74,7 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => {
-
-
-        const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes),
-        });
-
-        function Content() {
-            if (!!props.attributes['wpbs-background']) {
-                return <div {...blockProps}>
-                    <div className={'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'}>
-                        <InnerBlocks.Content/>
-                    </div>
-                    <Background attributes={props.attributes} editor={false}/>
-                </div>;
-            } else {
-                return <div {...useInnerBlocksProps.save(blockProps)} />;
-            }
-        }
-
-        return (
-            <Content/>
-        );
-    }
+    save: (props) => <InnerBlocks.Content/>
 })
 
 

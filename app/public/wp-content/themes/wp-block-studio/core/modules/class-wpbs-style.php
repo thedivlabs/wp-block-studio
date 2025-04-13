@@ -18,7 +18,7 @@ class WPBS_Style {
 			);
 		} );
 
-		add_filter( 'block_type_metadata', [ $this, 'block_style_metadata' ], 1 );
+		//add_filter( 'block_type_metadata', [ $this, 'block_style_metadata' ], 1 );
 
 	}
 
@@ -28,7 +28,7 @@ class WPBS_Style {
 			return $metadata;
 		}
 
-		$metadata['attributes'] = array_merge( $metadata['attributes'] ?? [], self::get_style_attributes() );
+		//$metadata['attributes'] = array_merge( $metadata['attributes'] ?? [], self::get_style_attributes() );
 
 		return $metadata;
 	}

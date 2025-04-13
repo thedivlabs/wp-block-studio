@@ -14,7 +14,7 @@ class WPBS_Layout {
 			return;
 		}
 
-		$this->attributes = $attributes;
+		$this->attributes = WPBS::clean_array( $attributes );
 
 		unset( $attributes );
 
@@ -23,6 +23,7 @@ class WPBS_Layout {
 		$this->hover   = $this->hover();
 
 		unset( $this->attributes );
+
 
 		if ( ! empty( $this->desktop['mask-image'] ) && empty( $this->mobile['mask-image'] ) ) {
 			$this->mobile['mask-image'] = 'none';
@@ -301,6 +302,7 @@ class WPBS_Layout {
 		if ( empty( $prop ) || empty( $value ) || ! is_string( $prop ) || ! is_string( $value ) ) {
 			return false;
 		}
+
 
 		switch ( $prop ) {
 			case 'height':

@@ -22,10 +22,9 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
-import {useSelect} from "@wordpress/data";
+import {dispatch, select, useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
-
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -542,7 +541,6 @@ registerBlockType(metadata.name, {
 
         }, []);
 
-
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
             style: {
@@ -622,26 +620,9 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        function serializeBlockForFrontend(block) {
-            return {
-                name: block.name,
-                attributes: block.attributes,
-                innerBlocks: block.innerBlocks.map(serializeBlockForFrontend),
-            };
-        }
-
-        const cardBlock = props?.innerBlocks?.[0];
-
-        const serializedCardTemplate = cardBlock
-            ? serializeBlockForFrontend(cardBlock)
-            : null;
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
-            'data-wp-init': 'callbacks.init',
-            'data-wp-context': JSON.stringify(props.attributes),
-            //'data-innerblocks': JSON.stringify(serializedCardTemplate),
             style: {
                 ...props.style,
                 ...sectionProps(props.attributes)
@@ -660,6 +641,7 @@ registerBlockType(metadata.name, {
                 <div {...innerBlocksProps} >
                     {children}
                     <MasonrySizer attributes={props.attributes}/>
+                    <button type={'button'} data-wp-on-async--click={'actions.pagination'}>Load More</button>
                 </div>
 
 

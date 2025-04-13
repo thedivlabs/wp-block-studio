@@ -18,28 +18,31 @@ const {state} = store('wpbs/grid', {
             console.log({
                 card: data.card,
                 attrs: data.attrs,
+                page: page,
+                nonce: nonce,
             });
 
             const response = await fetch('/wp-json/wpbs/v1/layout-grid', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    //'X-WP-Nonce': nonce,
+                    'X-WP-Nonce': nonce,
                 },
                 body: JSON.stringify({
                     card: data.card,
                     attrs: data.attrs,
                     page: page,
-                    nonce: nonce,
                 }),
             });
 
 
             const result = await response.json();
 
-            element.insertAdjacentHTML('beforebegin', result.response);
-
-            console.log(result);
+            if (result.response) {
+                element.insertAdjacentHTML('beforebegin', result.response);
+            } else {
+                element.remove();
+            }
 
         }
     },

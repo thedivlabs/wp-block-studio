@@ -11,14 +11,43 @@ class WPBS_Grid {
 			register_rest_route( 'wpbs/v1', "/layout-grid/",
 				[
 					'methods'             => 'POST',
-					'permission_callback' => '__return_true',
 					'accept_json'         => true,
-					'callback'            => [ $this, 'render_grid' ]
+					'callback'            => [ $this, 'render_grid' ],
+					'permission_callback' => function () {
+
+						$nonce = $_SERVER['HTTP_X_WP_NONCE'] ?? null;
+
+						return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
+					},
+					'args'                => [
+						'page'  => [
+							'type'              => 'integer',
+							'default'           => 1,
+							'sanitize_callback' => 'absint',
+						],
+						'attrs' => [
+							'type'              => 'object',
+							'sanitize_callback' => [ 'WPBS_Grid', 'sanitize_loop_attrs' ],
+
+						],
+						'card'  => [
+							'type'              => 'object',
+							'sanitize_callback' => [ 'WPBS_Grid', 'sanitize_block_template' ],
+						],
+					],
 				]
 			);
 		} );
 
 
+	}
+
+	public static function sanitize_block_template( $block ) {
+		return $block;
+	}
+
+	public static function sanitize_loop_attrs( $attrs ): array {
+		return $attrs;
 	}
 
 	public static function query( $attrs, $page = 1 ): WP_Query|bool {
@@ -190,11 +219,12 @@ class WPBS_Grid {
 
 		}
 
+		wp_reset_postdata();
 
 		return new WP_REST_Response(
 			[
 				'status'        => 200,
-				'response'      => $new_content,
+				'response'      => ! empty( $new_content ) ? $new_content : false,
 				'body_response' => null
 			]
 		);

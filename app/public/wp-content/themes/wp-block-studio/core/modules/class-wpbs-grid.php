@@ -47,7 +47,19 @@ class WPBS_Grid {
 	}
 
 	public static function sanitize_loop_attrs( $attrs ): array {
-		return $attrs;
+		return WPBS::clean_array( [
+			'queryArgs'           => [
+				'post_type'      => sanitize_text_field( $attrs['queryArgs']['post_type'] ?? '' ) ?? null,
+				'term'           => sanitize_text_field( $attrs['queryArgs']['term'] ?? '' ) ?? null,
+				'taxonomy'       => sanitize_text_field( $attrs['queryArgs']['taxonomy'] ?? '' ) ?? null,
+				'posts_per_page' => sanitize_text_field( $attrs['queryArgs']['posts_per_page'] ?? '' ) ?? null,
+				'orderby'        => sanitize_text_field( $attrs['queryArgs']['orderby'] ?? '' ) ?? null,
+				'order'          => sanitize_text_field( $attrs['queryArgs']['order'] ?? '' ) ?? null,
+				'post__not_in'   => sanitize_text_field( $attrs['queryArgs']['post__not_in'] ?? '' ) ?? null,
+			],
+			'wpbs-loop-page-size' => sanitize_text_field( $attrs['wpbs-loop-page-size'] ?? '' ) ?? null,
+			'wpbs-loop-type'      => sanitize_text_field( $attrs['wpbs-loop-type'] ?? '' ) ?? null,
+		] );
 	}
 
 	public static function query( $attrs, $page = 1 ): WP_Query|bool {
@@ -223,9 +235,9 @@ class WPBS_Grid {
 
 		return new WP_REST_Response(
 			[
-				'status'        => 200,
-				'response'      => ! empty( $new_content ) ? $new_content : false,
-				'body_response' => null
+				'status'   => 200,
+				'response' => ! empty( $new_content ) ? $new_content : false,
+				'last'     => $query->get( 'paged' ) >= $query->max_num_pages
 			]
 		);
 

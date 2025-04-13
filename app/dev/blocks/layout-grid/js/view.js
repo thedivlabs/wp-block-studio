@@ -1,4 +1,5 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
+import {string} from "../../../../public/wp-includes/js/clipboard";
 
 const {state} = store('wpbs/grid', {
     actions: {
@@ -7,9 +8,8 @@ const {state} = store('wpbs/grid', {
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
             const page = parseInt(grid.dataset.page ? grid.dataset.page : 2);
-            console.log(page);
-            grid.dataset.page = page + 1;
-            console.log(grid.dataset.page);
+
+            grid.dataset.page = String(page + 1);
 
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML || '');
 
@@ -38,9 +38,9 @@ const {state} = store('wpbs/grid', {
 
             const result = await response.json();
 
-            if (result.response) {
-                element.insertAdjacentHTML('beforebegin', result.response);
-            } else {
+            element.insertAdjacentHTML('beforebegin', result.response);
+
+            if (!!result.last) {
                 element.remove();
             }
 

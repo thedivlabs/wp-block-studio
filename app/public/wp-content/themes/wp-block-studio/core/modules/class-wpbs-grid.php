@@ -6,7 +6,6 @@ class WPBS_Grid {
 
 	private function __construct() {
 
-
 		add_action( 'rest_api_init', function () {
 			register_rest_route( 'wpbs/v1', "/layout-grid/",
 				[
@@ -14,7 +13,6 @@ class WPBS_Grid {
 					'accept_json'         => true,
 					'callback'            => [ $this, 'render_grid' ],
 					'permission_callback' => function () {
-
 						$nonce = $_SERVER['HTTP_X_WP_NONCE'] ?? null;
 
 						return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
@@ -43,7 +41,7 @@ class WPBS_Grid {
 	}
 
 	public static function recursive_sanitize( $input ) {
-		
+
 		if ( is_array( $input ) ) {
 			$sanitized = [];
 
@@ -144,7 +142,7 @@ class WPBS_Grid {
 
 	}
 
-	public static function render_style( $attributes ): void {
+	public static function render_style( $attributes, $block ): void {
 
 		$breakpoints       = WPBS_Style::get_breakpoint();
 		$breakpoint_mobile = $breakpoints[ $attributes['wpbs-breakpoint-mobile'] ?? 'xs' ];

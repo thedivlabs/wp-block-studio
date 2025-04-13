@@ -2,13 +2,14 @@
 
 global $wp_query;
 
+
 $attributes = array_filter( $attributes ?? [] );
 $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
 
 $is_loop = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 
-WPBS_Grid::render_style( $attributes );
+WPBS_Grid::render_style( $attributes, $block );
 
 if ( $is_loop ) {
 

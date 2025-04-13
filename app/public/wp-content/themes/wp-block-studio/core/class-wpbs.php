@@ -560,5 +560,47 @@ class WPBS {
 		return $template;
 	}
 
+	public static function sanitize_query_args( $args ) {
+		$sanitized = [];
+
+		foreach ( $args as $key => $value ) {
+			switch ( $key ) {
+				case 'post_type':
+				case 'orderby':
+				case 'order':
+				case 'post_status':
+				case 'author_name':
+				case 'name':
+					$sanitized[ $key ] = sanitize_key( $value );
+					break;
+
+				case 'posts_per_page':
+				case 'paged':
+				case 'author':
+				case 'p':
+					$sanitized[ $key ] = absint( $value );
+					break;
+
+				case 'post__in':
+				case 'post__not_in':
+				case 'category__in':
+				case 'tag__in':
+					$sanitized[ $key ] = array_map( 'absint', (array) $value );
+					break;
+
+				case 's':
+					$sanitized[ $key ] = sanitize_text_field( $value );
+					break;
+
+				default:
+					// Skip or allow unknown keys if you're confident
+					$sanitized[ $key ] = is_scalar( $value ) ? sanitize_text_field( $value ) : $value;
+					break;
+			}
+		}
+
+		return $sanitized;
+	}
+
 }
 

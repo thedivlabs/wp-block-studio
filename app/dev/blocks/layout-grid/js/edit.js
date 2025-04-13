@@ -641,7 +641,9 @@ registerBlockType(metadata.name, {
                 <div {...innerBlocksProps} >
                     {children}
                     <MasonrySizer attributes={props.attributes}/>
-                    <button type={'button'} data-wp-on-async--click={'actions.pagination'}>Load More</button>
+                    <button type={'button'} className={'w-full h-10'}
+                            data-wp-on-async--click={'actions.pagination'}>Load More
+                    </button>
                 </div>
 
 

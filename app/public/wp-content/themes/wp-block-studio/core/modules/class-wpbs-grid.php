@@ -32,6 +32,10 @@ class WPBS_Grid {
 							'type'              => 'object',
 							'sanitize_callback' => [ 'WPBS_Grid', 'sanitize_block_template' ],
 						],
+						'query' => [
+							'type'              => 'object',
+							'sanitize_callback' => [ 'WPBS', 'sanitize_query_args' ],
+						],
 					],
 				]
 			);
@@ -108,14 +112,6 @@ class WPBS_Grid {
 
 	public static function query( $attrs, $page = 1 ): WP_Query|bool {
 
-
-		if ( ( $attributes['wpbs-loop-type'] ?? false ) === 'current' ) {
-			global $wp_query;
-
-			return $wp_query;
-		}
-
-
 		$query_args = [
 			'post_type'      => $attrs['queryArgs']['post_type'] ?? 'post',
 			'posts_per_page' => $attrs['queryArgs']['posts_per_page'] ?? get_option( 'posts_per_page' ),
@@ -133,7 +129,7 @@ class WPBS_Grid {
 				[
 					'taxonomy' => $taxonomy,
 					'field'    => 'term_id',
-					'terms'    => $attrs['queryArgs']['term'],
+					'terms'    => $attrs['queryArgs']['term'] ?? false,
 				]
 			];
 		}
@@ -247,11 +243,17 @@ class WPBS_Grid {
 
 		$params = $request->get_params();
 
-		$attrs = $params['attrs'] ?? false;
-		$page  = $params['page'] ?? false;
-		$card  = $params['card'] ?? false;
+		$attrs         = $params['attrs'] ?? false;
+		$page          = $params['page'] ?? false;
+		$card          = $params['card'] ?? false;
+		$current_query = $params['query'] ?? false;
 
-		$query = self::query( $attrs, $page );
+		if ( $attrs['wpbs-loop-type'] == 'current' ) {
+			$query = self::query( $attrs, $page );
+		} else {
+			$query = self::query( $attrs, $page );
+		}
+
 
 		$new_content = '';
 

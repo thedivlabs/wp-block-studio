@@ -33,7 +33,7 @@ class WPBS_Grid {
 							'sanitize_callback' => [ 'WPBS_Grid', 'sanitize_block_template' ],
 						],
 						'query' => [
-							'type'              => 'object',
+							'type'              => 'array',
 							'sanitize_callback' => [ 'WPBS', 'sanitize_query_args' ],
 						],
 					],
@@ -248,8 +248,8 @@ class WPBS_Grid {
 		$card          = $params['card'] ?? false;
 		$current_query = $params['query'] ?? false;
 
-		if ( $attrs['wpbs-loop-type'] == 'current' ) {
-			$query = self::query( $attrs, $page );
+		if ( ! empty( $current_query ) ) {
+			$query = self::query( $current_query, $page );
 		} else {
 			$query = self::query( $attrs, $page );
 		}
@@ -284,7 +284,8 @@ class WPBS_Grid {
 				'status'   => 200,
 				'response' => ! empty( $new_content ) ? $new_content : false,
 				'last'     => $query->get( 'paged' ) >= $query->max_num_pages,
-				'card'     => $card
+				'card'     => $card,
+				'query'    => $query,
 			]
 		);
 

@@ -38,6 +38,8 @@ const {state} = store('wpbs/grid', {
 
             const result = await response.json();
 
+            console.log(result);
+
             element.insertAdjacentHTML('beforebegin', result.response);
 
             if (!!result.last) {

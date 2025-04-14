@@ -10,14 +10,11 @@ $content    = $content ?? false;
 $is_loop    = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 $is_current = ( $attributes['wpbs-loop-type'] ?? false ) === 'current';
 
-WPBS_Grid::render_style( $attributes, $block );
-
 if ( $is_loop ) {
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 	if ( $is_current ) {
-		global $wp_query;
 
 		$query = $wp_query;
 	} else {
@@ -84,3 +81,6 @@ if ( $is_loop ) {
 } else {
 	echo $content;
 }
+
+
+WPBS_Grid::render_style( $attributes, $block, $query ?? $wp_query );

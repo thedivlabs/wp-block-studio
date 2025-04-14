@@ -17,6 +17,7 @@ const {state} = store('wpbs/grid', {
 
             console.log({
                 card: data.card,
+                query: data.query,
                 attrs: data.attrs,
                 page: page,
                 nonce: nonce,
@@ -32,6 +33,7 @@ const {state} = store('wpbs/grid', {
                     card: data.card,
                     attrs: data.attrs,
                     page: page,
+                    query: data.query,
                 }),
             });
 

@@ -44,6 +44,23 @@ const {state} = store('wpbs/grid', {
 
             element.insertAdjacentHTML('beforebegin', result.response);
 
+            const cards = container.querySelectorAll('.wpbs-layout-grid-card');
+
+            [...cards].forEach(card => card.classList.remove('last-row'));
+
+            const columns = Number(getComputedStyle(grid).getPropertyValue('--columns').trim());
+
+
+            const total = cards.length;
+            const lastRowCount = total % columns || columns;
+
+            const lastRowStartIndex = total - lastRowCount;
+
+            const lastRowItems = Array.from(cards).slice(lastRowStartIndex);
+
+            lastRowItems.forEach(item => item.classList.add('last-row'));
+
+
             if (!!result.last) {
                 element.remove();
             }

@@ -218,7 +218,7 @@ class WPBS_Grid {
 			if ( ! empty( $attributes['wpbs-divider'] ) ) {
 
 				$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_large . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }' . "\r\n";
-				//$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type( -n+' . $last_row_large . ' ):not(:nth-of-type( -n+' . $last_row_large . ' )):after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }' . "\r\n";
+				$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card.last-row:after { height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important; }' . "\r\n";
 				$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( -n+' . $cols_large . '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }' . "\r\n";
 				//$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type:not(:nth-of-type(-n + ' . ( $full_rows_large + 1 ) . ')):after { height: 100% !important; }' . "\r\n";
 				$custom_css .= $selector . ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type(-n + ' . $cols_large . '):nth-last-of-type(-n + ' . $cols_large . '):after { height: 100% !important; }' . "\r\n";

@@ -10,6 +10,7 @@ const {state} = store('wpbs/grid', {
                 grid = gridElement;
             }
 
+
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
 
             const cards = container.querySelectorAll('.wpbs-layout-grid-card');
@@ -31,14 +32,15 @@ const {state} = store('wpbs/grid', {
 
             const lastRowItems = Array.from(cards).slice(lastRowStartIndex);
 
+
             lastRowItems.forEach(item => item.classList.add('last-row'));
 
             firstRowItems.forEach((item) => {
-                item.classList.add('first-row');
-                item.classList.remove('last-row');
+                //item.classList.add('first-row');
+                //item.classList.remove('last-row');
             });
 
-            console.log(firstRowItems);
+            //console.log(firstRowItems);
             console.log(lastRowItems);
 
 
@@ -66,7 +68,7 @@ const {state} = store('wpbs/grid', {
                 nonce: nonce,
             });
 
-            const response = await fetch('/wp-json/wpbs/v1/layout-grid', {
+            await fetch('/wp-json/wpbs/v1/layout-grid', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,19 +80,21 @@ const {state} = store('wpbs/grid', {
                     page: page,
                     query: data.query,
                 }),
-            });
+            }).then((response) => {
+                return response.json();
+            })
+                .then(result => {
+
+                    container.innerHTML += result.response;
+
+                    callbacks.dividers(grid);
 
 
-            const result = await response.json();
+                    if (!!result.last) {
+                        element.remove();
+                    }
+                })
 
-            element.insertAdjacentHTML('beforebegin', result.response);
-
-            callbacks.dividers(grid);
-
-
-            if (!!result.last) {
-                element.remove();
-            }
 
         }
     },

@@ -16,9 +16,7 @@
   &--divider &__container > .wpbs-layout-grid-card {
 
     &.last-row {
-      &:after {
-        height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important;
-      }
+    
 
       &:before {
         content: none !important
@@ -29,7 +27,6 @@
     &:after {
       left: calc(0px - (var(--column-gap, var(--row-gap, 0px)) / 2));
       color: var(--divider-color, lightgray);
-      content: '';
       position: absolute;
       z-index: 10;
       display: flex;
@@ -39,6 +36,7 @@
     }
 
     &:before {
+      content: none;
       width: calc(100% + var(--column-gap, var(--row-gap, 0px)));
       border-bottom: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
       font-size: var(--divider-icon-size, min(2rem, calc(var(--row-gap, var(--column-gap, 0px)) - 1rem)));
@@ -46,8 +44,10 @@
     }
 
     &:after {
-      top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2));
-      height: calc(100% + var(--row-gap, var(--column-gap, 0px)));
+      //top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2));
+      //height: calc(100% + var(--row-gap, var(--column-gap, 0px)));
+      top: 0;
+      height: 100%;
       border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
       content: var(--divider-icon-large, '');
       font-size: var(--divider-icon-size, min(2rem, calc(var(--column-gap, var(--row-gap, 0px)) - 1rem)));

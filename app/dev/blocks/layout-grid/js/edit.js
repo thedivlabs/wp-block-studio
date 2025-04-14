@@ -623,6 +623,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
+            'data-wp-init': 'callbacks.dividers',
             style: {
                 ...props.style,
                 ...sectionProps(props.attributes)
@@ -641,10 +642,11 @@ registerBlockType(metadata.name, {
                 <div {...innerBlocksProps} >
                     {children}
                     <MasonrySizer attributes={props.attributes}/>
-                    <button type={'button'} className={'w-full h-10'}
-                            data-wp-on-async--click={'actions.pagination'}>Load More
-                    </button>
                 </div>
+
+                <button type={'button'} className={'w-full h-10 relative'}
+                        data-wp-on-async--click={'actions.pagination'}>Load More
+                </button>
 
 
                 <Background attributes={props.attributes} editor={false}/>

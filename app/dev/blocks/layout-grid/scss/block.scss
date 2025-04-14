@@ -16,10 +16,13 @@
   &--divider &__container > .wpbs-layout-grid-card {
 
     &.last-row {
-      &:before {
-        content: none !important;
+      &:after {
+        height: calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important;
       }
 
+      &:before {
+        content: none !important
+      }
     }
 
     &:before,

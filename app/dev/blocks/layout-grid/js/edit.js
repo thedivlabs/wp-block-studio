@@ -38,7 +38,7 @@ function sectionClassNames(attributes = {}) {
 
 function containerClassNames(attributes = {}) {
     return [
-        'wpbs-layout-grid__container relative flex',
+        'wpbs-layout-grid__container relative flex'
     ].filter(x => x).join(' ');
 }
 

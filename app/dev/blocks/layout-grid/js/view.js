@@ -21,21 +21,18 @@ function setDividers(grid, context) {
         small: colSmall = 2,
         large: colLarge = 3,
     } = Object.fromEntries(
-        Object.entries(columns).map(([key, value]) => [key, parseInt(value)])
+        Object.entries(columns).map(([key, value]) => [key, Number(value)])
     );
 
     const lastRow = {
         mobile: {
-            count: total - (total - columns.mobile),
-            index: total - (total % colMobile || colMobile)
+            count: Math.max(total % colMobile,1),
         },
         small: {
-            count: total - (total - columns.small),
-            index: total - (total % colSmall || colSmall)
+            count: Math.max(total % colSmall,1),
         },
         large: {
-            count: total - (total - columns.large),
-            index: total - (total % colLarge || colLarge)
+            count: Math.max(total % colLarge,1),
         }
     }
 
@@ -70,13 +67,13 @@ function setDividers(grid, context) {
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',
-        selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:nth-of-type(-n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:nth-of-type(n+' + (colLarge + 2) + '):after { height: calc(100% + var(--row-gap, var(--column-gap, 0px)));top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n+1 ):before { width: ' + (colLarge > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%') + '; left: 0; }',
 
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.large.count + '):after { height:calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important;top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { content:none !important; }',
+        selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:nth-of-type(-n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: 0; }',
         '}',
     ].join('\r\n');
 

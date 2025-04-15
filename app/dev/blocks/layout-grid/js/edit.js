@@ -29,7 +29,6 @@ import Breakpoint from 'Components/Breakpoint';
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        !!attributes['wpbs-divider'] ? 'wpbs-layout-grid--divider' : null,
         !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         attributes.uniqueId,
@@ -623,7 +622,15 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
-            'data-wp-init': 'callbacks.dividers',
+            'data-wp-init': 'actions.init',
+            'data-wp-context': JSON.stringify({
+                uniqueId: props.attributes.uniqueId,
+                divider: !!props.attributes['wpbs-divider'],
+                breakpoints: {
+                    small: props.attributes['wpbs-breakpoint-small'] || false,
+                    large: props.attributes['wpbs-breakpoint-large'] || false,
+                }
+            }),
             style: {
                 ...props.style,
                 ...sectionProps(props.attributes)

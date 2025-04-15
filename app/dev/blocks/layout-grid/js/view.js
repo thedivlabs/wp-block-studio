@@ -26,13 +26,13 @@ function setDividers(grid, context) {
 
     const lastRow = {
         mobile: {
-            count: Math.max((total % colMobile),colMobile),
+            count: Math.max((total % colMobile),1),
         },
         small: {
-            count: Math.max((total % colSmall),colSmall),
+            count: Math.max((total % colSmall),1),
         },
         large: {
-            count: Math.max((total % colLarge),colLarge),
+            count: Math.max((total % colLarge),1),
         }
     }
 

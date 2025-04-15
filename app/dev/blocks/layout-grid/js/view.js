@@ -23,7 +23,9 @@ function setDividers(grid, context) {
         mobile: colMobile = 1,
         small: colSmall = 2,
         large: colLarge = 3,
-    } = columns;
+    } = Object.fromEntries(
+        Object.entries(columns).map(([key, value]) => [key, Number(value)])
+    );
 
     styleTag.classList.add(styleSelector);
 
@@ -59,10 +61,6 @@ function setDividers(grid, context) {
     styleCss += selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n ):before { width: calc(100% + calc(var(--column-gap) / 2)); }' + '\r\n';
     styleCss += selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n+1 ):before { width: ' + (colLarge > 1 ? 'calc(100% + calc(var(--column-gap) / 2))' : '100%') + '; left: 0; }' + '\r\n';
     styleCss += '}';
-
-    console.log(uniqueId);
-    console.log(breakpoints);
-    console.log(styleTag);
 
     styleTag.innerHTML = styleCss;
 

@@ -74,7 +74,29 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => <InnerBlocks.Content/>
+    save: (props) => {
+
+        const blockProps = useBlockProps.save({
+            className: sectionClassNames(props.attributes),
+        });
+
+        function Content() {
+            if (!!props.attributes['wpbs-background']) {
+                return <div {...blockProps}>
+                    <div {...useInnerBlocksProps.save({
+                        className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
+                    })} />
+                    <Background attributes={props.attributes} editor={true}/>
+                </div>;
+            } else {
+                return <div {...useInnerBlocksProps.save(blockProps)} />;
+            }
+        }
+
+        return Content();
+
+
+    }
 })
 
 

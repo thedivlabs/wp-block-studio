@@ -62,7 +62,7 @@ class WPBS_Style {
 		return empty( $attributes ) ? $breakpoints : $breakpoints[ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
 	}
 
-	public static function block_styles( $attributes, $block, $custom_css = '', $return = false ): string|false {
+	public static function block_styles( $attributes, $block, $custom_css = '' ): string|false {
 
 		if ( ! is_array( $attributes ) ) {
 			return false;
@@ -133,7 +133,7 @@ class WPBS_Style {
 			$custom_css
 		] ) );
 
-		if ( $block && ! $return ) {
+		if ( $block ) {
 			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
 		}
 

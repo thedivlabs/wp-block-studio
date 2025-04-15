@@ -3,12 +3,9 @@
 global $wp_query;
 
 
-$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false );
+$css = WPBS_Style::block_styles( $attributes ?? [], $block ?? false );
 
 ?>
 
 
-<div <?php echo get_block_wrapper_attributes( [] ); ?>>
-
-	<?php echo $content ?? false; ?>
-</div>
+<?php echo $content ?? false; ?>

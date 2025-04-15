@@ -29,8 +29,8 @@ import Breakpoint from 'Components/Breakpoint';
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
-        'w-full flex relative',
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry !block' : 'flex',
+        'w-full relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -39,7 +39,7 @@ function sectionClassNames(attributes = {}) {
 function containerClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid__container relative',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid__container--masonry masonry' : null,
+        !!attributes['wpbs-masonry'] ? '!block' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -64,7 +64,7 @@ function containerProps(attributes = {}) {
 
     let props = {};
 
-    if (!!attributes['wpbs-masonry']) {
+   /* if (!!attributes['wpbs-masonry']) {
         props['data-masonry'] = JSON.stringify({
             horizontalOrder: true,
             itemSelector: '.wpbs-layout-grid-card',
@@ -72,7 +72,7 @@ function containerProps(attributes = {}) {
             percentPosition: true,
             gutter: '.gutter-sizer'
         })
-    }
+    }*/
 
     return Object.fromEntries(
         Object.entries({

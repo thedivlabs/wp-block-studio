@@ -7,7 +7,7 @@
     max-width: calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
   }
 
-  &__container--masonry {
+  &--masonry > &__container {
     & > .wpbs-layout-grid-card {
       margin-bottom: var(--row-gap, var(--column-gap, 0px));
     }

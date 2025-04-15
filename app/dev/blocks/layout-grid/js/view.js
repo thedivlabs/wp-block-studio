@@ -102,6 +102,17 @@ const {state} = store('wpbs/grid', {
 
             const context = JSON.parse(JSON.stringify(getContext()));
 
+            if('Masonry' in window && grid.classList.contains('wpbs-layout-grid--masonry')){
+                const masonry = new Masonry( grid.querySelector(':scope > .wpbs-layout-grid__container'), {
+                    itemSelector:'.wpbs-layout-grid-card',
+                    //columnWidth: '.wpbs-layout-grid-card',
+                    gutter:'.gutter-sizer',
+                    percentPosition: true,
+                    horizontalOrder: true,
+                });
+                masonry.layout();
+            }
+
             setDividers(grid, context);
 
 

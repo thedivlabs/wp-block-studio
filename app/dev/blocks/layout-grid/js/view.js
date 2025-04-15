@@ -94,6 +94,28 @@ function setDividers(grid, context) {
 
 }
 
+function setMasonry(grid) {
+    if ('Masonry' in window && grid && grid.classList.contains('wpbs-layout-grid--masonry')) {
+
+        const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
+        const masonryData = Masonry.data(container) || false;
+
+        if (masonryData) {
+            masonryData.destroy();
+        }
+
+        const masonry = new Masonry(container, {
+            itemSelector: '.wpbs-layout-grid-card',
+            //columnWidth: '.wpbs-layout-grid-card',
+            gutter: '.gutter-sizer',
+            percentPosition: true,
+            horizontalOrder: true,
+        });
+        masonry.layout();
+
+    }
+}
+
 const {state} = store('wpbs/grid', {
     actions: {
         init: () => {
@@ -102,19 +124,8 @@ const {state} = store('wpbs/grid', {
 
             const context = JSON.parse(JSON.stringify(getContext()));
 
-            if('Masonry' in window && grid.classList.contains('wpbs-layout-grid--masonry')){
-                const masonry = new Masonry( grid.querySelector(':scope > .wpbs-layout-grid__container'), {
-                    itemSelector:'.wpbs-layout-grid-card',
-                    //columnWidth: '.wpbs-layout-grid-card',
-                    gutter:'.gutter-sizer',
-                    percentPosition: true,
-                    horizontalOrder: true,
-                });
-                masonry.layout();
-            }
-
+            setMasonry(grid);
             setDividers(grid, context);
-
 
         },
         pagination: async () => {
@@ -150,6 +161,7 @@ const {state} = store('wpbs/grid', {
                     container.innerHTML += result.response;
 
                     setDividers(grid, context);
+                    setMasonry(grid);
 
                     if (!!result.last) {
                         element.remove();

@@ -29,7 +29,7 @@ import Breakpoint from 'Components/Breakpoint';
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry !block' : 'flex',
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry' : null,
         'w-full relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
@@ -38,8 +38,7 @@ function sectionClassNames(attributes = {}) {
 
 function containerClassNames(attributes = {}) {
     return [
-        'wpbs-layout-grid__container relative',
-        !!attributes['wpbs-masonry'] ? '!block' : null,
+        'wpbs-layout-grid__container relative flex',
     ].filter(x => x).join(' ');
 }
 

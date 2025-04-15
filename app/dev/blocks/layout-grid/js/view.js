@@ -26,17 +26,15 @@ function setDividers(grid, context) {
 
     const lastRow = {
         mobile: {
-            count: Math.max((total % colMobile),1),
+            count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || colMobile,
         },
         small: {
-            count: Math.max((total % colSmall),1),
+            count: Math.floor(total - (Math.floor(total / colSmall) * colSmall)) || colSmall,
         },
         large: {
-            count: Math.max((total % colLarge),1),
+            count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
         }
     }
-
-    console.log(lastRow.large.count);
 
     const styleCss = [
         '@media screen and (max-width: calc(' + breakpoints.small + ' - 1px)) {',

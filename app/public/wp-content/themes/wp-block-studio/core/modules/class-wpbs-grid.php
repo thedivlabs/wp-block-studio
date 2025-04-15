@@ -153,7 +153,7 @@ class WPBS_Grid {
 
 		$attributes['wpbs-prop-row-gap']    = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['left'] ?? '0px' );
 		$attributes['wpbs-prop-column-gap'] = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['top'] ?? '0px' );
-		
+
 		$cols_mobile = intval( $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
 		$cols_small  = intval( $attributes['wpbs-columns-small'] ?? false ) ?: 2;
 		$cols_large  = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
@@ -162,7 +162,7 @@ class WPBS_Grid {
 
 		if ( ! empty( $cols_mobile ) ) {
 
-			$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint_mobile ) . ' - 1px)) {';
+			$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint_small ) . ' - 1px)) {';
 
 			$custom_css .= $selector . '{ --columns: ' . $cols_mobile . ' }';
 

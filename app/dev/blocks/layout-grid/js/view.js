@@ -8,8 +8,6 @@ function setDividers(grid, context) {
         return false;
     }
 
-    grid.classList.add('wpbs-layout-grid--divider');
-
     const selector = '.' + uniqueId;
     const styleSelector = [uniqueId, 'divider-styles'].join('-');
 
@@ -88,6 +86,8 @@ function setDividers(grid, context) {
     const lastRowItems = Array.from(cards).slice(lastRowStartIndex);
 
     lastRowItems.forEach(item => item.classList.add('last-row'));
+
+    grid.classList.add('wpbs-layout-grid--divider');
 
 }
 

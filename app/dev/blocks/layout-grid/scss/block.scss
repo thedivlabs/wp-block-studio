@@ -15,14 +15,6 @@
 
   &--divider &__container > .wpbs-layout-grid-card {
 
-    &.last-row {
-
-
-      &:before {
-        content: none !important
-      }
-    }
-
     &:before,
     &:after {
       left: calc(0px - (var(--column-gap, var(--row-gap, 0px)) / 2));
@@ -44,8 +36,6 @@
     }
 
     &:after {
-      //top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2));
-      //height: calc(100% + var(--row-gap, var(--column-gap, 0px)));
       top: 0;
       height: 100%;
       border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);

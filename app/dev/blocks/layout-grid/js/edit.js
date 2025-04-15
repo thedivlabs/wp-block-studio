@@ -1,7 +1,7 @@
 import "../scss/block.scss";
 
 import {
-    useBlockProps,
+    useBlockProps, useSettings,
     InspectorControls, useInnerBlocksProps, PanelColorSettings, DefaultBlockAppender, MediaUploadCheck, MediaUpload,
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
@@ -18,11 +18,11 @@ import {
     PanelBody,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    QueryControls, BaseControl, Button, FormTokenField, Spinner
+    QueryControls, BaseControl, FormTokenField, Spinner
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
-import {dispatch, select, useSelect} from "@wordpress/data";
+import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
 
@@ -90,6 +90,8 @@ function MasonrySizer({attributes}) {
                   width: 'var(--row-gap, var(--column-gap, 0px))'
               }}/> : false;
 }
+
+const [{breakpoints}] = useSettings(['custom']);
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -307,7 +309,9 @@ registerBlockType(metadata.name, {
             ];
         }
 
+
         useEffect(() => {
+
 
             setAttributes({
                 queryArgs: {
@@ -362,11 +366,17 @@ registerBlockType(metadata.name, {
 
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
-                    setAttributes({['wpbs-breakpoint-small']: newValue});
+                    setAttributes({
+                        ['wpbs-breakpoint-small']: newValue,
+                        ['wpbs-breakpoint-small-value']: breakpoints[attributes[newValue]],
+                    });
                     setBreakpointSmall(newValue);
                 }}/>
                 <Breakpoint label={'Breakpoint Large'} defaultValue={breakpointLarge} callback={(newValue) => {
-                    setAttributes({['wpbs-breakpoint-large']: newValue});
+                    setAttributes({
+                        ['wpbs-breakpoint-large']: newValue,
+                        ['wpbs-breakpoint-large-value']: breakpoints[attributes[newValue]],
+                    });
                     setBreakpointLarge(newValue);
                 }}/>
             </Grid>
@@ -619,6 +629,8 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
+
+        console.log(props.attributes);
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
@@ -627,8 +639,8 @@ registerBlockType(metadata.name, {
                 uniqueId: props.attributes.uniqueId,
                 divider: !!props.attributes['wpbs-divider'],
                 breakpoints: {
-                    small: props.attributes['wpbs-breakpoint-small'] || false,
-                    large: props.attributes['wpbs-breakpoint-large'] || false,
+                    small: props.attributes['wpbs-breakpoint-small-value'] || false,
+                    large: props.attributes['wpbs-breakpoint-large-value'] || false,
                 }
             }),
             style: {

@@ -1,6 +1,15 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
-function setDividers(grid) {
+function setDividers({grid, uniqueId, breakpoints}) {
+
+    grid.classList.add('wpbs-layout-grid--divider');
+
+    breakpoints = JSON.parse(JSON.stringify(breakpoints));
+
+    console.log(uniqueId);
+    console.log(breakpoints);
+
+
     const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
 
     const cards = container.querySelectorAll('.wpbs-layout-grid-card');
@@ -30,10 +39,10 @@ const {state} = store('wpbs/grid', {
 
             const {ref: grid} = getElement();
 
-            const {divider, breakpoints} = getContext();
+            const {divider, breakpoints, uniqueId} = getContext();
 
             if (divider) {
-                setDividers(grid, breakpoints);
+                setDividers({grid, uniqueId, breakpoints});
             }
 
 
@@ -41,7 +50,7 @@ const {state} = store('wpbs/grid', {
         pagination: async () => {
 
             const {ref: element} = getElement();
-            const {divider, breakpoints} = getContext();
+            const {divider, breakpoints, uniqueId} = getContext();
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
@@ -71,7 +80,7 @@ const {state} = store('wpbs/grid', {
                     container.innerHTML += result.response;
 
                     if (divider) {
-                        setDividers(grid, breakpoints);
+                        setDividers({grid, uniqueId, breakpoints});
                     }
 
                     if (!!result.last) {

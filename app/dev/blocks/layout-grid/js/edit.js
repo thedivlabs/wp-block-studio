@@ -91,8 +91,6 @@ function MasonrySizer({attributes}) {
               }}/> : false;
 }
 
-
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -279,7 +277,6 @@ registerBlockType(metadata.name, {
             );
         }
 
-
         if (postTypes) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
             postTypeOptions.push({value: 'current', label: 'Current'})
@@ -329,6 +326,16 @@ registerBlockType(metadata.name, {
 
         }, [attributes['wpbs-loop-suppress'], attributes['wpbs-loop-type'], attributes['wpbs-loop-term'], attributes['wpbs-loop-taxonomy'], attributes['wpbs-loop-page-size'], attributes['wpbs-loop-orderby'], attributes['wpbs-loop-order']]);
 
+        useEffect(() => {
+            setAttributes({
+                ['wpbs-breakpoints']: {
+                    mobile: breakpoints[attributes['wpbs-breakpoint-mobile'] || 'xs'],
+                    small: breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'],
+                    large: breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'],
+                }
+            });
+        }, [attributes['wpbs-breakpoint-small'], attributes['wpbs-breakpoint-large']]);
+
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
@@ -369,15 +376,14 @@ registerBlockType(metadata.name, {
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
                     setAttributes({
-                        ['wpbs-breakpoint-small']: newValue,
-                        ['wpbs-breakpoint-small-value']: breakpoints[newValue],
+                        ['wpbs-breakpoint-small']: newValue
                     });
                     setBreakpointSmall(newValue);
                 }}/>
                 <Breakpoint label={'Breakpoint Large'} defaultValue={breakpointLarge} callback={(newValue) => {
                     setAttributes({
                         ['wpbs-breakpoint-large']: newValue,
-                        ['wpbs-breakpoint-large-value']: breakpoints[newValue],
+                        ['wpbs-breakpoint-large-value']: breakpoints[newValue || 'normal'],
                     });
                     setBreakpointLarge(newValue);
                 }}/>
@@ -455,85 +461,81 @@ registerBlockType(metadata.name, {
             />
         </Grid>;
 
-        const tabLoop =
+        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
+            <SelectControl
+                label={'Post Type'}
+                value={loopPostType}
+                options={postTypeOptions}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-type']: newValue});
+                    setLoopPostType(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+            <Grid columns={1} columnGap={15} rowGap={20}
+                  style={(attributes['wpbs-loop-type'] || '') === 'current' ? {
+                      opacity: .4,
+                      pointerEvents: 'none'
+                  } : {}}>
 
-
-            <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl
-                    label={'Post Type'}
-                    value={loopPostType}
-                    options={postTypeOptions}
+                    label={'Taxonomy'}
+                    value={loopTaxonomy}
+                    options={taxonomiesOptions}
                     onChange={(newValue) => {
-                        setAttributes({['wpbs-loop-type']: newValue});
-                        setLoopPostType(newValue);
+                        setAttributes({['wpbs-loop-taxonomy']: newValue});
+                        setLoopTaxonomy(newValue);
                     }}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-                <Grid columns={1} columnGap={15} rowGap={20}
-                      style={(attributes['wpbs-loop-type'] || '') === 'current' ? {
-                          opacity: .4,
-                          pointerEvents: 'none'
-                      } : {}}>
+                <SelectControl
+                    label={'Term'}
+                    value={loopTerm}
+                    options={termsOptions}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-loop-term']: newValue});
+                        setLoopTerm(newValue);
+                    }}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
 
-                    <SelectControl
-                        label={'Taxonomy'}
-                        value={loopTaxonomy}
-                        options={taxonomiesOptions}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-loop-taxonomy']: newValue});
-                            setLoopTaxonomy(newValue);
-                        }}
+                <SuppressPostsField/>
+
+                <QueryControls
+                    onOrderByChange={(newValue) => {
+                        setAttributes({['wpbs-loop-orderby']: newValue});
+                        setLoopOrderBy(newValue);
+                    }}
+                    onOrderChange={(newValue) => {
+                        setAttributes({['wpbs-loop-order']: newValue});
+                        setLoopOrder(newValue);
+                    }}
+                    order={loopOrder}
+                    orderBy={loopOrderBy}
+                />
+
+                <Grid columns={2} columnGap={15} rowGap={20}>
+
+                    <NumberControl
+                        label={'Page Size'}
                         __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
-                    <SelectControl
-                        label={'Term'}
-                        value={loopTerm}
-                        options={termsOptions}
+                        min={1}
+                        isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-loop-term']: newValue});
-                            setLoopTerm(newValue);
+                            setAttributes({['wpbs-loop-page-size']: newValue});
+                            setLoopPageSize(newValue);
                         }}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
+                        value={loopPageSize}
                     />
-
-                    <SuppressPostsField/>
-
-                    <QueryControls
-                        onOrderByChange={(newValue) => {
-                            setAttributes({['wpbs-loop-orderby']: newValue});
-                            setLoopOrderBy(newValue);
-                        }}
-                        onOrderChange={(newValue) => {
-                            setAttributes({['wpbs-loop-order']: newValue});
-                            setLoopOrder(newValue);
-                        }}
-                        order={loopOrder}
-                        orderBy={loopOrderBy}
-                    />
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-
-                        <NumberControl
-                            label={'Page Size'}
-                            __next40pxDefaultSize
-                            min={1}
-                            isShiftStepEnabled={false}
-                            onChange={(newValue) => {
-                                setAttributes({['wpbs-loop-page-size']: newValue});
-                                setLoopPageSize(newValue);
-                            }}
-                            value={loopPageSize}
-                        />
-
-                    </Grid>
-
 
                 </Grid>
+
+
             </Grid>
-        ;
+        </Grid>;
 
         const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
             <></>
@@ -638,9 +640,11 @@ registerBlockType(metadata.name, {
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes.uniqueId,
                 divider: !!props.attributes['wpbs-divider'],
-                breakpoints: {
-                    small: props.attributes['wpbs-breakpoint-small-value'] || false,
-                    large: props.attributes['wpbs-breakpoint-large-value'] || false,
+                breakpoints: props.attributes['wpbs-breakpoints'],
+                columns: {
+                    mobile: props.attributes['wpbs-columns-mobile'] || 1,
+                    small: props.attributes['wpbs-columns-small'] || 2,
+                    large: props.attributes['wpbs-columns-large'] || 3,
                 }
             }),
             style: {

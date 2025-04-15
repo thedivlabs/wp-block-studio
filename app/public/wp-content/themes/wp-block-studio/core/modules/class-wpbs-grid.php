@@ -141,9 +141,9 @@ class WPBS_Grid {
 	public static function render_style( $attributes, $block, $query ): void {
 
 		$breakpoints       = WPBS_Style::get_breakpoint();
-		$breakpoint_mobile = $attributes['wpbs-breakpoint-mobile'] ?? $breakpoints['xs'] ?? null;
-		$breakpoint_small  = $attributes['wpbs-breakpoint-small'] ?? $breakpoints['md'] ?? null;
-		$breakpoint_large  = $attributes['wpbs-breakpoint-large'] ?? $breakpoints['lg'] ?? null;
+		$breakpoint_mobile = $breakpoints[ $attributes['wpbs-breakpoint-mobile'] ?? 'xs' ] ?? null;
+		$breakpoint_small  = $breakpoints[ $attributes['wpbs-breakpoint-small'] ?? 'sm' ] ?? null;
+		$breakpoint_large  = $breakpoints[ $attributes['wpbs-breakpoint-large'] ?? 'normal' ] ?? null;
 
 		$selector = match ( true ) {
 			! empty( $attributes['uniqueId'] ) => '.' . join( '.', explode( ' ', $attributes['uniqueId'] ) ),
@@ -153,15 +153,10 @@ class WPBS_Grid {
 
 		$attributes['wpbs-prop-row-gap']    = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['left'] ?? '0px' );
 		$attributes['wpbs-prop-column-gap'] = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['top'] ?? '0px' );
-
-		$total = ! empty( $query ) ? $query->found_posts : count( $block->parsed_block['innerBlocks'] ?? [] );
-
-		$cols_mobile      = intval( $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
-		$cols_small       = intval( $attributes['wpbs-columns-small'] ?? false ) ?: 2;
-		$cols_large       = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
-		$full_rows_mobile = floor( $total / $cols_mobile ) * $cols_mobile;
-		$full_rows_small  = floor( $total / $cols_small ) * $cols_small;
-		$full_rows_large  = floor( $total / $cols_large ) * $cols_large;
+		
+		$cols_mobile = intval( $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
+		$cols_small  = intval( $attributes['wpbs-columns-small'] ?? false ) ?: 2;
+		$cols_large  = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
 
 		$custom_css = '';
 
@@ -263,7 +258,6 @@ class WPBS_Grid {
 		} else {
 			$query = self::query( $attrs, $page );
 		}
-
 
 		$new_content = '';
 

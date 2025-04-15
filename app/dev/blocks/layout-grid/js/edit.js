@@ -91,7 +91,7 @@ function MasonrySizer({attributes}) {
               }}/> : false;
 }
 
-const [{breakpoints}] = useSettings(['custom']);
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -169,6 +169,8 @@ registerBlockType(metadata.name, {
         const colors = useSelect((select) => {
             return select('core/block-editor').getSettings().colors;
         }, []);
+
+        const [{breakpoints}] = useSettings(['custom']);
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
@@ -629,8 +631,6 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-
-        console.log(props.attributes);
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',

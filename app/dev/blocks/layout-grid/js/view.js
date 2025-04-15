@@ -21,20 +21,20 @@ function setDividers(grid, context) {
         small: colSmall = 2,
         large: colLarge = 3,
     } = Object.fromEntries(
-        Object.entries(columns).map(([key, value]) => [key, Number(value)])
+        Object.entries(columns).map(([key, value]) => [key, parseInt(value)])
     );
 
     const lastRow = {
         mobile: {
-            count: total % colMobile || colMobile,
+            count: total - (total - columns.mobile),
             index: total - (total % colMobile || colMobile)
         },
         small: {
-            count: total % colSmall || colSmall,
+            count: total - (total - columns.small),
             index: total - (total % colSmall || colSmall)
         },
         large: {
-            count: total % colLarge || colLarge,
+            count: total - (total - columns.large),
             index: total - (total % colLarge || colLarge)
         }
     }

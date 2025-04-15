@@ -8,9 +8,6 @@ function setDividers(grid, context) {
         return false;
     }
 
-    console.log(breakpoints);
-    console.log(columns);
-
     const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
 
     const cards = container.querySelectorAll('.wpbs-layout-grid-card');
@@ -41,8 +38,6 @@ function setDividers(grid, context) {
             index: total - (total % colLarge || colLarge)
         }
     }
-
-    console.log(lastRow);
 
     const styleCss = [
         '@media screen and (max-width: calc(' + breakpoints.small + ' - 1px)) {',

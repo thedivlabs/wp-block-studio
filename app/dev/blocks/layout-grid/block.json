@@ -34,7 +34,15 @@
       "type": "string",
       "show_in_rest": true
     },
+    "wpbs-breakpoint-small-value": {
+      "type": "string",
+      "show_in_rest": true
+    },
     "wpbs-breakpoint-large": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-breakpoint-large-value": {
       "type": "string",
       "show_in_rest": true
     },

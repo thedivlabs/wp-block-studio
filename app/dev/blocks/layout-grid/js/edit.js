@@ -368,14 +368,14 @@ registerBlockType(metadata.name, {
                 <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
                     setAttributes({
                         ['wpbs-breakpoint-small']: newValue,
-                        ['wpbs-breakpoint-small-value']: breakpoints[attributes[newValue]],
+                        ['wpbs-breakpoint-small-value']: breakpoints[newValue],
                     });
                     setBreakpointSmall(newValue);
                 }}/>
                 <Breakpoint label={'Breakpoint Large'} defaultValue={breakpointLarge} callback={(newValue) => {
                     setAttributes({
                         ['wpbs-breakpoint-large']: newValue,
-                        ['wpbs-breakpoint-large-value']: breakpoints[attributes[newValue]],
+                        ['wpbs-breakpoint-large-value']: breakpoints[newValue],
                     });
                     setBreakpointLarge(newValue);
                 }}/>

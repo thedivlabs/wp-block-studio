@@ -10,16 +10,16 @@ $content    = $content ?? false;
 $is_loop    = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 $is_current = ( $attributes['wpbs-loop-type'] ?? false ) === 'current';
 
+$query = ! $is_loop ? false : match ( true ) {
+	$is_current => $wp_query,
+	default => WPBS_Grid::query( $attributes )
+};
+
+WPBS::console_log( $block );
+
 if ( $is_loop ) {
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
-
-	if ( $is_current ) {
-
-		$query = $wp_query;
-	} else {
-		$query = WPBS_Grid::query( $attributes );
-	}
 
 	$new_content = '';
 
@@ -52,19 +52,6 @@ if ( $is_loop ) {
 	}
 
 
-	/*$pagination = paginate_links( array(
-		'base'    => str_replace( 99999, '%#%', esc_url( get_pagenum_link( 99999 ) ) ),
-		'format'  => '?paged=%#%',
-		'current' => max( 1, get_query_var( 'paged' ) ),
-		'total'   => $query->max_num_pages
-	) );
-
-	$new_content .= ! empty( $pagination ) ? trim( join( ' ', [
-		'<nav class="wpbs-layout-grid-pagination">',
-		$pagination,
-		'</nav>'
-	] ) ) : '';*/
-
 	$new_content .= '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $is_current ? $query->query : false,
@@ -82,5 +69,9 @@ if ( $is_loop ) {
 	echo $content;
 }
 
-
 WPBS_Grid::render_style( $attributes, $block, $query ?? $wp_query );
+
+
+?>
+
+

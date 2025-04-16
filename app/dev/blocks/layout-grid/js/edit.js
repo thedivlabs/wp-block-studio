@@ -1,8 +1,15 @@
 import "../scss/block.scss";
 
 import {
-    useBlockProps, useSettings,
-    InspectorControls, useInnerBlocksProps, PanelColorSettings, DefaultBlockAppender, MediaUploadCheck, MediaUpload,
+    useBlockProps,
+    useSettings,
+    InspectorControls,
+    useInnerBlocksProps,
+    PanelColorSettings,
+    DefaultBlockAppender,
+    MediaUploadCheck,
+    MediaUpload,
+    InnerBlocks,
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -36,12 +43,6 @@ function sectionClassNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function containerClassNames(attributes = {}) {
-    return [
-        'wpbs-layout-grid__container relative flex'
-    ].filter(x => x).join(' ');
-}
-
 function sectionProps(attributes = {}) {
 
     const {['wpbs-divider']: divider = {}} = attributes;
@@ -57,27 +58,6 @@ function sectionProps(attributes = {}) {
             '--divider-icon-color': attributes['wpbs-divider-icon-color'],
         }).filter(([key, value]) => value)
     );
-}
-
-function containerProps(attributes = {}) {
-
-    let props = {};
-
-    return Object.fromEntries(
-        Object.entries({
-            ...props
-        }).filter(([key, value]) => value)
-    );
-}
-
-function MasonrySizer({attributes}) {
-
-    return !!attributes['wpbs-masonry'] ?
-        <span className={'gutter-sizer'}
-              style={{
-                  position: 'absolute',
-                  width: 'var(--row-gap, var(--column-gap, 0px))'
-              }}/> : false;
 }
 
 registerBlockType(metadata.name, {
@@ -304,7 +284,6 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
 
-
             setAttributes({
                 queryArgs: {
                     'post_type': attributes['wpbs-loop-type'],
@@ -455,17 +434,43 @@ registerBlockType(metadata.name, {
         </Grid>;
 
         const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
-            <SelectControl
-                label={'Post Type'}
-                value={loopPostType}
-                options={postTypeOptions}
-                onChange={(newValue) => {
-                    setAttributes({['wpbs-loop-type']: newValue});
-                    setLoopPostType(newValue);
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <SelectControl
+                    label={'Post Type'}
+                    value={loopPostType}
+                    options={postTypeOptions}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-loop-type']: newValue});
+                        setLoopPostType(newValue);
+                    }}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <SelectControl
+                    label={'Pagination'}
+                    value={paginationType}
+                    options={[
+                        {
+                            value: '',
+                            label: 'Select'
+                        },
+                        {
+                            value: 'button',
+                            label: 'Button'
+                        },
+                        {
+                            value: 'default',
+                            label: 'Default'
+                        }
+                    ]}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-pagination-type']: newValue});
+                        setPaginationType(newValue);
+                    }}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            </Grid>
             <Grid columns={1} columnGap={15} rowGap={20}
                   style={(attributes['wpbs-loop-type'] || '') === 'current' ? {
                       opacity: .4,
@@ -524,30 +529,6 @@ registerBlockType(metadata.name, {
                         value={loopPageSize}
                     />
 
-                    <SelectControl
-                        label={'Pagination Type'}
-                        value={paginationType}
-                        options={[
-                            {
-                                value: '',
-                                label: 'Select'
-                            },
-                            {
-                                value: 'button',
-                                label: 'Button'
-                            },
-                            {
-                                value: 'default',
-                                label: 'Default'
-                            }
-                        ]}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-pagination-type']: newValue});
-                            setPaginationType(newValue);
-                        }}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
 
                 </Grid>
 
@@ -578,13 +559,6 @@ registerBlockType(metadata.name, {
                 ...props.style,
                 ...sectionProps(attributes)
             }
-        });
-
-        const {children, ...innerBlocksProps} = useInnerBlocksProps({
-            className: containerClassNames(attributes),
-            ...containerProps(attributes),
-        }, {
-            renderAppender: false
         });
 
         return (
@@ -633,18 +607,11 @@ registerBlockType(metadata.name, {
                         clientId={clientId}></Layout>
 
                 <div {...blockProps}>
-
-                    <div {...innerBlocksProps}>
-                        {children}
-
-                        <MasonrySizer attributes={attributes}/>
-                    </div>
-
-
+                    <div {...useInnerBlocksProps({
+                        className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
+                    }, {})} />
                     <Background attributes={attributes} editor={true}/>
-
                     <DefaultBlockAppender rootClientId={clientId}/>
-
                 </div>
             </>
         )
@@ -671,28 +638,12 @@ registerBlockType(metadata.name, {
             }
         });
 
-        const {children, ...innerBlocksProps} = useInnerBlocksProps.save({
-            className: containerClassNames(props.attributes),
-            ...containerProps(props.attributes)
-        }, {});
-
-
-        return (
-            <div {...blockProps}>
-
-                <div {...innerBlocksProps} >
-                    {children}
-                    <MasonrySizer attributes={props.attributes}/>
-
-
-                </div>
-                <button type={'button'} className={'w-full h-10 relative'}
-                        data-wp-on-async--click={'actions.pagination'}>Load More
-                </button>
-
-                <Background attributes={props.attributes} editor={false}/>
-            </div>
-        );
+        return (<div {...blockProps}>
+            <div {...useInnerBlocksProps.save({
+                className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
+            }, {})} />
+            <Background attributes={props.attributes} editor={false}/>
+        </div>);
     }
 })
 

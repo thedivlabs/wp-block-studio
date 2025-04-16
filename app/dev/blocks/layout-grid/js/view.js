@@ -119,12 +119,11 @@ const {state} = store('wpbs/grid', {
         init: () => {
 
             const {ref: grid} = getElement();
-
             const context = JSON.parse(JSON.stringify(getContext()));
 
             setMasonry(grid);
             setDividers(grid, context);
-
+            
         },
         pagination: async () => {
 

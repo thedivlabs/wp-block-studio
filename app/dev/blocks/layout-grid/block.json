@@ -107,12 +107,17 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/layout-grid-card"
+    "wpbs/layout-grid-card",
+    "wpbs/layout-grid-pagination"
   ],
   "styles": [
     {
       "name": "loop",
       "label": "Loop"
+    },
+    {
+      "name": "gallery",
+      "label": "Gallery"
     }
   ],
   "supports": {

@@ -22,11 +22,13 @@ import {
 
 export function Background({attributes = {}, className = '', editor = false}) {
 
-    const {['wpbs-background']: settings} = attributes;
+    const {['wpbs-background']: settings = {}} = attributes;
 
-    if (!settings) {
+    if (!settings.type) {
         return false;
     }
+
+    console.log(settings.type);
 
     const bgClass = [
         'wpbs-background',

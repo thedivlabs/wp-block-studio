@@ -15,9 +15,10 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
-WPBS::console_log( $block );
 
 if ( $is_loop ) {
+
+	$block->attributes['queryId'] = 'main';
 
 	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
@@ -28,8 +29,6 @@ if ( $is_loop ) {
 		while ( $query->have_posts() ) {
 
 			$query->the_post();
-
-			setup_postdata( $query->post );
 
 			$new_block = new WP_Block( $block_template, array_filter( [
 				'postId' => get_the_ID(),
@@ -48,9 +47,8 @@ if ( $is_loop ) {
 
 		}
 
-		wp_reset_postdata();
+		$query->reset_postdata();
 	}
-
 
 	$new_content .= '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
@@ -60,17 +58,54 @@ if ( $is_loop ) {
 			}, ARRAY_FILTER_USE_KEY ),
 		] ) . '</script>';
 
+	$big = 999999999; // Dummy value for replacement
+
+	$current_page = max( 1, get_query_var( 'paged' ) );
+
+	$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
+
+	$pagination_links = paginate_links( [
+		'base'      => $base,
+		'format'    => '/page/%#%/',
+		'current'   => $current_page,
+		'total'     => $query->max_num_pages,
+		'prev_text' => '←',
+		'next_text' => '→',
+		'type'      => 'array', // 'plain', 'array', or 'list'
+	] );
+
+	do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
+
+	// If pagination exists, wrap it in a custom div with classes for styling
+	if ( $pagination_links ) {
+		$pagination = '<nav class="wp-block-query-pagination is-nowrap is-layout-flex" aria-label="Pagination">';
+
+		// Numbers
+		$pagination .= '<div class="wp-block-query-pagination-numbers">';
+		foreach ( $pagination_links as $link ) {
+			$pagination .= $link;
+		}
+		$pagination .= '</div>';
+
+		// Previous and Next buttons
+		//$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';
+		//$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page + 1 ) ) . '" class="wp-block-query-pagination-next" aria-label="Next Page"><span class="wp-block-query-pagination-next-arrow is-arrow-arrow" aria-hidden="true">→</span></a>';
+
+		$pagination .= '</nav>';
+	}
+
+	$new_content .= $pagination ?? '';
 
 	$block->inner_content[1] = trim( $new_content );
 
 	echo join( ' ', $block->inner_content );
+
 
 } else {
 	echo $content;
 }
 
 WPBS_Grid::render_style( $attributes, $block, $query ?? $wp_query );
-
 
 ?>
 

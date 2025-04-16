@@ -548,7 +548,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({
-                uniqueId: uniqueId
+                uniqueId: uniqueId,
             });
 
         }, []);
@@ -638,12 +638,14 @@ registerBlockType(metadata.name, {
             }
         });
 
-        return (<div {...blockProps}>
-            <div {...useInnerBlocksProps.save({
-                className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
-            }, {})} />
-            <Background attributes={props.attributes} editor={false}/>
-        </div>);
+        return (
+            <div {...blockProps}>
+                <div {...useInnerBlocksProps.save({
+                    className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
+                }, {})} />
+                <Background attributes={props.attributes} editor={false}/>
+            </div>
+        );
     }
 })
 

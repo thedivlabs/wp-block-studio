@@ -601,6 +601,35 @@
     },
     "typography": {
       "fontFamily": "var(--wp--preset--font-family--roboto)"
+    },
+    "blocks": {
+      "core/query-pagination-numbers": {
+        "elements": {
+          "link": {
+            "dimensions": {
+              "minHeight": "1.5em"
+            },
+            "border": {
+              "radius": "5px",
+              "style": "solid",
+              "width": "1px",
+              "color": "var:preset|color|secondary-800"
+            },
+            "color": {
+              "text": "white",
+              "background": "var:preset|color|secondary-700"
+            },
+            ":hover": {
+              "color": {
+                "background": "var:preset|color|secondary-hover"
+              }
+            }
+          }
+        },
+        "typography": {
+          "fontSize": "1rem"
+        }
+      }
     }
   }
 }

@@ -3,6 +3,29 @@
   flex-direction: row;
   flex-wrap: wrap;
 
+  .wp-block-query-pagination {
+    width: 100%;
+
+    .wp-block-query-pagination-numbers {
+      display: inline-grid;
+      grid-template-columns: repeat(auto-fit, minmax(1em, 1fr));
+      width: fit-content;
+      max-width: 100%;
+      align-items: stretch;
+
+      .page-numbers {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        aspect-ratio: 1/1;
+        height: auto;
+        width: auto;
+      }
+    }
+  }
+
+
   .wpbs-layout-grid-card {
     max-width: calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
   }

@@ -108,7 +108,7 @@
   },
   "allowedBlocks": [
     "wpbs/layout-grid-card",
-    "wpbs/layout-grid-pagination"
+    "core/query-pagination"
   ],
   "styles": [
     {

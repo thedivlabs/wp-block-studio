@@ -162,7 +162,7 @@ class WPBS_Grid {
 
 		if ( ! empty( $cols_mobile ) ) {
 
-			$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint_mobile ) . ' - 1px)) {';
+			$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint_small ) . ' - 1px)) {';
 
 			$custom_css .= $selector . '{ --columns: ' . $cols_mobile . ' }';
 

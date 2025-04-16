@@ -25,12 +25,11 @@ import React, {useEffect, useState} from "react";
 import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
-import {LayoutStyle} from "Components/LayoutStyle.js";
 
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry' : null,
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
@@ -39,8 +38,7 @@ function sectionClassNames(attributes = {}) {
 
 function containerClassNames(attributes = {}) {
     return [
-        'wpbs-layout-grid__container relative',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid__container--masonry masonry' : null,
+        'wpbs-layout-grid__container relative flex'
     ].filter(x => x).join(' ');
 }
 
@@ -64,16 +62,6 @@ function sectionProps(attributes = {}) {
 function containerProps(attributes = {}) {
 
     let props = {};
-
-    if (!!attributes['wpbs-masonry']) {
-        props['data-masonry'] = JSON.stringify({
-            horizontalOrder: true,
-            itemSelector: '.wpbs-layout-grid-card',
-            columnWidth: '.wpbs-layout-grid-card',
-            percentPosition: true,
-            gutter: '.gutter-sizer'
-        })
-    }
 
     return Object.fromEntries(
         Object.entries({
@@ -658,7 +646,6 @@ registerBlockType(metadata.name, {
                     <DefaultBlockAppender rootClientId={clientId}/>
 
                 </div>
-
             </>
         )
     },

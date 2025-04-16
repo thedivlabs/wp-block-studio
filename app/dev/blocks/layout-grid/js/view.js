@@ -26,16 +26,13 @@ function setDividers(grid, context) {
 
     const lastRow = {
         mobile: {
-            count: total % colMobile || colMobile,
-            index: total - (total % colMobile || colMobile)
+            count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || colMobile,
         },
         small: {
-            count: total % colSmall || colSmall,
-            index: total - (total % colSmall || colSmall)
+            count: Math.floor(total - (Math.floor(total / colSmall) * colSmall)) || colSmall,
         },
         large: {
-            count: total % colLarge || colLarge,
-            index: total - (total % colLarge || colLarge)
+            count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
         }
     }
 
@@ -77,6 +74,7 @@ function setDividers(grid, context) {
 
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.large.count + '):after { height:calc(100% + calc(var(--row-gap, var(--column-gap)) / 2)) !important;top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { content:none !important; }',
+
         '}',
     ].join('\r\n');
 
@@ -94,6 +92,28 @@ function setDividers(grid, context) {
 
 }
 
+function setMasonry(grid) {
+    if ('Masonry' in window && grid && grid.classList.contains('wpbs-layout-grid--masonry')) {
+
+        const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
+        const masonryData = Masonry.data(container) || false;
+
+        if (masonryData) {
+            masonryData.destroy();
+        }
+
+        const masonry = new Masonry(container, {
+            itemSelector: '.wpbs-layout-grid-card',
+            //columnWidth: '.wpbs-layout-grid-card',
+            gutter: '.gutter-sizer',
+            percentPosition: true,
+            horizontalOrder: true,
+        });
+        masonry.layout();
+
+    }
+}
+
 const {state} = store('wpbs/grid', {
     actions: {
         init: () => {
@@ -102,8 +122,8 @@ const {state} = store('wpbs/grid', {
 
             const context = JSON.parse(JSON.stringify(getContext()));
 
+            setMasonry(grid);
             setDividers(grid, context);
-
 
         },
         pagination: async () => {
@@ -139,6 +159,7 @@ const {state} = store('wpbs/grid', {
                     container.innerHTML += result.response;
 
                     setDividers(grid, context);
+                    setMasonry(grid);
 
                     if (!!result.last) {
                         element.remove();

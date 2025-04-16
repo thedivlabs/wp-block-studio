@@ -25,11 +25,12 @@ import React, {useEffect, useState} from "react";
 import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
+import {LayoutStyle} from "Components/LayoutStyle.js";
 
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
+        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry' : null,
         'w-full flex relative',
         attributes.uniqueId,
         LayoutClasses(attributes)
@@ -127,6 +128,9 @@ registerBlockType(metadata.name, {
         ['wpbs-divider-icon-color']: {
             type: 'string'
         },
+        ['wpbs-pagination-type']: {
+            type: 'string'
+        },
         ['wpbs-pagination-size']: {
             type: 'string'
         },
@@ -186,6 +190,7 @@ registerBlockType(metadata.name, {
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
+        const [paginationType, setPaginationType] = useState(attributes['wpbs-pagination-type']);
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
         let postTypeOptions = [];
@@ -531,6 +536,31 @@ registerBlockType(metadata.name, {
                         value={loopPageSize}
                     />
 
+                    <SelectControl
+                        label={'Pagination Type'}
+                        value={paginationType}
+                        options={[
+                            {
+                                value: '',
+                                label: 'Select'
+                            },
+                            {
+                                value: 'button',
+                                label: 'Button'
+                            },
+                            {
+                                value: 'default',
+                                label: 'Default'
+                            }
+                        ]}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-pagination-type']: newValue});
+                            setPaginationType(newValue);
+                        }}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+
                 </Grid>
 
 
@@ -628,6 +658,7 @@ registerBlockType(metadata.name, {
                     <DefaultBlockAppender rootClientId={clientId}/>
 
                 </div>
+
             </>
         )
     },

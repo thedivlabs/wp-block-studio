@@ -606,6 +606,9 @@
       "core/query-pagination-numbers": {
         "elements": {
           "link": {
+            "typography": {
+              "textDecoration": "none"
+            },
             "dimensions": {
               "minHeight": "1.5em"
             },

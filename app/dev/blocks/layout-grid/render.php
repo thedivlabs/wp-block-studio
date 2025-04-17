@@ -64,7 +64,9 @@ if ( $is_loop ) {
 
 	$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
-	$pagination_links = paginate_links( [
+	$pagination_links = array_map( function ( $link ) {
+		return str_replace( [ '<span', '</span>' ], [ '<a href="#"', '</a>' ], $link );
+	}, paginate_links( [
 		'base'      => $base,
 		'format'    => '/page/%#%/',
 		'current'   => $current_page,
@@ -72,8 +74,8 @@ if ( $is_loop ) {
 		'prev_text' => '←',
 		'next_text' => '→',
 		'type'      => 'array', // 'plain', 'array', or 'list'
-	] );
-
+	] ) );
+	
 	do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
 	// If pagination exists, wrap it in a custom div with classes for styling

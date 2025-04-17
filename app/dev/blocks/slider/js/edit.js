@@ -229,7 +229,7 @@ registerBlockType(metadata.name, {
 
             const block = document.getElementById(blockId);
 
-            if ('swiper' in block) {
+            if (block && 'swiper' in block) {
 
                 block.swiper.destroy();
             }

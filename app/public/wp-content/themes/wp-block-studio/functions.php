@@ -11,12 +11,3 @@ if ( class_exists( 'WPBS' ) ) {
 	$wpbs = WPBS::init();
 }
 
-
-add_filter( 'block_type_metadata', function ( $metadata ) {
-	if ( $metadata['name'] === 'core/query-pagination' ) {
-		$metadata['ancestor'][] = 'wpbs/layout-grid';
-	}
-
-	return $metadata;
-}, 1 );
-

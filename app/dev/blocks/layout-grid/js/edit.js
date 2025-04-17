@@ -640,28 +640,33 @@ registerBlockType(metadata.name, {
             className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
         }, {});
 
+        const GutterSizer = ()=>{
+            if (!!props.attributes['wpbs-masonry']) {
+                return <span class="gutter-sizer"
+                             style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
+            } else {
+                return <></>;
+            }
+        }
+
+        const PaginationButton = ()=>{
+            if(!!pagination && loopType !== 'current') {
+                return <button type="button" class="w-full h-10 relative"
+                               data-wp-on-async--click="actions.pagination">
+                    {props.attributes['wpbs-pagination-label'] || 'Show More'}
+                </button>;
+            } else {
+                return <></>;
+            }
+        }
+
         return (
             <div {...blockProps}>
                 <div {...innerBlockProps} >
                     {innerBlockProps.children}
-                    {() => {
-                        if (!!props.attributes['wpbs-masonry']) {
-                            return <span class="gutter-sizer"
-                                         style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
-                        }
-                    }
-                    }
+                    <GutterSizer/>
                 </div>
-                {
-                    ()=>{
-                        if(!!pagination && loopType !== 'current') {
-                            return <button type="button" class="w-full h-10 relative"
-                                           data-wp-on-async--click="actions.pagination">
-                                {props.attributes['wpbs-pagination-label'] || 'Show More'}
-                            </button>;
-                        }
-                    }
-                }
+                <PaginationButton/>
                 <Background attributes={props.attributes} editor={false}/>
             </div>
         );

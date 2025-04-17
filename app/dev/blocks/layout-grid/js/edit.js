@@ -519,19 +519,18 @@ registerBlockType(metadata.name, {
 
                 </Grid>
 
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
-                    <ToggleControl
-                        __nextHasNoMarginBottom
-                        label="Pagination"
-                        checked={!!pagination}
-                        onChange={(newValue) => {
-                            setAttributes({['wpbs-pagination']: newValue});
-                            setPagination(newValue);
-                        }}
-                    />
-                </Grid>
 
-
+            </Grid>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Pagination"
+                    checked={!!pagination}
+                    onChange={(newValue) => {
+                        setAttributes({['wpbs-pagination']: newValue});
+                        setPagination(newValue);
+                    }}
+                />
             </Grid>
         </Grid>;
 

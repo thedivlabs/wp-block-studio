@@ -610,14 +610,14 @@
         }
       },
       "core/query-pagination-numbers": {
-        "typography": {
-          "textDecoration": "none"
-        },
         "color": {
           "text": "white"
         },
         "elements": {
           "link": {
+            "typography": {
+              "textDecoration": "none"
+            },
             "dimensions": {
               "minHeight": "1.5em"
             },
@@ -641,7 +641,7 @@
               "minHeight": "1.5em"
             },
             "color": {
-              "background": "var:preset|color|secondary-700"
+              "background": "var:preset|color|secondary-800"
             }
           }
         }

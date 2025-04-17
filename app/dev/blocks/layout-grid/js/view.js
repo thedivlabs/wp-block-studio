@@ -140,6 +140,8 @@ const {state} = store('wpbs/grid', {
 
             const nonce = 'wpbsData' in window ? window.wpbsData?.nonce : false;
 
+            WPBS.loader.toggle();
+
             await fetch('/wp-json/wpbs/v1/layout-grid', {
                 method: 'POST',
                 headers: {
@@ -154,6 +156,10 @@ const {state} = store('wpbs/grid', {
                 }),
             }).then(response => response.json())
                 .then(result => {
+
+                    WPBS.loader.toggle({
+                        remove: true
+                    });
 
                     element.insertAdjacentHTML('beforebegin', result.response);
 

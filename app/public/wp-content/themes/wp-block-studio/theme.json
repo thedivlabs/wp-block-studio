@@ -555,8 +555,8 @@
       },
       "loader": {
         "color": "var:preset|color|primary-hover",
-        "background": "",
-        "opacity": ""
+        "background": "transparent",
+        "opacity": "0"
       }
     },
     "spacing": {

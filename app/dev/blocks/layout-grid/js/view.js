@@ -161,7 +161,9 @@ const {state} = store('wpbs/grid', {
                         remove: true
                     });
 
-                    element.insertAdjacentHTML('beforebegin', result.response);
+                    container.innerHTML += result.response;
+
+                    //element.insertAdjacentHTML('beforebegin', result.response);
 
                     setDividers(grid, context);
                     setMasonry(grid);

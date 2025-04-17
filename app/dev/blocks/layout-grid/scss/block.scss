@@ -22,6 +22,10 @@
         aspect-ratio: 1/1;
         height: auto;
         width: auto;
+
+        &.current {
+          pointer-events: none;
+        }
       }
     }
   }

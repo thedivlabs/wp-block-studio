@@ -64,8 +64,11 @@ if ( $is_loop ) {
 
 	$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
-	$pagination_links = array_map( function ( $link ) {
-		return str_replace( [ '<span', '</span>' ], [ '<a href="#"', '</a>' ], $link );
+	$pagination_links = array_map( function ( $link ) use ( $current_page ) {
+		return str_replace( [ '<span', '</span>' ], [
+			'<a href="' . get_pagenum_link( $current_page ) . '"',
+			'</a>'
+		], $link );
 	}, paginate_links( [
 		'base'      => $base,
 		'format'    => '/page/%#%/',

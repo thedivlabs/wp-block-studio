@@ -609,6 +609,7 @@
         }
       },
       "core/query-pagination-numbers": {
+        "css": "> .current{background-color: var(--wp--preset--color--secondary-800) !important;}",
         "elements": {
           "link": {
             "typography": {

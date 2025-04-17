@@ -112,19 +112,22 @@ if ( $is_loop ) {
 		}
 	}
 
-	if ( ! empty( $attributes['wpbs-masonry'] ) ) {
-		$new_content .= '<span class="gutter-sizer" style="width:var(--row-gap, var(--column-gap, 0px))"></span>"';
-	}
-
 	$block->inner_content[1] = trim( $new_content );
 
-	echo join( ' ', $block->inner_content );
 
 
-} else {
-	echo $content;
+
 }
-WPBS::console_log( $attributes );
+
+if ( ! empty( $attributes['wpbs-masonry'] ) ) {
+
+	$last_index = count($block->inner_content) - 1;
+
+	$block->inner_content[$last_index] = '<span class="gutter-sizer" style="width:var(--row-gap, var(--column-gap, 0px))"></span>"' . $block->inner_content[$last_index];
+}
+
+echo join( ' ', $block->inner_content );
+
 WPBS_Grid::render_style( $attributes, $block, $query ?? $wp_query );
 
 ?>

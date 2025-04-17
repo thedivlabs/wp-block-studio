@@ -38,9 +38,11 @@
   }
 
   &:before {
-    background-color:var(--wp--custom--loader--background, transparent);
+    background-color: var(--wp--custom--loader--background, transparent);
+    opacity: var(--wp--custom--loader--opacity, 0);
 
     @apply
+    content-['']
     absolute
     top-0
     left-0

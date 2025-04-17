@@ -58,7 +58,7 @@ if ( $is_loop ) {
 			}, ARRAY_FILTER_USE_KEY ),
 		] ) . '</script>';
 
-	if ( $is_current ) {
+	if ( $is_current && ! empty( $attributes['wpbs-pagination'] ) ) {
 		$big = 999999999;
 
 		$current_page = max( 1, get_query_var( 'paged' ) );

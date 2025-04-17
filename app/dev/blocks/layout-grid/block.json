@@ -62,6 +62,10 @@
       "type": "string",
       "show_in_rest": true
     },
+    "wpbs-pagination": {
+      "type": "boolean",
+      "show_in_rest": true
+    },
     "wpbs-pagination-size": {
       "type": "string",
       "show_in_rest": true

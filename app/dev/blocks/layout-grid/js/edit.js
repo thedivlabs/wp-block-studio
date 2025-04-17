@@ -96,8 +96,8 @@ registerBlockType(metadata.name, {
         ['wpbs-divider-icon-color']: {
             type: 'string'
         },
-        ['wpbs-pagination-type']: {
-            type: 'string'
+        ['wpbs-pagination']: {
+            type: 'boolean'
         },
         ['wpbs-pagination-size']: {
             type: 'string'
@@ -158,7 +158,7 @@ registerBlockType(metadata.name, {
         const [loopPageSize, setLoopPageSize] = useState(attributes['wpbs-loop-page-size']);
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
-        const [paginationType, setPaginationType] = useState(attributes['wpbs-pagination-type']);
+        const [pagination, setPagination] = useState(attributes['wpbs-pagination']);
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
         let postTypeOptions = [];
@@ -434,43 +434,17 @@ registerBlockType(metadata.name, {
         </Grid>;
 
         const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
-                <SelectControl
-                    label={'Post Type'}
-                    value={loopPostType}
-                    options={postTypeOptions}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-loop-type']: newValue});
-                        setLoopPostType(newValue);
-                    }}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <SelectControl
-                    label={'Pagination'}
-                    value={paginationType}
-                    options={[
-                        {
-                            value: '',
-                            label: 'Select'
-                        },
-                        {
-                            value: 'button',
-                            label: 'Button'
-                        },
-                        {
-                            value: 'default',
-                            label: 'Default'
-                        }
-                    ]}
-                    onChange={(newValue) => {
-                        setAttributes({['wpbs-pagination-type']: newValue});
-                        setPaginationType(newValue);
-                    }}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-            </Grid>
+            <SelectControl
+                label={'Post Type'}
+                value={loopPostType}
+                options={postTypeOptions}
+                onChange={(newValue) => {
+                    setAttributes({['wpbs-loop-type']: newValue});
+                    setLoopPostType(newValue);
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
             <Grid columns={1} columnGap={15} rowGap={20}
                   style={(attributes['wpbs-loop-type'] || '') === 'current' ? {
                       opacity: .4,
@@ -530,6 +504,18 @@ registerBlockType(metadata.name, {
                     />
 
 
+                </Grid>
+
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
+                    <ToggleControl
+                        __nextHasNoMarginBottom
+                        label="Pagination"
+                        checked={!!pagination}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-pagination']: newValue});
+                            setPagination(newValue);
+                        }}
+                    />
                 </Grid>
 
 

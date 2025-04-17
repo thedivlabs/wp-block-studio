@@ -552,6 +552,11 @@
             }
           }
         }
+      },
+      "loader": {
+        "color": "var:preset|color|primary-hover",
+        "background": "var:preset|color|dark",
+        "opacity": ".4"
       }
     },
     "spacing": {

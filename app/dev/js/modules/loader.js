@@ -32,14 +32,16 @@ export default class Loader {
 
         } else {
             if (args.remove !== true) {
-                this.show(args.target);
+                this.show(args);
             }
         }
 
     }
 
 
-    static show(target = false) {
+    static show(args = false) {
+
+        const {target = false, reverse = false} = args;
 
         if (document.querySelectorAll('.wpbs-loader').length > 0) {
             return false;
@@ -47,7 +49,16 @@ export default class Loader {
 
         const loader = this.loader.cloneNode(true);
 
+        loader.querySelector(':scope > div').addEventListener('click', ()=>{
+            this.remove(loader);
+        });
+
+        if (reverse) {
+            loader.classList.add('reverse');
+        }
+
         if (target && typeof target === 'object') {
+            loader.classList.add('target');
             target.append(loader);
         } else {
             document.body.append(loader);
@@ -55,9 +66,9 @@ export default class Loader {
     }
 
     static remove(el = false) {
-        el = typeof el === 'object' ? $(el) : $('.' + this.class_name)
+        el = typeof el === 'object' ? jQuery(el) : jQuery('.' + this.class_name)
         el.fadeOut('fast', function () {
-            $(this).remove();
+            jQuery(this).remove();
         })
     }
 

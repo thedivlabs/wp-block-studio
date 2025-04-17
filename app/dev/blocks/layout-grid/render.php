@@ -104,9 +104,10 @@ if ( $is_loop ) {
 				}
 
 				$pagination .= '</nav>';
+
+				$block->inner_content[count($block->inner_content) - 1] .= $pagination;
 			}
 
-			$new_content .= $pagination ?? '';
 		}
 	}
 

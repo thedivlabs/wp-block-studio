@@ -53,14 +53,20 @@ class WPBS {
 	public function theme_assets(): void {
 		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
 		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
-		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [ 'jquery' ] );
+		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [ 'jquery' ], false, [
+			'strategy' => 'defer'
+		] );
 
 		/* Swiper */
 		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
-		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [ 'jquery' ] );
+		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [ 'jquery' ], false, [
+			'strategy' => 'defer'
+		] );
 
 		/* Masonry */
-		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [ 'jquery' ] );
+		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [ 'jquery' ], false, [
+			'strategy' => 'async'
+		] );
 
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
 			'nonce' => wp_create_nonce( 'wp_rest' )
@@ -72,15 +78,15 @@ class WPBS {
 	public function admin_assets(): void {
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
-		wp_enqueue_script( 'wpbs-swiper-js' );
-		wp_enqueue_style( 'wpbs-swiper-css' );
+		//wp_enqueue_script( 'wpbs-swiper-js' );
+		//wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
 
 	public function editor_assets(): void {
 		add_editor_style();
-		wp_enqueue_style( 'wpbs-swiper-css' );
-		wp_enqueue_script( 'wpbs-swiper-js' );
+		//wp_enqueue_style( 'wpbs-swiper-css' );
+		//wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
 	}
 
@@ -89,7 +95,6 @@ class WPBS {
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
 	}
-
 
 	public function theme_support(): void {
 

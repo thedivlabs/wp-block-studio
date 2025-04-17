@@ -31,11 +31,11 @@ const {state} = store('wpbs', {
                                     script_tag.id = 'wpbs-swiper-js';
                                     script_tag.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
                                     script_tag.defer = true;
+                                    script_tag.async = true;
                                     script_tag.onload = resolve;
                                     script_tag.onerror = reject;
                                     document.body.appendChild(script_tag);
                                 });
-
 
                             } else {
                                 return true;

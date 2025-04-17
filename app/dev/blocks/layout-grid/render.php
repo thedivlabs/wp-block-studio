@@ -108,7 +108,7 @@ if ( $is_loop ) {
 
 			$new_content .= $pagination ?? '';
 		} else {
-			$new_content .= '<button type="button" class="w-full h-10 relative" data-wp-on-async--click="actions.pagination">Load More</button>';
+			$new_content .= '<button type="button" class="w-full h-10 relative" data-wp-on-async--click="actions.pagination">' . ( $attributes['wpbs-pagination-label'] ?? 'Show More' ) . '</button>';
 		}
 	}
 

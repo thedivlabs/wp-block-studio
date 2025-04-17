@@ -25,7 +25,7 @@ import {
     PanelBody,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    QueryControls, BaseControl, FormTokenField, Spinner
+    QueryControls, BaseControl, FormTokenField, Spinner, TextControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
@@ -504,11 +504,9 @@ registerBlockType(metadata.name, {
                         value={loopPageSize}
                     />
 
-                    <NumberControl
+                    <TextControl
                         label={'Pagination Label'}
                         __next40pxDefaultSize
-                        min={1}
-                        isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             setAttributes({['wpbs-pagination-label']: newValue});
                             setPaginationLabel(newValue);

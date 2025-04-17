@@ -625,6 +625,9 @@ registerBlockType(metadata.name, {
                 uniqueId: props.attributes.uniqueId,
                 divider: !!props.attributes['wpbs-divider'],
                 breakpoints: props.attributes['wpbs-breakpoints'],
+                button: {
+                    label: props.attributes['wpbs-pagination-label']
+                },
                 columns: {
                     mobile: props.attributes['wpbs-columns-mobile'] || 1,
                     small: props.attributes['wpbs-columns-small'] || 2,

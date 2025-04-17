@@ -15,7 +15,6 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
-
 if ( $is_loop ) {
 
 	$block->attributes['queryId'] = 'main';
@@ -58,56 +57,61 @@ if ( $is_loop ) {
 			}, ARRAY_FILTER_USE_KEY ),
 		] ) . '</script>';
 
-	if ( $is_current && ! empty( $attributes['wpbs-pagination'] ) ) {
-		$big = 999999999;
+	if ( ! empty( $attributes['wpbs-pagination'] ) && $query->max_num_pages > 1 ) {
+		if ( $is_current ) {
+			$big = 999999999;
 
-		$current_page = max( 1, get_query_var( 'paged' ) );
+			$current_page = max( 1, get_query_var( 'paged' ) );
 
-		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
+			$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
-		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-			return str_replace( [ '<span', '</span>', 'current' ], [
-				'<button type="button" disabled',
-				'</button>',
-				'current wp-element-button '
-			], $link );
-		}, paginate_links( [
-			'base'      => $base,
-			'format'    => '/page/%#%/',
-			'current'   => $current_page,
-			'total'     => $query->max_num_pages,
-			'prev_next' => false,
-			//'prev_text' => '←',
-			//'next_text' => '→',
-			'type'      => 'array', // 'plain', 'array', or 'list'
-		] ) );
+			$pagination_links = array_map( function ( $link ) use ( $current_page ) {
+				return str_replace( [ '<span', '</span>', 'current' ], [
+					'<button type="button" disabled',
+					'</button>',
+					'current wp-element-button '
+				], $link );
+			}, paginate_links( [
+				'base'      => $base,
+				'format'    => '/page/%#%/',
+				'current'   => $current_page,
+				'total'     => $query->max_num_pages,
+				'prev_next' => false,
+				//'prev_text' => '←',
+				//'next_text' => '→',
+				'type'      => 'array', // 'plain', 'array', or 'list'
+			] ) );
 
-		do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
+			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
-		if ( $pagination_links ) {
-			$pagination = '<nav class="wp-block-query-pagination" aria-label="Pagination">';
+			if ( $pagination_links ) {
+				$pagination = '<nav class="wp-block-query-pagination" aria-label="Pagination">';
 
-			if ( $current_page > 1 ) {
-				$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';
+				if ( $current_page > 1 ) {
+					$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';
+				}
+
+				$pagination .= '<div class="wp-block-query-pagination-numbers">';
+
+				foreach ( $pagination_links as $link ) {
+					$pagination .= $link;
+				}
+
+				$pagination .= '</div>';
+
+				if ( $current_page < $query->max_num_pages ) {
+					$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page + 1 ) ) . '" class="wp-block-query-pagination-next" aria-label="Next Page"><span class="wp-block-query-pagination-next-arrow is-arrow-arrow" aria-hidden="true">→</span></a>';
+				}
+
+				$pagination .= '</nav>';
 			}
 
-			$pagination .= '<div class="wp-block-query-pagination-numbers">';
-
-			foreach ( $pagination_links as $link ) {
-				$pagination .= $link;
-			}
-
-			$pagination .= '</div>';
-
-			if ( $current_page < $query->max_num_pages ) {
-				$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page + 1 ) ) . '" class="wp-block-query-pagination-next" aria-label="Next Page"><span class="wp-block-query-pagination-next-arrow is-arrow-arrow" aria-hidden="true">→</span></a>';
-			}
-
-			$pagination .= '</nav>';
+			$new_content .= $pagination ?? '';
+		} else {
+			$new_content .= '<button type="button" class="w-full h-10 relative" data-wp-on-async--click="actions.pagination">Load More</button>';
 		}
-
-		$new_content .= $pagination ?? '';
 	}
+
 
 	$block->inner_content[1] = trim( $new_content );
 

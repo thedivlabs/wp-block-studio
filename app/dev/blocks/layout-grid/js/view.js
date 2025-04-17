@@ -123,7 +123,7 @@ const {state} = store('wpbs/grid', {
 
             setMasonry(grid);
             setDividers(grid, context);
-            
+
         },
         pagination: async () => {
 
@@ -155,7 +155,7 @@ const {state} = store('wpbs/grid', {
             }).then(response => response.json())
                 .then(result => {
 
-                    container.innerHTML += result.response;
+                    element.insertAdjacentHTML('beforebegin', result.response);
 
                     setDividers(grid, context);
                     setMasonry(grid);

@@ -76,8 +76,9 @@ if ( $is_loop ) {
 			'format'    => '/page/%#%/',
 			'current'   => $current_page,
 			'total'     => $query->max_num_pages,
-			'prev_text' => '←',
-			'next_text' => '→',
+			'prev_next' => false,
+			//'prev_text' => '←',
+			//'next_text' => '→',
 			'type'      => 'array', // 'plain', 'array', or 'list'
 		] ) );
 
@@ -86,14 +87,21 @@ if ( $is_loop ) {
 		if ( $pagination_links ) {
 			$pagination = '<nav class="wp-block-query-pagination" aria-label="Pagination">';
 
+			if ( $current_page > 1 ) {
+				$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';
+			}
+
 			$pagination .= '<div class="wp-block-query-pagination-numbers">';
+
 			foreach ( $pagination_links as $link ) {
 				$pagination .= $link;
 			}
+
 			$pagination .= '</div>';
 
-			//$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';
-			//$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page + 1 ) ) . '" class="wp-block-query-pagination-next" aria-label="Next Page"><span class="wp-block-query-pagination-next-arrow is-arrow-arrow" aria-hidden="true">→</span></a>';
+			if ( $current_page < $query->max_num_pages ) {
+				$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page + 1 ) ) . '" class="wp-block-query-pagination-next" aria-label="Next Page"><span class="wp-block-query-pagination-next-arrow is-arrow-arrow" aria-hidden="true">→</span></a>';
+			}
 
 			$pagination .= '</nav>';
 		}

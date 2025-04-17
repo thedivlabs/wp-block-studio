@@ -617,6 +617,9 @@
       },
       "core/query-pagination-numbers": {
         "css": "gap:5px",
+        "color": {
+          "text": "white"
+        },
         "elements": {
           "button": {
             "dimensions": {
@@ -630,6 +633,9 @@
             }
           },
           "link": {
+            "color": {
+              "background": "var:preset|color|secondary-700"
+            },
             "typography": {
               "textDecoration": "none"
             },
@@ -641,10 +647,6 @@
               "style": "solid",
               "width": "1px",
               "color": "var:preset|color|secondary-800"
-            },
-            "color": {
-              "text": "white",
-              "background": "var:preset|color|secondary-700"
             },
             ":hover": {
               "color": {

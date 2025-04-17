@@ -159,6 +159,7 @@ registerBlockType(metadata.name, {
         const [loopOrderBy, setLoopOrderBy] = useState(attributes['wpbs-loop-orderby']);
         const [loopOrder, setLoopOrder] = useState(attributes['wpbs-loop-order']);
         const [pagination, setPagination] = useState(attributes['wpbs-pagination']);
+        const [paginationLabel, setPaginationLabel] = useState(attributes['wpbs-pagination-label']);
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
         let postTypeOptions = [];
@@ -501,6 +502,18 @@ registerBlockType(metadata.name, {
                             setLoopPageSize(newValue);
                         }}
                         value={loopPageSize}
+                    />
+
+                    <NumberControl
+                        label={'Pagination Label'}
+                        __next40pxDefaultSize
+                        min={1}
+                        isShiftStepEnabled={false}
+                        onChange={(newValue) => {
+                            setAttributes({['wpbs-pagination-label']: newValue});
+                            setPaginationLabel(newValue);
+                        }}
+                        value={paginationLabel}
                     />
 
 

@@ -59,7 +59,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
                 ].filter(s => !!s).join(' '),
                 sizeLarge: resolution,
             }}
-            style={{'object-fit': size || 'cover'}}
+            style={{'object-fit': size}}
             editor={!!isEditor}
         ></ResponsivePicture>;
     } else {
@@ -81,7 +81,8 @@ const blockAttributes = {
         type: 'string'
     },
     'wpbs-imageSize': {
-        type: 'string'
+        type: 'string',
+        default: 'cover'
     },
     'wpbs-eagerSlide': {
         type: 'boolean'
@@ -221,8 +222,8 @@ registerBlockType(metadata.name, {
                                 label="Size"
                                 value={imageSize}
                                 options={[
-                                    {label: 'Default', value: 'contain'},
-                                    {label: 'Cover', value: 'cover'},
+                                    {label: 'Default', value: 'cover'},
+                                    {label: 'Contain', value: 'contain'},
                                     {label: 'Vertical', value: 'auto 100%'},
                                     {label: 'Horizontal', value: '100% auto'},
                                 ]}

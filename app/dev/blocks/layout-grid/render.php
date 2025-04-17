@@ -107,8 +107,6 @@ if ( $is_loop ) {
 			}
 
 			$new_content .= $pagination ?? '';
-		} else {
-			$new_content .= '<button type="button" class="w-full h-10 relative" data-wp-on-async--click="actions.pagination">' . ( $attributes['wpbs-pagination-label'] ?? 'Show More' ) . '</button>';
 		}
 	}
 
@@ -117,13 +115,6 @@ if ( $is_loop ) {
 
 
 
-}
-
-if ( ! empty( $attributes['wpbs-masonry'] ) ) {
-
-	$last_index = count($block->inner_content) - 1;
-
-	$block->inner_content[$last_index] = '<span class="gutter-sizer" style="width:var(--row-gap, var(--column-gap, 0px))"></span>"' . $block->inner_content[$last_index];
 }
 
 echo join( ' ', $block->inner_content );

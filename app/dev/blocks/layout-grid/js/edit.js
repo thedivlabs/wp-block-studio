@@ -614,6 +614,8 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
+        const {'wpbs-pagination':pagination,'wpbs-loop-type':loopType} = props.attributes;
+
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
@@ -634,16 +636,32 @@ registerBlockType(metadata.name, {
             }
         });
 
+        const innerBlockProps = useInnerBlocksProps.save({
+            className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
+        }, {});
+
         return (
             <div {...blockProps}>
-                <div {...useInnerBlocksProps.save({
-                    className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
-                }, {})} />
-                {() => {
-                    if (!!props.attributes['wpbs-masonry']) {
-                        return <span class="gutter-sizer" style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
+                <div {...innerBlockProps} >
+                    {innerBlockProps.children}
+                    {() => {
+                        if (!!props.attributes['wpbs-masonry']) {
+                            return <span class="gutter-sizer"
+                                         style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
+                        }
                     }
-                }}
+                    }
+                </div>
+                {
+                    ()=>{
+                        if(!!pagination && loopType !== 'current') {
+                            return <button type="button" class="w-full h-10 relative"
+                                           data-wp-on-async--click="actions.pagination">
+                                {props.attributes['wpbs-pagination-label'] || 'Show More'}
+                            </button>;
+                        }
+                    }
+                }
                 <Background attributes={props.attributes} editor={false}/>
             </div>
         );

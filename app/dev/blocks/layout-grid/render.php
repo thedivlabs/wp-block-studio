@@ -66,9 +66,10 @@ if ( $is_loop ) {
 		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
 		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-			return str_replace( [ '<span', '</span>' ], [
+			return str_replace( [ '<span', '</span>', 'current' ], [
 				'<button type="button" disabled',
-				'</button>'
+				'</button>',
+				'current wp-element-button '
 			], $link );
 		}, paginate_links( [
 			'base'      => $base,

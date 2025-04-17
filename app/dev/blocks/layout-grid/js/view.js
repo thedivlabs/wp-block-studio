@@ -97,7 +97,7 @@ function setMasonry(grid) {
 
         const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
         const masonryData = Masonry.data(container) || false;
-
+        const gutterSizer = grid.querySelector(':scope > .gutter-sizer');
         if (masonryData) {
             masonryData.destroy();
         }
@@ -105,7 +105,7 @@ function setMasonry(grid) {
         const masonry = new Masonry(container, {
             itemSelector: '.wpbs-layout-grid-card',
             //columnWidth: '.wpbs-layout-grid-card',
-            gutter: '.gutter-sizer',
+            gutter: gutterSizer,
             percentPosition: true,
             horizontalOrder: true,
         });

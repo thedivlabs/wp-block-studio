@@ -112,6 +112,10 @@ if ( $is_loop ) {
 		}
 	}
 
+	if ( ! empty( $attributes['wpbs-masonry'] ) ) {
+		$new_content .= '<span class="gutter-sizer" style="width:var(--row-gap, var(--column-gap, 0px))"></span>"';
+	}
+
 	$block->inner_content[1] = trim( $new_content );
 
 	echo join( ' ', $block->inner_content );

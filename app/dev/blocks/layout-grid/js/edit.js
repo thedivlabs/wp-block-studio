@@ -639,6 +639,11 @@ registerBlockType(metadata.name, {
                 <div {...useInnerBlocksProps.save({
                     className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
                 }, {})} />
+                {() => {
+                    if (!!props.attributes['wpbs-masonry']) {
+                        return <span class="gutter-sizer" style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
+                    }
+                }}
                 <Background attributes={props.attributes} editor={false}/>
             </div>
         );

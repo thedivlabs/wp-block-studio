@@ -112,7 +112,6 @@ if ( $is_loop ) {
 		}
 	}
 
-
 	$block->inner_content[1] = trim( $new_content );
 
 	echo join( ' ', $block->inner_content );
@@ -121,7 +120,7 @@ if ( $is_loop ) {
 } else {
 	echo $content;
 }
-
+WPBS::console_log( $attributes );
 WPBS_Grid::render_style( $attributes, $block, $query ?? $wp_query );
 
 ?>

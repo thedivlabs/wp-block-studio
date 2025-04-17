@@ -12,7 +12,14 @@ import {Background, BackgroundSettings, BackgroundAttributes} from "Components/B
 
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
-import {__experimentalGrid as Grid, BaseControl, Button, PanelBody, ToggleControl} from "@wordpress/components";
+import {
+    __experimentalGrid as Grid,
+    BaseControl,
+    Button,
+    PanelBody,
+    SelectControl,
+    ToggleControl
+} from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
 import Resolution from "Components/Resolution.js";
@@ -38,6 +45,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
             ['wpbs-eagerSlide']: eager,
             ['wpbs-forceSlide']: force,
             ['wpbs-resolutionSlide']: resolution,
+            ['wpbs-imageSize']: size,
         } = attributes;
 
         return <ResponsivePicture
@@ -46,9 +54,12 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
             settings={{
                 eager: !!eager,
                 force: !!force,
-                className: 'w-full h-full !object-cover absolute top-0 left-0',
+                className: [
+                    'w-full h-full !object-cover absolute top-0 left-0'
+                ].filter(s => !!s).join(' '),
                 sizeLarge: resolution,
             }}
+            style={{'object-fit': size || 'cover'}}
             editor={!!isEditor}
         ></ResponsivePicture>;
     } else {
@@ -67,6 +78,9 @@ const blockAttributes = {
         type: 'object'
     },
     'wpbs-resolutionSlide': {
+        type: 'string'
+    },
+    'wpbs-imageSize': {
         type: 'string'
     },
     'wpbs-eagerSlide': {
@@ -90,6 +104,7 @@ registerBlockType(metadata.name, {
         const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileSlideImage']);
         const [largeImage, setLargeImage] = useState(attributes['wpbs-largeSlideImage']);
         const [resolution, setResolution] = useState(attributes['wpbs-resolutionSlide']);
+        const [imageSize, setImageSize] = useState(attributes['wpbs-imageSize']);
         const [eager, setEager] = useState(attributes['wpbs-eagerSlide']);
         const [force, setForce] = useState(attributes['wpbs-forceSlide']);
 
@@ -201,6 +216,22 @@ registerBlockType(metadata.name, {
                                 setAttributes({['wpbs-resolutionSlide']: newValue});
                                 setResolution(newValue)
                             }}/>
+                            <SelectControl
+                                __next40pxDefaultSize
+                                label="Size"
+                                value={imageSize}
+                                options={[
+                                    {label: 'Default', value: 'contain'},
+                                    {label: 'Cover', value: 'cover'},
+                                    {label: 'Vertical', value: 'auto 100%'},
+                                    {label: 'Horizontal', value: '100% auto'},
+                                ]}
+                                onChange={(newValue) => {
+                                    setAttributes({['wpbs-imageSize']: newValue});
+                                    setImageSize(newValue)
+                                }}
+                                __nextHasNoMarginBottom
+                            />
                         </Grid>
 
                         <Grid columns={2} columnGap={15} rowGap={20}

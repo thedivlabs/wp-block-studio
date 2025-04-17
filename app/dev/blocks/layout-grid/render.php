@@ -85,7 +85,7 @@ if ( $is_loop ) {
 			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
 			if ( $pagination_links ) {
-				$pagination = '<nav class="wp-block-query-pagination" aria-label="Pagination">';
+				$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
 
 				if ( $current_page > 1 ) {
 					$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';

@@ -1,7 +1,7 @@
 export default class Loader {
 
     static class_name = 'wpbs-loader';
-    static anim_div_count = 4;
+    static anim_div_count = 1;
 
     static init() {
 
@@ -12,8 +12,10 @@ export default class Loader {
         anim_container.classList.add('wpbs-loader__anim');
         this.loader.append(anim_container);
 
-        for (let step = 0; step < this.anim_div_count; step++) {
-            anim_container.append(document.createElement('div'));
+        if (this.anim_div_count > 1) {
+            for (let step = 0; step < this.anim_div_count; step++) {
+                anim_container.append(document.createElement('div'));
+            }
         }
 
     }

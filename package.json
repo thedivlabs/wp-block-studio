@@ -25,6 +25,7 @@
     "gulp-postcss": "^10.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^6.0.1",
+    "lottie-web": "^5.12.2",
     "postcss-nesting": "^12.1.5",
     "react": "^18.3.1",
     "sass": "^1.86.0",

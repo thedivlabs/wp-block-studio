@@ -603,6 +603,11 @@
       "fontFamily": "var(--wp--preset--font-family--roboto)"
     },
     "blocks": {
+      "core/query-pagination": {
+        "typography": {
+          "textAlign": "center"
+        }
+      },
       "core/query-pagination-numbers": {
         "elements": {
           "link": {

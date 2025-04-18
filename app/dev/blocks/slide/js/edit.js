@@ -294,7 +294,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-slide__container w-full h-full container relative z-20',
+            className: 'wpbs-slide__container w-full h-auto container relative z-20',
         });
 
         const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');

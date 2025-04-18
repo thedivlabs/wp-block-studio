@@ -1,7 +1,6 @@
 .wpbs-layout-grid {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
 
   .wp-block-query-pagination {
     width: 100%;

@@ -604,7 +604,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({
-                        className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
+                        className: 'wpbs-layout-grid__container relative z-20',
                     }, {})} />
                     <Background attributes={attributes} editor={true}/>
                     <DefaultBlockAppender rootClientId={clientId}/>
@@ -614,7 +614,7 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const {'wpbs-pagination':pagination,'wpbs-loop-type':loopType} = props.attributes;
+        const {'wpbs-pagination': pagination, 'wpbs-loop-type': loopType} = props.attributes;
 
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
@@ -637,10 +637,10 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlockProps = useInnerBlocksProps.save({
-            className: 'wpbs-layout-grid__container wpbs-layout-wrapper relative z-20',
+            className: 'wpbs-layout-grid__container relative z-20',
         }, {});
 
-        const GutterSizer = ()=>{
+        const GutterSizer = () => {
             if (!!props.attributes['wpbs-masonry']) {
                 return <span class="gutter-sizer"
                              style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
@@ -649,8 +649,8 @@ registerBlockType(metadata.name, {
             }
         }
 
-        const PaginationButton = ()=>{
-            if(!!pagination && loopType !== 'current') {
+        const PaginationButton = () => {
+            if (!!pagination && loopType !== 'current') {
                 return <button type="button" class="w-full h-10 relative"
                                data-wp-on-async--click="actions.pagination">
                     {props.attributes['wpbs-pagination-label'] || 'Show More'}

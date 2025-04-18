@@ -1,11 +1,13 @@
 import {
     useBlockProps,
     BlockEdit,
-    useInnerBlocksProps
+    useInnerBlocksProps, PanelColorSettings, InspectorControls
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import React from "react";
+import React, {useState} from "react";
+import {__experimentalGrid as Grid, PanelBody} from "@wordpress/components";
+import Height from "Components/Height";
 
 function blockClasses(attributes = {}) {
     return [
@@ -17,12 +19,17 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        'wpbs-layout-height': {
+            type: 'string'
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
         });
+
+        const [height, setHeight] = useState(attributes['wpbs-layout-height']);
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
@@ -32,6 +39,17 @@ registerBlockType(metadata.name, {
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
+
+            <InspectorControls group="styles">
+                <PanelBody initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
+                        <Height defaultValue={height} callback={(newValue) => {
+                            setAttributes({'wpbs-layout-height': newValue});
+                            setHeight(newValue);
+                        }}/>
+                    </Grid>
+                </PanelBody>
+            </InspectorControls>
 
             <div {...innerBlocksProps}></div>
 

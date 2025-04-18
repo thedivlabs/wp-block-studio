@@ -17,6 +17,7 @@ function MinHeight({defaultValue, callback}) {
             {label: 'Full Screen', value: 'full-screen'},
             {label: 'Full', value: '100%'},
             {label: 'Auto', value: 'auto'},
+            {label: 'Inherit', value: 'inherit'},
         ]}
         onChange={(newValue) => {
             setValue(newValue);

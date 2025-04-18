@@ -4,10 +4,6 @@
     width: min(5rem, 100%) !important;
   }
 
-  &.swiper-disabled .swiper-wrapper {
-    display: block !important;
-  }
-
   &--collapse.swiper--disabled {
 
     .swiper-wrapper {

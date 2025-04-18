@@ -75,7 +75,7 @@ class WPBS_Style {
 			'props'      => ( new WPBS_Props( $attributes ) )->styles(),
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
-
+		
 		$css = '';
 
 		foreach ( $components as $component => $data ) {

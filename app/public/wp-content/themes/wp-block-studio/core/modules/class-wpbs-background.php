@@ -102,6 +102,7 @@ class WPBS_Background {
 			$mobile_id = $featured_image_id;
 		}
 
+
 		$large_src  = wp_get_attachment_image_src( $large_id, $this->attributes['resolution'] ?? 'large' )[0] ?? false;
 		$mobile_src = wp_get_attachment_image_src( $mobile_id, $this->attributes['resolutionMobile'] ?? 'large' )[0] ?? false;
 
@@ -200,11 +201,20 @@ class WPBS_Background {
 				continue;
 			}
 			switch ( $prop ) {
+				case 'type':
+					if ( $value == 'featured-image' ) {
+						$props['--image'] = $this->image_set();
+					}
+					break;
 				case 'mobileImage':
-					$props['--image'] = $this->image_set( true );
+					if ( $attributes['type'] != 'featured-image' ) {
+						$props['--image'] = $this->image_set( true );
+					}
 					break;
 				case 'largeImage':
-					$props['--image'] = $this->image_set();
+					if ( $attributes['type'] != 'featured-image' ) {
+						$props['--image'] = $this->image_set();
+					}
 					break;
 				case 'fixed':
 					$props['--attachment'] = 'fixed';

@@ -163,7 +163,13 @@ const {state} = store('wpbs/grid', {
 
                     container.innerHTML += result.response;
 
-                    //element.insertAdjacentHTML('beforebegin', result.response);
+                    if (result.css) {
+                        const styleTag = document.createElement('style');
+
+                        styleTag.innerHTML = result.css;
+
+                        document.head.appendChild(styleTag);
+                    }
 
                     setDividers(grid, context);
                     setMasonry(grid);

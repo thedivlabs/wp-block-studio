@@ -227,23 +227,32 @@ class WPBS_Grid {
 
 		$new_content = '';
 
+		$css = '';
+
 		while ( $query->have_posts() ) {
 
 			$query->the_post();
 
-			setup_postdata( $query->post );
+			$block_template = $card;
 
-			global $post;
+			$unique_id = join( ' ', array_filter( [
+				//$block_template['attrs']['uniqueId'] ?? null,
+				'wpbs-layout-grid-card-' . get_the_ID()
+			] ) );
 
-			$card['attrs']['postId'] = $post->ID;
-
-			$block = new WP_Block( $card, [
+			$new_block = new WP_Block( $block_template, array_filter( [
 				'postId' => get_the_ID(),
-			] );
+			] ) );
 
-			$block->attributes['postId'] = get_the_ID();
+			$new_block->inner_content[0]       = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_content[0] );
+			$new_block->inner_html             = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_html );
+			$new_block->attributes['uniqueId'] = $unique_id;
 
-			$new_content .= $block->render();
+			$new_content .= $new_block->render();
+
+			$new_block->attributes['postId'] = get_the_ID();
+
+			$css .= WPBS_Style::block_styles( $new_block->attributes ?? false, $new_block );
 
 		}
 
@@ -256,6 +265,7 @@ class WPBS_Grid {
 				'last'     => $query->get( 'paged' ) >= $query->max_num_pages,
 				'card'     => $card,
 				'query'    => $query,
+				'css'      => $css
 			]
 		);
 

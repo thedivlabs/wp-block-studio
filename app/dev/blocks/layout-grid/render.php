@@ -17,9 +17,6 @@ $query = ! $is_loop ? false : match ( true ) {
 
 if ( $is_loop ) {
 
-	$block->attributes['queryId'] = 'main';
-
-	$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 	$new_content = '';
 
@@ -29,17 +26,19 @@ if ( $is_loop ) {
 
 			$query->the_post();
 
+			$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
+
+			$unique_id = join( ' ', array_filter( [
+				//$block_template['attrs']['uniqueId'] ?? null,
+				'wpbs-layout-grid-card-' . get_the_ID()
+			] ) );
+
 			$new_block = new WP_Block( $block_template, array_filter( [
 				'postId' => get_the_ID(),
 			] ) );
 
-			$unique_id = join( ' ', array_filter( [
-				$new_block->attributes['uniqueId'] ?? null,
-				'wpbs-layout-grid-card-' . $query->current_post
-			] ) );
-
-			$new_block->inner_content[0]       = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_content[0] );
-			$new_block->inner_html             = str_replace( $new_block->attributes['uniqueId'] ?? false, $unique_id, $new_block->inner_html );
+			$new_block->inner_content[0]       = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_content[0] );
+			$new_block->inner_html             = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
 
 			$new_content .= $new_block->render();
@@ -105,15 +104,13 @@ if ( $is_loop ) {
 
 				$pagination .= '</nav>';
 
-				$block->inner_content[count($block->inner_content) - 1] .= $pagination;
+				$block->inner_content[ count( $block->inner_content ) - 1 ] .= $pagination;
 			}
 
 		}
 	}
 
 	$block->inner_content[1] = trim( $new_content );
-
-
 
 
 }

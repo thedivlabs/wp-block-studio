@@ -235,6 +235,8 @@ class WPBS_Grid {
 
 			$block_template = $card;
 
+			$block_template['attrs']['wpbs-background']['eager'] = true;
+
 			$unique_id = join( ' ', array_filter( [
 				//$block_template['attrs']['uniqueId'] ?? null,
 				'wpbs-layout-grid-card-' . get_the_ID()

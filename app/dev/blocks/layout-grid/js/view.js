@@ -166,7 +166,10 @@ const {state} = store('wpbs/grid', {
                     if (result.css) {
                         const styleTag = document.createElement('style');
 
+                        styleTag.classList.add('qqqqqqqqq');
                         styleTag.innerHTML = result.css;
+
+                        console.log(styleTag);
 
                         document.head.appendChild(styleTag);
                     }

@@ -75,7 +75,7 @@ class WPBS_Style {
 			'props'      => ( new WPBS_Props( $attributes ) )->styles(),
 			'background' => ( new WPBS_Background( $attributes ) )->styles(),
 		];
-		
+
 		$css = '';
 
 		foreach ( $components as $component => $data ) {
@@ -103,24 +103,24 @@ class WPBS_Style {
 
 			foreach ( $styles['desktop'] ?? [] ?: [] as $prop => $value ) {
 
-				$css_desktop .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+				$css_desktop .= ' ' . $prop . ':' . WPBS::parse_style( $value ) . ';';
 			}
 
 			foreach ( $styles['hover'] ?? [] ?: [] as $prop => $value ) {
 
-				$css_hover .= $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
+				$css_hover .= ' ' . $prop . ':' . WPBS::parse_style( $value ) . ' !important;';
 			}
 
 			foreach ( $styles['mobile'] ?? [] ?: [] as $prop => $value ) {
 
-				$css_mobile .= $prop . ':' . WPBS::parse_style( $value ) . ';';
+				$css_mobile .= ' ' . $prop . ':' . WPBS::parse_style( $value ) . ';';
 			}
 
-			$css .= join( ' ', array_filter( [
-				! empty( $css_desktop ) ? $selector . '{' . $css_desktop . '}' : null,
-				! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
-				! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
-			] ) );
+			$css .= ' ' . join( ' ', array_filter( [
+					! empty( $css_desktop ) ? $selector . '{' . $css_desktop . '}' : null,
+					! empty( $css_hover ) ? $selector . ':hover {' . $css_hover . '}' : null,
+					! empty( $css_mobile ) ? '@media screen and (max-width: calc(' . $breakpoint . ' - 1px)) { ' . $selector . ' {' . $css_mobile . '}}' : null
+				] ) );
 
 			unset( $css_desktop );
 			unset( $css_hover );

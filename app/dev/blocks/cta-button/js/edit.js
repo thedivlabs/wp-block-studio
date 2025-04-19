@@ -30,26 +30,30 @@ function elementClassNames(attributes = {}) {
 function Content({attributes}) {
 
     const {
-        link,
-        loop,
-        icon,
-        iconOnly,
-        iconPosition,
-        popup,
+        'wpbs-link': link = {},
+        'wpbs-loop': loop,
+        'wpbs-icon': icon,
+        'wpbs-icon-only': iconOnly,
+        'wpbs-icon-position': iconPosition,
+        'wpbs-popup': popup,
 
     } = attributes;
 
     const Title = () => {
+        if (!'title' in link) {
+            return false
+        }
+
         if (!!iconOnly) {
             return <span className={'screen-reader-text'}>{link.title}</span>;
         } else {
-            return link.title
+            return link.title || false
         }
     }
 
     const linkUrl = () => {
         if (!!loop) {
-            return link.url;
+            return link.url || '#';
         } else {
             return '#';
         }
@@ -156,6 +160,7 @@ registerBlockType(metadata.name, {
                         setIcon(value);
                         setAttributes({['wpbs-icon']: value});
                     }}
+                    __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
                 <SelectControl
@@ -208,7 +213,7 @@ registerBlockType(metadata.name, {
 
         const tabs = {
             options: tabOptions,
-            loop: tabIcon
+            icon: tabIcon
         }
 
         const blockProps = useBlockProps({

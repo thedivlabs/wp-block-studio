@@ -163,6 +163,8 @@ const {state} = store('wpbs/grid', {
 
                     container.innerHTML += result.response;
 
+                    setDividers(grid, context);
+                    setMasonry(grid);
                     WPBS.observeMedia(container);
 
                     if (result.css) {
@@ -172,9 +174,6 @@ const {state} = store('wpbs/grid', {
 
                         document.head.appendChild(styleTag);
                     }
-
-                    setDividers(grid, context);
-                    setMasonry(grid);
 
                     if (!!result.last) {
                         element.remove();

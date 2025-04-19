@@ -18,28 +18,23 @@ function Link({defaultValue, callback}) {
                 {({onClose}) => (
                     <MenuGroup>
                         <MenuItem>
-                            <Grid columns={1} columnGap={15}>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
-                                    <span>Link:</span>
-                                    <LinkControl
-                                        searchInputPlaceholder="Search here..."
-                                        forceIsEditingLink={true}
-                                        hasTextControl={true}
-                                        value={value}
-                                        settings={[
-                                            {
-                                                id: 'opensInNewTab',
-                                                title: 'Open in new tab',
-                                            }
-                                        ]}
-                                        onChange={(newValue) => {
-                                            setValue(newValue);
-                                            callback(newValue);
-                                        }}
-                                        //withCreateSuggestion={true}
-                                    ></LinkControl>
-                                </div>
-                            </Grid>
+                            <LinkControl
+                                searchInputPlaceholder="Search here..."
+                                forceIsEditingLink={true}
+                                hasTextControl={true}
+                                value={value}
+                                settings={[
+                                    {
+                                        id: 'opensInNewTab',
+                                        title: 'Open in new tab',
+                                    }
+                                ]}
+                                onChange={(newValue) => {
+                                    setValue(newValue);
+                                    callback(newValue);
+                                }}
+                                //withCreateSuggestion={true}
+                            ></LinkControl>
                         </MenuItem>
                     </MenuGroup>
                 )}

@@ -55,6 +55,9 @@ registerBlockType(metadata.name, {
         },
         'wpbs-icon-color': {
             type: 'string'
+        },
+        'wpbs-icon-only': {
+            type: 'boolean'
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
@@ -63,11 +66,11 @@ registerBlockType(metadata.name, {
 
         const [link, setLink] = useState(attributes['wpbs-link']);
         const [icon, setIcon] = useState(attributes['wpbs-icon']);
-        const [iconRight, setIconRight] = useState(attributes['wpbs-icon-right']);
         const [loop, setLoop] = useState(attributes['wpbs-loop']);
         const [popup, setPopup] = useState(attributes['wpbs-popup']);
         const [iconColor, setIconColor] = useState(attributes['wpbs-icon-color']);
         const [iconPosition, setIconPosition] = useState(attributes['wpbs-icon-position']);
+        const [iconOnly, setIconOnly] = useState(attributes['wpbs-icon-only']);
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -98,12 +101,9 @@ registerBlockType(metadata.name, {
                     className={'flex items-center'}
                     __nextHasNoMarginBottom
                 />
-
             </Grid>
-
         </Grid>;
-        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
-
+        const tabIcon = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <TextControl
                     label="Icon"
@@ -133,17 +133,15 @@ registerBlockType(metadata.name, {
             <Grid columns={2} columnGap={15} rowGap={20}
                   style={{padding: '1rem 0'}}>
                 <ToggleControl
-                    label="Loop"
-                    checked={!!loop}
+                    label="Icon Only"
+                    checked={!!iconOnly}
                     onChange={(value) => {
-                        setLoop(value);
-                        setAttributes({'wpbs-loop': value});
+                        setIconOnly(value);
+                        setAttributes({'wpbs-icon-only': value});
                     }}
                     className={'flex items-center'}
                     __nextHasNoMarginBottom
                 />
-
-
             </Grid>
             <PanelColorSettings
                 enableAlpha
@@ -166,7 +164,7 @@ registerBlockType(metadata.name, {
 
         const tabs = {
             options: tabOptions,
-            loop: tabLoop
+            loop: tabIcon
         }
 
         const blockProps = useBlockProps({

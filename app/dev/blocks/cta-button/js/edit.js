@@ -29,8 +29,52 @@ function elementClassNames(attributes = {}) {
 
 function Content({attributes}) {
 
+    const {
+        link,
+        loop,
+        icon,
+        iconOnly,
+        iconPosition,
+        popup,
 
-    return <a href={'#'}>AAA</a>;
+    } = attributes;
+
+    const Title = () => {
+        if (!!iconOnly) {
+            return <span className={'screen-reader-text'}>{link.title}</span>;
+        } else {
+            return link.title
+        }
+    }
+
+    const linkUrl = () => {
+        if (!!loop) {
+            return link.url;
+        } else {
+            return '#';
+        }
+    }
+
+    const classNames = [
+        'wpbs-cta-button__link inline-flex items-center text-center',
+        iconPosition === 'left' ? 'flex-row-reverse' : 'flex-row'
+    ].filter(x => x).join(' ');
+
+    const style = Object.fromEntries(
+        Object.entries({
+            '--icon': icon || false
+        }).filter(([key, value]) => value));
+
+    const props = Object.fromEntries(
+        Object.entries({
+            className: classNames,
+            'data-popup': popup || false,
+            style: style
+        }).filter(([key, value]) => value));
+
+    return <a href={linkUrl} {...props} >
+        <Title/>
+    </a>;
 }
 
 registerBlockType(metadata.name, {
@@ -175,11 +219,10 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
-
+                <Link defaultValue={link} callback={(newValue) => {
+                    setAttributes({['wpbs-link']: newValue});
+                }}/>
                 <InspectorControls group="styles">
-                    <Link defaultValue={link} callback={(newValue) => {
-                        setAttributes({['wpbs-link']: newValue});
-                    }}/>
                     <PanelBody initialOpen={true}>
 
                         <TabPanel
@@ -203,10 +246,7 @@ registerBlockType(metadata.name, {
                                 (tab) => (<>{tabs[tab.name]}</>)
                             }
                         </TabPanel>
-
                     </PanelBody>
-
-
                 </InspectorControls>
 
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}

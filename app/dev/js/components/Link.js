@@ -1,4 +1,6 @@
-import {DropdownMenu, MenuGroup, MenuItem, SelectControl, ToolbarGroup} from "@wordpress/components";
+import {DropdownMenu, MenuGroup, MenuItem, SelectControl, TextControl, ToolbarGroup,
+    __experimentalGrid as Grid
+} from "@wordpress/components";
 import React, {useState} from "react";
 import {__experimentalLinkControl as LinkControl, BlockControls} from "@wordpress/block-editor";
 import {customLink} from "@wordpress/icons";
@@ -15,26 +17,29 @@ function Link({defaultValue, callback}) {
             >
                 {({onClose}) => (
                     <MenuGroup>
-                        <MenuItem
-
-                        >
-                            Link:
-                            <LinkControl
-                                searchInputPlaceholder="Search here..."
-
-                                value={value}
-                                settings={[
-                                    {
-                                        id: 'opensInNewTab',
-                                        title: 'Open in new tab',
-                                    }
-                                ]}
-                                onChange={(newValue) => {
-                                    setValue(newValue);
-                                    callback(newValue);
-                                }}
-                                //withCreateSuggestion={true}
-                            ></LinkControl>
+                        <MenuItem>
+                            <Grid columns={1} columnGap={15}>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <span>Link:</span>
+                                    <LinkControl
+                                        searchInputPlaceholder="Search here..."
+                                        forceIsEditingLink={true}
+                                        hasTextControl={true}
+                                        value={value}
+                                        settings={[
+                                            {
+                                                id: 'opensInNewTab',
+                                                title: 'Open in new tab',
+                                            }
+                                        ]}
+                                        onChange={(newValue) => {
+                                            setValue(newValue);
+                                            callback(newValue);
+                                        }}
+                                        //withCreateSuggestion={true}
+                                    ></LinkControl>
+                                </div>
+                            </Grid>
                         </MenuItem>
                     </MenuGroup>
                 )}

@@ -8,13 +8,14 @@ import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     PanelBody,
-    SelectControl,
+    SelectControl, TabPanel,
     TextControl,
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Link from "Components/Link.js";
+import {BackgroundSettings} from "Components/Background.js";
 
 
 function elementClassNames(attributes = {}) {
@@ -46,8 +47,8 @@ registerBlockType(metadata.name, {
         'wpbs-loop': {
             type: 'boolean'
         },
-        'wpbs-icon-right': {
-            type: 'boolean'
+        'wpbs-icon-position': {
+            type: 'string'
         },
         'wpbs-popup': {
             type: 'string'
@@ -66,10 +67,107 @@ registerBlockType(metadata.name, {
         const [loop, setLoop] = useState(attributes['wpbs-loop']);
         const [popup, setPopup] = useState(attributes['wpbs-popup']);
         const [iconColor, setIconColor] = useState(attributes['wpbs-icon-color']);
+        const [iconPosition, setIconPosition] = useState(attributes['wpbs-icon-position']);
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
+
+        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
+            <SelectControl
+                label={'Popup'}
+                value={popup}
+                onChange={(value) => {
+                    setAttributes({'wpbs-popup': value});
+                    setPopup(value);
+                }}
+                options={[]}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+
+            <Grid columns={2} columnGap={15} rowGap={20}
+                  style={{padding: '1rem 0'}}>
+                <ToggleControl
+                    label="Loop"
+                    checked={!!loop}
+                    onChange={(value) => {
+                        setLoop(value);
+                        setAttributes({'wpbs-loop': value});
+                    }}
+                    className={'flex items-center'}
+                    __nextHasNoMarginBottom
+                />
+
+            </Grid>
+
+        </Grid>;
+        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
+
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <TextControl
+                    label="Icon"
+                    value={icon}
+                    onChange={(value) => {
+                        setIcon(value);
+                        setAttributes({['wpbs-icon']: value});
+                    }}
+                    __nextHasNoMarginBottom
+                />
+                <SelectControl
+                    label={'Icon Position'}
+                    value={iconPosition}
+                    onChange={(value) => {
+                        setAttributes({'wpbs-icon-position': value});
+                        setIconPosition(value);
+                    }}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Left', value: 'left'},
+                        {label: 'Right', value: 'right'},
+                    ]}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            </Grid>
+            <Grid columns={2} columnGap={15} rowGap={20}
+                  style={{padding: '1rem 0'}}>
+                <ToggleControl
+                    label="Loop"
+                    checked={!!loop}
+                    onChange={(value) => {
+                        setLoop(value);
+                        setAttributes({'wpbs-loop': value});
+                    }}
+                    className={'flex items-center'}
+                    __nextHasNoMarginBottom
+                />
+
+
+            </Grid>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'icon',
+                        label: 'Icon Color',
+                        value: iconColor,
+                        onChange: (value) => {
+                            setAttributes({'wpbs-icon-color': value});
+                            setIconColor(value);
+                        },
+                        isShownByDefault: true
+                    }
+                ]}
+            />
+
+        </Grid>;
+
+        const tabs = {
+            options: tabOptions,
+            loop: tabLoop
+        }
 
         const blockProps = useBlockProps({
             className: elementClassNames(attributes),
@@ -79,78 +177,40 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
+
                 <InspectorControls group="styles">
+                    <Link defaultValue={link} callback={(newValue) => {
+                        setAttributes({['wpbs-link']: newValue});
+                    }}/>
                     <PanelBody initialOpen={true}>
-                        <Grid columns={1} columnGap={15} rowGap={20}>
-                            <Link defaultValue={link} callback={(newValue) => {
-                                setAttributes({['wpbs-link']: newValue});
-                            }}/>
-                            <Grid columns={2} columnGap={15} rowGap={20}>
-                                <TextControl
-                                    label="Icon"
-                                    value={icon}
-                                    onChange={(value) => {
-                                        setIcon(value);
-                                        setAttributes({['wpbs-icon']: value});
-                                    }}
-                                    __nextHasNoMarginBottom
-                                />
-                                <SelectControl
-                                    label={'Popup'}
-                                    value={popup}
-                                    onChange={(value) => {
-                                        setAttributes({'wpbs-popup': value});
-                                        setPopup(value);
-                                    }}
-                                    options={[]}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                            </Grid>
-                            <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{padding: '1rem 0'}}>
-                                <ToggleControl
-                                    label="Loop"
-                                    checked={!!loop}
-                                    onChange={(value) => {
-                                        setLoop(value);
-                                        setAttributes({'wpbs-loop': value});
-                                    }}
-                                    className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
-                                <ToggleControl
-                                    label="Icon on Right"
-                                    checked={!!iconRight}
-                                    onChange={(value) => {
-                                        setIconRight(value);
-                                        setAttributes({'wpbs-icon-right': value});
-                                    }}
-                                    className={'flex items-center'}
-                                    __nextHasNoMarginBottom
-                                />
 
-                            </Grid>
-                            <PanelColorSettings
-                                enableAlpha
-                                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                                colorSettings={[
-                                    {
-                                        slug: 'icon',
-                                        label: 'Icon Color',
-                                        value: iconColor,
-                                        onChange: (value) => {
-                                            setAttributes({'wpbs-icon-color': value});
-                                            setIconColor(value);
-                                        },
-                                        isShownByDefault: true
-                                    }
-                                ]}
-                            />
+                        <TabPanel
+                            className="wpbs-editor-tabs"
+                            activeClass="active"
+                            orientation="horizontal"
+                            initialTabName="options"
+                            tabs={[
+                                {
+                                    name: 'options',
+                                    title: 'Options',
+                                    className: 'tab-options',
+                                },
+                                {
+                                    name: 'icon',
+                                    title: 'Icon',
+                                    className: 'tab-icon',
+                                }
+                            ]}>
+                            {
+                                (tab) => (<>{tabs[tab.name]}</>)
+                            }
+                        </TabPanel>
 
-                        </Grid>
                     </PanelBody>
+
+
                 </InspectorControls>
+
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 

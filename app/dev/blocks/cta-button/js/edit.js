@@ -76,10 +76,11 @@ function Content({attributes}) {
             className: classNames,
             'data-popup': popup || false,
             style: style,
+            href:linkUrl,
             target: link.target || '_self'
         }).filter(([key, value]) => value));
 
-    return <a href={linkUrl} {...props} >
+    return <a {...props} >
         <Title/>
     </a>;
 }

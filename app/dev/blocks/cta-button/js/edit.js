@@ -75,7 +75,8 @@ function Content({attributes}) {
         Object.entries({
             className: classNames,
             'data-popup': popup || false,
-            style: style
+            style: style,
+            target: link.target || '_self'
         }).filter(([key, value]) => value));
 
     return <a href={linkUrl} {...props} >

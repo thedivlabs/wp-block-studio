@@ -31,7 +31,7 @@ function Content({attributes}) {
 
     const {
         'wpbs-link': link = {},
-        'wpbs-loop': loop,
+        'wpbs-loop': loop = false,
         'wpbs-icon': icon,
         'wpbs-icon-color': iconColor,
         'wpbs-icon-only': iconOnly,
@@ -54,9 +54,9 @@ function Content({attributes}) {
 
     const linkUrl = () => {
         if (!!loop) {
-            return link.url || '#';
-        } else {
             return '#';
+        } else {
+            return link.url;
         }
     }
 
@@ -76,7 +76,7 @@ function Content({attributes}) {
             className: classNames,
             'data-popup': popup || false,
             style: style,
-            href:linkUrl,
+            href: linkUrl(),
             target: link.target || '_self'
         }).filter(([key, value]) => value));
 

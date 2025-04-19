@@ -1,16 +1,20 @@
 import {
     useBlockProps,
-    InspectorControls, PanelColorSettings, BlockEdit,
+    InspectorControls, PanelColorSettings, BlockEdit
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
-    __experimentalGrid as Grid, PanelBody, SelectControl, TextControl, ToggleControl,
+    __experimentalGrid as Grid,
+    PanelBody,
+    SelectControl,
+    TextControl,
+    ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
-import LinkControl from "@wordpress/block-editor/build/components/link-control";
+import Link from "Components/Link.js";
 
 
 function elementClassNames(attributes = {}) {
@@ -78,22 +82,9 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
-                            <LinkControl
-                                searchInputPlaceholder="Search here..."
-                                label={'Link'}
-                                value={link}
-                                settings={[
-                                    {
-                                        id: 'opensInNewTab',
-                                        title: 'Open in new tab',
-                                    }
-                                ]}
-                                onChange={(newValue) => {
-                                    setLink(newValue);
-                                    setAttributes({'wpbs-link': newValue});
-                                }}
-                                //withCreateSuggestion={true}
-                            ></LinkControl>
+                            <Link defaultValue={link} callback={(newValue) => {
+                                setAttributes({['wpbs-link']: newValue});
+                            }}/>
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 <TextControl
                                     label="Icon"

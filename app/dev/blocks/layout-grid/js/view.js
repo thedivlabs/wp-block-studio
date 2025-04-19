@@ -163,9 +163,11 @@ const {state} = store('wpbs/grid', {
 
                     container.innerHTML += result.response;
 
+                    [...container.querySelectorAll('.wpbs-background')].forEach(bg => bg.classList.remove('lazy'));
+
                     if (result.css) {
                         const styleTag = document.createElement('style');
-                        
+
                         styleTag.innerHTML = result.css;
 
                         document.head.appendChild(styleTag);

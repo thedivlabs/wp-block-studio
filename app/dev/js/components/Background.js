@@ -28,8 +28,6 @@ export function Background({attributes = {}, className = '', editor = false}) {
         return false;
     }
 
-    console.log(settings.type);
-
     const bgClass = [
         'wpbs-background',
         settings.mask ? 'wpbs-background--mask' : null,

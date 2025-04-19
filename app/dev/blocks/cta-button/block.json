@@ -1,0 +1,77 @@
+{
+  "name": "wpbs/cta-button",
+  "title": "CTA Button",
+  "description": "Display a CTA button",
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "selectors": {
+    "root": ".wpbs-cta-button",
+    "border": ".wpbs-cta-button > a",
+    "color": ".wpbs-cta-button > a",
+    "spacing": ".wpbs-cta-button > a",
+    "typography": ".wpbs-cta-button",
+    "dimensions": ".wpbs-cta-button > a"
+  },
+  "styles": [
+    {
+      "name": "primary",
+      "label": "Primary",
+      "isDefault": true
+    },
+    {
+      "name": "secondary",
+      "label": "Secondary"
+    },
+    {
+      "name": "outline",
+      "label": "Outline"
+    },
+    {
+      "name": "reverse",
+      "label": "Reverse"
+    },
+    {
+      "name": "link",
+      "label": "Link"
+    }
+  ],
+  "supports": {
+    "dimensions": {
+      "minHeight": true
+    },
+    "shadow": true,
+    "color": {
+      "background": true,
+      "text": false,
+      "link": true,
+      "gradients": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal"
+      ],
+      "margin": true,
+      "padding": true
+    },
+    "typography": {
+      "fontSize": true,
+      "textAlign": true,
+      "fontWeight": true,
+      "__experimentalTextTransform": true
+    }
+  },
+  "editorScript": "file:./js/edit.js",
+  "style": "file:./js/edit.css",
+  "editorStyle": "file:./js/edit.css",
+  "icon": "admin-links"
+}
+
+

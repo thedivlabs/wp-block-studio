@@ -33,6 +33,7 @@ function Content({attributes}) {
         'wpbs-link': link = {},
         'wpbs-loop': loop,
         'wpbs-icon': icon,
+        'wpbs-icon-color': iconColor,
         'wpbs-icon-only': iconOnly,
         'wpbs-icon-position': iconPosition,
         'wpbs-popup': popup,
@@ -66,7 +67,8 @@ function Content({attributes}) {
 
     const style = Object.fromEntries(
         Object.entries({
-            '--icon': icon || false
+            '--icon': icon || false,
+            '--icon-color': iconColor || false,
         }).filter(([key, value]) => value));
 
     const props = Object.fromEntries(

@@ -17,7 +17,8 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Link from "Components/Link.js";
-import ServerSideRender from '@wordpress/server-side-render';
+import {useSelect} from "@wordpress/data";
+import {store as coreStore} from "@wordpress/core-data";
 
 
 function elementClassNames(attributes = {}) {
@@ -72,6 +73,16 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
+        const popups = useSelect(
+            (select) =>
+                select(coreStore).getEntityRecords('postType', 'popup', {
+                    per_page: -1,
+                }),
+            []
+        );
+
+        console.log(popups);
+
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label={'Popup'}
@@ -80,7 +91,13 @@ registerBlockType(metadata.name, {
                     setAttributes({'wpbs-popup': value});
                     setPopup(value);
                 }}
-                options={[]}
+                options={[
+                    /*...popups?.map((popup) => {
+                        return {label: popup.title, value: popup.id}
+                    }),*/
+                    {label:'Select', value:''},
+                    {label:'Testing', value:'1234'}
+                ]}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />

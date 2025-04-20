@@ -8,7 +8,7 @@
     order: 0;
   }
 
-  &--icon {
+  &--icon &__link {
     &:after {
       transition: color 0.3s ease;
       color: var(--icon-color, inherit);

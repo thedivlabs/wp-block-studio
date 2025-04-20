@@ -7,6 +7,14 @@
       "type": "string"
     }
   },
+  "selectors": {
+    "root": ".wpbs-cta-button",
+    "border": ".wpbs-cta-button > .wpbs-cta-button__link",
+    "color": ".wpbs-cta-button > .wpbs-cta-button__link",
+    "spacing": ".wpbs-cta-button > .wpbs-cta-button__link",
+    "typography": ".wpbs-cta-button",
+    "dimensions": ".wpbs-cta-button > .wpbs-cta-button__link"
+  },
   "styles": [
     {
       "name": "primary",

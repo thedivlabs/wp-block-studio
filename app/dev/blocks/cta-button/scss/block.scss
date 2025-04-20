@@ -1,0 +1,8 @@
+.wpbs-cta-button {
+
+  &__link:after {
+    color: var(--icon-color, inherit);
+    content: var(--icon, none);
+  }
+
+}

@@ -138,7 +138,7 @@ class WPBS_Grid {
 
 	}
 
-	public static function render_style( $attributes, $block, $query ): string|bool {
+	public static function render_style( $attributes, $block, $query = false ): string|bool {
 
 		$breakpoints       = WPBS_Style::get_breakpoint();
 		$breakpoint_mobile = $breakpoints[ $attributes['wpbs-breakpoint-mobile'] ?? 'xs' ] ?? null;

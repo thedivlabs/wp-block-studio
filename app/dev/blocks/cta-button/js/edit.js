@@ -15,7 +15,7 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Link from "Components/Link.js";
-import {BackgroundSettings} from "Components/Background.js";
+import ServerSideRender from '@wordpress/server-side-render';
 
 
 function elementClassNames(attributes = {}) {
@@ -25,64 +25,6 @@ function elementClassNames(attributes = {}) {
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
-}
-
-function Content({attributes}) {
-
-    const {
-        'wpbs-link': link = {},
-        'wpbs-loop': loop = false,
-        'wpbs-icon': icon,
-        'wpbs-icon-color': iconColor,
-        'wpbs-icon-only': iconOnly,
-        'wpbs-icon-position': iconPosition,
-        'wpbs-popup': popup,
-
-    } = attributes;
-
-    const Title = () => {
-        if (!'title' in link) {
-            return false
-        }
-
-        if (!!iconOnly) {
-            return <span className={'screen-reader-text'}>{link.title}</span>;
-        } else {
-            return link.title || false
-        }
-    }
-
-    const linkUrl = () => {
-        if (!!loop) {
-            return '#';
-        } else {
-            return link.url;
-        }
-    }
-
-    const classNames = [
-        'wpbs-cta-button__link inline-flex items-center text-center',
-        iconPosition === 'left' ? 'flex-row-reverse' : 'flex-row'
-    ].filter(x => x).join(' ');
-
-    const style = Object.fromEntries(
-        Object.entries({
-            '--icon': icon || false,
-            '--icon-color': iconColor || false,
-        }).filter(([key, value]) => value));
-
-    const props = Object.fromEntries(
-        Object.entries({
-            className: classNames,
-            'data-popup': popup || false,
-            style: style,
-            href: linkUrl(),
-            target: link.target || '_self'
-        }).filter(([key, value]) => value));
-
-    return <a {...props} >
-        <Title/>
-    </a>;
 }
 
 registerBlockType(metadata.name, {
@@ -261,25 +203,13 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <div {...blockProps}>
-                    <Content attributes={attributes}/>
-                </div>
+                <ServerSideRender
+                    block="wpbs/cta-button"
+                />
             </>
         )
     },
-    save: (props) => {
-
-
-        const blockProps = useBlockProps.save({
-            className: elementClassNames(props.attributes),
-        });
-
-        return (
-            <div {...blockProps}>
-                <Content attributes={props.attributes}/>
-            </div>
-        );
-    }
+    save: () => null
 })
 
 

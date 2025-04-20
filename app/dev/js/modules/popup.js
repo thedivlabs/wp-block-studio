@@ -80,6 +80,8 @@ export default class Popup {
                     delay: 'delay' in cta_popups[0] ? cta_popups[0].delay || false : false
                 });
 
+                WPBS.observeMedia(document.querySelector('#wpbs-popup-' + popup.id));
+
             });
 
 

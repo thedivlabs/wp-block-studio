@@ -1,9 +1,9 @@
 (() => {
-    this.cookie_base = 'divlabs-popup-';
+    this.cookie_base = 'wpbs-popup-';
 
     this.init = () => {
 
-        const settings = 'popups' in DIVLABS.settings ? DIVLABS.settings.popups : false;
+        const settings = 'popups' in WPBS.settings ? WPBS.settings.popups : false;
 
         if (!settings) {
             return false;
@@ -38,7 +38,7 @@
                 days = false;
         }
 
-        DIVLABS.helpers.set_cookie(this.cookie_base + popup.id, 1, days);
+        WPBS.set_cookie(this.cookie_base + popup.id, 1, days);
     }
 
     this.click_popups = (click_popups = []) => {
@@ -51,7 +51,7 @@
                 el.addEventListener('click', (e) => {
                     e.preventDefault();
                     this.set_cookie(popup);
-                    DIVLABS.modal('#divlabs-popup-' + popup.id, {
+                    WPBS.modals.toggle_modal('#wpbs-popup-' + popup.id, {
                         delay: 'delay' in click_popups[0] ? click_popups[0].delay || false : false
                     });
                 })
@@ -65,17 +65,17 @@
         }
         this.set_cookie(enter_popups[0]);
 
-        DIVLABS.modal('#divlabs-popup-' + enter_popups[0].id, {
+        WPBS.modals.toggle_modal('#wpbs-popup-' + enter_popups[0].id, {
             delay: 'delay' in enter_popups[0] ? enter_popups[0].delay || false : false
         });
     }
 
     this.has_cookie = (id) => {
-        return id !== 'undefined' ? DIVLABS.helpers.get_cookie(this.cookie_base + id) : false;
+        return id !== 'undefined' ? WPBS.get_cookie(this.cookie_base + id) : false;
     }
 
 
-    document.addEventListener(('DIVLABS' in window ? 'DOMContentLoaded' : 'divlabs-init'), () => {
+    document.addEventListener(('WPBS' in window ? 'DOMContentLoaded' : 'wpbs-init'), () => {
         this.init();
     });
 

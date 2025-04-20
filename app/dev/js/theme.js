@@ -25,6 +25,34 @@ class WPBS_Theme {
         this.init();
     }
 
+    set_cookie(cname, cvalue, exdays = false) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        const expires = exdays === false ? null : "expires=" + d.toUTCString();
+        const args = [
+            JSON.stringify(cvalue),
+            expires,
+            'path=/'
+        ].filter((arg) => arg).join(';');
+        document.cookie = cname + "=" + args;
+    }
+
+    get_cookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return JSON.parse(c.substring(name.length, c.length));
+            }
+        }
+        return '';
+    }
+
     observeMedia(refElement) {
         if (!refElement) {
             return false;
@@ -70,7 +98,7 @@ class WPBS_Theme {
                 if (entry.isIntersecting) {
 
                     const media = entry.target;
-                    observerIntersection.unobserve(entry.target);
+                    observer.unobserve(entry.target);
 
                     if (media.dataset.src) {
                         media.src = media.dataset.src;

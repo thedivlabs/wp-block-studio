@@ -18,6 +18,13 @@ $button_props = $is_popup ? implode( ' ', array_filter( [
 	] ) ) . '"'
 ] ) ) : false;
 
+
+$style_props = wp_style_engine_get_styles( [ 'block_type' => $block->block_type, 'attributes' => $attributes ] );
+
+
+WPBS::console_log($block ?? false);
+WPBS::console_log($style_props);
+
 ?>
 
 

@@ -31,6 +31,16 @@ function elementClassNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
+function elementClassNames(attributes = {}) {
+
+    return [
+        'wpbs-cta-button',
+        attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
+        attributes.uniqueId,
+        LayoutClasses(attributes)
+    ].filter(x => x).join(' ');
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -229,7 +239,22 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: () => null
+    save: () => {
+
+        const blockProps = useBlockProps.save({
+            className: elementClassNames(props.attributes),
+            style: {
+                '--icon': props.attributes['wpbs-icon'],
+                '--icon-color': props.attributes['wpbs-icon-color'],
+            }
+        });
+
+        return <div {...blockProps}>
+            <button className={'wpbs-cta-button__link wp-element-button'}>
+                {props.attributes['wpbs-link'].title || 'Learn More'}
+            </button>
+        </div>
+    }
 })
 
 

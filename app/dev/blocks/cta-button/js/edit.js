@@ -44,8 +44,8 @@ registerBlockType(metadata.name, {
         'wpbs-loop': {
             type: 'boolean'
         },
-        'wpbs-icon-position': {
-            type: 'string'
+        'wpbs-icon-first': {
+            type: 'boolean'
         },
         'wpbs-popup': {
             type: 'string'
@@ -66,7 +66,7 @@ registerBlockType(metadata.name, {
         const [loop, setLoop] = useState(attributes['wpbs-loop']);
         const [popup, setPopup] = useState(attributes['wpbs-popup']);
         const [iconColor, setIconColor] = useState(attributes['wpbs-icon-color']);
-        const [iconPosition, setIconPosition] = useState(attributes['wpbs-icon-position']);
+        const [iconFirst, setIconFirst] = useState(attributes['wpbs-icon-first']);
         const [iconOnly, setIconOnly] = useState(attributes['wpbs-icon-only']);
 
         useEffect(() => {
@@ -95,8 +95,8 @@ registerBlockType(metadata.name, {
                     /*...popups?.map((popup) => {
                         return {label: popup.title, value: popup.id}
                     }),*/
-                    {label:'Select', value:''},
-                    {label:'Testing', value:'1234'}
+                    {label: 'Select', value: ''},
+                    {label: 'Testing', value: '1234'}
                 ]}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
@@ -128,21 +128,7 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-                <SelectControl
-                    label={'Icon Position'}
-                    value={iconPosition}
-                    onChange={(value) => {
-                        setAttributes({'wpbs-icon-position': value});
-                        setIconPosition(value);
-                    }}
-                    options={[
-                        {label: 'Select', value: ''},
-                        {label: 'Left', value: 'left'},
-                        {label: 'Right', value: 'right'},
-                    ]}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}
                   style={{padding: '1rem 0'}}>
@@ -152,6 +138,16 @@ registerBlockType(metadata.name, {
                     onChange={(value) => {
                         setIconOnly(value);
                         setAttributes({'wpbs-icon-only': value});
+                    }}
+                    className={'flex items-center'}
+                    __nextHasNoMarginBottom
+                />
+                <ToggleControl
+                    label="Icon First"
+                    checked={!!iconFirst}
+                    onChange={(value) => {
+                        setIconFirst(value);
+                        setAttributes({'wpbs-icon-first': value});
                     }}
                     className={'flex items-center'}
                     __nextHasNoMarginBottom

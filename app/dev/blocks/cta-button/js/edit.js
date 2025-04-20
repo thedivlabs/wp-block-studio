@@ -38,7 +38,6 @@ function elementProps(attributes = {}) {
 
     return Object.fromEntries(
         Object.entries({
-            '--icon': '"\\' +  attributes['wpbs-icon'] + '"',
             '--icon-color': attributes['wpbs-icon-color'],
         }).filter(([key, value]) => value)
     );
@@ -70,23 +69,25 @@ const Content = ({attributes,editor=false})=>{
         'wpbs-cta-button__link wp-element-button',
     ].filter(x => x).join(' ');
 
-    if (isPopup) {
+    if (isPopup || editor) {
         return (
             <button className={className} {...buttonProps(attributes)}>
                 <span>{title}</span>
+                <i className={attributes['wpbs-icon']}></i>
             </button>
         );
     }
 
     const anchorProps = {
-        target: !!link.opensInNewTab ? "_blank" : "_self",
+        target: !!link.openInNewTab ? "_blank" : "_self",
     }
 
-    const href = editor ? '#' : '%%URL%%';
+    const href = '%%URL%%';
 
     return (
-        <a href={href} className={className} {...anchorProps}>
+        <a href={href} className={className} {...anchorProps} >
             <span>{title}</span>
+            <i className={attributes['wpbs-icon']}></i>
         </a>
     );
 }
@@ -181,8 +182,16 @@ registerBlockType(metadata.name, {
                     label="Icon"
                     value={icon}
                     onChange={(value) => {
-                        setIcon(value);
-                        setAttributes({['wpbs-icon']: value});
+
+                        const htmlString = value || '<i class="fa-light fa-arrow-right"></i>';
+
+                        const classRegex = /<i[^>]*class=["']([^"']+)["'][^>]*>/i;
+                        const match = htmlString.match(classRegex);
+
+                        const iconClass = match ? match[1] : '';
+
+                        setIcon(iconClass);
+                        setAttributes({['wpbs-icon']: iconClass});
                     }}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom

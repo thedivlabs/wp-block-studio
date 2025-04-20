@@ -6,8 +6,8 @@ $classes = implode( ' ', array_filter( [
 ] ) );
 
 $style = implode( '; ', array_filter( [
-	'--icon'       => ! empty( $attributes['wpbs-icon'] ) ? '/' . $attributes['wpbs-icon'] : null,
-	'--icon-color' => $attributes['wpbs-icon-color'] ?? null,
+	! empty( $attributes['wpbs-icon'] ) ? '--icon:"\\' . $attributes['wpbs-icon'] . '"' : null,
+	! empty( $attributes['wpbs-icon-color'] ) ? '--icon-color:' . $attributes['wpbs-icon-color'] : null,
 ] ) );
 
 $url      = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
@@ -18,9 +18,9 @@ $is_popup = ! empty( $attributes['wpbs-popup'] );
 $button_props = $is_popup ? implode( ' ', array_filter( [
 	'data-wp-interactive="wpbs/cta-button"',
 	'data-wp-on--click="actions.popup"',
-	'data-wp-context="' . json_encode( [
+	'data-wp-context="' . esc_attr( json_encode( [
 		'id' => $attributes['wpbs-popup'] ?? false,
-	] ) . '"'
+	] ) ) . '"'
 ] ) ) : false;
 
 ?>

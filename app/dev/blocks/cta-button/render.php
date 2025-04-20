@@ -5,11 +5,6 @@ WPBS_Grid::render_style( $attributes ?? false, $block ?? false, false );
 $classes = implode( ' ', array_filter( [
 ] ) );
 
-$style = implode( '; ', array_filter( [
-	! empty( $attributes['wpbs-icon'] ) ? '--icon:"\\' . $attributes['wpbs-icon'] . '"' : null,
-	! empty( $attributes['wpbs-icon-color'] ) ? '--icon-color:' . $attributes['wpbs-icon-color'] : null,
-] ) );
-
 $url      = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
 $title    = $attributes['wpbs-link']['title'] ?? 'Learn More';
 $target   = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_self';
@@ -28,7 +23,6 @@ $button_props = $is_popup ? implode( ' ', array_filter( [
 
 <div <?php echo get_block_wrapper_attributes( array_filter( [
 	'class' => $classes,
-	'style' => $style,
 ] ) ); ?>>
 
 	<?php if ( ! $is_popup ){ ?>

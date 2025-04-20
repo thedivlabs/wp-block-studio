@@ -25,6 +25,7 @@ function elementClassNames(attributes = {}) {
 
     return [
         'wpbs-cta-button',
+        attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
@@ -80,8 +81,6 @@ registerBlockType(metadata.name, {
                 }),
             []
         );
-
-        console.log(popups);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
@@ -179,6 +178,10 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: elementClassNames(attributes),
+            style: {
+                '--icon': attributes['wpbs-icon'],
+                '--icon-color': attributes['wpbs-icon-color'],
+            }
         });
 
 

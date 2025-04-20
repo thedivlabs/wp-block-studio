@@ -32,10 +32,10 @@ class WPBS {
 			self::clear_transients();
 		}
 
-		add_action( 'init', [ $this, 'theme_support' ], 15 );
 		add_action( 'init', [ $this, 'theme_assets' ], 20 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
-		add_action( 'enqueue_block_assets', [ $this, 'admin_assets' ] );
+		add_action( 'enqueue_block_assets', [ $this, 'block_assets' ] );
+		add_action( 'admin_init', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 
@@ -75,18 +75,22 @@ class WPBS {
 
 	}
 
+	public function block_assets(): void {
+		//wp_enqueue_style( 'wpbs-theme-css' );
+	}
+
 	public function admin_assets(): void {
-		wp_enqueue_style( 'wpbs-theme-css' );
+		//wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
-		//wp_enqueue_script( 'wpbs-swiper-js' );
-		//wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
 	public function editor_assets(): void {
 		add_editor_style();
-		//wp_enqueue_style( 'wpbs-swiper-css' );
-		//wp_enqueue_script( 'wpbs-swiper-js' );
+		wp_enqueue_style( 'wpbs-swiper-css' );
+		wp_enqueue_script( 'wpbs-swiper-js' );
+		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
+		wp_enqueue_style( 'wpbs-admin-css' );
 	}
 
 	public function view_assets(): void {
@@ -94,24 +98,6 @@ class WPBS {
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
 	}
-
-	public function theme_support(): void {
-
-		add_theme_support( 'custom-spacing' );
-		add_theme_support( 'custom-units' );
-		add_theme_support( 'block-template-parts' );
-		add_theme_support( 'core-block-patterns' );
-		add_theme_support( 'custom-background' );
-		add_theme_support( 'editor-styles' );
-		add_theme_support( 'post-thumbnails' );
-		add_theme_support( 'appearance-tools' );
-		add_theme_support( 'wp-block-styles' );
-		add_theme_support( 'border' );
-		//add_theme_support( 'editor-color-palette' );
-		//add_theme_support( 'editor-gradient-presets' );
-
-	}
-
 
 	public function init_theme(): void {
 
@@ -122,12 +108,16 @@ class WPBS {
 		require_once self::$core_path . 'modules/class-wpbs-props.php';
 		require_once self::$core_path . 'modules/class-wpbs-cpt.php';
 		require_once self::$core_path . 'modules/class-wpbs-taxonomy.php';
+		require_once self::$core_path . 'modules/class-wpbs-popup.php';
 
 		WPBS_WP::init();
 		WPBS_Blocks::init();
 		WPBS_Style::init();
 		WPBS_CPT::init();
 		WPBS_Taxonomy::init();
+		WPBS_Popup::init();
+
+		self::init_classes('core/components');
 
 
 		do_action( 'wpbs_init' );

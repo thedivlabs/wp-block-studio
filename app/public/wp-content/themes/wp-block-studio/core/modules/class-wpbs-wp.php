@@ -31,6 +31,23 @@ class WPBS_WP {
 
 	}
 
+	public function theme_support(): void {
+
+		add_theme_support( 'custom-spacing' );
+		add_theme_support( 'custom-units' );
+		add_theme_support( 'block-template-parts' );
+		add_theme_support( 'core-block-patterns' );
+		add_theme_support( 'custom-background' );
+		add_theme_support( 'editor-styles' );
+		add_theme_support( 'post-thumbnails' );
+		add_theme_support( 'appearance-tools' );
+		add_theme_support( 'wp-block-styles' );
+		add_theme_support( 'border' );
+		//add_theme_support( 'editor-color-palette' );
+		//add_theme_support( 'editor-gradient-presets' );
+
+	}
+
 	public function add_rest_method( $endpoints ) {
 		if ( is_wp_version_compatible( '5.5' ) ) {
 			return $endpoints;

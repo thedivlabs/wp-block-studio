@@ -1,0 +1,141 @@
+#adminmenu {
+
+
+  div.dashicons {
+
+    &-before[class*='dashicons--'] {
+
+      &:before {
+        font-size: 1em;
+        font-family: 'Font Awesome 6 Pro', sans-serif;
+        @apply
+        w-auto
+        font-bold
+        leading-normal
+      }
+    }
+
+    &--wines {
+      &:before {
+        content: '\f72f';
+      }
+    }
+
+    &--news {
+      &:before {
+        content: '\f1ea';
+      }
+    }
+
+    &--portfolio {
+      &:before {
+        content: '\f0b1';
+      }
+    }
+
+    &--feature {
+      &:before {
+        content: '\f336';
+      }
+    }
+
+    &--cta {
+      &:before {
+        content: '\f685';
+      }
+    }
+
+    &--practice-area {
+      &:before {
+        content: '\f24e';
+      }
+    }
+
+    &--services {
+      &:before {
+        content: '\f562';
+      }
+    }
+
+    &--legal-services {
+      &:before {
+        content: '\e0c1';
+      }
+    }
+
+    &--events {
+      &:before {
+        content: '\f736';
+      }
+    }
+
+    &--companies {
+      &:before {
+        content: '\f3c5';
+      }
+    }
+
+    &--service-areas {
+      &:before {
+        content: '\f0ac';
+      }
+    }
+
+    &--faqs {
+      &:before {
+        content: '\e3dd';
+      }
+    }
+
+    &--team {
+      &:before {
+        content: '\e533';
+      }
+    }
+
+    &--popups {
+      &:before {
+        content: '\f2d2';
+      }
+    }
+
+    &--reviews {
+      &:before {
+        content: '\f4b4';
+      }
+    }
+
+    &--portfolio {
+      &:before {
+        content: '\f0b1';
+      }
+    }
+
+    &--theme-settings {
+      &:before {
+        content: '\f1de';
+      }
+    }
+
+
+    &--photo_gallery {
+      &:before {
+        content: '\e3aa';
+      }
+    }
+
+    &--jobs {
+      &:before {
+        content: '\f0b1';
+      }
+    }
+
+    &--certs {
+      &:before {
+        content: '\f5f3';
+      }
+    }
+
+
+  }
+}

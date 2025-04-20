@@ -2,11 +2,19 @@
   content: none !important;
 }
 
+.block-editor-block-list__block .block-list-appender.block-list-appender {
+  z-index: 40;
+}
+
 .editor-visual-editor {
+  height: calc(100svh - 60px) !important;
+
+  .block-editor-block-canvas {
+
+  }
 
 
   .editor-styles-wrapper {
-    min-height: 65vh;
     @apply
     flex
     flex-col

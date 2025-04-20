@@ -673,20 +673,16 @@
             "right": ".7rem"
           }
         },
-        "elements": {
-          "link": {
-            "typography": {
-              "fontSize": ".9rem",
-              "textDecoration": "none",
-              "textAlign": "center",
-              "lineHeight": "normal"
-            }
-          }
+        "typography": {
+          "fontSize": ".9rem",
+          "textDecoration": "none",
+          "textAlign": "center",
+          "lineHeight": "normal"
         },
         "variations": {
           "primary": {
             "elements": {
-              "link": {
+              "button": {
                 "border": {
                   "style": "none"
                 },
@@ -727,7 +723,7 @@
           },
           "outline": {
             "elements": {
-              "link": {
+              "button": {
                 "border": {
                   "style": "solid",
                   "width": "2px",
@@ -754,7 +750,7 @@
           },
           "reverse": {
             "elements": {
-              "link": {
+              "button": {
                 "color": {
                   "background": "transparent",
                   "text": "white"
@@ -797,7 +793,7 @@
               "color": ""
             },
             "elements": {
-              "link": {
+              "button": {
                 "color": {
                   "text": "inherit",
                   "background": "transparent"

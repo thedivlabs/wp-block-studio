@@ -2,12 +2,7 @@
 
 WPBS_Grid::render_style( $attributes ?? false, $block ?? false, false );
 
-$type = str_replace( 'is-style-', '', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ), function ( $class ) {
-	return str_starts_with( $class, 'is-style' );
-} ) )[0] ?? '' );
-
 $classes = implode( ' ', array_filter( [
-	'wpbs-cta-button--' . $type,
 ] ) );
 
 $style = implode( '; ', array_filter( [
@@ -15,19 +10,25 @@ $style = implode( '; ', array_filter( [
 	'--icon-color' => $attributes['wpbs-icon-color'] ?? null,
 ] ) );
 
-$url       = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
-$title     = $attributes['wpbs-link']['title'] ?? 'Learn More';
-$target    = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_self';
-$is_button = ! empty( $attributes['wpbs-popup'] );
+$url      = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
+$title    = $attributes['wpbs-link']['title'] ?? 'Learn More';
+$target   = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_self';
+$is_popup = ! empty( $attributes['wpbs-popup'] );
 ?>
 
 
-<div <?php echo get_block_wrapper_attributes( [
-	'class' => $classes,
-	'style' => $style,
-] ); ?>>
+<div <?php echo get_block_wrapper_attributes( array_filter( [
+	'class'               => $classes,
+	'style'               => $style,
+	'data-popup'          => $attributes['wpbs-popup'] ?? null,
+	'data-wp-interactive' => 'wpbs/cta-button',
+	'data-wp-on--click'   => $is_popup ? 'popup' : null,
+	'data-context'        => $is_popup ? [
+		'id' => $attributes['wpbs-popup'] ?? false,
+	] : null,
+] ) ); ?>>
 
-	<?php if ( $is_button ){ ?>
+	<?php if ( ! $is_popup ){ ?>
     <a href="<?= $url ?>" class="wpbs-cta-button__link wp-element-button" target="<?= $target ?>">
 		<?php } else { ?>
         <button type="button" class="wpbs-cta-button__link wp-element-button">
@@ -39,7 +40,7 @@ $is_button = ! empty( $attributes['wpbs-popup'] );
                 <span><?= $title ?></span>
 			<?php } ?>
 
-			<?php if ( $is_button ){ ?>
+			<?php if ( $is_popup ){ ?>
         </button>
 		<?php } else { ?>
     </a>

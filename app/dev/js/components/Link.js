@@ -1,4 +1,5 @@
-import {DropdownMenu, MenuGroup, MenuItem, SelectControl, TextControl, ToolbarGroup,
+import {
+    DropdownMenu, MenuGroup, MenuItem, SelectControl, TextControl, ToolbarGroup,
     __experimentalGrid as Grid
 } from "@wordpress/components";
 import React, {useState} from "react";
@@ -20,7 +21,8 @@ function Link({defaultValue, callback}) {
                         <MenuItem>
                             <LinkControl
                                 searchInputPlaceholder="Search here..."
-                                forceIsEditingLink={true}
+                                allowDirectEntry={true}
+                                //forceIsEditingLink={true}
                                 hasTextControl={true}
                                 value={value}
                                 settings={[

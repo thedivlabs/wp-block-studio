@@ -38,7 +38,7 @@ function elementProps(attributes = {}) {
 
     return Object.fromEntries(
         Object.entries({
-            '--icon': attributes['wpbs-icon'],
+            '--icon': '"\\' +  attributes['wpbs-icon'] + '"',
             '--icon-color': attributes['wpbs-icon-color'],
         }).filter(([key, value]) => value)
     );

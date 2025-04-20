@@ -49,6 +49,7 @@ function buttonProps(attributes = {}) {
     return Object.fromEntries(
         Object.entries({
             type:'button',
+            title: !!attributes['wpbs-icon-only'] && !!attributes['wpbs-link'] ? attributes['wpbs-link'].title : null,
             'data-wp-interactive': 'wpbs/cta-button',
             'data-wp-on--click': 'actions.popup',
             'data-wp-context':JSON.stringify({

@@ -4,28 +4,22 @@
   position: relative;
   gap: .3rem;
 
-  &--icon-first &__link:after {
-    order: 0;
-  }
-
   &--icon &__link {
     &:after {
-      transition: color 0.3s ease;
-      color: var(--icon-color, inherit);
       content: var(--icon, none);
-      order: 2;
-      height: 1em;
-      aspect-ratio: 1/1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      font-family: 'Font Awesome 6 Pro', sans-serif;
     }
 
     &:hover:after {
       color: inherit;
     }
+  }
+
+  &--icon-first &__link:after {
+    order: 0;
+  }
+
+  &--icon-only &__link > span {
+    display:none;
   }
 
   &__link {
@@ -38,6 +32,20 @@
 
     & > span {
       order: 1;
+    }
+
+    &:after {
+      transition: color 0.3s ease;
+      color: var(--icon-color, inherit);
+      content: none;
+      order: 2;
+      height: 1em;
+      aspect-ratio: 1/1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-family: 'Font Awesome 6 Pro', sans-serif;
     }
 
   }

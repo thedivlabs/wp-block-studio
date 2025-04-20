@@ -42,6 +42,48 @@ function elementProps(attributes = {}) {
         }).filter(([key, value]) => value)
     );
 }
+function buttonProps(attributes = {}) {
+
+
+    return Object.fromEntries(
+        Object.entries({
+            type:'button',
+            'data-wp-interactive': 'wpbs/cta-button',
+            'data-wp-on--click': 'actions.popup',
+            'data-wp-context':JSON.stringify({
+                id: attributes['wpbs-popup'] || false,
+            })
+        }).filter(([key, value]) => value)
+    );
+}
+
+const Content = ({attributes})=>{
+
+    const {'wpbs-link':link = {}} = attributes;
+
+    const isPopup = !!attributes['wpbs-popup'];
+    const title = link.title || 'Learn More';
+
+    const className = 'wpbs-cta-button__link wp-element-button'
+
+    if (isPopup) {
+        return (
+            <button className={className} {...buttonProps(attributes)}>
+                <span>{title}</span>
+            </button>
+        );
+    }
+
+    const anchorProps = {
+        target: !!link.openInNewTab ? "_blank" : "_self",
+    }
+
+    return (
+        <a href="%%URL%%" className={className} {...anchorProps}>
+            <span>{title}</span>
+        </a>
+    );
+}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -191,7 +233,6 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: elementClassNames(attributes),
             style: elementProps(attributes)
-
         });
 
         return (
@@ -199,6 +240,7 @@ registerBlockType(metadata.name, {
                 <BlockEdit key="edit" {...blockProps} />
                 <Link defaultValue={link} callback={(newValue) => {
                     setAttributes({['wpbs-link']: newValue});
+                    setLink(newValue);
                 }}/>
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true}>
@@ -230,7 +272,9 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <div {...blockProps}/>
+                <div {...blockProps}>
+                    <Content attributes={attributes} />
+                </div>
             </>
         )
     },
@@ -242,7 +286,9 @@ registerBlockType(metadata.name, {
         });
 
 
-        return <div {...blockProps}>PLACEHOLDER</div>;
+        return <div {...blockProps}>
+            <Content attributes={props.attributes} />
+        </div>;
     }
 })
 

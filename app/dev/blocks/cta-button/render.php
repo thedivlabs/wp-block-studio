@@ -2,44 +2,10 @@
 
 WPBS_Grid::render_style( $attributes ?? false, $block ?? false, false );
 
-$classes = implode( ' ', array_filter( [
-] ) );
+$replacements = [
+	'%%URL%%'   => esc_url( $attributes['url'] ?? '#' ),
+	'%%TARGET%%' => esc_attr( $attributes['target'] ?? '_self' ),
+	'%%TITLE%%' => esc_html( $attributes['title'] ?? 'Click' ),
+];
 
-$url      = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
-$title    = $attributes['wpbs-link']['title'] ?? 'Learn More';
-$target   = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_self';
-$is_popup = ! empty( $attributes['wpbs-popup'] );
-
-$button_props = $is_popup ? implode( ' ', array_filter( [
-	'data-wp-interactive="wpbs/cta-button"',
-	'data-wp-on--click="actions.popup"',
-	'data-wp-context="' . esc_attr( json_encode( [
-		'id' => $attributes['wpbs-popup'] ?? false,
-	] ) ) . '"'
-] ) ) : false;
-
-
-WPBS::console_log( $block ?? false );
-WPBS::console_log( $style_props ?? false );
-WPBS::console_log( [ get_block_wrapper_attributes() ] );
-
-?>
-
-
-<div <?php echo get_block_wrapper_attributes(); ?>>
-
-	<?php if ( ! $is_popup ){ ?>
-    <a href="<?= $url ?>" class="wpbs-cta-button__link wp-element-button" target="<?= $target ?>">
-		<?php } else { ?>
-        <button type="button" class="wpbs-cta-button__link wp-element-button" <?= $button_props ?>>
-			<?php } ?>
-
-            <span><?= $title ?></span>
-
-			<?php if ( $is_popup ){ ?>
-        </button>
-		<?php } else { ?>
-    </a>
-<?php } ?>
-
-</div>
+echo strtr( $content ?? '', $replacements );

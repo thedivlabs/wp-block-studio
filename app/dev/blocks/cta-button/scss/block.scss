@@ -35,7 +35,6 @@
     & > i {
       transition: color 0.3s ease;
       color: var(--icon-color, inherit);
-      content: none;
       order: 2;
       height: 1em;
       aspect-ratio: 1/1;
@@ -43,7 +42,6 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      font-family: 'Font Awesome 6 Pro', sans-serif;
     }
 
   }

@@ -60,7 +60,7 @@ function buttonProps(attributes = {}) {
 
 const Content = ({attributes,editor=false})=>{
 
-    const {'wpbs-link':link = {}} = attributes;
+    const {'wpbs-link':link = {}, 'wpbs-icon':icon = ''} = attributes;
 
     const isPopup = !!attributes['wpbs-popup'];
     const title = link.title || 'Learn More';
@@ -69,11 +69,14 @@ const Content = ({attributes,editor=false})=>{
         'wpbs-cta-button__link wp-element-button',
     ].filter(x => x).join(' ');
 
+    const match = icon.match(/<i[^>]*class=["']([^"']+)["'][^>]*>/i);
+    const iconClass = match ? match[1] : '';
+
     if (isPopup || editor) {
         return (
             <button className={className} {...buttonProps(attributes)}>
                 <span>{title}</span>
-                <i className={attributes['wpbs-icon']}></i>
+                <i className={iconClass}/>
             </button>
         );
     }
@@ -87,7 +90,7 @@ const Content = ({attributes,editor=false})=>{
     return (
         <a href={href} className={className} {...anchorProps} >
             <span>{title}</span>
-            <i className={attributes['wpbs-icon']}></i>
+            <i className={iconClass}/>
         </a>
     );
 }
@@ -182,16 +185,8 @@ registerBlockType(metadata.name, {
                     label="Icon"
                     value={icon}
                     onChange={(value) => {
-
-                        const htmlString = value || '<i class="fa-light fa-arrow-right"></i>';
-
-                        const classRegex = /<i[^>]*class=["']([^"']+)["'][^>]*>/i;
-                        const match = htmlString.match(classRegex);
-
-                        const iconClass = match ? match[1] : '';
-
-                        setIcon(iconClass);
-                        setAttributes({['wpbs-icon']: iconClass});
+                        setIcon(value);
+                        setAttributes({['wpbs-icon']: value});
                     }}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom

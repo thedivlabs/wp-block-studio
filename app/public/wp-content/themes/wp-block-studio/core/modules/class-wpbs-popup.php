@@ -43,13 +43,13 @@ class WPBS_Popup {
 		add_filter( 'wpbs_init_vars', [ $this, 'output_vars' ] );
 
 		add_action( 'wp_footer', [ $this, 'output_container' ], 10 );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ], 100 );
 
-		add_action( 'wp_head', [ $this, 'parse_template' ], 1 );
+		add_action( 'wp_head', [ $this, 'parse_template' ], 5 );
 
 	}
 
 	public function parse_template(): void {
+
 
 		if (
 			self::$enabled &&
@@ -84,16 +84,6 @@ class WPBS_Popup {
 
 	}
 
-	public function enqueue_scripts(): void {
-		if (
-			! is_admin() &&
-			! empty( $this->current )
-		) {
-			wp_enqueue_script( 'wpbs-popup' );
-		}
-
-	}
-
 	public function init_vars(): void {
 
 	}
@@ -106,7 +96,7 @@ class WPBS_Popup {
 
 	public function define_vars(): void {
 
-		$this->settings = get_field( 'popup_options', 'option' ) ?: false;
+		$this->settings = WPBS::clean_array( get_field( 'popup_options', 'option' ) );
 		self::$enabled  = ! empty( $this->settings['general']['enabled'] );
 	}
 
@@ -182,9 +172,12 @@ class WPBS_Popup {
 
 	public function output_vars( $vars ): array {
 
-		return array_merge( ( is_array( $vars ) ? $vars : [] ), array_filter( [
-			'popups' => $this->current ?? false
-		] ) );
+
+		if ( ! empty( $this->current ) ) {
+			$vars['popups'] = $this->current;
+		}
+
+		return $vars;
 
 	}
 

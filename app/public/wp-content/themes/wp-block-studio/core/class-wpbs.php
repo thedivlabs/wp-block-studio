@@ -38,6 +38,7 @@ class WPBS {
 		add_action( 'admin_init', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
+		add_action( 'wp_footer', [ $this, 'output_vars' ], 30 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
@@ -216,7 +217,9 @@ class WPBS {
 
 		if ( empty( $data ) ) {
 
-			$data = WPBS::clean_array( get_field( $field_id, $post_id ?? false ) );
+			$data = get_field( $field_id, $post_id ?? false );
+
+			$data = WPBS::clean_array($data);
 
 			if ( ! empty( $data ) ) {
 				set_transient( $name, $data, DAY_IN_SECONDS );
@@ -491,11 +494,26 @@ class WPBS {
 
 	}
 
+	public static function output_vars(): void {
 
-	public static function clean_array( $array, &$ref_array = [] ): array {
+		$vars = apply_filters( 'wpbs_init_vars', [
+			//'page_id' => DIVLABS::$nonce ?? false,
+			'path'    => [
+				'site'  => home_url(),
+				'ajax'  => admin_url( 'admin-ajax.php' ),
+				'theme' => get_theme_file_uri()
+			],
+			'post_id' => self::$pid
+		], false );
+
+		echo '<script type="application/json" id="wpbs-args">' . json_encode( $vars ) . '</script>';
+
+	}
+
+	public static function clean_array( $array, &$ref_array = [] ): mixed {
 		$array = ! empty( $array ) ? $array : $ref_array;
 		if ( ! is_array( $array ) ) {
-			return [];
+			return $array;
 		}
 		foreach ( $array as $key => &$value ) {
 			if ( is_array( $value ) ) {
@@ -520,7 +538,6 @@ class WPBS {
 
 		return 'var(--wp--' . str_replace( '|', '--', substr( $shorthand, 4 ) ) . ')';
 	}
-
 
 	public static function get_block_template( $block ): array {
 

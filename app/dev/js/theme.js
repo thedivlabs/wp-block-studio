@@ -1,5 +1,6 @@
 import Modals from './modules/modals'
 import Loader from './modules/loader'
+import Popup from './modules/popup'
 import {swiperDefaultArgs} from "./inc/helper";
 
 
@@ -8,16 +9,21 @@ class WPBS_Theme {
     static modals;
     static loader;
     static swiper;
+    static popup;
+    static settings;
 
     constructor() {
 
         this.modals = Modals;
         this.loader = Loader;
+        this.popup = Popup;
         this.swiper = {
             args: {
                 ...swiperDefaultArgs
             }
         };
+
+        this.settings = JSON.parse(document.querySelector('#wpbs-args')?.innerHTML || '[]');
 
         this.modals.init();
         this.loader.init();
@@ -133,13 +139,10 @@ class WPBS_Theme {
 
 
     init() {
+
         document.addEventListener('DOMContentLoaded', () => {
 
-
-
-
-
-
+            this.popup.init();
 
             [...document.querySelectorAll('video:has(source[data-media]):has(source[data-src]),.wpbs-background.lazy')].forEach((media) => {
                 this.observeMedia(media);

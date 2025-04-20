@@ -1,7 +1,9 @@
-(() => {
-    this.cookie_base = 'wpbs-popup-';
+export default class Popup {
 
-    this.init = () => {
+    static cookie_base = 'wpbs-popup-';
+
+    static init() {
+
 
         const settings = 'popups' in WPBS.settings ? WPBS.settings.popups : false;
 
@@ -9,9 +11,12 @@
             return false;
         }
 
+        console.log(settings);
+
         const click_popups = settings.filter((popup) => {
             return popup.trigger === 'click' && !this.has_cookie(popup.id);
         });
+        console.log(click_popups);
 
         const enter_popups = settings.filter((popup) => {
             return popup.trigger === 'enter' && !this.has_cookie(popup.id);
@@ -22,7 +27,7 @@
 
     }
 
-    this.set_cookie = (popup) => {
+    static set_cookie = (popup) => {
         if (popup.frequency === '') {
             return false;
         }
@@ -41,7 +46,7 @@
         WPBS.set_cookie(this.cookie_base + popup.id, 1, days);
     }
 
-    this.click_popups = (click_popups = []) => {
+    static click_popups = (click_popups = []) => {
         [...click_popups].forEach((popup) => {
             if (!('click_selector' in popup)) {
                 return;
@@ -59,7 +64,7 @@
         })
     }
 
-    this.enter_popups = (enter_popups = []) => {
+    static enter_popups = (enter_popups = []) => {
         if (enter_popups.length < 1) {
             return false;
         }
@@ -70,13 +75,9 @@
         });
     }
 
-    this.has_cookie = (id) => {
+    static has_cookie = (id) => {
         return id !== 'undefined' ? WPBS.get_cookie(this.cookie_base + id) : false;
     }
 
 
-    document.addEventListener(('WPBS' in window ? 'DOMContentLoaded' : 'wpbs-init'), () => {
-        this.init();
-    });
-
-})();
+}

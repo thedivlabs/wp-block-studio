@@ -59,7 +59,7 @@ function buttonProps(attributes = {}) {
     );
 }
 
-const Content = ({attributes})=>{
+const Content = ({attributes,editor=false})=>{
 
     const {'wpbs-link':link = {}} = attributes;
 
@@ -82,8 +82,10 @@ const Content = ({attributes})=>{
         target: !!link.openInNewTab ? "_blank" : "_self",
     }
 
+    const href = editor ? '#' : '%%URL%%';
+
     return (
-        <a href="%%URL%%" className={className} {...anchorProps}>
+        <a href={href} className={className} {...anchorProps}>
             <span>{title}</span>
         </a>
     );
@@ -277,7 +279,7 @@ registerBlockType(metadata.name, {
                         clientId={clientId}></Layout>
 
                 <div {...blockProps}>
-                    <Content attributes={attributes} />
+                    <Content attributes={attributes} editor={true} />
                 </div>
             </>
         )

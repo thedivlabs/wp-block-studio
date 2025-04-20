@@ -11,12 +11,9 @@ export default class Popup {
             return false;
         }
 
-        console.log(settings);
-
         const click_popups = settings.filter((popup) => {
             return popup.trigger === 'click' && !this.has_cookie(popup.id);
         });
-        console.log(click_popups);
 
         const enter_popups = settings.filter((popup) => {
             return popup.trigger === 'enter' && !this.has_cookie(popup.id);

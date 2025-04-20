@@ -57,7 +57,7 @@
     },
     "spacing": {
       "blockGap": [
-        "horizontal"
+        "vertical"
       ],
       "margin": true,
       "padding": true

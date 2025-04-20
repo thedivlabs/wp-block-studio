@@ -38,7 +38,7 @@ function elementProps(attributes = {}) {
 
     return Object.fromEntries(
         Object.entries({
-            '--icon-color': attributes['wpbs-icon-color'],
+            '--icon-color': attributes['wpbs-icon-color'] || null,
         }).filter(([key, value]) => value)
     );
 }
@@ -51,9 +51,7 @@ function buttonProps(attributes = {}) {
             title: !!attributes['wpbs-icon-only'] && !!attributes['wpbs-link'] ? attributes['wpbs-link'].title : null,
             'data-wp-interactive': 'wpbs/cta-button',
             'data-wp-on--click': 'actions.popup',
-            'data-wp-context':JSON.stringify({
-                id: attributes['wpbs-popup'] || false,
-            })
+            'data-popup': attributes['wpbs-popup'] || null,
         }).filter(([key, value]) => value)
     );
 }

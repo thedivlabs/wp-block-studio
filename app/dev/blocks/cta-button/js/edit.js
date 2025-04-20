@@ -75,7 +75,7 @@ const Content = ({attributes,editor=false})=>{
         return (
             <button className={className} {...buttonProps(attributes)}>
                 <span>{title}</span>
-                <i className={iconClass}/>
+                {iconClass && <i className={iconClass} />}
             </button>
         );
     }
@@ -89,7 +89,7 @@ const Content = ({attributes,editor=false})=>{
     return (
         <a href={href} className={className} {...anchorProps} >
             <span>{title}</span>
-            <i className={iconClass}/>
+            {iconClass && <i className={iconClass} />}
         </a>
     );
 }

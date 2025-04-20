@@ -180,19 +180,16 @@ registerBlockType(metadata.name, {
             </Grid>
         </Grid>;
         const tabIcon = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
-                <TextControl
-                    label="Icon"
-                    value={icon}
-                    onChange={(value) => {
-                        setIcon(value);
-                        setAttributes({['wpbs-icon']: value});
-                    }}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-
-            </Grid>
+            <TextControl
+                label="Icon"
+                value={icon}
+                onChange={(value) => {
+                    setIcon(value);
+                    setAttributes({['wpbs-icon']: value});
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
             <Grid columns={2} columnGap={15} rowGap={20}
                   style={{padding: '1rem 0'}}>
                 <ToggleControl

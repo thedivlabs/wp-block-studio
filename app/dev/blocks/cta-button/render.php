@@ -19,18 +19,14 @@ $button_props = $is_popup ? implode( ' ', array_filter( [
 ] ) ) : false;
 
 
-$style_props = wp_style_engine_get_styles( [ 'block_type' => $block->block_type, 'attributes' => $attributes ] );
-
-
-WPBS::console_log($block ?? false);
-WPBS::console_log($style_props);
+WPBS::console_log( $block ?? false );
+WPBS::console_log( $style_props ?? false );
+WPBS::console_log( [ get_block_wrapper_attributes() ] );
 
 ?>
 
 
-<div <?php echo get_block_wrapper_attributes( array_filter( [
-	'class' => $classes,
-] ) ); ?>>
+<div <?php echo get_block_wrapper_attributes(); ?>>
 
 	<?php if ( ! $is_popup ){ ?>
     <a href="<?= $url ?>" class="wpbs-cta-button__link wp-element-button" target="<?= $target ?>">
@@ -38,11 +34,7 @@ WPBS::console_log($style_props);
         <button type="button" class="wpbs-cta-button__link wp-element-button" <?= $button_props ?>>
 			<?php } ?>
 
-			<?php if ( ! empty( $attributes['wpbs-icon-only'] ) ) { ?>
-                <span class="screen-reader-text"><?= $title ?></span>
-			<?php } else { ?>
-                <span><?= $title ?></span>
-			<?php } ?>
+            <span><?= $title ?></span>
 
 			<?php if ( $is_popup ){ ?>
         </button>

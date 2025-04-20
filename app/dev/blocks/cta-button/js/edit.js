@@ -2,7 +2,7 @@ import '../scss/block.scss'
 
 import {
     useBlockProps,
-    InspectorControls, PanelColorSettings, BlockEdit
+    InspectorControls, PanelColorSettings, BlockEdit, InnerBlocks, useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -25,20 +25,22 @@ function elementClassNames(attributes = {}) {
 
     return [
         'wpbs-cta-button',
-        attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
+        !!attributes['wpbs-icon-only'] ? 'wpbs-cta-button--icon-only' : false,
+        !!attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
 
-function elementClassNames(attributes = {}) {
+function elementProps(attributes = {}) {
 
-    return [
-        'wpbs-cta-button',
-        attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
-        attributes.uniqueId,
-        LayoutClasses(attributes)
-    ].filter(x => x).join(' ');
+
+    return Object.fromEntries(
+        Object.entries({
+            '--icon': attributes['wpbs-icon'],
+            '--icon-color': attributes['wpbs-icon-color'],
+        }).filter(([key, value]) => value)
+    );
 }
 
 registerBlockType(metadata.name, {
@@ -188,12 +190,9 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: elementClassNames(attributes),
-            style: {
-                '--icon': attributes['wpbs-icon'],
-                '--icon-color': attributes['wpbs-icon-color'],
-            }
-        });
+            style: elementProps(attributes)
 
+        });
 
         return (
             <>
@@ -231,30 +230,19 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <div {...blockProps}>
-                    <button className={'wpbs-cta-button__link wp-element-button'}>
-                        {attributes['wpbs-link'].title || 'Learn More'}
-                    </button>
-                </div>
+                <div {...blockProps}/>
             </>
         )
     },
-    save: () => {
+    save: (props) => {
 
         const blockProps = useBlockProps.save({
             className: elementClassNames(props.attributes),
-            style: {
-                '--icon': props.attributes['wpbs-icon'],
-                '--icon-color': props.attributes['wpbs-icon-color'],
-            }
+            style: elementProps(props.attributes)
         });
 
-        return <div {...blockProps}>
-            <button className={'wpbs-cta-button__link wp-element-button'}>
-                {props.attributes['wpbs-link'].title || 'Learn More'}
-            </button>
-        </div>
+
+        return <div {...blockProps}>PLACEHOLDER</div>;
     }
 })
-
 

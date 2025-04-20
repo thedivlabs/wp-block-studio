@@ -708,14 +708,14 @@
           },
           "secondary": {
             "elements": {
-              "link": {
+              "button": {
                 "color": {
-                  "text": "black",
+                  "text": "white",
                   "background": "var:preset|color|primary"
                 },
                 ":hover": {
                   "color": {
-                    "text": "black",
+                    "text": "white",
                     "background": "var:preset|color|primary-hover"
                   }
                 },
@@ -767,10 +767,10 @@
                 ":hover": {
                   "color": {
                     "text": "black",
-                    "background": "var:preset|color|primary"
+                    "background": "var:preset|color|primary-hover"
                   },
                   "border": {
-                    "color": "var:preset|color|primary"
+                    "color": "var:preset|color|primary-hover"
                   }
                 },
                 "typography": {

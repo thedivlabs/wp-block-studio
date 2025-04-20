@@ -205,9 +205,11 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
 
-                <ServerSideRender
-                    block="wpbs/cta-button"
-                />
+                <div {...blockProps}>
+                    <button className={'wpbs-cta-button__link wp-element-button'}>
+                        {attributes['wpbs-link'].title || 'Learn More'}
+                    </button>
+                </div>
             </>
         )
     },

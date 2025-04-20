@@ -8,7 +8,6 @@ $type = str_replace( 'is-style-', '', array_values( array_filter( explode( ' ', 
 
 $classes = implode( ' ', array_filter( [
 	'wpbs-cta-button--' . $type,
-
 ] ) );
 
 $style = implode( '; ', array_filter( [
@@ -16,9 +15,10 @@ $style = implode( '; ', array_filter( [
 	'--icon-color' => $attributes['wpbs-icon-color'] ?? null,
 ] ) );
 
-$url    = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
-$title  = $attributes['wpbs-link']['title'] ?? 'Learn More';
-$target = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_self';
+$url       = ! empty( $attributes['wpbs-loop'] ) ? get_the_permalink() : $attributes['wpbs-link']['url'] ?? '#';
+$title     = $attributes['wpbs-link']['title'] ?? 'Learn More';
+$target    = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_self';
+$is_button = ! empty( $attributes['wpbs-popup'] );
 ?>
 
 
@@ -26,11 +26,23 @@ $target = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_se
 	'class' => $classes,
 	'style' => $style,
 ] ); ?>>
-    <a href="<?= $url ?>" class="wpbs-cta-button__link" target="<?= $target ?>">
-		<?php if ( ! empty( $attributes['wpbs-icon-only'] ) ) { ?>
-            <span class="screen-reader-text"><?= $title ?></span>
+
+	<?php if ( $is_button ){ ?>
+    <a href="<?= $url ?>" class="wpbs-cta-button__link wp-element-button" target="<?= $target ?>">
 		<?php } else { ?>
-            <span><?= $title ?></span>
-		<?php } ?>
+        <button type="button" class="wpbs-cta-button__link wp-element-button">
+			<?php } ?>
+
+			<?php if ( ! empty( $attributes['wpbs-icon-only'] ) ) { ?>
+                <span class="screen-reader-text"><?= $title ?></span>
+			<?php } else { ?>
+                <span><?= $title ?></span>
+			<?php } ?>
+
+			<?php if ( $is_button ){ ?>
+        </button>
+		<?php } else { ?>
     </a>
+<?php } ?>
+
 </div>

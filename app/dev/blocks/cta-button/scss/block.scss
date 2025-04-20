@@ -3,6 +3,7 @@
   width: fit-content;
   position: relative;
   gap: .3rem;
+  user-select: none;
 
   &--icon &__link {
     &:after {
@@ -23,6 +24,7 @@
   }
 
   &__link {
+    user-select: none;
     gap: inherit;
     position: relative;
     transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;

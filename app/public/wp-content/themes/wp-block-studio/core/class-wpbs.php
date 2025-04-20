@@ -82,7 +82,6 @@ class WPBS {
 		//wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
-
 	public function editor_assets(): void {
 		add_editor_style();
 		//wp_enqueue_style( 'wpbs-swiper-css' );
@@ -121,15 +120,15 @@ class WPBS {
 		require_once self::$core_path . 'modules/class-wpbs-style.php';
 		require_once self::$core_path . 'modules/class-wpbs-layout.php';
 		require_once self::$core_path . 'modules/class-wpbs-props.php';
-		require_once self::$core_path . 'modules/class-wpbs-background.php';
-		require_once self::$core_path . 'modules/class-wpbs-endpoints.php';
-		require_once self::$core_path . 'modules/class-wpbs-grid.php';
+		require_once self::$core_path . 'modules/class-wpbs-cpt.php';
+		require_once self::$core_path . 'modules/class-wpbs-taxonomy.php';
 
 		WPBS_WP::init();
 		WPBS_Blocks::init();
 		WPBS_Style::init();
-		WPBS_Endpoints::init();
-		WPBS_Grid::init();
+		WPBS_CPT::init();
+		WPBS_Taxonomy::init();
+
 
 		do_action( 'wpbs_init' );
 	}
@@ -170,13 +169,14 @@ class WPBS {
 	static function get_acf_load_paths(): array {
 
 		$acf_json_paths = array_unique( array_merge(
-			glob( self::$path . 'acf-json', GLOB_ONLYDIR )
+			glob( self::$path . 'acf-json', GLOB_ONLYDIR ),
+			glob( self::$path . 'features/**/acf-json', GLOB_ONLYDIR ),
 		) );
 
 		sort( $acf_json_paths );
 
 		return array_merge( $acf_json_paths, [
-			get_stylesheet_directory() . '/acf-json',
+			//get_stylesheet_directory() . '/acf-json',
 		] );
 
 	}
@@ -579,6 +579,55 @@ class WPBS {
 		}
 
 		return $sanitized;
+	}
+
+	public static function init_classes( $dir, $init = true): void {
+
+		$path = self::$path;
+
+		$files = array_map( function ( $file_path ) {
+
+			$file_name  = substr( $file_path, strrpos( $file_path, '/' ) + 1 );
+			$class_name = str_replace( [ 'class-', '-', '.php' ], [
+				'',
+				'_',
+				''
+			], $file_name );
+
+			return [
+				'file'  => $file_name,
+				'class' => $class_name,
+				'path'  => $file_path
+			];
+
+		}, array_merge(
+			glob( $path . $dir . '/class-*.php' ),
+			glob( $path . $dir . '/**/class-*.php' ),
+			glob( $path . $dir . '/**/classes/class-*.php' ),
+			glob( $path . $dir . '/**/blocks/**/classes/class-*.php' )
+		) );
+
+		usort( $files, function ( $a, $b ) {
+			return strcmp( $a['path'], $b['path'] );
+		} );
+
+		foreach ( $files as $file ) {
+			$slug = trim( str_replace( [ 'class-wpbs-', '.php' ], [ '' ], $file['file'] ) );
+			require $file['path'];
+		}
+
+		foreach ( $files as $file ) {
+
+			if (
+				$init &&
+				class_exists( $file['class'] ) &&
+				method_exists( $file['class'], 'init' )
+			) {
+				call_user_func( [ $file['class'], 'init' ] );
+			}
+		}
+
+
 	}
 
 }

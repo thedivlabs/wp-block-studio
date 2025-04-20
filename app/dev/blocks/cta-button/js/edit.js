@@ -69,8 +69,7 @@ const Content = ({attributes,editor=false})=>{
         'wpbs-cta-button__link wp-element-button',
     ].filter(x => x).join(' ');
 
-    const match = icon.match(/<i[^>]*class=["']([^"']+)["'][^>]*>/i);
-    const iconClass = match ? match[1] : '';
+    const iconClass = icon.match(/<i[^>]*class=["']([^"']+)["'][^>]*>/i)?.[1] || '';
 
     if (isPopup || editor) {
         return (

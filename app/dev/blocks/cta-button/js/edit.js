@@ -49,8 +49,8 @@ function buttonProps(attributes = {}) {
         Object.entries({
             type:'button',
             title: !!attributes['wpbs-icon-only'] && !!attributes['wpbs-link'] ? attributes['wpbs-link'].title : null,
-            'data-wp-interactive': 'wpbs/cta-button',
-            'data-wp-on--click': 'actions.popup',
+            //'data-wp-interactive': 'wpbs/cta-button',
+            //'data-wp-on--click': 'actions.popup',
             'data-popup': attributes['wpbs-popup'] || null,
         }).filter(([key, value]) => value)
     );

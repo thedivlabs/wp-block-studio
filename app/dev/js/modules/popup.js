@@ -11,14 +11,19 @@ export default class Popup {
             return false;
         }
 
+        const cta_popups = settings.filter((popup) => {
+            return popup.trigger === 'cta';
+        });
+
         const click_popups = settings.filter((popup) => {
-            return popup.trigger === 'click' && !this.has_cookie(popup.id);
+            return popup.trigger === 'click';
         });
 
         const enter_popups = settings.filter((popup) => {
             return popup.trigger === 'enter' && !this.has_cookie(popup.id);
         });
 
+        this.cta_popups(cta_popups);
         this.click_popups(click_popups);
         this.enter_popups(enter_popups);
 
@@ -52,12 +57,32 @@ export default class Popup {
             [...click_trigger].forEach((el) => {
                 el.addEventListener('click', (e) => {
                     e.preventDefault();
-                    this.set_cookie(popup);
                     WPBS.modals.toggle_modal('#wpbs-popup-' + popup.id, {
                         delay: 'delay' in click_popups[0] ? click_popups[0].delay || false : false
                     });
                 })
             })
+        })
+    }
+
+    static cta_popups = (cta_popups = []) => {
+        [...cta_popups].forEach((popup) => {
+
+            document.body.addEventListener('click', (e) => {
+
+                const el = 'popup' in e.target.dataset ? e.target : e.target.closest('[data-popup]');
+
+                if(!el || !'popup' in el.dataset){
+                    return false;
+                }
+
+                WPBS.modals.toggle_modal('#wpbs-popup-' + popup.id, {
+                    delay: 'delay' in cta_popups[0] ? cta_popups[0].delay || false : false
+                });
+
+            });
+
+
         })
     }
 

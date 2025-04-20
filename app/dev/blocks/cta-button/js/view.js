@@ -7,10 +7,10 @@ const {state} = store('wpbs/cta-button', {
         popup: () => {
 
             const {ref: element} = getElement();
-            const context = JSON.parse(JSON.stringify(getContext()));
+            //const context = JSON.parse(JSON.stringify(getContext()));
 
-            console.log(element);
-            console.log(context);
+            //console.log(element);
+            //console.log(context);
         }
     },
 });

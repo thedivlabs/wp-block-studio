@@ -79,7 +79,7 @@ const Content = ({attributes,editor=false})=>{
     }
 
     const anchorProps = {
-        target: !!link.openInNewTab ? "_blank" : "_self",
+        target: !!link.opensInNewTab ? "_blank" : "_self",
     }
 
     const href = editor ? '#' : '%%URL%%';

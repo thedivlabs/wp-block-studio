@@ -660,6 +660,165 @@
             }
           }
         }
+      },
+      "wpbs/cta-button": {
+        "dimensions": {
+          "minHeight": "2.4rem"
+        },
+        "spacing": {
+          "padding": {
+            "bottom": ".2rem",
+            "top": ".2rem",
+            "left": ".7rem",
+            "right": ".7rem"
+          }
+        },
+        "elements": {
+          "link": {
+            "typography": {
+              "fontSize": ".9rem",
+              "textDecoration": "none",
+              "textAlign": "center",
+              "lineHeight": "normal"
+            }
+          }
+        },
+        "variations": {
+          "primary": {
+            "elements": {
+              "link": {
+                "border": {
+                  "style": "none"
+                },
+                "color": {
+                  "text": "white",
+                  "background": "var:preset|color|dark"
+                },
+                ":hover": {
+                  "color": {
+                    "text": "black",
+                    "background": "var:preset|color|primary"
+                  }
+                },
+                "typography": {
+                  "textTransform": "uppercase"
+                }
+              }
+            }
+          },
+          "secondary": {
+            "elements": {
+              "link": {
+                "color": {
+                  "text": "black",
+                  "background": "var:preset|color|primary"
+                },
+                ":hover": {
+                  "color": {
+                    "text": "black",
+                    "background": "var:preset|color|primary-hover"
+                  }
+                },
+                "typography": {
+                  "textTransform": "uppercase"
+                }
+              }
+            }
+          },
+          "outline": {
+            "elements": {
+              "link": {
+                "border": {
+                  "style": "solid",
+                  "width": "2px",
+                  "color": "var:preset|color|primary"
+                },
+                "color": {
+                  "text": "inherit",
+                  "background": "transparent"
+                },
+                ":hover": {
+                  "color": {
+                    "text": "black",
+                    "background": "var:preset|color|primary"
+                  },
+                  "border": {
+                    "color": "var:preset|color|primary"
+                  }
+                },
+                "typography": {
+                  "textTransform": "uppercase"
+                }
+              }
+            }
+          },
+          "reverse": {
+            "elements": {
+              "link": {
+                "color": {
+                  "background": "transparent",
+                  "text": "white"
+                },
+                "border": {
+                  "style": "solid",
+                  "width": "1px",
+                  "color": "var:preset|color|primary"
+                },
+                ":hover": {
+                  "color": {
+                    "text": "black",
+                    "background": "var:preset|color|primary"
+                  },
+                  "border": {
+                    "color": "var:preset|color|primary"
+                  }
+                },
+                "typography": {
+                  "textTransform": "uppercase"
+                }
+              }
+            }
+          },
+          "link": {
+            "dimensions": {
+              "minHeight": "1rem"
+            },
+            "spacing": {
+              "padding": {
+                "bottom": "0px",
+                "top": "0px",
+                "left": "0px",
+                "right": "0px"
+              }
+            },
+            "border": {
+              "style": "none",
+              "width": "",
+              "color": ""
+            },
+            "elements": {
+              "link": {
+                "color": {
+                  "text": "inherit",
+                  "background": "transparent"
+                },
+                ":hover": {
+                  "color": {
+                    "background": "",
+                    "text": "var:preset|color|primary"
+                  },
+                  "border": {
+                    "color": ""
+                  }
+                },
+                "typography": {
+                  "fontSize": "inherit",
+                  "lineHeight": "inherit"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

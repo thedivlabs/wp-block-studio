@@ -7,7 +7,8 @@ $type = str_replace( 'is-style-', '', array_values( array_filter( explode( ' ', 
 } ) )[0] ?? '' );
 
 $classes = implode( ' ', array_filter( [
-	'wpbs-cta-button--' . $type
+	'wpbs-cta-button--' . $type,
+
 ] ) );
 
 $style = implode( '; ', array_filter( [
@@ -28,8 +29,8 @@ $target = ! empty( $attributes['wpbs-link']['opensInNewTab'] ) ? '_blank' : '_se
     <a href="<?= $url ?>" class="wpbs-cta-button__link" target="<?= $target ?>">
 		<?php if ( ! empty( $attributes['wpbs-icon-only'] ) ) { ?>
             <span class="screen-reader-text"><?= $title ?></span>
-		<?php } else {
-			echo $title;
-		} ?>
+		<?php } else { ?>
+            <span><?= $title ?></span>
+		<?php } ?>
     </a>
 </div>

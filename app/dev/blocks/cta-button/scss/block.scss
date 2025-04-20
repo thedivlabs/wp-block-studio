@@ -1,8 +1,29 @@
 .wpbs-cta-button {
+  display: block;
+  width: fit-content;
+  position: relative;
 
-  &__link:after {
-    color: var(--icon-color, inherit);
-    content: var(--icon, none);
+  &--icon-first &__link:after {
+    order: 0;
+  }
+
+  &__link {
+    gap: inherit;
+    position: relative;
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    & > span {
+      order: 1;
+    }
+
+    &:after {
+      color: var(--icon-color, inherit);
+      content: var(--icon, none);
+      order: 2;
+    }
   }
 
 }

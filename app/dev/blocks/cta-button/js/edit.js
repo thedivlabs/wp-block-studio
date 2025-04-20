@@ -1,3 +1,5 @@
+import '../scss/block.scss'
+
 import {
     useBlockProps,
     InspectorControls, PanelColorSettings, BlockEdit
@@ -21,7 +23,7 @@ import ServerSideRender from '@wordpress/server-side-render';
 function elementClassNames(attributes = {}) {
 
     return [
-        'wpbs-cta-button inline-flex w-fit max-w-full relative',
+        'wpbs-cta-button',
         attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');

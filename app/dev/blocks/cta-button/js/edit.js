@@ -25,6 +25,7 @@ function elementClassNames(attributes = {}) {
 
     return [
         'wpbs-cta-button',
+        !!attributes['wpbs-icon'] ? 'wpbs-cta-button--icon' : null,
         !!attributes['wpbs-icon-only'] ? 'wpbs-cta-button--icon-only' : false,
         !!attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
         attributes.uniqueId,
@@ -64,7 +65,9 @@ const Content = ({attributes})=>{
     const isPopup = !!attributes['wpbs-popup'];
     const title = link.title || 'Learn More';
 
-    const className = 'wpbs-cta-button__link wp-element-button'
+    const className = [
+        'wpbs-cta-button__link wp-element-button',
+    ].filter(x => x).join(' ');
 
     if (isPopup) {
         return (

@@ -71,6 +71,9 @@ const blockAttributes = {
     'wpbs-contain': {
         type: 'boolean'
     },
+    'wpbs-linkPost': {
+        type: 'boolean'
+    },
     'wpbs-blend': {
         type: 'string'
     },
@@ -123,7 +126,7 @@ function Media({attributes, editor = false, props = {}}) {
         }
     }
 
-    if (attributes['wpbs-link'] && !editor) {
+    if (attributes['wpbs-link'] && !editor && !attributes['wpbs-linkPost']) {
         return <a class={mediaClasses} href={attributes['wpbs-link'].url}
                   target={attributes['wpbs-link'].opensInNewTab ? '_blank' : '_self'}
                   rel={attributes['wpbs-link'].rel} style={mediaStyle}>
@@ -155,8 +158,8 @@ registerBlockType(metadata.name, {
         const [eager, setEager] = useState(attributes['wpbs-eager']);
         const [force, setForce] = useState(attributes['wpbs-force']);
         const [link, setLink] = useState(attributes['wpbs-link']);
-        const [contain, setContain] = useState(attributes.contain);
-        const [linkPost, setLinkPost] = useState(attributes.linkPost);
+        const [contain, setContain] = useState(attributes['wpbs-contain']);
+        const [linkPost, setLinkPost] = useState(attributes['wpbs-linkPost']);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 

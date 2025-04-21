@@ -10,9 +10,6 @@
     },
     "preload": {
       "type": "array"
-    },
-    "linkPost": {
-      "type": "boolean"
     }
   },
   "usesContext": [ "postId" ],

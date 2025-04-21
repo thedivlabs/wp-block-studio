@@ -23,7 +23,7 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 	$src_large_webp = $src_large ? $src_large . '.webp' : false;
 
 	if ( ! empty( $attributes['wpbs-linkPost'] ) ) {
-		$picture .= '<a href="' . $attributes['wpbs-linkPost'] . '" target="' . ( ! empty( $attributes['link']['opensInNewTab'] ) ? '_blank' : '_self' ) . '" title="' . get_the_title() . '">';
+		$picture .= '<a href="' . get_the_permalink() . '" target="' . ( ! empty( $attributes['link']['opensInNewTab'] ) ? '_blank' : '_self' ) . '" title="' . get_the_title() . '">';
 	}
 
 	$picture .= '<picture class="' . $class . '" style="' . $style . '">';

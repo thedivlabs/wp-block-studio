@@ -24,7 +24,10 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 
 	$picture .= '<picture class="' . $class . '" style="' . $style . '">';
 
-	$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
+	if ( file_exists( ABSPATH . ltrim( str_replace( get_site_url(), '', $src_large_webp ?: '' ), '/' ) ) ) {
+		$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
+	}
+
 	$picture .= '<source type="image/jpeg" ' . $srcset_attr . '="' . $src_large . '" />';
 
 	$picture .= wp_get_attachment_image( $featured_image_id, $attributes['wpbs-resolution'] ?? 'large' );
@@ -33,7 +36,7 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 
 	$replacements = [
 		'%%PERMALINK%%' => get_the_permalink(),
-		'%%IMAGE%%' => $picture,
+		'%%IMAGE%%'     => $picture,
 	];
 
 	echo strtr( $content ?? '', $replacements );

@@ -5,7 +5,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses, LayoutStyles} from "Components/Layout"
+import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
@@ -19,8 +19,8 @@ function sectionClassNames(attributes = {}) {
 
     return [
         'wpbs-layout-element w-full block relative',
+        LayoutClasses,
         attributes.uniqueId,
-        LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
 
@@ -40,15 +40,6 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
-        let styleTag = <style>{attributes['wpbs-css']}</style>;
-
-        useEffect(() => {
-            styleTag = LayoutStyles(attributes, clientId, (css) => {
-                setAttributes({'wpbs-css': css});
-            });
-
-        }, [Object.keys(LayoutAttributes).filter(x => x !== 'wpbs-css')]);
-
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
@@ -65,14 +56,12 @@ registerBlockType(metadata.name, {
                 return <ElementTagName {...blockProps} >
                     <div {...innerBlocksProps} />
                     <Background attributes={attributes} editor={true}/>
-                    <styleTag/>
                 </ElementTagName>;
             } else {
                 const {children, ...innerBlocksProps} = useInnerBlocksProps(blockProps);
 
                 return <ElementTagName {...blockProps} >
                     {children}
-                    <styleTag/>
                 </ElementTagName>;
             }
         }

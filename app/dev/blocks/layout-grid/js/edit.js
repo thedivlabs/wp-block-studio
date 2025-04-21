@@ -7,9 +7,6 @@ import {
     useInnerBlocksProps,
     PanelColorSettings,
     DefaultBlockAppender,
-    MediaUploadCheck,
-    MediaUpload,
-    InnerBlocks,
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"

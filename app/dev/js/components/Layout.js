@@ -1,13 +1,12 @@
 import {
     InspectorControls,
-    PanelColorSettings, BlockEdit,
+    PanelColorSettings,
 } from "@wordpress/block-editor";
 import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
-import apiFetch from '@wordpress/api-fetch';
-import {useEffect} from "@wordpress/element"
+import {useEffect} from "react";
 
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
@@ -42,7 +41,6 @@ import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 import OffsetHeader from "Components/OffsetHeader";
 import MinHeight from "Components/MinHeight";
-//import {LayoutStyle} from "Components/LayoutStyle";
 import MaxHeight from "Components/MaxHeight";
 import MinHeightCustom from "Components/MinHeightCustom";
 import MaxHeightCustom from "Components/MaxHeightCustom";
@@ -298,6 +296,68 @@ export const LayoutAttributes = Object.assign({
     },
 }, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
 
+function desktop(attributes) {
+
+    const style_attributes = Object.fromEntries(Object.entries({
+        'column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
+        'row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
+    }).filter(([key, value]) => value));
+
+    const special_attributes = Object.fromEntries(
+        Object.entries(attributes).filter(([key]) => [
+            'wpbs-layout-mask-image',
+            'wpbs-layout-mask-size',
+            'wpbs-layout-mask-origin',
+            'wpbs-layout-container',
+            'wpbs-layout-width',
+            'wpbs-layout-width-custom',
+            'wpbs-layout-height',
+            'wpbs-layout-height-custom',
+            'wpbs-layout-min-height',
+            'wpbs-layout-min-height-custom',
+            'wpbs-layout-max-height',
+            'wpbs-layout-max-height-custom',
+            'wpbs-layout-offset-header',
+            'wpbs-layout-translate'
+        ].includes(key))
+    );
+
+    const layout_attributes = Object.fromEntries(
+        Object.entries(attributes).filter(([k]) =>
+            k.startsWith('wpbs-layout') &&
+            !Array.isArray(attributes[k]) &&
+            !k.includes('mobile') &&
+            !k.includes('hover') &&
+            ![...Object.keys(special_attributes), 'wpbs-layout-breakpoint'].includes(k)
+        ));
+
+
+}
+
+function mobile(attributes) {
+
+}
+
+function hover(attributes) {
+
+}
+
+function LayoutStyle({attributes, clientId, setAttributes}) {
+
+    let css = '';
+
+    useEffect(() => {
+        setAttributes({'wpbs-css': css});
+    }, []);
+
+    const desktop = desktop();
+
+
+    return (
+        <style id={'wpbs-layout-styles'} style={{display: 'none'}}>{css}</style>
+    );
+}
+
 export function LayoutClasses(attributes) {
 
     let classes = [];
@@ -321,24 +381,6 @@ export function LayoutClasses(attributes) {
     }).filter(x => x)];
 
     return classes.join(' ');
-}
-
-export function LayoutStyles(attributes, clientId, callback) {
-    const selector = '#block-' + clientId;
-    let css = <style></style>;
-    apiFetch({
-        path: '/wpbs/v1/layout-styles/',
-        method: 'POST',
-        data: {
-            attributes: attributes,
-            selector: selector,
-        },
-    }).then((data) => {
-        callback(data);
-        css = <style>data</style>;
-    });
-
-    return css;
 }
 
 export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
@@ -1084,5 +1126,7 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
 
 
         </InspectorControls>
+        <LayoutStyle attributes={attributes} clientId={blockProps.clientId} setAttributes={setAttributes}/>
+
     </>;
 }

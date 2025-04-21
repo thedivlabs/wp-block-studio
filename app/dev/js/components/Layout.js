@@ -311,6 +311,15 @@ function parseStyle(value) {
     return value;
 }
 
+function getSelector(attributes) {
+
+    let selector = attributes.className || attributes.uniqueId || null;
+
+    selector = '.' + selector.split(' ').join('.');
+
+    return selector;
+}
+
 function parseSpecial(prop, value) {
     switch (prop) {
         case 'height':
@@ -583,7 +592,9 @@ function hover(attributes) {
     return styles;
 }
 
-function LayoutStyle({attributes, clientId, setAttributes}) {
+function LayoutStyle({attributes, clientId, setAttributes, blockProps}) {
+
+    const selector = getSelector(attributes);
 
     let css = '';
 
@@ -595,7 +606,9 @@ function LayoutStyle({attributes, clientId, setAttributes}) {
     const mobileCss = mobile(attributes);
     const hoverCss = hover(attributes);
 
-    css = [desktopCss, mobileCss, hoverCss].join(' ');
+    desktopCss.forEach(([prop, value]) => {
+        css +=  selector + '{' + value + '}';
+    })
 
     setAttributes({'wpbs-css': css});
 
@@ -638,7 +651,6 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
     const resetAll_layout_mobile = () => {
         setAttributes(Object.keys(blockAttributes.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
     };
-
 
     return <>
         <InspectorControls group="styles">

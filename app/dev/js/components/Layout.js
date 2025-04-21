@@ -296,14 +296,45 @@ export const LayoutAttributes = Object.assign({
     },
 }, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
 
+function parseStyle(value) {
+    if (typeof value !== 'string') return value;
+
+    if (value.startsWith('var|')) {
+        const parts = value.split('|').slice(1); // Remove 'var'
+        return `var(--wp--${parts.join('--')})`;
+    }
+
+    if (value.startsWith('--wp--')) {
+        return `var(${value})`;
+    }
+
+    return value;
+}
+
+function parseSpecial(prop, value) {
+    switch (prop) {
+        case 'height':
+        case 'min-height':
+        case 'max-height':
+            if (value === 'screen') {
+                value = 'calc(100svh - var(--wpbs-header-height, 0px))';
+            } else if (value === 'full-screen') {
+                value = '100svh';
+            }
+            break;
+    }
+
+    return value;
+}
+
 function desktop(attributes) {
 
-    const style_attributes = Object.fromEntries(Object.entries({
+    const styleAttributes = Object.fromEntries(Object.entries({
         'column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
         'row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
     }).filter(([key, value]) => value));
 
-    const special_attributes = Object.fromEntries(
+    const specialAttributes = Object.fromEntries(
         Object.entries(attributes).filter(([key]) => [
             'wpbs-layout-mask-image',
             'wpbs-layout-mask-size',
@@ -322,24 +353,234 @@ function desktop(attributes) {
         ].includes(key))
     );
 
-    const layout_attributes = Object.fromEntries(
+    const layoutAttributes = Object.fromEntries(
         Object.entries(attributes).filter(([k]) =>
             k.startsWith('wpbs-layout') &&
             !Array.isArray(attributes[k]) &&
             !k.includes('mobile') &&
             !k.includes('hover') &&
-            ![...Object.keys(special_attributes), 'wpbs-layout-breakpoint'].includes(k)
+            ![...Object.keys(specialAttributes), 'wpbs-layout-breakpoint'].includes(k)
         ));
+
+    const styles = {};
+
+    // Filter style attributes
+    for (const [prop, value] of Object.entries(styleAttributes)) {
+        if (!value) continue;
+        styles[prop] = value;
+    }
+
+    // Rename layout attribute keys and assign values
+    for (const [prop, value] of Object.entries(layoutAttributes)) {
+        if (!value) continue;
+        const propName = prop.replace('wpbs-layout-', '');
+        styles[propName] = value;
+    }
+
+    // Handle special attributes
+    for (const [prop, value] of Object.entries(specialAttributes)) {
+        if (!value) continue;
+
+        switch (prop) {
+            case 'wpbs-layout-mask-image':
+                const imageUrl = value?.sizes?.full?.url || '#';
+                styles['mask-image'] = `url(${imageUrl})`;
+                styles['mask-repeat'] = 'no-repeat';
+                styles['mask-size'] = (() => {
+                    const size = attributes?.['wpbs-layout-mask-size'];
+                    switch (size) {
+                        case 'cover':
+                            return 'cover';
+                        case 'horizontal':
+                            return '100% auto';
+                        case 'vertical':
+                            return 'auto 100%';
+                        default:
+                            return 'contain';
+                    }
+                })();
+                styles['mask-position'] = attributes?.['wpbs-layout-mask-origin'] || 'center center';
+                break;
+
+            case 'wpbs-layout-height':
+            case 'wpbs-layout-height-custom':
+                styles['height'] = parseSpecial('height', attributes?.['wpbs-layout-height-custom'] ?? attributes?.['wpbs-layout-height']);
+                break;
+
+            case 'wpbs-layout-min-height':
+            case 'wpbs-layout-min-height-custom':
+                styles['min-height'] = parseSpecial('min-height', attributes?.['wpbs-layout-min-height-custom'] ?? attributes?.['wpbs-layout-min-height']);
+                break;
+
+            case 'wpbs-layout-max-height':
+            case 'wpbs-layout-max-height-custom':
+                styles['max-height'] = parseSpecial('max-height', attributes?.['wpbs-layout-max-height-custom'] ?? attributes?.['wpbs-layout-max-height']);
+                break;
+
+            case 'wpbs-layout-width':
+            case 'wpbs-layout-width-custom':
+                styles['width'] = attributes?.['wpbs-layout-width-custom'] ?? attributes?.['wpbs-layout-width'] ?? null;
+                break;
+
+            case 'wpbs-layout-translate':
+                const top = parseStyle(attributes?.['wpbs-layout-translate']?.top || '0px');
+                const left = parseStyle(attributes?.['wpbs-layout-translate']?.left || '0px');
+                styles['transform'] = `translate(${top}, ${left})`;
+                break;
+
+            case 'wpbs-layout-offset-header':
+                const padding = parseStyle(attributes?.style?.spacing?.padding?.top || '0px');
+                styles['padding-top'] = `calc(${padding} + var(--wpbs-header-height, 0px)) !important`;
+                break;
+        }
+    }
+
+    return styles;
 
 
 }
 
 function mobile(attributes) {
+    const specialKeys = [
+        'wpbs-layout-mask-image-mobile',
+        'wpbs-layout-mask-origin-mobile',
+        'wpbs-layout-mask-size-mobile',
+        'wpbs-layout-width-mobile',
+        'wpbs-layout-width-custom-mobile',
+        'wpbs-layout-height-mobile',
+        'wpbs-layout-height-custom-mobile',
+        'wpbs-layout-min-height-mobile',
+        'wpbs-layout-min-height-custom-mobile',
+        'wpbs-layout-max-height-mobile',
+        'wpbs-layout-max-height-custom-mobile',
+        'wpbs-layout-translate-mobile',
+    ];
 
+    const specialAttributes = Object.fromEntries(
+        Object.entries(attributes).filter(([key]) => specialKeys.includes(key))
+    );
+
+    const mobileAttributes = Object.fromEntries(
+        Object.entries(attributes).filter(([key, value]) =>
+            key.startsWith('wpbs-layout') &&
+            key.includes('mobile') &&
+            typeof value !== 'object' &&
+            !key.includes('hover') &&
+            ![...Object.keys(specialAttributes), 'wpbs-layout-breakpoint'].includes(key)
+        )
+    );
+
+    const styles = {};
+
+    for (const [prop, value] of Object.entries(mobileAttributes)) {
+        if (!value) continue;
+
+        let propName = prop.replace('wpbs-layout-', '').replace('-mobile', '');
+
+        if (propName === 'text-color') {
+            propName = 'color';
+        }
+
+        styles[propName] = value;
+    }
+
+    for (const [prop, value] of Object.entries(specialAttributes)) {
+        if (!value) continue;
+
+        switch (prop) {
+            case 'wpbs-layout-mask-image-mobile': {
+                const imageUrl = value?.sizes?.full?.url || '#';
+                styles['mask-image'] = `url(${imageUrl})`;
+                styles['mask-repeat'] = 'no-repeat';
+                styles['mask-size'] = (() => {
+                    const size = attributes?.['wpbs-layout-mask-size'];
+                    switch (size) {
+                        case 'cover':
+                            return 'cover';
+                        case 'horizontal':
+                            return '100% auto';
+                        case 'vertical':
+                            return 'auto 100%';
+                        default:
+                            return 'contain';
+                    }
+                })();
+                styles['mask-position'] = attributes?.['wpbs-layout-mask-origin'] || 'center center';
+                break;
+            }
+            case 'wpbs-layout-height-mobile':
+            case 'wpbs-layout-height-custom-mobile':
+                styles['height'] =
+                    attributes['wpbs-layout-height-custom-mobile'] ||
+                    attributes['wpbs-layout-height-mobile'] ||
+                    null;
+                break;
+
+            case 'wpbs-layout-min-height-mobile':
+            case 'wpbs-layout-min-height-custom-mobile':
+                styles['min-height'] =
+                    attributes['wpbs-layout-min-height-custom-mobile'] ||
+                    attributes['wpbs-layout-min-height-mobile'] ||
+                    null;
+                break;
+
+            case 'wpbs-layout-max-height-mobile':
+            case 'wpbs-layout-max-height-custom-mobile':
+                styles['max-height'] =
+                    attributes['wpbs-layout-max-height-custom-mobile'] ||
+                    attributes['wpbs-layout-max-height-mobile'] ||
+                    null;
+                break;
+
+            case 'wpbs-layout-width-mobile':
+            case 'wpbs-layout-width-custom-mobile':
+                styles['width'] =
+                    attributes['wpbs-layout-width-custom-mobile'] ||
+                    attributes['wpbs-layout-width-mobile'] ||
+                    null;
+                break;
+
+            case 'wpbs-layout-translate-mobile': {
+                const top = parseStyle(attributes['wpbs-layout-translate-mobile']?.top ?? '0px');
+                const left = parseStyle(attributes['wpbs-layout-translate-mobile']?.left ?? '0px');
+                styles['transform'] = `translate(${top}, ${left})`;
+                break;
+            }
+        }
+    }
+
+    return styles;
 }
 
 function hover(attributes) {
+    const hoverAttributes = Object.fromEntries(
+        Object.entries(attributes).filter(([key, value]) =>
+            key.startsWith('wpbs-layout') &&
+            key.includes('hover') &&
+            typeof value !== 'object' &&
+            !key.includes('mobile')
+        )
+    );
 
+    const styles = {};
+
+    // Process each hover attribute
+    for (const [prop, value] of Object.entries(hoverAttributes)) {
+        if (!value) continue;
+
+        // Remove the prefix 'wpbs-layout-' and suffix '-hover'
+        let propName = prop.replace('wpbs-layout-', '').replace('-hover', '');
+
+        // Handle special cases for property names
+        if (propName === 'text-color') {
+            propName = 'color';
+        }
+
+        // Add the processed property and value to styles
+        styles[propName] = value;
+    }
+
+    return styles;
 }
 
 function LayoutStyle({attributes, clientId, setAttributes}) {
@@ -350,11 +591,16 @@ function LayoutStyle({attributes, clientId, setAttributes}) {
         setAttributes({'wpbs-css': css});
     }, []);
 
-    const desktop = desktop();
+    const desktopCss = desktop(attributes);
+    const mobileCss = mobile(attributes);
+    const hoverCss = hover(attributes);
 
+    css = [desktopCss, mobileCss, hoverCss].join(' ');
+
+    setAttributes({'wpbs-css': css});
 
     return (
-        <style id={'wpbs-layout-styles'} style={{display: 'none'}}>{css}</style>
+        <style id={'wpbs-layout-styles'}>{css}</style>
     );
 }
 

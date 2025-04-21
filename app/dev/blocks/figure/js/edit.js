@@ -120,7 +120,7 @@ function Media({attributes, editor = false, props = {}}) {
                 return <ResponsivePicture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
                                           settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
             case 'featured-image':
-                return '%%IMAGE%%';
+                return !editor ? '%%IMAGE%%' : '<img src="" alt="" />';
             default:
                 return false
         }

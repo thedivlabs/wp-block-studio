@@ -22,10 +22,6 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 	$src_large      = wp_get_attachment_image_src( $featured_image_id, $attributes['wpbs-resolution'] ?? 'large' )[0] ?? false;
 	$src_large_webp = $src_large ? $src_large . '.webp' : false;
 
-	if ( ! empty( $attributes['wpbs-linkPost'] ) ) {
-		$picture .= '<a href="' . get_the_permalink() . '" target="' . ( ! empty( $attributes['link']['opensInNewTab'] ) ? '_blank' : '_self' ) . '" title="' . ( $attributes['wpbs-link']['title'] ?? get_the_title() ) . '">';
-	}
-
 	$picture .= '<picture class="' . $class . '" style="' . $style . '">';
 
 	$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
@@ -35,11 +31,8 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 
 	$picture .= '</picture>';
 
-	if ( ! empty( $attributes['wpbs-linkPost'] ) ) {
-		$picture .= '</a>';
-	}
-
 	$replacements = [
+		'%%PERMALINK%%' => get_the_permalink(),
 		'%%IMAGE%%' => $picture,
 	];
 

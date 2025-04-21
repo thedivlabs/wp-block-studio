@@ -126,7 +126,7 @@ function Media({attributes, editor = false, props = {}}) {
         }
     }
 
-    if (attributes['wpbs-link'] && !editor && !attributes['wpbs-linkPost']) {
+    if (!attributes['wpbs-linkPost'] && attributes['wpbs-link'] && !editor) {
         return <a class={mediaClasses} href={attributes['wpbs-link'].url}
                   target={attributes['wpbs-link'].opensInNewTab ? '_blank' : '_self'}
                   rel={attributes['wpbs-link'].rel} style={mediaStyle}>

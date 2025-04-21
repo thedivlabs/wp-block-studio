@@ -48,11 +48,21 @@ registerBlockType(metadata.name, {
 
         function Content() {
             if (!!attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks/>
-                </div>;
+
+                const innerBlocksProps = useInnerBlocksProps({
+                    className: 'wpbs-layout-wrapper w-full h-full'
+                });
+
+                return <ElementTagName {...blockProps} >
+                    <div {...innerBlocksProps} />
+                    <Background attributes={attributes} editor={true}/>
+                </ElementTagName>;
             } else {
-                return <InnerBlocks/>;
+                const {children, ...innerBlocksProps} = useInnerBlocksProps(blockProps);
+
+                return <ElementTagName {...blockProps} >
+                    {children}
+                </ElementTagName>;
             }
         }
 
@@ -69,14 +79,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
-                <ElementTagName {...blockProps}
-                                data-wp-interactive='wpbs-layout-element'
-                >
-                    <Content/>
-
-                    <Background attributes={attributes} editor={true}/>
-
-                </ElementTagName>
+                <Content/>
             </>
         )
     },
@@ -91,23 +94,25 @@ registerBlockType(metadata.name, {
 
         function Content() {
             if (!!props.attributes['wpbs-background']) {
-                return <div className={'wpbs-layout-wrapper w-full h-full'}>
-                    <InnerBlocks.Content/>
-                </div>;
+
+                const innerBlocksProps = useInnerBlocksProps.save({
+                    className: 'wpbs-layout-wrapper w-full h-full'
+                });
+
+                return <ElementTagName {...blockProps} >
+                    <div {...innerBlocksProps} />
+                    <Background attributes={props.attributes} editor={false}/>
+                </ElementTagName>;
             } else {
-                return <InnerBlocks.Content/>;
+                const {children, ...innerBlocksProps} = useInnerBlocksProps.save(blockProps);
+
+                return <ElementTagName {...blockProps} >
+                    {children}
+                </ElementTagName>;
             }
         }
 
-        return (
-            <ElementTagName {...blockProps}
-            >
-
-                <Content/>
-
-                <Background attributes={props.attributes} editor={false}/>
-            </ElementTagName>
-        );
+        return <Content/>;
     }
 })
 

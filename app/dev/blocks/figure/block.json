@@ -11,8 +11,8 @@
     "preload": {
       "type": "array"
     },
-    "postId": {
-      "type": "string"
+    "linkPost": {
+      "type": "boolean"
     }
   },
   "usesContext": [ "postId" ],

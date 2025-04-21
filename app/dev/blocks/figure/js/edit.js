@@ -156,6 +156,7 @@ registerBlockType(metadata.name, {
         const [force, setForce] = useState(attributes['wpbs-force']);
         const [link, setLink] = useState(attributes['wpbs-link']);
         const [contain, setContain] = useState(attributes.contain);
+        const [linkPost, setLinkPost] = useState(attributes.linkPost);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
@@ -376,6 +377,18 @@ registerBlockType(metadata.name, {
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
+                                {attributes['wpbs-type'] === 'featured-image' && (
+                                    <ToggleControl
+                                        label="Link Post"
+                                        checked={!!linkPost}
+                                        onChange={(value) => {
+                                            setLinkPost(value);
+                                            setAttributes({['wpbs-linkPost']: value});
+                                        }}
+                                        className="flex items-center"
+                                        __nextHasNoMarginBottom
+                                    />
+                                )}
 
                             </Grid>
                         </Grid>

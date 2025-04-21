@@ -4,6 +4,8 @@ $css = WPBS_Style::block_styles( $attributes ?? [], $block ?? false );
 
 if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
 
+	$picture = '';
+
 	$breakpoint = $attributes['wpbs-breakpoint'] ?? WPBS_Style::get_breakpoint()['normal'] ?? false;
 
 	$class = implode( ' ', array_filter( [
@@ -17,10 +19,14 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 	$src_attr    = ! empty( $attributes['wpbs-eager'] ) ? 'src' : 'data-src';
 	$srcset_attr = ! empty( $attributes['wpbs-eager'] ) ? 'srcset' : 'data-srcset';
 
-	$src_large = wp_get_attachment_image_src( $featured_image_id, $attributes['wpbs-resolution'] ?? 'large' )[0] ?? false;
+	$src_large      = wp_get_attachment_image_src( $featured_image_id, $attributes['wpbs-resolution'] ?? 'large' )[0] ?? false;
 	$src_large_webp = $src_large ? $src_large . '.webp' : false;
 
-	$picture = '<picture class="' . $class . '" style="' . $style . '">';
+	if ( ! empty( $attributes['wpbs-linkPost'] ) ) {
+		$picture .= '<a href="' . $attributes['wpbs-linkPost'] . '" target="' . ( ! empty( $attributes['link']['opensInNewTab'] ) ? '_blank' : '_self' ) . '" title="' . get_the_title() . '">';
+	}
+
+	$picture .= '<picture class="' . $class . '" style="' . $style . '">';
 
 	$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
 	$picture .= '<source type="image/jpeg" ' . $srcset_attr . '="' . $src_large . '" />';
@@ -29,8 +35,12 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 
 	$picture .= '</picture>';
 
+	if ( ! empty( $attributes['wpbs-linkPost'] ) ) {
+		$picture .= '</a>';
+	}
+
 	$replacements = [
-		'%%IMAGE%%'   => $picture,
+		'%%IMAGE%%' => $picture,
 	];
 
 	echo strtr( $content ?? '', $replacements );

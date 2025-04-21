@@ -6,6 +6,8 @@ import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
+import apiFetch from '@wordpress/api-fetch';
+import {useEffect} from "@wordpress/element"
 
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
@@ -40,7 +42,7 @@ import Order from 'Components/Order';
 import Rounded from 'Components/Rounded';
 import OffsetHeader from "Components/OffsetHeader";
 import MinHeight from "Components/MinHeight";
-import {LayoutStyle} from "Components/LayoutStyle";
+//import {LayoutStyle} from "Components/LayoutStyle";
 import MaxHeight from "Components/MaxHeight";
 import MinHeightCustom from "Components/MinHeightCustom";
 import MaxHeightCustom from "Components/MaxHeightCustom";
@@ -290,7 +292,11 @@ const blockAttributes = {
 };
 
 
-export const LayoutAttributes = Object.assign({}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
+export const LayoutAttributes = Object.assign({
+    'wpbs-css': {
+        type: 'string'
+    },
+}, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
 
 export function LayoutClasses(attributes) {
 
@@ -317,6 +323,24 @@ export function LayoutClasses(attributes) {
     return classes.join(' ');
 }
 
+export function LayoutStyles(attributes, clientId, callback) {
+    const selector = '#block-' + clientId;
+    let css = <style></style>;
+    apiFetch({
+        path: '/wpbs/v1/layout-styles/',
+        method: 'POST',
+        data: {
+            attributes: attributes,
+            selector: selector,
+        },
+    }).then((data) => {
+        callback(data);
+        css = <style>data</style>;
+    });
+
+    return css;
+}
+
 export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
 
     const resetAll_layout = () => {
@@ -326,6 +350,7 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
     const resetAll_layout_mobile = () => {
         setAttributes(Object.keys(blockAttributes.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
     };
+
 
     return <>
         <InspectorControls group="styles">
@@ -1059,6 +1084,5 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
 
 
         </InspectorControls>
-        <LayoutStyle attributes={attributes} clientId={clientId}/>
     </>;
 }

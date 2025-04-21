@@ -140,7 +140,8 @@ class WPBS_Style {
 		] ) );
 
 		if ( $block ) {
-			wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
+			//wp_add_inline_style( 'wpbs-theme-css', $css );
+			//wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $css );
 		}
 
 		return $css;

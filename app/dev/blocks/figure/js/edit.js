@@ -116,6 +116,8 @@ function Media({attributes, editor = false, props = {}}) {
 
                 return <ResponsivePicture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
                                           settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
+            case 'featured-image':
+                return '%%IMAGE%%';
             default:
                 return false
         }
@@ -177,6 +179,7 @@ registerBlockType(metadata.name, {
             <BlockEdit key="edit" {...blockProps} />
             <Link defaultValue={link} callback={(newValue) => {
                 setAttributes({['wpbs-link']: newValue});
+                setLink(newValue);
             }}/>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
@@ -188,6 +191,7 @@ registerBlockType(metadata.name, {
                             options={[
                                 {label: 'Select', value: ''},
                                 {label: 'Image', value: 'image'},
+                                {label: 'Featured Image', value: 'featured-image'},
                                 {label: 'Lottie', value: 'lottie'},
                                 {label: 'Icon', value: 'icon'},
                             ]}
@@ -200,7 +204,7 @@ registerBlockType(metadata.name, {
                         <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
 
                             <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{display: type !== 'image' ? 'none' : null}}>
+                                  style={{display: type !== 'image' && type !== 'featured-image' ? 'none' : null}}>
                                 <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                                     <MediaUploadCheck>
                                         <MediaUpload

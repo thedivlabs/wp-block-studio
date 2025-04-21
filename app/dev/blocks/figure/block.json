@@ -10,8 +10,12 @@
     },
     "preload": {
       "type": "array"
+    },
+    "postId": {
+      "type": "string"
     }
   },
+  "usesContext": [ "postId" ],
   "selectors": {
     "root": ".wpbs-figure"
   },
@@ -36,6 +40,7 @@
   },
   "editorScript": "file:./js/edit.js",
   "viewScriptModule": "file:./js/view.js",
+  "render": "file:./render.php",
   "style": "file:./js/edit.css",
   "icon": "format-image"
 }

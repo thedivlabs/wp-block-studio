@@ -59,7 +59,13 @@ class WPBS_Style {
 
 		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? false;
 
-		return empty( $attributes ) ? $breakpoints : $breakpoints[ $attributes['wpbs-layout-breakpoint'] ?? 'normal' ] ?? '';
+		$breakpoint_attr = match ( true ) {
+			! empty( $attributes['wpbs-layout-breakpoint'] ) => $attributes['wpbs-layout-breakpoint'],
+			! empty( $attributes['wpbs-breakpoint'] ) => $attributes['wpbs-breakpoint'],
+			default => null
+		};
+
+		return empty( $attributes ) ? $breakpoints : $breakpoints[ $breakpoint_attr ?? 'normal' ] ?? '';
 	}
 
 	public static function block_styles( $attributes, $block, $custom_css = '' ): string|false {

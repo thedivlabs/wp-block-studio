@@ -13,7 +13,6 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import {useEffect} from "react";
-import {compileCSS, getCSSRules} from '@wordpress/style-engine';
 
 
 function sectionClassNames(attributes = {}) {

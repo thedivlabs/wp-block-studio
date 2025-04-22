@@ -16,9 +16,9 @@ class WPBS_Blocks {
 
 	public function render_block( $attributes, $content, $block ): string {
 
-		WPBS::console_log($attributes);
+		WPBS::console_log($block->attributes['wpbs-css'] ?? false);
 
-		wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $attributes['wpbs-css'] ?? '' );
+		//wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $attributes['wpbs-css'] ?? '' );
 
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
 

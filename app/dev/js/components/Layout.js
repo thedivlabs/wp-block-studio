@@ -571,13 +571,9 @@ function hover(attributes) {
 
 export function LayoutStyle({attributes, setAttributes, uniqueId}) {
 
-    if (!uniqueId) {
-        return false;
-    }
-
     const breakpoint = useSetting('custom.breakpoints')[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
-    let selector = uniqueId || attributes.className || null;
+    let selector = attributes.uniqueId || attributes.className || null;
 
     selector = '.' + selector.split(' ').join('.');
 
@@ -634,10 +630,12 @@ export function LayoutClasses(attributes) {
     return classes.join(' ');
 }
 
-export function Layout({attributes = {}, setAttributes, uniqueId}) {
+export function Layout({blockProps = {}, attributes = {}, setAttributes, uniqueId}) {
+
+    console.log(blockProps);
 
     if (uniqueId === undefined) {
-        return false;
+        return <></>;
     }
 
     const resetAll_layout = () => {

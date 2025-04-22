@@ -38,6 +38,7 @@ class WPBS {
 		add_action( 'admin_init', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
+		add_action( 'wp_head', [ $this, 'critical_css' ], 40 );
 		add_action( 'wp_footer', [ $this, 'output_vars' ], 30 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
@@ -48,6 +49,18 @@ class WPBS {
 		add_filter( 'acf/settings/save_json', [ $this, 'save_json' ] );
 
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
+
+	}
+
+	public function critical_css(): void {
+
+		$css = apply_filters( 'wpbs_critical_css', [] );
+
+		$css = array_unique( $css );
+
+		echo '<style class="wpbs-critical-css">';
+		echo join( ' ', $css );
+		echo '</style>';
 
 	}
 
@@ -121,7 +134,7 @@ class WPBS {
 		WPBS_Popup::init();
 		WPBS_Endpoints::init();
 
-		self::init_classes('core/components');
+		self::init_classes( 'core/components' );
 
 
 		do_action( 'wpbs_init' );
@@ -222,7 +235,7 @@ class WPBS {
 
 			$data = get_field( $field_id, $post_id ?? false );
 
-			$data = WPBS::clean_array($data);
+			$data = WPBS::clean_array( $data );
 
 			if ( ! empty( $data ) ) {
 				set_transient( $name, $data, DAY_IN_SECONDS );
@@ -591,7 +604,7 @@ class WPBS {
 		return $sanitized;
 	}
 
-	public static function init_classes( $dir, $init = true): void {
+	public static function init_classes( $dir, $init = true ): void {
 
 		$path = self::$path;
 

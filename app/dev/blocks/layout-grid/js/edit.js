@@ -29,7 +29,7 @@ import React, {useEffect, useState} from "react";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, styleAttributesFull} from "Components/Style.js";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributes,
+        ...styleAttributesFull,
         ['wpbs-columns-mobile']: {
             type: 'string'
         },

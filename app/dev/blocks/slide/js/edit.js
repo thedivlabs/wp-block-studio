@@ -24,7 +24,7 @@ import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
 import Resolution from "Components/Resolution.js";
 import ResponsivePicture from "Components/ResponsivePicture.js";
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, styleAttributesFull} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -97,7 +97,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributes,
+        ...styleAttributesFull,
         ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {

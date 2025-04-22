@@ -9,7 +9,7 @@ import {LayoutClasses, LayoutSettings} from "Components/Layout"
 import {Background, BackgroundSettings} from "Components/Background";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useRef} from "react";
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, styleAttributesFull} from "Components/Style.js";
 
 
 function sectionClassNames(attributes = {}) {
@@ -25,7 +25,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributes,
+        ...styleAttributesFull,
     },
     edit: ({attributes, setAttributes, context, clientId}) => {
 

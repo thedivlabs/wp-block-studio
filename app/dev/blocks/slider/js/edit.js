@@ -21,7 +21,7 @@ import {
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {swiperDefaultArgs} from "Includes/helper";
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, styleAttributesFull} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -155,7 +155,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributes,
+        ...styleAttributesFull,
         ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {

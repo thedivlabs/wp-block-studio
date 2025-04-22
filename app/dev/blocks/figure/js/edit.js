@@ -27,7 +27,7 @@ import Overlay from "Components/Overlay";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
 import {imageButtonStyle} from "Includes/helper";
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, styleAttributesFull} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
 
@@ -149,7 +149,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributes,
+        ...styleAttributesFull,
         ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {

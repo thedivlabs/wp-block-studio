@@ -13,7 +13,7 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, styleAttributesFull} from "Components/Style.js";
 
 
 function sectionClassNames(attributes = {}) {
@@ -29,8 +29,8 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributes,
-        ...ElementTagAttributes
+        ...styleAttributesFull,
+        ...ElementTagAttributes,
     },
     edit: ({attributes, setAttributes, clientId}) => {
 

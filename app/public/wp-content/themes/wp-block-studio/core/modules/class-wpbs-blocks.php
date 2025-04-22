@@ -17,11 +17,11 @@ class WPBS_Blocks {
 	public static function render_block_styles( $attributes ): void {
 		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes ) {
 
-			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-layout-css'] ) ) {
+			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
 				return $css_array;
 			}
 
-			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-layout-css'];
+			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-css'];
 
 			return $css_array;
 		} );

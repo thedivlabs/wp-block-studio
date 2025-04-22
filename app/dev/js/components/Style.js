@@ -1,5 +1,4 @@
-import { useSetting } from '@wordpress/block-editor';
-
+import {useSetting} from '@wordpress/block-editor';
 
 
 import {LayoutAttributes} from './Layout';
@@ -305,20 +304,27 @@ function props(attributes) {
     return styles;
 }
 
-export function Style({attributes,setAttributes,uniqueId}) {
+export function Style({attributes, setAttributes, uniqueId}) {
 
-    const breakpoints = useSetting( 'custom.breakpoints' );
+    const breakpoints = useSetting('custom.breakpoints');
 
     useEffect(() => {
-        setAttributes({'wpbs-css': styleCss(attributes, uniqueId,breakpoints)});
+        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, breakpoints)});
     }, [Object.fromEntries(Object.entries(styleAttributes))]);
 
     return <style class={'wpbs-styles'}>{attributes['wpbs-css'] || ''}</style>;
 }
 
-export const styleAttributes = {...BackgroundAttributes, ...LayoutAttributes}
+export const styleAttributes = {...BackgroundAttributes, ...LayoutAttributes};
+export const styleAttributesFull = {
+    ...BackgroundAttributes, ...LayoutAttributes, ...{
+        'wpbs-css': {
+            type: 'string'
+        }
+    }
+};
 
-export function styleCss(attributes, uniqueId,breakpoints) {
+export function styleCss(attributes, uniqueId, breakpoints) {
 
     const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 

@@ -317,10 +317,17 @@ registerBlockType(metadata.name, {
 
         let customCSS = '';
 
-        customCSS += selector + '{';
-        customCSS += '--row-gap:' + getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null) + ';';
-        customCSS += '--column-gap:' + getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null) + ';';
-        customCSS += '}';
+        useEffect(()=>{
+            setAttributes({
+                'wpbs-prop-row-gap':getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+                'wpbs-prop-row-gap-mobile':getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
+                'wpbs-prop-column-gap':getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+                'wpbs-prop-column-gap-mobile':getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+            });
+        }, [
+            attributes?.style?.spacing,
+            attributes['wpbs-layout-gap-mobile']
+        ]);
 
 
         if (selector) {

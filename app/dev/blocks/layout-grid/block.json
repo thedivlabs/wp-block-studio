@@ -18,6 +18,22 @@
       "type": "string",
       "show_in_rest": true
     },
+    "wpbs-prop-row-gap": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-prop-column-gap": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-prop-row-gap-mobile": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-prop-column-gap-mobile": {
+      "type": "string",
+      "show_in_rest": true
+    },
     "wpbs-prop-columns-mobile": {
       "type": "string",
       "show_in_rest": true

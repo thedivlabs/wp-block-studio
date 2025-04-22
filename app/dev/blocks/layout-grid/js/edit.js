@@ -30,6 +30,7 @@ import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
 import {Style, styleAttributesFull} from "Components/Style.js";
+import {getCSSValueFromRawStyle} from "@wordpress/style-engine";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -315,6 +316,12 @@ registerBlockType(metadata.name, {
         }
 
         let customCSS = '';
+
+        customCSS += selector + JSON.stringify({
+            '--row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+            '--column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+        });
+
 
         if (selector) {
             customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') {';

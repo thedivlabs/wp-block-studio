@@ -584,9 +584,9 @@ function props(attributes) {
             const styleKey = `--${propName}`;
 
             if (key.includes('mobile')) {
-                styles.mobile['--' + styleKey] = value;
+                styles.mobile[styleKey] = value;
             } else {
-                styles.desktop['--' + styleKey] = value;
+                styles.desktop[styleKey] = value;
             }
         }
     });

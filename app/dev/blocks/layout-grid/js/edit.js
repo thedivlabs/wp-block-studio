@@ -317,11 +317,8 @@ registerBlockType(metadata.name, {
 
         let customCSS = '';
 
-        customCSS += selector + JSON.stringify({
-            '--row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-            '--column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-        });
-
+        customCSS += selector + '--row-gap:' + getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null) + ';';
+        customCSS += selector + '--column-gap:' + getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null) + ';';
 
         if (selector) {
             customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') {';

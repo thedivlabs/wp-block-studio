@@ -304,15 +304,15 @@ function props(attributes) {
     return styles;
 }
 
-export function Style({attributes, setAttributes, uniqueId}) {
+export function Style({attributes, setAttributes, uniqueId, customCss = ''}) {
 
     const breakpoints = useSetting('custom.breakpoints');
 
     useEffect(() => {
-        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, breakpoints)});
+        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, breakpoints, customCss)});
     }, [Object.fromEntries(Object.entries(styleAttributes))]);
 
-    return <style class={'wpbs-styles'}>{attributes['wpbs-css'] || ''}</style>;
+    return <style class={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
 }
 
 export const styleAttributes = {...BackgroundAttributes, ...LayoutAttributes};
@@ -324,7 +324,7 @@ export const styleAttributesFull = {
     }
 };
 
-export function styleCss(attributes, uniqueId, breakpoints) {
+export function styleCss(attributes, uniqueId, breakpoints, customCss = '') {
 
     const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
@@ -338,9 +338,10 @@ export function styleCss(attributes, uniqueId, breakpoints) {
     let mobileCss = '';
     let mobileProps = '';
     let hoverCss = '';
-    //let customCss = attributes['wpbs-css'] || '';
 
     const customProps = props(attributes);
+
+    console.log(customProps);
 
     Object.entries(desktop(attributes)).forEach(([prop, value]) => {
         desktopCss += prop + ':' + value + ';';
@@ -362,7 +363,7 @@ export function styleCss(attributes, uniqueId, breakpoints) {
         mobileProps += prop + ':' + value + ';';
     });
 
-    if (mobileCss.length) {
+    if (mobileCss.length || mobileProps.length) {
         css += '@media(width < ' + breakpoint + '){' + selector + '{' + [mobileProps, mobileCss].join(' ') + '}}';
     }
 
@@ -374,7 +375,7 @@ export function styleCss(attributes, uniqueId, breakpoints) {
         css += selector + ':hover' + '{' + hoverCss + '}';
     }
 
-    return css;
+    return [css, customCss].join(' ');
 
 
 }

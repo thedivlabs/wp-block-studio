@@ -138,55 +138,12 @@ class WPBS_Grid {
 
 	}
 
-	public static function render_style( $attributes, $block, $query = false ): string|bool {
+	public static function render_style( $attributes ): string|bool {
 
 		$breakpoints       = WPBS_Style::get_breakpoint();
-		$breakpoint_mobile = $breakpoints[ $attributes['wpbs-breakpoint-mobile'] ?? 'xs' ] ?? null;
-		$breakpoint_small  = $breakpoints[ $attributes['wpbs-breakpoint-small'] ?? 'sm' ] ?? null;
 		$breakpoint_large  = $breakpoints[ $attributes['wpbs-breakpoint-large'] ?? 'normal' ] ?? null;
 
-		$selector = match ( true ) {
-			! empty( $attributes['uniqueId'] ) => '.' . join( '.', explode( ' ', $attributes['uniqueId'] ) ),
-			! empty( $attributes['className'] ) => '.' . join( '.', explode( ' ', $attributes['className'] ) ),
-			default => false
-		};
-
-		$cols_mobile = intval( $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
-		$cols_small  = intval( $attributes['wpbs-columns-small'] ?? false ) ?: 2;
-		$cols_large  = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
-
-		$custom_css = '';
-
-		if ( ! empty( $cols_mobile ) ) {
-
-			$custom_css .= '@media screen and (max-width: calc(' . ( $breakpoint_small ) . ' - 1px)) {';
-
-			$custom_css .= $selector . '{ --columns: ' . $cols_mobile . ' }';
-
-			$custom_css .= '} ';
-		}
-
-
-		if ( ! empty( $cols_small ) ) {
-
-			$custom_css .= '@media screen and (min-width: ' . $breakpoint_small . ') and (max-width: calc(' . $breakpoint_large . ' - 1px)) {';
-
-			$custom_css .= $selector . '{ --columns: ' . $cols_small . ' }';
-
-			$custom_css .= '} ';
-		}
-
-		if ( ! empty( $cols_large ) ) {
-			$custom_css .= '@media screen and (min-width: ' . ( $breakpoint_large ) . ') {';
-
-			$custom_css .= $selector . '{ --columns: ' . $cols_large . ' }';
-
-			$custom_css .= '} ';
-		}
-
-
-		//$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false, $custom_css );
-
+		WPBS_Blocks::render_block_styles($attributes ?? false);
 
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes, $breakpoint_large ) {
 

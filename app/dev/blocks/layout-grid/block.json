@@ -22,11 +22,11 @@
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-columns-small": {
+    "wpbs-prop-columns-small": {
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-columns-large": {
+    "wpbs-prop-columns-large": {
       "type": "string",
       "show_in_rest": true
     },

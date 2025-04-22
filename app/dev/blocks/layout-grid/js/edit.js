@@ -63,13 +63,13 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...styleAttributesFull,
-        ['wpbs-columns-mobile']: {
+        ['wpbs-prop-columns-mobile']: {
             type: 'string'
         },
-        ['wpbs-columns-small']: {
+        ['wpbs-prop-columns-small']: {
             type: 'string'
         },
-        ['wpbs-columns-large']: {
+        ['wpbs-prop-columns-large']: {
             type: 'string'
         },
         ['wpbs-breakpoint-small']: {
@@ -140,9 +140,9 @@ registerBlockType(metadata.name, {
         const [{breakpoints}] = useSettings(['custom']);
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
-        const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-columns-mobile']);
-        const [columnsSmall, setColumnsSmall] = useState(attributes['wpbs-columns-small']);
-        const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-columns-large']);
+        const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-prop-columns-mobile']);
+        const [columnsSmall, setColumnsSmall] = useState(attributes['wpbs-prop-columns-small']);
+        const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-prop-columns-large']);
         const [breakpointLarge, setBreakpointLarge] = useState(attributes['wpbs-breakpoint-large']);
         const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
@@ -307,6 +307,29 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-breakpoint-small'], attributes['wpbs-breakpoint-large']]);
 
 
+        let selector = false;
+        if (uniqueId) {
+            selector = '.' + uniqueId.split(' ').join('.');
+        } else if (className) {
+            selector = '.' + className.split(' ').join('.');
+        }
+
+        let customCSS = '';
+
+        if (selector) {
+            customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-mobile'] || 'xs'] + ') {';
+            customCSS += `${selector} { --columns: var(--columns-mobile, 1) }`;
+            customCSS += `} `;
+
+            customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') {';
+            customCSS += `${selector} { --columns: var(--columns-small, 2) }`;
+            customCSS += `} `;
+
+            customCSS += '@media (width > ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
+            customCSS += `${selector} { --columns: var(--columns-large, 2) }`;
+            customCSS += `} `;
+        }
+
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
                 <Grid columns={3} columnGap={15} rowGap={20}>
@@ -315,7 +338,7 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-columns-mobile']: newValue});
+                            setAttributes({['wpbs-prop-columns-mobile']: newValue});
                             setColumnsMobile(newValue);
                         }}
                         value={columnsMobile}
@@ -325,7 +348,7 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-columns-small']: newValue});
+                            setAttributes({['wpbs-prop-columns-small']: newValue});
                             setColumnsSmall(newValue);
                         }}
                         value={columnsSmall}
@@ -335,7 +358,7 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-columns-large']: newValue});
+                            setAttributes({['wpbs-prop-columns-large']: newValue});
                             setColumnsLarge(newValue);
                         }}
                         value={columnsLarge}
@@ -595,7 +618,7 @@ registerBlockType(metadata.name, {
 
 
                 </InspectorControls>
-                <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+                <LayoutSettings attributes={attributes} setAttributes={setAttributes}/>
 
 
                 <div {...blockProps}>
@@ -604,7 +627,8 @@ registerBlockType(metadata.name, {
                     }, {})} />
                     <Background attributes={attributes} editor={true}/>
                     <DefaultBlockAppender rootClientId={clientId}/>
-                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                           customCss={customCSS}/>
                 </div>
             </>
         )
@@ -622,9 +646,9 @@ registerBlockType(metadata.name, {
                 divider: !!props.attributes['wpbs-divider'],
                 breakpoints: props.attributes['wpbs-breakpoints'],
                 columns: {
-                    mobile: props.attributes['wpbs-columns-mobile'] || 1,
-                    small: props.attributes['wpbs-columns-small'] || 2,
-                    large: props.attributes['wpbs-columns-large'] || 3,
+                    mobile: props.attributes['wpbs-prop-columns-mobile'] || 1,
+                    small: props.attributes['wpbs-prop-columns-small'] || 2,
+                    large: props.attributes['wpbs-prop-columns-large'] || 3,
                 }
             }),
             style: {

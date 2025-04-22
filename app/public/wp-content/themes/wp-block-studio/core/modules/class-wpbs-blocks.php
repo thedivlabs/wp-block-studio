@@ -14,14 +14,19 @@ class WPBS_Blocks {
 
 	}
 
-	public static function render_block_styles( $attributes ): void {
-		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes ) {
+	public static function render_block_styles( $attributes, $custom_css = '' ): void {
+		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes, $custom_css ) {
 
 			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
 				return $css_array;
 			}
 
 			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-css'];
+
+			if ( ! empty( $custom_css ) ) {
+				$css_array[ $attributes['uniqueId'] . '-custom' ] = $custom_css;
+			}
+
 
 			return $css_array;
 		} );

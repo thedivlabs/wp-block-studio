@@ -79,8 +79,8 @@ registerBlockType(metadata.name, {
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
                 <Content/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
             </>
         )
     },

@@ -21,7 +21,7 @@ import {
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {swiperDefaultArgs} from "Includes/helper";
-import {Style} from "Components/Style.js";
+import {Style, styleAttributes} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -155,7 +155,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LayoutAttributes,
+        ...styleAttributes,
         ...blockAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
@@ -494,7 +494,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
-
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
 
             <div {...innerBlocksProps}></div>
         </>;

@@ -10,8 +10,8 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
-import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
+import {LayoutClasses, LayoutSettings} from "Components/Layout"
+import {Background, BackgroundSettings} from "Components/Background";
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
@@ -26,10 +26,10 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
-import {select, useSelect} from "@wordpress/data";
+import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
-import {Style} from "Components/Style.js";
+import {Style, styleAttributes} from "Components/Style.js";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -62,8 +62,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LayoutAttributes,
-        ...BackgroundAttributes,
+        ...styleAttributes,
         ['wpbs-columns-mobile']: {
             type: 'string'
         },
@@ -597,7 +596,7 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
                 <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
-                
+
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({
@@ -605,6 +604,7 @@ registerBlockType(metadata.name, {
                     }, {})} />
                     <Background attributes={attributes} editor={true}/>
                     <DefaultBlockAppender rootClientId={clientId}/>
+                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
                 </div>
             </>
         )

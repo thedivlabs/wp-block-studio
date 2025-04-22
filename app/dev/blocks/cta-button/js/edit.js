@@ -19,7 +19,7 @@ import React, {useEffect, useState} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style,Css} from "Components/Style.js";
+import {Style, styleAttributes} from "Components/Style.js";
 
 
 function elementClassNames(attributes = {}) {
@@ -97,7 +97,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LayoutAttributes,
+        ...styleAttributes,
         'wpbs-link': {
             type: 'object'
         },
@@ -275,10 +275,9 @@ registerBlockType(metadata.name, {
                     </PanelBody>
                 </InspectorControls>
 
-
-
                 <div {...blockProps}>
                     <Content attributes={attributes} editor={true} />
+                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
                 </div>
             </>
         )

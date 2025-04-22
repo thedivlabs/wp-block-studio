@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        clientId={clientId}></Layout>
+                        uniqueId={uniqueId}></Layout>
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs-layout-section'
                 >

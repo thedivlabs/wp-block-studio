@@ -67,7 +67,7 @@ registerBlockType(metadata.name, {
                                         pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        clientId={clientId}></Layout>
+                        uniqueId={uniqueId}></Layout>
 
                 <Content/>
 

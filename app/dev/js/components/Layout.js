@@ -7,6 +7,7 @@ import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
+import {getCSSValueFromRawStyle} from "@wordpress/style-engine";
 
 
 import Outline from 'Components/Outline';
@@ -297,21 +298,6 @@ export const LayoutAttributes = Object.assign({
     },
 }, blockAttributes.layout, blockAttributes.mobile, blockAttributes.colors);
 
-function parseStyle(value) {
-    if (typeof value !== 'string') return value;
-
-    if (value.startsWith('var|')) {
-        const parts = value.split('|').slice(1); // Remove 'var'
-        return `var(--wp--${parts.join('--')})`;
-    }
-
-    if (value.startsWith('--wp--')) {
-        return `var(${value})`;
-    }
-
-    return value;
-}
-
 function parseSpecial(prop, value) {
     switch (prop) {
         case 'height':
@@ -331,8 +317,8 @@ function parseSpecial(prop, value) {
 function desktop(attributes) {
 
     const styleAttributes = Object.fromEntries(Object.entries({
-        'column-gap': parseStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-        'row-gap': parseStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+        'row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+        'column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
@@ -424,13 +410,13 @@ function desktop(attributes) {
                 break;
 
             case 'wpbs-layout-translate':
-                const top = parseStyle(attributes?.['wpbs-layout-translate']?.top || '0px');
-                const left = parseStyle(attributes?.['wpbs-layout-translate']?.left || '0px');
+                const top = getCSSValueFromRawStyle(attributes?.['wpbs-layout-translate']?.top || '0px');
+                const left = getCSSValueFromRawStyle(attributes?.['wpbs-layout-translate']?.left || '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
 
             case 'wpbs-layout-offset-header':
-                const padding = parseStyle(attributes?.style?.spacing?.padding?.top || '0px');
+                const padding = getCSSValueFromRawStyle(attributes?.style?.spacing?.padding?.top || '0px');
                 styles['padding-top'] = `calc(${padding} + var(--wpbs-header-height, 0px)) !important`;
                 break;
         }
@@ -541,8 +527,8 @@ function mobile(attributes) {
                 break;
 
             case 'wpbs-layout-translate-mobile': {
-                const top = parseStyle(attributes['wpbs-layout-translate-mobile']?.top ?? '0px');
-                const left = parseStyle(attributes['wpbs-layout-translate-mobile']?.left ?? '0px');
+                const top = getCSSValueFromRawStyle(attributes['wpbs-layout-translate-mobile']?.top ?? '0px');
+                const left = getCSSValueFromRawStyle(attributes['wpbs-layout-translate-mobile']?.left ?? '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
             }
@@ -583,7 +569,11 @@ function hover(attributes) {
     return styles;
 }
 
-export function LayoutStyle({attributes, setAttributes,uniqueId}) {
+export function LayoutStyle({attributes, setAttributes, uniqueId}) {
+
+    if (!uniqueId) {
+        return false;
+    }
 
     const breakpoint = useSetting('custom.breakpoints')[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
@@ -606,15 +596,13 @@ export function LayoutStyle({attributes, setAttributes,uniqueId}) {
         mobileCss += prop + ':' + value + ';';
     });
 
-    css += '@media(max-width:calc(' + breakpoint + ') - 1px){' + selector + '{' + mobileCss + '}}';
+    css += '@media(width < ' + breakpoint + '){' + selector + '{' + mobileCss + '}}';
 
     Object.entries(hover(attributes)).forEach(([prop, value]) => {
         hoverCss += prop + ':' + value + ';';
     });
 
     css += selector + ':hover' + '{' + hoverCss + '}';
-
-    console.log(css);
 
     setAttributes({'wpbs-css': css});
 
@@ -646,7 +634,11 @@ export function LayoutClasses(attributes) {
     return classes.join(' ');
 }
 
-export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
+export function Layout({attributes = {}, setAttributes, uniqueId}) {
+
+    if (uniqueId === undefined) {
+        return false;
+    }
 
     const resetAll_layout = () => {
         setAttributes(Object.keys(blockAttributes.layout).reduce((o, key) => ({...o, [key]: undefined}), {}))
@@ -1386,8 +1378,8 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
                 })}
             />
 
-
         </InspectorControls>
 
+        <LayoutStyle attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
     </>;
 }

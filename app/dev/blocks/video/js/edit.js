@@ -259,7 +259,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
 
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    clientId={clientId}></Layout>
+                    uniqueId={uniqueId}></Layout>
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>

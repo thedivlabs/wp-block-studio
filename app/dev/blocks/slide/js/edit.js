@@ -276,7 +276,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
 
             <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    clientId={clientId}></Layout>
+                    uniqueId={uniqueId}></Layout>
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}

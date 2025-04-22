@@ -79,9 +79,8 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        clientId={clientId}></Layout>
+                        uniqueId={uniqueId}></Layout>
                 <Content/>
-                <LayoutStyle attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
             </>
         )
     },

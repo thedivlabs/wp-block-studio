@@ -29,7 +29,7 @@ if ( $is_loop ) {
 			$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
 
 			$unique_id = join( ' ', array_filter( [
-				//$block_template['attrs']['uniqueId'] ?? null,
+				$block_template['attrs']['uniqueId'] ?? null,
 				'wpbs-layout-grid-card-' . get_the_ID()
 			] ) );
 

@@ -317,16 +317,16 @@ registerBlockType(metadata.name, {
         let customCSS = '';
 
         if (selector) {
-            customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-mobile'] || 'xs'] + ') {';
+            customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') {';
             customCSS += `${selector} { --columns: var(--columns-mobile, 1) }`;
             customCSS += `} `;
 
-            customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') {';
+            customCSS += '@media (' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ' < width < ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
             customCSS += `${selector} { --columns: var(--columns-small, 2) }`;
             customCSS += `} `;
 
             customCSS += '@media (width > ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
-            customCSS += `${selector} { --columns: var(--columns-large, 2) }`;
+            customCSS += `${selector} { --columns: var(--columns-large, 3) }`;
             customCSS += `} `;
         }
 

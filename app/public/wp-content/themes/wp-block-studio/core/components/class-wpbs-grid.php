@@ -207,7 +207,7 @@ class WPBS_Grid {
 
 			$new_block->attributes['postId'] = get_the_ID();
 
-			$css .= WPBS_Style::block_styles( $new_block->attributes ?? false, $new_block );
+			//$css .= WPBS_Style::block_styles( $new_block->attributes ?? false, $new_block );
 
 		}
 

@@ -151,9 +151,6 @@ class WPBS_Grid {
 			default => false
 		};
 
-		$attributes['wpbs-prop-row-gap']    = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['left'] ?? '0px' );
-		$attributes['wpbs-prop-column-gap'] = WPBS::parse_wp_css_variable( $attributes['style']['spacing']['blockGap']['top'] ?? '0px' );
-
 		$cols_mobile = intval( $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
 		$cols_small  = intval( $attributes['wpbs-columns-small'] ?? false ) ?: 2;
 		$cols_large  = intval( $attributes['wpbs-columns-large'] ?? $attributes['wpbs-columns-small'] ?? $attributes['wpbs-columns-mobile'] ?? false ) ?: 1;
@@ -188,7 +185,7 @@ class WPBS_Grid {
 		}
 
 
-		$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false, $custom_css );
+		//$css = WPBS_Style::block_styles( $attributes ?? false, $block ?? false, $custom_css );
 
 
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes, $breakpoint_large ) {
@@ -203,8 +200,9 @@ class WPBS_Grid {
 
 		} );
 
-		return $css;
+		//return $css;
 
+		return true;
 
 	}
 

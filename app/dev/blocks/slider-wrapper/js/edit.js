@@ -1,7 +1,7 @@
 import {
     useBlockProps,
     BlockEdit,
-    useInnerBlocksProps, PanelColorSettings, InspectorControls
+    useInnerBlocksProps, InspectorControls
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"

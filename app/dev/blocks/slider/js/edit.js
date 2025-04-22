@@ -9,7 +9,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -21,6 +21,7 @@ import {
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {swiperDefaultArgs} from "Includes/helper";
+import {Style} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -492,9 +493,9 @@ registerBlockType(metadata.name, {
 
                 </PanelBody>
             </InspectorControls>
-
-            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    uniqueId={uniqueId}></Layout>
+            <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+            <Style attributes={attributes} setAttributes={setAttributes}
+                    uniqueId={uniqueId}></Style>
 
             <div {...innerBlocksProps}></div>
         </>;

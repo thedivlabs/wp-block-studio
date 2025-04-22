@@ -7,7 +7,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     BaseControl,
@@ -24,6 +24,7 @@ import Overlay from "Components/Overlay";
 import {imageButtonStyle} from "Includes/helper";
 import {useInstanceId} from '@wordpress/compose';
 import Resolution from "Components/Resolution";
+import {Style} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -257,9 +258,9 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-
-            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    uniqueId={uniqueId}></Layout>
+            <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+            <Style attributes={attributes} setAttributes={setAttributes}
+                    uniqueId={uniqueId}></Style>
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>

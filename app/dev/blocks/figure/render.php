@@ -1,6 +1,10 @@
 <?php
 
-$css = WPBS_Style::block_styles( $attributes ?? [], $block ?? false );
+//$css = WPBS_Style::block_styles( $attributes ?? [], $block ?? false );
+
+WPBS_Blocks::render_block_styles( $attributes ?? false );
+
+WPBS::console_log( $block ?? false );
 
 if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
 

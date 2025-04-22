@@ -5,14 +5,15 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
+import {Style} from "Components/Style.js";
 
 
 function sectionClassNames(attributes = {}) {
@@ -69,8 +70,9 @@ registerBlockType(metadata.name, {
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>
-                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Layout>
+                <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+                <Style attributes={attributes} setAttributes={setAttributes}
+                        uniqueId={uniqueId}></Style>
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs-layout-section'
                 >

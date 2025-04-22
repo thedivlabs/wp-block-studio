@@ -8,6 +8,7 @@
     "@wordpress/blocks": "^13.3.0",
     "@wordpress/components": "^28.3.0",
     "@wordpress/compose": "^7.17.0",
+    "@wordpress/core-data": "^7.22.0",
     "@wordpress/create-block": "^4.46.0",
     "@wordpress/data": "^10.19.0",
     "@wordpress/editor": "^14.4.0",

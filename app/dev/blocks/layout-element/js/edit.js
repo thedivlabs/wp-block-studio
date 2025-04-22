@@ -5,14 +5,15 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses, LayoutStyle} from "Components/Layout"
+import {LayoutAttributes, LayoutClasses, LayoutSettings, LayoutStyle} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
+import {Style} from "Components/Style.js";
 
 
 function sectionClassNames(attributes = {}) {
@@ -72,14 +73,16 @@ registerBlockType(metadata.name, {
                     <BackgroundSettings attributes={attributes || {}}
                                         pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
+                <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>
-                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Layout>
+                <Style attributes={attributes} setAttributes={setAttributes}
+                        uniqueId={uniqueId}></Style>
                 <Content/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },

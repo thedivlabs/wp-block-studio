@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {LayoutSettings, LayoutAttributes, LayoutClasses} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     BaseControl,
@@ -27,13 +27,13 @@ import Overlay from "Components/Overlay";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
 import {imageButtonStyle} from "Includes/helper";
+import {Style} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
 
 
     return [
         'wpbs-figure flex items-center justify-center relative max-w-full max-h-full',
-        attributes.uniqueId,
         LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
@@ -120,7 +120,9 @@ function Media({attributes, editor = false, props = {}}) {
                 return <ResponsivePicture mobile={attributes['wpbs-mobileImage']} large={attributes['wpbs-largeImage']}
                                           settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
             case 'featured-image':
-                return !editor ? '%%IMAGE%%' : <figure className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED IMAGE</figure>;
+                return !editor ? '%%IMAGE%%' : <figure
+                    className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
+                    IMAGE</figure>;
             default:
                 return false
         }
@@ -171,7 +173,7 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps({
-            className: blockClasses(attributes),
+            className: [blockClasses(attributes), uniqueId].join(' '),
             style: {
                 ...blockStyles(attributes),
             }
@@ -183,6 +185,7 @@ registerBlockType(metadata.name, {
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
+            <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
             <Link defaultValue={link} callback={(newValue) => {
                 setAttributes({['wpbs-link']: newValue});
                 setLink(newValue);
@@ -401,8 +404,8 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
 
-            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    uniqueId={uniqueId}></Layout>
+            <Style attributes={attributes} setAttributes={setAttributes}
+                    uniqueId={uniqueId}></Style>
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>

@@ -18,7 +18,7 @@
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-columns-mobile": {
+    "wpbs-prop-columns-mobile": {
       "type": "string",
       "show_in_rest": true
     },

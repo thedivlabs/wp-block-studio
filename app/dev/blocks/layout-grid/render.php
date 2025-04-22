@@ -15,6 +15,8 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
+WPBS_Blocks::render_block_styles($attributes ?? false);
+
 if ( $is_loop ) {
 
 

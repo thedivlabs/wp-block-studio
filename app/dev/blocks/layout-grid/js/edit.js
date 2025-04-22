@@ -10,7 +10,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {
     __experimentalInputControl as InputControl,
@@ -29,6 +29,7 @@ import React, {useEffect, useState} from "react";
 import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
+import {Style} from "Components/Style.js";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -595,9 +596,9 @@ registerBlockType(metadata.name, {
 
 
                 </InspectorControls>
-
-                <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Layout>
+                <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+                <Style attributes={attributes} setAttributes={setAttributes}
+                        uniqueId={uniqueId}></Style>
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

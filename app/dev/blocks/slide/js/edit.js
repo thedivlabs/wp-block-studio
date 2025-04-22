@@ -7,7 +7,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 
 import React, {useEffect, useState} from "react";
@@ -24,6 +24,7 @@ import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
 import Resolution from "Components/Resolution.js";
 import ResponsivePicture from "Components/ResponsivePicture.js";
+import {Style} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
     return [
@@ -274,9 +275,9 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-
-            <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
-                    uniqueId={uniqueId}></Layout>
+            <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+            <Style attributes={attributes} setAttributes={setAttributes}
+                    uniqueId={uniqueId}></Style>
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}

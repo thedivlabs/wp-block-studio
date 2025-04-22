@@ -14,18 +14,22 @@ class WPBS_Blocks {
 
 	}
 
-	public function render_block( $attributes, $content, $block ): string {
-
+	public static function render_block_styles( $attributes ): void {
 		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes ) {
 
-			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
+			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-layout-css'] ) ) {
 				return $css_array;
 			}
 
-			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-css'];
+			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-layout-css'];
 
 			return $css_array;
 		} );
+	}
+
+	public function render_block( $attributes, $content, $block ): string {
+
+		self::render_block_styles( $attributes );
 
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
 

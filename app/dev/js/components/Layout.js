@@ -1,12 +1,13 @@
 import {
     InspectorControls,
     PanelColorSettings,
+    useSetting
 } from "@wordpress/block-editor";
 import {
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem
 } from "@wordpress/components";
-import {useEffect} from "react";
+
 
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
@@ -45,7 +46,6 @@ import MaxHeight from "Components/MaxHeight";
 import MinHeightCustom from "Components/MinHeightCustom";
 import MaxHeightCustom from "Components/MaxHeightCustom";
 import Mask from "Components/Mask";
-import {compileCSS} from "@wordpress/style-engine";
 
 const blockAttributes = {
     layout: {
@@ -583,37 +583,40 @@ function hover(attributes) {
     return styles;
 }
 
-export function LayoutStyle(attributes, setAttributes) {
+export function LayoutStyle({attributes, setAttributes}) {
+
+    const breakpoint = useSetting('custom.breakpoints')[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
     let selector = attributes.uniqueId || attributes.className || null;
 
     selector = '.' + selector.split(' ').join('.');
 
-    console.log(selector);
-
-    const desktopCss = desktop(attributes);
-
     let css = '';
+    let desktopCss = '';
+    let mobileCss = '';
+    let hoverCss = '';
 
-    Object.entries(desktopCss).forEach(([prop, value]) => {
-        css += prop + ':' + value + ';';
+    Object.entries(desktop(attributes)).forEach(([prop, value]) => {
+        desktopCss += prop + ':' + value + ';';
     });
 
-    css = selector + '{' + css + '}';
+    css += selector + '{' + desktopCss + '}';
+
+    Object.entries(mobile(attributes)).forEach(([prop, value]) => {
+        mobileCss += prop + ':' + value + ';';
+    });
+
+    css += 'media(max-width:calc(' + breakpoint + ') - 1px)' + selector + '{' + mobileCss + '}';
+
+    Object.entries(hover(attributes)).forEach(([prop, value]) => {
+        hoverCss += prop + ':' + value + ';';
+    });
+
+    css += ':hover' + selector + '{' + hoverCss + '}';
 
     setAttributes({'wpbs-css': css});
 
-
-    //const mobileCss = mobile(attributes);
-    //const hoverCss = hover(attributes);
-
-    /*desktopCss.forEach(([prop, value]) => {
-        css += selector + '{' + value + '}';
-    })*/
-
-    //setAttributes({'wpbs-css': css});
-
-    return css;
+    return <style class={'wpbs-layout-styles'}>{css}</style>;
 }
 
 export function LayoutClasses(attributes) {

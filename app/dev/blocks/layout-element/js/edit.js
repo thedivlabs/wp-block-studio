@@ -45,10 +45,6 @@ registerBlockType(metadata.name, {
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
 
-        const css = LayoutStyle(attributes, setAttributes);
-        console.log(css);
-
-
         const ElementTagName = ElementTag(attributes);
 
         function Content() {
@@ -85,7 +81,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
                 <Content/>
-                <style id={'wpbs-layout-styles'}>{attributes['wpbs-css'] || ''}</style>
+                <LayoutStyle attributes={attributes} setAttributes={setAttributes} />
             </>
         )
     },

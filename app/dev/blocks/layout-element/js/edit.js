@@ -5,7 +5,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {Layout, LayoutAttributes, LayoutClasses} from "Components/Layout"
+import {Layout, LayoutAttributes, LayoutClasses, LayoutStyle} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
@@ -13,13 +13,14 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import {useEffect} from "react";
+import {compileCSS, getCSSRules} from '@wordpress/style-engine';
 
 
 function sectionClassNames(attributes = {}) {
 
     return [
         'wpbs-layout-element w-full block relative',
-        LayoutClasses,
+        LayoutClasses(attributes),
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -43,6 +44,10 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
         });
+
+        const css = LayoutStyle(attributes, setAttributes);
+        console.log(css);
+
 
         const ElementTagName = ElementTag(attributes);
 

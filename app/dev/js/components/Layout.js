@@ -45,6 +45,7 @@ import MaxHeight from "Components/MaxHeight";
 import MinHeightCustom from "Components/MinHeightCustom";
 import MaxHeightCustom from "Components/MaxHeightCustom";
 import Mask from "Components/Mask";
+import {compileCSS} from "@wordpress/style-engine";
 
 const blockAttributes = {
     layout: {
@@ -311,15 +312,6 @@ function parseStyle(value) {
     return value;
 }
 
-function getSelector(attributes) {
-
-    let selector = attributes.className || attributes.uniqueId || null;
-
-    selector = '.' + selector.split(' ').join('.');
-
-    return selector;
-}
-
 function parseSpecial(prop, value) {
     switch (prop) {
         case 'height':
@@ -445,7 +437,6 @@ function desktop(attributes) {
     }
 
     return styles;
-
 
 }
 
@@ -592,29 +583,37 @@ function hover(attributes) {
     return styles;
 }
 
-function LayoutStyle({attributes, clientId, setAttributes, blockProps}) {
+export function LayoutStyle(attributes, setAttributes) {
 
-    const selector = getSelector(attributes);
+    let selector = attributes.uniqueId || attributes.className || null;
+
+    selector = '.' + selector.split(' ').join('.');
+
+    console.log(selector);
+
+    const desktopCss = desktop(attributes);
 
     let css = '';
 
-    useEffect(() => {
-        setAttributes({'wpbs-css': css});
-    }, []);
+    Object.entries(desktopCss).forEach(([prop, value]) => {
+        css += prop + ':' + value + ';';
+    });
 
-    const desktopCss = desktop(attributes);
-    const mobileCss = mobile(attributes);
-    const hoverCss = hover(attributes);
-
-    desktopCss.forEach(([prop, value]) => {
-        css +=  selector + '{' + value + '}';
-    })
+    css = selector + '{' + css + '}';
 
     setAttributes({'wpbs-css': css});
 
-    return (
-        <style id={'wpbs-layout-styles'}>{css}</style>
-    );
+
+    //const mobileCss = mobile(attributes);
+    //const hoverCss = hover(attributes);
+
+    /*desktopCss.forEach(([prop, value]) => {
+        css += selector + '{' + value + '}';
+    })*/
+
+    //setAttributes({'wpbs-css': css});
+
+    return css;
 }
 
 export function LayoutClasses(attributes) {
@@ -1384,7 +1383,6 @@ export function Layout({blockProps, attributes = {}, setAttributes, clientId}) {
 
 
         </InspectorControls>
-        <LayoutStyle attributes={attributes} clientId={blockProps.clientId} setAttributes={setAttributes}/>
 
     </>;
 }

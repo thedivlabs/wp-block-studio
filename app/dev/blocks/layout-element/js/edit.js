@@ -81,7 +81,7 @@ registerBlockType(metadata.name, {
                 <Layout blockProps={blockProps} attributes={attributes} setAttributes={setAttributes}
                         clientId={clientId}></Layout>
                 <Content/>
-                <LayoutStyle attributes={attributes} setAttributes={setAttributes} />
+                <LayoutStyle attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
             </>
         )
     },

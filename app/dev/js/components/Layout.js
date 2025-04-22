@@ -583,11 +583,11 @@ function hover(attributes) {
     return styles;
 }
 
-export function LayoutStyle({attributes, setAttributes}) {
+export function LayoutStyle({attributes, setAttributes,uniqueId}) {
 
     const breakpoint = useSetting('custom.breakpoints')[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
-    let selector = attributes.uniqueId || attributes.className || null;
+    let selector = uniqueId || attributes.className || null;
 
     selector = '.' + selector.split(' ').join('.');
 

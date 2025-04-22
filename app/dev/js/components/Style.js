@@ -26,6 +26,8 @@ function parseSpecial(prop, value) {
 function desktop(attributes) {
 
     const styleAttributes = Object.fromEntries(Object.entries({
+        '--row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+        '--column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
         'row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
         'column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
     }).filter(([key, value]) => value));

@@ -341,8 +341,6 @@ export function styleCss(attributes, uniqueId, breakpoints, customCss = '') {
 
     const customProps = props(attributes);
 
-    console.log(customProps);
-
     Object.entries(desktop(attributes)).forEach(([prop, value]) => {
         desktopCss += prop + ':' + value + ';';
     });

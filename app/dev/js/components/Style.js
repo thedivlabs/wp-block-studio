@@ -1,8 +1,12 @@
-import {
-    useSetting
-} from "@wordpress/block-editor";
+import { useSetting } from '@wordpress/block-editor';
+
+
+
+import {LayoutAttributes} from './Layout';
+import {BackgroundAttributes} from './Background';
 
 import {getCSSValueFromRawStyle} from "@wordpress/style-engine";
+import {useEffect} from "react";
 
 function parseSpecial(prop, value) {
     switch (prop) {
@@ -301,9 +305,22 @@ function props(attributes) {
     return styles;
 }
 
-export function Style({attributes, setAttributes, uniqueId}) {
+export function Style({attributes,setAttributes,uniqueId}) {
 
-    const breakpoint = useSetting('custom.breakpoints')[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
+    const breakpoints = useSetting( 'custom.breakpoints' );
+
+    useEffect(() => {
+        setAttributes({'wpbs-css': styleCss(attributes, uniqueId,breakpoints)});
+    }, [Object.fromEntries(Object.entries(styleAttributes))]);
+
+    return <style class={'wpbs-styles'}>{attributes['wpbs-css'] || ''}</style>;
+}
+
+export const styleAttributes = {...BackgroundAttributes, ...LayoutAttributes}
+
+export function styleCss(attributes, uniqueId,breakpoints) {
+
+    const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
     let selector = uniqueId || attributes.className || null;
 
@@ -315,7 +332,7 @@ export function Style({attributes, setAttributes, uniqueId}) {
     let mobileCss = '';
     let mobileProps = '';
     let hoverCss = '';
-    let customCss = attributes['wpbs-css'] || '';
+    //let customCss = attributes['wpbs-css'] || '';
 
     const customProps = props(attributes);
 
@@ -340,7 +357,7 @@ export function Style({attributes, setAttributes, uniqueId}) {
     });
 
     if (mobileCss.length) {
-        css += '@media(width < ' + breakpoint + '){' + selector + '{' + [mobileProps,mobileCss].join(' ') + '}}';
+        css += '@media(width < ' + breakpoint + '){' + selector + '{' + [mobileProps, mobileCss].join(' ') + '}}';
     }
 
     Object.entries(hover(attributes)).forEach(([prop, value]) => {
@@ -351,7 +368,7 @@ export function Style({attributes, setAttributes, uniqueId}) {
         css += selector + ':hover' + '{' + hoverCss + '}';
     }
 
-    setAttributes({'wpbs-layout-css': css});
+    return css;
 
-    return <style class={'wpbs-layout-styles'}>{css}</style>;
+
 }

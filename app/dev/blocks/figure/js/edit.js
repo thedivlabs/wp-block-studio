@@ -114,6 +114,7 @@ function Media({attributes, editor = false, props = {}}) {
     }
 
     const Content = () => {
+
         switch (attributes['wpbs-type']) {
             case 'image':
 
@@ -404,8 +405,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
 
-            <Style attributes={attributes} setAttributes={setAttributes}
-                    uniqueId={uniqueId}></Style>
+
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>

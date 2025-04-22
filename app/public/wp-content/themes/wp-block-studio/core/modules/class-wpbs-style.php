@@ -36,7 +36,10 @@ class WPBS_Style {
 	public static function get_style_attributes(): array {
 
 		$layout = [
-
+			'wpbs-css'                      => [
+				'show_in_rest' => true,
+				'type'         => 'string',
+			],
 			'wpbs-background'                      => [
 				'show_in_rest' => true,
 				'type'         => 'object',

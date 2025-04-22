@@ -71,8 +71,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
                 <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
-                <Style attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Style>
+                
                 <ElementTagName {...blockProps}
                                 data-wp-interactive='wpbs-layout-section'
                 >

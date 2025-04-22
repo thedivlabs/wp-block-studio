@@ -259,8 +259,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
-            <Style attributes={attributes} setAttributes={setAttributes}
-                    uniqueId={uniqueId}></Style>
+
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>

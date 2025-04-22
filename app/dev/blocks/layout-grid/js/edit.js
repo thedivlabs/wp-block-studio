@@ -597,8 +597,7 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
                 <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
-                <Style attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Style>
+                
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

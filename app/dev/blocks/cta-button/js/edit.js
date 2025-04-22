@@ -2,7 +2,7 @@ import '../scss/block.scss'
 
 import {
     useBlockProps,
-    InspectorControls, PanelColorSettings, BlockEdit, InnerBlocks, useInnerBlocksProps
+    InspectorControls, PanelColorSettings, BlockEdit
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -19,7 +19,7 @@ import React, {useEffect, useState} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style} from "Components/Style.js";
+import {Style,Css} from "Components/Style.js";
 
 
 function elementClassNames(attributes = {}) {
@@ -275,8 +275,7 @@ registerBlockType(metadata.name, {
                     </PanelBody>
                 </InspectorControls>
 
-                <Style attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Style>
+
 
                 <div {...blockProps}>
                     <Content attributes={attributes} editor={true} />

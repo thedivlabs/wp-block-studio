@@ -1,19 +1,19 @@
 import {
     useBlockProps,
     InspectorControls,
-    useInnerBlocksProps, InnerBlocks,
+    useInnerBlocksProps, useSetting,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutAttributes, LayoutClasses, LayoutSettings, LayoutStyle} from "Components/Layout"
-import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
+import {LayoutClasses, LayoutSettings} from "Components/Layout"
+import {Background, BackgroundSettings} from "Components/Background";
 import {ElementTagSettings, ElementTag, ElementTagAttributes} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
-import {Style} from "Components/Style.js";
+import {Style, styleAttributes} from "Components/Style.js";
 
 
 function sectionClassNames(attributes = {}) {
@@ -29,13 +29,13 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LayoutAttributes,
-        ...BackgroundAttributes,
+        ...styleAttributes,
         ...ElementTagAttributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
+
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -73,16 +73,14 @@ registerBlockType(metadata.name, {
                     <BackgroundSettings attributes={attributes || {}}
                                         pushSettings={setAttributes}></BackgroundSettings>
                 </InspectorControls>
-                <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+                <LayoutSettings attributes={attributes} setAttributes={setAttributes}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
                     </Grid>
                 </InspectorControls>
-                <Style attributes={attributes} setAttributes={setAttributes}
-                        uniqueId={uniqueId}></Style>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
                 <Content/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },

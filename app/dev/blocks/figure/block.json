@@ -10,6 +10,9 @@
     },
     "preload": {
       "type": "array"
+    },
+    "postId": {
+      "type": "string"
     }
   },
   "usesContext": [ "postId" ],

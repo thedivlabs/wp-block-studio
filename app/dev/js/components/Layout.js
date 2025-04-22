@@ -606,13 +606,15 @@ export function LayoutStyle({attributes, setAttributes}) {
         mobileCss += prop + ':' + value + ';';
     });
 
-    css += 'media(max-width:calc(' + breakpoint + ') - 1px)' + selector + '{' + mobileCss + '}';
+    css += 'media(max-width:calc(' + breakpoint + ') - 1px){' + selector + '{' + mobileCss + '}}';
 
     Object.entries(hover(attributes)).forEach(([prop, value]) => {
         hoverCss += prop + ':' + value + ';';
     });
 
-    css += ':hover' + selector + '{' + hoverCss + '}';
+    css += selector + ':hover' + '{' + hoverCss + '}';
+
+    console.log(css);
 
     setAttributes({'wpbs-css': css});
 

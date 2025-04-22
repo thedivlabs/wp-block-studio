@@ -9,7 +9,6 @@ import {
 } from "@wordpress/components";
 import {getCSSValueFromRawStyle} from "@wordpress/style-engine";
 
-
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
 import FlexDirection from 'Components/FlexDirection';
@@ -569,36 +568,80 @@ function hover(attributes) {
     return styles;
 }
 
+function props(attributes) {
+    const styles = {
+        mobile: {},
+        desktop: {},
+    };
+
+    Object.entries(attributes).forEach(([key, value]) => {
+        if (
+            key.startsWith('wpbs-prop') &&
+            typeof value !== 'object' &&
+            value !== ''
+        ) {
+            const propName = key.replace('wpbs-prop-', '');
+            const styleKey = `--${propName}`;
+
+            if (key.includes('mobile')) {
+                styles.mobile['--' + styleKey] = value;
+            } else {
+                styles.desktop['--' + styleKey] = value;
+            }
+        }
+    });
+
+    return styles;
+}
+
 export function LayoutStyle({attributes, setAttributes, uniqueId}) {
 
     const breakpoint = useSetting('custom.breakpoints')[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
-    let selector = attributes.uniqueId || attributes.className || null;
+    let selector = uniqueId || attributes.className || null;
 
     selector = '.' + selector.split(' ').join('.');
 
     let css = '';
     let desktopCss = '';
+    let desktopProps = '';
     let mobileCss = '';
+    let mobileProps = '';
     let hoverCss = '';
+
+    const customProps = props(attributes);
 
     Object.entries(desktop(attributes)).forEach(([prop, value]) => {
         desktopCss += prop + ':' + value + ';';
     });
 
-    css += selector + '{' + desktopCss + '}';
+    Object.entries(customProps.desktop).forEach(([prop, value]) => {
+        desktopProps += prop + ':' + value + ';';
+    });
+
+    if (desktopCss.length) {
+        css += selector + '{' + [desktopProps, desktopCss].join(' ') + '}';
+    }
 
     Object.entries(mobile(attributes)).forEach(([prop, value]) => {
         mobileCss += prop + ':' + value + ';';
     });
 
-    css += '@media(width < ' + breakpoint + '){' + selector + '{' + mobileCss + '}}';
+    Object.entries(customProps.mobile).forEach(([prop, value]) => {
+        mobileProps += prop + ':' + value + ';';
+    });
+
+    if (mobileCss.length) {
+        css += '@media(width < ' + breakpoint + '){' + selector + '{' + [mobileProps,mobileCss].join(' ') + '}}';
+    }
 
     Object.entries(hover(attributes)).forEach(([prop, value]) => {
         hoverCss += prop + ':' + value + ';';
     });
 
-    css += selector + ':hover' + '{' + hoverCss + '}';
+    if (hoverCss.length) {
+        css += selector + ':hover' + '{' + hoverCss + '}';
+    }
 
     setAttributes({'wpbs-css': css});
 
@@ -630,9 +673,7 @@ export function LayoutClasses(attributes) {
     return classes.join(' ');
 }
 
-export function Layout({blockProps = {}, attributes = {}, setAttributes, uniqueId}) {
-
-    console.log(blockProps);
+export function Layout({blockProps = {}, attributes = {}, setAttributes, uniqueId, css = ''}) {
 
     if (uniqueId === undefined) {
         return <></>;

@@ -16,9 +16,16 @@ class WPBS_Blocks {
 
 	public function render_block( $attributes, $content, $block ): string {
 
-		WPBS::console_log($block->attributes['wpbs-css'] ?? false);
+		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes ) {
 
-		//wp_add_inline_style( $block->block_type->style_handles[0] ?? false, $attributes['wpbs-css'] ?? '' );
+			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
+				return $css_array;
+			}
+
+			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-css'];
+
+			return $css_array;
+		} );
 
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
 

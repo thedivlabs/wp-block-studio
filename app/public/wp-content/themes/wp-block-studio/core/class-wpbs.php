@@ -59,7 +59,7 @@ class WPBS {
 		$css = array_unique( $css );
 
 		echo '<style class="wpbs-critical-css">';
-		echo join( ' ', $css );
+		echo join( ' ', array_values( $css ) );
 		echo '</style>';
 
 	}

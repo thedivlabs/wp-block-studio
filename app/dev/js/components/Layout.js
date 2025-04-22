@@ -331,8 +331,8 @@ function parseSpecial(prop, value) {
 function desktop(attributes) {
 
     const styleAttributes = Object.fromEntries(Object.entries({
-        'column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
-        'row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
+        'column-gap': parseStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+        'row-gap': parseStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
@@ -606,7 +606,7 @@ export function LayoutStyle({attributes, setAttributes}) {
         mobileCss += prop + ':' + value + ';';
     });
 
-    css += 'media(max-width:calc(' + breakpoint + ') - 1px){' + selector + '{' + mobileCss + '}}';
+    css += '@media(max-width:calc(' + breakpoint + ') - 1px){' + selector + '{' + mobileCss + '}}';
 
     Object.entries(hover(attributes)).forEach(([prop, value]) => {
         hoverCss += prop + ':' + value + ';';

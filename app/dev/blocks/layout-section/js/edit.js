@@ -77,7 +77,7 @@ registerBlockType(metadata.name, {
                     <div {...innerBlocksProps}/>
 
                     <Background attributes={attributes} editor={true}/>
-                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-layout-section'} />
                 </ElementTagName>
             </>
         )

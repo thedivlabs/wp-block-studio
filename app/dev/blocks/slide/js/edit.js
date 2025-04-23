@@ -100,7 +100,12 @@ registerBlockType(metadata.name, {
         ...styleAttributesFull,
         ...blockAttributes
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: (props) => {
+
+
+        const {attributes, setAttributes, clientId} = props;
+
+        console.log(props);
 
         const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileSlideImage']);
         const [largeImage, setLargeImage] = useState(attributes['wpbs-largeSlideImage']);
@@ -280,7 +285,7 @@ registerBlockType(metadata.name, {
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
                               isEditor={true}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-slide'} />
             </div>
 
         </>;

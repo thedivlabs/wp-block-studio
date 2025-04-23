@@ -636,7 +636,7 @@ registerBlockType(metadata.name, {
                     <Background attributes={attributes} editor={true}/>
                     <DefaultBlockAppender rootClientId={clientId}/>
                     <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                           customCss={customCSS}/>
+                           customCss={customCSS} selector={'wpbs-layout-grid'}/>
                 </div>
             </>
         )

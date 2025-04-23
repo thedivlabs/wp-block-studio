@@ -277,7 +277,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
                     <Content attributes={attributes} editor={true} />
-                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-cta-button'} />
                 </div>
             </>
         )

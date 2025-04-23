@@ -65,7 +65,7 @@ registerBlockType(metadata.name, {
 
 
                 <Content/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-layout-grid-card'} />
 
             </>
         )

@@ -304,12 +304,12 @@ function props(attributes) {
     return styles;
 }
 
-export function Style({attributes, setAttributes, uniqueId, customCss = ''}) {
+export function Style({attributes, setAttributes, uniqueId, customCss = '', selector = ''}) {
 
     const breakpoints = useSetting('custom.breakpoints');
 
     useEffect(() => {
-        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, breakpoints, customCss)});
+        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, breakpoints, customCss, selector)});
     }, [Object.fromEntries(Object.entries(styleAttributes))]);
 
     return <style class={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
@@ -324,13 +324,11 @@ export const styleAttributesFull = {
     }
 };
 
-export function styleCss(attributes, uniqueId, breakpoints, customCss = '') {
+export function styleCss(attributes, uniqueId, breakpoints, customCss = '', selector = '') {
 
     const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
-    console.log(attributes || false);
-    let selector = uniqueId || attributes.className || null;
 
-    selector = '.' + selector.split(' ').join('.');
+    selector = '.' + [selector, uniqueId, attributes.className].join(' ').trim().split(' ').join('.');
 
     let css = '';
     let desktopCss = '';

@@ -80,7 +80,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
                 <Content/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-layout-element'} />
             </>
         )
     },

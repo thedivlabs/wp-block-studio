@@ -409,7 +409,7 @@ registerBlockType(metadata.name, {
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-figure'} />
             </figure>
 
         </>;

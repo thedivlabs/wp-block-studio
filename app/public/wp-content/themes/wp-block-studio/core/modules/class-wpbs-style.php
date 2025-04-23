@@ -6,17 +6,6 @@ class WPBS_Style {
 
 	private function __construct() {
 
-
-		add_action( 'rest_api_init', function () {
-			register_rest_route( 'wpbs/v1', "/layout-styles/",
-				[
-					'methods'             => 'POST',
-					'permission_callback' => '__return_true',
-					'accept_json'         => true,
-					'callback'            => [ $this, 'render_layout_styles' ]
-				]
-			);
-		} );
 	}
 
 

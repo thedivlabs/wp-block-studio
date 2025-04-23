@@ -117,8 +117,7 @@ if ( $is_loop ) {
 
 echo join( ' ', $block->inner_content );
 
-WPBS_Grid::render_style( $attributes, $block, $query ?? $wp_query );
+WPBS_Blocks::render_block_styles( $attributes ?? false );
 
-?>
 
 

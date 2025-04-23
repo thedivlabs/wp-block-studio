@@ -138,31 +138,6 @@ class WPBS_Grid {
 
 	}
 
-	public static function render_style( $attributes ): string|bool {
-
-		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? false;
-		$breakpoint_large  = $breakpoints[ $attributes['wpbs-breakpoint-large'] ?? 'normal' ] ?? null;
-
-		WPBS_Blocks::render_block_styles($attributes ?? false);
-
-		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes, $breakpoint_large ) {
-
-			$block_images = array_map( function ( $image ) use ( $attributes, $breakpoint_large ) {
-				return array_merge( $image, [
-					'breakpoint' => $breakpoint_large
-				] );
-			}, $attributes['preload'] ?? [] );
-
-			return array_merge( $images, $block_images );
-
-		} );
-
-		//return $css;
-
-		return true;
-
-	}
-
 	public function render_grid( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
 		$params = $request->get_params();

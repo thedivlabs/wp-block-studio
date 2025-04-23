@@ -11,10 +11,29 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-
 	}
 
 	public static function render_block_styles( $attributes, $custom_css = '' ): void {
+
+		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {
+
+			$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ array_filter( array_map( function ( $prop ) {
+				return ! empty( $prop );
+			}, [
+				$attributes['wpbs-layout-breakpoint'] ?? null,
+				$attributes['wpbs-breakpoint-large'] ?? null
+			] ) )[0] ?? 'normal' ];
+
+			$block_images = array_map( function ( $image ) use ( $attributes, $breakpoint ) {
+				return array_merge( $image, [
+					'breakpoint' => $breakpoint
+				] );
+			}, $attributes['preload'] ?? [] );
+
+			return array_merge( $images, $block_images );
+
+		} );
+
 		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes, $custom_css ) {
 
 			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
@@ -32,21 +51,9 @@ class WPBS_Blocks {
 		} );
 	}
 
-	public function render_block( $attributes, $content, $block ): string {
+	public function render_block( $attributes, $content ): string {
 
 		self::render_block_styles( $attributes );
-
-		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $block ) {
-
-			$block_images = array_map( function ( $image ) use ( $block ) {
-				return array_merge( $image, [
-					'breakpoint' => WPBS_Style::get_breakpoint( $block->attributes )
-				] );
-			}, $block->attributes['preload'] ?? [] );
-
-			return array_merge( $images, $block_images );
-
-		} );
 
 		return $content;
 	}

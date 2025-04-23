@@ -327,7 +327,7 @@ export const styleAttributesFull = {
 export function styleCss(attributes, uniqueId, breakpoints, customCss = '') {
 
     const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
-
+    console.log(attributes || false);
     let selector = uniqueId || attributes.className || null;
 
     selector = '.' + selector.split(' ').join('.');

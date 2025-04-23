@@ -140,7 +140,7 @@ class WPBS_Grid {
 
 	public static function render_style( $attributes ): string|bool {
 
-		$breakpoints       = WPBS_Style::get_breakpoint();
+		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? false;
 		$breakpoint_large  = $breakpoints[ $attributes['wpbs-breakpoint-large'] ?? 'normal' ] ?? null;
 
 		WPBS_Blocks::render_block_styles($attributes ?? false);

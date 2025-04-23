@@ -20,18 +20,6 @@ class WPBS_Style {
 	}
 
 
-	public static function get_breakpoint( $attributes = false ): string|array|false {
-
-		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? false;
-
-		$breakpoint_attr = match ( true ) {
-			! empty( $attributes['wpbs-layout-breakpoint'] ) => $attributes['wpbs-layout-breakpoint'],
-			! empty( $attributes['wpbs-breakpoint'] ) => $attributes['wpbs-breakpoint'],
-			default => null
-		};
-
-		return empty( $attributes ) ? $breakpoints : $breakpoints[ $breakpoint_attr ?? 'normal' ] ?? '';
-	}
 
 	public static function get_style_attributes(): array {
 

@@ -7,7 +7,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
+import {LayoutClasses, LayoutSettings} from "Components/Layout"
 import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 
 import React, {useEffect, useState} from "react";
@@ -280,6 +280,7 @@ registerBlockType(metadata.name, {
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
                               isEditor={true}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} />
             </div>
 
         </>;

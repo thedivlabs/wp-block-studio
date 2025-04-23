@@ -8,9 +8,11 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
 
+	$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
+
 	$picture = '';
 
-	$breakpoint = $attributes['wpbs-breakpoint'] ?? WPBS_Style::get_breakpoint()['normal'] ?? false;
+	$breakpoint = $attributes['wpbs-breakpoint'] ?? $breakpoints['normal'] ?? false;
 
 	$class = implode( ' ', array_filter( [
 		'wpbs-picture'

@@ -138,7 +138,7 @@ registerBlockType(metadata.name, {
             return select('core/block-editor').getSettings().colors;
         }, []);
 
-        const [{breakpoints}] = useSettings(['custom']);
+        const breakpoints = window?.wpbsBreakpoints ?? {};
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-prop-columns-mobile']);
@@ -307,7 +307,7 @@ registerBlockType(metadata.name, {
             });
         }, [attributes['wpbs-breakpoint-small'], attributes['wpbs-breakpoint-large']]);
 
-        const selector = '.' + uniqueId.split(' ').join('.');
+        const selector = '.' + ['wpbs-layout-grid', uniqueId].join(' ').split(' ').join('.');
 
         let customCSS = '';
 
@@ -323,17 +323,16 @@ registerBlockType(metadata.name, {
             attributes['wpbs-layout-gap-mobile']
         ]);
 
-
         if (selector) {
-            customCSS += '@media (width < ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') {';
+            customCSS += '@media (max-width: calc(' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ' - 1px)) {';
             customCSS += `${selector} { --columns: var(--columns-mobile, 1) }`;
             customCSS += `} `;
 
-            customCSS += '@media (' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ' < width < ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
+            customCSS += '@media (min-width: ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') and (max-width: calc(' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ' - 1px)) {';
             customCSS += `${selector} { --columns: var(--columns-small, 2) }`;
             customCSS += `} `;
 
-            customCSS += '@media (width > ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
+            customCSS += '@media ( min-width: ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
             customCSS += `${selector} { --columns: var(--columns-large, 3) }`;
             customCSS += `} `;
         }
@@ -569,13 +568,6 @@ registerBlockType(metadata.name, {
             loop: tabLoop,
             gallery: tabGallery
         }
-
-        useEffect(() => {
-            setAttributes({
-                uniqueId: uniqueId,
-            });
-
-        }, []);
 
         const blockProps = useBlockProps({
             className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),

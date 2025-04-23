@@ -2,7 +2,9 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 function setDividers(grid, context) {
 
-    const {uniqueId, divider, breakpoints, columns} = context;
+    const {uniqueId, divider, columns, breakpoints} = context;
+
+    //const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
     if (!divider) {
         return false;

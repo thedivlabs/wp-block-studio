@@ -25,6 +25,8 @@ class WPBS_Theme {
 
         this.settings = JSON.parse(document.querySelector('#wpbs-args')?.innerHTML || '[]');
 
+        this.settings.breakpoints = window?.wpbsData?.breakpoints ?? {};
+
         this.modals.init();
         this.loader.init();
 

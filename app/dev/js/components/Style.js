@@ -1,11 +1,23 @@
-import {useSetting} from '@wordpress/block-editor';
-
-
 import {LayoutAttributes} from './Layout';
 import {BackgroundAttributes} from './Background';
-
-import {getCSSValueFromRawStyle} from "@wordpress/style-engine";
 import {useEffect} from "react";
+
+function getCSSFromStyle(raw) {
+    if (typeof raw !== 'string') return raw;
+
+    if (raw.startsWith('var:')) {
+        const [source, type, name] = raw.slice(4).split('|');
+        if (source && type && name) {
+            return `var(--wp--${source}--${type}--${name})`;
+        }
+    }
+
+    if (raw.startsWith('--wp--')) {
+        return `var(${raw})`;
+    }
+
+    return raw;
+}
 
 function parseSpecial(prop, value) {
     switch (prop) {
@@ -26,8 +38,8 @@ function parseSpecial(prop, value) {
 function desktop(attributes) {
 
     const styleAttributes = Object.fromEntries(Object.entries({
-        'row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-        'column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+        'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+        'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
@@ -119,13 +131,13 @@ function desktop(attributes) {
                 break;
 
             case 'wpbs-layout-translate':
-                const top = getCSSValueFromRawStyle(attributes?.['wpbs-layout-translate']?.top || '0px');
-                const left = getCSSValueFromRawStyle(attributes?.['wpbs-layout-translate']?.left || '0px');
+                const top = getCSSFromStyle(attributes?.['wpbs-layout-translate']?.top || '0px');
+                const left = getCSSFromStyle(attributes?.['wpbs-layout-translate']?.left || '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
 
             case 'wpbs-layout-offset-header':
-                const padding = getCSSValueFromRawStyle(attributes?.style?.spacing?.padding?.top || '0px');
+                const padding = getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px');
                 styles['padding-top'] = `calc(${padding} + var(--wpbs-header-height, 0px)) !important`;
                 break;
         }
@@ -138,8 +150,8 @@ function desktop(attributes) {
 function mobile(attributes) {
 
     const styleAttributes = Object.fromEntries(Object.entries({
-        'row-gap': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
-        'column-gap': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+        'row-gap': getCSSFromStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
+        'column-gap': getCSSFromStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
     }).filter(([key, value]) => value));
 
     const specialKeys = [
@@ -247,8 +259,8 @@ function mobile(attributes) {
                 break;
 
             case 'wpbs-layout-translate-mobile': {
-                const top = getCSSValueFromRawStyle(attributes['wpbs-layout-translate-mobile']?.top ?? '0px');
-                const left = getCSSValueFromRawStyle(attributes['wpbs-layout-translate-mobile']?.left ?? '0px');
+                const top = getCSSFromStyle(attributes['wpbs-layout-translate-mobile']?.top ?? '0px');
+                const left = getCSSFromStyle(attributes['wpbs-layout-translate-mobile']?.left ?? '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
             }
@@ -302,7 +314,7 @@ function props(attributes) {
             value !== ''
         ) {
             const propName = key.replace('wpbs-prop-', '');
-            
+
             if (key.includes('mobile')) {
                 const styleKey = `--${propName}`.replace('-mobile', '');
                 styles.mobile[styleKey] = value;
@@ -318,13 +330,11 @@ function props(attributes) {
 
 export function Style({attributes, setAttributes, uniqueId, customCss = '', selector = ''}) {
 
-    const breakpoints = useSetting('custom.breakpoints');
-
     useEffect(() => {
-        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, breakpoints, customCss, selector)});
+        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, customCss, selector)});
     }, [Object.fromEntries(Object.entries(styleAttributes))]);
 
-    return <style class={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
+    return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
 }
 
 export const styleAttributes = {...BackgroundAttributes, ...LayoutAttributes};
@@ -336,8 +346,9 @@ export const styleAttributesFull = {
     }
 };
 
-export function styleCss(attributes, uniqueId, breakpoints, customCss = '', selector = '') {
+export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
 
+    const breakpoints = 'wpbsBreakpoints' in window ? window.wpbsBreakpoints : {};
     const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
     selector = '.' + [selector, uniqueId].join(' ').trim().split(' ').join('.');

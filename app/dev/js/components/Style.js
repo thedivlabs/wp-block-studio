@@ -302,8 +302,7 @@ function props(attributes) {
             value !== ''
         ) {
             const propName = key.replace('wpbs-prop-', '');
-
-
+            
             if (key.includes('mobile')) {
                 const styleKey = `--${propName}`.replace('-mobile', '');
                 styles.mobile[styleKey] = value;

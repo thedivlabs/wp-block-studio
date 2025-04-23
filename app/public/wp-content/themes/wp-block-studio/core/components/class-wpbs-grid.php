@@ -11,7 +11,7 @@ class WPBS_Grid {
 				[
 					'methods'             => 'POST',
 					'accept_json'         => true,
-					'callback'            => [ $this, 'render_grid' ],
+					'callback'            => [ $this, 'rest_request' ],
 					'permission_callback' => function () {
 						$nonce = $_SERVER['HTTP_X_WP_NONCE'] ?? null;
 
@@ -138,14 +138,7 @@ class WPBS_Grid {
 
 	}
 
-	public function render_grid( WP_REST_Request $request ): WP_REST_Response|WP_Error {
-
-		$params = $request->get_params();
-
-		$attrs         = $params['attrs'] ?? false;
-		$page          = $params['page'] ?? false;
-		$card          = $params['card'] ?? false;
-		$current_query = $params['query'] ?? false;
+	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [] ): array|bool {
 
 		if ( ! empty( $current_query ) ) {
 			$query = new WP_Query( array_merge( [
@@ -156,8 +149,6 @@ class WPBS_Grid {
 		}
 
 		$new_content = '';
-
-		$css = '';
 
 		while ( $query->have_posts() ) {
 
@@ -182,20 +173,31 @@ class WPBS_Grid {
 
 			$new_block->attributes['postId'] = get_the_ID();
 
-			//$css .= WPBS_Style::block_styles( $new_block->attributes ?? false, $new_block );
-
 		}
 
 		wp_reset_postdata();
 
+		return [
+			'content' => ! empty( $new_content ) ? $new_content : false,
+			'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
+			'query'   => $query,
+		];
+
+
+	}
+
+	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+
+		$params = $request->get_params();
+
+		$grid = self::render( $params['attrs'] ?? false, $params['page'] ?? false, $params['card'] ?? false, $params['query'] ?? false );
+
 		return new WP_REST_Response(
 			[
 				'status'   => 200,
-				'response' => ! empty( $new_content ) ? $new_content : false,
-				'last'     => $query->get( 'paged' ) >= $query->max_num_pages,
-				'card'     => $card,
-				'query'    => $query,
-				'css'      => $css
+				'response' => $grid['content'] ?? false,
+				'last'     => $grid['last'] ?? false,
+				'query'    => $grid['query'] ?? false
 			]
 		);
 

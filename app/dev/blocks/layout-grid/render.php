@@ -18,37 +18,9 @@ $query = ! $is_loop ? false : match ( true ) {
 if ( $is_loop ) {
 
 
-	$new_content = '';
+	$grid_cards = WPBS_Grid::render($attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query->query);
 
-	if ( $query->have_posts() ) {
-
-		while ( $query->have_posts() ) {
-
-			$query->the_post();
-
-			$block_template = $block->parsed_block['innerBlocks'][0] ?? false;
-
-			$unique_id = join( ' ', array_filter( [
-				$block_template['attrs']['uniqueId'] ?? null,
-				'wpbs-layout-grid-card-' . get_the_ID()
-			] ) );
-
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'postId' => get_the_ID(),
-			] ) );
-
-			$new_block->inner_content[0]       = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_content[0] );
-			$new_block->inner_html             = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_html );
-			$new_block->attributes['uniqueId'] = $unique_id;
-
-			$new_content .= $new_block->render();
-
-		}
-
-		$query->reset_postdata();
-	}
-
-	$new_content .= '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
+	$grid_cards['content'] .= '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $is_current ? $query->query : false,
 			'attrs' => array_filter( $attributes, function ( $attribute ) {
@@ -110,7 +82,7 @@ if ( $is_loop ) {
 		}
 	}
 
-	$block->inner_content[1] = trim( $new_content );
+	$block->inner_content[1] = trim( $grid_cards['content'] );
 
 
 }

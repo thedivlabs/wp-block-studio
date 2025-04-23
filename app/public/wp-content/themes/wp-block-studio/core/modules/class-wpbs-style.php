@@ -9,7 +9,6 @@ class WPBS_Style {
 	}
 
 
-
 	public static function get_style_attributes(): array {
 
 		$layout = [

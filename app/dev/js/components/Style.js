@@ -328,7 +328,7 @@ export function styleCss(attributes, uniqueId, breakpoints, customCss = '', sele
 
     const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || attributes['wpbs-breakpoint'] || 'normal'];
 
-    selector = '.' + [selector, uniqueId, attributes.className].join(' ').trim().split(' ').join('.');
+    selector = '.' + [selector, uniqueId].join(' ').trim().split(' ').join('.');
 
     let css = '';
     let desktopCss = '';

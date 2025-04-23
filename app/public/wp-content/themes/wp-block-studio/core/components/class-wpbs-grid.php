@@ -190,7 +190,7 @@ class WPBS_Grid {
 
 		$params = $request->get_params();
 
-		$grid = self::render( $params['attrs'] ?? false, $params['page'] ?? false, $params['card'] ?? false, $params['query'] ?? false );
+		$grid = self::render( $params['attrs'] ?? false, $params['page'] ?? 1, $params['card'] ?? false, $params['query'] ?? false );
 
 		return new WP_REST_Response(
 			[

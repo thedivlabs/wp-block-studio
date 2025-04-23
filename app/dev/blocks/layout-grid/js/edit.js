@@ -307,22 +307,16 @@ registerBlockType(metadata.name, {
             });
         }, [attributes['wpbs-breakpoint-small'], attributes['wpbs-breakpoint-large']]);
 
-
-        let selector = false;
-        if (uniqueId) {
-            selector = '.' + uniqueId.split(' ').join('.');
-        } else if (className) {
-            selector = '.' + className.split(' ').join('.');
-        }
+        const selector = '.' + uniqueId.split(' ').join('.');
 
         let customCSS = '';
 
-        useEffect(()=>{
+        useEffect(() => {
             setAttributes({
-                'wpbs-prop-row-gap':getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-                'wpbs-prop-row-gap-mobile':getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
-                'wpbs-prop-column-gap':getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-                'wpbs-prop-column-gap-mobile':getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+                'wpbs-prop-row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+                'wpbs-prop-row-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
+                'wpbs-prop-column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+                'wpbs-prop-column-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
             });
         }, [
             attributes?.style?.spacing,

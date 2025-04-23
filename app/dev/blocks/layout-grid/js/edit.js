@@ -313,10 +313,10 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({
-                'wpbs-prop-row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-                'wpbs-prop-row-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
-                'wpbs-prop-column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-                'wpbs-prop-column-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+                'wpbs-prop-row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+                'wpbs-prop-row-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+                'wpbs-prop-column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+                'wpbs-prop-column-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
             });
         }, [
             attributes?.style?.spacing,

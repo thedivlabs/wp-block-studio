@@ -1040,5 +1040,8 @@ export function BackgroundSettings({attributes = {}, pushSettings, className = n
 export const BackgroundAttributes = {
     'wpbs-background': {
         type: 'object'
+    },
+    'wpbs-background-css': {
+        type: 'string'
     }
 }

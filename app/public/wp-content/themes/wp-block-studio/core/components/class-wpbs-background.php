@@ -45,7 +45,6 @@ class WPBS_Background {
 
 		$this->attributes = $attributes['wpbs-background'];
 
-
 		if ( ! empty( $this->attributes['eager'] ) ) {
 
 			add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {

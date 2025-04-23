@@ -54,7 +54,7 @@ class WPBS_Background {
 					'mobile'     => $attributes['wpbs-background']['mobileImage']['id'] ?? null,
 					'large'      => $attributes['wpbs-background']['largeImage']['id'] ?? null,
 					'size'       => $attributes['wpbs-background']['resolution'] ?? null,
-					'breakpoint' => WPBS_Style::get_breakpoint( $attributes ),
+					'breakpoint' => $attributes['wpbs-breakpoint'] ?? false,
 				] ) );
 
 				return $images;

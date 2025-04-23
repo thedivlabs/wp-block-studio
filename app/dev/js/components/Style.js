@@ -136,6 +136,12 @@ function desktop(attributes) {
 }
 
 function mobile(attributes) {
+
+    const styleAttributes = Object.fromEntries(Object.entries({
+        'row-gap': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
+        'column-gap': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+    }).filter(([key, value]) => value));
+
     const specialKeys = [
         'wpbs-layout-mask-image-mobile',
         'wpbs-layout-mask-origin-mobile',
@@ -166,6 +172,11 @@ function mobile(attributes) {
     );
 
     const styles = {};
+
+    for (const [prop, value] of Object.entries(styleAttributes)) {
+        if (!value) continue;
+        styles[prop] = value;
+    }
 
     for (const [prop, value] of Object.entries(mobileAttributes)) {
         if (!value) continue;
@@ -291,11 +302,13 @@ function props(attributes) {
             value !== ''
         ) {
             const propName = key.replace('wpbs-prop-', '');
-            const styleKey = `--${propName}`;
+
 
             if (key.includes('mobile')) {
+                const styleKey = `--${propName}`.replace('-mobile', '');
                 styles.mobile[styleKey] = value;
             } else {
+                const styleKey = `--${propName}`;
                 styles.desktop[styleKey] = value;
             }
         }

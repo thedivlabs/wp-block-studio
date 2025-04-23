@@ -105,8 +105,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        console.log(props);
-
         const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileSlideImage']);
         const [largeImage, setLargeImage] = useState(attributes['wpbs-largeSlideImage']);
         const [resolution, setResolution] = useState(attributes['wpbs-resolutionSlide']);
@@ -279,13 +277,14 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-            <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
+            <LayoutSettings attributes={attributes} setAttributes={setAttributes}/>
 
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
                               isEditor={true}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-slide'} />
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                       selector={'wpbs-slide'}/>
             </div>
 
         </>;

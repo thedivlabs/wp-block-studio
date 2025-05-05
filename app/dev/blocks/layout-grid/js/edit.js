@@ -10,8 +10,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutClasses, LayoutSettings} from "Components/Layout"
-import {Background, BackgroundSettings} from "Components/Background";
+import {LayoutSettings, BackgroundElement, layoutAttributes} from "Components/Layout"
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
@@ -29,8 +28,7 @@ import React, {useEffect, useState} from "react";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
-import {Style, styleAttributesFull} from "Components/Style.js";
-import {getCSSValueFromRawStyle} from "@wordpress/style-engine";
+import {Style} from "Components/Style.js";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -63,7 +61,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributesFull,
+        ...layoutAttributes,
         ['wpbs-prop-columns-mobile']: {
             type: 'string'
         },
@@ -134,11 +132,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
-        const colors = useSelect((select) => {
-            return select('core/block-editor').getSettings().colors;
-        }, []);
-
         const breakpoints = window?.wpbsBreakpoints ?? {};
+        const colors = window?.wpbsBreakpoints ?? {};
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-prop-columns-mobile']);
@@ -297,45 +292,21 @@ registerBlockType(metadata.name, {
 
         }, [attributes['wpbs-loop-suppress'], attributes['wpbs-loop-type'], attributes['wpbs-loop-term'], attributes['wpbs-loop-taxonomy'], attributes['wpbs-loop-page-size'], attributes['wpbs-loop-orderby'], attributes['wpbs-loop-order']]);
 
-        useEffect(() => {
-            setAttributes({
-                ['wpbs-breakpoints']: {
-                    mobile: breakpoints[attributes['wpbs-breakpoint-mobile'] || 'xs'],
-                    small: breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'],
-                    large: breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'],
-                }
-            });
-        }, [attributes['wpbs-breakpoint-small'], attributes['wpbs-breakpoint-large']]);
-
         const selector = '.' + ['wpbs-layout-grid', uniqueId].join(' ').split(' ').join('.');
 
         let customCSS = '';
 
-        useEffect(() => {
-            setAttributes({
-                'wpbs-prop-row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-                'wpbs-prop-row-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
-                'wpbs-prop-column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-                'wpbs-prop-column-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
-            });
-        }, [
-            attributes?.style?.spacing,
-            attributes['wpbs-layout-gap-mobile']
-        ]);
-
-        if (selector) {
-            customCSS += '@media (max-width: calc(' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ' - 1px)) {';
-            customCSS += `${selector} { --columns: var(--columns-mobile, 1) }`;
-            customCSS += `} `;
-
-            customCSS += '@media (min-width: ' + breakpoints[attributes['wpbs-breakpoint-small'] || 'sm'] + ') and (max-width: calc(' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ' - 1px)) {';
-            customCSS += `${selector} { --columns: var(--columns-small, 2) }`;
-            customCSS += `} `;
-
-            customCSS += '@media ( min-width: ' + breakpoints[attributes['wpbs-breakpoint-large'] || 'normal'] + ') {';
-            customCSS += `${selector} { --columns: var(--columns-large, 3) }`;
-            customCSS += `} `;
-        }
+        /* useEffect(() => {
+             setAttributes({
+                 'wpbs-prop-row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+                 'wpbs-prop-row-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+                 'wpbs-prop-column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+                 'wpbs-prop-column-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
+             });
+         }, [
+             attributes?.style?.spacing,
+             attributes['wpbs-layout-gap-mobile']
+         ]);*/
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
@@ -618,14 +589,13 @@ registerBlockType(metadata.name, {
 
 
                 </InspectorControls>
-                <LayoutSettings attributes={attributes} setAttributes={setAttributes}/>
+                <LayoutSettings attributes={attributes} setAttributes={setAttributes} background={true}/>
 
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({
                         className: 'wpbs-layout-grid__container relative z-20',
                     }, {})} />
-                    <Background attributes={attributes} editor={true}/>
                     <DefaultBlockAppender rootClientId={clientId}/>
                     <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                            customCss={customCSS} selector={'wpbs-layout-grid'}/>

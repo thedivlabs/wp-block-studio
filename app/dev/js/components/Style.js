@@ -1,5 +1,4 @@
-import {LayoutAttributes} from './Layout';
-import {BackgroundAttributes} from './Background';
+import {layoutAttributes} from './Layout';
 import {useEffect} from "react";
 
 function getCSSFromStyle(raw) {
@@ -337,9 +336,9 @@ export function Style({attributes, setAttributes, uniqueId, customCss = '', sele
     return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
 }
 
-export const styleAttributes = {...BackgroundAttributes, ...LayoutAttributes};
+export const styleAttributes = {...BackgroundAttributes, ...layoutAttributes};
 export const styleAttributesFull = {
-    ...BackgroundAttributes, ...LayoutAttributes, ...{
+    ...BackgroundAttributes, ...layoutAttributes, ...{
         'wpbs-css': {
             type: 'string'
         }

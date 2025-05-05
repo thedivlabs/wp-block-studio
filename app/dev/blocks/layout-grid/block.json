@@ -10,118 +10,15 @@
       "type": "string",
       "show_in_rest": true
     },
+    "styleCss": {
+      "type": "string",
+      "show_in_rest": true
+    },
     "queryArgs": {
       "type": "object",
       "show_in_rest": true
     },
     "cardTemplate": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-row-gap": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-column-gap": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-row-gap-mobile": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-column-gap-mobile": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-columns-mobile": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-columns-small": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-prop-columns-large": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-breakpoint-small": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-breakpoint-large": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-breakpoints": {
-      "type": "object",
-      "show_in_rest": true
-    },
-    "wpbs-masonry": {
-      "type": "boolean",
-      "show_in_rest": true
-    },
-    "wpbs-divider": {
-      "type": "object",
-      "show_in_rest": true
-    },
-    "wpbs-divider-icon": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-divider-icon-size": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-divider-icon-color": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-pagination": {
-      "type": "boolean",
-      "show_in_rest": true
-    },
-    "wpbs-pagination-size": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-pagination-label": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-orderby": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-order": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-type": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-term": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-taxonomy": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-page-size": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "wpbs-loop-suppress": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "show_in_rest": true
-    },
-    "wpbs-gallery": {
       "type": "string",
       "show_in_rest": true
     }

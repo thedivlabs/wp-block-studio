@@ -85,7 +85,7 @@ class WPBS {
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-			'colors'      => wp_get_global_settings()['color']['palette'] ?? [],
+			'colors'      => array_values(array_merge(wp_get_global_settings()['color']['palette']['theme'] ?? [],wp_get_global_settings()['color']['palette']['default'] ?? [])),
 		] );
 
 

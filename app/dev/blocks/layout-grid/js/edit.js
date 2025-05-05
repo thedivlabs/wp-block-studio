@@ -23,6 +23,7 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
+import Breakpoint from 'Components/Breakpoint'
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -62,6 +63,9 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         ['wpbs-prop-columns-large']: {
+            type: 'string'
+        },
+        ['wpbs-breakpoint-small']: {
             type: 'string'
         },
         ['wpbs-masonry']: {
@@ -127,6 +131,7 @@ registerBlockType(metadata.name, {
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
+        const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
 
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
@@ -181,6 +186,11 @@ registerBlockType(metadata.name, {
                     />
                 </Grid>
             </BaseControl>
+            <Breakpoint defaultValue={breakpointSmall}
+                        callback={(newValue) => {
+                            setAttributes({['wpbs-breakpoint-small']: newValue});
+                            setBreakpointSmall(newValue);
+                        }}/>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom

@@ -58,7 +58,8 @@ export const layoutAttributes = {
         default: {}
     },
     'wpbs-background': {
-        type: 'object'
+        type: 'object',
+        default: {}
     }
 };
 
@@ -200,6 +201,763 @@ export const layoutProps = {
 
 };
 
+export function LayoutControls({attributes = {}, setAttributes, background = false}) {
+
+    const resetAll_layout = () => {
+        setAttributes(Object.keys(layoutProps.layout).reduce((o, key) => ({...o, [key]: undefined}), {}))
+    };
+
+    const resetAll_layout_mobile = () => {
+        setAttributes(Object.keys(layoutProps.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
+    };
+
+    function updateProp(newValue) {
+        setAttributes({
+            'wpbs-layout': {
+                ...attributes['wpbs-layout'],
+                ...newValue
+            }
+        });
+    }
+
+    function Controls() {
+        return <InspectorControls group="styles">
+            <ToolsPanel label={'Layout'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['display']}
+                    label={'Display'}
+                    onDeselect={() => updateProp({'display': undefined})}
+                >
+                    <Display defaultValue={attributes['wpbs-layout']?.['display']} callback={(newValue) => {
+                        updateProp({'display': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-direction']}
+                    label={'Direction'}
+                    onDeselect={() => updateProp({'flex-direction': undefined})}
+                >
+                    <FlexDirection defaultValue={attributes['wpbs-layout']?.['flex-direction']}
+                                   callback={(newValue) => {
+                                       updateProp({'flex-direction': newValue});
+                                   }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['container']}
+                    label={'Container'}
+                    onDeselect={() => updateProp({['container']: undefined})}
+                >
+                    <Container defaultValue={attributes['wpbs-layout']?.['container']} callback={(newValue) => {
+                        updateProp({'container': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['align-items']}
+                    label={'Align'}
+                    onDeselect={() => updateProp({['align-items']: undefined})}
+                >
+                    <Align defaultValue={attributes['wpbs-layout']?.['align-items']} callback={(newValue) => {
+                        updateProp({'align-items': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['justify-content']}
+                    label={'Justify'}
+                    onDeselect={() => updateProp({['justify-content']: undefined})}
+                >
+                    <Justify defaultValue={attributes['wpbs-layout']?.['justify-content']} callback={(newValue) => {
+                        updateProp({'justify-content': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 2'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['opacity']}
+                    label={'Opacity'}
+                    onDeselect={() => updateProp({['opacity']: undefined})}
+                >
+                    <Opacity defaultValue={attributes['wpbs-layout']?.['opacity']} callback={(newValue) => {
+                        updateProp({'opacity': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 2'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['basis']}
+                    label={'Basis'}
+                    onDeselect={() => updateProp({['basis']: undefined})}
+                >
+                    <Basis defaultValue={attributes['wpbs-layout']?.['basis']} callback={(newValue) => {
+                        updateProp({'basis': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['width']}
+                    label={'Width'}
+                    onDeselect={() => updateProp({['width']: undefined})}
+                >
+                    <Width defaultValue={attributes['wpbs-layout']?.['width']} callback={(newValue) => {
+                        updateProp({'width': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['width-custom']}
+                    label={'Width Custom'}
+                    onDeselect={() => updateProp({['width-custom']: undefined})}
+                >
+                    <WidthCustom defaultValue={attributes['wpbs-layout']?.['width-custom']} callback={(newValue) => {
+                        updateProp({'width-custom': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['max-width']}
+                    label={'Max-Width'}
+                    onDeselect={() => updateProp({['max-width']: undefined})}
+                >
+                    <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-layout']?.['max-width']}
+                                 callback={(newValue) => {
+                                     updateProp({'max-width': newValue});
+                                 }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['height']}
+                    label={'Height'}
+                    onDeselect={() => updateProp({['height']: undefined})}
+                >
+                    <Height defaultValue={attributes['wpbs-layout']?.['height']} callback={(newValue) => {
+                        updateProp({'height': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['height-custom']}
+                    label={'Height Custom'}
+                    onDeselect={() => updateProp({['height-custom']: undefined})}
+                >
+                    <HeightCustom defaultValue={attributes['wpbs-layout']?.['height-custom']} callback={(newValue) => {
+                        updateProp({'height-custom': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['min-height']}
+                    label={'Min-Height'}
+                    onDeselect={() => updateProp({['min-height']: undefined})}
+                >
+                    <MinHeight defaultValue={attributes['wpbs-layout']?.['min-height']} callback={(newValue) => {
+                        updateProp({'min-height': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['min-height-custom']}
+                    label={'Min-Height Custom'}
+                    onDeselect={() => updateProp({['min-height-custom']: undefined})}
+                >
+                    <MinHeightCustom defaultValue={attributes['wpbs-layout']?.['min-height-custom']}
+                                     callback={(newValue) => {
+                                         updateProp({'min-height-custom': newValue});
+                                     }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['max-height']}
+                    label={'Max-Height'}
+                    onDeselect={() => updateProp({['max-height']: undefined})}
+                >
+                    <MaxHeight defaultValue={attributes['wpbs-layout']?.['max-height']} callback={(newValue) => {
+                        updateProp({'max-height': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['max-height-custom']}
+                    label={'Max-Height Custom'}
+                    onDeselect={() => updateProp({['max-height-custom']: undefined})}
+                >
+                    <MaxHeightCustom defaultValue={attributes['wpbs-layout']?.['max-height-custom']}
+                                     callback={(newValue) => {
+                                         updateProp({'max-height-custom': newValue});
+                                     }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-wrap']}
+                    label={'Flex Wrap'}
+                    onDeselect={() => updateProp({['flex-wrap']: undefined})}
+                >
+                    <FlexWrap defaultValue={attributes['wpbs-layout']?.['flex-wrap']} callback={(newValue) => {
+                        updateProp({'flex-wrap': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-grow']}
+                    label={'Grow'}
+                    onDeselect={() => updateProp({['flex-grow']: undefined})}
+                >
+                    <Grow defaultValue={attributes['wpbs-layout']?.['flex-grow']} callback={(newValue) => {
+                        updateProp({'flex-grow': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-shrink']}
+                    label={'Shrink'}
+                    onDeselect={() => updateProp({['flex-shrink']: undefined})}
+                >
+                    <Shrink defaultValue={attributes['wpbs-layout']?.['flex-shrink']} callback={(newValue) => {
+                        updateProp({'flex-shrink': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['position']}
+                    label={'Position'}
+                    onDeselect={() => updateProp({['position']: undefined})}
+                >
+                    <Position defaultValue={attributes['wpbs-layout']?.['position']} callback={(newValue) => {
+                        updateProp({'position': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['z-index']}
+                    label={'Z-Index'}
+                    onDeselect={() => updateProp({['z-index']: undefined})}
+                >
+                    <ZIndex defaultValue={attributes['wpbs-layout']?.['z-index']} callback={(newValue) => {
+                        updateProp({'z-index': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['top'] || !!attributes['wpbs-layout']?.['right'] || !!attributes['wpbs-layout']?.['bottom'] || !!attributes['wpbs-layout']?.['left']}
+                    label={'Box Position'}
+                    onDeselect={() => updateProp({
+                        ['top']: undefined,
+                        ['right']: undefined,
+                        ['bottom']: undefined,
+                        ['left']: undefined
+                    })}
+                >
+                    <BoxPosition topValue={attributes['wpbs-layout']?.['top']}
+                                 rightValue={attributes['wpbs-layout']?.['right']}
+                                 bottomValue={attributes['wpbs-layout']?.['bottom']}
+                                 leftValue={attributes['wpbs-layout']?.['left']}
+                                 callback={(top, right, bottom, left) => {
+                                     updateProp({
+                                         'top': top,
+                                         'right': right,
+                                         'bottom': bottom,
+                                         'left': left
+                                     });
+                                 }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['overflow']}
+                    label={'Overflow'}
+                    onDeselect={() => updateProp({['overflow']: undefined})}
+                >
+                    <Overflow defaultValue={attributes['wpbs-layout']?.['overflow']} callback={(newValue) => {
+                        updateProp({'overflow': newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['aspect-ratio']}
+                    label={'Shape'}
+                    onDeselect={() => updateProp({['aspect-ratio']: undefined})}
+                >
+                    <Shape defaultValue={attributes['wpbs-layout']?.['aspect-ratio']} callback={(newValue) => {
+                        updateProp({['aspect-ratio']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['order']}
+                    label={'Order'}
+                    onDeselect={() => updateProp({['order']: undefined})}
+                >
+                    <Order defaultValue={attributes['wpbs-layout']?.['order']} callback={(newValue) => {
+                        updateProp({['order']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['outline-offset']}
+                    label={'Outline Offset'}
+                    onDeselect={() => updateProp({['outline-offset']: undefined})}
+                >
+                    <OutlineOffset defaultValue={attributes['wpbs-layout']?.['outline-offset']}
+                                   callback={(newValue) => {
+                                       updateProp({['outline-offset']: newValue});
+                                   }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['offset-header']}
+                    label={'Offset Header'}
+                    onDeselect={() => updateProp({['offset-header']: undefined})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout']?.['offset-header'] || undefined}
+                                  callback={(newValue) => {
+                                      updateProp({['offset-header']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['translate']}
+                    label={'Translate'}
+                    onDeselect={() => updateProp({['translate']: undefined})}
+                >
+                    <Translate defaultValue={attributes['wpbs-layout']?.['translate']} callback={(newValue) => {
+                        updateProp({['translate']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['outline']}
+                    label={'Outline'}
+                    onDeselect={() => updateProp({['outline']: undefined})}
+                >
+                    <Outline defaultValue={attributes['wpbs-layout']?.['outline']} callback={(newValue) => {
+                        updateProp({['outline']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['mask-image']}
+                    label={'Mask'}
+                    onDeselect={() => {
+                        updateProp({
+                            ['mask-image']: undefined,
+                            ['mask-origin']: undefined,
+                            ['mask-size']: undefined
+                        });
+                    }}
+                >
+                    <Mask
+                        imageValue={attributes['wpbs-layout']?.['mask-image']}
+                        originValue={attributes['wpbs-layout']?.['mask-origin']}
+                        sizeValue={attributes['wpbs-layout']?.['mask-size']}
+                        callback={(image, origin, size) => {
+                            updateProp({
+                                ['mask-image']: image,
+                                ['mask-origin']: origin,
+                                ['mask-size']: size
+                            });
+                        }}/>
+                </ToolsPanelItem>
+
+
+            </ToolsPanel>
+
+            <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['breakpoint']}
+                    label={'Breakpoint'}
+                    onDeselect={() => updateProp({['breakpoint']: undefined})}
+                >
+                    <Breakpoint defaultValue={attributes['wpbs-layout']?.['breakpoint']} callback={(newValue) => {
+                        updateProp({['breakpoint']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['display-mobile']}
+                    label={'Display'}
+                    onDeselect={() => updateProp({['display-mobile']: undefined})}
+                >
+                    <Display defaultValue={attributes['wpbs-layout']?.['display-mobile']} callback={(newValue) => {
+                        updateProp({['display-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-direction-mobile']}
+                    label={'Direction'}
+                    onDeselect={() => updateProp({['flex-direction-mobile']: undefined})}
+                >
+                    <FlexDirection defaultValue={attributes['wpbs-layout']?.['flex-direction-mobile']}
+                                   callback={(newValue) => {
+                                       updateProp({['flex-direction-mobile']: newValue});
+                                   }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['align-items-mobile']}
+                    label={'Align'}
+                    onDeselect={() => updateProp({['align-items-mobile']: undefined})}
+                >
+                    <Align defaultValue={attributes['wpbs-layout']?.['align-items-mobile']} callback={(newValue) => {
+                        updateProp({['align-items-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['justify-content-mobile']}
+                    label={'Justify'}
+                    onDeselect={() => updateProp({['justify-content-mobile']: undefined})}
+                >
+                    <Justify defaultValue={attributes['wpbs-layout']?.['justify-content-mobile']}
+                             callback={(newValue) => {
+                                 updateProp({['justify-content-mobile']: newValue});
+                             }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-grow-mobile']}
+                    label={'Grow'}
+                    onDeselect={() => updateProp({['flex-grow-mobile']: undefined})}
+                >
+                    <Grow defaultValue={attributes['wpbs-layout']?.['flex-grow-mobile']} callback={(newValue) => {
+                        updateProp({['flex-grow-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-shrink-mobile']}
+                    label={'Shrink'}
+                    onDeselect={() => updateProp({['flex-shrink-mobile']: undefined})}
+                >
+                    <Shrink defaultValue={attributes['wpbs-layout']?.['flex-shrink-mobile']} callback={(newValue) => {
+                        updateProp({['flex-shrink-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 2'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['opacity-mobile']}
+                    label={'Opacity'}
+                    onDeselect={() => updateProp({['opacity-mobile']: undefined})}
+                >
+                    <Opacity defaultValue={attributes['wpbs-layout']?.['opacity-mobile'] || 100} callback={(newValue) => {
+                        updateProp({['opacity-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 2'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['basis-mobile']}
+                    label={'Basis'}
+                    onDeselect={() => updateProp({['basis-mobile']: undefined})}
+                >
+                    <Basis defaultValue={attributes['wpbs-layout']?.['basis-mobile']} callback={(newValue) => {
+                        updateProp({['basis-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['width-mobile']}
+                    label={'Width'}
+                    onDeselect={() => updateProp({['width-mobile']: undefined})}
+                >
+                    <Width defaultValue={attributes['wpbs-layout']?.['width-mobile']} callback={(newValue) => {
+                        updateProp({['width-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['width-custom-mobile']}
+                    label={'Width Custom'}
+                    onDeselect={() => updateProp({['width-custom-mobile']: undefined})}
+                >
+                    <WidthCustom defaultValue={attributes['wpbs-layout']?.['width-custom-mobile']} callback={(newValue) => {
+                        updateProp({['width-custom-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['max-width-mobile']}
+                    label={'Max-Width'}
+                    onDeselect={() => updateProp({['max-width-mobile']: undefined})}
+                >
+                    <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-layout']?.['max-width-mobile']}
+                                 callback={(newValue) => {
+                                     updateProp({['max-width-mobile']: newValue});
+                                 }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['height-mobile']}
+                    label={'Height'}
+                    onDeselect={() => updateProp({['height-mobile']: undefined})}
+                >
+                    <Height defaultValue={attributes['wpbs-layout']?.['height-mobile']} callback={(newValue) => {
+                        updateProp({['height-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['min-height-mobile']}
+                    label={'Min-Height'}
+                    onDeselect={() => updateProp({['min-height-mobile']: undefined})}
+                >
+                    <MinHeight defaultValue={attributes['wpbs-layout']?.['min-height-mobile']} callback={(newValue) => {
+                        updateProp({['min-height-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['height-custom-mobile']}
+                    label={'Height Custom'}
+                    onDeselect={() => updateProp({['height-custom-mobile']: undefined})}
+                >
+                    <HeightCustom defaultValue={attributes['wpbs-layout']?.['height-custom-mobile']}
+                                  callback={(newValue) => {
+                                      updateProp({['height-custom-mobile']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['aspect-ratio-mobile']}
+                    label={'Shape'}
+                    onDeselect={() => updateProp({['aspect-ratio-mobile']: undefined})}
+                >
+                    <Shape defaultValue={attributes['wpbs-layout']?.['aspect-ratio-mobile']} callback={(newValue) => {
+                        updateProp({['aspect-ratio-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['flex-wrap-mobile']}
+                    label={'Flex Wrap'}
+                    onDeselect={() => updateProp({['flex-wrap-mobile']: undefined})}
+                >
+                    <FlexWrap defaultValue={attributes['wpbs-layout']?.['flex-wrap-mobile']} callback={(newValue) => {
+                        updateProp({['flex-wrap-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['position-mobile']}
+                    label={'Position'}
+                    onDeselect={() => updateProp({['position-mobile']: undefined})}
+                >
+                    <Position defaultValue={attributes['wpbs-layout']?.['position-mobile']} callback={(newValue) => {
+                        updateProp({['position-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['z-index-mobile']}
+                    label={'Z-Index'}
+                    onDeselect={() => updateProp({['z-index-mobile']: undefined})}
+                >
+                    <ZIndex defaultValue={attributes['wpbs-layout']?.['z-index-mobile']} callback={(newValue) => {
+                        updateProp({['z-index-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['top-mobile'] || !!attributes['wpbs-layout']?.['right-mobile'] || !!attributes['wpbs-layout']?.['bottom-mobile'] || !!attributes['wpbs-layout']?.['left-mobile']}
+                    label={'Box Position'}
+                    onDeselect={() => updateProp({
+                        ['top-mobile']: undefined,
+                        ['right-mobile']: undefined,
+                        ['bottom-mobile']: undefined,
+                        ['left-mobile']: undefined
+                    })}
+                >
+                    <BoxPosition topValue={attributes['wpbs-layout']?.['top-mobile']}
+                                 rightValue={attributes['wpbs-layout']?.['right-mobile']}
+                                 bottomValue={attributes['wpbs-layout']?.['bottom-mobile']}
+                                 leftValue={attributes['wpbs-layout']?.['left-mobile']}
+                                 callback={(top, right, bottom, left) => {
+                                     updateProp({
+                                         ['top-mobile']: top,
+                                         ['right-mobile']: right,
+                                         ['bottom-mobile']: bottom,
+                                         ['left-mobile']: left
+                                     });
+                                 }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['order-mobile']}
+                    label={'Order'}
+                    onDeselect={() => updateProp({['order-mobile']: undefined})}
+                >
+                    <Order defaultValue={attributes['wpbs-layout']?.['order-mobile']} callback={(newValue) => {
+                        updateProp({['order-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['offset-header-mobile']}
+                    label={'Offset Header'}
+                    onDeselect={() => updateProp({['offset-header-mobile']: undefined})}
+                >
+                    <OffsetHeader defaultValue={attributes['wpbs-layout']?.['offset-header-mobile'] || undefined}
+                                  callback={(newValue) => {
+                                      updateProp({['offset-header-mobile']: newValue});
+                                  }}/>
+                </ToolsPanelItem>
+
+
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['translate-mobile']}
+                    label={'Translate'}
+                    onDeselect={() => updateProp({['translate-mobile']: undefined})}
+                >
+                    <Translate label={'Translate'}
+                               defaultValue={attributes['wpbs-layout']?.['translate-mobile'] || {}}
+                               callback={(newValue) => {
+                                   updateProp({['translate-mobile']: newValue});
+                               }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['padding-mobile']}
+                    label={'Padding'}
+                    onDeselect={() => updateProp({['padding-mobile']: undefined})}
+                >
+                    <Padding defaultValue={attributes['wpbs-layout']?.['padding-mobile'] || {}} callback={(newValue) => {
+                        updateProp({['padding-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['margin-mobile']}
+                    label={'Margin'}
+                    onDeselect={() => updateProp({['margin-mobile']: undefined})}
+                >
+                    <Margin defaultValue={attributes['wpbs-layout']?.['margin-mobile'] || {}} callback={(newValue) => {
+                        updateProp({['margin-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['gap-mobile']}
+                    label={'Gap'}
+                    onDeselect={() => updateProp({['gap-mobile']: undefined})}
+                >
+                    <Gap defaultValue={attributes['wpbs-layout']?.['gap-mobile'] || {}} callback={(newValue) => {
+                        updateProp({['gap-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['border-radius-mobile']}
+                    label={'Rounded'}
+                    onDeselect={() => updateProp({['border-radius-mobile']: undefined})}
+                >
+                    <Rounded defaultValue={attributes['wpbs-layout']?.['border-radius-mobile'] || {}}
+                             callback={(newValue) => {
+                                 updateProp({['border-radius-mobile']: newValue});
+                             }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['font-size-mobile']}
+                    label={'Font Size'}
+                    onDeselect={() => updateProp({['font-size-mobile']: undefined})}
+                >
+                    <FontSize defaultValue={attributes['wpbs-layout']?.['font-size-mobile']} callback={(newValue) => {
+                        updateProp({['font-size-mobile']: newValue});
+                    }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['line-height-mobile']}
+                    label={'Line Height'}
+                    onDeselect={() => updateProp({['line-height-mobile']: undefined})}
+                >
+                    <LineHeight defaultValue={attributes['wpbs-layout']?.['line-height-mobile']}
+                                callback={(newValue) => {
+                                    updateProp({['line-height-mobile']: newValue});
+                                }}/>
+                </ToolsPanelItem>
+                <ToolsPanelItem
+                    style={{gridColumn: 'span 1'}}
+                    hasValue={() => !!attributes['wpbs-layout']?.['text-align-mobile']}
+                    label={'Text Align'}
+                    onDeselect={() => updateProp({['text-align-mobile']: undefined})}
+                >
+                    <TextAlign defaultValue={attributes['wpbs-layout']?.['text-align-mobile']}
+                               callback={(newValue) => {
+                                   updateProp({['text-align-mobile']: newValue});
+                               }}/>
+                </ToolsPanelItem>
+
+                <ToolsPanelItem
+                    hasValue={() => !!attributes['wpbs-layout']?.['mask-image-mobile']}
+                    label={'Mask'}
+                    onDeselect={() => {
+                        updateProp({
+                            ['mask-image-mobile']: undefined,
+                            ['mask-origin-mobile']: undefined,
+                            ['mask-size-mobile']: undefined
+                        });
+                    }}
+                >
+                    <Mask
+                        imageValue={attributes['wpbs-layout']?.['mask-image-mobile']}
+                        originValue={attributes['wpbs-layout']?.['mask-origin-mobile']}
+                        sizeValue={attributes['wpbs-layout']?.['mask-size-mobile']}
+                        callback={(image, origin, size) => {
+                            updateProp({
+                                ['mask-image-mobile']: image,
+                                ['mask-origin-mobile']: origin,
+                                ['mask-size-mobile']: size
+                            });
+                        }}/>
+                </ToolsPanelItem>
+
+
+            </ToolsPanel>
+
+            <PanelColorSettings
+                title={'Additional Colors'}
+                enableAlpha
+                __experimentalIsRenderedInSidebar
+                colorSettings={[
+                    {
+                        slug: 'text-color-hover',
+                        label: 'Text Hover'
+                    },
+                    {
+                        slug: 'background-color-hover',
+                        label: 'Background Hover'
+                    },
+                    {
+                        slug: 'border-color-hover',
+                        label: 'Border Hover'
+                    },
+                    {
+                        slug: 'text-color-mobile',
+                        label: 'Text Mobile'
+                    },
+                    {
+                        slug: 'background-color-mobile',
+                        label: 'Background Mobile'
+                    }
+                ].map((color_control) => {
+                    return {
+                        value: attributes['wpbs-layout']?.[color_control.slug],
+                        onChange: (color) => updateProp({[color_control.slug]: color}),
+                        label: color_control.label.trim(),
+                        isShownByDefault: false
+                    }
+                })}
+            />
+
+        </InspectorControls>;
+    }
+
+    return <>
+        <BackgroundControls attributes={attributes} setAttributes={setAttributes} enabled={!!background}/>
+        <Controls/>
+    </>;
+}
+
 function BackgroundControls({attributes = {}, setAttributes, enabled = false}) {
 
     if (!enabled) {
@@ -308,14 +1066,12 @@ function BackgroundControls({attributes = {}, setAttributes, enabled = false}) {
 
     function updateSettings(attr, val) {
 
-        if (typeof 'updateProp' === 'function') {
-            setAttributes({
-                'wpbs-background': {
-                    ...settings,
-                    ...{[attr]: val}
-                }
-            });
-        }
+        setAttributes({
+            'wpbs-background': {
+                ...settings,
+                ...{[attr]: val}
+            }
+        });
 
     }
 
@@ -947,949 +1703,194 @@ function BackgroundControls({attributes = {}, setAttributes, enabled = false}) {
     }
 
     return (
+        <InspectorControls group="styles">
+            <PanelBody title={'Background'} initialOpen={false}>
+                <Grid columns={1} columnGap={15} rowGap={20}>
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Type"
+                        value={type}
+                        options={[
+                            {label: 'Select', value: ''},
+                            {label: 'Image', value: 'image'},
+                            {label: 'Featured Image', value: 'featured-image'},
+                            {label: 'Video', value: 'video'},
+                        ]}
+                        onChange={(value) => {
+                            updateSettings('type', value, setType);
+                        }}
+                        __nextHasNoMarginBottom
+                    />
+                    <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
 
-        <PanelBody title={'Background'} initialOpen={false} className={className}>
-            <Grid columns={1} columnGap={15} rowGap={20}>
-                <SelectControl
-                    __next40pxDefaultSize
-                    label="Type"
-                    value={type}
-                    options={[
-                        {label: 'Select', value: ''},
-                        {label: 'Image', value: 'image'},
-                        {label: 'Featured Image', value: 'featured-image'},
-                        {label: 'Video', value: 'video'},
-                    ]}
-                    onChange={(value) => {
-                        updateSettings('type', value, setType);
-                    }}
-                    __nextHasNoMarginBottom
-                />
-                <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
-
-                    <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{display: type !== 'image' && type !== 'featured-image' ? 'none' : null}}>
-                        <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Mobile Image'}
-                                    onSelect={(value) => {
-                                        updateSettings('mobileImage', {
-                                            type: value.type,
-                                            id: value.id,
-                                            url: value.url,
-                                        }, setMobileImage);
-                                    }}
-                                    allowedTypes={['image']}
-                                    value={mobileImage}
-                                    render={({open}) => {
-                                        return <PreviewThumbnail
-                                            image={mobileImage || {}}
-                                            callback={() => {
-                                                updateSettings('mobileImage', undefined, setMobileImage)
-                                            }}
-                                            onClick={open}
-                                        />;
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Large Image'}
-                                    onSelect={(value) => {
-                                        updateSettings('largeImage', {
-                                            type: value.type,
-                                            id: value.id,
-                                            url: value.url,
-                                        }, setLargeImage);
-                                    }}
-                                    allowedTypes={['image']}
-                                    value={largeImage}
-                                    render={({open}) => {
-                                        return <PreviewThumbnail
-                                            image={largeImage || {}}
-                                            callback={() => {
-                                                updateSettings('largeImage', undefined, setLargeImage)
-                                            }}
-                                            onClick={open}
-                                        />;
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
+                        <Grid columns={2} columnGap={15} rowGap={20}
+                              style={{display: type !== 'image' && type !== 'featured-image' ? 'none' : null}}>
+                            <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title={'Mobile Image'}
+                                        onSelect={(value) => {
+                                            updateSettings('mobileImage', {
+                                                type: value.type,
+                                                id: value.id,
+                                                url: value.url,
+                                            }, setMobileImage);
+                                        }}
+                                        allowedTypes={['image']}
+                                        value={mobileImage}
+                                        render={({open}) => {
+                                            return <PreviewThumbnail
+                                                image={mobileImage || {}}
+                                                callback={() => {
+                                                    updateSettings('mobileImage', undefined, setMobileImage)
+                                                }}
+                                                onClick={open}
+                                            />;
+                                        }}
+                                    />
+                                </MediaUploadCheck>
+                            </BaseControl>
+                            <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title={'Large Image'}
+                                        onSelect={(value) => {
+                                            updateSettings('largeImage', {
+                                                type: value.type,
+                                                id: value.id,
+                                                url: value.url,
+                                            }, setLargeImage);
+                                        }}
+                                        allowedTypes={['image']}
+                                        value={largeImage}
+                                        render={({open}) => {
+                                            return <PreviewThumbnail
+                                                image={largeImage || {}}
+                                                callback={() => {
+                                                    updateSettings('largeImage', undefined, setLargeImage)
+                                                }}
+                                                onClick={open}
+                                            />;
+                                        }}
+                                    />
+                                </MediaUploadCheck>
+                            </BaseControl>
 
 
-                    </Grid>
-                    <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{display: type !== 'video' ? 'none' : null}}>
+                        </Grid>
+                        <Grid columns={2} columnGap={15} rowGap={20}
+                              style={{display: type !== 'video' ? 'none' : null}}>
 
-                        <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Mobile Video'}
-                                    onSelect={(value) => {
-                                        updateSettings('mobileVideo', {
-                                            type: value.type,
-                                            id: value.id,
-                                            url: value.url,
-                                        }, setMobileVideo);
-                                    }}
-                                    allowedTypes={['video']}
-                                    value={mobileVideo}
-                                    render={({open}) => {
-                                        return <PreviewThumbnail
-                                            image={mobileVideo || {}}
-                                            callback={() => {
-                                                updateSettings('mobileVideo', undefined, setMobileVideo)
-                                            }}
-                                            onClick={open}
-                                        />;
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                        <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title={'Large Video'}
-                                    onSelect={(value) => {
-                                        updateSettings('largeVideo', {
-                                            type: value.type,
-                                            id: value.id,
-                                            url: value.url,
-                                        }, setLargeVideo);
-                                    }}
-                                    allowedTypes={['video']}
-                                    value={largeVideo}
-                                    render={({open}) => {
-                                        return <PreviewThumbnail
-                                            image={largeVideo || {}}
-                                            callback={() => {
-                                                updateSettings('largeVideo', undefined, setLargeVideo)
-                                            }}
-                                            onClick={open}
-                                        />;
-                                    }}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
-                    </Grid>
+                            <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title={'Mobile Video'}
+                                        onSelect={(value) => {
+                                            updateSettings('mobileVideo', {
+                                                type: value.type,
+                                                id: value.id,
+                                                url: value.url,
+                                            }, setMobileVideo);
+                                        }}
+                                        allowedTypes={['video']}
+                                        value={mobileVideo}
+                                        render={({open}) => {
+                                            return <PreviewThumbnail
+                                                image={mobileVideo || {}}
+                                                callback={() => {
+                                                    updateSettings('mobileVideo', undefined, setMobileVideo)
+                                                }}
+                                                onClick={open}
+                                            />;
+                                        }}
+                                    />
+                                </MediaUploadCheck>
+                            </BaseControl>
+                            <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title={'Large Video'}
+                                        onSelect={(value) => {
+                                            updateSettings('largeVideo', {
+                                                type: value.type,
+                                                id: value.id,
+                                                url: value.url,
+                                            }, setLargeVideo);
+                                        }}
+                                        allowedTypes={['video']}
+                                        value={largeVideo}
+                                        render={({open}) => {
+                                            return <PreviewThumbnail
+                                                image={largeVideo || {}}
+                                                callback={() => {
+                                                    updateSettings('largeVideo', undefined, setLargeVideo)
+                                                }}
+                                                onClick={open}
+                                            />;
+                                        }}
+                                    />
+                                </MediaUploadCheck>
+                            </BaseControl>
+                        </Grid>
 
-                    <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{padding: '1rem 0'}}>
-                        <ToggleControl
-                            label="Eager"
-                            checked={eager}
-                            onChange={(value) => {
-                                updateSettings('eager', value, setEager);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                        <ToggleControl
-                            label="Force"
-                            checked={force}
-                            onChange={(value) => {
-                                updateSettings('force', value, setForce);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                        <ToggleControl
-                            label="Fixed"
-                            checked={fixed}
-                            onChange={(value) => {
-                                updateSettings('fixed', value, setFixed);
-                            }}
-                            className={'flex items-center'}
-                            __nextHasNoMarginBottom
-                        />
-                    </Grid>
+                        <Grid columns={2} columnGap={15} rowGap={20}
+                              style={{padding: '1rem 0'}}>
+                            <ToggleControl
+                                label="Eager"
+                                checked={eager}
+                                onChange={(value) => {
+                                    updateSettings('eager', value, setEager);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Force"
+                                checked={force}
+                                onChange={(value) => {
+                                    updateSettings('force', value, setForce);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Fixed"
+                                checked={fixed}
+                                onChange={(value) => {
+                                    updateSettings('fixed', value, setFixed);
+                                }}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                        </Grid>
 
-                    <TabPanel
-                        className="wpbs-editor-tabs"
-                        activeClass="active"
-                        orientation="horizontal"
-                        initialTabName="desktop"
-                        tabs={[
+                        <TabPanel
+                            className="wpbs-editor-tabs"
+                            activeClass="active"
+                            orientation="horizontal"
+                            initialTabName="desktop"
+                            tabs={[
+                                {
+                                    name: 'desktop',
+                                    title: 'Desktop',
+                                    className: 'tab-desktop',
+                                },
+                                {
+                                    name: 'mobile',
+                                    title: 'Mobile',
+                                    className: 'tab-mobile',
+                                },
+                            ]}>
                             {
-                                name: 'desktop',
-                                title: 'Desktop',
-                                className: 'tab-desktop',
-                            },
-                            {
-                                name: 'mobile',
-                                title: 'Mobile',
-                                className: 'tab-mobile',
-                            },
-                        ]}>
-                        {
-                            (tab) => (<>{tabs[tab.name]}</>)
-                        }
-                    </TabPanel>
+                                (tab) => (<>{tabs[tab.name]}</>)
+                            }
+                        </TabPanel>
+                    </Grid>
                 </Grid>
-            </Grid>
 
-        </PanelBody>
+            </PanelBody>
+        </InspectorControls>
     )
-}
-
-export function LayoutSettings({attributes = {}, setAttributes, background = false}) {
-
-    const resetAll_layout = () => {
-        setAttributes(Object.keys(layoutProps.layout).reduce((o, key) => ({...o, [key]: undefined}), {}))
-    };
-
-    const resetAll_layout_mobile = () => {
-        setAttributes(Object.keys(layoutProps.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
-    };
-
-    function updateProp(newValue, prop = false) {
-        setAttributes({
-            'wpbs-layout': {
-                ...attributes['wpbs-layout'],
-                ...newValue
-            }
-        });
-    }
-
-    const LayoutControls = <InspectorControls group="styles">
-
-        <ToolsPanel label={'Layout'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['display']}
-                label={'Display'}
-                onDeselect={() => updateProp({['display']: undefined})}
-            >
-                <Display defaultValue={attributes['display']} callback={(newValue) => {
-                    updateProp('display', newValue);
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-direction']}
-                label={'Direction'}
-                onDeselect={() => updateProp({['flex-direction']: undefined})}
-            >
-                <FlexDirection defaultValue={attributes['flex-direction']}
-                               callback={(newValue) => {
-                                   updateProp('flex-direction', newValue);
-                               }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['container']}
-                label={'Container'}
-                onDeselect={() => updateProp({['container']: undefined})}
-            >
-                <Container defaultValue={attributes['container']} callback={(newValue) => {
-                    updateProp('container', newValue);
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['align-items']}
-                label={'Align'}
-                onDeselect={() => updateProp({['align-items']: undefined})}
-            >
-                <Align defaultValue={attributes['align-items']} callback={(newValue) => {
-                    updateProp('align-items', newValue);
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['justify-content']}
-                label={'Justify'}
-                onDeselect={() => updateProp({['justify-content']: undefined})}
-            >
-                <Justify defaultValue={attributes['justify-content']} callback={(newValue) => {
-                    updateProp({['justify-content']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 2'}}
-                hasValue={() => !!attributes['opacity']}
-                label={'Opacity'}
-                onDeselect={() => updateProp({['opacity']: undefined})}
-            >
-                <Opacity defaultValue={attributes['opacity']} callback={(newValue) => {
-                    updateProp({['opacity']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 2'}}
-                hasValue={() => !!attributes['basis']}
-                label={'Basis'}
-                onDeselect={() => updateProp({['basis']: undefined})}
-            >
-                <Basis defaultValue={attributes['basis']} callback={(newValue) => {
-                    updateProp({['basis']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['width']}
-                label={'Width'}
-                onDeselect={() => updateProp({['width']: undefined})}
-            >
-                <Width defaultValue={attributes['width']} callback={(newValue) => {
-                    updateProp({['width']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['width-custom']}
-                label={'Width Custom'}
-                onDeselect={() => updateProp({['width-custom']: undefined})}
-            >
-                <WidthCustom defaultValue={attributes['width-custom']} callback={(newValue) => {
-                    updateProp({['width-custom']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['max-width']}
-                label={'Max-Width'}
-                onDeselect={() => updateProp({['max-width']: undefined})}
-            >
-                <WidthCustom label={'Max-Width'} defaultValue={attributes['max-width']}
-                             callback={(newValue) => {
-                                 updateProp({['max-width']: newValue});
-                             }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['height']}
-                label={'Height'}
-                onDeselect={() => updateProp({['height']: undefined})}
-            >
-                <Height defaultValue={attributes['height']} callback={(newValue) => {
-                    updateProp({['height']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['height-custom']}
-                label={'Height Custom'}
-                onDeselect={() => updateProp({['height-custom']: undefined})}
-            >
-                <HeightCustom defaultValue={attributes['height-custom']} callback={(newValue) => {
-                    updateProp({['height-custom']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['min-height']}
-                label={'Min-Height'}
-                onDeselect={() => updateProp({['min-height']: undefined})}
-            >
-                <MinHeight defaultValue={attributes['min-height']} callback={(newValue) => {
-                    updateProp({['min-height']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['min-height-custom']}
-                label={'Min-Height Custom'}
-                onDeselect={() => updateProp({['min-height-custom']: undefined})}
-            >
-                <MinHeightCustom defaultValue={attributes['min-height-custom']}
-                                 callback={(newValue) => {
-                                     updateProp({['min-height-custom']: newValue});
-                                 }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['max-height']}
-                label={'Max-Height'}
-                onDeselect={() => updateProp({['max-height']: undefined})}
-            >
-                <MaxHeight defaultValue={attributes['max-height']} callback={(newValue) => {
-                    updateProp({['max-height']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['max-height-custom']}
-                label={'Max-Height Custom'}
-                onDeselect={() => updateProp({['max-height-custom']: undefined})}
-            >
-                <MaxHeightCustom defaultValue={attributes['max-height-custom']}
-                                 callback={(newValue) => {
-                                     updateProp({['max-height-custom']: newValue});
-                                 }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-wrap']}
-                label={'Flex Wrap'}
-                onDeselect={() => updateProp({['flex-wrap']: undefined})}
-            >
-                <FlexWrap defaultValue={attributes['flex-wrap']} callback={(newValue) => {
-                    updateProp({['flex-wrap']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-grow']}
-                label={'Grow'}
-                onDeselect={() => updateProp({['flex-grow']: undefined})}
-            >
-                <Grow defaultValue={attributes['flex-grow']} callback={(newValue) => {
-                    updateProp({['flex-grow']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-shrink']}
-                label={'Shrink'}
-                onDeselect={() => updateProp({['flex-shrink']: undefined})}
-            >
-                <Shrink defaultValue={attributes['flex-shrink']} callback={(newValue) => {
-                    updateProp({['flex-shrink']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['position']}
-                label={'Position'}
-                onDeselect={() => updateProp({['position']: undefined})}
-            >
-                <Position defaultValue={attributes['position']} callback={(newValue) => {
-                    updateProp({['position']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['z-index']}
-                label={'Z-Index'}
-                onDeselect={() => updateProp({['z-index']: undefined})}
-            >
-                <ZIndex defaultValue={attributes['z-index']} callback={(newValue) => {
-                    updateProp({['z-index']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                hasValue={() => !!attributes['top'] || !!attributes['right'] || !!attributes['bottom'] || !!attributes['left']}
-                label={'Box Position'}
-                onDeselect={() => updateProp({
-                    ['top']: undefined,
-                    ['right']: undefined,
-                    ['bottom']: undefined,
-                    ['left']: undefined
-                })}
-            >
-                <BoxPosition topValue={attributes['top']}
-                             rightValue={attributes['right']}
-                             bottomValue={attributes['bottom']}
-                             leftValue={attributes['left']}
-                             callback={(top, right, bottom, left) => {
-                                 updateProp({
-                                     ['top']: top,
-                                     ['right']: right,
-                                     ['bottom']: bottom,
-                                     ['left']: left
-                                 });
-                             }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['overflow']}
-                label={'Overflow'}
-                onDeselect={() => updateProp({['overflow']: undefined})}
-            >
-                <Overflow defaultValue={attributes['overflow']} callback={(newValue) => {
-                    updateProp({['overflow']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['aspect-ratio']}
-                label={'Shape'}
-                onDeselect={() => updateProp({['aspect-ratio']: undefined})}
-            >
-                <Shape defaultValue={attributes['aspect-ratio']} callback={(newValue) => {
-                    updateProp({['aspect-ratio']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['order']}
-                label={'Order'}
-                onDeselect={() => updateProp({['order']: undefined})}
-            >
-                <Order defaultValue={attributes['order']} callback={(newValue) => {
-                    updateProp({['order']: newValue});
-                }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['outline-offset']}
-                label={'Outline Offset'}
-                onDeselect={() => updateProp({['outline-offset']: undefined})}
-            >
-                <OutlineOffset defaultValue={attributes['outline-offset']}
-                               callback={(newValue) => {
-                                   updateProp({['outline-offset']: newValue});
-                               }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['offset-header']}
-                label={'Offset Header'}
-                onDeselect={() => updateProp({['offset-header']: undefined})}
-            >
-                <OffsetHeader defaultValue={attributes['offset-header'] || undefined}
-                              callback={(newValue) => {
-                                  updateProp({['offset-header']: newValue});
-                              }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                hasValue={() => !!attributes['translate']}
-                label={'Translate'}
-                onDeselect={() => updateProp({['translate']: undefined})}
-            >
-                <Translate defaultValue={attributes['translate']} callback={(newValue) => {
-                    updateProp({['translate']: newValue});
-                }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                hasValue={() => !!attributes['outline']}
-                label={'Outline'}
-                onDeselect={() => updateProp({['outline']: undefined})}
-            >
-                <Outline defaultValue={attributes['outline']} callback={(newValue) => {
-                    updateProp({['outline']: newValue});
-                }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                hasValue={() => !!attributes['mask-image']}
-                label={'Mask'}
-                onDeselect={() => {
-                    updateProp({
-                        ['mask-image']: undefined,
-                        ['mask-origin']: undefined,
-                        ['mask-size']: undefined
-                    });
-                }}
-            >
-                <Mask
-                    imageValue={attributes['mask-image']}
-                    originValue={attributes['mask-origin']}
-                    sizeValue={attributes['mask-size']}
-                    callback={(image, origin, size) => {
-                        updateProp({
-                            ['mask-image']: image,
-                            ['mask-origin']: origin,
-                            ['mask-size']: size
-                        });
-                    }}/>
-            </ToolsPanelItem>
-
-
-        </ToolsPanel>
-
-        <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['breakpoint']}
-                label={'Breakpoint'}
-                onDeselect={() => updateProp({['breakpoint']: undefined})}
-            >
-                <Breakpoint defaultValue={attributes['breakpoint']} callback={(newValue) => {
-                    updateProp({['breakpoint']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['display-mobile']}
-                label={'Display'}
-                onDeselect={() => updateProp({['display-mobile']: undefined})}
-            >
-                <Display defaultValue={attributes['display-mobile']} callback={(newValue) => {
-                    updateProp({['display-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-direction-mobile']}
-                label={'Direction'}
-                onDeselect={() => updateProp({['flex-direction-mobile']: undefined})}
-            >
-                <FlexDirection defaultValue={attributes['flex-direction-mobile']}
-                               callback={(newValue) => {
-                                   updateProp({['flex-direction-mobile']: newValue});
-                               }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['align-items-mobile']}
-                label={'Align'}
-                onDeselect={() => updateProp({['align-items-mobile']: undefined})}
-            >
-                <Align defaultValue={attributes['align-items-mobile']} callback={(newValue) => {
-                    updateProp({['align-items-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['justify-content-mobile']}
-                label={'Justify'}
-                onDeselect={() => updateProp({['justify-content-mobile']: undefined})}
-            >
-                <Justify defaultValue={attributes['justify-content-mobile']}
-                         callback={(newValue) => {
-                             updateProp({['justify-content-mobile']: newValue});
-                         }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-grow-mobile']}
-                label={'Grow'}
-                onDeselect={() => updateProp({['flex-grow-mobile']: undefined})}
-            >
-                <Grow defaultValue={attributes['flex-grow-mobile']} callback={(newValue) => {
-                    updateProp({['flex-grow-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-shrink-mobile']}
-                label={'Shrink'}
-                onDeselect={() => updateProp({['flex-shrink-mobile']: undefined})}
-            >
-                <Shrink defaultValue={attributes['flex-shrink-mobile']} callback={(newValue) => {
-                    updateProp({['flex-shrink-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 2'}}
-                hasValue={() => !!attributes['opacity-mobile']}
-                label={'Opacity'}
-                onDeselect={() => updateProp({['opacity-mobile']: undefined})}
-            >
-                <Opacity defaultValue={attributes['opacity-mobile'] || 100} callback={(newValue) => {
-                    updateProp({['opacity-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 2'}}
-                hasValue={() => !!attributes['basis-mobile']}
-                label={'Basis'}
-                onDeselect={() => updateProp({['basis-mobile']: undefined})}
-            >
-                <Basis defaultValue={attributes['basis-mobile']} callback={(newValue) => {
-                    updateProp({['basis-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['width-mobile']}
-                label={'Width'}
-                onDeselect={() => updateProp({['width-mobile']: undefined})}
-            >
-                <Width defaultValue={attributes['width-mobile']} callback={(newValue) => {
-                    updateProp({['width-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['width-custom-mobile']}
-                label={'Width Custom'}
-                onDeselect={() => updateProp({['width-custom-mobile']: undefined})}
-            >
-                <WidthCustom defaultValue={attributes['width-custom-mobile']} callback={(newValue) => {
-                    updateProp({['width-custom-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['max-width-mobile']}
-                label={'Max-Width'}
-                onDeselect={() => updateProp({['max-width-mobile']: undefined})}
-            >
-                <WidthCustom label={'Max-Width'} defaultValue={attributes['max-width-mobile']}
-                             callback={(newValue) => {
-                                 updateProp({['max-width-mobile']: newValue});
-                             }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['height-mobile']}
-                label={'Height'}
-                onDeselect={() => updateProp({['height-mobile']: undefined})}
-            >
-                <Height defaultValue={attributes['height-mobile']} callback={(newValue) => {
-                    updateProp({['height-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['min-height-mobile']}
-                label={'Min-Height'}
-                onDeselect={() => updateProp({['min-height-mobile']: undefined})}
-            >
-                <MinHeight defaultValue={attributes['min-height-mobile']} callback={(newValue) => {
-                    updateProp({['min-height-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['height-custom-mobile']}
-                label={'Height Custom'}
-                onDeselect={() => updateProp({['height-custom-mobile']: undefined})}
-            >
-                <HeightCustom defaultValue={attributes['height-custom-mobile']}
-                              callback={(newValue) => {
-                                  updateProp({['height-custom-mobile']: newValue});
-                              }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['aspect-ratio-mobile']}
-                label={'Shape'}
-                onDeselect={() => updateProp({['aspect-ratio-mobile']: undefined})}
-            >
-                <Shape defaultValue={attributes['aspect-ratio-mobile']} callback={(newValue) => {
-                    updateProp({['aspect-ratio-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['flex-wrap-mobile']}
-                label={'Flex Wrap'}
-                onDeselect={() => updateProp({['flex-wrap-mobile']: undefined})}
-            >
-                <FlexWrap defaultValue={attributes['flex-wrap-mobile']} callback={(newValue) => {
-                    updateProp({['flex-wrap-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['position-mobile']}
-                label={'Position'}
-                onDeselect={() => updateProp({['position-mobile']: undefined})}
-            >
-                <Position defaultValue={attributes['position-mobile']} callback={(newValue) => {
-                    updateProp({['position-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['z-index-mobile']}
-                label={'Z-Index'}
-                onDeselect={() => updateProp({['z-index-mobile']: undefined})}
-            >
-                <ZIndex defaultValue={attributes['z-index-mobile']} callback={(newValue) => {
-                    updateProp({['z-index-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                hasValue={() => !!attributes['top-mobile'] || !!attributes['right-mobile'] || !!attributes['bottom-mobile'] || !!attributes['left-mobile']}
-                label={'Box Position'}
-                onDeselect={() => updateProp({
-                    ['top-mobile']: undefined,
-                    ['right-mobile']: undefined,
-                    ['bottom-mobile']: undefined,
-                    ['left-mobile']: undefined
-                })}
-            >
-                <BoxPosition topValue={attributes['top-mobile']}
-                             rightValue={attributes['right-mobile']}
-                             bottomValue={attributes['bottom-mobile']}
-                             leftValue={attributes['left-mobile']}
-                             callback={(top, right, bottom, left) => {
-                                 updateProp({
-                                     ['top-mobile']: top,
-                                     ['right-mobile']: right,
-                                     ['bottom-mobile']: bottom,
-                                     ['left-mobile']: left
-                                 });
-                             }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['order-mobile']}
-                label={'Order'}
-                onDeselect={() => updateProp({['order-mobile']: undefined})}
-            >
-                <Order defaultValue={attributes['order-mobile']} callback={(newValue) => {
-                    updateProp({['order-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['offset-header-mobile']}
-                label={'Offset Header'}
-                onDeselect={() => updateProp({['offset-header-mobile']: undefined})}
-            >
-                <OffsetHeader defaultValue={attributes['offset-header-mobile'] || undefined}
-                              callback={(newValue) => {
-                                  updateProp({['offset-header-mobile']: newValue});
-                              }}/>
-            </ToolsPanelItem>
-
-
-            <ToolsPanelItem
-                hasValue={() => !!attributes['translate-mobile']}
-                label={'Translate'}
-                onDeselect={() => updateProp({['translate-mobile']: undefined})}
-            >
-                <Translate label={'Translate'}
-                           defaultValue={attributes['translate-mobile'] || {}}
-                           callback={(newValue) => {
-                               updateProp({['translate-mobile']: newValue});
-                           }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                hasValue={() => !!attributes['padding-mobile']}
-                label={'Padding'}
-                onDeselect={() => updateProp({['padding-mobile']: undefined})}
-            >
-                <Padding defaultValue={attributes['padding-mobile'] || {}} callback={(newValue) => {
-                    updateProp({['padding-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                hasValue={() => !!attributes['margin-mobile']}
-                label={'Margin'}
-                onDeselect={() => updateProp({['margin-mobile']: undefined})}
-            >
-                <Margin defaultValue={attributes['margin-mobile'] || {}} callback={(newValue) => {
-                    updateProp({['margin-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                hasValue={() => !!attributes['gap-mobile']}
-                label={'Gap'}
-                onDeselect={() => updateProp({['gap-mobile']: undefined})}
-            >
-                <Gap defaultValue={attributes['gap-mobile'] || {}} callback={(newValue) => {
-                    updateProp({['gap-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                hasValue={() => !!attributes['border-radius-mobile']}
-                label={'Rounded'}
-                onDeselect={() => updateProp({['border-radius-mobile']: undefined})}
-            >
-                <Rounded defaultValue={attributes['border-radius-mobile'] || {}}
-                         callback={(newValue) => {
-                             updateProp({['border-radius-mobile']: newValue});
-                         }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['font-size-mobile']}
-                label={'Font Size'}
-                onDeselect={() => updateProp({['font-size-mobile']: undefined})}
-            >
-                <FontSize defaultValue={attributes['font-size-mobile']} callback={(newValue) => {
-                    updateProp({['font-size-mobile']: newValue});
-                }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['line-height-mobile']}
-                label={'Line Height'}
-                onDeselect={() => updateProp({['line-height-mobile']: undefined})}
-            >
-                <LineHeight defaultValue={attributes['line-height-mobile']}
-                            callback={(newValue) => {
-                                updateProp({['line-height-mobile']: newValue});
-                            }}/>
-            </ToolsPanelItem>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => !!attributes['text-align-mobile']}
-                label={'Text Align'}
-                onDeselect={() => updateProp({['text-align-mobile']: undefined})}
-            >
-                <TextAlign defaultValue={attributes['text-align-mobile']}
-                           callback={(newValue) => {
-                               updateProp({['text-align-mobile']: newValue});
-                           }}/>
-            </ToolsPanelItem>
-
-            <ToolsPanelItem
-                hasValue={() => !!attributes['mask-image-mobile']}
-                label={'Mask'}
-                onDeselect={() => {
-                    updateProp({
-                        ['mask-image-mobile']: undefined,
-                        ['mask-origin-mobile']: undefined,
-                        ['mask-size-mobile']: undefined
-                    });
-                }}
-            >
-                <Mask
-                    imageValue={attributes['mask-image-mobile']}
-                    originValue={attributes['mask-origin-mobile']}
-                    sizeValue={attributes['mask-size-mobile']}
-                    callback={(image, origin, size) => {
-                        updateProp({
-                            ['mask-image-mobile']: image,
-                            ['mask-origin-mobile']: origin,
-                            ['mask-size-mobile']: size
-                        });
-                    }}/>
-            </ToolsPanelItem>
-
-
-        </ToolsPanel>
-
-        <PanelColorSettings
-            title={'Additional Colors'}
-            enableAlpha
-            __experimentalIsRenderedInSidebar
-            colorSettings={[
-                {
-                    slug: 'text-color-hover',
-                    label: 'Text Hover'
-                },
-                {
-                    slug: 'background-color-hover',
-                    label: 'Background Hover'
-                },
-                {
-                    slug: 'border-color-hover',
-                    label: 'Border Hover'
-                },
-                {
-                    slug: 'text-color-mobile',
-                    label: 'Text Mobile'
-                },
-                {
-                    slug: 'background-color-mobile',
-                    label: 'Background Mobile'
-                }
-            ].map((color_control) => {
-                return {
-                    value: attributes[color_control.slug],
-                    onChange: (color) => updateProp({[color_control.slug]: color}),
-                    label: color_control.label.trim(),
-                    isShownByDefault: false
-                }
-            })}
-        />
-
-    </InspectorControls>;
-
-    return <>
-        <BackgroundControls attributes={attributes} setAttributes={setAttributes} enabled={!!background}/>
-        <LayoutControls/>
-    </>;
 }
 
 export function BackgroundElement({attributes = {}, editor = false}) {

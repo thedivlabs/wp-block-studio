@@ -10,7 +10,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutSettings, BackgroundElement, layoutAttributes} from "Components/Layout"
+import {LayoutControls, BackgroundElement, layoutAttributes} from "Components/Layout"
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
@@ -28,7 +28,6 @@ import React, {useEffect, useState} from "react";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
 import Breakpoint from 'Components/Breakpoint';
-import {Style} from "Components/Style.js";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -36,7 +35,6 @@ function sectionClassNames(attributes = {}) {
         !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         attributes.uniqueId,
-        LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
 
@@ -132,8 +130,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
-        const breakpoints = window?.wpbsBreakpoints ?? {};
-        const colors = window?.wpbsBreakpoints ?? {};
+        const breakpoints = window?.wpbsData?.breakpoints ?? {};
+        const colors = window?.wpbsData?.colors ?? [];
 
         const [divider, setDivider] = useState(attributes['wpbs-divider']);
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-prop-columns-mobile']);
@@ -584,12 +582,8 @@ registerBlockType(metadata.name, {
                     </PanelBody>
 
 
-                    <BackgroundSettings attributes={attributes || {}}
-                                        pushSettings={setAttributes}></BackgroundSettings>
-
-
                 </InspectorControls>
-                <LayoutSettings attributes={attributes} setAttributes={setAttributes} background={true}/>
+                <LayoutControls attributes={attributes} setAttributes={setAttributes} background={true}/>
 
 
                 <div {...blockProps}>
@@ -597,8 +591,7 @@ registerBlockType(metadata.name, {
                         className: 'wpbs-layout-grid__container relative z-20',
                     }, {})} />
                     <DefaultBlockAppender rootClientId={clientId}/>
-                    <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                           customCss={customCSS} selector={'wpbs-layout-grid'}/>
+                    <BackgroundElement attributes={props.attributes} editor={false}/>
                 </div>
             </>
         )
@@ -658,7 +651,7 @@ registerBlockType(metadata.name, {
                     <GutterSizer/>
                 </div>
                 <PaginationButton/>
-                <Background attributes={props.attributes} editor={false}/>
+                <BackgroundElement attributes={props.attributes} editor={false}/>
             </div>
         );
     }

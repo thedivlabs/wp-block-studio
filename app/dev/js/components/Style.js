@@ -1,4 +1,3 @@
-import {layoutAttributes} from './Layout';
 import {useEffect} from "react";
 
 function getCSSFromStyle(raw) {

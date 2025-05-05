@@ -42,30 +42,29 @@ function desktop(attributes) {
 
     const specialAttributes = Object.fromEntries(
         Object.entries(attributes).filter(([key]) => [
-            'wpbs-layout-mask-image',
-            'wpbs-layout-mask-size',
-            'wpbs-layout-mask-origin',
-            'wpbs-layout-container',
-            'wpbs-layout-width',
-            'wpbs-layout-width-custom',
-            'wpbs-layout-height',
-            'wpbs-layout-height-custom',
-            'wpbs-layout-min-height',
-            'wpbs-layout-min-height-custom',
-            'wpbs-layout-max-height',
-            'wpbs-layout-max-height-custom',
-            'wpbs-layout-offset-header',
-            'wpbs-layout-translate'
+            'mask-image',
+            'mask-size',
+            'mask-origin',
+            'container',
+            'width',
+            'width-custom',
+            'height',
+            'height-custom',
+            'min-height',
+            'min-height-custom',
+            'max-height',
+            'max-height-custom',
+            'offset-header',
+            'translate'
         ].includes(key))
     );
 
     const layoutAttributes = Object.fromEntries(
         Object.entries(attributes).filter(([k]) =>
-            k.startsWith('wpbs-layout') &&
             !Array.isArray(attributes[k]) &&
             !k.includes('mobile') &&
             !k.includes('hover') &&
-            ![...Object.keys(specialAttributes), 'wpbs-layout-breakpoint'].includes(k)
+            ![...Object.keys(specialAttributes), 'breakpoint'].includes(k)
         ));
 
     const styles = {};
@@ -79,7 +78,7 @@ function desktop(attributes) {
     // Rename layout attribute keys and assign values
     for (const [prop, value] of Object.entries(layoutAttributes)) {
         if (!value) continue;
-        const propName = prop.replace('wpbs-layout-', '');
+        const propName = prop.replace('', '');
         styles[propName] = value;
     }
 
@@ -88,12 +87,12 @@ function desktop(attributes) {
         if (!value) continue;
 
         switch (prop) {
-            case 'wpbs-layout-mask-image':
+            case 'mask-image':
                 const imageUrl = value?.sizes?.full?.url || '#';
                 styles['mask-image'] = `url(${imageUrl})`;
                 styles['mask-repeat'] = 'no-repeat';
                 styles['mask-size'] = (() => {
-                    const size = attributes?.['wpbs-layout-mask-size'];
+                    const size = attributes?.['mask-size'];
                     switch (size) {
                         case 'cover':
                             return 'cover';
@@ -105,36 +104,36 @@ function desktop(attributes) {
                             return 'contain';
                     }
                 })();
-                styles['mask-position'] = attributes?.['wpbs-layout-mask-origin'] || 'center center';
+                styles['mask-position'] = attributes?.['mask-origin'] || 'center center';
                 break;
 
-            case 'wpbs-layout-height':
-            case 'wpbs-layout-height-custom':
-                styles['height'] = parseSpecial('height', attributes?.['wpbs-layout-height-custom'] ?? attributes?.['wpbs-layout-height']);
+            case 'height':
+            case 'height-custom':
+                styles['height'] = parseSpecial('height', attributes?.['height-custom'] ?? attributes?.['height']);
                 break;
 
-            case 'wpbs-layout-min-height':
-            case 'wpbs-layout-min-height-custom':
-                styles['min-height'] = parseSpecial('min-height', attributes?.['wpbs-layout-min-height-custom'] ?? attributes?.['wpbs-layout-min-height']);
+            case 'min-height':
+            case 'min-height-custom':
+                styles['min-height'] = parseSpecial('min-height', attributes?.['min-height-custom'] ?? attributes?.['min-height']);
                 break;
 
-            case 'wpbs-layout-max-height':
-            case 'wpbs-layout-max-height-custom':
-                styles['max-height'] = parseSpecial('max-height', attributes?.['wpbs-layout-max-height-custom'] ?? attributes?.['wpbs-layout-max-height']);
+            case 'max-height':
+            case 'max-height-custom':
+                styles['max-height'] = parseSpecial('max-height', attributes?.['max-height-custom'] ?? attributes?.['max-height']);
                 break;
 
-            case 'wpbs-layout-width':
-            case 'wpbs-layout-width-custom':
-                styles['width'] = attributes?.['wpbs-layout-width-custom'] ?? attributes?.['wpbs-layout-width'] ?? null;
+            case 'width':
+            case 'width-custom':
+                styles['width'] = attributes?.['width-custom'] ?? attributes?.['width'] ?? null;
                 break;
 
-            case 'wpbs-layout-translate':
-                const top = getCSSFromStyle(attributes?.['wpbs-layout-translate']?.top || '0px');
-                const left = getCSSFromStyle(attributes?.['wpbs-layout-translate']?.left || '0px');
+            case 'translate':
+                const top = getCSSFromStyle(attributes?.['translate']?.top || '0px');
+                const left = getCSSFromStyle(attributes?.['translate']?.left || '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
 
-            case 'wpbs-layout-offset-header':
+            case 'offset-header':
                 const padding = getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px');
                 styles['padding-top'] = `calc(${padding} + var(--wpbs-header-height, 0px)) !important`;
                 break;
@@ -148,23 +147,23 @@ function desktop(attributes) {
 function mobile(attributes) {
 
     const styleAttributes = Object.fromEntries(Object.entries({
-        'row-gap': getCSSFromStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
-        'column-gap': getCSSFromStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
+        'row-gap': getCSSFromStyle(attributes['gap-mobile']?.left ?? null),
+        'column-gap': getCSSFromStyle(attributes['gap-mobile']?.top ?? null),
     }).filter(([key, value]) => value));
 
     const specialKeys = [
-        'wpbs-layout-mask-image-mobile',
-        'wpbs-layout-mask-origin-mobile',
-        'wpbs-layout-mask-size-mobile',
-        'wpbs-layout-width-mobile',
-        'wpbs-layout-width-custom-mobile',
-        'wpbs-layout-height-mobile',
-        'wpbs-layout-height-custom-mobile',
-        'wpbs-layout-min-height-mobile',
-        'wpbs-layout-min-height-custom-mobile',
-        'wpbs-layout-max-height-mobile',
-        'wpbs-layout-max-height-custom-mobile',
-        'wpbs-layout-translate-mobile',
+        'mask-image-mobile',
+        'mask-origin-mobile',
+        'mask-size-mobile',
+        'width-mobile',
+        'width-custom-mobile',
+        'height-mobile',
+        'height-custom-mobile',
+        'min-height-mobile',
+        'min-height-custom-mobile',
+        'max-height-mobile',
+        'max-height-custom-mobile',
+        'translate-mobile',
     ];
 
     const specialAttributes = Object.fromEntries(
@@ -177,7 +176,7 @@ function mobile(attributes) {
             key.includes('mobile') &&
             typeof value !== 'object' &&
             !key.includes('hover') &&
-            ![...Object.keys(specialAttributes), 'wpbs-layout-breakpoint'].includes(key)
+            ![...Object.keys(specialAttributes), 'breakpoint'].includes(key)
         )
     );
 
@@ -191,7 +190,7 @@ function mobile(attributes) {
     for (const [prop, value] of Object.entries(mobileAttributes)) {
         if (!value) continue;
 
-        let propName = prop.replace('wpbs-layout-', '').replace('-mobile', '');
+        let propName = prop.replace('', '').replace('-mobile', '');
 
         if (propName === 'text-color') {
             propName = 'color';
@@ -204,12 +203,12 @@ function mobile(attributes) {
         if (!value) continue;
 
         switch (prop) {
-            case 'wpbs-layout-mask-image-mobile': {
+            case 'mask-image-mobile': {
                 const imageUrl = value?.sizes?.full?.url || '#';
                 styles['mask-image'] = `url(${imageUrl})`;
                 styles['mask-repeat'] = 'no-repeat';
                 styles['mask-size'] = (() => {
-                    const size = attributes?.['wpbs-layout-mask-size'];
+                    const size = attributes?.['mask-size'];
                     switch (size) {
                         case 'cover':
                             return 'cover';
@@ -221,44 +220,44 @@ function mobile(attributes) {
                             return 'contain';
                     }
                 })();
-                styles['mask-position'] = attributes?.['wpbs-layout-mask-origin'] || 'center center';
+                styles['mask-position'] = attributes?.['mask-origin'] || 'center center';
                 break;
             }
-            case 'wpbs-layout-height-mobile':
-            case 'wpbs-layout-height-custom-mobile':
+            case 'height-mobile':
+            case 'height-custom-mobile':
                 styles['height'] =
-                    attributes['wpbs-layout-height-custom-mobile'] ||
-                    attributes['wpbs-layout-height-mobile'] ||
+                    attributes['height-custom-mobile'] ||
+                    attributes['height-mobile'] ||
                     null;
                 break;
 
-            case 'wpbs-layout-min-height-mobile':
-            case 'wpbs-layout-min-height-custom-mobile':
+            case 'min-height-mobile':
+            case 'min-height-custom-mobile':
                 styles['min-height'] =
-                    attributes['wpbs-layout-min-height-custom-mobile'] ||
-                    attributes['wpbs-layout-min-height-mobile'] ||
+                    attributes['min-height-custom-mobile'] ||
+                    attributes['min-height-mobile'] ||
                     null;
                 break;
 
-            case 'wpbs-layout-max-height-mobile':
-            case 'wpbs-layout-max-height-custom-mobile':
+            case 'max-height-mobile':
+            case 'max-height-custom-mobile':
                 styles['max-height'] =
-                    attributes['wpbs-layout-max-height-custom-mobile'] ||
-                    attributes['wpbs-layout-max-height-mobile'] ||
+                    attributes['max-height-custom-mobile'] ||
+                    attributes['max-height-mobile'] ||
                     null;
                 break;
 
-            case 'wpbs-layout-width-mobile':
-            case 'wpbs-layout-width-custom-mobile':
+            case 'width-mobile':
+            case 'width-custom-mobile':
                 styles['width'] =
-                    attributes['wpbs-layout-width-custom-mobile'] ||
-                    attributes['wpbs-layout-width-mobile'] ||
+                    attributes['width-custom-mobile'] ||
+                    attributes['width-mobile'] ||
                     null;
                 break;
 
-            case 'wpbs-layout-translate-mobile': {
-                const top = getCSSFromStyle(attributes['wpbs-layout-translate-mobile']?.top ?? '0px');
-                const left = getCSSFromStyle(attributes['wpbs-layout-translate-mobile']?.left ?? '0px');
+            case 'translate-mobile': {
+                const top = getCSSFromStyle(attributes['translate-mobile']?.top ?? '0px');
+                const left = getCSSFromStyle(attributes['translate-mobile']?.left ?? '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
             }
@@ -284,8 +283,8 @@ function hover(attributes) {
     for (const [prop, value] of Object.entries(hoverAttributes)) {
         if (!value) continue;
 
-        // Remove the prefix 'wpbs-layout-' and suffix '-hover'
-        let propName = prop.replace('wpbs-layout-', '').replace('-hover', '');
+        // Remove the prefix '' and suffix '-hover'
+        let propName = prop.replace('', '').replace('-hover', '');
 
         // Handle special cases for property names
         if (propName === 'text-color') {
@@ -347,7 +346,7 @@ export const styleAttributesFull = {
 export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
 
     const breakpoints = 'wpbsBreakpoints' in window ? window.wpbsBreakpoints : {};
-    const breakpoint = breakpoints[attributes['wpbs-breakpoint-large'] || attributes['wpbs-breakpoint'] || attributes['wpbs-layout-breakpoint'] || 'sm'];
+    const breakpoint = breakpoints[attributes['wpbs-breakpoint-large'] || attributes['wpbs-breakpoint'] || attributes['breakpoint'] || 'sm'];
 
 
     selector = '.' + [selector, uniqueId].join(' ').trim().split(' ').join('.');

@@ -2,7 +2,6 @@ import "../scss/block.scss";
 
 import {
     useBlockProps,
-    useSettings,
     InspectorControls,
     useInnerBlocksProps,
     PanelColorSettings,
@@ -27,7 +26,6 @@ import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from '@wordpress/core-data';
-import Breakpoint from 'Components/Breakpoint';
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -67,12 +65,6 @@ registerBlockType(metadata.name, {
             type: 'string'
         },
         ['wpbs-prop-columns-large']: {
-            type: 'string'
-        },
-        ['wpbs-breakpoint-small']: {
-            type: 'string'
-        },
-        ['wpbs-breakpoint-large']: {
             type: 'string'
         },
         ['wpbs-masonry']: {
@@ -137,8 +129,6 @@ registerBlockType(metadata.name, {
         const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-prop-columns-mobile']);
         const [columnsSmall, setColumnsSmall] = useState(attributes['wpbs-prop-columns-small']);
         const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-prop-columns-large']);
-        const [breakpointLarge, setBreakpointLarge] = useState(attributes['wpbs-breakpoint-large']);
-        const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
         const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
         const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
@@ -341,22 +331,6 @@ registerBlockType(metadata.name, {
                     />
                 </Grid>
             </BaseControl>
-
-            <Grid columns={2} columnGap={15} rowGap={20}>
-                <Breakpoint label={'Breakpoint Small'} defaultValue={breakpointSmall} callback={(newValue) => {
-                    setAttributes({
-                        ['wpbs-breakpoint-small']: newValue
-                    });
-                    setBreakpointSmall(newValue);
-                }}/>
-                <Breakpoint label={'Breakpoint Large'} defaultValue={breakpointLarge} callback={(newValue) => {
-                    setAttributes({
-                        ['wpbs-breakpoint-large']: newValue,
-                        ['wpbs-breakpoint-large-value']: breakpoints[newValue || 'normal'],
-                    });
-                    setBreakpointLarge(newValue);
-                }}/>
-            </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom

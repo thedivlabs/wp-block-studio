@@ -138,8 +138,6 @@ registerBlockType(metadata.name, {
 
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
-        const selector = '.' + ['wpbs-layout-grid', uniqueId].join(' ').split(' ').join('.');
-
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId
@@ -155,7 +153,7 @@ registerBlockType(metadata.name, {
             });
         }, [
             attributes?.style?.spacing,
-            attributes['wpbs-layout']['gap-mobile']
+            attributes?.['wpbs-layout']?.['gap-mobile']
         ]);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -215,7 +213,7 @@ registerBlockType(metadata.name, {
                 enableStyle
                 disableUnits
                 value={divider}
-                colors={window?.wpbsData?.colors ?? []}
+                colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}
                 label="Divider"
                 onChange={(newValue) => {

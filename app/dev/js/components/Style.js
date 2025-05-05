@@ -267,7 +267,7 @@ function mobile(attributes) {
 }
 
 function hover(attributes) {
-    
+
     const hoverAttributes = Object.fromEntries(
         Object.entries(attributes['wpbs-layout']).filter(([key, value]) =>
             key.includes('hover') &&
@@ -302,7 +302,7 @@ function props(attributes) {
         mobile: {},
         desktop: {},
     };
-
+    console.log(attributes);
     Object.entries(attributes).forEach(([key, value]) => {
         if (
             key.startsWith('wpbs-prop') &&

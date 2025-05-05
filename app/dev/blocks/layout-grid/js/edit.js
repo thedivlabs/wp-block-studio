@@ -9,7 +9,8 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutControls, BackgroundElement, layoutAttributes} from "Components/Layout"
+import {LayoutControls, layoutAttributes} from "Components/Layout"
+import {BackgroundControls, backgroundAttributes, BackgroundElement} from "Components/Background"
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
@@ -321,8 +322,8 @@ registerBlockType(metadata.name, {
 
 
                 </InspectorControls>
-                <LayoutControls attributes={attributes} setAttributes={setAttributes} background={true}/>
-
+                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+                <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

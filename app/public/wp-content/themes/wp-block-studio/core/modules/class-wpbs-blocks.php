@@ -79,8 +79,6 @@ class WPBS_Blocks {
 
 			}
 
-			$args['attributes'] = array_merge( [], $block_object['attributes'] ?? [], WPBS_Style::get_style_attributes() );
-
 			$args = array_merge_recursive( [], $block_object, array_filter( $args ?? [] ) );
 
 			$block = register_block_type( $block_dir, $args );

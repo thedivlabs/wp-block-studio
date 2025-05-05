@@ -88,7 +88,6 @@ class WPBS {
 			'colors'      => array_values(array_merge(wp_get_global_settings()['color']['palette']['theme'] ?? [],wp_get_global_settings()['color']['palette']['default'] ?? [])),
 		] );
 
-
 	}
 
 	public function block_assets(): void {
@@ -102,11 +101,15 @@ class WPBS {
 
 	public function editor_assets(): void {
 		//add_editor_style();
+
 		//wp_enqueue_script( 'wpbs-swiper-js' );
-		//wp_enqueue_script( 'wpbs-masonry-js' );
-		wp_enqueue_style( 'wpbs-swiper-css' );
-		wp_enqueue_style( 'wpbs-theme-css' );
+		//wp_enqueue_style( 'wpbs-swiper-css' );
+
+		wp_enqueue_script( 'wpbs-masonry-js' );
+
 		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_enqueue_style( 'wpbs-theme-css' );
+
 		wp_enqueue_style( 'wpbs-admin-css' );
 
 

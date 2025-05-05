@@ -23,12 +23,12 @@ class WPBS_Theme {
             }
         };
 
-        this.settings = JSON.parse(document.querySelector('#wpbs-args')?.innerHTML || '[]');
-
-        this.settings.breakpoints = window?.wpbsData?.breakpoints ?? {};
+        this.settings = window.wpbsData ?? {};
 
         this.modals.init();
         this.loader.init();
+
+        console.log(this.settings);
 
         this.init();
     }

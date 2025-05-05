@@ -268,9 +268,12 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
         });
     }
 
+
     function Controls() {
         return <InspectorControls group="styles">
-            <ToolsPanel label={'Layout'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
+
+
+            <ToolsPanel label={'Large'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout']?.['display']}
@@ -358,9 +361,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Width Custom'}
                     onDeselect={() => updateProp({['width-custom']: undefined})}
                 >
-                    <WidthCustom defaultValue={attributes['wpbs-layout']?.['width-custom']} callback={(newValue) => {
-                        updateProp({'width-custom': newValue});
-                    }}/>
+                    <WidthCustom defaultValue={attributes['wpbs-layout']?.['width-custom']}
+                                 callback={(newValue) => {
+                                     updateProp({'width-custom': newValue});
+                                 }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -389,9 +393,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Height Custom'}
                     onDeselect={() => updateProp({['height-custom']: undefined})}
                 >
-                    <HeightCustom defaultValue={attributes['wpbs-layout']?.['height-custom']} callback={(newValue) => {
-                        updateProp({'height-custom': newValue});
-                    }}/>
+                    <HeightCustom defaultValue={attributes['wpbs-layout']?.['height-custom']}
+                                  callback={(newValue) => {
+                                      updateProp({'height-custom': newValue});
+                                  }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -618,9 +623,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Breakpoint'}
                     onDeselect={() => updateProp({['breakpoint-small']: undefined})}
                 >
-                    <Breakpoint defaultValue={attributes['wpbs-layout']?.['breakpoint-small']} callback={(newValue) => {
-                        updateProp({['breakpoint-small']: newValue});
-                    }}/>
+                    <Breakpoint defaultValue={attributes['wpbs-layout']?.['breakpoint-small']}
+                                callback={(newValue) => {
+                                    updateProp({['breakpoint-small']: newValue});
+                                }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -670,9 +676,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Shrink'}
                     onDeselect={() => updateProp({['flex-shrink-small']: undefined})}
                 >
-                    <Shrink defaultValue={attributes['wpbs-layout']?.['flex-shrink-small']} callback={(newValue) => {
-                        updateProp({['flex-shrink-small']: newValue});
-                    }}/>
+                    <Shrink defaultValue={attributes['wpbs-layout']?.['flex-shrink-small']}
+                            callback={(newValue) => {
+                                updateProp({['flex-shrink-small']: newValue});
+                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
@@ -743,9 +750,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Min-Height'}
                     onDeselect={() => updateProp({['min-height-small']: undefined})}
                 >
-                    <MinHeight defaultValue={attributes['wpbs-layout']?.['min-height-small']} callback={(newValue) => {
-                        updateProp({['min-height-small']: newValue});
-                    }}/>
+                    <MinHeight defaultValue={attributes['wpbs-layout']?.['min-height-small']}
+                               callback={(newValue) => {
+                                   updateProp({['min-height-small']: newValue});
+                               }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -764,9 +772,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Shape'}
                     onDeselect={() => updateProp({['aspect-ratio-small']: undefined})}
                 >
-                    <Shape defaultValue={attributes['wpbs-layout']?.['aspect-ratio-small']} callback={(newValue) => {
-                        updateProp({['aspect-ratio-small']: newValue});
-                    }}/>
+                    <Shape defaultValue={attributes['wpbs-layout']?.['aspect-ratio-small']}
+                           callback={(newValue) => {
+                               updateProp({['aspect-ratio-small']: newValue});
+                           }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -774,9 +783,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Flex Wrap'}
                     onDeselect={() => updateProp({['flex-wrap-small']: undefined})}
                 >
-                    <FlexWrap defaultValue={attributes['wpbs-layout']?.['flex-wrap-small']} callback={(newValue) => {
-                        updateProp({['flex-wrap-small']: newValue});
-                    }}/>
+                    <FlexWrap defaultValue={attributes['wpbs-layout']?.['flex-wrap-small']}
+                              callback={(newValue) => {
+                                  updateProp({['flex-wrap-small']: newValue});
+                              }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -872,9 +882,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Margin'}
                     onDeselect={() => updateProp({['margin-small']: undefined})}
                 >
-                    <Margin defaultValue={attributes['wpbs-layout']?.['margin-small'] || {}} callback={(newValue) => {
-                        updateProp({['margin-small']: newValue});
-                    }}/>
+                    <Margin defaultValue={attributes['wpbs-layout']?.['margin-small'] || {}}
+                            callback={(newValue) => {
+                                updateProp({['margin-small']: newValue});
+                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout']?.['gap-small']}
@@ -901,9 +912,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Font Size'}
                     onDeselect={() => updateProp({['font-size-small']: undefined})}
                 >
-                    <FontSize defaultValue={attributes['wpbs-layout']?.['font-size-small']} callback={(newValue) => {
-                        updateProp({['font-size-small']: newValue});
-                    }}/>
+                    <FontSize defaultValue={attributes['wpbs-layout']?.['font-size-small']}
+                              callback={(newValue) => {
+                                  updateProp({['font-size-small']: newValue});
+                              }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -994,9 +1006,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Align'}
                     onDeselect={() => updateProp({['align-items-mobile']: undefined})}
                 >
-                    <Align defaultValue={attributes['wpbs-layout']?.['align-items-mobile']} callback={(newValue) => {
-                        updateProp({['align-items-mobile']: newValue});
-                    }}/>
+                    <Align defaultValue={attributes['wpbs-layout']?.['align-items-mobile']}
+                           callback={(newValue) => {
+                               updateProp({['align-items-mobile']: newValue});
+                           }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1025,9 +1038,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Shrink'}
                     onDeselect={() => updateProp({['flex-shrink-mobile']: undefined})}
                 >
-                    <Shrink defaultValue={attributes['wpbs-layout']?.['flex-shrink-mobile']} callback={(newValue) => {
-                        updateProp({['flex-shrink-mobile']: newValue});
-                    }}/>
+                    <Shrink defaultValue={attributes['wpbs-layout']?.['flex-shrink-mobile']}
+                            callback={(newValue) => {
+                                updateProp({['flex-shrink-mobile']: newValue});
+                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
@@ -1098,9 +1112,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Min-Height'}
                     onDeselect={() => updateProp({['min-height-mobile']: undefined})}
                 >
-                    <MinHeight defaultValue={attributes['wpbs-layout']?.['min-height-mobile']} callback={(newValue) => {
-                        updateProp({['min-height-mobile']: newValue});
-                    }}/>
+                    <MinHeight defaultValue={attributes['wpbs-layout']?.['min-height-mobile']}
+                               callback={(newValue) => {
+                                   updateProp({['min-height-mobile']: newValue});
+                               }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1119,9 +1134,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Shape'}
                     onDeselect={() => updateProp({['aspect-ratio-mobile']: undefined})}
                 >
-                    <Shape defaultValue={attributes['wpbs-layout']?.['aspect-ratio-mobile']} callback={(newValue) => {
-                        updateProp({['aspect-ratio-mobile']: newValue});
-                    }}/>
+                    <Shape defaultValue={attributes['wpbs-layout']?.['aspect-ratio-mobile']}
+                           callback={(newValue) => {
+                               updateProp({['aspect-ratio-mobile']: newValue});
+                           }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1129,9 +1145,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Flex Wrap'}
                     onDeselect={() => updateProp({['flex-wrap-mobile']: undefined})}
                 >
-                    <FlexWrap defaultValue={attributes['wpbs-layout']?.['flex-wrap-mobile']} callback={(newValue) => {
-                        updateProp({['flex-wrap-mobile']: newValue});
-                    }}/>
+                    <FlexWrap defaultValue={attributes['wpbs-layout']?.['flex-wrap-mobile']}
+                              callback={(newValue) => {
+                                  updateProp({['flex-wrap-mobile']: newValue});
+                              }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1139,9 +1156,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Position'}
                     onDeselect={() => updateProp({['position-mobile']: undefined})}
                 >
-                    <Position defaultValue={attributes['wpbs-layout']?.['position-mobile']} callback={(newValue) => {
-                        updateProp({['position-mobile']: newValue});
-                    }}/>
+                    <Position defaultValue={attributes['wpbs-layout']?.['position-mobile']}
+                              callback={(newValue) => {
+                                  updateProp({['position-mobile']: newValue});
+                              }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1227,9 +1245,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Margin'}
                     onDeselect={() => updateProp({['margin-mobile']: undefined})}
                 >
-                    <Margin defaultValue={attributes['wpbs-layout']?.['margin-mobile'] || {}} callback={(newValue) => {
-                        updateProp({['margin-mobile']: newValue});
-                    }}/>
+                    <Margin defaultValue={attributes['wpbs-layout']?.['margin-mobile'] || {}}
+                            callback={(newValue) => {
+                                updateProp({['margin-mobile']: newValue});
+                            }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout']?.['gap-mobile']}
@@ -1256,9 +1275,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Font Size'}
                     onDeselect={() => updateProp({['font-size-mobile']: undefined})}
                 >
-                    <FontSize defaultValue={attributes['wpbs-layout']?.['font-size-mobile']} callback={(newValue) => {
-                        updateProp({['font-size-mobile']: newValue});
-                    }}/>
+                    <FontSize defaultValue={attributes['wpbs-layout']?.['font-size-mobile']}
+                              callback={(newValue) => {
+                                  updateProp({['font-size-mobile']: newValue});
+                              }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1309,6 +1329,7 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
 
 
             </ToolsPanel>
+
 
             <PanelColorSettings
                 title={'Additional Colors'}

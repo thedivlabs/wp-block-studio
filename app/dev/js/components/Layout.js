@@ -273,7 +273,7 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
         return <InspectorControls group="styles">
 
 
-            <ToolsPanel label={'Large'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
+            <ToolsPanel label={'Layout Large'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout']?.['display']}
@@ -616,7 +616,7 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
 
             </ToolsPanel>
 
-            <ToolsPanel label={'Small'} resetAll={resetAll_layout_small}>
+            <ToolsPanel label={'Layout Small'} resetAll={resetAll_layout_small}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout']?.['breakpoint-small']}
@@ -967,7 +967,7 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
 
             </ToolsPanel>
 
-            <ToolsPanel label={'Mobile'} resetAll={resetAll_layout_mobile}>
+            <ToolsPanel label={'Layout Mobile'} resetAll={resetAll_layout_mobile}>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
                     hasValue={() => !!attributes['wpbs-layout']?.['breakpoint-mobile']}

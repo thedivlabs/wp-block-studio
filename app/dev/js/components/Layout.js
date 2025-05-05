@@ -99,8 +99,7 @@ export const layoutProps = {
         'mask-size-mobile',
         'offset-header-mobile',
         'display-mobile',
-        'breakpoint-large',
-        'breakpoint-small',
+        'breakpoint',
         'align-items-mobile',
         'justify-content-mobile',
         'opacity-mobile',
@@ -162,7 +161,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
     function updateProp(newValue) {
 
         setAttributes({
-            'wpbs-layout':{
+            'wpbs-layout': {
                 ...attributes['wpbs-layout'],
                 ...newValue
             }
@@ -271,22 +270,19 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 hasValue={() => !!attributes['wpbs-layout']?.['max-width']}
                 label={'Max-Width'}
                 onDeselect={() => {
-                    //setMaxWidth(undefined);
-                    //updateProp({['max-width']: undefined})
+                    updateProp({['max-width']: undefined})
                 }}
             >
                 <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-layout']?.['max-width']}
                              callback={(newValue) => {
-                                 console.log(newValue);
                                  updateProp({'max-width': newValue});
-
                              }}/>
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['height']}
                 label={'Height'}
-                onDeselect={() => updateProp({['height']: undefined})}
+                onDeselect={() => updateProp({'height': undefined})}
             >
                 <Height defaultValue={settings?.['height']} callback={(newValue) => {
                     updateProp({'height': newValue});
@@ -524,13 +520,13 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         <ToolsPanel label={'Layout Mobile'} resetAll={resetAll_mobile}>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
-                hasValue={() => !!settings?.['breakpoint-mobile']}
+                hasValue={() => !!settings?.['breakpoint']}
                 label={'Breakpoint'}
-                onDeselect={() => updateProp({['breakpoint-mobile']: undefined})}
+                onDeselect={() => updateProp({['breakpoint']: undefined})}
             >
-                <Breakpoint defaultValue={settings?.['breakpoint-mobile']}
+                <Breakpoint defaultValue={settings?.['breakpoint']}
                             callback={(newValue) => {
-                                updateProp({['breakpoint-mobile']: newValue});
+                                updateProp({['breakpoint']: newValue});
                             }}/>
             </ToolsPanelItem>
             <ToolsPanelItem

@@ -11,6 +11,7 @@ import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LayoutControls, layoutAttributes} from "Components/Layout"
 import {BackgroundControls, backgroundAttributes, BackgroundElement} from "Components/Background"
+import {Style} from "Components/Style"
 import {
     __experimentalInputControl as InputControl,
     __experimentalGrid as Grid,
@@ -57,6 +58,7 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...layoutAttributes,
+        ...backgroundAttributes,
         ['wpbs-prop-columns-mobile']: {
             type: 'string'
         },
@@ -138,19 +140,23 @@ registerBlockType(metadata.name, {
 
         const selector = '.' + ['wpbs-layout-grid', uniqueId].join(' ').split(' ').join('.');
 
-        let customCSS = '';
+        useEffect(() => {
+            setAttributes({
+                'uniqueId': uniqueId
+            });
+        }, []);
 
-        /* useEffect(() => {
-             setAttributes({
-                 'wpbs-prop-row-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-                 'wpbs-prop-row-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.top ?? null),
-                 'wpbs-prop-column-gap': getCSSValueFromRawStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-                 'wpbs-prop-column-gap-mobile': getCSSValueFromRawStyle(attributes['wpbs-layout-gap-mobile']?.left ?? null),
-             });
-         }, [
-             attributes?.style?.spacing,
-             attributes['wpbs-layout-gap-mobile']
-         ]);*/
+        useEffect(() => {
+            setAttributes({
+                'wpbs-prop-row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
+                'wpbs-prop-row-gap-mobile': attributes['wpbs-layout']['gap-mobile']?.top ?? null,
+                'wpbs-prop-column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
+                'wpbs-prop-column-gap-mobile': attributes['wpbs-layout']['gap-mobile']?.left ?? null,
+            });
+        }, [
+            attributes?.style?.spacing,
+            attributes['wpbs-layout']['gap-mobile']
+        ]);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
@@ -324,6 +330,8 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

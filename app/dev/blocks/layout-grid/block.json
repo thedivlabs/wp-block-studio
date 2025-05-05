@@ -10,7 +10,7 @@
       "type": "string",
       "show_in_rest": true
     },
-    "styleCss": {
+    "wpbs-css": {
       "type": "string",
       "show_in_rest": true
     },

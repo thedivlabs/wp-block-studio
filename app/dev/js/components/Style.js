@@ -41,7 +41,7 @@ function desktop(attributes) {
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
-        Object.entries(attributes).filter(([key]) => [
+        Object.entries(attributes['wpbs-layout']).filter(([key]) => [
             'mask-image',
             'mask-size',
             'mask-origin',
@@ -60,8 +60,8 @@ function desktop(attributes) {
     );
 
     const layoutAttributes = Object.fromEntries(
-        Object.entries(attributes).filter(([k]) =>
-            !Array.isArray(attributes[k]) &&
+        Object.entries(attributes['wpbs-layout']).filter(([k]) =>
+            !Array.isArray(attributes['wpbs-layout'][k]) &&
             !k.includes('mobile') &&
             !k.includes('hover') &&
             ![...Object.keys(specialAttributes), 'breakpoint'].includes(k)
@@ -167,12 +167,11 @@ function mobile(attributes) {
     ];
 
     const specialAttributes = Object.fromEntries(
-        Object.entries(attributes).filter(([key]) => specialKeys.includes(key))
+        Object.entries(attributes['wpbs-layout']).filter(([key]) => specialKeys.includes(key))
     );
 
     const mobileAttributes = Object.fromEntries(
-        Object.entries(attributes).filter(([key, value]) =>
-            key.startsWith('wpbs-layout') &&
+        Object.entries(attributes['wpbs-layout']).filter(([key, value]) =>
             key.includes('mobile') &&
             typeof value !== 'object' &&
             !key.includes('hover') &&
@@ -268,9 +267,9 @@ function mobile(attributes) {
 }
 
 function hover(attributes) {
+    
     const hoverAttributes = Object.fromEntries(
-        Object.entries(attributes).filter(([key, value]) =>
-            key.startsWith('wpbs-layout') &&
+        Object.entries(attributes['wpbs-layout']).filter(([key, value]) =>
             key.includes('hover') &&
             typeof value !== 'object' &&
             !key.includes('mobile')
@@ -329,25 +328,15 @@ export function Style({attributes, setAttributes, uniqueId, customCss = '', sele
 
     useEffect(() => {
         setAttributes({'wpbs-css': styleCss(attributes, uniqueId, customCss, selector)});
-    }, [Object.fromEntries(Object.entries(styleAttributes))]);
+    }, [attributes['wpbs-layout'], attributes['wpbs-background']]);
 
     return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
 }
 
-export const styleAttributes = {...BackgroundAttributes, ...layoutAttributes};
-export const styleAttributesFull = {
-    ...BackgroundAttributes, ...layoutAttributes, ...{
-        'wpbs-css': {
-            type: 'string'
-        }
-    }
-};
-
 export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
 
-    const breakpoints = 'wpbsBreakpoints' in window ? window.wpbsBreakpoints : {};
-    const breakpoint = breakpoints[attributes['wpbs-breakpoint-large'] || attributes['wpbs-breakpoint'] || attributes['breakpoint'] || 'sm'];
-
+    const breakpoints = WPBS?.settings?.breakpoints;
+    const breakpoint = breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
     selector = '.' + [selector, uniqueId].join(' ').trim().split(' ').join('.');
 

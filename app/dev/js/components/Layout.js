@@ -642,9 +642,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Opacity'}
                     onDeselect={() => updateProp({['opacity-mobile']: undefined})}
                 >
-                    <Opacity defaultValue={attributes['wpbs-layout']?.['opacity-mobile'] || 100} callback={(newValue) => {
-                        updateProp({['opacity-mobile']: newValue});
-                    }}/>
+                    <Opacity defaultValue={attributes['wpbs-layout']?.['opacity-mobile'] || 100}
+                             callback={(newValue) => {
+                                 updateProp({['opacity-mobile']: newValue});
+                             }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 2'}}
@@ -672,9 +673,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Width Custom'}
                     onDeselect={() => updateProp({['width-custom-mobile']: undefined})}
                 >
-                    <WidthCustom defaultValue={attributes['wpbs-layout']?.['width-custom-mobile']} callback={(newValue) => {
-                        updateProp({['width-custom-mobile']: newValue});
-                    }}/>
+                    <WidthCustom defaultValue={attributes['wpbs-layout']?.['width-custom-mobile']}
+                                 callback={(newValue) => {
+                                     updateProp({['width-custom-mobile']: newValue});
+                                 }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -822,9 +824,10 @@ export function LayoutControls({attributes = {}, setAttributes, background = fal
                     label={'Padding'}
                     onDeselect={() => updateProp({['padding-mobile']: undefined})}
                 >
-                    <Padding defaultValue={attributes['wpbs-layout']?.['padding-mobile'] || {}} callback={(newValue) => {
-                        updateProp({['padding-mobile']: newValue});
-                    }}/>
+                    <Padding defaultValue={attributes['wpbs-layout']?.['padding-mobile'] || {}}
+                             callback={(newValue) => {
+                                 updateProp({['padding-mobile']: newValue});
+                             }}/>
                 </ToolsPanelItem>
                 <ToolsPanelItem
                     hasValue={() => !!attributes['wpbs-layout']?.['margin-mobile']}
@@ -1064,7 +1067,11 @@ function BackgroundControls({attributes = {}, setAttributes, enabled = false}) {
     const [fadeMobile, setFadeMobile] = useState(settings.fadeMobile);
 
 
-    function updateSettings(attr, val) {
+    function updateSettings(attr, val, callback) {
+
+        if (typeof callback === 'function') {
+            callback(val);
+        }
 
         setAttributes({
             'wpbs-background': {
@@ -1704,7 +1711,7 @@ function BackgroundControls({attributes = {}, setAttributes, enabled = false}) {
 
     return (
         <InspectorControls group="styles">
-            <PanelBody title={'Background'} initialOpen={false}>
+            <PanelBody title={'Background'} initialOpen={!!type}>
                 <Grid columns={1} columnGap={15} rowGap={20}>
                     <SelectControl
                         __next40pxDefaultSize

@@ -1,31 +1,39 @@
 import "../scss/block.scss";
 
 import {
-    useBlockProps,
-    InspectorControls,
-    useInnerBlocksProps,
-    PanelColorSettings,
     DefaultBlockAppender,
+    InspectorControls,
+    PanelColorSettings,
+    useBlockProps,
+    useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutControls, layoutAttributes} from "Components/Layout"
-import {BackgroundControls, backgroundAttributes, BackgroundElement} from "Components/Background"
+import {layoutAttributes, LayoutControls} from "Components/Layout"
+import {backgroundAttributes, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style} from "Components/Style"
 import {
-    __experimentalInputControl as InputControl,
-    __experimentalGrid as Grid,
     __experimentalBorderControl as BorderControl,
-    ToggleControl,
-    TabPanel,
-    PanelBody,
+    __experimentalGrid as Grid,
+    __experimentalInputControl as InputControl,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    BaseControl
+    BaseControl,
+    FormTokenField,
+    PanelBody,
+    QueryControls,
+    SelectControl,
+    Spinner,
+    TabPanel,
+    TextControl,
+    ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
+import Loop from 'Components/Loop';
+import {useSelect} from "@wordpress/data";
+import {store as coreStore} from "@wordpress/core-data";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -95,9 +103,6 @@ registerBlockType(metadata.name, {
         ['wpbs-pagination-label']: {
             type: 'string'
         },
-        ['wpbs-loop']: {
-            type: 'object'
-        }
     },
     edit: (props) => {
 
@@ -115,7 +120,7 @@ registerBlockType(metadata.name, {
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
         const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
 
-        const [loop, setLoop] = useState(attributes['wpbs-loop']);
+        const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
 
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
@@ -250,9 +255,17 @@ registerBlockType(metadata.name, {
             />
         </Grid>;
 
-        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
-            <></>
-        </Grid>;
+        let tabLoop = <Loop attributes={queryArgs} callback={(newValue) => {
+
+            const result = {
+                ...queryArgs,
+                ...newValue
+            };
+
+            setQueryArgs(result);
+            setAttributes({queryArgs: result});
+
+        }}/>;
 
         const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
             <></>
@@ -272,26 +285,6 @@ registerBlockType(metadata.name, {
             }
         });
 
-        const populateLoopFields = async (tabName) => {
-            if (tabName !== 'loop') {
-                return
-            }
-
-
-            // Simulate API fetch
-            const fetchedOptions = await new Promise((resolve) =>
-                setTimeout(() => {
-                    resolve([
-                        {label: 'Option 1', value: '1'},
-                        {label: 'Option 2', value: '2'},
-                    ]);
-                }, 1000)
-            );
-
-            setOptions(fetchedOptions);
-            setIsLoading(false);
-            setHasLoaded(true);
-        };
 
         return (
             <>
@@ -305,9 +298,9 @@ registerBlockType(metadata.name, {
                             orientation="horizontal"
                             initialTabName="options"
                             onSelect={(tabName) => {
-                                if (tabName === 'loop' || loop?.loading !== true) {
-                                    populateLoopFields(tabName);
-                                }
+                                populateLoopFields(tabName, attributes).then(() => {
+                                    console.log('Loaded');
+                                });
                                 console.log(tabName);
                             }}
                             tabs={[

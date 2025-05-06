@@ -10,15 +10,7 @@ import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 
 
-function populateFields() {
-
-
-    return <></>;
-}
-
-export function Loop({attributes, setAttributes}) {
-
-    const {'wpbs-loop': settings = {}} = attrs;
+export function Loop({settings, callback}) {
 
     const [loopPostType, setLoopPostType] = useState(settings['type']);
     const [loopTerm, setLoopTerm] = useState(settings['term']);
@@ -32,6 +24,7 @@ export function Loop({attributes, setAttributes}) {
     let postTypeOptions = [];
     let taxonomiesOptions = [];
     let termsOptions = [];
+    let suppressPosts = [];
 
     const {postTypes, taxonomies} = useSelect((select) => {
         const {getPostTypes} = select(coreStore);
@@ -88,18 +81,16 @@ export function Loop({attributes, setAttributes}) {
 
         // Map selected post titles back to their IDs
         const handleChange = (selectedTitles) => {
-            const newIds = selectedTitles
+            suppressPosts = selectedTitles
                 .map((title) => {
                     const match = posts.find((post) => post.title.rendered === title);
                     return match?.id;
                 })
                 .filter(Boolean);
-
-            setAttributes({['loop-suppress']: newIds});
         };
 
         // Convert stored IDs to titles for display in the field
-        const selectedTitles = (settings['suppress'] || [])
+        const selectedTitles = (suppressPosts)
             .map((id) => {
                 const post = posts.find((post) => post.id === id);
                 return post?.title.rendered;
@@ -173,6 +164,7 @@ export function Loop({attributes, setAttributes}) {
             options={postTypeOptions}
             onChange={(newValue) => {
                 setLoopPostType(newValue);
+                callback(newValue);
             }}
             __next40pxDefaultSize
             __nextHasNoMarginBottom
@@ -189,6 +181,7 @@ export function Loop({attributes, setAttributes}) {
                 options={taxonomiesOptions}
                 onChange={(newValue) => {
                     setLoopTaxonomy(newValue);
+                    callback(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
@@ -199,6 +192,7 @@ export function Loop({attributes, setAttributes}) {
                 options={termsOptions}
                 onChange={(newValue) => {
                     setLoopTerm(newValue);
+                    callback(newValue);
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
@@ -209,9 +203,11 @@ export function Loop({attributes, setAttributes}) {
             <QueryControls
                 onOrderByChange={(newValue) => {
                     setLoopOrderBy(newValue);
+                    callback(newValue);
                 }}
                 onOrderChange={(newValue) => {
                     setLoopOrder(newValue);
+                    callback(newValue);
                 }}
                 order={loopOrder}
                 orderBy={loopOrderBy}
@@ -226,6 +222,7 @@ export function Loop({attributes, setAttributes}) {
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
                         setLoopPageSize(newValue);
+                        callback(newValue);
                     }}
                     value={loopPageSize}
                 />
@@ -235,6 +232,7 @@ export function Loop({attributes, setAttributes}) {
                     __next40pxDefaultSize
                     onChange={(newValue) => {
                         setPaginationLabel(newValue);
+                        callback(newValue);
                     }}
                     value={paginationLabel}
                 />
@@ -251,6 +249,7 @@ export function Loop({attributes, setAttributes}) {
                 checked={!!pagination}
                 onChange={(newValue) => {
                     setPagination(newValue);
+                    callback(newValue);
                 }}
             />
         </Grid>

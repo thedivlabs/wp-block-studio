@@ -25,7 +25,7 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
-import Breakpoint from 'Components/Breakpoint'
+import Breakpoint from 'Components/Breakpoint';
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -95,29 +95,8 @@ registerBlockType(metadata.name, {
         ['wpbs-pagination-label']: {
             type: 'string'
         },
-        ['wpbs-loop-orderby']: {
-            type: 'string'
-        },
-        ['wpbs-loop-order']: {
-            type: 'string'
-        },
-        ['wpbs-loop-type']: {
-            type: 'string'
-        },
-        ['wpbs-loop-term']: {
-            type: 'string'
-        },
-        ['wpbs-loop-taxonomy']: {
-            type: 'string'
-        },
-        ['wpbs-loop-page-size']: {
-            type: 'string'
-        },
-        ['wpbs-loop-suppress']: {
-            type: 'array'
-        },
-        ['wpbs-gallery']: {
-            type: 'string'
+        ['wpbs-loop']: {
+            type: 'object'
         }
     },
     edit: (props) => {
@@ -135,6 +114,8 @@ registerBlockType(metadata.name, {
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
         const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
+
+        const [loop, setLoop] = useState(attributes['wpbs-loop']);
 
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
@@ -269,7 +250,9 @@ registerBlockType(metadata.name, {
             />
         </Grid>;
 
-        const tabLoop = <></>;
+        const tabLoop = <Grid columns={1} columnGap={15} rowGap={20}>
+            <></>
+        </Grid>;
 
         const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
             <></>
@@ -289,6 +272,27 @@ registerBlockType(metadata.name, {
             }
         });
 
+        const populateLoopFields = async (tabName) => {
+            if (tabName !== 'loop') {
+                return
+            }
+
+
+            // Simulate API fetch
+            const fetchedOptions = await new Promise((resolve) =>
+                setTimeout(() => {
+                    resolve([
+                        {label: 'Option 1', value: '1'},
+                        {label: 'Option 2', value: '2'},
+                    ]);
+                }, 1000)
+            );
+
+            setOptions(fetchedOptions);
+            setIsLoading(false);
+            setHasLoaded(true);
+        };
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -300,6 +304,12 @@ registerBlockType(metadata.name, {
                             activeClass="active"
                             orientation="horizontal"
                             initialTabName="options"
+                            onSelect={(tabName) => {
+                                if (tabName === 'loop' || loop?.loading !== true) {
+                                    populateLoopFields(tabName);
+                                }
+                                console.log(tabName);
+                            }}
                             tabs={[
                                 {
                                     name: 'options',
@@ -309,7 +319,7 @@ registerBlockType(metadata.name, {
                                 {
                                     name: 'loop',
                                     title: 'Loop',
-                                    className: 'tab-loop',
+                                    className: 'tab-loop'
                                 },
                                 {
                                     name: 'gallery',

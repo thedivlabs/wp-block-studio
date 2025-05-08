@@ -150,14 +150,11 @@ registerBlockType(metadata.name, {
 
         const {terms} = useSelect((select) => {
 
-            if (currentTab !== 'loop' || !queryArgs?.taxonomy || termsOptions?.length > 1) {
+            if (currentTab !== 'loop' || !queryArgs?.taxonomy) {
                 return {
                     terms: [],
                 }
             }
-
-            console.log(queryArgs);
-            console.log('fetching terms');
 
             let termsArray = [];
 
@@ -176,7 +173,7 @@ registerBlockType(metadata.name, {
             return {
                 terms: termsArray,
             }
-        }, [attributes?.queryArgs]);
+        }, [queryArgs?.taxonomy]);
 
         const {suppressPosts} = useSelect((select) => {
 

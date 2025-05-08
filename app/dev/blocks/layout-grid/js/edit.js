@@ -128,11 +128,10 @@ registerBlockType(metadata.name, {
         let postTypeOptions = [];
         let taxonomiesOptions = [];
         let termsOptions = [];
-        let suppressPostsOptions = [];
 
         const {postTypes, taxonomies} = useSelect((select) => {
 
-            if (currentTab !== 'loop') {
+            if (currentTab !== 'loop' || !!queryArgs?.post_type) {
                 return {
                     postTypes: [],
                     taxonomies: [],
@@ -151,33 +150,27 @@ registerBlockType(metadata.name, {
 
         const {terms} = useSelect((select) => {
 
-            if (currentTab !== 'loop' || !taxonomies?.length) {
+            if (currentTab !== 'loop' || !queryArgs?.taxonomy) {
                 return {
                     terms: [],
                 }
             }
 
+            console.log(queryArgs);
             console.log('fetching terms');
 
             let termsArray = [];
 
-            if (taxonomiesOptions && taxonomies) {
+            const {getEntityRecords} = select(coreStore);
 
-                const {getEntityRecords} = select(coreStore);
+            const terms = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
 
-                taxonomies.forEach((tax) => {
-                    const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
+            if (terms && terms.length > 0) {
 
-                    if (terms && terms.length > 0) {
-                        termsArray.push({value: '', label: tax.name, disabled: true});
+                terms.forEach((term) => {
 
-                        terms.forEach((term) => {
-
-                            termsArray.push({value: term.id, label: term.name});
-                        });
-                    }
-
-                })
+                    termsArray.push({value: term.id, label: term.name});
+                });
             }
 
             return {
@@ -191,12 +184,10 @@ registerBlockType(metadata.name, {
                     return {suppressPosts: []};
                 }
 
-                const {getSuppressPosts} = select(coreStore).getEntityRecords('postType', queryArgs?.post_type || 'post', {
-                    per_page: 100,
-                });
-
                 return {
-                    suppressPosts: getSuppressPosts()
+                    suppressPosts: select(coreStore).getEntityRecords('postType', queryArgs?.post_type || 'post', {
+                        per_page: 100,
+                    })
                 }
 
             },
@@ -383,12 +374,11 @@ registerBlockType(metadata.name, {
             const SuppressPostsField = () => {
 
 
-                if (!suppressPosts.length) {
+                if (!suppressPosts?.length) {
                     return <Spinner/>;
                 }
 
                 let posts = suppressPosts || [];
-
 
                 // Suggestions (post titles)
                 const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
@@ -404,12 +394,10 @@ registerBlockType(metadata.name, {
                 };
 
                 // Convert stored IDs to titles for display in the field
-                const selectedTitles = (suppressPosts)
-                    .map((id) => {
-                        const post = posts.find((post) => post.id === id);
-                        return post?.title.rendered;
-                    })
-                    .filter(Boolean);
+                const selectedTitles = posts.map((id) => {
+                    const post = posts.find((post) => post.id === id);
+                    return post?.title.rendered;
+                }).filter(Boolean);
 
                 return (
                     <FormTokenField

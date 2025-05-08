@@ -129,53 +129,42 @@ registerBlockType(metadata.name, {
         let taxonomiesOptions = [];
         let termsOptions = [];
 
-        const {postTypes, taxonomies} = useSelect((select) => {
+        const [postTypes, setPostTypes] = useState([]);
+        const [taxonomies, setTaxonomies] = useState([]);
+        const [terms, setTerms] = useState([]);
+        const [suppressPosts, setSuppressPosts] = useState([]);
 
-            if (currentTab !== 'loop' || !!queryArgs?.post_type) {
-                return {
-                    postTypes: [],
-                    taxonomies: [],
-                }
+        useSelect((select) => {
+
+            if (currentTab !== 'loop' || (postTypes.length && taxonomies.length)) {
+                return;
             }
 
             const {getPostTypes} = select(coreStore);
             const {getTaxonomies} = select(coreStore);
 
-            return {
-                postTypes: getPostTypes(),
-                taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public),
-            }
+            setPostTypes(getPostTypes() ?? []);
+            setTaxonomies(getTaxonomies()?.filter(tax => tax.visibility.public) ?? []);
 
         }, [currentTab]);
 
-        const {terms} = useSelect((select) => {
+        useSelect((select) => {
 
-            if (currentTab !== 'loop' || !queryArgs?.taxonomy) {
-                return {
-                    terms: [],
-                }
+            if (currentTab !== 'loop' || !queryArgs?.taxonomy || terms.length) {
+                return;
             }
-
-            let termsArray = [];
 
             const {getEntityRecords} = select(coreStore);
 
             const termsQuery = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
 
-            if (termsQuery && termsQuery.length > 0) {
-
-                termsQuery.forEach((term) => {
-
-                    termsArray.push({value: term.id, label: term.name});
-                });
+            if (termsQuery?.length) {
+                setTerms(termsQuery);
             }
 
-            return {
-                terms: termsArray,
-            }
-        }, [queryArgs?.taxonomy]);
+        }, [taxonomies]);
 
-        const {suppressPosts} = useSelect((select) => {
+        useSelect((select) => {
 
                 if (currentTab !== 'loop' || !queryArgs?.length) {
                     return {suppressPosts: []};
@@ -193,37 +182,52 @@ registerBlockType(metadata.name, {
         );
 
         if (postTypes?.length) {
-            postTypeOptions.push({value: 0, label: 'Select a post type'})
-            postTypeOptions.push({value: 'current', label: 'Current'})
-            postTypes.forEach((postType) => {
-                if (!postType.viewable || ['attachment'].includes(postType.slug)) {
-                    return;
-                }
-                postTypeOptions.push({value: postType.slug, label: postType.name})
-            })
+            postTypeOptions = [
+                {value: 0, label: 'Select a post type'},
+                {value: 'current', label: 'Current'},
+                ...postTypes.filter((postType) => {
+                    return !!postType.viewable && !['attachment'].includes(postType.slug)
+                }).map((postType) => {
+                    return {value: postType.slug, label: postType.name};
+                })
+            ];
+
         } else {
-            postTypeOptions.push({value: 0, label: 'Loading...'})
+            postTypeOptions = [
+                {value: 0, label: 'Loading...'}
+            ]
         }
 
         if (taxonomies?.length) {
-            taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
-            taxonomies.forEach((tax) => {
-                if (!tax.visibility.public) {
-                    return;
-                }
-                taxonomiesOptions.push({value: tax.slug, label: tax.name})
-            })
+
+            taxonomiesOptions = [
+                {value: 0, label: 'Select a taxonomy'},
+                ...taxonomies.filter((tax) => {
+                    return !!tax.visibility.public;
+                }).map((tax) => {
+                    return {value: tax.slug, label: tax.name};
+                })
+            ];
+
         } else {
-            taxonomiesOptions.push({value: 0, label: 'Loading...'})
+            taxonomiesOptions = [
+                {value: 0, label: 'Loading...'}
+            ]
         }
 
         if (terms?.length) {
             termsOptions = [
                 {value: '', label: 'Select a term'},
-                ...terms
+                ...terms.filter((term) => {
+                    return true;
+                }).map((term) => {
+                    return {value: term.id, label: term.name};
+                })
             ];
         } else {
-            termsOptions.push({value: 0, label: 'Loading...'})
+            termsOptions = [
+                {value: 0, label: 'Loading...'}
+            ]
         }
 
         useEffect(() => {

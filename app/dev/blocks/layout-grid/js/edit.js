@@ -129,40 +129,57 @@ registerBlockType(metadata.name, {
         let taxonomiesOptions = [];
         let termsOptions = [];
 
-        const [postTypes, setPostTypes] = useState([]);
-        const [taxonomies, setTaxonomies] = useState([]);
-        const [terms, setTerms] = useState([]);
-        const [suppressPosts, setSuppressPosts] = useState([]);
+        const [loop, setLoop] = useState({
+            postTypes: [],
+            taxonomies: [],
+            terms: [],
+        });
+
+        const [loopLoading, setLoopLoading] = useState(false);
 
         useSelect((select) => {
 
-            if (currentTab !== 'loop' || (postTypes.length && taxonomies.length)) {
+            if (currentTab !== 'loop') {
                 return;
             }
 
-            const {getPostTypes} = select(coreStore);
-            const {getTaxonomies} = select(coreStore);
+            if (!loop?.postTypes?.length || !!loopLoading) {
 
-            setPostTypes(getPostTypes() ?? []);
-            setTaxonomies(getTaxonomies()?.filter(tax => tax.visibility.public) ?? []);
+                setLoopLoading(true);
+
+                const {getPostTypes} = select(coreStore);
+                const {getTaxonomies} = select(coreStore);
+
+                setLoop({
+                    ...loop,
+                    postTypes: getPostTypes(),
+                    taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public) ?? [],
+                    terms: []
+                });
+
+                setLoopLoading(false);
+            }
+
+            if (!loop?.terms?.length && !!loop?.postTypes?.length || !!loopLoading) {
+
+                setLoopLoading(true);
+
+                const {getEntityRecords} = select(coreStore);
+
+                const termsQuery = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
+
+                setLoop({
+                    ...loop,
+                    terms: termsQuery
+                });
+
+                setLoopLoading(false);
+            }
+
+            console.log('fetching posts');
+
 
         }, [currentTab]);
-
-        useSelect((select) => {
-
-            if (currentTab !== 'loop' || !queryArgs?.taxonomy || terms.length) {
-                return;
-            }
-
-            const {getEntityRecords} = select(coreStore);
-
-            const termsQuery = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
-
-            if (termsQuery?.length) {
-                setTerms(termsQuery);
-            }
-
-        }, [taxonomies]);
 
         useSelect((select) => {
 
@@ -180,55 +197,6 @@ registerBlockType(metadata.name, {
             },
             [queryArgs]
         );
-
-        if (postTypes?.length) {
-            postTypeOptions = [
-                {value: 0, label: 'Select a post type'},
-                {value: 'current', label: 'Current'},
-                ...postTypes.filter((postType) => {
-                    return !!postType.viewable && !['attachment'].includes(postType.slug)
-                }).map((postType) => {
-                    return {value: postType.slug, label: postType.name};
-                })
-            ];
-
-        } else {
-            postTypeOptions = [
-                {value: 0, label: 'Loading...'}
-            ]
-        }
-
-        if (taxonomies?.length) {
-
-            taxonomiesOptions = [
-                {value: 0, label: 'Select a taxonomy'},
-                ...taxonomies.filter((tax) => {
-                    return !!tax.visibility.public;
-                }).map((tax) => {
-                    return {value: tax.slug, label: tax.name};
-                })
-            ];
-
-        } else {
-            taxonomiesOptions = [
-                {value: 0, label: 'Loading...'}
-            ]
-        }
-
-        if (terms?.length) {
-            termsOptions = [
-                {value: '', label: 'Select a term'},
-                ...terms.filter((term) => {
-                    return true;
-                }).map((term) => {
-                    return {value: term.id, label: term.name};
-                })
-            ];
-        } else {
-            termsOptions = [
-                {value: 0, label: 'Loading...'}
-            ]
-        }
 
         useEffect(() => {
             setAttributes({
@@ -257,6 +225,7 @@ registerBlockType(metadata.name, {
                 }).filter(([_, value]) => ![null, 0, '0', false, undefined].includes(value))
             )
 
+            setTerms([]);
             setAttributes({queryArgs: result});
             setQueryArgs(result);
         }
@@ -421,7 +390,24 @@ registerBlockType(metadata.name, {
                 <SelectControl
                     label={'Post Type'}
                     value={queryArgs?.post_type}
-                    options={postTypeOptions}
+                    options={()=>{
+                        if (!!loop?.postTypes?.length) {
+                            return [
+                                {value: 0, label: 'Select a post type'},
+                                {value: 'current', label: 'Current'},
+                                ...loop.postTypes.filter((postType) => {
+                                    return !!postType.viewable && !['attachment'].includes(postType.slug)
+                                }).map((postType) => {
+                                    return {value: postType.slug, label: postType.name};
+                                })
+                            ];
+
+                        } else {
+                            return [
+                                {value: 0, label: 'Loading...'}
+                            ]
+                        }
+                    }}
                     onChange={(newValue) => {
                         updateLoopSettings('post_type', newValue);
                     }}
@@ -437,7 +423,24 @@ registerBlockType(metadata.name, {
                     <SelectControl
                         label={'Taxonomy'}
                         value={queryArgs?.taxonomy}
-                        options={taxonomiesOptions}
+                        options={()=>{
+                            if (!!loop?.taxonomies?.length) {
+
+                                return [
+                                    {value: 0, label: 'Select a taxonomy'},
+                                    ...loop.taxonomies.filter((tax) => {
+                                        return !!tax.visibility.public;
+                                    }).map((tax) => {
+                                        return {value: tax.slug, label: tax.name};
+                                    })
+                                ];
+
+                            } else {
+                                return [
+                                    {value: 0, label: 'Loading...'}
+                                ]
+                            }
+                        }}
                         onChange={(newValue) => {
                             updateLoopSettings('taxonomy', newValue);
                         }}
@@ -446,7 +449,22 @@ registerBlockType(metadata.name, {
                     />
                     <SelectControl
                         label={'Term'}
-                        value={queryArgs?.term}
+                        value={()=>{
+                            if (!!loop?.terms?.length) {
+                                return [
+                                    {value: '', label: 'Select a term'},
+                                    ...loop.terms.filter((term) => {
+                                        return true;
+                                    }).map((term) => {
+                                        return {value: term.id, label: term.name};
+                                    })
+                                ];
+                            } else {
+                                return [
+                                    {value: 0, label: 'Loading...'}
+                                ]
+                            }
+                        }}
                         options={termsOptions}
                         onChange={(newValue) => {
                             updateLoopSettings('term', newValue);

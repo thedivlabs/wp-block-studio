@@ -181,7 +181,7 @@ registerBlockType(metadata.name, {
 
         }, [currentTab]);
 
-        useSelect((select) => {
+       /* useSelect((select) => {
 
                 if (currentTab !== 'loop' || !queryArgs?.length) {
                     return {suppressPosts: []};
@@ -196,7 +196,7 @@ registerBlockType(metadata.name, {
 
             },
             [queryArgs]
-        );
+        );*/
 
         useEffect(() => {
             setAttributes({
@@ -348,11 +348,11 @@ registerBlockType(metadata.name, {
             const SuppressPostsField = () => {
 
 
-                if (!suppressPosts?.length) {
+             /*   if (!suppressPosts?.length) {
                     return <Spinner/>;
-                }
+                }*/
 
-                let posts = suppressPosts || [];
+                let posts =  [];
 
                 // Suggestions (post titles)
                 const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);

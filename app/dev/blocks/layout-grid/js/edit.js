@@ -150,7 +150,7 @@ registerBlockType(metadata.name, {
 
         const {terms} = useSelect((select) => {
 
-            if (currentTab !== 'loop' || !queryArgs?.taxonomy) {
+            if (currentTab !== 'loop' || !queryArgs?.taxonomy || termsOptions?.length > 1) {
                 return {
                     terms: [],
                 }
@@ -163,11 +163,11 @@ registerBlockType(metadata.name, {
 
             const {getEntityRecords} = select(coreStore);
 
-            const terms = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
+            const termsQuery = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
 
-            if (terms && terms.length > 0) {
+            if (termsQuery && termsQuery.length > 0) {
 
-                terms.forEach((term) => {
+                termsQuery.forEach((term) => {
 
                     termsArray.push({value: term.id, label: term.name});
                 });
@@ -176,22 +176,23 @@ registerBlockType(metadata.name, {
             return {
                 terms: termsArray,
             }
-        }, [taxonomies]);
+        }, [attributes?.queryArgs]);
 
         const {suppressPosts} = useSelect((select) => {
 
-                if (currentTab !== 'loop' || !queryArgs?.post_type) {
+                if (currentTab !== 'loop' || !queryArgs?.length) {
                     return {suppressPosts: []};
                 }
 
                 return {
-                    suppressPosts: select(coreStore).getEntityRecords('postType', queryArgs?.post_type || 'post', {
+                    suppressPosts: select(coreStore).getEntityRecords('postType', queryArgs?.post_type ?? 'post', {
+                        ...queryArgs,
                         per_page: 100,
                     })
                 }
 
             },
-            [queryArgs?.post_type]
+            [queryArgs]
         );
 
         if (postTypes?.length) {
@@ -247,10 +248,13 @@ registerBlockType(metadata.name, {
         ]);
 
         function updateLoopSettings(prop, newValue) {
-            const result = {
-                ...queryArgs,
-                ...{[prop]: newValue}
-            }
+
+            const result = Object.fromEntries(
+                Object.entries({
+                    ...queryArgs,
+                    ...{[prop]: newValue}
+                }).filter(([_, value]) => ![null, 0, '0', false, undefined].includes(value))
+            )
 
             setAttributes({queryArgs: result});
             setQueryArgs(result);

@@ -31,7 +31,6 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
-import Loop from 'Components/Loop';
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 
@@ -122,82 +121,120 @@ registerBlockType(metadata.name, {
 
         const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
 
+        const [currentTab, setCurrentTab] = useState('options');
+
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
         let postTypeOptions = [];
         let taxonomiesOptions = [];
         let termsOptions = [];
-        let suppressPosts = [];
+        let suppressPostsOptions = [];
 
-        function initLoopOptions() {
-            const {postTypes, taxonomies} = useSelect((select) => {
+        const {postTypes, taxonomies} = useSelect((select) => {
 
-                const {getPostTypes} = select(coreStore);
-                const {getTaxonomies} = select(coreStore);
-
+            if (currentTab !== 'loop') {
                 return {
-                    postTypes: getPostTypes(),
-                    taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public),
+                    postTypes: [],
+                    taxonomies: [],
                 }
-            }, []);
-
-            const {terms} = useSelect((select) => {
-                let termsArray = [];
-
-                if (taxonomiesOptions && taxonomies) {
-
-                    const {getEntityRecords} = select(coreStore);
-
-                    taxonomies.forEach((tax) => {
-                        const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
-
-                        if (terms && terms.length > 0) {
-                            termsArray.push({value: '', label: tax.name, disabled: true});
-
-                            terms.forEach((term) => {
-
-                                termsArray.push({value: term.id, label: term.name});
-                            });
-                        }
-
-                    })
-                }
-
-                return {
-                    terms: termsArray,
-                }
-            }, [taxonomies]);
-
-            if (postTypes) {
-                postTypeOptions.push({value: 0, label: 'Select a post type'})
-                postTypeOptions.push({value: 'current', label: 'Current'})
-                postTypes.forEach((postType) => {
-                    if (!postType.viewable || ['attachment'].includes(postType.slug)) {
-                        return;
-                    }
-                    postTypeOptions.push({value: postType.slug, label: postType.name})
-                })
-            } else {
-                postTypeOptions.push({value: 0, label: 'Loading...'})
             }
 
-            if (taxonomies) {
-                taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
+            const {getPostTypes} = select(coreStore);
+            const {getTaxonomies} = select(coreStore);
+
+            return {
+                postTypes: getPostTypes(),
+                taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public),
+            }
+
+        }, [currentTab]);
+
+        const {terms} = useSelect((select) => {
+
+            if (currentTab !== 'loop' || !queryArgs?.post_type) {
+                return {
+                    terms: [],
+                }
+            }
+
+            console.log('fetching terms');
+
+            let termsArray = [];
+
+            if (taxonomiesOptions && taxonomies) {
+
+                const {getEntityRecords} = select(coreStore);
+
                 taxonomies.forEach((tax) => {
-                    if (!tax.visibility.public) {
-                        return;
+                    const terms = getEntityRecords('taxonomy', tax.slug, {hide_empty: true});
+
+                    if (terms && terms.length > 0) {
+                        termsArray.push({value: '', label: tax.name, disabled: true});
+
+                        terms.forEach((term) => {
+
+                            termsArray.push({value: term.id, label: term.name});
+                        });
                     }
-                    taxonomiesOptions.push({value: tax.slug, label: tax.name})
+
                 })
-            } else {
-                taxonomiesOptions.push({value: 0, label: 'Loading...'})
             }
-            if (terms) {
-                termsOptions = [
-                    {value: '', label: 'Select a term'},
-                    ...terms
-                ];
+
+            return {
+                terms: termsArray,
             }
+        }, [taxonomies]);
+
+        const {suppressPosts} = useSelect((select) => {
+
+                if (currentTab !== 'loop' || !queryArgs?.post_type) {
+                    return {suppressPosts: []};
+                }
+
+                const {getSuppressPosts} = select(coreStore).getEntityRecords('postType', queryArgs?.post_type || 'post', {
+                    per_page: 100,
+                });
+
+                return {
+                    suppressPosts: getSuppressPosts()
+                }
+
+            },
+            [queryArgs?.post_type]
+        );
+
+        if (postTypes) {
+            postTypeOptions.push({value: 0, label: 'Select a post type'})
+            postTypeOptions.push({value: 'current', label: 'Current'})
+            postTypes.forEach((postType) => {
+                if (!postType.viewable || ['attachment'].includes(postType.slug)) {
+                    return;
+                }
+                postTypeOptions.push({value: postType.slug, label: postType.name})
+            })
+        } else {
+            postTypeOptions.push({value: 0, label: 'Loading...'})
+        }
+
+        if (taxonomies) {
+            taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
+            taxonomies.forEach((tax) => {
+                if (!tax.visibility.public) {
+                    return;
+                }
+                taxonomiesOptions.push({value: tax.slug, label: tax.name})
+            })
+        } else {
+            taxonomiesOptions.push({value: 0, label: 'Loading...'})
+        }
+
+        if (terms) {
+            termsOptions = [
+                {value: '', label: 'Select a term'},
+                ...terms
+            ];
+        } else {
+            termsOptions.push({value: 0, label: 'Loading...'})
         }
 
         useEffect(() => {
@@ -343,26 +380,22 @@ registerBlockType(metadata.name, {
 
         const tabLoop = () => {
 
-
             const SuppressPostsField = () => {
 
-                // Fetch posts
-                const posts = useSelect(
-                    (select) =>
-                        select(coreStore).getEntityRecords('postType', queryArgs?.post_type || 'post', {
-                            per_page: 100,
-                        }),
-                    [queryArgs?.post_type]
-                );
 
-                if (posts === null || posts === undefined) return <Spinner/>;
+                if (!suppressPosts.length) {
+                    return <Spinner/>;
+                }
+
+                let posts = suppressPosts || [];
+
 
                 // Suggestions (post titles)
                 const suggestions = posts?.map((post) => post.title.rendered);
 
                 // Map selected post titles back to their IDs
                 const handleChange = (selectedTitles) => {
-                    suppressPosts = selectedTitles
+                    posts = selectedTitles
                         .map((title) => {
                             const match = posts.find((post) => post.title.rendered === title);
                             return match?.id;
@@ -514,7 +547,7 @@ registerBlockType(metadata.name, {
                             initialTabName="options"
                             onSelect={(tabName) => {
                                 if (tabName === 'loop') {
-                                    initLoopOptions();
+                                    setCurrentTab(tabName);
                                 }
                             }}
                             tabs={[

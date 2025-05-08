@@ -151,7 +151,7 @@ registerBlockType(metadata.name, {
 
         const {terms} = useSelect((select) => {
 
-            if (currentTab !== 'loop' || !queryArgs?.post_type) {
+            if (currentTab !== 'loop' || !taxonomies?.length) {
                 return {
                     terms: [],
                 }
@@ -203,7 +203,7 @@ registerBlockType(metadata.name, {
             [queryArgs?.post_type]
         );
 
-        if (postTypes) {
+        if (postTypes?.length) {
             postTypeOptions.push({value: 0, label: 'Select a post type'})
             postTypeOptions.push({value: 'current', label: 'Current'})
             postTypes.forEach((postType) => {
@@ -216,7 +216,7 @@ registerBlockType(metadata.name, {
             postTypeOptions.push({value: 0, label: 'Loading...'})
         }
 
-        if (taxonomies) {
+        if (taxonomies?.length) {
             taxonomiesOptions.push({value: 0, label: 'Select a taxonomy'})
             taxonomies.forEach((tax) => {
                 if (!tax.visibility.public) {
@@ -228,7 +228,7 @@ registerBlockType(metadata.name, {
             taxonomiesOptions.push({value: 0, label: 'Loading...'})
         }
 
-        if (terms) {
+        if (terms?.length) {
             termsOptions = [
                 {value: '', label: 'Select a term'},
                 ...terms
@@ -391,7 +391,7 @@ registerBlockType(metadata.name, {
 
 
                 // Suggestions (post titles)
-                const suggestions = posts?.map((post) => post.title.rendered);
+                const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
 
                 // Map selected post titles back to their IDs
                 const handleChange = (selectedTitles) => {

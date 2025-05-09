@@ -302,7 +302,7 @@ function props(attributes) {
         mobile: {},
         desktop: {},
     };
-    console.log(attributes);
+    
     Object.entries(attributes).forEach(([key, value]) => {
         if (
             key.startsWith('wpbs-prop') &&

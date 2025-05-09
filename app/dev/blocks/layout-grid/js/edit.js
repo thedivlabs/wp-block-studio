@@ -150,6 +150,13 @@ registerBlockType(metadata.name, {
 
             }
 
+        }, [currentTab]);
+
+        useSelect((select) => {
+
+            console.log(queryArgs);
+            console.log(queryArgs?.taxonomy);
+
             if (!loop.terms.length && !!queryArgs?.taxonomy) {
 
                 const {getEntityRecords} = select(coreStore);
@@ -161,7 +168,7 @@ registerBlockType(metadata.name, {
 
             }
 
-        }, [currentTab, queryArgs?.taxonomy]);
+        }, [queryArgs]);
 
         /* useSelect((select) => {
 
@@ -198,14 +205,14 @@ registerBlockType(metadata.name, {
             attributes?.['wpbs-layout']?.['gap-mobile']
         ]);
 
-        function updateLoopSettings({newValue}) {
+        function updateLoopSettings(newValue) {
 
             const result = Object.fromEntries(
                 Object.entries({
                     ...queryArgs,
                     ...newValue
                 }).filter(([_, value]) => ![null, 0, '0', false, undefined].includes(value))
-            )
+            );
 
             setAttributes({queryArgs: result});
             setQueryArgs(result);
@@ -369,7 +376,6 @@ registerBlockType(metadata.name, {
 
             const postTypeOptions = () => {
                 if (loop.postTypes?.length) {
-                    console.log(loop.postTypes);
                     return [
                         {value: 0, label: 'Select a post type'},
                         {value: 'current', label: 'Current'},
@@ -407,7 +413,6 @@ registerBlockType(metadata.name, {
 
             const termOptions = () => {
                 if (!!loop?.terms?.length) {
-                    console.log(loop.terms);
                     return [
                         {value: '', label: 'Select a term'},
                         ...loop.terms.filter((term) => {
@@ -422,8 +427,6 @@ registerBlockType(metadata.name, {
                     ]
                 }
             }
-
-            console.log(loop);
 
             return <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl

@@ -140,6 +140,8 @@ registerBlockType(metadata.name, {
 
             if (!loop.postTypes.length) {
 
+                console.log(!loop.postTypes.length);
+
                 const {getPostTypes} = select(coreStore);
                 const {getTaxonomies} = select(coreStore);
 
@@ -160,7 +162,6 @@ registerBlockType(metadata.name, {
             } else {
                 result.terms = [];
             }
-
 
             setLoop({
                 ...loop,
@@ -393,7 +394,6 @@ registerBlockType(metadata.name, {
             }
 
             const termOptions = () => {
-                console.log(loop);
                 return [
                     {value: '', label: 'Select a term'},
                     ...(loop?.terms ?? []).map((term) => {

@@ -162,7 +162,7 @@ registerBlockType(metadata.name, {
             }
 
 
-            if (!!queryArgs?.post_type && !loop.suppressPosts.length) {
+            if (!!queryArgs.post_type && !loop.suppressPosts?.length) {
 
                 result.suppressPosts = getEntityRecords('postType', queryArgs.post_type, {
                     per_page: -1,
@@ -201,12 +201,10 @@ registerBlockType(metadata.name, {
 
         function updateLoopSettings(newValue) {
 
-            const result = Object.fromEntries(
-                Object.entries({
-                    ...queryArgs,
-                    ...newValue
-                }).filter(([_, value]) => !!value?.length && ![null, 0, '0', false, undefined].includes(value))
-            );
+            const result = {
+                ...queryArgs,
+                ...newValue
+            };
 
             setAttributes({queryArgs: result});
             setQueryArgs(result);
@@ -409,7 +407,8 @@ registerBlockType(metadata.name, {
                     onChange={(newValue) => {
                         updateLoopSettings({
                             post_type: newValue,
-                            post__not_in: []
+                            post__not_in: [],
+                            term: undefined,
                         });
 
                         setLoop({

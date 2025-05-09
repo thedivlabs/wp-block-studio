@@ -145,7 +145,9 @@ registerBlockType(metadata.name, {
                 const {getPostTypes} = select(coreStore);
                 const {getTaxonomies} = select(coreStore);
 
-                result.postTypes = getPostTypes();
+                result.postTypes = getPostTypes()?.filter((type) => {
+                    return type.visibility?.public;
+                });
                 result.taxonomies = getTaxonomies()?.filter(tax => tax.visibility.public);
 
             }

@@ -128,6 +128,7 @@ registerBlockType(metadata.name, {
             postTypes: [],
             taxonomies: [],
             terms: [],
+            suppressPosts: [],
         });
 
         useSelect((select) => {
@@ -138,10 +139,11 @@ registerBlockType(metadata.name, {
 
             let result = {};
 
-            if (!loop.postTypes.length) {
+            const {getPostTypes} = select(coreStore);
+            const {getTaxonomies} = select(coreStore);
+            const {getEntityRecords} = select(coreStore);
 
-                const {getPostTypes} = select(coreStore);
-                const {getTaxonomies} = select(coreStore);
+            if (!loop.postTypes.length) {
 
                 result.postTypes = getPostTypes()?.filter((type) => {
                     return !!type.viewable && !['attachment'].includes(type.slug);
@@ -150,9 +152,7 @@ registerBlockType(metadata.name, {
 
             }
 
-            if (!loop.terms.length && !!queryArgs?.taxonomy) {
-
-                const {getEntityRecords} = select(coreStore);
+            if (!loop.terms?.length && !!queryArgs?.taxonomy) {
 
                 result.terms = getEntityRecords('taxonomy', queryArgs.taxonomy, {
                     hide_empty: true,
@@ -163,29 +163,25 @@ registerBlockType(metadata.name, {
                 result.terms = [];
             }
 
+
+            if (!!queryArgs?.post_type && !loop.suppressPosts.length) {
+
+                result.suppressPosts = getEntityRecords('postType', queryArgs.post_type, {
+                    per_page: -1,
+                    order: 'asc',
+                    orderby: 'title',
+                });
+
+                console.log(result);
+            }
+
+
             setLoop({
                 ...loop,
                 ...result
             });
 
         }, [currentTab, queryArgs]);
-
-        /* useSelect((select) => {
-
-                 if (currentTab !== 'loop' || !queryArgs?.length) {
-                     return {suppressPosts: []};
-                 }
-
-                 return {
-                     suppressPosts: select(coreStore).getEntityRecords('postType', queryArgs?.post_type ?? 'post', {
-                         ...queryArgs,
-                         per_page: 100,
-                     })
-                 }
-
-             },
-             [queryArgs]
-         );*/
 
         useEffect(() => {
             setAttributes({
@@ -211,7 +207,7 @@ registerBlockType(metadata.name, {
                 Object.entries({
                     ...queryArgs,
                     ...newValue
-                }).filter(([_, value]) => ![null, 0, '0', false, undefined].includes(value))
+                }).filter(([_, value]) => !!value?.length && ![null, 0, '0', false, undefined].includes(value))
             );
 
             setAttributes({queryArgs: result});
@@ -341,23 +337,28 @@ registerBlockType(metadata.name, {
                        return <Spinner/>;
                    }*/
 
-                let posts = [];
+                let posts = loop?.suppressPosts ?? [];
 
                 // Suggestions (post titles)
                 const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
 
                 // Map selected post titles back to their IDs
                 const handleChange = (selectedTitles) => {
-                    posts = selectedTitles
+
+                    const post_ids = selectedTitles
                         .map((title) => {
                             const match = posts.find((post) => post.title.rendered === title);
                             return match?.id;
                         })
                         .filter(Boolean);
+
+                    updateLoopSettings({posts__not_in: post_ids});
+
+
                 };
 
                 // Convert stored IDs to titles for display in the field
-                const selectedTitles = posts.map((id) => {
+                const selectedTitles = (queryArgs?.post__not_in ?? []).map((id) => {
                     const post = posts.find((post) => post.id === id);
                     return post?.title.rendered;
                 }).filter(Boolean);
@@ -408,7 +409,10 @@ registerBlockType(metadata.name, {
                     value={queryArgs?.post_type}
                     options={postTypeOptions()}
                     onChange={(newValue) => {
-                        updateLoopSettings({post_type: newValue});
+                        updateLoopSettings({
+                            post_type: newValue,
+                            post__not_in: []
+                        });
                     }}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -426,7 +430,8 @@ registerBlockType(metadata.name, {
                         onChange={(newValue) => {
                             updateLoopSettings({
                                 taxonomy: newValue,
-                                terms: []
+                                term: undefined,
+                                post__not_in: []
                             });
                         }}
                         __next40pxDefaultSize
@@ -437,7 +442,10 @@ registerBlockType(metadata.name, {
                         value={queryArgs?.term}
                         options={termOptions()}
                         onChange={(newValue) => {
-                            updateLoopSettings({term: newValue});
+                            updateLoopSettings({
+                                term: newValue,
+                                post__not_in: []
+                            });
                         }}
                         __next40pxDefaultSize
                         __nextHasNoMarginBottom

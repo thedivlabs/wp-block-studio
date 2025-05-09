@@ -136,39 +136,38 @@ registerBlockType(metadata.name, {
                 return;
             }
 
+            let result = {};
+
             if (!loop.postTypes.length) {
 
                 const {getPostTypes} = select(coreStore);
                 const {getTaxonomies} = select(coreStore);
 
-                setLoop({
-                    ...loop,
-                    postTypes: getPostTypes(),
-                    taxonomies: getTaxonomies()?.filter(tax => tax.visibility.public) ?? [],
-                    terms: []
-                });
+                result.postTypes = getPostTypes();
+                result.taxonomies = getTaxonomies()?.filter(tax => tax.visibility.public);
 
             }
-
-        }, [currentTab]);
-
-        useSelect((select) => {
-
-            console.log(queryArgs);
-            console.log(queryArgs?.taxonomy);
 
             if (!loop.terms.length && !!queryArgs?.taxonomy) {
 
                 const {getEntityRecords} = select(coreStore);
 
-                setLoop({
-                    ...loop,
-                    terms: getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true})
+                result.terms = getEntityRecords('taxonomy', queryArgs.taxonomy, {
+                    hide_empty: true,
+                    per_page: -1
                 });
 
+            } else {
+                result.terms = [];
             }
 
-        }, [queryArgs]);
+
+            setLoop({
+                ...loop,
+                ...result
+            });
+
+        }, [currentTab, queryArgs]);
 
         /* useSelect((select) => {
 
@@ -375,57 +374,32 @@ registerBlockType(metadata.name, {
             }
 
             const postTypeOptions = () => {
-                if (loop.postTypes?.length) {
-                    return [
-                        {value: 0, label: 'Select a post type'},
-                        {value: 'current', label: 'Current'},
-                        ...loop.postTypes.filter((postType) => {
-                            return !!postType.viewable && !['attachment'].includes(postType.slug)
-                        }).map((postType) => {
-                            return {value: postType.slug, label: postType.name};
-                        })
-                    ];
-
-                } else {
-                    return [
-                        {value: 0, label: 'Loading...'}
-                    ]
-                }
+                return [
+                    {value: 0, label: 'Select a post type'},
+                    {value: 'current', label: 'Current'},
+                    ...(loop?.postTypes ?? []).map((postType) => {
+                        return {value: postType.slug, label: postType.name};
+                    })
+                ];
             }
 
             const taxonomyOptions = () => {
-                if (!!loop?.taxonomies?.length) {
-                    return [
-                        {value: 0, label: 'Select a taxonomy'},
-                        ...loop.taxonomies.filter((tax) => {
-                            return !!tax.visibility.public;
-                        }).map((tax) => {
-                            return {value: tax.slug, label: tax.name};
-                        })
-                    ];
-
-                } else {
-                    return [
-                        {value: 0, label: 'Loading...'}
-                    ]
-                }
+                return [
+                    {value: 0, label: 'Select a taxonomy'},
+                    ...(loop?.taxonomies ?? []).map((tax) => {
+                        return {value: tax.slug, label: tax.name};
+                    })
+                ];
             }
 
             const termOptions = () => {
-                if (!!loop?.terms?.length) {
-                    return [
-                        {value: '', label: 'Select a term'},
-                        ...loop.terms.filter((term) => {
-                            return true;
-                        }).map((term) => {
-                            return {value: term.id, label: term.name};
-                        })
-                    ];
-                } else {
-                    return [
-                        {value: 0, label: 'Loading...'}
-                    ]
-                }
+                console.log(loop);
+                return [
+                    {value: '', label: 'Select a term'},
+                    ...(loop?.terms ?? []).map((term) => {
+                        return {value: term.id, label: term.name};
+                    })
+                ];
             }
 
             return <Grid columns={1} columnGap={15} rowGap={20}>
@@ -460,25 +434,8 @@ registerBlockType(metadata.name, {
                     />
                     <SelectControl
                         label={'Term'}
-                        value={termOptions()}
-                        options={() => {
-                            if (!!loop?.terms?.length) {
-
-                                return [
-                                    {value: 0, label: 'Select a Term'},
-                                    ...loop.terms.filter((term) => {
-                                        return !!term;
-                                    }).map((term) => {
-                                        return {value: term.id, label: term.label};
-                                    })
-                                ];
-
-                            } else {
-                                return [
-                                    {value: 0, label: 'Loading...'}
-                                ]
-                            }
-                        }}
+                        value={queryArgs?.term}
+                        options={termOptions()}
                         onChange={(newValue) => {
                             updateLoopSettings({term: newValue});
                         }}

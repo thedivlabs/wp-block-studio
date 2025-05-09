@@ -159,8 +159,6 @@ registerBlockType(metadata.name, {
                     per_page: -1
                 });
 
-            } else {
-                result.terms = [];
             }
 
 
@@ -352,7 +350,7 @@ registerBlockType(metadata.name, {
                         })
                         .filter(Boolean);
 
-                    updateLoopSettings({posts__not_in: post_ids});
+                    updateLoopSettings({post__not_in: post_ids});
 
 
                 };
@@ -413,6 +411,13 @@ registerBlockType(metadata.name, {
                             post_type: newValue,
                             post__not_in: []
                         });
+
+                        setLoop({
+                            ...loop,
+                            terms: [],
+                            taxonomies: [],
+                            suppressPosts: [],
+                        });
                     }}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -431,7 +436,11 @@ registerBlockType(metadata.name, {
                             updateLoopSettings({
                                 taxonomy: newValue,
                                 term: undefined,
-                                post__not_in: []
+                            });
+
+                            setLoop({
+                                ...loop,
+                                terms: []
                             });
                         }}
                         __next40pxDefaultSize
@@ -444,7 +453,6 @@ registerBlockType(metadata.name, {
                         onChange={(newValue) => {
                             updateLoopSettings({
                                 term: newValue,
-                                post__not_in: []
                             });
                         }}
                         __next40pxDefaultSize

@@ -140,13 +140,11 @@ registerBlockType(metadata.name, {
 
             if (!loop.postTypes.length) {
 
-                console.log(!loop.postTypes.length);
-
                 const {getPostTypes} = select(coreStore);
                 const {getTaxonomies} = select(coreStore);
 
                 result.postTypes = getPostTypes()?.filter((type) => {
-                    return type.visibility?.public;
+                    return !!type.viewable && !['attachment'].includes(type.slug);
                 });
                 result.taxonomies = getTaxonomies()?.filter(tax => tax.visibility.public);
 

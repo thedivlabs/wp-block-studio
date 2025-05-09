@@ -414,7 +414,6 @@ registerBlockType(metadata.name, {
                         setLoop({
                             ...loop,
                             terms: [],
-                            taxonomies: [],
                             suppressPosts: [],
                         });
                     }}

@@ -118,16 +118,11 @@ registerBlockType(metadata.name, {
         const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
         const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
         const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
-
         const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
 
         const [currentTab, setCurrentTab] = useState('options');
 
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
-
-        let postTypeOptions = [];
-        let taxonomiesOptions = [];
-        let termsOptions = [];
 
         const [loop, setLoop] = useState({
             postTypes: [],
@@ -135,17 +130,13 @@ registerBlockType(metadata.name, {
             terms: [],
         });
 
-        const [loopLoading, setLoopLoading] = useState(false);
-
         useSelect((select) => {
 
             if (currentTab !== 'loop') {
                 return;
             }
 
-            if (!loop?.postTypes?.length || !!loopLoading) {
-
-                setLoopLoading(true);
+            if (!loop.postTypes.length) {
 
                 const {getPostTypes} = select(coreStore);
                 const {getTaxonomies} = select(coreStore);
@@ -157,46 +148,37 @@ registerBlockType(metadata.name, {
                     terms: []
                 });
 
-                setLoopLoading(false);
             }
 
-            if (!loop?.terms?.length && !!loop?.postTypes?.length || !!loopLoading) {
-
-                setLoopLoading(true);
+            if (!loop.terms.length && !!queryArgs?.taxonomy) {
 
                 const {getEntityRecords} = select(coreStore);
 
-                const termsQuery = getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true});
-
                 setLoop({
                     ...loop,
-                    terms: termsQuery
+                    terms: getEntityRecords('taxonomy', queryArgs?.taxonomy, {hide_empty: true})
                 });
 
-                setLoopLoading(false);
             }
 
-            console.log('fetching posts');
+        }, [currentTab, queryArgs?.taxonomy]);
 
+        /* useSelect((select) => {
 
-        }, [currentTab]);
+                 if (currentTab !== 'loop' || !queryArgs?.length) {
+                     return {suppressPosts: []};
+                 }
 
-       /* useSelect((select) => {
+                 return {
+                     suppressPosts: select(coreStore).getEntityRecords('postType', queryArgs?.post_type ?? 'post', {
+                         ...queryArgs,
+                         per_page: 100,
+                     })
+                 }
 
-                if (currentTab !== 'loop' || !queryArgs?.length) {
-                    return {suppressPosts: []};
-                }
-
-                return {
-                    suppressPosts: select(coreStore).getEntityRecords('postType', queryArgs?.post_type ?? 'post', {
-                        ...queryArgs,
-                        per_page: 100,
-                    })
-                }
-
-            },
-            [queryArgs]
-        );*/
+             },
+             [queryArgs]
+         );*/
 
         useEffect(() => {
             setAttributes({
@@ -216,18 +198,18 @@ registerBlockType(metadata.name, {
             attributes?.['wpbs-layout']?.['gap-mobile']
         ]);
 
-        function updateLoopSettings(prop, newValue) {
+        function updateLoopSettings({newValue}) {
 
             const result = Object.fromEntries(
                 Object.entries({
                     ...queryArgs,
-                    ...{[prop]: newValue}
+                    ...newValue
                 }).filter(([_, value]) => ![null, 0, '0', false, undefined].includes(value))
             )
 
-            setTerms([]);
             setAttributes({queryArgs: result});
             setQueryArgs(result);
+
         }
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -348,11 +330,11 @@ registerBlockType(metadata.name, {
             const SuppressPostsField = () => {
 
 
-             /*   if (!suppressPosts?.length) {
-                    return <Spinner/>;
-                }*/
+                /*   if (!suppressPosts?.length) {
+                       return <Spinner/>;
+                   }*/
 
-                let posts =  [];
+                let posts = [];
 
                 // Suggestions (post titles)
                 const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
@@ -385,31 +367,71 @@ registerBlockType(metadata.name, {
                 );
             }
 
+            const postTypeOptions = () => {
+                if (loop.postTypes?.length) {
+                    console.log(loop.postTypes);
+                    return [
+                        {value: 0, label: 'Select a post type'},
+                        {value: 'current', label: 'Current'},
+                        ...loop.postTypes.filter((postType) => {
+                            return !!postType.viewable && !['attachment'].includes(postType.slug)
+                        }).map((postType) => {
+                            return {value: postType.slug, label: postType.name};
+                        })
+                    ];
+
+                } else {
+                    return [
+                        {value: 0, label: 'Loading...'}
+                    ]
+                }
+            }
+
+            const taxonomyOptions = () => {
+                if (!!loop?.taxonomies?.length) {
+                    return [
+                        {value: 0, label: 'Select a taxonomy'},
+                        ...loop.taxonomies.filter((tax) => {
+                            return !!tax.visibility.public;
+                        }).map((tax) => {
+                            return {value: tax.slug, label: tax.name};
+                        })
+                    ];
+
+                } else {
+                    return [
+                        {value: 0, label: 'Loading...'}
+                    ]
+                }
+            }
+
+            const termOptions = () => {
+                if (!!loop?.terms?.length) {
+                    console.log(loop.terms);
+                    return [
+                        {value: '', label: 'Select a term'},
+                        ...loop.terms.filter((term) => {
+                            return true;
+                        }).map((term) => {
+                            return {value: term.id, label: term.name};
+                        })
+                    ];
+                } else {
+                    return [
+                        {value: 0, label: 'Loading...'}
+                    ]
+                }
+            }
+
+            console.log(loop);
 
             return <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl
                     label={'Post Type'}
                     value={queryArgs?.post_type}
-                    options={()=>{
-                        if (!!loop?.postTypes?.length) {
-                            return [
-                                {value: 0, label: 'Select a post type'},
-                                {value: 'current', label: 'Current'},
-                                ...loop.postTypes.filter((postType) => {
-                                    return !!postType.viewable && !['attachment'].includes(postType.slug)
-                                }).map((postType) => {
-                                    return {value: postType.slug, label: postType.name};
-                                })
-                            ];
-
-                        } else {
-                            return [
-                                {value: 0, label: 'Loading...'}
-                            ]
-                        }
-                    }}
+                    options={postTypeOptions()}
                     onChange={(newValue) => {
-                        updateLoopSettings('post_type', newValue);
+                        updateLoopSettings({post_type: newValue});
                     }}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -423,51 +445,39 @@ registerBlockType(metadata.name, {
                     <SelectControl
                         label={'Taxonomy'}
                         value={queryArgs?.taxonomy}
-                        options={()=>{
-                            if (!!loop?.taxonomies?.length) {
-
-                                return [
-                                    {value: 0, label: 'Select a taxonomy'},
-                                    ...loop.taxonomies.filter((tax) => {
-                                        return !!tax.visibility.public;
-                                    }).map((tax) => {
-                                        return {value: tax.slug, label: tax.name};
-                                    })
-                                ];
-
-                            } else {
-                                return [
-                                    {value: 0, label: 'Loading...'}
-                                ]
-                            }
-                        }}
+                        options={taxonomyOptions()}
                         onChange={(newValue) => {
-                            updateLoopSettings('taxonomy', newValue);
+                            updateLoopSettings({
+                                taxonomy: newValue,
+                                terms: []
+                            });
                         }}
                         __next40pxDefaultSize
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
                         label={'Term'}
-                        value={()=>{
+                        value={termOptions()}
+                        options={() => {
                             if (!!loop?.terms?.length) {
+
                                 return [
-                                    {value: '', label: 'Select a term'},
+                                    {value: 0, label: 'Select a Term'},
                                     ...loop.terms.filter((term) => {
-                                        return true;
+                                        return !!term;
                                     }).map((term) => {
-                                        return {value: term.id, label: term.name};
+                                        return {value: term.id, label: term.label};
                                     })
                                 ];
+
                             } else {
                                 return [
                                     {value: 0, label: 'Loading...'}
                                 ]
                             }
                         }}
-                        options={termsOptions}
                         onChange={(newValue) => {
-                            updateLoopSettings('term', newValue);
+                            updateLoopSettings({term: newValue});
                         }}
                         __next40pxDefaultSize
                         __nextHasNoMarginBottom
@@ -477,10 +487,10 @@ registerBlockType(metadata.name, {
 
                     <QueryControls
                         onOrderByChange={(newValue) => {
-                            updateLoopSettings('orderby', newValue);
+                            updateLoopSettings({orderby: newValue});
                         }}
                         onOrderChange={(newValue) => {
-                            updateLoopSettings('order', newValue);
+                            updateLoopSettings({order: newValue});
                         }}
                         order={queryArgs?.order}
                         orderBy={queryArgs?.orderby}
@@ -494,7 +504,7 @@ registerBlockType(metadata.name, {
                             min={1}
                             isShiftStepEnabled={false}
                             onChange={(newValue) => {
-                                updateLoopSettings('posts_per_page', newValue);
+                                updateLoopSettings({posts_per_page: newValue});
                             }}
                             value={queryArgs?.posts_per_page}
                         />
@@ -503,7 +513,7 @@ registerBlockType(metadata.name, {
                             label={'Pagination Label'}
                             __next40pxDefaultSize
                             onChange={(newValue) => {
-                                updateLoopSettings('pagination_label', newValue);
+                                updateLoopSettings({pagination_label: newValue});
                             }}
                             value={queryArgs?.pagination_label}
                         />
@@ -519,7 +529,7 @@ registerBlockType(metadata.name, {
                         label="Pagination"
                         checked={!!queryArgs?.pagination}
                         onChange={(newValue) => {
-                            updateLoopSettings('pagination', newValue);
+                            updateLoopSettings({pagination: newValue});
                         }}
                     />
                 </Grid>

@@ -61,7 +61,7 @@ function Loop({attributes, setAttributes, currentTab}) {
              });
         }
 
-        //console.log(result);
+        console.log(result);
 
 
         setLoop({

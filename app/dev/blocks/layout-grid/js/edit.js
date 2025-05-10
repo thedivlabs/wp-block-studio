@@ -87,7 +87,7 @@ registerBlockType(metadata.name, {
     edit: (props) => {
 
         const {attributes, setAttributes, clientId} = props;
-
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
         const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
         const [currentTab, setCurrentTab] = useState('options');

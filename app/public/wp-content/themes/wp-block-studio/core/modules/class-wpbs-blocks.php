@@ -74,6 +74,9 @@ class WPBS_Blocks {
 				'attributes' => [
 					'wpbs-css' => [
 						'type' => 'string'
+					],
+					'wpbs-props' => [
+						'type' => 'object'
 					]
 				]
 			];

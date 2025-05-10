@@ -189,6 +189,10 @@ registerBlockType(metadata.name, {
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             updateGridSettings({'columns-mobile': newValue});
+                            setAttributes({
+                                ...attributes.props,
+                                'columns-mobile': newValue
+                            });
                         }}
                         value={props['columns-mobile']}
                     />
@@ -198,6 +202,10 @@ registerBlockType(metadata.name, {
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             updateGridSettings({'columns-small': newValue});
+                            setAttributes({
+                                ...attributes.props,
+                                'columns-small': newValue
+                            });
                         }}
                         value={props['columns-small']}
                     />
@@ -207,6 +215,10 @@ registerBlockType(metadata.name, {
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             updateGridSettings({'columns-large': newValue});
+                            setAttributes({
+                                ...attributes.props,
+                                'columns-large': newValue
+                            });
                         }}
                         value={props['columns-large']}
                     />

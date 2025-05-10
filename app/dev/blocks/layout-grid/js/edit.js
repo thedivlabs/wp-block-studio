@@ -23,7 +23,6 @@ import {
     PanelBody,
     QueryControls,
     SelectControl,
-    Spinner,
     TabPanel,
     TextControl,
     ToggleControl
@@ -79,6 +78,7 @@ registerBlockType(metadata.name, {
             default: {
                 'breakpoint-small': undefined,
                 'masonry': undefined,
+                'gallery': undefined,
                 'divider': undefined,
                 'divider-icon': undefined,
                 'divider-icon-size': undefined,
@@ -93,21 +93,8 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
-
-        const [divider, setDivider] = useState(attributes['wpbs-divider']);
-        const [columnsMobile, setColumnsMobile] = useState(attributes['wpbs-prop-columns-mobile']);
-        const [columnsSmall, setColumnsSmall] = useState(attributes['wpbs-prop-columns-small']);
-        const [columnsLarge, setColumnsLarge] = useState(attributes['wpbs-prop-columns-large']);
-        const [masonry, setMasonry] = useState(attributes['wpbs-masonry']);
-        const [dividerIcon, setDividerIcon] = useState(attributes['wpbs-divider-icon']);
-        const [dividerIconSize, setDividerIconSize] = useState(attributes['wpbs-divider-icon-size']);
-        const [dividerIconColor, setDividerIconColor] = useState(attributes['wpbs-divider-icon-color']);
-        const [breakpointSmall, setBreakpointSmall] = useState(attributes['wpbs-breakpoint-small']);
         const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
-
         const [currentTab, setCurrentTab] = useState('options');
-
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
 
         const [loop, setLoop] = useState({
@@ -169,7 +156,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({
-                'uniqueId': uniqueId
+                'uniqueId': useInstanceId(registerBlockType, 'wpbs-layout-grid')
             });
         }, []);
 

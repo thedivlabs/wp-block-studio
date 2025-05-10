@@ -70,7 +70,13 @@ class WPBS_Blocks {
 				continue;
 			}
 
-			$args = [];
+			$args = [
+				'attributes' => [
+					'wpbs-css' => [
+						'type' => 'string'
+					]
+				]
+			];
 
 
 			if ( empty( $block_object['render'] ) && empty( $block_object['render_callback'] ) ) {

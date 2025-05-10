@@ -10,14 +10,6 @@
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-css": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "queryArgs": {
-      "type": "object",
-      "show_in_rest": true
-    },
     "cardTemplate": {
       "type": "string",
       "show_in_rest": true

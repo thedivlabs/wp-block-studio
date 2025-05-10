@@ -1,5 +1,5 @@
-import {useState} from "react";
-import {useSelect} from "@wordpress/data";
+import {useEffect, useState} from "react";
+import {select, subscribe, useSelect,getEntityRecords} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {
     __experimentalGrid as Grid,
@@ -12,9 +12,9 @@ import {
 } from "@wordpress/components";
 
 
-function Loop({attributes, setAttributes, currentTab}) {
+function Loop({attributes, setAttributes}) {
 
-    currentTab = currentTab || 'loop'
+    //currentTab = currentTab || 'loop'
 
     const [loop, setLoop] = useState({
         postTypes: [],
@@ -25,24 +25,70 @@ function Loop({attributes, setAttributes, currentTab}) {
 
     const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
 
+    useEffect(() => {
+
+        const unsubscribe = subscribe(() => {
+            if (
+                select(coreStore).hasFinishedResolution('getPostTypes') &&
+                select(coreStore).hasFinishedResolution('getTaxonomies')
+            ) {
+
+                const postTypes = select(coreStore).getPostTypes().filter((type) => {
+                    return !!type.viewable && !['attachment'].includes(type.slug);
+                });
+                const taxonomies = select(coreStore).getTaxonomies()?.filter(tax => tax.visibility.public);
+
+                setLoop({
+                    ...loop,
+                    postTypes: postTypes,
+                    taxonomies:taxonomies
+                })
+                console.log('finished loading');
+                console.log(loop);
+                unsubscribe(); // Prevent future updates
+            }
+        });
+
+        select(coreStore).getPostTypes();
+        select(coreStore).getTaxonomies();
+    }, []);
+
+    useEffect(() => {
+
+        const unsubscribe = subscribe(() => {
+            console.log('starting terms');
+
+            const hasResolved = select(coreStore).hasFinishedResolution(
+                'getEntityRecords',
+                ['taxonomy', queryArgs.taxonomy, {
+                    hide_empty: true,
+                    per_page: -1
+                }]
+            );
+
+            if (hasResolved) {
+                const terms = getEntityRecords('taxonomy', queryArgs.taxonomy, {
+                    hide_empty: true,
+                    per_page: -1
+                });
+
+                setLoop({
+                    ...loop,
+                    terms: terms,
+                })
+                console.log('finished terms');
+                console.log(loop);
+                unsubscribe();
+            }
+        });
+    }, [queryArgs]);
+
+
     useSelect((select) => {
-
-        if (currentTab !== 'loop') {
-            return;
-        }
-
+return false;
         let result = {};
 
-        const {getPostTypes} = select(coreStore);
-        const {getTaxonomies} = select(coreStore);
         const {getEntityRecords} = select(coreStore);
-
-        if (!loop.postTypes.length) {
-            result.postTypes = getPostTypes()?.filter((type) => {
-                return !!type.viewable && !['attachment'].includes(type.slug);
-            });
-            result.taxonomies = getTaxonomies()?.filter(tax => tax.visibility.public);
-        }
 
         if (!loop.terms?.length && !!queryArgs?.taxonomy) {
 
@@ -50,15 +96,19 @@ function Loop({attributes, setAttributes, currentTab}) {
                 hide_empty: true,
                 per_page: -1
             });
+
+            console.log('setting terms');
         }
 
         if (!!queryArgs.post_type && !loop.suppressPosts?.length) {
 
-             result.suppressPosts = getEntityRecords('postType', queryArgs.post_type, {
-                 per_page: -1,
-                 order: 'asc',
-                 orderby: 'title',
-             });
+            result.suppressPosts = getEntityRecords('postType', queryArgs.post_type, {
+                per_page: -1,
+                order: 'asc',
+                orderby: 'title',
+            });
+
+            console.log('setting suppressPosts');
         }
 
         console.log(result);

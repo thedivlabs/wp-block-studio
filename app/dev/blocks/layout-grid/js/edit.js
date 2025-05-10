@@ -562,8 +562,6 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const {'wpbs-pagination': pagination, 'wpbs-loop-type': loopType} = props.attributes['wpbs-grid'];
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
@@ -598,10 +596,10 @@ registerBlockType(metadata.name, {
         }
 
         const PaginationButton = () => {
-            if (!!pagination && loopType !== 'current') {
+            if (!!props.attributes['wpbs-grid']?.['pagination'] && props.attributes['queryArgs']?.['post_type'] !== 'current') {
                 return <button type="button" class="w-full h-10 relative"
                                data-wp-on-async--click="actions.pagination">
-                    {props.attributes['wpbs-pagination-label'] || 'Show More'}
+                    {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
                 </button>;
             } else {
                 return <></>;

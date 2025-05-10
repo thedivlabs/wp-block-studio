@@ -299,15 +299,20 @@ function hover(attributes) {
 
 function props(attributes) {
     const styles = {
-        mobile: {},
-        desktop: {},
+        mobile: {
+            'row-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null,
+            'column-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null,
+        },
+        desktop: {
+            'row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
+            'column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
+        },
     };
-    
-    Object.entries(attributes).forEach(([key, value]) => {
+
+    Object.entries(attributes?.['wpbs-props']).forEach(([key, value]) => {
         if (
-            key.startsWith('wpbs-prop') &&
             typeof value !== 'object' &&
-            value !== ''
+            !['', undefined, null].includes(value)
         ) {
             const propName = key.replace('wpbs-prop-', '');
 
@@ -321,7 +326,7 @@ function props(attributes) {
         }
     });
 
-    return styles;
+    return Object.fromEntries(Object.entries(styles).filter((k, style) => !!style));
 }
 
 export function Style({attributes, setAttributes, uniqueId, customCss = '', selector = ''}) {

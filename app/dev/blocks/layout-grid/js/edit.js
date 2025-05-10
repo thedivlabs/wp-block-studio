@@ -66,42 +66,28 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...layoutAttributes,
         ...backgroundAttributes,
-        ['wpbs-prop-columns-mobile']: {
-            type: 'string'
+        'wpbs-props': {
+            type: 'object',
+            default: {
+                'columns-mobile': undefined,
+                'columns-small': undefined,
+                'columns-large': undefined,
+            }
         },
-        ['wpbs-prop-columns-small']: {
-            type: 'string'
-        },
-        ['wpbs-prop-columns-large']: {
-            type: 'string'
-        },
-        ['wpbs-breakpoint-small']: {
-            type: 'string'
-        },
-        ['wpbs-masonry']: {
-            type: 'boolean'
-        },
-        ['wpbs-divider']: {
-            type: 'object'
-        },
-        ['wpbs-divider-icon']: {
-            type: 'string'
-        },
-        ['wpbs-divider-icon-size']: {
-            type: 'string'
-        },
-        ['wpbs-divider-icon-color']: {
-            type: 'string'
-        },
-        ['wpbs-pagination']: {
-            type: 'boolean'
-        },
-        ['wpbs-pagination-size']: {
-            type: 'string'
-        },
-        ['wpbs-pagination-label']: {
-            type: 'string'
-        },
+        'wpbs-grid': {
+            type: 'object',
+            default: {
+                'breakpoint-small': undefined,
+                'masonry': undefined,
+                'divider': undefined,
+                'divider-icon': undefined,
+                'divider-icon-size': undefined,
+                'divider-icon-color': undefined,
+                'pagination': undefined,
+                'pagination-size': undefined,
+                'pagination-label': undefined,
+            }
+        }
     },
     edit: (props) => {
 
@@ -187,17 +173,18 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        useEffect(() => {
-            setAttributes({
-                'wpbs-prop-row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
-                'wpbs-prop-row-gap-mobile': attributes['wpbs-layout']['gap-mobile']?.top ?? null,
-                'wpbs-prop-column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
-                'wpbs-prop-column-gap-mobile': attributes['wpbs-layout']['gap-mobile']?.left ?? null,
-            });
-        }, [
-            attributes?.style?.spacing,
-            attributes?.['wpbs-layout']?.['gap-mobile']
-        ]);
+
+        function updateGridSettings(newValue) {
+
+            const result = {
+                ...grid,
+                ...newValue
+            };
+
+            setAttributes({'wpbs-grid': result});
+            setQueryArgs(result);
+
+        }
 
         function updateLoopSettings(newValue) {
 

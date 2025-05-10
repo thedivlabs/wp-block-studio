@@ -73,7 +73,7 @@ registerBlockType(metadata.name, {
                 'columns-large': undefined,
                 'breakpoint-small': undefined,
                 'masonry': undefined,
-                'gallery': undefined,
+                'gallery': {},
                 'divider': {},
                 'divider-icon': undefined,
                 'divider-icon-size': undefined,

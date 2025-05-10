@@ -167,11 +167,11 @@ function mobile(attributes) {
     ];
 
     const specialAttributes = Object.fromEntries(
-        Object.entries(attributes['wpbs-layout']).filter(([key]) => specialKeys.includes(key))
+        Object.entries(attributes?.['wpbs-layout']).filter(([key]) => specialKeys.includes(key))
     );
 
     const mobileAttributes = Object.fromEntries(
-        Object.entries(attributes['wpbs-layout']).filter(([key, value]) =>
+        Object.entries(attributes?.['wpbs-layout']).filter(([key, value]) =>
             key.includes('mobile') &&
             typeof value !== 'object' &&
             !key.includes('hover') &&
@@ -269,7 +269,7 @@ function mobile(attributes) {
 function hover(attributes) {
 
     const hoverAttributes = Object.fromEntries(
-        Object.entries(attributes['wpbs-layout']).filter(([key, value]) =>
+        Object.entries(attributes?.['wpbs-layout']).filter(([key, value]) =>
             key.includes('hover') &&
             typeof value !== 'object' &&
             !key.includes('mobile')
@@ -309,7 +309,7 @@ function props(attributes) {
         },
     };
 
-    Object.entries(attributes?.['wpbs-props']).forEach(([key, value]) => {
+    Object.entries(attributes?.['wpbs-props'] ?? {}).forEach(([key, value]) => {
         if (
             typeof value !== 'object' &&
             !['', undefined, null].includes(value)

@@ -151,7 +151,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({
-                'uniqueId': useInstanceId(registerBlockType, 'wpbs-layout-grid')
+                'uniqueId': uniqueId
             });
         }, []);
 

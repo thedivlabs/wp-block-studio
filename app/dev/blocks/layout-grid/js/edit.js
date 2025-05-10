@@ -79,7 +79,7 @@ registerBlockType(metadata.name, {
                 'breakpoint-small': undefined,
                 'masonry': undefined,
                 'gallery': undefined,
-                'divider': undefined,
+                'divider': {},
                 'divider-icon': undefined,
                 'divider-icon-size': undefined,
                 'divider-icon-color': undefined,
@@ -94,9 +94,10 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
+        const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
+        const [props, setProps] = useState(attributes['wpbs-props'] || {});
         const [currentTab, setCurrentTab] = useState('options');
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
-
         const [loop, setLoop] = useState({
             postTypes: [],
             taxonomies: [],
@@ -161,6 +162,17 @@ registerBlockType(metadata.name, {
         }, []);
 
 
+        function updatePropsSettings(newValue) {
+
+            const result = {
+                ...attributes['wpbs-props'],
+                ...newValue
+            };
+
+            setAttributes({'wpbs-props': result});
+            setProps(result);
+        }
+
         function updateGridSettings(newValue) {
 
             const result = {
@@ -169,7 +181,7 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({'wpbs-grid': result});
-            setQueryArgs(result);
+            setGrid(result);
 
         }
 
@@ -193,46 +205,41 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-prop-columns-mobile']: newValue});
-                            setColumnsMobile(newValue);
+                            updatePropsSettings({'columns-mobile': newValue});
                         }}
-                        value={columnsMobile}
+                        value={props['columns-mobile']}
                     />
                     <NumberControl
                         label={'Small'}
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-prop-columns-small']: newValue});
-                            setColumnsSmall(newValue);
+                            updatePropsSettings({'columns-small': newValue});
                         }}
-                        value={columnsSmall}
+                        value={props['columns-small']}
                     />
                     <NumberControl
                         label={'Large'}
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            setAttributes({['wpbs-prop-columns-large']: newValue});
-                            setColumnsLarge(newValue);
+                            updatePropsSettings({'columns-large': newValue});
                         }}
-                        value={columnsLarge}
+                        value={props['columns-large']}
                     />
                 </Grid>
             </BaseControl>
-            <Breakpoint defaultValue={breakpointSmall}
+            <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-small']}
                         callback={(newValue) => {
-                            setAttributes({['wpbs-breakpoint-small']: newValue});
-                            setBreakpointSmall(newValue);
+                            updateGridSettings({'breakpoint-small': newValue});
                         }}/>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Masonry"
-                    checked={!!masonry}
+                    checked={!!grid['masonry']}
                     onChange={(newValue) => {
-                        setAttributes({['wpbs-masonry']: newValue});
-                        setMasonry(newValue);
+                        updateGridSettings({'masonry': newValue});
                     }}
                 />
             </Grid>
@@ -241,35 +248,31 @@ registerBlockType(metadata.name, {
                 enableAlpha
                 enableStyle
                 disableUnits
-                value={divider}
+                value={grid['divider'] || {}}
                 colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}
                 label="Divider"
                 onChange={(newValue) => {
-                    setAttributes({['wpbs-divider']: newValue});
-                    setDivider(newValue);
+                    updateGridSettings({'divider': newValue})
                 }}
                 shouldSanitizeBorder
             />
             <Grid columns={2} columnGap={15} rowGap={20}>
 
-
                 <InputControl
                     label={'Divider Icon'}
                     __next40pxDefaultSize
-                    value={dividerIcon}
+                    value={grid['divider-icon']}
                     onChange={(newValue) => {
-                        setAttributes({['wpbs-divider-icon']: newValue});
-                        setDividerIcon(newValue);
+                        updateGridSettings({'divider-icon': newValue})
                     }}
                 />
                 <UnitControl
                     label={'Icon Size'}
-                    value={dividerIconSize}
+                    value={grid['divider-icon-size']}
                     isResetValueOnUnitChange={true}
                     onChange={(newValue) => {
-                        setAttributes({['wpbs-divider-icon-size']: newValue});
-                        setDividerIconSize(newValue);
+                        updateGridSettings({'divider-icon-size': newValue})
                     }}
                     units={[
                         {value: 'px', label: 'px', default: 0},
@@ -287,10 +290,9 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'icon-color',
                         label: 'Divider Icon Color',
-                        value: dividerIconColor,
+                        value: grid['divider-icon-color'],
                         onChange: (newValue) => {
-                            setAttributes({['wpbs-divider-icon-color']: newValue});
-                            setDividerIconColor(newValue);
+                            updateGridSettings({'divider-icon-color': newValue})
                         },
                         isShownByDefault: true
                     }
@@ -323,7 +325,6 @@ registerBlockType(metadata.name, {
                         .filter(Boolean);
 
                     updateLoopSettings({post__not_in: post_ids});
-
 
                 };
 
@@ -548,7 +549,6 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
-
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

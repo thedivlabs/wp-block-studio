@@ -570,12 +570,12 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes.uniqueId,
-                divider: !!props.attributes['wpbs-divider'],
-                breakpoints: props.attributes['wpbs-breakpoints'],
+                divider: !!props.attributes['wpbs-grid']?.['divider'],
+                breakpoints: props.attributes['wpbs-grid']?.['breakpoints'],
                 columns: {
-                    mobile: props.attributes['wpbs-prop-columns-mobile'] || 1,
-                    small: props.attributes['wpbs-prop-columns-small'] || 2,
-                    large: props.attributes['wpbs-prop-columns-large'] || 3,
+                    mobile: props.attributes['wpbs-props']?.['columns-mobile'] ?? 1,
+                    small: props.attributes['wpbs-props']?.['columns-small'] ?? 2,
+                    large: props.attributes['wpbs-props']?.['columns-large'] ?? 3,
                 }
             }),
             style: {

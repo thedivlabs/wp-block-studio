@@ -12,6 +12,7 @@ import metadata from "../block.json"
 import {layoutAttributes, LayoutControls} from "Components/Layout"
 import {backgroundAttributes, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style} from "Components/Style"
+import Loop from "Components/Loop"
 import {
     __experimentalBorderControl as BorderControl,
     __experimentalGrid as Grid,
@@ -19,19 +20,13 @@ import {
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
     BaseControl,
-    FormTokenField,
     PanelBody,
-    QueryControls,
-    SelectControl,
     TabPanel,
-    TextControl,
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
-import {useSelect} from "@wordpress/data";
-import {store as coreStore} from "@wordpress/core-data";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -88,73 +83,14 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
-        const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
         const [currentTab, setCurrentTab] = useState('options');
-        const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
-        const [loop, setLoop] = useState({
-            postTypes: [],
-            taxonomies: [],
-            terms: [],
-            suppressPosts: [],
-        });
-
-        useSelect((select) => {
-
-            if (currentTab !== 'loop') {
-                return;
-            }
-
-            let result = {};
-
-            const {getPostTypes} = select(coreStore);
-            const {getTaxonomies} = select(coreStore);
-            const {getEntityRecords} = select(coreStore);
-
-            if (!loop.postTypes.length) {
-
-                result.postTypes = getPostTypes()?.filter((type) => {
-                    return !!type.viewable && !['attachment'].includes(type.slug);
-                });
-                result.taxonomies = getTaxonomies()?.filter(tax => tax.visibility.public);
-
-            }
-
-            if (!loop.terms?.length && !!queryArgs?.taxonomy) {
-
-                result.terms = getEntityRecords('taxonomy', queryArgs.taxonomy, {
-                    hide_empty: true,
-                    per_page: -1
-                });
-
-            }
-
-
-            if (!!queryArgs.post_type && !loop.suppressPosts?.length) {
-
-                result.suppressPosts = getEntityRecords('postType', queryArgs.post_type, {
-                    per_page: -1,
-                    order: 'asc',
-                    orderby: 'title',
-                });
-
-                console.log(result);
-            }
-
-
-            setLoop({
-                ...loop,
-                ...result
-            });
-
-        }, [currentTab, queryArgs]);
 
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId
             });
         }, []);
-
 
         function updateGridSettings(newValue) {
 
@@ -165,18 +101,6 @@ registerBlockType(metadata.name, {
 
             setAttributes({'wpbs-grid': result});
             setGrid(result);
-
-        }
-
-        function updateLoopSettings(newValue) {
-
-            const result = {
-                ...queryArgs,
-                ...newValue
-            };
-
-            setAttributes({queryArgs: result});
-            setQueryArgs(result);
 
         }
 
@@ -294,200 +218,11 @@ registerBlockType(metadata.name, {
                 ]}
             />
         </Grid>;
-
-        const tabLoop = () => {
-
-            const SuppressPostsField = () => {
-
-
-                /*   if (!suppressPosts?.length) {
-                       return <Spinner/>;
-                   }*/
-
-                let posts = loop?.suppressPosts ?? [];
-
-                // Suggestions (post titles)
-                const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
-
-                // Map selected post titles back to their IDs
-                const handleChange = (selectedTitles) => {
-
-                    const post_ids = selectedTitles
-                        .map((title) => {
-                            const match = posts.find((post) => post.title.rendered === title);
-                            return match?.id;
-                        })
-                        .filter(Boolean);
-
-                    updateLoopSettings({post__not_in: post_ids});
-
-                };
-
-                // Convert stored IDs to titles for display in the field
-                const selectedTitles = (queryArgs?.post__not_in ?? []).map((id) => {
-                    const post = posts.find((post) => post.id === id);
-                    return post?.title.rendered;
-                }).filter(Boolean);
-
-                return (
-                    <FormTokenField
-                        __experimentalExpandOnFocus={true}
-                        label="Suppress posts from loop"
-                        value={selectedTitles}
-                        suggestions={suggestions}
-                        onChange={handleChange}
-                        placeholder="Type post titles…"
-                    />
-                );
-            }
-
-            const postTypeOptions = () => {
-                return [
-                    {value: 0, label: 'Select a post type'},
-                    {value: 'current', label: 'Current'},
-                    ...(loop?.postTypes ?? []).map((postType) => {
-                        return {value: postType.slug, label: postType.name};
-                    })
-                ];
-            }
-
-            const taxonomyOptions = () => {
-                return [
-                    {value: 0, label: 'Select a taxonomy'},
-                    ...(loop?.taxonomies ?? []).map((tax) => {
-                        return {value: tax.slug, label: tax.name};
-                    })
-                ];
-            }
-
-            const termOptions = () => {
-                return [
-                    {value: '', label: 'Select a term'},
-                    ...(loop?.terms ?? []).map((term) => {
-                        return {value: term.id, label: term.name};
-                    })
-                ];
-            }
-
-            return <Grid columns={1} columnGap={15} rowGap={20}>
-                <SelectControl
-                    label={'Post Type'}
-                    value={queryArgs?.post_type}
-                    options={postTypeOptions()}
-                    onChange={(newValue) => {
-                        updateLoopSettings({
-                            post_type: newValue,
-                            post__not_in: [],
-                            term: undefined,
-                        });
-
-                        setLoop({
-                            ...loop,
-                            terms: [],
-                            suppressPosts: [],
-                        });
-                    }}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <Grid columns={1} columnGap={15} rowGap={20}
-                      style={queryArgs?.post_type === 'current' ? {
-                          opacity: .4,
-                          pointerEvents: 'none'
-                      } : {}}>
-
-                    <SelectControl
-                        label={'Taxonomy'}
-                        value={queryArgs?.taxonomy}
-                        options={taxonomyOptions()}
-                        onChange={(newValue) => {
-                            updateLoopSettings({
-                                taxonomy: newValue,
-                                term: undefined,
-                            });
-
-                            setLoop({
-                                ...loop,
-                                terms: []
-                            });
-                        }}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
-                    <SelectControl
-                        label={'Term'}
-                        value={queryArgs?.term}
-                        options={termOptions()}
-                        onChange={(newValue) => {
-                            updateLoopSettings({
-                                term: newValue,
-                            });
-                        }}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
-
-                    <SuppressPostsField/>
-
-                    <QueryControls
-                        onOrderByChange={(newValue) => {
-                            updateLoopSettings({orderby: newValue});
-                        }}
-                        onOrderChange={(newValue) => {
-                            updateLoopSettings({order: newValue});
-                        }}
-                        order={queryArgs?.order}
-                        orderBy={queryArgs?.orderby}
-                    />
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-
-                        <NumberControl
-                            label={'Page Size'}
-                            __next40pxDefaultSize
-                            min={1}
-                            isShiftStepEnabled={false}
-                            onChange={(newValue) => {
-                                updateLoopSettings({posts_per_page: newValue});
-                            }}
-                            value={queryArgs?.posts_per_page}
-                        />
-
-                        <TextControl
-                            label={'Pagination Label'}
-                            __next40pxDefaultSize
-                            onChange={(newValue) => {
-                                updateLoopSettings({pagination_label: newValue});
-                            }}
-                            value={queryArgs?.pagination_label}
-                        />
-
-
-                    </Grid>
-
-
-                </Grid>
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
-                    <ToggleControl
-                        __nextHasNoMarginBottom
-                        label="Pagination"
-                        checked={!!queryArgs?.pagination}
-                        onChange={(newValue) => {
-                            updateLoopSettings({pagination: newValue});
-                        }}
-                    />
-                </Grid>
-            </Grid>;
-        };
-
-        const tabGallery = <Grid columns={1} columnGap={15} rowGap={20}>
-            <></>
-        </Grid>;
+        const tabLoop = <Loop attributes={attributes} setAttributes={setAttributes} currentTab={currentTab} />
 
         const tabs = {
             options: tabOptions,
-            loop: tabLoop(),
-            gallery: tabGallery
+            loop:tabLoop
         }
 
         const blockProps = useBlockProps({

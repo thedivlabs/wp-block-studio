@@ -41,7 +41,7 @@ function desktop(attributes) {
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
-        Object.entries(attributes['wpbs-layout']).filter(([key]) => [
+        Object.entries(attributes?.['wpbs-layout'] ?? {}).filter(([key]) => [
             'mask-image',
             'mask-size',
             'mask-origin',
@@ -358,7 +358,7 @@ export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
         desktopCss += prop + ':' + value + ';';
     });
 
-    Object.entries(customProps.desktop).forEach(([prop, value]) => {
+    Object.entries(customProps?.desktop ?? {}).forEach(([prop, value]) => {
         desktopProps += prop + ':' + value + ';';
     });
 
@@ -370,7 +370,7 @@ export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
         mobileCss += prop + ':' + value + ';';
     });
 
-    Object.entries(customProps.mobile).forEach(([prop, value]) => {
+    Object.entries(customProps?.mobile ?? {}).forEach(([prop, value]) => {
         mobileProps += prop + ':' + value + ';';
     });
 

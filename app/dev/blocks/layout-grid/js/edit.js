@@ -562,7 +562,7 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const {'wpbs-pagination': pagination, 'wpbs-loop-type': loopType} = props.attributes;
+        const {'wpbs-pagination': pagination, 'wpbs-loop-type': loopType} = props.attributes['wpbs-grid'];
 
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),

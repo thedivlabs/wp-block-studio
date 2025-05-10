@@ -65,17 +65,12 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...layoutAttributes,
         ...backgroundAttributes,
-        'wpbs-props': {
+        'wpbs-grid': {
             type: 'object',
             default: {
                 'columns-mobile': undefined,
                 'columns-small': undefined,
                 'columns-large': undefined,
-            }
-        },
-        'wpbs-grid': {
-            type: 'object',
-            default: {
                 'breakpoint-small': undefined,
                 'masonry': undefined,
                 'gallery': undefined,
@@ -95,7 +90,6 @@ registerBlockType(metadata.name, {
 
         const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
-        const [props, setProps] = useState(attributes['wpbs-props'] || {});
         const [currentTab, setCurrentTab] = useState('options');
         const [gallery, setGallery] = useState(attributes['wpbs-gallery']);
         const [loop, setLoop] = useState({
@@ -162,17 +156,6 @@ registerBlockType(metadata.name, {
         }, []);
 
 
-        function updatePropsSettings(newValue) {
-
-            const result = {
-                ...attributes['wpbs-props'],
-                ...newValue
-            };
-
-            setAttributes({'wpbs-props': result});
-            setProps(result);
-        }
-
         function updateGridSettings(newValue) {
 
             const result = {
@@ -205,7 +188,7 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            updatePropsSettings({'columns-mobile': newValue});
+                            updateGridSettings({'columns-mobile': newValue});
                         }}
                         value={props['columns-mobile']}
                     />
@@ -214,7 +197,7 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            updatePropsSettings({'columns-small': newValue});
+                            updateGridSettings({'columns-small': newValue});
                         }}
                         value={props['columns-small']}
                     />
@@ -223,7 +206,7 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
-                            updatePropsSettings({'columns-large': newValue});
+                            updateGridSettings({'columns-large': newValue});
                         }}
                         value={props['columns-large']}
                     />

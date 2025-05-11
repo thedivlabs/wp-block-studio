@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {select, subscribe, useSelect,getEntityRecords} from "@wordpress/data";
+import {select, subscribe, useSelect, getEntityRecords} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {
     __experimentalGrid as Grid,
@@ -27,47 +27,49 @@ function Loop({attributes, setAttributes}) {
 
     useEffect(() => {
 
+        select(coreStore).getPostTypes();
+        select(coreStore).getTaxonomies();
+
         const unsubscribe = subscribe(() => {
+
             if (
                 select(coreStore).hasFinishedResolution('getPostTypes') &&
                 select(coreStore).hasFinishedResolution('getTaxonomies')
             ) {
 
-                const postTypes = select(coreStore).getPostTypes().filter((type) => {
-                    return !!type.viewable && !['attachment'].includes(type.slug);
-                });
-                const taxonomies = select(coreStore).getTaxonomies()?.filter(tax => tax.visibility.public);
-
                 setLoop({
                     ...loop,
-                    postTypes: postTypes,
-                    taxonomies:taxonomies
+                    postTypes: select(coreStore).getPostTypes().filter((type) => {
+                        return !!type.viewable && !['attachment'].includes(type.slug);
+                    }),
+                    taxonomies: select(coreStore).getTaxonomies().filter(tax => tax.visibility.public)
                 })
-                console.log('finished loading');
-                console.log(loop);
+
                 unsubscribe(); // Prevent future updates
             }
         });
 
-        select(coreStore).getPostTypes();
-        select(coreStore).getTaxonomies();
     }, []);
 
-    useEffect(() => {
+    /*useEffect(() => {
+        const query = {
+            hide_empty: true,
+            per_page: -1
+        };
 
         const unsubscribe = subscribe(() => {
+            select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query);
             console.log('starting terms');
-const query = {
-    hide_empty: true,
-    per_page: -1
-};
+            console.log(queryArgs.taxonomy);
+            console.log(loop);
+
             const hasResolved = select(coreStore).hasFinishedResolution(
                 'getEntityRecords',
                 ['taxonomy', queryArgs.taxonomy, query]
             );
 
             if (hasResolved) {
-                const terms = getEntityRecords('taxonomy', queryArgs.taxonomy, query);
+                const terms = select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query);
 
                 setLoop({
                     ...loop,
@@ -78,45 +80,10 @@ const query = {
                 unsubscribe();
             }
         });
-    }, [queryArgs]);
 
 
-    useSelect((select) => {
-return false;
-        let result = {};
+    }, [queryArgs?.taxonomy]);*/
 
-        const {getEntityRecords} = select(coreStore);
-
-        if (!loop.terms?.length && !!queryArgs?.taxonomy) {
-
-            result.terms = getEntityRecords('taxonomy', queryArgs.taxonomy, {
-                hide_empty: true,
-                per_page: -1
-            });
-
-            console.log('setting terms');
-        }
-
-        if (!!queryArgs.post_type && !loop.suppressPosts?.length) {
-
-            result.suppressPosts = getEntityRecords('postType', queryArgs.post_type, {
-                per_page: -1,
-                order: 'asc',
-                orderby: 'title',
-            });
-
-            console.log('setting suppressPosts');
-        }
-
-        console.log(result);
-
-
-        setLoop({
-            ...loop,
-            ...result
-        });
-
-    }, [queryArgs]);
 
     function updateSettings(newValue) {
 

@@ -57,20 +57,17 @@ function Loop({attributes, setAttributes}) {
 
         const unsubscribe = subscribe(() => {
             console.log('starting terms');
-
+const query = {
+    hide_empty: true,
+    per_page: -1
+};
             const hasResolved = select(coreStore).hasFinishedResolution(
                 'getEntityRecords',
-                ['taxonomy', queryArgs.taxonomy, {
-                    hide_empty: true,
-                    per_page: -1
-                }]
+                ['taxonomy', queryArgs.taxonomy, query]
             );
 
             if (hasResolved) {
-                const terms = getEntityRecords('taxonomy', queryArgs.taxonomy, {
-                    hide_empty: true,
-                    per_page: -1
-                });
+                const terms = getEntityRecords('taxonomy', queryArgs.taxonomy, query);
 
                 setLoop({
                     ...loop,

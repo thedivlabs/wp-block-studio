@@ -27,7 +27,6 @@ function Loop({attributes, setAttributes}) {
 
     useEffect(() => {
 
-
         const unsubscribe = subscribe(() => {
 
             const query = {
@@ -57,8 +56,6 @@ function Loop({attributes, setAttributes}) {
                 unsubscribe();
             }
         });
-
-        console.log(loop);
 
     }, [queryArgs?.taxonomy]);
 
@@ -146,7 +143,7 @@ function Loop({attributes, setAttributes}) {
             })
         ];
     }
-    
+
     return <Grid columns={1} columnGap={15} rowGap={20}>
         <SelectControl
             label={'Post Type'}

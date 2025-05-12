@@ -35,14 +35,14 @@ function Loop({attributes, setAttributes}) {
                 per_page: -1
             };
 
-            const postTypes = !loop?.postTypes.length ? select(coreStore).getPostTypes() : loop.postTypes;
-            const taxonomies = !loop?.taxonomies.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
-            const terms = !loop?.terms.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query) : loop.terms;
+            const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
+            const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
+            const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query) : loop.terms;
 
             if (
-                (!!loop?.postTypes.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
-                (!!loop?.taxonomies.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
-                (!!loop?.terms.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, query]))
+                (!!loop?.postTypes?.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
+                (!!loop?.taxonomies?.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
+                (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, query]))
             ) {
 
                 setLoop({

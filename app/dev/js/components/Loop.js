@@ -162,7 +162,6 @@ function Loop({attributes, setAttributes}) {
 
                 setLoop({
                     ...loop,
-                    terms: [],
                     suppressPosts: [],
                 });
             }}

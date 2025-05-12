@@ -196,8 +196,7 @@ function Loop({attributes, setAttributes}) {
 
                     setLoop({
                         ...loop,
-                        terms: [],
-                        suppressPosts: []
+                        terms: []
                     });
                 }}
                 __next40pxDefaultSize
@@ -210,11 +209,6 @@ function Loop({attributes, setAttributes}) {
                 onChange={(newValue) => {
                     updateSettings({
                         term: newValue,
-                        suppressPosts: [],
-                    });
-                    setLoop({
-                        ...loop,
-                        suppressPosts: []
                     });
                 }}
                 __next40pxDefaultSize

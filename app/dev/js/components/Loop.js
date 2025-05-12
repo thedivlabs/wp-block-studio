@@ -40,9 +40,13 @@ function Loop({attributes, setAttributes}) {
             const suppressQuery = {
                 per_page: -1,
                 status: 'publish',
-                order:'asc',
-                orderby:'title'
+                order: 'asc',
+                orderby: 'title'
             };
+
+            if (!!queryArgs?.taxonomy && !!queryArgs?.term) {
+                suppressQuery[queryArgs.taxonomy] = queryArgs.term
+            }
 
             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
             const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;

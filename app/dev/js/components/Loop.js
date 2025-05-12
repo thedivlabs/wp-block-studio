@@ -45,7 +45,8 @@ function Loop({attributes, setAttributes}) {
             };
 
             if (!!queryArgs?.taxonomy && !!queryArgs?.term) {
-                suppressQuery[queryArgs.taxonomy] = queryArgs.term
+                const tax_slug = queryArgs.taxonomy === 'category' ? 'categories' : queryArgs.taxonomy;
+                suppressQuery[tax_slug] = [queryArgs.term]
             }
 
             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
@@ -72,8 +73,6 @@ function Loop({attributes, setAttributes}) {
 
             }
         });
-
-        console.log(loop);
 
         return () => unsubscribe();
 

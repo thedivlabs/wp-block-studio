@@ -47,8 +47,10 @@ function Loop({attributes, setAttributes}) {
 
                 setLoop({
                     ...loop,
-                    postTypes: postTypes,
-                    taxonomies: taxonomies,
+                    postTypes: postTypes.filter((type) => {
+                        return !!type.viewable && !['attachment'].includes(type.slug);
+                    }),
+                    taxonomies: taxonomies.filter(tax => tax.visibility.public),
                     terms: terms,
                 })
 

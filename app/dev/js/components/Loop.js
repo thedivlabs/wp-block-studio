@@ -38,7 +38,10 @@ function Loop({attributes, setAttributes}) {
                 per_page: -1
             };
             const suppressQuery = {
-                per_page: -1
+                per_page: -1,
+                status: 'publish',
+                order:'asc',
+                orderby:'title'
             };
 
             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;

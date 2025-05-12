@@ -44,11 +44,6 @@ function Loop({attributes, setAttributes}) {
                 orderby: 'title'
             };
 
-            if (!!queryArgs?.taxonomy && !!queryArgs?.term) {
-                const tax_slug = queryArgs.taxonomy === 'category' ? 'categories' : queryArgs.taxonomy;
-                suppressQuery[tax_slug] = [queryArgs.term]
-            }
-
             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
             const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
             const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery) : loop.terms;

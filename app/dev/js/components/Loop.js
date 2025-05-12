@@ -27,35 +27,48 @@ function Loop({attributes, setAttributes}) {
 
     useEffect(() => {
 
+        if (loop.postTypes.length && loop.taxonomies.length && loop.terms.length) {
+            return;
+        }
+
         const unsubscribe = subscribe(() => {
 
-            const query = {
+            const termsQuery = {
                 hide_empty: true,
+                per_page: -1
+            };
+            const suppressQuery = {
                 per_page: -1
             };
 
             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
             const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
-            const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query) : loop.terms;
+            const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery) : loop.terms;
+            const suppressPosts = !loop?.suppressPosts?.length ? select(coreStore).getEntityRecords('postType', queryArgs.post_type, suppressQuery) : loop.suppressPosts;
 
             if (
                 (!!loop?.postTypes?.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
                 (!!loop?.taxonomies?.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
-                (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, query]))
+                (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, termsQuery]))
+                (!!loop?.suppressPosts?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['postType', queryArgs.post_type, suppressQuery]))
             ) {
 
-                setLoop({
-                    ...loop,
+                setLoop(prevLoop => ({
+                    ...prevLoop,
                     postTypes: postTypes.filter((type) => {
                         return !!type.viewable && !['attachment'].includes(type.slug);
                     }),
                     taxonomies: taxonomies.filter(tax => tax.visibility.public),
                     terms: terms,
-                })
+                    suppressPosts: suppressPosts,
+                }));
 
-                unsubscribe();
             }
         });
+
+        console.log(loop);
+
+        return () => unsubscribe();
 
     }, [queryArgs?.taxonomy]);
 

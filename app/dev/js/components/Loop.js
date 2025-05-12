@@ -27,62 +27,38 @@ function Loop({attributes, setAttributes}) {
 
     useEffect(() => {
 
-        select(coreStore).getPostTypes();
-        select(coreStore).getTaxonomies();
 
         const unsubscribe = subscribe(() => {
 
+            const query = {
+                hide_empty: true,
+                per_page: -1
+            };
+
+            const postTypes = !loop?.postTypes.length ? select(coreStore).getPostTypes() : loop.postTypes;
+            const taxonomies = !loop?.taxonomies.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
+            const terms = !loop?.terms.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query) : loop.terms;
+
             if (
-                select(coreStore).hasFinishedResolution('getPostTypes') &&
-                select(coreStore).hasFinishedResolution('getTaxonomies')
+                (!!loop?.postTypes.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
+                (!!loop?.taxonomies.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
+                (!!loop?.terms.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, query]))
             ) {
 
                 setLoop({
                     ...loop,
-                    postTypes: select(coreStore).getPostTypes().filter((type) => {
-                        return !!type.viewable && !['attachment'].includes(type.slug);
-                    }),
-                    taxonomies: select(coreStore).getTaxonomies().filter(tax => tax.visibility.public)
-                })
-
-                unsubscribe(); // Prevent future updates
-            }
-        });
-
-    }, []);
-
-    /*useEffect(() => {
-        const query = {
-            hide_empty: true,
-            per_page: -1
-        };
-
-        const unsubscribe = subscribe(() => {
-            select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query);
-            console.log('starting terms');
-            console.log(queryArgs.taxonomy);
-            console.log(loop);
-
-            const hasResolved = select(coreStore).hasFinishedResolution(
-                'getEntityRecords',
-                ['taxonomy', queryArgs.taxonomy, query]
-            );
-
-            if (hasResolved) {
-                const terms = select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, query);
-
-                setLoop({
-                    ...loop,
+                    postTypes: postTypes,
+                    taxonomies: taxonomies,
                     terms: terms,
                 })
-                console.log('finished terms');
-                console.log(loop);
+
                 unsubscribe();
             }
         });
 
+        console.log(loop);
 
-    }, [queryArgs?.taxonomy]);*/
+    }, [queryArgs?.taxonomy]);
 
 
     function updateSettings(newValue) {

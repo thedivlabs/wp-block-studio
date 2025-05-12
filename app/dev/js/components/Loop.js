@@ -146,8 +146,7 @@ function Loop({attributes, setAttributes}) {
             })
         ];
     }
-
-
+    
     return <Grid columns={1} columnGap={15} rowGap={20}>
         <SelectControl
             label={'Post Type'}

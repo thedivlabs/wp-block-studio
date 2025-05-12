@@ -49,7 +49,7 @@ function Loop({attributes, setAttributes}) {
             if (
                 (!!loop?.postTypes?.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
                 (!!loop?.taxonomies?.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
-                (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, termsQuery]))
+                (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, termsQuery])) &&
                 (!!loop?.suppressPosts?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['postType', queryArgs.post_type, suppressQuery]))
             ) {
 

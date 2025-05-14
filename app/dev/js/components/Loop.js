@@ -20,7 +20,7 @@ function Loop({attributes, setAttributes}) {
         postTypes: [],
         taxonomies: [],
         terms: [],
-        suppressPosts: [],
+        posts: [],
     });
 
     const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
@@ -30,7 +30,7 @@ function Loop({attributes, setAttributes}) {
         per_page: -1
     };
 
-    const suppressQuery = {
+    const mainQuery = {
         per_page: -1,
         status: 'publish',
         order: 'asc',
@@ -44,7 +44,7 @@ function Loop({attributes, setAttributes}) {
             post_tag: 'tags',
         }[queryArgs.taxonomy] ?? queryArgs.taxonomy;
 
-        suppressQuery[tax_base] = queryArgs.term;
+        mainQuery[tax_base] = queryArgs.term;
     }
 
 
@@ -53,6 +53,9 @@ function Loop({attributes, setAttributes}) {
         select(coreStore).getPostTypes();
         select(coreStore).getTaxonomies();
         select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
+        select(coreStore).getEntityRecords('postType', queryArgs?.post_type ?? 'post', mainQuery);
+
+        console.log('starting queries');
 
         const unsubscribe = subscribe(() => {
 
@@ -64,106 +67,32 @@ function Loop({attributes, setAttributes}) {
                 'getEntityRecords',
                 ['taxonomy', queryArgs.taxonomy, termsQuery]
             );
+            const isSuppressReady = core.hasFinishedResolution(
+                'getEntityRecords',
+                ['postType', queryArgs?.post_type ?? 'post', mainQuery]
+            );
 
-            if (isPostTypesReady && isTaxonomiesReady && isTermsReady) {
+
+            if (isPostTypesReady && isTaxonomiesReady && isTermsReady && isSuppressReady) {
                 const postTypes = core.getPostTypes();
                 const taxonomies = core.getTaxonomies();
                 const terms = core.getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
+                const posts = core.getEntityRecords('postType', queryArgs?.post_type ?? 'post', mainQuery);
 
                 setLoop((prev) => ({
                     ...prev,
                     postTypes: postTypes?.filter((type) => type.viewable && type.slug !== 'attachment') || [],
                     taxonomies: taxonomies?.filter((tax) => tax.visibility?.public) || [],
                     terms: terms || [],
+                    posts: posts || [],
                 }));
+
+                console.log(loop);
 
                 unsubscribe(); // cleanup
             }
         });
-    }, [queryArgs?.taxonomy]);
-
-    useEffect(() => {
-
-        if (!queryArgs?.term && !queryArgs?.post_type) {
-            return;
-        }
-
-        select(coreStore).getEntityRecords('postType', queryArgs.post_type, suppressQuery);
-
-        const unsubscribe = subscribe(() => {
-
-            const core = select(coreStore);
-
-            const isSuppressReady = core.hasFinishedResolution(
-                'getEntityRecords',
-                ['postType', queryArgs.post_type, suppressQuery]
-            );
-
-            console.log(queryArgs);
-
-            if (isSuppressReady) {
-
-                const suppressPosts = core.getEntityRecords('postType', queryArgs.post_type, suppressQuery);
-
-                setLoop((prev) => ({
-                    ...prev,
-                    suppressPosts: suppressPosts || [],
-                }));
-
-                unsubscribe(); // cleanup
-            }
-        });
-    }, [queryArgs?.term, queryArgs?.post_type]);
-
-    /* useEffect(() => {
-
-         if (!!loop?.postTypes.length && !!loop?.taxonomies.length && !!loop?.terms.length) {
-             return;
-         }
-
-         const unsubscribe = subscribe(() => {
-
-             console.log(loop);
-
-             const termsQuery = {
-                 hide_empty: true,
-                 per_page: -1
-             };
-             const suppressQuery = {
-                 per_page: -1,
-                 status: 'publish',
-                 order: 'asc',
-                 orderby: 'title'
-             };
-
-             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
-             const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
-             const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery) : loop.terms;
-             const suppressPosts = !loop?.suppressPosts?.length ? select(coreStore).getEntityRecords('postType', queryArgs.post_type, suppressQuery) : loop.suppressPosts;
-
-             if (
-                 (!!loop?.postTypes?.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
-                 (!!loop?.taxonomies?.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
-                 (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, termsQuery])) &&
-                 (!!loop?.suppressPosts?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['postType', queryArgs.post_type, suppressQuery]))
-             ) {
-
-                 setLoop(prevLoop => ({
-                     ...prevLoop,
-                     postTypes: postTypes.filter((type) => {
-                         return !!type.viewable && !['attachment'].includes(type.slug);
-                     }),
-                     taxonomies: taxonomies.filter(tax => tax.visibility.public),
-                     terms: terms,
-                     suppressPosts: suppressPosts,
-                 }));
-
-             }
-         });
-
-         return () => unsubscribe();
-
-     }, [postType, taxonomy]);*/
+    }, [queryArgs]);
 
 
     function updateSettings(newValue) {
@@ -180,12 +109,7 @@ function Loop({attributes, setAttributes}) {
 
     const SuppressPostsField = () => {
 
-
-        /*   if (!suppressPosts?.length) {
-               return <Spinner/>;
-           }*/
-
-        let posts = loop?.suppressPosts ?? [];
+        let posts = loop?.posts ?? [];
 
         // Suggestions (post titles)
         const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
@@ -214,6 +138,45 @@ function Loop({attributes, setAttributes}) {
             <FormTokenField
                 __experimentalExpandOnFocus={true}
                 label="Suppress posts from loop"
+                value={selectedTitles}
+                suggestions={suggestions}
+                onChange={handleChange}
+                placeholder="Type post titles…"
+            />
+        );
+    }
+
+    const SelectPostsField = () => {
+
+        let posts = loop?.posts ?? [];
+
+        // Suggestions (post titles)
+        const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
+
+        // Map selected post titles back to their IDs
+        const handleChange = (selectedTitles) => {
+
+            const post_ids = selectedTitles
+                .map((title) => {
+                    const match = posts.find((post) => post.title.rendered === title);
+                    return match?.id;
+                })
+                .filter(Boolean);
+
+            updateSettings({post__in: post_ids});
+
+        };
+
+        // Convert stored IDs to titles for display in the field
+        const selectedTitles = (queryArgs?.post__in ?? []).map((id) => {
+            const post = posts.find((post) => post.id === id);
+            return post?.title.rendered;
+        }).filter(Boolean);
+
+        return (
+            <FormTokenField
+                __experimentalExpandOnFocus={true}
+                label="Select posts"
                 value={selectedTitles}
                 suggestions={suggestions}
                 onChange={handleChange}
@@ -264,7 +227,7 @@ function Loop({attributes, setAttributes}) {
 
                 setLoop({
                     ...loop,
-                    suppressPosts: [],
+                    posts: [],
                 });
 
             }}
@@ -285,11 +248,13 @@ function Loop({attributes, setAttributes}) {
                     updateSettings({
                         taxonomy: newValue,
                         term: undefined,
+                        posts: [],
                     });
 
                     setLoop({
                         ...loop,
-                        terms: []
+                        terms: [],
+                        posts: [],
                     });
 
                 }}
@@ -303,11 +268,14 @@ function Loop({attributes, setAttributes}) {
                 onChange={(newValue) => {
                     updateSettings({
                         term: newValue,
+                        posts: [],
                     });
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
+
+            <SelectPostsField/>
 
             <SuppressPostsField/>
 

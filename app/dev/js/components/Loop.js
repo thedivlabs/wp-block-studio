@@ -25,28 +25,6 @@ function Loop({attributes, setAttributes}) {
 
     const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
 
-    const termsQuery = {
-        hide_empty: true,
-        per_page: -1
-    };
-
-    const mainQuery = {
-        per_page: -1,
-        status: 'publish',
-        order: 'asc',
-        orderby: 'title'
-    };
-
-    if (!!queryArgs.taxonomy && !!queryArgs.term) {
-
-        const tax_base = {
-            category: 'categories',
-            post_tag: 'tags',
-        }[queryArgs.taxonomy] ?? queryArgs.taxonomy;
-
-        mainQuery[tax_base] = queryArgs.term;
-    }
-
 
     useEffect(() => {
 
@@ -54,10 +32,36 @@ function Loop({attributes, setAttributes}) {
             return;
         }
 
+        const termsQuery = {
+            hide_empty: true,
+            per_page: -1
+        };
+
+        const mainQuery = {
+            per_page: -1,
+            status: 'publish',
+            order: 'asc',
+            orderby: 'title'
+        };
+
+        if (!!queryArgs.taxonomy && !!queryArgs.term) {
+
+            const tax_base = {
+                category: 'categories',
+                post_tag: 'tags',
+            }[queryArgs.taxonomy] ?? queryArgs.taxonomy;
+
+            mainQuery[tax_base] = queryArgs.term;
+        }
+
+        const postType = {
+            pages: 'page',
+        }?.[queryArgs.post_type] ?? queryArgs.post_type;
+
         select(coreStore).getPostTypes();
         select(coreStore).getTaxonomies();
         select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
-        select(coreStore).getEntityRecords('postType', queryArgs?.post_type ?? 'post', mainQuery);
+        select(coreStore).getEntityRecords('postType', postType, mainQuery);
 
         console.log('starting queries');
 
@@ -73,7 +77,7 @@ function Loop({attributes, setAttributes}) {
             );
             const isSuppressReady = core.hasFinishedResolution(
                 'getEntityRecords',
-                ['postType', queryArgs?.post_type ?? 'post', mainQuery]
+                ['postType', postType, mainQuery]
             );
 
 
@@ -81,7 +85,7 @@ function Loop({attributes, setAttributes}) {
                 const postTypes = core.getPostTypes();
                 const taxonomies = core.getTaxonomies();
                 const terms = core.getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
-                const posts = core.getEntityRecords('postType', queryArgs?.post_type ?? 'post', mainQuery);
+                const posts = core.getEntityRecords('postType', postType, mainQuery);
 
                 setLoop((prev) => ({
                     ...prev,
@@ -91,11 +95,12 @@ function Loop({attributes, setAttributes}) {
                     posts: posts || [],
                 }));
 
+                console.log(mainQuery);
+
                 unsubscribe();
             }
         });
     }, [queryArgs]);
-
 
     function updateSettings(newValue) {
 
@@ -111,17 +116,11 @@ function Loop({attributes, setAttributes}) {
 
     const SuppressPostsField = () => {
 
-        let posts = loop?.posts ?? [];
-
-        // Suggestions (post titles)
-        const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
-
-        // Map selected post titles back to their IDs
         const handleChange = (selectedTitles) => {
 
             const post_ids = selectedTitles
                 .map((title) => {
-                    const match = posts.find((post) => post.title.rendered === title);
+                    const match = loop?.posts.find((post) => post.title.rendered === title);
                     return match?.id;
                 })
                 .filter(Boolean);
@@ -130,9 +129,8 @@ function Loop({attributes, setAttributes}) {
 
         };
 
-        // Convert stored IDs to titles for display in the field
         const selectedTitles = (queryArgs?.post__not_in ?? []).map((id) => {
-            const post = posts.find((post) => post.id === id);
+            const post = loop?.posts.find((post) => post.id === id);
             return post?.title.rendered;
         }).filter(Boolean);
 
@@ -141,7 +139,7 @@ function Loop({attributes, setAttributes}) {
                 __experimentalExpandOnFocus={true}
                 label="Suppress posts"
                 value={selectedTitles}
-                suggestions={suggestions}
+                suggestions={!loop?.posts.length ? [] : loop?.posts.map((post) => post.title.rendered)}
                 onChange={handleChange}
                 placeholder="Type post titles…"
                 __experimentalShowHowTo={false}
@@ -151,17 +149,11 @@ function Loop({attributes, setAttributes}) {
 
     const SelectPostsField = () => {
 
-        let posts = loop?.posts ?? [];
-
-        // Suggestions (post titles)
-        const suggestions = !posts.length ? [] : posts.map((post) => post.title.rendered);
-
-        // Map selected post titles back to their IDs
         const handleChange = (selectedTitles) => {
 
             const post_ids = selectedTitles
                 .map((title) => {
-                    const match = posts.find((post) => post.title.rendered === title);
+                    const match = loop?.posts.find((post) => post.title.rendered === title);
                     return match?.id;
                 })
                 .filter(Boolean);
@@ -170,9 +162,8 @@ function Loop({attributes, setAttributes}) {
 
         };
 
-        // Convert stored IDs to titles for display in the field
         const selectedTitles = (queryArgs?.post__in ?? []).map((id) => {
-            const post = posts.find((post) => post.id === id);
+            const post = loop?.posts.find((post) => post.id === id);
             return post?.title.rendered;
         }).filter(Boolean);
 
@@ -181,7 +172,7 @@ function Loop({attributes, setAttributes}) {
                 __experimentalExpandOnFocus={true}
                 label="Select posts"
                 value={selectedTitles}
-                suggestions={suggestions}
+                suggestions={!loop?.posts.length ? [] : loop?.posts.map((post) => post.title.rendered)}
                 onChange={handleChange}
                 placeholder="Type post titles…"
                 __experimentalShowHowTo={false}

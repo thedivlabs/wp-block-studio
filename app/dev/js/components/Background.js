@@ -741,7 +741,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         }}
                         __nextHasNoMarginBottom
                     />
-                    <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
+                    <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
 
                         <Grid columns={2} columnGap={15} rowGap={20}
                               style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>

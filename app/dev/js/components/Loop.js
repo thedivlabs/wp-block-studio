@@ -25,53 +25,145 @@ function Loop({attributes, setAttributes}) {
 
     const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
 
+    const termsQuery = {
+        hide_empty: true,
+        per_page: -1
+    };
+
+    const suppressQuery = {
+        per_page: -1,
+        status: 'publish',
+        order: 'asc',
+        orderby: 'title'
+    };
+
+    if (!!queryArgs.taxonomy && !!queryArgs.term) {
+
+        const tax_base = {
+            category: 'categories',
+            post_tag: 'tags',
+        }[queryArgs.taxonomy] ?? queryArgs.taxonomy;
+
+        suppressQuery[tax_base] = queryArgs.term;
+    }
+
+
     useEffect(() => {
 
-        if (loop.postTypes.length && loop.taxonomies.length && loop.terms.length) {
-            return;
-        }
+        select(coreStore).getPostTypes();
+        select(coreStore).getTaxonomies();
+        select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
 
         const unsubscribe = subscribe(() => {
 
-            const termsQuery = {
-                hide_empty: true,
-                per_page: -1
-            };
-            const suppressQuery = {
-                per_page: -1,
-                status: 'publish',
-                order: 'asc',
-                orderby: 'title'
-            };
+            const core = select(coreStore);
 
-            const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
-            const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
-            const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery) : loop.terms;
-            const suppressPosts = !loop?.suppressPosts?.length ? select(coreStore).getEntityRecords('postType', queryArgs.post_type, suppressQuery) : loop.suppressPosts;
+            const isPostTypesReady = core.hasFinishedResolution('getPostTypes');
+            const isTaxonomiesReady = core.hasFinishedResolution('getTaxonomies');
+            const isTermsReady = core.hasFinishedResolution(
+                'getEntityRecords',
+                ['taxonomy', queryArgs.taxonomy, termsQuery]
+            );
 
-            if (
-                (!!loop?.postTypes?.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
-                (!!loop?.taxonomies?.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
-                (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, termsQuery])) &&
-                (!!loop?.suppressPosts?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['postType', queryArgs.post_type, suppressQuery]))
-            ) {
+            if (isPostTypesReady && isTaxonomiesReady && isTermsReady) {
+                const postTypes = core.getPostTypes();
+                const taxonomies = core.getTaxonomies();
+                const terms = core.getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
 
-                setLoop(prevLoop => ({
-                    ...prevLoop,
-                    postTypes: postTypes.filter((type) => {
-                        return !!type.viewable && !['attachment'].includes(type.slug);
-                    }),
-                    taxonomies: taxonomies.filter(tax => tax.visibility.public),
-                    terms: terms,
-                    suppressPosts: suppressPosts,
+                setLoop((prev) => ({
+                    ...prev,
+                    postTypes: postTypes?.filter((type) => type.viewable && type.slug !== 'attachment') || [],
+                    taxonomies: taxonomies?.filter((tax) => tax.visibility?.public) || [],
+                    terms: terms || [],
                 }));
 
+                unsubscribe(); // cleanup
             }
         });
-
-        return () => unsubscribe();
-
     }, [queryArgs?.taxonomy]);
+
+    useEffect(() => {
+
+        if (!queryArgs?.term && !queryArgs?.post_type) {
+            return;
+        }
+
+        select(coreStore).getEntityRecords('postType', queryArgs.post_type, suppressQuery);
+
+        const unsubscribe = subscribe(() => {
+
+            const core = select(coreStore);
+
+            const isSuppressReady = core.hasFinishedResolution(
+                'getEntityRecords',
+                ['postType', queryArgs.post_type, suppressQuery]
+            );
+
+            console.log(queryArgs);
+
+            if (isSuppressReady) {
+
+                const suppressPosts = core.getEntityRecords('postType', queryArgs.post_type, suppressQuery);
+
+                setLoop((prev) => ({
+                    ...prev,
+                    suppressPosts: suppressPosts || [],
+                }));
+
+                unsubscribe(); // cleanup
+            }
+        });
+    }, [queryArgs?.term, queryArgs?.post_type]);
+
+    /* useEffect(() => {
+
+         if (!!loop?.postTypes.length && !!loop?.taxonomies.length && !!loop?.terms.length) {
+             return;
+         }
+
+         const unsubscribe = subscribe(() => {
+
+             console.log(loop);
+
+             const termsQuery = {
+                 hide_empty: true,
+                 per_page: -1
+             };
+             const suppressQuery = {
+                 per_page: -1,
+                 status: 'publish',
+                 order: 'asc',
+                 orderby: 'title'
+             };
+
+             const postTypes = !loop?.postTypes?.length ? select(coreStore).getPostTypes() : loop.postTypes;
+             const taxonomies = !loop?.taxonomies?.length ? select(coreStore).getTaxonomies() : loop.taxonomies;
+             const terms = !loop?.terms?.length ? select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery) : loop.terms;
+             const suppressPosts = !loop?.suppressPosts?.length ? select(coreStore).getEntityRecords('postType', queryArgs.post_type, suppressQuery) : loop.suppressPosts;
+
+             if (
+                 (!!loop?.postTypes?.length || select(coreStore).hasFinishedResolution('getPostTypes')) &&
+                 (!!loop?.taxonomies?.length || select(coreStore).hasFinishedResolution('getTaxonomies')) &&
+                 (!!loop?.terms?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['taxonomy', queryArgs.taxonomy, termsQuery])) &&
+                 (!!loop?.suppressPosts?.length || select(coreStore).hasFinishedResolution('getEntityRecords', ['postType', queryArgs.post_type, suppressQuery]))
+             ) {
+
+                 setLoop(prevLoop => ({
+                     ...prevLoop,
+                     postTypes: postTypes.filter((type) => {
+                         return !!type.viewable && !['attachment'].includes(type.slug);
+                     }),
+                     taxonomies: taxonomies.filter(tax => tax.visibility.public),
+                     terms: terms,
+                     suppressPosts: suppressPosts,
+                 }));
+
+             }
+         });
+
+         return () => unsubscribe();
+
+     }, [postType, taxonomy]);*/
 
 
     function updateSettings(newValue) {
@@ -174,6 +266,7 @@ function Loop({attributes, setAttributes}) {
                     ...loop,
                     suppressPosts: [],
                 });
+
             }}
             __next40pxDefaultSize
             __nextHasNoMarginBottom
@@ -198,6 +291,7 @@ function Loop({attributes, setAttributes}) {
                         ...loop,
                         terms: []
                     });
+
                 }}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
@@ -262,6 +356,14 @@ function Loop({attributes, setAttributes}) {
                 checked={!!queryArgs?.pagination}
                 onChange={(newValue) => {
                     updateSettings({pagination: newValue});
+                }}
+            />
+            <ToggleControl
+                __nextHasNoMarginBottom
+                label="Loop Terms"
+                checked={!!queryArgs?.loop_terms}
+                onChange={(newValue) => {
+                    updateSettings({loop_terms: newValue});
                 }}
             />
         </Grid>

@@ -406,7 +406,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize
                 label="Position"
-                value={settings?.['blendMobile'] ?? ''}
+                value={settings?.['positionMobile'] ?? ''}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Center', value: 'center'},

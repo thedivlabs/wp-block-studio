@@ -56,8 +56,6 @@ function Loop({attributes, setAttributes}) {
         select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
         select(coreStore).getEntityRecords('postType', queryArgs.post_type, mainQuery);
 
-        console.log('starting queries');
-
         const unsubscribe = subscribe(() => {
 
             const core = select(coreStore);
@@ -86,9 +84,7 @@ function Loop({attributes, setAttributes}) {
                     terms: terms || [],
                     posts: posts || [],
                 }));
-
-                console.log(mainQuery);
-
+                
                 unsubscribe();
             }
         });

@@ -84,7 +84,6 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
-        const [currentTab, setCurrentTab] = useState('options');
 
         useEffect(() => {
             setAttributes({
@@ -220,7 +219,7 @@ registerBlockType(metadata.name, {
                 ]}
             />
         </Grid>;
-        const tabLoop = <Loop attributes={attributes} setAttributes={setAttributes} currentTab={currentTab}/>
+        const tabLoop = <Loop attributes={attributes} setAttributes={setAttributes}/>
 
         const tabs = {
             options: tabOptions,

@@ -50,6 +50,10 @@ function Loop({attributes, setAttributes}) {
 
     useEffect(() => {
 
+        if (queryArgs.post_type === 'current') {
+            return;
+        }
+
         select(coreStore).getPostTypes();
         select(coreStore).getTaxonomies();
         select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
@@ -87,9 +91,7 @@ function Loop({attributes, setAttributes}) {
                     posts: posts || [],
                 }));
 
-                console.log(loop);
-
-                unsubscribe(); // cleanup
+                unsubscribe();
             }
         });
     }, [queryArgs]);
@@ -137,11 +139,12 @@ function Loop({attributes, setAttributes}) {
         return (
             <FormTokenField
                 __experimentalExpandOnFocus={true}
-                label="Suppress posts from loop"
+                label="Suppress posts"
                 value={selectedTitles}
                 suggestions={suggestions}
                 onChange={handleChange}
                 placeholder="Type post titles…"
+                __experimentalShowHowTo={false}
             />
         );
     }
@@ -181,6 +184,7 @@ function Loop({attributes, setAttributes}) {
                 suggestions={suggestions}
                 onChange={handleChange}
                 placeholder="Type post titles…"
+                __experimentalShowHowTo={false}
             />
         );
     }

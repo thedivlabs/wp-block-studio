@@ -38,8 +38,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             }
         });
 
-        console.log(settings);
-
     }
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
@@ -62,7 +60,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize
                 label="Size"
-                value={settings.size}
+                value={settings?.['size'] ?? ''}
                 options={[
                     {label: 'Default', value: 'contain'},
                     {label: 'Cover', value: 'cover'},
@@ -77,7 +75,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize
                 label="Blend"
-                value={settings.blend}
+                value={settings?.['blend'] ?? ''}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Multiply', value: 'multiply'},
@@ -97,7 +95,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize
                 label="Position"
-                value={settings.position}
+                value={settings?.['position'] ?? ''}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Center', value: 'center'},
@@ -114,7 +112,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize__next40pxDefaultSize
                 label="Origin"
-                value={settings.origin}
+                value={settings?.['origin'] ?? ''}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Center', value: 'center'},
@@ -135,7 +133,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             />
             <UnitControl
                 label={'Max Height'}
-                value={settings.maxHeight}
+                value={settings?.['maxHeight'] ?? ''}
                 isResetValueOnUnitChange={true}
                 onChange={(value) => {
                     updateSettings('maxHeight', value);
@@ -148,7 +146,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize
                 label="Repeat"
-                value={settings.repeat}
+                value={settings?.['repeat'] ?? ''}
                 options={[
                     {label: 'None', value: ''},
                     {label: 'Default', value: 'repeat'},
@@ -170,7 +168,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {
                         slug: 'color',
                         label: 'Color',
-                        value: settings.color,
+                        value: settings?.['color'] ?? '',
                         onChange: (color) => {
                             updateSettings('color', color)
                         },
@@ -181,7 +179,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Scale"
-                value={settings.scale}
+                value={settings?.['scale'] ?? ''}
                 onChange={(value) => {
                     updateSettings('scale', value);
                 }}
@@ -193,7 +191,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Opacity"
-                value={settings.opacity}
+                value={settings?.['opacity'] ?? ''}
                 onChange={(value) => {
                     updateSettings('opacity', value);
                 }}
@@ -205,7 +203,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Width"
-                value={settings.width}
+                value={settings?.['width'] ?? ''}
                 onChange={(value) => {
                     updateSettings('width', value);
                 }}
@@ -217,7 +215,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Height"
-                value={settings.height}
+                value={settings?.['height'] ?? ''}
                 onChange={(value) => {
                     updateSettings('height', value);
                 }}
@@ -229,7 +227,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <RangeControl
                 __nextHasNoMarginBottom
                 label="Fade"
-                value={settings.fade}
+                value={settings?.['fade'] ?? ''}
                 onChange={(value) => {
                     updateSettings('fade', value);
                 }}
@@ -244,7 +242,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
               style={{padding: '1rem 0'}}>
             <ToggleControl
                 label="Mask"
-                checked={!!settings.mask}
+                checked={!!settings?.['mask']}
                 onChange={(value) => {
                     updateSettings('mask', value);
                 }}
@@ -267,7 +265,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                             });
                         }}
                         allowedTypes={['image']}
-                        value={settings['maskImageLarge']}
+                        value={settings?.['maskImageLarge'] ?? {}}
                         render={({open}) => {
                             return <PreviewThumbnail
                                 image={settings['maskImageLarge'] || {}}
@@ -289,7 +287,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 <SelectControl
                     __next40pxDefaultSize
                     label="Mask Origin"
-                    value={settings.maskOrigin}
+                    value={settings?.['maskOrigin'] ?? ''}
                     options={[
                         {label: 'Default', value: ''},
                         {label: 'Center', value: 'center'},
@@ -310,7 +308,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 <SelectControl
                     __next40pxDefaultSize
                     label="Mask Size"
-                    value={settings.maskSize}
+                    value={settings?.['maskSize'] ?? ''}
                     options={[
                         {label: 'Default', value: 'contain'},
                         {label: 'Cover', value: 'cover'},
@@ -348,7 +346,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings.overlay}
+                value={settings?.['overlay'] ?? {}}
                 onChange={(value) => {
                     updateSettings('overlay', value);
                 }}

@@ -14,8 +14,6 @@ import {
 
 function Loop({attributes, setAttributes}) {
 
-    //currentTab = currentTab || 'loop'
-
     const [loop, setLoop] = useState({
         postTypes: [],
         taxonomies: [],
@@ -24,7 +22,6 @@ function Loop({attributes, setAttributes}) {
     });
 
     const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
-
 
     useEffect(() => {
 
@@ -54,14 +51,10 @@ function Loop({attributes, setAttributes}) {
             mainQuery[tax_base] = queryArgs.term;
         }
 
-        const postType = {
-            pages: 'page',
-        }?.[queryArgs.post_type] ?? queryArgs.post_type;
-
         select(coreStore).getPostTypes();
         select(coreStore).getTaxonomies();
         select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
-        select(coreStore).getEntityRecords('postType', postType, mainQuery);
+        select(coreStore).getEntityRecords('postType', queryArgs.post_type, mainQuery);
 
         console.log('starting queries');
 
@@ -77,15 +70,14 @@ function Loop({attributes, setAttributes}) {
             );
             const isSuppressReady = core.hasFinishedResolution(
                 'getEntityRecords',
-                ['postType', postType, mainQuery]
+                ['postType', queryArgs.post_type, mainQuery]
             );
-
 
             if (isPostTypesReady && isTaxonomiesReady && isTermsReady && isSuppressReady) {
                 const postTypes = core.getPostTypes();
                 const taxonomies = core.getTaxonomies();
                 const terms = core.getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
-                const posts = core.getEntityRecords('postType', postType, mainQuery);
+                const posts = core.getEntityRecords('postType', queryArgs.post_type, mainQuery);
 
                 setLoop((prev) => ({
                     ...prev,

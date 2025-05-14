@@ -144,10 +144,16 @@ registerBlockType(metadata.name, {
                     />
                 </Grid>
             </BaseControl>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
             <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-small']}
                         callback={(newValue) => {
                             updateGridSettings({'breakpoint-small': newValue});
                         }}/>
+            <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-large']}
+                        callback={(newValue) => {
+                            updateGridSettings({'breakpoint-large': newValue});
+                        }}/>
+            </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom

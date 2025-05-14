@@ -22,77 +22,20 @@ export const backgroundAttributes = {
 
 export function BackgroundControls({attributes = {}, setAttributes}) {
 
-    const settings = Object.assign({}, {
-        type: undefined,
-        mobileImage: undefined,
-        largeImage: undefined,
-        mobileVideo: undefined,
-        largeVideo: undefined,
-        maskImageMobile: undefined,
-        maskImageLarge: undefined,
-        eager: undefined,
-        force: undefined,
-        fixed: undefined,
+    const {'wpbs-background': settings = {}} = attributes;
 
+    function updateSettings(attr, val) {
 
-        resolution: undefined,
-        size: undefined,
-        blend: undefined,
-        position: undefined,
-        origin: undefined,
-        maskOrigin: undefined,
-        maskSize: undefined,
-        repeat: undefined,
-        scale: undefined,
-        opacity: undefined,
-        width: undefined,
-        height: undefined,
-        overlay: undefined,
-        color: undefined,
-        mask: undefined,
-        fade: undefined,
-        maxHeight: undefined,
-
-
-        resolutionMobile: undefined,
-        sizeMobile: undefined,
-        blendMobile: undefined,
-        positionMobile: undefined,
-        originMobile: undefined,
-        maskOriginMobile: undefined,
-        maskSizeMobile: undefined,
-        repeatMobile: undefined,
-        scaleMobile: undefined,
-        opacityMobile: undefined,
-        widthMobile: undefined,
-        heightMobile: undefined,
-        colorMobile: undefined,
-        maskMobile: undefined,
-        overlayMobile: undefined,
-        fadeMobile: undefined,
-        maxHeightMobile: undefined,
-
-    }, attributes['wpbs-background'])
-
-
-
-
-
-
-
-
-    function updateSettings(attr, val, callback) {
-
-        if (typeof callback === 'function') {
-            callback(val);
-        }
+        const result = {
+            ...settings,
+            ...{[attr]: val}
+        };
 
         setAttributes({
-            'wpbs-background': {
-                ...settings,
-                ...{[attr]: val}
-            }
+            'wpbs-background': result
         });
+
+        console.log(settings);
 
     }
 
@@ -321,10 +264,10 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                             });
                         }}
                         allowedTypes={['image']}
-                        value={settings.maskImageLarge}
+                        value={settings['maskImageLarge']}
                         render={({open}) => {
                             return <PreviewThumbnail
-                                image={settings.maskImageLarge || {}}
+                                image={settings['maskImageLarge'] || {}}
                                 callback={() => {
                                     updateSettings('maskImageLarge', undefined)
                                 }}
@@ -415,7 +358,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <SelectControl
                 __next40pxDefaultSize
                 label="Resolution"
-                value={settings.resolutionMobile}
+                value={settings['resolutionMobile'] || undefined}
                 options={[
                     {label: 'Default', value: ''},
                     {label: 'Small', value: 'small'},
@@ -456,6 +399,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 ]}
                 onChange={(value) => {
                     updateSettings('blendMobile', value);
+                    console.log(settings);
                 }}
                 __nextHasNoMarginBottom
             />

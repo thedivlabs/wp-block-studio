@@ -4,11 +4,9 @@ import {useState} from "react";
 
 function Breakpoint({defaultValue, callback, label='Breakpoint'}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <SelectControl
         label={label}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Extra Small', value: 'xs'},
@@ -18,7 +16,6 @@ function Breakpoint({defaultValue, callback, label='Breakpoint'}) {
             {label: 'Extra Large', value: 'xl'}
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

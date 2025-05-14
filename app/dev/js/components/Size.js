@@ -4,11 +4,10 @@ import React, {useState} from "react";
 
 function Size({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || 0);
 
     return <SelectControl
         label={'Size'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Default', value: 'contain'},
             {label: 'Cover', value: 'cover'},
@@ -16,7 +15,6 @@ function Size({defaultValue, callback}) {
             {label: 'Horizontal', value: '100% auto'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

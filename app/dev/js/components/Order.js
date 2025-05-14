@@ -4,15 +4,12 @@ import {useState} from "react";
 
 function Order({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
-
     return <NumberControl
         label={'Order'}
-        value={value}
+        value={defaultValue}
         spinControls={'native'}
         isDragEnabled={false}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

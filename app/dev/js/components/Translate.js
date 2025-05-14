@@ -6,14 +6,12 @@ import {useState} from "react";
 
 function Translate({label, defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
 
     return <BoxControl
         label={label || 'Translate'}
-        values={value}
+        values={defaultValue}
         sides={['top', 'left']}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         inputProps={{

@@ -7,20 +7,14 @@ import {useState} from "react";
 
 function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
 
-    const [top, setTop] = useState(topValue);
-    const [right, setRight] = useState(rightValue);
-    const [bottom, setBottom] = useState(bottomValue);
-    const [left, setLeft] = useState(leftValue);
-
     return <Grid columns={2} columnGap={20} rowGap={20} style={{gridColumnStart: 1, gridColumnEnd: -1}}>
 
         <UnitControl
             label={'Top'}
-            value={top || null}
+            value={topValue || null}
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
-                setTop(newValue);
-                callback(newValue, right, bottom, left);
+                callback(newValue, rightValue, bottomValue, leftValue);
             }}
             units={[
                 {value: 'px', label: 'px', default: 0},
@@ -36,11 +30,10 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
         />
         <UnitControl
             label={'Right'}
-            value={right || null}
+            value={rightValue || null}
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
-                setRight(newValue);
-                callback(top, newValue, bottom, left);
+                callback(topValue, newValue, bottomValue, leftValue);
             }}
             units={[
                 {value: 'px', label: 'px', default: 0},
@@ -55,11 +48,10 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
         />
         <UnitControl
             label={'Bottom'}
-            value={bottom || null}
+            value={bottomValue || null}
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
-                setBottom(newValue);
-                callback(top, right, newValue, left);
+                callback(topValue, rightValue, newValue, leftValue);
             }}
             units={[
                 {value: 'px', label: 'px', default: 0},
@@ -74,11 +66,10 @@ function BoxPosition({topValue, rightValue, bottomValue, leftValue, callback}) {
         />
         <UnitControl
             label={'Left'}
-            value={left || null}
+            value={leftValue || null}
             isResetValueOnUnitChange={true}
             onChange={(newValue) => {
-                setLeft(newValue);
-                callback(top, right, bottom, newValue);
+                callback(topValue, rightValue, bottomValue, newValue);
             }}
             units={[
                 {value: 'px', label: 'px', default: 0},

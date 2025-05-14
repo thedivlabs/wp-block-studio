@@ -6,11 +6,9 @@ import {useState} from "react";
 
 function WidthCustom({defaultValue, callback, label = 'Width Custom'}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <UnitControl
         label={label}
-        value={value}
+        value={defaultValue}
         units={[
             {value: 'px', label: 'px', default: 0},
             {value: '%', label: '%', default: 0},
@@ -22,7 +20,6 @@ function WidthCustom({defaultValue, callback, label = 'Width Custom'}) {
         ]}
         isResetValueOnUnitChange={true}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

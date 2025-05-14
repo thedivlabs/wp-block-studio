@@ -6,14 +6,11 @@ import {useState} from "react";
 
 function OutlineOffset({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <UnitControl
         label={'Outline Offset'}
-        value={value}
+        value={defaultValue}
         isResetValueOnUnitChange={true}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

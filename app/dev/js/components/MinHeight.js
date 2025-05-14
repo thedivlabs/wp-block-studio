@@ -6,11 +6,9 @@ import {useState} from "react";
 
 function MinHeight({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Min-Height'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Screen', value: 'screen'},
@@ -20,7 +18,6 @@ function MinHeight({defaultValue, callback}) {
             {label: 'Inherit', value: 'inherit'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

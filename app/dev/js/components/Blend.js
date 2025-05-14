@@ -4,11 +4,9 @@ import React, {useState} from "react";
 
 function Blend({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || 0);
-
     return <SelectControl
         label={'Blend'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Default', value: ''},
             {label: 'Multiply', value: 'multiply'},
@@ -21,7 +19,6 @@ function Blend({defaultValue, callback}) {
             {label: 'Color Burn', value: 'color-burn'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

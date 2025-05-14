@@ -1,14 +1,12 @@
 import {
-    DropdownMenu, MenuGroup, MenuItem, SelectControl, TextControl, ToolbarGroup,
-    __experimentalGrid as Grid
+    DropdownMenu, MenuGroup, MenuItem, ToolbarGroup
 } from "@wordpress/components";
-import React, {useState} from "react";
+import React from "react";
 import {__experimentalLinkControl as LinkControl, BlockControls} from "@wordpress/block-editor";
 import {customLink} from "@wordpress/icons";
 
 function Link({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
 
     return <BlockControls>
         <ToolbarGroup>
@@ -24,7 +22,7 @@ function Link({defaultValue, callback}) {
                                 allowDirectEntry={true}
                                 //forceIsEditingLink={true}
                                 hasTextControl={true}
-                                value={value}
+                                value={defaultValue}
                                 settings={[
                                     {
                                         id: 'opensInNewTab',
@@ -32,7 +30,6 @@ function Link({defaultValue, callback}) {
                                     }
                                 ]}
                                 onChange={(newValue) => {
-                                    setValue(newValue);
                                     callback(newValue);
                                 }}
                                 //withCreateSuggestion={true}

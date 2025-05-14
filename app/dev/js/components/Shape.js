@@ -4,11 +4,9 @@ import {useState} from "react";
 
 function Shape({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Shape'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Square', value: '1/1'},
@@ -19,7 +17,6 @@ function Shape({defaultValue, callback}) {
             {label: 'Auto', value: 'auto'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

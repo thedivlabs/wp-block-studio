@@ -6,8 +6,6 @@ import {useState} from "react";
 
 function Gap({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || {});
-
     return <BoxControl
         label={'Gap'}
         units={[
@@ -19,10 +17,9 @@ function Gap({defaultValue, callback}) {
             {value: 'vw', label: 'vw', default: 0},
             {value: 'ch', label: 'ch', default: 0},
         ]}
-        values={value}
+        values={defaultValue}
         sides={['top', 'left']}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
     />;

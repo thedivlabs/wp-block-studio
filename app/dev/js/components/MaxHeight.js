@@ -6,11 +6,9 @@ import {useState} from "react";
 
 function MaxHeight({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Max-Height'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Screen', value: 'screen'},
@@ -18,7 +16,6 @@ function MaxHeight({defaultValue, callback}) {
             {label: 'Auto', value: 'auto'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

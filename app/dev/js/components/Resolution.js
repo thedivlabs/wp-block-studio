@@ -4,11 +4,9 @@ import React, {useState} from "react";
 
 function Resolution({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || '');
-
     return <SelectControl
         label={'Resolution'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Default', value: ''},
             {label: 'Small', value: 'small'},
@@ -17,7 +15,6 @@ function Resolution({defaultValue, callback}) {
             {label: 'Extra Large', value: 'xlarge'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

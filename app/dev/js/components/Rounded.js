@@ -6,13 +6,10 @@ import {useState} from "react";
 
 function Rounded({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <BoxControl
         label={'Rounded'}
-        values={value}
+        values={defaultValue}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

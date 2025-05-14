@@ -4,11 +4,9 @@ import {useState} from "react";
 
 function Container({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Container'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'None', value: 'none'},
@@ -19,7 +17,6 @@ function Container({defaultValue, callback}) {
             {label: 'Large', value: 'lg'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

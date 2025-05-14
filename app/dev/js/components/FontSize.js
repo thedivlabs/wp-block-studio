@@ -6,14 +6,11 @@ import {useState} from "react";
 
 function FontSize({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <UnitControl
         label={'Font Size'}
-        value={value}
+        value={defaultValue}
         isResetValueOnUnitChange={true}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

@@ -6,11 +6,9 @@ import {useState} from "react";
 
 function Position({defaultValue, callback}) {
 
-    const [position, setPosition] = useState(defaultValue);
-
     return <SelectControl
         label={'Position'}
-        value={position}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Relative', value: 'relative'},
@@ -19,7 +17,6 @@ function Position({defaultValue, callback}) {
             {label: 'Static', value: 'static'},
         ]}
         onChange={(newValue) => {
-            setPosition(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

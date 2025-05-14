@@ -4,11 +4,10 @@ import {useState} from "react";
 
 function Align({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
 
     return <SelectControl
         label={'Align'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Start', value: 'flex-start'},
@@ -17,7 +16,6 @@ function Align({defaultValue, callback}) {
             {label: 'Stretch', value: 'stretch'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

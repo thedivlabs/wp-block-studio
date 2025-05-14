@@ -6,14 +6,11 @@ import {useState} from "react";
 
 function HeightCustom({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || null);
-
     return <UnitControl
         label={'Height Custom'}
-        value={value}
+        value={defaultValue}
         isResetValueOnUnitChange={true}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

@@ -6,11 +6,9 @@ import {useState} from "react";
 
 function Margin({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <BoxControl
         label={'Margin'}
-        values={value}
+        values={defaultValue}
         units={[
             {value: 'px', label: 'px', default: 10},
             {value: '%', label: '%', default: 10},
@@ -18,7 +16,6 @@ function Margin({defaultValue, callback}) {
             {value: 'em', label: 'em', default: 1, step: .1},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
     />;

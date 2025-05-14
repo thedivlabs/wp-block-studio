@@ -4,11 +4,9 @@ import {useState} from "react";
 
 function Display({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Display'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Flex', value: 'flex'},
@@ -18,7 +16,6 @@ function Display({defaultValue, callback}) {
             {label: 'None', value: 'none'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

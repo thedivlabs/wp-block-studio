@@ -4,15 +4,12 @@ import {useState} from "react";
 
 function Grow({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <NumberControl
         label={'Grow'}
-        value={value}
+        value={defaultValue}
         min={0}
         isDragEnabled={false}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

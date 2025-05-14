@@ -4,8 +4,6 @@ import {useState} from "react";
 
 function Opacity({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || '');
-
     return <RangeControl
         label="Opacity"
         step={.1}
@@ -13,9 +11,8 @@ function Opacity({defaultValue, callback}) {
         allowReset={true}
         isShiftStepEnabled
         initialPosition={0}
-        value={value}
+        value={defaultValue}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

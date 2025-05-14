@@ -6,14 +6,11 @@ import {useState} from "react";
 
 function MaxHeightCustom({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || null);
-
     return <UnitControl
         label={'Max-Height Custom'}
-        value={value}
+        value={defaultValue}
         isResetValueOnUnitChange={true}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

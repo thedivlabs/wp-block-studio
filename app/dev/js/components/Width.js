@@ -6,11 +6,10 @@ import {useState} from "react";
 
 function Width({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
 
     return <SelectControl
         label={'Width'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Auto', value: 'auto'},
@@ -18,7 +17,6 @@ function Width({defaultValue, callback}) {
             {label: 'Full', value: '100%'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

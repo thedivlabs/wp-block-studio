@@ -6,15 +6,12 @@ import React, {useState} from "react";
 
 function OffsetHeader({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <NumberControl
         label={'Offset Header'}
-        value={value}
+        value={defaultValue}
         min={0}
         isDragEnabled={false}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

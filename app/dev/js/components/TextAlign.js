@@ -4,11 +4,10 @@ import {useState} from "react";
 
 function TextAlign({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
 
     return <SelectControl
         label={'TextAlign'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Left', value: 'left'},
@@ -17,7 +16,6 @@ function TextAlign({defaultValue, callback}) {
             {label: 'Inherit', value: 'inherit'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

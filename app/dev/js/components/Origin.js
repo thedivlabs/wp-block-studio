@@ -4,11 +4,9 @@ import React, {useState} from "react";
 
 function Origin({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue || 0);
-
     return <SelectControl
         label={'Origin'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Default', value: undefined},
             {label: 'Center', value: 'center'},
@@ -22,7 +20,6 @@ function Origin({defaultValue, callback}) {
             {label: 'Bottom Right', value: 'right bottom'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

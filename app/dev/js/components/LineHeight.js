@@ -6,14 +6,11 @@ import {useState} from "react";
 
 function LineHeight({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <UnitControl
         label={'Line Height'}
-        value={value}
+        value={defaultValue}
         isResetValueOnUnitChange={true}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

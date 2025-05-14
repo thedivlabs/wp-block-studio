@@ -4,15 +4,12 @@ import {useState} from "react";
 
 function ZIndex({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
-
     return <NumberControl
         label={'Z-Index'}
-        value={value}
+        value={defaultValue}
         spinControls={'native'}
         isDragEnabled={false}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

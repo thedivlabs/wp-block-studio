@@ -6,13 +6,10 @@ import {useState} from "react";
 
 function Padding({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <BoxControl
         label={'Padding'}
-        values={value}
+        values={defaultValue}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         units={[

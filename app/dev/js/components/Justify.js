@@ -4,11 +4,9 @@ import {useState} from "react";
 
 function Justify({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Justify'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Start', value: 'flex-start'},
@@ -17,7 +15,6 @@ function Justify({defaultValue, callback}) {
             {label: 'Between', value: 'space-between'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

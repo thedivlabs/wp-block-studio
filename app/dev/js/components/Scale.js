@@ -4,8 +4,6 @@ import {useState} from "react";
 
 function Scale({defaultValue, callback}) {
 
-    const [value,setValue] = useState(defaultValue || 0);
-
     return <RangeControl
         label="Scale"
         step={1}
@@ -13,9 +11,8 @@ function Scale({defaultValue, callback}) {
         allowReset={true}
         isShiftStepEnabled
         initialPosition={0}
-        value={value}
+        value={defaultValue}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

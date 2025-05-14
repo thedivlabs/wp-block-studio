@@ -4,8 +4,6 @@ import React, {useState} from "react";
 
 function Overlay({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
         <GradientPicker
             gradients={[
@@ -29,9 +27,8 @@ function Overlay({defaultValue, callback}) {
                 }
             ]}
             clearable={true}
-            value={value}
+            value={defaultValue}
             onChange={(newValue) => {
-                setValue(newValue);
                 callback(newValue);
             }}
         />

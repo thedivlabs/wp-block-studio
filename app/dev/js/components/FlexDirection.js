@@ -4,11 +4,9 @@ import {useState} from "react";
 
 function FlexDirection({defaultValue, callback}) {
 
-    const [value, setValue] = useState(defaultValue);
-
     return <SelectControl
         label={'Direction'}
-        value={value}
+        value={defaultValue}
         options={[
             {label: 'Select', value: ''},
             {label: 'Row', value: 'row'},
@@ -17,7 +15,6 @@ function FlexDirection({defaultValue, callback}) {
             {label: 'Column Reverse', value: 'column-reverse'},
         ]}
         onChange={(newValue) => {
-            setValue(newValue);
             callback(newValue);
         }}
         __next40pxDefaultSize

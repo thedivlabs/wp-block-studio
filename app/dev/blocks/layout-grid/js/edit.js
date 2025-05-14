@@ -99,7 +99,13 @@ registerBlockType(metadata.name, {
                 ...newValue
             };
 
-            setAttributes({'wpbs-grid': result});
+            setAttributes({
+                'wpbs-grid': result,
+                props: {
+                    ...attributes.props,
+                    'columns-mobile': newValue
+                }
+            });
             setGrid(result);
 
         }
@@ -113,10 +119,6 @@ registerBlockType(metadata.name, {
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             updateGridSettings({'columns-mobile': newValue});
-                            setAttributes({
-                                ...attributes.props,
-                                'columns-mobile': newValue
-                            });
                         }}
                         value={props['columns-mobile']}
                     />
@@ -126,10 +128,6 @@ registerBlockType(metadata.name, {
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             updateGridSettings({'columns-small': newValue});
-                            setAttributes({
-                                ...attributes.props,
-                                'columns-small': newValue
-                            });
                         }}
                         value={props['columns-small']}
                     />
@@ -139,10 +137,6 @@ registerBlockType(metadata.name, {
                         isShiftStepEnabled={false}
                         onChange={(newValue) => {
                             updateGridSettings({'columns-large': newValue});
-                            setAttributes({
-                                ...attributes.props,
-                                'columns-large': newValue
-                            });
                         }}
                         value={props['columns-large']}
                     />
@@ -218,11 +212,11 @@ registerBlockType(metadata.name, {
                 ]}
             />
         </Grid>;
-        const tabLoop = <Loop attributes={attributes} setAttributes={setAttributes} currentTab={currentTab} />
+        const tabLoop = <Loop attributes={attributes} setAttributes={setAttributes} currentTab={currentTab}/>
 
         const tabs = {
             options: tabOptions,
-            loop:tabLoop
+            loop: tabLoop
         }
 
         const blockProps = useBlockProps({

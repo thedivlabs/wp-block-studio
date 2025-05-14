@@ -103,7 +103,9 @@ registerBlockType(metadata.name, {
                 'wpbs-grid': result,
                 props: {
                     ...attributes.props,
-                    'columns-mobile': newValue
+                    'columns-mobile': result?.['columns-mobile'] ?? undefined,
+                    'columns-small': result?.['columns-small'] ?? undefined,
+                    'columns-large': result?.['columns-large'] ?? undefined,
                 }
             });
             setGrid(result);
@@ -120,7 +122,7 @@ registerBlockType(metadata.name, {
                         onChange={(newValue) => {
                             updateGridSettings({'columns-mobile': newValue});
                         }}
-                        value={props['columns-mobile']}
+                        value={grid['columns-mobile']}
                     />
                     <NumberControl
                         label={'Small'}
@@ -129,7 +131,7 @@ registerBlockType(metadata.name, {
                         onChange={(newValue) => {
                             updateGridSettings({'columns-small': newValue});
                         }}
-                        value={props['columns-small']}
+                        value={grid['columns-small']}
                     />
                     <NumberControl
                         label={'Large'}
@@ -138,7 +140,7 @@ registerBlockType(metadata.name, {
                         onChange={(newValue) => {
                             updateGridSettings({'columns-large': newValue});
                         }}
-                        value={props['columns-large']}
+                        value={grid['columns-large']}
                     />
                 </Grid>
             </BaseControl>

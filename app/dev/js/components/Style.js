@@ -41,27 +41,30 @@ function desktop(attributes) {
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
-        Object.entries(attributes?.['wpbs-layout'] ?? {}).filter(([key]) => [
-            'mask-image',
-            'mask-size',
-            'mask-origin',
-            'container',
-            'width',
-            'width-custom',
-            'height',
-            'height-custom',
-            'min-height',
-            'min-height-custom',
-            'max-height',
-            'max-height-custom',
-            'offset-header',
-            'translate'
-        ].includes(key))
+        Object.entries(attributes?.['wpbs-layout'] ?? {}).filter(([key,value]) =>
+            ![undefined, null, []].includes(value) &&
+            [
+                'mask-image',
+                'mask-size',
+                'mask-origin',
+                'container',
+                'width',
+                'width-custom',
+                'height',
+                'height-custom',
+                'min-height',
+                'min-height-custom',
+                'max-height',
+                'max-height-custom',
+                'offset-header',
+                'translate'
+            ].includes(key))
     );
 
     const layoutAttributes = Object.fromEntries(
-        Object.entries(attributes['wpbs-layout']).filter(([k]) =>
-            !Array.isArray(attributes['wpbs-layout'][k]) &&
+        Object.entries(attributes['wpbs-layout']).filter(([k,value]) =>
+            ![undefined, null, []].includes(value) &&
+            !Array.isArray(value) &&
             !k.includes('mobile') &&
             !k.includes('hover') &&
             ![...Object.keys(specialAttributes), 'breakpoint'].includes(k)
@@ -92,7 +95,7 @@ function desktop(attributes) {
                 styles['mask-image'] = `url(${imageUrl})`;
                 styles['mask-repeat'] = 'no-repeat';
                 styles['mask-size'] = (() => {
-                    const size = attributes?.['mask-size'];
+                    const size = attributes['wpbs-layout']?.['mask-size'];
                     switch (size) {
                         case 'cover':
                             return 'cover';
@@ -104,32 +107,32 @@ function desktop(attributes) {
                             return 'contain';
                     }
                 })();
-                styles['mask-position'] = attributes?.['mask-origin'] || 'center center';
+                styles['mask-position'] = attributes['wpbs-layout']?.['mask-origin'] || 'center center';
                 break;
 
             case 'height':
             case 'height-custom':
-                styles['height'] = parseSpecial('height', attributes?.['height-custom'] ?? attributes?.['height']);
+                styles['height'] = parseSpecial('height', attributes['wpbs-layout']?.['height-custom'] ?? attributes['wpbs-layout']?.['height']);
                 break;
 
             case 'min-height':
             case 'min-height-custom':
-                styles['min-height'] = parseSpecial('min-height', attributes?.['min-height-custom'] ?? attributes?.['min-height']);
+                styles['min-height'] = parseSpecial('min-height', attributes['wpbs-layout']?.['min-height-custom'] ?? attributes['wpbs-layout']?.['min-height']);
                 break;
 
             case 'max-height':
             case 'max-height-custom':
-                styles['max-height'] = parseSpecial('max-height', attributes?.['max-height-custom'] ?? attributes?.['max-height']);
+                styles['max-height'] = parseSpecial('max-height', attributes['wpbs-layout']?.['max-height-custom'] ?? attributes['wpbs-layout']?.['max-height']);
                 break;
 
             case 'width':
             case 'width-custom':
-                styles['width'] = attributes?.['width-custom'] ?? attributes?.['width'] ?? null;
+                styles['width'] = attributes['wpbs-layout']?.['width-custom'] ?? attributes['wpbs-layout']?.['width'] ?? null;
                 break;
 
             case 'translate':
-                const top = getCSSFromStyle(attributes?.['translate']?.top || '0px');
-                const left = getCSSFromStyle(attributes?.['translate']?.left || '0px');
+                const top = getCSSFromStyle(attributes['wpbs-layout']?.['translate']?.top || '0px');
+                const left = getCSSFromStyle(attributes['wpbs-layout']?.['translate']?.left || '0px');
                 styles['transform'] = `translate(${top}, ${left})`;
                 break;
 
@@ -139,6 +142,7 @@ function desktop(attributes) {
                 break;
         }
     }
+
 
     return styles;
 

@@ -20,6 +20,20 @@ export const backgroundAttributes = {
     }
 };
 
+function parseProp(prop) {
+
+    if (typeof prop === 'string') {
+        return prop;
+    }
+
+    return prop
+        .replace(/Mobile/g, '')                        // Remove 'Mobile'
+        .split(/(?=[A-Z])/)                            // Split before uppercase letters
+        .join('-')                                     // Join with dashes
+        .replace(/\s+/g, '')                           // Remove spaces
+        .toLowerCase();
+}
+
 export function backgroundStyles(attributes) {
 
     const {'wpbs-background': settings = {}} = attributes;
@@ -64,14 +78,14 @@ export function backgroundStyles(attributes) {
 
     const desktop = Object.fromEntries(Object.entries(settings).filter((k, value) =>
         !specialProps.includes(String(k)) &&
-        !k.toLowerCase().includes('Mobile') &&
-        !['object', 'array'].includes(typeof value)
+        !['object', 'array'].includes(typeof value) &&
+        !String(k).toLowerCase().includes('mobile')
     ));
 
     const mobile = Object.fromEntries(Object.entries(settings).filter((k, value) =>
         !specialProps.includes(String(k)) &&
-        k.toLowerCase().includes('Mobile') &&
-        !['object', 'array'].includes(typeof value)
+        !['object', 'array'].includes(typeof value) &&
+        String(k).toLowerCase().includes('mobile')
     ));
 
     console.log(desktop);

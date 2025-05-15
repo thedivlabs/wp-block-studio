@@ -45,6 +45,7 @@ function sectionProps(attributes = {}) {
 
     return Object.fromEntries(
         Object.entries({
+            '--columns': attributes?.['wpbs-props']?.['columns-mobile'] ?? attributes?.['wpbs-props']?.['columns-small'] ?? attributes?.['wpbs-props']?.['columns-large'] ?? null,
             '--divider-width': width,
             '--divider-color': color,
             '--divider-icon': attributes['wpbs-divider-icon'],
@@ -100,7 +101,7 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 'wpbs-grid': result,
-                props: {
+                'wpbs-props': {
                     ...attributes.props,
                     'columns-mobile': result?.['columns-mobile'] ?? undefined,
                     'columns-small': result?.['columns-small'] ?? undefined,

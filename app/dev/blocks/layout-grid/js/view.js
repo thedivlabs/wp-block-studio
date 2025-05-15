@@ -2,9 +2,9 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 function setDividers(grid, context) {
 
-    const {uniqueId, divider, columns, breakpoints} = context;
+    const {uniqueId, divider, columns} = context;
 
-    //const breakpoints = WPBS?.settings?.breakpoints ?? {};
+    const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
     if (!divider) {
         return false;
@@ -37,6 +37,7 @@ function setDividers(grid, context) {
             count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
         }
     }
+
 
     const styleCss = [
         '@media screen and (max-width: calc(' + breakpoints.small + ' - 1px)) {',

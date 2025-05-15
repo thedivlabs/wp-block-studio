@@ -41,7 +41,7 @@ function desktop(attributes) {
     }).filter(([key, value]) => value));
 
     const specialAttributes = Object.fromEntries(
-        Object.entries(attributes?.['wpbs-layout'] ?? {}).filter(([key,value]) =>
+        Object.entries(attributes?.['wpbs-layout'] ?? {}).filter(([key, value]) =>
             ![undefined, null, []].includes(value) &&
             [
                 'mask-image',
@@ -51,6 +51,7 @@ function desktop(attributes) {
                 'width',
                 'width-custom',
                 'height',
+                'basis',
                 'height-custom',
                 'min-height',
                 'min-height-custom',
@@ -62,7 +63,7 @@ function desktop(attributes) {
     );
 
     const layoutAttributes = Object.fromEntries(
-        Object.entries(attributes['wpbs-layout']).filter(([k,value]) =>
+        Object.entries(attributes['wpbs-layout']).filter(([k, value]) =>
             ![undefined, null, []].includes(value) &&
             !Array.isArray(value) &&
             !k.includes('mobile') &&
@@ -108,6 +109,10 @@ function desktop(attributes) {
                     }
                 })();
                 styles['mask-position'] = attributes['wpbs-layout']?.['mask-origin'] || 'center center';
+                break;
+
+            case 'basis':
+                styles['flex-basis'] = value + '%';
                 break;
 
             case 'height':
@@ -303,14 +308,14 @@ function hover(attributes) {
 
 function props(attributes) {
     const styles = {
-        mobile: {
+        mobile: Object.fromEntries(Object.entries({
             'row-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null,
             'column-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null,
-        },
-        desktop: {
+        }).filter(([key, value]) => value)),
+        desktop: Object.fromEntries(Object.entries({
             'row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
             'column-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
-        },
+        }).filter(([key, value]) => value)),
     };
 
     Object.entries(attributes?.['wpbs-props'] ?? {}).forEach(([key, value]) => {

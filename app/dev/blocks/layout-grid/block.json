@@ -14,7 +14,7 @@
       "type": "string",
       "show_in_rest": true
     },
-    "queryArgs": {
+    "wpbs-query": {
       "type": "object",
       "show_in_rest": true
     }

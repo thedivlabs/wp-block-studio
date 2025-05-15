@@ -234,7 +234,6 @@ registerBlockType(metadata.name, {
             }
         });
 
-
         return (
             <>
                 <InspectorControls group="styles">

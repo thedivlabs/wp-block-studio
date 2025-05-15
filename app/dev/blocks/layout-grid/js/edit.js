@@ -293,7 +293,7 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes.uniqueId,
-                divider: !!props.attributes['wpbs-grid']?.['divider'],
+                divider: !!props.attributes['wpbs-grid']?.['divider'].length,
                 breakpoints: props.attributes['wpbs-grid']?.['breakpoints'],
                 columns: {
                     mobile: props.attributes['wpbs-props']?.['columns-mobile'] ?? 1,

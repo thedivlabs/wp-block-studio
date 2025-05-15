@@ -1,7 +1,6 @@
 import "../scss/block.scss";
 
 import {
-    DefaultBlockAppender,
     InspectorControls,
     PanelColorSettings,
     useBlockProps,
@@ -10,7 +9,7 @@ import {
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {layoutAttributes, LayoutControls} from "Components/Layout"
-import {backgroundAttributes, BackgroundControls, BackgroundElement} from "Components/Background"
+import {backgroundAttributes, BackgroundControls, BackgroundElement, backgroundStyles} from "Components/Background"
 import {Style} from "Components/Style"
 import Loop from "Components/Loop"
 import {
@@ -271,7 +270,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} customCss={backgroundStyles(attributes)}/>
 
                 <div {...blockProps}>
 

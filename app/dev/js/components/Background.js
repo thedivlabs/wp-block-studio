@@ -20,13 +20,82 @@ export const backgroundAttributes = {
     }
 };
 
+export function backgroundStyles(attributes) {
+
+    const {'wpbs-background': settings = {}} = attributes;
+
+    if (!settings?.type || !attributes.uniqueId) {
+        return;
+    }
+
+    const uniqueId = attributes?.uniqueId;
+    const selector = '.' + uniqueId.trim().split(' ').join('.');
+
+    const specialProps = [
+        'type',
+        'mobileImage',
+        'largeImage',
+        'mobileVideo',
+        'largeVideo',
+        'maskImageMobile',
+        'maskImageLarge',
+        'resolution',
+        'position',
+        'positionMobile',
+        'eager',
+        'force',
+        'mask',
+        'fixed',
+        'size',
+        'sizeMobile',
+        'opacity',
+        'width',
+        'height',
+        'resolutionMobile',
+        'maskMobile',
+        'scale',
+        'scaleMobile',
+        'opacityMobile',
+        'widthMobile',
+        'heightMobile',
+        'fade',
+        'fadeMobile',
+    ];
+
+    const desktop = Object.fromEntries(Object.entries(settings).filter((k, value) =>
+        !specialProps.includes(String(k)) &&
+        !k.toLowerCase().includes('Mobile') &&
+        !['object', 'array'].includes(typeof value)
+    ));
+
+    const mobile = Object.fromEntries(Object.entries(settings).filter((k, value) =>
+        !specialProps.includes(String(k)) &&
+        k.toLowerCase().includes('Mobile') &&
+        !['object', 'array'].includes(typeof value)
+    ));
+
+    console.log(desktop);
+    console.log(mobile);
+
+    let css = '';
+    let desktopCss = '';
+    let desktopProps = '';
+    let mobileCss = '';
+    let mobileProps = '';
+    let hoverCss = '';
+
+
+    return css;
+
+}
+
 export function BackgroundControls({attributes = {}, setAttributes}) {
 
     const [settings, setSettings] = useState(attributes['wpbs-background']);
 
     function updateSettings(attr, val) {
 
-        setSettings((prev)=>{
+        setSettings((prev) => {
             return {
                 ...prev,
                 ...{[attr]: val}

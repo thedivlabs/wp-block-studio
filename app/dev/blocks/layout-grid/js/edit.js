@@ -144,14 +144,14 @@ registerBlockType(metadata.name, {
                 </Grid>
             </BaseControl>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
-            <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-small']}
-                        callback={(newValue) => {
-                            updateGridSettings({'breakpoint-small': newValue});
-                        }}/>
-            <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-large']}
-                        callback={(newValue) => {
-                            updateGridSettings({'breakpoint-large': newValue});
-                        }}/>
+                <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-small']}
+                            callback={(newValue) => {
+                                updateGridSettings({'breakpoint-small': newValue});
+                            }}/>
+                <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-large']}
+                            callback={(newValue) => {
+                                updateGridSettings({'breakpoint-large': newValue});
+                            }}/>
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
@@ -246,11 +246,6 @@ registerBlockType(metadata.name, {
                             activeClass="active"
                             orientation="horizontal"
                             initialTabName="options"
-                            onSelect={(tabName) => {
-                                if (tabName === 'loop') {
-                                    setCurrentTab(tabName);
-                                }
-                            }}
                             tabs={[
                                 {
                                     name: 'options',
@@ -282,6 +277,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
                 <div {...blockProps}>
+
                     <div {...useInnerBlocksProps({
                         className: 'wpbs-layout-grid__container relative z-20',
                     }, {})} />

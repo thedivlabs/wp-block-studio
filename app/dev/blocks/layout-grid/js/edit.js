@@ -45,7 +45,6 @@ function sectionProps(attributes = {}) {
 
     return Object.fromEntries(
         Object.entries({
-            '--columns': attributes?.['wpbs-props']?.['columns-mobile'] ?? attributes?.['wpbs-props']?.['columns-small'] ?? attributes?.['wpbs-props']?.['columns-large'] ?? null,
             '--divider-width': width,
             '--divider-color': color,
             '--divider-icon': attributes['wpbs-divider-icon'],
@@ -323,7 +322,7 @@ registerBlockType(metadata.name, {
         }
 
         const PaginationButton = () => {
-            if (!!props.attributes['wpbs-grid']?.pagination && props.attributes.queryArgs?.['post_type'] !== 'current') {
+            if (!!props.attributes['wpbs-grid']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
                 return <button type="button" class="w-full h-10 relative"
                                data-wp-on-async--click="actions.pagination">
                     {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}

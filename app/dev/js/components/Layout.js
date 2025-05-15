@@ -51,7 +51,16 @@ export const layoutAttributes = {
     'wpbs-layout': {
         type: 'object',
         default: {}
-    }
+    },
+    'wpbs-css': {
+        type: 'string',
+        show_in_rest: true
+    },
+    'wpbs-props': {
+        type: 'object',
+        show_in_rest: true
+    },
+
 };
 
 export const layoutProps = {
@@ -148,14 +157,19 @@ export const layoutProps = {
 export function LayoutControls({attributes = {}, setAttributes}) {
 
 
-    let {'wpbs-layout': settings = {}} = attributes;
+    //let {'wpbs-layout': settings = {}} = attributes;
+
+    const [settings, setSettings] = useState(attributes['wpbs-layout'] || {});
 
     const resetAll_layout = () => {
-        setAttributes(Object.keys(layoutProps.layout).reduce((o, key) => ({...o, [key]: undefined}), {}))
+        const result = Object.keys(layoutProps.layout).reduce((o, key) => ({...o, [key]: undefined}), {});
+        setSettings(result);
+        setAttributes(result);
     };
 
     const resetAll_mobile = () => {
-        setAttributes(Object.keys(layoutProps.mobile).reduce((o, key) => ({...o, [key]: undefined}), {}))
+        const result = Object.keys(layoutProps.mobile).reduce((o, key) => ({...o, [key]: undefined}), {});
+        setAttributes(result);
     };
 
     function updateProp(newValue) {
@@ -165,7 +179,14 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 ...attributes['wpbs-layout'],
                 ...newValue
             }
-        })
+        });
+
+        setSettings((prevState) => {
+            return {
+                ...prevState,
+                ...newValue
+            }
+        });
 
     }
 

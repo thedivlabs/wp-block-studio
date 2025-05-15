@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {select, subscribe, useSelect, getEntityRecords} from "@wordpress/data";
+import {select, subscribe} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {
     __experimentalGrid as Grid,
@@ -21,7 +21,7 @@ function Loop({attributes, setAttributes}) {
         posts: [],
     });
 
-    const [queryArgs, setQueryArgs] = useState(attributes['queryArgs'] || {});
+    const [queryArgs, setQueryArgs] = useState(attributes['wpbs-query'] || {});
 
     useEffect(() => {
 
@@ -84,7 +84,7 @@ function Loop({attributes, setAttributes}) {
                     terms: terms || [],
                     posts: posts || [],
                 }));
-                
+
                 unsubscribe();
             }
         });
@@ -97,7 +97,7 @@ function Loop({attributes, setAttributes}) {
             ...newValue
         };
 
-        setAttributes({queryArgs: result});
+        setAttributes({'wpbs-query': result});
         setQueryArgs(result);
 
     }

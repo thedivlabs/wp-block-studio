@@ -35,7 +35,7 @@ class WPBS_Blocks {
 		} );
 
 		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes, $custom_css ) {
-
+			WPBS::console_log( $attributes );
 			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
 				return $css_array;
 			}
@@ -72,11 +72,13 @@ class WPBS_Blocks {
 
 			$args = [
 				'attributes' => [
-					'wpbs-css' => [
-						'type' => 'string'
+					'wpbs-css'   => [
+						'type'         => 'string',
+						'show_in_rest' => true,
 					],
 					'wpbs-props' => [
-						'type' => 'object'
+						'type'         => 'object',
+						'show_in_rest' => true,
 					]
 				]
 			];

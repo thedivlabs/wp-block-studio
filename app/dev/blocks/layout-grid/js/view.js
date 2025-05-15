@@ -96,7 +96,12 @@ function setDividers(grid, context) {
 }
 
 function setMasonry(grid) {
-    if ('Masonry' in window && grid && grid.classList.contains('wpbs-layout-grid--masonry')) {
+
+    if (!'Masonry' in window) {
+        return;
+    }
+
+    if (grid && grid.classList.contains('wpbs-layout-grid--masonry')) {
 
         const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
         const masonryData = Masonry.data(container) || false;

@@ -39,17 +39,15 @@ function sectionClassNames(attributes = {}) {
 
 function sectionProps(attributes = {}) {
 
-    const {['wpbs-divider']: divider = {}} = attributes;
-
-    const {width, color} = divider;
+    const {width, color} = attributes['wpbs-grid']?.divider ?? {};
 
     return Object.fromEntries(
         Object.entries({
             '--divider-width': width,
             '--divider-color': color,
-            '--divider-icon': attributes['wpbs-divider-icon'],
-            '--divider-icon-size': attributes['wpbs-divider-icon-size'],
-            '--divider-icon-color': attributes['wpbs-divider-icon-color'],
+            '--divider-icon': attributes['wpbs-grid']?.['wpbs-divider-icon'] ?? null,
+            '--divider-icon-size': attributes['wpbs-grid']?.['wpbs-divider-icon-size'] ?? null,
+            '--divider-icon-color': attributes['wpbs-grid']?.['wpbs-divider-icon-color'] ?? null,
         }).filter(([key, value]) => value)
     );
 }

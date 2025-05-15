@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import {
     InspectorControls, MediaUpload, MediaUploadCheck,
@@ -22,14 +22,16 @@ export const backgroundAttributes = {
 
 export function BackgroundControls({attributes = {}, setAttributes}) {
 
-    let {'wpbs-background': settings = {}} = attributes;
+    const [settings, setSettings] = useState(attributes['wpbs-background']);
 
     function updateSettings(attr, val) {
 
-        settings = {
-            ...attributes['wpbs-background'],
-            ...{[attr]: val}
-        };
+        setSettings((prev)=>{
+            return {
+                ...prev,
+                ...{[attr]: val}
+            }
+        })
 
         setAttributes({
             'wpbs-background': {

@@ -48,7 +48,7 @@ function sectionProps(attributes = {}) {
             '--divider-icon': attributes['wpbs-grid']?.['wpbs-divider-icon'] ?? null,
             '--divider-icon-size': attributes['wpbs-grid']?.['wpbs-divider-icon-size'] ?? null,
             '--divider-icon-color': attributes['wpbs-grid']?.['wpbs-divider-icon-color'] ?? null,
-        }).filter(([key, value]) => value)
+        }).filter(([key, value]) => ![null, undefined].includes(value))
     );
 }
 

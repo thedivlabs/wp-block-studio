@@ -281,7 +281,6 @@ registerBlockType(metadata.name, {
                     <div {...useInnerBlocksProps({
                         className: 'wpbs-layout-grid__container relative z-20',
                     }, {})} />
-                    <DefaultBlockAppender rootClientId={clientId}/>
                     <BackgroundElement attributes={props.attributes} editor={false}/>
                 </div>
             </>

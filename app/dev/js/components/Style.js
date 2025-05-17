@@ -38,7 +38,7 @@ function desktop(attributes) {
     const styleAttributes = Object.fromEntries(Object.entries({
         'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
         'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-    }).filter(([key, value]) => value));
+    }).filter(([key, value]) => !!value));
 
     const specialAttributes = Object.fromEntries(
         Object.entries(attributes?.['wpbs-layout'] ?? {}).filter(([key, value]) =>
@@ -338,23 +338,16 @@ function props(attributes) {
     return Object.fromEntries(Object.entries(styles).filter((k, style) => !!style));
 }
 
-export function Style({attributes, setAttributes, uniqueId, customCss = '', selector = ''}) {
+export function Style({attributes, setAttributes, uniqueId, css = '' | [], selector = ''}) {
 
-    useEffect(() => {
-        setAttributes({'wpbs-css': styleCss(attributes, uniqueId, customCss, selector)});
-    }, [attributes['wpbs-layout'], attributes['wpbs-background']]);
-
-    return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
-}
-
-export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
 
     const breakpoints = WPBS?.settings?.breakpoints;
     const breakpoint = breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
     selector = '.' + [selector, uniqueId].join(' ').trim().split(' ').join('.');
+    console.log(selector);
 
-    let css = '';
+    let result = '';
     let desktopCss = '';
     let desktopProps = '';
     let mobileCss = '';
@@ -372,7 +365,7 @@ export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
     });
 
     if (desktopCss.length) {
-        css += selector + '{' + [desktopProps, desktopCss].join(' ') + '}';
+        result += selector + '{' + [desktopProps, desktopCss].join(' ') + '}';
     }
 
     Object.entries(mobile(attributes)).forEach(([prop, value]) => {
@@ -384,7 +377,7 @@ export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
     });
 
     if (mobileCss.length || mobileProps.length) {
-        css += '@media(width < ' + breakpoint + '){' + selector + '{' + [mobileProps, mobileCss].join(' ') + '}}';
+        result += '@media(width < ' + breakpoint + '){' + selector + '{' + [mobileProps, mobileCss].join(' ') + '}}';
     }
 
     Object.entries(hover(attributes)).forEach(([prop, value]) => {
@@ -392,10 +385,17 @@ export function styleCss(attributes, uniqueId, customCss = '', selector = '') {
     });
 
     if (hoverCss.length) {
-        css += selector + ':hover' + '{' + hoverCss + '}';
+        result += selector + ':hover' + '{' + hoverCss + '}';
     }
 
-    return [css, customCss].join(' ');
+    if (Array.isArray(css)) {
+        result = [result, ...css].join(' ');
+    } else {
+        result = [result, css].join(' ');
+    }
 
+    setAttributes({'wpbs-css': result});
 
+    return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
 }
+

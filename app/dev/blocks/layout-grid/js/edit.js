@@ -270,7 +270,10 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} customCss={backgroundStyles(attributes)}/>
+                <Style attributes={attributes} setAttributes={setAttributes}
+                       uniqueId={uniqueId}
+                       css={[backgroundStyles(attributes)]}
+                />
 
                 <div {...blockProps}>
 

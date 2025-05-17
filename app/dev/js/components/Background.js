@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {
     InspectorControls, MediaUpload, MediaUploadCheck,
@@ -22,7 +22,7 @@ export const backgroundAttributes = {
 
 function parseProp(prop) {
 
-    if (typeof prop === 'string') {
+    if (typeof prop !== 'string') {
         return prop;
     }
 
@@ -34,72 +34,168 @@ function parseProp(prop) {
         .toLowerCase();
 }
 
+function parseSpecial(prop, settings) {
+
+    if (!settings?.[prop]) {
+        return {};
+    }
+
+    const parsedProp = prop.replace(/Mobile|Large/g, '');
+
+    switch (parsedProp) {
+        case 'fixed':
+            return {'--attachment': 'fixed'}
+        case 'scale':
+        case 'size':
+            return {'--size': !!settings?.scale ? parseFloat(settings?.scale) + '%' : settings?.size ?? null}
+        case 'width':
+        case 'height':
+            return {['--' + parsedProp]: settings[prop] + '%'}
+        case 'opacity':
+            return {['--' + parsedProp]: parseFloat(settings[prop]) / 100}
+        case 'fade':
+            return {'--fade': 'linear-gradient(to bottom, #000000ff ' + (settings[prop] + '%') + ', #00000000 100%)'}
+        case 'position':
+
+            switch (settings[prop]) {
+                case 'top-left':
+                    return {
+                        '--top': '0px',
+                        '--left': '0px',
+                        '--bottom': 'auto',
+                        '--right': 'auto',
+                    }
+                case 'top-right':
+                    return {
+                        '--top': '0px',
+                        '--right': '0px',
+                        '--bottom': 'auto',
+                        '--left': 'auto',
+                    }
+                case 'bottom-right':
+                    return {
+                        '--bottom': '0px',
+                        '--right': '0px',
+                        '--top': 'auto',
+                        '--left': 'auto',
+                    }
+                case 'bottom-left':
+                    return {
+                        '--bottom': '0px',
+                        '--left': '0px',
+                        '--top': 'unset',
+                        '--right': 'unset',
+                    }
+                case 'center':
+                    return {
+                        '--top': '50%',
+                        '--left': '50%',
+                        '--bottom': 'unset',
+                        '--right': 'unset',
+                        '--transform': 'translate(-50%,-50%)',
+                    }
+            }
+
+            break;
+        default:
+            return {}
+    }
+
+
+}
+
 export function backgroundStyles(attributes) {
 
-    const {'wpbs-background': settings = {}} = attributes;
-
-    if (!settings?.type || !attributes.uniqueId) {
+    if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
         return;
     }
 
-    const uniqueId = attributes?.uniqueId;
-    const selector = '.' + uniqueId.trim().split(' ').join('.');
+    let desktop = [];
+    let mobile = [];
+    let special = [];
 
-    const specialProps = [
-        'type',
-        'mobileImage',
-        'largeImage',
-        'mobileVideo',
-        'largeVideo',
-        'maskImageMobile',
-        'maskImageLarge',
-        'resolution',
-        'position',
-        'positionMobile',
-        'eager',
-        'force',
-        'mask',
-        'fixed',
-        'size',
-        'sizeMobile',
-        'opacity',
-        'width',
-        'height',
-        'resolutionMobile',
-        'maskMobile',
-        'scale',
-        'scaleMobile',
-        'opacityMobile',
-        'widthMobile',
-        'heightMobile',
-        'fade',
-        'fadeMobile',
-    ];
+    useEffect(() => {
 
-    const desktop = Object.fromEntries(Object.entries(settings).filter((k, value) =>
-        !specialProps.includes(String(k)) &&
-        !['object', 'array'].includes(typeof value) &&
-        !String(k).toLowerCase().includes('mobile')
-    ));
+        const uniqueId = attributes?.uniqueId;
+        const selector = '.' + uniqueId.trim().split(' ').join('.');
+        const suppressProps = ['type'];
+        const specialProps = [
+            'type',
+            'mobileImage',
+            'largeImage',
+            'mobileVideo',
+            'largeVideo',
+            'maskImageMobile',
+            'maskImageLarge',
+            'resolution',
+            'position',
+            'positionMobile',
+            'eager',
+            'force',
+            'mask',
+            'fixed',
+            'size',
+            'sizeMobile',
+            'opacity',
+            'width',
+            'height',
+            'resolutionMobile',
+            'maskMobile',
+            'scale',
+            'scaleMobile',
+            'opacityMobile',
+            'widthMobile',
+            'heightMobile',
+            'fade',
+            'fadeMobile',
+        ];
 
-    const mobile = Object.fromEntries(Object.entries(settings).filter((k, value) =>
-        !specialProps.includes(String(k)) &&
-        !['object', 'array'].includes(typeof value) &&
-        String(k).toLowerCase().includes('mobile')
-    ));
+        const {'wpbs-background': settings = {}} = attributes;
 
-    console.log(desktop);
-    console.log(mobile);
+        Object.entries(settings).filter(([k, value]) =>
+            !suppressProps.includes(String(k)) &&
+            !['object', 'array'].includes(typeof value) &&
+            !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-    let css = '';
-    let desktopCss = '';
-    let desktopProps = '';
-    let mobileCss = '';
-    let mobileProps = '';
-    let hoverCss = '';
+            if (specialProps.includes(prop)) {
+
+                desktop = {
+                    ...desktop,
+                    ...parseSpecial(prop, settings)
+                };
+
+            } else {
+                desktop['--' + parseProp(prop)] = value;
+            }
+
+        });
+
+        Object.entries(settings).filter(([k, value]) =>
+            !suppressProps.includes(String(k)) &&
+            !specialProps.includes(String(k)) &&
+            !['object', 'array'].includes(typeof value) &&
+            String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+
+            if (specialProps.includes(prop)) {
+
+                mobile = {
+                    ...mobile,
+                    ...parseSpecial(prop, settings)
+                };
+
+            } else {
+                mobile['--' + parseProp(prop)] = value;
+            }
+
+        });
+
+        console.log(desktop);
+        console.log(mobile);
+        console.log(special);
+    }, [attributes['wpbs-background']]);
 
 
-    return css;
+    return [desktop, mobile].join(' ');
 
 }
 

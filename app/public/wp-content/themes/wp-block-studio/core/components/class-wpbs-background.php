@@ -215,6 +215,8 @@ class WPBS_Background {
 						$props['--image'] = $this->image_set();
 					}
 					break;
+
+
 				case 'fixed':
 					$props['--attachment'] = 'fixed';
 					break;

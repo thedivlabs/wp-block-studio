@@ -104,6 +104,38 @@ function parseSpecial(prop, settings) {
 
 }
 
+const suppressProps = ['type'];
+const specialProps = [
+    'type',
+    'mobileImage',
+    'largeImage',
+    'mobileVideo',
+    'largeVideo',
+    'maskImageMobile',
+    'maskImageLarge',
+    'resolution',
+    'position',
+    'positionMobile',
+    'eager',
+    'force',
+    'mask',
+    'fixed',
+    'size',
+    'sizeMobile',
+    'opacity',
+    'width',
+    'height',
+    'resolutionMobile',
+    'maskMobile',
+    'scale',
+    'scaleMobile',
+    'opacityMobile',
+    'widthMobile',
+    'heightMobile',
+    'fade',
+    'fadeMobile',
+];
+
 export function backgroundStyles(attributes) {
 
     if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
@@ -118,43 +150,13 @@ export function backgroundStyles(attributes) {
 
         const uniqueId = attributes?.uniqueId;
         const selector = '.' + uniqueId.trim().split(' ').join('.');
-        const suppressProps = ['type'];
-        const specialProps = [
-            'type',
-            'mobileImage',
-            'largeImage',
-            'mobileVideo',
-            'largeVideo',
-            'maskImageMobile',
-            'maskImageLarge',
-            'resolution',
-            'position',
-            'positionMobile',
-            'eager',
-            'force',
-            'mask',
-            'fixed',
-            'size',
-            'sizeMobile',
-            'opacity',
-            'width',
-            'height',
-            'resolutionMobile',
-            'maskMobile',
-            'scale',
-            'scaleMobile',
-            'opacityMobile',
-            'widthMobile',
-            'heightMobile',
-            'fade',
-            'fadeMobile',
-        ];
 
         const {'wpbs-background': settings = {}} = attributes;
 
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
-            !['object', 'array'].includes(typeof value) &&
+            !Array.isArray(value) &&
+            !['object'].includes(typeof value) &&
             !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
             if (specialProps.includes(prop)) {
@@ -173,7 +175,8 @@ export function backgroundStyles(attributes) {
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
             !specialProps.includes(String(k)) &&
-            !['object', 'array'].includes(typeof value) &&
+            !Array.isArray(value) &&
+            !['object'].includes(typeof value) &&
             String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
             if (specialProps.includes(prop)) {

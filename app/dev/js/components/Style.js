@@ -340,12 +340,10 @@ function props(attributes) {
 
 export function Style({attributes, setAttributes, uniqueId, css = '' | [], selector = ''}) {
 
-
     const breakpoints = WPBS?.settings?.breakpoints;
     const breakpoint = breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
     selector = '.' + [selector, uniqueId].join(' ').trim().split(' ').join('.');
-    console.log(selector);
 
     let result = '';
     let desktopCss = '';

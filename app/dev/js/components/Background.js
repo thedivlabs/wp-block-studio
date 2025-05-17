@@ -138,20 +138,24 @@ const specialProps = [
 
 export function backgroundStyles(attributes) {
 
+    const [result, setResult] = useState('');
+
     if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
         return;
     }
-
-    let desktop = [];
-    let mobile = [];
-    let special = [];
 
     useEffect(() => {
 
         const uniqueId = attributes?.uniqueId;
         const selector = '.' + uniqueId.trim().split(' ').join('.');
+        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const {'wpbs-background': settings = {}} = attributes;
+
+        let css = '';
+        let desktop = [];
+        let mobile = [];
+        let special = [];
 
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
@@ -192,13 +196,36 @@ export function backgroundStyles(attributes) {
 
         });
 
+        if (desktop.length) {
+            css += selector + ' { ';
+
+            desktop.forEach(([prop, value]) => {
+                css += [prop, value].join(': ') + '; ';
+            })
+
+            css += '} ';
+        }
+
+        if (mobile.length) {
+            css += '@media(width < ' + breakpoint + '){' + selector + '{ ';
+
+            mobile.forEach(([prop, value]) => {
+                css += [prop, value].join(': ') + '; ';
+            })
+
+            css += '}} ';
+        }
+
+        setResult(css);
+
+        console.log(result);
         console.log(desktop);
         console.log(mobile);
         console.log(special);
     }, [attributes['wpbs-background']]);
 
 
-    return [desktop, mobile].join(' ');
+    return result;
 
 }
 

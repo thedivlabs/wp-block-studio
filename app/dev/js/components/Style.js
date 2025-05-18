@@ -77,17 +77,17 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
     }
 
     if (Array.isArray(css)) {
-        css = [propsCss, ...css].join(' ');
+        css = [propsCss, ...css].join(' ').trim();
     } else {
-        css = [propsCss, css].join(' ');
+        css = [propsCss, css].join(' ').trim();
     }
 
     useEffect(() => {
-        setAttributes({'wpbs-css': css.trim()});
+        
+        setAttributes({'wpbs-css': css});
 
-        console.log(attributes['wpbs-css']);
     }, dependencyValues);
 
-    return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
+    return <style className={'wpbs-styles'}>{css}</style>;
 }
 

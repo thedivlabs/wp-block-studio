@@ -196,24 +196,24 @@ export function backgroundStyles(attributes) {
         });
 
         if (Object.keys(desktop).length) {
-            css += selector + ' { ';
+            css += selector + ' {';
             console.log(!!mobile);
             Object.entries(desktop).forEach(([prop, value]) => {
 
                 css += [prop, value].join(':') + '; ';
             })
 
-            css += '} ';
+            css += '}';
         }
 
         if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + '{ ';
+            css += '@media(width < ' + breakpoint + '){' + selector + '{';
 
             Object.entries(mobile).forEach(([prop, value]) => {
                 css += [prop, value].join(':') + '; ';
             })
 
-            css += '}} ';
+            css += '}}';
         }
 
         setResult(css);

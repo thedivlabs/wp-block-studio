@@ -8,9 +8,9 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {layoutAttributes, LayoutControls} from "Components/Layout"
-import {backgroundAttributes, BackgroundControls, BackgroundElement, backgroundStyles} from "Components/Background"
-import {Style} from "Components/Style"
+import {layoutAttributes, LayoutControls, layoutCss} from "Components/Layout"
+import {backgroundAttributes, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {Style,styleAttributes} from "Components/Style"
 import Loop from "Components/Loop"
 import {
     __experimentalBorderControl as BorderControl,
@@ -57,6 +57,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...layoutAttributes,
         ...backgroundAttributes,
+        ...styleAttributes,
         'wpbs-grid': {
             type: 'object',
             default: {
@@ -272,7 +273,7 @@ registerBlockType(metadata.name, {
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
-                       css={[backgroundStyles(attributes)]}
+                       css={[backgroundCss(attributes),layoutCss(attributes)]}
                 />
 
                 <div {...blockProps}>

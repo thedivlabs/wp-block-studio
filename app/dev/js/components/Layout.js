@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {
     InspectorControls,
@@ -9,6 +9,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
 } from "@wordpress/components";
 
+import {getCSSFromStyle} from 'Components/Style';
 import Outline from 'Components/Outline';
 import Display from 'Components/Display';
 import FlexDirection from 'Components/FlexDirection';
@@ -51,19 +52,41 @@ export const layoutAttributes = {
     'wpbs-layout': {
         type: 'object',
         default: {}
-    },
-    'wpbs-css': {
-        type: 'string',
-        show_in_rest: true
-    },
-    'wpbs-props': {
-        type: 'object',
-        show_in_rest: true
-    },
-
+    }
 };
 
-export const layoutProps = {
+const suppressProps = [];
+const specialProps = [
+    'type',
+    'mobileImage',
+    'largeImage',
+    'mobileVideo',
+    'largeVideo',
+    'maskImageMobile',
+    'maskImageLarge',
+    'resolution',
+    'position',
+    'positionMobile',
+    'eager',
+    'force',
+    'mask',
+    'fixed',
+    'size',
+    'sizeMobile',
+    'opacity',
+    'width',
+    'height',
+    'resolutionMobile',
+    'maskMobile',
+    'scale',
+    'scaleMobile',
+    'opacityMobile',
+    'widthMobile',
+    'heightMobile',
+    'fade',
+    'fadeMobile',
+];
+const layoutProps = {
 
     layout: [
         'offset-header',
@@ -153,6 +176,166 @@ export const layoutProps = {
     ],
 
 };
+
+function parseSpecial(prop, attributes) {
+
+    const {'wpbs-layout': settings} = attributes
+
+    if (!settings?.[prop]) {
+        return {};
+    }
+
+    const value = settings[prop];
+
+    switch (prop) {
+        case 'mask-image':
+            const imageUrl = value?.sizes?.full?.url || '#';
+            return {
+                'mask-image': 'url(' + imageUrl + ')',
+                'mask-repeat': 'no-repeat',
+                'mask-size': (() => {
+                    switch (settings?.['mask-size']) {
+                        case 'cover':
+                            return 'cover';
+                        case 'horizontal':
+                            return '100% auto';
+                        case 'vertical':
+                            return 'auto 100%';
+                        default:
+                            return 'contain';
+                    }
+                })(),
+                'mask-position': settings?.['mask-origin'] || 'center center'
+            };
+
+        case 'basis':
+            return {'flex-basis': value + '%'}
+
+        case 'height':
+        case 'height-custom':
+            return {'height': parseSpecial('height', settings?.['height-custom'] ?? settings?.['height'])}
+
+        case 'min-height':
+        case 'min-height-custom':
+            return {'min-height': parseSpecial('min-height', settings?.['min-height-custom'] ?? settings?.['min-height'])}
+
+        case 'max-height':
+        case 'max-height-custom':
+            return {'max-height': parseSpecial('max-height', settings?.['max-height-custom'] ?? settings?.['max-height'])}
+
+        case 'width':
+        case 'width-custom':
+            return {'width': settings?.['width-custom'] ?? settings?.['width'] ?? null}
+
+        case 'translate':
+
+            return {
+                'transform': 'translate(' + [
+                    getCSSFromStyle(settings?.['translate']?.top || '0px'),
+                    getCSSFromStyle(settings?.['translate']?.left || '0px')
+                ].join(',') + ')'
+            }
+
+        case 'offset-header':
+            return {'padding-top': 'calc(' + getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px') + ' + var(--wpbs-header-height, 0px)) !important'}
+    }
+
+
+    return {};
+
+
+}
+
+export function layoutCss(attributes) {
+
+    const [result, setResult] = useState('');
+
+    useEffect(() => {
+
+        if (!attributes?.['wpbs-layout'] || !attributes.uniqueId) {
+            return;
+        }
+
+
+
+        let css = '';
+        let desktop = {};
+        let mobile = {};
+
+        const uniqueId = attributes?.uniqueId;
+        const selector = '.' + uniqueId.trim().split(' ').join('.');
+        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+
+        const {'wpbs-layout': settings = {}} = attributes;
+
+        Object.entries(settings).filter(([k, value]) =>
+            !suppressProps.includes(String(k)) &&
+            !Array.isArray(value) &&
+            !['object'].includes(typeof value) &&
+            !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+
+            if (specialProps.includes(prop)) {
+
+                desktop = {
+                    ...desktop,
+                    ...parseSpecial(prop, attributes)
+                };
+
+            } else {
+                desktop[prop] = value;
+            }
+
+        });
+
+        Object.entries(settings).filter(([k, value]) =>
+            !suppressProps.includes(String(k)) &&
+            !specialProps.includes(String(k)) &&
+            !Array.isArray(value) &&
+            !['object'].includes(typeof value) &&
+            String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+
+            prop = prop.replace('-mobile', '');
+
+            if (specialProps.includes(prop)) {
+
+                mobile = {
+                    ...mobile,
+                    ...parseSpecial(prop, attributes)
+                };
+
+            } else {
+                mobile[prop] = value;
+            }
+
+        });
+
+        if (Object.keys(desktop).length) {
+            css += selector + '{';
+            Object.entries(desktop).forEach(([prop, value]) => {
+
+                css += [prop, value].join(':') + ';';
+            })
+
+            css += '}';
+        }
+
+        if (Object.keys(mobile).length) {
+            css += '@media(width < ' + breakpoint + '){' + selector + '{';
+
+            Object.entries(mobile).forEach(([prop, value]) => {
+                css += [prop, value].join(':') + ';';
+            })
+
+            css += '}}';
+        }
+
+        setResult(css);
+
+    }, [attributes['wpbs-layout']]);
+
+    return result;
+
+}
 
 export function LayoutControls({attributes = {}, setAttributes}) {
 

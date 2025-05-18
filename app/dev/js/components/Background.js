@@ -136,7 +136,7 @@ const specialProps = [
     'fadeMobile',
 ];
 
-export function backgroundStyles(attributes) {
+export function backgroundCss(attributes) {
 
     const [result, setResult] = useState('');
 

@@ -200,7 +200,7 @@ export function backgroundStyles(attributes) {
             console.log(!!mobile);
             Object.entries(desktop).forEach(([prop, value]) => {
 
-                css += [prop, value].join(': ') + '; ';
+                css += [prop, value].join(':') + '; ';
             })
 
             css += '} ';
@@ -210,7 +210,7 @@ export function backgroundStyles(attributes) {
             css += '@media(width < ' + breakpoint + '){' + selector + '{ ';
 
             Object.entries(mobile).forEach(([prop, value]) => {
-                css += [prop, value].join(': ') + '; ';
+                css += [prop, value].join(':') + '; ';
             })
 
             css += '}} ';

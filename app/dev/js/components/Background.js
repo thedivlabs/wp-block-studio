@@ -138,88 +138,80 @@ const specialProps = [
 
 export function backgroundCss(attributes) {
 
-    const [result, setResult] = useState('');
+    if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
+        return;
+    }
 
-    useEffect(() => {
+    let css = '';
+    let desktop = {};
+    let mobile = {};
 
-        if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
-            return;
+    const uniqueId = attributes?.uniqueId;
+    const selector = '.' + uniqueId.trim().split(' ').join('.');
+    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+
+    const {'wpbs-background': settings = {}} = attributes;
+
+    Object.entries(settings).filter(([k, value]) =>
+        !suppressProps.includes(String(k)) &&
+        !Array.isArray(value) &&
+        !['object'].includes(typeof value) &&
+        !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+
+        if (specialProps.includes(prop)) {
+
+            desktop = {
+                ...desktop,
+                ...parseSpecial(prop, settings)
+            };
+
+        } else {
+            desktop['--' + parseProp(prop)] = value;
         }
 
-        let css = '';
-        let desktop = {};
-        let mobile = {};
+    });
 
-        const uniqueId = attributes?.uniqueId;
-        const selector = '.' + uniqueId.trim().split(' ').join('.');
-        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+    Object.entries(settings).filter(([k, value]) =>
+        !suppressProps.includes(String(k)) &&
+        !specialProps.includes(String(k)) &&
+        !Array.isArray(value) &&
+        !['object'].includes(typeof value) &&
+        String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-        const {'wpbs-background': settings = {}} = attributes;
+        if (specialProps.includes(prop)) {
 
-        Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
-            !Array.isArray(value) &&
-            !['object'].includes(typeof value) &&
-            !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+            mobile = {
+                ...mobile,
+                ...parseSpecial(prop, settings)
+            };
 
-            if (specialProps.includes(prop)) {
-
-                desktop = {
-                    ...desktop,
-                    ...parseSpecial(prop, settings)
-                };
-
-            } else {
-                desktop['--' + parseProp(prop)] = value;
-            }
-
-        });
-
-        Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
-            !specialProps.includes(String(k)) &&
-            !Array.isArray(value) &&
-            !['object'].includes(typeof value) &&
-            String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
-
-            if (specialProps.includes(prop)) {
-
-                mobile = {
-                    ...mobile,
-                    ...parseSpecial(prop, settings)
-                };
-
-            } else {
-                mobile['--' + parseProp(prop)] = value;
-            }
-
-        });
-
-        if (Object.keys(desktop).length) {
-            css += selector + '{';
-            Object.entries(desktop).forEach(([prop, value]) => {
-
-                css += [prop, value].join(':') + ';';
-            })
-
-            css += '}';
+        } else {
+            mobile['--' + parseProp(prop)] = value;
         }
 
-        if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + '{';
+    });
 
-            Object.entries(mobile).forEach(([prop, value]) => {
-                css += [prop, value].join(':') + ';';
-            })
+    if (Object.keys(desktop).length) {
+        css += selector + '{';
+        Object.entries(desktop).forEach(([prop, value]) => {
 
-            css += '}}';
-        }
+            css += [prop, value].join(':') + ';';
+        })
 
-        setResult(css);
+        css += '}';
+    }
 
-    }, [attributes['wpbs-background']]);
+    if (Object.keys(mobile).length) {
+        css += '@media(width < ' + breakpoint + '){' + selector + '{';
 
-    return result;
+        Object.entries(mobile).forEach(([prop, value]) => {
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}}';
+    }
+
+    return css.trim();
 
 }
 

@@ -23,8 +23,9 @@ export function getCSSFromStyle(raw) {
     return raw;
 }
 
-export function Style({attributes, setAttributes, css = '' | []}) {
+export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
 
+    const dependencyValues = deps.map((key) => attributes[key]);
 
     const uniqueId = attributes?.uniqueId;
     const selector = '.' + uniqueId.trim().split(' ').join('.');
@@ -74,15 +75,16 @@ export function Style({attributes, setAttributes, css = '' | []}) {
 
         propsCss += '}}';
     }
-
-
+    
     if (Array.isArray(css)) {
         css = [propsCss, ...css].join(' ');
     } else {
         css = [propsCss, css].join(' ');
     }
 
-    setAttributes({'wpbs-css': css.trim()});
+    useEffect(() => {
+        setAttributes({'wpbs-css': css.trim()});
+    }, dependencyValues);
 
     return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;
 }

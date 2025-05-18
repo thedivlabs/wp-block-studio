@@ -10,7 +10,7 @@ import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {layoutAttributes, LayoutControls, layoutCss} from "Components/Layout"
 import {backgroundAttributes, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
-import {Style,styleAttributes} from "Components/Style"
+import {Style, styleAttributes} from "Components/Style"
 import Loop from "Components/Loop"
 import {
     __experimentalBorderControl as BorderControl,
@@ -273,7 +273,8 @@ registerBlockType(metadata.name, {
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
-                       css={[backgroundCss(attributes),layoutCss(attributes)]}
+                       css={[backgroundCss(attributes), layoutCss(attributes)]}
+                       deps={['wpbs-layout', 'wpbs-background']}
                 />
 
                 <div {...blockProps}>

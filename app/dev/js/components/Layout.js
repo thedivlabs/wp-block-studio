@@ -251,7 +251,7 @@ function parseSpecial(prop, attributes) {
             break;
     }
 
-    Object.entries(result).forEach(([k,val]) => {
+    Object.entries(result).forEach(([k, val]) => {
 
         if (typeof val === 'object') {
             result[k] = Object.entries(val)
@@ -268,115 +268,107 @@ function parseSpecial(prop, attributes) {
 
 export function layoutCss(attributes) {
 
-    const [result, setResult] = useState('');
+    if (!attributes?.['wpbs-layout'] || !attributes.uniqueId) {
+        return;
+    }
 
-    useEffect(() => {
+    const uniqueId = attributes?.uniqueId;
+    const selector = '.' + uniqueId.trim().split(' ').join('.');
+    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
-        if (!attributes?.['wpbs-layout'] || !attributes.uniqueId) {
-            return;
+    const {'wpbs-layout': settings = {}} = attributes;
+
+    let css = '';
+    let desktop = {};
+    let mobile = {};
+    let hover = {};
+
+    Object.entries(settings).filter(([k, value]) =>
+        !k.toLowerCase().includes('mobile') &&
+        !k.toLowerCase().includes('hover')
+    ).forEach(([prop, value]) => {
+
+        if (layoutProps.special.includes(prop)) {
+
+            desktop = {
+                ...desktop,
+                ...parseSpecial(prop, attributes)
+            };
+
+        } else {
+            desktop[prop] = value;
         }
 
-        const uniqueId = attributes?.uniqueId;
-        const selector = '.' + uniqueId.trim().split(' ').join('.');
-        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+    });
 
-        const {'wpbs-layout': settings = {}} = attributes;
+    Object.entries(settings).filter(([k, value]) =>
+        k.toLowerCase().includes('mobile') &&
+        !k.toLowerCase().includes('hover')
+    ).forEach(([prop, value]) => {
 
-        let css = '';
-        let desktop = {};
-        let mobile = {};
-        let hover = {};
+        if (layoutProps.special.includes(prop)) {
 
-        Object.entries(settings).filter(([k, value]) =>
-            !k.toLowerCase().includes('mobile') &&
-            !k.toLowerCase().includes('hover')
-        ).forEach(([prop, value]) => {
+            mobile = {
+                ...mobile,
+                ...parseSpecial(prop, attributes)
+            };
 
-            if (layoutProps.special.includes(prop)) {
-
-                desktop = {
-                    ...desktop,
-                    ...parseSpecial(prop, attributes)
-                };
-
-            } else {
-                desktop[prop] = value;
-            }
-
-        });
-
-        Object.entries(settings).filter(([k, value]) =>
-            k.toLowerCase().includes('mobile') &&
-            !k.toLowerCase().includes('hover')
-        ).forEach(([prop, value]) => {
-
-            if (layoutProps.special.includes(prop)) {
-
-                mobile = {
-                    ...mobile,
-                    ...parseSpecial(prop, attributes)
-                };
-
-            } else {
-                prop = prop.replace(/-mobile/g, '');
-                mobile[prop] = value;
-            }
-
-        });
-
-        Object.entries(settings).filter(([k, value]) =>
-            String(k).toLowerCase().includes('hover')
-        ).forEach(([prop, value]) => {
-
-            if (layoutProps.special.includes(prop)) {
-
-                hover = {
-                    ...mobile,
-                    ...parseSpecial(prop, attributes)
-                };
-
-            } else {
-                prop = prop.replace(/-hover/g, '');
-                hover[prop] = value;
-            }
-
-        });
-
-        if (Object.keys(desktop).length) {
-            css += selector + '{';
-            Object.entries(desktop).forEach(([prop, value]) => {
-
-                css += [prop, value].join(':') + ';';
-            })
-
-            css += '}';
+        } else {
+            prop = prop.replace(/-mobile/g, '');
+            mobile[prop] = value;
         }
 
-        if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + '{';
+    });
 
-            Object.entries(mobile).forEach(([prop, value]) => {
-                css += [prop, value].join(':') + ';';
-            })
+    Object.entries(settings).filter(([k, value]) =>
+        String(k).toLowerCase().includes('hover')
+    ).forEach(([prop, value]) => {
 
-            css += '}}';
+        if (layoutProps.special.includes(prop)) {
+
+            hover = {
+                ...mobile,
+                ...parseSpecial(prop, attributes)
+            };
+
+        } else {
+            prop = prop.replace(/-hover/g, '');
+            hover[prop] = value;
         }
 
-        if (Object.keys(hover).length) {
-            css += selector + ':hover {';
-            Object.entries(desktop).forEach(([prop, value]) => {
+    });
 
-                css += [prop, value].join(':') + ';';
-            })
+    if (Object.keys(desktop).length) {
+        css += selector + '{';
+        Object.entries(desktop).forEach(([prop, value]) => {
 
-            css += '}';
-        }
+            css += [prop, value].join(':') + ';';
+        })
 
-        setResult(css);
+        css += '}';
+    }
 
-    }, [attributes['wpbs-layout']]);
+    if (Object.keys(mobile).length) {
+        css += '@media(width < ' + breakpoint + '){' + selector + '{';
 
-    return result;
+        Object.entries(mobile).forEach(([prop, value]) => {
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}}';
+    }
+
+    if (Object.keys(hover).length) {
+        css += selector + ':hover {';
+        Object.entries(desktop).forEach(([prop, value]) => {
+
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}';
+    }
+
+    return css.trim();
 
 }
 

@@ -166,8 +166,6 @@ export function backgroundCss(attributes) {
 
         const {'wpbs-background': settings = {}} = attributes;
 
-        console.log(settings);
-
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
             !Array.isArray(value) &&
@@ -238,6 +236,21 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     function updateSettings(newValue = {}) {
 
+        if('resolution' in newValue){
+
+
+            newValue.largeImage = {
+                ...settings.largeImage,
+                url: settings.largeImage.sizes[newValue.resolution].url
+            }
+            newValue.mobileImage = {
+                ...settings.largeImage,
+                url: settings.largeImage.sizes[newValue.resolution].url
+            }
+        }
+
+
+
         setSettings((prev) => {
             return {
                 ...prev,
@@ -251,6 +264,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 ...newValue
             }
         });
+
+        console.log(settings.largeImage);
+        console.log(settings.mobileImage);
 
     }
 

@@ -236,25 +236,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     const [settings, setSettings] = useState(attributes['wpbs-background']);
 
-    function updateSettings(attr, val) {
-
-        setSettings((prev) => {
-            return {
-                ...prev,
-                ...{[attr]: val}
-            }
-        })
-
-        setAttributes({
-            'wpbs-background': {
-                ...attributes['wpbs-background'],
-                ...{[attr]: val}
-            }
-        });
-
-    }
-
-    function updateImageSettings(newValue) {
+    function updateSettings(newValue = {}) {
 
         setSettings((prev) => {
             return {
@@ -580,7 +562,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlay'] ?? ''}
+                value={settings?.['overlay'] ?? 'none'}
                 onChange={(value) => {
                     updateSettings({'overlay': value});
                 }}

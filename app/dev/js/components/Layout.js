@@ -55,38 +55,24 @@ export const layoutAttributes = {
     }
 };
 
-const specialProps = [
-    'type',
-    'mobileImage',
-    'largeImage',
-    'mobileVideo',
-    'largeVideo',
-    'maskImageMobile',
-    'maskImageLarge',
-    'resolution',
-    'position',
-    'positionMobile',
-    'eager',
-    'force',
-    'mask',
-    'fixed',
-    'size',
-    'sizeMobile',
-    'opacity',
-    'width',
-    'height',
-    'resolutionMobile',
-    'maskMobile',
-    'scale',
-    'scaleMobile',
-    'opacityMobile',
-    'widthMobile',
-    'heightMobile',
-    'fade',
-    'fadeMobile',
-];
-const layoutProps = {
 
+const layoutProps = {
+    special: [
+        'mask-image',
+        'basis',
+        'height',
+        'height-custom',
+        'min-height',
+        'min-height-custom',
+        'max-height',
+        'max-height-custom',
+        'width',
+        'width-custom',
+        'translate',
+        'offset-header',
+        'text-color-hover',
+        'text-color-mobile'
+    ],
     layout: [
         'offset-header',
         'display',
@@ -209,6 +195,9 @@ function parseSpecial(prop, attributes) {
 
         case 'basis':
             return {'flex-basis': value + '%'}
+        case 'text-color-hover':
+        case 'text-color-mobile':
+            return {'color': value}
 
         case 'height':
         case 'height-custom':
@@ -255,25 +244,22 @@ export function layoutCss(attributes) {
             return;
         }
 
-
-        let css = '';
-        let desktop = {};
-        let mobile = {};
-        let hover = {};
-
         const uniqueId = attributes?.uniqueId;
         const selector = '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const {'wpbs-layout': settings = {}} = attributes;
 
+        let css = '';
+        let desktop = {};
+        let mobile = {};
+        let hover = {};
+
         Object.entries(settings).filter(([k, value]) =>
-            !Array.isArray(value) &&
-            !['object'].includes(typeof value) &&
             !['mobile', 'hover'].includes(String(k).toLowerCase())
         ).forEach(([prop, value]) => {
 
-            if (specialProps.includes(prop)) {
+            if (layoutProps.special.includes(prop)) {
 
                 desktop = {
                     ...desktop,
@@ -287,15 +273,13 @@ export function layoutCss(attributes) {
         });
 
         Object.entries(settings).filter(([k, value]) =>
-            !Array.isArray(value) &&
-            !['object'].includes(typeof value) &&
             !['hover'].includes(String(k).toLowerCase()) &&
             ['mobile'].includes(String(k).toLowerCase())
         ).forEach(([prop, value]) => {
 
             prop = prop.replace('-mobile', '');
 
-            if (specialProps.includes(prop)) {
+            if (layoutProps.special.includes(prop)) {
 
                 mobile = {
                     ...mobile,
@@ -304,6 +288,25 @@ export function layoutCss(attributes) {
 
             } else {
                 mobile[prop] = value;
+            }
+
+        });
+
+        Object.entries(settings).filter(([k, value]) =>
+            ['hover'].includes(String(k).toLowerCase())
+        ).forEach(([prop, value]) => {
+
+            prop = prop.replace('-hover', '');
+
+            if (layoutProps.special.includes(prop)) {
+
+                hover = {
+                    ...mobile,
+                    ...parseSpecial(prop, attributes)
+                };
+
+            } else {
+                hover[prop] = value;
             }
 
         });
@@ -326,6 +329,16 @@ export function layoutCss(attributes) {
             })
 
             css += '}}';
+        }
+
+        if (Object.keys(hover).length) {
+            css += selector + ':hover {';
+            Object.entries(desktop).forEach(([prop, value]) => {
+
+                css += [prop, value].join(':') + ';';
+            })
+
+            css += '}';
         }
 
         setResult(css);

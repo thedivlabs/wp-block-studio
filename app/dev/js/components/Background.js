@@ -584,7 +584,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Extra Large', value: 'xlarge'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('resolutionMobile', value);
+                    updateSettings({'resolutionMobile': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -599,7 +599,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Horizontal', value: '100% auto'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('sizeMobile', value);
+                    updateSettings({'sizeMobile': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -615,7 +615,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Soft Light', value: 'soft-light'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('blendMobile', value);
+                    updateSettings({'blendMobile': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -632,7 +632,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Bottom Right', value: 'bottom-right'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('positionMobile', value);
+                    updateSettings({'positionMobile': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -653,7 +653,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Bottom Right', value: 'right bottom'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('originMobile', value);
+                    updateSettings({'originMobile': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -662,7 +662,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 value={settings?.['maxHeightMobile'] ?? ''}
                 isResetValueOnUnitChange={true}
                 onChange={(value) => {
-                    updateSettings('maxHeightMobile', value);
+                    updateSettings({'maxHeightMobile': value});
                 }}
                 units={[
                     {value: 'vh', label: 'vh', default: 0},
@@ -680,7 +680,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Vertical', value: 'repeat-y'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('repeatMobile', value);
+                    updateSettings({'repeatMobile': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -694,7 +694,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         slug: 'colorMobile',
                         label: 'Color',
                         value: settings?.['colorMobile'] ?? '',
-                        onChange: (color) => updateSettings('colorMobile', color),
+                        onChange: (color) => updateSettings({'colorMobile': color}),
                         isShownByDefault: true
                     }
                 ]}
@@ -704,7 +704,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Scale"
                 value={settings?.['scaleMobile'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('scaleMobile', value);
+                    updateSettings({'scaleMobile': value});
                 }}
                 min={0}
                 max={200}
@@ -716,7 +716,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Opacity"
                 value={settings?.['opacityMobile'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('opacityMobile', value);
+                    updateSettings({'opacityMobile': value});
                 }}
                 min={0}
                 max={100}
@@ -728,7 +728,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Width"
                 value={settings?.['widthMobile'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('widthMobile', value);
+                    updateSettings({'widthMobile': value});
                 }}
                 min={0}
                 max={100}
@@ -740,7 +740,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Height"
                 value={settings?.['heightMobile'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('heightMobile', value);
+                    updateSettings({'heightMobile': value});
                 }}
                 min={0}
                 max={100}
@@ -752,7 +752,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Fade"
                 value={settings?.['fadeMobile'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('fadeMobile', value);
+                    updateSettings({'fadeMobile': value});
                 }}
                 min={0}
                 max={100}
@@ -767,7 +767,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Mask"
                 checked={!!settings?.['maskMobile']}
                 onChange={(value) => {
-                    updateSettings('maskMobile', value);
+                    updateSettings({'maskMobile': value});
                 }}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
@@ -780,10 +780,12 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     <MediaUpload
                         title={'Mask Image'}
                         onSelect={(value) => {
-                            updateSettings('maskImageMobile', {
-                                type: value.type,
-                                id: value.id,
-                                url: value.url,
+                            updateSettings({
+                                'maskImageMobile': {
+                                    type: value.type,
+                                    id: value.id,
+                                    url: value.url,
+                                }
                             });
                         }}
                         allowedTypes={['image']}
@@ -792,7 +794,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                             return <PreviewThumbnail
                                 image={settings?.['maskImageMobile'] || {}}
                                 callback={() => {
-                                    updateSettings('maskImageMobile', undefined)
+                                    updateSettings({'maskImageMobile': undefined})
                                 }}
                                 style={{
                                     objectFit: 'contain',
@@ -822,7 +824,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         {label: 'Bottom Right', value: 'bottom right'},
                     ]}
                     onChange={(value) => {
-                        updateSettings('maskOriginMobile', value);
+                        updateSettings({'maskOriginMobile': value});
                     }}
                     __nextHasNoMarginBottom
                 />
@@ -837,7 +839,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         {label: 'Horizontal', value: '100% auto'},
                     ]}
                     onChange={(value) => {
-                        updateSettings('maskSizeMobile', value);
+                        updateSettings({'maskSizeMobile': value});
                     }}
                     __nextHasNoMarginBottom
                 />
@@ -871,7 +873,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 clearable={true}
                 value={settings?.['overlayMobile'] ?? {}}
                 onChange={(value) => {
-                    updateSettings('overlayMobile', value);
+                    updateSettings({'overlayMobile': value});
                 }}
             />
         </BaseControl>

@@ -83,7 +83,7 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
     }
 
     useEffect(() => {
-        
+
         setAttributes({'wpbs-css': css});
 
     }, dependencyValues);

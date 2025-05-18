@@ -15,8 +15,8 @@
 
 
   .editor-styles-wrapper {
+    display: flex !important;
     @apply
-    flex
     flex-col
     ;
 

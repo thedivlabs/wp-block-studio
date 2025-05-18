@@ -368,6 +368,8 @@ export function layoutCss(attributes) {
         css += '}';
     }
 
+    console.log(css.trim());
+
     return css.trim();
 
 }

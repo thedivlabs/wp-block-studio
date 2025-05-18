@@ -85,7 +85,7 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
     useEffect(() => {
 
         setAttributes({'wpbs-css': css});
-
+console.log(css);
     }, dependencyValues);
 
     return <style className={'wpbs-styles'}>{css}</style>;

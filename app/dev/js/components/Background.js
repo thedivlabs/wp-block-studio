@@ -238,7 +238,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
         if('resolution' in newValue){
 
-
             newValue.largeImage = {
                 ...settings.largeImage,
                 url: settings.largeImage.sizes[newValue.resolution].url

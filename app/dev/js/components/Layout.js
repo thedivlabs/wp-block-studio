@@ -55,7 +55,6 @@ export const layoutAttributes = {
     }
 };
 
-const suppressProps = [];
 const specialProps = [
     'type',
     'mobileImage',
@@ -257,10 +256,10 @@ export function layoutCss(attributes) {
         }
 
 
-
         let css = '';
         let desktop = {};
         let mobile = {};
+        let hover = {};
 
         const uniqueId = attributes?.uniqueId;
         const selector = '.' + uniqueId.trim().split(' ').join('.');
@@ -269,10 +268,10 @@ export function layoutCss(attributes) {
         const {'wpbs-layout': settings = {}} = attributes;
 
         Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
             !Array.isArray(value) &&
             !['object'].includes(typeof value) &&
-            !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+            !['mobile', 'hover'].includes(String(k).toLowerCase())
+        ).forEach(([prop, value]) => {
 
             if (specialProps.includes(prop)) {
 
@@ -288,11 +287,11 @@ export function layoutCss(attributes) {
         });
 
         Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
-            !specialProps.includes(String(k)) &&
             !Array.isArray(value) &&
             !['object'].includes(typeof value) &&
-            String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+            !['hover'].includes(String(k).toLowerCase()) &&
+            ['mobile'].includes(String(k).toLowerCase())
+        ).forEach(([prop, value]) => {
 
             prop = prop.replace('-mobile', '');
 

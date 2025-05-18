@@ -59,6 +59,7 @@ export const layoutAttributes = {
 const layoutProps = {
     special: [
         'mask-image',
+        'margin-mobile',
         'basis',
         'height',
         'height-custom',
@@ -172,10 +173,16 @@ function parseSpecial(prop, attributes) {
 
     const value = settings[prop];
 
+    prop = prop.replace(/-hover|-mobile/g, '');
+
+    console.log(prop);
+
+    let result = {};
+
     switch (prop) {
         case 'mask-image':
             const imageUrl = value?.sizes?.full?.url || '#';
-            return {
+            result = {
                 'mask-image': 'url(' + imageUrl + ')',
                 'mask-repeat': 'no-repeat',
                 'mask-size': (() => {
@@ -193,43 +200,73 @@ function parseSpecial(prop, attributes) {
                 'mask-position': settings?.['mask-origin'] || 'center center'
             };
 
+            break;
+        case 'margin':
+            result = Object.fromEntries(Object.entries({
+                'margin-top': settings[prop]?.top,
+                'margin-right': settings[prop]?.right,
+                'margin-bottom': settings[prop]?.bottom,
+                'margin-left': settings[prop]?.left,
+            }).filter(([k, v]) => !!v))
+            break;
         case 'basis':
-            return {'flex-basis': value + '%'}
-        case 'text-color-hover':
-        case 'text-color-mobile':
-            return {'color': value}
+            result = {'flex-basis': value + '%'}
+            break;
+        case 'text-color':
+            result = {'color': value}
 
+            break;
         case 'height':
+            break;
         case 'height-custom':
-            return {'height': parseSpecial('height', settings?.['height-custom'] ?? settings?.['height'])}
+            result = {'height': parseSpecial('height', settings?.['height-custom'] ?? settings?.['height'])}
 
+            break;
         case 'min-height':
+            break;
         case 'min-height-custom':
-            return {'min-height': parseSpecial('min-height', settings?.['min-height-custom'] ?? settings?.['min-height'])}
+            result = {'min-height': parseSpecial('min-height', settings?.['min-height-custom'] ?? settings?.['min-height'])}
 
+            break;
         case 'max-height':
+            break;
         case 'max-height-custom':
-            return {'max-height': parseSpecial('max-height', settings?.['max-height-custom'] ?? settings?.['max-height'])}
+            result = {'max-height': parseSpecial('max-height', settings?.['max-height-custom'] ?? settings?.['max-height'])}
 
+            break;
         case 'width':
+            break;
         case 'width-custom':
-            return {'width': settings?.['width-custom'] ?? settings?.['width'] ?? null}
+            result = {'width': settings?.['width-custom'] ?? settings?.['width'] ?? null}
 
+            break;
         case 'translate':
-
-            return {
+            result = {
                 'transform': 'translate(' + [
                     getCSSFromStyle(settings?.['translate']?.top || '0px'),
                     getCSSFromStyle(settings?.['translate']?.left || '0px')
                 ].join(',') + ')'
             }
-
+            break;
         case 'offset-header':
-            return {'padding-top': 'calc(' + getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px') + ' + var(--wpbs-header-height, 0px)) !important'}
+            result = {'padding-top': 'calc(' + getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px') + ' + var(--wpbs-header-height, 0px)) !important'}
+            break;
     }
 
+    result = Object.fromEntries(Object.entries(result).map((v) => {
 
-    return {};
+        if (typeof value === 'object') {
+            return Object.entries(v)
+                .filter(([_, value]) => value !== undefined && value !== null)
+                .map(([key, value]) => `${key}: ${value};`)
+                .join(' ')
+        } else {
+            return value
+        }
+
+    }))
+
+    return result;
 
 
 }
@@ -250,13 +287,16 @@ export function layoutCss(attributes) {
 
         const {'wpbs-layout': settings = {}} = attributes;
 
+        console.log(settings);
+
         let css = '';
         let desktop = {};
         let mobile = {};
         let hover = {};
 
         Object.entries(settings).filter(([k, value]) =>
-            !['mobile', 'hover'].includes(String(k).toLowerCase())
+            !k.toLowerCase().includes('mobile') &&
+            !k.toLowerCase().includes('hover')
         ).forEach(([prop, value]) => {
 
             if (layoutProps.special.includes(prop)) {
@@ -273,11 +313,9 @@ export function layoutCss(attributes) {
         });
 
         Object.entries(settings).filter(([k, value]) =>
-            !['hover'].includes(String(k).toLowerCase()) &&
-            ['mobile'].includes(String(k).toLowerCase())
+            k.toLowerCase().includes('mobile') &&
+            !k.toLowerCase().includes('hover')
         ).forEach(([prop, value]) => {
-
-            prop = prop.replace('-mobile', '');
 
             if (layoutProps.special.includes(prop)) {
 
@@ -287,16 +325,15 @@ export function layoutCss(attributes) {
                 };
 
             } else {
+                prop = prop.replace(/-mobile/g, '');
                 mobile[prop] = value;
             }
 
         });
 
         Object.entries(settings).filter(([k, value]) =>
-            ['hover'].includes(String(k).toLowerCase())
+            String(k).toLowerCase().includes('hover')
         ).forEach(([prop, value]) => {
-
-            prop = prop.replace('-hover', '');
 
             if (layoutProps.special.includes(prop)) {
 
@@ -306,6 +343,7 @@ export function layoutCss(attributes) {
                 };
 
             } else {
+                prop = prop.replace(/-hover/g, '');
                 hover[prop] = value;
             }
 
@@ -342,6 +380,8 @@ export function layoutCss(attributes) {
         }
 
         setResult(css);
+
+        console.log(css);
 
     }, [attributes['wpbs-layout']]);
 

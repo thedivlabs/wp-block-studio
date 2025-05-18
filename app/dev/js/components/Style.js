@@ -1,3 +1,5 @@
+import {useEffect} from "react";
+
 export const styleAttributes = {
     'wpbs-css': {
         type: 'string'
@@ -27,15 +29,31 @@ export function Style({attributes, setAttributes, css = '' | []}) {
     const selector = '.' + uniqueId.trim().split(' ').join('.');
     const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
-    const desktopProps = Object.fromEntries(Object.entries({
-        'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-        'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-    }).filter(([k, v]) => !!v));
+    let desktopProps = {}
+    let mobileProps = {}
 
-    const mobileProps = Object.fromEntries(Object.entries({
-        'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
-        'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
-    }).filter(([k, v]) => !!v));
+    useEffect(() => {
+        const desktop = Object.fromEntries(Object.entries({
+            'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+            'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+        }).filter(([k, v]) => !!v));
+
+        const mobile = Object.fromEntries(Object.entries({
+            'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
+            'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
+        }).filter(([k, v]) => !!v));
+
+        desktopProps = {
+            ...desktopProps,
+            ...desktop
+        };
+
+        mobileProps = {
+            ...mobileProps,
+            ...mobile
+        }
+
+    }, [attributes?.style?.spacing?.blockGap, attributes?.['wpbs-layout']?.['gap-mobile']]);
 
     let styleCss = '';
 

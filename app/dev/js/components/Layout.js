@@ -173,13 +173,11 @@ function parseSpecial(prop, attributes) {
 
     const value = settings[prop];
 
-    prop = prop.replace(/-hover|-mobile/g, '');
-
-    console.log(prop);
+    const parsedProp = prop.replace(/-hover|-mobile/g, '');
 
     let result = {};
 
-    switch (prop) {
+    switch (parsedProp) {
         case 'mask-image':
             const imageUrl = value?.sizes?.full?.url || '#';
             result = {
@@ -253,18 +251,15 @@ function parseSpecial(prop, attributes) {
             break;
     }
 
-    result = Object.fromEntries(Object.entries(result).map((v) => {
+    Object.entries(result).forEach(([k,val]) => {
 
-        if (typeof value === 'object') {
-            return Object.entries(v)
-                .filter(([_, value]) => value !== undefined && value !== null)
-                .map(([key, value]) => `${key}: ${value};`)
-                .join(' ')
-        } else {
-            return value
+        if (typeof val === 'object') {
+            result[k] = Object.entries(val)
+                .filter(([_, v]) => v !== undefined && v !== null)
+                .map(([k, v]) => `${k}: ${v};`)
+                .join(' ');
         }
-
-    }))
+    });
 
     return result;
 
@@ -286,8 +281,6 @@ export function layoutCss(attributes) {
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const {'wpbs-layout': settings = {}} = attributes;
-
-        console.log(settings);
 
         let css = '';
         let desktop = {};
@@ -380,8 +373,6 @@ export function layoutCss(attributes) {
         }
 
         setResult(css);
-
-        console.log(css);
 
     }, [attributes['wpbs-layout']]);
 

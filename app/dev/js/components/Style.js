@@ -1,4 +1,4 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 export const styleAttributes = {
     'wpbs-css': {
@@ -25,6 +25,7 @@ export function getCSSFromStyle(raw) {
 
 export function Style({attributes, setAttributes, css = '' | []}) {
 
+
     const uniqueId = attributes?.uniqueId;
     const selector = '.' + uniqueId.trim().split(' ').join('.');
     const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
@@ -32,56 +33,53 @@ export function Style({attributes, setAttributes, css = '' | []}) {
     let desktopProps = {}
     let mobileProps = {}
 
-    useEffect(() => {
-        const desktop = Object.fromEntries(Object.entries({
-            'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-            'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-        }).filter(([k, v]) => !!v));
+    let propsCss = '';
 
-        const mobile = Object.fromEntries(Object.entries({
-            'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
-            'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
-        }).filter(([k, v]) => !!v));
+    const desktop = Object.fromEntries(Object.entries({
+        'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+        'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+    }).filter(([k, v]) => !!v));
 
-        desktopProps = {
-            ...desktopProps,
-            ...desktop
-        };
+    const mobile = Object.fromEntries(Object.entries({
+        'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
+        'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
+    }).filter(([k, v]) => !!v));
 
-        mobileProps = {
-            ...mobileProps,
-            ...mobile
-        }
+    desktopProps = {
+        ...desktopProps,
+        ...desktop
+    };
 
-    }, [attributes?.style?.spacing?.blockGap, attributes?.['wpbs-layout']?.['gap-mobile']]);
-
-    let styleCss = '';
+    mobileProps = {
+        ...mobileProps,
+        ...mobile
+    }
 
     if (Object.keys(desktopProps).length) {
-        styleCss += selector + '{';
+        propsCss += selector + '{';
         Object.entries(desktopProps).forEach(([prop, value]) => {
 
-            styleCss += [prop, value].join(':') + ';';
+            propsCss += [prop, value].join(':') + ';';
         })
 
-        styleCss += '}';
+        propsCss += '}';
     }
 
     if (Object.keys(mobileProps).length) {
-        styleCss += '@media(width < ' + breakpoint + '){' + selector + '{';
+        propsCss += '@media(width < ' + breakpoint + '){' + selector + '{';
 
         Object.entries(mobileProps).forEach(([prop, value]) => {
-            styleCss += [prop, value].join(':') + ';';
+            propsCss += [prop, value].join(':') + ';';
         })
 
-        styleCss += '}}';
+        propsCss += '}}';
     }
 
 
     if (Array.isArray(css)) {
-        css = [styleCss, ...css].join(' ');
+        css = [propsCss, ...css].join(' ');
     } else {
-        css = [styleCss, css].join(' ');
+        css = [propsCss, css].join(' ');
     }
 
     setAttributes({'wpbs-css': css.trim()});

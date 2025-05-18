@@ -278,11 +278,14 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Resolution"
                 value={settings?.['resolution'] ?? ''}
                 options={[
-                    {label: 'Default', value: ''},
+                    {label: 'Default', value: 'large'},
+                    {label: 'Thumbnail', value: 'thumbnail'},
                     {label: 'Small', value: 'small'},
                     {label: 'Medium', value: 'medium'},
                     {label: 'Large', value: 'large'},
-                    {label: 'Extra Large', value: 'xlarge'},]}
+                    {label: 'Extra Large', value: 'xlarge'},
+                    {label: 'Full', value: 'full'},
+                ]}
                 onChange={(value) => {
                     updateSettings({'resolution': value});
                 }}

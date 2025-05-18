@@ -34,6 +34,18 @@ function parseProp(prop) {
         .toLowerCase();
 }
 
+function imageSet(settings, isMobile = false) {
+
+    const force = !!settings.force;
+
+    const large = settings?.['largeImage'];
+    const mobile = settings?.['largeMobile'];
+
+    const largeId = force ? large?.id ?? false : large?.id ?? mobile?.id ?? false;
+    const mobileId = force ? mobile?.id ?? false : mobile?.id ?? large?.id ?? false;
+
+}
+
 function parseSpecial(prop, settings) {
 
     if (!settings?.[prop]) {
@@ -142,7 +154,8 @@ export function backgroundCss(attributes) {
         return '';
     }
 
-    return useMemo(()=>{
+    return useMemo(() => {
+
         let css = '';
         let desktop = {};
         let mobile = {};
@@ -152,6 +165,8 @@ export function backgroundCss(attributes) {
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const {'wpbs-background': settings = {}} = attributes;
+
+        console.log(settings);
 
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
@@ -213,7 +228,7 @@ export function backgroundCss(attributes) {
         }
 
         return css.trim();
-    }, [attributes['wpbs-background'],attributes.uniqueId]);
+    }, [attributes['wpbs-background'], attributes.uniqueId]);
 
 }
 
@@ -239,6 +254,24 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     }
 
+    function updateImageSettings(newValue) {
+
+        setSettings((prev) => {
+            return {
+                ...prev,
+                ...newValue
+            }
+        })
+
+        setAttributes({
+            'wpbs-background': {
+                ...attributes['wpbs-background'],
+                ...newValue
+            }
+        });
+
+    }
+
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
             <SelectControl
@@ -252,7 +285,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Large', value: 'large'},
                     {label: 'Extra Large', value: 'xlarge'},]}
                 onChange={(value) => {
-                    updateSettings('resolution', value);
+                    updateSettings({'resolution': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -267,7 +300,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Horizontal', value: '100% auto'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('size', value);
+                    updateSettings({'size': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -287,7 +320,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Color Burn', value: 'color-burn'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('blend', value);
+                    updateSettings({'blend': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -304,7 +337,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Bottom Right', value: 'bottom-right'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('position', value);
+                    updateSettings({'position': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -325,7 +358,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Bottom Right', value: 'right bottom'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('origin', value);
+                    updateSettings({'origin': value});
                 }}
                 __nextHasNoMarginBottom
                 __next40pxDefaultSize
@@ -335,7 +368,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 value={settings?.['maxHeight'] ?? ''}
                 isResetValueOnUnitChange={true}
                 onChange={(value) => {
-                    updateSettings('maxHeight', value);
+                    updateSettings({'maxHeight': value});
                 }}
                 units={[
                     {value: 'vh', label: 'vh', default: 0},
@@ -353,7 +386,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     {label: 'Vertical', value: 'repeat-y'},
                 ]}
                 onChange={(value) => {
-                    updateSettings('repeat', value);
+                    updateSettings({'repeat': value});
                 }}
                 __nextHasNoMarginBottom
             />
@@ -369,7 +402,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         label: 'Color',
                         value: settings?.['color'] ?? '',
                         onChange: (color) => {
-                            updateSettings('color', color)
+                            updateSettings({'color': color})
                         },
                         isShownByDefault: true
                     }
@@ -380,7 +413,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Scale"
                 value={settings?.['scale'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('scale', value);
+                    updateSettings({'scale': value});
                 }}
                 min={0}
                 max={200}
@@ -392,7 +425,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Opacity"
                 value={settings?.['opacity'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('opacity', value);
+                    updateSettings({'opacity': value});
                 }}
                 min={0}
                 max={100}
@@ -404,7 +437,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Width"
                 value={settings?.['width'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('width', value);
+                    updateSettings({'width': value});
                 }}
                 min={0}
                 max={100}
@@ -416,7 +449,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Height"
                 value={settings?.['height'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('height', value);
+                    updateSettings({'height': value});
                 }}
                 min={0}
                 max={100}
@@ -428,7 +461,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Fade"
                 value={settings?.['fade'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('fade', value);
+                    updateSettings({'fade': value});
                 }}
                 min={0}
                 max={100}
@@ -443,7 +476,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Mask"
                 checked={!!settings?.['mask']}
                 onChange={(value) => {
-                    updateSettings('mask', value);
+                    updateSettings({'mask': value});
                 }}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
@@ -457,10 +490,12 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     <MediaUpload
                         title={'Mask Desktop'}
                         onSelect={(value) => {
-                            updateSettings('maskImageLarge', {
-                                type: value.type,
-                                id: value.id,
-                                url: value.url,
+                            updateSettings({
+                                'maskImageLarge': {
+                                    type: value.type,
+                                    id: value.id,
+                                    url: value.url,
+                                }
                             });
                         }}
                         allowedTypes={['image']}
@@ -469,7 +504,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                             return <PreviewThumbnail
                                 image={settings['maskImageLarge'] || {}}
                                 callback={() => {
-                                    updateSettings('maskImageLarge', undefined)
+                                    updateSettings({'maskImageLarge': undefined})
                                 }}
                                 style={{
                                     objectFit: 'contain',
@@ -500,7 +535,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         {label: 'Bottom Right', value: 'bottom right'},
                     ]}
                     onChange={(value) => {
-                        updateSettings('maskOrigin', value);
+                        updateSettings({'maskOrigin': value});
                     }}
                     __nextHasNoMarginBottom
                 />
@@ -515,7 +550,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         {label: 'Horizontal', value: '100% auto'},
                     ]}
                     onChange={(value) => {
-                        updateSettings('maskSize', value);
+                        updateSettings({'maskSize': value});
                     }}
                     __nextHasNoMarginBottom
                 />
@@ -545,9 +580,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlay'] ?? {}}
+                value={settings?.['overlay'] ?? ''}
                 onChange={(value) => {
-                    updateSettings('overlay', value);
+                    updateSettings({'overlay': value});
                 }}
             />
         </BaseControl>
@@ -880,7 +915,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                             {label: 'Video', value: 'video'},
                         ]}
                         onChange={(value) => {
-                            updateSettings('type', value);
+                            updateSettings({'type': value});
                         }}
                         __nextHasNoMarginBottom
                     />
@@ -893,10 +928,13 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                     <MediaUpload
                                         title={'Mobile Image'}
                                         onSelect={(value) => {
-                                            updateSettings('mobileImage', {
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
+                                            console.log(value);
+                                            updateSettings({
+                                                'mobileImage': {
+                                                    type: value.type,
+                                                    id: value.id,
+                                                    sizes: value?.sizes?.[value?.resolution ?? 'large']?.url ?? value?.url ?? '#',
+                                                }
                                             });
                                         }}
                                         allowedTypes={['image']}
@@ -905,7 +943,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                             return <PreviewThumbnail
                                                 image={settings?.['mobileImage'] || {}}
                                                 callback={() => {
-                                                    updateSettings('mobileImage', undefined)
+                                                    updateSettings({'mobileImage': undefined})
                                                 }}
                                                 onClick={open}
                                             />;
@@ -918,10 +956,12 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                     <MediaUpload
                                         title={'Large Image'}
                                         onSelect={(value) => {
-                                            updateSettings('largeImage', {
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
+                                            updateSettings({
+                                                'largeImage': {
+                                                    type: value.type,
+                                                    id: value.id,
+                                                    url: value.url,
+                                                }
                                             });
                                         }}
                                         allowedTypes={['image']}
@@ -930,7 +970,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                             return <PreviewThumbnail
                                                 image={settings?.['largeImage'] ?? {}}
                                                 callback={() => {
-                                                    updateSettings('largeImage', {})
+                                                    updateSettings({'largeImage': undefined})
                                                 }}
                                                 onClick={open}
                                             />;
@@ -949,10 +989,12 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                     <MediaUpload
                                         title={'Mobile Video'}
                                         onSelect={(value) => {
-                                            updateSettings('mobileVideo', {
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
+                                            updateSettings({
+                                                'mobileVideo': {
+                                                    type: value.type,
+                                                    id: value.id,
+                                                    url: value.url,
+                                                }
                                             });
                                         }}
                                         allowedTypes={['video']}
@@ -961,7 +1003,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                             return <PreviewThumbnail
                                                 image={settings?.['mobileVideo'] ?? {}}
                                                 callback={() => {
-                                                    updateSettings('mobileVideo', {})
+                                                    updateSettings({'mobileVideo': {}})
                                                 }}
                                                 onClick={open}
                                             />;
@@ -974,19 +1016,21 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                     <MediaUpload
                                         title={'Large Video'}
                                         onSelect={(value) => {
-                                            updateSettings('largeVideo', {
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
+                                            updateSettings({
+                                                'largeVideo': {
+                                                    type: value.type,
+                                                    id: value.id,
+                                                    url: value.url,
+                                                }
                                             });
                                         }}
                                         allowedTypes={['video']}
-                                        value={settings.largeVideo}
+                                        value={settings?.['largeVideo'] ?? {}}
                                         render={({open}) => {
                                             return <PreviewThumbnail
-                                                image={settings.largeVideo || {}}
+                                                image={settings?.['largeVideo'] ?? {}}
                                                 callback={() => {
-                                                    updateSettings('largeVideo', undefined)
+                                                    updateSettings({'largeVideo': undefined})
                                                 }}
                                                 onClick={open}
                                             />;
@@ -1000,9 +1044,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                               style={{padding: '1rem 0'}}>
                             <ToggleControl
                                 label="Eager"
-                                checked={!!settings.eager}
+                                checked={!!settings?.['eager']}
                                 onChange={(value) => {
-                                    updateSettings('eager', value);
+                                    updateSettings({'eager': value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -1011,7 +1055,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                 label="Force"
                                 checked={!!settings.force}
                                 onChange={(value) => {
-                                    updateSettings('force', value);
+                                    updateSettings({'force': value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
@@ -1020,7 +1064,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                 label="Fixed"
                                 checked={!!settings.fixed}
                                 onChange={(value) => {
-                                    updateSettings('fixed', value);
+                                    updateSettings({'fixed': value});
                                 }}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

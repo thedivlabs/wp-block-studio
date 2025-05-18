@@ -25,15 +25,15 @@ export function getCSSFromStyle(raw) {
 
 export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
 
-    const dependencyValues = deps.map((key) => attributes[key]);
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes.uniqueId];
 
     const result = useMemo(() => {
         const uniqueId = attributes?.uniqueId;
         const selector = '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
-        let desktopProps = {}
-        let mobileProps = {}
+        let desktopProps = {};
+        let mobileProps = {};
 
         let propsCss = '';
 
@@ -84,10 +84,10 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
         }
 
         setAttributes({'wpbs-css': css});
-        
+
         return css;
 
-    }, [...dependencyValues, attributes.uniqueId]);
+    }, dependencyValues);
 
 
     return <style className={'wpbs-styles'}>{result}</style>;

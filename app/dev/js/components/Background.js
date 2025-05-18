@@ -139,7 +139,7 @@ const specialProps = [
 export function backgroundCss(attributes) {
 
     if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
-        return;
+        return '';
     }
 
     let css = '';

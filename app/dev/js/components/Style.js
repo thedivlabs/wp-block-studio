@@ -75,7 +75,7 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
 
         propsCss += '}}';
     }
-    
+
     if (Array.isArray(css)) {
         css = [propsCss, ...css].join(' ');
     } else {
@@ -84,6 +84,8 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
 
     useEffect(() => {
         setAttributes({'wpbs-css': css.trim()});
+
+        console.log(attributes['wpbs-css']);
     }, dependencyValues);
 
     return <style className={'wpbs-styles'}>{attributes['wpbs-css']}</style>;

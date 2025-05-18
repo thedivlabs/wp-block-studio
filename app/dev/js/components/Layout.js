@@ -269,7 +269,7 @@ function parseSpecial(prop, attributes) {
 export function layoutCss(attributes) {
 
     if (!attributes?.['wpbs-layout'] || !attributes.uniqueId) {
-        return;
+        return '';
     }
 
     const uniqueId = attributes?.uniqueId;

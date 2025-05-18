@@ -910,12 +910,11 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                     <MediaUpload
                                         title={'Mobile Image'}
                                         onSelect={(value) => {
-                                            console.log(value);
                                             updateSettings({
                                                 'mobileImage': {
                                                     type: value.type,
                                                     id: value.id,
-                                                    sizes: value?.sizes?.[value?.resolution ?? 'large']?.url ?? value?.url ?? '#',
+                                                    url: value?.sizes?.[settings?.resolution ?? 'large']?.url ?? value?.url ?? '#',
                                                 }
                                             });
                                         }}
@@ -942,7 +941,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                                 'largeImage': {
                                                     type: value.type,
                                                     id: value.id,
-                                                    url: value.url,
+                                                    url: value?.sizes?.[settings?.resolution ?? 'large']?.url ?? value?.url ?? '#',
                                                 }
                                             });
                                         }}

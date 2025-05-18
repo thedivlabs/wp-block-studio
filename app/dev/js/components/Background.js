@@ -917,6 +917,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                                     type: value.type,
                                                     id: value.id,
                                                     url: value?.sizes?.[settings?.resolution ?? 'large']?.url ?? value?.url ?? '#',
+                                                    sizes: value?.sizes
                                                 }
                                             });
                                         }}
@@ -944,6 +945,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                                     type: value.type,
                                                     id: value.id,
                                                     url: value?.sizes?.[settings?.resolution ?? 'large']?.url ?? value?.url ?? '#',
+                                                    sizes: value?.sizes
                                                 }
                                             });
                                         }}

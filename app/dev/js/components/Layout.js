@@ -59,18 +59,30 @@ export const layoutAttributes = {
 const layoutProps = {
     special: [
         'mask-image',
+        'mask-image-mobile',
         'margin-mobile',
         'basis',
+        'basis-mobile',
         'height',
+        'height-mobile',
         'height-custom',
+        'height-custom-mobile',
         'min-height',
+        'min-height-mobile',
         'min-height-custom',
+        'min-height-custom-mobile',
         'max-height',
+        'max-height-mobile',
         'max-height-custom',
+        'max-height-custom-mobile',
         'width',
+        'width-mobile',
         'width-custom',
+        'width-custom-mobile',
         'translate',
+        'translate-mobile',
         'offset-header',
+        'offset-header-mobile',
         'text-color-hover',
         'text-color-mobile'
     ],
@@ -367,8 +379,6 @@ export function layoutCss(attributes) {
 
         css += '}';
     }
-
-    console.log(css.trim());
 
     return css.trim();
 

@@ -84,9 +84,7 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
         }
 
         setAttributes({'wpbs-css': css});
-
-        console.log(css);
-
+        
         return css;
 
     }, [...dependencyValues, attributes.uniqueId]);

@@ -241,14 +241,14 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             if(settings?.largeImage?.sizes){
                 newValue.largeImage = {
                     ...settings.largeImage,
-                    url: settings.largeImage.sizes?.[newValue.resolution]?.url ?? '#'
+                    url: settings.largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 }
             }
 
             if(settings?.mobileImage?.sizes){
                 newValue.mobileImage = {
                     ...settings.mobileImage,
-                    url: settings.mobileImage.sizes?.[newValue.resolution]?.url ?? '#'
+                    url: settings.mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 }
             }
 

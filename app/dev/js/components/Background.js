@@ -213,7 +213,7 @@ export function backgroundCss(attributes) {
         }
 
         return css.trim();
-    }, [attributes['wpbs-background']]);
+    }, [attributes['wpbs-background'],attributes.uniqueId]);
 
 }
 

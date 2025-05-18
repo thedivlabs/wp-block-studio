@@ -80,9 +80,9 @@ registerBlockType(metadata.name, {
     edit: (props) => {
 
         const {attributes, setAttributes, clientId} = props;
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId

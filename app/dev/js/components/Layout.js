@@ -382,7 +382,7 @@ export function layoutCss(attributes) {
         }
 
         return css.trim();
-    }, [attributes['wpbs-layout']]);
+    }, [attributes['wpbs-layout'],attributes.uniqueId]);
 
 
 }

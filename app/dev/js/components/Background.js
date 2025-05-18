@@ -244,12 +244,10 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 url: settings.largeImage.sizes[newValue.resolution].url
             }
             newValue.mobileImage = {
-                ...settings.largeImage,
-                url: settings.largeImage.sizes[newValue.resolution].url
+                ...settings.mobileImage,
+                url: settings.mobileImage.sizes[newValue.resolution].url
             }
         }
-
-
 
         setSettings((prev) => {
             return {
@@ -264,9 +262,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 ...newValue
             }
         });
-
-        console.log(settings.largeImage);
-        console.log(settings.mobileImage);
 
     }
 

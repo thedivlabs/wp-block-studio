@@ -236,20 +236,24 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     function updateSettings(newValue = {}) {
 
-        if('resolution' in newValue){
+        if ('resolution' in newValue) {
 
-            if(settings?.largeImage?.sizes){
+            if (settings.largeImage.sizes?.[newValue.resolution]?.url) {
                 newValue.largeImage = {
                     ...settings.largeImage,
                     url: settings.largeImage.sizes?.[newValue.resolution]?.url ?? '#'
                 }
+            } else {
+                newValue.largeImage = undefined;
             }
 
-            if(settings?.mobileImage?.sizes){
+            if (settings.mobileImage.sizes?.[newValue.resolution]?.url) {
                 newValue.mobileImage = {
                     ...settings.mobileImage,
                     url: settings.mobileImage.sizes?.[newValue.resolution]?.url ?? '#'
                 }
+            } else {
+                newValue.mobileImage = undefined;
             }
 
 

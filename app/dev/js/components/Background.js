@@ -278,7 +278,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label="Resolution"
                 value={settings?.['resolution'] ?? ''}
                 options={[
-                    {label: 'Default', value: 'large'},
+                    {label: 'Default', value: ''},
                     {label: 'Thumbnail', value: 'thumbnail'},
                     {label: 'Small', value: 'small'},
                     {label: 'Medium', value: 'medium'},

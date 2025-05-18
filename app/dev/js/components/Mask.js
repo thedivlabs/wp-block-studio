@@ -10,10 +10,6 @@ function Mask({
                   callback
               }) {
 
-    const [image, setImage] = useState(imageValue);
-    const [origin, setOrigin] = useState(originValue);
-    const [size, setSize] = useState(sizeValue);
-
     const originOptions = [
         {label: 'Default', value: ''},
         {label: 'Center', value: 'center'},
@@ -48,17 +44,15 @@ function Mask({
                                 alt: value.alt,
                                 sizes: value.sizes,
                             };
-                            setImage(imageProps);
-                            callback(imageProps, origin, size);
+                            callback(imageProps, originValue, sizeValue);
                         }}
                         allowedTypes={['image']}
-                        value={image}
+                        value={imageValue}
                         render={({open}) => {
                             return <PreviewThumbnail
-                                image={image || {}}
+                                image={imageValue || {}}
                                 callback={() => {
-                                    setImage(undefined);
-                                    callback(image, origin, size);
+                                    callback(undefined, originValue, sizeValue);
                                 }}
                                 style={{
                                     objectFit: 'contain'
@@ -75,22 +69,20 @@ function Mask({
                 <SelectControl
                     __next40pxDefaultSize
                     label="Origin"
-                    value={origin}
+                    value={originValue}
                     options={originOptions}
                     onChange={(value) => {
-                        setOrigin(value);
-                        callback(image, value, size);
+                        callback(imageValue, value, sizeValue);
                     }}
                     __nextHasNoMarginBottom
                 />
                 <SelectControl
                     __next40pxDefaultSize
                     label="Size"
-                    value={size}
+                    value={sizeValue}
                     options={sizeOptions}
                     onChange={(value) => {
-                        setSize(value);
-                        callback(image, origin, value);
+                        callback(imageValue, originValue, value);
                     }}
                     __nextHasNoMarginBottom
                 />

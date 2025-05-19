@@ -206,7 +206,7 @@ export function backgroundCss(attributes) {
         });
 
         if (Object.keys(desktop).length) {
-            css += selector + '{';
+            css += selector + ' .wpbs-background {';
             Object.entries(desktop).forEach(([prop, value]) => {
 
                 css += [prop, value].join(':') + ';';
@@ -216,7 +216,7 @@ export function backgroundCss(attributes) {
         }
 
         if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + '{';
+            css += '@media(width < ' + breakpoint + '){' + selector + ' .wpbs-background {';
 
             Object.entries(mobile).forEach(([prop, value]) => {
                 css += [prop, value].join(':') + ';';
@@ -236,16 +236,16 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     function updateSettings(newValue = {}) {
 
-        if('resolution' in newValue){
+        if ('resolution' in newValue) {
 
-            if(settings?.largeImage?.sizes){
+            if (settings?.largeImage?.sizes) {
                 newValue.largeImage = {
                     ...settings.largeImage,
                     url: settings.largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 }
             }
 
-            if(settings?.mobileImage?.sizes){
+            if (settings?.mobileImage?.sizes) {
                 newValue.mobileImage = {
                     ...settings.mobileImage,
                     url: settings.mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'

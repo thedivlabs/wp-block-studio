@@ -1162,7 +1162,7 @@ export function BackgroundElement({attributes = {}, editor = false}) {
 
             let srcAttr;
 
-            srcAttr = !!editor ? 'src' : 'data-src';
+            srcAttr = !!editor || !!settings.eager ? 'src' : 'data-src';
 
             MediaElement = <video muted loop autoPlay={true}>
                 <source {...{

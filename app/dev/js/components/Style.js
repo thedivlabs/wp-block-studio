@@ -61,6 +61,10 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
             propsCss += selector + '{';
             Object.entries(desktopProps).forEach(([prop, value]) => {
 
+                if (!value) {
+                    return;
+                }
+
                 propsCss += [prop, value].join(':') + ';';
             })
 
@@ -71,6 +75,11 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
             propsCss += '@media(width < ' + breakpoint + '){' + selector + '{';
 
             Object.entries(mobileProps).forEach(([prop, value]) => {
+
+                if (!value) {
+                    return;
+                }
+                
                 propsCss += [prop, value].join(':') + ';';
             })
 

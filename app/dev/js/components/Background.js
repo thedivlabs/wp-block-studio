@@ -63,6 +63,9 @@ function parseSpecial(prop, settings) {
     const parsedProp = parseProp(prop);
 
     switch (parsedProp) {
+        case 'mask-image-large':
+        case 'mask-image-mobile':
+            return {'--mask-image': 'url(' + (settings[prop]?.url ?? '#') + ')'};
         case 'large-image':
             return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolution ?? 'large') : '%IMG_URL%'};
         case 'mobile-image':

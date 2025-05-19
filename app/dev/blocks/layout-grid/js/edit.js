@@ -282,7 +282,7 @@ registerBlockType(metadata.name, {
                     <div {...useInnerBlocksProps({
                         className: 'wpbs-layout-grid__container relative z-20',
                     }, {})} />
-                    <BackgroundElement attributes={props.attributes} editor={false}/>
+                    <BackgroundElement attributes={props.attributes} editor={true}/>
                 </div>
             </>
         )

@@ -106,23 +106,32 @@ class WPBS_Theme {
 
                     const media = entry.target;
                     observer.unobserve(entry.target);
+                    console.log(media.tagName);
 
-                    if (media.dataset.src) {
-                        media.src = media.dataset.src;
-                        media.removeAttribute('data-src');
-                    }
 
-                    if (media.dataset.srcset) {
-                        media.srcset = media.dataset.srcset;
-                        media.removeAttribute('data-srcset');
+                    if (media.classList.contains('wpbs-background')) {
+                        responsiveBackgroundSrc(media);
+                        return;
                     }
 
                     if (media.tagName === 'VIDEO') {
                         responsiveVideoSrc(media);
                         observerSize.observe(media);
-                    } else if (media.classList.contains('wpbs-background')) {
-                        responsiveBackgroundSrc(media);
+                        return;
                     }
+
+                    [media, ...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
+
+                        if (element.dataset.src) {
+                            element.src = element.dataset.src;
+                            element.removeAttribute('data-src');
+                        }
+                        if (element.dataset.srcset) {
+                            element.srcset = element.dataset.srcset;
+                            element.removeAttribute('data-srcset');
+                        }
+
+                    });
 
                 }
             });
@@ -133,9 +142,7 @@ class WPBS_Theme {
             threshold: 0,
         });
 
-        [refElement, ...refElement.querySelectorAll('[data-src],[data-srcset],.wpbs-background.lazy')].forEach((media) => {
-            observerIntersection.observe(media);
-        });
+        observerIntersection.observe(refElement);
     }
 
 
@@ -144,8 +151,7 @@ class WPBS_Theme {
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
-            [...document.querySelectorAll('video:has(source[data-media]):has(source[data-src]),.wpbs-background.lazy')].forEach((media) => {
-
+            [...document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),.wpbs-background')].forEach((media) => {
                 this.observeMedia(media);
             });
 

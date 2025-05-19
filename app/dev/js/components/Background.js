@@ -168,7 +168,7 @@ export function backgroundCss(attributes) {
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const {'wpbs-background': settings = {}} = attributes;
-        console.log(settings);
+
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
             !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
@@ -188,7 +188,6 @@ export function backgroundCss(attributes) {
 
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
-            !specialProps.includes(String(k)) &&
             String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
             if (specialProps.includes(prop)) {
@@ -1160,10 +1159,10 @@ export function BackgroundElement({attributes = {}, editor = false}) {
 
             let srcAttr;
 
-            if (editor === true) {
+            if (!!editor) {
                 srcAttr = 'src';
             } else {
-                srcAttr = settings.eager ? 'src' : 'data-src';
+                srcAttr = !!settings['eager'] ? 'src' : 'data-src';
             }
 
             MediaElement = <video muted loop autoPlay={true}>

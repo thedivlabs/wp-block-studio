@@ -189,8 +189,6 @@ export function backgroundCss(attributes) {
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
             !specialProps.includes(String(k)) &&
-            !Array.isArray(value) &&
-            !['object'].includes(typeof value) &&
             String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
             if (specialProps.includes(prop)) {

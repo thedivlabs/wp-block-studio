@@ -59,13 +59,14 @@ function parseSpecial(prop, settings) {
         return {};
     }
 
+    const is_featured = settings.type === 'featured-image';
     const parsedProp = parseProp(prop);
 
     switch (parsedProp) {
         case 'large-image':
-            return {'--image': imageSet(settings[prop], settings?.resolution ?? 'large')};
+            return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolution ?? 'large') : '%IMG_URL%'};
         case 'mobile-image':
-            return {'--image': imageSet(settings[prop], settings?.resolutionMobile ?? settings?.resolution ?? 'large')};
+            return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolutionMobile ?? settings?.resolution ?? 'large') : '%IMG_URL%'};
         case 'fixed':
             return {'--attachment': 'fixed'}
         case 'scale':

@@ -80,7 +80,7 @@ class WPBS_Theme {
         function responsiveVideoSrc(video) {
             [...video.querySelectorAll('source')].forEach((source) => {
                 const mq = source.dataset.media;
-                console.log(mq);
+console.log(source);
                 if (!mq) {
                     source.remove();
                     return false;
@@ -111,12 +111,9 @@ class WPBS_Theme {
                     if (media.tagName === 'VIDEO') {
                         responsiveVideoSrc(media);
                         observerSize.observe(media);
-                        console.log(media);
+                    } else if (media.classList.contains('wpbs-background')) {
+                        responsiveBackgroundSrc(media);
                     } else {
-                        if (media.classList.contains('wpbs-background')) {
-                            responsiveBackgroundSrc(media);
-                        }
-
                         [media, ...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
 
                             if (element.dataset.src) {

@@ -1131,9 +1131,12 @@ export function BackgroundElement({attributes = {}, editor = false}) {
         'wpbs-background__media absolute z-0 overflow-hidden w-full h-full',
     ];
 
-    function Media() {
+    function Media({attributes}) {
 
         let MediaElement;
+
+        const {['wpbs-background']: settings = {}} = attributes;
+        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         if (settings.type === 'image' || settings.type === 'featured-image') {
             mediaClass.push(imageClass);
@@ -1159,11 +1162,7 @@ export function BackgroundElement({attributes = {}, editor = false}) {
 
             let srcAttr;
 
-            if (!!editor) {
-                srcAttr = 'src';
-            } else {
-                srcAttr = !!settings['eager'] ? 'src' : 'data-src';
-            }
+            srcAttr =!!editor ? 'src' : 'data-src';
 
             MediaElement = <video muted loop autoPlay={true}>
                 <source {...{
@@ -1182,7 +1181,7 @@ export function BackgroundElement({attributes = {}, editor = false}) {
         }
 
         return <div className={mediaClass.filter(x => x).join(' ')}>
-            {MediaElement}
+            <MediaElement attributes={attributes} />
         </div>;
     }
 

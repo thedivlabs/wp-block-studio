@@ -69,19 +69,6 @@ class WPBS_Background {
 
 	}
 
-	private function parse_prop( $value ): string {
-		return strtolower( str_replace( ' ', '', implode( '-', preg_split( '/(?=[A-Z])/', str_replace( 'Mobile', '', $value ) ) ) ) );
-	}
-
-	public function styles(): array {
-		return apply_filters( 'wpbs_block_styles_background', [
-			'selector' => '.wpbs-background',
-			'styles'   => [
-				'desktop' => $this->desktop,
-				'mobile'  => $this->mobile,
-			]
-		] );
-	}
 
 	private function image_set( $is_mobile = false ): string|false {
 

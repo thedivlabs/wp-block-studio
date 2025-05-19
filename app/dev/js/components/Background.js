@@ -1173,10 +1173,8 @@ export function BackgroundElement({attributes = {}, editor = false}) {
                 <source {...{
                     [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
                     type: 'video/mp4',
-                    'data-media': '(max-width:' + breakpoint + ')'
+                    'data-media': '(width < ' + breakpoint + ')'
                 }}/>
-
-                <source src={'#'}/>
             </video>
         }
 

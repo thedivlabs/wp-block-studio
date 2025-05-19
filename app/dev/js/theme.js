@@ -60,39 +60,45 @@ class WPBS_Theme {
         return '';
     }
 
-    observeMedia(refElement) {
-        if (!refElement) {
-            return false;
-        }
+    responsiveVideoSrc(video) {
 
         let timer;
 
-        let observerSize = new ResizeObserver((entries) => {
-
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                entries.forEach((entry) => {
-                    responsiveVideoSrc(entry.target);
-                });
-            }, 500);
-        });
-
-        function responsiveVideoSrc(video) {
+        function setSrc(){
             [...video.querySelectorAll('source')].forEach((source) => {
                 const mq = source.dataset.media;
-console.log(source);
+
                 if (!mq) {
                     source.remove();
                     return false;
                 }
 
                 if (window.matchMedia(mq).matches) {
+                    console.log('match',mq,source);
                     source.src = source.dataset.src;
                 } else {
+                    console.log('no match',mq,source);
                     source.src = '#';
                 }
-            })
+            });
+
             video.load();
+        }
+
+        window.addEventListener('resize', () => {
+            clearTimeout(timer);
+            timer = setTimeout( ()=>{
+                setSrc(video);
+            }, 500);
+        });
+
+        setSrc();
+
+    }
+
+    observeMedia(refElement) {
+        if (!refElement) {
+            return false;
         }
 
         function responsiveBackgroundSrc(element) {
@@ -107,14 +113,12 @@ console.log(source);
                     const media = entry.target;
                     observer.unobserve(entry.target);
 
-
                     if (media.tagName === 'VIDEO') {
-                        responsiveVideoSrc(media);
-                        observerSize.observe(media);
+                        this.responsiveVideoSrc(media);
                     } else if (media.classList.contains('wpbs-background')) {
                         responsiveBackgroundSrc(media);
                     } else {
-                        [media, ...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
+                        [...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
 
                             if (element.dataset.src) {
                                 element.src = element.dataset.src;
@@ -146,12 +150,18 @@ console.log(source);
 
         document.addEventListener('DOMContentLoaded', () => {
 
+            const media = document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
+
             this.popup.init();
-            [...document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background')].forEach((media) => {
+
+            [...media].forEach((media) => {
                 this.observeMedia(media);
             });
 
         });
+
+
+
     }
 }
 

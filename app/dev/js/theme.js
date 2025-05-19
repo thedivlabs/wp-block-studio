@@ -80,7 +80,7 @@ class WPBS_Theme {
         function responsiveVideoSrc(video) {
             [...video.querySelectorAll('source')].forEach((source) => {
                 const mq = source.dataset.media;
-
+                console.log(mq);
                 if (!mq) {
                     source.remove();
                     return false;
@@ -106,32 +106,31 @@ class WPBS_Theme {
 
                     const media = entry.target;
                     observer.unobserve(entry.target);
-                    console.log(media.tagName);
 
-
-                    if (media.classList.contains('wpbs-background')) {
-                        responsiveBackgroundSrc(media);
-                        return;
-                    }
 
                     if (media.tagName === 'VIDEO') {
                         responsiveVideoSrc(media);
                         observerSize.observe(media);
-                        return;
+                        console.log(media);
+                    } else {
+                        if (media.classList.contains('wpbs-background')) {
+                            responsiveBackgroundSrc(media);
+                        }
+
+                        [media, ...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
+
+                            if (element.dataset.src) {
+                                element.src = element.dataset.src;
+                                element.removeAttribute('data-src');
+                            }
+                            if (element.dataset.srcset) {
+                                element.srcset = element.dataset.srcset;
+                                element.removeAttribute('data-srcset');
+                            }
+
+                        });
                     }
 
-                    [media, ...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
-
-                        if (element.dataset.src) {
-                            element.src = element.dataset.src;
-                            element.removeAttribute('data-src');
-                        }
-                        if (element.dataset.srcset) {
-                            element.srcset = element.dataset.srcset;
-                            element.removeAttribute('data-srcset');
-                        }
-
-                    });
 
                 }
             });
@@ -151,7 +150,7 @@ class WPBS_Theme {
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
-            [...document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),.wpbs-background')].forEach((media) => {
+            [...document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background')].forEach((media) => {
                 this.observeMedia(media);
             });
 

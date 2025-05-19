@@ -36,7 +36,9 @@ function parseProp(prop) {
 
 function imageSet(media, resolution) {
 
-    const url = media?.sizes?.[resolution]?.url ?? '#';
+    const size = media?.sizes?.[resolution];
+
+    const url = size?.url ?? false;
 
     if (!url) {
         return '';
@@ -178,7 +180,6 @@ export function backgroundCss(attributes) {
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
             !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
-
 
             if (specialProps.includes(prop)) {
                 desktop = {

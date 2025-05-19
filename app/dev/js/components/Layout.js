@@ -58,6 +58,7 @@ export const layoutAttributes = {
 
 const layoutProps = {
     special: [
+        'breakpoint',
         'mask-image',
         'mask-image-mobile',
         'mask-repeat',

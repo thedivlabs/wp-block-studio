@@ -28,7 +28,6 @@ class WPBS_Theme {
         this.modals.init();
         this.loader.init();
 
-        console.log(this.settings);
 
         this.init();
     }
@@ -134,7 +133,7 @@ class WPBS_Theme {
             threshold: 0,
         });
 
-        [...refElement.querySelectorAll('[data-src],[data-srcset],.wpbs-background.lazy')].forEach((media) => {
+        [refElement, ...refElement.querySelectorAll('[data-src],[data-srcset],.wpbs-background.lazy')].forEach((media) => {
             observerIntersection.observe(media);
         });
     }
@@ -145,8 +144,8 @@ class WPBS_Theme {
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
-
             [...document.querySelectorAll('video:has(source[data-media]):has(source[data-src]),.wpbs-background.lazy')].forEach((media) => {
+
                 this.observeMedia(media);
             });
 

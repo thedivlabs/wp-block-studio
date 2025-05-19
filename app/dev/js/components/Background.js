@@ -52,9 +52,12 @@ function parseSpecial(prop, settings) {
         return {};
     }
 
-    const parsedProp = prop.replace(/Mobile|Large/g, '');
+    const parsedProp = parseProp(prop);
 
     switch (parsedProp) {
+        case 'large-image':
+        case 'mobile-image':
+            return {'--image': 'url(' + settings[prop]?.url + ')'};
         case 'fixed':
             return {'--attachment': 'fixed'}
         case 'scale':
@@ -165,15 +168,13 @@ export function backgroundCss(attributes) {
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const {'wpbs-background': settings = {}} = attributes;
-
+        console.log(settings);
         Object.entries(settings).filter(([k, value]) =>
             !suppressProps.includes(String(k)) &&
-            !Array.isArray(value) &&
-            !['object'].includes(typeof value) &&
             !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-            if (specialProps.includes(prop)) {
 
+            if (specialProps.includes(prop)) {
                 desktop = {
                     ...desktop,
                     ...parseSpecial(prop, settings)

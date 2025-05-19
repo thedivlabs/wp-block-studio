@@ -36,7 +36,7 @@ function parseProp(prop) {
 
 function imageSet(media, resolution) {
 
-    const url = media?.sizes[resolution]?.url;
+    const url = media?.sizes?.[resolution]?.url ?? '#';
 
     if (!url) {
         return '';

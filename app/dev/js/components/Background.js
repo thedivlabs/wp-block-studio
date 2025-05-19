@@ -34,15 +34,20 @@ function parseProp(prop) {
         .toLowerCase();
 }
 
-function imageSet(settings, isMobile = false) {
+function imageSet(media, resolution) {
 
-    const force = !!settings.force;
+    const url = media?.sizes[resolution]?.url;
 
-    const large = settings?.['largeImage'];
-    const mobile = settings?.['largeMobile'];
+    if (!url) {
+        return '';
+    }
 
-    const largeId = force ? large?.id ?? false : large?.id ?? mobile?.id ?? false;
-    const mobileId = force ? mobile?.id ?? false : mobile?.id ?? large?.id ?? false;
+    const ext = url.endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+    const webp = 'url("' + [url, '.webp'].join('') + '") type("image/webp")';
+    const fallback = 'url("' + url + '") type("' + ext + '")';
+
+    return 'image-set(' + [webp, fallback].join(', ') + ')';
 
 }
 
@@ -56,8 +61,9 @@ function parseSpecial(prop, settings) {
 
     switch (parsedProp) {
         case 'large-image':
+            return {'--image': imageSet(settings[prop], settings?.resolution ?? 'large')};
         case 'mobile-image':
-            return {'--image': 'url(' + settings[prop]?.url + ')'};
+            return {'--image': imageSet(settings[prop], settings?.resolutionMobile ?? settings?.resolution ?? 'large')};
         case 'fixed':
             return {'--attachment': 'fixed'}
         case 'scale':

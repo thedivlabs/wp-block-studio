@@ -60,6 +60,9 @@ const layoutProps = {
     special: [
         'mask-image',
         'mask-image-mobile',
+        'mask-repeat',
+        'mask-size',
+        'mask-origin',
         'margin-mobile',
         'basis',
         'basis-mobile',
@@ -284,7 +287,7 @@ export function layoutCss(attributes) {
         return '';
     }
 
-    return useMemo(()=>{
+    return useMemo(() => {
         const uniqueId = attributes?.uniqueId;
         const selector = '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
@@ -382,7 +385,7 @@ export function layoutCss(attributes) {
         }
 
         return css.trim();
-    }, [attributes['wpbs-layout'],attributes.uniqueId]);
+    }, [attributes['wpbs-layout'], attributes.uniqueId]);
 
 
 }

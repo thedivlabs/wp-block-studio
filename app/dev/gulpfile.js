@@ -79,6 +79,7 @@ gulp.task('js', function () {
             webpack({
                 entry: {
                     theme: './js/theme.js',
+                    admin: './js/admin.js',
                 },
                 output: {
                     filename: "[name].min.js",

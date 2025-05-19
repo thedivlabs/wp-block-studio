@@ -1162,18 +1162,18 @@ export function BackgroundElement({attributes = {}, editor = false}) {
 
             let srcAttr;
 
-            srcAttr =!!editor ? 'src' : 'data-src';
+            srcAttr = !!editor ? 'src' : 'data-src';
 
             MediaElement = <video muted loop autoPlay={true}>
                 <source {...{
                     [srcAttr]: largeVideo.url ? largeVideo.url : '#',
                     type: 'video/mp4',
-                    'data-media': '(min-width:960px)'
+                    'data-media': '(min-width:' + breakpoint + ')'
                 }}/>
                 <source {...{
                     [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
                     type: 'video/mp4',
-                    'data-media': '(min-width:240px) and (max-width:959px)'
+                    'data-media': '(max-width:' + breakpoint + ')'
                 }}/>
 
                 <source src={'#'}/>
@@ -1181,11 +1181,11 @@ export function BackgroundElement({attributes = {}, editor = false}) {
         }
 
         return <div className={mediaClass.filter(x => x).join(' ')}>
-            <MediaElement attributes={attributes} />
+            {MediaElement}
         </div>;
     }
 
     return <div className={bgClass}>
-        <Media/>
+        <Media attributes={attributes}/>
     </div>;
 }

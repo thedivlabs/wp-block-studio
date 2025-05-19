@@ -11,6 +11,7 @@ class WPBS_Theme {
     static swiper;
     static popup;
     static settings;
+    static videos;
 
     constructor() {
 
@@ -22,6 +23,7 @@ class WPBS_Theme {
                 ...swiperDefaultArgs
             }
         };
+        this.videos = [];
 
         this.settings = window.wpbsData ?? {};
 
@@ -30,6 +32,17 @@ class WPBS_Theme {
 
 
         this.init();
+
+        let timer;
+
+        window.addEventListener('resize', () => {
+            clearTimeout(timer);
+            timer = setTimeout( ()=>{
+                this.videos.forEach((video)=>{
+                    this.responsiveVideoSrc(video);
+                })
+            }, 500);
+        });
     }
 
     set_cookie(cname, cvalue, exdays = false) {
@@ -60,50 +73,35 @@ class WPBS_Theme {
         return '';
     }
 
+    responsiveBackgroundSrc(element) {
+
+        element.classList.remove('lazy');
+    }
+
     responsiveVideoSrc(video) {
 
-        let timer;
+        [...video.querySelectorAll('source')].forEach((source) => {
+            const mq = source.dataset.media;
 
-        function setSrc(){
-            [...video.querySelectorAll('source')].forEach((source) => {
-                const mq = source.dataset.media;
+            if (!mq) {
+                source.remove();
+                return false;
+            }
 
-                if (!mq) {
-                    source.remove();
-                    return false;
-                }
-
-                if (window.matchMedia(mq).matches) {
-                    console.log('match',mq,source);
-                    source.src = source.dataset.src;
-                } else {
-                    console.log('no match',mq,source);
-                    source.src = '#';
-                }
-            });
-
-            video.load();
-        }
-
-        window.addEventListener('resize', () => {
-            clearTimeout(timer);
-            timer = setTimeout( ()=>{
-                setSrc(video);
-            }, 500);
+            if (window.matchMedia(mq).matches) {
+                source.src = source.dataset.src;
+            } else {
+                source.src = '#';
+            }
         });
 
-        setSrc();
+        video.load();
 
     }
 
     observeMedia(refElement) {
         if (!refElement) {
             return false;
-        }
-
-        function responsiveBackgroundSrc(element) {
-
-            element.classList.remove('lazy');
         }
 
         let observerIntersection = new IntersectionObserver((entries, observer) => {
@@ -114,9 +112,10 @@ class WPBS_Theme {
                     observer.unobserve(entry.target);
 
                     if (media.tagName === 'VIDEO') {
+                        this.videos.push(media);
                         this.responsiveVideoSrc(media);
                     } else if (media.classList.contains('wpbs-background')) {
-                        responsiveBackgroundSrc(media);
+                        this.responsiveBackgroundSrc(media);
                     } else {
                         [...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
 

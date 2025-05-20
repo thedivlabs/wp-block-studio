@@ -40,11 +40,15 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
         const desktop = Object.fromEntries(Object.entries({
             'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
             'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+            '--row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+            '--column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
         }).filter(([k, v]) => !!v));
 
         const mobile = Object.fromEntries(Object.entries({
             'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
             'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
+            '--row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
+            '--column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
         }).filter(([k, v]) => !!v));
 
         desktopProps = {

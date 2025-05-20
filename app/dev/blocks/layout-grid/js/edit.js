@@ -83,13 +83,9 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
         const breakpoints = WPBS?.settings?.breakpoints ?? {};
-        const breakpointLarge = breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal'];
-        const breakpointSmall = breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'normal'];
-
-
-        console.log(breakpoints);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
+
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId
@@ -146,9 +142,9 @@ registerBlockType(metadata.name, {
                 <Breakpoint
                     label={'Breakpoint SM'}
                     defaultValue={attributes['wpbs-grid']['breakpoint-small']}
-                            callback={(newValue) => {
-                                updateGridSettings({'breakpoint-small': newValue});
-                            }}/>
+                    callback={(newValue) => {
+                        updateGridSettings({'breakpoint-small': newValue});
+                    }}/>
                 <Breakpoint
                     label={'Breakpoint LG'}
                     defaultValue={attributes['wpbs-grid']['breakpoint-large']}
@@ -281,9 +277,11 @@ registerBlockType(metadata.name, {
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background']}
                        props={{
-                           '--columns-mobile': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
-                           '--columns-small': attributes['wpbs-grid']?.['columns-small'] ?? undefined,
-                           '--columns-large': attributes['wpbs-grid']?.['columns-large'] ?? undefined,
+                           '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
+                           breakpoints:{
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined}
+                           }
                        }}
                 />
 

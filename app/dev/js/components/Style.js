@@ -48,7 +48,6 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
         }).filter(([k, v]) => !!v));
 
         desktopProps = {
-            ...props,
             ...desktopProps,
             ...desktop
         };
@@ -86,6 +85,44 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
             propsCss += '}}';
         }
+
+        if (Object.keys(props).length) {
+
+            propsCss += selector + '{';
+            Object.entries(props).forEach(([prop, value]) => {
+
+                if (!value || prop === 'breakpoints') {
+                    return;
+                }
+
+                propsCss += [prop, value].join(':') + ';';
+            })
+
+            propsCss += '}';
+
+            if (Object.keys(props?.breakpoints ?? {}).length) {
+                Object.entries(props.breakpoints).forEach(([breakpoint, rules]) => {
+
+                    if (typeof rules !== 'object') {
+                        return;
+                    }
+
+                    propsCss += '@media(min-width: ' + breakpoint + '){' + selector + '{';
+
+                    Object.entries(rules).forEach(([prop, value]) => {
+
+                        if (!value) {
+                            return;
+                        }
+
+                        propsCss += [prop, value].join(':') + ';';
+                    })
+
+                    propsCss += '}}';
+                })
+            }
+        }
+
 
         if (Array.isArray(css)) {
             css = [propsCss, ...css].join(' ').trim();

@@ -21,7 +21,7 @@ class WPBS_Background {
 				$img_src_large = wp_get_attachment_image_src( $img_id_large, $block['attrs']['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
 
 				$img_id_mobile = get_post_thumbnail_id( get_the_ID() ) ?: ( $block['attrs']['wpbs-background']['mobileImage']['id'] ?? $block['attrs']['wpbs-background']['largeImage']['id'] );
-				$img_src_mobile = wp_get_attachment_image_src( $img_id_mobile, $block['attrs']['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
+				$img_src_mobile = wp_get_attachment_image_src( $img_id_mobile, $block['attrs']['wpbs-background']['resolutionMobile'] ?? $block['attrs']['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
 
 				$block['attrs']['wpbs-css'] = str_replace(
 					[ '%POST_IMG_URL_LARGE%','%POST_IMG_URL_MOBILE%' ],

@@ -40,10 +40,6 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
-        useEffect(() => {
-            console.log(attributes);
-        }, [attributes]);
-
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
         });

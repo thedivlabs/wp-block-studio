@@ -38,7 +38,6 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
         let propsCss = '';
 
         const desktop = Object.fromEntries(Object.entries({
-            ...props,
             'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
             'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
         }).filter(([k, v]) => !!v));
@@ -49,6 +48,7 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
         }).filter(([k, v]) => !!v));
 
         desktopProps = {
+            ...props,
             ...desktopProps,
             ...desktop
         };
@@ -93,14 +93,11 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
             css = [propsCss, css].join(' ').trim();
         }
 
-
         setAttributes({'wpbs-css': css});
 
         return css;
 
     }, dependencyValues);
-
-
 
 
     return <style className={'wpbs-styles'}>{result}</style>;

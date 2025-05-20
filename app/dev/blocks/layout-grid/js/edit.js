@@ -270,9 +270,9 @@ registerBlockType(metadata.name, {
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background']}
                        props={{
-                           'columns-mobile': result?.['columns-mobile'] ?? undefined,
-                           'columns-small': result?.['columns-small'] ?? undefined,
-                           'columns-large': result?.['columns-large'] ?? undefined,
+                           'columns-mobile': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
+                           'columns-small': attributes['wpbs-grid']?.['columns-small'] ?? undefined,
+                           'columns-large': attributes['wpbs-grid']?.['columns-large'] ?? undefined,
                        }}
                 />
 

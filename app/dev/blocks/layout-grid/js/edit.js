@@ -306,9 +306,9 @@ registerBlockType(metadata.name, {
                 divider: !!props.attributes['wpbs-grid']?.['divider'].length,
                 breakpoints: props.attributes['wpbs-grid']?.['breakpoints'],
                 columns: {
-                    mobile: props.attributes['wpbs-props']?.['columns-mobile'] ?? 1,
-                    small: props.attributes['wpbs-props']?.['columns-small'] ?? 2,
-                    large: props.attributes['wpbs-props']?.['columns-large'] ?? 3,
+                    mobile: props.attributes['wpbs-grid']?.['columns-mobile'] ?? 1,
+                    small: props.attributes['wpbs-grid']?.['columns-small'] ?? 2,
+                    large: props.attributes['wpbs-grid']?.['columns-large'] ?? 3,
                 }
             }),
             style: {

@@ -6,12 +6,14 @@ class WPBS_Background {
 
 	private function __construct() {
 
-		add_filter( 'render_block_data', [ $this, 'filter_block_data' ], 10, 1 );
+		add_filter( 'render_block_data', [ $this, 'set_block_data' ], 10, 1 );
 
 
 	}
 
-	function filter_block_data( $block ): array {
+	public function set_block_data( $block ): array {
+
+		global $post;
 
 		if ( ! empty( $block['attrs']['wpbs-background'] ) && ! empty( $block['attrs']['wpbs-css'] ) ) {
 
@@ -31,6 +33,11 @@ class WPBS_Background {
 					],
 					$block['attrs']['wpbs-css']
 				);
+
+				if ( $block['blockName'] === 'wpbs/layout-grid-card' ) {
+					WPBS::console_log( get_the_ID() );
+
+				}
 
 			}
 

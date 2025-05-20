@@ -214,8 +214,11 @@ export function backgroundCss(attributes) {
 
         });
 
-        if (Object.keys(desktop).length) {
+        if (Object.keys(desktop).length || settings.type === 'featured-image') {
             css += selector + ' > .wpbs-background {';
+
+            desktop.largeImage = desktop?.largeImage ?? '%POST_IMG_URL_LARGE%';
+
             Object.entries(desktop).forEach(([prop, value]) => {
 
                 css += [prop, value].join(':') + ';';
@@ -224,8 +227,10 @@ export function backgroundCss(attributes) {
             css += '}';
         }
 
-        if (Object.keys(mobile).length) {
+        if (Object.keys(mobile).length || settings.type === 'featured-image') {
             css += '@media(width < ' + breakpoint + '){' + selector + ' > .wpbs-background {';
+
+            mobile.mobileImage = mobile?.mobileImage ?? '%POST_IMG_URL_MOBILE%';
 
             Object.entries(mobile).forEach(([prop, value]) => {
                 css += [prop, value].join(':') + ';';

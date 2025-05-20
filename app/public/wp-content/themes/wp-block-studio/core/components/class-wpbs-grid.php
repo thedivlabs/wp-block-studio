@@ -177,10 +177,10 @@ class WPBS_Grid {
 			$new_block->inner_content[0]       = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_content[0] );
 			$new_block->inner_html             = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
+			$new_block->attributes['postId']   = get_the_ID();
 
 			$new_content .= $new_block->render();
 
-			$new_block->attributes['postId'] = get_the_ID();
 
 		}
 

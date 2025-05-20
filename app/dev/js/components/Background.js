@@ -216,8 +216,8 @@ export function backgroundCss(attributes) {
 
         if (Object.keys(desktop).length || settings.type === 'featured-image') {
             css += selector + ' > .wpbs-background {';
+            console.log(desktop);
 
-            desktop.largeImage = desktop?.largeImage ?? '%POST_IMG_URL_LARGE%';
 
             Object.entries(desktop).forEach(([prop, value]) => {
 

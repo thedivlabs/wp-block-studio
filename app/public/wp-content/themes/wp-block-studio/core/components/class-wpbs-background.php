@@ -15,7 +15,7 @@ class WPBS_Background {
 
 		global $post;
 
-		if ( ! empty( $block['attrs']['wpbs-background'] ) && ! empty( $block['attrs']['wpbs-css'] ) ) {
+		if ( ! empty( $block['attrs']['wpbs-background'] ) ) {
 
 			if ( ( $block['attrs']['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
 
@@ -28,16 +28,11 @@ class WPBS_Background {
 				$block['attrs']['wpbs-css'] = str_replace(
 					[ '%POST_IMG_URL_LARGE%', '%POST_IMG_URL_MOBILE%' ],
 					[
-						'url("' . $img_src_large . '")',
-						'url("' . $img_src_mobile . '")',
+						'url(' . $img_src_large . ')',
+						'url(' . $img_src_mobile . ')',
 					],
 					$block['attrs']['wpbs-css']
 				);
-
-				if ( $block['blockName'] === 'wpbs/layout-grid-card' ) {
-					WPBS::console_log( get_the_ID() );
-
-				}
 
 			}
 

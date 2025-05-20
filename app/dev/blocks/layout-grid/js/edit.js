@@ -97,13 +97,7 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({
-                'wpbs-grid': result,
-                'wpbs-props': {
-                    ...attributes.props,
-                    'columns-mobile': result?.['columns-mobile'] ?? undefined,
-                    'columns-small': result?.['columns-small'] ?? undefined,
-                    'columns-large': result?.['columns-large'] ?? undefined,
-                }
+                'wpbs-grid': result
             });
             setGrid(result);
 
@@ -275,6 +269,11 @@ registerBlockType(metadata.name, {
                        uniqueId={uniqueId}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background']}
+                       props={{
+                           'columns-mobile': result?.['columns-mobile'] ?? undefined,
+                           'columns-small': result?.['columns-small'] ?? undefined,
+                           'columns-large': result?.['columns-large'] ?? undefined,
+                       }}
                 />
 
                 <div {...blockProps}>

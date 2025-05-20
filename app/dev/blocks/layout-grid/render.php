@@ -87,7 +87,11 @@ if ( $is_loop ) {
 
 }
 
-echo join( ' ', $block->inner_content );
+WPBS::console_log( $block );
+
+//echo join( ' ', $block->inner_content );
+
+echo $content;
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 

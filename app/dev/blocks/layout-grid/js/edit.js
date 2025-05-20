@@ -26,6 +26,7 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
+import {InnerBlocks} from "@wordpress/editor";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -81,6 +82,12 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
+        const breakpoints = WPBS?.settings?.breakpoints ?? {};
+        const breakpointLarge = breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+        const breakpointSmall = breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'normal'];
+
+
+        console.log(breakpoints);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
         useEffect(() => {
@@ -136,14 +143,18 @@ registerBlockType(metadata.name, {
                 </Grid>
             </BaseControl>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
-                <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-small']}
+                <Breakpoint
+                    label={'Breakpoint SM'}
+                    defaultValue={attributes['wpbs-grid']['breakpoint-small']}
                             callback={(newValue) => {
                                 updateGridSettings({'breakpoint-small': newValue});
                             }}/>
-                <Breakpoint defaultValue={attributes['wpbs-grid']['breakpoint-large']}
-                            callback={(newValue) => {
-                                updateGridSettings({'breakpoint-large': newValue});
-                            }}/>
+                <Breakpoint
+                    label={'Breakpoint LG'}
+                    defaultValue={attributes['wpbs-grid']['breakpoint-large']}
+                    callback={(newValue) => {
+                        updateGridSettings({'breakpoint-large': newValue});
+                    }}/>
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
                 <ToggleControl
@@ -270,17 +281,15 @@ registerBlockType(metadata.name, {
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background']}
                        props={{
-                           'columns-mobile': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
-                           'columns-small': attributes['wpbs-grid']?.['columns-small'] ?? undefined,
-                           'columns-large': attributes['wpbs-grid']?.['columns-large'] ?? undefined,
+                           '--columns-mobile': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
+                           '--columns-small': attributes['wpbs-grid']?.['columns-small'] ?? undefined,
+                           '--columns-large': attributes['wpbs-grid']?.['columns-large'] ?? undefined,
                        }}
                 />
 
                 <div {...blockProps}>
 
-                    <div {...useInnerBlocksProps({
-                        className: 'wpbs-layout-grid__container relative z-20',
-                    }, {})} />
+                    <InnerBlocks/>
                     <BackgroundElement attributes={props.attributes} editor={true}/>
                 </div>
             </>
@@ -308,10 +317,6 @@ registerBlockType(metadata.name, {
             }
         });
 
-        const innerBlockProps = useInnerBlocksProps.save({
-            className: 'wpbs-layout-grid__container relative z-20',
-        }, {});
-
         const GutterSizer = () => {
             if (!!props.attributes['wpbs-masonry']) {
                 return <span class="gutter-sizer"
@@ -334,10 +339,7 @@ registerBlockType(metadata.name, {
 
         return (
             <div {...blockProps}>
-                <div {...innerBlockProps} >
-                    {innerBlockProps.children}
-                    <GutterSizer/>
-                </div>
+                <InnerBlocks.Content/>
                 <PaginationButton/>
                 <BackgroundElement attributes={props.attributes} editor={false}/>
             </div>

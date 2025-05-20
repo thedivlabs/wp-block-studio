@@ -17,13 +17,8 @@ $query = ! $is_loop ? false : match ( true ) {
 
 if ( $is_loop ) {
 
-	WPBS::console_log( $attributes );
-	WPBS::console_log( $query );
-
 	$grid_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query->query );
-
-	WPBS::console_log( $grid_cards );
-
+	
 	$grid_cards['content'] .= '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $is_current ? $query->query : false,

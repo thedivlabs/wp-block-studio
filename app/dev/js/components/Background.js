@@ -215,7 +215,7 @@ export function backgroundCss(attributes) {
         });
 
         if (Object.keys(desktop).length) {
-            css += selector + ' .wpbs-background {';
+            css += selector + ' > .wpbs-background {';
             Object.entries(desktop).forEach(([prop, value]) => {
 
                 css += [prop, value].join(':') + ';';
@@ -225,7 +225,7 @@ export function backgroundCss(attributes) {
         }
 
         if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + ' .wpbs-background {';
+            css += '@media(width < ' + breakpoint + '){' + selector + ' > .wpbs-background {';
 
             Object.entries(mobile).forEach(([prop, value]) => {
                 css += [prop, value].join(':') + ';';

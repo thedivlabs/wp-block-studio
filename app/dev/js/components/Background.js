@@ -169,73 +169,70 @@ export function backgroundCss(attributes) {
         return '';
     }
 
-    return useMemo(() => {
+    let css = '';
+    let desktop = {};
+    let mobile = {};
 
-        let css = '';
-        let desktop = {};
-        let mobile = {};
+    const uniqueId = attributes?.uniqueId ?? '';
+    const selector = '.' + uniqueId.trim().split(' ').join('.');
+    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
-        const uniqueId = attributes?.uniqueId ?? '';
-        const selector = '.' + uniqueId.trim().split(' ').join('.');
-        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+    const {'wpbs-background': settings = {}} = attributes;
 
-        const {'wpbs-background': settings = {}} = attributes;
+    Object.entries(settings).filter(([k, value]) =>
+        !suppressProps.includes(String(k)) &&
+        !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-        Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
-            !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+        if (specialProps.includes(prop)) {
+            desktop = {
+                ...desktop,
+                ...parseSpecial(prop, settings)
+            };
 
-            if (specialProps.includes(prop)) {
-                desktop = {
-                    ...desktop,
-                    ...parseSpecial(prop, settings)
-                };
-
-            } else {
-                desktop['--' + parseProp(prop)] = value;
-            }
-
-        });
-
-        Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
-            String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
-
-            if (specialProps.includes(prop)) {
-
-                mobile = {
-                    ...mobile,
-                    ...parseSpecial(prop, settings)
-                };
-
-            } else {
-                mobile['--' + parseProp(prop)] = value;
-            }
-
-        });
-
-        if (Object.keys(desktop).length) {
-            css += selector + ' .wpbs-background {';
-            Object.entries(desktop).forEach(([prop, value]) => {
-
-                css += [prop, value].join(':') + ';';
-            })
-
-            css += '}';
+        } else {
+            desktop['--' + parseProp(prop)] = value;
         }
 
-        if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + ' .wpbs-background {';
+    });
 
-            Object.entries(mobile).forEach(([prop, value]) => {
-                css += [prop, value].join(':') + ';';
-            })
+    Object.entries(settings).filter(([k, value]) =>
+        !suppressProps.includes(String(k)) &&
+        String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-            css += '}}';
+        if (specialProps.includes(prop)) {
+
+            mobile = {
+                ...mobile,
+                ...parseSpecial(prop, settings)
+            };
+
+        } else {
+            mobile['--' + parseProp(prop)] = value;
         }
 
-        return css.trim();
-    }, [attributes['wpbs-background'], attributes.uniqueId]);
+    });
+
+    if (Object.keys(desktop).length) {
+        css += selector + ' .wpbs-background {';
+        Object.entries(desktop).forEach(([prop, value]) => {
+
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}';
+    }
+
+    if (Object.keys(mobile).length) {
+        css += '@media(width < ' + breakpoint + '){' + selector + ' .wpbs-background {';
+
+        Object.entries(mobile).forEach(([prop, value]) => {
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}}';
+    }
+
+    return css.trim();
 
 }
 

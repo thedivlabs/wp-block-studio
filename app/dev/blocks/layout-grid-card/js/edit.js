@@ -10,6 +10,7 @@ import {backgroundAttributes, BackgroundControls, BackgroundElement, backgroundC
 import {Style, styleAttributes} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
+import {PanelBody, TabPanel} from "@wordpress/components";
 
 
 function sectionClassNames(attributes = {}) {
@@ -31,14 +32,17 @@ registerBlockType(metadata.name, {
     edit: (props) => {
 
 
-        const {attributes, setAttributes, context, clientId} = props;
+        const {attributes, setAttributes} = props;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
-            console.log(attributes);
         }, []);
+
+        useEffect(() => {
+            console.log(attributes);
+        }, [attributes]);
 
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
@@ -47,14 +51,13 @@ registerBlockType(metadata.name, {
 
         return (
             <>
+                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+                <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-layout', 'wpbs-background']}
+                       deps={['wpbs-background','wpbs-layout']}
                 />
-                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

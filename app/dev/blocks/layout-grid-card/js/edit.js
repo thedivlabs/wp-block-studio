@@ -37,7 +37,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
-
+            console.log(attributes);
         }, []);
 
         const blockProps = useBlockProps({

@@ -28,7 +28,7 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes.uniqueId];
 
     const result = useMemo(() => {
-        const uniqueId = attributes?.uniqueId;
+        const uniqueId = attributes?.uniqueId ?? '';
         const selector = '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
@@ -79,7 +79,7 @@ export function Style({attributes, setAttributes, css = '' | [], deps = []}) {
                 if (!value) {
                     return;
                 }
-                
+
                 propsCss += [prop, value].join(':') + ';';
             })
 

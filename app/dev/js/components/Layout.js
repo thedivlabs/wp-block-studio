@@ -284,12 +284,13 @@ function parseSpecial(prop, attributes) {
 
 export function layoutCss(attributes) {
 
-    if (!attributes?.['wpbs-layout'] || !attributes.uniqueId) {
+    if (!Object.keys(attributes['wpbs-layout']).length || !attributes.uniqueId) {
         return '';
     }
 
     return useMemo(() => {
-        const uniqueId = attributes?.uniqueId;
+
+        const uniqueId = attributes?.uniqueId ?? '';
         const selector = '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
@@ -299,6 +300,7 @@ export function layoutCss(attributes) {
         let desktop = {};
         let mobile = {};
         let hover = {};
+
 
         Object.entries(settings).filter(([k, value]) =>
             !k.toLowerCase().includes('mobile') &&
@@ -344,7 +346,7 @@ export function layoutCss(attributes) {
             if (layoutProps.special.includes(prop)) {
 
                 hover = {
-                    ...mobile,
+                    ...hover,
                     ...parseSpecial(prop, attributes)
                 };
 

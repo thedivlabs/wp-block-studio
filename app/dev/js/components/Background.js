@@ -175,7 +175,7 @@ export function backgroundCss(attributes) {
         let desktop = {};
         let mobile = {};
 
-        const uniqueId = attributes?.uniqueId;
+        const uniqueId = attributes?.uniqueId ?? '';
         const selector = '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 

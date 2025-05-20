@@ -287,7 +287,9 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <InnerBlocks/>
+                    <div {...useInnerBlocksProps({
+                        className: 'wpbs-layout-grid__container relative z-20',
+                    }, {})} />
                     <BackgroundElement attributes={props.attributes} editor={true}/>
                 </div>
             </>
@@ -315,6 +317,10 @@ registerBlockType(metadata.name, {
             }
         });
 
+        const innerBlockProps = useInnerBlocksProps.save({
+            className: 'wpbs-layout-grid__container relative z-20',
+        }, {});
+
         const GutterSizer = () => {
             if (!!props.attributes['wpbs-masonry']) {
                 return <span class="gutter-sizer"
@@ -337,7 +343,10 @@ registerBlockType(metadata.name, {
 
         return (
             <div {...blockProps}>
-                <InnerBlocks.Content/>
+                <div {...innerBlockProps} >
+                    {innerBlockProps.children}
+                    <GutterSizer/>
+                </div>
                 <PaginationButton/>
                 <BackgroundElement attributes={props.attributes} editor={false}/>
             </div>

@@ -165,74 +165,77 @@ const specialProps = [
 
 export function backgroundCss(attributes) {
 
-    if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
-        return '';
-    }
+    return useMemo(() => {
 
-    let css = '';
-    let desktop = {};
-    let mobile = {};
-
-    const uniqueId = attributes?.uniqueId ?? '';
-    const selector = '.' + uniqueId.trim().split(' ').join('.');
-    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
-
-    const {'wpbs-background': settings = {}} = attributes;
-
-    Object.entries(settings).filter(([k, value]) =>
-        !suppressProps.includes(String(k)) &&
-        !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
-
-        if (specialProps.includes(prop)) {
-            desktop = {
-                ...desktop,
-                ...parseSpecial(prop, settings)
-            };
-
-        } else {
-            desktop['--' + parseProp(prop)] = value;
+        if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
+            return '';
         }
 
-    });
+        let css = '';
+        let desktop = {};
+        let mobile = {};
 
-    Object.entries(settings).filter(([k, value]) =>
-        !suppressProps.includes(String(k)) &&
-        String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+        const uniqueId = attributes?.uniqueId ?? '';
+        const selector = '.' + uniqueId.trim().split(' ').join('.');
+        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
-        if (specialProps.includes(prop)) {
+        const {'wpbs-background': settings = {}} = attributes;
 
-            mobile = {
-                ...mobile,
-                ...parseSpecial(prop, settings)
-            };
+        Object.entries(settings).filter(([k, value]) =>
+            !suppressProps.includes(String(k)) &&
+            !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-        } else {
-            mobile['--' + parseProp(prop)] = value;
+            if (specialProps.includes(prop)) {
+                desktop = {
+                    ...desktop,
+                    ...parseSpecial(prop, settings)
+                };
+
+            } else {
+                desktop['--' + parseProp(prop)] = value;
+            }
+
+        });
+
+        Object.entries(settings).filter(([k, value]) =>
+            !suppressProps.includes(String(k)) &&
+            String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
+
+            if (specialProps.includes(prop)) {
+
+                mobile = {
+                    ...mobile,
+                    ...parseSpecial(prop, settings)
+                };
+
+            } else {
+                mobile['--' + parseProp(prop)] = value;
+            }
+
+        });
+
+        if (Object.keys(desktop).length) {
+            css += selector + ' .wpbs-background {';
+            Object.entries(desktop).forEach(([prop, value]) => {
+
+                css += [prop, value].join(':') + ';';
+            })
+
+            css += '}';
         }
 
-    });
+        if (Object.keys(mobile).length) {
+            css += '@media(width < ' + breakpoint + '){' + selector + ' .wpbs-background {';
 
-    if (Object.keys(desktop).length) {
-        css += selector + ' .wpbs-background {';
-        Object.entries(desktop).forEach(([prop, value]) => {
+            Object.entries(mobile).forEach(([prop, value]) => {
+                css += [prop, value].join(':') + ';';
+            })
 
-            css += [prop, value].join(':') + ';';
-        })
+            css += '}}';
+        }
 
-        css += '}';
-    }
-
-    if (Object.keys(mobile).length) {
-        css += '@media(width < ' + breakpoint + '){' + selector + ' .wpbs-background {';
-
-        Object.entries(mobile).forEach(([prop, value]) => {
-            css += [prop, value].join(':') + ';';
-        })
-
-        css += '}}';
-    }
-
-    return css.trim();
+        return css.trim();
+    }, [attributes['wpbs-background'], attributes.uniqueId]);
 
 }
 

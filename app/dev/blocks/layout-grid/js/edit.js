@@ -279,8 +279,8 @@ registerBlockType(metadata.name, {
                        props={{
                            '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
                            breakpoints:{
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined}
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined},
                            }
                        }}
                 />

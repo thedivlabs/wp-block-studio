@@ -28,8 +28,10 @@ registerBlockType(metadata.name, {
         ...backgroundAttributes,
         ...styleAttributes,
     },
-    edit: ({attributes, setAttributes, context, clientId}) => {
+    edit: (props) => {
 
+
+        const {attributes, setAttributes, context, clientId} = props;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
@@ -58,7 +60,7 @@ registerBlockType(metadata.name, {
                     <div {...useInnerBlocksProps({
                         className: 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20',
                     })} />
-                    <BackgroundElement attributes={props.attributes} editor={true}/>
+                    <BackgroundElement attributes={attributes} editor={true}/>
                 </div>
 
 

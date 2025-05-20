@@ -95,15 +95,18 @@ class WPBS_Grid {
 	}
 
 	public static function sanitize_loop_attrs( $attrs ): array {
+
+		$query = $attrs['wpbs-query'] ?? false;
+
 		return WPBS::clean_array( [
 			'queryArgs'           => [
-				'post_type'      => sanitize_text_field( $attrs['queryArgs']['post_type'] ?? '' ) ?? null,
-				'term'           => sanitize_text_field( $attrs['queryArgs']['term'] ?? '' ) ?? null,
-				'taxonomy'       => sanitize_text_field( $attrs['queryArgs']['taxonomy'] ?? '' ) ?? null,
-				'posts_per_page' => sanitize_text_field( $attrs['queryArgs']['posts_per_page'] ?? '' ) ?? null,
-				'orderby'        => sanitize_text_field( $attrs['queryArgs']['orderby'] ?? '' ) ?? null,
-				'order'          => sanitize_text_field( $attrs['queryArgs']['order'] ?? '' ) ?? null,
-				'post__not_in'   => sanitize_text_field( $attrs['queryArgs']['post__not_in'] ?? '' ) ?? null,
+				'post_type'      => sanitize_text_field( $query['post_type'] ?? '' ) ?? null,
+				'term'           => sanitize_text_field( $query['term'] ?? '' ) ?? null,
+				'taxonomy'       => sanitize_text_field( $query['taxonomy'] ?? '' ) ?? null,
+				'posts_per_page' => sanitize_text_field( $query['posts_per_page'] ?? '' ) ?? null,
+				'orderby'        => sanitize_text_field( $query['orderby'] ?? '' ) ?? null,
+				'order'          => sanitize_text_field( $query['order'] ?? '' ) ?? null,
+				'post__not_in'   => sanitize_text_field( $query['post__not_in'] ?? '' ) ?? null,
 			],
 			'wpbs-loop-page-size' => sanitize_text_field( $attrs['wpbs-loop-page-size'] ?? '' ) ?? null,
 			'wpbs-loop-type'      => sanitize_text_field( $attrs['wpbs-loop-type'] ?? '' ) ?? null,
@@ -112,24 +115,30 @@ class WPBS_Grid {
 
 	public static function query( $attrs, $page = 1 ): WP_Query|bool {
 
+		$query = $attrs['wpbs-query'] ?? false;
+
+		if ( empty( $query ) ) {
+			return false;
+		}
+
 		$query_args = [
-			'post_type'      => $attrs['queryArgs']['post_type'] ?? 'post',
-			'posts_per_page' => $attrs['queryArgs']['posts_per_page'] ?? get_option( 'posts_per_page' ),
-			'orderby'        => $attrs['queryArgs']['orderby'] ?? 'date',
-			'order'          => $attrs['queryArgs']['order'] ?? 'DESC',
-			'post__not_in'   => $attrs['queryArgs']['post__not_in'] ?? [],
+			'post_type'      => $query['post_type'] ?? 'post',
+			'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
+			'orderby'        => $query['orderby'] ?? 'date',
+			'order'          => $query['order'] ?? 'DESC',
+			'post__not_in'   => $query['post__not_in'] ?? [],
 			'paged'          => $page ?: 1,
 		];
 
-		if ( ! empty( $attrs['queryArgs']['taxonomy'] ) ) {
+		if ( ! empty( $query['taxonomy'] ) ) {
 
-			$taxonomy = get_term( $attrs['queryArgs']['term'] )->taxonomy ?? false;
+			$taxonomy = get_term( $query['term'] )->taxonomy ?? false;
 
 			$query_args['tax_query'] = [
 				[
 					'taxonomy' => $taxonomy,
 					'field'    => 'term_id',
-					'terms'    => $attrs['queryArgs']['term'] ?? false,
+					'terms'    => $query['term'] ?? false,
 				]
 			];
 		}

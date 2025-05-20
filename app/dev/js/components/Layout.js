@@ -285,7 +285,6 @@ function parseSpecial(prop, attributes) {
 export function layoutCss(attributes) {
 
 
-
     return useMemo(() => {
 
         if (!Object.keys(attributes?.['wpbs-layout'] ?? {}).length || !attributes.uniqueId) {
@@ -309,6 +308,10 @@ export function layoutCss(attributes) {
             !k.toLowerCase().includes('hover')
         ).forEach(([prop, value]) => {
 
+            if (!value) {
+                return;
+            }
+
             if (layoutProps.special.includes(prop)) {
 
                 desktop = {
@@ -327,6 +330,10 @@ export function layoutCss(attributes) {
             !k.toLowerCase().includes('hover')
         ).forEach(([prop, value]) => {
 
+            if (!value) {
+                return;
+            }
+
             if (layoutProps.special.includes(prop)) {
 
                 mobile = {
@@ -344,6 +351,10 @@ export function layoutCss(attributes) {
         Object.entries(settings).filter(([k, value]) =>
             String(k).toLowerCase().includes('hover')
         ).forEach(([prop, value]) => {
+
+            if (!value) {
+                return;
+            }
 
             if (layoutProps.special.includes(prop)) {
 

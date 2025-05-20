@@ -26,7 +26,6 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
-import {InnerBlocks} from "@wordpress/editor";
 
 function sectionClassNames(attributes = {}) {
     return [
@@ -278,8 +277,8 @@ registerBlockType(metadata.name, {
                        deps={['wpbs-layout', 'wpbs-background']}
                        props={{
                            '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
-                           breakpoints:{
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
+                           breakpoints: {
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'sm']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
                                [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined},
                            }
                        }}

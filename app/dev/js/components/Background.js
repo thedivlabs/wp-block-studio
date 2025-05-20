@@ -67,9 +67,9 @@ function parseSpecial(prop, settings) {
         case 'mask-image-mobile':
             return {'--mask-image': 'url(' + (settings[prop]?.url ?? '#') + ')'};
         case 'large-image':
-            return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolution ?? 'large') : '%IMG_URL%'};
+            return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolution ?? 'large') : '%POST_IMG_URL_LARGE%'};
         case 'mobile-image':
-            return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolutionMobile ?? settings?.resolution ?? 'large') : '%IMG_URL%'};
+            return {'--image': !is_featured ? imageSet(settings[prop], settings?.resolutionMobile ?? settings?.resolution ?? 'large') : '%POST_IMG_URL_MOBILE%'};
         case 'fixed':
             return {'--attachment': 'fixed'}
         case 'scale':

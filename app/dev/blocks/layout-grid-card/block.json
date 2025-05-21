@@ -13,6 +13,10 @@
     "postId": {
       "type": "string",
       "show_in_rest": true
+    },
+    "termId": {
+      "type": "string",
+      "show_in_rest": true
     }
   },
   "parent": [

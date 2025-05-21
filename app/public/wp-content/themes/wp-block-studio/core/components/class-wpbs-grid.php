@@ -113,12 +113,20 @@ class WPBS_Grid {
 		] );
 	}
 
-	public static function query( $attrs, $page = 1 ): WP_Query|bool {
+	public static function query( $attrs, $page = 1 ): WP_Query|bool|array {
 
 		$query = $attrs['wpbs-query'] ?? false;
 
 		if ( empty( $query ) ) {
 			return false;
+		}
+
+		if ( ! empty( $query['loop_terms'] ) ) {
+
+			return get_terms( [
+				'taxonomy'   => $query['taxonomy'] ?? false,
+				'hide_empty' => true,
+			] );
 		}
 
 		$query_args = [
@@ -132,74 +140,109 @@ class WPBS_Grid {
 
 		if ( ! empty( $query['taxonomy'] ) ) {
 
-			$taxonomy = get_term( $query['term'] )->taxonomy ?? false;
+			$taxonomy = get_term( $query['term'] ?? false )->taxonomy ?? false;
 
-			$query_args['tax_query'] = [
-				[
-					'taxonomy' => $taxonomy,
-					'field'    => 'term_id',
-					'terms'    => $query['term'] ?? false,
-				]
-			];
+			if ( ! empty( $taxonomy ) ) {
+				$query_args['tax_query'] = [
+					[
+						'taxonomy' => $taxonomy,
+						'field'    => 'term_id',
+						'terms'    => $query['term'] ?? false,
+					]
+				];
+			}
+
 		}
 
 		return new WP_Query( $query_args );
 
 	}
 
+	private static function loop_card( $card = [], $args = [] ): WP_Block|bool {
+
+		$block_template = $card;
+		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
+
+		$post_id = $args['term_id'] ?? get_the_ID();
+
+		$unique_id = join( ' ', array_filter( [
+			$original_id ?? null,
+			$original_id . '--' . $post_id
+		] ) );
+
+		$selector = '.' . join( '.', array_filter( [
+				$original_id ?? null,
+				$original_id . '--' . $post_id
+			] ) );
+
+		$new_block = new WP_Block( $block_template, array_filter( [
+			'postId'   => $post_id,
+			'uniqueId' => $unique_id
+		] ) );
+
+		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
+
+		$new_block->inner_content[0]       = str_replace( $original_id, $unique_id, $new_block->inner_content[0] );
+		$new_block->inner_html             = str_replace( $original_id, $unique_id, $new_block->inner_html );
+		$new_block->attributes['uniqueId'] = $unique_id;
+		$new_block->attributes['postId']   = get_the_ID();
+		$new_block->attributes['termId']   = $args['term_id'] ?? false;
+
+		return $new_block;
+	}
+
 	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [] ): array|bool {
 
-		if ( ! empty( $current_query ) ) {
-			$query = new WP_Query( array_merge( [
-				'paged' => $page
-			], $current_query ) );
-		} else {
-			$query = self::query( $attrs, $page );
-		}
+
+		$query = match ( true ) {
+			is_a( $current_query, 'WP_Query' ), ! empty( $attrs['wpbs-query']['loop_terms'] ) && is_array( $current_query ) => $current_query,
+			default => self::query( $attrs, $page )
+		};
+
 
 		$new_content = '';
 
-		while ( $query->have_posts() ) {
+		if ( is_a( $query, 'WP_Query' ) ) {
+			while ( $query->have_posts() ) {
 
-			$query->the_post();
+				$query->the_post();
 
-			$block_template = $card;
-			$original_id    = $block_template['attrs']['uniqueId'] ?? '';
+				$new_block = self::loop_card( $card );
 
-			$unique_id = join( ' ', array_filter( [
-				$original_id ?? null,
-				$original_id . '--' . get_the_ID()
-			] ) );
+				$new_content .= $new_block->render();
 
-			$selector = '.' . join( '.', array_filter( [
-					$original_id ?? null,
-					$original_id . '--' . get_the_ID()
-				] ) );
+			}
 
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'postId'   => get_the_ID(),
-				'uniqueId' => $unique_id
-			] ) );
+			wp_reset_postdata();
 
-			$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
+			return array_filter( [
+				'content' => ! empty( $new_content ) ? $new_content : false,
+				'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
+				'query'   => $query,
+			] );
+		}
 
-			$new_block->inner_content[0]       = str_replace( $original_id, $unique_id, $new_block->inner_content[0] );
-			$new_block->inner_html             = str_replace( $original_id, $unique_id, $new_block->inner_html );
-			$new_block->attributes['uniqueId'] = $unique_id;
-			$new_block->attributes['postId']   = get_the_ID();
+		if ( is_array( $query ) && ! empty( $attrs['wpbs-query']['loop_terms'] ) ) {
 
-			$new_content .= $new_block->render();
+			foreach ( $query as $k => $term_obj ) {
+
+				$new_block = self::loop_card( $card, [
+					'term_id' => $term_obj->term_id,
+				] );
+
+				$new_content .= $new_block->render();
+
+			}
 
 
 		}
 
-		wp_reset_postdata();
 
-		return [
-			'content' => ! empty( $new_content ) ? $new_content : false,
-			'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
+		return array_filter( [
+			'content' => $new_content,
+			'last'    => false,
 			'query'   => $query,
-		];
+		] );
 
 
 	}

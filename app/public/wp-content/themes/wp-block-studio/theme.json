@@ -633,11 +633,11 @@
         "elements": {
           "button": {
             "dimensions": {
-              "minHeight": "1.8em",
+              "minHeight": "2em",
               "aspectRatio": "1.2/1"
             },
             "typography": {
-              "lineHeight": "1.8em"
+              "lineHeight": "2em"
             },
             "color": {
               "background": "var:preset|color|secondary-900"
@@ -652,10 +652,10 @@
             },
             "typography": {
               "textDecoration": "none",
-              "lineHeight": "1.8em"
+              "lineHeight": "2em"
             },
             "dimensions": {
-              "minHeight": "1.8em",
+              "minHeight": "2em",
               "aspectRatio": "1.2/1"
             },
             "border": {

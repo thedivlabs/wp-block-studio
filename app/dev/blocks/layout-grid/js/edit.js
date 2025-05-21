@@ -274,7 +274,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-layout', 'wpbs-background']}
+                       deps={['wpbs-layout', 'wpbs-background','wpbs-grid']}
                        props={{
                            '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
                            breakpoints: {

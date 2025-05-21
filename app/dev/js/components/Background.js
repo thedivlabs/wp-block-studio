@@ -594,7 +594,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlay'] ?? 'none'}
+                value={settings?.['overlay'] ?? undefined}
                 onChange={(value) => {
                     updateSettings({'overlay': value});
                 }}

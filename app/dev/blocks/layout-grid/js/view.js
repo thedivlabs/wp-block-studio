@@ -128,7 +128,7 @@ const {state} = store('wpbs/grid', {
 
             const {ref: grid} = getElement();
             const context = JSON.parse(JSON.stringify(getContext()));
-
+console.log(context);
             setMasonry(grid);
             setDividers(grid, context);
 

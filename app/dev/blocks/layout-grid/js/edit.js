@@ -30,7 +30,8 @@ import Breakpoint from 'Components/Breakpoint';
 function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
-        !!attributes['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
+        !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
+        !!attributes?.['wpbs-grid']?.divider ? 'wpbs-layout-grid--divider' : null,
         'w-full flex relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
@@ -44,9 +45,9 @@ function sectionProps(attributes = {}) {
         Object.entries({
             '--divider-width': width,
             '--divider-color': color,
-            '--divider-icon': attributes['wpbs-grid']?.['wpbs-divider-icon'] ?? null,
-            '--divider-icon-size': attributes['wpbs-grid']?.['wpbs-divider-icon-size'] ?? null,
-            '--divider-icon-color': attributes['wpbs-grid']?.['wpbs-divider-icon-color'] ?? null,
+            '--divider-icon': attributes['wpbs-grid']?.['divider-icon'] ?? null,
+            '--divider-icon-size': attributes['wpbs-grid']?.['divider-icon-size'] ?? null,
+            '--divider-icon-color': attributes['wpbs-grid']?.['divider-icon-color'] ?? null,
         }).filter(([key, value]) => ![null, undefined].includes(value))
     );
 }
@@ -296,14 +297,15 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
+        const breakpoints = WPBS?.settings?.breakpoints ?? {};
+
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes.uniqueId,
-                divider: !!props.attributes['wpbs-grid']?.['divider'].length,
-                breakpoints: props.attributes['wpbs-grid']?.['breakpoints'],
+                divider: !!Object.keys(props.attributes['wpbs-grid']?.['divider'] ?? {}).length,
                 columns: {
                     mobile: props.attributes['wpbs-grid']?.['columns-mobile'] ?? 1,
                     small: props.attributes['wpbs-grid']?.['columns-small'] ?? 2,

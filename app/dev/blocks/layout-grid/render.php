@@ -63,7 +63,7 @@ if ( $is_loop ) {
 			}
 
 			$pagination .= '</div>';
-			
+
 			$pagination .= '</nav>';
 
 			$block->inner_content[ count( $block->inner_content ) - 1 ] = $pagination . $block->inner_content[ count( $block->inner_content ) - 1 ];

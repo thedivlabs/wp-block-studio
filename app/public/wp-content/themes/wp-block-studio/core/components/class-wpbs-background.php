@@ -6,21 +6,11 @@ class WPBS_Background {
 
 	private function __construct() {
 
-		add_filter('wpbs_loop_block', [ $this, 'set_block_data' ], 10, 3);
+		add_filter( 'wpbs_loop_block', [ $this, 'set_block_data' ], 10, 3 );
 
 	}
 
-	public function set_block_data( $block, $unique_id, $original_id ): WP_Block {
-
-		$new_id = join( ' ', array_filter( [
-			$unique_id ?? null,
-			$unique_id . '--' . get_the_ID()
-		] ) );
-
-		$selector = '.' . join( '.', array_filter( [
-				$unique_id ?? null,
-				$unique_id . '--' . get_the_ID()
-			] ) );
+	public function set_block_data( $block, $original_id, $selector ): WP_Block {
 
 		if ( ( $block->attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
 
@@ -31,7 +21,7 @@ class WPBS_Background {
 			$img_src_mobile = wp_get_attachment_image_src( $img_id_mobile, $block->attributes['wpbs-background']['resolutionMobile'] ?? $block->attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
 
 			$block->attributes['wpbs-css'] = str_replace(
-				[ '.' . $unique_id, '%POST_IMG_URL_LARGE%', '%POST_IMG_URL_MOBILE%' ],
+				[ '.' . $original_id, '%POST_IMG_URL_LARGE%', '%POST_IMG_URL_MOBILE%' ],
 				[
 					$selector,
 					'url(' . $img_src_large . ')',
@@ -39,8 +29,6 @@ class WPBS_Background {
 				],
 				$block->attributes['wpbs-css']
 			);
-
-			$block->attributes['uniqueId'] = $new_id;
 
 			return $block;
 

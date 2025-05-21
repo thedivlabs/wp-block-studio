@@ -164,21 +164,27 @@ class WPBS_Grid {
 			$query->the_post();
 
 			$block_template = $card;
+			$original_id    = $block_template['attrs']['uniqueId'] ?? '';
 
 			$unique_id = join( ' ', array_filter( [
-				$block_template['attrs']['uniqueId'] ?? null,
-				$block_template['attrs']['uniqueId'] . '--' . get_the_ID()
+				$original_id ?? null,
+				$original_id . '--' . get_the_ID()
 			] ) );
 
+			$selector = '.' . join( '.', array_filter( [
+					$original_id ?? null,
+					$original_id . '--' . get_the_ID()
+				] ) );
+
 			$new_block = new WP_Block( $block_template, array_filter( [
-				'postId' => get_the_ID(),
+				'postId'   => get_the_ID(),
 				'uniqueId' => $unique_id
 			] ) );
 
-			$new_block = apply_filters('wpbs_loop_block', $new_block, $block_template['attrs']['uniqueId'], $unique_id);
+			$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
 
-			$new_block->inner_content[0]       = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_content[0] );
-			$new_block->inner_html             = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_html );
+			$new_block->inner_content[0]       = str_replace( $original_id, $unique_id, $new_block->inner_content[0] );
+			$new_block->inner_html             = str_replace( $original_id, $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
 			$new_block->attributes['postId']   = get_the_ID();
 

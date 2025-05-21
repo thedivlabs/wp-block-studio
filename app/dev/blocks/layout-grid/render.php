@@ -24,58 +24,53 @@ if ( $is_loop ) {
 			'attrs' => $attributes['wpbs-query'],
 		] ) . '</script>';
 
+
 	if ( ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
 
-		if ( $is_current ) {
-			$big = 999999999;
+		WPBS::console_log( $query->max_num_pages );
 
-			$current_page = max( 1, get_query_var( 'paged' ) );
+		$big = 999999999;
 
-			$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
+		$current_page = max( 1, get_query_var( 'paged' ) );
 
-			$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-				return str_replace( [ '<span', '</span>', 'current' ], [
-					'<button type="button" disabled',
-					'</button>',
-					'current wp-element-button '
-				], $link );
-			}, paginate_links( [
-				'base'      => $base,
-				'format'    => '/page/%#%/',
-				'current'   => $current_page,
-				'total'     => $query->max_num_pages,
-				'prev_next' => false,
-				//'prev_text' => '←',
-				//'next_text' => '→',
-				'type'      => 'array', // 'plain', 'array', or 'list'
-			] ) );
+		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
-			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
+		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
+			return str_replace( [ '<span', '</span>', 'current' ], [
+				'<button type="button" disabled',
+				'</button>',
+				'current wp-element-button ',
+			], $link );
+		}, paginate_links( [
+			'base'      => $base,
+			'format'    => '/page/%#%/',
+			'current'   => $current_page,
+			'total'     => $query->max_num_pages,
+			'prev_next' => false,
+			'mid_size'  => 6,
+			//'prev_text' => '←',
+			//'next_text' => '→',
+			'type'      => 'array', // 'plain', 'array', or 'list'
+		] ) );
 
-			if ( $pagination_links ) {
-				$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
+		do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
-				if ( $current_page > 1 ) {
-					$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page - 1 ) ) . '" class="wp-block-query-pagination-previous" aria-label="Previous Page"><span class="wp-block-query-pagination-previous-arrow is-arrow-arrow" aria-hidden="true">←</span></a>';
-				}
+		if ( $pagination_links ) {
+			$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
 
-				$pagination .= '<div class="wp-block-query-pagination-numbers">';
 
-				foreach ( $pagination_links as $link ) {
-					$pagination .= $link;
-				}
+			$pagination .= '<div class="wp-block-query-pagination-numbers inline-flex w-max">';
 
-				$pagination .= '</div>';
-
-				if ( $current_page < $query->max_num_pages ) {
-					$pagination .= '<a href="' . esc_url( get_pagenum_link( $current_page + 1 ) ) . '" class="wp-block-query-pagination-next" aria-label="Next Page"><span class="wp-block-query-pagination-next-arrow is-arrow-arrow" aria-hidden="true">→</span></a>';
-				}
-
-				$pagination .= '</nav>';
-
-				$block->inner_content[ count( $block->inner_content ) - 1 ] .= $pagination;
+			foreach ( $pagination_links as $link ) {
+				$pagination .= $link;
 			}
 
+			$pagination .= '</div>';
+
+
+			$pagination .= '</nav>';
+
+			$block->inner_content[ count( $block->inner_content ) - 1 ] .= $pagination;
 		}
 	}
 

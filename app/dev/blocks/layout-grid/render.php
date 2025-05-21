@@ -25,7 +25,7 @@ if ( $is_loop ) {
 		] ) . '</script>';
 
 
-	if ( ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
+	if ( $is_current && ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
 
 		$big = 999999999;
 
@@ -71,9 +71,7 @@ if ( $is_loop ) {
 			$block->inner_content[ count( $block->inner_content ) - 1 ] = $pagination . $block->inner_content[ count( $block->inner_content ) - 1 ];
 		}
 	}
-
-	WPBS::console_log( $block->inner_content );
-
+	
 	$block->inner_content[1] = trim( $grid_cards['content'] );
 
 	foreach ( $block->inner_content as $html ) {

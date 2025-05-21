@@ -216,8 +216,6 @@ export function backgroundCss(attributes) {
 
         if (Object.keys(desktop).length || settings.type === 'featured-image') {
             css += selector + ' > .wpbs-background {';
-            console.log(desktop);
-
 
             Object.entries(desktop).forEach(([prop, value]) => {
 

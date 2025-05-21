@@ -1,14 +1,13 @@
 <?php
 
 
-$term_id = $block->context['wpbs/termId'] ?? null;
+$term_id = $block->context['wpbs/termId'] ?? false;
 
-if ( ! $term_id ) {
+$term = $term_id ? get_term( $term_id ) : ( is_tax() ? get_queried_object() : false );
+
+if ( empty( $term ) ) {
 	return;
 }
-
-$term = get_term( $term_id );
-
 
 $type = str_replace( 'is-style-', '', strtolower( array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ), function ( $value ) {
 	return str_contains( $value, 'is-style' );

@@ -176,11 +176,11 @@ class WPBS_Grid {
 			] ) );
 
 		$block_template['attrs']['postId']   = $post_id;
-		$block_template['attrs']['termId']   = $args['termId'];
+		$block_template['attrs']['termId']   = $args['termId'] ?? 0;
 		$block_template['attrs']['uniqueId'] = $unique_id;
 
 		$new_block = new WP_Block( $block_template, array_filter( [
-			'termId'   => $args['termId'],
+			'termId'   => $args['termId'] ?? 0,
 			'postId'   => $post_id,
 			'uniqueId' => $unique_id
 		] ) );
@@ -227,7 +227,7 @@ class WPBS_Grid {
 		if ( is_array( $query ) && ! empty( $attrs['wpbs-query']['loop_terms'] ) ) {
 
 			foreach ( $query as $k => $term_obj ) {
-				
+
 				$new_block = self::loop_card( $card, [
 					'termId' => $term_obj->term_id,
 				] );

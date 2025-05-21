@@ -6,6 +6,9 @@ function setDividers(grid, context) {
 
     const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
+    const breakpointLarge = breakpoints[context?.breakpoints?.large ?? 'lg'];
+    const breakpointSmall = breakpoints[context?.breakpoints?.small ?? 'sm'];
+
     if (!divider) {
         return false;
     }
@@ -38,9 +41,8 @@ function setDividers(grid, context) {
         }
     }
 
-
     const styleCss = [
-        '@media screen and (max-width: calc(' + breakpoints.small + ' - 1px)) {',
+        '@media screen and (max-width: calc(' + breakpointSmall + ' - 1px)) {',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colMobile + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',
@@ -53,7 +55,7 @@ function setDividers(grid, context) {
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):before { content:none !important; }',
         '}',
 
-        '@media screen and (min-width: ' + breakpoints.small + ') and (max-width: calc(' + breakpoints.large + ' - 1px)) {',
+        '@media screen and (min-width: ' + breakpointSmall + ') and (max-width: calc(' + breakpoints.large + ' - 1px)) {',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colSmall + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colSmall + 1) + '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colSmall + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',
@@ -66,7 +68,7 @@ function setDividers(grid, context) {
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { content:none !important; }',
         '}',
 
-        '@media screen and (min-width: ' + breakpoints.large + ') {',
+        '@media screen and (min-width: ' + breakpointLarge + ') {',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--row-gap, var(--column-gap)) / 2));top: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',
@@ -128,7 +130,7 @@ const {state} = store('wpbs/grid', {
 
             const {ref: grid} = getElement();
             const context = JSON.parse(JSON.stringify(getContext()));
-console.log(context);
+
             setMasonry(grid);
             setDividers(grid, context);
 

@@ -297,8 +297,6 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const breakpoints = WPBS?.settings?.breakpoints ?? {};
-
         const blockProps = useBlockProps.save({
             className: sectionClassNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
@@ -306,6 +304,10 @@ registerBlockType(metadata.name, {
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes.uniqueId,
                 divider: !!Object.keys(props.attributes['wpbs-grid']?.['divider'] ?? {}).length,
+                breakpoints:{
+                    small: props.attributes?.['wpbs-grid']?.['breakpoint-small'],
+                    large: props.attributes?.['wpbs-grid']?.['breakpoint-large'] ??  props.attributes?.['wpbs-layout']?.['breakpoint'] ?? false,
+                },
                 columns: {
                     mobile: props.attributes['wpbs-grid']?.['columns-mobile'] ?? 1,
                     small: props.attributes['wpbs-grid']?.['columns-small'] ?? 2,

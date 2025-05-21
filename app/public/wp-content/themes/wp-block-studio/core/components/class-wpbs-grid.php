@@ -167,50 +167,20 @@ class WPBS_Grid {
 
 			$unique_id = join( ' ', array_filter( [
 				$block_template['attrs']['uniqueId'] ?? null,
-				'wpbs-layout-grid-card--' . get_the_ID()
-			] ) );
-
-			$selector = '.' . join( '.', array_filter( [
-				$block_template['attrs']['uniqueId'] ?? null,
-				'wpbs-layout-grid-card--' . get_the_ID()
+				$block_template['attrs']['uniqueId'] . '--' . get_the_ID()
 			] ) );
 
 			$new_block = new WP_Block( $block_template, array_filter( [
 				'postId' => get_the_ID(),
+				'uniqueId' => $unique_id
 			] ) );
+
+			$new_block = apply_filters('wpbs_loop_block', $new_block, $block_template['attrs']['uniqueId'], $unique_id);
 
 			$new_block->inner_content[0]       = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_content[0] );
 			$new_block->inner_html             = str_replace( $block_template['attrs']['uniqueId'] ?? '', $unique_id, $new_block->inner_html );
 			$new_block->attributes['uniqueId'] = $unique_id;
 			$new_block->attributes['postId']   = get_the_ID();
-
-			WPBS::console_log($block_template['attrs']['uniqueId']);
-			WPBS::console_log($selector);
-
-			if ( ( $new_block->attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
-
-				$img_id_large  = get_post_thumbnail_id( $new_block->attributes['postId'] ) ?: ( $new_block->attributes['wpbs-background']['largeImage']['id'] ?? $new_block->attributes['wpbs-background']['mobileImage']['id'] ?? false );
-				$img_src_large = wp_get_attachment_image_src( $img_id_large, $new_block->attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
-
-				$img_id_mobile  = get_post_thumbnail_id( $new_block->attributes['postId'] ) ?: ( $new_block->attributes['wpbs-background']['mobileImage']['id'] ?? $new_block->attributes['wpbs-background']['largeImage']['id'] ?? false );
-				$img_src_mobile = wp_get_attachment_image_src( $img_id_mobile, $new_block->attributes['wpbs-background']['resolutionMobile'] ?? $new_block->attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
-
-				$new_block->attributes['wpbs-css'] = str_replace(
-					[ '.' . $block_template['attrs']['uniqueId'], '%POST_IMG_URL_LARGE%', '%POST_IMG_URL_MOBILE%' ],
-					[
-						$selector,
-						'url(' . $img_src_large . ')',
-						'url(' . $img_src_mobile . ')',
-					],
-					$new_block->attributes['wpbs-css']
-				);
-
-				WPBS::console_log($new_block);
-
-			}
-
-
-
 
 			$new_content .= $new_block->render();
 

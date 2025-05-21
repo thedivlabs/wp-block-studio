@@ -2,7 +2,6 @@
 
 global $wp_query;
 
-
 $attributes = array_filter( $attributes ?? [] );
 $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;

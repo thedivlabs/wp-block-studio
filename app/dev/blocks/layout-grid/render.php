@@ -7,7 +7,7 @@ $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
 
 $is_loop    = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
-$is_current = ( $attributes['wpbs-loop-type'] ?? false ) === 'current';
+$is_current = ( $attributes['wpbs-query']['post_type'] ?? false ) === 'current';
 
 $query = ! $is_loop ? false : match ( true ) {
 	$is_current => $wp_query,
@@ -21,12 +21,11 @@ if ( $is_loop ) {
 	$grid_cards['content'] .= '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $is_current ? $query->query : false,
-			'attrs' => array_filter( $attributes, function ( $attribute ) {
-				return str_starts_with( $attribute, 'wpbs-loop' ) || $attribute == 'queryArgs';
-			}, ARRAY_FILTER_USE_KEY ),
+			'attrs' => $attributes['wpbs-query'],
 		] ) . '</script>';
 
-	if ( ! empty( $attributes['wpbs-pagination'] ) && $query->max_num_pages > 1 ) {
+	if ( ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
+
 		if ( $is_current ) {
 			$big = 999999999;
 

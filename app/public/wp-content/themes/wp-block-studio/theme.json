@@ -625,6 +625,11 @@
         "color": {
           "text": "white"
         },
+        "spacing": {
+          "margin": {
+            "top": "1.8rem"
+          }
+        },
         "elements": {
           "button": {
             "dimensions": {

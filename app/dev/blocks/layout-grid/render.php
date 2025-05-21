@@ -27,8 +27,6 @@ if ( $is_loop ) {
 
 	if ( ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
 
-		WPBS::console_log( $query->max_num_pages );
-
 		$big = 999999999;
 
 		$current_page = max( 1, get_query_var( 'paged' ) );
@@ -70,9 +68,11 @@ if ( $is_loop ) {
 
 			$pagination .= '</nav>';
 
-			$block->inner_content[ count( $block->inner_content ) - 1 ] .= $pagination;
+			$block->inner_content[ count( $block->inner_content ) - 1 ] = $pagination . $block->inner_content[ count( $block->inner_content ) - 1 ];
 		}
 	}
+
+	WPBS::console_log( $block->inner_content );
 
 	$block->inner_content[1] = trim( $grid_cards['content'] );
 

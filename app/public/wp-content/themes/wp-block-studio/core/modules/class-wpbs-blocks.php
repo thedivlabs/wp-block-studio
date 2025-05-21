@@ -40,12 +40,13 @@ class WPBS_Blocks {
 				return $css_array;
 			}
 
+			WPBS::console_log($attributes['uniqueId']);
+
 			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-css'];
 
 			if ( ! empty( $custom_css ) ) {
 				$css_array[ $attributes['uniqueId'] . '-custom' ] = $custom_css;
 			}
-
 
 			return $css_array;
 		} );

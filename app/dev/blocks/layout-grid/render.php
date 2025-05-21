@@ -83,8 +83,6 @@ if ( $is_loop ) {
 
 	$block->inner_content[1] = trim( $grid_cards['content'] );
 
-	WPBS::console_log( $block );
-
 	foreach ( $block->inner_content as $html ) {
 		echo $html;
 	}

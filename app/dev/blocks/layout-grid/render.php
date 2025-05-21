@@ -18,7 +18,7 @@ if ( $is_loop ) {
 
 	$grid_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query ?? false );
 
-	$grid_cards['content'] = ($grid_cards['content'] ?? '') . '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
+	$grid_cards['content'] = ( $grid_cards['content'] ?? '' ) . '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $is_current ? $query->query : false,
 			'attrs' => $attributes['wpbs-query'],
@@ -56,7 +56,6 @@ if ( $is_loop ) {
 		if ( $pagination_links ) {
 			$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
 
-
 			$pagination .= '<div class="wp-block-query-pagination-numbers inline-flex w-max">';
 
 			foreach ( $pagination_links as $link ) {
@@ -64,8 +63,7 @@ if ( $is_loop ) {
 			}
 
 			$pagination .= '</div>';
-
-
+			
 			$pagination .= '</nav>';
 
 			$block->inner_content[ count( $block->inner_content ) - 1 ] = $pagination . $block->inner_content[ count( $block->inner_content ) - 1 ];

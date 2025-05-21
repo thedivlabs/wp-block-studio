@@ -1,36 +1,29 @@
 {
-  "name": "wpbs/layout-grid-card",
-  "title": "Grid Card",
-  "description": "Display a layout grid card",
+  "name": "wpbs/term-details",
+  "title": "Term Details",
+  "description": "Display term details",
   "selectors": {
-    "root": ".wpbs-layout-grid-card"
+    "root": ".wpbs-term-details"
   },
-  "attributes": {
-    "uniqueId": {
-      "type": "string",
-      "show_in_rest": true
-    },
-    "postId": {
-      "type": "integer",
-      "show_in_rest": true
-    },
-    "termId": {
-      "type": "integer",
-      "default": 0,
-      "show_in_rest": true
-    }
-  },
-  "parent": [
-    "wpbs/layout-grid"
+  "usesContext": [
+    "wpbs/termId"
   ],
-  "providesContext": {
-    "postId": "postId",
-    "wpbs/termId": "termId",
-    "postType": "postType"
-  },
+  "styles": [
+    {
+      "name": "name",
+      "label": "Name",
+      "isDefault": true
+    },
+    {
+      "name": "description",
+      "label": "Description"
+    },
+    {
+      "name": "thumbnail",
+      "label": "Thumbnail"
+    }
+  ],
   "supports": {
-    "interactivity": true,
-    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,
@@ -38,10 +31,6 @@
       "gradients": true
     },
     "spacing": {
-      "blockGap": [
-        "horizontal",
-        "vertical"
-      ],
       "padding": true,
       "margin": true
     },

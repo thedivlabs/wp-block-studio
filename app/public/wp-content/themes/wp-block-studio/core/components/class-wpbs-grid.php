@@ -175,18 +175,20 @@ class WPBS_Grid {
 				$original_id . '--' . $post_id
 			] ) );
 
+		$block_template['attrs']['postId']   = $post_id;
+		$block_template['attrs']['termId']   = $args['termId'];
+		$block_template['attrs']['uniqueId'] = $unique_id;
+
 		$new_block = new WP_Block( $block_template, array_filter( [
+			'termId'   => $args['termId'],
 			'postId'   => $post_id,
 			'uniqueId' => $unique_id
 		] ) );
 
 		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
 
-		$new_block->inner_content[0]       = str_replace( $original_id, $unique_id, $new_block->inner_content[0] );
-		$new_block->inner_html             = str_replace( $original_id, $unique_id, $new_block->inner_html );
-		$new_block->attributes['uniqueId'] = $unique_id;
-		$new_block->attributes['postId']   = get_the_ID();
-		$new_block->attributes['termId']   = $args['term_id'] ?? false;
+		$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] );
+		$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html );
 
 		return $new_block;
 	}
@@ -225,9 +227,9 @@ class WPBS_Grid {
 		if ( is_array( $query ) && ! empty( $attrs['wpbs-query']['loop_terms'] ) ) {
 
 			foreach ( $query as $k => $term_obj ) {
-
+				
 				$new_block = self::loop_card( $card, [
-					'term_id' => $term_obj->term_id,
+					'termId' => $term_obj->term_id,
 				] );
 
 				$new_content .= $new_block->render();

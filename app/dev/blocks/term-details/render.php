@@ -1,9 +1,9 @@
 <?php
 
 
-$term_id = $block->context['wpbs/termId'] ?? false;
+$term_id = $block->context['wpbs/termId'] ?? get_queried_object()->term_id ?? false;
 
-$term = $term_id ? get_term( $term_id ) : ( is_tax() ? get_queried_object() : false );
+$term = get_term( $term_id );
 
 if ( empty( $term ) ) {
 	return;

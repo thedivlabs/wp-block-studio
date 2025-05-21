@@ -31,7 +31,6 @@ function sectionClassNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
         !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
-        !!attributes?.['wpbs-grid']?.divider ? 'wpbs-layout-grid--divider' : null,
         'w-full flex relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');

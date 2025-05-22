@@ -175,8 +175,12 @@ const {state} = store('wpbs/grid', {
 
                     setDividers(grid, context);
                     setMasonry(grid);
-                    WPBS.observeMedia(container);
-console.log(result);
+
+                    const media = grid.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
+                    [...media].forEach((media_element) => {
+                        WPBS.observeMedia(media_element);
+                    })
+
                     if (result.css) {
                         const styleTag = document.createElement('style');
 

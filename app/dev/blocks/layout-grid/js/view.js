@@ -148,7 +148,7 @@ const {state} = store('wpbs/grid', {
 
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML || '');
 
-            const nonce = 'wpbsData' in window ? window.wpbsData?.nonce : false;
+            const nonce = WPBS?.settings?.nonce ?? false;
 
             WPBS.loader.toggle();
 
@@ -176,7 +176,7 @@ const {state} = store('wpbs/grid', {
                     setDividers(grid, context);
                     setMasonry(grid);
                     WPBS.observeMedia(container);
-
+console.log(result);
                     if (result.css) {
                         const styleTag = document.createElement('style');
 

@@ -113,15 +113,15 @@ class WPBS_Grid {
 		] );
 	}
 
-	public static function query( $attrs, $page = 1 ): WP_Query|bool|array {
+	public static function query( $attrs, $page = 1, $current_query = [] ): WP_Query|bool|array {
 
-		$query = $attrs['wpbs-query'] ?? false;
+		$query = $attrs['wpbs-query'] ?? $current_query ?? false;
 
 		if ( empty( $query ) ) {
 			return false;
 		}
 
-		if ( ! empty( $query['loop_terms'] ) ) {
+		if ( ! empty( $query['term'] ) ) {
 
 			return get_terms( [
 				'taxonomy'   => $query['taxonomy'] ?? false,
@@ -197,10 +197,11 @@ class WPBS_Grid {
 
 		$query = match ( true ) {
 			is_a( $current_query, 'WP_Query' ), ! empty( $attrs['wpbs-query']['loop_terms'] ) && ! empty( $attrs['wpbs-query']['taxonomy'] ) && is_array( $current_query ) => $current_query,
-			default => self::query( $attrs, $page )
+			default => self::query( $attrs, $page, $current_query )
 		};
 
 		$new_content = '';
+		$css         = '';
 
 		if ( is_a( $query, 'WP_Query' ) ) {
 			while ( $query->have_posts() ) {
@@ -210,6 +211,7 @@ class WPBS_Grid {
 				$new_block = self::loop_card( $card );
 
 				$new_content .= $new_block->render();
+				$css         .= $new_block->attributes['wpbs-css'] ?? '';
 
 			}
 
@@ -219,6 +221,7 @@ class WPBS_Grid {
 				'content' => ! empty( $new_content ) ? $new_content : false,
 				'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
 				'query'   => $query,
+				'css'     => trim( $css ),
 			] );
 		}
 
@@ -258,7 +261,8 @@ class WPBS_Grid {
 				'status'   => 200,
 				'response' => $grid['content'] ?? false,
 				'last'     => $grid['last'] ?? false,
-				'query'    => $grid['query'] ?? false
+				'query'    => $grid['query'] ?? false,
+				'css'      => $grid['css'] ?? false
 			]
 		);
 

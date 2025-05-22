@@ -67,7 +67,7 @@ if ( $is_loop ) {
 
 	$block->inner_content[count($block->inner_content) - 1]  = '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
-			'query' => $is_current ? $query->query : false,
+			'query' => $query->query,
 			'attrs' => $attributes['wpbs-query'],
 		] ) . '</script>' . $block->inner_content[count($block->inner_content) - 1];
 

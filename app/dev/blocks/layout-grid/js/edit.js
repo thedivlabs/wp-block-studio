@@ -334,7 +334,7 @@ registerBlockType(metadata.name, {
 
         const PaginationButton = () => {
             if (!!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
-                return <button type="button" class="w-full h-10 relative"
+                return <button type="button" class="w-full h-10 relative z-20"
                                data-wp-on-async--click="actions.pagination">
                     {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
                 </button>;
@@ -348,9 +348,9 @@ registerBlockType(metadata.name, {
                 <div {...innerBlockProps} >
                     {innerBlockProps.children}
                     <GutterSizer/>
-                    <PaginationButton/>
-                </div>
 
+                </div>
+                <PaginationButton/>
                 <BackgroundElement attributes={props.attributes} editor={false}/>
             </div>
         );

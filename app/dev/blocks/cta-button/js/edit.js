@@ -144,8 +144,6 @@ registerBlockType(metadata.name, {
                 }),
             []) || [];
 
-        console.log(popups);
-
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label={'Popup'}

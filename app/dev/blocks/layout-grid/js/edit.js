@@ -274,7 +274,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-layout', 'wpbs-background','wpbs-grid']}
+                       deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid']}
                        props={{
                            '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
                            breakpoints: {
@@ -303,9 +303,9 @@ registerBlockType(metadata.name, {
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes.uniqueId,
                 divider: !!Object.keys(props.attributes['wpbs-grid']?.['divider'] ?? {}).length,
-                breakpoints:{
+                breakpoints: {
                     small: props.attributes?.['wpbs-grid']?.['breakpoint-small'],
-                    large: props.attributes?.['wpbs-grid']?.['breakpoint-large'] ??  props.attributes?.['wpbs-layout']?.['breakpoint'] ?? false,
+                    large: props.attributes?.['wpbs-grid']?.['breakpoint-large'] ?? props.attributes?.['wpbs-layout']?.['breakpoint'] ?? false,
                 },
                 columns: {
                     mobile: props.attributes['wpbs-grid']?.['columns-mobile'] ?? 1,
@@ -334,7 +334,7 @@ registerBlockType(metadata.name, {
 
         const PaginationButton = () => {
             if (!!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
-                return <button type="button" class="w-full h-10 relative z-20"
+                return <button type="button" class="w-full h-10 relative z-20 wpbs-cta-button is-style-outline"
                                data-wp-on-async--click="actions.pagination">
                     {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
                 </button>;

@@ -15,7 +15,7 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
@@ -137,12 +137,26 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
+        const popupQuery = useMemo(() => ({
+            hide_empty: true,
+            per_page: -1,
+            status: 'publish',
+            order: 'asc',
+            orderby: 'title',
+        }), []);
+
         const popups = useSelect(
-            (select) =>
-                select(coreStore).getEntityRecords('postType', 'popup', {
-                    per_page: -1,
-                }),
-            []) || [];
+            (select) => select(coreStore).getEntityRecords('postType', 'popup', popupQuery),
+            [popupQuery]
+        ) || [];
+
+        const popupOptions = useMemo(() => {
+            if (!popups) return [];
+            return popups.map((popup) => ({
+                label: popup.title?.rendered || '(Untitled)',
+                value: popup.id,
+            }));
+        }, [popups]);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
@@ -154,9 +168,7 @@ registerBlockType(metadata.name, {
                 }}
                 options={[
                     {label: 'Select', value: ''},
-                    ...popups.map((popup) => {
-                        return {label: popup?.title?.raw ?? 'No Title', value: popup.id}
-                    }),
+                    ...popupOptions,
                 ]}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom

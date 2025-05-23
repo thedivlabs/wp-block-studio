@@ -516,9 +516,18 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Align'}
                 onDeselect={() => updateProp({['align-items']: ''})}
             >
-                <Align defaultValue={settings?.['align-items']} callback={(newValue) => {
-                    updateProp({'align-items': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Align"
+                    value={settings?.['align-items'] ?? ''}
+                    onChange={(newValue) => updateProp({'align-items': newValue})}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Start', value: 'flex-start'},
+                        {label: 'Center', value: 'center'},
+                        {label: 'End', value: 'flex-end'},
+                        {label: 'Stretch', value: 'stretch'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}

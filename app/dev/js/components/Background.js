@@ -590,7 +590,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlay'] ?? ''}
+                value={settings?.['overlay'] ?? {}}
                 onChange={(value) => updateSettings({'overlay': value})}
             />
         </BaseControl>
@@ -835,7 +835,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                 label="Fixed"
                                 prop="fixed"
                             />
-                            
+
                         </Grid>
 
                         <TabPanel

@@ -541,7 +541,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
 
             <MemoMediaControl
-                label={'Mask Desktop'}
+                label={'Mask Image'}
                 prop={'maskImageLarge'}
                 allowedTypes={['image']}
             />
@@ -709,7 +709,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
 
             <MemoMediaControl
-                label={'Mask Mobile'}
+                label={'Mask Image'}
                 prop={'maskImageMobile'}
                 allowedTypes={['image']}
             />

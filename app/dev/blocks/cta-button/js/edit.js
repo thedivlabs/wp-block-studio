@@ -15,7 +15,7 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
@@ -137,6 +137,25 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
+        const MemoSelectControl = React.memo(({label, value, onChange, options}) => (
+            <SelectControl
+                label={label}
+                value={value}
+                onChange={onChange}
+                options={options}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+        ));
+
+        const handleFieldChange = useCallback(
+            (prop, localSetter) => (value) => {
+                setAttributes({[prop]: value});
+                if (localSetter) localSetter(value);
+            },
+            []
+        );
+
         const popupQuery = useMemo(() => ({
             hide_empty: true,
             per_page: -1,
@@ -152,94 +171,78 @@ registerBlockType(metadata.name, {
 
         const popupOptions = useMemo(() => {
             if (!popups) return [];
-            return popups.map((popup) => ({
-                label: popup.title?.rendered || '(Untitled)',
-                value: popup.id,
-            }));
+            return [
+                {
+                    label: 'Select',
+                    value: '',
+                },
+                ...popups.map((popup) => ({
+                    label: popup.title?.rendered || '(Untitled)',
+                    value: popup.id,
+                }))];
         }, [popups]);
 
-        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <SelectControl
-                label={'Popup'}
-                value={popup}
-                onChange={(value) => {
-                    setAttributes({'wpbs-popup': value});
-                    setPopup(value);
-                }}
-                options={[
-                    {label: 'Select', value: ''},
-                    ...popupOptions,
-                ]}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-
-            <Grid columns={2} columnGap={15} rowGap={20}
-                  style={{padding: '1rem 0'}}>
-                <ToggleControl
-                    label="Loop"
-                    checked={!!loop}
-                    onChange={(value) => {
-                        setLoop(value);
-                        setAttributes({'wpbs-loop': value});
-                    }}
-                    className={'flex items-center'}
+        const tabOptions = useMemo(() => (
+            <Grid columns={1} columnGap={15} rowGap={20}>
+                <MemoSelectControl
+                    label="Popup"
+                    value={popup}
+                    onChange={handleFieldChange('wpbs-popup', setPopup)}
+                    options={popupOptions}
+                />
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
+                    <ToggleControl
+                        label="Loop"
+                        checked={!!loop}
+                        onChange={handleFieldChange('wpbs-loop', setLoop)}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+            </Grid>
+        ), [popup, popupOptions, loop]);
+        
+        const tabIcon = useMemo(() => (
+            <Grid columns={1} columnGap={15} rowGap={20}>
+                <TextControl
+                    label="Icon"
+                    value={icon}
+                    onChange={handleFieldChange('wpbs-icon', setIcon)}
+                    __next40pxDefaultSize
                     __nextHasNoMarginBottom
+                />
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
+                    <ToggleControl
+                        label="Icon Only"
+                        checked={!!iconOnly}
+                        onChange={handleFieldChange('wpbs-icon-only', setIconOnly)}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                    <ToggleControl
+                        label="Icon First"
+                        checked={!!iconFirst}
+                        onChange={handleFieldChange('wpbs-icon-first', setIconFirst)}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'icon',
+                            label: 'Icon Color',
+                            value: iconColor,
+                            onChange: handleFieldChange('wpbs-icon-color', setIconColor),
+
+                            isShownByDefault: true
+                        }
+                    ]}
                 />
             </Grid>
-        </Grid>;
-        const tabIcon = <Grid columns={1} columnGap={15} rowGap={20}>
-            <TextControl
-                label="Icon"
-                value={icon}
-                onChange={(value) => {
-                    setIcon(value);
-                    setAttributes({['wpbs-icon']: value});
-                }}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-            <Grid columns={2} columnGap={15} rowGap={20}
-                  style={{padding: '1rem 0'}}>
-                <ToggleControl
-                    label="Icon Only"
-                    checked={!!iconOnly}
-                    onChange={(value) => {
-                        setIconOnly(value);
-                        setAttributes({'wpbs-icon-only': value});
-                    }}
-                    className={'flex items-center'}
-                    __nextHasNoMarginBottom
-                />
-                <ToggleControl
-                    label="Icon First"
-                    checked={!!iconFirst}
-                    onChange={(value) => {
-                        setIconFirst(value);
-                        setAttributes({'wpbs-icon-first': value});
-                    }}
-                    className={'flex items-center'}
-                    __nextHasNoMarginBottom
-                />
-            </Grid>
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
-                    {
-                        slug: 'icon',
-                        label: 'Icon Color',
-                        value: iconColor,
-                        onChange: (value) => {
-                            setAttributes({'wpbs-icon-color': value});
-                            setIconColor(value);
-                        },
-                        isShownByDefault: true
-                    }
-                ]}
-            />
-
-        </Grid>;
+        ), [icon, iconOnly, iconFirst, iconColor]);
 
         const tabs = {
             options: tabOptions,

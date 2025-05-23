@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 
 import {
     InspectorControls,
@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor";
 import {
     __experimentalToolsPanel as ToolsPanel,
-    __experimentalToolsPanelItem as ToolsPanelItem,
+    __experimentalToolsPanelItem as ToolsPanelItem, SelectControl,
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -408,10 +408,7 @@ export function layoutCss(attributes) {
 
 export function LayoutControls({attributes = {}, setAttributes}) {
 
-
-    //let {'wpbs-layout': settings = {}} = attributes;
-
-    const [settings, setSettings] = useState(attributes['wpbs-layout'] || {});
+    const [settings, setSettings] = useState(() => attributes['wpbs-layout'] || {});
 
     const resetAll_layout = () => {
         const result = Object.keys(layoutProps.layout).reduce((o, key) => ({...o, [key]: undefined}), {});
@@ -424,23 +421,31 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         setAttributes(result);
     };
 
-    function updateProp(newValue) {
+    const updateProp = useCallback((newValue) => {
+
+        const result = {
+            ...attributes['wpbs-layout'],
+            ...newValue,
+        }
 
         setAttributes({
-            'wpbs-layout': {
-                ...attributes['wpbs-layout'],
-                ...newValue
-            }
+            'wpbs-layout': result
         });
 
-        setSettings((prevState) => {
-            return {
-                ...prevState,
-                ...newValue
-            }
-        });
+        setSettings(result);
 
-    }
+        }, [setAttributes, setSettings]);
+
+    const MemoSelectControl = ({ label, value, onChange, options }) => (
+        <SelectControl
+            label={label}
+            value={value}
+            onChange={onChange}
+            options={options}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+        />
+    );
 
     return <InspectorControls group="styles">
 
@@ -450,17 +455,27 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['display']}
                 label={'Display'}
-                onDeselect={() => updateProp({'display': undefined})}
+                onDeselect={() => updateProp({'display': ''})}
             >
-                <Display defaultValue={settings?.['display']} callback={(newValue) => {
-                    updateProp({'display': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Display"
+                    value={settings?.['display'] ?? ''}
+                    onChange={(newValue) => updateProp({ display: newValue })}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Flex', value: 'flex'},
+                        {label: 'Block', value: 'block'},
+                        {label: 'Inline Flex', value: 'inline-flex'},
+                        {label: 'Inline Block', value: 'inline-block'},
+                        {label: 'None', value: 'none'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-direction']}
                 label={'Direction'}
-                onDeselect={() => updateProp({'flex-direction': undefined})}
+                onDeselect={() => updateProp({'flex-direction': ''})}
             >
                 <FlexDirection defaultValue={settings?.['flex-direction']}
                                callback={(newValue) => {
@@ -471,7 +486,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['container']}
                 label={'Container'}
-                onDeselect={() => updateProp({['container']: undefined})}
+                onDeselect={() => updateProp({['container']: ''})}
             >
                 <Container defaultValue={settings?.['container']} callback={(newValue) => {
                     updateProp({'container': newValue});
@@ -481,7 +496,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['align-items']}
                 label={'Align'}
-                onDeselect={() => updateProp({['align-items']: undefined})}
+                onDeselect={() => updateProp({['align-items']: ''})}
             >
                 <Align defaultValue={settings?.['align-items']} callback={(newValue) => {
                     updateProp({'align-items': newValue});
@@ -491,7 +506,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['justify-content']}
                 label={'Justify'}
-                onDeselect={() => updateProp({['justify-content']: undefined})}
+                onDeselect={() => updateProp({['justify-content']: ''})}
             >
                 <Justify defaultValue={settings?.['justify-content']} callback={(newValue) => {
                     updateProp({'justify-content': newValue});
@@ -501,7 +516,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 2'}}
                 hasValue={() => !!settings?.['opacity']}
                 label={'Opacity'}
-                onDeselect={() => updateProp({['opacity']: undefined})}
+                onDeselect={() => updateProp({['opacity']: ''})}
             >
                 <Opacity defaultValue={settings?.['opacity']} callback={(newValue) => {
                     updateProp({'opacity': newValue});
@@ -511,7 +526,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 2'}}
                 hasValue={() => !!settings?.['basis']}
                 label={'Basis'}
-                onDeselect={() => updateProp({['basis']: undefined})}
+                onDeselect={() => updateProp({['basis']: ''})}
             >
                 <Basis defaultValue={settings?.['basis']} callback={(newValue) => {
                     updateProp({'basis': newValue});
@@ -521,7 +536,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['width']}
                 label={'Width'}
-                onDeselect={() => updateProp({['width']: undefined})}
+                onDeselect={() => updateProp({['width']: ''})}
             >
                 <Width defaultValue={settings?.['width']} callback={(newValue) => {
                     updateProp({'width': newValue});
@@ -531,7 +546,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['width-custom']}
                 label={'Width Custom'}
-                onDeselect={() => updateProp({['width-custom']: undefined})}
+                onDeselect={() => updateProp({['width-custom']: ''})}
             >
                 <WidthCustom defaultValue={settings?.['width-custom']}
                              callback={(newValue) => {
@@ -543,7 +558,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 hasValue={() => !!attributes['wpbs-layout']?.['max-width']}
                 label={'Max-Width'}
                 onDeselect={() => {
-                    updateProp({['max-width']: undefined})
+                    updateProp({['max-width']: ''})
                 }}
             >
                 <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-layout']?.['max-width']}
@@ -555,7 +570,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['height']}
                 label={'Height'}
-                onDeselect={() => updateProp({'height': undefined})}
+                onDeselect={() => updateProp({'height': ''})}
             >
                 <Height defaultValue={settings?.['height']} callback={(newValue) => {
                     updateProp({'height': newValue});
@@ -565,7 +580,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['height-custom']}
                 label={'Height Custom'}
-                onDeselect={() => updateProp({['height-custom']: undefined})}
+                onDeselect={() => updateProp({['height-custom']: ''})}
             >
                 <HeightCustom defaultValue={settings?.['height-custom']}
                               callback={(newValue) => {
@@ -576,7 +591,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['min-height']}
                 label={'Min-Height'}
-                onDeselect={() => updateProp({['min-height']: undefined})}
+                onDeselect={() => updateProp({['min-height']: ''})}
             >
                 <MinHeight defaultValue={settings?.['min-height']} callback={(newValue) => {
                     updateProp({'min-height': newValue});
@@ -586,7 +601,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['min-height-custom']}
                 label={'Min-Height Custom'}
-                onDeselect={() => updateProp({['min-height-custom']: undefined})}
+                onDeselect={() => updateProp({['min-height-custom']: ''})}
             >
                 <MinHeightCustom defaultValue={settings?.['min-height-custom']}
                                  callback={(newValue) => {
@@ -597,7 +612,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['max-height']}
                 label={'Max-Height'}
-                onDeselect={() => updateProp({['max-height']: undefined})}
+                onDeselect={() => updateProp({['max-height']: ''})}
             >
                 <MaxHeight defaultValue={settings?.['max-height']} callback={(newValue) => {
                     updateProp({'max-height': newValue});
@@ -607,7 +622,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['max-height-custom']}
                 label={'Max-Height Custom'}
-                onDeselect={() => updateProp({['max-height-custom']: undefined})}
+                onDeselect={() => updateProp({['max-height-custom']: ''})}
             >
                 <MaxHeightCustom defaultValue={settings?.['max-height-custom']}
                                  callback={(newValue) => {
@@ -619,7 +634,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-wrap']}
                 label={'Flex Wrap'}
-                onDeselect={() => updateProp({['flex-wrap']: undefined})}
+                onDeselect={() => updateProp({['flex-wrap']: ''})}
             >
                 <FlexWrap defaultValue={settings?.['flex-wrap']} callback={(newValue) => {
                     updateProp({'flex-wrap': newValue});
@@ -629,7 +644,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-grow']}
                 label={'Grow'}
-                onDeselect={() => updateProp({['flex-grow']: undefined})}
+                onDeselect={() => updateProp({['flex-grow']: ''})}
             >
                 <Grow defaultValue={settings?.['flex-grow']} callback={(newValue) => {
                     updateProp({'flex-grow': newValue});
@@ -639,7 +654,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-shrink']}
                 label={'Shrink'}
-                onDeselect={() => updateProp({['flex-shrink']: undefined})}
+                onDeselect={() => updateProp({['flex-shrink']: ''})}
             >
                 <Shrink defaultValue={settings?.['flex-shrink']} callback={(newValue) => {
                     updateProp({'flex-shrink': newValue});
@@ -649,7 +664,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['position']}
                 label={'Position'}
-                onDeselect={() => updateProp({['position']: undefined})}
+                onDeselect={() => updateProp({['position']: ''})}
             >
                 <Position defaultValue={settings?.['position']} callback={(newValue) => {
                     updateProp({'position': newValue});
@@ -659,7 +674,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['z-index']}
                 label={'Z-Index'}
-                onDeselect={() => updateProp({['z-index']: undefined})}
+                onDeselect={() => updateProp({['z-index']: ''})}
             >
                 <ZIndex defaultValue={settings?.['z-index']} callback={(newValue) => {
                     updateProp({'z-index': newValue});
@@ -669,10 +684,10 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 hasValue={() => !!settings?.['top'] || !!settings?.['right'] || !!settings?.['bottom'] || !!settings?.['left']}
                 label={'Box Position'}
                 onDeselect={() => updateProp({
-                    ['top']: undefined,
-                    ['right']: undefined,
-                    ['bottom']: undefined,
-                    ['left']: undefined
+                    ['top']: '',
+                    ['right']: '',
+                    ['bottom']: '',
+                    ['left']: ''
                 })}
             >
                 <BoxPosition topValue={settings?.['top']}
@@ -692,7 +707,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['overflow']}
                 label={'Overflow'}
-                onDeselect={() => updateProp({['overflow']: undefined})}
+                onDeselect={() => updateProp({['overflow']: ''})}
             >
                 <Overflow defaultValue={settings?.['overflow']} callback={(newValue) => {
                     updateProp({'overflow': newValue});
@@ -702,7 +717,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['aspect-ratio']}
                 label={'Shape'}
-                onDeselect={() => updateProp({['aspect-ratio']: undefined})}
+                onDeselect={() => updateProp({['aspect-ratio']: ''})}
             >
                 <Shape defaultValue={settings?.['aspect-ratio']} callback={(newValue) => {
                     updateProp({['aspect-ratio']: newValue});
@@ -712,7 +727,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['order']}
                 label={'Order'}
-                onDeselect={() => updateProp({['order']: undefined})}
+                onDeselect={() => updateProp({['order']: ''})}
             >
                 <Order defaultValue={settings?.['order']} callback={(newValue) => {
                     updateProp({['order']: newValue});
@@ -723,7 +738,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['outline-offset']}
                 label={'Outline Offset'}
-                onDeselect={() => updateProp({['outline-offset']: undefined})}
+                onDeselect={() => updateProp({['outline-offset']: ''})}
             >
                 <OutlineOffset defaultValue={settings?.['outline-offset']}
                                callback={(newValue) => {
@@ -735,9 +750,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['offset-header']}
                 label={'Offset Header'}
-                onDeselect={() => updateProp({['offset-header']: undefined})}
+                onDeselect={() => updateProp({['offset-header']: ''})}
             >
-                <OffsetHeader defaultValue={settings?.['offset-header'] || undefined}
+                <OffsetHeader defaultValue={settings?.['offset-header'] || ''}
                               callback={(newValue) => {
                                   updateProp({['offset-header']: newValue});
                               }}/>
@@ -746,7 +761,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['translate']}
                 label={'Translate'}
-                onDeselect={() => updateProp({['translate']: undefined})}
+                onDeselect={() => updateProp({['translate']: ''})}
             >
                 <Translate defaultValue={settings?.['translate']} callback={(newValue) => {
                     updateProp({['translate']: newValue});
@@ -756,7 +771,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['outline']}
                 label={'Outline'}
-                onDeselect={() => updateProp({['outline']: undefined})}
+                onDeselect={() => updateProp({['outline']: ''})}
             >
                 <Outline defaultValue={settings?.['outline']} callback={(newValue) => {
                     updateProp({['outline']: newValue});
@@ -768,9 +783,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Mask'}
                 onDeselect={() => {
                     updateProp({
-                        ['mask-image']: undefined,
-                        ['mask-origin']: undefined,
-                        ['mask-size']: undefined
+                        ['mask-image']: '',
+                        ['mask-origin']: '',
+                        ['mask-size']: ''
                     });
                 }}
             >
@@ -795,7 +810,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['breakpoint']}
                 label={'Breakpoint'}
-                onDeselect={() => updateProp({['breakpoint']: undefined})}
+                onDeselect={() => updateProp({['breakpoint']: ''})}
             >
                 <Breakpoint defaultValue={settings?.['breakpoint']}
                             callback={(newValue) => {
@@ -806,7 +821,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['display-mobile']}
                 label={'Display'}
-                onDeselect={() => updateProp({['display-mobile']: undefined})}
+                onDeselect={() => updateProp({['display-mobile']: ''})}
             >
                 <Display defaultValue={settings?.['display-mobile']} callback={(newValue) => {
                     updateProp({['display-mobile']: newValue});
@@ -816,7 +831,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-direction-mobile']}
                 label={'Direction'}
-                onDeselect={() => updateProp({['flex-direction-mobile']: undefined})}
+                onDeselect={() => updateProp({['flex-direction-mobile']: ''})}
             >
                 <FlexDirection defaultValue={settings?.['flex-direction-mobile']}
                                callback={(newValue) => {
@@ -827,7 +842,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['align-items-mobile']}
                 label={'Align'}
-                onDeselect={() => updateProp({['align-items-mobile']: undefined})}
+                onDeselect={() => updateProp({['align-items-mobile']: ''})}
             >
                 <Align defaultValue={settings?.['align-items-mobile']}
                        callback={(newValue) => {
@@ -838,7 +853,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['justify-content-mobile']}
                 label={'Justify'}
-                onDeselect={() => updateProp({['justify-content-mobile']: undefined})}
+                onDeselect={() => updateProp({['justify-content-mobile']: ''})}
             >
                 <Justify defaultValue={settings?.['justify-content-mobile']}
                          callback={(newValue) => {
@@ -849,7 +864,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-grow-mobile']}
                 label={'Grow'}
-                onDeselect={() => updateProp({['flex-grow-mobile']: undefined})}
+                onDeselect={() => updateProp({['flex-grow-mobile']: ''})}
             >
                 <Grow defaultValue={settings?.['flex-grow-mobile']} callback={(newValue) => {
                     updateProp({['flex-grow-mobile']: newValue});
@@ -859,7 +874,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-shrink-mobile']}
                 label={'Shrink'}
-                onDeselect={() => updateProp({['flex-shrink-mobile']: undefined})}
+                onDeselect={() => updateProp({['flex-shrink-mobile']: ''})}
             >
                 <Shrink defaultValue={settings?.['flex-shrink-mobile']}
                         callback={(newValue) => {
@@ -870,7 +885,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 2'}}
                 hasValue={() => !!settings?.['opacity-mobile']}
                 label={'Opacity'}
-                onDeselect={() => updateProp({['opacity-mobile']: undefined})}
+                onDeselect={() => updateProp({['opacity-mobile']: ''})}
             >
                 <Opacity defaultValue={settings?.['opacity-mobile'] || 100}
                          callback={(newValue) => {
@@ -881,7 +896,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 2'}}
                 hasValue={() => !!settings?.['basis-mobile']}
                 label={'Basis'}
-                onDeselect={() => updateProp({['basis-mobile']: undefined})}
+                onDeselect={() => updateProp({['basis-mobile']: ''})}
             >
                 <Basis defaultValue={settings?.['basis-mobile']} callback={(newValue) => {
                     updateProp({['basis-mobile']: newValue});
@@ -891,7 +906,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['width-mobile']}
                 label={'Width'}
-                onDeselect={() => updateProp({['width-mobile']: undefined})}
+                onDeselect={() => updateProp({['width-mobile']: ''})}
             >
                 <Width defaultValue={settings?.['width-mobile']} callback={(newValue) => {
                     updateProp({['width-mobile']: newValue});
@@ -901,7 +916,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['width-custom-mobile']}
                 label={'Width Custom'}
-                onDeselect={() => updateProp({['width-custom-mobile']: undefined})}
+                onDeselect={() => updateProp({['width-custom-mobile']: ''})}
             >
                 <WidthCustom defaultValue={settings?.['width-custom-mobile']}
                              callback={(newValue) => {
@@ -912,7 +927,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['max-width-mobile']}
                 label={'Max-Width'}
-                onDeselect={() => updateProp({['max-width-mobile']: undefined})}
+                onDeselect={() => updateProp({['max-width-mobile']: ''})}
             >
                 <WidthCustom label={'Max-Width'} defaultValue={settings?.['max-width-mobile']}
                              callback={(newValue) => {
@@ -923,7 +938,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['height-mobile']}
                 label={'Height'}
-                onDeselect={() => updateProp({['height-mobile']: undefined})}
+                onDeselect={() => updateProp({['height-mobile']: ''})}
             >
                 <Height defaultValue={settings?.['height-mobile']} callback={(newValue) => {
                     updateProp({['height-mobile']: newValue});
@@ -933,7 +948,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['min-height-mobile']}
                 label={'Min-Height'}
-                onDeselect={() => updateProp({['min-height-mobile']: undefined})}
+                onDeselect={() => updateProp({['min-height-mobile']: ''})}
             >
                 <MinHeight defaultValue={settings?.['min-height-mobile']}
                            callback={(newValue) => {
@@ -944,7 +959,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['height-custom-mobile']}
                 label={'Height Custom'}
-                onDeselect={() => updateProp({['height-custom-mobile']: undefined})}
+                onDeselect={() => updateProp({['height-custom-mobile']: ''})}
             >
                 <HeightCustom defaultValue={settings?.['height-custom-mobile']}
                               callback={(newValue) => {
@@ -955,7 +970,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['aspect-ratio-mobile']}
                 label={'Shape'}
-                onDeselect={() => updateProp({['aspect-ratio-mobile']: undefined})}
+                onDeselect={() => updateProp({['aspect-ratio-mobile']: ''})}
             >
                 <Shape defaultValue={settings?.['aspect-ratio-mobile']}
                        callback={(newValue) => {
@@ -966,7 +981,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['flex-wrap-mobile']}
                 label={'Flex Wrap'}
-                onDeselect={() => updateProp({['flex-wrap-mobile']: undefined})}
+                onDeselect={() => updateProp({['flex-wrap-mobile']: ''})}
             >
                 <FlexWrap defaultValue={settings?.['flex-wrap-mobile']}
                           callback={(newValue) => {
@@ -977,7 +992,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['position-mobile']}
                 label={'Position'}
-                onDeselect={() => updateProp({['position-mobile']: undefined})}
+                onDeselect={() => updateProp({['position-mobile']: ''})}
             >
                 <Position defaultValue={settings?.['position-mobile']}
                           callback={(newValue) => {
@@ -988,7 +1003,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['z-index-mobile']}
                 label={'Z-Index'}
-                onDeselect={() => updateProp({['z-index-mobile']: undefined})}
+                onDeselect={() => updateProp({['z-index-mobile']: ''})}
             >
                 <ZIndex defaultValue={settings?.['z-index-mobile']} callback={(newValue) => {
                     updateProp({['z-index-mobile']: newValue});
@@ -998,10 +1013,10 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 hasValue={() => !!settings?.['top-mobile'] || !!settings?.['right-mobile'] || !!settings?.['bottom-mobile'] || !!settings?.['left-mobile']}
                 label={'Box Position'}
                 onDeselect={() => updateProp({
-                    ['top-mobile']: undefined,
-                    ['right-mobile']: undefined,
-                    ['bottom-mobile']: undefined,
-                    ['left-mobile']: undefined
+                    ['top-mobile']: '',
+                    ['right-mobile']: '',
+                    ['bottom-mobile']: '',
+                    ['left-mobile']: ''
                 })}
             >
                 <BoxPosition topValue={settings?.['top-mobile']}
@@ -1021,7 +1036,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['order-mobile']}
                 label={'Order'}
-                onDeselect={() => updateProp({['order-mobile']: undefined})}
+                onDeselect={() => updateProp({['order-mobile']: ''})}
             >
                 <Order defaultValue={settings?.['order-mobile']} callback={(newValue) => {
                     updateProp({['order-mobile']: newValue});
@@ -1032,9 +1047,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['offset-header-mobile']}
                 label={'Offset Header'}
-                onDeselect={() => updateProp({['offset-header-mobile']: undefined})}
+                onDeselect={() => updateProp({['offset-header-mobile']: ''})}
             >
-                <OffsetHeader defaultValue={settings?.['offset-header-mobile'] || undefined}
+                <OffsetHeader defaultValue={settings?.['offset-header-mobile'] || ''}
                               callback={(newValue) => {
                                   updateProp({['offset-header-mobile']: newValue});
                               }}/>
@@ -1044,7 +1059,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['translate-mobile']}
                 label={'Translate'}
-                onDeselect={() => updateProp({['translate-mobile']: undefined})}
+                onDeselect={() => updateProp({['translate-mobile']: ''})}
             >
                 <Translate label={'Translate'}
                            defaultValue={settings?.['translate-mobile'] || {}}
@@ -1056,7 +1071,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['padding-mobile']}
                 label={'Padding'}
-                onDeselect={() => updateProp({['padding-mobile']: undefined})}
+                onDeselect={() => updateProp({['padding-mobile']: ''})}
             >
                 <Padding defaultValue={settings?.['padding-mobile'] || {}}
                          callback={(newValue) => {
@@ -1066,7 +1081,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['margin-mobile']}
                 label={'Margin'}
-                onDeselect={() => updateProp({['margin-mobile']: undefined})}
+                onDeselect={() => updateProp({['margin-mobile']: ''})}
             >
                 <Margin defaultValue={settings?.['margin-mobile'] || {}}
                         callback={(newValue) => {
@@ -1076,7 +1091,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['gap-mobile']}
                 label={'Gap'}
-                onDeselect={() => updateProp({['gap-mobile']: undefined})}
+                onDeselect={() => updateProp({['gap-mobile']: ''})}
             >
                 <Gap defaultValue={settings?.['gap-mobile'] || {}} callback={(newValue) => {
                     updateProp({['gap-mobile']: newValue});
@@ -1085,7 +1100,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             <ToolsPanelItem
                 hasValue={() => !!settings?.['border-radius-mobile']}
                 label={'Rounded'}
-                onDeselect={() => updateProp({['border-radius-mobile']: undefined})}
+                onDeselect={() => updateProp({['border-radius-mobile']: ''})}
             >
                 <Rounded defaultValue={settings?.['border-radius-mobile'] || {}}
                          callback={(newValue) => {
@@ -1096,7 +1111,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['font-size-mobile']}
                 label={'Font Size'}
-                onDeselect={() => updateProp({['font-size-mobile']: undefined})}
+                onDeselect={() => updateProp({['font-size-mobile']: ''})}
             >
                 <FontSize defaultValue={settings?.['font-size-mobile']}
                           callback={(newValue) => {
@@ -1107,7 +1122,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['line-height-mobile']}
                 label={'Line Height'}
-                onDeselect={() => updateProp({['line-height-mobile']: undefined})}
+                onDeselect={() => updateProp({['line-height-mobile']: ''})}
             >
                 <LineHeight defaultValue={settings?.['line-height-mobile']}
                             callback={(newValue) => {
@@ -1118,7 +1133,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 style={{gridColumn: 'span 1'}}
                 hasValue={() => !!settings?.['text-align-mobile']}
                 label={'Text Align'}
-                onDeselect={() => updateProp({['text-align-mobile']: undefined})}
+                onDeselect={() => updateProp({['text-align-mobile']: ''})}
             >
                 <TextAlign defaultValue={settings?.['text-align-mobile']}
                            callback={(newValue) => {
@@ -1131,9 +1146,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Mask'}
                 onDeselect={() => {
                     updateProp({
-                        ['mask-image-mobile']: undefined,
-                        ['mask-origin-mobile']: undefined,
-                        ['mask-size-mobile']: undefined
+                        ['mask-image-mobile']: '',
+                        ['mask-origin-mobile']: '',
+                        ['mask-size-mobile']: ''
                     });
                 }}
             >

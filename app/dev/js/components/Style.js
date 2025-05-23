@@ -27,34 +27,30 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId];
 
-    console.log(dependencyValues);
-    console.log(attributes);
-
     const uniqueId = attributes?.uniqueId ?? '';
     const selector = '.' + uniqueId.trim().split(' ').join('.');
     const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
-    let desktopProps = {};
-    let mobileProps = {};
-
-    let propsCss = '';
-
-    const desktop = Object.fromEntries(Object.entries({
-        'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-        'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-        '--row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-        '--column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-    }).filter(([k, v]) => !!v));
-
-    const mobile = Object.fromEntries(Object.entries({
-        'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
-        'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
-        '--row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
-        '--column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
-    }).filter(([k, v]) => !!v));
-
     const result = useMemo(() => {
 
+        let desktopProps = {};
+        let mobileProps = {};
+
+        let propsCss = '';
+
+        const desktop = Object.fromEntries(Object.entries({
+            'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+            'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+            '--row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
+            '--column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+        }).filter(([k, v]) => !!v));
+
+        const mobile = Object.fromEntries(Object.entries({
+            'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
+            'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
+            '--row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
+            '--column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
+        }).filter(([k, v]) => !!v));
 
         desktopProps = {
             ...desktopProps,

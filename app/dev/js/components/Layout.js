@@ -5,8 +5,13 @@ import {
     PanelColorSettings,
 } from "@wordpress/block-editor";
 import {
+    __experimentalGrid as Grid,
+    __experimentalNumberControl as NumberControl,
     __experimentalToolsPanel as ToolsPanel,
-    __experimentalToolsPanelItem as ToolsPanelItem, SelectControl,
+    __experimentalToolsPanelItem as ToolsPanelItem,
+    __experimentalUnitControl as UnitControl,
+    RangeControl,
+    SelectControl,
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -436,14 +441,61 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     }, [setAttributes, setSettings]);
 
-    const MemoSelectControl = ({label, value, onChange, options}) => (
+    const MemoSelectControl = ({label, options, prop}) => (
         <SelectControl
             label={label}
-            value={value}
-            onChange={onChange}
             options={options}
+            value={settings?.[prop] ?? ''}
+            onChange={(newValue) => updateProp({[prop]: newValue})}
             __next40pxDefaultSize
             __nextHasNoMarginBottom
+        />
+    );
+
+    const MemoNumberControl = ({label, prop, min}) => (
+        <NumberControl
+            label={label}
+            value={settings?.[prop] ?? ''}
+            min={min || 0}
+            isDragEnabled={false}
+            onChange={(newValue) => updateProp({[prop]: newValue})}
+            __next40pxDefaultSize
+        />
+    );
+
+    const MemoUnitControl = ({label, units, prop}) => (
+        <UnitControl
+            label={label}
+            value={settings?.[prop] ?? ''}
+            units={units || [
+                {value: 'px', label: 'px', default: 0},
+                {value: '%', label: '%', default: 0},
+                {value: 'em', label: 'em', default: 0, step: .1},
+                {value: 'rem', label: 'rem', default: 0, step: .1},
+                {value: 'vh', label: 'vh', default: 0},
+                {value: 'vw', label: 'vw', default: 0},
+                {value: 'ch', label: 'ch', default: 0},
+            ]}
+            isResetValueOnUnitChange={true}
+            onChange={(newValue) => updateProp({[prop]: newValue})}
+            __next40pxDefaultSize
+        />
+    );
+
+    const MemoRangeControl = ({label, prop, step, min, max}) => (
+        <RangeControl
+            label={label}
+            step={step}
+            withInputField={true}
+            allowReset={true}
+            isShiftStepEnabled
+            initialPosition={0}
+            value={settings?.[prop] ?? ''}
+            onChange={(newValue) => updateProp({[prop]: newValue})}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+            min={min}
+            max={max}
         />
     );
 
@@ -458,8 +510,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Display"
-                    value={settings?.['display'] ?? ''}
-                    onChange={(newValue) => updateProp({display: newValue})}
+                    prop={'display'}
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'Flex', value: 'flex'},
@@ -478,8 +529,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Direction"
-                    value={settings?.['flex-direction'] ?? ''}
-                    onChange={(newValue) => updateProp({'flex-direction': newValue})}
+                    prop={'flex-direction'}
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'Row', value: 'row'},
@@ -497,8 +547,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Container"
-                    value={settings?.['container'] ?? ''}
-                    onChange={(newValue) => updateProp({'container': newValue})}
+                    prop={'container'}
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'None', value: 'none'},
@@ -518,8 +567,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Align"
-                    value={settings?.['align-items'] ?? ''}
-                    onChange={(newValue) => updateProp({'align-items': newValue})}
+                    prop={'align-items'}
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'Start', value: 'flex-start'},
@@ -535,9 +583,17 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Justify'}
                 onDeselect={() => updateProp({['justify-content']: ''})}
             >
-                <Justify defaultValue={settings?.['justify-content']} callback={(newValue) => {
-                    updateProp({'justify-content': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Justify"
+                    prop={'justify'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Start', value: 'flex-start'},
+                        {label: 'Center', value: 'center'},
+                        {label: 'End', value: 'flex-end'},
+                        {label: 'Between', value: 'space-between'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 2'}}
@@ -545,9 +601,13 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Opacity'}
                 onDeselect={() => updateProp({['opacity']: ''})}
             >
-                <Opacity defaultValue={settings?.['opacity']} callback={(newValue) => {
-                    updateProp({'opacity': newValue});
-                }}/>
+                <MemoRangeControl
+                    label="Opacity"
+                    prop={'opacity'}
+                    step={.1}
+                    min={0}
+                    max={1}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 2'}}
@@ -555,9 +615,13 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Basis'}
                 onDeselect={() => updateProp({['basis']: ''})}
             >
-                <Basis defaultValue={settings?.['basis']} callback={(newValue) => {
-                    updateProp({'basis': newValue});
-                }}/>
+                <MemoRangeControl
+                    label="Basis"
+                    step={1}
+                    prop={'basis'}
+                    min={0}
+                    max={100}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -565,9 +629,16 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Width'}
                 onDeselect={() => updateProp({['width']: ''})}
             >
-                <Width defaultValue={settings?.['width']} callback={(newValue) => {
-                    updateProp({'width': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Width"
+                    prop={'width'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Auto', value: 'auto'},
+                        {label: 'Fit', value: 'fit-content'},
+                        {label: 'Full', value: '100%'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -575,10 +646,20 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Width Custom'}
                 onDeselect={() => updateProp({['width-custom']: ''})}
             >
-                <WidthCustom defaultValue={settings?.['width-custom']}
-                             callback={(newValue) => {
-                                 updateProp({'width-custom': newValue});
-                             }}/>
+                <MemoUnitControl
+                    label="Width Custom"
+                    prop={'width-custom'}
+                    units={[
+                        {value: 'px', label: 'px', default: 0},
+                        {value: '%', label: '%', default: 0},
+                        {value: 'em', label: 'em', default: 0},
+                        {value: 'rem', label: 'rem', default: 0},
+                        {value: 'vh', label: 'vh', default: 0},
+                        {value: 'vw', label: 'vw', default: 0},
+                        {value: 'ch', label: 'ch', default: 0},
+                    ]}
+                />
+
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -588,10 +669,19 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                     updateProp({['max-width']: ''})
                 }}
             >
-                <WidthCustom label={'Max-Width'} defaultValue={attributes['wpbs-layout']?.['max-width']}
-                             callback={(newValue) => {
-                                 updateProp({'max-width': newValue});
-                             }}/>
+                <MemoUnitControl
+                    label="Max-Width"
+                    prop={'max-width'}
+                    units={[
+                        {value: 'px', label: 'px', default: 0},
+                        {value: '%', label: '%', default: 0},
+                        {value: 'em', label: 'em', default: 0},
+                        {value: 'rem', label: 'rem', default: 0},
+                        {value: 'vh', label: 'vh', default: 0},
+                        {value: 'vw', label: 'vw', default: 0},
+                        {value: 'ch', label: 'ch', default: 0},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -599,9 +689,18 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Height'}
                 onDeselect={() => updateProp({'height': ''})}
             >
-                <Height defaultValue={settings?.['height']} callback={(newValue) => {
-                    updateProp({'height': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Height"
+                    prop={'height'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Screen', value: 'screen'},
+                        {label: 'Full Screen', value: 'full-screen'},
+                        {label: 'Full', value: '100%'},
+                        {label: 'Auto', value: 'auto'},
+                        {label: 'Inherit', value: 'inherit'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -609,10 +708,19 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Height Custom'}
                 onDeselect={() => updateProp({['height-custom']: ''})}
             >
-                <HeightCustom defaultValue={settings?.['height-custom']}
-                              callback={(newValue) => {
-                                  updateProp({'height-custom': newValue});
-                              }}/>
+                <MemoUnitControl
+                    label="Height Custom"
+                    prop={'height-custom'}
+                    units={[
+                        {value: 'px', label: 'px', default: 0},
+                        {value: '%', label: '%', default: 0},
+                        {value: 'em', label: 'em', default: 0, step: .1},
+                        {value: 'rem', label: 'rem', default: 0, step: .1},
+                        {value: 'vh', label: 'vh', default: 0},
+                        {value: 'vw', label: 'vw', default: 0},
+                        {value: 'ch', label: 'ch', default: 0},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -620,9 +728,18 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Min-Height'}
                 onDeselect={() => updateProp({['min-height']: ''})}
             >
-                <MinHeight defaultValue={settings?.['min-height']} callback={(newValue) => {
-                    updateProp({'min-height': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Min-Height"
+                    prop={'min-height'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Screen', value: 'screen'},
+                        {label: 'Full Screen', value: 'full-screen'},
+                        {label: 'Full', value: '100%'},
+                        {label: 'Auto', value: 'auto'},
+                        {label: 'Inherit', value: 'inherit'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -630,10 +747,19 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Min-Height Custom'}
                 onDeselect={() => updateProp({['min-height-custom']: ''})}
             >
-                <MinHeightCustom defaultValue={settings?.['min-height-custom']}
-                                 callback={(newValue) => {
-                                     updateProp({'min-height-custom': newValue});
-                                 }}/>
+                <MemoUnitControl
+                    label="Min-Height Custom"
+                    prop={'min-height-custom'}
+                    units={[
+                        {value: 'px', label: 'px', default: 0},
+                        {value: '%', label: '%', default: 0},
+                        {value: 'em', label: 'em', default: 0, step: .1},
+                        {value: 'rem', label: 'rem', default: 0, step: .1},
+                        {value: 'vh', label: 'vh', default: 0},
+                        {value: 'vw', label: 'vw', default: 0},
+                        {value: 'ch', label: 'ch', default: 0},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -641,9 +767,16 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Max-Height'}
                 onDeselect={() => updateProp({['max-height']: ''})}
             >
-                <MaxHeight defaultValue={settings?.['max-height']} callback={(newValue) => {
-                    updateProp({'max-height': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Max-Height"
+                    prop={'max-height'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Screen', value: 'screen'},
+                        {label: 'Full', value: '100%'},
+                        {label: 'Auto', value: 'auto'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -651,10 +784,19 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Max-Height Custom'}
                 onDeselect={() => updateProp({['max-height-custom']: ''})}
             >
-                <MaxHeightCustom defaultValue={settings?.['max-height-custom']}
-                                 callback={(newValue) => {
-                                     updateProp({'max-height-custom': newValue});
-                                 }}/>
+                <MemoUnitControl
+                    label="Max-Height Custom"
+                    prop={'max-height-custom'}
+                    units={[
+                        {value: 'px', label: 'px', default: 0},
+                        {value: '%', label: '%', default: 0},
+                        {value: 'em', label: 'em', default: 0, step: .1},
+                        {value: 'rem', label: 'rem', default: 0, step: .1},
+                        {value: 'vh', label: 'vh', default: 0},
+                        {value: 'vw', label: 'vw', default: 0},
+                        {value: 'ch', label: 'ch', default: 0},
+                    ]}
+                />
             </ToolsPanelItem>
 
             <ToolsPanelItem
@@ -663,9 +805,15 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Flex Wrap'}
                 onDeselect={() => updateProp({['flex-wrap']: ''})}
             >
-                <FlexWrap defaultValue={settings?.['flex-wrap']} callback={(newValue) => {
-                    updateProp({'flex-wrap': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Flex Wrap"
+                    prop={'flex-wrap'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Wrap', value: 'wrap'},
+                        {label: 'No Wrap', value: 'no-wrap'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -673,9 +821,11 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Grow'}
                 onDeselect={() => updateProp({['flex-grow']: ''})}
             >
-                <Grow defaultValue={settings?.['flex-grow']} callback={(newValue) => {
-                    updateProp({'flex-grow': newValue});
-                }}/>
+                <MemoNumberControl
+                    label="Grow"
+                    prop={'flex-grow'}
+                    min={0}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -683,9 +833,11 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Shrink'}
                 onDeselect={() => updateProp({['flex-shrink']: ''})}
             >
-                <Shrink defaultValue={settings?.['flex-shrink']} callback={(newValue) => {
-                    updateProp({'flex-shrink': newValue});
-                }}/>
+                <MemoNumberControl
+                    label="Shrink"
+                    prop={'flex-shrink'}
+                    min={0}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -693,9 +845,17 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Position'}
                 onDeselect={() => updateProp({['position']: ''})}
             >
-                <Position defaultValue={settings?.['position']} callback={(newValue) => {
-                    updateProp({'position': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Position"
+                    prop={'position'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Relative', value: 'relative'},
+                        {label: 'Absolute', value: 'absolute'},
+                        {label: 'Sticky', value: 'sticky'},
+                        {label: 'Static', value: 'static'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -703,32 +863,42 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Z-Index'}
                 onDeselect={() => updateProp({['z-index']: ''})}
             >
-                <ZIndex defaultValue={settings?.['z-index']} callback={(newValue) => {
-                    updateProp({'z-index': newValue});
-                }}/>
+                <MemoNumberControl
+                    label="Z-Index"
+                    prop={'z-index'}
+                    min={-100}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 hasValue={() => !!settings?.['top'] || !!settings?.['right'] || !!settings?.['bottom'] || !!settings?.['left']}
                 label={'Box Position'}
                 onDeselect={() => updateProp({
-                    ['top']: '',
-                    ['right']: '',
-                    ['bottom']: '',
-                    ['left']: ''
+                    top: '',
+                    right: '',
+                    bottom: '',
+                    left: ''
                 })}
             >
-                <BoxPosition topValue={settings?.['top']}
-                             rightValue={settings?.['right']}
-                             bottomValue={settings?.['bottom']}
-                             leftValue={settings?.['left']}
-                             callback={(top, right, bottom, left) => {
-                                 updateProp({
-                                     'top': top,
-                                     'right': right,
-                                     'bottom': bottom,
-                                     'left': left
-                                 });
-                             }}/>
+                <Grid columns={2} columnGap={20} rowGap={20} style={{gridColumnStart: 1, gridColumnEnd: -1}}>
+
+                    <MemoUnitControl
+                        label="Top"
+                        prop={'top'}
+                    />
+                    <MemoUnitControl
+                        label="Right"
+                        prop={'right'}
+                    />
+                    <MemoUnitControl
+                        label="Bottom"
+                        prop={'bottom'}
+                    />
+                    <MemoUnitControl
+                        label="Left"
+                        prop={'left'}
+                    />
+
+                </Grid>
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -736,6 +906,17 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Overflow'}
                 onDeselect={() => updateProp({['overflow']: ''})}
             >
+                <MemoSelectControl
+                    label="Position"
+                    prop={'position'}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Relative', value: 'relative'},
+                        {label: 'Absolute', value: 'absolute'},
+                        {label: 'Sticky', value: 'sticky'},
+                        {label: 'Static', value: 'static'},
+                    ]}
+                />
                 <Overflow defaultValue={settings?.['overflow']} callback={(newValue) => {
                     updateProp({'overflow': newValue});
                 }}/>

@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {layoutAttributes, LayoutControls, layoutCss} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     PanelBody,
@@ -19,10 +19,10 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style, styleAttributes} from "Components/Style.js";
+import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 
 
-function elementClassNames(attributes = {}) {
+function classNames(attributes = {}) {
 
     return [
         'wpbs-cta-button',
@@ -31,16 +31,6 @@ function elementClassNames(attributes = {}) {
         !!attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
-}
-
-function elementProps(attributes = {}) {
-
-
-    return Object.fromEntries(
-        Object.entries({
-            '--icon-color': attributes['wpbs-icon-color'] || null,
-        }).filter(([key, value]) => value)
-    );
 }
 
 function buttonProps(attributes = {}) {
@@ -97,8 +87,12 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...layoutAttributes,
-        ...styleAttributes,
+        ...LAYOUT_ATTRIBUTES,
+        ...STYLE_ATTRIBUTES,
+        'wpbs-cta': {
+            type: 'object',
+            default: {}
+        },
         'wpbs-link': {
             type: 'object'
         },
@@ -125,6 +119,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta-button');
 
+        const [cta, setCta] = useState(attributes['wpbs-cta']);
+
         const [link, setLink] = useState(attributes['wpbs-link']);
         const [icon, setIcon] = useState(attributes['wpbs-icon']);
         const [loop, setLoop] = useState(attributes['wpbs-loop']);
@@ -136,6 +132,14 @@ registerBlockType(metadata.name, {
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
+
+        const popupQuery = useMemo(() => ({
+            hide_empty: true,
+            per_page: -1,
+            status: 'publish',
+            order: 'asc',
+            orderby: 'title',
+        }), []);
 
         const MemoSelectControl = React.memo(({label, value, onChange, options}) => (
             <SelectControl
@@ -155,14 +159,6 @@ registerBlockType(metadata.name, {
             },
             []
         );
-
-        const popupQuery = useMemo(() => ({
-            hide_empty: true,
-            per_page: -1,
-            status: 'publish',
-            order: 'asc',
-            orderby: 'title',
-        }), []);
 
         const popups = useSelect(
             (select) => select(coreStore).getEntityRecords('postType', 'popup', popupQuery),
@@ -201,7 +197,7 @@ registerBlockType(metadata.name, {
                 </Grid>
             </Grid>
         ), [popup, popupOptions, loop]);
-        
+
         const tabIcon = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>
                 <TextControl
@@ -244,14 +240,8 @@ registerBlockType(metadata.name, {
             </Grid>
         ), [icon, iconOnly, iconFirst, iconColor]);
 
-        const tabs = {
-            options: tabOptions,
-            icon: tabIcon
-        }
-
         const blockProps = useBlockProps({
-            className: elementClassNames(attributes),
-            style: elementProps(attributes)
+            className: classNames(attributes),
         });
 
         return (
@@ -282,7 +272,10 @@ registerBlockType(metadata.name, {
                                 }
                             ]}>
                             {
-                                (tab) => (<>{tabs[tab.name]}</>)
+                                (tab) => (<>{{
+                                    options: tabOptions,
+                                    icon: tabIcon
+                                }[tab.name]}</>)
                             }
                         </TabPanel>
                     </PanelBody>
@@ -293,11 +286,13 @@ registerBlockType(metadata.name, {
                        uniqueId={uniqueId}
                        css={[layoutCss(attributes)]}
                        deps={['wpbs-layout']}
+                       props={{
+                           '--icon-color': attributes['wpbs-icon-color'] || null,
+                       }}
                 />
 
                 <div {...blockProps}>
                     <Content attributes={attributes} editor={true}/>
-
                 </div>
             </>
         )
@@ -305,10 +300,8 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: elementClassNames(props.attributes),
-            style: elementProps(props.attributes)
+            className: classNames(props.attributes)
         });
-
 
         return <div {...blockProps}>
             <Content attributes={props.attributes}/>

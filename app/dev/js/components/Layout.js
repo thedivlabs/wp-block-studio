@@ -17,46 +17,9 @@ import {
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
-import Outline from 'Components/Outline';
-import Display from 'Components/Display';
-import FlexDirection from 'Components/FlexDirection';
-import Align from 'Components/Align';
-import Justify from 'Components/Justify';
-import Height from 'Components/Height';
-import HeightCustom from 'Components/HeightCustom';
-import Container from 'Components/Container';
-import FlexWrap from 'Components/FlexWrap';
-import Grow from 'Components/Grow';
-import Shrink from 'Components/Shrink';
-import Position from 'Components/Position';
-import ZIndex from 'Components/ZIndex';
-import Overflow from 'Components/Overflow';
-import Padding from 'Components/Padding';
-import Margin from 'Components/Margin';
-import Gap from 'Components/Gap';
-import Breakpoint from 'Components/Breakpoint';
-import Width from 'Components/Width';
-import WidthCustom from 'Components/WidthCustom';
-import TextAlign from 'Components/TextAlign';
-import Shape from 'Components/Shape';
-import Translate from 'Components/Translate';
-import FontSize from 'Components/FontSize';
-import LineHeight from 'Components/LineHeight';
-import OutlineOffset from 'Components/OutlineOffset';
-import Opacity from 'Components/Opacity';
-import BoxPosition from 'Components/BoxPosition';
-import Basis from 'Components/Basis';
-import Order from 'Components/Order';
-import Rounded from 'Components/Rounded';
-import OffsetHeader from "Components/OffsetHeader";
-import MinHeight from "Components/MinHeight";
-import MaxHeight from "Components/MaxHeight";
-import MinHeightCustom from "Components/MinHeightCustom";
-import MaxHeightCustom from "Components/MaxHeightCustom";
-import Mask from "Components/Mask";
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 
-export const layoutAttributes = {
+export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
         type: 'object',
         default: {}
@@ -189,7 +152,7 @@ const BORDER_UNITS = [
     {value: 'rem', label: 'rem', default: 0},
 ]
 
-const layoutProps = {
+const LAYOUT_PROPS = {
     special: [
         'breakpoint',
         'mask-image',
@@ -417,7 +380,6 @@ function parseSpecial(prop, attributes) {
 
 export function layoutCss(attributes) {
 
-
     return useMemo(() => {
 
         if (!Object.keys(attributes?.['wpbs-layout'] ?? {}).length || !attributes.uniqueId) {
@@ -445,7 +407,7 @@ export function layoutCss(attributes) {
                 return;
             }
 
-            if (layoutProps.special.includes(prop)) {
+            if (LAYOUT_PROPS.special.includes(prop)) {
 
                 desktop = {
                     ...desktop,
@@ -467,7 +429,7 @@ export function layoutCss(attributes) {
                 return;
             }
 
-            if (layoutProps.special.includes(prop)) {
+            if (LAYOUT_PROPS.special.includes(prop)) {
 
                 mobile = {
                     ...mobile,
@@ -489,7 +451,7 @@ export function layoutCss(attributes) {
                 return;
             }
 
-            if (layoutProps.special.includes(prop)) {
+            if (LAYOUT_PROPS.special.includes(prop)) {
 
                 hover = {
                     ...hover,
@@ -547,15 +509,14 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         return wp.data.select('core/editor').getEditorSettings().colors || [];
     }, []);
 
-
     const resetAll_layout = () => {
-        const result = Object.keys(layoutProps.layout).reduce((o, key) => ({...o, [key]: undefined}), {});
+        const result = Object.keys(LAYOUT_PROPS.layout).reduce((o, key) => ({...o, [key]: undefined}), {});
         setSettings(result);
         setAttributes(result);
     };
 
     const resetAll_mobile = () => {
-        const result = Object.keys(layoutProps.mobile).reduce((o, key) => ({...o, [key]: undefined}), {});
+        const result = Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: undefined}), {});
         setAttributes(result);
     };
 

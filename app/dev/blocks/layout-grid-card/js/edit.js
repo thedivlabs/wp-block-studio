@@ -5,9 +5,9 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {layoutAttributes, LayoutControls, layoutCss} from "Components/Layout"
-import {backgroundAttributes, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
-import {Style, styleAttributes} from "Components/Style"
+import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
 import {PanelBody, TabPanel} from "@wordpress/components";
@@ -25,9 +25,9 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...layoutAttributes,
-        ...backgroundAttributes,
-        ...styleAttributes,
+        ...LAYOUT_ATTRIBUTES,
+        ...BACKGROUND_ATTRIBUTES,
+        ...STYLE_ATTRIBUTES,
     },
     edit: (props) => {
 
@@ -52,7 +52,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-background','wpbs-layout']}
+                       deps={['wpbs-background', 'wpbs-layout']}
                 />
 
                 <div {...blockProps}>

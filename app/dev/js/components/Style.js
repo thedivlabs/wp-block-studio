@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useState} from "react";
 
-export const styleAttributes = {
+export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
         type: 'string'
     }

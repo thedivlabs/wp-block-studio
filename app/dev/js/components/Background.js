@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 
 import {
     InspectorControls, MediaUpload, MediaUploadCheck,
@@ -13,12 +13,80 @@ import {
 
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 
-export const backgroundAttributes = {
+export const BACKGROUND_ATTRIBUTES = {
     'wpbs-background': {
         type: 'object',
         default: {}
     }
 };
+
+const RESOLUTION_OPTIONS = [
+    {label: 'Default', value: ''},
+    {label: 'Thumbnail', value: 'thumbnail'},
+    {label: 'Small', value: 'small'},
+    {label: 'Medium', value: 'medium'},
+    {label: 'Large', value: 'large'},
+    {label: 'Extra Large', value: 'xlarge'},
+    {label: 'Full', value: 'full'},
+];
+
+const SIZE_OPTIONS = [
+    {label: 'Default', value: 'contain'},
+    {label: 'Cover', value: 'cover'},
+    {label: 'Vertical', value: 'auto 100%'},
+    {label: 'Horizontal', value: '100% auto'},
+];
+
+const BLEND_OPTIONS = [
+    {label: 'Default', value: ''},
+    {label: 'Multiply', value: 'multiply'},
+    {label: 'Luminosity', value: 'luminosity'},
+    {label: 'Screen', value: 'screen'},
+    {label: 'Overlay', value: 'overlay'},
+    {label: 'Soft Light', value: 'soft-light'},
+    {label: 'Hard Light', value: 'hard-light'},
+    {label: 'Difference', value: 'difference'},
+    {label: 'Color Burn', value: 'color-burn'},
+];
+
+const POSITION_OPTIONS = [
+    {label: 'Default', value: ''},
+    {label: 'Center', value: 'center'},
+    {label: 'Top Left', value: 'top-left'},
+    {label: 'Top Right', value: 'top-right'},
+    {label: 'Bottom Left', value: 'bottom-left'},
+    {label: 'Bottom Right', value: 'bottom-right'},
+];
+
+const ORIGIN_OPTIONS = [
+    {label: 'Default', value: ''},
+    {label: 'Center', value: 'center'},
+    {label: 'Top', value: 'top'},
+    {label: 'Right', value: 'right'},
+    {label: 'Bottom', value: 'bottom'},
+    {label: 'Left', value: 'left'},
+    {label: 'Top Left', value: 'left top'},
+    {label: 'Top Right', value: 'right top'},
+    {label: 'Bottom Left', value: 'left bottom'},
+    {label: 'Bottom Right', value: 'right bottom'},
+];
+
+const REPEAT_OPTIONS = [
+    {label: 'None', value: ''},
+    {label: 'Default', value: 'repeat'},
+    {label: 'Horizontal', value: 'repeat-x'},
+    {label: 'Vertical', value: 'repeat-y'},
+];
+
+const DIMENSION_UNITS = [
+    {value: 'px', label: 'px', default: 0},
+    {value: '%', label: '%', default: 0},
+    {value: 'em', label: 'em', default: 0},
+    {value: 'rem', label: 'rem', default: 0},
+    {value: 'vh', label: 'vh', default: 0},
+    {value: 'vw', label: 'vw', default: 0},
+    {value: 'ch', label: 'ch', default: 0},
+]
 
 function parseProp(prop) {
 
@@ -131,8 +199,8 @@ function parseSpecial(prop, settings) {
 
 }
 
-const suppressProps = ['type'];
-const specialProps = [
+const SUPPRESS_PROPS = ['type'];
+const SPECIAL_PROPS = [
     'type',
     'mobileImage',
     'largeImage',
@@ -182,10 +250,10 @@ export function backgroundCss(attributes) {
         const {'wpbs-background': settings = {}} = attributes;
 
         Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
+            !SUPPRESS_PROPS.includes(String(k)) &&
             !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-            if (specialProps.includes(prop)) {
+            if (SPECIAL_PROPS.includes(prop)) {
                 desktop = {
                     ...desktop,
                     ...parseSpecial(prop, settings)
@@ -198,10 +266,10 @@ export function backgroundCss(attributes) {
         });
 
         Object.entries(settings).filter(([k, value]) =>
-            !suppressProps.includes(String(k)) &&
+            !SUPPRESS_PROPS.includes(String(k)) &&
             String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
 
-            if (specialProps.includes(prop)) {
+            if (SPECIAL_PROPS.includes(prop)) {
 
                 mobile = {
                     ...mobile,
@@ -246,164 +314,173 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     const [settings, setSettings] = useState(attributes['wpbs-background']);
 
-    function updateSettings(newValue = {}) {
-
+    const updateSettings = useCallback((newValue = {}) => {
         if ('resolution' in newValue) {
-
             if (settings?.largeImage?.sizes) {
                 newValue.largeImage = {
                     ...settings.largeImage,
                     url: settings.largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
-                }
+                };
             }
 
             if (settings?.mobileImage?.sizes) {
                 newValue.mobileImage = {
                     ...settings.mobileImage,
                     url: settings.mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
-                }
+                };
             }
-
-
         }
 
-        setSettings((prev) => {
-            return {
-                ...prev,
-                ...newValue
-            }
-        })
+        setSettings((prev) => ({
+            ...prev,
+            ...newValue,
+        }));
 
         setAttributes({
             'wpbs-background': {
                 ...attributes['wpbs-background'],
-                ...newValue
-            }
+                ...newValue,
+            },
         });
+    }, [settings, setSettings, setAttributes]);
 
-    }
+    const MemoSelectControl = ({label, options, prop}) => (
+        <SelectControl
+            label={label}
+            options={options}
+            value={settings?.[prop] ?? ''}
+            onChange={(newValue) => updateSettings({[prop]: newValue})}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+        />
+    );
+
+    const MemoUnitControl = ({label, units, prop}) => (
+        <UnitControl
+            label={label}
+            value={settings?.[prop] ?? ''}
+            units={units || DIMENSION_UNITS}
+            isResetValueOnUnitChange={true}
+            onChange={(newValue) => updateSettings({[prop]: newValue})}
+            __next40pxDefaultSize
+        />
+    );
+
+    const MemoRangeControl = ({label, prop, step, min, max}) => (
+        <RangeControl
+            label={label}
+            step={step}
+            withInputField={true}
+            allowReset={true}
+            isShiftStepEnabled
+            initialPosition={0}
+            value={settings?.[prop] ?? ''}
+            onChange={(newValue) => updateSettings({[prop]: newValue})}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+            min={min}
+            max={max}
+        />
+    );
+
+    const MemoToggleControl = ({label, prop}) => (
+        <ToggleControl
+            label={label}
+            checked={!!settings?.[prop]}
+            onChange={(newValue) => updateSettings({[prop]: newValue})}
+            className={'flex items-center'}
+            __nextHasNoMarginBottom
+        />
+    );
+
+    const MemoMediaControl = ({label, allowedTypes, prop}) => (
+        <BaseControl
+            label={label}
+            __nextHasNoMarginBottom={true}
+        >
+            <MediaUploadCheck>
+                <MediaUpload
+                    title={label}
+                    onSelect={(newValue) => updateSettings({
+                        [prop]: {
+                            type: newValue.type,
+                            id: newValue.id,
+                            url: newValue.url,
+                            alt: newValue?.alt,
+                            sizes: newValue?.sizes,
+                        }
+                    })}
+                    allowedTypes={allowedTypes || ['image']}
+                    value={settings?.[prop] ?? {}}
+                    render={({open}) => {
+                        return <PreviewThumbnail
+                            image={settings?.[prop] ?? {}}
+                            callback={(newValue) => updateSettings({
+                                [prop]: undefined
+                            })}
+                            style={{
+                                objectFit: 'contain'
+                            }}
+                            onClick={open}
+                        />;
+                    }}
+                />
+            </MediaUploadCheck>
+        </BaseControl>
+    );
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Resolution"
-                value={settings?.['resolution'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Thumbnail', value: 'thumbnail'},
-                    {label: 'Small', value: 'small'},
-                    {label: 'Medium', value: 'medium'},
-                    {label: 'Large', value: 'large'},
-                    {label: 'Extra Large', value: 'xlarge'},
-                    {label: 'Full', value: 'full'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'resolution': value});
-                }}
+                prop={'resolution'}
+                options={RESOLUTION_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Size"
-                value={settings?.['size'] ?? ''}
-                options={[
-                    {label: 'Default', value: 'contain'},
-                    {label: 'Cover', value: 'cover'},
-                    {label: 'Vertical', value: 'auto 100%'},
-                    {label: 'Horizontal', value: '100% auto'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'size': value});
-                }}
+                prop={'size'}
+                options={SIZE_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Blend"
-                value={settings?.['blend'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Multiply', value: 'multiply'},
-                    {label: 'Luminosity', value: 'luminosity'},
-                    {label: 'Screen', value: 'screen'},
-                    {label: 'Overlay', value: 'overlay'},
-                    {label: 'Soft Light', value: 'soft-light'},
-                    {label: 'Hard Light', value: 'hard-light'},
-                    {label: 'Difference', value: 'difference'},
-                    {label: 'Color Burn', value: 'color-burn'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'blend': value});
-                }}
+                prop={'blend'}
+                options={BLEND_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Position"
-                value={settings?.['position'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Center', value: 'center'},
-                    {label: 'Top Left', value: 'top-left'},
-                    {label: 'Top Right', value: 'top-right'},
-                    {label: 'Bottom Left', value: 'bottom-left'},
-                    {label: 'Bottom Right', value: 'bottom-right'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'position': value});
-                }}
+                prop={'position'}
+                options={POSITION_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
-                __next40pxDefaultSize__next40pxDefaultSize
-                label="Origin"
-                value={settings?.['origin'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Center', value: 'center'},
-                    {label: 'Top', value: 'top'},
-                    {label: 'Right', value: 'right'},
-                    {label: 'Bottom', value: 'bottom'},
-                    {label: 'Left', value: 'left'},
-                    {label: 'Top Left', value: 'left top'},
-                    {label: 'Top Right', value: 'right top'},
-                    {label: 'Bottom Left', value: 'left bottom'},
-                    {label: 'Bottom Right', value: 'right bottom'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'origin': value});
-                }}
-                __nextHasNoMarginBottom
+            <MemoSelectControl
                 __next40pxDefaultSize
+                label="Origin"
+                prop={'origin'}
+                options={ORIGIN_OPTIONS}
+                __nextHasNoMarginBottom
             />
-            <UnitControl
+            <MemoUnitControl
                 label={'Max Height'}
-                value={settings?.['maxHeight'] ?? ''}
-                isResetValueOnUnitChange={true}
-                onChange={(value) => {
-                    updateSettings({'maxHeight': value});
-                }}
+                prop={'maxHeight'}
                 units={[
                     {value: 'vh', label: 'vh', default: 0},
                 ]}
-                __next40pxDefaultSize
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Repeat"
-                value={settings?.['repeat'] ?? ''}
-                options={[
-                    {label: 'None', value: ''},
-                    {label: 'Default', value: 'repeat'},
-                    {label: 'Horizontal', value: 'repeat-x'},
-                    {label: 'Vertical', value: 'repeat-y'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'repeat': value});
-                }}
+                prop={'repeat'}
+                options={REPEAT_OPTIONS}
                 __nextHasNoMarginBottom
             />
+
         </Grid>
 
         <Grid columns={1} columnGap={15} rowGap={20}>
@@ -415,159 +492,78 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         slug: 'color',
                         label: 'Color',
                         value: settings?.['color'] ?? '',
-                        onChange: (color) => {
-                            updateSettings({'color': color})
-                        },
+                        onChange: (newValue) => updateSettings({color: newValue}),
                         isShownByDefault: true
                     }
                 ]}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Scale"
-                value={settings?.['scale'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'scale': value});
-                }}
+                prop={'scale'}
                 min={0}
                 max={200}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Opacity"
-                value={settings?.['opacity'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'opacity': value});
-                }}
+                prop={'opacity'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Width"
-                value={settings?.['width'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'width': value});
-                }}
+                prop={'width'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Height"
-                value={settings?.['height'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'height': value});
-                }}
+                prop={'height'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Fade"
-                value={settings?.['fade'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'fade': value});
-                }}
+                prop={'fade'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20}
               style={{padding: '1rem 0'}}>
-            <ToggleControl
+            <MemoToggleControl
                 label="Mask"
-                checked={!!settings?.['mask']}
-                onChange={(value) => {
-                    updateSettings({'mask': value});
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
+                prop="mask"
             />
         </Grid>
 
         <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
 
-            <BaseControl label={'Mask Image'} __nextHasNoMarginBottom={true}>
-                <MediaUploadCheck>
-                    <MediaUpload
-                        title={'Mask Desktop'}
-                        onSelect={(value) => {
-                            updateSettings({
-                                'maskImageLarge': {
-                                    type: value.type,
-                                    id: value.id,
-                                    url: value.url,
-                                }
-                            });
-                        }}
-                        allowedTypes={['image']}
-                        value={settings?.['maskImageLarge'] ?? {}}
-                        render={({open}) => {
-                            return <PreviewThumbnail
-                                image={settings['maskImageLarge'] || {}}
-                                callback={() => {
-                                    updateSettings({'maskImageLarge': undefined})
-                                }}
-                                style={{
-                                    objectFit: 'contain',
-                                    backgroundColor: 'rgba(0,0,0,0.1)',
-                                }}
-                                onClick={open}
-                            />;
-                        }}
-                    />
-                </MediaUploadCheck>
-            </BaseControl>
+
+            <MemoMediaControl
+                label={'Mask Desktop'}
+                prop={'maskImageLarge'}
+                allowedTypes={['image']}
+            />
 
             <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-                <SelectControl
+
+                <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Origin"
-                    value={settings?.['maskOrigin'] ?? ''}
-                    options={[
-                        {label: 'Default', value: ''},
-                        {label: 'Center', value: 'center'},
-                        {label: 'Top', value: 'top'},
-                        {label: 'Right', value: 'right'},
-                        {label: 'Bottom', value: 'bottom'},
-                        {label: 'Left', value: 'left'},
-                        {label: 'Top Left', value: 'top left'},
-                        {label: 'Top Right', value: 'top right'},
-                        {label: 'Bottom Left', value: 'bottom left'},
-                        {label: 'Bottom Right', value: 'bottom right'},
-                    ]}
-                    onChange={(value) => {
-                        updateSettings({'maskOrigin': value});
-                    }}
+                    prop={'maskOrigin'}
+                    options={ORIGIN_OPTIONS}
                     __nextHasNoMarginBottom
                 />
-                <SelectControl
+
+                <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Size"
-                    value={settings?.['maskSize'] ?? ''}
-                    options={[
-                        {label: 'Default', value: 'contain'},
-                        {label: 'Cover', value: 'cover'},
-                        {label: 'Vertical', value: 'auto 100%'},
-                        {label: 'Horizontal', value: '100% auto'},
-                    ]}
-                    onChange={(value) => {
-                        updateSettings({'maskSize': value});
-                    }}
+                    prop={'maskSize'}
+                    options={SIZE_OPTIONS}
                     __nextHasNoMarginBottom
                 />
+
             </Grid>
         </Grid>
 
@@ -594,128 +590,66 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlay'] ?? undefined}
-                onChange={(value) => {
-                    updateSettings({'overlay': value});
-                }}
+                value={settings?.['overlay'] ?? ''}
+                onChange={(value) => updateSettings({'overlay': value})}
             />
         </BaseControl>
     </Grid>
 
     const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
-            <SelectControl
+
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Resolution"
-                value={settings?.['resolutionMobile'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Small', value: 'small'},
-                    {label: 'Medium', value: 'medium'},
-                    {label: 'Large', value: 'large'},
-                    {label: 'Extra Large', value: 'xlarge'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'resolutionMobile': value});
-                }}
+                prop={'resolutionMobile'}
+                options={RESOLUTION_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Size"
-                value={settings?.['sizeMobile'] ?? ''}
-                options={[
-                    {label: 'Default', value: 'contain'},
-                    {label: 'Cover', value: 'cover'},
-                    {label: 'Vertical', value: 'auto 100%'},
-                    {label: 'Horizontal', value: '100% auto'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'sizeMobile': value});
-                }}
+                prop={'sizeMobile'}
+                options={SIZE_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Blend"
-                value={settings?.['blendMobile'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Multiply', value: 'multiply'},
-                    {label: 'Screen', value: 'screen'},
-                    {label: 'Overlay', value: 'overlay'},
-                    {label: 'Soft Light', value: 'soft-light'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'blendMobile': value});
-                }}
+                prop={'blendMobile'}
+                options={BLEND_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Position"
-                value={settings?.['positionMobile'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Center', value: 'center'},
-                    {label: 'Top Left', value: 'top-left'},
-                    {label: 'Top Right', value: 'top-right'},
-                    {label: 'Bottom Left', value: 'bottom-left'},
-                    {label: 'Bottom Right', value: 'bottom-right'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'positionMobile': value});
-                }}
+                prop={'positionMobile'}
+                options={POSITION_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Origin"
-                value={settings?.['originMobile'] ?? ''}
-                options={[
-                    {label: 'Default', value: ''},
-                    {label: 'Center', value: 'center'},
-                    {label: 'Top', value: 'top'},
-                    {label: 'Right', value: 'right'},
-                    {label: 'Bottom', value: 'bottom'},
-                    {label: 'Left', value: 'left'},
-                    {label: 'Top Left', value: 'left top'},
-                    {label: 'Top Right', value: 'right top'},
-                    {label: 'Bottom Left', value: 'left bottom'},
-                    {label: 'Bottom Right', value: 'right bottom'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'originMobile': value});
-                }}
+                prop={'originMobile'}
+                options={ORIGIN_OPTIONS}
                 __nextHasNoMarginBottom
             />
-            <UnitControl
+            <MemoUnitControl
                 label={'Max Height'}
-                value={settings?.['maxHeightMobile'] ?? ''}
-                isResetValueOnUnitChange={true}
-                onChange={(value) => {
-                    updateSettings({'maxHeightMobile': value});
-                }}
+                prop={'maxHeightMobile'}
                 units={[
                     {value: 'vh', label: 'vh', default: 0},
                 ]}
-                __next40pxDefaultSize
             />
-            <SelectControl
+            <MemoSelectControl
                 __next40pxDefaultSize
                 label="Repeat"
-                value={settings?.['repeatMobile'] ?? ''}
-                options={[
-                    {label: 'None', value: ''},
-                    {label: 'Default', value: 'repeat'},
-                    {label: 'Horizontal', value: 'repeat-x'},
-                    {label: 'Vertical', value: 'repeat-y'},
-                ]}
-                onChange={(value) => {
-                    updateSettings({'repeatMobile': value});
-                }}
+                prop={'repeatMobile'}
+                options={REPEAT_OPTIONS}
                 __nextHasNoMarginBottom
             />
+
+
         </Grid>
         <Grid columns={1} columnGap={15} rowGap={20}>
             <PanelColorSettings
@@ -731,148 +665,70 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Scale"
-                value={settings?.['scaleMobile'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'scaleMobile': value});
-                }}
+                prop={'scaleMobile'}
                 min={0}
                 max={200}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Opacity"
-                value={settings?.['opacityMobile'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'opacityMobile': value});
-                }}
+                prop={'opacityMobile'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Width"
-                value={settings?.['widthMobile'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'widthMobile': value});
-                }}
+                prop={'widthMobile'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Height"
-                value={settings?.['heightMobile'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'heightMobile': value});
-                }}
+                prop={'heightMobile'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
-            <RangeControl
-                __nextHasNoMarginBottom
+            <MemoRangeControl
                 label="Fade"
-                value={settings?.['fadeMobile'] ?? ''}
-                onChange={(value) => {
-                    updateSettings({'fadeMobile': value});
-                }}
+                prop={'fadeMobile'}
                 min={0}
                 max={100}
-                resetFallbackValue={undefined}
-                allowReset={true}
             />
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20}
               style={{padding: '1rem 0'}}>
-            <ToggleControl
+            <MemoToggleControl
                 label="Mask"
-                checked={!!settings?.['maskMobile']}
-                onChange={(value) => {
-                    updateSettings({'maskMobile': value});
-                }}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
+                prop="maskMobile"
             />
         </Grid>
 
         <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.maskMobile ? 'none' : null}}>
-            <BaseControl label={'Mask Mobile'} __nextHasNoMarginBottom={true} gridColumn={'1/-1'}>
-                <MediaUploadCheck>
-                    <MediaUpload
-                        title={'Mask Image'}
-                        onSelect={(value) => {
-                            updateSettings({
-                                'maskImageMobile': {
-                                    type: value.type,
-                                    id: value.id,
-                                    url: value.url,
-                                }
-                            });
-                        }}
-                        allowedTypes={['image']}
-                        value={settings?.['maskImageMobile'] ?? {}}
-                        render={({open}) => {
-                            return <PreviewThumbnail
-                                image={settings?.['maskImageMobile'] || {}}
-                                callback={() => {
-                                    updateSettings({'maskImageMobile': undefined})
-                                }}
-                                style={{
-                                    objectFit: 'contain',
-                                    backgroundColor: 'rgba(0,0,0,0.1)',
-                                }}
-                                onClick={open}
-                            />;
-                        }}
-                    />
-                </MediaUploadCheck>
-            </BaseControl>
+
+
+            <MemoMediaControl
+                label={'Mask Mobile'}
+                prop={'maskImageMobile'}
+                allowedTypes={['image']}
+            />
+
             <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.maskMobile ? 'none' : null}}>
-                <SelectControl
+
+                <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Origin"
-                    value={settings?.['maskOriginMobile'] ?? ''}
-                    options={[
-                        {label: 'Default', value: ''},
-                        {label: 'Center', value: 'center'},
-                        {label: 'Top', value: 'top'},
-                        {label: 'Right', value: 'right'},
-                        {label: 'Bottom', value: 'bottom'},
-                        {label: 'Left', value: 'left'},
-                        {label: 'Top Left', value: 'top left'},
-                        {label: 'Top Right', value: 'top right'},
-                        {label: 'Bottom Left', value: 'bottom left'},
-                        {label: 'Bottom Right', value: 'bottom right'},
-                    ]}
-                    onChange={(value) => {
-                        updateSettings({'maskOriginMobile': value});
-                    }}
+                    prop={'maskOriginMobile'}
+                    options={ORIGIN_OPTIONS}
                     __nextHasNoMarginBottom
                 />
-                <SelectControl
+
+                <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Size"
-                    value={settings?.['maskSizeMobile'] ?? ''}
-                    options={[
-                        {label: 'Default', value: 'contain'},
-                        {label: 'Cover', value: 'cover'},
-                        {label: 'Vertical', value: 'auto 100%'},
-                        {label: 'Horizontal', value: '100% auto'},
-                    ]}
-                    onChange={(value) => {
-                        updateSettings({'maskSizeMobile': value});
-                    }}
+                    prop={'maskSizeMobile'}
+                    options={SIZE_OPTIONS}
                     __nextHasNoMarginBottom
                 />
             </Grid>
@@ -904,9 +760,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 ]}
                 clearable={true}
                 value={settings?.['overlayMobile'] ?? {}}
-                onChange={(value) => {
-                    updateSettings({'overlayMobile': value});
-                }}
+                onChange={(value) => updateSettings({'overlayMobile': value})}
             />
         </BaseControl>
     </Grid>
@@ -920,172 +774,68 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
         <InspectorControls group="styles">
             <PanelBody title={'Background'} initialOpen={!!settings.type}>
                 <Grid columns={1} columnGap={15} rowGap={20}>
-                    <SelectControl
+                    <MemoSelectControl
                         __next40pxDefaultSize
                         label="Type"
-                        value={settings.type}
+                        prop={'Type'}
                         options={[
                             {label: 'Select', value: ''},
                             {label: 'Image', value: 'image'},
                             {label: 'Featured Image', value: 'featured-image'},
                             {label: 'Video', value: 'video'},
                         ]}
-                        onChange={(value) => {
-                            updateSettings({'type': value});
-                        }}
                         __nextHasNoMarginBottom
                     />
                     <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
 
                         <Grid columns={2} columnGap={15} rowGap={20}
                               style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
-                            <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title={'Mobile Image'}
-                                        onSelect={(value) => {
-                                            updateSettings({
-                                                'mobileImage': {
-                                                    type: value.type,
-                                                    id: value.id,
-                                                    url: value?.sizes?.[settings?.resolution ?? 'large']?.url ?? value?.url ?? '#',
-                                                    sizes: value?.sizes
-                                                }
-                                            });
-                                        }}
-                                        allowedTypes={['image']}
-                                        value={settings?.['mobileImage'] ?? {}}
-                                        render={({open}) => {
-                                            return <PreviewThumbnail
-                                                image={settings?.['mobileImage'] || {}}
-                                                callback={() => {
-                                                    updateSettings({'mobileImage': undefined})
-                                                }}
-                                                onClick={open}
-                                            />;
-                                        }}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
-                            <BaseControl label={'Large Image'} __nextHasNoMarginBottom={true}>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title={'Large Image'}
-                                        onSelect={(value) => {
-                                            updateSettings({
-                                                'largeImage': {
-                                                    type: value.type,
-                                                    id: value.id,
-                                                    url: value?.sizes?.[settings?.resolution ?? 'large']?.url ?? value?.url ?? '#',
-                                                    sizes: value?.sizes
-                                                }
-                                            });
-                                        }}
-                                        allowedTypes={['image']}
-                                        value={settings?.['largeImage'] ?? {}}
-                                        render={({open}) => {
-                                            return <PreviewThumbnail
-                                                image={settings?.['largeImage'] ?? {}}
-                                                callback={() => {
-                                                    updateSettings({'largeImage': undefined})
-                                                }}
-                                                onClick={open}
-                                            />;
-                                        }}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
 
+                            <MemoMediaControl
+                                label={'Mobile Image'}
+                                prop={'mobileImage'}
+                                allowedTypes={['image']}
+                            />
+                            <MemoMediaControl
+                                label={'Large Image'}
+                                prop={'largeImage'}
+                                allowedTypes={['image']}
+                            />
 
                         </Grid>
                         <Grid columns={2} columnGap={15} rowGap={20}
                               style={{display: settings.type !== 'video' ? 'none' : null}}>
 
-                            <BaseControl label={'Mobile Video'} __nextHasNoMarginBottom={true}>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title={'Mobile Video'}
-                                        onSelect={(value) => {
-                                            updateSettings({
-                                                'mobileVideo': {
-                                                    type: value.type,
-                                                    id: value.id,
-                                                    url: value.url,
-                                                }
-                                            });
-                                        }}
-                                        allowedTypes={['video']}
-                                        value={settings?.['mobileVideo'] ?? {}}
-                                        render={({open}) => {
-                                            return <PreviewThumbnail
-                                                image={settings?.['mobileVideo'] ?? {}}
-                                                callback={() => {
-                                                    updateSettings({'mobileVideo': {}})
-                                                }}
-                                                onClick={open}
-                                            />;
-                                        }}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
-                            <BaseControl label={'Large Video'} __nextHasNoMarginBottom={true}>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title={'Large Video'}
-                                        onSelect={(value) => {
-                                            updateSettings({
-                                                'largeVideo': {
-                                                    type: value.type,
-                                                    id: value.id,
-                                                    url: value.url,
-                                                }
-                                            });
-                                        }}
-                                        allowedTypes={['video']}
-                                        value={settings?.['largeVideo'] ?? {}}
-                                        render={({open}) => {
-                                            return <PreviewThumbnail
-                                                image={settings?.['largeVideo'] ?? {}}
-                                                callback={() => {
-                                                    updateSettings({'largeVideo': undefined})
-                                                }}
-                                                onClick={open}
-                                            />;
-                                        }}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
+                            <MemoMediaControl
+                                label={'Mobile Video'}
+                                prop={'mobileVideo'}
+                                allowedTypes={['video']}
+                            />
+
+                            <MemoMediaControl
+                                label={'Large Video'}
+                                prop={'largeVideo'}
+                                allowedTypes={['video']}
+                            />
+
                         </Grid>
 
                         <Grid columns={2} columnGap={15} rowGap={20}
                               style={{padding: '1rem 0'}}>
-                            <ToggleControl
+
+                            <MemoToggleControl
                                 label="Eager"
-                                checked={!!settings?.['eager']}
-                                onChange={(value) => {
-                                    updateSettings({'eager': value});
-                                }}
-                                className={'flex items-center'}
-                                __nextHasNoMarginBottom
+                                prop="eager"
                             />
-                            <ToggleControl
+                            <MemoToggleControl
                                 label="Force"
-                                checked={!!settings.force}
-                                onChange={(value) => {
-                                    updateSettings({'force': value});
-                                }}
-                                className={'flex items-center'}
-                                __nextHasNoMarginBottom
+                                prop="force"
                             />
-                            <ToggleControl
+                            <MemoToggleControl
                                 label="Fixed"
-                                checked={!!settings.fixed}
-                                onChange={(value) => {
-                                    updateSettings({'fixed': value});
-                                }}
-                                className={'flex items-center'}
-                                __nextHasNoMarginBottom
+                                prop="fixed"
                             />
+                            
                         </Grid>
 
                         <TabPanel

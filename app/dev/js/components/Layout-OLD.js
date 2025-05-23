@@ -288,7 +288,7 @@ const blockAttributes = {
     }
 };
 
-export const LayoutAttributes = {...blockAttributes.layout, ...blockAttributes.mobile, ...blockAttributes.colors};
+export const LAYOUT_ATTRIBUTES = {...blockAttributes.layout, ...blockAttributes.mobile, ...blockAttributes.colors};
 
 export function LayoutClasses(attributes) {
 

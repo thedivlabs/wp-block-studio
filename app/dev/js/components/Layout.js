@@ -434,9 +434,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
         setSettings(result);
 
-        }, [setAttributes, setSettings]);
+    }, [setAttributes, setSettings]);
 
-    const MemoSelectControl = ({ label, value, onChange, options }) => (
+    const MemoSelectControl = ({label, value, onChange, options}) => (
         <SelectControl
             label={label}
             value={value}
@@ -449,7 +449,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     return <InspectorControls group="styles">
 
-
         <ToolsPanel label={'Layout Large'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -460,7 +459,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 <MemoSelectControl
                     label="Display"
                     value={settings?.['display'] ?? ''}
-                    onChange={(newValue) => updateProp({ display: newValue })}
+                    onChange={(newValue) => updateProp({display: newValue})}
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'Flex', value: 'flex'},
@@ -477,10 +476,18 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Direction'}
                 onDeselect={() => updateProp({'flex-direction': ''})}
             >
-                <FlexDirection defaultValue={settings?.['flex-direction']}
-                               callback={(newValue) => {
-                                   updateProp({'flex-direction': newValue});
-                               }}/>
+                <MemoSelectControl
+                    label="Direction"
+                    value={settings?.['flex-direction'] ?? ''}
+                    onChange={(newValue) => updateProp({'flex-direction': newValue})}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Row', value: 'row'},
+                        {label: 'Column', value: 'column'},
+                        {label: 'Row Reverse', value: 'row-reverse'},
+                        {label: 'Column Reverse', value: 'column-reverse'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}
@@ -488,9 +495,20 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 label={'Container'}
                 onDeselect={() => updateProp({['container']: ''})}
             >
-                <Container defaultValue={settings?.['container']} callback={(newValue) => {
-                    updateProp({'container': newValue});
-                }}/>
+                <MemoSelectControl
+                    label="Container"
+                    value={settings?.['container'] ?? ''}
+                    onChange={(newValue) => updateProp({'container': newValue})}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'None', value: 'none'},
+                        {label: 'Normal', value: 'normal'},
+                        {label: 'Small', value: 'sm'},
+                        {label: 'Extra Small', value: 'xs'},
+                        {label: 'Medium', value: 'md'},
+                        {label: 'Large', value: 'lg'},
+                    ]}
+                />
             </ToolsPanelItem>
             <ToolsPanelItem
                 style={{gridColumn: 'span 1'}}

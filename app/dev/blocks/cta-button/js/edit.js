@@ -268,7 +268,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
                        css={[layoutCss(attributes)]}
-                       deps={['wpbs-layout']}
+                       deps={['wpbs-layout','wpbs-cta']}
                        props={{
                            '--icon-color': settings?.['icon-color'] || null,
                        }}

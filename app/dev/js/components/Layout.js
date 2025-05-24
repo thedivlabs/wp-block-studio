@@ -277,7 +277,7 @@ const LAYOUT_PROPS = {
 
 function parseSpecial(prop, attributes) {
 
-    const {'wpbs-layout': settings} = attributes
+    const {'wpbs-layout': settings = {}} = attributes;
 
     if (!settings?.[prop]) {
         return {};
@@ -533,7 +533,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
         setSettings(result);
 
-    }, [attributes['wpbs-layout']]);
+    }, [attributes['wpbs-layout'],setAttributes,setSettings]);
 
     const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
         <BaseControl

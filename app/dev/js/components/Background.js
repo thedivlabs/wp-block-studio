@@ -316,33 +316,34 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     const updateSettings = useCallback((newValue = {}) => {
         if ('resolution' in newValue) {
-            if (attributes['wpbs-background']?.largeImage?.sizes) {
+            if (settings?.largeImage?.sizes) {
                 newValue.largeImage = {
-                    ...attributes['wpbs-background'].largeImage,
-                    url: attributes['wpbs-background'].largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                    ...settings.largeImage,
+                    url: settings.largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 };
             }
 
-            if (attributes['wpbs-background']?.mobileImage?.sizes) {
+            if (settings?.mobileImage?.sizes) {
                 newValue.mobileImage = {
-                    ...attributes['wpbs-background'].mobileImage,
-                    url: attributes['wpbs-background'].mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                    ...settings.mobileImage,
+                    url: settings.mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 };
             }
         }
 
-        setSettings((prev) => ({
-            ...prev,
-            ...newValue,
-        }));
+        const result = {
+            ...settings,
+            ...newValue
+        }
 
         setAttributes({
-            'wpbs-background': {
-                ...attributes['wpbs-background'],
-                ...newValue,
-            },
+            'wpbs-background': result,
         });
-    }, [attributes['wpbs-background']]);
+
+        setSettings(result);
+
+
+    }, [settings]);
 
     const MemoSelectControl = React.memo(({label, options, prop}) => (
         <SelectControl
@@ -590,7 +591,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlay'] ?? {}}
+                value={settings?.['overlay'] ?? undefined}
                 onChange={(value) => updateSettings({'overlay': value})}
             />
         </BaseControl>

@@ -26,6 +26,129 @@ export const LAYOUT_ATTRIBUTES = {
     }
 };
 
+const LAYOUT_PROPS = {
+    special: [
+        'breakpoint',
+        'mask-image',
+        'mask-image-mobile',
+        'mask-repeat',
+        'mask-size',
+        'mask-origin',
+        'margin-mobile',
+        'basis',
+        'basis-mobile',
+        'height',
+        'height-mobile',
+        'height-custom',
+        'height-custom-mobile',
+        'min-height',
+        'min-height-mobile',
+        'min-height-custom',
+        'min-height-custom-mobile',
+        'max-height',
+        'max-height-mobile',
+        'max-height-custom',
+        'max-height-custom-mobile',
+        'width',
+        'width-mobile',
+        'width-custom',
+        'width-custom-mobile',
+        'translate',
+        'translate-mobile',
+        'offset-header',
+        'offset-header-mobile',
+        'text-color-hover',
+        'text-color-mobile'
+    ],
+    layout: [
+        'offset-header',
+        'display',
+        'mask-image',
+        'mask-origin',
+        'mask-size',
+        'flex-direction',
+        'container',
+        'align-items',
+        'justify-content',
+        'opacity',
+        'basis',
+        'width',
+        'width-custom',
+        'max-width',
+        'height',
+        'height-custom',
+        'min-height',
+        'min-height-custom',
+        'max-height',
+        'max-height-custom',
+        'flex-wrap',
+        'flex-grow',
+        'flex-shrink',
+        'position',
+        'z-index',
+        'top',
+        'right',
+        'bottom',
+        'left',
+        'overflow',
+        'aspect-ratio',
+        'order',
+        'translate',
+        'outline',
+    ],
+
+    mobile: [
+        'mask-image-mobile',
+        'mask-origin-mobile',
+        'mask-size-mobile',
+        'offset-header-mobile',
+        'display-mobile',
+        'breakpoint',
+        'align-items-mobile',
+        'justify-content-mobile',
+        'opacity-mobile',
+        'basis-mobile',
+        'width-mobile',
+        'width-custom-mobile',
+        'max-width-mobile',
+        'height-mobile',
+        'height-custom-mobile',
+        'min-height-mobile',
+        'min-height-custom-mobile',
+        'max-height-mobile',
+        'max-height-custom-mobile',
+        'flex-grow-mobile',
+        'flex-shrink-mobile',
+        'flex-direction-mobile',
+        'aspect-ratio-mobile',
+        'position-mobile',
+        'z-index-mobile',
+        'top-mobile',
+        'right-mobile',
+        'bottom-mobile',
+        'left-mobile',
+        'order-mobile',
+        'translate-mobile',
+        'padding-mobile',
+        'margin-mobile',
+        'gap-mobile',
+        'border-radius-mobile',
+        'font-size-mobile',
+        'line-height-mobile',
+        'text-align-mobile',
+        'flex-wrap-mobile',
+    ],
+
+    colors: [
+        'text-color-hover',
+        'background-color-hover',
+        'border-color-hover',
+        'text-color-mobile',
+        'background-color-mobile',
+    ],
+
+};
+
 const DISPLAY_OPTIONS = [
     {label: 'Select', value: ''},
     {label: 'Flex', value: 'flex'},
@@ -152,128 +275,107 @@ const BORDER_UNITS = [
     {value: 'rem', label: 'rem', default: 0},
 ]
 
-const LAYOUT_PROPS = {
-    special: [
-        'breakpoint',
-        'mask-image',
-        'mask-image-mobile',
-        'mask-repeat',
-        'mask-size',
-        'mask-origin',
-        'margin-mobile',
-        'basis',
-        'basis-mobile',
-        'height',
-        'height-mobile',
-        'height-custom',
-        'height-custom-mobile',
-        'min-height',
-        'min-height-mobile',
-        'min-height-custom',
-        'min-height-custom-mobile',
-        'max-height',
-        'max-height-mobile',
-        'max-height-custom',
-        'max-height-custom-mobile',
-        'width',
-        'width-mobile',
-        'width-custom',
-        'width-custom-mobile',
-        'translate',
-        'translate-mobile',
-        'offset-header',
-        'offset-header-mobile',
-        'text-color-hover',
-        'text-color-mobile'
-    ],
-    layout: [
-        'offset-header',
-        'display',
-        'mask-image',
-        'mask-origin',
-        'mask-size',
-        'flex-direction',
-        'container',
-        'align-items',
-        'justify-content',
-        'opacity',
-        'basis',
-        'width',
-        'width-custom',
-        'max-width',
-        'height',
-        'height-custom',
-        'min-height',
-        'min-height-custom',
-        'max-height',
-        'max-height-custom',
-        'flex-wrap',
-        'flex-grow',
-        'flex-shrink',
-        'position',
-        'z-index',
-        'top',
-        'right',
-        'bottom',
-        'left',
-        'overflow',
-        'aspect-ratio',
-        'order',
-        'translate',
-        'outline',
-    ],
+const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => (
+    <BaseControl
+        label={label}
+        __nextHasNoMarginBottom={true}
+    >
+        <MediaUploadCheck>
+            <MediaUpload
+                title={label}
+                onSelect={callback}
+                allowedTypes={allowedTypes || ['image']}
+                value={value}
+                render={({open}) => {
+                    return <PreviewThumbnail
+                        image={value}
+                        callback={callback}
+                        style={{
+                            objectFit: 'contain'
+                        }}
+                        onClick={open}
+                    />;
+                }}
+            />
+        </MediaUploadCheck>
+    </BaseControl>
+));
 
-    mobile: [
-        'mask-image-mobile',
-        'mask-origin-mobile',
-        'mask-size-mobile',
-        'offset-header-mobile',
-        'display-mobile',
-        'breakpoint',
-        'align-items-mobile',
-        'justify-content-mobile',
-        'opacity-mobile',
-        'basis-mobile',
-        'width-mobile',
-        'width-custom-mobile',
-        'max-width-mobile',
-        'height-mobile',
-        'height-custom-mobile',
-        'min-height-mobile',
-        'min-height-custom-mobile',
-        'max-height-mobile',
-        'max-height-custom-mobile',
-        'flex-grow-mobile',
-        'flex-shrink-mobile',
-        'flex-direction-mobile',
-        'aspect-ratio-mobile',
-        'position-mobile',
-        'z-index-mobile',
-        'top-mobile',
-        'right-mobile',
-        'bottom-mobile',
-        'left-mobile',
-        'order-mobile',
-        'translate-mobile',
-        'padding-mobile',
-        'margin-mobile',
-        'gap-mobile',
-        'border-radius-mobile',
-        'font-size-mobile',
-        'line-height-mobile',
-        'text-align-mobile',
-        'flex-wrap-mobile',
-    ],
+const MemoSelectControl = React.memo(({label, options, value, callback}) => (
+    <SelectControl
+        label={label}
+        options={options}
+        value={value}
+        onChange={callback}
+        __next40pxDefaultSize
+        __nextHasNoMarginBottom
+    />
+));
 
-    colors: [
-        'text-color-hover',
-        'background-color-hover',
-        'border-color-hover',
-        'text-color-mobile',
-        'background-color-mobile',
-    ],
+const MemoBorderControl = React.memo(({label, value, callback, colors}) => (
+    <BorderControl
+        label={label}
+        value={value}
+        enableAlpha={true}
+        enableStyle={true}
+        disableCustomColors={false}
+        colors={colors}
+        withSlider={true}
+        onChange={callback}
+        __experimentalIsRenderedInSidebar={true}
+        __next40pxDefaultSize
+    />
+));
 
-};
+const MemoBoxControl = React.memo(({label, inputProps, value, callback, sides}) => (
+    <BoxControl
+        label={label}
+        values={value}
+        sides={sides}
+        onChange={callback}
+        inputProps={inputProps}
+        __nextHasNoMarginBottom={true}
+    />
+));
+
+const MemoNumberControl = React.memo(({label, value, callback, min}) => (
+    <NumberControl
+        label={label}
+        value={value}
+        min={min || 0}
+        isDragEnabled={false}
+        onChange={callback}
+        __next40pxDefaultSize
+    />
+));
+
+const MemoUnitControl = React.memo(({label, value, units, callback}) => (
+    <UnitControl
+        label={label}
+        value={value}
+        units={units || DIMENSION_UNITS}
+        isResetValueOnUnitChange={true}
+        onChange={callback}
+        __next40pxDefaultSize
+    />
+));
+
+const MemoRangeControl = React.memo(({label, callback, value, step, min, max}) => (
+    <RangeControl
+        label={label}
+        step={step}
+        withInputField={true}
+        allowReset={true}
+        isShiftStepEnabled
+        initialPosition={0}
+        value={value}
+        onChange={callback}
+        __next40pxDefaultSize
+        __nextHasNoMarginBottom
+        min={min}
+        max={max}
+    />
+));
 
 function parseSpecial(prop, attributes) {
 
@@ -327,21 +429,19 @@ function parseSpecial(prop, attributes) {
 
             break;
         case 'height':
-            break;
         case 'height-custom':
-            result = {'height': parseSpecial('height', settings?.['height-custom'] ?? settings?.['height'])}
+            result = {'height': settings?.['height-custom'] ?? settings?.['height'] ?? null}
 
             break;
         case 'min-height':
-            break;
         case 'min-height-custom':
-            result = {'min-height': parseSpecial('min-height', settings?.['min-height-custom'] ?? settings?.['min-height'])}
+            result = {'min-height': settings?.['min-height-custom'] ?? settings?.['min-height'] ?? null}
 
             break;
         case 'max-height':
-            break;
         case 'max-height-custom':
-            result = {'max-height': parseSpecial('max-height', settings?.['max-height-custom'] ?? settings?.['max-height'])}
+            console.log(settings?.['max-height-custom']);
+            result = {'max-height': settings?.['max-height-custom'] ?? settings?.['max-height'] ?? null}
 
             break;
         case 'width':
@@ -533,119 +633,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
         setSettings(result);
 
-    }, [attributes['wpbs-layout'],setAttributes,setSettings]);
+    }, [attributes['wpbs-layout'], setAttributes, setSettings]);
 
-    const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
-        <BaseControl
-            label={label}
-            __nextHasNoMarginBottom={true}
-        >
-            <MediaUploadCheck>
-                <MediaUpload
-                    title={label}
-                    onSelect={(newValue) => updateProp({
-                        [prop]: {
-                            type: newValue.type,
-                            id: newValue.id,
-                            url: newValue.url,
-                            alt: newValue.alt,
-                            sizes: newValue.sizes,
-                        }
-                    })}
-                    allowedTypes={allowedTypes || ['image']}
-                    value={settings?.[prop] ?? {}}
-                    render={({open}) => {
-                        return <PreviewThumbnail
-                            image={settings?.[prop] ?? {}}
-                            callback={(newValue) => updateProp({
-                                [prop]: undefined
-                            })}
-                            style={{
-                                objectFit: 'contain'
-                            }}
-                            onClick={open}
-                        />;
-                    }}
-                />
-            </MediaUploadCheck>
-        </BaseControl>
-    ));
-
-    const MemoSelectControl = React.memo(({label, options, prop}) => (
-        <SelectControl
-            label={label}
-            options={options}
-            value={settings?.[prop] ?? ''}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            __next40pxDefaultSize
-            __nextHasNoMarginBottom
-        />
-    ));
-
-    const MemoBorderControl = React.memo(({label, prop}) => (
-        <BorderControl
-            label={label}
-            value={settings?.[prop] ?? {}}
-            enableAlpha={true}
-            enableStyle={true}
-            disableCustomColors={false}
-            colors={editorColors}
-            withSlider={true}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            __experimentalIsRenderedInSidebar={true}
-            __next40pxDefaultSize
-        />
-    ));
-
-    const MemoBoxControl = React.memo(({label, inputProps, prop, sides}) => (
-        <BoxControl
-            label={label}
-            values={settings?.[prop] ?? {}}
-            sides={sides}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            inputProps={inputProps}
-            __nextHasNoMarginBottom={true}
-        />
-    ));
-
-    const MemoNumberControl = React.memo(({label, prop, min}) => (
-        <NumberControl
-            label={label}
-            value={settings?.[prop] ?? ''}
-            min={min || 0}
-            isDragEnabled={false}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            __next40pxDefaultSize
-        />
-    ));
-
-    const MemoUnitControl = React.memo(({label, units, prop}) => (
-        <UnitControl
-            label={label}
-            value={settings?.[prop] ?? ''}
-            units={units || DIMENSION_UNITS}
-            isResetValueOnUnitChange={true}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            __next40pxDefaultSize
-        />
-    ));
-
-    const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
-        <RangeControl
-            label={label}
-            step={step}
-            withInputField={true}
-            allowReset={true}
-            isShiftStepEnabled
-            initialPosition={0}
-            value={settings?.[prop] ?? ''}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            __next40pxDefaultSize
-            __nextHasNoMarginBottom
-            min={min}
-            max={max}
-        />
-    ));
 
     return <InspectorControls group="styles">
 
@@ -658,8 +647,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Display"
-                    prop={'display'}
                     options={DISPLAY_OPTIONS}
+                    value={settings?.['display']}
+                    callback={(newValue) => updateProp({'display': newValue})}
                 />
             </ToolsPanelItem>
             <ToolsPanelItem
@@ -670,7 +660,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Direction"
-                    prop={'flex-direction'}
+                    value={settings?.['flex-direction']}
+                    callback={(newValue) => updateProp({'flex-direction': newValue})}
                     options={DIRECTION_OPTIONS}
                 />
             </ToolsPanelItem>
@@ -682,7 +673,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Container"
-                    prop={'container'}
+                    value={settings?.['container']}
+                    callback={(newValue) => updateProp({'container': newValue})}
                     options={CONTAINER_OPTIONS}
                 />
             </ToolsPanelItem>
@@ -694,7 +686,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Align"
-                    prop={'align-items'}
+                    value={settings?.['align-items']}
+                    callback={(newValue) => updateProp({'align-items': newValue})}
                     options={ALIGN_OPTIONS}
                 />
             </ToolsPanelItem>
@@ -706,7 +699,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoSelectControl
                     label="Justify"
-                    prop={'justify-content'}
+                    value={settings?.['justify-content']}
+                    callback={(newValue) => updateProp({'justify-content': newValue})}
                     options={JUSTIFY_OPTIONS}
                 />
             </ToolsPanelItem>
@@ -718,7 +712,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoRangeControl
                     label="Opacity"
-                    prop={'opacity'}
+                    value={settings?.['opacity']}
+                    callback={(newValue) => updateProp({'opacity': newValue})}
                     step={.1}
                     min={0}
                     max={1}
@@ -733,7 +728,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 <MemoRangeControl
                     label="Basis"
                     step={1}
-                    prop={'basis'}
+                    value={settings?.['basis']}
+                    callback={(newValue) => updateProp({'basis': newValue})}
                     min={0}
                     max={100}
                 />
@@ -845,7 +841,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             >
                 <MemoUnitControl
                     label="Max-Height Custom"
-                    prop={'max-height-custom'}
+                    value={settings?.['max-height-custom']}
+                    callback={(newValue) => updateProp({'max-height-custom': newValue})}
                     units={DIMENSION_UNITS}
                 />
             </ToolsPanelItem>
@@ -1047,6 +1044,15 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         label={'Mask Image'}
                         prop={'mask-image'}
                         allowedTypes={['image']}
+                        callback={(newValue) => updateProp({
+                            ['mask-image']: {
+                                type: newValue.type,
+                                id: newValue.id,
+                                url: newValue.url,
+                                alt: newValue.alt,
+                                sizes: newValue.sizes,
+                            }
+                        })}
                     />
 
                     <Grid columns={2} columnGap={15} rowGap={20}>
@@ -1457,6 +1463,15 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         label={'Mask Image'}
                         prop={'mask-image-mobile'}
                         allowedTypes={['image']}
+                        callback={(newValue) => updateProp({
+                            ['mask-image-mobile']: {
+                                type: newValue.type,
+                                id: newValue.id,
+                                url: newValue.url,
+                                alt: newValue.alt,
+                                sizes: newValue.sizes,
+                            }
+                        })}
                     />
 
                     <Grid columns={2} columnGap={15} rowGap={20}>

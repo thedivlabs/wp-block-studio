@@ -535,6 +535,17 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     }, [setAttributes, setSettings]);
 
+    const MemoSelectControl = React.memo(({label, options, prop}) => (
+        <SelectControl
+            label={label}
+            options={options}
+            value={settings?.[prop] ?? ''}
+            onChange={(newValue) => updateProp({[prop]: newValue})}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+        />
+    ));
+
     const MemoMediaControl = ({label, allowedTypes, prop}) => (
         <BaseControl
             label={label}
@@ -571,7 +582,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         </BaseControl>
     );
 
-    const MemoSelectControl = ({label, options, prop}) => (
+    const MemoSelectControl = React.memo(({label, options, prop}) => (
         <SelectControl
             label={label}
             options={options}
@@ -580,7 +591,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             __next40pxDefaultSize
             __nextHasNoMarginBottom
         />
-    );
+    ));
 
     const MemoBorderControl = ({label, prop}) => (
         <BorderControl

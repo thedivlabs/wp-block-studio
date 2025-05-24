@@ -92,42 +92,13 @@ registerBlockType(metadata.name, {
         'wpbs-cta': {
             type: 'object',
             default: {}
-        },
-        'wpbs-link': {
-            type: 'object'
-        },
-        'wpbs-icon': {
-            type: 'string'
-        },
-        'wpbs-loop': {
-            type: 'boolean'
-        },
-        'wpbs-icon-first': {
-            type: 'boolean'
-        },
-        'wpbs-popup': {
-            type: 'string'
-        },
-        'wpbs-icon-color': {
-            type: 'string'
-        },
-        'wpbs-icon-only': {
-            type: 'boolean'
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta-button');
 
-        const [cta, setCta] = useState(attributes['wpbs-cta']);
-
-        const [link, setLink] = useState(attributes['wpbs-link']);
-        const [icon, setIcon] = useState(attributes['wpbs-icon']);
-        const [loop, setLoop] = useState(attributes['wpbs-loop']);
-        const [popup, setPopup] = useState(attributes['wpbs-popup']);
-        const [iconColor, setIconColor] = useState(attributes['wpbs-icon-color']);
-        const [iconFirst, setIconFirst] = useState(attributes['wpbs-icon-first']);
-        const [iconOnly, setIconOnly] = useState(attributes['wpbs-icon-only']);
+        const [settings, setSettings] = useState(attributes['wpbs-cta']);
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -141,24 +112,51 @@ registerBlockType(metadata.name, {
             orderby: 'title',
         }), []);
 
-        const MemoSelectControl = React.memo(({label, value, onChange, options}) => (
+        const MemoSelectControl = React.memo(({label, value, options}) => (
             <SelectControl
                 label={label}
                 value={value}
-                onChange={onChange}
+                onChange={(newValue) => updateSettings({[prop]: newValue})}
                 options={options}
                 __next40pxDefaultSize
                 __nextHasNoMarginBottom
             />
         ));
 
-        const handleFieldChange = useCallback(
-            (prop, localSetter) => (value) => {
-                setAttributes({[prop]: value});
-                if (localSetter) localSetter(value);
-            },
-            []
-        );
+        const MemoToggleControl = React.memo(({label, prop}) => (
+            <ToggleControl
+                label={label}
+                checked={!!settings?.[prop]}
+                onChange={(newValue) => updateSettings({[prop]: newValue})}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            />
+        ));
+
+        const MemoTextControl = React.memo(({label, prop}) => (
+            <TextControl
+                label={label}
+                value={settings?.[prop]}
+                onChange={(newValue) => updateSettings({[prop]: newValue})}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+        ));
+
+        const updateSettings = useCallback((newValue) => {
+
+            const result = {
+                ...attributes['wpbs-cta'],
+                ...newValue,
+            }
+
+            setAttributes({
+                'wpbs-cta': result
+            });
+
+            setSettings(result);
+
+        }, [setAttributes, setSettings]);
 
         const popups = useSelect(
             (select) => select(coreStore).getEntityRecords('postType', 'popup', popupQuery),
@@ -182,45 +180,32 @@ registerBlockType(metadata.name, {
             <Grid columns={1} columnGap={15} rowGap={20}>
                 <MemoSelectControl
                     label="Popup"
-                    value={popup}
-                    onChange={handleFieldChange('wpbs-popup', setPopup)}
+                    prop={'popup'}
                     options={popupOptions}
                 />
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                    <ToggleControl
+                    <MemoToggleControl
                         label="Loop"
-                        checked={!!loop}
-                        onChange={handleFieldChange('wpbs-loop', setLoop)}
-                        className={'flex items-center'}
-                        __nextHasNoMarginBottom
+                        prop={'loop'}
                     />
                 </Grid>
             </Grid>
-        ), [popup, popupOptions, loop]);
+        ), [settings]);
 
         const tabIcon = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>
-                <TextControl
+                <MemoTextControl
                     label="Icon"
-                    value={icon}
-                    onChange={handleFieldChange('wpbs-icon', setIcon)}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
+                    prop={'icon'}
                 />
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                    <ToggleControl
+                    <MemoToggleControl
                         label="Icon Only"
-                        checked={!!iconOnly}
-                        onChange={handleFieldChange('wpbs-icon-only', setIconOnly)}
-                        className={'flex items-center'}
-                        __nextHasNoMarginBottom
+                        prop={'icon-only'}
                     />
-                    <ToggleControl
+                    <MemoToggleControl
                         label="Icon First"
-                        checked={!!iconFirst}
-                        onChange={handleFieldChange('wpbs-icon-first', setIconFirst)}
-                        className={'flex items-center'}
-                        __nextHasNoMarginBottom
+                        prop={'icon-first'}
                     />
                 </Grid>
                 <PanelColorSettings
@@ -230,15 +215,14 @@ registerBlockType(metadata.name, {
                         {
                             slug: 'icon',
                             label: 'Icon Color',
-                            value: iconColor,
-                            onChange: handleFieldChange('wpbs-icon-color', setIconColor),
-
+                            value: settings?.['icon-color'],
+                            onChange: (newValue) => updateSettings({'icon-color': newValue}),
                             isShownByDefault: true
                         }
                     ]}
                 />
             </Grid>
-        ), [icon, iconOnly, iconFirst, iconColor]);
+        ), [settings]);
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -247,10 +231,8 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
-                <Link defaultValue={link} callback={(newValue) => {
-                    setAttributes({['wpbs-link']: newValue});
-                    setLink(newValue);
-                }}/>
+                <Link defaultValue={settings?.link}
+                      callback={(newValue) => updateSettings({link: newValue})}/>
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true}>
 
@@ -287,7 +269,7 @@ registerBlockType(metadata.name, {
                        css={[layoutCss(attributes)]}
                        deps={['wpbs-layout']}
                        props={{
-                           '--icon-color': attributes['wpbs-icon-color'] || null,
+                           '--icon-color': settings?.['icon-color'] || null,
                        }}
                 />
 

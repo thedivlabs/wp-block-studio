@@ -39,10 +39,10 @@ function buttonProps(attributes = {}) {
     return Object.fromEntries(
         Object.entries({
             type: 'button',
-            title: !!attributes['wpbs-cta']['icon-only'] && !!attributes['wpbs-cta']['link'] ? attributes['wpbs-cta']['link'].title : null,
+            title: !!attributes['wpbs-cta']['icon-only'] && !!attributes['wpbs-cta']['link'] ? attributes['wpbs-cta']['link']?.title ?? null : null,
             //'data-wp-interactive': 'wpbs/cta-button',
             //'data-wp-on--click': 'actions.popup',
-            'data-popup': attributes['wpbs-cta']['popup'] || null,
+            'data-popup': attributes['wpbs-cta']?.['popup'] ?? null,
         }).filter(([key, value]) => value)
     );
 }
@@ -52,7 +52,7 @@ const Content = ({attributes, editor = false}) => {
     const {link, icon, popup} = attributes['wpbs-cta'];
 
     const isButton = !!popup;
-    const title = link.title || 'Learn More';
+    const title = link?.title ?? 'Learn More';
 
     const className = [
         'wpbs-cta-button__link wp-element-button',

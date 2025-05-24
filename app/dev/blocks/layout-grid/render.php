@@ -63,7 +63,7 @@ if ( $is_loop ) {
 		}
 	}
 
-	$block->inner_content[1] = trim( $grid_cards['content'] );
+	$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
 
 	$block->inner_content[ count( $block->inner_content ) - 1 ] = '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
@@ -74,7 +74,7 @@ if ( $is_loop ) {
 	foreach ( $block->inner_content as $html ) {
 		echo $html;
 	}
-	
+
 
 } else {
 

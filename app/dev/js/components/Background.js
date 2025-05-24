@@ -323,7 +323,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 };
             }
 
-            if (settings?.mobileImage?.sizes) {
+            if (attributes['wpbs-background']?.mobileImage?.sizes) {
                 newValue.mobileImage = {
                     ...attributes['wpbs-background'].mobileImage,
                     url: attributes['wpbs-background'].mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'

@@ -533,7 +533,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
         setSettings(result);
 
-    }, [setAttributes, setSettings]);
+    }, [attributes['wpbs-layout']]);
 
     const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
         <BaseControl

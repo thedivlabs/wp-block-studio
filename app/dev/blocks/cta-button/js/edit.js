@@ -113,10 +113,10 @@ registerBlockType(metadata.name, {
         }, []);
 
 
-        const MemoSelectControl = React.memo(({label, value, options}) => (
+        const MemoSelectControl = React.memo(({label, prop, options}) => (
             <SelectControl
                 label={label}
-                value={value}
+                value={settings?.[prop]}
                 onChange={(newValue) => updateSettings({[prop]: newValue})}
                 options={options}
                 __next40pxDefaultSize
@@ -157,14 +157,12 @@ registerBlockType(metadata.name, {
 
             setSettings(result);
 
-        }, [setAttributes, setSettings]);
+        }, [attributes['wpbs-cta']]);
 
         const popups = useSelect(
             (select) => select(coreStore).getEntityRecords('postType', 'popup', POPUP_QUERY),
             []
         ) || [];
-
-        console.log(popups);
 
         const popupOptions = useMemo(() => {
             if (!popups) return [];
@@ -174,7 +172,7 @@ registerBlockType(metadata.name, {
                     value: '',
                 },
                 ...popups.map((popup) => ({
-                    label: popup.title?.rendered || '(Untitled)',
+                    label: popup.title?.raw || '(Untitled)',
                     value: popup.id,
                 }))];
         }, [popups]);

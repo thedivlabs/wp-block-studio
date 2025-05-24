@@ -316,17 +316,17 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     const updateSettings = useCallback((newValue = {}) => {
         if ('resolution' in newValue) {
-            if (settings?.largeImage?.sizes) {
+            if (attributes['wpbs-background']?.largeImage?.sizes) {
                 newValue.largeImage = {
-                    ...settings.largeImage,
-                    url: settings.largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                    ...attributes['wpbs-background'].largeImage,
+                    url: attributes['wpbs-background'].largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 };
             }
 
             if (settings?.mobileImage?.sizes) {
                 newValue.mobileImage = {
-                    ...settings.mobileImage,
-                    url: settings.mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                    ...attributes['wpbs-background'].mobileImage,
+                    url: attributes['wpbs-background'].mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 };
             }
         }
@@ -342,7 +342,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 ...newValue,
             },
         });
-    }, [settings, setSettings, setAttributes]);
+    }, [attributes['wpbs-background']]);
 
     const MemoSelectControl = React.memo(({label, options, prop}) => (
         <SelectControl

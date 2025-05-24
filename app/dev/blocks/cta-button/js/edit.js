@@ -161,8 +161,10 @@ registerBlockType(metadata.name, {
 
         const popups = useSelect(
             (select) => select(coreStore).getEntityRecords('postType', 'popup', POPUP_QUERY),
-            [POPUP_QUERY]
+            []
         ) || [];
+
+        console.log(popups);
 
         const popupOptions = useMemo(() => {
             if (!popups) return [];

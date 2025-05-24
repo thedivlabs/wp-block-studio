@@ -440,7 +440,6 @@ function parseSpecial(prop, attributes) {
             break;
         case 'max-height':
         case 'max-height-custom':
-            console.log(settings?.['max-height-custom']);
             result = {'max-height': settings?.['max-height-custom'] ?? settings?.['max-height'] ?? null}
 
             break;

@@ -49,9 +49,9 @@ function buttonProps(attributes = {}) {
 
 const Content = ({attributes, editor = false}) => {
 
-    const {'link': link = {}, 'icon': icon = ''} = attributes['wpbs-cta'];
+    const {link, icon, popup} = attributes['wpbs-cta'];
 
-    const isButton = !!attributes['wpbs-cta']['popup'];
+    const isButton = !!popup;
     const title = link.title || 'Learn More';
 
     const className = [

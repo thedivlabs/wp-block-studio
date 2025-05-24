@@ -344,7 +344,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
         });
     }, [settings, setSettings, setAttributes]);
 
-    const MemoSelectControl = ({label, options, prop}) => (
+    const MemoSelectControl = React.memo(({label, options, prop}) => (
         <SelectControl
             label={label}
             options={options}
@@ -353,9 +353,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             __next40pxDefaultSize
             __nextHasNoMarginBottom
         />
-    );
+    ));
 
-    const MemoUnitControl = ({label, units, prop}) => (
+    const MemoUnitControl = React.memo(({label, units, prop}) => (
         <UnitControl
             label={label}
             value={settings?.[prop] ?? ''}
@@ -364,9 +364,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             onChange={(newValue) => updateSettings({[prop]: newValue})}
             __next40pxDefaultSize
         />
-    );
+    ));
 
-    const MemoRangeControl = ({label, prop, step, min, max}) => (
+    const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
         <RangeControl
             label={label}
             step={step}
@@ -381,9 +381,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             min={min}
             max={max}
         />
-    );
+    ));
 
-    const MemoToggleControl = ({label, prop}) => (
+    const MemoToggleControl = React.memo(({label, prop}) => (
         <ToggleControl
             label={label}
             checked={!!settings?.[prop]}
@@ -391,9 +391,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             className={'flex items-center'}
             __nextHasNoMarginBottom
         />
-    );
+    ));
 
-    const MemoMediaControl = ({label, allowedTypes, prop}) => (
+    const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
         <BaseControl
             label={label}
             __nextHasNoMarginBottom={true}
@@ -427,7 +427,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 />
             </MediaUploadCheck>
         </BaseControl>
-    );
+    ));
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>

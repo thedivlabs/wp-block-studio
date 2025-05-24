@@ -83,6 +83,14 @@ const Content = ({attributes, editor = false}) => {
     );
 }
 
+const POPUP_QUERY = {
+    hide_empty: true,
+    per_page: -1,
+    status: 'publish',
+    order: 'asc',
+    orderby: 'title',
+};
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -104,13 +112,6 @@ registerBlockType(metadata.name, {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
-        const popupQuery = useMemo(() => ({
-            hide_empty: true,
-            per_page: -1,
-            status: 'publish',
-            order: 'asc',
-            orderby: 'title',
-        }), []);
 
         const MemoSelectControl = React.memo(({label, value, options}) => (
             <SelectControl
@@ -159,8 +160,8 @@ registerBlockType(metadata.name, {
         }, [setAttributes, setSettings]);
 
         const popups = useSelect(
-            (select) => select(coreStore).getEntityRecords('postType', 'popup', popupQuery),
-            [popupQuery]
+            (select) => select(coreStore).getEntityRecords('postType', 'popup', POPUP_QUERY),
+            [POPUP_QUERY]
         ) || [];
 
         const popupOptions = useMemo(() => {

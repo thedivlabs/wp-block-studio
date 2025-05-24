@@ -535,18 +535,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     }, [setAttributes, setSettings]);
 
-    const MemoSelectControl = React.memo(({label, options, prop}) => (
-        <SelectControl
-            label={label}
-            options={options}
-            value={settings?.[prop] ?? ''}
-            onChange={(newValue) => updateProp({[prop]: newValue})}
-            __next40pxDefaultSize
-            __nextHasNoMarginBottom
-        />
-    ));
-
-    const MemoMediaControl = ({label, allowedTypes, prop}) => (
+    const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
         <BaseControl
             label={label}
             __nextHasNoMarginBottom={true}
@@ -580,7 +569,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 />
             </MediaUploadCheck>
         </BaseControl>
-    );
+    ));
 
     const MemoSelectControl = React.memo(({label, options, prop}) => (
         <SelectControl
@@ -593,7 +582,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         />
     ));
 
-    const MemoBorderControl = ({label, prop}) => (
+    const MemoBorderControl = React.memo(({label, prop}) => (
         <BorderControl
             label={label}
             value={settings?.[prop] ?? {}}
@@ -606,9 +595,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             __experimentalIsRenderedInSidebar={true}
             __next40pxDefaultSize
         />
-    );
+    ));
 
-    const MemoBoxControl = ({label, inputProps, prop, sides}) => (
+    const MemoBoxControl = React.memo(({label, inputProps, prop, sides}) => (
         <BoxControl
             label={label}
             values={settings?.[prop] ?? {}}
@@ -617,9 +606,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             inputProps={inputProps}
             __nextHasNoMarginBottom={true}
         />
-    );
+    ));
 
-    const MemoNumberControl = ({label, prop, min}) => (
+    const MemoNumberControl = React.memo(({label, prop, min}) => (
         <NumberControl
             label={label}
             value={settings?.[prop] ?? ''}
@@ -628,9 +617,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             onChange={(newValue) => updateProp({[prop]: newValue})}
             __next40pxDefaultSize
         />
-    );
+    ));
 
-    const MemoUnitControl = ({label, units, prop}) => (
+    const MemoUnitControl = React.memo(({label, units, prop}) => (
         <UnitControl
             label={label}
             value={settings?.[prop] ?? ''}
@@ -639,9 +628,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             onChange={(newValue) => updateProp({[prop]: newValue})}
             __next40pxDefaultSize
         />
-    );
+    ));
 
-    const MemoRangeControl = ({label, prop, step, min, max}) => (
+    const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
         <RangeControl
             label={label}
             step={step}
@@ -656,7 +645,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             min={min}
             max={max}
         />
-    );
+    ));
 
     return <InspectorControls group="styles">
 

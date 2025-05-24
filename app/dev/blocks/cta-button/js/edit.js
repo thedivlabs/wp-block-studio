@@ -26,9 +26,9 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-cta-button',
-        !!attributes['wpbs-icon'] ? 'wpbs-cta-button--icon' : null,
-        !!attributes['wpbs-icon-only'] ? 'wpbs-cta-button--icon-only' : false,
-        !!attributes['wpbs-icon-first'] ? 'wpbs-cta-button--icon-first' : false,
+        !!attributes['wpbs-cta']['icon'] ? 'wpbs-cta-button--icon' : null,
+        !!attributes['wpbs-cta']['icon-only'] ? 'wpbs-cta-button--icon-only' : false,
+        !!attributes['wpbs-cta']['icon-first'] ? 'wpbs-cta-button--icon-first' : false,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -39,19 +39,19 @@ function buttonProps(attributes = {}) {
     return Object.fromEntries(
         Object.entries({
             type: 'button',
-            title: !!attributes['wpbs-icon-only'] && !!attributes['wpbs-link'] ? attributes['wpbs-link'].title : null,
+            title: !!attributes['wpbs-cta']['icon-only'] && !!attributes['wpbs-cta']['link'] ? attributes['wpbs-cta']['link'].title : null,
             //'data-wp-interactive': 'wpbs/cta-button',
             //'data-wp-on--click': 'actions.popup',
-            'data-popup': attributes['wpbs-popup'] || null,
+            'data-popup': attributes['wpbs-cta']['popup'] || null,
         }).filter(([key, value]) => value)
     );
 }
 
 const Content = ({attributes, editor = false}) => {
 
-    const {'wpbs-link': link = {}, 'wpbs-icon': icon = ''} = attributes;
+    const {'link': link = {}, 'icon': icon = ''} = attributes['wpbs-cta'];
 
-    const isButton = !!attributes['wpbs-popup'];
+    const isButton = !!attributes['wpbs-cta']['popup'];
     const title = link.title || 'Learn More';
 
     const className = [

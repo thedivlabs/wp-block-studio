@@ -121,6 +121,8 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
                     return;
                 }
 
+                value = getCSSFromStyle(value);
+
                 propsCss += [prop, value].join(':') + ';';
             })
 
@@ -140,6 +142,8 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
                         if (!value) {
                             return;
                         }
+
+                        value = getCSSFromStyle(value);
 
                         propsCss += [prop, value].join(':') + ';';
                     })

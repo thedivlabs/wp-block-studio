@@ -419,7 +419,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
         setSettings(result);
 
 
-    }, [attributes['wpbs-layout'], setAttributes, setSettings]);
+    }, [attributes['wpbs-background'], setAttributes, setSettings]);
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
@@ -671,7 +671,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 options={REPEAT_OPTIONS}
                 __nextHasNoMarginBottom
             />
-
         </Grid>
 
         <Grid columns={1} columnGap={15} rowGap={20}>

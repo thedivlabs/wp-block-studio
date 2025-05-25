@@ -84,8 +84,12 @@
 
   }
 
+  &--pagination &__button {
+    display: inline-block;
+  }
+
   &--pagination &__container:empty + &__button {
-    display: none;
+    display: none !important;
     pointer-events: none;
   }
 

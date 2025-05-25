@@ -32,6 +32,7 @@ function sectionClassNames(attributes = {}) {
         'wpbs-layout-grid',
         !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
+        !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }

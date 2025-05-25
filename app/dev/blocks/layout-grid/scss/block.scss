@@ -84,4 +84,9 @@
 
   }
 
+  &--pagination &__container:empty + &__button {
+    display: none;
+    pointer-events: none;
+  }
+
 }

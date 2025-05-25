@@ -28,7 +28,8 @@ function blockClasses(attributes = {}) {
     const {'wpbs-figure': settings = {}} = attributes;
 
     return [
-        'wpbs-figure flex items-center justify-center relative max-w-full max-h-full'
+        'wpbs-figure flex items-center justify-center relative max-w-full max-h-full',
+        attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
 
@@ -200,7 +201,7 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps({
-            className: [blockClasses(attributes), uniqueId].join(' '),
+            className: blockClasses(attributes),
             style: {
                 ...blockStyles(attributes),
             }

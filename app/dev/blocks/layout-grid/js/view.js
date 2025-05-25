@@ -134,6 +134,12 @@ const {state} = store('wpbs/grid', {
             setMasonry(grid);
             setDividers(grid, context);
 
+            if (!grid.dataset.page) {
+                [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
+                    el.remove();
+                })
+            }
+
         },
         pagination: async () => {
 

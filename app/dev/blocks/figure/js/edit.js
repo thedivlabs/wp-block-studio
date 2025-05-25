@@ -103,6 +103,8 @@ function Media({attributes, editor = false, props = {}}) {
     }
 }
 
+const breakpoints = WPBS?.settings?.breakpoints ?? {};
+
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},
     {label: 'Multiply', value: 'multiply'},
@@ -173,8 +175,6 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
-
-        const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
         const [settings, setSettings] = useState(attributes['wpbs-figure']);
 

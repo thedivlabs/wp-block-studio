@@ -88,9 +88,9 @@ function Media({attributes, editor = false, props = {}}) {
         }
     }
 
-    if (settings?.link && !editor) {
+    if ((settings?.link || settings?.linkPost) && !editor) {
         return <a class={mediaClasses}
-                  href={!settings?.['linkPost'] ? settings.link?.url ?? '#' : '%%PERMALINK%%'}
+                  href={!settings?.linkPost ? settings.link?.url ?? '#' : '%%PERMALINK%%'}
                   title={settings.link?.title ?? ''}
                   target={!!settings.link?.opensInNewTab ? '_blank' : '_self'}
                   rel={settings.link?.rel ?? ''} style={mediaStyle}>

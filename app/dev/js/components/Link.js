@@ -29,9 +29,7 @@ function Link({defaultValue, callback}) {
                                         title: 'Open in new tab',
                                     }
                                 ]}
-                                onChange={(newValue) => {
-                                    callback(newValue);
-                                }}
+                                onChange={(newValue) => callback}
                                 //withCreateSuggestion={true}
                             ></LinkControl>
                         </MenuItem>

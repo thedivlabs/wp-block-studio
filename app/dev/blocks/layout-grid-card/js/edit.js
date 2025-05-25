@@ -1,6 +1,5 @@
 import {
     useBlockProps,
-    InspectorControls,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -10,7 +9,6 @@ import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, background
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
-import {PanelBody, TabPanel} from "@wordpress/components";
 
 
 function sectionClassNames(attributes = {}) {

@@ -3,8 +3,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect} from "react";
+import React from "react";
 
 
 function blockClassNames(attributes = {}) {
@@ -28,7 +27,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),
         });
-        
+
         return (
             <>
                 <div {...blockProps}>Term Details</div>

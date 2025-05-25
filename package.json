@@ -1,38 +1,13 @@
 {
   "dependencies": {
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/typography": "^0.5.13",
-    "@wordpress/api-fetch": "^7.18.0",
-    "@wordpress/block-editor": "^13.4.0",
-    "@wordpress/block-library": "^9.18.0",
-    "@wordpress/blocks": "^13.3.0",
-    "@wordpress/components": "^28.3.0",
-    "@wordpress/compose": "^7.17.0",
-    "@wordpress/core-data": "^7.22.0",
-    "@wordpress/create-block": "^4.46.0",
-    "@wordpress/data": "^10.19.0",
-    "@wordpress/editor": "^14.4.0",
-    "@wordpress/element": "^6.4.0",
-    "@wordpress/hooks": "^4.23.0",
-    "@wordpress/icons": "^10.18.0",
-    "@wordpress/interactivity": "^6.5.0",
-    "@wordpress/media-utils": "^5.3.0",
-    "@wordpress/private-apis": "^1.9.0",
-    "@wordpress/scripts": "^28.3.0",
-    "@wordpress/server-side-render": "^5.18.0",
-    "@wordpress/url": "^4.18.0",
-    "gulp": "^5.0.0",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-minify": "^3.1.0",
-    "gulp-postcss": "^10.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^6.0.1",
-    "lottie-web": "^5.12.2",
-    "postcss-nesting": "^12.1.5",
-    "react": "^18.3.1",
-    "sass": "^1.86.0",
-    "toml": "^3.0.0",
-    "webpack-stream": "^7.0.0"
+    "@wordpress/block-editor": "^14.19.0",
+    "@wordpress/blocks": "^14.13.0",
+    "@wordpress/components": "^29.10.0",
+    "@wordpress/compose": "^7.24.0",
+    "@wordpress/core-data": "^7.24.0",
+    "@wordpress/data": "^10.24.0",
+    "@wordpress/interactivity": "^6.24.0",
+    "@wordpress/scripts": "^30.17.0"
   },
   "scripts": {
     "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/ --watch --experimental-modules",
@@ -40,10 +15,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
+    "gulp": "^5.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-postcss": "^10.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^6.0.1",
     "postcss": "^8.4.39",
-    "postcss-cli": "^11.0.0",
-    "postcss-import": "^16.1.0",
-    "tailwindcss": "^3.4.6"
+    "react": "^18.3.1",
+    "sass": "^1.86.0",
+    "tailwindcss": "^3.4.6",
+    "webpack-stream": "^7.0.0"
   }
 }

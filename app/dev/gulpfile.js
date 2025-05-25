@@ -3,7 +3,6 @@ const rename = require('gulp-rename');
 const sass = require('gulp-sass')(require('sass'));
 const postcss = require('gulp-postcss');
 const tailwindcss = require('tailwindcss');
-const minify = require('gulp-minify');
 const webpack = require('webpack-stream');
 const cleanCSS = require('gulp-clean-css');
 const node_path = require("path");

@@ -211,7 +211,6 @@ registerBlockType(metadata.name, {
             <BlockEdit key="edit" {...blockProps} />
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   uniqueId={uniqueId}
                    css={[layoutCss(attributes)]}
                    deps={['wpbs-layout', 'wpbs-figure', attributes?.uniqueId]}
                    props={{}}

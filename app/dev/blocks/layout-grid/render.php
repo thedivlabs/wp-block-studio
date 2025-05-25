@@ -64,12 +64,12 @@ if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 	}
 
 	$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
-
-	$block->inner_content[ count( $block->inner_content ) - 1 ] = '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
+WPBS::console_log($block->inner_content);
+	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace('<script class="wpbs-layout-grid-args" type="application/json">','<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $query->query,
 			'attrs' => $attributes['wpbs-query'],
-		] ) . '</script>' . $block->inner_content[ count( $block->inner_content ) - 1 ];
+		] ),$block->inner_content[ count( $block->inner_content ) - 1 ]);
 
 	foreach ( $block->inner_content as $html ) {
 		echo $html;
@@ -77,7 +77,7 @@ if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 
 } elseif ( ! empty( $block->parsed_block['innerBlocks'] ) ) {
-	
+
 	echo $block->inner_content[0];
 
 	foreach ( $block->parsed_block['innerBlocks'] ?? [] as $parsed_block ) {

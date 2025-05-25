@@ -354,6 +354,7 @@ registerBlockType(metadata.name, {
                 </div>
                 <PaginationButton/>
                 <BackgroundElement attributes={props.attributes} editor={false}/>
+                <script class="wpbs-layout-grid-args" type="application/json"/>
             </div>
         );
     }

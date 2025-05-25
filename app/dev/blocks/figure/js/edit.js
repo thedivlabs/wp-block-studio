@@ -254,7 +254,7 @@ registerBlockType(metadata.name, {
                                             value={settings?.mobileImage}
                                             render={({open}) => {
                                                 return <PreviewThumbnail
-                                                    image={mobileImage || {}}
+                                                    image={settings?.mobileImage || {}}
                                                     callback={() => updateSettings({'mobileImage': undefined})}
                                                     onClick={open}
                                                 />;

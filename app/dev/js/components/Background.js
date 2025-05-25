@@ -392,23 +392,23 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     const updateSettings = useCallback((newValue = {}) => {
         if ('resolution' in newValue) {
-            if (settings?.largeImage?.sizes) {
+            if (attributes['wpbs-background']?.largeImage?.sizes) {
                 newValue.largeImage = {
-                    ...settings.largeImage,
-                    url: settings.largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                    ...attributes['wpbs-background'].largeImage,
+                    url: attributes['wpbs-background'].largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 };
             }
 
-            if (settings?.mobileImage?.sizes) {
+            if (attributes['wpbs-background']?.mobileImage?.sizes) {
                 newValue.mobileImage = {
-                    ...settings.mobileImage,
-                    url: settings.mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                    ...attributes['wpbs-background'].mobileImage,
+                    url: attributes['wpbs-background'].mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
                 };
             }
         }
 
         const result = {
-            ...settings,
+            ...attributes['wpbs-background'],
             ...newValue
         }
 
@@ -419,8 +419,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
         setSettings(result);
 
 
-    }, [settings]);
-
+    }, [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>

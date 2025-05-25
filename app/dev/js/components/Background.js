@@ -20,6 +20,39 @@ export const BACKGROUND_ATTRIBUTES = {
     }
 };
 
+const SUPPRESS_PROPS = ['type'];
+
+const SPECIAL_PROPS = [
+    'type',
+    'mobileImage',
+    'largeImage',
+    'mobileVideo',
+    'largeVideo',
+    'maskImageMobile',
+    'maskImageLarge',
+    'resolution',
+    'position',
+    'positionMobile',
+    'eager',
+    'force',
+    'mask',
+    'fixed',
+    'size',
+    'sizeMobile',
+    'opacity',
+    'width',
+    'height',
+    'resolutionMobile',
+    'maskMobile',
+    'scale',
+    'scaleMobile',
+    'opacityMobile',
+    'widthMobile',
+    'heightMobile',
+    'fade',
+    'fadeMobile',
+];
+
 const RESOLUTION_OPTIONS = [
     {label: 'Default', value: ''},
     {label: 'Thumbnail', value: 'thumbnail'},
@@ -87,6 +120,91 @@ const DIMENSION_UNITS = [
     {value: 'vw', label: 'vw', default: 0},
     {value: 'ch', label: 'ch', default: 0},
 ]
+
+const MemoSelectControl = React.memo(({label, options, prop}) => (
+    <SelectControl
+        label={label}
+        options={options}
+        value={settings?.[prop] ?? ''}
+        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        __next40pxDefaultSize
+        __nextHasNoMarginBottom
+    />
+));
+
+const MemoUnitControl = React.memo(({label, units, prop}) => (
+    <UnitControl
+        label={label}
+        value={settings?.[prop] ?? ''}
+        units={units || DIMENSION_UNITS}
+        isResetValueOnUnitChange={true}
+        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        __next40pxDefaultSize
+    />
+));
+
+const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
+    <RangeControl
+        label={label}
+        step={step}
+        withInputField={true}
+        allowReset={true}
+        isShiftStepEnabled
+        initialPosition={0}
+        value={settings?.[prop] ?? ''}
+        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        __next40pxDefaultSize
+        __nextHasNoMarginBottom
+        min={min}
+        max={max}
+    />
+));
+
+const MemoToggleControl = React.memo(({label, prop}) => (
+    <ToggleControl
+        label={label}
+        checked={!!settings?.[prop]}
+        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        className={'flex items-center'}
+        __nextHasNoMarginBottom
+    />
+));
+
+const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
+    <BaseControl
+        label={label}
+        __nextHasNoMarginBottom={true}
+    >
+        <MediaUploadCheck>
+            <MediaUpload
+                title={label}
+                onSelect={(newValue) => updateSettings({
+                    [prop]: {
+                        type: newValue.type,
+                        id: newValue.id,
+                        url: newValue.url,
+                        alt: newValue?.alt,
+                        sizes: newValue?.sizes,
+                    }
+                })}
+                allowedTypes={allowedTypes || ['image']}
+                value={settings?.[prop] ?? {}}
+                render={({open}) => {
+                    return <PreviewThumbnail
+                        image={settings?.[prop] ?? {}}
+                        callback={(newValue) => updateSettings({
+                            [prop]: undefined
+                        })}
+                        style={{
+                            objectFit: 'contain'
+                        }}
+                        onClick={open}
+                    />;
+                }}
+            />
+        </MediaUploadCheck>
+    </BaseControl>
+));
 
 function parseProp(prop) {
 
@@ -198,38 +316,6 @@ function parseSpecial(prop, settings) {
 
 
 }
-
-const SUPPRESS_PROPS = ['type'];
-const SPECIAL_PROPS = [
-    'type',
-    'mobileImage',
-    'largeImage',
-    'mobileVideo',
-    'largeVideo',
-    'maskImageMobile',
-    'maskImageLarge',
-    'resolution',
-    'position',
-    'positionMobile',
-    'eager',
-    'force',
-    'mask',
-    'fixed',
-    'size',
-    'sizeMobile',
-    'opacity',
-    'width',
-    'height',
-    'resolutionMobile',
-    'maskMobile',
-    'scale',
-    'scaleMobile',
-    'opacityMobile',
-    'widthMobile',
-    'heightMobile',
-    'fade',
-    'fadeMobile',
-];
 
 export function backgroundCss(attributes) {
 
@@ -345,90 +431,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
     }, [settings]);
 
-    const MemoSelectControl = React.memo(({label, options, prop}) => (
-        <SelectControl
-            label={label}
-            options={options}
-            value={settings?.[prop] ?? ''}
-            onChange={(newValue) => updateSettings({[prop]: newValue})}
-            __next40pxDefaultSize
-            __nextHasNoMarginBottom
-        />
-    ));
 
-    const MemoUnitControl = React.memo(({label, units, prop}) => (
-        <UnitControl
-            label={label}
-            value={settings?.[prop] ?? ''}
-            units={units || DIMENSION_UNITS}
-            isResetValueOnUnitChange={true}
-            onChange={(newValue) => updateSettings({[prop]: newValue})}
-            __next40pxDefaultSize
-        />
-    ));
-
-    const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
-        <RangeControl
-            label={label}
-            step={step}
-            withInputField={true}
-            allowReset={true}
-            isShiftStepEnabled
-            initialPosition={0}
-            value={settings?.[prop] ?? ''}
-            onChange={(newValue) => updateSettings({[prop]: newValue})}
-            __next40pxDefaultSize
-            __nextHasNoMarginBottom
-            min={min}
-            max={max}
-        />
-    ));
-
-    const MemoToggleControl = React.memo(({label, prop}) => (
-        <ToggleControl
-            label={label}
-            checked={!!settings?.[prop]}
-            onChange={(newValue) => updateSettings({[prop]: newValue})}
-            className={'flex items-center'}
-            __nextHasNoMarginBottom
-        />
-    ));
-
-    const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
-        <BaseControl
-            label={label}
-            __nextHasNoMarginBottom={true}
-        >
-            <MediaUploadCheck>
-                <MediaUpload
-                    title={label}
-                    onSelect={(newValue) => updateSettings({
-                        [prop]: {
-                            type: newValue.type,
-                            id: newValue.id,
-                            url: newValue.url,
-                            alt: newValue?.alt,
-                            sizes: newValue?.sizes,
-                        }
-                    })}
-                    allowedTypes={allowedTypes || ['image']}
-                    value={settings?.[prop] ?? {}}
-                    render={({open}) => {
-                        return <PreviewThumbnail
-                            image={settings?.[prop] ?? {}}
-                            callback={(newValue) => updateSettings({
-                                [prop]: undefined
-                            })}
-                            style={{
-                                objectFit: 'contain'
-                            }}
-                            onClick={open}
-                        />;
-                    }}
-                />
-            </MediaUploadCheck>
-        </BaseControl>
-    ));
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>

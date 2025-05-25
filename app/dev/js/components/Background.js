@@ -212,7 +212,7 @@ function parseProp(prop) {
 
 function imageSet(media, resolution) {
 
-    const size = media?.sizes?.[resolution];
+    const size = media?.sizes?.[resolution || 'large'];
 
     const url = size?.url ?? false;
 

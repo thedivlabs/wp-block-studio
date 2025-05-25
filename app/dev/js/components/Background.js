@@ -704,8 +704,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             />
             <MemoRangeControl
                 label="Width"
-                value={settings?.['width']}
-                callback={(newValue) => updateSettings({'width': newValue})}
+                value={settings?.['widthMobile']}
+                callback={(newValue) => updateSettings({'widthMobile': newValue})}
                 min={0}
                 max={100}
             />

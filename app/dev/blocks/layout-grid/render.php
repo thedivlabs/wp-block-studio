@@ -14,7 +14,7 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
-if ( $is_loop ) {
+if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 	$grid_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query ?? false );
 
@@ -76,17 +76,18 @@ if ( $is_loop ) {
 	}
 
 
-} else {
-
-
+} elseif ( ! empty( $block->parsed_block['innerBlocks'] ) ) {
+	
 	echo $block->inner_content[0];
 
-	foreach ( $block->parsed_block['innerBlocks'] as $parsed_block ) {
+	foreach ( $block->parsed_block['innerBlocks'] ?? [] as $parsed_block ) {
 
 		echo render_block( $parsed_block );
 	}
 
 	echo $block->inner_content[ count( $block->inner_content ) - 1 ];
+} else {
+	echo $content;
 }
 
 

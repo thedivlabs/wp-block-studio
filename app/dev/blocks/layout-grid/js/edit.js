@@ -334,7 +334,7 @@ registerBlockType(metadata.name, {
 
         const PaginationButton = () => {
             if (!!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
-                return <button type="button" class="w-full h-10 relative z-20 wpbs-cta-button is-style-outline"
+                return <button type="button" class="w-full h-10 relative z-20 wpbs-cta-button is-style-outline hidden"
                                data-wp-on-async--click="actions.pagination">
                     {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
                 </button>;

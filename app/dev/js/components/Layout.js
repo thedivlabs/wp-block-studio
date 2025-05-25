@@ -58,7 +58,9 @@ const LAYOUT_PROPS = {
         'offset-header',
         'offset-header-mobile',
         'text-color-hover',
-        'text-color-mobile'
+        'text-color-mobile',
+        'container',
+        'container-mobile',
     ],
     layout: [
         'offset-header',

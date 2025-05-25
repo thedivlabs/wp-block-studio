@@ -17,7 +17,7 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 
 const selector = 'wpbs-layout-wrapper';
 
-const classNames = (attributes = {}) =>{
+const classNames = (attributes = {}) => {
 
     return [
         selector + ' w-full block relative',
@@ -25,7 +25,7 @@ const classNames = (attributes = {}) =>{
     ].filter(x => x).join(' ');
 }
 
-function RenderContent({ attributes, blockProps, innerBlocksProps, editor = false }) {
+function RenderContent({attributes, blockProps, innerBlocksProps, editor = false}) {
 
     const ElementTagName = ElementTag(attributes);
 
@@ -33,11 +33,11 @@ function RenderContent({ attributes, blockProps, innerBlocksProps, editor = fals
         return (
             <ElementTagName {...blockProps}>
                 <div {...innerBlocksProps} />
-                {editor && <BackgroundElement attributes={attributes} editor={true} />}
+                {editor && <BackgroundElement attributes={attributes} editor={true}/>}
             </ElementTagName>
         );
     } else {
-        const { children, ...rest } = innerBlocksProps;
+        const {children, ...rest} = innerBlocksProps;
         return (
             <ElementTagName {...blockProps}>
                 {children}
@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']
-            ? useInnerBlocksProps({ className: selector + ' w-full h-full' })
+            ? useInnerBlocksProps({className: selector + ' w-full h-full'})
             : useInnerBlocksProps(blockProps);
 
 
@@ -100,35 +100,23 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const { attributes } = props;
+        const {attributes} = props;
 
         const blockProps = useBlockProps.save({
             className: classNames(attributes),
         });
 
-        const ElementTagName = ElementTag(attributes);
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className: 'wpbs-layout-wrapper w-full h-full'
+        });
 
-        if (!!attributes['wpbs-background']) {
-            const innerBlocksProps = {
-                className: selector + ' w-full h-full',
-            };
-
-            return (
-                <ElementTagName {...blockProps}>
-                    <div {...innerBlocksProps}>
-                        <InnerBlocks.Content />
-                    </div>
-                </ElementTagName>
-            );
-        }
-
-        return (
-            <ElementTagName {...blockProps}>
-                <InnerBlocks.Content />
-            </ElementTagName>
-        );
+        return  <RenderContent
+            attributes={attributes}
+            blockProps={blockProps}
+            innerBlocksProps={innerBlocksProps}
+            editor={false}
+        />
     }
-
 })
 
 

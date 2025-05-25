@@ -93,7 +93,7 @@ function Media({attributes, editor = false, props = {}}) {
     }
 }
 
-const breakpoints = WPBS?.settings?.breakpoints ?? {};
+//const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},

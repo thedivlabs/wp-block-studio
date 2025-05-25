@@ -427,41 +427,47 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Resolution"
-                prop={'resolution'}
+                value={settings?.['resolution']}
+                callback={(newValue) => updateSettings({'resolution': newValue})}
                 options={RESOLUTION_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Size"
-                prop={'size'}
+                value={settings?.['size']}
+                callback={(newValue) => updateSettings({'size': newValue})}
                 options={SIZE_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Blend"
-                prop={'blend'}
+                value={settings?.['blend']}
+                callback={(newValue) => updateSettings({'blend': newValue})}
                 options={BLEND_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Position"
-                prop={'position'}
+                value={settings?.['position']}
+                callback={(newValue) => updateSettings({'position': newValue})}
                 options={POSITION_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Origin"
-                prop={'origin'}
+                value={settings?.['origin']}
+                callback={(newValue) => updateSettings({'origin': newValue})}
                 options={ORIGIN_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoUnitControl
                 label={'Max Height'}
-                prop={'maxHeight'}
+                value={settings?.['maxHeight']}
+                callback={(newValue) => updateSettings({'maxHeight': newValue})}
                 units={[
                     {value: 'vh', label: 'vh', default: 0},
                 ]}
@@ -469,7 +475,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Repeat"
-                prop={'repeat'}
+                value={settings?.['repeat']}
+                callback={(newValue) => updateSettings({'repeat': newValue})}
                 options={REPEAT_OPTIONS}
                 __nextHasNoMarginBottom
             />
@@ -492,31 +499,36 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             />
             <MemoRangeControl
                 label="Scale"
-                prop={'scale'}
+                value={settings?.['scale']}
+                callback={(newValue) => updateSettings({'scale': newValue})}
                 min={0}
                 max={200}
             />
             <MemoRangeControl
                 label="Opacity"
-                prop={'opacity'}
+                value={settings?.['opacity']}
+                callback={(newValue) => updateSettings({'opacity': newValue})}
                 min={0}
                 max={100}
             />
             <MemoRangeControl
                 label="Width"
-                prop={'width'}
+                value={settings?.['width']}
+                callback={(newValue) => updateSettings({'width': newValue})}
                 min={0}
                 max={100}
             />
             <MemoRangeControl
                 label="Height"
-                prop={'height'}
+                value={settings?.['height']}
+                callback={(newValue) => updateSettings({'height': newValue})}
                 min={0}
                 max={100}
             />
             <MemoRangeControl
                 label="Fade"
-                prop={'fade'}
+                value={settings?.['fade']}
+                callback={(newValue) => updateSettings({'fade': newValue})}
                 min={0}
                 max={100}
             />
@@ -526,7 +538,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
               style={{padding: '1rem 0'}}>
             <MemoToggleControl
                 label="Mask"
-                prop="mask"
+                value={!!settings?.['mask']}
+                callback={(newValue) => updateSettings({'mask': newValue})}
             />
         </Grid>
 
@@ -554,7 +567,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Origin"
-                    prop={'maskOrigin'}
+                    value={settings?.['maskOrigin']}
+                    callback={(newValue) => updateSettings({'maskOrigin': newValue})}
                     options={ORIGIN_OPTIONS}
                     __nextHasNoMarginBottom
                 />
@@ -562,7 +576,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Size"
-                    prop={'maskSize'}
+                    value={settings?.['maskSize']}
+                    callback={(newValue) => updateSettings({'maskSize': newValue})}
                     options={SIZE_OPTIONS}
                     __nextHasNoMarginBottom
                 />
@@ -594,52 +609,57 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 ]}
                 clearable={true}
                 value={settings?.['overlay'] ?? undefined}
-                onChange={(value) => updateSettings({'overlay': value})}
+                onChange={(newValue) => updateSettings({'overlay': newValue})}
             />
         </BaseControl>
     </Grid>
 
     const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
-
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Resolution"
-                prop={'resolutionMobile'}
+                value={settings?.['resolutionMobile']}
+                callback={(newValue) => updateSettings({'resolutionMobile': newValue})}
                 options={RESOLUTION_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Size"
-                prop={'sizeMobile'}
+                value={settings?.['sizeMobile']}
+                callback={(newValue) => updateSettings({'sizeMobile': newValue})}
                 options={SIZE_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Blend"
-                prop={'blendMobile'}
+                value={settings?.['blendMobile']}
+                callback={(newValue) => updateSettings({'blendMobile': newValue})}
                 options={BLEND_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Position"
-                prop={'positionMobile'}
+                value={settings?.['positionMobile']}
+                callback={(newValue) => updateSettings({'positionMobile': newValue})}
                 options={POSITION_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Origin"
-                prop={'originMobile'}
+                value={settings?.['originMobile']}
+                callback={(newValue) => updateSettings({'originMobile': newValue})}
                 options={ORIGIN_OPTIONS}
                 __nextHasNoMarginBottom
             />
             <MemoUnitControl
                 label={'Max Height'}
-                prop={'maxHeightMobile'}
+                value={settings?.['maxHeightMobile']}
+                callback={(newValue) => updateSettings({'maxHeightMobile': newValue})}
                 units={[
                     {value: 'vh', label: 'vh', default: 0},
                 ]}
@@ -647,13 +667,14 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <MemoSelectControl
                 __next40pxDefaultSize
                 label="Repeat"
-                prop={'repeatMobile'}
+                value={settings?.['repeatMobile']}
+                callback={(newValue) => updateSettings({'repeatMobile': newValue})}
                 options={REPEAT_OPTIONS}
                 __nextHasNoMarginBottom
             />
 
-
         </Grid>
+
         <Grid columns={1} columnGap={15} rowGap={20}>
             <PanelColorSettings
                 enableAlpha
@@ -663,38 +684,43 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         slug: 'colorMobile',
                         label: 'Color',
                         value: settings?.['colorMobile'] ?? '',
-                        onChange: (color) => updateSettings({'colorMobile': color}),
+                        onChange: (newValue) => updateSettings({colorMobile: newValue}),
                         isShownByDefault: true
                     }
                 ]}
             />
             <MemoRangeControl
                 label="Scale"
-                prop={'scaleMobile'}
+                value={settings?.['scaleMobile']}
+                callback={(newValue) => updateSettings({'scaleMobile': newValue})}
                 min={0}
                 max={200}
             />
             <MemoRangeControl
                 label="Opacity"
-                prop={'opacityMobile'}
+                value={settings?.['opacityMobile']}
+                callback={(newValue) => updateSettings({'opacityMobile': newValue})}
                 min={0}
                 max={100}
             />
             <MemoRangeControl
                 label="Width"
-                prop={'widthMobile'}
+                value={settings?.['width']}
+                callback={(newValue) => updateSettings({'width': newValue})}
                 min={0}
                 max={100}
             />
             <MemoRangeControl
                 label="Height"
-                prop={'heightMobile'}
+                value={settings?.['heightMobile']}
+                callback={(newValue) => updateSettings({'heightMobile': newValue})}
                 min={0}
                 max={100}
             />
             <MemoRangeControl
                 label="Fade"
-                prop={'fadeMobile'}
+                value={settings?.['fadeMobile']}
+                callback={(newValue) => updateSettings({'fadeMobile': newValue})}
                 min={0}
                 max={100}
             />
@@ -704,25 +730,36 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
               style={{padding: '1rem 0'}}>
             <MemoToggleControl
                 label="Mask"
-                prop="maskMobile"
+                value={!!settings?.['maskMobile']}
+                callback={(newValue) => updateSettings({'maskMobile': newValue})}
             />
         </Grid>
 
-        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.maskMobile ? 'none' : null}}>
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
 
 
             <MemoMediaControl
                 label={'Mask Image'}
-                prop={'maskImageMobile'}
                 allowedTypes={['image']}
+                value={settings?.['maskImageLargeMobile']}
+                callback={(newValue) => updateSettings({
+                    maskImageLargeMobile: {
+                        type: newValue.type,
+                        id: newValue.id,
+                        url: newValue.url,
+                        alt: newValue?.alt,
+                        sizes: newValue?.sizes,
+                    }
+                })}
             />
 
-            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.maskMobile ? 'none' : null}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
 
                 <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Origin"
-                    prop={'maskOriginMobile'}
+                    value={settings?.['maskOriginMobile']}
+                    callback={(newValue) => updateSettings({'maskOriginMobile': newValue})}
                     options={ORIGIN_OPTIONS}
                     __nextHasNoMarginBottom
                 />
@@ -730,13 +767,13 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 <MemoSelectControl
                     __next40pxDefaultSize
                     label="Mask Size"
-                    prop={'maskSizeMobile'}
+                    value={settings?.['maskSizeMobile']}
+                    callback={(newValue) => updateSettings({'maskSizeMobile': newValue})}
                     options={SIZE_OPTIONS}
                     __nextHasNoMarginBottom
                 />
+
             </Grid>
-
-
         </Grid>
 
         <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
@@ -762,8 +799,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     }
                 ]}
                 clearable={true}
-                value={settings?.['overlayMobile'] ?? {}}
-                onChange={(value) => updateSettings({'overlayMobile': value})}
+                value={settings?.['overlayMobile'] ?? undefined}
+                onChange={(newValue) => updateSettings({'overlayMobile': newValue})}
             />
         </BaseControl>
     </Grid>
@@ -780,7 +817,8 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                     <MemoSelectControl
                         __next40pxDefaultSize
                         label="Type"
-                        prop={'Type'}
+                        value={settings?.['type']}
+                        callback={(newValue) => updateSettings({'type': newValue})}
                         options={[
                             {label: 'Select', value: ''},
                             {label: 'Image', value: 'image'},
@@ -796,12 +834,14 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
                             <MemoMediaControl
                                 label={'Mobile Image'}
-                                prop={'mobileImage'}
+                                value={settings?.['mobileImage']}
+                                callback={(newValue) => updateSettings({'mobileImage': newValue})}
                                 allowedTypes={['image']}
                             />
                             <MemoMediaControl
                                 label={'Large Image'}
-                                prop={'largeImage'}
+                                value={settings?.['largeImage']}
+                                callback={(newValue) => updateSettings({'largeImage': newValue})}
                                 allowedTypes={['image']}
                             />
 
@@ -811,13 +851,15 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
                             <MemoMediaControl
                                 label={'Mobile Video'}
-                                prop={'mobileVideo'}
+                                value={settings?.['mobileVideo']}
+                                callback={(newValue) => updateSettings({'mobileVideo': newValue})}
                                 allowedTypes={['video']}
                             />
 
                             <MemoMediaControl
                                 label={'Large Video'}
-                                prop={'largeVideo'}
+                                value={settings?.['largeVideo']}
+                                callback={(newValue) => updateSettings({'largeVideo': newValue})}
                                 allowedTypes={['video']}
                             />
 
@@ -828,15 +870,18 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
                             <MemoToggleControl
                                 label="Eager"
-                                prop="eager"
+                                value={!!settings?.['eager']}
+                                callback={(newValue) => updateSettings({'eager': newValue})}
                             />
                             <MemoToggleControl
                                 label="Force"
-                                prop="force"
+                                value={!!settings?.['force']}
+                                callback={(newValue) => updateSettings({'force': newValue})}
                             />
                             <MemoToggleControl
                                 label="Fixed"
-                                prop="fixed"
+                                value={!!settings?.['fixed']}
+                                callback={(newValue) => updateSettings({'fixed': newValue})}
                             />
 
                         </Grid>

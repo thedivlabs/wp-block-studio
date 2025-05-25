@@ -69,11 +69,13 @@ if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 	$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
 
-	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace( '<script class="wpbs-layout-grid-args" type="application/json">', '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
+	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace( '<script class="wpbs-layout-grid-args" type="application/json">', '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $query->query,
+			'cur'   => $query->is_paged ?: 1,
+			'max'   => $query->max_num_pages ?? 1,
 			'attrs' => $attributes['wpbs-query'],
-		] ), $block->inner_content[ count( $block->inner_content ) - 1 ] );
+		] ) ), $block->inner_content[ count( $block->inner_content ) - 1 ] );
 
 	foreach ( $block->inner_content as $html ) {
 		echo $html;

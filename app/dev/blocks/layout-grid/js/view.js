@@ -130,9 +130,13 @@ const {state} = store('wpbs/grid', {
 
             const {ref: grid} = getElement();
             const context = JSON.parse(JSON.stringify(getContext()));
+            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML || '');
 
             setMasonry(grid);
             setDividers(grid, context);
+
+            console.log(context);
+            console.log(data);
 
             if (!grid.dataset.page) {
                 [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {

@@ -20,7 +20,7 @@ export const swiperDefaultArgs = {
     uniqueNavElements: true,
     on: {
         afterInit: (swiper) => {
-            if(swiper.enabled === false) {
+            if (swiper.enabled === false) {
                 swiper.el.classList.add('swiper--disabled');
             } else {
                 swiper.el.classList.remove('swiper--disabled');
@@ -44,7 +44,7 @@ export const swiperDefaultArgs = {
             }
         },
         resize: (swiper) => {
-            if(swiper.enabled === false) {
+            if (swiper.enabled === false) {
                 swiper.el.classList.add('swiper--disabled');
             } else {
                 swiper.el.classList.remove('swiper--disabled');
@@ -52,3 +52,15 @@ export const swiperDefaultArgs = {
         }
     }
 };
+
+
+export const imageButtonStyle = {
+    border: '1px dashed lightgray',
+    width: '100%',
+    height: 'auto',
+    aspectRatio: '16/9',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+}

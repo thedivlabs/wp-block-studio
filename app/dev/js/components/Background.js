@@ -121,29 +121,29 @@ const DIMENSION_UNITS = [
     {value: 'ch', label: 'ch', default: 0},
 ]
 
-const MemoSelectControl = React.memo(({label, options, prop}) => (
+const MemoSelectControl = React.memo(({label, options, value, callback}) => (
     <SelectControl
         label={label}
         options={options}
-        value={settings?.[prop] ?? ''}
-        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        value={value}
+        onChange={callback}
         __next40pxDefaultSize
         __nextHasNoMarginBottom
     />
 ));
 
-const MemoUnitControl = React.memo(({label, units, prop}) => (
+const MemoUnitControl = React.memo(({label, units, value, callback}) => (
     <UnitControl
         label={label}
-        value={settings?.[prop] ?? ''}
+        value={value}
         units={units || DIMENSION_UNITS}
         isResetValueOnUnitChange={true}
-        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        onChange={callback}
         __next40pxDefaultSize
     />
 ));
 
-const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
+const MemoRangeControl = React.memo(({label, value, callback, step, min, max}) => (
     <RangeControl
         label={label}
         step={step}
@@ -151,8 +151,8 @@ const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
         allowReset={true}
         isShiftStepEnabled
         initialPosition={0}
-        value={settings?.[prop] ?? ''}
-        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        value={value}
+        onChange={callback}
         __next40pxDefaultSize
         __nextHasNoMarginBottom
         min={min}
@@ -160,17 +160,17 @@ const MemoRangeControl = React.memo(({label, prop, step, min, max}) => (
     />
 ));
 
-const MemoToggleControl = React.memo(({label, prop}) => (
+const MemoToggleControl = React.memo(({label, value, callback}) => (
     <ToggleControl
         label={label}
-        checked={!!settings?.[prop]}
-        onChange={(newValue) => updateSettings({[prop]: newValue})}
+        checked={!!value}
+        onChange={callback}
         className={'flex items-center'}
         __nextHasNoMarginBottom
     />
 ));
 
-const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
+const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => (
     <BaseControl
         label={label}
         __nextHasNoMarginBottom={true}
@@ -178,23 +178,13 @@ const MemoMediaControl = React.memo(({label, allowedTypes, prop}) => (
         <MediaUploadCheck>
             <MediaUpload
                 title={label}
-                onSelect={(newValue) => updateSettings({
-                    [prop]: {
-                        type: newValue.type,
-                        id: newValue.id,
-                        url: newValue.url,
-                        alt: newValue?.alt,
-                        sizes: newValue?.sizes,
-                    }
-                })}
+                onSelect={callback}
                 allowedTypes={allowedTypes || ['image']}
-                value={settings?.[prop] ?? {}}
+                value={value}
                 render={({open}) => {
                     return <PreviewThumbnail
-                        image={settings?.[prop] ?? {}}
-                        callback={(newValue) => updateSettings({
-                            [prop]: undefined
-                        })}
+                        image={value}
+                        callback={callback}
                         style={{
                             objectFit: 'contain'
                         }}
@@ -432,7 +422,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
     }, [settings]);
 
 
-
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>
             <MemoSelectControl
@@ -548,6 +537,16 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                 label={'Mask Image'}
                 prop={'maskImageLarge'}
                 allowedTypes={['image']}
+                value={settings?.['maskImageLarge']}
+                callback={(newValue) => updateSettings({
+                    maskImageLarge: {
+                        type: newValue.type,
+                        id: newValue.id,
+                        url: newValue.url,
+                        alt: newValue?.alt,
+                        sizes: newValue?.sizes,
+                    }
+                })}
             />
 
             <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>

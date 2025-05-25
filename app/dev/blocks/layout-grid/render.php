@@ -64,7 +64,7 @@ if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 	}
 
 	$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
-WPBS::console_log($block->inner_content);
+
 	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace('<script class="wpbs-layout-grid-args" type="application/json">','<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $query->query,

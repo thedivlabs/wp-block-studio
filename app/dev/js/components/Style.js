@@ -7,6 +7,7 @@ export const STYLE_ATTRIBUTES = {
 };
 
 export function getCSSFromStyle(raw) {
+
     if (typeof raw !== 'string') return raw;
 
     if (raw.startsWith('var:')) {
@@ -38,18 +39,23 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
         let propsCss = '';
 
+        let rowGap = (rowGap = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null)) === 0 ? '0px' : rowGap;
+        let colGap = (colGap = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null)) === 0 ? '0px' : colGap;
+        let rowGapMobile = (rowGapMobile = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null)) === 0 ? '0px' : rowGapMobile;
+        let colGapMobile = (colGapMobile = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null)) === 0 ? '0px' : colGapMobile;
+
         const desktop = Object.fromEntries(Object.entries({
-            'row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-            'column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
-            '--row-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null),
-            '--column-gap': getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null),
+            'row-gap': rowGap,
+            'column-gap': colGap,
+            '--row-gap': rowGap,
+            '--column-gap': colGap,
         }).filter(([k, v]) => !!v));
 
         const mobile = Object.fromEntries(Object.entries({
-            'row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
-            'column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
-            '--row-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null),
-            '--column-gap': getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null),
+            'row-gap': rowGapMobile,
+            'column-gap': colGapMobile,
+            '--row-gap': rowGapMobile,
+            '--column-gap': colGapMobile,
         }).filter(([k, v]) => !!v));
 
         desktopProps = {

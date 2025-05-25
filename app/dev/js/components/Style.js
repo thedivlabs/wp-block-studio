@@ -41,22 +41,22 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
         const rowGap = (() => {
             const val = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null);
-            return val === 0 ? '0px' : val;
+            return val === 0 || val === '0' ? '0px' : val;
         })();
 
         const colGap = (() => {
             const val = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null);
-            return val === 0 ? '0px' : val;
+            return val === 0 || val === '0' ? '0px' : val;
         })();
 
         const rowGapMobile = (() => {
             const val = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null);
-            return val === 0 ? '0px' : val;
+            return val === 0 || val === '0' ? '0px' : val;
         })();
 
         const colGapMobile = (() => {
             const val = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null);
-            return val === 0 ? '0px' : val;
+            return val === 0 || val === '0' ? '0px' : val;
         })();
 
         const desktop = Object.fromEntries(Object.entries({

@@ -39,10 +39,25 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
         let propsCss = '';
 
-        let rowGap = (rowGap = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null)) === 0 ? '0px' : rowGap;
-        let colGap = (colGap = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null)) === 0 ? '0px' : colGap;
-        let rowGapMobile = (rowGapMobile = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null)) === 0 ? '0px' : rowGapMobile;
-        let colGapMobile = (colGapMobile = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null)) === 0 ? '0px' : colGapMobile;
+        const rowGap = (() => {
+            const val = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null);
+            return val === 0 ? '0px' : val;
+        })();
+
+        const colGap = (() => {
+            const val = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null);
+            return val === 0 ? '0px' : val;
+        })();
+
+        const rowGapMobile = (() => {
+            const val = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null);
+            return val === 0 ? '0px' : val;
+        })();
+
+        const colGapMobile = (() => {
+            const val = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null);
+            return val === 0 ? '0px' : val;
+        })();
 
         const desktop = Object.fromEntries(Object.entries({
             'row-gap': rowGap,

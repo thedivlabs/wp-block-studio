@@ -13,10 +13,6 @@
     },
     "postId": {
       "type": "string"
-    },
-    "styleCss": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
   "usesContext": [

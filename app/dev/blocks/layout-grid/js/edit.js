@@ -273,9 +273,8 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
-                       uniqueId={uniqueId}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid']}
+                       deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
                        props={{
                            '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
                            breakpoints: {
@@ -334,7 +333,7 @@ registerBlockType(metadata.name, {
         }
 
         const PaginationButton = () => {
-            if (!!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
+            if ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
                 return <button type="button"
                                class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
                                data-wp-on-async--click="actions.pagination">

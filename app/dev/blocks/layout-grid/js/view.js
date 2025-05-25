@@ -130,8 +130,8 @@ const {state} = store('wpbs/grid', {
 
             const {ref: grid} = getElement();
             const context = JSON.parse(JSON.stringify(getContext()));
-            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML || '');
-            const {cur, max} = data;
+            const scriptTag = grid.querySelector('script.wpbs-layout-grid-args');
+            const {cur, max} = scriptTag?.innerHTML ? JSON.parse(scriptTag?.innerHTML ?? '') : {};
 
             setMasonry(grid);
             setDividers(grid, context);
@@ -150,11 +150,13 @@ const {state} = store('wpbs/grid', {
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
-            const page = parseInt(grid.dataset.page ? grid.dataset.page : 2);
+            const page = parseInt(grid.dataset?.page ?? 2);
 
             grid.dataset.page = String(page + 1);
 
-            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML || '');
+            const scriptTag = grid.querySelector('script.wpbs-layout-grid-args');
+
+            const data = scriptTag?.innerHTML ? JSON.parse(scriptTag?.innerHTML ?? '') : {};
 
             const nonce = WPBS?.settings?.nonce ?? false;
 

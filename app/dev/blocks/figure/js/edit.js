@@ -359,7 +359,7 @@ registerBlockType(metadata.name, {
                                             render={({open}) => {
                                                 return <PreviewThumbnail
                                                     image={settings?.video || {}}
-                                                    callback={() => updateSettings({video:undefined})}
+                                                    callback={() => updateSettings({video: undefined})}
                                                     onClick={open}
                                                 />;
                                             }}
@@ -377,16 +377,15 @@ registerBlockType(metadata.name, {
                                     label="Eager"
                                     checked={!!settings?.eager}
                                     onChange={(value) => {
-                                        setEager(value);
-                                        setAttributes({['wpbs-eager']: value});
+                                        updateSettings({'eager': value});
 
                                         if (value) {
                                             setAttributes({
                                                 preload: [
                                                     {
-                                                        mobile: !!attributes['wpbs-mobileImage'] ? attributes['wpbs-mobileImage'].id : null,
-                                                        large: !!attributes['wpbs-largeImage'] ? attributes['wpbs-largeImage'].id : null,
-                                                        size: attributes['wpbs-resolution'] || null
+                                                        mobile: settings?.mobileImage?.id ?? null,
+                                                        large: settings?.largeImage?.id ?? null,
+                                                        size: settings?.resolution ?? null
                                                     }
                                                 ]
                                             });
@@ -397,32 +396,23 @@ registerBlockType(metadata.name, {
                                 />
                                 <ToggleControl
                                     label="Force"
-                                    checked={force}
-                                    onChange={(value) => {
-                                        setForce(value);
-                                        setAttributes({['wpbs-force']: value});
-                                    }}
+                                    checked={!!settings?.force}
+                                    onChange={(value) => updateSettings({force: value})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
                                 <ToggleControl
                                     label="Contain"
-                                    checked={contain}
-                                    onChange={(value) => {
-                                        setContain(value);
-                                        setAttributes({['wpbs-contain']: value});
-                                    }}
+                                    checked={!!settings?.contain}
+                                    onChange={(value) => updateSettings({contain: value})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
                                 {attributes['wpbs-type'] === 'featured-image' && (
                                     <ToggleControl
                                         label="Link Post"
-                                        checked={!!linkPost}
-                                        onChange={(value) => {
-                                            setLinkPost(value);
-                                            setAttributes({['wpbs-linkPost']: value});
-                                        }}
+                                        checked={!!settings?.linkPost}
+                                        onChange={(value) => updateSettings({linkPost: value})}
                                         className="flex items-center"
                                         __nextHasNoMarginBottom
                                     />
@@ -437,8 +427,6 @@ registerBlockType(metadata.name, {
 
             <figure {...blockProps}>
                 <Media attributes={attributes} editor={true}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       selector={'wpbs-figure'}/>
             </figure>
 
         </>;

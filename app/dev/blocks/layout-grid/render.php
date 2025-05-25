@@ -16,6 +16,10 @@ $query = ! $is_loop ? false : match ( true ) {
 
 if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
+	if ( ! $query->have_posts() ) {
+		return;
+	}
+
 	$grid_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query ?? false );
 
 	if ( $is_current && ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
@@ -65,11 +69,11 @@ if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 	$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
 
-	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace('<script class="wpbs-layout-grid-args" type="application/json">','<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
+	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace( '<script class="wpbs-layout-grid-args" type="application/json">', '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 			'query' => $query->query,
 			'attrs' => $attributes['wpbs-query'],
-		] ),$block->inner_content[ count( $block->inner_content ) - 1 ]);
+		] ), $block->inner_content[ count( $block->inner_content ) - 1 ] );
 
 	foreach ( $block->inner_content as $html ) {
 		echo $html;

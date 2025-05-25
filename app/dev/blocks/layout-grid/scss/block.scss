@@ -30,12 +30,12 @@
 
 
   .wpbs-layout-grid-card {
-    max-width: calc((100% - (var(--row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
+    max-width: calc((100% - (var(--grid-row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
   }
 
   &--masonry > &__container {
     & > .wpbs-layout-grid-card {
-      margin-bottom: var(--row-gap, var(--column-gap, 0px));
+      margin-bottom: var(--grid-row-gap, var(--grid-column-gap, 0px));
     }
   }
 
@@ -43,7 +43,7 @@
 
     &:before,
     &:after {
-      left: calc(0px - (var(--column-gap, var(--row-gap, 0px)) / 2));
+      left: calc(0px - (var(--grid-column-gap, var(--grid-row-gap, 0px)) / 2));
       color: var(--divider-color, lightgray);
       position: absolute;
       z-index: 10;
@@ -55,10 +55,10 @@
 
     &:before {
       content: "";
-      width: calc(100% + var(--column-gap, var(--row-gap, 0px)));
+      width: calc(100% + var(--grid-column-gap, var(--grid-row-gap, 0px)));
       border-bottom: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
-      font-size: var(--divider-icon-size, min(2rem, calc(var(--row-gap, var(--column-gap, 0px)) - 1rem)));
-      bottom: calc(0px - (var(--row-gap, var(--column-gap, 0px)) / 2));
+      font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-row-gap, var(--grid-column-gap, 0px)) - 1rem)));
+      bottom: calc(0px - (var(--grid-row-gap, var(--grid-column-gap, 0px)) / 2));
     }
 
     &:after {
@@ -66,7 +66,7 @@
       height: 100%;
       border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
       content: var(--divider-icon-large, '');
-      font-size: var(--divider-icon-size, min(2rem, calc(var(--column-gap, var(--row-gap, 0px)) - 1rem)));
+      font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-column-gap, var(--grid-row-gap, 0px)) - 1rem)));
     }
   }
 

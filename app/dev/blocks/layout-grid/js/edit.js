@@ -276,10 +276,16 @@ registerBlockType(metadata.name, {
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
                        props={{
+                           '--grid-row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
+                           '--grid-col-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
                            '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
                            breakpoints: {
                                [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'sm']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {'--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined},
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {
+                                   '--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined,
+                                   '--grid-row-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null,
+                                   '--grid-col-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null,
+                               },
                            }
                        }}
                 />

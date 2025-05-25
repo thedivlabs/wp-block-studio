@@ -1,23 +1,3 @@
-export function parseProp(prop) {
-
-    if (prop === '0' || !prop) {
-        return '0';
-    }
-
-    prop = typeof prop === 'string' ? prop : false;
-
-    if (!prop) {
-        return false
-    }
-
-    return [
-        'var(--wp--',
-        prop.replace('var:', '').replaceAll('|', '--'),
-        ')'
-    ].join('');
-
-}
-
 export const swiperDefaultArgs = {
     createElements: false,
     navigation: {
@@ -57,7 +37,7 @@ export const swiperDefaultArgs = {
         },
         paginationUpdate: (swiper, paginationEl) => {
 
-            if (swiper.isBeginning) {
+            if (!!swiper?.['isBeginning']) {
                 swiper.el.classList.add('swiper--start');
             } else {
                 swiper.el.classList.remove('swiper--start');
@@ -72,22 +52,3 @@ export const swiperDefaultArgs = {
         }
     }
 };
-
-export function breakpoint(prop) {
-
-}
-
-export const imageButtonStyle = {
-    border: '1px dashed lightgray',
-    width: '100%',
-    height: 'auto',
-    aspectRatio: '16/9',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-}
-
-export function checkKey() {
-    const domain = false;
-}

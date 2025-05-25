@@ -33,16 +33,6 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function blockStyles(attributes = {}) {
-
-    const {'wpbs-figure': settings = {}} = attributes;
-
-    return {
-        '--figure-type': settings?.type ?? null,
-        '--overlay': settings?.overlay ?? null,
-    };
-}
-
 function getSettings(attributes = {}) {
 
     const {'wpbs-figure': settings = {}} = attributes;
@@ -201,10 +191,7 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps({
-            className: blockClasses(attributes),
-            style: {
-                ...blockStyles(attributes),
-            }
+            className: blockClasses(attributes)
         });
 
         return <>
@@ -213,7 +200,10 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    css={[layoutCss(attributes)]}
                    deps={['wpbs-layout', 'wpbs-figure', attributes?.uniqueId]}
-                   props={{}}
+                   props={{
+                       '--figure-type': settings?.type ?? null,
+                       '--overlay': settings?.overlay ?? null,
+                   }}
             />
             <Link defaultValue={settings?.link} callback={(newValue) => updateSettings({'link': newValue})}/>
             <InspectorControls group="styles">
@@ -434,10 +424,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
             'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observe',
-            style: {
-                ...blockStyles(props.attributes),
-            }
+            'data-wp-init': 'callbacks.observe'
         });
 
 

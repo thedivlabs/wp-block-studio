@@ -73,7 +73,7 @@ function Media({attributes, editor = false, props = {}}) {
 
     const Content = () => {
 
-        switch (settings.type) {
+        switch (settings?.type ?? false) {
             case 'image':
 
                 return <ResponsivePicture mobile={settings?.['mobileImage']} large={settings?.['largeImage']}
@@ -233,10 +233,10 @@ registerBlockType(metadata.name, {
                             onChange={(newValue) => updateSettings({'type': newValue})}
                             __nextHasNoMarginBottom
                         />
-                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !type ? 'none' : null}}>
+                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings?.type ? 'none' : null}}>
 
                             <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{display: type !== 'image' && type !== 'featured-image' ? 'none' : null}}>
+                                  style={{display: settings?.type !== 'image' && settings?.type !== 'featured-image' ? 'none' : null}}>
                                 <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                                     <MediaUploadCheck>
                                         <MediaUpload
@@ -347,7 +347,7 @@ registerBlockType(metadata.name, {
 
 
                             <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{display: type !== 'video' ? 'none' : null}}>
+                                  style={{display: settings?.type !== 'video' ? 'none' : null}}>
 
                                 <BaseControl label={'Video'} __nextHasNoMarginBottom={true}>
                                     <MediaUploadCheck>
@@ -408,15 +408,13 @@ registerBlockType(metadata.name, {
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
-                                {attributes['wpbs-type'] === 'featured-image' && (
-                                    <ToggleControl
-                                        label="Link Post"
-                                        checked={!!settings?.linkPost}
-                                        onChange={(value) => updateSettings({linkPost: value})}
-                                        className="flex items-center"
-                                        __nextHasNoMarginBottom
-                                    />
-                                )}
+                                {settings?.type === 'featured-image' && <ToggleControl
+                                    label="Link Post"
+                                    checked={!!settings?.linkPost}
+                                    onChange={(value) => updateSettings({linkPost: value})}
+                                    className="flex items-center"
+                                    __nextHasNoMarginBottom
+                                />}
 
                             </Grid>
                         </Grid>

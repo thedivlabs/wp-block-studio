@@ -4,15 +4,17 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
+$settings = $attributes['wpbs-figure'] ?? [];
+
 //WPBS::console_log( $block ?? false );
 
-if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
+if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
 
 	$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 
 	$picture = '';
 
-	$breakpoint = $attributes['wpbs-breakpoint'] ?? $breakpoints['normal'] ?? false;
+	$breakpoint = $settings['breakpoint'] ?? $breakpoints['normal'] ?? false;
 
 	$class = implode( ' ', array_filter( [
 		'wpbs-picture'
@@ -22,10 +24,10 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 		'object-fit:inherit'
 	] ) );
 
-	$src_attr    = ! empty( $attributes['wpbs-eager'] ) ? 'src' : 'data-src';
-	$srcset_attr = ! empty( $attributes['wpbs-eager'] ) ? 'srcset' : 'data-srcset';
+	$src_attr    = ! empty( $settings['eager'] ) ? 'src' : 'data-src';
+	$srcset_attr = ! empty( $settings['eager'] ) ? 'srcset' : 'data-srcset';
 
-	$src_large      = wp_get_attachment_image_src( $featured_image_id, $attributes['wpbs-resolution'] ?? 'large' )[0] ?? false;
+	$src_large      = wp_get_attachment_image_src( $featured_image_id, $settings['resolution'] ?? 'large' )[0] ?? false;
 	$src_large_webp = $src_large ? $src_large . '.webp' : false;
 
 	$picture .= '<picture class="' . $class . '" style="' . $style . '">';
@@ -36,7 +38,7 @@ if ( ! empty( $block ) && ( $attributes['wpbs-type'] ?? false ) == 'featured-ima
 
 	$picture .= '<source type="image/jpeg" ' . $srcset_attr . '="' . $src_large . '" />';
 
-	$picture .= wp_get_attachment_image( $featured_image_id, $attributes['wpbs-resolution'] ?? 'large' );
+	$picture .= wp_get_attachment_image( $featured_image_id, $settings['resolution'] ?? 'large' );
 
 	$picture .= '</picture>';
 

@@ -311,7 +311,7 @@ function parseSpecial(prop, settings) {
 
 }
 
-function getPreloadAssets(attributes) {
+function getPreloadAssets(attributes, newValue) {
 
     const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
@@ -322,7 +322,6 @@ function getPreloadAssets(attributes) {
      }*/
 
     if (!!attributes?.['wpbs-background']?.eager) {
-        console.log(attributes);
 
         if (['image', 'featured-image'].includes(attributes?.['wpbs-background']?.type)) {
             if (attributes?.['wpbs-background']?.largeImage?.id ?? false) {
@@ -433,6 +432,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
     const [settings, setSettings] = useState(attributes['wpbs-background']);
 
     const updateSettings = useCallback((newValue = {}) => {
+
         if ('resolution' in newValue) {
             if (attributes['wpbs-background']?.largeImage?.sizes) {
                 newValue.largeImage = {
@@ -449,7 +449,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             }
         }
 
-        const preloadAssets = getPreloadAssets(attributes);
+        const preloadAssets = getPreloadAssets(attributes,newValue);
 
         const result = {
             ...attributes['wpbs-background'],

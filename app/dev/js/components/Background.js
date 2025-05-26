@@ -218,6 +218,9 @@ function imageSet(media, resolution) {
 
     const size = media?.sizes?.[resolution || 'large'];
 
+    console.log(media);
+    console.log(resolution);
+
     const url = size?.url ?? false;
 
     if (!url) {
@@ -323,7 +326,7 @@ function getPreloadAssets(attributes, newValue) {
 
             const largeImage = newValue?.largeImage ?? settings?.largeImage ?? false;
             const mobileImage = newValue?.mobileImage ?? settings?.mobileImage ?? false;
-            const resolution = newValue?.resolution ?? settings?.resolution;
+            const resolution = newValue?.resolution ?? settings?.resolution ?? 'large';
             const largeBreakpoint = !!newValue?.force || !!settings?.force ?
                 attributes['wpbs-layout']?.breakpoint ?? 'normal' :
                 !!mobileImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
@@ -350,7 +353,7 @@ function getPreloadAssets(attributes, newValue) {
                     ...{
                         [mobileImage.id]: {
                             breakpoint: mobileBreakpoint,
-                            resolution: resolution || 'mobile',
+                            resolution: resolution || 'large',
                             mobile: true
                         }
 

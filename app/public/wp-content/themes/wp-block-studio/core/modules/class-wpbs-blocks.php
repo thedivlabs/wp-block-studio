@@ -93,10 +93,6 @@ class WPBS_Blocks {
 						'type'         => 'string',
 						'show_in_rest' => true,
 					],
-					'wpbs-props' => [
-						'type'         => 'object',
-						'show_in_rest' => true,
-					],
 					'wpbs-preload' => [
 						'type'         => 'object',
 						'show_in_rest' => true,

@@ -369,7 +369,8 @@ class WPBS {
 		$preconnect_sources        = apply_filters( 'wpbs_preconnect_sources', [] );
 		$preload_sources           = apply_filters( 'wpbs_preload_sources', [] );
 		$preload_images            = apply_filters( 'wpbs_preload_images', [] );
-		$preload_images_responsive = array_values( array_unique( self::clean_array( apply_filters( 'wpbs_preload_images_responsive', [] ) ), SORT_REGULAR ) );
+
+		WPBS::console_log($preload_images);
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
@@ -418,17 +419,17 @@ class WPBS {
 
 		echo '<!-- Block images preload responsive -->';
 
-		$breakpoints   = array_values( array_unique( array_column( $preload_images_responsive, 'breakpoint' ) ) );
-		$mobile_images = [];
+		/*$mobile_images = [];
 		$large_images  = [];
-		WPBS::console_log($preload_images_responsive);
+
+
 		foreach ( $breakpoints as $bp ) {
 			$large_images[ $bp ] = array_map( function ( $img ) {
 				unset( $img['mobile'], $img['breakpoint'] );
 
 				return $img;
 			}, array_filter( $preload_images_responsive, function ( $img ) use ( $bp ) {
-				return $img['breakpoint'] === $bp && ! empty( $img['large'] );
+				return ($img['breakpoint'] ?? false) === $bp && ! empty( $img['large'] );
 			} ) );
 
 		}
@@ -438,7 +439,7 @@ class WPBS {
 
 				return $img;
 			}, array_filter( $preload_images_responsive, function ( $img ) use ( $bp ) {
-				return $img['breakpoint'] === $bp && ! empty( $img['mobile'] );
+				return ($img['breakpoint'] ?? false) === $bp && ! empty( $img['mobile'] );
 			} ) );
 
 		}
@@ -487,7 +488,7 @@ class WPBS {
 			}
 
 
-		}
+		}*/
 
 
 		$default_styles = [

@@ -18,17 +18,9 @@ class WPBS_Blocks {
 		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
 
-		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {
+		add_filter( 'wpbs_preload_images', function ( $images ) use ( $attributes ) {
 
-			$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout']['breakpoint'] ?? 'normal'][0];
-
-			$block_images = array_map( function ( $image ) use ( $attributes, $breakpoint ) {
-				return array_merge( $image, [
-					'breakpoint' => $breakpoint
-				] );
-			}, $attributes['wpbs-preload'] ?? [] );
-
-			return array_merge( $images, $block_images );
+			return array_merge( $images, $attributes['wpbs-preload'] ?? [] );
 
 		} );
 

@@ -1,12 +1,8 @@
 <?php
 
-//$css = WPBS_Style::block_styles( $attributes ?? [], $block ?? false );
-
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 $settings = $attributes['wpbs-figure'] ?? [];
-
-//WPBS::console_log( $block ?? false );
 
 if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
 
@@ -14,7 +10,7 @@ if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && 
 
 	$picture = '';
 
-	$breakpoint = $settings['breakpoint'] ?? $breakpoints['normal'] ?? false;
+	$breakpoint = $breakpoints[ $attributes['wpbs-layout']['breakpoint'] ?? 'normal' ] ?? false;
 
 	$class = implode( ' ', array_filter( [
 		'wpbs-picture'
@@ -52,16 +48,4 @@ if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && 
 } else {
 	echo $content ?? false;
 }
-
-
-
-
-
-/*
- *
- * "
-<figure class="wp-block-wpbs-figure wpbs-figure flex items-center justify-center relative max-w-full max-h-full wpbs-figure-21" data-wp-interactive="wpbs" data-wp-init="callbacks.observe"><div class="wpbs-figure__media w-full h-full overflow-hidden rounded-inherit" style="object-fit:cover"><picture class="wpbs-picture" style="object-fit:inherit"><source data-srcset="https://wp-block-studio.local/wp-content/uploads/brandon-siu-608784-unsplash-1500x1001.jpg.webp" media="(min-width: 1304px)"/><source data-srcset="https://wp-block-studio.local/wp-content/uploads/brandon-siu-608784-unsplash-1500x1001.jpg" media="(min-width: 1304px)"/><source data-srcset="https://wp-block-studio.local/wp-content/uploads/brandon-siu-608784-unsplash-1500x1001.jpg.webp" media="(min-width: 32px)"/><source data-srcset="https://wp-block-studio.local/wp-content/uploads/brandon-siu-608784-unsplash-1500x1001.jpg" media="(min-width: 32px)"/><img data-src="https://wp-block-studio.local/wp-content/uploads/brandon-siu-608784-unsplash-1500x1001.jpg" alt="" loading="lazy"/></picture></div></figure>
-"
- *
- * */
 

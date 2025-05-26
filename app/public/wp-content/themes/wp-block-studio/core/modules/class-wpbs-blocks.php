@@ -20,7 +20,7 @@ class WPBS_Blocks {
 
 		add_filter( 'wpbs_preload_images', function ( $images ) use ( $attributes ) {
 
-			return array_merge( $images, $attributes['wpbs-preload'] ?? [] );
+			return array_replace( [], $images, $attributes['wpbs-preload'] ?? [] );
 
 		} );
 

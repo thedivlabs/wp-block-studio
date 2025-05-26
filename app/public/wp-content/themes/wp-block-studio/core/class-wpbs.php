@@ -68,28 +68,28 @@ class WPBS {
 		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
 		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
 		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [], false, [
-			'strategy' => 'async',
+			'strategy'  => 'async',
 			'in_footer' => true,
 		] );
 
 		/* Swiper */
 		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
 		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [ 'jquery' ], false, [
-			'strategy' => 'defer',
+			'strategy'  => 'defer',
 			'in_footer' => true,
 		] );
 
 		/* Masonry */
 		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [ 'jquery' ], false, [
-			'strategy' => 'async',
+			'strategy'  => 'async',
 			'in_footer' => true,
 		] );
 
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-			'containers' => wp_get_global_settings()['custom']['container'] ?? [],
-			'colors'      => array_values(array_merge(wp_get_global_settings()['color']['palette']['theme'] ?? [],wp_get_global_settings()['color']['palette']['default'] ?? [])),
+			'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+			'colors'      => array_values( array_merge( wp_get_global_settings()['color']['palette']['theme'] ?? [], wp_get_global_settings()['color']['palette']['default'] ?? [] ) ),
 		] );
 
 	}
@@ -114,10 +114,6 @@ class WPBS {
 
 		//wp_enqueue_script( 'wpbs-swiper-js' );
 		//wp_enqueue_style( 'wpbs-swiper-css' );
-
-
-
-
 
 
 	}
@@ -366,11 +362,9 @@ class WPBS {
 		global $wp_scripts;
 		global $wp_styles;
 
-		$preconnect_sources        = apply_filters( 'wpbs_preconnect_sources', [] );
-		$preload_sources           = apply_filters( 'wpbs_preload_sources', [] );
-		$preload_images            = apply_filters( 'wpbs_preload_images', [] );
-
-		WPBS::console_log($preload_images);
+		$preconnect_sources = apply_filters( 'wpbs_preconnect_sources', [] );
+		$preload_sources    = apply_filters( 'wpbs_preload_sources', [] );
+		$preload_images     = apply_filters( 'wpbs_preload_images', [] );
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
@@ -388,25 +382,33 @@ class WPBS {
 			}
 		}
 
-		foreach ( array_unique( array_filter( $preload_images ) ) as $image ) {
+		if ( ! empty( $preload_images ) ) {
+			echo '<!-- Preload images -->';
+		}
 
-			if ( empty( $image['id'] ) ) {
-				continue;
-			}
+		foreach ( array_unique( array_keys( $preload_images ) ) as $k => $image_id ) {
 
-			$src          = wp_get_attachment_image_src( $image['id'], $image['size'] ?? 'large' )[0] ?? false;
-			$image_srcset = wp_get_attachment_image_srcset( $image['id'] );
+			$image_data = $preload_images[ $image_id ];
+
+			$src          = wp_get_attachment_image_src( $image_id, $image_data['resolution'] ?? 'large' )[0] ?? false;
+			$image_srcset = wp_get_attachment_image_srcset( $image_id );
 			$path         = str_replace( home_url(), ABSPATH, $src );
 			$webp         = file_exists( $path . '.webp' );
+			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
+			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
 
-			echo '<link rel="preload" as="image"';
+
+			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
 
 			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
 
-			//echo 'media="(max-width: 992px)"';
+			if ( ! empty( $image_data['breakpoint'] ) ) {
+				echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';
+			}
+
 
 			if ( $image_srcset ) {
-				echo 'imagesrcset="' . $image_srcset . '"';
+				//echo 'imagesrcset="' . $image_srcset . '"';
 			}
 
 			if ( $webp ) {
@@ -416,79 +418,6 @@ class WPBS {
 			echo '/>';
 
 		}
-
-		echo '<!-- Block images preload responsive -->';
-
-		/*$mobile_images = [];
-		$large_images  = [];
-
-
-		foreach ( $breakpoints as $bp ) {
-			$large_images[ $bp ] = array_map( function ( $img ) {
-				unset( $img['mobile'], $img['breakpoint'] );
-
-				return $img;
-			}, array_filter( $preload_images_responsive, function ( $img ) use ( $bp ) {
-				return ($img['breakpoint'] ?? false) === $bp && ! empty( $img['large'] );
-			} ) );
-
-		}
-		foreach ( $breakpoints as $bp ) {
-			$mobile_images[ $bp ] = array_map( function ( $img ) {
-				unset( $img['large'], $img['breakpoint'] );
-
-				return $img;
-			}, array_filter( $preload_images_responsive, function ( $img ) use ( $bp ) {
-				return ($img['breakpoint'] ?? false) === $bp && ! empty( $img['mobile'] );
-			} ) );
-
-		}
-
-
-		foreach ( $preload_images_responsive as $image ) {
-
-			if ( empty( $image['breakpoint'] ) ) {
-				continue;
-			}
-
-			$src  = ! empty( $image['large'] ) ? wp_get_attachment_image_src( $image['large'], $image['size'] ?? 'large' )[0] ?? false : false;
-			$path = str_replace( home_url(), ABSPATH, $src );
-			$webp = file_exists( $path . '.webp' );
-
-			$src_mobile  = ! empty( $image['mobile'] ) ? wp_get_attachment_image_src( $image['mobile'], $image['size'] ?? 'large' )[0] ?? false : false;
-			$path_mobile = str_replace( home_url(), ABSPATH, $src );
-			$webp_mobile = file_exists( $path_mobile . '.webp' );
-
-			if ( ! empty( $src ) ) {
-				echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
-
-				echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
-
-				echo 'media="(min-width: ' . $image['breakpoint'] . ')"';
-
-				if ( $webp ) {
-					echo 'type="image/webp"';
-				}
-
-				echo '/>';
-			}
-
-			if ( ! empty( $src_mobile ) ) {
-				echo '<link data-id="wpbs-preload-image" rel="preload" as="image"';
-
-				echo 'href="' . ( $webp_mobile ? $src_mobile . '.webp' : $src_mobile ) . '"';
-
-				echo 'media="(max-width: calc(' . $image['breakpoint'] . ' - 1px))"';
-
-				if ( $webp_mobile ) {
-					echo 'type="image/webp"';
-				}
-
-				echo '/>';
-			}
-
-
-		}*/
 
 
 		$default_styles = [

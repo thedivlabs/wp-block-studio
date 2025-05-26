@@ -41,8 +41,60 @@ function getSettings(attributes = {}) {
         force: !!settings?.['force'],
         eager: !!settings?.['eager'],
         resolution: settings?.['resolution'] ?? null,
-        breakpoint: settings?.['breakpoint'] ?? null,
+        breakpoint: attributes?.['wpbs-layout']?.breakpoint ?? 'normal',
     };
+}
+
+function getPreload(attributes = {}, newValue) {
+
+    const {'wpbs-figure': settings = {}} = attributes;
+
+    if (!settings?.['eager']) {
+        return {}
+    }
+
+    const largeImage = newValue?.largeImage ?? settings?.largeImage ?? false;
+    const mobileImage = newValue?.mobileImage ?? settings?.mobileImage ?? false;
+    const resolution = newValue?.resolution ?? settings?.resolution;
+    const largeBreakpoint = !!newValue?.force || !!settings?.force ?
+        attributes['wpbs-layout']?.breakpoint ?? 'normal' :
+        !!mobileImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
+    const mobileBreakpoint = !!newValue?.force || !!settings?.force ?
+        attributes['wpbs-layout']?.breakpoint ?? 'normal' :
+        !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
+
+    let result = {};
+
+    if (largeImage?.id) {
+        result = {
+            ...result,
+            ...{
+                [largeImage.id]: {
+                    resolution: resolution || 'large',
+                    breakpoint: largeBreakpoint,
+                    mobile: false
+                }
+            }
+        }
+    }
+
+    if (mobileImage?.id) {
+        result = {
+            ...result,
+            ...{
+                [mobileImage.id]: {
+                    breakpoint: mobileBreakpoint,
+                    resolution: resolution || 'mobile',
+                    mobile: true
+                }
+
+            }
+        }
+    }
+
+    return result;
+
+
 }
 
 function Media({attributes, editor = false, props = {}}) {
@@ -92,8 +144,6 @@ function Media({attributes, editor = false, props = {}}) {
         </div>;
     }
 }
-
-//const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},
@@ -150,10 +200,9 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         'wpbs-figure': {
             type: 'object',
-            default:{
+            default: {
                 'mobileImage': undefined,
                 'largeImage': undefined,
-                'breakpoint': undefined,
                 'eager': undefined,
                 'force': undefined,
                 'resolution': undefined,
@@ -184,8 +233,11 @@ registerBlockType(metadata.name, {
                 ...newValue
             };
 
+            const preload = getPreload(attributes, newValue);
+
             setAttributes({
-                'wpbs-figure': result
+                'wpbs-figure': result,
+                'wpbs-preload': preload,
             });
 
             setSettings(result);

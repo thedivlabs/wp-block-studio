@@ -5,6 +5,9 @@ function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = fal
         resolution: sizeLarge = 'large',
     } = settings;
 
+    const breakpoints = WPBS.settings.breakpoints;
+    const breakpoint = breakpoints[settings?.breakpoint ?? 'normal'];
+
     const {[sizeMobile]: mobileLarge = {}} = mobile.sizes || {};
     const {[sizeLarge]: largeLarge = {}} = large.sizes || {};
 
@@ -49,22 +52,22 @@ function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = fal
     }}>
         <source {...{
             [srcsetAttr]: urlLarge ? urlLarge + '.webp' : '#',
-            media: '(min-width: ' + settings.breakpoint + ')',
+            media: '(width >= ' + breakpoint + ')',
         }}/>
         <source {...{
             [srcsetAttr]: urlLarge || '#',
-            media: '(min-width: ' + settings.breakpoint + ')',
+            media: '(width >= ' + breakpoint + ')',
         }}/>
         <source {...{
             [srcsetAttr]: urlMobile ? urlMobile + '.webp' : '#',
-            media: '(min-width: 32px)',
+            media: '(width >= 32px)',
         }}/>
         <source {...{
             [srcsetAttr]: urlMobile || '#',
-            media: '(min-width: 32px)',
+            media: '(width >= 32px)',
         }}/>
         <img {...{
-            [srcAttr]: urlMobile || '#',
+            [srcAttr]: urlMobile + '.webp' || '#',
             alt: large.alt || mobile.alt || '',
             ariaHidden: true,
             loading: settings.eager ? 'eager' : 'lazy'

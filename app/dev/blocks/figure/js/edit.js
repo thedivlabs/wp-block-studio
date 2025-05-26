@@ -149,19 +149,22 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         'wpbs-figure': {
-            'type': undefined,
-            'mobileImage': undefined,
-            'largeImage': undefined,
-            'breakpoint': undefined,
-            'eager': undefined,
-            'force': undefined,
-            'resolution': undefined,
-            'contain': undefined,
-            'linkPost': undefined,
-            'blend': undefined,
-            'origin': undefined,
-            'overlay': undefined,
-            'link': undefined,
+            type: 'object',
+            default:{
+                'mobileImage': undefined,
+                'largeImage': undefined,
+                'breakpoint': undefined,
+                'eager': undefined,
+                'force': undefined,
+                'resolution': undefined,
+                'contain': undefined,
+                'linkPost': undefined,
+                'blend': undefined,
+                'origin': undefined,
+                'overlay': undefined,
+                'link': undefined,
+            }
+
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {

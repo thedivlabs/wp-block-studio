@@ -92,6 +92,41 @@ registerBlockType(metadata.name, {
 
         }
 
+        const blockProps = useBlockProps({
+            className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' ')
+        });
+
+        const cssProps = useMemo(() => {
+            const grid = attributes['wpbs-grid'] ?? {};
+            const layout = attributes['wpbs-layout'] ?? {};
+            const spacing = attributes?.style?.spacing?.blockGap ?? {};
+
+            return {
+                '--grid-row-gap': spacing.top,
+                '--grid-col-gap': spacing.left,
+                '--columns': grid['columns-mobile'],
+                '--divider-width': grid.divider?.width,
+                '--divider-color': grid.divider?.color,
+                '--divider-icon': grid?.['divider-icon'],
+                '--divider-icon-size': grid?.['divider-icon-size'],
+                '--divider-icon-color': grid?.['divider-icon-color'],
+                breakpoints: {
+                    [breakpoints[grid['breakpoint-small'] ?? 'sm']]: {
+                        '--columns': grid['columns-small']
+                    },
+                    [breakpoints[grid['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
+                        '--columns': grid['columns-large'],
+                        '--grid-row-gap': layout?.['gap-mobile']?.top,
+                        '--grid-col-gap': layout?.['gap-mobile']?.left,
+                    }
+                }
+            };
+        }, [
+            attributes['wpbs-grid'],
+            attributes['wpbs-layout'],
+            attributes?.style?.spacing
+        ]);
+
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
                 <Grid columns={3} columnGap={15} rowGap={20}>
@@ -210,41 +245,6 @@ registerBlockType(metadata.name, {
             options: tabOptions,
             loop: tabLoop
         }
-
-        const blockProps = useBlockProps({
-            className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' ')
-        });
-
-        const cssProps = useMemo(() => {
-            const grid = attributes['wpbs-grid'] ?? {};
-            const layout = attributes['wpbs-layout'] ?? {};
-            const spacing = attributes?.style?.spacing?.blockGap ?? {};
-
-            return {
-                '--grid-row-gap': spacing.top,
-                '--grid-col-gap': spacing.left,
-                '--columns': grid['columns-mobile'],
-                '--divider-width': grid.divider?.width,
-                '--divider-color': grid.divider?.color,
-                '--divider-icon': grid.divider?.icon,
-                '--divider-icon-size': grid.divider?.['icon-size'],
-                '--divider-icon-color': grid.divider?.['icon-color'],
-                breakpoints: {
-                    [breakpoints[grid['breakpoint-small'] ?? 'sm']]: {
-                        '--columns': grid['columns-small']
-                    },
-                    [breakpoints[grid['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
-                        '--columns': grid['columns-large'],
-                        '--grid-row-gap': layout?.['gap-mobile']?.top,
-                        '--grid-col-gap': layout?.['gap-mobile']?.left,
-                    }
-                }
-            };
-        }, [
-            attributes['wpbs-grid'],
-            attributes['wpbs-layout'],
-            attributes?.style?.spacing
-        ]);
 
         return (
             <>

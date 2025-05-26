@@ -946,7 +946,9 @@ export function BackgroundElement({attributes = {}, editor = false}) {
         let MediaElement;
 
         const {['wpbs-background']: settings = {}} = attributes;
-        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+        //const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+
+        const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
 
         if (settings.type === 'image' || settings.type === 'featured-image') {
             mediaClass.push(imageClass);

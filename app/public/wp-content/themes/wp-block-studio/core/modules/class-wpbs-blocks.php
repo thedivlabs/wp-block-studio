@@ -63,10 +63,7 @@ class WPBS_Blocks {
 				};
 			}, $custom_css);
 
-
 			$css_array[ $attributes['uniqueId'] ] = $css;
-
-			WPBS::console_log($css_array);
 
 			if ( ! empty( $custom_css ) ) {
 				$css_array[ $attributes['uniqueId'] . '-custom' ] = $custom_css;

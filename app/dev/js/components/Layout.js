@@ -170,12 +170,13 @@ const DIRECTION_OPTIONS = [
 
 const CONTAINER_OPTIONS = [
     {label: 'Select', value: ''},
-    {label: 'None', value: 'container-none'},
-    {label: 'Normal', value: 'container'},
-    {label: 'Small', value: 'container-sm'},
-    {label: 'Extra Small', value: 'container-xs'},
-    {label: 'Medium', value: 'container-md'},
-    {label: 'Large', value: 'container-lg'},
+    {label: 'None', value: ''},
+    {label: 'Extra Small', value: 'xs'},
+    {label: 'Small', value: 'sm'},
+    {label: 'Medium', value: 'md'},
+    {label: 'Normal', value: 'normal'},
+    {label: 'Large', value: 'lg'},
+    {label: 'Extra Large', value: 'xl'},
 ];
 
 const ALIGN_OPTIONS = [
@@ -566,12 +567,16 @@ export function layoutCss(attributes) {
 
         });
 
-        if (Object.keys(desktop).length) {
+        if (Object.keys(desktop).length || attributes?.['wpbs-layout']?.container) {
             css += selector + '{';
             Object.entries(desktop).forEach(([prop, value]) => {
 
                 css += [prop, value].join(':') + ';';
             })
+
+            if (attributes?.['wpbs-layout']?.container) {
+                css += '--container-width: ' + WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.container ?? 'normal'] + '}';
+            }
 
             css += '}';
         }
@@ -613,12 +618,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
     const resetAll_layout = useCallback(() => updateProp({
         ...attributes?.['wpbs-layout'] || {},
         ...Object.keys(LAYOUT_PROPS.layout).reduce((o, key) => ({...o, [key]: undefined}), {})
-    }),[attributes['wpbs-layout'], setAttributes, setSettings]);
+    }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const resetAll_mobile = useCallback(() => updateProp({
         ...attributes?.['wpbs-layout'] || {},
         ...Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: undefined}), {})
-    }),[attributes['wpbs-layout'], setAttributes, setSettings]);
+    }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const updateProp = useCallback((newValue) => {
 
@@ -1066,13 +1071,15 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                     <MemoMediaControl
                         label={'Mask Image'}
                         value={settings?.['mask-image']}
-                        callback={(newValue) => updateProp({'mask-image': {
+                        callback={(newValue) => updateProp({
+                            'mask-image': {
                                 type: newValue.type,
                                 id: newValue.id,
                                 url: newValue.url,
                                 alt: newValue.alt,
                                 sizes: newValue.sizes,
-                            }})}
+                            }
+                        })}
                         allowedTypes={['image']}
                     />
 
@@ -1095,12 +1102,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             </ToolsPanelItem>
 
 
-
         </ToolsPanel>
 
         <ToolsPanel label={'Layout Mobile'} resetAll={resetAll_mobile}>
-
-
 
 
             <ToolsPanelItem
@@ -1575,13 +1579,15 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                     <MemoMediaControl
                         label={'Mask Image'}
                         value={settings?.['mask-image-mobile']}
-                        callback={(newValue) => updateProp({'mask-image-mobile': {
+                        callback={(newValue) => updateProp({
+                            'mask-image-mobile': {
                                 type: newValue.type,
                                 id: newValue.id,
                                 url: newValue.url,
                                 alt: newValue.alt,
                                 sizes: newValue.sizes,
-                            }})}
+                            }
+                        })}
 
                         allowedTypes={['image']}
 

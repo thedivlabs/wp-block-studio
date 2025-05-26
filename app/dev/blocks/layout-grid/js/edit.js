@@ -27,7 +27,7 @@ import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect, useMemo, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
 
-function sectionClassNames(attributes = {}) {
+function classNames(attributes = {}) {
     return [
         'wpbs-layout-grid',
         !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
@@ -93,7 +93,7 @@ registerBlockType(metadata.name, {
         }
 
         const blockProps = useBlockProps({
-            className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' ')
+            className: [classNames(attributes), 'empty:min-h-8'].join(' ')
         });
 
         const cssProps = useMemo(() => {
@@ -304,7 +304,7 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes),
+            className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({

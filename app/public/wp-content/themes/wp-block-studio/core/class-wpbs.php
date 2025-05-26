@@ -67,24 +67,28 @@ class WPBS {
 	public function theme_assets(): void {
 		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
 		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
-		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [ 'jquery' ], false, [
-			'strategy' => 'defer'
+		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [], false, [
+			'strategy' => 'async',
+			'in_footer' => true,
 		] );
 
 		/* Swiper */
 		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
 		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [ 'jquery' ], false, [
-			'strategy' => 'defer'
+			'strategy' => 'defer',
+			'in_footer' => true,
 		] );
 
 		/* Masonry */
 		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [ 'jquery' ], false, [
-			'strategy' => 'async'
+			'strategy' => 'async',
+			'in_footer' => true,
 		] );
 
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
+			'container' => wp_get_global_settings()['custom']['container'] ?? [],
 			'colors'      => array_values(array_merge(wp_get_global_settings()['color']['palette']['theme'] ?? [],wp_get_global_settings()['color']['palette']['default'] ?? [])),
 		] );
 

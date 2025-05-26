@@ -130,13 +130,13 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
             propsCss += '}';
 
             if (Object.keys(props?.breakpoints ?? {}).length) {
-                Object.entries(props.breakpoints).forEach(([breakpoint, rules]) => {
+                Object.entries(props.breakpoints).forEach(([bp, rules]) => {
 
                     if (typeof rules !== 'object') {
                         return;
                     }
 
-                    propsCss += '@media(min-width: %%__BREAKPOINT__' + breakpoint + '__%%){' + selector + '{';
+                    propsCss += '@media(min-width: %%__BREAKPOINT__' + bp + '__%%){' + selector + '{';
 
                     Object.entries(rules).forEach(([prop, value]) => {
 

@@ -98,7 +98,7 @@ class WPBS_Blocks {
 						'show_in_rest' => true,
 					],
 					'wpbs-preload' => [
-						'type'         => 'array',
+						'type'         => 'object',
 						'show_in_rest' => true,
 					]
 				]

@@ -19,8 +19,8 @@ export const BACKGROUND_ATTRIBUTES = {
         default: {}
     },
     'wpbs-preload': {
-        type: 'array',
-        default: []
+        type: 'object',
+        default: {}
     }
 };
 

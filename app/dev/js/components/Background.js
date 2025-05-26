@@ -325,19 +325,28 @@ function getPreloadAssets(attributes, newValue) {
 
         if (['image', 'featured-image'].includes(attributes?.['wpbs-background']?.type)) {
             if (attributes?.['wpbs-background']?.largeImage?.id ?? false) {
-                result.push({
-                    id: attributes['wpbs-background'].largeImage?.id,
-                    breakpoint: breakpoint,
-                    resolution: attributes['wpbs-background']?.resolution ?? 'large',
-                })
+                result = {
+                    ...result,
+                    ...{
+                        [attributes['wpbs-background'].largeImage.id]: {
+                            resolution: attributes['wpbs-background']?.resolution ?? 'large',
+                        }
+
+                    }
+                }
             }
 
-            if (attributes?.['wpbs-background']?.mobileImage?.id ?? false) {
-                result.push({
-                    id: attributes['wpbs-background'].mobileImage?.id,
-                    breakpoint: breakpoint,
-                    resolution: attributes['wpbs-background']?.resolution ?? 'large',
-                })
+            if (attributes?.['wpbs-background']?.largeImage?.id ?? false) {
+                result = {
+                    ...result,
+                    ...{
+                        [attributes['wpbs-background'].largeImage.id]: {
+                            breakpoint: breakpoint,
+                            resolution: attributes['wpbs-background']?.resolution ?? 'large',
+                        }
+
+                    }
+                }
             }
         }
 
@@ -449,7 +458,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             }
         }
 
-        const preloadAssets = getPreloadAssets(attributes,newValue);
+        const preloadAssets = getPreloadAssets(attributes, newValue);
 
         const result = {
             ...attributes['wpbs-background'],

@@ -313,42 +313,40 @@ function parseSpecial(prop, settings) {
 
 function getPreloadAssets(attributes, newValue) {
 
-    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
-
     let result = [];
-
-    /* if (('largeImage' in newValue || 'mobileImage' in newValue) &&) {
-         console.log(newValue);
-     }*/
 
     if (!!attributes?.['wpbs-background']?.eager) {
 
         if (['image', 'featured-image'].includes(attributes?.['wpbs-background']?.type)) {
-            if (attributes?.['wpbs-background']?.largeImage?.id ?? false) {
+
+            const largeImage = newValue?.largeImage ?? attributes?.['wpbs-background']?.largeImage ?? false;
+            const mobileImage = newValue?.mobileImage ?? attributes?.['wpbs-background']?.mobileImage ?? false;
+            const resolution = newValue?.resolution ?? attributes['wpbs-background']?.resolution;
+
+            if (largeImage?.id) {
                 result = {
                     ...result,
                     ...{
-                        [attributes['wpbs-background'].largeImage.id]: {
-                            resolution: attributes['wpbs-background']?.resolution ?? 'large',
+                        [largeImage.id]: {
+                            resolution: resolution || 'large',
                         }
                     }
                 }
             }
 
-            if (attributes?.['wpbs-background']?.mobileImage?.id ?? false) {
+            if (mobileImage?.id) {
                 result = {
                     ...result,
                     ...{
-                        [attributes['wpbs-background'].mobileImage.id]: {
-                            breakpoint: breakpoint,
-                            resolution: attributes['wpbs-background']?.resolution ?? 'mobile',
+                        [mobileImage.id]: {
+                            breakpoint: attributes['wpbs-layout']?.breakpoint ?? 'normal',
+                            resolution: resolution || 'mobile',
                         }
 
                     }
                 }
             }
         }
-
 
     }
 

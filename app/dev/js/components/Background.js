@@ -331,7 +331,6 @@ function getPreloadAssets(attributes, newValue) {
                         [attributes['wpbs-background'].largeImage.id]: {
                             resolution: attributes['wpbs-background']?.resolution ?? 'large',
                         }
-
                     }
                 }
             }

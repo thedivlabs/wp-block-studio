@@ -4,7 +4,7 @@ function setDividers(grid, context) {
 
     const {uniqueId, divider, columns} = context;
 
-    const breakpoints = WPBS?.settings?.breakpoints ?? {};
+    const {breakpoints} = WPBS?.settings ?? {};
 
     const breakpointLarge = breakpoints[context?.breakpoints?.large ?? 'lg'];
     const breakpointSmall = breakpoints[context?.breakpoints?.small ?? 'sm'];
@@ -42,7 +42,7 @@ function setDividers(grid, context) {
     }
 
     const styleCss = [
-        '@media screen and (max-width: calc(' + breakpointSmall + ' - 1px)) {',
+        '@media screen and (width < ' + breakpointSmall + ') {',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colMobile + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',
@@ -55,7 +55,7 @@ function setDividers(grid, context) {
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):before { content:none !important; }',
         '}',
 
-        '@media screen and (min-width: ' + breakpointSmall + ') and (max-width: calc(' + breakpoints.large + ' - 1px)) {',
+        '@media screen and (min-width: ' + breakpointSmall + ') and (max-width: calc(' + breakpointLarge + ' - 1px)) {',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colSmall + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colSmall + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colSmall + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',
@@ -68,7 +68,7 @@ function setDividers(grid, context) {
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { content:none !important; }',
         '}',
 
-        '@media screen and (min-width: ' + breakpointLarge + ') {',
+        '@media screen and (width > ' + breakpointLarge + ') {',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( ' + colLarge + 'n+1 ):after { content: none !important; }',
         selector + ' > .wpbs-layout-grid__container > .wpbs-layout-grid-card:nth-of-type( n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
         selector + ' > .wpbs-layout-grid__container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .wpbs-layout-grid-card:before { content:"" }',

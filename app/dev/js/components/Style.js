@@ -136,7 +136,7 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
                         return;
                     }
 
-                    propsCss += '@media(min-width: ' + breakpoint + '){' + selector + '{';
+                    propsCss += '@media(min-width: %%__BREAKPOINT__' + breakpoint + '__%%){' + selector + '{';
 
                     Object.entries(rules).forEach(([prop, value]) => {
 

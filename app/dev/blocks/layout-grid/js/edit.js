@@ -111,10 +111,10 @@ registerBlockType(metadata.name, {
                 '--divider-icon-size': grid?.['divider-icon-size'],
                 '--divider-icon-color': grid?.['divider-icon-color'],
                 breakpoints: {
-                    [breakpoints[grid['breakpoint-small'] ?? 'sm']]: {
+                    [[grid['breakpoint-small'] ?? 'sm']]: {
                         '--columns': grid['columns-small']
                     },
-                    [breakpoints[grid['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
+                    [[grid['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
                         '--columns': grid['columns-large'],
                         '--grid-row-gap': layout?.['gap-mobile']?.top,
                         '--grid-col-gap': layout?.['gap-mobile']?.left,

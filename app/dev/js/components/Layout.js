@@ -23,6 +23,10 @@ export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
         type: 'object',
         default: {}
+    },
+    'wpbs-preload': {
+        type: 'array',
+        default: []
     }
 };
 

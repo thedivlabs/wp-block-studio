@@ -397,7 +397,6 @@ class WPBS {
 			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
 
-
 			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
 
 			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
@@ -408,7 +407,7 @@ class WPBS {
 
 
 			if ( $image_srcset ) {
-				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [ '.jpg,.png,.jpeg' ], [ '.jpg.webp,.png.webp,.jpeg.webp' ], $image_srcset ) ) . '"';
+				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [ '.jpg','.png','.jpeg' ], [ '.jpg.webp','.png.webp','.jpeg.webp' ], $image_srcset ) ) . '"';
 			}
 
 			if ( $webp ) {

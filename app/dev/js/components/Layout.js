@@ -490,12 +490,11 @@ export function layoutCss(attributes) {
 
         const uniqueId = attributes?.uniqueId ?? '';
         const selector = '.' + uniqueId.trim().split(' ').join('.');
-        const {breakpoints, containers} = WPBS?.settings ?? {};
-
-        const breakpoint = breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
-        const container = attributes?.['wpbs-layout']?.container ? containers[attributes?.['wpbs-layout']?.container] : false;
 
         const {'wpbs-layout': settings = {}} = attributes;
+
+        const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
+        const container = attributes?.['wpbs-layout']?.container ? '%%__CONTAINER__' + (attributes?.['wpbs-layout']?.container) + '__%%' : false;
 
         let css = '';
         let desktop = {};
@@ -603,7 +602,7 @@ export function layoutCss(attributes) {
 
             css += '}';
         }
-
+console.log(css.trim());
         return css.trim();
     }, [attributes['wpbs-layout'], attributes.uniqueId]);
 

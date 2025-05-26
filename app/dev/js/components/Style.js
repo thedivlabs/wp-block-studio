@@ -27,10 +27,11 @@ export function getCSSFromStyle(raw) {
 export function Style({attributes, setAttributes, css = '' | [], props = {}, deps = []}) {
 
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId];
+    const {containers, breakpoints} = WPBS?.settings ?? {};
 
     const uniqueId = attributes?.uniqueId ?? '';
     const selector = '.' + uniqueId.trim().split(' ').join('.');
-    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+    const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
 
     const result = useMemo(() => {
 
@@ -160,9 +161,19 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
             css = [propsCss, css].join(' ').trim();
         }
 
+
         setAttributes({'wpbs-css': css});
 
-        return css;
+        return css.replace(/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/g, (match, type, key) => {
+            switch (type) {
+                case 'BREAKPOINT':
+                    return breakpoints[key] ?? match;
+                case 'CONTAINER':
+                    return containers[key] ?? match;
+                default:
+                    return match; // fallback for unknown types
+            }
+        });
 
     }, dependencyValues);
 

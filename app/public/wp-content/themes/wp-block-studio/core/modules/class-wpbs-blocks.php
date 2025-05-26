@@ -15,6 +15,9 @@ class WPBS_Blocks {
 
 	public static function render_block_styles( $attributes, $custom_css = '' ): void {
 
+		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
+		$containers = wp_get_global_settings()['custom']['container'] ?? [];
+
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {
 
 			$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ array_filter( array_map( function ( $prop ) {
@@ -34,13 +37,36 @@ class WPBS_Blocks {
 
 		} );
 
-		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes, $custom_css ) {
+		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes, $custom_css, $breakpoints, $containers ) {
 
 			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
 				return $css_array;
 			}
 
-			$css_array[ $attributes['uniqueId'] ] = $attributes['wpbs-css'];
+			$css = preg_replace_callback('/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/', function ($matches) use ($breakpoints, $containers) {
+				[$full, $type, $key] = $matches;
+
+				return match ( $type ) {
+					'BREAKPOINT' => $breakpoints[ $key ] ?? $full,
+					'CONTAINER' => $containers[ $key ] ?? $full,
+					default => $full,
+				};
+			}, $attributes['wpbs-css']);
+
+			$custom_css = preg_replace_callback('/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/', function ($matches) use ($breakpoints, $containers) {
+				[$full, $type, $key] = $matches;
+
+				return match ( $type ) {
+					'BREAKPOINT' => $breakpoints[ $key ] ?? $full,
+					'CONTAINER' => $containers[ $key ] ?? $full,
+					default => $full,
+				};
+			}, $custom_css);
+
+
+			$css_array[ $attributes['uniqueId'] ] = $css;
+
+			WPBS::console_log($css_array);
 
 			if ( ! empty( $custom_css ) ) {
 				$css_array[ $attributes['uniqueId'] . '-custom' ] = $custom_css;

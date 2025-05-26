@@ -14,6 +14,8 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
+WPBS::console_log($attributes);
+
 if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 	if ( ! $query->have_posts() ) {

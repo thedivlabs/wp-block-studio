@@ -325,7 +325,7 @@ function getPreloadAssets(attributes) {
         console.log(attributes);
 
         if (['image', 'featured-image'].includes(attributes?.['wpbs-background']?.type)) {
-            if ('largeImage' in attributes?.['wpbs-background'] ?? {}) {
+            if (attributes?.['wpbs-background']?.largeImage?.id ?? false) {
                 result.push({
                     id: attributes['wpbs-background'].largeImage?.id,
                     breakpoint: breakpoint,
@@ -333,9 +333,9 @@ function getPreloadAssets(attributes) {
                 })
             }
 
-            if ('mobileImage' in attributes?.['wpbs-background'] ?? {}) {
+            if (attributes?.['wpbs-background']?.mobileImage?.id ?? false) {
                 result.push({
-                    id: attributes['wpbs-background'].largeImage?.id,
+                    id: attributes['wpbs-background'].mobileImage?.id,
                     breakpoint: breakpoint,
                     resolution: attributes['wpbs-background']?.resolution ?? 'large',
                 })
@@ -346,10 +346,7 @@ function getPreloadAssets(attributes) {
     }
 
 
-    return [
-        ...attributes?.['wpbs-preload'] ?? [],
-        ...result
-    ];
+    return result;
 }
 
 export function backgroundCss(attributes) {

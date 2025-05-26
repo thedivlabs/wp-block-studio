@@ -411,6 +411,10 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             }
         }
 
+        if ('largeImage' in newValue || 'mobileImage' in newValue) {
+
+        }
+
         const result = {
             ...attributes['wpbs-background'],
             ...newValue

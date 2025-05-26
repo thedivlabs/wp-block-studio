@@ -311,6 +311,47 @@ function parseSpecial(prop, settings) {
 
 }
 
+function getPreloadAssets(attributes) {
+
+    const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+
+    let result = [];
+
+    /* if (('largeImage' in newValue || 'mobileImage' in newValue) &&) {
+         console.log(newValue);
+     }*/
+
+    if (!!attributes?.['wpbs-background']?.eager) {
+        console.log(attributes);
+
+        if (['image', 'featured-image'].includes(attributes?.['wpbs-background']?.type)) {
+            if ('largeImage' in attributes?.['wpbs-background'] ?? {}) {
+                result.push({
+                    id: attributes['wpbs-background'].largeImage?.id,
+                    breakpoint: breakpoint,
+                    resolution: attributes['wpbs-background']?.resolution ?? 'large',
+                })
+            }
+
+            if ('mobileImage' in attributes?.['wpbs-background'] ?? {}) {
+                result.push({
+                    id: attributes['wpbs-background'].largeImage?.id,
+                    breakpoint: breakpoint,
+                    resolution: attributes['wpbs-background']?.resolution ?? 'large',
+                })
+            }
+        }
+
+
+    }
+
+
+    return [
+        ...attributes?.['wpbs-preload'] ?? [],
+        ...result
+    ];
+}
+
 export function backgroundCss(attributes) {
 
     return useMemo(() => {
@@ -411,9 +452,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             }
         }
 
-        if ('largeImage' in newValue || 'mobileImage' in newValue) {
-
-        }
+        const preloadAssets = getPreloadAssets(attributes);
 
         const result = {
             ...attributes['wpbs-background'],
@@ -422,6 +461,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
         setAttributes({
             'wpbs-background': result,
+            'wpbs-preload': preloadAssets,
         });
 
         setSettings(result);

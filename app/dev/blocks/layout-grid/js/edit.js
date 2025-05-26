@@ -24,7 +24,7 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
 
 function sectionClassNames(attributes = {}) {
@@ -212,12 +212,39 @@ registerBlockType(metadata.name, {
         }
 
         const blockProps = useBlockProps({
-            className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' '),
-            style: {
-                ...props.style,
-                ...sectionProps(attributes)
-            }
+            className: [sectionClassNames(attributes), 'empty:min-h-8'].join(' ')
         });
+
+        const cssProps = useMemo(() => {
+            const grid = attributes['wpbs-grid'] ?? {};
+            const layout = attributes['wpbs-layout'] ?? {};
+            const spacing = attributes?.style?.spacing?.blockGap ?? {};
+
+            return {
+                '--grid-row-gap': spacing.top,
+                '--grid-col-gap': spacing.left,
+                '--columns': grid['columns-mobile'],
+                '--divider-width': grid.divider?.width,
+                '--divider-color': grid.divider?.color,
+                '--divider-icon': grid.divider?.icon,
+                '--divider-icon-size': grid.divider?.['icon-size'],
+                '--divider-icon-color': grid.divider?.['icon-color'],
+                breakpoints: {
+                    [breakpoints[grid['breakpoint-small'] ?? 'sm']]: {
+                        '--columns': grid['columns-small']
+                    },
+                    [breakpoints[grid['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
+                        '--columns': grid['columns-large'],
+                        '--grid-row-gap': layout?.['gap-mobile']?.top,
+                        '--grid-col-gap': layout?.['gap-mobile']?.left,
+                    }
+                }
+            };
+        }, [
+            attributes['wpbs-grid'],
+            attributes['wpbs-layout'],
+            attributes?.style?.spacing
+        ]);
 
         return (
             <>
@@ -261,24 +288,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes}
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
-                       props={{
-                           '--grid-row-gap': attributes?.style?.spacing?.blockGap?.top,
-                           '--grid-col-gap': attributes?.style?.spacing?.blockGap?.left,
-                           '--columns': attributes['wpbs-grid']?.['columns-mobile'],
-                           '--divider-width': attributes['wpbs-grid']?.divider?.width,
-                           '--divider-color': attributes['wpbs-grid']?.divider?.color,
-                           '--divider-icon': attributes['wpbs-grid']?.divider?.icon,
-                           '--divider-icon-size': attributes['wpbs-grid']?.divider?.['icon-size'],
-                           '--divider-icon-color':attributes['wpbs-grid']?.divider?.['icon-color'],
-                           breakpoints: {
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'sm']]: {'--columns': attributes['wpbs-grid']?.['columns-small']},
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {
-                                   '--columns': attributes['wpbs-grid']?.['columns-large'],
-                                   '--grid-row-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.top,
-                                   '--grid-col-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.left,
-                               },
-                           }
-                       }}
+                       props={cssProps}
                 />
 
                 <div {...blockProps}>
@@ -309,11 +319,7 @@ registerBlockType(metadata.name, {
                     small: props.attributes['wpbs-grid']?.['columns-small'] ?? 2,
                     large: props.attributes['wpbs-grid']?.['columns-large'] ?? 3,
                 }
-            }),
-            style: {
-                ...props.style,
-                ...sectionProps(props.attributes)
-            }
+            })
         });
 
         const innerBlockProps = useInnerBlocksProps.save({

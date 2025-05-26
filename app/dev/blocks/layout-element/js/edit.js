@@ -20,7 +20,7 @@ const selector = 'wpbs-layout-wrapper';
 const classNames = (attributes = {}) => {
 
     return [
-        selector + ' w-full block relative',
+        selector + ' w-full block relative wpbs-container',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }

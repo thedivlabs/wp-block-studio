@@ -313,15 +313,23 @@ function parseSpecial(prop, settings) {
 
 function getPreloadAssets(attributes, newValue) {
 
-    let result = [];
+    const {'wpbs-background': settings = {}} = attributes;
 
-    if (!!attributes?.['wpbs-background']?.eager) {
+    let result = {};
 
-        if (['image', 'featured-image'].includes(attributes?.['wpbs-background']?.type)) {
+    if (!!settings?.eager) {
 
-            const largeImage = newValue?.largeImage ?? attributes?.['wpbs-background']?.largeImage ?? false;
-            const mobileImage = newValue?.mobileImage ?? attributes?.['wpbs-background']?.mobileImage ?? false;
-            const resolution = newValue?.resolution ?? attributes['wpbs-background']?.resolution;
+        if (['image', 'featured-image'].includes(settings?.type)) {
+
+            const largeImage = newValue?.largeImage ?? settings?.largeImage ?? false;
+            const mobileImage = newValue?.mobileImage ?? settings?.mobileImage ?? false;
+            const resolution = newValue?.resolution ?? settings?.resolution;
+            const largeBreakpoint = !!newValue?.force || !!settings?.force ?
+                attributes['wpbs-layout']?.breakpoint ?? 'normal' :
+                !!mobileImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
+            const mobileBreakpoint = !!newValue?.force || !!settings?.force ?
+                attributes['wpbs-layout']?.breakpoint ?? 'normal' :
+                !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
 
             if (largeImage?.id) {
                 result = {
@@ -329,6 +337,8 @@ function getPreloadAssets(attributes, newValue) {
                     ...{
                         [largeImage.id]: {
                             resolution: resolution || 'large',
+                            breakpoint: largeBreakpoint,
+                            mobile: false
                         }
                     }
                 }
@@ -339,8 +349,9 @@ function getPreloadAssets(attributes, newValue) {
                     ...result,
                     ...{
                         [mobileImage.id]: {
-                            breakpoint: attributes['wpbs-layout']?.breakpoint ?? 'normal',
+                            breakpoint: mobileBreakpoint,
                             resolution: resolution || 'mobile',
+                            mobile: true
                         }
 
                     }

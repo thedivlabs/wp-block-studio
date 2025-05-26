@@ -31,7 +31,7 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
     const uniqueId = attributes?.uniqueId ?? '';
     const selector = '.' + uniqueId.trim().split(' ').join('.');
-    const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
+    const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
 
     const result = useMemo(() => {
 
@@ -136,7 +136,7 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
                         return;
                     }
 
-                    propsCss += '@media(min-width: %%__BREAKPOINT__' + bp + '__%%){' + selector + '{';
+                    propsCss += '@media(min-width: %__BREAKPOINT__' + bp + '__%){' + selector + '{';
 
                     Object.entries(rules).forEach(([prop, value]) => {
 
@@ -164,7 +164,7 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
         setAttributes({'wpbs-css': css});
 
-        return css.replace(/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/g, (match, type, key) => {
+        return css.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {
                 case 'BREAKPOINT':
                     return breakpoints[key] ?? match;

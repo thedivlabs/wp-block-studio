@@ -408,7 +408,7 @@ class WPBS {
 
 
 			if ( $image_srcset ) {
-				//echo 'imagesrcset="' . $image_srcset . '"';
+				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [ '.jpg,.png,.jpeg' ], [ '.jpg.webp,.png.webp,.jpeg.webp' ], $image_srcset ) ) . '"';
 			}
 
 			if ( $webp ) {

@@ -418,10 +418,10 @@ class WPBS {
 
 		echo '<!-- Block images preload responsive -->';
 
-		/*$breakpoints   = array_values( array_unique( array_column( $preload_images_responsive, 'breakpoint' ) ) );
+		$breakpoints   = array_values( array_unique( array_column( $preload_images_responsive, 'breakpoint' ) ) );
 		$mobile_images = [];
 		$large_images  = [];
-
+		WPBS::console_log($preload_images_responsive);
 		foreach ( $breakpoints as $bp ) {
 			$large_images[ $bp ] = array_map( function ( $img ) {
 				unset( $img['mobile'], $img['breakpoint'] );
@@ -441,7 +441,7 @@ class WPBS {
 				return $img['breakpoint'] === $bp && ! empty( $img['mobile'] );
 			} ) );
 
-		}*/
+		}
 
 
 		foreach ( $preload_images_responsive as $image ) {

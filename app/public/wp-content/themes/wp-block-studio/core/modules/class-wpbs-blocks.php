@@ -16,22 +16,17 @@ class WPBS_Blocks {
 	public static function render_block_styles( $attributes, $custom_css = '' ): void {
 
 		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
-		$containers = wp_get_global_settings()['custom']['container'] ?? [];
+		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
 
 		add_filter( 'wpbs_preload_images_responsive', function ( $images ) use ( $attributes ) {
 
-			$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ array_filter( array_map( function ( $prop ) {
-				return ! empty( $prop );
-			}, [
-				$attributes['wpbs-layout-breakpoint'] ?? null,
-				$attributes['wpbs-breakpoint-large'] ?? null
-			] ) )[0] ?? 'normal' ];
+			$breakpoint = wp_get_global_settings()['custom']['breakpoints'][ $attributes['wpbs-layout']['breakpoint'] ?? 'normal'][0];
 
 			$block_images = array_map( function ( $image ) use ( $attributes, $breakpoint ) {
 				return array_merge( $image, [
 					'breakpoint' => $breakpoint
 				] );
-			}, $attributes['preload'] ?? [] );
+			}, $attributes['wpbs-preload'] ?? [] );
 
 			return array_merge( $images, $block_images );
 
@@ -43,25 +38,25 @@ class WPBS_Blocks {
 				return $css_array;
 			}
 
-			$css = preg_replace_callback('/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ($matches) use ($breakpoints, $containers) {
-				[$full, $type, $key] = $matches;
+			$css = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
+				[ $full, $type, $key ] = $matches;
 
 				return match ( $type ) {
 					'BREAKPOINT' => $breakpoints[ $key ] ?? $full,
 					'CONTAINER' => $containers[ $key ] ?? $full,
 					default => $full,
 				};
-			}, $attributes['wpbs-css']);
+			}, $attributes['wpbs-css'] );
 
-			$custom_css = preg_replace_callback('/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ($matches) use ($breakpoints, $containers) {
-				[$full, $type, $key] = $matches;
+			$custom_css = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
+				[ $full, $type, $key ] = $matches;
 
 				return match ( $type ) {
 					'BREAKPOINT' => $breakpoints[ $key ] ?? $full,
 					'CONTAINER' => $containers[ $key ] ?? $full,
 					default => $full,
 				};
-			}, $custom_css);
+			}, $custom_css );
 
 			$css_array[ $attributes['uniqueId'] ] = $css;
 
@@ -100,6 +95,10 @@ class WPBS_Blocks {
 					],
 					'wpbs-props' => [
 						'type'         => 'object',
+						'show_in_rest' => true,
+					],
+					'wpbs-preload' => [
+						'type'         => 'array',
 						'show_in_rest' => true,
 					]
 				]

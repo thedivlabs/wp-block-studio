@@ -374,7 +374,7 @@ registerBlockType(metadata.name, {
 
                                         if (value) {
                                             setAttributes({
-                                                preload: [
+                                                'wpbs-preload': [
                                                     {
                                                         mobile: settings?.mobileImage?.id ?? null,
                                                         large: settings?.largeImage?.id ?? null,

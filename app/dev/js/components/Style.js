@@ -163,6 +163,16 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
 
 
         setAttributes({'wpbs-css': css});
+        console.log(css.replace(/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/g, (match, type, key) => {
+            switch (type) {
+                case 'BREAKPOINT':
+                    return breakpoints[key] ?? match;
+                case 'CONTAINER':
+                    return containers[key] ?? match;
+                default:
+                    return match; // fallback for unknown types
+            }
+        }));
 
         return css.replace(/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/g, (match, type, key) => {
             switch (type) {
@@ -174,6 +184,8 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
                     return match; // fallback for unknown types
             }
         });
+
+
 
     }, dependencyValues);
 

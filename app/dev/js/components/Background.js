@@ -174,7 +174,7 @@ const MemoToggleControl = React.memo(({label, value, callback}) => (
     />
 ));
 
-const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => (
+const MemoMediaControl = React.memo(({label, allowedTypes, value, callback, clear}) => (
     <BaseControl
         label={label}
         __nextHasNoMarginBottom={true}
@@ -188,7 +188,7 @@ const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => 
                 render={({open}) => {
                     return <PreviewThumbnail
                         image={value}
-                        callback={callback}
+                        callback={clear}
                         style={{
                             objectFit: 'contain'
                         }}
@@ -607,6 +607,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         sizes: newValue?.sizes,
                     }
                 })}
+                clear={(newValue) => updateSettings({
+                    maskImageLarge: {}
+                })}
             />
 
             <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
@@ -787,7 +790,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             <MemoMediaControl
                 label={'Mask Image'}
                 allowedTypes={['image']}
-                value={settings?.['maskImageLargeMobile']}
+                value={settings?.['maskImageMobile']}
                 callback={(newValue) => updateSettings({
                     maskImageLargeMobile: {
                         type: newValue.type,
@@ -796,6 +799,9 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                         alt: newValue?.alt,
                         sizes: newValue?.sizes,
                     }
+                })}
+                clear={(newValue) => updateSettings({
+                    maskImageMobile: {}
                 })}
             />
 
@@ -882,12 +888,14 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                 label={'Mobile Image'}
                                 value={settings?.['mobileImage']}
                                 callback={(newValue) => updateSettings({'mobileImage': newValue})}
+                                clear={(newValue) => updateSettings({'mobileImage': {}})}
                                 allowedTypes={['image']}
                             />
                             <MemoMediaControl
                                 label={'Large Image'}
                                 value={settings?.['largeImage']}
                                 callback={(newValue) => updateSettings({'largeImage': newValue})}
+                                clear={(newValue) => updateSettings({'largeImage': {}})}
                                 allowedTypes={['image']}
                             />
 
@@ -899,6 +907,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                 label={'Mobile Video'}
                                 value={settings?.['mobileVideo']}
                                 callback={(newValue) => updateSettings({'mobileVideo': newValue})}
+                                clear={(newValue) => updateSettings({'mobileVideo': {}})}
                                 allowedTypes={['video']}
                             />
 
@@ -906,6 +915,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
                                 label={'Large Video'}
                                 value={settings?.['largeVideo']}
                                 callback={(newValue) => updateSettings({'largeVideo': newValue})}
+                                clear={(newValue) => updateSettings({'largeVideo': {}})}
                                 allowedTypes={['video']}
                             />
 

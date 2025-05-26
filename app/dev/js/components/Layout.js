@@ -490,7 +490,10 @@ export function layoutCss(attributes) {
 
         const uniqueId = attributes?.uniqueId ?? '';
         const selector = '.' + uniqueId.trim().split(' ').join('.');
-        const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+        const {breakpoints, containers} = WPBS?.settings ?? {};
+
+        const breakpoint = breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+        const container = attributes?.['wpbs-layout']?.container ? containers[attributes?.['wpbs-layout']?.container] : false;
 
         const {'wpbs-layout': settings = {}} = attributes;
 
@@ -567,15 +570,15 @@ export function layoutCss(attributes) {
 
         });
 
-        if (Object.keys(desktop).length || attributes?.['wpbs-layout']?.container) {
+        if (Object.keys(desktop).length || container) {
             css += selector + '{';
             Object.entries(desktop).forEach(([prop, value]) => {
 
                 css += [prop, value].join(':') + ';';
             })
 
-            if (attributes?.['wpbs-layout']?.container) {
-                css += '--container-width: ' + WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.container ?? 'normal'] + '}';
+            if (container) {
+                css += '--container-width: ' + container + '}';
             }
 
             css += '}';

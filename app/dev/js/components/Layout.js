@@ -493,8 +493,8 @@ export function layoutCss(attributes) {
 
         const {'wpbs-layout': settings = {}} = attributes;
 
-        const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
-        const container = attributes?.['wpbs-layout']?.container ? '%%__CONTAINER__' + (attributes?.['wpbs-layout']?.container) + '__%%' : false;
+        const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
+        const container = attributes?.['wpbs-layout']?.container ? '%__CONTAINER__' + (attributes?.['wpbs-layout']?.container) + '__%' : false;
 
         let css = '';
         let desktop = {};

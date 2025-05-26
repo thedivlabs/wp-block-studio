@@ -43,7 +43,7 @@ class WPBS_Blocks {
 				return $css_array;
 			}
 
-			$css = preg_replace_callback('/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/', function ($matches) use ($breakpoints, $containers) {
+			$css = preg_replace_callback('/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ($matches) use ($breakpoints, $containers) {
 				[$full, $type, $key] = $matches;
 
 				return match ( $type ) {
@@ -53,7 +53,7 @@ class WPBS_Blocks {
 				};
 			}, $attributes['wpbs-css']);
 
-			$custom_css = preg_replace_callback('/%%__(BREAKPOINT|CONTAINER)__(.*?)__%%/', function ($matches) use ($breakpoints, $containers) {
+			$custom_css = preg_replace_callback('/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ($matches) use ($breakpoints, $containers) {
 				[$full, $type, $key] = $matches;
 
 				return match ( $type ) {

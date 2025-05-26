@@ -33,23 +33,9 @@ function sectionClassNames(attributes = {}) {
         !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
+        'wpbs-container',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
-}
-
-function sectionProps(attributes = {}) {
-
-    const {width, color} = attributes['wpbs-grid']?.divider ?? {};
-
-    return Object.fromEntries(
-        Object.entries({
-            '--divider-width': width,
-            '--divider-color': color,
-            '--divider-icon': attributes['wpbs-grid']?.['divider-icon'] ?? null,
-            '--divider-icon-size': attributes['wpbs-grid']?.['divider-icon-size'] ?? null,
-            '--divider-icon-color': attributes['wpbs-grid']?.['divider-icon-color'] ?? null,
-        }).filter(([key, value]) => ![null, undefined].includes(value))
-    );
 }
 
 registerBlockType(metadata.name, {
@@ -276,15 +262,20 @@ registerBlockType(metadata.name, {
                        css={[backgroundCss(attributes), layoutCss(attributes)]}
                        deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
                        props={{
-                           '--grid-row-gap': attributes?.style?.spacing?.blockGap?.top ?? null,
-                           '--grid-col-gap': attributes?.style?.spacing?.blockGap?.left ?? null,
-                           '--columns': attributes['wpbs-grid']?.['columns-mobile'] ?? undefined,
+                           '--grid-row-gap': attributes?.style?.spacing?.blockGap?.top,
+                           '--grid-col-gap': attributes?.style?.spacing?.blockGap?.left,
+                           '--columns': attributes['wpbs-grid']?.['columns-mobile'],
+                           '--divider-width': attributes['wpbs-grid']?.divider?.width,
+                           '--divider-color': attributes['wpbs-grid']?.divider?.color,
+                           '--divider-icon': attributes['wpbs-grid']?.divider?.icon,
+                           '--divider-icon-size': attributes['wpbs-grid']?.divider?.['icon-size'],
+                           '--divider-icon-color':attributes['wpbs-grid']?.divider?.['icon-color'],
                            breakpoints: {
-                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'sm']]: {'--columns': attributes['wpbs-grid']?.['columns-small'] ?? undefined},
+                               [breakpoints[attributes['wpbs-grid']?.['breakpoint-small'] ?? 'sm']]: {'--columns': attributes['wpbs-grid']?.['columns-small']},
                                [breakpoints[attributes['wpbs-grid']?.['breakpoint-large'] ?? attributes['wpbs-layout']?.breakpoint ?? 'normal']]: {
-                                   '--columns': attributes['wpbs-grid']?.['columns-large'] ?? undefined,
-                                   '--grid-row-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null,
-                                   '--grid-col-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null,
+                                   '--columns': attributes['wpbs-grid']?.['columns-large'],
+                                   '--grid-row-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.top,
+                                   '--grid-col-gap': attributes?.['wpbs-layout']?.['gap-mobile']?.left,
                                },
                            }
                        }}

@@ -170,12 +170,12 @@ const DIRECTION_OPTIONS = [
 
 const CONTAINER_OPTIONS = [
     {label: 'Select', value: ''},
-    {label: 'None', value: 'none'},
-    {label: 'Normal', value: 'normal'},
-    {label: 'Small', value: 'sm'},
-    {label: 'Extra Small', value: 'xs'},
-    {label: 'Medium', value: 'md'},
-    {label: 'Large', value: 'lg'},
+    {label: 'None', value: 'container-none'},
+    {label: 'Normal', value: 'container'},
+    {label: 'Small', value: 'container-sm'},
+    {label: 'Extra Small', value: 'container-xs'},
+    {label: 'Medium', value: 'container-md'},
+    {label: 'Large', value: 'container-lg'},
 ];
 
 const ALIGN_OPTIONS = [

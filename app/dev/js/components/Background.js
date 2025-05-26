@@ -335,13 +335,13 @@ function getPreloadAssets(attributes, newValue) {
                 }
             }
 
-            if (attributes?.['wpbs-background']?.largeImage?.id ?? false) {
+            if (attributes?.['wpbs-background']?.mobileImage?.id ?? false) {
                 result = {
                     ...result,
                     ...{
-                        [attributes['wpbs-background'].largeImage.id]: {
+                        [attributes['wpbs-background'].mobileImage.id]: {
                             breakpoint: breakpoint,
-                            resolution: attributes['wpbs-background']?.resolution ?? 'large',
+                            resolution: attributes['wpbs-background']?.resolution ?? 'mobile',
                         }
 
                     }

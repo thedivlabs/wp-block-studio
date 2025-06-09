@@ -1,15 +1,16 @@
 import '../scss/block.scss';
 
 import {
-    BlockEdit,
     InspectorControls,
     useBlockProps,
-    useInnerBlocksProps,
-    useSettings
+    useInnerBlocksProps
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutAttributes, LayoutClasses, LayoutSettings} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import Loop from "Components/Loop"
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -21,81 +22,16 @@ import {
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {swiperDefaultArgs} from "Includes/helper";
-import {Style, styleAttributesFull} from "Components/Style.js";
 
 function blockClasses(attributes = {}) {
+
+    const {'wpbs-slider': sliderArgs} = attributes;
+
     return [
         'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
         attributes.uniqueId,
-        !!attributes['wpbs-collapse'] ? 'wpbs-slider--collapse' : null,
-        LayoutClasses(attributes)
+        !!sliderArgs.collapse ? 'wpbs-slider--collapse' : null,
     ].filter(x => x).join(' ');
-}
-
-const blockAttributes = {
-    'wpbs-prop-slides': {
-        type: 'string'
-    },
-    'wpbs-prop-slides-mobile': {
-        type: 'string'
-    },
-    'wpbs-slides-mobile': {
-        type: 'string'
-    },
-    'wpbs-slides-large': {
-        type: 'string'
-    },
-    'wpbs-group-mobile': {
-        type: 'string'
-    },
-    'wpbs-group-large': {
-        type: 'string'
-    },
-    'wpbs-margin-mobile': {
-        type: 'string'
-    },
-    'wpbs-margin-large': {
-        type: 'string'
-    },
-    'wpbs-autoplay': {
-        type: 'string'
-    },
-    'wpbs-transition': {
-        type: 'string'
-    },
-    'wpbs-pagination': {
-        type: 'string'
-    },
-    'wpbs-effect': {
-        type: 'string'
-    },
-    'wpbs-hover-pause': {
-        type: 'boolean'
-    },
-    'wpbs-free-mode': {
-        type: 'boolean'
-    },
-    'wpbs-centered': {
-        type: 'boolean'
-    },
-    'wpbs-collapse': {
-        type: 'boolean'
-    },
-    'wpbs-loop': {
-        type: 'boolean'
-    },
-    'wpbs-dim': {
-        type: 'boolean'
-    },
-    'wpbs-from-end': {
-        type: 'boolean'
-    },
-    'wpbs-rewind': {
-        type: 'boolean'
-    },
-    'swiperArgs': {
-        type: 'object'
-    },
 }
 
 function getArgs(attributes) {
@@ -155,60 +91,38 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributesFull,
-        ...blockAttributes
+        ...LAYOUT_ATTRIBUTES,
+        ...BACKGROUND_ATTRIBUTES,
+        ...STYLE_ATTRIBUTES,
+        'wpbs-slider': {
+            type: 'object',
+            default: {
+                slidesPerView: undefined,
+                slidesPerGroup: undefined,
+                spaceBetween: undefined,
+                autoplay: undefined,
+                speed: undefined,
+                pagination: undefined,
+                effect: undefined,
+                freeMode: undefined,
+                centeredSlides: undefined,
+                loop: undefined,
+                rewind: undefined,
+                initialSlide: undefined,
+                breakpoints: {}
+            }
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const [slidesMobile, setSlidesMobile] = useState(attributes['wpbs-slides-mobile']);
-        const [slidesLarge, setSlidesLarge] = useState(attributes['wpbs-slides-large']);
-
-        const [groupMobile, setGroupMobile] = useState(attributes['wpbs-group-mobile']);
-        const [groupLarge, setGroupLarge] = useState(attributes['wpbs-group-large']);
-
-        const [marginMobile, setMarginMobile] = useState(attributes['wpbs-margin-mobile'] || '');
-        const [marginLarge, setMarginLarge] = useState(attributes['wpbs-margin-large']) || '';
-
-        const [autoplay, setAutoplay] = useState(attributes['wpbs-autoplay']);
-        const [transition, setTransition] = useState(attributes['wpbs-transition']);
-        const [pagination, setPagination] = useState(attributes['wpbs-pagination']);
-        const [effect, setEffect] = useState(attributes['wpbs-effect'] || 'slide');
-
-        const [hoverPause, setHoverPause] = useState(attributes['wpbs-hover-pause']);
-        const [freeMode, setFreeMode] = useState(attributes['wpbs-free-mode']);
-        const [centered, setCentered] = useState(attributes['wpbs-centered']);
-        const [collapse, setCollapse] = useState(attributes['wpbs-collapse'] || false);
-        const [loop, setLoop] = useState(attributes['wpbs-loop']);
-        const [dim, setDim] = useState(attributes['wpbs-dim']);
-        const [fromEnd, setFromEnd] = useState(attributes['wpbs-from-end']);
-        const [rewind, setRewind] = useState(attributes['wpbs-rewind']);
-        const [swiperArgs, setSwiperArgs] = useState(attributes.swiperArgs || {});
-
+        const [settings, setSettings] = useState(attributes['wpbs-slider']);
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
-
-        const [{breakpoints}] = useSettings(['custom']);
-
-        const breakpoint = breakpoints[attributes['wpbs-layout-breakpoint'] || 'md'].replace('px', '');
-
-        function updateSlider() {
-
-            const args = getArgs(attributes);
-            setAttributes({
-                ['wpbs-prop-slides']: attributes['wpbs-slidesLarge'] || attributes['wpbs-slidesMobile'] || '1',
-                ['wpbs-prop-slides-mobile']: attributes['wpbs-slidesMobile'] || attributes['wpbs-slidesLarge'] || '1',
-                breakpoint: breakpoint,
-                swiperArgs: args
-            });
-            setSwiperArgs(args);
-
-        }
+        const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
         useEffect(() => {
 
             setAttributes({
                 uniqueId: uniqueId,
-                ['wpbs-prop-slides']: attributes['wpbs-slides-large'] || attributes['wpbs-slides-mobile'] || '1',
-                ['wpbs-prop-slides-mobile']: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || '1'
             });
 
         }, []);
@@ -241,13 +155,11 @@ registerBlockType(metadata.name, {
             }
 
 
-        }, [swiperArgs]);
+        }, [attributes['wpbs-slider']]);
 
 
         const blockProps = useBlockProps({
-            className: [
-                blockClasses(attributes)
-            ].join(' ')
+            className: blockClasses(attributes)
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
@@ -258,7 +170,6 @@ registerBlockType(metadata.name, {
 
 
         return <>
-            <BlockEdit key="edit" {...blockProps} />
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>

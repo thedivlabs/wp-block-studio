@@ -22,7 +22,6 @@
   "allowedBlocks": [
     "wpbs/slider-wrapper",
     "wpbs/layout-element",
-    "wpbs/layout-section",
     "wpbs/slider-navigation"
   ],
   "supports": {

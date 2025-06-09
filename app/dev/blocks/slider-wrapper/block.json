@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/slider-wrapper",
+  "title": "Slider Wrapper",
+  "description": "Display a slider wrapper element",
+  "selectors": {
+    "root": ".wpbs-slider-wrapper"
+  },
+  "parent": [
+    "wpbs/slider"
+  ],
+  "allowedBlocks": [
+    "wpbs/slide"
+  ],
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "innerBlocks": true
+  },
+  "editorScript": "file:./js/edit.js",
+  "style": "file:./js/edit.css",
+  "icon": "slides"
+}
+
+

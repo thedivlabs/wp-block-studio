@@ -21,9 +21,6 @@ import {
 } from "@wordpress/components";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
-import {useSelect} from "@wordpress/data";
-import {store as blockEditorStore} from '@wordpress/block-editor';
-import {BlockListBlock} from '@wordpress/block-editor';
 
 
 function blockClasses(attributes = {}) {
@@ -182,7 +179,7 @@ registerBlockType(metadata.name, {
 
             //delete (sliderOptions.on);
 
-            if (swiperRef.current.swiper) {
+            if (!!swiperRef.current?.swiper) {
                 swiperRef.current.swiper.destroy(true, true);
             }
 
@@ -212,10 +209,14 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        const innerBlocksProps = useInnerBlocksProps({
-            className: 'swiper-wrapper',
-        }, {});
-        console.log(innerBlocksProps.children);
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            className: 'swiper-wrapper grow flex',
+            template: [
+                ['wpbs/slider-wrapper'],
+            ]
+        });
+
+
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
@@ -382,11 +383,7 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
 
-            <div ref={swiperRef} {...blockProps}>
-                <div {...innerBlocksProps} >
-                    {innerBlocksProps.children}
-                </div>
-            </div>
+            <div ref={swiperRef} {...innerBlocksProps} />
         </>;
 
 
@@ -402,14 +399,12 @@ registerBlockType(metadata.name, {
             })
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps, {
+            className: 'swiper-wrapper grow flex',
+        });
 
         return (
-            <div {...blockProps}>
-                <div {...innerBlocksProps} >
-                    {innerBlocksProps.children}
-                </div>
-            </div>
+            <div {...innerBlocksProps} />
         );
     }
 })

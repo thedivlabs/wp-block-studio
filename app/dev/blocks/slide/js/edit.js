@@ -212,11 +212,26 @@ registerBlockType(metadata.name, {
                                     />
                                 </MediaUploadCheck>
                             </BaseControl>
+                            <SelectControl
+                                __next40pxDefaultSize
+                                label="Resolution"
+                                value={resolution}
+                                callback={(newValue) => {
+                                    setAttributes({['wpbs-resolutionSlide']: newValue});
+                                    setResolution(newValue)
+                                }}
+                                options={[
+                                    {label: 'Default', value: ''},
+                                    {label: 'Thumbnail', value: 'thumbnail'},
+                                    {label: 'Small', value: 'small'},
+                                    {label: 'Medium', value: 'medium'},
+                                    {label: 'Large', value: 'large'},
+                                    {label: 'Extra Large', value: 'xlarge'},
+                                    {label: 'Full', value: 'full'},
+                                ]}
+                                __nextHasNoMarginBottom
+                            />
 
-                            <Resolution defaultValue={resolution} callback={(newValue) => {
-                                setAttributes({['wpbs-resolutionSlide']: newValue});
-                                setResolution(newValue)
-                            }}/>
                             <SelectControl
                                 __next40pxDefaultSize
                                 label="Size"
@@ -278,8 +293,7 @@ registerBlockType(metadata.name, {
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
                    css={[backgroundCss(attributes), layoutCss(attributes)]}
-                   deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
-                   props={cssProps}
+                   deps={['wpbs-layout', 'wpbs-background', 'uniqueId']}
             />
 
             <div {...blockProps}>

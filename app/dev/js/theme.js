@@ -1,7 +1,6 @@
 import Modals from './modules/modals'
 import Loader from './modules/loader'
 import Popup from './modules/popup'
-import {swiperDefaultArgs} from "./inc/helper";
 
 
 class WPBS_Theme {
@@ -18,11 +17,6 @@ class WPBS_Theme {
         this.modals = Modals;
         this.loader = Loader;
         this.popup = Popup;
-        this.swiper = {
-            args: {
-                ...swiperDefaultArgs
-            }
-        };
         this.videos = [];
 
         this.settings = window.wpbsData ?? {};

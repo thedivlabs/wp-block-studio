@@ -10,13 +10,6 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "wpbs-transition": {
-      "type": "string"
-    },
-    "styleCss": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
   "allowedBlocks": [

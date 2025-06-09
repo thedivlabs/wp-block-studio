@@ -8,7 +8,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {
     __experimentalGrid as Grid,
@@ -39,8 +39,8 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
     if (isImageSlide) {
 
         const {
-            ['wpbs-mobileSlideImage']: mobileImage,
-            ['wpbs-largeSlideImage']: largeImage,
+            ['wpbs-imageMobile']: imageMobile,
+            ['wpbs-imageLarge']: largeImage,
             ['wpbs-eagerSlide']: eager,
             ['wpbs-forceSlide']: force,
             ['wpbs-resolutionSlide']: resolution,
@@ -48,7 +48,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
         } = attributes;
 
         return <ResponsivePicture
-            mobile={mobileImage}
+            mobile={imageMobile}
             large={largeImage}
             settings={{
                 eager: !!eager,
@@ -69,25 +69,17 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
 }
 
 const blockAttributes = {
-    'wpbs-mobileSlideImage': {
-        type: 'object'
-    },
-    'wpbs-largeSlideImage': {
-        type: 'object'
-    },
-    'wpbs-resolutionSlide': {
-        type: 'string'
-    },
-    'wpbs-imageSize': {
-        type: 'string',
-        default: 'cover'
-    },
-    'wpbs-eagerSlide': {
-        type: 'boolean'
-    },
-    'wpbs-forceSlide': {
-        type: 'boolean'
-    },
+    'wpbs-slide': {
+        type: 'object',
+        default: {
+            imageMobile: undefined,
+            imageLarge: undefined,
+            imageSize: undefined,
+            resolution: undefined,
+            eager: undefined,
+            force: undefined,
+        }
+    }
 }
 
 registerBlockType(metadata.name, {
@@ -101,21 +93,22 @@ registerBlockType(metadata.name, {
     },
     edit: (props) => {
 
-
         const {attributes, setAttributes, clientId} = props;
-
-        const [mobileImage, setMobileImage] = useState(attributes['wpbs-mobileSlideImage']);
-        const [largeImage, setLargeImage] = useState(attributes['wpbs-largeSlideImage']);
-        const [resolution, setResolution] = useState(attributes['wpbs-resolutionSlide']);
-        const [imageSize, setImageSize] = useState(attributes['wpbs-imageSize']);
-        const [eager, setEager] = useState(attributes['wpbs-eagerSlide']);
-        const [force, setForce] = useState(attributes['wpbs-forceSlide']);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
+
+        const updateSettings = useCallback((newValue, prop) => {
+            setAttributes({
+                'wpbs-slide': {
+                    ...attributes['wpbs-slide'],
+                    [prop]: newValue,
+                },
+            });
+        }, [attributes['wpbs-slide'], setAttributes, uniqueId]);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
@@ -137,33 +130,21 @@ registerBlockType(metadata.name, {
                                 <MediaUploadCheck>
                                     <MediaUpload
                                         title={'Mobile Image'}
-                                        onSelect={(value) => {
-                                            setMobileImage({
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
-                                                alt: value.alt,
-                                                sizes: value.sizes,
-                                            });
-                                            setAttributes({
-                                                ['wpbs-mobileSlideImage']: {
-                                                    type: value.type,
-                                                    id: value.id,
-                                                    url: value.url,
-                                                    alt: value.alt,
-                                                    sizes: value.sizes,
-                                                }
-                                            });
-                                        }}
+                                        onSelect={(value) =>
+                                            updateSettings({
+                                                type: value?.type,
+                                                id: value?.id,
+                                                url: value?.url,
+                                                alt: value?.alt,
+                                                sizes: value?.sizes,
+                                            }, 'imageMobile')
+                                        }
                                         allowedTypes={['image']}
-                                        value={mobileImage}
+                                        value={attributes['wpbs-slide']?.imageMobile}
                                         render={({open}) => {
                                             return <PreviewThumbnail
-                                                image={mobileImage || {}}
-                                                callback={() => {
-                                                    setMobileImage(undefined);
-                                                    setAttributes({['wpbs-mobileSlideImage']: undefined});
-                                                }}
+                                                image={attributes['wpbs-slide']?.imageMobile || {}}
+                                                callback={() => updateSettings(undefined, 'imageMobile')}
                                                 onClick={open}
                                             />;
                                         }}
@@ -174,52 +155,35 @@ registerBlockType(metadata.name, {
                                 <MediaUploadCheck>
                                     <MediaUpload
                                         title={'Large Image'}
-                                        onSelect={(value) => {
-                                            setLargeImage({
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
-                                                alt: value.alt,
-                                                sizes: value.sizes,
-                                            });
-                                            setAttributes({
-                                                ['wpbs-largeSlideImage']: {
-                                                    type: value.type,
-                                                    id: value.id,
-                                                    url: value.url,
-                                                    alt: value.alt,
-                                                    sizes: value.sizes,
-                                                }
-                                            });
-                                        }}
+                                        onSelect={(value) =>
+                                            updateSettings({
+                                                type: value?.type,
+                                                id: value?.id,
+                                                url: value?.url,
+                                                alt: value?.alt,
+                                                sizes: value?.sizes,
+                                            }, 'imageLarge')
+                                        }
                                         allowedTypes={['image']}
-                                        value={largeImage}
+                                        value={attributes['wpbs-slide']?.imageLarge}
                                         render={({open}) => {
-                                            if (largeImage) {
-                                                return <PreviewThumbnail
-                                                    image={largeImage || {}}
-                                                    callback={() => {
-                                                        setLargeImage(undefined);
-                                                        setAttributes({['wpbs-largeSlideImage']: undefined});
-                                                    }}
-                                                    onClick={open}
-                                                />;
-                                            } else {
-                                                return <Button onClick={open} style={imageButtonStyle}>Choose
-                                                    Image</Button>
-                                            }
+                                            return <PreviewThumbnail
+                                                image={attributes['wpbs-slide']?.imageLarge || {}}
+                                                callback={() =>
+                                                    updateSettings(undefined, 'imageLarge')
+                                                }
+                                                onClick={open}
+                                            />;
                                         }}
                                     />
+
                                 </MediaUploadCheck>
                             </BaseControl>
                             <SelectControl
                                 __next40pxDefaultSize
                                 label="Resolution"
-                                value={resolution}
-                                callback={(newValue) => {
-                                    setAttributes({['wpbs-resolutionSlide']: newValue});
-                                    setResolution(newValue)
-                                }}
+                                value={attributes['wpbs-slide']?.resolution}
+                                onChange={(value) => updateSettings(value,'resolution')}
                                 options={[
                                     {label: 'Default', value: ''},
                                     {label: 'Thumbnail', value: 'thumbnail'},
@@ -235,17 +199,14 @@ registerBlockType(metadata.name, {
                             <SelectControl
                                 __next40pxDefaultSize
                                 label="Size"
-                                value={imageSize}
                                 options={[
                                     {label: 'Default', value: 'cover'},
                                     {label: 'Contain', value: 'contain'},
                                     {label: 'Vertical', value: 'auto 100%'},
                                     {label: 'Horizontal', value: '100% auto'},
                                 ]}
-                                onChange={(newValue) => {
-                                    setAttributes({['wpbs-imageSize']: newValue});
-                                    setImageSize(newValue)
-                                }}
+                                value={attributes['wpbs-slide']?.imageSize}
+                                onChange={(value) => updateSettings(value,'imageSize')}
                                 __nextHasNoMarginBottom
                             />
                         </Grid>
@@ -254,17 +215,17 @@ registerBlockType(metadata.name, {
                               style={{padding: '1rem 0'}}>
                             <ToggleControl
                                 label="Eager"
-                                checked={eager}
+                                checked={!!attributes['wpbs-slide']?.eager}
                                 onChange={(value) => {
-                                    setEager(value);
-                                    setAttributes({['wpbs-eagerSlide']: value});
+
+                                    updateSettings(value,'eager')
 
                                     if (value) {
                                         setAttributes({
                                             preload: [
                                                 {
-                                                    mobile: !!attributes['wpbs-mobileSlideImage'] ? attributes['wpbs-mobileSlideImage'].id : null,
-                                                    large: !!attributes['wpbs-largeSlideImage'] ? attributes['wpbs-largeSlideImage'].id : null,
+                                                    mobile: !!attributes['wpbs-imageMobile'] ? attributes['wpbs-imageMobile'].id : null,
+                                                    large: !!attributes['wpbs-imageLarge'] ? attributes['wpbs-imageLarge'].id : null,
                                                     size: attributes['wpbs-resolutionSlide'] || null
                                                 }
                                             ]

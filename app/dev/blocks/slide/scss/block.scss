@@ -1,0 +1,8 @@
+.wpbs-slide {
+  max-width: calc(100% / var(--slides, 1));
+
+  &--image picture > img {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

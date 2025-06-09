@@ -8,7 +8,6 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
-import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Loop from "Components/Loop"
 import {
@@ -19,9 +18,63 @@ import {
     SelectControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
-import {swiperDefaultArgs} from "Includes/helper";
+
+const DEFAULT_ARGS = {
+    createElements: false,
+    navigation: {
+        enabled: true,
+        nextEl: '.wpbs-slider-nav__btn.wpbs-slider-nav__btn--next',
+        prevEl: '.wpbs-slider-nav__btn.wpbs-slider-nav__btn--prev',
+    },
+    pagination: {
+        enabled: true,
+        el: '.swiper-pagination',
+    },
+    watchSlidesProgress: true,
+    updateOnWindowResize: true,
+    simulateTouch: true,
+    slidesPerView: 1,
+    spaceBetween: 0,
+    watchOverflow: true,
+    passiveListeners: true,
+    grabCursor: true,
+    uniqueNavElements: true,
+    on: {
+        afterInit: (swiper) => {
+            if (swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
+            if (swiper.slides.length < 2) {
+                swiper.disable();
+            }
+            if (swiper.autoplay.running) {
+                swiper.autoplay.pause();
+                setTimeout(() => {
+                    swiper.autoplay.resume();
+                }, 5000);
+            }
+        },
+        paginationUpdate: (swiper, paginationEl) => {
+
+            if (!!swiper?.['isBeginning']) {
+                swiper.el.classList.add('swiper--start');
+            } else {
+                swiper.el.classList.remove('swiper--start');
+            }
+        },
+        resize: (swiper) => {
+            if (swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
+        }
+    }
+};
 
 function blockClasses(attributes = {}) {
 
@@ -34,40 +87,60 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
+function cleanArgs(obj) {
+    if (Array.isArray(obj)) {
+        return obj
+            .map(cleanArgs)
+            .filter((val) => val !== undefined && val !== null && val !== '');
+    }
+
+    if (typeof obj === 'object' && obj !== null) {
+        return Object.fromEntries(
+            Object.entries(obj)
+                .map(([key, value]) => [key, cleanArgs(value)])
+                .filter(([, value]) => value !== undefined && value !== null && value !== '')
+        );
+    }
+
+    return obj;
+}
+
 function getArgs(attributes) {
+
+    const {'wpbs-slider': options} = attributes;
 
     const breakpoint = attributes.breakpoint || 992;
 
     let args = {
-        slidesPerView: attributes['wpbs-slides-mobile'] || attributes['wpbs-slides-large'] || 1,
-        slidesPerGroup: attributes['wpbs-group-mobile'] || attributes['wpbs-group-large'] || 1,
-        spaceBetween: attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large'] ? (attributes['wpbs-margin-mobile'] || attributes['wpbs-margin-large']).replace('px', '') : null,
-        autoplay: attributes['wpbs-autoplay'] ? {
-            delay: attributes['wpbs-autoplay'] * 1000,
-            pauseOnMouseEnter: !!attributes['wpbs-hover-pause']
+        slidesPerView: options['slides-mobile'] || options['slides-large'] || 1,
+        slidesPerGroup: options['group-mobile'] || options['group-large'] || 1,
+        spaceBetween: options['margin-mobile'] || options['margin-large'] ? (options['margin-mobile'] || options['margin-large']).replace('px', '') : null,
+        autoplay: options['autoplay'] ? {
+            delay: options['autoplay'] * 1000,
+            pauseOnMouseEnter: !!options['hover-pause']
         } : false,
-        speed: attributes['wpbs-transition'] ? attributes['wpbs-transition'] * 100 : null,
-        pagination: attributes['wpbs-pagination'] ? {
+        speed: options['transition'] ? options['transition'] * 100 : null,
+        pagination: options['pagination'] ? {
             enabled: true,
             el: '.swiper-pagination',
-            type: attributes['wpbs-pagination']
+            type: options['pagination']
         } : false,
-        effect: attributes['wpbs-effect'] || 'slide',
-        freeMode: !!attributes['wpbs-effect'],
-        centeredSlides: !!attributes['wpbs-centered'],
-        loop: !!attributes['wpbs-loop'],
-        rewind: !!attributes['wpbs-loop'] ? false : !!attributes['wpbs-rewind'],
-        initialSlide: !!attributes['wpbs-from-end'] ? 99 : null,
+        effect: options['effect'] || 'slide',
+        freeMode: !!options['effect'],
+        centeredSlides: !!options['centered'],
+        loop: !!options['loop'],
+        rewind: !!options['loop'] ? false : !!options['rewind'],
+        initialSlide: !!options['from-end'] ? 99 : null,
         breakpoints: {}
     };
 
     let breakpointArgs = {
-        slidesPerView: attributes['wpbs-slides-mobile'] && attributes['wpbs-slides-large'] ? attributes['wpbs-slides-large'] : null,
-        slidesPerGroup: attributes['wpbs-group-mobile'] && attributes['wpbs-group-large'] ? attributes['wpbs-group-large'] : null,
-        spaceBetween: attributes['wpbs-margin-mobile'] && attributes['wpbs-margin-large'] ? attributes['wpbs-margin-large'] : null,
+        slidesPerView: options['slides-mobile'] && options['slides-large'] ? options['slides-large'] : null,
+        slidesPerGroup: options['group-mobile'] && options['group-large'] ? options['group-large'] : null,
+        spaceBetween: options['margin-mobile'] && options['margin-large'] ? options['margin-large'] : null,
     };
 
-    if (!!attributes['wpbs-collapse']) {
+    if (!!options['collapse']) {
         args.enabled = false;
         breakpointArgs.enabled = true;
     }
@@ -84,7 +157,24 @@ function getArgs(attributes) {
         ...breakpointArgs
     };
 
-    return args;
+
+    return {
+        ...DEFAULT_ARGS,
+        ...args
+    };
+}
+
+function getCssProps(attributes){
+    const breakpoint = WPBS?.settings?.breakpoints?.[attributes?.['wpbs-layout']?.['breakpoint'] ?? 'normal'];
+
+    return cleanArgs({
+        '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
+        breakpoints: {
+            [breakpoint]: {
+                '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,
+            }
+        }
+    });
 }
 
 registerBlockType(metadata.name, {
@@ -92,32 +182,35 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
-        ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         'wpbs-slider': {
             type: 'object',
             default: {
-                slidesPerView: undefined,
-                slidesPerGroup: undefined,
-                spaceBetween: undefined,
-                autoplay: undefined,
-                speed: undefined,
-                pagination: undefined,
-                effect: undefined,
-                freeMode: undefined,
-                centeredSlides: undefined,
-                loop: undefined,
-                rewind: undefined,
-                initialSlide: undefined,
-                breakpoints: {}
+                'slides-mobile': undefined,
+                'slides-large': undefined,
+                'group-mobile': undefined,
+                'group-large': undefined,
+                'margin-mobile': undefined,
+                'margin-large': undefined,
+                'autoplay': undefined,
+                'transition': undefined,
+                'effect': undefined,
+                'hover-pause': undefined,
+                'centered': undefined,
+                'collapse': undefined,
+                'loop': undefined,
+                'dim': undefined,
+                'from-end': undefined,
+                'rewind': undefined,
+                'swiperArgs': undefined,
             }
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const [settings, setSettings] = useState(attributes['wpbs-slider']);
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
-        const breakpoints = WPBS?.settings?.breakpoints ?? {};
+
+        const swiperRef = useRef(null);
 
         useEffect(() => {
 
@@ -127,36 +220,27 @@ registerBlockType(metadata.name, {
 
         }, []);
 
+        const sliderOptions = useMemo(() => {
+            return getArgs(attributes);
+        }, [attributes['wpbs-slider'], uniqueId]);
+
         useEffect(() => {
 
-            const args = getArgs(attributes);
+            //delete (sliderOptions.on);
 
-            const mergedArgs = {
-                ...swiperDefaultArgs,
-                ...args
-            };
-
-            delete (mergedArgs.on);
-
-            const blockId = 'block-' + clientId;
-            const selector = '#' + blockId;
-            const selectorAlt = '.' + uniqueId;
-
-            const block = document.getElementById(blockId);
-
-            if (block && 'swiper' in block) {
-
-                block.swiper.destroy();
+            if (swiperRef.current.swiper) {
+                swiperRef.current.swiper.destroy(true, true);
             }
 
-            if ('Swiper' in window && selector) {
-
-                const swiper = new Swiper(selectorAlt, mergedArgs);
+            if ('Swiper' in window) {
+                const swiper = new Swiper(swiperRef.current, sliderOptions);
             }
 
+        }, [sliderOptions]);
 
-        }, [attributes['wpbs-slider']]);
-
+        const cssProps = useMemo(() => {
+            return getCssProps(attributes);
+        }, [attributes['wpbs-layout']?.['breakpoint'], attributes['wpbs-slider'], uniqueId]);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes)
@@ -168,6 +252,17 @@ registerBlockType(metadata.name, {
             ]
         });
 
+        const updateOptions = useCallback((key) => (newValue) => {
+            setAttributes((prev) => {
+                const next = {
+                    ...prev['wpbs-slider'],
+                    [key]: newValue,
+                };
+                return {
+                    'wpbs-slider': next
+                };
+            });
+        }, []);
 
         return <>
             <InspectorControls group="styles">
@@ -178,12 +273,8 @@ registerBlockType(metadata.name, {
                                 label={'Slides Mobile'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={(newValue) => {
-                                    setAttributes({['wpbs-slides-mobile']: newValue});
-                                    setSlidesMobile(newValue);
-                                    updateSlider({});
-                                }}
-                                value={slidesMobile}
+                                onChange={updateOptions('slides-mobile')}
+                                value={settings?.['slides-mobile']}
                             />
                             <NumberControl
                                 label={'Slides Large'}
@@ -404,10 +495,14 @@ registerBlockType(metadata.name, {
 
                 </PanelBody>
             </InspectorControls>
-            <LayoutSettings attributes={attributes} setAttributes={setAttributes} />
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={'wpbs-slider'} />
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <Style attributes={attributes} setAttributes={setAttributes}
+                   css={[layoutCss(attributes)]}
+                   deps={['wpbs-layout', 'wpbs-slider', attributes?.uniqueId]}
+                   props={cssProps}
+            />
 
-            <div {...innerBlocksProps}></div>
+            <div ref={swiperRef} {...innerBlocksProps}></div>
         </>;
 
 

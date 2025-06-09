@@ -7,8 +7,6 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutClasses, LayoutSettings} from "Components/Layout"
-import {Background, BackgroundSettings, BackgroundAttributes} from "Components/Background";
 
 import React, {useEffect, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
@@ -22,9 +20,10 @@ import {
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
-import Resolution from "Components/Resolution.js";
 import ResponsivePicture from "Components/ResponsivePicture.js";
-import {Style, styleAttributesFull} from "Components/Style.js";
+import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 
 function blockClasses(attributes = {}) {
     return [
@@ -32,7 +31,6 @@ function blockClasses(attributes = {}) {
         (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
         'swiper-slide wpbs-layout-container wpbs-has-container grow w-full !flex flex-col shrink-0 relative',
         attributes.uniqueId,
-        LayoutClasses(attributes)
     ].filter(x => x).join(' ');
 }
 
@@ -66,7 +64,6 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
     } else {
         return <>
             <div {...innerBlocksProps}></div>
-            <Background attributes={attributes} editor={!!isEditor}/>
         </>;
     }
 }
@@ -97,7 +94,9 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...styleAttributesFull,
+        ...LAYOUT_ATTRIBUTES,
+        ...BACKGROUND_ATTRIBUTES,
+        ...STYLE_ATTRIBUTES,
         ...blockAttributes
     },
     edit: (props) => {
@@ -131,8 +130,6 @@ registerBlockType(metadata.name, {
         return <>
             <BlockEdit key="edit" {...blockProps} />
             <InspectorControls group="styles">
-                <BackgroundSettings attributes={attributes || {}} className={isImageSlide ? '!hidden' : null}
-                                    pushSettings={setAttributes}></BackgroundSettings>
                 <PanelBody initialOpen={true} title={'Image'} className={!isImageSlide ? '!hidden' : null}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
                         <Grid columns={2} columnGap={15} rowGap={20}>
@@ -277,14 +274,18 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-            <LayoutSettings attributes={attributes} setAttributes={setAttributes}/>
-
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
+            <Style attributes={attributes} setAttributes={setAttributes}
+                   css={[backgroundCss(attributes), layoutCss(attributes)]}
+                   deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
+                   props={cssProps}
+            />
 
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
                               isEditor={true}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       selector={'wpbs-slide'}/>
+                <BackgroundElement attributes={props.attributes} editor={true}/>
             </div>
 
         </>;
@@ -308,6 +309,7 @@ registerBlockType(metadata.name, {
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={props.attributes}
                               innerBlocksProps={innerBlocksProps} isEditor={false}/>
+                <BackgroundElement attributes={props.attributes} editor={false}/>
             </div>
         );
     }

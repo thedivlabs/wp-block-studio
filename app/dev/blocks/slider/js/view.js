@@ -1,5 +1,40 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
+const SWIPER_OPTIONS_VIEW = {
+    on: {
+        afterInit: (swiper) => {
+            if (swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
+            if (swiper.slides.length < 2) {
+                swiper.disable();
+            }
+            if (swiper.autoplay.running) {
+                swiper.autoplay.pause();
+                setTimeout(() => {
+                    swiper.autoplay.resume();
+                }, 5000);
+            }
+        },
+        paginationUpdate: (swiper, paginationEl) => {
+
+            if (!!swiper?.['isBeginning']) {
+                swiper.el.classList.add('swiper--start');
+            } else {
+                swiper.el.classList.remove('swiper--start');
+            }
+        },
+        resize: (swiper) => {
+            if (swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
+        }
+    }
+};
 
 const {state} = store('wpbs', {
     callbacks: {
@@ -7,7 +42,10 @@ const {state} = store('wpbs', {
             const {ref: element} = getElement();
             let {args} = getContext();
 
-            args = JSON.parse(JSON.stringify(args));
+            args = {
+                ...SWIPER_OPTIONS_VIEW,
+                ...JSON.parse(JSON.stringify(args))
+            };
 
             let observerIntersection = new IntersectionObserver((entries, observer) => {
                 entries.forEach((entry) => {

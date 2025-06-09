@@ -7,7 +7,6 @@ class WPBS_Theme {
 
     static modals;
     static loader;
-    static swiper;
     static popup;
     static settings;
     static videos;
@@ -20,7 +19,6 @@ class WPBS_Theme {
         this.videos = [];
 
         this.settings = window.wpbsData ?? {};
-
         this.modals.init();
         this.loader.init();
 
@@ -31,8 +29,8 @@ class WPBS_Theme {
 
         window.addEventListener('resize', () => {
             clearTimeout(timer);
-            timer = setTimeout( ()=>{
-                this.videos.forEach((video)=>{
+            timer = setTimeout(() => {
+                this.videos.forEach((video) => {
                     this.responsiveVideoSrc(video);
                 })
             }, 500);
@@ -152,7 +150,6 @@ class WPBS_Theme {
             });
 
         });
-
 
 
     }

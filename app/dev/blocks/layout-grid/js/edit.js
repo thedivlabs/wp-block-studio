@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
         const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
-        const uniqueId = useInstanceId(this, 'wpbs-layout-grid');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
         useEffect(() => {
             setAttributes({
@@ -328,8 +328,8 @@ registerBlockType(metadata.name, {
 
         const GutterSizer = () => {
             if (!!props.attributes['wpbs-masonry']) {
-                return <span class="gutter-sizer"
-                             style="width:var(--row-gap, var(--column-gap, 0px))"></span>;
+                return <span className={"gutter-sizer"}
+                             style={{width: 'var(--row-gap, var(--column-gap, 0px))'}}></span>;
             } else {
                 return <></>;
             }
@@ -338,7 +338,7 @@ registerBlockType(metadata.name, {
         const PaginationButton = () => {
             if ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
                 return <button type="button"
-                               class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
+                               className={"wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"}
                                data-wp-on-async--click="actions.pagination">
                     {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
                 </button>;

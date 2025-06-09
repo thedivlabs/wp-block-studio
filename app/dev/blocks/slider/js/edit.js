@@ -10,6 +10,7 @@ import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Loop from "Components/Loop"
+import {SWIPER_OPTIONS_DEFAULT} from 'Includes/helper'
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -20,28 +21,10 @@ import {
 } from "@wordpress/components";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
+import {useSelect} from "@wordpress/data";
+import {store as blockEditorStore} from '@wordpress/block-editor';
+import {BlockListBlock} from '@wordpress/block-editor';
 
-const DEFAULT_ARGS = {
-    createElements: false,
-    navigation: {
-        enabled: true,
-        nextEl: '.wpbs-slider-btn--next',
-        prevEl: '.wpbs-slider-btn--prev',
-    },
-    pagination: {
-        enabled: true,
-        el: '.swiper-pagination',
-    },
-    watchSlidesProgress: true,
-    updateOnWindowResize: true,
-    simulateTouch: true,
-    slidesPerView: 1,
-    spaceBetween: 0,
-    watchOverflow: true,
-    passiveListeners: true,
-    grabCursor: true,
-    uniqueNavElements: true,
-};
 
 function blockClasses(attributes = {}) {
 
@@ -126,12 +109,12 @@ function getArgs(attributes) {
 
 
     return {
-        ...DEFAULT_ARGS,
+        ...SWIPER_OPTIONS_DEFAULT,
         ...args
     };
 }
 
-function getCssProps(attributes){
+function getCssProps(attributes) {
     const breakpoint = WPBS?.settings?.breakpoints?.[attributes?.['wpbs-layout']?.['breakpoint'] ?? 'normal'];
 
     return cleanArgs({
@@ -150,6 +133,10 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
+        'wpbs-query': {
+            type: 'object',
+            default: {}
+        },
         'wpbs-slider': {
             type: 'object',
             default: {
@@ -213,12 +200,6 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes)
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/slider-wrapper', {}],
-            ]
-        });
-
         const updateOptions = useCallback((key) => (newValue) => {
             setAttributes((prev) => {
                 const next = {
@@ -231,6 +212,10 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
+        const innerBlocksProps = useInnerBlocksProps({
+            className: 'swiper-wrapper',
+        }, {});
+        console.log(innerBlocksProps.children);
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
@@ -387,10 +372,7 @@ registerBlockType(metadata.name, {
                                 __nextHasNoMarginBottom
                             />
                         </Grid>
-
                     </Grid>
-
-
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
@@ -400,7 +382,11 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
 
-            <div ref={swiperRef} {...innerBlocksProps}></div>
+            <div ref={swiperRef} {...blockProps}>
+                <div {...innerBlocksProps} >
+                    {innerBlocksProps.children}
+                </div>
+            </div>
         </>;
 
 
@@ -419,7 +405,11 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
         return (
-            <div {...innerBlocksProps}></div>
+            <div {...blockProps}>
+                <div {...innerBlocksProps} >
+                    {innerBlocksProps.children}
+                </div>
+            </div>
         );
     }
 })

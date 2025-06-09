@@ -218,9 +218,6 @@ function imageSet(media, resolution) {
 
     const size = media?.sizes?.[resolution || 'large'];
 
-    console.log(media);
-    console.log(resolution);
-
     const url = size?.url ?? false;
 
     if (!url) {

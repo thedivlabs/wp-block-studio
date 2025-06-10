@@ -469,10 +469,9 @@ function parseSpecial(prop, attributes) {
         case 'max-height':
         case 'max-height-custom':
             result = {'max-height': heightVal(settings?.['max-height-custom'] ?? settings?.['max-height'] ?? null)}
+            break;
 
-            break;
         case 'width':
-            break;
         case 'width-custom':
             result = {'width': settings?.['width-custom'] ?? settings?.['width'] ?? null}
 

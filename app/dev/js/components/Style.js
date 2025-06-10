@@ -60,7 +60,7 @@ export function Style({
                           preload = []
                       }) {
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, preload, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
+    const dependencyValues = [...deps.map((key) => attributes[key]).filter((attr) => attr), attributes?.style, attributes.uniqueId, preload, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
     const {containers, breakpoints} = WPBS?.settings ?? {};
 
     const uniqueId = attributes?.uniqueId ?? '';

@@ -69,7 +69,7 @@ export function Style({
 
     css = [layoutCss(attributes) || '', backgroundCss(attributes) || '', ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
-    const result = useMemo(() => {
+    const resultCss = useMemo(() => {
 
         if (!uniqueId) {
             return '';
@@ -212,20 +212,18 @@ export function Style({
     const preloadMedia = useMemo(() => getPreloadMedia([...preload, ...backgroundPreload(attributes)]), [preload, attributes['wpbs-background']]);
 
     useEffect(() => {
-        if (attributes['wpbs-css'] !== result) {
+
+        const {'wpbs-css': currentCss = ''} = attributes;
+
+        if (currentCss !== resultCss) {
             setAttributes({
-                'wpbs-css': result,
+                'wpbs-css': resultCss,
+                'wpbs-preload': preloadMedia
             });
         }
-    }, [result]);
-
-    useEffect(() => {
-        setAttributes({
-            'wpbs-preload': preloadMedia
-        });
-    }, [preloadMedia]);
+    }, [resultCss, preload]);
 
 
-    return <style className='wpbs-styles'>{result}</style>;
+    return <style className='wpbs-styles'>{resultCss}</style>;
 }
 

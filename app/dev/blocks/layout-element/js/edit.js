@@ -79,9 +79,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes}
-                       deps={['uniqueId']}
-                />
+                <Style attributes={attributes} setAttributes={setAttributes}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
@@ -109,7 +107,7 @@ registerBlockType(metadata.name, {
             className: 'wpbs-layout-wrapper w-full h-full'
         });
 
-        return  <RenderContent
+        return <RenderContent
             attributes={attributes}
             blockProps={blockProps}
             innerBlocksProps={innerBlocksProps}

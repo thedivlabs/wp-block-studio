@@ -68,20 +68,6 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
     }
 }
 
-const blockAttributes = {
-    'wpbs-slide': {
-        type: 'object',
-        default: {
-            imageMobile: undefined,
-            imageLarge: undefined,
-            imageSize: undefined,
-            resolution: undefined,
-            eager: undefined,
-            force: undefined,
-        }
-    }
-}
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -89,7 +75,17 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        ...blockAttributes
+        'wpbs-slide': {
+            type: 'object',
+            default: {
+                imageMobile: undefined,
+                imageLarge: undefined,
+                imageSize: undefined,
+                resolution: undefined,
+                eager: undefined,
+                force: undefined,
+            }
+        }
     },
     edit: (props) => {
 
@@ -234,13 +230,13 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['uniqueId', 'wpbs-slide']}
-                   /*preload={{
-                       large: [attributes['wpbs-slide']?.imageLarge],
-                       mobile: [attributes['wpbs-slide']?.imageMobile],
-                       force: !!attributes['wpbs-slide']?.force,
-                       resolution: attributes['wpbs-slide']?.resolution,
-                   }}*/
+                   deps={['wpbs-slide']}
+                /*preload={{
+                    large: [attributes['wpbs-slide']?.imageLarge],
+                    mobile: [attributes['wpbs-slide']?.imageMobile],
+                    force: !!attributes['wpbs-slide']?.force,
+                    resolution: attributes['wpbs-slide']?.resolution,
+                }}*/
             />
 
             <div {...blockProps}>

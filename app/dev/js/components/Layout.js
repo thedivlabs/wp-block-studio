@@ -177,7 +177,7 @@ const DIRECTION_OPTIONS = [
 
 const CONTAINER_OPTIONS = [
     {label: 'Select', value: ''},
-    {label: 'None', value: ''},
+    {label: 'None', value: 'none'},
     {label: 'Extra Small', value: 'xs'},
     {label: 'Small', value: 'sm'},
     {label: 'Medium', value: 'md'},
@@ -500,8 +500,8 @@ export function layoutCss(attributes) {
 
         const {'wpbs-layout': settings = {}} = attributes;
 
-        const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
-        const container = attributes?.['wpbs-layout']?.container ? '%__CONTAINER__' + (attributes?.['wpbs-layout']?.container) + '__%' : false;
+        const breakpoint = '%__BREAKPOINT__' + (settings?.breakpoint ?? 'normal') + '__%';
+        const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
 
         let css = '';
         let desktop = {};

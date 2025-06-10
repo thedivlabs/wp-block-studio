@@ -377,10 +377,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['uniqueId']}
-                   props={cssProps}
-            />
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps}/>
 
             <div ref={swiperRef} {...innerBlocksProps} />
         </>;

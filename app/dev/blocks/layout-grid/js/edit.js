@@ -286,7 +286,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
-                       deps={['wpbs-grid', 'uniqueId']}
+                       deps={['wpbs-grid']}
                        props={cssProps}
                 />
 

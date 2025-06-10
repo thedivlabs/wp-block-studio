@@ -220,7 +220,7 @@ registerBlockType(metadata.name, {
             <BlockEdit key="edit" {...blockProps} />
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['wpbs-figure', 'uniqueId']}
+                   deps={['wpbs-figure']}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,

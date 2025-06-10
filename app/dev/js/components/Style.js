@@ -1,4 +1,5 @@
 import {useMemo} from "react";
+import {backgroundPreload} from "Components/Background.js";
 
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
@@ -194,7 +195,7 @@ export function Style({
         }
 
         setAttributes({'wpbs-css': css});
-        setAttributes({'wpbs-preload': getPreloadMedia(preload)});
+        setAttributes({'wpbs-preload': [...getPreloadMedia(preload), ...backgroundPreload(attributes)]});
 
         return css.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {

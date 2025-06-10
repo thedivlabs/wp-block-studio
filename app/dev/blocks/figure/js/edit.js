@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutControls, LAYOUT_ATTRIBUTES, layoutCss} from "Components/Layout"
+import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     BaseControl,
@@ -220,12 +220,12 @@ registerBlockType(metadata.name, {
             <BlockEdit key="edit" {...blockProps} />
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['wpbs-layout', 'wpbs-figure', attributes?.uniqueId]}
+                   deps={['wpbs-figure', 'uniqueId']}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,
                    }}
-                   preload={[...preloadMedia]}
+                   preload={preloadMedia}
             />
             <Link defaultValue={attributes['wpbs-figure']?.link}
                   callback={(newValue) => updateSettings({'link': newValue})}/>

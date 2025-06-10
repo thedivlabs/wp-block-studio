@@ -5,8 +5,8 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LayoutControls, LAYOUT_ATTRIBUTES, layoutCss} from "Components/Layout"
-import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {ElementTagSettings, ElementTag, ELEMENT_TAG_ATTRIBUTES} from "Components/ElementTag";
 import {
     __experimentalGrid as Grid,
@@ -80,8 +80,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
-                       css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-layout', 'wpbs-background', attributes?.uniqueId]}
+                       deps={['uniqueId']}
                 />
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>

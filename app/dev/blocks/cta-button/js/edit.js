@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     PanelBody,
@@ -267,8 +267,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
-                       css={[layoutCss(attributes)]}
-                       deps={['wpbs-layout','wpbs-cta']}
+                       deps={['wpbs-cta']}
                        props={{
                            '--icon-color': settings?.['icon-color'] || null,
                        }}

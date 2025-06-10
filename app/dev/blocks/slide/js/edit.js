@@ -8,7 +8,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {
     __experimentalGrid as Grid,
@@ -21,8 +21,8 @@ import {
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
 import {imageButtonStyle} from "Includes/helper.js";
 import ResponsivePicture from "Components/ResponsivePicture.js";
-import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
-import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 
 function blockClasses(attributes = {}) {
@@ -234,13 +234,13 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['wpbs-layout', 'wpbs-background', 'uniqueId', 'wpbs-slide']}
-                   preload={{
+                   deps={['uniqueId', 'wpbs-slide']}
+                   /*preload={{
                        large: [attributes['wpbs-slide']?.imageLarge],
                        mobile: [attributes['wpbs-slide']?.imageMobile],
                        force: !!attributes['wpbs-slide']?.force,
                        resolution: attributes['wpbs-slide']?.resolution,
-                   }}
+                   }}*/
             />
 
             <div {...blockProps}>

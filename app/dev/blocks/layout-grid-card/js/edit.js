@@ -4,8 +4,8 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
-import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
@@ -49,8 +49,6 @@ registerBlockType(metadata.name, {
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
-                       css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-background', 'wpbs-layout']}
                 />
 
                 <div {...blockProps}>

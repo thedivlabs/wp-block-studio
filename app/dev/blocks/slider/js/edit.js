@@ -7,7 +7,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Loop from "Components/Loop"
 import {SWIPER_OPTIONS_DEFAULT} from 'Includes/helper'
@@ -378,8 +378,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   css={[layoutCss(attributes)]}
-                   deps={['wpbs-layout', 'wpbs-slider', attributes?.uniqueId]}
+                   deps={['uniqueId']}
                    props={cssProps}
             />
 

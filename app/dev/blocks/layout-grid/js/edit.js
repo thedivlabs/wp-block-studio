@@ -8,8 +8,8 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls, layoutCss} from "Components/Layout"
-import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement, backgroundCss} from "Components/Background"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Loop from "Components/Loop"
 import {
@@ -286,8 +286,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
-                       css={[backgroundCss(attributes), layoutCss(attributes)]}
-                       deps={['wpbs-layout', 'wpbs-background', 'wpbs-grid', attributes?.uniqueId]}
+                       deps={['wpbs-grid', 'uniqueId']}
                        props={cssProps}
                 />
 

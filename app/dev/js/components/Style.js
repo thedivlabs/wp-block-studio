@@ -67,7 +67,6 @@ export function getPreloadMedia(media, breakpoint = 'normal') {
 
     return result;
 
-
 }
 
 export function Style({
@@ -79,8 +78,7 @@ export function Style({
                           preload = {
                               large: [],
                               mobile: [],
-                              resolution: 'large',
-                              force: false
+                              resolution: 'large'
                           }
                       }) {
 

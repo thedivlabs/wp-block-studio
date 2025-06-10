@@ -311,12 +311,15 @@ function parseSpecial(prop, settings) {
 
 }
 
-function getPreloadAssets(attributes, newValue) {
+export function backgroundPreload(attributes) {
 
     const {'wpbs-background': settings = {}} = attributes;
 
     let result = {};
 
+    if (!settings?.eager) {
+        return result;
+    }
     if (!!settings?.eager) {
 
         if (['image', 'featured-image'].includes(settings?.type)) {
@@ -330,34 +333,6 @@ function getPreloadAssets(attributes, newValue) {
             const mobileBreakpoint = !!newValue?.force || !!settings?.force ?
                 attributes['wpbs-layout']?.breakpoint ?? 'normal' :
                 !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
-
-            if (largeImage?.id) {
-                result = {
-                    ...result,
-                    ...{
-                        [largeImage.id]: {
-                            resolution: resolution || 'large',
-                            breakpoint: largeBreakpoint,
-                            mobile: false
-                        }
-                    }
-                }
-            }
-
-            if (mobileImage?.id) {
-                result = {
-                    ...result,
-                    ...{
-                        [mobileImage.id]: {
-                            breakpoint: mobileBreakpoint,
-                            resolution: resolution || 'large',
-                            mobile: true
-                        }
-
-                    }
-                }
-            }
-        }
 
     }
 
@@ -466,8 +441,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             }
         }
 
-        const preloadAssets = getPreloadAssets(attributes, newValue);
-
         const result = {
             ...attributes['wpbs-background'],
             ...newValue
@@ -475,7 +448,6 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
 
         setAttributes({
             'wpbs-background': result,
-            'wpbs-preload': preloadAssets,
         });
 
         setSettings(result);

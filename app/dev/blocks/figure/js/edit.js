@@ -45,7 +45,7 @@ function getSettings(attributes = {}) {
     };
 }
 
-function getPreload(attributes = {}, newValue) {
+function getPreload(attributes = {}) {
 
     const {'wpbs-figure': settings = {}} = attributes;
 
@@ -53,46 +53,15 @@ function getPreload(attributes = {}, newValue) {
         return {}
     }
 
-    const largeImage = newValue?.largeImage ?? settings?.largeImage ?? false;
-    const mobileImage = newValue?.mobileImage ?? settings?.mobileImage ?? false;
-    const resolution = newValue?.resolution ?? settings?.resolution;
-    const largeBreakpoint = !!newValue?.force || !!settings?.force ?
-        attributes['wpbs-layout']?.breakpoint ?? 'normal' :
-        !!mobileImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
-    const mobileBreakpoint = !!newValue?.force || !!settings?.force ?
-        attributes['wpbs-layout']?.breakpoint ?? 'normal' :
-        !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
+    const largeImage = !!settings.force ? settings?.largeImage ?? false : settings?.largeImage ?? settings?.mobileImage ?? false;
+    const mobileImage = !!settings.force ? settings?.mobileImage ?? false : settings?.mobileImage ?? settings?.largeImage ?? false;
+    const resolution = settings.resolution || 'large';
 
-    let result = {};
-
-    if (largeImage?.id) {
-        result = {
-            ...result,
-            ...{
-                [largeImage.id]: {
-                    resolution: resolution || 'large',
-                    breakpoint: largeBreakpoint,
-                    mobile: false
-                }
-            }
-        }
+    return {
+        large: [largeImage],
+        mobile: [mobileImage],
+        resolution: resolution
     }
-
-    if (mobileImage?.id) {
-        result = {
-            ...result,
-            ...{
-                [mobileImage.id]: {
-                    breakpoint: mobileBreakpoint,
-                    resolution: resolution || 'mobile',
-                    mobile: true
-                }
-
-            }
-        }
-    }
-
-    return result;
 
 
 }
@@ -256,7 +225,7 @@ registerBlockType(metadata.name, {
                        '--figure-type': settings?.type ?? null,
                        '--overlay': settings?.overlay ?? null,
                    }}
-                   preload={getPreload(attributes, newValue)}
+                   preload={getPreload(attributes)}
             />
             <Link defaultValue={settings?.link} callback={(newValue) => updateSettings({'link': newValue})}/>
             <InspectorControls group="styles">

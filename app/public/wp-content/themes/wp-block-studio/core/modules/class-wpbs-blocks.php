@@ -19,7 +19,7 @@ class WPBS_Blocks {
 		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
 
 		add_filter( 'wpbs_preload_images', function ( $images ) use ( $attributes ) {
-
+WPBS::console_log($attributes ?? false);
 			return array_replace( [], $images, $attributes['wpbs-preload'] ?? [] );
 
 		} );

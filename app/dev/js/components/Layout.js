@@ -489,130 +489,126 @@ function parseSpecial(prop, attributes) {
 
 export function layoutCss(attributes) {
 
-    return useMemo(() => {
+    if (!Object.keys(attributes?.['wpbs-layout'] ?? {}).length || !attributes.uniqueId) {
+        return '';
+    }
 
-        if (!Object.keys(attributes?.['wpbs-layout'] ?? {}).length || !attributes.uniqueId) {
-            return '';
+    const uniqueId = attributes?.uniqueId ?? '';
+    const selector = '.' + uniqueId.trim().split(' ').join('.');
+
+    const {'wpbs-layout': settings = {}} = attributes;
+
+    const breakpoint = '%__BREAKPOINT__' + (settings?.breakpoint ?? 'normal') + '__%';
+    const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
+
+    let css = '';
+    let desktop = {};
+    let mobile = {};
+    let hover = {};
+
+
+    Object.entries(settings).filter(([k, value]) =>
+        !k.toLowerCase().includes('mobile') &&
+        !k.toLowerCase().includes('hover')
+    ).forEach(([prop, value]) => {
+
+        if (!value) {
+            return;
         }
 
-        const uniqueId = attributes?.uniqueId ?? '';
-        const selector = '.' + uniqueId.trim().split(' ').join('.');
+        if (LAYOUT_PROPS.special.includes(prop)) {
 
-        const {'wpbs-layout': settings = {}} = attributes;
+            desktop = {
+                ...desktop,
+                ...parseSpecial(prop, attributes)
+            };
 
-        const breakpoint = '%__BREAKPOINT__' + (settings?.breakpoint ?? 'normal') + '__%';
-        const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
-
-        let css = '';
-        let desktop = {};
-        let mobile = {};
-        let hover = {};
-
-
-        Object.entries(settings).filter(([k, value]) =>
-            !k.toLowerCase().includes('mobile') &&
-            !k.toLowerCase().includes('hover')
-        ).forEach(([prop, value]) => {
-
-            if (!value) {
-                return;
-            }
-
-            if (LAYOUT_PROPS.special.includes(prop)) {
-
-                desktop = {
-                    ...desktop,
-                    ...parseSpecial(prop, attributes)
-                };
-
-            } else {
-                desktop[prop] = value;
-            }
-
-        });
-
-        Object.entries(settings).filter(([k, value]) =>
-            k.toLowerCase().includes('mobile') &&
-            !k.toLowerCase().includes('hover')
-        ).forEach(([prop, value]) => {
-
-            if (!value) {
-                return;
-            }
-
-            if (LAYOUT_PROPS.special.includes(prop)) {
-
-                mobile = {
-                    ...mobile,
-                    ...parseSpecial(prop, attributes)
-                };
-
-            } else {
-                prop = prop.replace(/-mobile/g, '');
-                mobile[prop] = value;
-            }
-
-        });
-
-        Object.entries(settings).filter(([k, value]) =>
-            String(k).toLowerCase().includes('hover')
-        ).forEach(([prop, value]) => {
-
-            if (!value) {
-                return;
-            }
-
-            if (LAYOUT_PROPS.special.includes(prop)) {
-
-                hover = {
-                    ...hover,
-                    ...parseSpecial(prop, attributes)
-                };
-
-            } else {
-                prop = prop.replace(/-hover/g, '');
-                hover[prop] = value;
-            }
-
-        });
-
-        if (Object.keys(desktop).length || container) {
-            css += selector + '{';
-            Object.entries(desktop).forEach(([prop, value]) => {
-
-                css += [prop, value].join(':') + ';';
-            })
-
-            if (container) {
-                css += '--container-width: ' + container + '}';
-            }
-
-            css += '}';
+        } else {
+            desktop[prop] = value;
         }
 
-        if (Object.keys(mobile).length) {
-            css += '@media(width < ' + breakpoint + '){' + selector + '{';
+    });
 
-            Object.entries(mobile).forEach(([prop, value]) => {
-                css += [prop, value].join(':') + ';';
-            })
+    Object.entries(settings).filter(([k, value]) =>
+        k.toLowerCase().includes('mobile') &&
+        !k.toLowerCase().includes('hover')
+    ).forEach(([prop, value]) => {
 
-            css += '}}';
+        if (!value) {
+            return;
         }
 
-        if (Object.keys(hover).length) {
-            css += selector + ':hover {';
-            Object.entries(desktop).forEach(([prop, value]) => {
+        if (LAYOUT_PROPS.special.includes(prop)) {
 
-                css += [prop, value].join(':') + ';';
-            })
+            mobile = {
+                ...mobile,
+                ...parseSpecial(prop, attributes)
+            };
 
-            css += '}';
+        } else {
+            prop = prop.replace(/-mobile/g, '');
+            mobile[prop] = value;
         }
 
-        return css.trim();
-    }, [attributes['wpbs-layout'], attributes.uniqueId]);
+    });
 
+    Object.entries(settings).filter(([k, value]) =>
+        String(k).toLowerCase().includes('hover')
+    ).forEach(([prop, value]) => {
+
+        if (!value) {
+            return;
+        }
+
+        if (LAYOUT_PROPS.special.includes(prop)) {
+
+            hover = {
+                ...hover,
+                ...parseSpecial(prop, attributes)
+            };
+
+        } else {
+            prop = prop.replace(/-hover/g, '');
+            hover[prop] = value;
+        }
+
+    });
+
+    if (Object.keys(desktop).length || container) {
+        css += selector + '{';
+        Object.entries(desktop).forEach(([prop, value]) => {
+
+            css += [prop, value].join(':') + ';';
+        })
+
+        if (container) {
+            css += '--container-width: ' + container + '}';
+        }
+
+        css += '}';
+    }
+
+    if (Object.keys(mobile).length) {
+        css += '@media(width < ' + breakpoint + '){' + selector + '{';
+
+        Object.entries(mobile).forEach(([prop, value]) => {
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}}';
+    }
+
+    if (Object.keys(hover).length) {
+        css += selector + ':hover {';
+        Object.entries(desktop).forEach(([prop, value]) => {
+
+            css += [prop, value].join(':') + ';';
+        })
+
+        css += '}';
+    }
+
+    return css.trim();
 
 }
 

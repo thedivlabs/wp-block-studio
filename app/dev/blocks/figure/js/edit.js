@@ -392,18 +392,6 @@ registerBlockType(metadata.name, {
                                     checked={!!attributes['wpbs-figure']?.eager}
                                     onChange={(value) => {
                                         updateSettings({'eager': value});
-
-                                        if (value) {
-                                            setAttributes({
-                                                'wpbs-preload': [
-                                                    {
-                                                        mobile: attributes['wpbs-figure']?.mobileImage?.id ?? null,
-                                                        large: attributes['wpbs-figure']?.largeImage?.id ?? null,
-                                                        size: attributes['wpbs-figure']?.resolution ?? null
-                                                    }
-                                                ]
-                                            });
-                                        }
                                     }}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom

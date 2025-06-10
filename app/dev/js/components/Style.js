@@ -32,14 +32,15 @@ export function getCSSFromStyle(raw) {
 
 function getPreloadMedia(preloads) {
 
-    let result = {};
+    let result = [];
 
     preloads.forEach((preloadItem) => {
 
         const {media, resolution = 'large', breakpoint = 'normal', mobile} = preloadItem;
 
         if (media?.id) {
-            result[id] = {
+            result[media.id] = {
+                id: media?.id,
                 resolution: resolution,
                 breakpoint: breakpoint,
                 mobile: !!mobile
@@ -60,7 +61,7 @@ export function Style({
                           preload = []
                       }) {
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
     const {containers, breakpoints} = WPBS?.settings ?? {};
 
     const uniqueId = attributes?.uniqueId ?? '';
@@ -71,13 +72,14 @@ export function Style({
         return null;
     }
 
-    css = [layoutCss(attributes) || '', backgroundCss(attributes) || '', ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
-
-    const resultCss = useMemo(() => {
+    const {resultCss,preloadMedia} = useMemo(() => {
         //console.log('compiling css');
         if (!uniqueId) {
             return '';
         }
+
+        const cssLayout = layoutCss(attributes);
+        const cssBackground = backgroundCss(attributes);
 
         let desktopProps = {};
         let mobileProps = {};
@@ -198,34 +200,46 @@ export function Style({
             }
         }
 
-        const mergedCss = [propsCss, css].join(' ').trim();
+        const mergedCss = [cssLayout, cssBackground, propsCss, ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
-        return mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
-            switch (type) {
-                case 'BREAKPOINT':
-                    return breakpoints[key] ?? match;
-                case 'CONTAINER':
-                    return containers[key] ?? match;
-                default:
-                    return match; // fallback for unknown types
-            }
-        });
+        const preloadMedia = getPreloadMedia([...preload, ...backgroundPreload(attributes)]);
+
+        return {
+            resultCss:mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
+                switch (type) {
+                    case 'BREAKPOINT':
+                        return breakpoints[key] ?? match;
+                    case 'CONTAINER':
+                        return containers[key] ?? match;
+                    default:
+                        return match; // fallback for unknown types
+                }
+            }),
+            preloadMedia: preloadMedia
+        };
 
     }, dependencyValues);
 
-    const preloadMedia = useMemo(() => getPreloadMedia([...preload, ...backgroundPreload(attributes)]), [preload, attributes['wpbs-background']]);
+
 
     useEffect(() => {
 
         const {'wpbs-css': currentCss = ''} = attributes;
 
         if (currentCss !== resultCss) {
+
             setAttributes({
                 'wpbs-css': resultCss,
-                'wpbs-preload': preloadMedia
             });
         }
-    }, [resultCss, preloadMedia]);
+
+        setAttributes({
+            'wpbs-preload': preloadMedia
+        });
+
+    }, [resultCss,preloadMedia]);
+
+
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

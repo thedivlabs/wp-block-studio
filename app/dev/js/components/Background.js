@@ -311,9 +311,9 @@ function parseSpecial(prop, settings) {
 
 }
 
-export function backgroundPreload(attributes) {
+export function backgroundPreload(settings) {
 
-    const {'wpbs-background': settings = {}} = attributes;
+    //const {'wpbs-background': settings = {}} = attributes;
 
     let result = [];
 

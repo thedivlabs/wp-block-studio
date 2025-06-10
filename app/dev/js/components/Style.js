@@ -1,4 +1,4 @@
-import {useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import {backgroundPreload} from "Components/Background.js";
 
 export const STYLE_ATTRIBUTES = {
@@ -187,17 +187,11 @@ export function Style({
             }
         }
 
+        const mergedCss = Array.isArray(css)
+            ? [propsCss, ...css].join(' ').trim()
+            : [propsCss, css].join(' ').trim();
 
-        if (Array.isArray(css)) {
-            css = [propsCss, ...css].join(' ').trim();
-        } else {
-            css = [propsCss, css].join(' ').trim();
-        }
-
-        setAttributes({'wpbs-css': css});
-        setAttributes({'wpbs-preload': [...getPreloadMedia(preload), ...backgroundPreload(attributes)]});
-
-        return css.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
+        return mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {
                 case 'BREAKPOINT':
                     return breakpoints[key] ?? match;
@@ -210,7 +204,18 @@ export function Style({
 
     }, dependencyValues);
 
+    const preloadMedia = useMemo(() => [...getPreloadMedia(preload), ...backgroundPreload(attributes['wpbs-background'])], [preload, attributes['wpbs-background']]);
 
-    return <style className={'wpbs-styles'}>{result}</style>;
+    useEffect(() => {
+        if (attributes['wpbs-css'] !== result) {
+            setAttributes({
+                'wpbs-css': result,
+                'wpbs-preload': preloadMedia
+            });
+        }
+    }, [result, preloadMedia]);
+
+
+    return <style className='wpbs-styles'>{result}</style>;
 }
 

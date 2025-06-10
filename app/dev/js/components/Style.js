@@ -32,13 +32,13 @@ export function getCSSFromStyle(raw) {
 
 function getPreloadMedia(preloads) {
 
-    let result = [];
+    let result = {};
 
     preloads.forEach((preloadItem) => {
 
         const {media, resolution = 'large', breakpoint = 'normal', mobile} = preloadItem;
 
-        if (media?.id) {
+        if (media.id) {
             result[media.id] = {
                 id: media?.id,
                 resolution: resolution,

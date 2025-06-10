@@ -28,39 +28,19 @@ export function getCSSFromStyle(raw) {
     return raw;
 }
 
-function getPreloadMedia(media, breakpoint = 'normal') {
-
-    const {large: largeMedia, mobile: mobileMedia, force, resolution = {}} = media;
+function getPreloadMedia(preloads) {
 
     let result = {};
 
+    preloads.forEach((preloadItem) => {
 
-    largeMedia.forEach((mediaItem) => {
-        if (mediaItem?.id) {
-            result = {
-                ...result,
-                ...{
-                    [mediaItem.id]: {
-                        resolution: resolution?.large || 'large',
-                        breakpoint: breakpoint,
-                        mobile: false
-                    }
-                }
-            }
-        }
-    })
+        const {media, resolution = 'large', breakpoint = 'normal', mobile} = preloadItem;
 
-    mobileMedia.forEach((mediaItem) => {
-        if (mediaItem?.id) {
-            result = {
-                ...result,
-                ...{
-                    [mediaItem.id]: {
-                        resolution: resolution?.mobile || 'large',
-                        breakpoint: breakpoint,
-                        mobile: false
-                    }
-                }
+        if (media?.id) {
+            result[id] = {
+                resolution: resolution,
+                breakpoint: breakpoint,
+                mobile: !!mobile
             }
         }
     })
@@ -214,7 +194,7 @@ export function Style({
         }
 
         setAttributes({'wpbs-css': css});
-        setAttributes({'wpbs-preload': getPreloadMedia(preload, attributes['wpbs-layout']?.breakpoint)});
+        setAttributes({'wpbs-preload': getPreloadMedia(preload)});
 
         return css.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {

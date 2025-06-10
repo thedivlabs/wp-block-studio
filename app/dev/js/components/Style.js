@@ -68,6 +68,10 @@ export function Style({
 
     const result = useMemo(() => {
 
+        if (!uniqueId) {
+            return '';
+        }
+
         let desktopProps = {};
         let mobileProps = {};
 

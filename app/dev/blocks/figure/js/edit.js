@@ -233,11 +233,8 @@ registerBlockType(metadata.name, {
                 ...newValue
             };
 
-            const preload = getPreload(attributes, newValue);
-
             setAttributes({
-                'wpbs-figure': result,
-                'wpbs-preload': preload,
+                'wpbs-figure': result
             });
 
             setSettings(result);
@@ -259,6 +256,7 @@ registerBlockType(metadata.name, {
                        '--figure-type': settings?.type ?? null,
                        '--overlay': settings?.overlay ?? null,
                    }}
+                   preload={getPreload(attributes, newValue)}
             />
             <Link defaultValue={settings?.link} callback={(newValue) => updateSettings({'link': newValue})}/>
             <InspectorControls group="styles">

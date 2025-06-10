@@ -216,23 +216,7 @@ registerBlockType(metadata.name, {
                             <ToggleControl
                                 label="Eager"
                                 checked={!!attributes['wpbs-slide']?.eager}
-                                onChange={(value) => {
-
-                                    updateSettings(value, 'eager')
-
-                                    if (value) {
-                                        setAttributes({
-                                            preload: [
-                                                {
-                                                    mobile: !!attributes['wpbs-imageMobile'] ? attributes['wpbs-imageMobile'].id : null,
-                                                    large: !!attributes['wpbs-imageLarge'] ? attributes['wpbs-imageLarge'].id : null,
-                                                    size: attributes['wpbs-resolutionSlide'] || null
-                                                }
-                                            ]
-                                        });
-
-                                    }
-                                }}
+                                onChange={(value) => updateSettings(value, 'eager')}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
@@ -251,7 +235,13 @@ registerBlockType(metadata.name, {
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
                    css={[backgroundCss(attributes), layoutCss(attributes)]}
-                   deps={['wpbs-layout', 'wpbs-background', 'uniqueId']}
+                   deps={['wpbs-layout', 'wpbs-background', 'uniqueId', 'wpbs-slide']}
+                   preload={{
+                       large: [attributes['wpbs-slide']?.imageLarge],
+                       mobile: [attributes['wpbs-slide']?.imageMobile],
+                       force: !!attributes['wpbs-slide']?.force,
+                       resolution: attributes['wpbs-slide']?.resolution,
+                   }}
             />
 
             <div {...blockProps}>

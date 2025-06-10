@@ -28,34 +28,61 @@ export function getCSSFromStyle(raw) {
     return raw;
 }
 
-export function getPreloadMedia(attributes = {}, props = []) {
+export function getPreloadMedia(media, breakpoint = 'normal') {
+
+    const {large: largeMedia, mobile: mobileMedia, force, resolution = {}} = media;
 
     let result = {};
 
-    props.forEach(prop => {
 
-        const media = attributes[prop];
-
-        result = {
-            ...result,
-            ...{
-                [media.id]: {
-                    resolution: media.resolution || 'large',
-                    breakpoint: largeBreakpoint,
-                    mobile: false
+    largeMedia.forEach((mediaItem) => {
+        if (mediaItem?.id) {
+            result = {
+                ...result,
+                ...{
+                    [mediaItem.id]: {
+                        resolution: resolution?.large || 'large',
+                        breakpoint: breakpoint,
+                        mobile: false
+                    }
                 }
             }
         }
-
     })
 
+    mobileMedia.forEach((mediaItem) => {
+        if (mediaItem?.id) {
+            result = {
+                ...result,
+                ...{
+                    [mediaItem.id]: {
+                        resolution: resolution?.mobile || 'large',
+                        breakpoint: breakpoint,
+                        mobile: false
+                    }
+                }
+            }
+        }
+    })
 
     return result;
 
 
 }
 
-export function Style({attributes, setAttributes, css = '' | [], props = {}, deps = [], preload = []}) {
+export function Style({
+                          attributes,
+                          setAttributes,
+                          css = [],
+                          props = {},
+                          deps = [],
+                          preload = {
+                              large: [],
+                              mobile: [],
+                              resolution: 'large',
+                              force: false
+                          }
+                      }) {
 
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, preload];
     const {containers, breakpoints} = WPBS?.settings ?? {};
@@ -193,7 +220,7 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
         }
 
         setAttributes({'wpbs-css': css});
-        setAttributes({'wpbs-preload': getPreloadMedia(attributes, preload)});
+        setAttributes({'wpbs-preload': getPreloadMedia(preload, attributes['wpbs-layout']?.breakpoint)});
 
         return css.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {

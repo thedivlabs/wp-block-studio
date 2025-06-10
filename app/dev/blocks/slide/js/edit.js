@@ -29,7 +29,7 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slide',
         (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
-        'swiper-slide wpbs-layout-container wpbs-has-container h-auto grow w-full flex flex-col shrink-0 relative',
+        'swiper-slide h-auto grow w-full flex flex-col shrink-0 relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -111,7 +111,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-slide__container w-full h-auto container relative z-20',
+            className: 'wpbs-slide__container wpbs-has-container w-full h-auto relative z-20',
         });
 
         const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');

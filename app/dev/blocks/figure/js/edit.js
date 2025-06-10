@@ -436,7 +436,7 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-                <Content />
+                {Content}
             </figure>
 
         </>;
@@ -454,7 +454,7 @@ registerBlockType(metadata.name, {
 
         return (
             <figure {...blockProps} >
-                <Content/>
+                {Content}
             </figure>
         );
     }

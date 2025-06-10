@@ -334,6 +334,34 @@ export function backgroundPreload(attributes) {
                 attributes['wpbs-layout']?.breakpoint ?? 'normal' :
                 !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
 
+            if (largeImage?.id) {
+                result = {
+                    ...result,
+                    ...{
+                        [largeImage.id]: {
+                            resolution: resolution || 'large',
+                            breakpoint: largeBreakpoint,
+                            mobile: false
+                        }
+                    }
+                }
+            }
+
+            if (mobileImage?.id) {
+                result = {
+                    ...result,
+                    ...{
+                        [mobileImage.id]: {
+                            breakpoint: mobileBreakpoint,
+                            resolution: resolution || 'large',
+                            mobile: true
+                        }
+
+                    }
+                }
+            }
+        }
+
     }
 
 

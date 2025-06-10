@@ -74,7 +74,7 @@ export function Style({
     css = [layoutCss(attributes) || '', backgroundCss(attributes) || '', ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
     const resultCss = useMemo(() => {
-
+console.log('compiling css');
         if (!uniqueId) {
             return '';
         }

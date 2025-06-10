@@ -24,7 +24,7 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
 
 function classNames(attributes = {}) {
@@ -78,8 +78,7 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        function updateGridSettings(newValue) {
-
+        const updateSettings = useCallback((newValue)=>{
             const result = {
                 ...grid,
                 ...newValue
@@ -90,7 +89,7 @@ registerBlockType(metadata.name, {
             });
             setGrid(result);
 
-        }
+        }, [setAttributes,setGrid])
 
         const blockProps = useBlockProps({
             className: [classNames(attributes), 'empty:min-h-8'].join(' ')
@@ -121,125 +120,126 @@ registerBlockType(metadata.name, {
                     }
                 }
             };
-        }, [
-            attributes['wpbs-grid'],
-            attributes['wpbs-layout'],
-            attributes?.style?.spacing
-        ]);
+        }, [attributes['wpbs-grid']]);
 
-        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
-                <Grid columns={3} columnGap={15} rowGap={20}>
-                    <NumberControl
-                        label={'Mobile'}
-                        __next40pxDefaultSize
-                        isShiftStepEnabled={false}
+        const tabOptions = useMemo(()=>{
+            return <Grid columns={1} columnGap={15} rowGap={20}>
+                <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
+                    <Grid columns={3} columnGap={15} rowGap={20}>
+                        <NumberControl
+                            label={'Mobile'}
+                            __next40pxDefaultSize
+                            isShiftStepEnabled={false}
+                            onChange={(newValue) => {
+                                updateSettings({'columns-mobile': newValue});
+                            }}
+                            value={grid['columns-mobile']}
+                        />
+                        <NumberControl
+                            label={'Small'}
+                            __next40pxDefaultSize
+                            isShiftStepEnabled={false}
+                            onChange={(newValue) => {
+                                updateSettings({'columns-small': newValue});
+                            }}
+                            value={grid['columns-small']}
+                        />
+                        <NumberControl
+                            label={'Large'}
+                            __next40pxDefaultSize
+                            isShiftStepEnabled={false}
+                            onChange={(newValue) => {
+                                updateSettings({'columns-large': newValue});
+                            }}
+                            value={grid['columns-large']}
+                        />
+                    </Grid>
+                </BaseControl>
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
+                    <Breakpoint
+                        label={'Breakpoint SM'}
+                        defaultValue={attributes['wpbs-grid']['breakpoint-small']}
+                        callback={(newValue) => {
+                            updateSettings({'breakpoint-small': newValue});
+                        }}/>
+                    <Breakpoint
+                        label={'Breakpoint LG'}
+                        defaultValue={attributes['wpbs-grid']['breakpoint-large']}
+                        callback={(newValue) => {
+                            updateSettings({'breakpoint-large': newValue});
+                        }}/>
+                </Grid>
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
+                    <ToggleControl
+                        __nextHasNoMarginBottom
+                        label="Masonry"
+                        checked={!!grid['masonry']}
                         onChange={(newValue) => {
-                            updateGridSettings({'columns-mobile': newValue});
+                            updateSettings({'masonry': newValue});
                         }}
-                        value={grid['columns-mobile']}
-                    />
-                    <NumberControl
-                        label={'Small'}
-                        __next40pxDefaultSize
-                        isShiftStepEnabled={false}
-                        onChange={(newValue) => {
-                            updateGridSettings({'columns-small': newValue});
-                        }}
-                        value={grid['columns-small']}
-                    />
-                    <NumberControl
-                        label={'Large'}
-                        __next40pxDefaultSize
-                        isShiftStepEnabled={false}
-                        onChange={(newValue) => {
-                            updateGridSettings({'columns-large': newValue});
-                        }}
-                        value={grid['columns-large']}
                     />
                 </Grid>
-            </BaseControl>
-            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
-                <Breakpoint
-                    label={'Breakpoint SM'}
-                    defaultValue={attributes['wpbs-grid']['breakpoint-small']}
-                    callback={(newValue) => {
-                        updateGridSettings({'breakpoint-small': newValue});
-                    }}/>
-                <Breakpoint
-                    label={'Breakpoint LG'}
-                    defaultValue={attributes['wpbs-grid']['breakpoint-large']}
-                    callback={(newValue) => {
-                        updateGridSettings({'breakpoint-large': newValue});
-                    }}/>
-            </Grid>
-            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
-                <ToggleControl
-                    __nextHasNoMarginBottom
-                    label="Masonry"
-                    checked={!!grid['masonry']}
+                <BorderControl
+                    __next40pxDefaultSize
+                    enableAlpha
+                    enableStyle
+                    disableUnits
+                    value={grid['divider'] || {}}
+                    colors={WPBS?.settings?.colors ?? []}
+                    __experimentalIsRenderedInSidebar={true}
+                    label="Divider"
                     onChange={(newValue) => {
-                        updateGridSettings({'masonry': newValue});
+                        updateSettings({'divider': newValue})
                     }}
+                    shouldSanitizeBorder
                 />
-            </Grid>
-            <BorderControl
-                __next40pxDefaultSize
-                enableAlpha
-                enableStyle
-                disableUnits
-                value={grid['divider'] || {}}
-                colors={WPBS?.settings?.colors ?? []}
-                __experimentalIsRenderedInSidebar={true}
-                label="Divider"
-                onChange={(newValue) => {
-                    updateGridSettings({'divider': newValue})
-                }}
-                shouldSanitizeBorder
-            />
-            <Grid columns={2} columnGap={15} rowGap={20}>
+                <Grid columns={2} columnGap={15} rowGap={20}>
 
-                <InputControl
-                    label={'Divider Icon'}
-                    __next40pxDefaultSize
-                    value={grid['divider-icon']}
-                    onChange={(newValue) => {
-                        updateGridSettings({'divider-icon': newValue})
-                    }}
-                />
-                <UnitControl
-                    label={'Icon Size'}
-                    value={grid['divider-icon-size']}
-                    isResetValueOnUnitChange={true}
-                    onChange={(newValue) => {
-                        updateGridSettings({'divider-icon-size': newValue})
-                    }}
-                    units={[
-                        {value: 'px', label: 'px', default: 0},
-                        {value: 'em', label: 'em', default: 0},
-                        {value: 'rem', label: 'rem', default: 0},
-                        {value: 'vw', label: 'vw', default: 0},
+                    <InputControl
+                        label={'Divider Icon'}
+                        __next40pxDefaultSize
+                        value={grid['divider-icon']}
+                        onChange={(newValue) => {
+                            updateSettings({'divider-icon': newValue})
+                        }}
+                    />
+                    <UnitControl
+                        label={'Icon Size'}
+                        value={grid['divider-icon-size']}
+                        isResetValueOnUnitChange={true}
+                        onChange={(newValue) => {
+                            updateSettings({'divider-icon-size': newValue})
+                        }}
+                        units={[
+                            {value: 'px', label: 'px', default: 0},
+                            {value: 'em', label: 'em', default: 0},
+                            {value: 'rem', label: 'rem', default: 0},
+                            {value: 'vw', label: 'vw', default: 0},
+                        ]}
+                        __next40pxDefaultSize
+                    />
+                </Grid>
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'icon-color',
+                            label: 'Divider Icon Color',
+                            value: grid['divider-icon-color'],
+                            onChange: (newValue) => {
+                                updateSettings({'divider-icon-color': newValue})
+                            },
+                            isShownByDefault: true
+                        }
                     ]}
-                    __next40pxDefaultSize
                 />
             </Grid>
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
-                    {
-                        slug: 'icon-color',
-                        label: 'Divider Icon Color',
-                        value: grid['divider-icon-color'],
-                        onChange: (newValue) => {
-                            updateGridSettings({'divider-icon-color': newValue})
-                        },
-                        isShownByDefault: true
-                    }
-                ]}
-            />
-        </Grid>;
-        const tabLoop = <Loop attributes={attributes} setAttributes={setAttributes}/>
+        }, [grid]);
+
+        const tabLoop = useMemo(()=>{
+            return <Loop attributes={attributes} setAttributes={setAttributes}/>
+        }, [grid])
 
         const tabs = {
             options: tabOptions,

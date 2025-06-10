@@ -234,7 +234,6 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   css={[backgroundCss(attributes), layoutCss(attributes)]}
                    deps={['wpbs-layout', 'wpbs-background', 'uniqueId', 'wpbs-slide']}
                    preload={{
                        large: [attributes['wpbs-slide']?.imageLarge],

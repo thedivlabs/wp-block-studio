@@ -1,5 +1,6 @@
 import {useEffect, useMemo} from "react";
-import {backgroundPreload} from "Components/Background.js";
+import {backgroundCss, backgroundPreload} from "Components/Background.js";
+import {layoutCss} from "Components/Layout.js";
 
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
@@ -65,6 +66,8 @@ export function Style({
     const uniqueId = attributes?.uniqueId ?? '';
     const selector = '.' + uniqueId.trim().split(' ').join('.');
     const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
+
+    css = [layoutCss(attributes) || '', backgroundCss(attributes) || '', ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
     const result = useMemo(() => {
 
@@ -191,9 +194,7 @@ export function Style({
             }
         }
 
-        const mergedCss = Array.isArray(css)
-            ? [propsCss, ...css].join(' ').trim()
-            : [propsCss, css].join(' ').trim();
+        const mergedCss = [propsCss, css].join(' ').trim();
 
         return mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {
@@ -208,16 +209,21 @@ export function Style({
 
     }, dependencyValues);
 
-    const preloadMedia = useMemo(() => [...getPreloadMedia(preload), ...backgroundPreload(attributes['wpbs-background'])], [preload, attributes['wpbs-background']]);
+    const preloadMedia = useMemo(() => getPreloadMedia([...preload, ...backgroundPreload(attributes['wpbs-background'])]), [preload, attributes['wpbs-background']]);
 
     useEffect(() => {
         if (attributes['wpbs-css'] !== result) {
             setAttributes({
                 'wpbs-css': result,
-                'wpbs-preload': preloadMedia
             });
         }
-    }, [result, preloadMedia]);
+    }, [result]);
+
+    useEffect(() => {
+        setAttributes({
+            'wpbs-preload': preloadMedia
+        });
+    }, [preloadMedia]);
 
 
     return <style className='wpbs-styles'>{result}</style>;

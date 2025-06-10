@@ -191,7 +191,7 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
-        const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes]);
+        const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -220,7 +220,6 @@ registerBlockType(metadata.name, {
             <BlockEdit key="edit" {...blockProps} />
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   css={[layoutCss(attributes)]}
                    deps={['wpbs-layout', 'wpbs-figure', attributes?.uniqueId]}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,

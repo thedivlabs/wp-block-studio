@@ -313,8 +313,6 @@ function parseSpecial(prop, settings) {
 
 export function backgroundPreload(settings) {
 
-    //const {'wpbs-background': settings = {}} = attributes;
-
     let result = [];
 
     if (!settings?.eager) {

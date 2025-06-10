@@ -23,10 +23,6 @@ export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
         type: 'object',
         default: {}
-    },
-    'wpbs-preload': {
-        type: 'object',
-        default: {}
     }
 };
 
@@ -1784,23 +1780,5 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         />
 
     </InspectorControls>;
-
-}
-
-export function getPreloadMedia(attributes = {}, props = []) {
-
-    result = {
-        ...result,
-        ...{
-            [largeImage.id]: {
-                resolution: resolution || 'large',
-                breakpoint: largeBreakpoint,
-                mobile: false
-            }
-        }
-    }
-
-    return result;
-
 
 }

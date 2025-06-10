@@ -3,6 +3,10 @@ import {useMemo} from "react";
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
         type: 'string'
+    },
+    'wpbs-preload': {
+        type: 'object',
+        default: {}
     }
 };
 
@@ -24,9 +28,36 @@ export function getCSSFromStyle(raw) {
     return raw;
 }
 
-export function Style({attributes, setAttributes, css = '' | [], props = {}, deps = []}) {
+export function getPreloadMedia(attributes = {}, props = []) {
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId];
+    let result = {};
+
+    props.forEach(prop => {
+
+        const media = attributes[prop];
+
+        result = {
+            ...result,
+            ...{
+                [media.id]: {
+                    resolution: media.resolution || 'large',
+                    breakpoint: largeBreakpoint,
+                    mobile: false
+                }
+            }
+        }
+
+    })
+
+
+    return result;
+
+
+}
+
+export function Style({attributes, setAttributes, css = '' | [], props = {}, deps = [], preload = []}) {
+
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, preload];
     const {containers, breakpoints} = WPBS?.settings ?? {};
 
     const uniqueId = attributes?.uniqueId ?? '';
@@ -161,8 +192,8 @@ export function Style({attributes, setAttributes, css = '' | [], props = {}, dep
             css = [propsCss, css].join(' ').trim();
         }
 
-
         setAttributes({'wpbs-css': css});
+        setAttributes({'wpbs-preload': getPreloadMedia(attributes, preload)});
 
         return css.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
             switch (type) {

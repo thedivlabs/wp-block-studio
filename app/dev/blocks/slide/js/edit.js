@@ -29,7 +29,7 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slide',
         (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
-        'swiper-slide wpbs-layout-container wpbs-has-container grow w-full !flex flex-col shrink-0 relative',
+        'swiper-slide wpbs-layout-container wpbs-has-container h-auto grow w-full flex flex-col shrink-0 relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -183,7 +183,7 @@ registerBlockType(metadata.name, {
                                 __next40pxDefaultSize
                                 label="Resolution"
                                 value={attributes['wpbs-slide']?.resolution}
-                                onChange={(value) => updateSettings(value,'resolution')}
+                                onChange={(value) => updateSettings(value, 'resolution')}
                                 options={[
                                     {label: 'Default', value: ''},
                                     {label: 'Thumbnail', value: 'thumbnail'},
@@ -206,7 +206,7 @@ registerBlockType(metadata.name, {
                                     {label: 'Horizontal', value: '100% auto'},
                                 ]}
                                 value={attributes['wpbs-slide']?.imageSize}
-                                onChange={(value) => updateSettings(value,'imageSize')}
+                                onChange={(value) => updateSettings(value, 'imageSize')}
                                 __nextHasNoMarginBottom
                             />
                         </Grid>
@@ -218,7 +218,7 @@ registerBlockType(metadata.name, {
                                 checked={!!attributes['wpbs-slide']?.eager}
                                 onChange={(value) => {
 
-                                    updateSettings(value,'eager')
+                                    updateSettings(value, 'eager')
 
                                     if (value) {
                                         setAttributes({
@@ -238,11 +238,8 @@ registerBlockType(metadata.name, {
                             />
                             <ToggleControl
                                 label="Force"
-                                checked={force}
-                                onChange={(value) => {
-                                    setForce(value);
-                                    setAttributes({['wpbs-forceSlide']: value});
-                                }}
+                                value={!!attributes['wpbs-slide']?.force}
+                                onChange={(value) => updateSettings(value, 'force')}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />

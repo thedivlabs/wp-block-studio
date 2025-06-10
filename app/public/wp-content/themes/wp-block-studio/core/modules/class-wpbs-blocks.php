@@ -34,8 +34,8 @@ class WPBS_Blocks {
 				[ $full, $type, $key ] = $matches;
 
 				return match ( $type ) {
-					'BREAKPOINT' => $breakpoints[ $key ] ?? $full,
-					'CONTAINER' => $containers[ $key ] ?? $full,
+					'BREAKPOINT' => $breakpoints[ $key ] ?? $breakpoints['normal'],
+					'CONTAINER' => $key === 'none' ? '100%' : $containers[ $key ] ?? $full,
 					default => $full,
 				};
 			}, $attributes['wpbs-css'] );
@@ -44,7 +44,7 @@ class WPBS_Blocks {
 				[ $full, $type, $key ] = $matches;
 
 				return match ( $type ) {
-					'BREAKPOINT' => $breakpoints[ $key ] ?? $full,
+					'BREAKPOINT' => $breakpoints[ $key ] ?? $breakpoints['normal'],
 					'CONTAINER' => $containers[ $key ] ?? $full,
 					default => $full,
 				};
@@ -81,7 +81,7 @@ class WPBS_Blocks {
 
 			$args = [
 				'attributes' => [
-					'wpbs-css'   => [
+					'wpbs-css'     => [
 						'type'         => 'string',
 						'show_in_rest' => true,
 					],

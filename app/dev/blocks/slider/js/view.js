@@ -81,8 +81,7 @@ const {state} = store('wpbs', {
                         }
 
                         initLib().then(() => {
-                            console.log(element);
-                            console.log(args);
+                            
                             const swiper = new Swiper(entry.target, args);
                         })
 

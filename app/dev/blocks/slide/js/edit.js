@@ -29,9 +29,13 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slide',
         (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
-        'swiper-slide h-auto grow w-full flex flex-col shrink-0 relative',
+        'wpbs-has-container swiper-slide !h-auto w-full flex flex-col shrink-0 relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
+}
+
+function containerClasses(attributes = {}) {
+    return 'wpbs-slide__container wpbs-container w-full h-full relative z-20';
 }
 
 function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = false}) {
@@ -111,7 +115,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-slide__container wpbs-has-container w-full h-auto relative z-20',
+            className: containerClasses(attributes),
         });
 
         const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');
@@ -256,7 +260,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-slide__container w-full h-auto container relative z-20',
+            className: containerClasses(props.attributes),
         });
 
         const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');

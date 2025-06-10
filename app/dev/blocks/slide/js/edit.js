@@ -8,7 +8,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {
     __experimentalGrid as Grid,
@@ -72,6 +72,44 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
     }
 }
 
+function getPreloadMedia(attributes) {
+
+    const {'wpbs-figure': settings = {}} = attributes;
+
+    /*preload={{
+                    large: [attributes['wpbs-slide']?.imageLarge],
+                    mobile: [attributes['wpbs-slide']?.imageMobile],
+                    force: !!attributes['wpbs-slide']?.force,
+                    resolution: attributes['wpbs-slide']?.resolution,
+                }}*/
+
+    if (!settings?.eager) {
+        return []
+    }
+
+    const imageLarge = !!settings.force ? settings?.imageLarge ?? false : settings?.imageLarge ?? settings?.imageMobile ?? false;
+    const imageMobile = !!settings.force ? settings?.imageMobile ?? false : settings?.imageMobile ?? settings?.imageLarge ?? false;
+    const resolution = settings.resolution || 'large';
+    const breakpoint = attributes?.['wpbs-breakpoint'] ?? {};
+
+    return [
+        {
+            media: imageLarge,
+            resolution: resolution,
+            breakpoint: breakpoint?.large ?? 'normal',
+            mobile: false
+        },
+        {
+            media: imageMobile,
+            resolution: resolution,
+            breakpoint: breakpoint.mobile ?? 'normal',
+            mobile: true
+        }
+    ].filter(obj => !!obj?.media?.id);
+
+
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -100,6 +138,8 @@ registerBlockType(metadata.name, {
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
+
+        const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-slide']]);
 
         const updateSettings = useCallback((newValue, prop) => {
             setAttributes({
@@ -235,12 +275,7 @@ registerBlockType(metadata.name, {
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-slide']}
-                /*preload={{
-                    large: [attributes['wpbs-slide']?.imageLarge],
-                    mobile: [attributes['wpbs-slide']?.imageMobile],
-                    force: !!attributes['wpbs-slide']?.force,
-                    resolution: attributes['wpbs-slide']?.resolution,
-                }}*/
+                   preload={preloadMedia}
             />
 
             <div {...blockProps}>

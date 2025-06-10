@@ -320,48 +320,64 @@ export function backgroundPreload(attributes) {
     if (!settings?.eager) {
         return result;
     }
-    if (!!settings?.eager) {
 
-        if (['image', 'featured-image'].includes(settings?.type)) {
+    if (['image', 'featured-image'].includes(settings?.type)) {
 
-            const largeImage = newValue?.largeImage ?? settings?.largeImage ?? false;
-            const mobileImage = newValue?.mobileImage ?? settings?.mobileImage ?? false;
-            const resolution = newValue?.resolution ?? settings?.resolution ?? 'large';
-            const largeBreakpoint = !!newValue?.force || !!settings?.force ?
-                attributes['wpbs-layout']?.breakpoint ?? 'normal' :
-                !!mobileImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
-            const mobileBreakpoint = !!newValue?.force || !!settings?.force ?
-                attributes['wpbs-layout']?.breakpoint ?? 'normal' :
-                !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
+        const largeImage = newValue?.largeImage ?? settings?.largeImage ?? false;
+        const mobileImage = newValue?.mobileImage ?? settings?.mobileImage ?? false;
+        const resolution = newValue?.resolution ?? settings?.resolution ?? 'large';
+        const largeBreakpoint = !!newValue?.force || !!settings?.force ?
+            attributes['wpbs-breakpoint']?.large ?? 'normal' :
+            !!mobileImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
+        const mobileBreakpoint = !!newValue?.force || !!settings?.force ?
+            attributes['wpbs-layout']?.breakpoint ?? 'normal' :
+            !!largeImage ? attributes['wpbs-layout']?.breakpoint ?? 'normal' : false;
 
-            if (largeImage?.id) {
-                result = {
-                    ...result,
-                    ...{
-                        [largeImage.id]: {
-                            resolution: resolution || 'large',
-                            breakpoint: largeBreakpoint,
-                            mobile: false
-                        }
+
+        /*
+        *
+        * {
+            media: largeImage,
+            resolution: resolution,
+            breakpoint: breakpoint,
+            mobile: false
+        },
+        *
+        * */
+
+
+        if (largeImage?.id) {
+            result = {
+                ...result,
+                ...{
+                    [largeImage.id]: {
+                        resolution: resolution || 'large',
+                        breakpoint: largeBreakpoint,
+                        mobile: false
                     }
-                }
-            }
-
-            if (mobileImage?.id) {
-                result = {
-                    ...result,
-                    ...{
-                        [mobileImage.id]: {
-                            breakpoint: mobileBreakpoint,
-                            resolution: resolution || 'large',
-                            mobile: true
-                        }
-
-                    }
+                },
+                ...{
+                    media: largeImage,
+                    resolution: resolution,
+                    breakpoint: breakpoint,
+                    mobile: false
                 }
             }
         }
 
+        if (mobileImage?.id) {
+            result = {
+                ...result,
+                ...{
+                    [mobileImage.id]: {
+                        breakpoint: mobileBreakpoint,
+                        resolution: resolution || 'large',
+                        mobile: true
+                    }
+
+                }
+            }
+        }
     }
 
 

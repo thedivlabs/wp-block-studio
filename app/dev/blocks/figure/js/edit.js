@@ -61,7 +61,8 @@ function Media(attributes, editor = false) {
         switch (attributes['wpbs-figure']?.type ?? false) {
             case 'image':
 
-                return <ResponsivePicture mobile={attributes['wpbs-figure']?.['mobileImage']} large={attributes['wpbs-figure']?.['largeImage']}
+                return <ResponsivePicture mobile={attributes['wpbs-figure']?.['mobileImage']}
+                                          large={attributes['wpbs-figure']?.['largeImage']}
                                           settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
             case 'featured-image':
                 return !editor ? '%%IMAGE%%' : <figure
@@ -136,28 +137,28 @@ const MemoSelectControl = React.memo(({label, options, value, callback}) => (
 function getPreloadMedia(attributes) {
 
     if (!attributes['wpbs-figure']?.['eager']) {
-        return {}
+        return []
     }
 
     const largeImage = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.largeImage ?? false : attributes['wpbs-figure']?.largeImage ?? attributes['wpbs-figure']?.mobileImage ?? false;
     const mobileImage = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.mobileImage ?? false : attributes['wpbs-figure']?.mobileImage ?? attributes['wpbs-figure']?.largeImage ?? false;
     const resolution = attributes['wpbs-figure'].resolution || 'large';
-    const breakpoint = attributes?.['wpbs-breakpoint'] ?? 'normal';
+    const breakpoint = attributes?.['wpbs-breakpoint'] ?? {};
 
     return [
         {
             media: largeImage,
             resolution: resolution,
-            breakpoint: breakpoint,
+            breakpoint: breakpoint?.large ?? 'normal',
             mobile: false
         },
         {
             media: mobileImage,
             resolution: resolution,
-            breakpoint: breakpoint,
+            breakpoint: breakpoint.mobile ?? 'normal',
             mobile: true
         }
-    ]
+    ].filter(obj => !!obj?.media?.id);
 
 
 }
@@ -213,7 +214,7 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes)
         });
 
-        const Content = useMemo(()=> Media(attributes, true), [attributes]);
+        const Content = useMemo(() => Media(attributes, true), [attributes]);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
@@ -227,7 +228,8 @@ registerBlockType(metadata.name, {
                    }}
                    preload={[...preloadMedia]}
             />
-            <Link defaultValue={attributes['wpbs-figure']?.link} callback={(newValue) => updateSettings({'link': newValue})}/>
+            <Link defaultValue={attributes['wpbs-figure']?.link}
+                  callback={(newValue) => updateSettings({'link': newValue})}/>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
@@ -245,7 +247,8 @@ registerBlockType(metadata.name, {
                             onChange={(newValue) => updateSettings({'type': newValue})}
                             __nextHasNoMarginBottom
                         />
-                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !attributes['wpbs-figure']?.type ? 'none' : null}}>
+                        <Grid columns={1} columnGap={15} rowGap={20}
+                              style={{display: !attributes['wpbs-figure']?.type ? 'none' : null}}>
 
                             <Grid columns={2} columnGap={15} rowGap={20}
                                   style={{display: attributes['wpbs-figure']?.type !== 'image' && attributes['wpbs-figure']?.type !== 'featured-image' ? 'none' : null}}>

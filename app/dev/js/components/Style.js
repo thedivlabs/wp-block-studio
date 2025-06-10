@@ -232,7 +232,7 @@ export function Style({
                 'wpbs-css': resultCss,
             });
         }
-
+console.log('compiling css');
         setAttributes({
             'wpbs-preload': preloadMedia
         });

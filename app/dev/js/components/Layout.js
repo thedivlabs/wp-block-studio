@@ -401,6 +401,22 @@ function parseSpecial(prop, attributes) {
 
     let result = {};
 
+    const heightVal = (val) => {
+
+        let result = val;
+
+        if (val === 'screen') {
+            result = 'calc(100svh - var(--wpbs--header-height, 0px))'
+        }
+
+        if (val === 'full-screen') {
+            result = '100svh'
+        }
+
+        return result;
+
+    }
+
     switch (parsedProp) {
         case 'mask-image':
             const imageUrl = value?.sizes?.full?.url || '#';
@@ -440,17 +456,19 @@ function parseSpecial(prop, attributes) {
             break;
         case 'height':
         case 'height-custom':
-            result = {'height': settings?.['height-custom'] ?? settings?.['height'] ?? null}
+            result = {'height': heightVal(settings?.['height-custom'] ?? settings?.['height'] ?? null)}
 
             break;
         case 'min-height':
         case 'min-height-custom':
-            result = {'min-height': settings?.['min-height-custom'] ?? settings?.['min-height'] ?? null}
+
+
+            result = {'min-height': heightVal(settings?.['min-height-custom'] ?? settings?.['min-height'] ?? null)}
 
             break;
         case 'max-height':
         case 'max-height-custom':
-            result = {'max-height': settings?.['max-height-custom'] ?? settings?.['max-height'] ?? null}
+            result = {'max-height': heightVal(settings?.['max-height-custom'] ?? settings?.['max-height'] ?? null)}
 
             break;
         case 'width':

@@ -209,7 +209,7 @@ export function Style({
 
     }, dependencyValues);
 
-    const preloadMedia = useMemo(() => getPreloadMedia([...preload, ...backgroundPreload(attributes['wpbs-background'])]), [preload, attributes['wpbs-background']]);
+    const preloadMedia = useMemo(() => getPreloadMedia([...preload, ...backgroundPreload(attributes)]), [preload, attributes['wpbs-background']]);
 
     useEffect(() => {
         if (attributes['wpbs-css'] !== result) {

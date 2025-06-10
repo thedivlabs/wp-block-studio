@@ -28,7 +28,7 @@ export function getCSSFromStyle(raw) {
     return raw;
 }
 
-export function getPreloadMedia(media, breakpoint = 'normal') {
+function getPreloadMedia(media, breakpoint = 'normal') {
 
     const {large: largeMedia, mobile: mobileMedia, force, resolution = {}} = media;
 
@@ -75,11 +75,7 @@ export function Style({
                           css = [],
                           props = {},
                           deps = [],
-                          preload = {
-                              large: [],
-                              mobile: [],
-                              resolution: 'large'
-                          }
+                          preload = []
                       }) {
 
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, preload];

@@ -23,6 +23,13 @@ export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
         type: 'object',
         default: {}
+    },
+    'wpbs-breakpoint': {
+        type: 'object',
+        default: {
+            mobile: 'small',
+            large: 'normal'
+        }
     }
 };
 
@@ -634,9 +641,15 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             ...newValue,
         }
 
-        setAttributes({
-            'wpbs-layout': result
-        });
+        setAttributes(Object.fromEntries(Object.entries({
+            'wpbs-layout': result,
+            'wpbs-breakpoint': Object.fromEntries(Object.entries({
+                ...(attributes?.['wpbs-breakpoint'] ?? {}),
+                ...{
+                    large: newValue?.breakpoint ?? null
+                }
+            }).filter(([k, value]) => value !== null)),
+        }).filter(([k, value]) => value !== null)));
 
         setSettings(result);
 

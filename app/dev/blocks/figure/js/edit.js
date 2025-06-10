@@ -17,15 +17,13 @@ import {
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import ResponsivePicture from "Components/ResponsivePicture.js";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {imageButtonStyle} from "Includes/helper.js";
 
 function blockClasses(attributes = {}) {
-
-    const {'wpbs-figure': settings = {}} = attributes;
 
     return [
         'wpbs-figure flex items-center justify-center relative max-w-full max-h-full',
@@ -35,48 +33,23 @@ function blockClasses(attributes = {}) {
 
 function getSettings(attributes = {}) {
 
-    const {'wpbs-figure': settings = {}} = attributes;
-
     return {
-        force: !!settings?.['force'],
-        eager: !!settings?.['eager'],
-        resolution: settings?.['resolution'] ?? null,
+        force: !!attributes['wpbs-figure']?.['force'],
+        eager: !!attributes['wpbs-figure']?.['eager'],
+        resolution: attributes['wpbs-figure']?.['resolution'] ?? null,
         breakpoint: attributes?.['wpbs-layout']?.breakpoint ?? 'normal',
     };
 }
 
-function getPreload(attributes = {}) {
-
-    const {'wpbs-figure': settings = {}} = attributes;
-
-    if (!settings?.['eager']) {
-        return {}
-    }
-
-    const largeImage = !!settings.force ? settings?.largeImage ?? false : settings?.largeImage ?? settings?.mobileImage ?? false;
-    const mobileImage = !!settings.force ? settings?.mobileImage ?? false : settings?.mobileImage ?? settings?.largeImage ?? false;
-    const resolution = settings.resolution || 'large';
-
-    return {
-        large: [largeImage],
-        mobile: [mobileImage],
-        resolution: resolution
-    }
-
-
-}
-
-function Media({attributes, editor = false, props = {}}) {
-
-    const {'wpbs-figure': settings = {}} = attributes;
+function Media(attributes, editor = false) {
 
     const mediaClasses = [
         'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
     ].filter(x => x).join(' ');
 
     let mediaStyle = {
-        ['mix-blend-mode']: settings.blend || null,
-        ['object-fit']: !!settings.contain ? 'contain' : 'cover',
+        ['mix-blend-mode']: attributes['wpbs-figure'].blend || null,
+        ['object-fit']: !!attributes['wpbs-figure'].contain ? 'contain' : 'cover',
     };
 
     mediaStyle = {
@@ -85,10 +58,10 @@ function Media({attributes, editor = false, props = {}}) {
 
     const Content = () => {
 
-        switch (settings?.type ?? false) {
+        switch (attributes['wpbs-figure']?.type ?? false) {
             case 'image':
 
-                return <ResponsivePicture mobile={settings?.['mobileImage']} large={settings?.['largeImage']}
+                return <ResponsivePicture mobile={attributes['wpbs-figure']?.['mobileImage']} large={attributes['wpbs-figure']?.['largeImage']}
                                           settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
             case 'featured-image':
                 return !editor ? '%%IMAGE%%' : <figure
@@ -99,12 +72,12 @@ function Media({attributes, editor = false, props = {}}) {
         }
     }
 
-    if ((settings?.link || settings?.linkPost) && !editor) {
+    if ((attributes['wpbs-figure']?.link || attributes['wpbs-figure']?.linkPost) && !editor) {
         return <a class={mediaClasses}
-                  href={!settings?.linkPost ? settings.link?.url ?? '#' : '%%PERMALINK%%'}
-                  title={settings.link?.title ?? ''}
-                  target={!!settings.link?.opensInNewTab ? '_blank' : '_self'}
-                  rel={settings.link?.rel ?? ''} style={mediaStyle}>
+                  href={!attributes['wpbs-figure']?.linkPost ? attributes['wpbs-figure'].link?.url ?? '#' : '%%PERMALINK%%'}
+                  title={attributes['wpbs-figure'].link?.title ?? ''}
+                  target={!!attributes['wpbs-figure'].link?.opensInNewTab ? '_blank' : '_self'}
+                  rel={attributes['wpbs-figure'].link?.rel ?? ''} style={mediaStyle}>
             <Content/>
         </a>
     } else {
@@ -160,6 +133,34 @@ const MemoSelectControl = React.memo(({label, options, value, callback}) => (
     />
 ));
 
+function getPreloadMedia(attributes) {
+
+    if (!attributes['wpbs-figure']?.['eager']) {
+        return {}
+    }
+
+    const largeImage = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.largeImage ?? false : attributes['wpbs-figure']?.largeImage ?? attributes['wpbs-figure']?.mobileImage ?? false;
+    const mobileImage = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.mobileImage ?? false : attributes['wpbs-figure']?.mobileImage ?? attributes['wpbs-figure']?.largeImage ?? false;
+    const resolution = attributes['wpbs-figure'].resolution || 'large';
+    const breakpoint = attributes?.['wpbs-breakpoint'] ?? 'normal';
+
+    return [
+        {
+            media: largeImage,
+            resolution: resolution,
+            breakpoint: breakpoint,
+            mobile: false
+        },
+        {
+            media: mobileImage,
+            resolution: resolution,
+            breakpoint: breakpoint,
+            mobile: true
+        }
+    ]
+
+
+}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -187,18 +188,18 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const [settings, setSettings] = useState(attributes['wpbs-figure']);
-
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+
+        const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes]);
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
         }, []);
 
-        function updateSettings(newValue) {
+        const updateSettings = useCallback((newValue) => {
 
             const result = {
-                ...settings,
+                ...attributes['wpbs-figure'],
                 ...newValue
             };
 
@@ -206,14 +207,13 @@ registerBlockType(metadata.name, {
                 'wpbs-figure': result
             });
 
-            setSettings(result);
-
-        }
-
+        }, [setAttributes, attributes['wpbs-figure']])
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes)
         });
+
+        const Content = useMemo(()=> Media(attributes, true), [attributes]);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
@@ -222,19 +222,19 @@ registerBlockType(metadata.name, {
                    css={[layoutCss(attributes)]}
                    deps={['wpbs-layout', 'wpbs-figure', attributes?.uniqueId]}
                    props={{
-                       '--figure-type': settings?.type ?? null,
-                       '--overlay': settings?.overlay ?? null,
+                       '--figure-type': attributes['wpbs-figure']?.type ?? null,
+                       '--overlay': attributes['wpbs-figure']?.overlay ?? null,
                    }}
-                   preload={getPreload(attributes)}
+                   preload={[...preloadMedia]}
             />
-            <Link defaultValue={settings?.link} callback={(newValue) => updateSettings({'link': newValue})}/>
+            <Link defaultValue={attributes['wpbs-figure']?.link} callback={(newValue) => updateSettings({'link': newValue})}/>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
                         <SelectControl
                             __next40pxDefaultSize
                             label="Type"
-                            value={settings?.type}
+                            value={attributes['wpbs-figure']?.type}
                             options={[
                                 {label: 'Select', value: ''},
                                 {label: 'Image', value: 'image'},
@@ -245,10 +245,10 @@ registerBlockType(metadata.name, {
                             onChange={(newValue) => updateSettings({'type': newValue})}
                             __nextHasNoMarginBottom
                         />
-                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings?.type ? 'none' : null}}>
+                        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !attributes['wpbs-figure']?.type ? 'none' : null}}>
 
                             <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{display: settings?.type !== 'image' && settings?.type !== 'featured-image' ? 'none' : null}}>
+                                  style={{display: attributes['wpbs-figure']?.type !== 'image' && attributes['wpbs-figure']?.type !== 'featured-image' ? 'none' : null}}>
                                 <BaseControl label={'Mobile Image'} __nextHasNoMarginBottom={true}>
                                     <MediaUploadCheck>
                                         <MediaUpload
@@ -263,10 +263,10 @@ registerBlockType(metadata.name, {
                                                 }
                                             })}
                                             allowedTypes={['image']}
-                                            value={settings?.mobileImage}
+                                            value={attributes['wpbs-figure']?.mobileImage}
                                             render={({open}) => {
                                                 return <PreviewThumbnail
-                                                    image={settings?.mobileImage || {}}
+                                                    image={attributes['wpbs-figure']?.mobileImage || {}}
                                                     callback={() => updateSettings({'mobileImage': undefined})}
                                                     onClick={open}
                                                 />;
@@ -288,11 +288,11 @@ registerBlockType(metadata.name, {
                                                 }
                                             })}
                                             allowedTypes={['image']}
-                                            value={settings?.largeImage}
+                                            value={attributes['wpbs-figure']?.largeImage}
                                             render={({open}) => {
-                                                if (settings?.largeImage) {
+                                                if (attributes['wpbs-figure']?.largeImage) {
                                                     return <PreviewThumbnail
-                                                        image={settings.largeImage}
+                                                        image={attributes['wpbs-figure'].largeImage}
                                                         callback={() => updateSettings({'largeImage': undefined})}
                                                         onClick={open}
                                                     />;
@@ -307,21 +307,21 @@ registerBlockType(metadata.name, {
 
 
                                 <MemoSelectControl
-                                    value={settings?.blend}
+                                    value={attributes['wpbs-figure']?.blend}
                                     label={'Blend'}
                                     options={BLEND_OPTIONS}
                                     callback={(newValue) => updateSettings({blend: newValue})}
                                 />
 
                                 <MemoSelectControl
-                                    value={settings?.origin}
+                                    value={attributes['wpbs-figure']?.origin}
                                     label={'Origin'}
                                     options={ORIGIN_OPTIONS}
                                     callback={(newValue) => updateSettings({origin: newValue})}
                                 />
 
                                 <MemoSelectControl
-                                    value={settings?.resolution}
+                                    value={attributes['wpbs-figure']?.resolution}
                                     label={'Resolution'}
                                     options={RESOLUTION_OPTIONS}
                                     callback={(newValue) => updateSettings({resolution: newValue})}
@@ -352,14 +352,14 @@ registerBlockType(metadata.name, {
                                         }
                                     ]}
                                     clearable={true}
-                                    value={settings?.overlay ?? undefined}
+                                    value={attributes['wpbs-figure']?.overlay ?? undefined}
                                     onChange={(newValue) => updateSettings({'overlay': newValue})}
                                 />
                             </BaseControl>
 
 
                             <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{display: settings?.type !== 'video' ? 'none' : null}}>
+                                  style={{display: attributes['wpbs-figure']?.type !== 'video' ? 'none' : null}}>
 
                                 <BaseControl label={'Video'} __nextHasNoMarginBottom={true}>
                                     <MediaUploadCheck>
@@ -367,10 +367,10 @@ registerBlockType(metadata.name, {
                                             title={'Video'}
                                             onSelect={(newValue) => updateSettings({'video': newValue})}
                                             allowedTypes={['video']}
-                                            value={settings?.video}
+                                            value={attributes['wpbs-figure']?.video}
                                             render={({open}) => {
                                                 return <PreviewThumbnail
-                                                    image={settings?.video || {}}
+                                                    image={attributes['wpbs-figure']?.video || {}}
                                                     callback={() => updateSettings({video: undefined})}
                                                     onClick={open}
                                                 />;
@@ -387,7 +387,7 @@ registerBlockType(metadata.name, {
                                   style={{padding: '1rem 0'}}>
                                 <ToggleControl
                                     label="Eager"
-                                    checked={!!settings?.eager}
+                                    checked={!!attributes['wpbs-figure']?.eager}
                                     onChange={(value) => {
                                         updateSettings({'eager': value});
 
@@ -395,9 +395,9 @@ registerBlockType(metadata.name, {
                                             setAttributes({
                                                 'wpbs-preload': [
                                                     {
-                                                        mobile: settings?.mobileImage?.id ?? null,
-                                                        large: settings?.largeImage?.id ?? null,
-                                                        size: settings?.resolution ?? null
+                                                        mobile: attributes['wpbs-figure']?.mobileImage?.id ?? null,
+                                                        large: attributes['wpbs-figure']?.largeImage?.id ?? null,
+                                                        size: attributes['wpbs-figure']?.resolution ?? null
                                                     }
                                                 ]
                                             });
@@ -408,21 +408,21 @@ registerBlockType(metadata.name, {
                                 />
                                 <ToggleControl
                                     label="Force"
-                                    checked={!!settings?.force}
+                                    checked={!!attributes['wpbs-figure']?.force}
                                     onChange={(value) => updateSettings({force: value})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
                                 <ToggleControl
                                     label="Contain"
-                                    checked={!!settings?.contain}
+                                    checked={!!attributes['wpbs-figure']?.contain}
                                     onChange={(value) => updateSettings({contain: value})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
-                                {settings?.type === 'featured-image' && <ToggleControl
+                                {attributes['wpbs-figure']?.type === 'featured-image' && <ToggleControl
                                     label="Link Post"
-                                    checked={!!settings?.linkPost}
+                                    checked={!!attributes['wpbs-figure']?.linkPost}
                                     onChange={(value) => updateSettings({linkPost: value})}
                                     className="flex items-center"
                                     __nextHasNoMarginBottom
@@ -436,7 +436,7 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-                <Media attributes={attributes} editor={true}/>
+                <Content />
             </figure>
 
         </>;
@@ -449,10 +449,12 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observe'
         });
 
+        const Content = Media(props.attributes);
+
 
         return (
             <figure {...blockProps} >
-                <Media attributes={props.attributes} editor={false}/>
+                <Content/>
             </figure>
         );
     }

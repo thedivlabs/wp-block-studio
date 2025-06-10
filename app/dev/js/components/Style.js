@@ -60,7 +60,7 @@ export function Style({
                           preload = []
                       }) {
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, preload, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
     const {containers, breakpoints} = WPBS?.settings ?? {};
 
     const uniqueId = attributes?.uniqueId ?? '';
@@ -74,7 +74,7 @@ export function Style({
     css = [layoutCss(attributes) || '', backgroundCss(attributes) || '', ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
     const resultCss = useMemo(() => {
-console.log('compiling css');
+        //console.log('compiling css');
         if (!uniqueId) {
             return '';
         }

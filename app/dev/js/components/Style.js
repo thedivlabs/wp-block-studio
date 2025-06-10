@@ -60,12 +60,16 @@ export function Style({
                           preload = []
                       }) {
 
-    const dependencyValues = [...deps.map((key) => attributes[key]).filter((attr) => attr), attributes?.style, attributes.uniqueId, preload, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, preload, attributes?.['wpbs-background'], attributes?.['wpbs-layout']];
     const {containers, breakpoints} = WPBS?.settings ?? {};
 
     const uniqueId = attributes?.uniqueId ?? '';
     const selector = '.' + uniqueId.trim().split(' ').join('.');
     const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
+
+    if (!uniqueId) {
+        return null;
+    }
 
     css = [layoutCss(attributes) || '', backgroundCss(attributes) || '', ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
@@ -221,7 +225,7 @@ export function Style({
                 'wpbs-preload': preloadMedia
             });
         }
-    }, [resultCss, preload]);
+    }, [resultCss, preloadMedia]);
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

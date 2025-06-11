@@ -1,4 +1,4 @@
-function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = false}) {
+const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false})=> {
 
     const {
         resolution: sizeMobile = 'medium',
@@ -23,7 +23,7 @@ function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = fal
     }
 
     if (!urlLarge && !urlMobile) {
-        return false;
+        //return false;
     }
 
     const className = [

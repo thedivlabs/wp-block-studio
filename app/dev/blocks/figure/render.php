@@ -46,6 +46,7 @@ if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && 
 	echo strtr( $content ?? '', $replacements );
 
 } else {
+	WPBS::console_log([$content ?? '']);
 	echo $content ?? false;
 }
 

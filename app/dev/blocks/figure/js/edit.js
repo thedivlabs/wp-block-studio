@@ -10,18 +10,17 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     BaseControl,
-    Button, GradientPicker,
+    GradientPicker,
     PanelBody,
     SelectControl,
     ToggleControl,
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import ResponsivePicture from "Components/ResponsivePicture.js";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
-import {imageButtonStyle} from "Includes/helper.js";
 
 function blockClasses(attributes = {}) {
 
@@ -66,7 +65,7 @@ function Media(settings, breakpoint, editor = false) {
                     className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
                     IMAGE</div>;
             default:
-                return false
+                return <></>
         }
     }
 
@@ -83,7 +82,7 @@ function Media(settings, breakpoint, editor = false) {
             <Content/>
         </div>;
     }
-};
+}
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},
@@ -193,7 +192,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({uniqueId});
-        }, [uniqueId]);
+        }, []);
 
         const updateSettings = useCallback((newValue) => {
 
@@ -208,13 +207,9 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, attributes['wpbs-figure']])
 
-        const memoBlockClasses = blockClasses(attributes);
-
         const blockProps = useBlockProps({
-            className: memoBlockClasses
+            className: blockClasses(attributes)
         });
-
-        const Content = Media(attributes['wpbs-figure'], attributes?.['wpbs-breakpoint']?.large, true);
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
@@ -421,7 +416,7 @@ registerBlockType(metadata.name, {
 
             <figure {...blockProps}>
 
-                {Content}
+                {Media(attributes['wpbs-figure'], attributes?.['wpbs-breakpoint']?.large, true)}
             </figure>
 
         </>;
@@ -434,11 +429,9 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observe'
         });
 
-        const Content = Media(props.attributes['wpbs-figure'], props.attributes?.['wpbs-breakpoint']?.large, false);
-
         return (
             <figure {...blockProps} >
-                {Content}
+                {Media(props.attributes['wpbs-figure'], props.attributes?.['wpbs-breakpoint']?.large, false)}
             </figure>
         );
     }

@@ -599,7 +599,7 @@ export function layoutCss(attributes) {
         })
 
         if (container) {
-            css += '--container-width: ' + container + '}';
+            css += '--container-width: ' + container + ';';
         }
 
         css += '}';

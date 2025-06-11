@@ -19,7 +19,8 @@ class WPBS_Blocks {
 		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
 
 		add_filter( 'wpbs_preload_images', function ( $images ) use ( $attributes ) {
-WPBS::console_log($attributes ?? false);
+			WPBS::console_log( $attributes ?? false );
+
 			return array_replace( [], $images, $attributes['wpbs-preload'] ?? [] );
 
 		} );
@@ -42,6 +43,10 @@ WPBS::console_log($attributes ?? false);
 
 			$custom_css = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
 				[ $full, $type, $key ] = $matches;
+
+				if ( $key === 'none' ) {
+					return null;
+				}
 
 				return match ( $type ) {
 					'BREAKPOINT' => $breakpoints[ $key ] ?? $breakpoints['normal'],

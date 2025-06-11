@@ -31,18 +31,7 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function getSettings(attributes = {}) {
-
-    return {
-        force: !!attributes['wpbs-figure']?.['force'],
-        eager: !!attributes['wpbs-figure']?.['eager'],
-        resolution: attributes['wpbs-figure']?.['resolution'] ?? null,
-        breakpoint: attributes?.['wpbs-layout']?.breakpoint ?? 'normal',
-    };
-}
-
-function Media(attributes, editor = false) {
-
+const Media = ({attributes, editor = false}) => {
     const mediaClasses = [
         'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
     ].filter(x => x).join(' ');
@@ -56,6 +45,15 @@ function Media(attributes, editor = false) {
         ...mediaStyle,
     }
 
+    console.log(attributes);
+
+    const settings = {
+        force: !!attributes['wpbs-figure']?.['force'],
+        eager: !!attributes['wpbs-figure']?.['eager'],
+        resolution: attributes['wpbs-figure']?.['resolution'] ?? null,
+        breakpoint: attributes?.['wpbs-layout']?.breakpoint ?? 'normal',
+    }
+
     const Content = () => {
 
         switch (attributes['wpbs-figure']?.type ?? false) {
@@ -63,7 +61,7 @@ function Media(attributes, editor = false) {
 
                 return <ResponsivePicture mobile={attributes['wpbs-figure']?.['mobileImage']}
                                           large={attributes['wpbs-figure']?.['largeImage']}
-                                          settings={getSettings(attributes)} editor={editor}></ResponsivePicture>;
+                                          settings={settings} editor={editor}></ResponsivePicture>;
             case 'featured-image':
                 return !editor ? '%%IMAGE%%' : <figure
                     className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
@@ -86,7 +84,7 @@ function Media(attributes, editor = false) {
             <Content/>
         </div>;
     }
-}
+};
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},
@@ -189,12 +187,12 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
 
         useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
+
+            setAttributes({uniqueId: useInstanceId(registerBlockType, 'wpbs-figure')});
         }, []);
 
         const updateSettings = useCallback((newValue) => {
@@ -210,14 +208,15 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, attributes['wpbs-figure']])
 
+        const memoBlockClasses = useMemo(() => blockClasses(attributes), [attributes['wpbs-figure'], attributes?.uniqueId]);
+
         const blockProps = useBlockProps({
-            className: blockClasses(attributes)
+            className: memoBlockClasses
         });
 
-        const Content = useMemo(() => Media(attributes, true), [attributes]);
+        const Content = useMemo(() => <Media attributes={attributes} editor={true}/>, [attributes['wpbs-figure']]);
 
         return <>
-            <BlockEdit key="edit" {...blockProps} />
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-figure']}
@@ -426,7 +425,7 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-                {Content}
+                <Content/>
             </figure>
 
         </>;
@@ -438,13 +437,11 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observe'
         });
-
-        const Content = Media(props.attributes);
-
+        
 
         return (
             <figure {...blockProps} >
-                {Content}
+                <Media attributes={props.attributes} editor={false}/>
             </figure>
         );
     }

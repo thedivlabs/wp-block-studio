@@ -10,7 +10,7 @@ if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && 
 
 	$picture = '';
 
-	$breakpoint = $breakpoints[ $attributes['wpbs-layout']['breakpoint'] ?? 'normal' ] ?? false;
+	$breakpoint = $breakpoints[ $attributes['wpbs-breakpoint']['large'] ?? 'normal' ] ?? false;
 
 	$class = implode( ' ', array_filter( [
 		'wpbs-picture'

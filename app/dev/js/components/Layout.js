@@ -504,14 +504,11 @@ function parseSpecial(prop, attributes) {
 
 }
 
-export function layoutCss(attributes) {
+export function layoutCss(attributes, selector) {
 
     if (!Object.keys(attributes?.['wpbs-layout'] ?? {}).length || !attributes.uniqueId) {
         return '';
     }
-
-    const uniqueId = attributes?.uniqueId ?? '';
-    const selector = '.' + uniqueId.trim().split(' ').join('.');
 
     const {'wpbs-layout': settings = {}} = attributes;
 

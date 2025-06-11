@@ -61,25 +61,23 @@ export function Style({
                           preload = []
                       }) {
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
-    const {containers, breakpoints} = WPBS?.settings ?? {};
 
-    const uniqueId = attributes?.uniqueId ?? '';
-    const selector = '.' + uniqueId.trim().split(' ').join('.');
-    const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
-
-    if (!uniqueId) {
+    if (!attributes || !attributes.uniqueId) {
         return null;
     }
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
 
-    const {resultCss,preloadMedia} = useMemo(() => {
-        //console.log('compiling css');
-        if (!uniqueId) {
-            return '';
-        }
 
-        const cssLayout = layoutCss(attributes);
-        const cssBackground = backgroundCss(attributes);
+    const {resultCss, preloadMedia} = useMemo(() => {
+
+        const {containers, breakpoints} = WPBS?.settings ?? {};
+
+        const uniqueId = attributes?.uniqueId ?? '';
+        const selector = '.' + uniqueId.slice(0, uniqueId.lastIndexOf('-')) + '.' + uniqueId.trim().split(' ').join('.');
+        const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
+
+        const cssLayout = layoutCss(attributes, selector);
+        const cssBackground = backgroundCss(attributes, selector);
 
         let desktopProps = {};
         let mobileProps = {};
@@ -204,8 +202,8 @@ export function Style({
 
         const preloadMedia = getPreloadMedia([...preload, ...backgroundPreload(attributes)]);
 
-        return {
-            resultCss:mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
+        const result = {
+            resultCss: mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
                 switch (type) {
                     case 'BREAKPOINT':
                         return breakpoints[key] ?? match;
@@ -218,8 +216,12 @@ export function Style({
             preloadMedia: preloadMedia
         };
 
-    }, dependencyValues);
+        console.log(selector);
+        console.log(result);
 
+        return result;
+
+    }, dependencyValues);
 
 
     useEffect(() => {
@@ -236,9 +238,7 @@ export function Style({
             'wpbs-preload': preloadMedia
         });
 
-    }, [resultCss,preloadMedia]);
-
-
+    }, [resultCss, preloadMedia]);
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

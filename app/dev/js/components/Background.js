@@ -359,7 +359,7 @@ export function backgroundPreload(attributes) {
     return result;
 }
 
-export function backgroundCss(attributes) {
+export function backgroundCss(attributes, selector) {
 
     if (!attributes?.['wpbs-background']?.type || !attributes.uniqueId) {
         return '';
@@ -369,8 +369,6 @@ export function backgroundCss(attributes) {
     let desktop = {};
     let mobile = {};
 
-    const uniqueId = attributes?.uniqueId ?? '';
-    const selector = '.' + uniqueId.trim().split(' ').join('.');
     const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
     const {'wpbs-background': settings = {}} = attributes;

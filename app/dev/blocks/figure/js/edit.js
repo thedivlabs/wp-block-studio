@@ -185,7 +185,7 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
 
-        const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
+
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
@@ -220,7 +220,7 @@ registerBlockType(metadata.name, {
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,
                    }}
-                   preload={preloadMedia}
+                   preload={getPreloadMedia(attributes)}
             />
             <Link defaultValue={attributes['wpbs-figure']?.link}
                   callback={(newValue) => updateSettings({'link': newValue})}/>

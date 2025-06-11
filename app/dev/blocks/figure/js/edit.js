@@ -287,16 +287,11 @@ registerBlockType(metadata.name, {
                                             allowedTypes={['image']}
                                             value={attributes['wpbs-figure']?.largeImage}
                                             render={({open}) => {
-                                                if (attributes['wpbs-figure']?.largeImage) {
-                                                    return <PreviewThumbnail
-                                                        image={attributes['wpbs-figure'].largeImage}
-                                                        callback={() => updateSettings({'largeImage': undefined})}
-                                                        onClick={open}
-                                                    />;
-                                                } else {
-                                                    return <Button onClick={open} style={imageButtonStyle}>Choose
-                                                        Image</Button>
-                                                }
+                                                return <PreviewThumbnail
+                                                    image={attributes['wpbs-figure']?.largeImage || {}}
+                                                    callback={() => updateSettings({'largeImage': undefined})}
+                                                    onClick={open}
+                                                />;
                                             }}
                                         />
                                     </MediaUploadCheck>

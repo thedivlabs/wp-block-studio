@@ -65,7 +65,7 @@ export function Style({
     if (!attributes || !attributes.uniqueId) {
         return null;
     }
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes?.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
 
 
     const {resultCss, preloadMedia} = useMemo(() => {
@@ -201,7 +201,7 @@ export function Style({
         const mergedCss = [cssLayout, cssBackground, propsCss, ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
         const preloadMedia = getPreloadMedia([...preload, ...backgroundPreload(attributes)]);
-        
+
         return {
             resultCss: mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
                 switch (type) {

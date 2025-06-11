@@ -202,7 +202,7 @@ export function Style({
 
         const preloadMedia = getPreloadMedia([...preload, ...backgroundPreload(attributes)]);
 
-        const result = {
+        return {
             resultCss: mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
                 switch (type) {
                     case 'BREAKPOINT':
@@ -215,11 +215,6 @@ export function Style({
             }),
             preloadMedia: preloadMedia
         };
-
-        console.log(selector);
-        console.log(result);
-
-        return result;
 
     }, dependencyValues);
 

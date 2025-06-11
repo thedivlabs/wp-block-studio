@@ -5,6 +5,7 @@ const {state} = store('wpbs-grid', {
         observe: () => {
             const {ref: element} = getElement();
 
+
             WPBS.observeMedia(element);
 
         },

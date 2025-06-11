@@ -38,8 +38,8 @@ function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = fal
         srcAttr = 'src';
         srcsetAttr = 'srcset';
     } else {
-        srcAttr = settings.eager ? 'src' : 'data-src';
-        srcsetAttr = settings.eager ? 'srcset' : 'data-srcset';
+        srcAttr = !!settings.eager ? 'src' : 'data-src';
+        srcsetAttr = !!settings.eager ? 'srcset' : 'data-srcset';
     }
 
     return <picture className={className} style={{

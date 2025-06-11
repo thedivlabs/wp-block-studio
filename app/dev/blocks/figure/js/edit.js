@@ -190,10 +190,8 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
         useEffect(() => {
-            if (!attributes.uniqueId) {
-                setAttributes({uniqueId});
-            }
-        }, []);
+            setAttributes({uniqueId});
+        }, [uniqueId]);
 
         const updateSettings = useCallback((newValue) => {
 

@@ -46,8 +46,6 @@ const Media = React.memo(({settings, breakpoint, editor = false}) => {
         ...mediaStyle,
     }
 
-    console.log(settings);
-
     const Content = () => {
 
         switch (settings?.type ?? false) {
@@ -60,11 +58,11 @@ const Media = React.memo(({settings, breakpoint, editor = false}) => {
                                               eager: !!settings?.['eager'],
                                               resolution: settings?.['resolution'] ?? null,
                                               breakpoint: breakpoint || 'normal',
-                                          }} editor={editor}></ResponsivePicture>;
+                                          }} editor={!!editor}></ResponsivePicture>;
             case 'featured-image':
-                return !editor ? '%%IMAGE%%' : <figure
+                return !editor ? '%%IMAGE%%' : <div
                     className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
-                    IMAGE</figure>;
+                    IMAGE</div>;
             default:
                 return false
         }
@@ -72,10 +70,10 @@ const Media = React.memo(({settings, breakpoint, editor = false}) => {
 
     if ((settings?.link || settings?.linkPost) && !editor) {
         return <a class={mediaClasses}
-                  href={!settings?.linkPost ? settings.link?.url ?? '#' : '%%PERMALINK%%'}
-                  title={settings.link?.title ?? ''}
-                  target={!!settings.link?.opensInNewTab ? '_blank' : '_self'}
-                  rel={settings.link?.rel ?? ''} style={mediaStyle}>
+                  href={!settings?.linkPost ? settings?.link?.url ?? '#' : '%%PERMALINK%%'}
+                  title={settings?.link?.title ?? ''}
+                  target={!!settings?.link?.opensInNewTab ? '_blank' : '_self'}
+                  rel={settings?.link?.rel ?? ''} style={mediaStyle}>
             <Content/>
         </a>
     } else {
@@ -192,8 +190,9 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
         useEffect(() => {
-
-            setAttributes({uniqueId: uniqueId});
+            if (!attributes.uniqueId) {
+                setAttributes({uniqueId});
+            }
         }, []);
 
         const updateSettings = useCallback((newValue) => {
@@ -209,7 +208,7 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, attributes['wpbs-figure']])
 
-        const memoBlockClasses = useMemo(() => blockClasses(attributes), [attributes['wpbs-figure'], attributes?.uniqueId]);
+        const memoBlockClasses = blockClasses(attributes);
 
         const blockProps = useBlockProps({
             className: memoBlockClasses
@@ -424,7 +423,8 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-                <Media settings={attributes['wpbs-figure']} breakpoint={attributes['wpbs-breakpoint']} editor={true}/>
+                <Media settings={attributes['wpbs-figure']} breakpoint={attributes?.['wpbs-breakpoint']?.large}
+                       editor={true}/>
             </figure>
 
         </>;
@@ -440,7 +440,8 @@ registerBlockType(metadata.name, {
 
         return (
             <figure {...blockProps} >
-                <Media attributes={props.attributes} breakpoint={props.attributes?.['wpbs-breakpoint']} editor={false}/>
+                <Media settings={props.attributes} breakpoint={props.attributes?.['wpbs-breakpoint']?.large}
+                       editor={false}/>
             </figure>
         );
     }

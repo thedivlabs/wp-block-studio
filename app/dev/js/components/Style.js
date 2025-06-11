@@ -201,7 +201,7 @@ export function Style({
         const mergedCss = [cssLayout, cssBackground, propsCss, ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
 
         const preloadMedia = getPreloadMedia([...preload, ...backgroundPreload(attributes)]);
-
+        console.log(mergedCss);
         return {
             resultCss: mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
                 switch (type) {

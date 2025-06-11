@@ -71,7 +71,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']
-            ? useInnerBlocksProps({className: selector + '__container wpbs-container w-full h-full'}, {})
+            ? useInnerBlocksProps({className: selector + '__container wpbs-layout-wrapper wpbs-container w-full h-full'}, {})
             : useInnerBlocksProps(blockProps, {});
 
 

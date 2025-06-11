@@ -78,7 +78,7 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        const updateSettings = useCallback((newValue)=>{
+        const updateSettings = useCallback((newValue) => {
             const result = {
                 ...grid,
                 ...newValue
@@ -89,7 +89,7 @@ registerBlockType(metadata.name, {
             });
             setGrid(result);
 
-        }, [setAttributes,setGrid])
+        }, [setAttributes, setGrid])
 
         const blockProps = useBlockProps({
             className: [classNames(attributes), 'empty:min-h-8'].join(' ')
@@ -122,7 +122,7 @@ registerBlockType(metadata.name, {
             };
         }, [attributes['wpbs-grid']]);
 
-        const tabOptions = useMemo(()=>{
+        const tabOptions = useMemo(() => {
             return <Grid columns={1} columnGap={15} rowGap={20}>
                 <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
                     <Grid columns={3} columnGap={15} rowGap={20}>
@@ -237,7 +237,7 @@ registerBlockType(metadata.name, {
             </Grid>
         }, [grid]);
 
-        const tabLoop = useMemo(()=>{
+        const tabLoop = useMemo(() => {
             return <Loop attributes={attributes} setAttributes={setAttributes}/>
         }, [grid])
 

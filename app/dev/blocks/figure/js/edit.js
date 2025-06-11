@@ -31,7 +31,7 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-const Media = ({settings, breakpoint, editor = false}) => {
+function Media(settings, breakpoint, editor = false) {
 
     const mediaClasses = [
         'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
@@ -213,6 +213,8 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: memoBlockClasses
         });
+
+        const Content = Media(attributes['wpbs-figure'], attributes?.['wpbs-breakpoint']?.large, true);
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
@@ -418,8 +420,8 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-                <Media settings={attributes['wpbs-figure']} breakpoint={attributes?.['wpbs-breakpoint']?.large}
-                       editor={true}/>
+
+                {Content}
             </figure>
 
         </>;
@@ -432,12 +434,11 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observe'
         });
 
+        const Content = Media(props.attributes['wpbs-figure'], props.attributes?.['wpbs-breakpoint']?.large, false);
 
         return (
             <figure {...blockProps} >
-                <Media settings={props.attributes['wpbs-figure']}
-                       breakpoint={props.attributes?.['wpbs-breakpoint']?.large}
-                />
+                {Content}
             </figure>
         );
     }

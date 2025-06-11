@@ -31,37 +31,36 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-const Media = ({attributes, editor = false}) => {
+const Media = React.memo(({settings, breakpoint, editor = false}) => {
+
     const mediaClasses = [
         'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
     ].filter(x => x).join(' ');
 
     let mediaStyle = {
-        ['mix-blend-mode']: attributes['wpbs-figure'].blend || null,
-        ['object-fit']: !!attributes['wpbs-figure'].contain ? 'contain' : 'cover',
+        ['mix-blend-mode']: settings.blend || null,
+        ['object-fit']: !!settings.contain ? 'contain' : 'cover',
     };
 
     mediaStyle = {
         ...mediaStyle,
     }
 
-    console.log(attributes);
-
-    const settings = {
-        force: !!attributes['wpbs-figure']?.['force'],
-        eager: !!attributes['wpbs-figure']?.['eager'],
-        resolution: attributes['wpbs-figure']?.['resolution'] ?? null,
-        breakpoint: attributes?.['wpbs-layout']?.breakpoint ?? 'normal',
-    }
+    console.log(settings);
 
     const Content = () => {
 
-        switch (attributes['wpbs-figure']?.type ?? false) {
+        switch (settings?.type ?? false) {
             case 'image':
 
-                return <ResponsivePicture mobile={attributes['wpbs-figure']?.['mobileImage']}
-                                          large={attributes['wpbs-figure']?.['largeImage']}
-                                          settings={settings} editor={editor}></ResponsivePicture>;
+                return <ResponsivePicture mobile={settings?.['mobileImage']}
+                                          large={settings?.['largeImage']}
+                                          settings={{
+                                              force: !!settings?.['force'],
+                                              eager: !!settings?.['eager'],
+                                              resolution: settings?.['resolution'] ?? null,
+                                              breakpoint: breakpoint || 'normal',
+                                          }} editor={editor}></ResponsivePicture>;
             case 'featured-image':
                 return !editor ? '%%IMAGE%%' : <figure
                     className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
@@ -71,12 +70,12 @@ const Media = ({attributes, editor = false}) => {
         }
     }
 
-    if ((attributes['wpbs-figure']?.link || attributes['wpbs-figure']?.linkPost) && !editor) {
+    if ((settings?.link || settings?.linkPost) && !editor) {
         return <a class={mediaClasses}
-                  href={!attributes['wpbs-figure']?.linkPost ? attributes['wpbs-figure'].link?.url ?? '#' : '%%PERMALINK%%'}
-                  title={attributes['wpbs-figure'].link?.title ?? ''}
-                  target={!!attributes['wpbs-figure'].link?.opensInNewTab ? '_blank' : '_self'}
-                  rel={attributes['wpbs-figure'].link?.rel ?? ''} style={mediaStyle}>
+                  href={!settings?.linkPost ? settings.link?.url ?? '#' : '%%PERMALINK%%'}
+                  title={settings.link?.title ?? ''}
+                  target={!!settings.link?.opensInNewTab ? '_blank' : '_self'}
+                  rel={settings.link?.rel ?? ''} style={mediaStyle}>
             <Content/>
         </a>
     } else {
@@ -84,7 +83,7 @@ const Media = ({attributes, editor = false}) => {
             <Content/>
         </div>;
     }
-};
+});
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},
@@ -190,9 +189,11 @@ registerBlockType(metadata.name, {
 
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+
         useEffect(() => {
 
-            setAttributes({uniqueId: useInstanceId(registerBlockType, 'wpbs-figure')});
+            setAttributes({uniqueId: uniqueId});
         }, []);
 
         const updateSettings = useCallback((newValue) => {
@@ -213,8 +214,6 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: memoBlockClasses
         });
-
-        const Content = useMemo(() => <Media attributes={attributes} editor={true}/>, [attributes['wpbs-figure']]);
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
@@ -425,7 +424,7 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-                <Content/>
+                <Media settings={attributes['wpbs-figure']} breakpoint={attributes['wpbs-breakpoint']} editor={true}/>
             </figure>
 
         </>;
@@ -437,11 +436,11 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs',
             'data-wp-init': 'callbacks.observe'
         });
-        
+
 
         return (
             <figure {...blockProps} >
-                <Media attributes={props.attributes} editor={false}/>
+                <Media attributes={props.attributes} breakpoint={props.attributes?.['wpbs-breakpoint']} editor={false}/>
             </figure>
         );
     }

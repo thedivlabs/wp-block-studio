@@ -58,7 +58,7 @@ const Media = ({settings, breakpoint, editor = false}) => {
                                               eager: !!settings?.['eager'],
                                               resolution: settings?.['resolution'] ?? null,
                                               breakpoint: breakpoint || 'normal',
-                                          }} editor={!!editor}></ResponsivePicture>;
+                                          }} editor={editor}></ResponsivePicture>;
             case 'featured-image':
                 return !editor ? '%%IMAGE%%' : <div
                     className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED

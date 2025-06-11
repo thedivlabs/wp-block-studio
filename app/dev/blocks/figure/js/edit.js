@@ -440,7 +440,8 @@ registerBlockType(metadata.name, {
 
         return (
             <figure {...blockProps} >
-                <Media settings={props.attributes} breakpoint={props.attributes?.['wpbs-breakpoint']?.large}
+                <Media settings={props.attributes['wpbs-figure']}
+                       breakpoint={props.attributes?.['wpbs-breakpoint']?.large}
                        editor={false}/>
             </figure>
         );

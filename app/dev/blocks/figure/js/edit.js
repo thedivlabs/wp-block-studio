@@ -69,7 +69,7 @@ const Media = ({settings, breakpoint, editor = false}) => {
     }
 
     if ((settings?.link || settings?.linkPost) && !editor) {
-        return <a class={mediaClasses}
+        return <a className={mediaClasses}
                   href={!settings?.linkPost ? settings?.link?.url ?? '#' : '%%PERMALINK%%'}
                   title={settings?.link?.title ?? ''}
                   target={!!settings?.link?.opensInNewTab ? '_blank' : '_self'}
@@ -77,7 +77,7 @@ const Media = ({settings, breakpoint, editor = false}) => {
             <Content/>
         </a>
     } else {
-        return <div class={mediaClasses} style={mediaStyle}>
+        return <div className={mediaClasses} style={mediaStyle}>
             <Content/>
         </div>;
     }
@@ -185,7 +185,7 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
 
-
+        const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
@@ -220,7 +220,7 @@ registerBlockType(metadata.name, {
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,
                    }}
-                   preload={getPreloadMedia(attributes)}
+                   preload={preloadMedia}
             />
             <Link defaultValue={attributes['wpbs-figure']?.link}
                   callback={(newValue) => updateSettings({'link': newValue})}/>

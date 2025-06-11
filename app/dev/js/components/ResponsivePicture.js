@@ -31,10 +31,6 @@ function ResponsivePicture({mobile = {}, large = {}, settings = {}, editor = fal
         settings.className || false,
     ].filter(x => x).join(' ');
 
-    if (!urlLarge && !urlMobile) {
-        return false;
-    }
-
     let srcAttr;
     let srcsetAttr;
 

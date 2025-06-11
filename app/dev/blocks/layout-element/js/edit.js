@@ -21,6 +21,7 @@ const classNames = (attributes = {}) => {
 
     return [
         selector + ' w-full block relative wpbs-container',
+        !!attributes['wpbs-background'] ? 'wpbs-has-container' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -70,8 +71,8 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']
-            ? useInnerBlocksProps({className: selector + ' w-full h-full'})
-            : useInnerBlocksProps(blockProps);
+            ? useInnerBlocksProps({className: selector + '__container wpbs-container w-full h-full'}, {})
+            : useInnerBlocksProps(blockProps, {});
 
 
         return (

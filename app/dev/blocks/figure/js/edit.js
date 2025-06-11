@@ -31,7 +31,7 @@ function blockClasses(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-const Media = React.memo(({settings, breakpoint, editor = false}) => {
+const Media = ({settings, breakpoint, editor = false}) => {
 
     const mediaClasses = [
         'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
@@ -81,7 +81,7 @@ const Media = React.memo(({settings, breakpoint, editor = false}) => {
             <Content/>
         </div>;
     }
-});
+};
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},

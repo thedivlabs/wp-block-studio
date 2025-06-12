@@ -56,7 +56,7 @@ const Media = React.memo(({settings, breakpoint}) => {
                 />;
             case 'featured-image':
                 return <div
-                    className={'w-full h-full bg-black opacity-50 text-sm leading-normal text-center flex justify-center items-center text-white/30 text-[50px]'}>
+                    className={'w-full h-full bg-black opacity-50 text-sm leading-normal text-center flex justify-center items-center text-white/30 text-3xl'}>
                     <i class="fa-solid fa-image-polaroid"></i></div>;
             default:
                 return <></>

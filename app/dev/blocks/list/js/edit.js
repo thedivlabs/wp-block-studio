@@ -62,6 +62,8 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-icon-list');
+        const breakpoint = WPBS.settings?.breakpoints[attributes['wpbs-icon-list']?.breakpoint ?? 'normal'];
+
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -161,7 +163,11 @@ registerBlockType(metadata.name, {
                        '--icon-space': attributes['wpbs-icon-list']?.iconSpace,
                        '--icon-style': attributes['wpbs-icon-list']?.iconStyle,
                        '--list-columns': attributes['wpbs-icon-list']?.columnsMobile ?? attributes['wpbs-icon-list']?.columnsLarge ?? 1,
-                       breakpoints: {}
+                       breakpoints: {
+                           [breakpoint]: {
+                               '--list-columns': attributes['wpbs-icon-list']?.columnsLarge ?? attributes['wpbs-icon-list']?.columnsMobile ?? 1,
+                           }
+                       }
                    }}
             />
 

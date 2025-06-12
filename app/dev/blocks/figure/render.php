@@ -30,8 +30,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 $breakpoint = ( wp_get_global_settings()['custom']['breakpoints'] ?? [] )[ $attributes['wpbs-breakpoint']['large'] ?? 'normal' ] ?? false;
 
-$fallback_large_id  = ! empty( $settings['force'] ) ? $settings['imageLarge']['id'] ?? false : $settings['imageLarge'] ?? $settings['imageMobile'] ?? false;
-$fallback_mobile_id = ! empty( $settings['force'] ) ? $settings['imageMobile']['id'] ?? false : $settings['imageMobile'] ?? $settings['imageLarge'] ?? false;
+$fallback_large_id  = ! empty( $settings['force'] ) ? $settings['imageLarge']['id'] ?? false : $settings['imageLarge']['id'] ?? $settings['imageMobile']['id'] ?? false;
+$fallback_mobile_id = ! empty( $settings['force'] ) ? $settings['imageMobile']['id'] ?? false : $settings['imageMobile']['id'] ?? $settings['imageLarge']['id'] ?? false;
 
 $src_attr    = ! empty( $settings['eager'] ) ? 'src' : 'data-src';
 $srcset_attr = ! empty( $settings['eager'] ) ? 'srcset' : 'data-srcset';

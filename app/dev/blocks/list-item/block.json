@@ -1,14 +1,14 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wpbs/icon-list",
-  "title": "Icon List",
+  "name": "wpbs/icon-list-item",
+  "title": "Icon List Item",
   "description": "Display a list element",
   "selectors": {
-    "root": ".wpbs-icon-list"
+    "root": ".wpbs-list"
   },
   "allowedBlocks": [
-    "wpbs/icon-list-item"
+    "wpbs/list-item"
   ],
   "attributes": {
     "uniqueId": {

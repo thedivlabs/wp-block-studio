@@ -19,6 +19,7 @@ import {
     __experimentalUnitControl as UnitControl,
 } from "@wordpress/components";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import NumberControl from "@wordpress/components/build-types/number-control";
 
 
 const ICON_STYLES = [
@@ -51,6 +52,9 @@ registerBlockType(metadata.name, {
                 iconStyle: undefined,
                 iconColor: undefined,
                 iconSize: undefined,
+                iconSpace: undefined,
+                columnsMobile:undefined,
+                columnsLarge:undefined,
             }
         }
     },
@@ -63,11 +67,11 @@ registerBlockType(metadata.name, {
         }, []);
 
 
-        const updateSettings = useCallback((newValue, prop) => {
+        const updateSettings = useCallback(({newValue}) => {
             setAttributes({
                 'wpbs-list': {
                     ...attributes['wpbs-list'],
-                    [prop]: newValue,
+                    ...newValue,
                 },
             });
         }, [attributes['wpbs-list'], setAttributes, uniqueId]);
@@ -80,52 +84,68 @@ registerBlockType(metadata.name, {
             <InspectorControls group="styles">
                 <Grid columns={1} columnGap={15} rowGap={20}>
 
-                    <PanelBody title="Icon Settings" initialOpen={true}>
-                        <TextControl
-                            label="FontAwesome Icon Name"
-                            value={settings.icon ?? ''}
-                            onChange={(val) => updateSettings({ icon: val })}
-                            placeholder="e.g. check, arrow-right"
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <NumberControl
+                            label="Columns Mobile"
+                            value={attributes['wpbs-list']?.columnsMobile ?? 1}
+                            onChange={(val) => updateSettings({ columnsMobile: val })}
+                            min={1}
+                            max={3}
+                            step={1}
                         />
+                        <NumberControl
+                            label="Columns Large"
+                            value={attributes['wpbs-list']?.columnsLarge ?? 1}
+                            onChange={(val) => updateSettings({ columnsLarge: val })}
+                            min={1}
+                            max={3}
+                            step={1}
+                        />
+                    </Grid>
+
+                    <TextControl
+                        label="Icon"
+                        value={attributes['wpbs-list'].icon ?? ''}
+                        onChange={(val) => updateSettings({ icon: val })}
+                    />
+
+
+                    <Grid columns={2} columnGap={15} rowGap={20}>
 
                         <SelectControl
                             label="Icon Style"
-                            value={settings.iconStyle ?? ''}
-                            options={[
-                                { label: 'Default', value: '' },
-                                { label: 'Solid', value: 'fas' },
-                                { label: 'Regular', value: 'far' },
-                                { label: 'Light', value: 'fal' },
-                                { label: 'Thin', value: 'fat' },
-                                { label: 'Duotone', value: 'fad' },
-                                { label: 'Brands', value: 'fab' },
-                            ]}
+                            value={attributes['wpbs-list'].iconStyle ?? ''}
+                            options={ICON_STYLES}
                             onChange={(val) => updateSettings({ iconStyle: val })}
                         />
-
-                        <PanelColorSettings
-                            enableAlpha
-                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                            colorSettings={[
-                                {
-                                    slug: 'iconColor',
-                                    label: 'Icon Color',
-                                    value: settings.iconColor ?? '',
-                                    onChange: (newValue) => updateSettings({ iconColor: newValue }),
-                                    isShownByDefault: true
-                                }
-                            ]}
-                        />
-
                         <UnitControl
                             label="Icon Size"
-                            value={settings.iconSize ?? ''}
+                            value={attributes['wpbs-list'].iconSize ?? ''}
                             onChange={(val) => updateSettings({ iconSize: val })}
                             units={['px', 'em', 'rem']}
                             isResettable
                         />
-                    </PanelBody>
-
+                        <UnitControl
+                            label="Icon Space"
+                            value={attributes['wpbs-list'].iconSpace ?? ''}
+                            onChange={(val) => updateSettings({ iconSpace: val })}
+                            units={['px', 'em', 'rem','ch']}
+                            isResettable
+                        />
+                    </Grid>
+                    <PanelColorSettings
+                        enableAlpha
+                        className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                        colorSettings={[
+                            {
+                                slug: 'iconColor',
+                                label: 'Icon Color',
+                                value: attributes['wpbs-list'].iconColor ?? '',
+                                onChange: (newValue) => updateSettings({ iconColor: newValue }),
+                                isShownByDefault: true,
+                            }
+                        ]}
+                    />
                 </Grid>
             </InspectorControls>
             <Style attributes={attributes} setAttributes={setAttributes}
@@ -134,7 +154,7 @@ registerBlockType(metadata.name, {
             />
 
             <ul {...useInnerBlocksProps(blockProps, {
-                allowedBlocks: ['your-namespace/list-item']
+                allowedBlocks: ['wpbs/list-item']
             })}></ul>
 
         </>;

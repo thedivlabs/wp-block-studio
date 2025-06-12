@@ -17,7 +17,8 @@
     }
 
     & > li::before {
-      content: var(--icon, "\f00c");
+      //content: var(--icon, "\f00c");
+      content: "\f00c";
       font-family: "Font Awesome 6 Pro", sans-serif;
       font-weight: var(--icon-style);
       font-size: var(--icon-size);

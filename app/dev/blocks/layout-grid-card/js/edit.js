@@ -61,13 +61,11 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <InspectorControls group="advanced">
-                    <PanelBody>
-                        <ToggleControl
-                            label="Link Post"
-                            checked={!!attributes['wpbs-layout-grid-card'].linkPost}
-                            onChange={(value) => updateSettings({linkPost: value})}
-                        />
-                    </PanelBody>
+                    <ToggleControl
+                        label="Link Post"
+                        checked={!!attributes['wpbs-layout-grid-card'].linkPost}
+                        onChange={(value) => updateSettings({linkPost: value})}
+                    />
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>

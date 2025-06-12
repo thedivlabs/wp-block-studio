@@ -77,7 +77,7 @@ $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
 
 			<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
 				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
-				'style'   => trim( $style ),
+				'style'   => trim( $style )
 			] ) ?>
         </picture>
     </div>

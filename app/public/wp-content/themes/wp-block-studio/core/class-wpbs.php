@@ -82,16 +82,20 @@ class WPBS {
 			'strategy'  => 'async',
 			'in_footer' => true,
 		] );
+		wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/2ac810357a.js', [], false, [
+			'strategy'  => 'async',
+			'in_footer' => false,
+		] );
 
 		/* Swiper */
 		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
-		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [ 'jquery' ], false, [
+		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
 			'strategy'  => 'defer',
 			'in_footer' => true,
 		] );
 
 		/* Masonry */
-		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [ 'jquery' ], false, [
+		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
 			'strategy'  => 'async',
 			'in_footer' => true,
 		] );
@@ -110,6 +114,7 @@ class WPBS {
 		wp_enqueue_script( 'wpbs-masonry-js' );
 
 		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_enqueue_script( 'wpbs-fontawesome' );
 		wp_enqueue_style( 'wpbs-theme-css' );
 
 		wp_enqueue_style( 'wpbs-admin-css' );
@@ -132,6 +137,7 @@ class WPBS {
 	public function view_assets(): void {
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_enqueue_script( 'wpbs-fontawesome' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
 	}
 

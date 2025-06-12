@@ -43,6 +43,9 @@ $src_large_webp = $src_large ? $src_large . '.webp' : false;
 $src_mobile      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_mobile_id, $settings['resolutionMobile'] ?? $settings['resolutionLarge'] ?? 'large' )[0] ?? false;
 $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 
+$mq_large  = 'media="(min-width: ' . $breakpoint . ')"';
+$mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
+
 ?>
 
 <figure <?php echo $wrapper_attributes ?>>
@@ -51,11 +54,11 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
         <picture class="w-full h-full">
 			<?php if ( ! empty( $src_large ) ) { ?>
                 <source type="image/webp"
-					<?php echo 'media="(min-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $mq_large ?>
 					<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
                 />
                 <source type="image/jpeg"
-					<?php echo 'media="(min-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $mq_large ?>
 					<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
                 />
 			<?php } ?>
@@ -63,11 +66,11 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 
 			<?php if ( ! empty( $src_mobile ) ) { ?>
                 <source type="image/webp"
-					<?php echo 'media="(max-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $mq_mobile ?>
 					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
                 />
                 <source type="image/jpeg"
-					<?php echo 'media="(max-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $mq_mobile ?>
 					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
                 />
 			<?php } ?>

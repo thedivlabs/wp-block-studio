@@ -175,8 +175,8 @@ registerBlockType(metadata.name, {
                                                 type: value?.type,
                                                 id: value?.id,
                                                 url: value?.url,
-                                                alt: value?.alt,
-                                                sizes: value?.sizes,
+                                                //alt: value?.alt,
+                                                //sizes: value?.sizes,
                                             }, 'imageMobile')
                                         }
                                         allowedTypes={['image']}
@@ -200,8 +200,8 @@ registerBlockType(metadata.name, {
                                                 type: value?.type,
                                                 id: value?.id,
                                                 url: value?.url,
-                                                alt: value?.alt,
-                                                sizes: value?.sizes,
+                                                //alt: value?.alt,
+                                                //sizes: value?.sizes,
                                             }, 'imageLarge')
                                         }
                                         allowedTypes={['image']}

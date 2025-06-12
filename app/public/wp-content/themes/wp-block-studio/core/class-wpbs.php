@@ -50,6 +50,17 @@ class WPBS {
 
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
 
+		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
+
+	}
+
+	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
+
+		if ( ( $attr['loading'] ?? false ) == 'eager' ) {
+			return $html;
+		}
+
+		return str_replace( [ 'src=', 'srcset=' ], [ 'data-src=', 'data-srcset=' ], $html );
 	}
 
 	public function critical_css(): void {
@@ -393,7 +404,7 @@ class WPBS {
 			$src          = wp_get_attachment_image_src( $image_id, $image_data['resolution'] ?? 'large' )[0] ?? false;
 			$image_srcset = wp_get_attachment_image_srcset( $image_id );
 			$path         = str_replace( home_url(), ABSPATH, $src );
-			$webp         = file_exists( $path . '.webp' );
+			$webp         = true;
 			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
 
@@ -482,15 +493,6 @@ class WPBS {
 		}
 
 		return $array;
-	}
-
-
-	public static function parse_wp_css_variable( $shorthand ) {
-		if ( ! str_starts_with( $shorthand, 'var:' ) ) {
-			return $shorthand;
-		}
-
-		return 'var(--wp--' . str_replace( '|', '--', substr( $shorthand, 4 ) ) . ')';
 	}
 
 	public static function get_block_template( $block ): array {

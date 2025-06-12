@@ -8,12 +8,12 @@ $is_featured_image = 'featured-image' === ( $settings['type'] ?? false );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => 'wpbs-figure',
-	'style'               => get_style_attribute(),
+	'style'               => get_style_attribute( $settings ),
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
 ] );
 
-function get_style_attribute(): string {
+function get_style_attribute( $settings ): string {
 
 	$style = '';
 
@@ -38,47 +38,47 @@ $fallback_mobile_id = ! empty( $settings['force'] ) ? $settings['imageMobile']['
 $src_attr    = ! empty( $settings['eager'] ) ? 'src' : 'data-src';
 $srcset_attr = ! empty( $settings['eager'] ) ? 'srcset' : 'data-srcset';
 
-$featured_image_id = $is_featured_image ? get_post_thumbnail_id() : false;
+$featured_image_id = $is_featured_image ? get_post_thumbnail_id() : 0;
 
-$src_large      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_large_id, $settings['resolution'] ?? 'large' )[0] ?? false;
+$src_large      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? 'large' )[0] ?? false;
 $src_large_webp = $src_large ? $src_large . '.webp' : false;
 
-$src_mobile      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_mobile_id, $settings['resolution'] ?? 'large' )[0] ?? false;
-$src_mobile_webp = $src_large ? $src_large . '.webp' : false;
+$src_mobile      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_mobile_id, $settings['resolutionMobile'] ?? $settings['resolutionLarge'] ?? 'large' )[0] ?? false;
+$src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 
 ?>
 
-    <figure <?= $wrapper_attributes ?>>
+<figure <?= $wrapper_attributes ?>>
 
-        <div class="wpbs-figure__media">
+    <div class="wpbs-figure__media">
 
-        </div>
+		<?php if ( ! empty( $src_large ) ) { ?>
+            <source type="image/webp"
+                    media="(width >= <?= $breakpoint ?>)"
+				<?= $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
+            />
+            <source type="image/jpeg"
+                    media="(width >= <?= $breakpoint ?>)"
+				<?= $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
+            />
+		<?php } ?>
 
-    </figure>
 
-<?php
+		<?php if ( ! empty( $src_mobile ) ) { ?>
+            <source type="image/webp"
+                    media="(width < <?= $breakpoint ?>)"
+				<?= $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
+            />
+            <source type="image/jpeg"
+                    media="(width < <?= $breakpoint ?>)"
+				<?= $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
+            />
+		<?php } ?>
 
-if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && () ) {
+		<?= wp_get_attachment_image( $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
+			'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy'
+		] ) ?>
 
+    </div>
 
-	$picture .= '<picture class="wpbs-picture" >';
-
-	$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
-
-	$picture .= '<source type="image/jpeg" ' . $srcset_attr . '="' . $src_large . '" />';
-
-	$picture .= wp_get_attachment_image( $featured_image_id, $settings['resolution'] ?? 'large' );
-
-	$picture .= '</picture>';
-
-	$replacements = [
-		'%%PERMALINK%%' => get_the_permalink(),
-		'%%IMAGE%%'     => $picture,
-	];
-
-	echo strtr( $content ?? '', $replacements );
-
-} else {
-	echo $content ?? false;
-}
-
+</figure>

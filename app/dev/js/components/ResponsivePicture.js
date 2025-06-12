@@ -23,7 +23,7 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
     }
 
     if (!urlLarge && !urlMobile) {
-        //return false;
+        return false;
     }
 
     const className = [

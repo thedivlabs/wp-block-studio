@@ -299,10 +299,17 @@ registerBlockType(metadata.name, {
                                 />
 
                                 <MemoSelectControl
-                                    value={attributes['wpbs-figure']?.resolution}
-                                    label={'Resolution'}
+                                    value={attributes['wpbs-figure']?.resolutionLarge}
+                                    label={'Resolution Large'}
                                     options={RESOLUTION_OPTIONS}
-                                    callback={(newValue) => updateSettings({resolution: newValue})}
+                                    callback={(newValue) => updateSettings({resolutionLarge: newValue})}
+                                />
+
+                                <MemoSelectControl
+                                    value={attributes['wpbs-figure']?.resolutionMobile}
+                                    label={'Resolution Mobile'}
+                                    options={RESOLUTION_OPTIONS}
+                                    callback={(newValue) => updateSettings({resolutionMobile: newValue})}
                                 />
 
                             </Grid>

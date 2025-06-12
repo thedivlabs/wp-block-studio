@@ -18,6 +18,7 @@ if ( ! empty( $settings['contain'] ) ) {
 
 // Merge styles into wrapper attributes
 $wrapper_attributes = get_block_wrapper_attributes( [
+	'class'               => 'wpbs-figure',
 	'style'               => $style,
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
@@ -27,6 +28,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
     <figure <?= $wrapper_attributes ?>>
 
+        <div class="wpbs-figure__media">
+
+        </div>
 
     </figure>
 
@@ -56,9 +60,7 @@ if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && 
 
 	$picture .= '<picture class="' . $class . '" style="' . $style . '">';
 
-	if ( file_exists( ABSPATH . ltrim( str_replace( get_site_url(), '', $src_large_webp ?: '' ), '/' ) ) ) {
-		$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
-	}
+	$picture .= '<source type="image/webp" ' . $srcset_attr . '="' . $src_large_webp . '" />';
 
 	$picture .= '<source type="image/jpeg" ' . $srcset_attr . '="' . $src_large . '" />';
 

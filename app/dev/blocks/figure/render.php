@@ -6,29 +6,27 @@ $settings = $attributes['wpbs-figure'] ?? [];
 
 $is_featured_image = 'featured-image' === ( $settings['type'] ?? false );
 
+$style = '';
+
+if ( isset( $settings['blend'] ) && $settings['blend'] ) {
+	$style .= 'mix-blend-mode:' . esc_attr( $settings['blend'] ) . ';';
+}
+
+if ( ! empty( $settings['contain'] ) ) {
+	$style .= 'object-fit:contain;';
+} else {
+	$style .= 'object-fit:cover;';
+}
+
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class'               => 'wpbs-figure',
-	'style'               => get_style_attribute( $settings ),
+	'class'               => implode( ' ', array_filter( [
+		'wpbs-figure',
+		$attributes['uniqueId'] ?? null
+	] ) ),
+	'style'               => trim( $style ),
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
 ] );
-
-function get_style_attribute( $settings ): string {
-
-	$style = '';
-
-	if ( isset( $settings['blend'] ) && $settings['blend'] ) {
-		$style .= 'mix-blend-mode:' . esc_attr( $settings['blend'] ) . ';';
-	}
-
-	if ( ! empty( $settings['contain'] ) ) {
-		$style .= 'object-fit:contain;';
-	} else {
-		$style .= 'object-fit:cover;';
-	}
-
-	return trim( $style );
-}
 
 $breakpoint = ( wp_get_global_settings()['custom']['breakpoints'] ?? [] )[ $attributes['wpbs-breakpoint']['large'] ?? 'normal' ] ?? false;
 

@@ -55,8 +55,8 @@ const Media = React.memo(({settings, breakpoint}) => {
                                           editor={true}
                 />;
             case 'featured-image':
-                return !editor ? '%%IMAGE%%' : <div
-                    className={'w-full h-full bg-black opacity-30 border border-gray text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
+                return <div
+                    className={'w-full h-full bg-black opacity-50 text-sm leading-normal text-center flex justify-center items-center text-white/50'}>FEATURED
                     IMAGE</div>;
             default:
                 return <></>

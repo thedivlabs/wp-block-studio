@@ -49,7 +49,7 @@ const Media = React.memo(({settings, breakpoint}) => {
                                           settings={{
                                               force: !!settings?.['force'],
                                               eager: !!settings?.['eager'],
-                                              resolution: settings?.['resolution'] ?? null,
+                                              resolution: settings?.['resolutionLarge'] ?? settings?.['resolutionMobile'] ?? null,
                                               breakpoint: breakpoint || 'normal',
                                           }}
                                           editor={true}
@@ -301,14 +301,14 @@ registerBlockType(metadata.name, {
 
                                 <MemoSelectControl
                                     value={attributes['wpbs-figure']?.resolutionLarge}
-                                    label={'Resolution Large'}
+                                    label={'Size Large'}
                                     options={RESOLUTION_OPTIONS}
                                     callback={(newValue) => updateSettings({resolutionLarge: newValue})}
                                 />
 
                                 <MemoSelectControl
                                     value={attributes['wpbs-figure']?.resolutionMobile}
-                                    label={'Resolution Mobile'}
+                                    label={'Size Mobile'}
                                     options={RESOLUTION_OPTIONS}
                                     callback={(newValue) => updateSettings({resolutionMobile: newValue})}
                                 />

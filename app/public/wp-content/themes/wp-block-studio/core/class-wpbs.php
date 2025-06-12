@@ -126,11 +126,6 @@ class WPBS {
 	}
 
 	public function editor_assets(): void {
-		//add_editor_style();
-
-		//wp_enqueue_script( 'wpbs-swiper-js' );
-		//wp_enqueue_style( 'wpbs-swiper-css' );
-
 
 	}
 

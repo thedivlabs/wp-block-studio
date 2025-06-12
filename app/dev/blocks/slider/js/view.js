@@ -53,6 +53,10 @@ const {state} = store('wpbs', {
 
                         observerIntersection.unobserve(entry.target);
 
+                        if (entry.target.querySelectorAll(':scope > .swiper-wrapper > .wpbs-slide').length < 2) {
+                            return false;
+                        }
+
                         async function initLib() {
                             if (typeof window.Swiper !== 'function') {
 
@@ -81,7 +85,7 @@ const {state} = store('wpbs', {
                         }
 
                         initLib().then(() => {
-                            
+
                             const swiper = new Swiper(entry.target, args);
                         })
 

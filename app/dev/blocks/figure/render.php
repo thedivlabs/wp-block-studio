@@ -23,7 +23,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-figure',
 		$attributes['uniqueId'] ?? null
 	] ) ),
-	'style'               => trim( $style ),
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
 ] );
@@ -74,7 +73,8 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 			<?php } ?>
 
 			<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
-				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy'
+				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
+				'style'   => trim( $style ),
 			] ) ?>
         </picture>
     </div>

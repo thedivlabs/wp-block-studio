@@ -10,7 +10,10 @@ import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Comp
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect} from "react";
-import {PanelBody, ToggleControl} from "@wordpress/components";
+import {
+    __experimentalGrid as Grid,
+    ToggleControl, SelectControl, TextControl
+} from "@wordpress/components";
 
 
 function sectionClassNames(attributes = {}) {
@@ -29,7 +32,11 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         'wpbs-layout-grid-card': {
             type: 'object',
-            default: {}
+            default: {
+                linkNewTab: undefined,
+                linkRel: undefined,
+                linkPost: undefined,
+            }
         }
     },
     edit: (props) => {
@@ -61,11 +68,34 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <InspectorControls group="advanced">
-                    <ToggleControl
-                        label="Link Post"
-                        checked={!!attributes['wpbs-layout-grid-card'].linkPost}
-                        onChange={(value) => updateSettings({linkPost: value})}
-                    />
+                    <Grid columns={2} rowGap={20} style={{'margin-top': '25px'}}>
+                        <ToggleControl
+                            style={{marginTop: '20px'}}
+                            label="Link Post"
+                            checked={!!attributes['wpbs-layout-grid-card'].linkPost}
+                            onChange={(value) => updateSettings({linkPost: value})}
+                        />
+                        <ToggleControl
+                            label="New tab"
+                            checked={!!attributes['wpbs-layout-grid-card']?.linkNewTab}
+                            onChange={(isChecked) => updateSettings({linkNewTab: !!isChecked})}
+                        />
+                        <Grid columns={2} columnGap={15} rowGap={20} style={{'grid-column': '1/-1'}}>
+                            <SelectControl
+                                label="Rel"
+                                value={attributes['wpbs-layout-grid-card']?.linkRel ?? ''}
+                                options={[
+                                    {label: 'None', value: ''},
+                                    {label: 'noopener', value: 'noopener'},
+                                    {label: 'noreferrer', value: 'noreferrer'},
+                                    {label: 'nofollow', value: 'nofollow'},
+                                    {label: 'noopener noreferrer', value: 'noopener noreferrer'},
+                                    {label: 'nofollow noopener', value: 'nofollow noopener'},
+                                ]}
+                                onChange={(value) => updateSettings({linkRel: value})}
+                            />
+                        </Grid>
+                    </Grid>
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
@@ -95,7 +125,8 @@ registerBlockType(metadata.name, {
             return <a
                 className="wpbs-layout-grid-card__anchor absolute top-0 left-0 z-50 w-full h-full"
                 href={'%__PERMALINK__%'}
-                target={'_self'}
+                target={!!props.attributes['wpbs-layout-grid-card']?.linkNewTab ? '_blank' : '_self'}
+                rel={props.attributes['wpbs-layout-grid-card'].linkRel || undefined}
             ><span className={'screen-reader-text'}>View Post</span></a>;
         }
 

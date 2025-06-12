@@ -1,0 +1,38 @@
+.wpbs-list {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+
+  &__list {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    list-style: none;
+    position: relative;
+    column-gap: var(--row-gap, .5rem);
+
+    & > li {
+      position: relative;
+      padding-left: var(--column-gap, 1.5em);
+    }
+
+    & > li::before {
+      content: var(--icon, "\f00c");
+      font-family: var(--icon-font, "Font Awesome 6 Pro"), sans-serif;
+      font-weight: var(--icon-weight);
+      font-size: var(--icon-size);
+      line-height: inherit;
+      position: absolute;
+      top: 0.125em;
+      left: 0;
+      font-style: normal;
+      font-variant: normal;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+
+}

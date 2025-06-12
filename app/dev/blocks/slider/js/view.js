@@ -42,10 +42,7 @@ const {state} = store('wpbs', {
             const {ref: element} = getElement();
             let {args} = getContext();
 
-            args = {
-                ...SWIPER_OPTIONS_VIEW,
-                ...JSON.parse(JSON.stringify(args))
-            };
+            args = Object.assign({}, SWIPER_OPTIONS_VIEW, args);
 
             let observerIntersection = new IntersectionObserver((entries, observer) => {
                 entries.forEach((entry) => {

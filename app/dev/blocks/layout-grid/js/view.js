@@ -189,7 +189,6 @@ const {state} = store('wpbs/grid', {
                     const media = grid.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
                     [...media].forEach((media_element) => {
                         WPBS.observeMedia(media_element);
-                        console.log(media_element);
                     })
 
                     if (result.css) {

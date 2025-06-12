@@ -24,12 +24,10 @@ import Breakpoint from "Components/Breakpoint"
 
 
 const ICON_STYLES = [
-    {label: 'Solid', value: 'fas'},
-    {label: 'Regular', value: 'far'},
-    {label: 'Light', value: 'fal'},
-    {label: 'Thin', value: 'fat'},
-    {label: 'Duotone', value: 'fad'},
-    {label: 'Brands', value: 'fab'},
+    {label: 'Solid', value: '900'},
+    {label: 'Regular', value: '400'},
+    {label: 'Light', value: '300'},
+    {label: 'Thin', value: '100'},
 ];
 
 function blockClasses(attributes = {}) {

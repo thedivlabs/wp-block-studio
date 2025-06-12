@@ -1,25 +1,25 @@
 .wpbs-icon-list {
   position: relative;
-  width: 100%;
+  width: fit-content;
   display: inline-block;
 
   &__list {
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    width: fit-content;
+    display: inline-grid;
+    grid-template-columns: repeat(var(--list-columns, 1), max-content);
     list-style: none;
     position: relative;
-    column-gap: var(--row-gap, .5rem);
+    gap: inherit;
 
     & > li {
       position: relative;
-      padding-left: var(--column-gap, 1.5em);
+      padding-left: var(--icon-space, 1.5em);
     }
 
     & > li::before {
       content: var(--icon, "\f00c");
-      font-family: var(--icon-font, "Font Awesome 6 Pro"), sans-serif;
-      font-weight: var(--icon-weight);
+      font-family: "Font Awesome 6 Pro", sans-serif;
+      font-weight: var(--icon-style);
       font-size: var(--icon-size);
       line-height: inherit;
       position: absolute;

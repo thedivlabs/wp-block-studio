@@ -168,10 +168,13 @@ registerBlockType(metadata.name, {
                        }
                    }}
             />
-
-            <ul {...useInnerBlocksProps(blockProps, {
-                allowedBlocks: ['wpbs/icon-list-item']
-            })}></ul>
+            <div {...blockProps}>
+                <ul {...useInnerBlocksProps({
+                    className: 'wpbs-icon-list__list'
+                }, {
+                    allowedBlocks: ['wpbs/icon-list-item']
+                })}></ul>
+            </div>
 
         </>;
     },
@@ -181,7 +184,11 @@ registerBlockType(metadata.name, {
             className: blockClasses(props.attributes)
         });
 
-        return <ul {...useInnerBlocksProps.save(blockProps)}></ul>;
+        return <div {...blockProps}>
+            <ul {...useInnerBlocksProps.save( {
+                className: 'wpbs-icon-list__list'
+            })}></ul>
+        </div>
     }
 })
 

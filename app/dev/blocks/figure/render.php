@@ -49,14 +49,14 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 <figure <?= $wrapper_attributes ?>>
 
     <div class="wpbs-figure__media">
-        <picture>
+        <picture class="w-full h-full">
 			<?php if ( ! empty( $src_large ) ) { ?>
                 <source type="image/webp"
-                        media=" <?= '(width >= ' . $breakpoint . ')' ?>"
+                        media="<?= '(width > ' . $breakpoint . ' )' ?>"
 					<?= $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
                 />
                 <source type="image/jpeg"
-                        media=" <?= '(width >= ' . $breakpoint . ')' ?>"
+                        media=" <?= '(width > ' . $breakpoint . ' )' ?>"
 					<?= $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
                 />
 			<?php } ?>
@@ -64,11 +64,11 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 
 			<?php if ( ! empty( $src_mobile ) ) { ?>
                 <source type="image/webp"
-                        media=" <?= '(width < ' . $breakpoint . ')' ?>"
+                        media=" <?= '(width < ' . $breakpoint . ' )' ?>"
 					<?= $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
                 />
                 <source type="image/jpeg"
-                        media=" <?= '(width < ' . $breakpoint . ')' ?>"
+                        media=" <?= '(width < ' . $breakpoint . ' )' ?>"
 					<?= $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
                 />
 			<?php } ?>

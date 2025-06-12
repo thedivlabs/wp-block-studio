@@ -109,7 +109,7 @@ class WPBS_Theme {
                     } else if (media.classList.contains('wpbs-background')) {
                         this.responsiveBackgroundSrc(media);
                     } else {
-                        [...media.querySelectorAll('[data-src],[data-srcset]')].forEach((element) => {
+                        [...media.querySelectorAll('[data-src],[data-srcset]'), media].forEach((element) => {
 
                             if (element.dataset.src) {
                                 element.src = element.dataset.src;

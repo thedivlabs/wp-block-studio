@@ -36,6 +36,7 @@ registerBlockType(metadata.name, {
                 linkNewTab: undefined,
                 linkRel: undefined,
                 linkPost: undefined,
+                linkTitle: undefined,
             }
         }
     },
@@ -94,6 +95,11 @@ registerBlockType(metadata.name, {
                                 ]}
                                 onChange={(value) => updateSettings({linkRel: value})}
                             />
+                            <TextControl
+                                label="Title"
+                                value={attributes['wpbs-layout-grid-card']?.linkTitle ?? ''}
+                                onChange={(value) => updateSettings({linkTitle: value})}
+                            />
                         </Grid>
                     </Grid>
                 </InspectorControls>
@@ -127,7 +133,8 @@ registerBlockType(metadata.name, {
                 href={'%__PERMALINK__%'}
                 target={!!props.attributes['wpbs-layout-grid-card']?.linkNewTab ? '_blank' : '_self'}
                 rel={props.attributes['wpbs-layout-grid-card'].linkRel || undefined}
-            ><span className={'screen-reader-text'}>View Post</span></a>;
+            ><span
+                className={'screen-reader-text'}>{props.attributes['wpbs-layout-grid-card']?.linkTitle ?? 'View post'}</span></a>;
         }
 
 

@@ -49,7 +49,8 @@ const Media = React.memo(({settings, breakpoint}) => {
                                           settings={{
                                               force: !!settings?.['force'],
                                               eager: !!settings?.['eager'],
-                                              resolution: settings?.['resolutionLarge'] ?? settings?.['resolutionMobile'] ?? null,
+                                              resolutionLarge: settings?.['resolutionLarge'] ?? null,
+                                              resolutionMobile: settings?.['resolutionMobile'] ?? settings?.['resolutionLarge'] ?? null,
                                               breakpoint: breakpoint || 'normal',
                                           }}
                                           editor={true}
@@ -125,19 +126,20 @@ function getPreloadMedia(attributes) {
 
     const imageLarge = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.imageLarge ?? false : attributes['wpbs-figure']?.imageLarge ?? attributes['wpbs-figure']?.imageMobile ?? false;
     const imageMobile = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.imageMobile ?? false : attributes['wpbs-figure']?.imageMobile ?? attributes['wpbs-figure']?.imageLarge ?? false;
-    const resolution = attributes['wpbs-figure'].resolution || 'large';
+    const resolutionLarge = attributes['wpbs-figure'].resolutionLarge || 'large';
+    const resolutionMobile = attributes['wpbs-figure'].resolutionMobile || attributes['wpbs-figure'].resolutionLarge || 'large';
     const breakpoint = attributes?.['wpbs-breakpoint'] ?? {};
 
     return [
         {
             media: imageLarge,
-            resolution: resolution,
+            resolution: resolutionLarge,
             breakpoint: breakpoint?.large ?? 'normal',
             mobile: false
         },
         {
             media: imageMobile,
-            resolution: resolution,
+            resolution: resolutionMobile,
             breakpoint: breakpoint.mobile ?? 'normal',
             mobile: true
         }

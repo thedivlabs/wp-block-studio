@@ -1,8 +1,8 @@
-const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false})=> {
+const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false}) => {
 
     const {
-        resolution: sizeMobile = 'medium',
-        resolution: sizeLarge = 'large',
+        resolutionMobile: sizeMobile = 'medium',
+        resolutionLarge: sizeLarge = 'large',
     } = settings;
 
     const breakpoints = WPBS.settings.breakpoints;

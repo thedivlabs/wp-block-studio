@@ -49,7 +49,7 @@ export default class Loader {
 
         const loader = this.loader.cloneNode(true);
 
-        loader.querySelector(':scope > div').addEventListener('click', ()=>{
+        loader.querySelector(':scope > div').addEventListener('click', () => {
             this.remove(loader);
         });
 
@@ -66,10 +66,19 @@ export default class Loader {
     }
 
     static remove(el = false) {
-        el = typeof el === 'object' ? jQuery(el) : jQuery('.' + this.class_name)
-        el.fadeOut('fast', function () {
-            jQuery(this).remove();
-        })
+        const elements = (typeof el === 'object' && el instanceof Element)
+            ? [el]
+            : document.querySelectorAll('.' + this.class_name);
+
+        elements.forEach((element) => {
+            // Add a class to trigger fade-out via CSS
+            element.classList.add('fade-out');
+
+            // Listen for the end of the transition
+            element.addEventListener('transitionend', () => {
+                element.remove();
+            }, {once: true});
+        });
     }
 
 }

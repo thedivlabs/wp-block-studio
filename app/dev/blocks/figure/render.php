@@ -46,34 +46,34 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 
 ?>
 
-<figure <?= $wrapper_attributes ?>>
+<figure <?php echo $wrapper_attributes ?>>
 
     <div class="wpbs-figure__media">
         <picture class="w-full h-full">
 			<?php if ( ! empty( $src_large ) ) { ?>
                 <source type="image/webp"
-                        media="<?= '(width > ' . $breakpoint . ' )' ?>"
-					<?= $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
+					<?php echo 'media="(min-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
                 />
                 <source type="image/jpeg"
-                        media=" <?= '(width > ' . $breakpoint . ' )' ?>"
-					<?= $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
+					<?php echo 'media="(min-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
                 />
 			<?php } ?>
 
 
 			<?php if ( ! empty( $src_mobile ) ) { ?>
                 <source type="image/webp"
-                        media=" <?= '(width < ' . $breakpoint . ' )' ?>"
-					<?= $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
+					<?php echo 'media="(max-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
                 />
                 <source type="image/jpeg"
-                        media=" <?= '(width < ' . $breakpoint . ' )' ?>"
-					<?= $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
+					<?php echo 'media="(max-width: ' . $breakpoint . ' )"' ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
                 />
 			<?php } ?>
 
-			<?= wp_get_attachment_image( $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
+			<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
 				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy'
 			] ) ?>
         </picture>

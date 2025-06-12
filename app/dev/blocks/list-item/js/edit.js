@@ -19,7 +19,12 @@ registerBlockType(metadata.name, {
             className: 'wpbs-list-item',
         });
 
-        return <li {...useInnerBlocksProps(blockProps, {})}></li>;
+        return <li {...useInnerBlocksProps(blockProps, {
+            allowedBlocks: [
+                "core/paragraph",
+                "core/heading"
+            ]
+        })}></li>;
     },
     save: (props) => {
 
@@ -27,7 +32,7 @@ registerBlockType(metadata.name, {
             className: 'wpbs-list-item',
         });
 
-        return <li {...useInnerBlocksProps(blockProps, {})}></li>;
+        return <li {...useInnerBlocksProps.save(blockProps)}></li>;
     }
 })
 

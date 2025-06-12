@@ -3,12 +3,16 @@
   "apiVersion": 3,
   "name": "wpbs/icon-list-item",
   "title": "Icon List Item",
-  "description": "Display a list element",
+  "description": "Display a list item",
   "selectors": {
-    "root": ".wpbs-list"
+    "root": ".wpbs-icon-list-item"
   },
+  "parent": [
+    "wpbs/icon-list"
+  ],
   "allowedBlocks": [
-    "wpbs/list-item"
+    "core/paragraph",
+    "core/heading"
   ],
   "attributes": {
     "uniqueId": {
@@ -38,7 +42,6 @@
     }
   },
   "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
   "icon": "editor-ul"
 }
 

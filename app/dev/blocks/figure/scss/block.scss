@@ -8,10 +8,14 @@
   max-h-full
   ;
 
-  picture > img {
-    @apply
-    w-full
-    h-full
+  picture {
+    object-fit: inherit;
+
+    & > img {
+      @apply
+      w-full
+      h-full
+    }
   }
 
   &__media {

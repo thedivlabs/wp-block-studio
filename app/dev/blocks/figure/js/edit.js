@@ -44,8 +44,8 @@ const Media = React.memo(({settings, breakpoint}) => {
         switch (settings?.type ?? false) {
             case 'image':
 
-                return <ResponsivePicture mobile={settings?.['mobileImage']}
-                                          large={settings?.['largeImage']}
+                return <ResponsivePicture mobile={settings?.['imageMobile']}
+                                          large={settings?.['imageLarge']}
                                           settings={{
                                               force: !!settings?.['force'],
                                               eager: !!settings?.['eager'],
@@ -122,20 +122,20 @@ function getPreloadMedia(attributes) {
         return []
     }
 
-    const largeImage = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.largeImage ?? false : attributes['wpbs-figure']?.largeImage ?? attributes['wpbs-figure']?.mobileImage ?? false;
-    const mobileImage = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.mobileImage ?? false : attributes['wpbs-figure']?.mobileImage ?? attributes['wpbs-figure']?.largeImage ?? false;
+    const imageLarge = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.imageLarge ?? false : attributes['wpbs-figure']?.imageLarge ?? attributes['wpbs-figure']?.imageMobile ?? false;
+    const imageMobile = !!attributes['wpbs-figure'].force ? attributes['wpbs-figure']?.imageMobile ?? false : attributes['wpbs-figure']?.imageMobile ?? attributes['wpbs-figure']?.imageLarge ?? false;
     const resolution = attributes['wpbs-figure'].resolution || 'large';
     const breakpoint = attributes?.['wpbs-breakpoint'] ?? {};
 
     return [
         {
-            media: largeImage,
+            media: imageLarge,
             resolution: resolution,
             breakpoint: breakpoint?.large ?? 'normal',
             mobile: false
         },
         {
-            media: mobileImage,
+            media: imageMobile,
             resolution: resolution,
             breakpoint: breakpoint.mobile ?? 'normal',
             mobile: true
@@ -154,11 +154,12 @@ registerBlockType(metadata.name, {
         'wpbs-figure': {
             type: 'object',
             default: {
-                'mobileImage': undefined,
-                'largeImage': undefined,
+                'imageMobile': undefined,
+                'imageLarge': undefined,
                 'eager': undefined,
                 'force': undefined,
-                'resolution': undefined,
+                'resolutionLarge': undefined,
+                'resolutionMobile': undefined,
                 'contain': undefined,
                 'linkPost': undefined,
                 'blend': undefined,
@@ -236,7 +237,7 @@ registerBlockType(metadata.name, {
                                         <MediaUpload
                                             title={'Mobile Image'}
                                             onSelect={(newValue) => updateSettings({
-                                                'mobileImage': {
+                                                'imageMobile': {
                                                     type: newValue.type,
                                                     id: newValue.id,
                                                     url: newValue.url,
@@ -245,11 +246,11 @@ registerBlockType(metadata.name, {
                                                 }
                                             })}
                                             allowedTypes={['image']}
-                                            value={attributes['wpbs-figure']?.mobileImage}
+                                            value={attributes['wpbs-figure']?.imageMobile}
                                             render={({open}) => {
                                                 return <PreviewThumbnail
-                                                    image={attributes['wpbs-figure']?.mobileImage || {}}
-                                                    callback={() => updateSettings({'mobileImage': undefined})}
+                                                    image={attributes['wpbs-figure']?.imageMobile || {}}
+                                                    callback={() => updateSettings({'imageMobile': undefined})}
                                                     onClick={open}
                                                 />;
                                             }}
@@ -261,7 +262,7 @@ registerBlockType(metadata.name, {
                                         <MediaUpload
                                             title={'Large Image'}
                                             onSelect={(newValue) => updateSettings({
-                                                'largeImage': {
+                                                'imageLarge': {
                                                     type: newValue.type,
                                                     id: newValue.id,
                                                     url: newValue.url,
@@ -270,11 +271,11 @@ registerBlockType(metadata.name, {
                                                 }
                                             })}
                                             allowedTypes={['image']}
-                                            value={attributes['wpbs-figure']?.largeImage}
+                                            value={attributes['wpbs-figure']?.imageLarge}
                                             render={({open}) => {
                                                 return <PreviewThumbnail
-                                                    image={attributes['wpbs-figure']?.largeImage || {}}
-                                                    callback={() => updateSettings({'largeImage': undefined})}
+                                                    image={attributes['wpbs-figure']?.imageLarge || {}}
+                                                    callback={() => updateSettings({'imageLarge': undefined})}
                                                     onClick={open}
                                                 />;
                                             }}

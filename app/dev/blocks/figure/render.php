@@ -4,6 +4,34 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 $settings = $attributes['wpbs-figure'] ?? [];
 
+$style = '';
+
+if ( isset( $settings['blend'] ) && $settings['blend'] ) {
+	$style .= 'mix-blend-mode:' . esc_attr( $settings['blend'] ) . ';';
+}
+
+if ( ! empty( $settings['contain'] ) ) {
+	$style .= 'object-fit:contain;';
+} else {
+	$style .= 'object-fit:cover;';
+}
+
+// Merge styles into wrapper attributes
+$wrapper_attributes = get_block_wrapper_attributes( [
+	'style'               => $style,
+	'data-wp-interactive' => 'wpbs',
+	'data-wp-init'        => 'callbacks.observe',
+] );
+
+?>
+
+    <figure <?= $wrapper_attributes ?>>
+
+
+    </figure>
+
+<?php
+
 if ( ! empty( $block ) && ( $settings['type'] ?? false ) == 'featured-image' && ( $featured_image_id = get_post_thumbnail_id() ) ) {
 
 	$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];

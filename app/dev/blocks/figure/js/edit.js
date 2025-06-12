@@ -2,7 +2,7 @@ import '../scss/block.scss';
 import {
     useBlockProps,
     InspectorControls,
-    BlockEdit, MediaUploadCheck, MediaUpload
+    MediaUploadCheck, MediaUpload
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -25,25 +25,19 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 function blockClasses(attributes = {}) {
 
     return [
-        'wpbs-figure flex items-center justify-center relative max-w-full max-h-full',
+        'wpbs-figure ',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
 
-function Media(settings, breakpoint, editor = false) {
+const Media = React.memo(({settings, breakpoint}) => {
 
-    const mediaClasses = [
-        'wpbs-figure__media w-full h-full overflow-hidden rounded-inherit',
-    ].filter(x => x).join(' ');
+    const classNames = 'wpbs-figure__media';
 
     let mediaStyle = {
         ['mix-blend-mode']: settings.blend || null,
         ['object-fit']: !!settings.contain ? 'contain' : 'cover',
     };
-
-    mediaStyle = {
-        ...mediaStyle,
-    }
 
     const Content = () => {
 
@@ -58,7 +52,7 @@ function Media(settings, breakpoint, editor = false) {
                                               resolution: settings?.['resolution'] ?? null,
                                               breakpoint: breakpoint || 'normal',
                                           }}
-                                          editor={editor}
+                                          editor={true}
                 />;
             case 'featured-image':
                 return !editor ? '%%IMAGE%%' : <div
@@ -69,20 +63,12 @@ function Media(settings, breakpoint, editor = false) {
         }
     }
 
-    if ((settings?.link || settings?.linkPost) && !editor) {
-        return <a className={mediaClasses}
-                  href={!settings?.linkPost ? settings?.link?.url ?? '#' : '%%PERMALINK%%'}
-                  title={settings?.link?.title ?? ''}
-                  target={!!settings?.link?.opensInNewTab ? '_blank' : '_self'}
-                  rel={settings?.link?.rel ?? ''} style={mediaStyle}>
-            <Content/>
-        </a>
-    } else {
-        return <div className={mediaClasses} style={mediaStyle}>
-            <Content/>
-        </div>;
-    }
-}
+    return <div className={classNames} style={mediaStyle}>
+        <Content/>
+    </div>;
+
+
+});
 
 const BLEND_OPTIONS = [
     {label: 'Default', value: ''},
@@ -415,26 +401,13 @@ registerBlockType(metadata.name, {
 
 
             <figure {...blockProps}>
-
-                {Media(attributes['wpbs-figure'], attributes?.['wpbs-breakpoint']?.large, true)}
+                <Media settings={attributes['wpbs-figure']} breakpoint={attributes?.['wpbs-breakpoint']?.large}/>
             </figure>
 
         </>;
     },
-    save: (props) => {
+    save: () => null
 
-        const blockProps = useBlockProps.save({
-            className: blockClasses(props.attributes),
-            'data-wp-interactive': 'wpbs',
-            'data-wp-init': 'callbacks.observe'
-        });
-
-        return (
-            <figure {...blockProps} >
-                {Media(props.attributes['wpbs-figure'], props.attributes?.['wpbs-breakpoint']?.large, false)}
-            </figure>
-        );
-    }
 })
 
 

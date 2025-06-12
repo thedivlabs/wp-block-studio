@@ -35,6 +35,13 @@
       "size": true,
       "color": true,
       "radius": true
+    },
+    "typography": {
+      "textAlign": true,
+      "lineHeight": true,
+      "fontSize": true,
+      "fontWeight": true,
+      "fontStyle": true
     }
   },
   "editorScript": "file:./js/edit.js",

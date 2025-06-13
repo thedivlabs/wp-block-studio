@@ -13,6 +13,7 @@ import {InnerBlocks} from '@wordpress/block-editor';
 import {useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useMemo} from '@wordpress/element';
+import {useInstanceId} from "@wordpress/compose";
 
 
 function classNames(attributes = {}) {
@@ -37,6 +38,14 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-nav');
+
+        useEffect(() => {
+            setAttributes({
+                'uniqueId': uniqueId
+            });
+        }, []);
+
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
@@ -48,7 +57,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs-nav']}
             />
-            <nav {...blockProps}></nav>
+            <nav {...blockProps}>NAVIGATION</nav>
         </>;
     },
     save: (props) => {
@@ -57,7 +66,7 @@ registerBlockType(metadata.name, {
             className: classNames(props.attributes),
         });
 
-        return <nav {...blockProps}></nav>;
+        return <nav {...blockProps}>NAVIGATION</nav>;
     }
 })
 

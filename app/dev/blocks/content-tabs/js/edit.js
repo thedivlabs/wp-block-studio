@@ -13,6 +13,7 @@ import {InnerBlocks} from '@wordpress/block-editor';
 import {useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useMemo} from '@wordpress/element';
+import {useInstanceId} from "@wordpress/compose";
 
 
 function classNames(attributes = {}) {
@@ -38,6 +39,14 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
         const [tabActive, setTabActive] = useState(0);
+
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
+
+        useEffect(() => {
+            setAttributes({
+                'uniqueId': uniqueId
+            });
+        }, []);
 
         const tabPanelsQuery = useSelect((select) => {
             const {getBlock} = select(blockEditorStore);

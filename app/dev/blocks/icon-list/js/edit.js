@@ -32,10 +32,10 @@ const ICON_STYLES = [
 
 const DIMENSION_UNITS = [
     {label: 'Select', value: ''},
-    {value: 'px', label: 'px', default: 0},
-    {value: 'em', label: 'em', default: 0},
-    {value: 'rem', label: 'rem', default: 0},
-    {value: 'ch', label: 'ch', default: 0},
+    {value: 'px', label: 'px', default: 0, step: 1},
+    {value: 'em', label: 'em', default: 0, step: .1},
+    {value: 'rem', label: 'rem', default: 0, step: .1},
+    {value: 'ch', label: 'ch', default: 0, step: 1},
 ]
 
 function blockClasses(attributes = {}) {

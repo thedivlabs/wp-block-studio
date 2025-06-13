@@ -52,7 +52,7 @@ const {state} = store('wpbs/content-tabs', {
 
                     cur_tab.classList.add('is-hidden');
 
-                    [...container.querySelectorAll(':scope > .active'), ...nav_buttons].forEach(cur_tab => {
+                    [...nav_buttons].forEach(cur_tab => {
                         cur_tab.classList.remove('active');
                     });
 

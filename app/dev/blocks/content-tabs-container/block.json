@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/content-tabs-container",
+  "title": "Content Tabs Container",
+  "description": "Display a tabs container",
+  "selectors": {
+    "root": ".wpbs-content-tabs-container"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "ancestor": [
+    "wpbs/content-tabs"
+  ],
+  "supports": {
+    "html": false,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": "file:./js/edit.js",
+  "style": "file:./js/edit.css",
+  "icon": "welcome-widgets-menus"
+}
+
+

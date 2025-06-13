@@ -17,6 +17,7 @@
     "wpbs/tab-active": "tabActive"
   },
   "supports": {
+    "interactivity": true,
     "html": false,
     "innerBlocks": true,
     "color": {

@@ -24,6 +24,7 @@ import Breakpoint from "Components/Breakpoint"
 
 
 const ICON_STYLES = [
+    {label: 'Select', value: ''},
     {label: 'Solid', value: '900'},
     {label: 'Regular', value: '400'},
     {label: 'Light', value: '300'},
@@ -31,6 +32,7 @@ const ICON_STYLES = [
 ];
 
 const DIMENSION_UNITS = [
+    {label: 'Select', value: ''},
     {value: 'px', label: 'px', default: 0},
     {value: 'em', label: 'em', default: 0},
     {value: 'rem', label: 'rem', default: 0},

@@ -21,6 +21,9 @@ registerBlockType(metadata.name, {
             allowedBlocks: [
                 "core/paragraph",
                 "core/heading"
+            ],
+            template: [
+                ['core/paragraph', {placeholder: 'List item text...'}],
             ]
         })}></li>;
     },

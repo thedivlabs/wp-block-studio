@@ -16,6 +16,7 @@ const {state} = store('wpbs/content-tabs', {
 
             const nav = component.querySelector('.wpbs-content-tabs-nav');
             const container = component.querySelector('.wpbs-content-tabs-container');
+            const isFade = component.classList.contains('is-style-fade');
 
             if (!nav || !container) {
                 return false;
@@ -44,25 +45,31 @@ const {state} = store('wpbs/content-tabs', {
 
                     const cur_tab = container.querySelector(':scope > .active') || tabs[0];
 
-
-                    const onTransitionEnd = () => {
-                        cur_tab.classList.remove('animating');
-                        component.classList.remove('animating');
-                        cur_tab.removeEventListener('transitionend', onTransitionEnd);
-                    };
-
-                    cur_tab.addEventListener('transitionend', onTransitionEnd);
-
-                    component.classList.add('animating');
-                    cur_tab.classList.remove('active');
-                    cur_tab.classList.add('animating');
-
-                    [...nav_buttons].forEach((button, index) => {
-                        button.classList.remove('active');
+                    [...nav_buttons].forEach((btn, index) => {
+                        btn.classList.remove('active');
                     });
 
-                    next_tab.classList.add('active');
                     button.classList.add('active');
+
+                    if (isFade) {
+                        const onTransitionEnd = () => {
+                            cur_tab.classList.remove('animating');
+                            component.classList.remove('animating');
+                            cur_tab.removeEventListener('transitionend', onTransitionEnd);
+                        };
+
+                        cur_tab.addEventListener('transitionend', onTransitionEnd);
+
+                        component.classList.add('animating');
+                        cur_tab.classList.remove('active');
+                        cur_tab.classList.add('animating');
+                        next_tab.classList.add('active');
+
+                    } else {
+                        cur_tab.classList.remove('active');
+                        next_tab.classList.add('active');
+                    }
+
 
                 })
 

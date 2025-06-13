@@ -2,6 +2,7 @@
   position: relative;
   width: 100%;
   display: inline-block;
+  line-height: var(--line-height, 1.5em);
 
   &__list {
     width: fit-content;
@@ -10,10 +11,12 @@
     list-style: none;
     position: relative;
     gap: inherit;
+    line-height: inherit;
 
     & > li {
       position: relative;
       padding-left: var(--icon-space, 1.5em);
+      line-height: inherit;
     }
 
     & > li::before {
@@ -24,8 +27,9 @@
       color: var(--icon-color, inherit);
       line-height: inherit;
       position: absolute;
-      top: 0.125em;
+      top: 0;
       left: 0;
+      height: var(--line-height, 1.5em);
       font-style: normal;
       font-variant: normal;
       text-rendering: auto;

@@ -181,6 +181,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-icon-list']}
                    props={{
+                       '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',
                        '--icon': attributes['wpbs-icon-list']?.icon,
                        '--icon-color': attributes['wpbs-icon-list']?.iconColor,
                        '--icon-size': attributes['wpbs-icon-list']?.iconSize,

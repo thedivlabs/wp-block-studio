@@ -12,7 +12,8 @@
   ],
   "allowedBlocks": [
     "core/paragraph",
-    "core/heading"
+    "core/heading",
+    "wpbs/icon-list"
   ],
   "attributes": {
     "uniqueId": {

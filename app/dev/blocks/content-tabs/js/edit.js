@@ -351,7 +351,7 @@ registerBlockType(metadata.name, {
                        '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
                        '--button-border': border?.style && border?.color ? `${border.top || '1px'} ${border.style} ${border.color}` : undefined,
                        '--button-divider': divider?.style && divider?.color ? `${divider.top || '1px'} ${divider.style} ${divider.color}` : undefined,
-                       '--button-padding': attributes['wpbs-content-tabs']?.['button-padding'],
+                       '--button-padding': padding ? `${padding.top || '0px'} ${padding.right || '0px'} ${padding.bottom || '0px'} ${padding.left || '0px'} ` : undefined,
                        '--button-background-hover': attributes['wpbs-content-tabs']?.['button-color-background-hover'],
                        '--button-text-hover': attributes['wpbs-content-tabs']?.['button-color-text-hover'],
                        '--button-border-hover': attributes['wpbs-content-tabs']?.['button-border-hover'],

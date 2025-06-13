@@ -2,13 +2,17 @@
 
 
   &:not(.tabs-initialized) {
-    .wpbs-content-tabs-container:has(> .wpbs-content-tabs-panel.active) .wpbs-content-tabs-panel:not(.active) {
+
+
+    .wpbs-content-tabs-container .wpbs-content-tabs-panel:first-of-type {
+      display: flex;
+    }
+
+    .wpbs-content-tabs-container .wpbs-content-tabs-panel:not(:first-of-type) {
       display: none;
     }
 
-    .wpbs-content-tabs-container:not(:has(> .wpbs-content-tabs-panel.active)) .wpbs-content-tabs-panel:first-of-type {
-      display: flex;
-    }
+
   }
 
 
@@ -28,16 +32,6 @@
     &.active {
       display: flex;
       opacity: 1;
-    }
-
-    &.fade-out {
-      z-index: 2;
-      opacity: 0;
-    }
-
-    &.fade-in {
-      display: flex;
-      opacity: 0;
     }
   }
 

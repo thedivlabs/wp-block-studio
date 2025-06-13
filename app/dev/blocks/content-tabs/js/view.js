@@ -52,28 +52,32 @@ const {state} = store('wpbs/content-tabs', {
 
                 const fadeOutHandler = () => {
 
-                    cur_tab.classList.remove('fade-out', 'active');
+                    cur_tab.classList.remove('active');
                     cur_tab.removeEventListener('transitionend', fadeOutHandler);
 
-                    next_tab.classList.add('fade-in');
+                    next_tab.style.opacity = '0';
+                    next_tab.classList.add('active');
+
+                    setTimeout(() => {
+                        next_tab.style.opacity = '1';
+                    }, 200)
+
                 };
 
                 const fadeInHandler = () => {
-                    next_tab.classList.remove('fade-in');
-                    next_tab.classList.add('active');
                     component.classList.remove('animating');
+                    next_tab.style.opacity = '';
                     next_tab.removeEventListener('transitionend', fadeInHandler);
                 };
 
                 if (isFade) {
-
 
                     cur_tab.addEventListener('transitionend', fadeOutHandler);
                     next_tab.addEventListener('transitionend', fadeInHandler);
 
                     component.classList.add('animating');
 
-                    cur_tab.classList.add('fade-out');
+                    cur_tab.style.opacity = '0';
 
                 } else {
                     [...tabs].forEach(tab => tab.classList.remove('active'));

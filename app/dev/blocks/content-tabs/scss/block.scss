@@ -15,19 +15,28 @@
     }
 
   }
-  
+
+  &.tabs-initialized {
+    .wpbs-content-tabs-panel {
+      transition: opacity .5s ease;
+      opacity: 0;
+
+      &.active {
+        opacity: 1;
+      }
+
+    }
+  }
+
   .wpbs-content-tabs-panel {
     display: none;
     flex-direction: column;
     z-index: 1;
     width: 100%;
     height: 100%;
-    transition: opacity .5s ease;
-    opacity: 0;
 
     &.active {
       display: flex;
-      opacity: 1;
     }
 
   }

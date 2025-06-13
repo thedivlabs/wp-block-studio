@@ -10,10 +10,11 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
 import {useState, useEffect} from '@wordpress/element';
 import {InnerBlocks} from '@wordpress/block-editor';
-import {useSelect} from '@wordpress/data';
+import {select, subscribe, useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useMemo} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
+import {useRef} from "react";
 
 
 function classNames(attributes = {}) {
@@ -22,6 +23,16 @@ function classNames(attributes = {}) {
         'w-full relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
+}
+
+function isEqualTabPanels(a = [], b = []) {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        if (a[i].title !== b[i].title || a[i].clientId !== b[i].clientId) {
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -39,6 +50,7 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
         const [tabActive, setTabActive] = useState(0);
+        const [tabPanels, setTabPanels] = useState([]);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
 
@@ -48,22 +60,53 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        const tabPanelsQuery = useSelect((select) => {
-            const {getBlock} = select(blockEditorStore);
-            const thisBlock = getBlock(clientId);
-            const container = thisBlock?.innerBlocks?.find(
-                (child) => child.name === 'wpbs/content-tabs-container'
-            );
-            if (!container) return [];
+        useEffect(() => {
 
-            // Extract panel data from container's children
-            return container.innerBlocks
-                .filter((block) => block.name === 'wpbs/content-tabs-panel')
-                .map((panel, i) => ({
-                    title: panel.attributes?.title || `Tab ${i + 1}`,
-                    clientId: panel.clientId,
-                }));
+            let unsubscribed = false;
+
+            const update = () => {
+                const {getBlock} = select(blockEditorStore);
+                const thisBlock = getBlock(clientId);
+                if (!thisBlock) return;
+
+                const container = thisBlock.innerBlocks?.find(
+                    (child) => child.name === 'wpbs/content-tabs-container'
+                );
+
+                if (!container) return;
+
+                const nextPanels = container.innerBlocks
+                    .filter((block) => block.name === 'wpbs/content-tabs-panel')
+                    .map((panel, i) => ({
+                        title: panel.attributes?.title || `Tab ${i + 1}`,
+                        clientId: panel.clientId,
+                    }));
+
+                // Only update if different
+                setTabPanels((prev) => {
+                    const isEqual = prev.length === nextPanels.length &&
+                        prev.every((p, i) =>
+                            p.title === nextPanels[i].title &&
+                            p.clientId === nextPanels[i].clientId
+                        );
+                    return isEqual ? prev : nextPanels;
+                });
+            };
+
+            update();
+
+            const unsubscribe = subscribe(() => {
+                if (!unsubscribed) {
+                    update();
+                }
+            });
+
+            return () => {
+                unsubscribed = true;
+                unsubscribe();
+            };
         }, [clientId]);
+        
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -81,7 +124,6 @@ registerBlockType(metadata.name, {
             ],
         });
 
-        const tabPanels = useMemo(() => tabPanelsQuery, [tabPanelsQuery]);
 
         return <>
 

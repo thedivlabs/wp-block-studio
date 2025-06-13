@@ -4,6 +4,14 @@
   display: inline-block;
   line-height: var(--line-height, 1.5em);
 
+  &--divider &__list {
+
+    & > li:not(:last-of-type) {
+      padding-bottom: var(--row-gap, 1em);
+      border-bottom: var(--divider, none);
+    }
+  }
+
   &__list {
     width: fit-content;
     display: inline-grid;

@@ -91,7 +91,7 @@ registerBlockType(metadata.name, {
         });
 
         const icon = attributes['wpbs-icon-list']?.icon?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-icon-list'].icon : 'f00c';
-
+        console.log(attributes['wpbs-icon-list']);
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
@@ -202,6 +202,11 @@ registerBlockType(metadata.name, {
                        '--icon-space': attributes['wpbs-icon-list']?.iconSpace,
                        '--icon-style': attributes['wpbs-icon-list']?.iconStyle,
                        '--list-columns': attributes['wpbs-icon-list']?.columnsMobile ?? attributes['wpbs-icon-list']?.columnsLarge ?? 1,
+                       '--divider': attributes['wpbs-icon-list']?.divider ? [
+                           attributes['wpbs-icon-list']?.divider?.width ?? '1px',
+                           attributes['wpbs-icon-list']?.divider?.style ?? 'dashed',
+                           attributes['wpbs-icon-list']?.divider?.color ?? null,
+                       ].join(' ') : null,
                        breakpoints: {
                            [breakpoint]: {
                                '--list-columns': attributes['wpbs-icon-list']?.columnsLarge ?? attributes['wpbs-icon-list']?.columnsMobile ?? 1,
@@ -213,7 +218,8 @@ registerBlockType(metadata.name, {
                 <ul {...useInnerBlocksProps({
                     className: 'wpbs-icon-list__list'
                 }, {
-                    allowedBlocks: ['wpbs/icon-list-item']
+                    allowedBlocks: ['wpbs/icon-list-item'],
+                    template: ['wpbs/icon-list-item']
                 })}></ul>
             </div>
 

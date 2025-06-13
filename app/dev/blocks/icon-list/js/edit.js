@@ -14,8 +14,6 @@ import {
     PanelBody,
     TextControl,
     SelectControl,
-    ColorPalette,
-    BaseControl,
     __experimentalUnitControl as UnitControl,
     __experimentalNumberControl as NumberControl,
 } from "@wordpress/components";

@@ -154,32 +154,34 @@ registerBlockType(metadata.name, {
         });
 
         const buttonTabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
-                    {
-                        slug: 'background-color',
-                        label: 'Background Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-background'],
-                        onChange: (newValue) => updateSettings({'button-color-background': newValue}),
-                        isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
-                    {
-                        slug: 'text-color',
-                        label: 'Text Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-text'],
-                        onChange: (newValue) => updateSettings({'button-color-text': newValue}),
-                        isShownByDefault: true
-                    }
-                ]}
-            />
+            <Grid columns={1} columnGap={0} rowGap={0}>
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'background-color',
+                            label: 'Background Color',
+                            value: attributes['wpbs-content-tabs']?.['button-color-background'],
+                            onChange: (newValue) => updateSettings({'button-color-background': newValue}),
+                            isShownByDefault: true
+                        }
+                    ]}
+                />
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'text-color',
+                            label: 'Text Color',
+                            value: attributes['wpbs-content-tabs']?.['button-color-text'],
+                            onChange: (newValue) => updateSettings({'button-color-text': newValue}),
+                            isShownByDefault: true
+                        }
+                    ]}
+                />
+            </Grid>
             <BorderControl
                 __next40pxDefaultSize
                 enableAlpha

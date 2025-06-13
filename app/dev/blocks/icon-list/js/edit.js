@@ -15,7 +15,7 @@ import {
     TextControl,
     SelectControl,
     __experimentalUnitControl as UnitControl,
-    __experimentalNumberControl as NumberControl,
+    __experimentalNumberControl as NumberControl, __experimentalBorderControl as BorderControl,
 } from "@wordpress/components";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Breakpoint from "Components/Breakpoint"
@@ -60,6 +60,7 @@ registerBlockType(metadata.name, {
                 iconSpace: undefined,
                 columnsMobile: undefined,
                 columnsLarge: undefined,
+                divider: undefined,
             }
         }
     },
@@ -173,6 +174,20 @@ registerBlockType(metadata.name, {
                                     isShownByDefault: true,
                                 }
                             ]}
+                        />
+                        <BorderControl
+                            __next40pxDefaultSize
+                            enableAlpha
+                            enableStyle
+                            disableUnits
+                            value={attributes['wpbs-icon-list']?.divider || {}}
+                            colors={WPBS?.settings?.colors ?? []}
+                            __experimentalIsRenderedInSidebar={true}
+                            label="Divider"
+                            onChange={(newValue) => {
+                                updateSettings({divider: newValue})
+                            }}
+                            shouldSanitizeBorder
                         />
                     </Grid>
                 </PanelBody>

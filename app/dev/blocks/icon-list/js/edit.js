@@ -52,6 +52,7 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         'wpbs-icon-list': {
             type: 'object',
+            additionalProperties:true,
             default: {
                 icon: undefined,
                 iconStyle: undefined,
@@ -91,7 +92,7 @@ registerBlockType(metadata.name, {
         });
 
         const icon = attributes['wpbs-icon-list']?.icon?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-icon-list'].icon : 'f00c';
-        console.log(attributes['wpbs-icon-list']);
+
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
@@ -219,7 +220,7 @@ registerBlockType(metadata.name, {
                     className: 'wpbs-icon-list__list'
                 }, {
                     allowedBlocks: ['wpbs/icon-list-item'],
-                    template: ['wpbs/icon-list-item']
+                    template: [['wpbs/icon-list-item']]
                 })}></ul>
             </div>
 

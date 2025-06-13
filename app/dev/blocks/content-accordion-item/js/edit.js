@@ -48,14 +48,12 @@ registerBlockType(metadata.name, {
 
         console.log(itemStyles);
 
-        /* useEffect(() => {
-             setStyles({
-                 header: {
-                     ...headerStyle,
-                     ...attributes?.style,
-                 },
-             });
-         }, [headerStyle, setStyles]);*/
+        useEffect(() => {
+            setItemStyles({
+                ...itemStyles,
+                ...attributes?.style,
+            });
+        }, [attributes?.style]);
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -63,10 +61,10 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/content-accordion-header'],
-                ['wpbs/content-accordion-content'],
-            ],
+            /* template: [
+                 ['wpbs/content-accordion-header'],
+                 ['wpbs/content-accordion-content'],
+             ],*/
             allowedBlocks: [
                 'wpbs/content-accordion-header',
                 'wpbs/content-accordion-content',
@@ -75,7 +73,6 @@ registerBlockType(metadata.name, {
         });
 
         console.log(itemStyles);
-        console.log(setItemStyles);
 
         return <>
 

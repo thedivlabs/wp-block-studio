@@ -246,6 +246,10 @@ registerBlockType(metadata.name, {
             loop: tabLoop
         }
 
+        const innerBlockProps = useInnerBlocksProps({
+            className: 'wpbs-layout-grid__container relative z-20',
+        }, {});
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -292,9 +296,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
 
-                    <div {...useInnerBlocksProps({
-                        className: 'wpbs-layout-grid__container relative z-20',
-                    }, {})} />
+                    <div {...innerBlockProps} />
                     <BackgroundElement attributes={props.attributes} editor={true}/>
                 </div>
             </>

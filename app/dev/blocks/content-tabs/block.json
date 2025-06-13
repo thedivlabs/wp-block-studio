@@ -10,12 +10,6 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "tabPanels": {
-      "type": "array"
-    },
-    "tabActive": {
-      "type": "integer"
     }
   },
   "providesContext": {

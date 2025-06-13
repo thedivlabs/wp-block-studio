@@ -6,6 +6,7 @@
     "@wordpress/compose": "^7.9.0",
     "@wordpress/core-data": "^7.9.0",
     "@wordpress/data": "^10.9.0",
+    "@wordpress/element": "^6.25.0",
     "@wordpress/icons": "^10.9.0",
     "@wordpress/interactivity": "^6.24.0",
     "@wordpress/scripts": "^30.7.0"

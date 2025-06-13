@@ -12,6 +12,17 @@ import {useState, useEffect} from '@wordpress/element';
 import {InnerBlocks} from '@wordpress/block-editor';
 import {useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
+import {useMemo} from '@wordpress/element';
+
+
+function classNames(attributes = {}) {
+    return [
+        'wpbs-content-tabs',
+        'w-full relative',
+        attributes.uniqueId,
+    ].filter(x => x).join(' ');
+}
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -22,12 +33,13 @@ registerBlockType(metadata.name, {
         'wpbs-content-tabs': {
             type: 'object',
             default: {}
-
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const tabPanels = useSelect((select) => {
+        const [tabActive, setTabActive] = useState(0);
+
+        const tabPanelsQuery = useSelect((select) => {
             const {getBlock} = select(blockEditorStore);
             const thisBlock = getBlock(clientId);
             const container = thisBlock?.innerBlocks?.find(
@@ -45,8 +57,22 @@ registerBlockType(metadata.name, {
         }, [clientId]);
 
         const blockProps = useBlockProps({
-            className: 'wpbs-content-tabs',
+            className: classNames(attributes),
         });
+
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            template: [
+                ['wpbs/content-tabs-nav'],
+                ['wpbs/content-tabs-container'],
+            ],
+            allowedBlocks: [
+                'wpbs/content-tabs-nav',
+                'wpbs/content-tabs-container',
+                'wpbs/layout-element',
+            ],
+        });
+
+        const tabPanels = useMemo(() => tabPanelsQuery, [tabPanelsQuery]);
 
         return <>
 
@@ -57,15 +83,10 @@ registerBlockType(metadata.name, {
             <BlockContextProvider
                 value={{
                     tabPanels,
-                    activeTabIndex,
+                    tabActive,
                 }}
             >
-                <div {...useInnerBlocksProps(blockProps, {
-                    template: [
-                        ['wpbs/content-tabs-nav'],
-                        ['wpbs/content-tabs-container'],
-                    ]
-                })}></div>
+                <div {...innerBlocksProps}></div>
             </BlockContextProvider>
 
         </>;
@@ -73,10 +94,12 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: 'wpbs-content-tabs',
+            className: classNames(props.attributes),
         });
 
-        return <div {...useInnerBlocksProps.save(blockProps)}></div>;
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+
+        return <div {...innerBlocksProps}></div>;
     }
 })
 

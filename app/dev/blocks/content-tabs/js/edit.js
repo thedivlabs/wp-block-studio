@@ -77,7 +77,7 @@ registerBlockType(metadata.name, {
                 'wpbs-content-tabs': result
             });
 
-        }, [setAttributes])
+        }, [setAttributes, attributes['wpbs-content-tabs']])
 
         useEffect(() => {
 
@@ -209,7 +209,7 @@ registerBlockType(metadata.name, {
             <BoxControl
                 label={'Padding'}
                 values={attributes['wpbs-content-tabs']?.['button-padding']}
-                sides={['top', 'left']}
+                sides={['top', 'left', 'bottom', 'right']}
                 onChange={(newValue) => updateSettings({'button-padding': newValue})}
                 inputProps={{
                     units: DIMENSION_UNITS
@@ -300,7 +300,6 @@ registerBlockType(metadata.name, {
                 ]}
             />
         </Grid>;
-
 
 
         const buttonTabs = {

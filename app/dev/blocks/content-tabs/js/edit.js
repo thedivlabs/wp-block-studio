@@ -106,7 +106,7 @@ registerBlockType(metadata.name, {
                 unsubscribe();
             };
         }, [clientId]);
-        
+
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -123,8 +123,7 @@ registerBlockType(metadata.name, {
                 'wpbs/layout-element',
             ],
         });
-
-
+        
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
@@ -135,6 +134,7 @@ registerBlockType(metadata.name, {
                 value={{
                     tabPanels,
                     tabActive,
+                    setTabActive,
                 }}
             >
                 <div {...innerBlocksProps}></div>

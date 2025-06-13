@@ -16,12 +16,12 @@ import {useMemo} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 
 
-function classNames(attributes, isActive = false) {
+function classNames(attributes, isActive = false, editor = false) {
     return [
         'wpbs-content-tabs-panel',
         'relative',
         attributes.uniqueId,
-        !!isActive ? 'active' : 'hidden',
+        !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -40,7 +40,7 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId, context}) => {
 
         const isActive = context.tabActive === clientId;
-        
+
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
 
         useEffect(() => {
@@ -50,7 +50,7 @@ registerBlockType(metadata.name, {
         }, []);
 
         const blockProps = useBlockProps({
-            className: classNames(attributes, isActive),
+            className: classNames(attributes, isActive, true),
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps);

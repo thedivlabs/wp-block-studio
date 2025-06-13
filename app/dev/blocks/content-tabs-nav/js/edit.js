@@ -38,7 +38,13 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         'wpbs-content-tabs-nav': {
             type: 'object',
-            default: {}
+            default: {
+                tabs: undefined,
+            }
+        },
+        tabPanels: {
+            type: 'array',
+            default: []
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
@@ -52,6 +58,18 @@ registerBlockType(metadata.name, {
                 'uniqueId': uniqueId
             });
         }, []);
+
+        useEffect(() => {
+            const prevClientIds = (attributes.tabPanels || []).map(panel => panel.clientId);
+            const nextClientIds = tabPanels.map(panel => panel.clientId);
+
+            const isEqual = prevClientIds.length === nextClientIds.length &&
+                prevClientIds.every((id, index) => id === nextClientIds[index]);
+
+            if (!isEqual) {
+                setAttributes({tabPanels});
+            }
+        }, [tabPanels]);
 
         const handleClick = useCallback((clientId) => {
             setTabActive(clientId);
@@ -67,7 +85,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs-nav']}
             />
-            <div {...blockProps} >
+            <nav {...blockProps} >
                 {tabPanels.map((panel) => {
                     const isActive = panel.clientId === tabActive;
 
@@ -82,16 +100,31 @@ registerBlockType(metadata.name, {
                         </button>
                     );
                 })}
-            </div>
+            </nav>
         </>;
     },
     save: (props) => {
+
+        const {tabPanels} = props.attributes;
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
         });
 
-        return <nav {...blockProps}>NAVIGATION</nav>;
+        return <nav {...blockProps} >
+            {tabPanels.map((panel, index) => {
+
+                return (
+                    <button
+                        key={panel.clientId}
+                        className={buttonClassNames(index === 0)}
+                        type="button"
+                    >
+                        {panel.title}
+                    </button>
+                );
+            })}
+        </nav>;
     }
 })
 

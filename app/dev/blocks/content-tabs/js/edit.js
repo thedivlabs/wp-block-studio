@@ -145,6 +145,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
+            'data-wp-init': 'actions.init',
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

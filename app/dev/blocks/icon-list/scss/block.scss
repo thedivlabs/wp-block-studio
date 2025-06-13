@@ -15,7 +15,7 @@
 
     & > li {
       position: relative;
-      padding-left: var(--icon-space, var(--icon-size, 1.5em));
+      padding-left: var(--icon-space, calc(var(--icon-size, 1.5em) + .2em));
       line-height: inherit;
     }
 

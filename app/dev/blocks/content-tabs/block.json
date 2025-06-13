@@ -1,0 +1,55 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/content-tabs",
+  "title": "Content Tabs",
+  "description": "Display a tabs section",
+  "selectors": {
+    "root": ".wpbs-content-tabs"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    },
+    "tabPanels": {
+      "type": "array"
+    },
+    "tabActive": {
+      "type": "integer"
+    }
+  },
+  "providesContext": {
+    "wpbs/tab-panels": "tabPanels",
+    "wpbs/tab-active": "tabActive"
+  },
+  "supports": {
+    "html": false,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": "file:./js/edit.js",
+  "viewScriptModule": "file:./js/view.js",
+  "style": "file:./js/edit.css",
+  "icon": "index-card",
+  "render": "file:./render.php"
+}
+
+

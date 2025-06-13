@@ -67,13 +67,17 @@ registerBlockType(metadata.name, {
             const update = () => {
                 const {getBlock} = select(blockEditorStore);
                 const thisBlock = getBlock(clientId);
-                if (!thisBlock) return;
+                if (!thisBlock) {
+                    return
+                }
 
                 const container = thisBlock.innerBlocks?.find(
                     (child) => child.name === 'wpbs/content-tabs-container'
                 );
 
-                if (!container) return;
+                if (!container) {
+                    return
+                }
 
                 const nextPanels = container.innerBlocks
                     .filter((block) => block.name === 'wpbs/content-tabs-panel')
@@ -123,7 +127,7 @@ registerBlockType(metadata.name, {
                 'wpbs/layout-element',
             ],
         });
-        
+
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>

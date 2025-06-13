@@ -8,10 +8,8 @@ import metadata from "../block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
-import {useState, useEffect} from '@wordpress/element';
-import { useBlockContext } from '@wordpress/block-editor';
-import { useSelect, useDispatch } from '@wordpress/data';
-import { useCallback } from '@wordpress/element';
+import {useDispatch} from '@wordpress/data';
+import {useCallback, useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 
 
@@ -20,6 +18,13 @@ function classNames(attributes = {}) {
         'wpbs-content-tabs-nav',
         'relative',
         attributes.uniqueId,
+    ].filter(x => x).join(' ');
+}
+
+function buttonClassNames(isActive) {
+    return [
+        'wpbs-content-tabs-nav__button',
+        !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -35,7 +40,9 @@ registerBlockType(metadata.name, {
             default: {}
         }
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: ({attributes, setAttributes, clientId, context}) => {
+
+        const {tabPanels = [], tabActive = null, setTabActive} = context;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-nav');
 
@@ -45,10 +52,6 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        const { tabPanels = [], tabActive = null } = useBlockContext();
-
-        const { setTabActive } = useDispatch('wpbs/content-tabs');
-
         const handleClick = useCallback((clientId) => {
             setTabActive(clientId);
         }, []);
@@ -56,7 +59,6 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
-
 
         return <>
 
@@ -72,9 +74,7 @@ registerBlockType(metadata.name, {
                         <button
                             key={panel.clientId}
                             onClick={() => handleClick(panel.clientId)}
-                            className={classnames('wpbs-tab-button', {
-                                'is-active': isActive,
-                            })}
+                            className={buttonClassNames(!!isActive)}
                             type="button"
                         >
                             {panel.title}

@@ -39,7 +39,6 @@
     }
   },
   "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
   "icon": "welcome-widgets-menus"
 }
 

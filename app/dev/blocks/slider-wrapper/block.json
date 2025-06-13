@@ -22,7 +22,6 @@
     "innerBlocks": true
   },
   "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
   "icon": "slides"
 }
 

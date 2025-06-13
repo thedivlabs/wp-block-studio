@@ -8,6 +8,12 @@ const {state} = store('wpbs/content-tabs', {
 
             const {ref: component} = getElement();
 
+            if (component.classList.contains('tabs-initialized')) {
+                return false;
+            }
+
+            component.classList.add('tabs-initialized');
+
             const nav = component.querySelector('.wpbs-content-tabs-nav');
             const container = component.querySelector('.wpbs-content-tabs-container');
 
@@ -18,7 +24,7 @@ const {state} = store('wpbs/content-tabs', {
             const nav_buttons = nav.querySelectorAll('.wpbs-content-tabs-nav__button');
             const tabs = container.querySelectorAll('.wpbs-content-tabs-panel');
 
-            if (!nav_buttons || !tabs) {
+            if (!nav_buttons.length || !tabs.length) {
                 return false;
             }
 
@@ -29,15 +35,11 @@ const {state} = store('wpbs/content-tabs', {
                     const next_tab = tabs[index];
 
                     if (button.classList.contains('active') || !next_tab) {
-                        return false;
+                        return;
                     }
 
-                    [...container.querySelectorAll(':scope > .active')].forEach(cur_tab => {
+                    [...container.querySelectorAll(':scope > .active'), ...nav_buttons].forEach(cur_tab => {
                         cur_tab.classList.remove('active');
-                    });
-
-                    [...nav_buttons].forEach(cur_btn => {
-                        cur_btn.classList.remove('active');
                     });
 
                     next_tab.classList.add('active');

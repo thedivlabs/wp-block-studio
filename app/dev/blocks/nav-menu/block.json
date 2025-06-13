@@ -1,22 +1,19 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wpbs/icon-list",
-  "title": "Icon List",
-  "description": "Display a list element",
+  "name": "wpbs/nav-menu",
+  "title": "Nav Menu",
+  "description": "Display a menu",
   "selectors": {
-    "root": ".wpbs-icon-list"
+    "root": ".wpbs-nav-menu"
   },
-  "allowedBlocks": [
-    "wpbs/icon-list-item"
-  ],
   "attributes": {
     "uniqueId": {
       "type": "string"
     }
   },
   "supports": {
-    "innerBlocks": true,
+    "html": false,
     "color": {
       "background": true,
       "text": true,
@@ -35,18 +32,11 @@
       "size": true,
       "color": true,
       "radius": true
-    },
-    "typography": {
-      "textAlign": true,
-      "lineHeight": true,
-      "fontSize": true,
-      "fontWeight": true,
-      "fontStyle": true
     }
   },
   "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
-  "icon": "list-view"
+  "icon": "menu",
+  "render": "file:./render.php"
 }
 
 

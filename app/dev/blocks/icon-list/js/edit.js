@@ -91,6 +91,8 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
+        const icon = attributes['wpbs-icon-list']?.icon?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-icon-list'].icon : 'f00c';
+
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
@@ -181,7 +183,7 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-icon-list']}
                    props={{
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',
-                       '--icon': `"\\${attributes['wpbs-icon-list']?.icon ?? 'f00c'}"`,
+                       '--icon': `"\\${icon}"`,
                        '--icon-color': attributes['wpbs-icon-list']?.iconColor,
                        '--icon-size': attributes['wpbs-icon-list']?.iconSize,
                        '--icon-space': attributes['wpbs-icon-list']?.iconSpace,

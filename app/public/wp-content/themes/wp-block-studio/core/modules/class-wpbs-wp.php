@@ -27,7 +27,7 @@ class WPBS_WP {
 
 		$this->shortcodes();
 
-		add_filter( 'rest_endpoints', [$this,'add_rest_method']);
+		add_filter( 'rest_endpoints', [ $this, 'add_rest_method' ] );
 
 	}
 
@@ -206,8 +206,9 @@ class WPBS_WP {
 		 * */
 
 		add_image_size( 'xlarge', 1800 );
-		add_image_size( 'small', 520, 980 );
-		add_image_size( 'mobile', 620, 1200 );
+		add_image_size( 'small', 640 );
+		add_image_size( 'medium', 1128 );
+		add_image_size( 'mobile', 624, 1200 );
 
 	}
 

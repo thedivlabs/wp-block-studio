@@ -17,11 +17,12 @@
     }
 
     & > li::before {
-      //content: var(--icon, "\f00c");
-      content: "\f00c";
+      content: var(--icon, "\f00c");
+      //content: "\f00c";
       font-family: "Font Awesome 6 Pro", sans-serif;
       font-weight: var(--icon-style);
       font-size: var(--icon-size);
+      color: var(--icon-color, inherit);
       line-height: inherit;
       position: absolute;
       top: 0.125em;

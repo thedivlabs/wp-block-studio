@@ -30,6 +30,13 @@ const ICON_STYLES = [
     {label: 'Thin', value: '100'},
 ];
 
+const DIMENSION_UNITS = [
+    {value: 'px', label: 'px', default: 0},
+    {value: 'em', label: 'em', default: 0},
+    {value: 'rem', label: 'rem', default: 0},
+    {value: 'ch', label: 'ch', default: 0},
+]
+
 function blockClasses(attributes = {}) {
     return [
         'wpbs-icon-list',
@@ -49,7 +56,7 @@ registerBlockType(metadata.name, {
             default: {
                 icon: undefined,
                 iconStyle: undefined,
-                iconColor: undefined,
+                iconColor: '',
                 iconSize: undefined,
                 iconSpace: undefined,
                 columnsMobile: undefined,
@@ -83,74 +90,89 @@ registerBlockType(metadata.name, {
 
         return <>
             <InspectorControls group="styles">
-                <Grid columns={1} columnGap={15} rowGap={20}>
+                <PanelBody initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
 
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <NumberControl
-                            label="Columns Mobile"
-                            value={attributes['wpbs-icon-list']?.columnsMobile ?? 1}
-                            onChange={(val) => updateSettings({columnsMobile: val})}
-                            min={1}
-                            max={3}
-                            step={1}
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            <NumberControl
+                                label="Columns Mobile"
+                                value={attributes['wpbs-icon-list']?.columnsMobile ?? 1}
+                                onChange={(val) => updateSettings({columnsMobile: val})}
+                                min={1}
+                                max={3}
+                                step={1}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                            <NumberControl
+                                label="Columns Large"
+                                value={attributes['wpbs-icon-list']?.columnsLarge ?? 1}
+                                onChange={(val) => updateSettings({columnsLarge: val})}
+                                min={1}
+                                max={3}
+                                step={1}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                        </Grid>
+
+                        <TextControl
+                            label="Icon"
+                            value={attributes['wpbs-icon-list'].icon ?? ''}
+                            onChange={(val) => updateSettings({icon: val})}
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
-                        <NumberControl
-                            label="Columns Large"
-                            value={attributes['wpbs-icon-list']?.columnsLarge ?? 1}
-                            onChange={(val) => updateSettings({columnsLarge: val})}
-                            min={1}
-                            max={3}
-                            step={1}
+
+
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+
+                            <SelectControl
+                                label="Icon Style"
+                                value={attributes['wpbs-icon-list'].iconStyle ?? ''}
+                                options={ICON_STYLES}
+                                onChange={(val) => updateSettings({iconStyle: val})}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+
+                            <UnitControl
+                                label="Icon Size"
+                                value={attributes['wpbs-icon-list'].iconSize ?? ''}
+                                onChange={(val) => updateSettings({iconSize: val})}
+                                units={DIMENSION_UNITS}
+                                isResetValueOnUnitChange={true}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                            <UnitControl
+                                label="Icon Space"
+                                value={attributes['wpbs-icon-list'].iconSpace ?? ''}
+                                onChange={(val) => updateSettings({iconSpace: val})}
+                                units={DIMENSION_UNITS}
+                                isResetValueOnUnitChange={true}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                            <Breakpoint defaultValue={attributes['wpbs-icon-list']?.breakpoint}
+                                        callback={(newValue) => updateSettings({breakpoint: newValue})}
+                            />
+                        </Grid>
+                        <PanelColorSettings
+                            enableAlpha
+                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                            colorSettings={[
+                                {
+                                    slug: 'iconColor',
+                                    label: 'Icon Color',
+                                    value: attributes['wpbs-icon-list'].iconColor ?? undefined,
+                                    onChange: (newValue) => updateSettings({iconColor: newValue}),
+                                    isShownByDefault: true,
+                                }
+                            ]}
                         />
                     </Grid>
-
-                    <TextControl
-                        label="Icon"
-                        value={attributes['wpbs-icon-list'].icon ?? ''}
-                        onChange={(val) => updateSettings({icon: val})}
-                    />
-
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-
-                        <SelectControl
-                            label="Icon Style"
-                            value={attributes['wpbs-icon-list'].iconStyle ?? ''}
-                            options={ICON_STYLES}
-                            onChange={(val) => updateSettings({iconStyle: val})}
-                        />
-                        <UnitControl
-                            label="Icon Size"
-                            value={attributes['wpbs-icon-list'].iconSize ?? ''}
-                            onChange={(val) => updateSettings({iconSize: val})}
-                            units={['px', 'em', 'rem']}
-                            isResettable
-                        />
-                        <UnitControl
-                            label="Icon Space"
-                            value={attributes['wpbs-icon-list'].iconSpace ?? ''}
-                            onChange={(val) => updateSettings({iconSpace: val})}
-                            units={['px', 'em', 'rem', 'ch']}
-                            isResettable
-                        />
-                        <Breakpoint defaultValue={attributes['wpbs-icon-list']?.breakpoint}
-                                    callback={(newValue) => updateSettings({breakpoint: newValue})}
-                        />
-                    </Grid>
-                    <PanelColorSettings
-                        enableAlpha
-                        className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                        colorSettings={[
-                            {
-                                slug: 'iconColor',
-                                label: 'Icon Color',
-                                value: attributes['wpbs-icon-list'].iconColor ?? '',
-                                onChange: (newValue) => updateSettings({iconColor: newValue}),
-                                isShownByDefault: true,
-                            }
-                        ]}
-                    />
-                </Grid>
+                </PanelBody>
             </InspectorControls>
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-icon-list']}
@@ -185,7 +207,7 @@ registerBlockType(metadata.name, {
         });
 
         return <div {...blockProps}>
-            <ul {...useInnerBlocksProps.save( {
+            <ul {...useInnerBlocksProps.save({
                 className: 'wpbs-icon-list__list'
             })}></ul>
         </div>

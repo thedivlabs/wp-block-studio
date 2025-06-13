@@ -342,6 +342,19 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs']}
+                   props={{
+                       '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
+                       '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
+                       '--button-border': attributes['wpbs-content-tabs']?.['button-border'],
+                       '--button-divider': attributes['wpbs-content-tabs']?.['button-divider'],
+                       '--button-padding': attributes['wpbs-content-tabs']?.['button-padding'],
+                       '--button-background-hover': attributes['wpbs-content-tabs']?.['button-color-background-hover'],
+                       '--button-text-hover': attributes['wpbs-content-tabs']?.['button-color-text-hover'],
+                       '--button-border-hover': attributes['wpbs-content-tabs']?.['button-border-hover'],
+                       '--button-background-active': attributes['wpbs-content-tabs']?.['button-color-background-active'],
+                       '--button-text-active': attributes['wpbs-content-tabs']?.['button-color-text-active'],
+                       '--button-border-active': attributes['wpbs-content-tabs']?.['button-border-active'],
+                   }}
             />
             <BlockContextProvider
                 value={{

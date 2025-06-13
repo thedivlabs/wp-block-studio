@@ -21,6 +21,9 @@
     }
   },
   "supports": {
+    "multiple": true,
+    "reusable": false,
+    "html": false,
     "innerBlocks": true,
     "color": {
       "background": true,

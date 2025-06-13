@@ -24,7 +24,8 @@ registerBlockType(metadata.name, {
             ],
             template: [
                 ['core/paragraph', {placeholder: 'List item text...'}],
-            ]
+            ],
+            templateLock: false
         })}></li>;
     },
     save: (props) => {

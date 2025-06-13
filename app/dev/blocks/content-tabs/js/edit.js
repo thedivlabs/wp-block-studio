@@ -217,7 +217,7 @@ registerBlockType(metadata.name, {
                 __nextHasNoMarginBottom={true}
             />
         </Grid>;
-        const buttonTabHover = <Grid columns={1} columnGap={15} rowGap={20}>
+        const buttonTabHover = <Grid columns={1} columnGap={0} rowGap={0}>
             <PanelColorSettings
                 enableAlpha
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
@@ -259,7 +259,7 @@ registerBlockType(metadata.name, {
             />
 
         </Grid>;
-        const buttonTabActive = <Grid columns={1} columnGap={15} rowGap={20}>
+        const buttonTabActive = <Grid columns={1} columnGap={0} rowGap={0}>
             <PanelColorSettings
                 enableAlpha
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}

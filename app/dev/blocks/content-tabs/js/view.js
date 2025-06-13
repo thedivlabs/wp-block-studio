@@ -28,6 +28,10 @@ const {state} = store('wpbs/content-tabs', {
                 return false;
             }
 
+            if (![...tabs].some(tab => tab.classList.contains('active'))) {
+                tabs[0].classList.add('active');
+            }
+
             [...nav_buttons].forEach((button, index) => {
 
                 button.addEventListener('click', (e) => {
@@ -38,11 +42,20 @@ const {state} = store('wpbs/content-tabs', {
                         return;
                     }
 
+                    const cur_tab = container.querySelector(':scope > .active') || tabs[0];
+
+                    cur_tab.addEventListener('transitionend', () => {
+                        cur_tab.classList.remove('active','is-hidden');
+                        cur_tab.removeEventListener('transitionend', this);
+                        next_tab.classList.add('active');
+                    }, {once: true});
+
+                    cur_tab.classList.add('is-hidden');
+
                     [...container.querySelectorAll(':scope > .active'), ...nav_buttons].forEach(cur_tab => {
                         cur_tab.classList.remove('active');
                     });
 
-                    next_tab.classList.add('active');
                     button.classList.add('active');
 
                 })

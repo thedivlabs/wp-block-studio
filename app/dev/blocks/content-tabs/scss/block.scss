@@ -1,8 +1,10 @@
 .wpbs-content-tabs {
 
+  &.animating {
+    pointer-events: none;
+  }
 
   &:not(.tabs-initialized) {
-
 
     .wpbs-content-tabs-container .wpbs-content-tabs-panel:first-of-type {
       display: flex;
@@ -12,14 +14,8 @@
       display: none;
     }
 
-
   }
-
-
-  &.animating {
-    pointer-events: none;
-  }
-
+  
   .wpbs-content-tabs-panel {
     display: none;
     flex-direction: column;
@@ -33,7 +29,7 @@
       display: flex;
       opacity: 1;
     }
-  }
 
+  }
 
 }

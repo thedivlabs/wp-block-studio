@@ -1,24 +1,23 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wpbs/content-tabs",
-  "title": "Content Tabs",
-  "description": "Display a tabs section",
+  "name": "wpbs/content-tabs-nav",
+  "title": "Content Tabs Nav",
+  "description": "Display a tabs navigation",
   "selectors": {
-    "root": ".wpbs-content-tabs"
+    "root": ".wpbs-content-tabs-nav"
   },
   "attributes": {
     "uniqueId": {
       "type": "string"
     }
   },
-  "providesContext": {
-    "wpbs/tab-panels": "tabPanels",
-    "wpbs/tab-active": "tabActive"
-  },
+  "ancestor": [
+    "wpbs/content-tabs"
+  ],
   "supports": {
     "html": false,
-    "innerBlocks": true,
+    "innerBlocks": false,
     "color": {
       "background": true,
       "text": true,
@@ -40,7 +39,6 @@
     }
   },
   "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "icon": "welcome-widgets-menus"
 }

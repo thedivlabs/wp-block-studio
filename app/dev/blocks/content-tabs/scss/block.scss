@@ -1,12 +1,19 @@
 .wpbs-content-tabs {
-  position: relative;
+
+
+  &:not(.tabs-initialized) {
+    .wpbs-content-tabs-container:has(> .wpbs-content-tabs-panel.active) .wpbs-content-tabs-panel:not(.active) {
+      display: none;
+    }
+
+    .wpbs-content-tabs-container:not(:has(> .wpbs-content-tabs-panel.active)) .wpbs-content-tabs-panel:first-of-type {
+      display: flex;
+    }
+  }
+
 
   &.animating {
     pointer-events: none;
-  }
-
-  .wpbs-content-tabs-container {
-    position: relative;
   }
 
   .wpbs-content-tabs-panel {
@@ -15,38 +22,22 @@
     z-index: 1;
     width: 100%;
     height: 100%;
+    transition: opacity .5s ease;
+    opacity: 0;
 
     &.active {
       display: flex;
+      opacity: 1;
     }
-  }
 
-  &--fade {
+    &.fade-out {
+      z-index: 2;
+      opacity: 0;
+    }
 
-    &.tabs-initialized {
-      .wpbs-content-tabs-panel {
-        transition: opacity .5s ease;
-        display: flex;
-
-        &.animating {
-          z-index: 2;
-          opacity: 0 !important;
-        }
-
-        &:not(.active) {
-          position: absolute;
-          pointer-events: none;
-          opacity: 0;
-          top: 0;
-          left: 0;
-        }
-
-        &.active {
-          opacity: 1;
-          transition: none;
-        }
-
-      }
+    &.fade-in {
+      display: flex;
+      opacity: 0;
     }
   }
 

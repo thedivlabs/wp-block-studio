@@ -56,7 +56,7 @@ registerBlockType(metadata.name, {
             default: {
                 icon: undefined,
                 iconStyle: undefined,
-                iconColor: '',
+                iconColor: undefined,
                 iconSize: undefined,
                 iconSpace: undefined,
                 columnsMobile: undefined,
@@ -76,13 +76,15 @@ registerBlockType(metadata.name, {
 
 
         const updateSettings = useCallback(({newValue}) => {
+            const result = {
+                ...attributes['wpbs-icon-list'],
+                ...newValue,
+            };
+
             setAttributes({
-                'wpbs-icon-list': {
-                    ...attributes['wpbs-icon-list'],
-                    ...newValue,
-                },
+                'wpbs-icon-list': result,
             });
-        }, [attributes['wpbs-icon-list'], setAttributes, uniqueId]);
+        }, [attributes['wpbs-icon-list'], setAttributes]);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),

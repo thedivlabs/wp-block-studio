@@ -18,10 +18,9 @@
 
     & > li::before {
       content: var(--icon, "\f00c");
-      //content: "\f00c";
       font-family: "Font Awesome 6 Pro", sans-serif;
-      font-weight: var(--icon-style);
-      font-size: var(--icon-size);
+      font-weight: var(--icon-style, 300);
+      font-size: var(--icon-size, 1.2em);
       color: var(--icon-color, inherit);
       line-height: inherit;
       position: absolute;

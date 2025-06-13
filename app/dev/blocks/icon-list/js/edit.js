@@ -28,7 +28,6 @@ const ICON_STYLES = [
     {label: 'Solid', value: '900'},
     {label: 'Regular', value: '400'},
     {label: 'Light', value: '300'},
-    {label: 'Thin', value: '100'},
 ];
 
 const DIMENSION_UNITS = [

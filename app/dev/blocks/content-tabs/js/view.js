@@ -44,18 +44,24 @@ const {state} = store('wpbs/content-tabs', {
 
                     const cur_tab = container.querySelector(':scope > .active') || tabs[0];
 
-                    cur_tab.addEventListener('transitionend', () => {
-                        cur_tab.classList.remove('active','is-hidden');
-                        cur_tab.removeEventListener('transitionend', this);
-                        next_tab.classList.add('active');
-                    }, {once: true});
 
-                    cur_tab.classList.add('is-hidden');
+                    const onTransitionEnd = () => {
+                        cur_tab.classList.remove('animating');
+                        component.classList.remove('animating');
+                        cur_tab.removeEventListener('transitionend', onTransitionEnd);
+                    };
 
-                    [...nav_buttons].forEach(cur_tab => {
-                        cur_tab.classList.remove('active');
+                    cur_tab.addEventListener('transitionend', onTransitionEnd);
+
+                    component.classList.add('animating');
+                    cur_tab.classList.remove('active');
+                    cur_tab.classList.add('animating');
+
+                    [...nav_buttons].forEach((button, index) => {
+                        button.classList.remove('active');
                     });
 
+                    next_tab.classList.add('active');
                     button.classList.add('active');
 
                 })

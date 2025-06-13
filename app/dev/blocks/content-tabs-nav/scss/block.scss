@@ -1,3 +1,6 @@
-.content-tabs-nav {
+.wpbs-content-tabs-nav {
 
+  .active {
+    background: var(--wp--preset--color--primary, red);
+  }
 }

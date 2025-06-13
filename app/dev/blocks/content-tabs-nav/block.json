@@ -15,6 +15,11 @@
   "ancestor": [
     "wpbs/content-tabs"
   ],
+  "usesContext": [
+    "tabActive",
+    "tabPanels",
+    "setTabActive"
+  ],
   "supports": {
     "html": false,
     "innerBlocks": false,

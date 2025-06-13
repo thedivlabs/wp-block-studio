@@ -1,3 +1,6 @@
+import '../scss/block.scss'
+
+
 import {
     useBlockProps,
     useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
@@ -9,12 +12,9 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
 import {useState, useEffect} from '@wordpress/element';
-import {InnerBlocks} from '@wordpress/block-editor';
-import {select, subscribe, useSelect} from '@wordpress/data';
+import {select, subscribe} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
-import {useMemo} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
-import {useRef} from "react";
 
 
 function classNames(attributes = {}) {
@@ -24,17 +24,6 @@ function classNames(attributes = {}) {
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
-
-function isEqualTabPanels(a = [], b = []) {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-        if (a[i].title !== b[i].title || a[i].clientId !== b[i].clientId) {
-            return false;
-        }
-    }
-    return true;
-}
-
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -110,6 +99,12 @@ registerBlockType(metadata.name, {
                 unsubscribe();
             };
         }, [clientId]);
+
+        useEffect(() => {
+            if (!tabActive && tabPanels?.length > 0) {
+                setTabActive(tabPanels[0].clientId);
+            }
+        }, [tabPanels, tabActive]);
 
 
         const blockProps = useBlockProps({

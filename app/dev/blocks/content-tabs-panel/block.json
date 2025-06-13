@@ -12,6 +12,9 @@
       "type": "string"
     }
   },
+  "usesContext": [
+    "tabActive"
+  ],
   "parent": [
     "wpbs/content-tabs-container"
   ],

@@ -40,7 +40,7 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId, context}) => {
 
         const isActive = context.tabActive === clientId;
-
+        
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
 
         useEffect(() => {

@@ -35,7 +35,7 @@ function blockClasses(attributes = {}) {
 }
 
 function containerClasses(attributes = {}) {
-    return 'wpbs-slide__container wpbs-container w-full h-full relative z-20';
+    return 'wpbs-slide__container wpbs-container wpbs-layout-wrapper w-full h-full relative z-20';
 }
 
 function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = false}) {

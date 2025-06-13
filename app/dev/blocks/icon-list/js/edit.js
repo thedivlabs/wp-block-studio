@@ -39,7 +39,7 @@ const DIMENSION_UNITS = [
 function blockClasses(attributes = {}) {
     return [
         'wpbs-icon-list',
-        (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-icon-list--image' : null,
+        attributes['wpbs-icon-list']?.divider ? 'wpbs-icon-list--divider' : null,
         'w-fit max-w-full',
         attributes.uniqueId,
     ].filter(x => x).join(' ');

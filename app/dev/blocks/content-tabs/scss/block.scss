@@ -4,7 +4,7 @@
     pointer-events: none;
   }
 
-  &:not(.tabs-initialized) {
+  &:not(.tabs-initialized):not(.editor) {
 
     .wpbs-content-tabs-container .wpbs-content-tabs-panel:first-of-type {
       display: flex;

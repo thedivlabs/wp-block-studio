@@ -17,11 +17,12 @@ import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useInstanceId} from "@wordpress/compose";
 
 
-function classNames(attributes = {}) {
+function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-content-tabs',
         'w-full relative',
+        !!editor ? 'editor' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -109,7 +110,7 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps({
-            className: classNames(attributes),
+            className: classNames(attributes, true),
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {

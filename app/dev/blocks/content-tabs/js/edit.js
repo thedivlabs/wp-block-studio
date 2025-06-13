@@ -354,10 +354,10 @@ registerBlockType(metadata.name, {
                        '--button-padding': padding ? `${padding.top || '0px'} ${padding.right || '0px'} ${padding.bottom || '0px'} ${padding.left || '0px'} ` : undefined,
                        '--button-background-hover': attributes['wpbs-content-tabs']?.['button-color-background-hover'],
                        '--button-text-hover': attributes['wpbs-content-tabs']?.['button-color-text-hover'],
-                       '--button-border-hover': attributes['wpbs-content-tabs']?.['button-border-hover'],
+                       '--button-border-hover': attributes['wpbs-content-tabs']?.['button-color-border-hover'],
                        '--button-background-active': attributes['wpbs-content-tabs']?.['button-color-background-active'],
                        '--button-text-active': attributes['wpbs-content-tabs']?.['button-color-text-active'],
-                       '--button-border-active': attributes['wpbs-content-tabs']?.['button-border-active'],
+                       '--button-border-active': attributes['wpbs-content-tabs']?.['button-color-border-active'],
                    }}
             />
             <BlockContextProvider

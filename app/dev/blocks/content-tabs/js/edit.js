@@ -191,6 +191,7 @@ registerBlockType(metadata.name, {
                 colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}
                 label="Border"
+                __experimentalUseIndividualSides={true}
                 onChange={(newValue) => updateSettings({'button-border': newValue})}
                 shouldSanitizeBorder
             />
@@ -308,6 +309,10 @@ registerBlockType(metadata.name, {
             active: buttonTabActive
         }
 
+        const border = attributes['wpbs-content-tabs']?.['button-border'];
+        const divider = attributes['wpbs-content-tabs']?.['button-divider'];
+        const padding = attributes['wpbs-content-tabs']?.['button-padding'];
+
         return <>
             <InspectorControls group="styles">
                 <PanelBody title="Button" initialOpen={true}>
@@ -345,8 +350,8 @@ registerBlockType(metadata.name, {
                    props={{
                        '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
                        '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
-                       '--button-border': attributes['wpbs-content-tabs']?.['button-border'],
-                       '--button-divider': attributes['wpbs-content-tabs']?.['button-divider'],
+                       '--button-border': border?.style && border?.color ? `${border.top || '1px'} ${border.right || '1px'} ${border.bottom || '1px'} ${border.left || '1px'} ${border.style} ${border.color}` : undefined,
+                       '--button-divider': divider?.style && divider?.color ? `${divider.top || '1px'} ${divider.style} ${divider.color}` : undefined,
                        '--button-padding': attributes['wpbs-content-tabs']?.['button-padding'],
                        '--button-background-hover': attributes['wpbs-content-tabs']?.['button-color-background-hover'],
                        '--button-text-hover': attributes['wpbs-content-tabs']?.['button-color-text-hover'],

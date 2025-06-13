@@ -34,9 +34,14 @@ const {state} = store('wpbs/content-tabs', {
 
                     [...container.querySelectorAll(':scope > .active')].forEach(cur_tab => {
                         cur_tab.classList.remove('active');
-                    })
+                    });
+
+                    [...nav_buttons].forEach(cur_btn => {
+                        cur_btn.classList.remove('active');
+                    });
 
                     next_tab.classList.add('active');
+                    button.classList.add('active');
 
                 })
 

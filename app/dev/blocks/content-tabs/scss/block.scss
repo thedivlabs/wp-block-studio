@@ -41,4 +41,30 @@
 
   }
 
+  .wpbs-content-tabs-nav {
+
+    button {
+
+      background-color: var(--button-background, transparent);
+      color: var(--button-text, inherit);
+      border: var(--button-border, none);
+      padding: var(--button-padding, 0px);
+
+      &:not(.active):hover {
+        background-color: var(--button-background-hover, transparent);
+        color: var(--button-text-hover, inherit);
+        border: var(--button-border-hover, none);
+      }
+
+      &.active {
+        background-color: var(--button-background-active, transparent);
+        color: var(--button-text-active, inherit);
+        border: var(--button-border-active, none);
+      }
+
+
+    }
+
+  }
+
 }

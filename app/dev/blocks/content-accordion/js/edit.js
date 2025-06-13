@@ -1,8 +1,7 @@
 import '../scss/block.scss'
 
-
 import {
-    useBlockProps,
+    useBlockProps, InnerBlocks,
     useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -57,6 +56,10 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-accordion');
 
+        const [headerStyles, setHeaderStyles] = useState(attributes.headerStyles);
+        const [itemStyles, setItemStyles] = useState(attributes.itemStyles);
+        const [contentStyles, setContentStyles] = useState(attributes.contentStyles);
+
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId
@@ -101,7 +104,18 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-content-accordion']}
             />
 
-            <div {...innerBlocksProps}></div>
+            <BlockContextProvider
+                value={{
+                    headerStyles,
+                    itemStyles,
+                    contentStyles,
+                    setHeaderStyles,
+                    setItemStyles,
+                    setContentStyles,
+                }}
+            >
+                <div {...innerBlocksProps} />
+            </BlockContextProvider>
 
         </>;
     },

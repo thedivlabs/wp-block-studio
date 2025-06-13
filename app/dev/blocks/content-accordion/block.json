@@ -10,6 +10,18 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "headerStyles": {
+      "type": "object",
+      "default": {}
+    },
+    "itemStyles": {
+      "type": "object",
+      "default": {}
+    },
+    "contentStyles": {
+      "type": "object",
+      "default": {}
     }
   },
   "styles": [
@@ -18,6 +30,14 @@
       "label": "Single"
     }
   ],
+  "allowedBlocks": [
+    "wpbs/content-accordion-item"
+  ],
+  "providesContext": {
+    "wpbs/headerStyles": "headerStyles",
+    "wpbs/itemStyles": "itemStyles",
+    "wpbs/contentStyles": "contentStyles"
+  },
   "supports": {
     "interactivity": true,
     "html": false,

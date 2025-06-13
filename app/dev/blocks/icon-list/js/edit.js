@@ -75,7 +75,7 @@ registerBlockType(metadata.name, {
         }, []);
 
 
-        const updateSettings = useCallback(({newValue}) => {
+        const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-icon-list'],
                 ...newValue,

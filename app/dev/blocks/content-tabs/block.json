@@ -16,6 +16,12 @@
     "wpbs/tab-panels": "tabPanels",
     "wpbs/tab-active": "tabActive"
   },
+  "styles": [
+    {
+      "name": "fade",
+      "label": "Fade"
+    }
+  ],
   "supports": {
     "interactivity": true,
     "html": false,

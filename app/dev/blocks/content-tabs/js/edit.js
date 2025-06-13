@@ -18,9 +18,11 @@ import {useInstanceId} from "@wordpress/compose";
 
 
 function classNames(attributes = {}) {
+
     return [
         'wpbs-content-tabs',
         'w-full relative',
+        (attributes.className || '').split(' ').includes('is-style-fade') ? 'wpbs-content-tabs--fade' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }

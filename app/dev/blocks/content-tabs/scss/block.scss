@@ -51,15 +51,15 @@
       padding: var(--button-padding, 0px);
 
       &:not(.active):hover {
-        background-color: var(--button-background-hover, transparent);
-        color: var(--button-text-hover, inherit);
-        border: var(--button-border-hover, none);
+        background-color: var(--button-background-hover, var(--button-background, transparent));
+        color: var(--button-text-hover, var(--button-text, inherit));
+        border: var(--button-border-hover, var(--button-border, none));
       }
 
       &.active {
-        background-color: var(--button-background-active, transparent);
-        color: var(--button-text-active, inherit);
-        border: var(--button-border-active, none);
+        background-color: var(--button-background-active, var(--button-background, transparent));
+        color: var(--button-text-active, var(--button-text, inherit));
+        border: var(--button-border-active, var(--button-border, none));
       }
 
 

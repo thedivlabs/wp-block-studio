@@ -30,7 +30,7 @@ const {state} = store('wpbs/accordion-group', {
                     const groupItem = header.closest('.wpbs-accordion-group-item');
                     const content = groupItem.querySelector('.wpbs-accordion-group-content');
 
-                    if (!content || groupItem.classList.contains('active')) {
+                    if (!content || (isSingle && groupItem.classList.contains('active'))) {
                         return;
                     }
 

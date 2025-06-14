@@ -8,6 +8,23 @@
     cursor: pointer;
   }
 
+
+  &.--header-hover .wpbs-accordion-group-header:hover {
+    background-color: var(--header-color-hover);
+  }
+
+  &.--header-text-hover .wpbs-accordion-group-header:hover {
+    color: var(--header-text-color-hover);
+  }
+
+  &.--header-active .active > .wpbs-accordion-group-header {
+    background-color: var(--header-color-active);
+  }
+
+  &.--header-text-active .active > .wpbs-accordion-group-header {
+    color: var(--header-text-color-active);
+  }
+
   .wpbs-accordion-group-content {
     display: none;
   }

@@ -19,10 +19,6 @@ import {
     PanelBody, TabPanel,
     __experimentalBorderControl as BorderControl,
     __experimentalGrid as Grid,
-    __experimentalInputControl as InputControl,
-    __experimentalNumberControl as NumberControl,
-    __experimentalUnitControl as UnitControl,
-    BaseControl,
     ToggleControl, __experimentalBoxControl as BoxControl
 } from "@wordpress/components";
 import React, {useCallback} from "react";
@@ -60,6 +56,7 @@ registerBlockType(metadata.name, {
         const [tabPanels, setTabPanels] = useState([]);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
+        const isFade = (attributes?.classNames ?? '').indexOf('is-style-fade') > -1;
 
         useEffect(() => {
             setAttributes({
@@ -216,6 +213,13 @@ registerBlockType(metadata.name, {
                 }}
                 __nextHasNoMarginBottom={true}
             />
+            {!!isFade ? <ToggleControl
+                label={'Grow'}
+                checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
+                onChange={(newValue) => updateSettings({'button-padding': newValue})}
+                className={'flex items-center'}
+                __nextHasNoMarginBottom
+            /> : null}
         </Grid>;
         const buttonTabHover = <Grid columns={1} columnGap={0} rowGap={0}>
             <PanelColorSettings
@@ -300,7 +304,6 @@ registerBlockType(metadata.name, {
                 ]}
             />
         </Grid>;
-
 
         const buttonTabs = {
             options: buttonTabOptions,

@@ -1,7 +1,7 @@
 import '../scss/block.scss'
 
 import {
-    useBlockProps, InnerBlocks,
+    useBlockProps,
     useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -10,19 +10,10 @@ import metadata from "../block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
-import {useState, useEffect} from '@wordpress/element';
-import {select, subscribe} from '@wordpress/data';
-import {store as blockEditorStore} from '@wordpress/block-editor';
+import {useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 import {
-    PanelBody, TabPanel,
-    __experimentalBorderControl as BorderControl,
     __experimentalGrid as Grid,
-    __experimentalInputControl as InputControl,
-    __experimentalNumberControl as NumberControl,
-    __experimentalUnitControl as UnitControl,
-    BaseControl,
-    ToggleControl, __experimentalBoxControl as BoxControl
 } from "@wordpress/components";
 import React, {useCallback} from "react";
 

@@ -262,15 +262,12 @@ registerBlockType(metadata.name, {
                 if (!accordionItem) {
                     return false;
                 }
-
-
+                console.log(accordionItem);
 
                 if (accordionItem.offsetParent !== null) {
-                    accordionItem.classList.remove('active');
-                    accordionItem.classList.remove('--open');
+                    accordionItem.classList.remove('active', '--open');
                 } else {
-                    accordionItem.classList.add('active');
-                    accordionItem.classList.add('--open');
+                    accordionItem.classList.add('active', '--open');
                 }
 
             }

@@ -38,7 +38,7 @@ function classNames(attributes = {}) {
         'wpbs-accordion-group',
         'w-full relative',
         !attributes['wpbs-accordion-group']?.['animate'] ? '--static' : null,
-        !!attributes['wpbs-accordion-group']?.['hide-icon'] ? '--no-icon' : null,
+        !!attributes['wpbs-accordion-group']?.['icon-hide'] ? '--no-icon' : null,
         !!attributes['wpbs-accordion-group']?.['header-color-hover'] ? '--header-hover' : null,
         !!attributes['wpbs-accordion-group']?.['header-text-color-hover'] ? '--header-text-hover' : null,
         !!attributes['wpbs-accordion-group']?.['header-color-active'] ? '--header-active' : null,

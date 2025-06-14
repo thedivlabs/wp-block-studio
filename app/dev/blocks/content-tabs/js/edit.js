@@ -370,17 +370,19 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <InspectorAdvancedControls>
-                <NumberControl
-                    label={'Duration'}
-                    value={attributes?.['wpbs-content-tabs']?.['duration']}
-                    onChange={(newValue) => updateSettings({'duration': newValue})}
-                    min={0}
-                    max={900}
-                    isDragEnabled={false}
-                    isShiftStepEnabled
-                    shiftStep={100}
-                    step={50}
-                />
+                <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '20px'}}>
+                    <NumberControl
+                        label={'Duration'}
+                        value={attributes?.['wpbs-content-tabs']?.['duration']}
+                        onChange={(newValue) => updateSettings({'duration': newValue})}
+                        min={0}
+                        max={900}
+                        isDragEnabled={false}
+                        isShiftStepEnabled
+                        shiftStep={100}
+                        step={50}
+                    />
+                </Grid>
             </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}

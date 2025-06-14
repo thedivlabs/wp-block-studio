@@ -93,7 +93,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <InspectorControls group="styles">
-                <PanelBody title="Button" initialOpen={true}>
+                <PanelBody title="Options" initialOpen={true}>
                     <Grid columns={1} columnGap={0} rowGap={0}>
                         <ToggleControl
                             label={'Open'}

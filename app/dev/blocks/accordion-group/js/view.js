@@ -1,5 +1,25 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
+function slideToggle(element, duration = 300) {
+    if (!element) return;
+
+    element.style.overflow = 'hidden';
+    element.style.transition = `max-height ${duration}ms ease`;
+
+    if (element.offsetHeight > 0) {
+        // Slide up
+        element.style.maxHeight = element.scrollHeight + 'px'; // set to full height first
+        requestAnimationFrame(() => {
+            element.style.maxHeight = '0';
+        });
+    } else {
+        // Slide down
+        element.style.maxHeight = '0';
+        requestAnimationFrame(() => {
+            element.style.maxHeight = element.scrollHeight + 'px';
+        });
+    }
+}
 
 const {state} = store('wpbs/accordion-group', {
 
@@ -32,13 +52,13 @@ const {state} = store('wpbs/accordion-group', {
                         return;
                     }
 
-                    jQuery(content).slideToggle('medium', () => {
-                        if (content.offsetParent !== null) {
-                            groupItem.classList.add('active');
-                        } else {
-                            groupItem.classList.remove('active');
-                        }
-                    });
+                    slideToggle(content, 300);
+
+                    if (content.offsetParent !== null) {
+                        groupItem.classList.add('active');
+                    } else {
+                        groupItem.classList.remove('active');
+                    }
 
                 })
             })

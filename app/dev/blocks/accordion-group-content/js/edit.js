@@ -15,7 +15,7 @@ function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-accordion-group-content',
-        !editor ? 'hidden' : null,
+        !editor ? 'max-h-[0px]' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -48,8 +48,9 @@ registerBlockType(metadata.name, {
             className: classNames(attributes, true),
         });
 
-        const innerBlocksProps = useInnerBlocksProps({}, {
-            className: wrapperClassNames(),
+        const innerBlocksProps = useInnerBlocksProps({
+            className: wrapperClassNames()
+        }, {
             template: [
                 ['core/paragraph']
             ],

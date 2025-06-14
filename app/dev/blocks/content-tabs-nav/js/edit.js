@@ -27,7 +27,7 @@ function buttonClassNames(isActive, attributes) {
     const {options = {}} = attributes['wpbs-content-tabs-nav'];
 
     return [
-        'wpbs-content-tabs-nav__button',
+        'wpbs-content-tabs-nav__button h-full',
         options?.buttonGrow ? 'grow' : null,
         !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');

@@ -6,6 +6,7 @@
     align-items: center;
     user-select: none;
     cursor: pointer;
+    transition: color .3s linear;
   }
 
 
@@ -17,7 +18,7 @@
     color: var(--header-text-color-hover);
   }
 
-  &.--header-active .active > .wpbs-accordion-group-header {
+  &.--header-active .wpbs-accordion-group-item.active > .wpbs-accordion-group-header {
     background-color: var(--header-color-active);
   }
 
@@ -26,7 +27,28 @@
   }
 
   .wpbs-accordion-group-header > button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    aspect-ratio: 1/1;
+    margin-left: auto;
+    font-size: var(--icon-size, 24px);
+    height: 1.2em;
+    line-height: normal;
+    transition: transform .3s ease-in-out, color .3s linear;
+  }
 
+  &.--static-icon .wpbs-accordion-group-header > button {
+    transition: none !important;
+  }
+
+  &.--no-icon .wpbs-accordion-group-header > button {
+    display: none !important;
+  }
+
+  .wpbs-accordion-group-item.active > .wpbs-accordion-group-header > button {
+    transform: rotate(-180deg);
   }
 
   .wpbs-accordion-group-content {

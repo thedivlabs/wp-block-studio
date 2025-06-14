@@ -30,7 +30,7 @@ const {state} = store('wpbs/accordion-group', {
                     const groupItem = header.closest('.wpbs-accordion-group-item');
                     const content = groupItem.querySelector('.wpbs-accordion-group-content');
 
-                    if (!content) {
+                    if (!content || groupItem.classList.contains('active')) {
                         return;
                     }
 
@@ -51,7 +51,7 @@ const {state} = store('wpbs/accordion-group', {
 
                             item.classList.remove('--open');
 
-                            WPBS.slideUp(openContent, 'medium', () => {
+                            WPBS.slideUp(openContent, 'fast', () => {
                                 item.classList.remove('active');
                             })
                         })
@@ -63,9 +63,11 @@ const {state} = store('wpbs/accordion-group', {
                         } else {
                             groupItem.classList.remove('active');
                         }
+
+                        component.classList.remove('animating');
                     })
 
-                    component.classList.remove('animating');
+
 
 
                 })

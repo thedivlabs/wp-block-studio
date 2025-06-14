@@ -60,7 +60,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs-panel']}
             />
-            <div {...innerBlocksProps}></div>
+            <div {...innerBlocksProps} aria-selected={!!isActive} role={'tabpanel'}></div>
 
         </>;
     },

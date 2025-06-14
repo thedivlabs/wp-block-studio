@@ -138,6 +138,7 @@ registerBlockType(metadata.name, {
                         key={panel.clientId}
                         className={buttonClassNames(index === 0, props.attributes)}
                         type="button"
+                        role={'tab'}
                     >
                         {panel.title}
                     </button>

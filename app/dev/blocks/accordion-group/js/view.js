@@ -51,7 +51,7 @@ const {state} = store('wpbs/accordion-group', {
 
                             item.classList.remove('--open');
 
-                            WPBS.slideUp(openContent, 'fast', () => {
+                            WPBS.slideUp(openContent, 'medium', () => {
                                 item.classList.remove('active');
                             })
                         })

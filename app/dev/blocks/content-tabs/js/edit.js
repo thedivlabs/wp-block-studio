@@ -235,13 +235,15 @@ registerBlockType(metadata.name, {
                 }}
                 __nextHasNoMarginBottom={true}
             />
-            <ToggleControl
-                label={'Grow'}
-                checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
-                onChange={(newValue) => updateSettings({'button-grow': newValue})}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
+            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop:'20px'}}>
+                <ToggleControl
+                    label={'Grow'}
+                    checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
+                    onChange={(newValue) => updateSettings({'button-grow': newValue})}
+                    className={'flex items-center'}
+                    __nextHasNoMarginBottom
+                />
+            </Grid>
         </Grid>;
         const buttonTabHover = <Grid columns={1} columnGap={0} rowGap={0}>
             <PanelColorSettings

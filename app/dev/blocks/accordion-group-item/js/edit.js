@@ -13,7 +13,7 @@ import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useRef} from "react";
 import {
     ToggleControl,
-    __experimentalGrid as Grid
+    __experimentalGrid as Grid, PanelBody
 } from "@wordpress/components";
 
 function classNames(attributes = {}, editor = false) {
@@ -93,15 +93,17 @@ registerBlockType(metadata.name, {
         return <>
 
             <InspectorControls group="styles">
-                <Grid columns={1} columnGap={0} rowGap={0}>
-                    <ToggleControl
-                        label={'Open'}
-                        checked={!!attributes['wpbs-accordion-group-item']?.['open']}
-                        onChange={(newValue) => updateSettings({'open': newValue})}
-                        className={'flex items-center'}
-                        __nextHasNoMarginBottom
-                    />
-                </Grid>
+                <PanelBody title="Button" initialOpen={true}>
+                    <Grid columns={1} columnGap={0} rowGap={0}>
+                        <ToggleControl
+                            label={'Open'}
+                            checked={!!attributes['wpbs-accordion-group-item']?.['open']}
+                            onChange={(newValue) => updateSettings({'open': newValue})}
+                            className={'flex items-center'}
+                            __nextHasNoMarginBottom
+                        />
+                    </Grid>
+                </PanelBody>
             </InspectorControls>
 
             <div {...innerBlocksProps} onClick={handleClick}></div>

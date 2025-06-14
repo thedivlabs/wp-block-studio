@@ -34,7 +34,7 @@ function RenderContent({attributes, blockProps, innerBlocksProps, editor = false
         return (
             <ElementTagName {...blockProps}>
                 <div {...innerBlocksProps} />
-                {editor && <BackgroundElement attributes={attributes} editor={true}/>}
+                <BackgroundElement attributes={attributes} editor={editor}/>
             </ElementTagName>
         );
     } else {

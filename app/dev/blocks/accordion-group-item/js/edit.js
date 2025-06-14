@@ -10,7 +10,7 @@ import {useEffect} from '@wordpress/element';
 
 import {useInstanceId} from "@wordpress/compose";
 
-import React, {useCallback} from "react";
+import React, {useCallback, useRef} from "react";
 import {
     ToggleControl,
     __experimentalGrid as Grid
@@ -36,6 +36,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
+        const ref = useRef(null);
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-item');
 
         useEffect(() => {
@@ -72,6 +73,29 @@ registerBlockType(metadata.name, {
             templateLock: 'all'
         });
 
+        const handleClick = (event) => {
+
+            console.log(event.target);
+
+            console.log(ref.current);
+
+            if (event.target.closest('button')) {
+
+
+
+                if (!ref.current) {
+                    return false;
+                }
+
+                if (ref.current.offsetParent !== null) {
+                    ref.current.classList.remove('active', '--open');
+                } else {
+                    ref.current.classList.add('active', '--open');
+                }
+
+            }
+        };
+
         return <>
 
             <InspectorControls group="styles">
@@ -86,7 +110,7 @@ registerBlockType(metadata.name, {
                 </Grid>
             </InspectorControls>
 
-            <div {...innerBlocksProps}></div>
+            <div {...innerBlocksProps} onClick={handleClick}></div>
 
         </>;
     },

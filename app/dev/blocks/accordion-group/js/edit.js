@@ -253,25 +253,7 @@ registerBlockType(metadata.name, {
         const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
         const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
 
-        const handleClick = (event) => {
 
-            if (event.target.closest('button')) {
-
-                const accordionItem = event.target.closest('button').closest('.wpbs-accordion-group-item');
-
-                if (!accordionItem) {
-                    return false;
-                }
-                console.log(accordionItem);
-
-                if (accordionItem.offsetParent !== null) {
-                    accordionItem.classList.remove('active', '--open');
-                } else {
-                    accordionItem.classList.add('active', '--open');
-                }
-
-            }
-        };
 
         return <>
 
@@ -325,7 +307,7 @@ registerBlockType(metadata.name, {
                    }}
             />
 
-            <div {...innerBlocksProps} onClick={handleClick}/>
+            <div {...innerBlocksProps}/>
 
         </>;
     },

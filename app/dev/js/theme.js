@@ -143,16 +143,19 @@ class WPBS_Theme {
 
     init() {
 
-        document.addEventListener('DOMContentLoaded', () => {
-
+        wp.domReady(() => {
             const media = document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
 
-            this.popup.init();
 
             [...media].forEach((media) => {
                 this.observeMedia(media);
             });
+        })
 
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            this.popup.init();
         });
 
 

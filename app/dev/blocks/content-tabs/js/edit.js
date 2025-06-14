@@ -235,7 +235,7 @@ registerBlockType(metadata.name, {
                 }}
                 __nextHasNoMarginBottom={true}
             />
-            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop:'20px'}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop:'10px'}}>
                 <ToggleControl
                     label={'Grow'}
                     checked={!!attributes['wpbs-content-tabs']?.['button-grow']}

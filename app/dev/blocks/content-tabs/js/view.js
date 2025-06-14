@@ -60,7 +60,7 @@ const {state} = store('wpbs/content-tabs', {
 
                     setTimeout(() => {
                         next_tab.style.opacity = '1';
-                    }, 200)
+                    }, 50)
 
                 };
 

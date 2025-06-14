@@ -12,6 +12,10 @@
     display: none;
   }
 
+  &.editor .wpbs-accordion-group-content {
+    display: block;
+  }
+
   .wpbs-accordion-group-item--open .wpbs-accordion-group-content {
     display: block;
   }

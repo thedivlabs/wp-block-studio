@@ -48,7 +48,7 @@ registerBlockType(metadata.name, {
             className: classNames(attributes, true),
         });
 
-        const innerBlocksProps = useInnerBlocksProps({
+        const innerBlocksProps = useInnerBlocksProps({}, {
             className: wrapperClassNames(),
             template: [
                 ['core/paragraph']

@@ -216,7 +216,7 @@ registerBlockType(metadata.name, {
             <ToggleControl
                 label={'Grow'}
                 checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
-                onChange={(newValue) => updateSettings({'button-padding': newValue})}
+                onChange={(newValue) => updateSettings({'button-grow': newValue})}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />

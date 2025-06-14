@@ -71,7 +71,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']
-            ? useInnerBlocksProps({className: selector + '__container wpbs-layout-wrapper wpbs-container w-full h-full'}, {})
+            ? useInnerBlocksProps({className: selector + '__container wpbs-layout-wrapper wpbs-container w-full h-full relative z-20'}, {})
             : useInnerBlocksProps(blockProps, {});
 
 
@@ -104,9 +104,9 @@ registerBlockType(metadata.name, {
             className: classNames(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-layout-wrapper w-full h-full'
-        });
+        const innerBlocksProps = !!props.attributes['wpbs-background']
+            ? useInnerBlocksProps.save({className: selector + '__container wpbs-layout-wrapper wpbs-container w-full h-full relative z-20'})
+            : useInnerBlocksProps.save(blockProps);
 
         return <RenderContent
             attributes={attributes}

@@ -16,11 +16,11 @@ import {
     __experimentalGrid as Grid
 } from "@wordpress/components";
 
-function classNames(attributes = {}) {
+function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-accordion-group-item',
-        !!attributes['wpbs-accordion-group-item']?.open ? 'wpbs-accordion-group-item--open' : null,
+        !!attributes['wpbs-accordion-group-item']?.open || !!editor ? 'wpbs-accordion-group-item--open' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -57,7 +57,7 @@ registerBlockType(metadata.name, {
         }, [setAttributes, attributes['wpbs-accordion-group-item']])
 
         const blockProps = useBlockProps({
-            className: classNames(attributes),
+            className: classNames(attributes, true),
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {

@@ -15,7 +15,6 @@ function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-accordion-group-content',
-        !!editor ? '.editor' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }

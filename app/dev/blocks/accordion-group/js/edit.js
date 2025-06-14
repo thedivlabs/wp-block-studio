@@ -15,7 +15,7 @@ import {useInstanceId} from "@wordpress/compose";
 import {
     __experimentalUnitControl as UnitControl,
     __experimentalBorderControl as BorderControl, __experimentalBoxControl as BoxControl,
-    __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl,
+    __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl, SelectControl,
 } from "@wordpress/components";
 import React, {useCallback} from "react";
 
@@ -23,7 +23,14 @@ const DIMENSION_UNITS = [
     {value: 'px', label: 'px', default: 0},
     {value: 'em', label: 'em', default: 0},
     {value: 'rem', label: 'rem', default: 0},
-]
+];
+
+const ICON_STYLES = [
+    {label: 'Select', value: ''},
+    {label: 'Solid', value: '900'},
+    {label: 'Regular', value: '400'},
+    {label: 'Light', value: '300'},
+];
 
 function classNames(attributes = {}) {
 
@@ -109,10 +116,18 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+                <SelectControl
+                    label="Icon Style"
+                    value={attributes['wpbs-accordion-group']?.['icon-style'] ?? ''}
+                    options={ICON_STYLES}
+                    onChange={(val) => updateSettings({'icon-style': val})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
-                    label={'Animate Icon'}
+                    label={'Animate'}
                     value={attributes['wpbs-accordion-group']?.['icon-animate'] !== false}
                     onChange={(newValue) => updateSettings({'icon-animate': newValue})}
                     __nextHasNoMarginBottom
@@ -277,6 +292,7 @@ registerBlockType(metadata.name, {
                    props={{
                        '--icon-open': `"\\${iconOpen}"`,
                        '--icon-closed': `"\\${iconClosed}"`,
+                       '--icon-style': attributes['wpbs-accordion-group']?.['icon-style'],
                        '--icon-size': attributes['wpbs-accordion-group']?.['icon-size'],
                        '--icon-color': attributes['wpbs-accordion-group']?.['icon-color'],
                        '--icon-color-hover': attributes['wpbs-accordion-group']?.['icon-color-hover'],

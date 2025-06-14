@@ -2,7 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "wpbs/accordion-group-item",
-  "title": "Content Accordion Item",
+  "title": "Accordion Item",
   "description": "Display an accordion item",
   "selectors": {
     "root": ".wpbs-accordion-group-item"

@@ -62,7 +62,9 @@ registerBlockType(metadata.name, {
         return <>
 
             <div {...blockProps}>
-                <div {...innerBlocksProps}></div>
+                <div {...innerBlocksProps}>
+                    <button type={'button'}><span className={'screen-reader-text'}>Toggle content</span></button>
+                </div>
             </div>
 
 

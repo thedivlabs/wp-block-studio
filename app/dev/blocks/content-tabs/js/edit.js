@@ -235,7 +235,7 @@ registerBlockType(metadata.name, {
                 }}
                 __nextHasNoMarginBottom={true}
             />
-            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop:'10px'}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>
                 <ToggleControl
                     label={'Grow'}
                     checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
@@ -390,7 +390,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs']}
                    props={{
-                       '--fade-duration': attributes['wpbs-content-tabs']?.['duration'],
+                       '--fade-duration': attributes['wpbs-content-tabs']?.['duration'] ? attributes['wpbs-content-tabs']?.['duration'] + 'ms' : null,
                        '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
                        '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
                        '--button-border': border?.style && border?.color ? `${border.top || '1px'} ${border.style} ${border.color}` : undefined,

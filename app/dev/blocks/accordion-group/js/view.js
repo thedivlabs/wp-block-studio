@@ -32,9 +32,20 @@ const {state} = store('wpbs/accordion-group', {
                         return;
                     }
 
-                    WPBS.slideToggle(content, (!isStatic ? 'medium' : 0));
+                    if (content.offsetParent !== null) {
+                        groupItem.classList.remove('--open');
+                    } else {
+                        groupItem.classList.add('--open');
+                    }
 
-                    groupItem.classList.toggle('active');
+                    WPBS.slideToggle(content, (!isStatic ? 'medium' : 0), () => {
+                        if (content.offsetParent !== null) {
+                            groupItem.classList.add('active');
+                        } else {
+                            groupItem.classList.remove('active');
+                        }
+                    })
+
 
                 })
             })

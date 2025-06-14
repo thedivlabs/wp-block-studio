@@ -250,9 +250,8 @@ registerBlockType(metadata.name, {
             active: tabActive
         }
 
-        const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
-        const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
-
+        const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
+        const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
 
 
         return <>

@@ -36,6 +36,7 @@ function classNames(attributes = {}, editor = false) {
         'wpbs-content-tabs',
         'w-full relative',
         !!editor ? 'editor' : null,
+        !!attributes['wpbs-content-tabs']?.['hide-tabs'] ? '--hide-tabs' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -342,7 +343,18 @@ registerBlockType(metadata.name, {
 
         return <>
             <InspectorControls group="styles">
-                <PanelBody title="Button" initialOpen={true}>
+                <PanelBody title="Options" initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
+                        <ToggleControl
+                            label={'Hide Tabs'}
+                            checked={!!attributes['wpbs-content-tabs']?.['hide-tabs']}
+                            onChange={(newValue) => updateSettings({'hide-tabs': newValue})}
+                            className={'flex items-center'}
+                            __nextHasNoMarginBottom
+                        />
+                    </Grid>
+                </PanelBody>
+                <PanelBody title="Button" initialOpen={false}>
                     <TabPanel
                         className="wpbs-editor-tabs"
                         activeClass="active"

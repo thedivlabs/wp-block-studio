@@ -24,6 +24,9 @@
   "supports": {
     "html": false,
     "innerBlocks": false,
+    "dimensions": {
+      "minHeight": true
+    },
     "color": {
       "background": true,
       "text": true,

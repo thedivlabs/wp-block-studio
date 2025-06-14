@@ -33,12 +33,18 @@
         "vertical"
       ],
       "padding": true,
-      "margin": true
+      "margin": false
     },
     "__experimentalBorder": {
       "size": true,
       "color": true,
       "radius": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontStyle": true,
+      "fontWeight": true
     }
   },
   "editorScript": "file:./js/edit.js",

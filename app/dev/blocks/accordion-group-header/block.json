@@ -22,6 +22,12 @@
   "supports": {
     "html": false,
     "innerBlocks": true,
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontStyle": true,
+      "fontWeight": true
+    },
     "color": {
       "background": true,
       "text": true,
@@ -29,11 +35,8 @@
       "gradients": true
     },
     "spacing": {
-      "blockGap": [
-        "vertical"
-      ],
       "padding": true,
-      "margin": true
+      "margin": false
     },
     "__experimentalBorder": {
       "size": true,

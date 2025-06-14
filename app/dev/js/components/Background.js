@@ -469,7 +469,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
         //setSettings(result);
 
 
-    }, [attributes['wpbs-background'], setAttributes, setSettings]);
+    }, [attributes['wpbs-background'], setAttributes]);
 
     const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
         <Grid columns={2} columnGap={15} rowGap={20}>

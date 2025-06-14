@@ -44,12 +44,9 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
-                ['core/heading', {level: 3}]
+                ['core/paragraph']
             ],
-            allowedBlocks: [
-                'core/heading',
-                'core/paragraph',
-            ],
+            templateLock: false
         });
 
         return <>

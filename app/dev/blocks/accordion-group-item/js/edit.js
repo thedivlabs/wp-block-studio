@@ -10,7 +10,7 @@ import {useEffect} from '@wordpress/element';
 
 import {useInstanceId} from "@wordpress/compose";
 
-import React from "react";
+import React, {useCallback} from "react";
 import {
     ToggleControl,
     __experimentalGrid as Grid
@@ -43,6 +43,18 @@ registerBlockType(metadata.name, {
                 'uniqueId': uniqueId
             });
         }, []);
+
+        const updateSettings = useCallback((newValue) => {
+            const result = {
+                ...attributes['wpbs-accordion-group-item'],
+                ...newValue
+            };
+
+            setAttributes({
+                'wpbs-accordion-group-item': result
+            });
+
+        }, [setAttributes, attributes['wpbs-accordion-group-item']])
 
         const blockProps = useBlockProps({
             className: classNames(attributes),

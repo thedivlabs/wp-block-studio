@@ -37,7 +37,7 @@ function classNames(attributes = {}) {
     return [
         'wpbs-accordion-group',
         'w-full relative',
-        attributes['wpbs-accordion-group']?.['icon-animate'] === false ? '--static' : null,
+        !attributes['wpbs-accordion-group']?.['animate'] ? '--static' : null,
         !!attributes['wpbs-accordion-group']?.['hide-icon'] ? '--no-icon' : null,
         !!attributes['wpbs-accordion-group']?.['header-color-hover'] ? '--header-hover' : null,
         !!attributes['wpbs-accordion-group']?.['header-text-color-hover'] ? '--header-text-hover' : null,
@@ -55,7 +55,9 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         'wpbs-accordion-group': {
             type: 'object',
-            default: {}
+            default: {
+                'animate': true
+            }
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
@@ -128,13 +130,13 @@ registerBlockType(metadata.name, {
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
                     label={'Animate'}
-                    value={attributes['wpbs-accordion-group']?.['icon-animate'] !== false}
-                    onChange={(newValue) => updateSettings({'icon-animate': newValue})}
+                    checked={attributes['wpbs-accordion-group']?.['animate'] ?? true}
+                    onChange={(newValue) => updateSettings({'animate': newValue})}
                     __nextHasNoMarginBottom
                 />
                 <ToggleControl
                     label={'Hide Icon'}
-                    value={!!attributes['wpbs-accordion-group']?.['icon-hide']}
+                    checked={!!attributes['wpbs-accordion-group']?.['icon-hide']}
                     onChange={(newValue) => updateSettings({'icon-hide': newValue})}
                     __nextHasNoMarginBottom
                 />

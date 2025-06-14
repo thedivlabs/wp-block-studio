@@ -16,7 +16,7 @@ import {useInstanceId} from "@wordpress/compose";
 
 function classNames(attributes = {}) {
     return [
-        'wpbs-content-tabs-nav',
+        'wpbs-content-tabs-nav flex items-stretch',
         'relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
@@ -27,7 +27,7 @@ function buttonClassNames(isActive, attributes) {
     const {options = {}} = attributes['wpbs-content-tabs-nav'];
 
     return [
-        'wpbs-content-tabs-nav__button h-full',
+        'wpbs-content-tabs-nav__button h-auto',
         options?.buttonGrow ? 'grow' : null,
         !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');

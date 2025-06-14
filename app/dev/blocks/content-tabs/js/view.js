@@ -1,5 +1,18 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
+function setMinHeight(component) {
+
+    if (component.classList.contains('--hide-tabs')) {
+        return;
+    }
+
+    const currentHeight = component.offsetHeight;
+    const previousHeight = parseInt(component.dataset.tabHeight || '0', 10);
+    const maxHeight = Math.max(currentHeight, previousHeight);
+
+    component.dataset.tabHeight = String(maxHeight);
+    component.style.minHeight = `${maxHeight}px`;
+}
 
 const {state} = store('wpbs/content-tabs', {
 
@@ -13,6 +26,8 @@ const {state} = store('wpbs/content-tabs', {
             }
 
             component.classList.add('tabs-initialized');
+
+            setMinHeight(component);
 
             const nav = component.querySelector('.wpbs-content-tabs-nav');
             const container = component.querySelector('.wpbs-content-tabs-container');
@@ -66,6 +81,7 @@ const {state} = store('wpbs/content-tabs', {
 
                 const fadeInHandler = () => {
                     component.classList.remove('animating');
+                    setMinHeight(component);
                     next_tab.style.opacity = '';
                     next_tab.removeEventListener('transitionend', fadeInHandler);
                 };
@@ -82,6 +98,7 @@ const {state} = store('wpbs/content-tabs', {
                 } else {
                     [...tabs].forEach(tab => tab.classList.remove('active'));
                     next_tab.classList.add('active');
+                    setMinHeight(component);
                 }
             }
 

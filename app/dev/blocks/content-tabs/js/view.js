@@ -67,9 +67,7 @@ const {state} = store('wpbs/content-tabs', {
 
                 const fadeOutHandler = () => {
 
-                    requestAnimationFrame(() => {
-                        setMinHeight(component);
-                    });
+                    setMinHeight(component);
 
                     cur_tab.classList.remove('active');
                     cur_tab.removeEventListener('transitionend', fadeOutHandler);

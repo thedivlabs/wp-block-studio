@@ -130,7 +130,7 @@ registerBlockType(metadata.name, {
             className: classNames(props.attributes),
         });
 
-        return <nav {...blockProps} >
+        return <nav {...blockProps} role={'tablist'}>
             {tabPanels.map((panel, index) => {
 
                 return (

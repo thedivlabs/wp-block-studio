@@ -59,7 +59,7 @@ const {state} = store('wpbs/content-tabs', {
 
                 const cur_tab = container.querySelector(':scope > .active') || tabs[0];
 
-                [...nav_buttons].forEach((btn, index) => {
+                [...nav_buttons].forEach((btn) => {
                     btn.classList.remove('active');
                 });
 

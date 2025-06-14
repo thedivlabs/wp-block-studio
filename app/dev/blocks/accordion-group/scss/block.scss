@@ -54,6 +54,7 @@
   }
 
   &.--static .wpbs-accordion-group-header > button {
+    transform: none !important;
     transition: none !important;
   }
 

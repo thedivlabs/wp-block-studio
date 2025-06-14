@@ -22,6 +22,9 @@
   "supports": {
     "html": false,
     "innerBlocks": true,
+    "dimensions": {
+      "minHeight": true
+    },
     "typography": {
       "fontSize": true,
       "lineHeight": true,

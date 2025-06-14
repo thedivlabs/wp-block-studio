@@ -22,7 +22,9 @@ function classNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function buttonClassNames(isActive, options = {}) {
+function buttonClassNames(isActive, attributes) {
+
+    const {options = {}} = attributes['wpbs-content-tabs-nav'];
 
     return [
         'wpbs-content-tabs-nav__button',
@@ -54,7 +56,7 @@ registerBlockType(metadata.name, {
         const {tabPanels = [], tabActive = null, setTabActive} = context;
 
         const {tabOptions} = context;
-        
+
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-nav');
 
         useEffect(() => {
@@ -74,6 +76,19 @@ registerBlockType(metadata.name, {
                 setAttributes({tabPanels});
             }
         }, [tabPanels]);
+
+        useEffect(() => {
+            let result = {
+                ...attributes['wpbs-content-tabs-nav'],
+                'options': {
+                    ...attributes['wpbs-content-tabs-nav']?.options,
+                    ...tabOptions
+                }
+            };
+
+            setAttributes({'wpbs-content-tabs-nav': result});
+
+        }, [tabOptions])
 
         const handleClick = useCallback((clientId) => {
             setTabActive(clientId);
@@ -97,7 +112,7 @@ registerBlockType(metadata.name, {
                         <button
                             key={panel.clientId}
                             onClick={() => handleClick(panel.clientId)}
-                            className={buttonClassNames(!!isActive, tabOptions)}
+                            className={buttonClassNames(!!isActive, attributes)}
                             type="button"
                         >
                             {panel.title}
@@ -121,7 +136,7 @@ registerBlockType(metadata.name, {
                 return (
                     <button
                         key={panel.clientId}
-                        className={buttonClassNames(index === 0)}
+                        className={buttonClassNames(index === 0, props.attributes)}
                         type="button"
                     >
                         {panel.title}

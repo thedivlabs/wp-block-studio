@@ -213,13 +213,13 @@ registerBlockType(metadata.name, {
                 }}
                 __nextHasNoMarginBottom={true}
             />
-            {!!isFade ? <ToggleControl
+            <ToggleControl
                 label={'Grow'}
                 checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
                 onChange={(newValue) => updateSettings({'button-padding': newValue})}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
-            /> : null}
+            />
         </Grid>;
         const buttonTabHover = <Grid columns={1} columnGap={0} rowGap={0}>
             <PanelColorSettings

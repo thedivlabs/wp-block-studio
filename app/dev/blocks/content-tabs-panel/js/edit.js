@@ -19,7 +19,6 @@ import {useInstanceId} from "@wordpress/compose";
 function classNames(attributes, isActive = false, editor = false) {
     return [
         'wpbs-content-tabs-panel',
-        'relative',
         attributes.uniqueId,
         !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');

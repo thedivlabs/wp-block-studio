@@ -58,7 +58,8 @@ registerBlockType(metadata.name, {
         }, [setAttributes, attributes['wpbs-accordion-group-item']])
 
         const blockProps = useBlockProps({
-            className: classNames(attributes, true),
+            ref,
+            className: classNames(attributes, true)
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
@@ -75,23 +76,16 @@ registerBlockType(metadata.name, {
 
         const handleClick = (event) => {
 
-            console.log(event.target);
-
-            console.log(ref.current);
 
             if (event.target.closest('button')) {
-
 
 
                 if (!ref.current) {
                     return false;
                 }
 
-                if (ref.current.offsetParent !== null) {
-                    ref.current.classList.remove('active', '--open');
-                } else {
-                    ref.current.classList.add('active', '--open');
-                }
+                ref.current.classList.toggle('active');
+                ref.current.classList.toggle('--open');
 
             }
         };

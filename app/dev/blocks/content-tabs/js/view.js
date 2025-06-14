@@ -25,8 +25,6 @@ const {state} = store('wpbs/content-tabs', {
                 return false;
             }
 
-            component.classList.add('tabs-initialized');
-
             setMinHeight(component);
 
             const nav = component.querySelector('.wpbs-content-tabs-nav');
@@ -66,6 +64,8 @@ const {state} = store('wpbs/content-tabs', {
                 button.classList.add('active');
 
                 const fadeOutHandler = () => {
+
+                    setMinHeight(component);
 
                     cur_tab.classList.remove('active');
                     cur_tab.removeEventListener('transitionend', fadeOutHandler);
@@ -107,6 +107,8 @@ const {state} = store('wpbs/content-tabs', {
                 button.addEventListener('click', (e) => tabHandler(button, index));
 
             })
+
+            component.classList.add('tabs-initialized');
 
         }
     }

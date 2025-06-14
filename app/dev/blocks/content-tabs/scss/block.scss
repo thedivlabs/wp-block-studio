@@ -4,17 +4,18 @@
     pointer-events: none;
   }
 
-  &:not(.tabs-initialized):not(.editor) {
+  &:not(:has(.wpbs-content-tabs-container > .wpbs-content-tabs-panel.active)) {
 
-    .wpbs-content-tabs-container .wpbs-content-tabs-panel:first-of-type {
+    .wpbs-content-tabs-panel:first-of-type {
       display: flex;
     }
 
-    .wpbs-content-tabs-container .wpbs-content-tabs-panel:not(:first-of-type) {
+    .wpbs-content-tabs-panel:not(:first-of-type) {
       display: none;
     }
 
   }
+
 
   &.tabs-initialized {
     .wpbs-content-tabs-panel {
@@ -22,16 +23,17 @@
       transition-timing-function: ease-in-out;
       transition-duration: var(--fade-duration, .3s);
       opacity: 0;
+      display: none;
 
       &.active {
         opacity: 1;
+        display: flex;
       }
 
     }
   }
 
   .wpbs-content-tabs-panel {
-    display: none;
     flex-direction: column;
     width: 100%;
     height: 100%;

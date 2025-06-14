@@ -7,5 +7,13 @@
     user-select: none;
     cursor: pointer;
   }
-  
+
+  .wpbs-accordion-group-content {
+    display: none;
+  }
+
+  .wpbs-accordion-group-item--open .wpbs-accordion-group-content {
+    display: block;
+  }
+
 }

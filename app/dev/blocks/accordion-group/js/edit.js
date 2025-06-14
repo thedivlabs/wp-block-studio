@@ -79,11 +79,7 @@ registerBlockType(metadata.name, {
         });
 
         return <>
-            <InspectorControls group="styles">
-                <Grid columns={1} columnGap={0} rowGap={0}>
-                    <></>
-                </Grid>
-            </InspectorControls>
+
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}

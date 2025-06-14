@@ -1,4 +1,5 @@
 import {
+    InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
@@ -10,11 +11,16 @@ import {useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 
 import React from "react";
+import {
+    ToggleControl,
+    __experimentalGrid as Grid
+} from "@wordpress/components";
 
 function classNames(attributes = {}) {
 
     return [
         'wpbs-accordion-group-item',
+        !!attributes['wpbs-accordion-group-item']?.open ? 'wpbs-accordion-group-item--open' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -55,6 +61,18 @@ registerBlockType(metadata.name, {
         });
 
         return <>
+
+            <InspectorControls group="styles">
+                <Grid columns={1} columnGap={0} rowGap={0}>
+                    <ToggleControl
+                        label={'Open'}
+                        checked={!!attributes['wpbs-accordion-group-item']?.['open']}
+                        onChange={(newValue) => updateSettings({'open': newValue})}
+                        className={'flex items-center'}
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+            </InspectorControls>
 
             <div {...innerBlocksProps}></div>
 

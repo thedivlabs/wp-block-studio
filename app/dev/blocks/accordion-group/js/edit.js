@@ -35,7 +35,7 @@ const DIMENSION_UNITS = [
 function classNames(attributes = {}) {
 
     return [
-        'wpbs-content-accordion',
+        'wpbs-accordion-group',
         'w-full relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
@@ -47,18 +47,14 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-content-accordion': {
+        'wpbs-accordion-group': {
             type: 'object',
             default: {}
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-accordion');
-
-        const [headerStyles, setHeaderStyles] = useState(attributes.headerStyles);
-        const [itemStyles, setItemStyles] = useState(attributes.itemStyles);
-        const [contentStyles, setContentStyles] = useState(attributes.contentStyles);
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group');
 
         useEffect(() => {
             setAttributes({
@@ -68,16 +64,15 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-content-accordion'],
+                ...attributes['wpbs-accordion-group'],
                 ...newValue
             };
 
             setAttributes({
-                'wpbs-content-accordion': result
+                'wpbs-accordion-group': result
             });
 
-        }, [setAttributes, attributes['wpbs-content-accordion']])
-
+        }, [setAttributes, attributes['wpbs-accordion-group']])
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -85,10 +80,10 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
-                ['wpbs/content-accordion-item'],
+                ['wpbs/accordion-group-item'],
             ],
             allowedBlocks: [
-                'wpbs/content-accordion-item',
+                'wpbs/accordion-group-item',
             ],
         });
 
@@ -101,21 +96,10 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['wpbs-content-accordion']}
+                   deps={['wpbs-accordion-group']}
             />
 
-            <BlockContextProvider
-                value={{
-                    headerStyles,
-                    itemStyles,
-                    contentStyles,
-                    setHeaderStyles,
-                    setItemStyles,
-                    setContentStyles,
-                }}
-            >
-                <div {...innerBlocksProps} />
-            </BlockContextProvider>
+            <div {...innerBlocksProps} />
 
         </>;
     },
@@ -123,7 +107,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
-            'data-wp-interactive': 'wpbs/content-accordion',
+            'data-wp-interactive': 'wpbs/accordion-group',
             'data-wp-init': 'actions.init',
         });
 

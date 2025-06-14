@@ -1,7 +1,7 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
 
-const {state} = store('wpbs/content-accordion', {
+const {state} = store('wpbs/accordion-group', {
 
     actions: {
         init: () => {

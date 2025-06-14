@@ -1,29 +1,28 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "wpbs/content-accordion-item",
-  "title": "Content Accordion Item",
-  "description": "Display an accordion item",
+  "name": "wpbs/accordion-group",
+  "title": "Accordion Group",
+  "description": "Display an accordion section",
   "selectors": {
-    "root": ".wpbs-content-accordion-item"
+    "root": ".wpbs-accordion-group"
   },
   "attributes": {
     "uniqueId": {
       "type": "string"
     }
   },
-  "parent": [
-    "wpbs/content-accordion"
+  "styles": [
+    {
+      "name": "single",
+      "label": "Single"
+    }
   ],
   "allowedBlocks": [
-    "wpbs/content-accordion-header",
-    "wpbs/content-accordion-content"
-  ],
-  "usesContext": [
-    "itemStyles",
-    "setItemStyles"
+    "wpbs/accordion-group-item"
   ],
   "supports": {
+    "interactivity": true,
     "html": false,
     "innerBlocks": true,
     "color": {
@@ -46,6 +45,8 @@
     }
   },
   "editorScript": "file:./js/edit.js",
+  "viewScriptModule": "file:./js/view.js",
+  "style": "file:./js/edit.css",
   "icon": "excerpt-view"
 }
 

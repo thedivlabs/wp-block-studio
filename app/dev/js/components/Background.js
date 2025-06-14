@@ -435,7 +435,9 @@ export function backgroundCss(attributes, selector) {
 
 export function BackgroundControls({attributes = {}, setAttributes}) {
 
-    const [settings, setSettings] = useState(attributes['wpbs-background']);
+    //const [settings, setSettings] = useState(attributes['wpbs-background']);
+
+    const {'wpbs-background': settings = {}} = attributes;
 
     const updateSettings = useCallback((newValue = {}) => {
 
@@ -464,7 +466,7 @@ export function BackgroundControls({attributes = {}, setAttributes}) {
             'wpbs-background': result,
         });
 
-        setSettings(result);
+        //setSettings(result);
 
 
     }, [attributes['wpbs-background'], setAttributes, setSettings]);

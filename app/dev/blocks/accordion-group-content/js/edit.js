@@ -1,27 +1,20 @@
 import {
     useBlockProps,
-    useContext,
-    useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
+    useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 
-import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
-import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
-
 import {useEffect} from '@wordpress/element';
 
 import {useInstanceId} from "@wordpress/compose";
-import {
-    __experimentalGrid as Grid,
-} from "@wordpress/components";
-import React, {useCallback} from "react";
+
+import React from "react";
 
 function classNames(attributes = {}) {
 
     return [
-        'wpbs-content-accordion-item',
-        'w-full relative',
+        'wpbs-accordion-group-content',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -30,15 +23,14 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        'wpbs-content-accordion-item': {
+        'wpbs-accordion-group-content': {
             type: 'object',
             default: {}
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-accordion-item');
-        const {itemStyles, setItemStyles} = context;
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-content');
 
         useEffect(() => {
             setAttributes({
@@ -46,33 +38,19 @@ registerBlockType(metadata.name, {
             });
         }, []);
 
-        console.log(itemStyles);
-
-        useEffect(() => {
-            setItemStyles({
-                ...itemStyles,
-                ...attributes?.style,
-            });
-        }, [attributes?.style]);
-
         const blockProps = useBlockProps({
             className: classNames(attributes),
-            style: itemStyles
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            /* template: [
-                 ['wpbs/content-accordion-header'],
-                 ['wpbs/content-accordion-content'],
-             ],*/
-            allowedBlocks: [
-                'wpbs/content-accordion-header',
-                'wpbs/content-accordion-content',
+            template: [
+                ['core/heading', {level: 3}]
             ],
-            templateLock: 'all'
+            allowedBlocks: [
+                'core/heading',
+                'core/paragraph',
+            ],
         });
-
-        console.log(itemStyles);
 
         return <>
 
@@ -84,7 +62,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
-            'data-wp-interactive': 'wpbs/content-accordion-item',
+            'data-wp-interactive': 'wpbs/accordion-group-item',
             'data-wp-init': 'actions.init',
         });
 

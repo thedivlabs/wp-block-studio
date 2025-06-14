@@ -386,6 +386,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs']}
                    props={{
+                       '--fade-duration': attributes['wpbs-content-tabs']?.['duration'],
                        '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
                        '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
                        '--button-border': border?.style && border?.color ? `${border.top || '1px'} ${border.style} ${border.color}` : undefined,
@@ -417,7 +418,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/content-tabs',
-            'data-wp-init': 'actions.init',
+            'data-wp-init': 'actions.init'
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

@@ -18,7 +18,7 @@
 
   &.tabs-initialized {
     .wpbs-content-tabs-panel {
-      transition: opacity .5s ease;
+      transition: opacity var(--fade-duration, .3s) ease;
       opacity: 0;
 
       &.active {

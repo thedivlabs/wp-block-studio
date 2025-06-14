@@ -22,9 +22,11 @@ const {state} = store('wpbs/accordion-group', {
             }
 
             const isStatic = component.classList.contains('--static');
+            const isSingle = component.classList.contains('is-style-single');
 
             headers.forEach(header => {
                 header.addEventListener('click', (e) => {
+
                     const groupItem = header.closest('.wpbs-accordion-group-item');
                     const content = groupItem.querySelector('.wpbs-accordion-group-content');
 
@@ -38,6 +40,23 @@ const {state} = store('wpbs/accordion-group', {
                         groupItem.classList.add('--open');
                     }
 
+                    component.classList.add('animating');
+
+                    if (isSingle) {
+                        const openItems = component.querySelectorAll('.wpbs-accordion-group-item.active');
+
+                        openItems.forEach(item => {
+
+                            const openContent = item.querySelector('.wpbs-accordion-group-content');
+
+                            item.classList.remove('--open');
+
+                            WPBS.slideUp(openContent, 'medium', () => {
+                                item.classList.remove('active');
+                            })
+                        })
+                    }
+
                     WPBS.slideToggle(content, 'medium', () => {
                         if (content.offsetParent !== null) {
                             groupItem.classList.add('active');
@@ -45,6 +64,8 @@ const {state} = store('wpbs/accordion-group', {
                             groupItem.classList.remove('active');
                         }
                     })
+
+                    component.classList.remove('animating');
 
 
                 })

@@ -1,4 +1,10 @@
 .wpbs-accordion-group {
+  display: flex;
+  flex-direction: column;
+
+  &.animating {
+    pointer-events: none;
+  }
 
   .wpbs-accordion-group-header {
     width: 100%;
@@ -46,8 +52,7 @@
     }
   }
 
-  .wpbs-accordion-group-item.--open > .wpbs-accordion-group-header > button
-  {
+  .wpbs-accordion-group-item.--open > .wpbs-accordion-group-header > button {
     &:before {
       content: var(--icon-open, var(--icon-closed, "\f077"));
     }
@@ -62,8 +67,7 @@
     display: none !important;
   }
 
-  .wpbs-accordion-group-item.--open > .wpbs-accordion-group-header > button
-  {
+  .wpbs-accordion-group-item.--open > .wpbs-accordion-group-header > button {
     transform: rotate(-180deg);
   }
 

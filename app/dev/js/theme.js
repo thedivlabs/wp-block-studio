@@ -140,6 +140,14 @@ class WPBS_Theme {
         jQuery(element).slideToggle(duration, callback);
     }
 
+    slideUp(element, duration, callback) {
+        jQuery(element).slideUp(duration, callback);
+    }
+
+    slideDown(element, duration, callback) {
+        jQuery(element).slideDown(duration, callback);
+    }
+
 
     init() {
 

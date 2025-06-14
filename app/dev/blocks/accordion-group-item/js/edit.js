@@ -20,7 +20,7 @@ function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-accordion-group-item',
-        !!attributes['wpbs-accordion-group-item']?.open ? 'active' : null,
+        !!attributes['wpbs-accordion-group-item']?.open ? 'active --open' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }

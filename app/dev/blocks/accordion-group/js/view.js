@@ -38,7 +38,7 @@ const {state} = store('wpbs/accordion-group', {
                         groupItem.classList.add('--open');
                     }
 
-                    WPBS.slideToggle(content, (!isStatic ? 'medium' : 0), () => {
+                    WPBS.slideToggle(content, 'medium', () => {
                         if (content.offsetParent !== null) {
                             groupItem.classList.add('active');
                         } else {

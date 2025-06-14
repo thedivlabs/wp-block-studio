@@ -265,7 +265,7 @@ registerBlockType(metadata.name, {
 
 
 
-                if (content.offsetParent !== null) {
+                if (accordionItem.offsetParent !== null) {
                     accordionItem.classList.remove('active');
                     accordionItem.classList.remove('--open');
                 } else {

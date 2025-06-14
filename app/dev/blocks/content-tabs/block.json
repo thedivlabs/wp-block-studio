@@ -13,6 +13,7 @@
     }
   },
   "providesContext": {
+    "wpbs/tab-options": "tabOptions",
     "wpbs/tab-panels": "tabPanels",
     "wpbs/tab-active": "tabActive"
   },

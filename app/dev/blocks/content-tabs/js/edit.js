@@ -315,6 +315,10 @@ registerBlockType(metadata.name, {
         const divider = attributes['wpbs-content-tabs']?.['button-divider'];
         const padding = attributes['wpbs-content-tabs']?.['button-padding'];
 
+        const tabOptions = {
+            buttonGrow: !!attributes['wpbs-content-tabs']?.['button-grow']
+        }
+
         return <>
             <InspectorControls group="styles">
                 <PanelBody title="Button" initialOpen={true}>
@@ -368,6 +372,7 @@ registerBlockType(metadata.name, {
                     tabPanels,
                     tabActive,
                     setTabActive,
+                    tabOptions,
                 }}
             >
                 <div {...innerBlocksProps}></div>

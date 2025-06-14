@@ -22,9 +22,10 @@ function classNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function buttonClassNames(isActive) {
+function buttonClassNames(isActive, options = {}) {
     return [
         'wpbs-content-tabs-nav__button',
+        options?.buttonGrow ? 'grow' : null,
         !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');
 }
@@ -50,6 +51,8 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId, context}) => {
 
         const {tabPanels = [], tabActive = null, setTabActive} = context;
+
+        const {tabOptions} = context;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-nav');
 
@@ -93,7 +96,7 @@ registerBlockType(metadata.name, {
                         <button
                             key={panel.clientId}
                             onClick={() => handleClick(panel.clientId)}
-                            className={buttonClassNames(!!isActive)}
+                            className={buttonClassNames(!!isActive, tabOptions)}
                             type="button"
                         >
                             {panel.title}

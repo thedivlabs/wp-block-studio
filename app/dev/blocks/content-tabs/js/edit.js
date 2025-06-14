@@ -39,6 +39,16 @@ function classNames(attributes = {}, editor = false) {
     ].filter(x => x).join(' ');
 }
 
+function shallowEqual(obj1, obj2) {
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    if (keys1.length !== keys2.length) return false;
+    for (let key of keys1) {
+        if (obj1[key] !== obj2[key]) return false;
+    }
+    return true;
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -54,6 +64,7 @@ registerBlockType(metadata.name, {
 
         const [tabActive, setTabActive] = useState(0);
         const [tabPanels, setTabPanels] = useState([]);
+        const [tabOptions, setTabOptions] = useState({});
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
         const isFade = (attributes?.classNames ?? '').indexOf('is-style-fade') > -1;
@@ -132,6 +143,16 @@ registerBlockType(metadata.name, {
                 setTabActive(tabPanels[0].clientId);
             }
         }, [tabPanels, tabActive]);
+
+        useEffect(() => {
+            const buttonGrow = !!attributes['wpbs-content-tabs']?.['button-grow'];
+            const result = {buttonGrow};
+
+            if (!shallowEqual(tabOptions, result)) {
+                setTabOptions(result);
+            }
+
+        }, [attributes['wpbs-content-tabs']]);
 
 
         const blockProps = useBlockProps({
@@ -315,9 +336,6 @@ registerBlockType(metadata.name, {
         const divider = attributes['wpbs-content-tabs']?.['button-divider'];
         const padding = attributes['wpbs-content-tabs']?.['button-padding'];
 
-        const tabOptions = {
-            buttonGrow: !!attributes['wpbs-content-tabs']?.['button-grow']
-        }
 
         return <>
             <InspectorControls group="styles">
@@ -369,10 +387,10 @@ registerBlockType(metadata.name, {
             />
             <BlockContextProvider
                 value={{
+                    tabOptions,
                     tabPanels,
                     tabActive,
                     setTabActive,
-                    tabOptions,
                 }}
             >
                 <div {...innerBlocksProps}></div>

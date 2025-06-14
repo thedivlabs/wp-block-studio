@@ -16,6 +16,7 @@
     "wpbs/content-tabs"
   ],
   "usesContext": [
+    "tabOptions",
     "tabActive",
     "tabPanels",
     "setTabActive"

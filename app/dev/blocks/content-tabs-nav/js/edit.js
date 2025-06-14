@@ -23,6 +23,7 @@ function classNames(attributes = {}) {
 }
 
 function buttonClassNames(isActive, options = {}) {
+
     return [
         'wpbs-content-tabs-nav__button',
         options?.buttonGrow ? 'grow' : null,
@@ -53,7 +54,7 @@ registerBlockType(metadata.name, {
         const {tabPanels = [], tabActive = null, setTabActive} = context;
 
         const {tabOptions} = context;
-
+        
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-nav');
 
         useEffect(() => {

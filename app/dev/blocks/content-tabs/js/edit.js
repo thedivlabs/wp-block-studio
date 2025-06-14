@@ -338,7 +338,7 @@ registerBlockType(metadata.name, {
         const border = attributes['wpbs-content-tabs']?.['button-border'];
         const divider = attributes['wpbs-content-tabs']?.['button-divider'];
         const padding = attributes['wpbs-content-tabs']?.['button-padding'];
-
+        const duration = Number(attributes['wpbs-content-tabs']?.duration);
 
         return <>
             <InspectorControls group="styles">
@@ -390,7 +390,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs']}
                    props={{
-                       '--fade-duration': attributes['wpbs-content-tabs']?.['duration'] ? attributes['wpbs-content-tabs']?.['duration'] + 'ms' : null,
+                       '--fade-duration': duration > 10 ? duration + 'ms' : null,
                        '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
                        '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
                        '--button-border': border?.style && border?.color ? `${border.top || '1px'} ${border.style} ${border.color}` : undefined,

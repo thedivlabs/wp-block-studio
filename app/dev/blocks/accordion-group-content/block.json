@@ -5,7 +5,8 @@
   "title": "Accordion Content",
   "description": "Display an accordion content",
   "selectors": {
-    "root": ".wpbs-accordion-group-content"
+    "root": ".wpbs-accordion-group-content",
+    "spacing": ".wpbs-accordion-group-content__wrapper"
   },
   "attributes": {
     "uniqueId": {

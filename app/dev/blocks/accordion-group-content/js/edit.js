@@ -11,12 +11,18 @@ import {useInstanceId} from "@wordpress/compose";
 
 import React from "react";
 
-function classNames(attributes = {}) {
+function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-accordion-group-content',
+        !editor ? 'hidden' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
+}
+
+function wrapperClassNames() {
+
+    return 'wpbs-accordion-group-content__wrapper';
 }
 
 registerBlockType(metadata.name, {
@@ -39,21 +45,20 @@ registerBlockType(metadata.name, {
         }, []);
 
         const blockProps = useBlockProps({
-            className: classNames(attributes),
+            className: classNames(attributes, true),
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+        const innerBlocksProps = useInnerBlocksProps({
+            className: wrapperClassNames(),
             template: [
                 ['core/paragraph']
             ],
             templateLock: false
         });
 
-        return <>
-
+        return <div {...blockProps}>
             <div {...innerBlocksProps}></div>
-
-        </>;
+        </div>;
     },
     save: (props) => {
 
@@ -63,9 +68,13 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'actions.init',
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className: wrapperClassNames(),
+        });
 
-        return <div {...innerBlocksProps}></div>;
+        return <div {...blockProps}>
+            <div {...innerBlocksProps}></div>
+        </div>;
     }
 })
 

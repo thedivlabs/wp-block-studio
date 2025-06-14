@@ -32,13 +32,9 @@ const {state} = store('wpbs/accordion-group', {
                         return;
                     }
 
-                    WPBS.slideToggle(content, (!isStatic ? 'medium' : 0), () => {
-                        if (content.offsetParent !== null) {
-                            groupItem.classList.add('active');
-                        } else {
-                            groupItem.classList.remove('active');
-                        }
-                    })
+                    WPBS.slideToggle(content, (!isStatic ? 'medium' : 0));
+
+                    groupItem.classList.toggle('active');
 
                 })
             })

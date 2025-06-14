@@ -136,6 +136,10 @@ class WPBS_Theme {
         observerIntersection.observe(refElement);
     }
 
+    slideToggle(element, duration, callback) {
+        jQuery(element).slideToggle(duration, callback);
+    }
+
 
     init() {
 

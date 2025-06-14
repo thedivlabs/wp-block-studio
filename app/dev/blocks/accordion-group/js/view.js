@@ -31,13 +31,13 @@ const {state} = store('wpbs/accordion-group', {
                         return;
                     }
 
-                    /*   jQuery(content).slideToggle('medium', () => {
-                           if (content.offsetParent !== null) {
-                               groupItem.classList.add('active');
-                           } else {
-                               groupItem.classList.remove('active');
-                           }
-                       });*/
+                    WPBS.slideToggle(content, 'medium', () => {
+                        if (content.offsetParent !== null) {
+                            groupItem.classList.add('active');
+                        } else {
+                            groupItem.classList.remove('active');
+                        }
+                    })
 
                 })
             })

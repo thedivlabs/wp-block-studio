@@ -3,7 +3,7 @@ import '../scss/block.scss'
 
 import {
     useBlockProps,
-    useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
+    useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider, InspectorAdvancedControls
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -16,6 +16,7 @@ import {select, subscribe} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useInstanceId} from "@wordpress/compose";
 import {
+    __experimentalNumberControl as NumberControl,
     PanelBody, TabPanel,
     __experimentalBorderControl as BorderControl,
     __experimentalGrid as Grid,
@@ -368,6 +369,19 @@ registerBlockType(metadata.name, {
                     </TabPanel>
                 </PanelBody>
             </InspectorControls>
+            <InspectorAdvancedControls>
+                <NumberControl
+                    label={'Duration'}
+                    value={attributes?.['wpbs-content-tabs']?.['duration']}
+                    onChange={(newValue) => updateSettings({'duration': newValue})}
+                    min={0}
+                    max={900}
+                    isDragEnabled={false}
+                    isShiftStepEnabled
+                    shiftStep={100}
+                    step={50}
+                />
+            </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs']}

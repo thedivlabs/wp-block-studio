@@ -249,8 +249,8 @@ registerBlockType(metadata.name, {
         }
 
 
-        const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f00c';
-        const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f00c';
+        const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f077';
+        const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
 
         return <>
 

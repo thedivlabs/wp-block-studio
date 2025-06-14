@@ -25,7 +25,9 @@ const {state} = store('wpbs/content-tabs', {
                 return false;
             }
 
-            setMinHeight(component);
+            requestAnimationFrame(() => {
+                setMinHeight(component);
+            });
 
             const nav = component.querySelector('.wpbs-content-tabs-nav');
             const container = component.querySelector('.wpbs-content-tabs-container');
@@ -65,7 +67,9 @@ const {state} = store('wpbs/content-tabs', {
 
                 const fadeOutHandler = () => {
 
-                    setMinHeight(component);
+                    requestAnimationFrame(() => {
+                        setMinHeight(component);
+                    });
 
                     cur_tab.classList.remove('active');
                     cur_tab.removeEventListener('transitionend', fadeOutHandler);
@@ -81,7 +85,9 @@ const {state} = store('wpbs/content-tabs', {
 
                 const fadeInHandler = () => {
                     component.classList.remove('animating');
-                    setMinHeight(component);
+                    requestAnimationFrame(() => {
+                        setMinHeight(component);
+                    });
                     next_tab.style.opacity = '';
                     next_tab.removeEventListener('transitionend', fadeInHandler);
                 };
@@ -98,7 +104,9 @@ const {state} = store('wpbs/content-tabs', {
                 } else {
                     [...tabs].forEach(tab => tab.classList.remove('active'));
                     next_tab.classList.add('active');
-                    setMinHeight(component);
+                    requestAnimationFrame(() => {
+                        setMinHeight(component);
+                    });
                 }
             }
 

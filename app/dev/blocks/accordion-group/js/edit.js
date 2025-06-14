@@ -13,7 +13,7 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 import {
-    __experimentalGrid as Grid, TextControl, ToggleControl,
+    __experimentalGrid as Grid, PanelBody, TextControl, ToggleControl,
 } from "@wordpress/components";
 import React, {useCallback} from "react";
 
@@ -81,16 +81,19 @@ registerBlockType(metadata.name, {
         return <>
 
             <InspectorControls group="styles">
-                <Grid columns={1} columnGap={15} rowGap={0}>
-                <Grid columns={2} columnGap={15} rowGap={20}>
-                    <TextControl
-                        label={'Icon'}
-                        value={attributes['wpbs-accordion-group']?.['icon']}
-                        onChange={(newValue) => updateSettings({'icon': newValue})}
-                        __nextHasNoMarginBottom
-                    />
-                </Grid>
-                </Grid>
+
+                <PanelBody title="Options" initialOpen={true}>
+                    <Grid columns={1} columnGap={15} rowGap={0}>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            <TextControl
+                                label={'Icon'}
+                                value={attributes['wpbs-accordion-group']?.['icon']}
+                                onChange={(newValue) => updateSettings({'icon': newValue})}
+                                __nextHasNoMarginBottom
+                            />
+                        </Grid>
+                    </Grid>
+                </PanelBody>
             </InspectorControls>
 
 

@@ -76,9 +76,13 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'actions.init',
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className: wrapperClassNames()
+        });
 
-        return <div {...innerBlocksProps}></div>;
+        return <div {...blockProps}>
+            <div {...innerBlocksProps}></div>
+        </div>;
     }
 })
 

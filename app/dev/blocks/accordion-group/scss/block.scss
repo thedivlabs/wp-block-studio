@@ -4,6 +4,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     user-select: none;
     cursor: pointer;
     transition: color .3s linear;
@@ -32,7 +33,6 @@
     align-items: center;
     text-align: center;
     aspect-ratio: 1/1;
-    margin-left: auto;
     font-size: var(--icon-size, 20px);
     color: var(--icon-color, inherit);
     font-weight: var(--icon-style, 400);

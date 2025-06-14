@@ -21,17 +21,18 @@ const {state} = store('wpbs/accordion-group', {
                 return false;
             }
 
+            const isStatic = component.classList.contains('--static');
+
             headers.forEach(header => {
                 header.addEventListener('click', (e) => {
                     const groupItem = header.closest('.wpbs-accordion-group-item');
                     const content = groupItem.querySelector('.wpbs-accordion-group-content');
-                    console.log(groupItem);
 
                     if (!content) {
                         return;
                     }
 
-                    WPBS.slideToggle(content, 'medium', () => {
+                    WPBS.slideToggle(content, (!isStatic ? 'medium' : 0), () => {
                         if (content.offsetParent !== null) {
                             groupItem.classList.add('active');
                         } else {

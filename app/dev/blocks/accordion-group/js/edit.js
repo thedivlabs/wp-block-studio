@@ -250,9 +250,23 @@ registerBlockType(metadata.name, {
             active: tabActive
         }
 
-
         const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
         const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
+
+        const handleClick = (event) => {
+
+            if (event.target.closest('button')) {
+
+                const accordionItem = event.target.closest('button').closest('.wpbs-accordion-group-item');
+
+                if (!accordionItem) {
+                    return false;
+                }
+
+                accordionItem.classList.toggle('active');
+
+            }
+        };
 
         return <>
 
@@ -306,7 +320,7 @@ registerBlockType(metadata.name, {
                    }}
             />
 
-            <div {...innerBlocksProps} />
+            <div {...innerBlocksProps} onClick={handleClick}/>
 
         </>;
     },

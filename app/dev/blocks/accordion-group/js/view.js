@@ -8,11 +8,40 @@ const {state} = store('wpbs/accordion-group', {
 
             const {ref: component} = getElement();
 
-            if (component.classList.contains('accordion-initialized')) {
+            if (!component || component.classList.contains('accordion-initialized')) {
                 return false;
             }
 
             component.classList.add('accordion-initialized');
+
+            console.log(component);
+
+            const headers = component.querySelectorAll('.wpbs-accordion-group-header');
+
+            if (!headers.length) {
+                return false;
+            }
+
+            headers.forEach(header => {
+                header.addEventListener('click', (e) => {
+
+                    const groupItem = header.closest('.wpbs-accordion-group-item');
+                    const content = groupItem.querySelector('.wpbs-accordion-group-content');
+
+                    if (!content) {
+                        return;
+                    }
+
+                    jQuery(content).slideToggle('medium', () => {
+                        if (content.offsetParent !== null) {
+                            groupItem.classList.add('active');
+                        } else {
+                            groupItem.classList.remove('active');
+                        }
+                    });
+
+                })
+            })
 
 
         }

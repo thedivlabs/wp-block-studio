@@ -19,6 +19,11 @@ function classNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
+function wrapperClassNames() {
+
+    return 'wpbs-accordion-group-header__wrapper';
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -42,7 +47,8 @@ registerBlockType(metadata.name, {
             className: classNames(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+        const innerBlocksProps = useInnerBlocksProps({}, {
+            className: wrapperClassNames(),
             template: [
                 ['core/heading', {level: 3}]
             ],
@@ -54,7 +60,10 @@ registerBlockType(metadata.name, {
 
         return <>
 
-            <div {...innerBlocksProps}></div>
+            <div {...blockProps}>
+                <div {...innerBlocksProps}></div>
+            </div>
+
 
         </>;
     },

@@ -13,17 +13,19 @@ import {useInstanceId} from '@wordpress/compose';
 import {
     __experimentalGrid as Grid,
     BaseControl,
-    Button,
     PanelBody,
     SelectControl,
     ToggleControl
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
-import {imageButtonStyle} from "Includes/helper.js";
 import ResponsivePicture from "Components/ResponsivePicture.js";
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import {
+    IMAGE_SIZE_OPTIONS,
+    RESOLUTION_OPTIONS
+} from "Includes/config"
 
 function blockClasses(attributes = {}) {
     return [
@@ -224,27 +226,14 @@ registerBlockType(metadata.name, {
                                 label="Resolution"
                                 value={attributes['wpbs-slide']?.resolution}
                                 onChange={(value) => updateSettings(value, 'resolution')}
-                                options={[
-                                    {label: 'Default', value: ''},
-                                    {label: 'Thumbnail', value: 'thumbnail'},
-                                    {label: 'Small', value: 'small'},
-                                    {label: 'Medium', value: 'medium'},
-                                    {label: 'Large', value: 'large'},
-                                    {label: 'Extra Large', value: 'xlarge'},
-                                    {label: 'Full', value: 'full'},
-                                ]}
+                                options={RESOLUTION_OPTIONS}
                                 __nextHasNoMarginBottom
                             />
 
                             <SelectControl
                                 __next40pxDefaultSize
                                 label="Size"
-                                options={[
-                                    {label: 'Default', value: 'cover'},
-                                    {label: 'Contain', value: 'contain'},
-                                    {label: 'Vertical', value: 'auto 100%'},
-                                    {label: 'Horizontal', value: '100% auto'},
-                                ]}
+                                options={IMAGE_SIZE_OPTIONS}
                                 value={attributes['wpbs-slide']?.imageSize}
                                 onChange={(value) => updateSettings(value, 'imageSize')}
                                 __nextHasNoMarginBottom

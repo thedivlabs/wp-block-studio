@@ -197,6 +197,7 @@ class WPBS {
 
 		$acf_json_paths = array_unique( array_merge(
 			glob( self::$path . 'acf-json', GLOB_ONLYDIR ),
+			glob( self::$path . 'core/acf-json', GLOB_ONLYDIR ),
 			glob( self::$path . 'features/**/acf-json', GLOB_ONLYDIR ),
 		) );
 

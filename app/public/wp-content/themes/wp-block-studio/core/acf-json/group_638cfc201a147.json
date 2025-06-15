@@ -1,6 +1,6 @@
 {
     "key": "group_638cfc201a147",
-    "title": "Pop-up Settings",
+    "title": "Pop-up",
     "fields": [
         {
             "key": "field_6453e99f75dfb",
@@ -76,7 +76,9 @@
                             "allow_null": 0,
                             "ui": 0,
                             "ajax": 0,
-                            "placeholder": ""
+                            "placeholder": "",
+                            "create_options": 0,
+                            "save_options": 0
                         },
                         {
                             "key": "field_638cfc2020858",
@@ -103,7 +105,9 @@
                             "allow_null": 0,
                             "ui": 0,
                             "ajax": 0,
-                            "placeholder": ""
+                            "placeholder": "",
+                            "create_options": 0,
+                            "save_options": 0
                         },
                         {
                             "key": "field_638cfc2020867",
@@ -205,7 +209,9 @@
                             "allow_null": 1,
                             "ui": 0,
                             "ajax": 0,
-                            "placeholder": ""
+                            "placeholder": "",
+                            "create_options": 0,
+                            "save_options": 0
                         },
                         {
                             "key": "field_638cfc2020860",
@@ -241,7 +247,9 @@
                             "allow_null": 0,
                             "ui": 0,
                             "ajax": 0,
-                            "placeholder": ""
+                            "placeholder": "",
+                            "create_options": 0,
+                            "save_options": 0
                         },
                         {
                             "key": "field_63902725124a7",
@@ -426,5 +434,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 1,
-    "modified": 1745174902
+    "modified": 1750015851
 }

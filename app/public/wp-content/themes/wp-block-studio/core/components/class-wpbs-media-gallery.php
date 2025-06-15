@@ -3,78 +3,110 @@
 class WPBS_Media_Gallery {
 
 	private static WPBS_Media_Gallery $instance;
-	private static string $selector;
+	private static string $cpt_id;
+	private const TRANSIENT_PREFIX = 'wpbs_media_gallery_';
+	private const ACF_FIELD = 'wpbs_media_gallery';
+
 
 	private function __construct() {
 
 
-		self::$selector = 'wpbs-media-gallery';
+		self::$cpt_id = 'media-gallery';
 
-		add_action( 'rest_api_init', function () {
-			register_rest_route( 'wpbs/v1', "/media-gallery/",
-				[
-					'methods'             => 'POST',
-					'accept_json'         => true,
-					'callback'            => [ $this, 'rest_request' ],
-					'permission_callback' => function () {
-						$nonce = $_SERVER['HTTP_X_WP_NONCE'] ?? null;
-
-						return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
-					},
-					'args'                => [
-						'id' => [
-							'type'              => 'integer',
-							'default'           => 0,
-							'sanitize_callback' => 'absint',
-						],
-
-					],
-				]
-			);
-		} );
-
+		add_action( 'rest_api_init', [ $this, 'init_rest' ] );
+		add_action( 'acf/save_post', [ $this, 'clear_transients' ], 20 );
 
 	}
 
+	private static function parse_acf_data( $field_data ): array {
 
-	public static function query( $id = 0 ): WP_Query|bool|array {
+		if ( ! is_array( $field_data ) ) {
+			return [];
+		}
 
+		return array_values( array_filter( array_map( function ( $media_id ) {
 
-		$query_args = [
-			'post_type'      => $query['post_type'] ?? 'post',
-			'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-			'orderby'        => $query['orderby'] ?? 'date',
-			'order'          => $query['order'] ?? 'DESC',
-			'post__not_in'   => $query['post__not_in'] ?? [],
-			'paged'          => $page ?: 1,
-		];
+			$attachment_id = absint( $media_id );
 
-		if ( ! empty( $query['taxonomy'] ) ) {
+			if ( ! $attachment_id || 'attachment' !== get_post_type( $attachment_id ) ) {
+				return null;
+			}
 
-			$taxonomy = get_term( $query['term'] ?? false )->taxonomy ?? false;
+			$src    = wp_get_attachment_image_url( $attachment_id, 'full' );
+			$srcset = wp_get_attachment_image_srcset( $attachment_id, 'full' );
+			$alt    = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+			$meta   = wp_get_attachment_metadata( $attachment_id );
 
-			if ( ! empty( $taxonomy ) ) {
-				$query_args['tax_query'] = [
-					[
-						'taxonomy' => $taxonomy,
-						'field'    => 'term_id',
-						'terms'    => $query['term'] ?? false,
-					]
-				];
+			return array_filter( [
+				'id'     => $attachment_id,
+				'alt'    => $alt ?: '',
+				'src'    => $src,
+				'srcset' => $srcset,
+				'width'  => $meta['width'] ?? null,
+				'height' => $meta['height'] ?? null,
+			] );
+
+		}, $field_data ) ) );
+	}
+
+	private function init_rest(): void {
+		register_rest_route( 'wpbs/v1', "/media-gallery/",
+			[
+				'methods'             => 'POST',
+				'accept_json'         => true,
+				'callback'            => [ $this, 'rest_request' ],
+				'permission_callback' => function () {
+					$nonce = $_SERVER['HTTP_X_WP_NONCE'] ?? null;
+
+					return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
+				},
+				'args'                => [
+					'id' => [
+						'type'              => 'integer',
+						'default'           => 0,
+						'sanitize_callback' => 'absint',
+					],
+
+				],
+			]
+		);
+	}
+
+	private function clear_transients( $post_id ): void {
+		if ( get_post_type( $post_id ) === self::$cpt_id ) {
+			delete_transient( self::TRANSIENT_PREFIX . $post_id );
+		}
+	}
+
+	private static function query( $id = 0 ): array {
+
+		if ( ! is_numeric( $id ) || $id <= 0 ) {
+			return [];
+		}
+
+		$transient_id = self::TRANSIENT_PREFIX . $id;
+
+		$result = get_transient( $transient_id );
+
+		if ( empty( $result ) ) {
+
+			$result = self::parse_acf_data( get_field( self::ACF_FIELD, $id ) ?: [] );
+
+			if ( ! empty( $result ) ) {
+				set_transient( $transient_id, $result, DAY_IN_SECONDS );
 			}
 
 		}
 
-		return new WP_Query( $query_args );
-
+		return $result;
 	}
 
-	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+	private function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$id = $request->get_params();
+		$id = $request->get_param( 'id' ); // singular, not plural
 
 		if ( empty( $id ) ) {
-			die();
+			return new WP_Error( 'no_id', 'Missing ID parameter.', [ 'status' => 400 ] );
 		}
 
 		return new WP_REST_Response(

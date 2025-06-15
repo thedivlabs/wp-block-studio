@@ -187,9 +187,9 @@ registerBlockType(metadata.name, {
                 const swiper = new Swiper(swiperRef.current, sliderOptions);
             }
 
-            console.log(swiperRef.current?.swiper);
-
         }, [sliderOptions]);
+
+
 
         const cssProps = useMemo(() => {
             return getCssProps(attributes);
@@ -383,7 +383,7 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps}/>
 
-            <div ref={swiperRef} {...innerBlocksProps} />
+            <div {...innerBlocksProps} />
         </>;
 
 

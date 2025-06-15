@@ -4,10 +4,6 @@
     width: min(5rem, 100%) !important;
   }
 
-  .swiper-wrapper {
-    min-width: max-content;
-  }
-
   &--collapse.swiper--disabled {
 
     .swiper-wrapper {

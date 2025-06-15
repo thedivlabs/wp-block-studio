@@ -181,11 +181,6 @@ registerBlockType(metadata.name, {
 
             if (!!swiperRef.current?.swiper) {
                 swiperRef.current.swiper.destroy(true, true);
-
-                swiperRef.current.querySelectorAll('.swiper-slide', '.swiper-wrapper').forEach((swiperElement) => {
-                    swiperElement.removeAttribute('style');
-                    console.log(swiperElement);
-                });
             }
 
             if ('Swiper' in window) {

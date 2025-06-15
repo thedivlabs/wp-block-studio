@@ -5,7 +5,7 @@
   "title": "Content Tabs Nav",
   "description": "Display a tabs navigation",
   "selectors": {
-    "root": ".wpbs-content-tabs-nav"
+    "root": ".wpbs-content-tabs-navigation"
   },
   "attributes": {
     "uniqueId": {

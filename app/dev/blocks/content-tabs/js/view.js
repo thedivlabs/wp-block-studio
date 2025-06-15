@@ -29,7 +29,7 @@ const {state} = store('wpbs/content-tabs', {
                 setMinHeight(component);
             });
 
-            const nav = component.querySelector('.wpbs-content-tabs-nav');
+            const nav = component.querySelector('.wpbs-content-tabs-navigation');
             const container = component.querySelector('.wpbs-content-tabs-container');
 
             const isFade = component.classList.contains('is-style-fade');
@@ -38,7 +38,7 @@ const {state} = store('wpbs/content-tabs', {
                 return false;
             }
 
-            const nav_buttons = nav.querySelectorAll('.wpbs-content-tabs-nav__button');
+            const nav_buttons = nav.querySelectorAll('.wpbs-content-tabs-navigation__button');
             const tabs = container.querySelectorAll('.wpbs-content-tabs-panel');
 
             if (!nav_buttons.length || !tabs.length) {

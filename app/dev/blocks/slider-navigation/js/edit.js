@@ -39,12 +39,12 @@ function BlockContent({props, attributes}) {
 
     const prevClass = [
         buttonClass,
-        'wpbs-slider-nav__btn--prev',
+        'wpbs-slider-nav__btn--prev wpbs-slider-btn--prev',
         !isGroupStyle ? 'absolute top-1/2 left-2 -translate-y-1/2' : null
     ].filter(x => x).join(' ');
     const nextClass = [
         buttonClass,
-        'wpbs-slider-nav__btn--next',
+        'wpbs-slider-nav__btn--next wpbs-slider-btn--next',
         !isGroupStyle ? 'absolute top-1/2 right-2 -translate-y-1/2' : null
     ].filter(x => x).join(' ');
     const paginationClass = [

@@ -194,6 +194,7 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-layout']?.['breakpoint'], attributes['wpbs-slider'], uniqueId]);
 
         const blockProps = useBlockProps({
+            swiperRef,
             className: blockClasses(attributes)
         });
 

@@ -16,7 +16,7 @@ import {useInstanceId} from "@wordpress/compose";
 
 function classNames(attributes = {}) {
     return [
-        'wpbs-content-tabs-nav flex items-stretch',
+        'wpbs-content-tabs-navigation flex items-stretch',
         'relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
@@ -24,10 +24,10 @@ function classNames(attributes = {}) {
 
 function buttonClassNames(isActive, attributes) {
 
-    const {options = {}} = attributes['wpbs-content-tabs-nav'];
+    const {options = {}} = attributes['wpbs-content-tabs-navigation'];
 
     return [
-        'wpbs-content-tabs-nav__button h-auto',
+        'wpbs-content-tabs-navigation__button h-auto',
         options?.buttonGrow ? 'grow' : null,
         !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');
@@ -40,7 +40,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-content-tabs-nav': {
+        'wpbs-content-tabs-navigation': {
             type: 'object',
             default: {
                 tabs: undefined,
@@ -57,7 +57,7 @@ registerBlockType(metadata.name, {
 
         const {tabOptions} = context;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-nav');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-navigation');
 
         useEffect(() => {
             setAttributes({
@@ -79,14 +79,14 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             let result = {
-                ...attributes['wpbs-content-tabs-nav'],
+                ...attributes['wpbs-content-tabs-navigation'],
                 'options': {
-                    ...attributes['wpbs-content-tabs-nav']?.options,
+                    ...attributes['wpbs-content-tabs-navigation']?.options,
                     ...tabOptions
                 }
             };
 
-            setAttributes({'wpbs-content-tabs-nav': result});
+            setAttributes({'wpbs-content-tabs-navigation': result});
 
         }, [tabOptions])
 
@@ -102,7 +102,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   deps={['wpbs-content-tabs-nav']}
+                   deps={['wpbs-content-tabs-navigation']}
             />
             <nav {...blockProps} >
                 {tabPanels.map((panel) => {

@@ -78,10 +78,7 @@ class WPBS {
 	public function theme_assets(): void {
 		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
 		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
-		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [
-			'wp-dom-ready',
-			'jquery'
-		], false, [
+		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [ 'wp-dom-ready' ], false, [
 			'strategy'  => 'async',
 			'in_footer' => true,
 		] );

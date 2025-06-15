@@ -181,10 +181,17 @@ registerBlockType(metadata.name, {
 
             if (!!swiperRef.current?.swiper) {
                 swiperRef.current.swiper.destroy(true, true);
+
+                swiperRef.current.querySelectorAll('.swiper-slide','.swiper-wrapper').forEach((swiperElement) => {
+                    swiperElement.removeAttribute('style');
+                });
+
             }
 
             if ('Swiper' in window) {
-                const swiper = new Swiper(swiperRef.current, sliderOptions);
+                requestAnimationFrame(() => {
+                    new Swiper(swiperRef.current, sliderOptions)
+                });
             }
 
         }, [sliderOptions]);
@@ -196,7 +203,7 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-layout']?.['breakpoint'], attributes['wpbs-slider'], uniqueId]);
 
         const blockProps = useBlockProps({
-            swiperRef,
+            ref: swiperRef,
             className: blockClasses(attributes)
         });
 
@@ -218,8 +225,6 @@ registerBlockType(metadata.name, {
                 ['wpbs/slider-wrapper'],
             ]
         });
-
-        console.log(attributes['wpbs-slider']);
 
         return <>
             <InspectorControls group="styles">

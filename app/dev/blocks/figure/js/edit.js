@@ -21,6 +21,12 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link";
 import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
+import {
+    BLEND_OPTIONS,
+    ORIGIN_OPTIONS,
+    RESOLUTION_OPTIONS,
+} from "Includes/config"
+
 
 function blockClasses(attributes = {}) {
 
@@ -72,40 +78,7 @@ const Media = React.memo(({settings, breakpoint}) => {
 
 });
 
-const BLEND_OPTIONS = [
-    {label: 'Default', value: ''},
-    {label: 'Multiply', value: 'multiply'},
-    {label: 'Luminosity', value: 'luminosity'},
-    {label: 'Screen', value: 'screen'},
-    {label: 'Overlay', value: 'overlay'},
-    {label: 'Soft Light', value: 'soft-light'},
-    {label: 'Hard Light', value: 'hard-light'},
-    {label: 'Difference', value: 'difference'},
-    {label: 'Color Burn', value: 'color-burn'},
-];
 
-const ORIGIN_OPTIONS = [
-    {label: 'Default', value: ''},
-    {label: 'Center', value: 'center'},
-    {label: 'Top', value: 'top'},
-    {label: 'Right', value: 'right'},
-    {label: 'Bottom', value: 'bottom'},
-    {label: 'Left', value: 'left'},
-    {label: 'Top Left', value: 'left top'},
-    {label: 'Top Right', value: 'right top'},
-    {label: 'Bottom Left', value: 'left bottom'},
-    {label: 'Bottom Right', value: 'right bottom'},
-];
-
-const RESOLUTION_OPTIONS = [
-    {label: 'Default', value: ''},
-    {label: 'Thumbnail', value: 'thumbnail'},
-    {label: 'Small', value: 'small'},
-    {label: 'Medium', value: 'medium'},
-    {label: 'Large', value: 'large'},
-    {label: 'Extra Large', value: 'xlarge'},
-    {label: 'Full', value: 'full'},
-];
 
 const MemoSelectControl = React.memo(({label, options, value, callback}) => (
     <SelectControl

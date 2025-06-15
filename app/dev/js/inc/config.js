@@ -124,3 +124,42 @@ export const BORDER_UNITS = [
     {value: 'em', label: 'em', default: 0},
     {value: 'rem', label: 'rem', default: 0},
 ];
+
+
+
+
+
+export const DIMENSION_UNITS_TEXT = [
+    {value: 'px', label: 'px', default: 0},
+    {value: 'em', label: 'em', default: 0},
+    {value: 'rem', label: 'rem', default: 0},
+];
+
+export const ICON_STYLES = [
+    {label: 'Select', value: ''},
+    {label: 'Solid', value: '900'},
+    {label: 'Regular', value: '400'},
+    {label: 'Light', value: '300'},
+];
+
+export const BLEND_OPTIONS = [
+    {label: 'Default', value: ''},
+    {label: 'Multiply', value: 'multiply'},
+    {label: 'Luminosity', value: 'luminosity'},
+    {label: 'Screen', value: 'screen'},
+    {label: 'Overlay', value: 'overlay'},
+    {label: 'Soft Light', value: 'soft-light'},
+    {label: 'Hard Light', value: 'hard-light'},
+    {label: 'Difference', value: 'difference'},
+    {label: 'Color Burn', value: 'color-burn'},
+];
+
+export const RESOLUTION_OPTIONS = [
+    {label: 'Default', value: ''},
+    {label: 'Thumbnail', value: 'thumbnail'},
+    {label: 'Small', value: 'small'},
+    {label: 'Medium', value: 'medium'},
+    {label: 'Large', value: 'large'},
+    {label: 'Extra Large', value: 'xlarge'},
+    {label: 'Full', value: 'full'},
+];

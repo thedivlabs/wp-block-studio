@@ -2,7 +2,7 @@ import '../scss/block.scss'
 
 import {
     useBlockProps,
-    useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
+    useInnerBlocksProps, InspectorControls, PanelColorSettings
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -14,23 +14,15 @@ import {useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 import {
     __experimentalUnitControl as UnitControl,
-    __experimentalBorderControl as BorderControl, __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl, SelectControl,
 } from "@wordpress/components";
 import React, {useCallback} from "react";
+import {
+    DIMENSION_UNITS_TEXT,
+    ICON_STYLES,
+} from "Includes/config";
 
-const DIMENSION_UNITS = [
-    {value: 'px', label: 'px', default: 0},
-    {value: 'em', label: 'em', default: 0},
-    {value: 'rem', label: 'rem', default: 0},
-];
 
-const ICON_STYLES = [
-    {label: 'Select', value: ''},
-    {label: 'Solid', value: '900'},
-    {label: 'Regular', value: '400'},
-    {label: 'Light', value: '300'},
-];
 
 function classNames(attributes = {}) {
 
@@ -113,7 +105,7 @@ registerBlockType(metadata.name, {
                     label="Icon Size"
                     value={attributes['wpbs-accordion-group']?.['icon-size'] ?? ''}
                     onChange={(val) => updateSettings({'icon-size': val})}
-                    units={DIMENSION_UNITS}
+                    units={DIMENSION_UNITS_TEXT}
                     isResetValueOnUnitChange={true}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom

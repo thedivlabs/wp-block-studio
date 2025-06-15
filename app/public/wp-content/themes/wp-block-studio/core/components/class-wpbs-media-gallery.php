@@ -31,7 +31,7 @@ class WPBS_Media_Gallery {
 		add_action( 'acf/save_post', [ $this, 'clear_transients' ], 20 );
 
 		$args = [
-			'supports'      => [ 'title', 'permalink', 'thumbnail', 'excerpt' ],
+			'supports'      => [ 'title', 'editor', 'permalink', 'thumbnail', 'excerpt' ],
 			'menu_position' => 25,
 			'menu_icon'     => 'dashicons-format-gallery',
 			'has_archive'   => 'media-gallery',
@@ -82,7 +82,7 @@ class WPBS_Media_Gallery {
 		}, $field_data ) ) );
 	}
 
-	private function init_rest(): void {
+	public function init_rest(): void {
 		register_rest_route( 'wpbs/v1', "/media-gallery/",
 			[
 				'methods'             => 'GET',
@@ -105,7 +105,7 @@ class WPBS_Media_Gallery {
 		);
 	}
 
-	private function clear_transients( $post_id ): void {
+	public function clear_transients( $post_id ): void {
 		if ( get_post_type( $post_id ) === self::$slug ) {
 			delete_transient( self::TRANSIENT_PREFIX . $post_id );
 		}

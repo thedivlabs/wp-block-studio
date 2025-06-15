@@ -24,4 +24,14 @@
     cursor: auto;
   }
 
+  .wpbs-slider-nav {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.swiper-initialized {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
 }

@@ -177,25 +177,19 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
 
-            //delete (sliderOptions.on);
+            delete (sliderOptions.on);
 
             if (!!swiperRef.current?.swiper) {
+
                 swiperRef.current.swiper.destroy(true, true);
 
-                swiperRef.current.querySelectorAll('.swiper-slide','.swiper-wrapper').forEach((swiperElement) => {
-                    swiperElement.removeAttribute('style');
-                });
-
             }
 
-            if ('Swiper' in window) {
-                requestAnimationFrame(() => {
-                    new Swiper(swiperRef.current, sliderOptions)
-                });
-            }
+            requestAnimationFrame(() => {
+                new Swiper(swiperRef.current, sliderOptions)
+            });
 
         }, [sliderOptions]);
-
 
 
         const cssProps = useMemo(() => {

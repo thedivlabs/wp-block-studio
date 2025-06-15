@@ -198,17 +198,18 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes)
         });
 
-        const updateOptions = useCallback((key) => (newValue) => {
+        const updateOptions = useCallback((newValue) => {
             setAttributes((prev) => {
                 const next = {
                     ...prev['wpbs-slider'],
-                    [key]: newValue,
+                    ...newValue,
                 };
                 return {
+                    ...prev,
                     'wpbs-slider': next
                 };
             });
-        }, []);
+        }, [setAttributes]);
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             className: 'swiper-wrapper grow flex',
@@ -217,6 +218,7 @@ registerBlockType(metadata.name, {
             ]
         });
 
+        console.log(attributes['wpbs-slider']);
 
         return <>
             <InspectorControls group="styles">
@@ -227,35 +229,35 @@ registerBlockType(metadata.name, {
                                 label={'Slides Mobile'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={updateOptions('slides-mobile')}
-                                value={attributes['wpbs-slider']['slides-mobile']}
+                                onChange={(newValue)=>updateOptions({'slides-mobile':newValue})}
+                                value={attributes['wpbs-slider']?.['slides-mobile']}
                             />
                             <NumberControl
                                 label={'Slides Large'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={updateOptions('slides-large')}
-                                value={attributes['wpbs-slider']['slides-large']}
+                                onChange={(newValue) => updateOptions({'slides-large': newValue})}
+                                value={attributes['wpbs-slider']?.['slides-large']}
                             />
                             <NumberControl
                                 label={'Group Mobile'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={updateOptions('group-mobile')}
-                                value={attributes['wpbs-slider']['group-mobile']}
+                                onChange={(newValue)=>updateOptions({'group-mobile':newValue})}
+                                value={attributes['wpbs-slider']?.['group-mobile']}
                             />
                             <NumberControl
                                 label={'Group Large'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={updateOptions('group-large')}
-                                value={attributes['wpbs-slider']['group-large']}
+                                onChange={(newValue)=>updateOptions({'group-large':newValue})}
+                                value={attributes['wpbs-slider']?.['group-large']}
                             />
                             <NumberControl
                                 label={'Autoplay'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={updateOptions('autoplay')}
+                                onChange={(newValue)=>updateOptions({'autoplay':newValue})}
                                 value={!!attributes['wpbs-slider']['autoplay']}
                                 step={1}
                             />
@@ -263,8 +265,8 @@ registerBlockType(metadata.name, {
                                 label={'Transition'}
                                 __next40pxDefaultSize
                                 isShiftStepEnabled={true}
-                                onChange={updateOptions('transition')}
-                                value={attributes['wpbs-slider']['transition']}
+                                onChange={(newValue)=>updateOptions({'transition':newValue})}
+                                value={attributes['wpbs-slider']?.['transition']}
                                 step={1}
                             />
                             <UnitControl
@@ -274,8 +276,8 @@ registerBlockType(metadata.name, {
                                     {value: 'px', label: 'px', default: 0},
                                 ]}
                                 __next40pxDefaultSize
-                                onChange={updateOptions('margin-mobile')}
-                                value={attributes['wpbs-slider']['margin-mobile']}
+                                onChange={(newValue)=>updateOptions({'margin-mobile':newValue})}
+                                value={attributes['wpbs-slider']?.['margin-mobile']}
                             />
                             <UnitControl
                                 label={'Margin Large'}
@@ -284,8 +286,8 @@ registerBlockType(metadata.name, {
                                     {value: 'px', label: 'px', default: 0},
                                 ]}
                                 __next40pxDefaultSize
-                                onChange={updateOptions('margin-large')}
-                                value={attributes['wpbs-slider']['margin-large']}
+                                onChange={(newValue)=>updateOptions({'margin-large':newValue})}
+                                value={attributes['wpbs-slider']?.['margin-large']}
                             />
 
 
@@ -296,8 +298,8 @@ registerBlockType(metadata.name, {
                                     {label: 'Progress Bar', value: 'progressbar'},
                                     {label: 'Bullets', value: 'bullets'},
                                 ]}
-                                onChange={updateOptions('pagination')}
-                                value={attributes['wpbs-slider']['pagination']}
+                                onChange={(newValue)=>updateOptions({'pagination':newValue})}
+                                value={attributes['wpbs-slider']?.['pagination']}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
                             />
@@ -308,8 +310,8 @@ registerBlockType(metadata.name, {
                                     {label: 'Fade', value: 'fade'},
                                     {label: 'Flip', value: 'flip'},
                                 ]}
-                                onChange={updateOptions('effect')}
-                                value={attributes['wpbs-slider']['effect']}
+                                onChange={(newValue)=>updateOptions({'effect':newValue})}
+                                value={attributes['wpbs-slider']?.['effect']}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
                             />
@@ -319,56 +321,56 @@ registerBlockType(metadata.name, {
                               style={{padding: '1rem 0'}}>
                             <ToggleControl
                                 label="Hover Pause"
-                                onChange={updateOptions('hover-pause')}
+                                onChange={(newValue)=>updateOptions({'hover-pause':newValue})}
                                 checked={!!attributes['wpbs-slider']['hover-pause']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="Free Mode"
-                                onChange={updateOptions('free-mode')}
+                                onChange={(newValue)=>updateOptions({'free-mode':newValue})}
                                 checked={!!attributes['wpbs-slider']['free-mode']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="Centered"
-                                onChange={updateOptions('centered')}
+                                onChange={(newValue)=>updateOptions({'centered':newValue})}
                                 checked={!!attributes['wpbs-slider']['centered']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="Collapse"
-                                onChange={updateOptions('collapse')}
+                                onChange={(newValue)=>updateOptions({'collapse':newValue})}
                                 checked={!!attributes['wpbs-slider']['collapse']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="Loop"
-                                onChange={updateOptions('loop')}
+                                onChange={(newValue)=>updateOptions({'loop':newValue})}
                                 checked={!!attributes['wpbs-slider']['loop']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="Dim"
-                                onChange={updateOptions('dim')}
+                                onChange={(newValue)=>updateOptions({'dim':newValue})}
                                 checked={!!attributes['wpbs-slider']['dim']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="From End"
-                                onChange={updateOptions('from-end')}
+                                onChange={(newValue)=>updateOptions({'from-end':newValue})}
                                 checked={!!attributes['wpbs-slider']['from-end']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />
                             <ToggleControl
                                 label="Rewind"
-                                onChange={updateOptions('rewind')}
+                                onChange={(newValue)=>updateOptions({'rewind':newValue})}
                                 checked={!!attributes['wpbs-slider']['rewind']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

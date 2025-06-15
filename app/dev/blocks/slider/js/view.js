@@ -36,10 +36,42 @@ const SWIPER_OPTIONS_VIEW = {
     }
 };
 
+function initLib() {
+    if (typeof window.Swiper !== 'function') {
+
+        let stylesheet = document.createElement('link');
+        stylesheet.id = 'wpbs-swiper-styles';
+        stylesheet.rel = 'stylesheet';
+        stylesheet.type = 'text/css';
+        stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
+
+        document.head.appendChild(stylesheet);
+
+        return new Promise((resolve, reject) => {
+            const script_tag = document.createElement('script');
+            script_tag.id = 'wpbs-swiper-js';
+            script_tag.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+            script_tag.defer = true;
+            script_tag.async = true;
+            script_tag.onload = resolve;
+            script_tag.onerror = reject;
+            document.body.appendChild(script_tag);
+        });
+
+    } else {
+        return Promise.resolve();
+    }
+}
+
 const {state} = store('wpbs', {
     callbacks: {
         observeSlider: () => {
             const {ref: element} = getElement();
+
+            if (element.classList.contains('swiper-initialized')) {
+                return;
+            }
+
             let {args} = getContext();
 
             args = Object.assign({}, SWIPER_OPTIONS_VIEW, args);
@@ -54,36 +86,13 @@ const {state} = store('wpbs', {
                             return false;
                         }
 
-                        async function initLib() {
-                            if (typeof window.Swiper !== 'function') {
-
-                                let stylesheet = document.createElement('link');
-                                stylesheet.id = 'wpbs-swiper-styles';
-                                stylesheet.rel = 'stylesheet';
-                                stylesheet.type = 'text/css';
-                                stylesheet.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-
-                                document.head.appendChild(stylesheet);
-
-                                return new Promise((resolve, reject) => {
-                                    const script_tag = document.createElement('script');
-                                    script_tag.id = 'wpbs-swiper-js';
-                                    script_tag.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-                                    script_tag.defer = true;
-                                    script_tag.async = true;
-                                    script_tag.onload = resolve;
-                                    script_tag.onerror = reject;
-                                    document.body.appendChild(script_tag);
-                                });
-
-                            } else {
-                                return true;
-                            }
-                        }
-
                         initLib().then(() => {
 
-                            const swiper = new Swiper(entry.target, args);
+                            try {
+                                new Swiper(entry.target, args);
+                            } catch (e) {
+                                console.error('Failed to initialize Swiper:', e);
+                            }
                         })
 
                     }

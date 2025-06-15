@@ -127,7 +127,14 @@ export const BORDER_UNITS = [
 
 
 
-
+export const REL_OPTIONS = [
+    {label: 'None', value: ''},
+    {label: 'noopener', value: 'noopener'},
+    {label: 'noreferrer', value: 'noreferrer'},
+    {label: 'nofollow', value: 'nofollow'},
+    {label: 'noopener noreferrer', value: 'noopener noreferrer'},
+    {label: 'nofollow noopener', value: 'nofollow noopener'},
+];
 
 export const DIMENSION_UNITS_TEXT = [
     {value: 'px', label: 'px', default: 0},

@@ -14,7 +14,7 @@ import {
     __experimentalGrid as Grid,
     ToggleControl, SelectControl, TextControl
 } from "@wordpress/components";
-
+import {REL_OPTIONS} from "Includes/config.js";
 
 function sectionClassNames(attributes = {}) {
 
@@ -85,14 +85,7 @@ registerBlockType(metadata.name, {
                             <SelectControl
                                 label="Rel"
                                 value={attributes['wpbs-layout-grid-card']?.linkRel ?? ''}
-                                options={[
-                                    {label: 'None', value: ''},
-                                    {label: 'noopener', value: 'noopener'},
-                                    {label: 'noreferrer', value: 'noreferrer'},
-                                    {label: 'nofollow', value: 'nofollow'},
-                                    {label: 'noopener noreferrer', value: 'noopener noreferrer'},
-                                    {label: 'nofollow noopener', value: 'nofollow noopener'},
-                                ]}
+                                options={REL_OPTIONS}
                                 onChange={(value) => updateSettings({linkRel: value})}
                             />
                             <TextControl

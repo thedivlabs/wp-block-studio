@@ -19,22 +19,11 @@ import {
 } from "@wordpress/components";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Breakpoint from "Components/Breakpoint"
+import {
+    ICON_STYLES,
+    DIMENSION_UNITS_TEXT,
+} from "Includes/config"
 
-
-const ICON_STYLES = [
-    {label: 'Select', value: ''},
-    {label: 'Solid', value: '900'},
-    {label: 'Regular', value: '400'},
-    {label: 'Light', value: '300'},
-];
-
-const DIMENSION_UNITS = [
-    {label: 'Select', value: ''},
-    {value: 'px', label: 'px', default: 0, step: 1},
-    {value: 'em', label: 'em', default: 0, step: .1},
-    {value: 'rem', label: 'rem', default: 0, step: .1},
-    {value: 'ch', label: 'ch', default: 0, step: 1},
-]
 
 function blockClasses(attributes = {}) {
     return [
@@ -145,7 +134,7 @@ registerBlockType(metadata.name, {
                                 label="Icon Size"
                                 value={attributes['wpbs-icon-list'].iconSize ?? ''}
                                 onChange={(val) => updateSettings({iconSize: val})}
-                                units={DIMENSION_UNITS}
+                                units={DIMENSION_UNITS_TEXT}
                                 isResetValueOnUnitChange={true}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
@@ -154,7 +143,7 @@ registerBlockType(metadata.name, {
                                 label="Icon Space"
                                 value={attributes['wpbs-icon-list'].iconSpace ?? ''}
                                 onChange={(val) => updateSettings({iconSpace: val})}
-                                units={DIMENSION_UNITS}
+                                units={DIMENSION_UNITS_TEXT}
                                 isResetValueOnUnitChange={true}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom

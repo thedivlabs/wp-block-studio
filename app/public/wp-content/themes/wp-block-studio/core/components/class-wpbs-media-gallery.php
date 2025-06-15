@@ -3,18 +3,51 @@
 class WPBS_Media_Gallery {
 
 	private static WPBS_Media_Gallery $instance;
-	private static string $cpt_id;
+
 	private const TRANSIENT_PREFIX = 'wpbs_media_gallery_';
+	private const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 	private const ACF_FIELD = 'wpbs_media_gallery';
+
+	public static string $singular;
+	public static string $plural;
+	public static string $slug;
+
+	public static string $tax_singular;
+	public static string $tax_plural;
+	public static string $tax_slug;
 
 
 	private function __construct() {
 
+		self::$singular = 'Media Gallery';
+		self::$plural   = 'Media Galleries';
+		self::$slug     = 'media-gallery';
 
-		self::$cpt_id = 'media-gallery';
+		self::$tax_singular = 'Category';
+		self::$tax_plural   = 'Categories';
+		self::$tax_slug     = 'media-gallery-category';
 
 		add_action( 'rest_api_init', [ $this, 'init_rest' ] );
 		add_action( 'acf/save_post', [ $this, 'clear_transients' ], 20 );
+
+		$args = [
+			'supports'      => [ 'title', 'permalink', 'thumbnail', 'excerpt' ],
+			'menu_position' => 25,
+			'menu_icon'     => 'dashicons-format-gallery',
+			'has_archive'   => 'media-gallery',
+			'taxonomies'    => [
+				'media-gallery-category'
+			]
+		];
+
+		$labels = [
+			'menu_name' => 'Media Gallery',
+			'archives'  => 'Media Gallery',
+		];
+
+		WPBS_CPT::register( self::$singular, self::$plural, self::$slug, $args, $labels );
+
+		WPBS_Taxonomy::register( self::$tax_singular, self::$tax_plural, self::$slug, self::$tax_slug, false );
 
 	}
 
@@ -35,7 +68,7 @@ class WPBS_Media_Gallery {
 			$src    = wp_get_attachment_image_url( $attachment_id, 'full' );
 			$srcset = wp_get_attachment_image_srcset( $attachment_id, 'full' );
 			$alt    = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
-			$meta   = wp_get_attachment_metadata( $attachment_id );
+			$meta   = wp_get_attachment_metadata( $attachment_id ) ?: [];
 
 			return array_filter( [
 				'id'     => $attachment_id,
@@ -52,7 +85,7 @@ class WPBS_Media_Gallery {
 	private function init_rest(): void {
 		register_rest_route( 'wpbs/v1', "/media-gallery/",
 			[
-				'methods'             => 'POST',
+				'methods'             => 'GET',
 				'accept_json'         => true,
 				'callback'            => [ $this, 'rest_request' ],
 				'permission_callback' => function () {
@@ -73,7 +106,7 @@ class WPBS_Media_Gallery {
 	}
 
 	private function clear_transients( $post_id ): void {
-		if ( get_post_type( $post_id ) === self::$cpt_id ) {
+		if ( get_post_type( $post_id ) === self::$slug ) {
 			delete_transient( self::TRANSIENT_PREFIX . $post_id );
 		}
 	}
@@ -93,7 +126,7 @@ class WPBS_Media_Gallery {
 			$result = self::parse_acf_data( get_field( self::ACF_FIELD, $id ) ?: [] );
 
 			if ( ! empty( $result ) ) {
-				set_transient( $transient_id, $result, DAY_IN_SECONDS );
+				set_transient( $transient_id, $result, self::TRANSIENT_EXPIRATION );
 			}
 
 		}

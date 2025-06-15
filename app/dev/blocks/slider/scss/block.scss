@@ -29,7 +29,7 @@
     pointer-events: none;
   }
 
-  &.swiper-initialized {
+  &.swiper-initialized .wpbs-slider-nav {
     opacity: 1;
     pointer-events: auto;
   }

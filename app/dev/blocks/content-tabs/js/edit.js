@@ -163,11 +163,11 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
-                ['wpbs/content-tabs-nav'],
+                ['wpbs/content-tabs-navigation'],
                 ['wpbs/content-tabs-container'],
             ],
             allowedBlocks: [
-                'wpbs/content-tabs-nav',
+                'wpbs/content-tabs-navigation',
                 'wpbs/content-tabs-container',
                 'wpbs/layout-element',
             ],

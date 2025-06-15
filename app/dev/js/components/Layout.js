@@ -18,6 +18,23 @@ import {
 
 import {getCSSFromStyle} from 'Components/Style';
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
+import {
+    DISPLAY_OPTIONS,
+    DIRECTION_OPTIONS,
+    CONTAINER_OPTIONS,
+    ALIGN_OPTIONS,
+    JUSTIFY_OPTIONS,
+    WIDTH_OPTIONS,
+    HEIGHT_OPTIONS,
+    WRAP_OPTIONS,
+    POSITION_OPTIONS,
+    OVERFLOW_OPTIONS,
+    SHAPE_OPTIONS,
+    ORIGIN_OPTIONS,
+    IMAGE_SIZE_OPTIONS,
+    DIMENSION_UNITS,
+    BORDER_UNITS,
+} from "Includes/config";
 
 export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
@@ -157,133 +174,6 @@ const LAYOUT_PROPS = {
     ],
 
 };
-
-const DISPLAY_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Flex', value: 'flex'},
-    {label: 'Block', value: 'block'},
-    {label: 'Inline Flex', value: 'inline-flex'},
-    {label: 'Inline Block', value: 'inline-block'},
-    {label: 'None', value: 'none'},
-];
-
-const DIRECTION_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Row', value: 'row'},
-    {label: 'Column', value: 'column'},
-    {label: 'Row Reverse', value: 'row-reverse'},
-    {label: 'Column Reverse', value: 'column-reverse'},
-];
-
-const CONTAINER_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'None', value: 'none'},
-    {label: 'Extra Small', value: 'xs'},
-    {label: 'Small', value: 'sm'},
-    {label: 'Medium', value: 'md'},
-    {label: 'Normal', value: 'normal'},
-    {label: 'Large', value: 'lg'},
-    {label: 'Extra Large', value: 'xl'},
-];
-
-const ALIGN_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Start', value: 'start'},
-    {label: 'Center', value: 'center'},
-    {label: 'End', value: 'end'},
-    {label: 'Stretch', value: 'stretch'},
-];
-
-const JUSTIFY_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Start', value: 'flex-start'},
-    {label: 'Center', value: 'center'},
-    {label: 'End', value: 'flex-end'},
-    {label: 'Between', value: 'space-between'},
-]
-
-const WIDTH_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Auto', value: 'auto'},
-    {label: 'Fit', value: 'fit-content'},
-    {label: 'Full', value: '100%'},
-]
-
-const HEIGHT_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Screen', value: 'screen'},
-    {label: 'Full Screen', value: 'full-screen'},
-    {label: 'Full', value: '100%'},
-    {label: 'Auto', value: 'auto'},
-    {label: 'Inherit', value: 'inherit'},
-]
-
-const WRAP_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Wrap', value: 'wrap'},
-    {label: 'No Wrap', value: 'no-wrap'},
-]
-
-const POSITION_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Relative', value: 'relative'},
-    {label: 'Absolute', value: 'absolute'},
-    {label: 'Sticky', value: 'sticky'},
-    {label: 'Static', value: 'static'},
-]
-
-const OVERFLOW_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Hidden', value: 'hidden'},
-    {label: 'Visible', value: 'visible'},
-]
-
-const SHAPE_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Square', value: '1/1'},
-    {label: 'Video', value: '16/9'},
-    {label: 'Photo', value: '10/8'},
-    {label: 'Tele', value: '5/6'},
-    {label: 'Tall', value: '1/1.4'},
-    {label: 'Auto', value: 'auto'},
-]
-
-const ORIGIN_OPTIONS = [
-    {label: 'Default', value: ''},
-    {label: 'Center', value: 'center'},
-    {label: 'Top', value: 'top'},
-    {label: 'Right', value: 'right'},
-    {label: 'Bottom', value: 'bottom'},
-    {label: 'Left', value: 'left'},
-    {label: 'Top Left', value: 'top left'},
-    {label: 'Top Right', value: 'top right'},
-    {label: 'Bottom Left', value: 'bottom left'},
-    {label: 'Bottom Right', value: 'bottom right'},
-];
-
-const IMAGE_SIZE_OPTIONS = [
-    {label: 'Default', value: 'contain'},
-    {label: 'Cover', value: 'cover'},
-    {label: 'Vertical', value: 'auto 100%'},
-    {label: 'Horizontal', value: '100% auto'},
-];
-
-const DIMENSION_UNITS = [
-    {value: 'px', label: 'px', default: 0},
-    {value: '%', label: '%', default: 0},
-    {value: 'em', label: 'em', default: 0},
-    {value: 'rem', label: 'rem', default: 0},
-    {value: 'vh', label: 'vh', default: 0},
-    {value: 'vw', label: 'vw', default: 0},
-    {value: 'ch', label: 'ch', default: 0},
-]
-
-const BORDER_UNITS = [
-    {value: 'px', label: 'px', default: 0},
-    {value: '%', label: '%', default: 0},
-    {value: 'em', label: 'em', default: 0},
-    {value: 'rem', label: 'rem', default: 0},
-]
 
 const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => (
     <BaseControl

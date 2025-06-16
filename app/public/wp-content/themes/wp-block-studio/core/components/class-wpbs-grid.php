@@ -195,7 +195,7 @@ class WPBS_Grid {
 		return $new_block;
 	}
 
-	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [] ): array|bool {
+	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [], $max = false ): array|bool {
 
 		if ( empty( $card ) ) {
 			return [];
@@ -249,6 +249,10 @@ class WPBS_Grid {
 		if ( is_array( $query ) ) {
 
 			foreach ( $query as $k => $data ) {
+
+				if ( $k >= $max ) {
+					break;
+				}
 
 				$new_block = self::loop_card( $card, $data, $k );
 

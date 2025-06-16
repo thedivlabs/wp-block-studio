@@ -19,7 +19,7 @@ if ( $is_gallery ) {
 
 	$gallery = WPBS_Media_Gallery::query( intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false ), $attributes['wpbs-media-gallery'] ?? [] );
 
-	$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, array_merge( $gallery['images'] ?? [], $gallery['video'] ?? [] ) );
+	$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, array_merge( $gallery['images'] ?? [], $gallery['video'] ?? [] ), $attributes['wpbs-media-gallery']['page-size'] ?? false );
 
 	if ( ! empty( $image_cards['content'] ) ) {
 		echo $block->inner_content[0];

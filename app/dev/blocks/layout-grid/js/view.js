@@ -136,11 +136,14 @@ const {state} = store('wpbs/grid', {
             setMasonry(grid);
             setDividers(grid, context);
 
-            if (cur >= max) {
-                [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
+            [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
+                if (cur >= max) {
                     el.remove();
-                })
-            }
+                } else {
+                    el.classList.remove('hidden');
+                }
+            })
+
 
         },
         pagination: async () => {
@@ -151,6 +154,10 @@ const {state} = store('wpbs/grid', {
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
             const page = parseInt(grid.dataset?.page ?? 2);
+
+            const isGallery = grid.classList.contains('is-style-gallery');
+
+            console.log(isGallery);
 
             grid.dataset.page = String(page + 1);
 

@@ -266,7 +266,7 @@ registerBlockType(metadata.name, {
         });
 
         const cardClass = 'layout-grid-card';
-        
+
         props.attributes.cardClass = cardClass;
 
         return (
@@ -363,7 +363,12 @@ registerBlockType(metadata.name, {
         }
 
         const PaginationButton = () => {
-            if ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current') {
+            return <button type="button"
+                           className={"wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"}
+                           data-wp-on-async--click="actions.pagination">
+                {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
+            </button>;
+            /*if ((props.attributes?.className ?? '').includes('is-style-gallery') || ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current')) {
                 return <button type="button"
                                className={"wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"}
                                data-wp-on-async--click="actions.pagination">
@@ -371,7 +376,7 @@ registerBlockType(metadata.name, {
                 </button>;
             } else {
                 return <></>;
-            }
+            }*/
         }
 
         return (

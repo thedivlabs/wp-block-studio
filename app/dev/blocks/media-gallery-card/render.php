@@ -9,7 +9,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-media-gallery-card layout-grid-card',
 		$attributes['uniqueId'] ?? null
 	] ) ),
-	'data-index' => $attributes['index'] ?? null,
+	'data-index'          => $attributes['index'] ?? null,
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
 ] );
@@ -20,6 +20,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 <figure <?php echo $wrapper_attributes ?>>
 	<?= wp_get_attachment_image( $attributes['postId'] ?? false, 'medium', false, [
-		'loading' => 'lazy'
+		'loading' => 'lazy',
+		'class'   => 'w-full h-full object-cover'
 	] ) ?>
 </figure>

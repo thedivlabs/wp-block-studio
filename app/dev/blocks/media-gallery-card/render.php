@@ -7,15 +7,13 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery-card',
-		$attributes['uniqueId'] ?? null
+		$attributes['uniqueId'] ?? null,
+		$attributes['cardClass'] ?? null,
 	] ) ),
 	'data-index'          => $attributes['index'] ?? null,
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
 ] );
-
-
-WPBS::console_log( $block );
 
 ?>
 

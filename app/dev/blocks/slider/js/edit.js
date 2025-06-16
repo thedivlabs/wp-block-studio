@@ -59,14 +59,14 @@ function getArgs(attributes) {
     const breakpoint = attributes.breakpoint || 992;
 
     let args = {
-        slidesPerView: options['slides-mobile'] || options['slides-large'] || 1,
-        slidesPerGroup: options['group-mobile'] || options['group-large'] || 1,
-        spaceBetween: options['margin-mobile'] || options['margin-large'] ? (options['margin-mobile'] || options['margin-large']).replace('px', '') : null,
+        slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
+        slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
+        spaceBetween: parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0),
         autoplay: options['autoplay'] ? {
             delay: options['autoplay'] * 1000,
             pauseOnMouseEnter: !!options['hover-pause']
         } : false,
-        speed: options['transition'] ? options['transition'] * 100 : null,
+        speed: parseInt(options['transition'] ? options['transition'] * 100 : null) || null,
         pagination: options['pagination'] ? {
             enabled: true,
             el: '.swiper-pagination',
@@ -82,9 +82,9 @@ function getArgs(attributes) {
     };
 
     let breakpointArgs = {
-        slidesPerView: options['slides-mobile'] && options['slides-large'] ? options['slides-large'] : null,
-        slidesPerGroup: options['group-mobile'] && options['group-large'] ? options['group-large'] : null,
-        spaceBetween: options['margin-mobile'] && options['margin-large'] ? options['margin-large'] : null,
+        slidesPerView: parseInt(options['slides-mobile'] && options['slides-large'] ? options['slides-large'] : 1),
+        slidesPerGroup: parseInt(options['group-mobile'] && options['group-large'] ? options['group-large'] : 1),
+        spaceBetween: parseInt(options?.['margin-large'] ?? options?.['margin-mobile'] ?? 0),
     };
 
     if (!!options['collapse']) {
@@ -176,19 +176,43 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-slider'], uniqueId]);
 
         useEffect(() => {
+            if (swiperRef.current?.swiper) {
 
-            //delete (sliderOptions.on);
+                const allowedParams = [
+                    'breakpoints',
+                    'slidesPerView',
+                    //'rewind',
+                    'slidesPerGroup',
+                    'spaceBetween',
+                ];
 
-            if (!!swiperRef.current?.swiper) {
-                swiperRef.current.swiper.destroy(true, true);
+                const newParams = Object.fromEntries(
+                    Object.entries({
+                        ...swiperRef.current.swiper.params,
+                        ...sliderOptions
+                    }).filter(([key]) => allowedParams.includes(key))
+                );
+
+
+                if (swiperRef.current?.swiper?.currentBreakpoint) {
+                    swiperRef.current.swiper.currentBreakpoint = null;
+                }
+
+                delete (newParams.on);
+
+                swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
+
+                swiperRef.current.swiper.update();
+
+            } else if ('Swiper' in window) {
+
+                console.log(sliderOptions);
+                console.log(SWIPER_OPTIONS_DEFAULT);
+
+                delete (sliderOptions.on);
+
+                swiperRef.current.swiper = new Swiper(swiperRef.current, sliderOptions);
             }
-
-            if ('Swiper' in window) {
-                requestAnimationFrame(() => {
-                    new Swiper(swiperRef.current, sliderOptions)
-                });
-            }
-
         }, [sliderOptions]);
 
 

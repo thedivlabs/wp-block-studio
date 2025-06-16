@@ -81,7 +81,6 @@ if ( ( $is_gallery || $is_loop ) && ! empty( $block->parsed_block['innerBlocks']
 
 
 			$block->inner_content[1] = trim( $image_cards['content'] );
-			$block->inner_content[1] .= WPBS_Media_Gallery::view_args( $attributes['wpbs-media-gallery'] );
 		}
 
 		$max   = count( $image_cards );

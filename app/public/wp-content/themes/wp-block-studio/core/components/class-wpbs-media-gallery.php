@@ -85,7 +85,7 @@ class WPBS_Media_Gallery {
 	public function init_rest(): void {
 		register_rest_route( 'wpbs/v1', "/media-gallery/",
 			[
-				'methods'             => 'GET',
+				'methods'             => 'POST',
 				'accept_json'         => true,
 				'callback'            => [ $this, 'rest_request' ],
 				'permission_callback' => function () {
@@ -94,7 +94,7 @@ class WPBS_Media_Gallery {
 					return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
 				},
 				'args'                => [
-					'id' => [
+					'gallery-id' => [
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
@@ -109,22 +109,6 @@ class WPBS_Media_Gallery {
 		if ( get_post_type( $post_id ) === self::$slug ) {
 			delete_transient( self::TRANSIENT_PREFIX . $post_id );
 		}
-	}
-
-
-	public static function view_args( $args = [] ): string|bool {
-		if ( empty( $args ) ) {
-			return false;
-		}
-
-		$args = array_filter( $args, function ( $prop ) {
-			return ! in_array( $prop, [
-				'card-class',
-				'gallery-id'
-			] );
-		}, ARRAY_FILTER_USE_KEY );
-
-		return '<script class="wpbs-media-gallery-args" type="application/json">' . json_encode( $args ) . '</script>';
 	}
 
 	public static function query( $id = 0, $args = [] ): array {
@@ -156,9 +140,9 @@ class WPBS_Media_Gallery {
 		return $result;
 	}
 
-	private function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$id = $request->get_param( 'id' ); // singular, not plural
+		$id = $request->get_param( 'gallery-id' );
 
 		if ( empty( $id ) ) {
 			return new WP_Error( 'no_id', 'Missing ID parameter.', [ 'status' => 400 ] );

@@ -157,8 +157,6 @@ const {state} = store('wpbs/grid', {
 
             const isGallery = grid.classList.contains('is-style-gallery');
 
-            console.log(isGallery);
-
             grid.dataset.page = String(page + 1);
 
             const scriptTag = grid.querySelector('script.wpbs-layout-grid-args');
@@ -169,12 +167,12 @@ const {state} = store('wpbs/grid', {
 
             const endpoint = isGallery ? '/wp-json/wpbs/v1/media-gallery'
                 : '/wp-json/wpbs/v1/layout-grid';
-
+console.log(data);
             const request = isGallery ? {
                 card: data.card,
                 attrs: data.attrs,
                 page: page,
-                galleryId: data?.['gallery-id'],
+                galleryId: parseInt(data?.['gallery-id']),
             } : {
                 card: data.card,
                 attrs: data.attrs,
@@ -193,7 +191,7 @@ const {state} = store('wpbs/grid', {
                 body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
-
+                    console.log(result);
                     WPBS.loader.toggle({
                         remove: true
                     });

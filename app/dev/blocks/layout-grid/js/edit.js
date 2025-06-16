@@ -388,7 +388,7 @@ registerBlockType(metadata.name, {
                 </div>
                 <PaginationButton/>
                 <BackgroundElement attributes={props.attributes} editor={false}/>
-                {(props.attributes?.className ?? '').includes('is-style-loop') &&
+                {((props.attributes?.className ?? '').includes('is-style-loop') || (props.attributes?.className ?? '').includes('is-style-gallery')) &&
                     <script class="wpbs-layout-grid-args" type="application/json"/>}
             </div>
         );

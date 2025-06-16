@@ -44,8 +44,6 @@ registerBlockType(metadata.name, {
 
         const {cardClass = ''} = context;
 
-        console.log(cardClass);
-
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
 
         useEffect(() => {
@@ -62,7 +60,8 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({
-                'wpbs-media-gallery-card': result
+                'wpbs-media-gallery-card': result,
+                cardClass: cardClass
             });
         }, [setAttributes, attributes['wpbs-media-gallery-card']]);
 

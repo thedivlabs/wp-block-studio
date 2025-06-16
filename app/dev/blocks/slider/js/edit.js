@@ -199,18 +199,14 @@ registerBlockType(metadata.name, {
                     swiperRef.current.swiper.currentBreakpoint = null;
                 }
 
+
                 swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
 
                 swiperRef.current.swiper.update();
 
             } else if ('Swiper' in window) {
 
-                console.log(sliderOptions);
-                console.log(SWIPER_OPTIONS_DEFAULT);
-
-                delete (sliderOptions.on);
-
-                swiperRef.current.swiper = new Swiper(swiperRef.current, sliderOptions);
+                new Swiper(swiperRef.current, sliderOptions);
             }
         }, [sliderOptions]);
 

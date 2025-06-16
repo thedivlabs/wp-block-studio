@@ -140,6 +140,30 @@ class WPBS_Media_Gallery {
 		return $result;
 	}
 
+	private static function loop_card( $card = [], $args = [], $index = false ): WP_Block|bool {
+
+		$block_template = $card;
+		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
+
+		$unique_id = join( ' ', array_filter( [
+			$original_id ?? null,
+			$original_id . '--' . $index
+		] ) );
+
+		$block_template['attrs']['index'] = $index;
+
+		$new_block = new WP_Block( $block_template, array_filter( [
+			'uniqueId' => $unique_id,
+			'index'    => $index,
+		] ) );
+
+		$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
+		$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
+
+		return $new_block;
+	}
+
+
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
 		$params = $request->get_params();
@@ -148,21 +172,40 @@ class WPBS_Media_Gallery {
 
 		if ( empty( $id ) ) {
 			return new WP_Error( 'no_id', 'Missing ID parameter.', [
-				'status' => 400,
-				'params' => $params,
+				'status'  => 400,
+				'params'  => $params,
 				'request' => $request,
 			] );
 		}
 
+
+		$max  = $params['max'] ?? - 1;
+		$cur  = $params['current'] ?? 0;
+		$card = $params['card'] ?? 0;
+
 		$query = self::query( $id );
-		//$cards = self::
+
+		//$query = array_slice( $query, $cur, $max );
+
+		$new_content = '';
+
+		foreach ( $query as $k => $data ) {
+
+			if ( $k >= $max ) {
+				//break;
+			}
+
+			$new_block = self::loop_card( $card, $data, $k );
+
+			$new_content .= $new_block->render();
+
+		}
+
 
 		return new WP_REST_Response(
 			[
 				'status'   => 200,
-				'response' => [
-					'media' => self::query( $id )
-				]
+				'response' => $new_content
 			]
 		);
 

@@ -10,6 +10,7 @@ import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
+import {MEDIA_GALLERY_ATTRIBUTES, MediaGalleryControls} from "Components/MediaGallery"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Loop from "Components/Loop"
 import {
@@ -45,6 +46,7 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
+        ...MEDIA_GALLERY_ATTRIBUTES,
         'wpbs-grid': {
             type: 'object',
             default: {
@@ -241,14 +243,25 @@ registerBlockType(metadata.name, {
             return <Loop attributes={attributes} setAttributes={setAttributes}/>
         }, [grid])
 
+        const tabGallery = useMemo(() => {
+            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>
+        }, [attributes['wpbs-grid']])
+
         const tabs = {
             options: tabOptions,
-            loop: tabLoop
+            loop: tabLoop,
+            gallery: tabGallery,
         }
 
         const innerBlockProps = useInnerBlocksProps({
             className: 'wpbs-layout-grid__container relative z-20',
-        }, {});
+        }, {
+            allowedBlocks: [
+                "wpbs/media-gallery-card",
+                "wpbs/layout-grid-card",
+                "core/query-pagination"
+            ]
+        });
 
         return (
             <>

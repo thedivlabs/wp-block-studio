@@ -20,6 +20,7 @@
     }
   },
   "allowedBlocks": [
+    "wpbs/media-gallery-card",
     "wpbs/layout-grid-card",
     "core/query-pagination"
   ],

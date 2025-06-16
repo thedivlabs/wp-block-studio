@@ -158,7 +158,7 @@ class WPBS_Grid {
 
 	}
 
-	private static function loop_card( $card = [], $args = [] ): WP_Block|bool {
+	private static function loop_card( $card = [], $args = [], $index = false ): WP_Block|bool {
 
 		$block_template = $card;
 		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
@@ -178,11 +178,13 @@ class WPBS_Grid {
 		$block_template['attrs']['postId']   = $post_id;
 		$block_template['attrs']['termId']   = $args['termId'] ?? 0;
 		$block_template['attrs']['uniqueId'] = $unique_id;
+		$block_template['attrs']['index']    = $index;
 
 		$new_block = new WP_Block( $block_template, array_filter( [
 			'termId'   => $args['termId'] ?? 0,
 			'postId'   => $post_id,
-			'uniqueId' => $unique_id
+			'uniqueId' => $unique_id,
+			'index'    => $index,
 		] ) );
 
 		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
@@ -194,6 +196,10 @@ class WPBS_Grid {
 	}
 
 	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [] ): array|bool {
+
+		if ( empty( $card ) ) {
+			return [];
+		}
 
 		$query = match ( true ) {
 			is_array( $current_query ) && empty( $attrs['wpbs-query']['loop_terms'] ) => $current_query,
@@ -244,7 +250,7 @@ class WPBS_Grid {
 
 			foreach ( $query as $k => $data ) {
 
-				$new_block = self::loop_card( $card, $data );
+				$new_block = self::loop_card( $card, $data, $k );
 
 				$new_content .= $new_block->render();
 

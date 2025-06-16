@@ -9,9 +9,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-media-gallery-card layout-grid-card',
 		$attributes['uniqueId'] ?? null
 	] ) ),
+	'data-index' => $attributes['index'] ?? null,
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
 ] );
+
 
 ?>
 

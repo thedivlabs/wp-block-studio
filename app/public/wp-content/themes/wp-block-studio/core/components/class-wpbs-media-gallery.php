@@ -111,7 +111,16 @@ class WPBS_Media_Gallery {
 		}
 	}
 
-	public static function query( $id = 0 ): array {
+
+	public static function view_args( $args = [] ): string|bool {
+		if ( empty( $args ) ) {
+			return false;
+		}
+
+		return '<script class="wpbs-media-gallery-args" type="application/json">' . json_encode( $args ) . '</script>';
+	}
+
+	public static function query( $id = 0, $args = [] ): array {
 
 		if ( ! is_numeric( $id ) || $id <= 0 ) {
 			return [];
@@ -123,9 +132,12 @@ class WPBS_Media_Gallery {
 
 		if ( empty( $result ) ) {
 
+			$images = self::parse_acf_data( get_field( 'wpbs_images', $id ) ?: [] );
+			$video  = self::parse_acf_data( get_field( 'wpbs_video', $id ) ?: [] );
+
 			$result = WPBS::clean_array( [
-				'images' => self::parse_acf_data( get_field( 'wpbs_images', $id ) ?: [] ),
-				'video'  => self::parse_acf_data( get_field( 'wpbs_video', $id ) ?: [] ),
+				'images' => $images,
+				'video'  => $video,
 			] );
 
 			if ( ! empty( $result ) ) {

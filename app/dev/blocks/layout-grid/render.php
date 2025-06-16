@@ -28,6 +28,8 @@ if ( $is_gallery ) {
 
 		echo $image_cards['content'];
 
+		echo WPBS_Media_Gallery::view_args( $attributes['wpbs-media-gallery'] );
+
 		echo $block->inner_content[ count( $block->inner_content ) - 1 ];
 	}
 

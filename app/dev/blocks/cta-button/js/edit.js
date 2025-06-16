@@ -83,14 +83,6 @@ const Content = ({attributes, editor = false}) => {
     );
 }
 
-const POPUP_QUERY = {
-    hide_empty: true,
-    per_page: -1,
-    status: 'publish',
-    order: 'asc',
-    orderby: 'title',
-};
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -159,22 +151,21 @@ registerBlockType(metadata.name, {
 
         }, [attributes['wpbs-cta']]);
 
+        const POPUP_QUERY = useMemo(() => ({per_page: -1}), []);
+
         const popups = useSelect(
             (select) => select(coreStore).getEntityRecords('postType', 'popup', POPUP_QUERY),
-            []
+            [POPUP_QUERY]
         ) || [];
 
         const popupOptions = useMemo(() => {
-            if (!popups) return [];
             return [
-                {
-                    label: 'Select',
-                    value: '',
-                },
+                {label: 'Select', value: ''},
                 ...popups.map((popup) => ({
                     label: popup.title?.raw || '(Untitled)',
                     value: popup.id,
-                }))];
+                })),
+            ];
         }, [popups]);
 
         const tabOptions = useMemo(() => (

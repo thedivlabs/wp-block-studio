@@ -22,6 +22,9 @@
   "providesContext": {
     "postId": "postId"
   },
+  "usesContext": [
+    "cardClass"
+  ],
   "supports": {
     "interactivity": true,
     "color": {

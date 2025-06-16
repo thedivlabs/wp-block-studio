@@ -19,8 +19,8 @@ import {
 
 function blockClassnames(attributes = {}) {
     return [
-        'wpbs-media-gallery-card layout-grid-card',
-        attributes?.['wpbs-media-gallery']?.['card-class'] ?? null,
+        'wpbs-media-gallery-card',
+        attributes?.cardClass ?? null,
         'w-full block relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
@@ -40,12 +40,19 @@ registerBlockType(metadata.name, {
     edit: (props) => {
 
 
-        const {attributes, setAttributes} = props;
+        const {attributes, setAttributes, context} = props;
+
+        const {cardClass = ''} = context;
+
+        console.log(cardClass);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
 
         useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
+            setAttributes({
+                uniqueId: uniqueId,
+                cardClass: cardClass
+            });
         }, []);
 
         const updateSettings = useCallback((newValue) => {

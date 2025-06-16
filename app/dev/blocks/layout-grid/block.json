@@ -24,6 +24,9 @@
     "wpbs/layout-grid-card",
     "core/query-pagination"
   ],
+  "providesContext": {
+    "wpbs/cardClass": "cardClass"
+  },
   "styles": [
     {
       "name": "loop",

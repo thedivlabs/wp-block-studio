@@ -1,6 +1,7 @@
 import "../scss/block.scss";
 
 import {
+    BlockContextProvider,
     InspectorControls,
     PanelColorSettings,
     useBlockProps,
@@ -244,7 +245,8 @@ registerBlockType(metadata.name, {
         }, [grid])
 
         const tabGallery = useMemo(() => {
-            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes} cardClass={'layout-grid-card'}/>
+            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}
+                                         cardClass={'layout-grid-card'}/>
         }, [attributes['wpbs-grid']])
 
         const tabs = {
@@ -253,7 +255,7 @@ registerBlockType(metadata.name, {
             gallery: tabGallery,
         }
 
-        const innerBlockProps = useInnerBlocksProps({
+        const innerBlocksProps = useInnerBlocksProps({
             className: 'wpbs-layout-grid__container relative z-20',
         }, {
             allowedBlocks: [
@@ -262,6 +264,10 @@ registerBlockType(metadata.name, {
                 "core/query-pagination"
             ]
         });
+
+        const cardClass = 'layout-grid-card';
+        
+        props.attributes.cardClass = cardClass;
 
         return (
             <>
@@ -307,11 +313,18 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <div {...blockProps}>
+                <BlockContextProvider
+                    value={{
+                        cardClass,
+                    }}
+                >
+                    <div {...blockProps}>
+                        <div {...innerBlocksProps}></div>
+                        <BackgroundElement attributes={props.attributes} editor={true}/>
+                    </div>
+                </BlockContextProvider>
 
-                    <div {...innerBlockProps} />
-                    <BackgroundElement attributes={props.attributes} editor={true}/>
-                </div>
+
             </>
         )
     },
@@ -336,7 +349,7 @@ registerBlockType(metadata.name, {
             })
         });
 
-        const innerBlockProps = useInnerBlocksProps.save({
+        const innerBlocksProps = useInnerBlocksProps.save({
             className: 'wpbs-layout-grid__container relative z-20',
         }, {});
 
@@ -363,8 +376,8 @@ registerBlockType(metadata.name, {
 
         return (
             <div {...blockProps}>
-                <div {...innerBlockProps} >
-                    {innerBlockProps.children}
+                <div {...innerBlocksProps} >
+                    {innerBlocksProps.children}
                     <GutterSizer/>
 
                 </div>

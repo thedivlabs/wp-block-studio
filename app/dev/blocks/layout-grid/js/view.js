@@ -167,20 +167,30 @@ const {state} = store('wpbs/grid', {
 
             const nonce = WPBS?.settings?.nonce ?? false;
 
+            const endpoint = isGallery ? '/wp-json/wpbs/v1/media-gallery'
+                : '/wp-json/wpbs/v1/layout-grid';
+
+            const request = isGallery ? {
+                card: data.card,
+                attrs: data.attrs,
+                page: page,
+                galleryId: data?.['gallery-id'],
+            } : {
+                card: data.card,
+                attrs: data.attrs,
+                page: page,
+                query: data.query,
+            };
+
             WPBS.loader.toggle();
 
-            await fetch('/wp-json/wpbs/v1/layout-grid', {
+            await fetch(endpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-WP-Nonce': nonce,
                 },
-                body: JSON.stringify({
-                    card: data.card,
-                    attrs: data.attrs,
-                    page: page,
-                    query: data.query,
-                }),
+                body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
 

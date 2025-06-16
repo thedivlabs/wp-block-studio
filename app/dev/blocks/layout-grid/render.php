@@ -85,9 +85,7 @@ if ( ( $is_gallery || $is_loop ) && ! empty( $block->parsed_block['innerBlocks']
 		}
 
 		$max   = count( $image_cards );
-		$attrs = [
-			'page-size' => $attributes['wpbs-media-gallery']['page-size']
-		];
+		$attrs = $attributes['wpbs-media-gallery'];
 
 	}
 

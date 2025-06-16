@@ -172,7 +172,7 @@ console.log(data);
                 card: data.card,
                 attrs: data.attrs,
                 page: page,
-                galleryId: parseInt(data?.['gallery-id']),
+                galleryId: parseInt(data?.attrs?.['gallery-id']),
             } : {
                 card: data.card,
                 attrs: data.attrs,

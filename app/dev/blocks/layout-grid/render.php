@@ -17,9 +17,7 @@ $query = ! $is_loop ? false : match ( true ) {
 
 if ( $is_gallery ) {
 
-	$gallery_id = intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false );
-
-	$gallery = WPBS_Media_Gallery::query( $gallery_id );
+	$gallery = WPBS_Media_Gallery::query( intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false ), $attributes['wpbs-media-gallery'] ?? [] );
 
 	$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $gallery['images'] );
 

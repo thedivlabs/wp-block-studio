@@ -79,7 +79,6 @@ if ( ( $is_gallery || $is_loop ) && ! empty( $block->parsed_block['innerBlocks']
 
 		if ( ! empty( $image_cards['content'] ) ) {
 
-
 			$block->inner_content[1] = trim( $image_cards['content'] );
 		}
 

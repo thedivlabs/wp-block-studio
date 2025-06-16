@@ -168,11 +168,11 @@ const {state} = store('wpbs/grid', {
             const endpoint = isGallery ? '/wp-json/wpbs/v1/media-gallery'
                 : '/wp-json/wpbs/v1/layout-grid';
 console.log(data);
+console.log(parseInt(data?.attrs?.['gallery-id']));
             const request = isGallery ? {
                 card: data.card,
                 attrs: data.attrs,
-                page: page,
-                galleryId: parseInt(data?.attrs?.['gallery-id']),
+                page: page
             } : {
                 card: data.card,
                 attrs: data.attrs,

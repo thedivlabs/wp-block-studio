@@ -142,11 +142,20 @@ class WPBS_Media_Gallery {
 
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$id = $request->get_param( 'gallery-id' );
+		$params = $request->get_params();
+
+		$id = $params['attrs']['gallery-id'] ?? false;
 
 		if ( empty( $id ) ) {
-			return new WP_Error( 'no_id', 'Missing ID parameter.', [ 'status' => 400 ] );
+			return new WP_Error( 'no_id', 'Missing ID parameter.', [
+				'status' => 400,
+				'params' => $params,
+				'request' => $request,
+			] );
 		}
+
+		$query = self::query( $id );
+		//$cards = self::
 
 		return new WP_REST_Response(
 			[

@@ -244,7 +244,7 @@ registerBlockType(metadata.name, {
         }, [grid])
 
         const tabGallery = useMemo(() => {
-            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>
+            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes} cardClass={'layout-grid-card'}/>
         }, [attributes['wpbs-grid']])
 
         const tabs = {

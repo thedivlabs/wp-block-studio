@@ -16,12 +16,10 @@ import {
 } from "@wordpress/components";
 import {REL_OPTIONS} from "Includes/config.js";
 
-function sectionClassNames(attributes = {}) {
+function blockClassnames(attributes = {}) {
 
-    return 'wpbs-layout-grid-card w-full block relative ' + (attributes?.uniqueId ?? '')
+    return 'wpbs-media-gallery-card w-full block relative ' + (attributes?.uniqueId ?? '')
 }
-
-const containerClassNames = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -30,14 +28,9 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-layout-grid-card': {
+        'wpbs-media-gallery-card': {
             type: 'object',
-            default: {
-                linkNewTab: undefined,
-                linkRel: undefined,
-                linkPost: undefined,
-                linkTitle: undefined,
-            }
+            default: {}
         }
     },
     edit: (props) => {
@@ -45,7 +38,7 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes} = props;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
 
         useEffect(() => {
             setAttributes({uniqueId: uniqueId});
@@ -53,91 +46,39 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-layout-grid-card'],
+                ...attributes['wpbs-media-gallery-card'],
                 ...newValue
             };
 
             setAttributes({
-                'wpbs-layout-grid-card': result
+                'wpbs-media-gallery-card': result
             });
-        }, [setAttributes, attributes['wpbs-layout-grid-card']]);
+        }, [setAttributes, attributes['wpbs-media-gallery-card']]);
 
         const blockProps = useBlockProps({
-            className: sectionClassNames(attributes),
+            className: blockClassnames(attributes),
         });
 
         return (
             <>
                 <InspectorControls group="advanced">
                     <Grid columns={2} rowGap={20} style={{'margin-top': '25px'}}>
-                        <ToggleControl
-                            style={{marginTop: '20px'}}
-                            label="Link Post"
-                            checked={!!attributes['wpbs-layout-grid-card'].linkPost}
-                            onChange={(value) => updateSettings({linkPost: value})}
-                        />
-                        <ToggleControl
-                            label="New tab"
-                            checked={!!attributes['wpbs-layout-grid-card']?.linkNewTab}
-                            onChange={(isChecked) => updateSettings({linkNewTab: !!isChecked})}
-                        />
-                        <Grid columns={2} columnGap={15} rowGap={20} style={{'grid-column': '1/-1'}}>
-                            <SelectControl
-                                label="Rel"
-                                value={attributes['wpbs-layout-grid-card']?.linkRel ?? ''}
-                                options={REL_OPTIONS}
-                                onChange={(value) => updateSettings({linkRel: value})}
-                            />
-                            <TextControl
-                                label="Title"
-                                value={attributes['wpbs-layout-grid-card']?.linkTitle ?? ''}
-                                onChange={(value) => updateSettings({linkTitle: value})}
-                            />
-                        </Grid>
+                        <></>
                     </Grid>
                 </InspectorControls>
-                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes}/>
 
-                <div {...blockProps}>
-                    <div {...useInnerBlocksProps({
-                        className: containerClassNames,
-                    })} />
-                    <BackgroundElement attributes={attributes} editor={true}/>
-                </div>
+                <div {...blockProps}></div>
             </>
         )
     },
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes),
+            className: blockClassnames(props.attributes),
         });
 
-        const Anchor = () => {
 
-            if (!props.attributes['wpbs-layout-grid-card']?.linkPost) {
-                return <></>;
-            }
-
-            return <a
-                className="wpbs-layout-grid-card__anchor absolute top-0 left-0 z-50 w-full h-full"
-                href={'%__PERMALINK__%'}
-                target={!!props.attributes['wpbs-layout-grid-card']?.linkNewTab ? '_blank' : '_self'}
-                rel={props.attributes['wpbs-layout-grid-card'].linkRel || undefined}
-            ><span
-                className={'screen-reader-text'}>{props.attributes['wpbs-layout-grid-card']?.linkTitle ?? 'View post'}</span></a>;
-        }
-
-
-        return <div {...blockProps}>
-            <div {...useInnerBlocksProps.save({
-                className: containerClassNames,
-            })} />
-            <BackgroundElement attributes={props.attributes} editor={false}/>
-            <Anchor/>
-        </div>;
+        return <div {...blockProps}> </div>;
 
 
     }

@@ -17,12 +17,23 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
 };
 
 
-export function MediaGalleryControls({attributes = {}, setAttributes}) {
-    const [settings, setSettings] = useState(() => attributes['wpbs-media-gallery'] || {});
+export function MediaGalleryControls({attributes = {}, setAttributes, cardClass = ''}) {
+
+    const [settings, setSettings] = useState({
+        ...(attributes?.['wpbs-media-gallery'] ?? {}),
+        'card-class': cardClass
+    });
 
     useEffect(() => {
         setAttributes({'wpbs-media-gallery': settings});
     }, [settings]);
+
+    useEffect(() => {
+        setSettings((prev) => ({
+            ...prev,
+            'card-class': cardClass,
+        }));
+    }, [cardClass]);
 
     const galleries = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
@@ -32,8 +43,9 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         setSettings((prev) => ({
             ...prev,
             ...newValue,
+            'card-class': cardClass,
         }));
-    }, []);
+    }, [cardClass]);
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

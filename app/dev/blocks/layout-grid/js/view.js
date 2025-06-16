@@ -15,7 +15,7 @@ function setDividers(grid, context) {
 
     const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
 
-    const cards = container.querySelectorAll('.wpbs-layout-grid-card');
+    const cards = container.querySelectorAll('.layout-grid-card');
 
     const total = cards.length;
 

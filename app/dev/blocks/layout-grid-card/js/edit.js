@@ -18,7 +18,7 @@ import {REL_OPTIONS} from "Includes/config.js";
 
 function sectionClassNames(attributes = {}) {
 
-    return 'wpbs-layout-grid-card w-full block relative ' + (attributes?.uniqueId ?? '')
+    return 'wpbs-layout-grid-card layout-grid-card w-full block relative ' + (attributes?.uniqueId ?? '')
 }
 
 const containerClassNames = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'

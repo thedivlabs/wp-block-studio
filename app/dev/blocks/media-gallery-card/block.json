@@ -1,7 +1,7 @@
 {
   "name": "wpbs/media-gallery-card",
-  "title": "Grid Card",
-  "description": "Display a layout grid card",
+  "title": "Media Card",
+  "description": "Display a media card",
   "selectors": {
     "root": ".wpbs-media-gallery-card"
   },
@@ -13,53 +13,30 @@
     "postId": {
       "type": "integer",
       "show_in_rest": true
-    },
-    "termId": {
-      "type": "integer",
-      "default": 0,
-      "show_in_rest": true
     }
   },
   "parent": [
-    "wpbs/layout-grid"
+    "wpbs/layout-grid",
+    "wpbs/slider-wrapper"
   ],
   "providesContext": {
-    "postId": "postId",
-    "wpbs/termId": "termId",
-    "postType": "postType"
+    "postId": "postId"
   },
   "supports": {
     "interactivity": true,
-    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,
       "link": true,
       "gradients": true
     },
-    "spacing": {
-      "blockGap": [
-        "horizontal",
-        "vertical"
-      ],
-      "padding": true,
-      "margin": true
-    },
     "__experimentalBorder": {
       "size": true,
       "color": true,
       "radius": true
-    },
-    "typography": {
-      "__experimentalFontFamily": true,
-      "__experimentalFontWeight": true,
-      "textAlign": true,
-      "fontSize": true,
-      "lineHeight": true
     }
   },
   "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
   "icon": "grid-view",
   "render": "file:./render.php"

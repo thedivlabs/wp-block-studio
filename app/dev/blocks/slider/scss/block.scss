@@ -24,14 +24,13 @@
     cursor: auto;
   }
 
-  /*  .wpbs-slider-nav {
-      opacity: 0;
-      pointer-events: none;
-    }
+  &:not(.swiper-initialized) .wpbs-slider-nav {
+    //opacity: 0;
+    pointer-events: none !important;
 
-    &.swiper-initialized .wpbs-slider-nav {
-      opacity: 1;
-      pointer-events: auto;
-    }*/
+    * {
+      pointer-events: none !important;
+    }
+  }
 
 }

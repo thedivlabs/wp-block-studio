@@ -111,7 +111,7 @@ class WPBS_Media_Gallery {
 		}
 	}
 
-	private static function query( $id = 0 ): array {
+	public static function query( $id = 0 ): array {
 
 		if ( ! is_numeric( $id ) || $id <= 0 ) {
 			return [];
@@ -123,7 +123,10 @@ class WPBS_Media_Gallery {
 
 		if ( empty( $result ) ) {
 
-			$result = self::parse_acf_data( get_field( self::ACF_FIELD, $id ) ?: [] );
+			$result = WPBS::clean_array( [
+				'images' => self::parse_acf_data( get_field( 'wpbs_images', $id ) ?: [] ),
+				'video'  => self::parse_acf_data( get_field( 'wpbs_video', $id ) ?: [] ),
+			] );
 
 			if ( ! empty( $result ) ) {
 				set_transient( $transient_id, $result, self::TRANSIENT_EXPIRATION );

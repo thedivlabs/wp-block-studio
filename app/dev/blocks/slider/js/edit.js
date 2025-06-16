@@ -202,11 +202,11 @@ registerBlockType(metadata.name, {
 
                 swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
 
-                swiperRef.current.swiper.update();
+                //swiperRef.current.swiper.update();
 
             } else if ('Swiper' in window) {
 
-                new Swiper(swiperRef.current, sliderOptions);
+                //new Swiper(swiperRef.current, sliderOptions);
             }
         }, [sliderOptions]);
 

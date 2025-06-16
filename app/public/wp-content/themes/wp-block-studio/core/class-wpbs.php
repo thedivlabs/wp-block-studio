@@ -115,7 +115,7 @@ class WPBS {
 	public function block_assets(): void {
 
 		wp_enqueue_script( 'wpbs-masonry-js' );
-		wp_enqueue_script( 'wpbs-swiper-js' );
+		//wp_enqueue_script( 'wpbs-swiper-js' );
 
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_script( 'wpbs-fontawesome' );

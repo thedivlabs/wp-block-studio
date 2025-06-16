@@ -196,6 +196,7 @@ class WPBS_Grid {
 	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [] ): array|bool {
 
 		$query = match ( true ) {
+			is_array( $current_query ) && empty( $attrs['wpbs-query']['loop_terms'] ) => $current_query,
 			is_a( $current_query, 'WP_Query' ), ! empty( $attrs['wpbs-query']['loop_terms'] ) && ! empty( $attrs['wpbs-query']['taxonomy'] ) && is_array( $current_query ) => $current_query,
 			default => self::query( $attrs, $page, $current_query )
 		};
@@ -237,6 +238,19 @@ class WPBS_Grid {
 
 			}
 
+		}
+
+		if ( is_array( $query ) ) {
+
+			foreach ( $query as $k => $data ) {
+
+				$new_block = self::loop_card( $card, [
+					'data' => $data,
+				] );
+
+				$new_content .= $new_block->render();
+
+			}
 
 		}
 

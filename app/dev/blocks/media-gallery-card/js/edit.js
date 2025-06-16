@@ -6,7 +6,6 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect} from "react";
@@ -14,11 +13,14 @@ import {
     __experimentalGrid as Grid,
     ToggleControl, SelectControl, TextControl
 } from "@wordpress/components";
-import {REL_OPTIONS} from "Includes/config.js";
 
 function blockClassnames(attributes = {}) {
-
-    return 'wpbs-media-gallery-card w-full block relative ' + (attributes?.uniqueId ?? '')
+    return [
+        'wpbs-media-gallery-card layout-grid-card',
+        attributes?.['wpbs-media-gallery']?.['card-class'] ?? null,
+        'w-full block relative',
+        attributes.uniqueId,
+    ].filter(x => x).join(' ');
 }
 
 registerBlockType(metadata.name, {
@@ -26,7 +28,6 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
-        ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         'wpbs-media-gallery-card': {
             type: 'object',
@@ -66,8 +67,11 @@ registerBlockType(metadata.name, {
                         <></>
                     </Grid>
                 </InspectorControls>
+                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <div {...blockProps}></div>
+                <figure {...blockProps}></figure>
+
+                <Style attributes={attributes} setAttributes={setAttributes}/>
             </>
         )
     },
@@ -78,7 +82,7 @@ registerBlockType(metadata.name, {
         });
 
 
-        return <div {...blockProps}> </div>;
+        return <figure {...blockProps}></figure>
 
 
     }

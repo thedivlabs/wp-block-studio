@@ -7,6 +7,7 @@ $block      = $block ?? ( (object) [] );
 $content    = $content ?? false;
 
 $is_loop    = in_array( 'is-style-loop', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
+$is_gallery = in_array( 'is-style-gallery', array_values( array_filter( explode( ' ', $attributes['className'] ?? '' ) ) ) );
 $is_current = ( $attributes['wpbs-query']['post_type'] ?? false ) === 'current';
 
 $query = ! $is_loop ? false : match ( true ) {
@@ -14,7 +15,24 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
-if ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
+if ( $is_gallery ) {
+
+	$gallery_id = intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false );
+
+	$gallery = WPBS_Media_Gallery::query( $gallery_id );
+
+	$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $gallery['images'] );
+
+	if ( ! empty( $image_cards['content'] ) ) {
+		echo $block->inner_content[0];
+
+		echo $image_cards['content'];
+
+		echo $block->inner_content[ count( $block->inner_content ) - 1 ];
+	}
+
+
+} elseif ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 	if ( ! $query->have_posts() ) {
 		return;

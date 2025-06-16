@@ -29,17 +29,17 @@
   }
 
 
-  .wpbs-layout-grid-card {
+  .layout-grid-card {
     max-width: calc((100% - (var(--grid-row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
   }
 
   &--masonry > &__container {
-    & > .wpbs-layout-grid-card {
+    & > .layout-grid-card {
       margin-bottom: var(--grid-row-gap, var(--grid-col-gap, 0px));
     }
   }
 
-  &--divider &__container > .wpbs-layout-grid-card {
+  &--divider &__container > .layout-grid-card {
 
     &:before,
     &:after {

@@ -21,6 +21,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <figure <?php echo $wrapper_attributes ?>>
 	<?= wp_get_attachment_image( $attributes['postId'] ?? false, 'medium', false, [
 		'loading' => 'lazy',
-		'class'   => 'w-full h-full object-cover'
+		'class'   => 'w-full h-full object-cover [&_img]:!object-cover'
 	] ) ?>
 </figure>

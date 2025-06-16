@@ -6,7 +6,7 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery-card layout-grid-card',
+		'wpbs-media-gallery-card',
 		$attributes['uniqueId'] ?? null
 	] ) ),
 	'data-index'          => $attributes['index'] ?? null,

@@ -18,7 +18,12 @@ import {REL_OPTIONS} from "Includes/config.js";
 
 function sectionClassNames(attributes = {}) {
 
-    return 'wpbs-layout-grid-card layout-grid-card w-full block relative ' + (attributes?.uniqueId ?? '')
+    return [
+        'wpbs-layout-grid-card',
+        attributes?.cardClass ?? null,
+        'w-full block relative',
+        attributes.uniqueId,
+    ].filter(x => x).join(' ');
 }
 
 const containerClassNames = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20'
@@ -43,12 +48,17 @@ registerBlockType(metadata.name, {
     edit: (props) => {
 
 
-        const {attributes, setAttributes} = props;
+        const {attributes, setAttributes, context} = props;
+
+        const {cardClass} = context;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
         useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
+            setAttributes({
+                uniqueId: uniqueId,
+                cardClass: cardClass
+            });
         }, []);
 
         const updateSettings = useCallback((newValue) => {
@@ -58,7 +68,8 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({
-                'wpbs-layout-grid-card': result
+                'wpbs-layout-grid-card': result,
+                cardClass: cardClass
             });
         }, [setAttributes, attributes['wpbs-layout-grid-card']]);
 

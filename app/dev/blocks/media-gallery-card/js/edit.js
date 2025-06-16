@@ -84,17 +84,7 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => {
-
-        const blockProps = useBlockProps.save({
-            className: blockClassnames(props.attributes),
-        });
-
-
-        return <figure {...blockProps}></figure>
-
-
-    }
+    save: (props) => null
 })
 
 

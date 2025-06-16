@@ -10,9 +10,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		$attributes['uniqueId'] ?? null,
 		$attributes['cardClass'] ?? null,
 	] ) ),
-	'data-index'          => $attributes['index'] ?? null,
-	'data-wp-interactive' => 'wpbs',
-	'data-wp-init'        => 'callbacks.observe',
+	'data-wp-interactive' => 'wpbs/media-gallery-card',
+	'data-wp-init'        => 'actions.init',
+	'data-wp-context'     => json_encode( array_filter( [
+		'index' => intval( $attributes['index'] ?? 0 ),
+	] ) ),
 ] );
 
 ?>

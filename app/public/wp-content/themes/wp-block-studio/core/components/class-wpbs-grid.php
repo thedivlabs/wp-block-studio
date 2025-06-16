@@ -163,7 +163,7 @@ class WPBS_Grid {
 		$block_template = $card;
 		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
 
-		$post_id = $args['term_id'] ?? get_the_ID();
+		$post_id = $args['id'] ?? $args['term_id'] ?? get_the_ID();
 
 		$unique_id = join( ' ', array_filter( [
 			$original_id ?? null,
@@ -244,9 +244,7 @@ class WPBS_Grid {
 
 			foreach ( $query as $k => $data ) {
 
-				$new_block = self::loop_card( $card, [
-					'data' => $data,
-				] );
+				$new_block = self::loop_card( $card, $data );
 
 				$new_content .= $new_block->render();
 

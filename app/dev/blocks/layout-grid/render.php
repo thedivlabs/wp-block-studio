@@ -15,84 +15,88 @@ $query = ! $is_loop ? false : match ( true ) {
 	default => WPBS_Grid::query( $attributes )
 };
 
-if ( $is_gallery ) {
+if ( ( $is_gallery || $is_loop ) && ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
-	$gallery = WPBS_Media_Gallery::query( intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false ), $attributes['wpbs-media-gallery'] ?? [] );
+	if ( $is_loop && $query->have_posts() ) {
+		$grid_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query ?? false );
 
-	$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, array_merge( $gallery['images'] ?? [], $gallery['video'] ?? [] ), $attributes['wpbs-media-gallery']['page-size'] ?? false );
+		if ( $is_current && ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
 
-	if ( ! empty( $image_cards['content'] ) ) {
-		echo $block->inner_content[0];
+			$big = 999999999;
 
-		echo $image_cards['content'];
+			$current_page = max( 1, get_query_var( 'paged' ) );
 
-		echo WPBS_Media_Gallery::view_args( $attributes['wpbs-media-gallery'] );
+			$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
-		echo $block->inner_content[ count( $block->inner_content ) - 1 ];
-	}
+			$pagination_links = array_map( function ( $link ) use ( $current_page ) {
+				return str_replace( [ '<span', '</span>', 'current' ], [
+					'<button type="button" disabled',
+					'</button>',
+					'current wp-element-button ',
+				], $link );
+			}, paginate_links( [
+				'base'      => $base,
+				'format'    => '/page/%#%/',
+				'current'   => $current_page,
+				'total'     => $query->max_num_pages,
+				'prev_next' => false,
+				'mid_size'  => 6,
+				//'prev_text' => '←',
+				//'next_text' => '→',
+				'type'      => 'array', // 'plain', 'array', or 'list'
+			] ) );
 
+			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
-} elseif ( $is_loop && ! empty( $block->parsed_block['innerBlocks'] ) ) {
+			if ( $pagination_links ) {
+				$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
 
-	if ( ! $query->have_posts() ) {
-		return;
-	}
+				$pagination .= '<div class="wp-block-query-pagination-numbers inline-flex w-max">';
 
-	$grid_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query ?? false );
+				foreach ( $pagination_links as $link ) {
+					$pagination .= $link;
+				}
 
-	if ( $is_current && ! empty( $attributes['wpbs-query']['pagination'] ) && $query->max_num_pages > 1 ) {
+				$pagination .= '</div>';
 
-		$big = 999999999;
+				$pagination .= '</nav>';
 
-		$current_page = max( 1, get_query_var( 'paged' ) );
-
-		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
-
-		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-			return str_replace( [ '<span', '</span>', 'current' ], [
-				'<button type="button" disabled',
-				'</button>',
-				'current wp-element-button ',
-			], $link );
-		}, paginate_links( [
-			'base'      => $base,
-			'format'    => '/page/%#%/',
-			'current'   => $current_page,
-			'total'     => $query->max_num_pages,
-			'prev_next' => false,
-			'mid_size'  => 6,
-			//'prev_text' => '←',
-			//'next_text' => '→',
-			'type'      => 'array', // 'plain', 'array', or 'list'
-		] ) );
-
-		do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
-
-		if ( $pagination_links ) {
-			$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
-
-			$pagination .= '<div class="wp-block-query-pagination-numbers inline-flex w-max">';
-
-			foreach ( $pagination_links as $link ) {
-				$pagination .= $link;
+				$block->inner_content[ count( $block->inner_content ) - 1 ] = $pagination . $block->inner_content[ count( $block->inner_content ) - 1 ];
 			}
-
-			$pagination .= '</div>';
-
-			$pagination .= '</nav>';
-
-			$block->inner_content[ count( $block->inner_content ) - 1 ] = $pagination . $block->inner_content[ count( $block->inner_content ) - 1 ];
 		}
+
+		$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
+
+		$max   = $query->max_num_pages ?? 1;
+		$attrs = $attributes['wpbs-query'] ?? [];
 	}
 
-	$block->inner_content[1] = trim( $grid_cards['content'] ?? '' );
+	if ( $is_gallery ) {
+
+		$gallery = WPBS_Media_Gallery::query( intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false ), $attributes['wpbs-media-gallery'] ?? [] );
+
+		$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, array_merge( $gallery['images'] ?? [], $gallery['video'] ?? [] ), $attributes['wpbs-media-gallery']['page-size'] ?? false );
+
+		if ( ! empty( $image_cards['content'] ) ) {
+
+
+			$block->inner_content[1] = trim( $image_cards['content'] );
+			$block->inner_content[1] .= WPBS_Media_Gallery::view_args( $attributes['wpbs-media-gallery'] );
+		}
+
+		$max   = count( $image_cards );
+		$attrs = [
+			'page-size' => $attributes['wpbs-media-gallery']['page-size']
+		];
+
+	}
 
 	$block->inner_content[ count( $block->inner_content ) - 1 ] = str_replace( '<script class="wpbs-layout-grid-args" type="application/json">', '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
 			'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
-			'query' => $query->query,
-			'cur'   => $query->is_paged ?: 1,
-			'max'   => $query->max_num_pages ?? 1,
-			'attrs' => $attributes['wpbs-query'],
+			'query' => $query->query ?? false,
+			'cur'   => ( $query->is_paged ?? false ) ?: 1,
+			'max'   => $max ?? 1,
+			'attrs' => $attrs ?? [],
 		] ) ), $block->inner_content[ count( $block->inner_content ) - 1 ] );
 
 	foreach ( $block->inner_content as $html ) {

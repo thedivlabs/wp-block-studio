@@ -117,6 +117,13 @@ class WPBS_Media_Gallery {
 			return false;
 		}
 
+		$args = array_filter( $args, function ( $prop ) {
+			return ! in_array( $prop, [
+				'card-class',
+				'gallery-id'
+			] );
+		}, ARRAY_FILTER_USE_KEY );
+
 		return '<script class="wpbs-media-gallery-args" type="application/json">' . json_encode( $args ) . '</script>';
 	}
 

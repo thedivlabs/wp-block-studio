@@ -24,14 +24,14 @@
     cursor: auto;
   }
 
-  .wpbs-slider-nav {
-    opacity: 0;
-    pointer-events: none;
-  }
+  /*  .wpbs-slider-nav {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-  &.swiper-initialized .wpbs-slider-nav {
-    opacity: 1;
-    pointer-events: auto;
-  }
+    &.swiper-initialized .wpbs-slider-nav {
+      opacity: 1;
+      pointer-events: auto;
+    }*/
 
 }

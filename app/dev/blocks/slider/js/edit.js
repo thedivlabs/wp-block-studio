@@ -52,13 +52,14 @@ function cleanArgs(obj) {
     return obj;
 }
 
-function getArgs(attributes) {
+function getArgs(attributes, swiperRef) {
 
     const {'wpbs-slider': options} = attributes;
 
     const breakpoint = attributes.breakpoint || 992;
 
     let args = {
+        enabled: true,
         slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
         slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
         spaceBetween: parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0),
@@ -87,7 +88,7 @@ function getArgs(attributes) {
         spaceBetween: parseInt(options?.['margin-large'] ?? options?.['margin-mobile'] ?? 0),
     };
 
-    if (!!options['collapse']) {
+    if (!!options?.['collapse']) {
         args.enabled = false;
         breakpointArgs.enabled = true;
     }
@@ -197,8 +198,6 @@ registerBlockType(metadata.name, {
                 if (swiperRef.current?.swiper?.currentBreakpoint) {
                     swiperRef.current.swiper.currentBreakpoint = null;
                 }
-
-                delete (newParams.on);
 
                 swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
 

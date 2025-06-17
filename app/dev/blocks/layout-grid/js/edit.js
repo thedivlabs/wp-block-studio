@@ -26,8 +26,10 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import Breakpoint from 'Components/Breakpoint';
+import {useSelect} from "@wordpress/data";
+
 
 function classNames(attributes = {}) {
     return [
@@ -73,13 +75,18 @@ registerBlockType(metadata.name, {
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
         const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
+        const previewContainerRef = useRef();
+
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
+
+        const cardClass = 'layout-grid-card';
 
         useEffect(() => {
             setAttributes({
-                'uniqueId': uniqueId
+                'uniqueId': uniqueId,
+                cardClass: cardClass
             });
-        }, []);
+        }, [uniqueId]);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -88,15 +95,12 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({
-                'wpbs-grid': result
+                'wpbs-grid': result,
+                cardClass: cardClass
             });
             setGrid(result);
 
         }, [setAttributes, setGrid])
-
-        const blockProps = useBlockProps({
-            className: [classNames(attributes), 'empty:min-h-8'].join(' ')
-        });
 
         const cssProps = useMemo(() => {
             const grid = attributes['wpbs-grid'] ?? {};
@@ -255,8 +259,13 @@ registerBlockType(metadata.name, {
             gallery: tabGallery,
         }
 
+        const blockProps = useBlockProps({
+            className: [classNames(attributes), 'empty:min-h-8'].join(' ')
+        });
+
         const innerBlocksProps = useInnerBlocksProps({
             className: 'wpbs-layout-grid__container relative z-20',
+            ref: previewContainerRef
         }, {
             allowedBlocks: [
                 "wpbs/media-gallery-card",
@@ -264,10 +273,6 @@ registerBlockType(metadata.name, {
                 "core/query-pagination"
             ]
         });
-
-        const cardClass = 'layout-grid-card';
-
-        props.attributes.cardClass = cardClass;
 
         return (
             <>
@@ -319,7 +324,7 @@ registerBlockType(metadata.name, {
                     }}
                 >
                     <div {...blockProps}>
-                        <div {...innerBlocksProps}></div>
+                        <div {...innerBlocksProps} />
                         <BackgroundElement attributes={props.attributes} editor={true}/>
                     </div>
                 </BlockContextProvider>

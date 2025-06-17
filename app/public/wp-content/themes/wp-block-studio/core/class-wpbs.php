@@ -82,8 +82,8 @@ class WPBS {
 			'wp-dom-ready',
 			'jquery'
 		], false, [
-			'strategy'  => 'async',
-			'in_footer' => true,
+			'strategy'  => 'defer',
+			'in_footer' => false,
 		] );
 		wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/2ac810357a.js', [], false, [
 			'strategy'  => 'async',

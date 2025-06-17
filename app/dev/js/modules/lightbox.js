@@ -8,12 +8,11 @@ export default class Lightbox {
         test.textContent = 'Lightbox';
 
         const slider = this.component([test]);
-
-
-        wp.domReady(() => {
+        
+        window.addEventListener('load', () => {
             this.toggle(slider);
             console.log(slider);
-        })
+        });
 
     }
 
@@ -36,7 +35,7 @@ export default class Lightbox {
     }
 
     static component(slides) {
-        
+
         const component = document.createElement('div');
         const slider = document.createElement('div');
         const sliderWrapper = document.createElement('div');

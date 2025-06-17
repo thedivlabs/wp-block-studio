@@ -10,10 +10,16 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "groupId": {
+      "type": "string"
     }
   },
   "parent": [
     "wpbs/accordion-group-item"
+  ],
+  "usesContext": [
+    "groupId"
   ],
   "supports": {
     "html": false,

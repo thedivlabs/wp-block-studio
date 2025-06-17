@@ -37,9 +37,14 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-header');
 
+        const {groupId = 'groupId'} = context;
+
+        const anchorId = '#' + groupId + '-content';
+
         useEffect(() => {
             setAttributes({
-                'uniqueId': uniqueId
+                'uniqueId': uniqueId,
+                'groupId': groupId
             });
         }, []);
 
@@ -64,7 +69,7 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <div {...innerBlocksProps}></div>
-                <a href={'#'} type={'button'}><span className={'screen-reader-text'}>Toggle content</span></a>
+                <a href={anchorId}><span className={'screen-reader-text'}>Toggle content</span></a>
             </div>
 
 
@@ -82,9 +87,13 @@ registerBlockType(metadata.name, {
             className: wrapperClassNames()
         });
 
+        const {groupId = 'groupId'} = props.attributes;
+
+        const anchorId = '#' + groupId + '-content';
+
         return <div {...blockProps}>
             <div {...innerBlocksProps}></div>
-            <button type={'button'}><span className={'screen-reader-text'}>Toggle content</span></button>
+            <a href={anchorId}><span className={'screen-reader-text'}>Toggle content</span></a>
         </div>;
     }
 })

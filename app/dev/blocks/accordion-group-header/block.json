@@ -10,6 +10,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "groupId": {
+      "type": "string"
     }
   },
   "parent": [
@@ -18,6 +21,9 @@
   "allowedBlocks": [
     "core/heading",
     "core/paragraph"
+  ],
+  "usesContext": [
+    "groupId"
   ],
   "supports": {
     "html": false,

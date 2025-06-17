@@ -22,6 +22,9 @@
   "usesContext": [
     "ElementTag"
   ],
+  "providesContext": {
+    "wpbs/groupId": "groupId"
+  },
   "supports": {
     "html": false,
     "innerBlocks": true,

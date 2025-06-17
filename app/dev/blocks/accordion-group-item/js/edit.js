@@ -1,4 +1,5 @@
 import {
+    BlockContextProvider,
     InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
@@ -37,7 +38,7 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId, context}) => {
 
         const {ElementTag: ParentElementTag = 'div'} = context || {};
-        
+
         const ElementTag = ['ul', 'ol'].includes(ParentElementTag) ? 'li' : 'div';
 
         const ref = useRef(null);
@@ -96,6 +97,8 @@ registerBlockType(metadata.name, {
             }
         };
 
+        const groupId = clientId;
+
         return <>
 
             <InspectorControls group="styles">
@@ -112,7 +115,9 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
 
-            <ElementTag {...innerBlocksProps} onClick={handleClick}></ElementTag>
+            <BlockContextProvider value={{groupId}}>
+                <ElementTag {...innerBlocksProps} onClick={handleClick}></ElementTag>
+            </BlockContextProvider>
 
         </>;
     },

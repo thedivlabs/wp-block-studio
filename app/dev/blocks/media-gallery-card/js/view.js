@@ -8,7 +8,7 @@ const {state} = store('wpbs/media-gallery-card', {
             const {ref: grid} = getElement();
             const context = JSON.parse(JSON.stringify(getContext()));
 
-            console.log(context);
+            //console.log(context);
 
         }
     },

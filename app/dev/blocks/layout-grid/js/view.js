@@ -150,6 +150,7 @@ const {state} = store('wpbs/grid', {
 
             const {ref: element} = getElement();
             const context = JSON.parse(JSON.stringify(getContext()));
+            const parser = new DOMParser();
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
@@ -167,8 +168,9 @@ const {state} = store('wpbs/grid', {
 
             const endpoint = isGallery ? '/wp-json/wpbs/v1/media-gallery'
                 : '/wp-json/wpbs/v1/layout-grid';
-console.log(data);
-console.log(parseInt(data?.attrs?.['gallery-id']));
+
+            console.log(data);
+
             const request = isGallery ? {
                 card: data.card,
                 attrs: data.attrs,
@@ -196,12 +198,15 @@ console.log(parseInt(data?.attrs?.['gallery-id']));
                         remove: true
                     });
 
-                    container.innerHTML += result.response;
+
+                    const newNodes = parser.parseFromString(result.response, 'text/html');
+                    container.append(...newNodes.body.childNodes);
 
                     setDividers(grid, context);
                     setMasonry(grid);
 
                     const media = grid.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
+
                     [...media].forEach((media_element) => {
                         WPBS.observeMedia(media_element);
                     })

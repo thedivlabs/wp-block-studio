@@ -170,7 +170,8 @@ class WPBS_Media_Gallery {
 
 		$params = $request->get_params();
 
-		$id = $params['attrs']['gallery-id'] ?? false;
+		$id        = $params['attrs']['gallery-id'] ?? false;
+		$page_size = intval( $params['attrs']['page-size'] ?? false );
 
 		if ( empty( $id ) ) {
 			return new WP_Error( 'no_id', 'Missing ID parameter.', [
@@ -180,22 +181,18 @@ class WPBS_Media_Gallery {
 			] );
 		}
 
-
-		$max  = $params['max'] ?? - 1;
-		$cur  = $params['current'] ?? 0;
-		$card = $params['card'] ?? 0;
-
 		$query = self::query( $id );
 
-		//$query = array_slice( $query, $cur, $max );
+		$total_pages = intval( $params['max'] ?? 1 );
+		$cur_page    = intval( $params['cur'] ?? 1 );
+		$card        = $params['card'] ?? [];
+		$is_last     = $cur_page >= $total_pages;
+
+		$query_slice = array_slice( ( $query['images'] ?? [] ), ( $cur_page - 0 ) * $page_size, $page_size );
 
 		$new_content = '';
 
-		foreach ( $query as $k => $data ) {
-
-			if ( $k >= $max ) {
-				//break;
-			}
+		foreach ( $query_slice as $k => $data ) {
 
 			$new_block = self::loop_card( $card, $data, $k );
 
@@ -208,7 +205,7 @@ class WPBS_Media_Gallery {
 			[
 				'status'   => 200,
 				'response' => $new_content,
-				'query'    => $query,
+				'last'     => $is_last,
 			]
 		);
 

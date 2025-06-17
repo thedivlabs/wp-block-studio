@@ -40,7 +40,7 @@ registerBlockType(metadata.name, {
         const {groupId = 'groupId'} = context;
 
         const anchorId = '#' + groupId + '-content';
-        
+
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId,
@@ -69,8 +69,8 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <div {...innerBlocksProps}></div>
-                <a href={anchorId} className={'wpbs-accordion-group-header__toggle'}><span
-                    className={'screen-reader-text'}>Toggle content</span></a>
+                <button className={'wpbs-accordion-group-header__toggle'}><span
+                    className={'screen-reader-text'}>Toggle content</span></button>
             </div>
 
 
@@ -94,8 +94,8 @@ registerBlockType(metadata.name, {
 
         return <div {...blockProps}>
             <div {...innerBlocksProps}></div>
-            <a href={anchorId} className={'wpbs-accordion-group-header__toggle'}><span
-                className={'screen-reader-text'}>Toggle content</span></a>
+            <button className={'wpbs-accordion-group-header__toggle'}><span
+                className={'screen-reader-text'}>Toggle content</span></button>
         </div>;
     }
 })

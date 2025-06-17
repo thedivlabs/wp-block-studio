@@ -84,9 +84,7 @@ registerBlockType(metadata.name, {
         const handleClick = (event) => {
 
 
-            if (event.target.closest('a.wpbs-accordion-group-header__toggle')) {
-
-                event.preventDefault();
+            if (event.target.closest('.wpbs-accordion-group-header__toggle')) {
 
                 if (!ref.current) {
                     return false;
@@ -94,6 +92,7 @@ registerBlockType(metadata.name, {
 
                 ref.current.classList.toggle('active');
                 ref.current.classList.toggle('--open');
+
 
             }
         };

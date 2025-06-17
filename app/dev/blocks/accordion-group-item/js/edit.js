@@ -84,8 +84,9 @@ registerBlockType(metadata.name, {
         const handleClick = (event) => {
 
 
-            if (event.target.closest('button')) {
+            if (event.target.closest('a.wpbs-accordion-group-header__toggle')) {
 
+                event.preventDefault();
 
                 if (!ref.current) {
                     return false;

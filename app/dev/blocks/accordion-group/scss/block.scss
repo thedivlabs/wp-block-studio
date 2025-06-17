@@ -33,7 +33,7 @@
     color: var(--header-text-color-active);
   }
 
-  .wpbs-accordion-group-header > button {
+  .wpbs-accordion-group-header__toggle {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,22 +52,22 @@
     }
   }
 
-  .wpbs-accordion-group-item.--open > .wpbs-accordion-group-header > button {
+  .wpbs-accordion-group-item.--open .wpbs-accordion-group-header__toggle {
     &:before {
       content: var(--icon-open, var(--icon-closed, "\f077"));
     }
   }
 
-  &.--static .wpbs-accordion-group-header > button {
+  &.--static .wpbs-accordion-group-header__toggle {
     transform: none !important;
     transition: none !important;
   }
 
-  &.--no-icon .wpbs-accordion-group-header > button {
+  &.--no-icon .wpbs-accordion-group-header__toggle {
     display: none !important;
   }
 
-  .wpbs-accordion-group-item.--open > .wpbs-accordion-group-header > button {
+  .wpbs-accordion-group-item.--open .wpbs-accordion-group-header__toggle {
     transform: rotate(-180deg);
   }
 

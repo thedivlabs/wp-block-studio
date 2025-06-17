@@ -19,6 +19,9 @@
     "wpbs/accordion-group-header",
     "wpbs/accordion-group-text"
   ],
+  "usesContext": [
+    "ElementTag"
+  ],
   "supports": {
     "html": false,
     "innerBlocks": true,

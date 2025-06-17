@@ -36,12 +36,17 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
+        const {ElementTag: ParentElementTag = 'div'} = context || {};
+        
+        const ElementTag = ['ul', 'ol'].includes(ParentElementTag) ? 'li' : 'div';
+
         const ref = useRef(null);
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-item');
 
         useEffect(() => {
             setAttributes({
-                'uniqueId': uniqueId
+                'uniqueId': uniqueId,
+                'ElementTag': ElementTag
             });
         }, []);
 
@@ -52,13 +57,14 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({
-                'wpbs-accordion-group-item': result
+                'wpbs-accordion-group-item': result,
+                'ElementTag': ElementTag
             });
 
         }, [setAttributes, attributes['wpbs-accordion-group-item']])
 
         const blockProps = useBlockProps({
-            ref,
+            ref: ref,
             className: classNames(attributes, true)
         });
 
@@ -106,11 +112,13 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
 
-            <div {...innerBlocksProps} onClick={handleClick}></div>
+            <ElementTag {...innerBlocksProps} onClick={handleClick}></ElementTag>
 
         </>;
     },
     save: (props) => {
+
+        const {ElementTag = 'div'} = props.attributes;
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
@@ -120,7 +128,7 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
-        return <div {...innerBlocksProps}></div>;
+        return <ElementTag {...innerBlocksProps}></ElementTag>;
     }
 })
 

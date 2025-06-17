@@ -60,12 +60,11 @@ registerBlockType(metadata.name, {
         });
 
 
-
         return <>
 
             <div {...blockProps}>
                 <div {...innerBlocksProps}></div>
-                <button  type={'button'}><span className={'screen-reader-text'}>Toggle content</span></button>
+                <a href={'#'} type={'button'}><span className={'screen-reader-text'}>Toggle content</span></a>
             </div>
 
 

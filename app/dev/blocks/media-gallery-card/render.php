@@ -1,7 +1,5 @@
 <?php
 
-global $wp_query;
-
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 $wrapper_attributes = get_block_wrapper_attributes( [

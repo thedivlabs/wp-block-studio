@@ -140,7 +140,7 @@ class WPBS_Media_Gallery {
 		return $result;
 	}
 
-	private static function loop_card( $card = [], $args = [], $index = false ): WP_Block|bool {
+	private static function loop_card( $card = [], $data = [], $index = false ): WP_Block|bool {
 
 		$block_template = $card;
 		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
@@ -150,11 +150,13 @@ class WPBS_Media_Gallery {
 			$original_id . '--' . $index
 		] ) );
 
-		$block_template['attrs']['index'] = $index;
+		$block_template['attrs']['index']  = $index;
+		$block_template['attrs']['postId'] = $data['id'] ?? false;
 
 		$new_block = new WP_Block( $block_template, array_filter( [
 			'uniqueId' => $unique_id,
 			'index'    => $index,
+			'postId'   => $data['id'] ?? false,
 		] ) );
 
 		$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
@@ -205,7 +207,8 @@ class WPBS_Media_Gallery {
 		return new WP_REST_Response(
 			[
 				'status'   => 200,
-				'response' => $new_content
+				'response' => $new_content,
+				'query'    => $query,
 			]
 		);
 

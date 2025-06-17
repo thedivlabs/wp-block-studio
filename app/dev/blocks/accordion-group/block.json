@@ -21,6 +21,9 @@
   "allowedBlocks": [
     "wpbs/accordion-group-item"
   ],
+  "providesContext": {
+    "wpbs/ElementTag": "ElementTag"
+  },
   "supports": {
     "interactivity": true,
     "html": false,

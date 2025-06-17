@@ -2,7 +2,7 @@ import '../scss/block.scss'
 
 import {
     useBlockProps,
-    useInnerBlocksProps, InspectorControls, PanelColorSettings
+    useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -21,7 +21,6 @@ import {
     DIMENSION_UNITS_TEXT,
     ICON_STYLES,
 } from "Includes/config";
-
 
 
 function classNames(attributes = {}) {
@@ -48,7 +47,8 @@ registerBlockType(metadata.name, {
         'wpbs-accordion-group': {
             type: 'object',
             default: {
-                'animate': true
+                'animate': true,
+                'tag': 'div',
             }
         }
     },
@@ -58,7 +58,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setAttributes({
-                'uniqueId': uniqueId
+                'uniqueId': uniqueId,
             });
         }, []);
 
@@ -69,7 +69,7 @@ registerBlockType(metadata.name, {
             };
 
             setAttributes({
-                'wpbs-accordion-group': result
+                'wpbs-accordion-group': result,
             });
 
         }, [setAttributes, attributes['wpbs-accordion-group']])
@@ -245,9 +245,26 @@ registerBlockType(metadata.name, {
         const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
         const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
 
+        const ElementTag = attributes['wpbs-accordion-group']?.['tag'] ?? 'div';
 
         return <>
 
+            <InspectorControls group="advanced">
+                <PanelBody style={{paddingTop: '20px'}}>
+                    <SelectControl
+                        value={attributes['wpbs-accordion-group']?.['tag']}
+                        label={'HTML element'}
+                        options={[
+                            {label: 'Default (<div>)', value: 'div'},
+                            {label: '<ul>', value: 'ul'},
+                            {label: '<ol>', value: 'ol'},
+                        ]}
+                        onChange={(newValue) => updateSettings({tag: newValue})}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                </PanelBody>
+            </InspectorControls>
             <InspectorControls group="styles">
                 <PanelBody title="Button" initialOpen={true}>
                     <TabPanel
@@ -298,11 +315,15 @@ registerBlockType(metadata.name, {
                    }}
             />
 
-            <div {...innerBlocksProps}/>
+            <BlockContextProvider value={{ElementTag}}>
+                <ElementTag role="presentation" {...innerBlocksProps} />
+            </BlockContextProvider>
 
         </>;
     },
     save: (props) => {
+
+        const ElementTag = props.attributes['wpbs-accordion-group']?.['tag'] ?? 'div';
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
@@ -312,7 +333,7 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
-        return <div {...innerBlocksProps}></div>;
+        return <ElementTag role="presentation" {...innerBlocksProps} />;
     }
 })
 

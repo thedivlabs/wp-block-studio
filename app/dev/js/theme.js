@@ -1,6 +1,7 @@
 import Modals from './modules/modals'
 import Loader from './modules/loader'
 import Popup from './modules/popup'
+import Lightbox from './modules/Lightbox'
 
 
 class WPBS_Theme {
@@ -10,17 +11,20 @@ class WPBS_Theme {
     static popup;
     static settings;
     static videos;
+    static lightbox;
 
     constructor() {
 
         this.modals = Modals;
         this.loader = Loader;
         this.popup = Popup;
+        this.lightbox = Lightbox;
         this.videos = [];
 
         this.settings = window.wpbsData ?? {};
         this.modals.init();
         this.loader.init();
+        this.lightbox.init();
 
 
         this.init();

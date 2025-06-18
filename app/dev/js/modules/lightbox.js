@@ -41,7 +41,7 @@ export default class Lightbox {
     static clickHandler(e) {
 
         const parent = e.target.closest('.lightbox-gallery');
-        const data = JSON.parse(JSON.parse(parent.dataset?.wpContext ?? '{}').gallery ?? '{}');
+        const data = JSON.parse(JSON.parse(parent?.dataset?.wpContext ?? '{}')?.gallery ?? '{}');
         const card = e.target.closest('.wpbs-lightbox-card');
 
         console.log(data);

@@ -2,7 +2,7 @@ import "../scss/block.scss";
 
 
 import {
-    InspectorControls,
+    InspectorControls, PanelColorSettings,
     useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
@@ -11,11 +11,21 @@ import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalGrid as Grid,
-    ToggleControl, SelectControl, TextControl
+    ToggleControl,
+    SelectControl,
+    TextControl,
+    BaseControl,
+    __experimentalNumberControl as NumberControl,
+    __experimentalBorderControl as BorderControl,
+    __experimentalInputControl as InputControl,
+    __experimentalUnitControl as UnitControl, PanelBody, TabPanel
 } from "@wordpress/components";
+import Breakpoint from "Components/Breakpoint.js";
+import {MediaGalleryControls} from "Components/MediaGallery.js";
+import {gridControls} from "Includes/helper.js";
 
 function blockClassnames(attributes = {}) {
     return [
@@ -44,6 +54,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
+        const [mediaGallery, setMediaGallery] = useState(attributes['wpbs-media-gallery'] || {});
+
         useEffect(() => {
             setAttributes({
                 uniqueId: uniqueId,
@@ -52,14 +64,29 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-media-gallery'],
+                ...mediaGallery,
                 ...newValue
             };
 
             setAttributes({
                 'wpbs-media-gallery': result,
             });
-        }, [setAttributes, attributes['wpbs-media-gallery']]);
+            setMediaGallery(result);
+
+        }, [setAttributes, setMediaGallery])
+
+        const tabOptions = useMemo(() => {
+            return gridControls(mediaGallery, updateSettings);
+        }, [mediaGallery]);
+
+        const tabGallery = useMemo(() => {
+            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}
+                                         cardClass={'layout-grid-card'}/>
+        }, [attributes['wpbs-media-gallery']])
+        const tabs = {
+            options: tabOptions,
+            gallery: tabGallery,
+        }
 
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
@@ -67,10 +94,35 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <InspectorControls group="advanced">
-                    <Grid columns={2} rowGap={20} style={{'margin-top': '25px'}}>
-                        <></>
-                    </Grid>
+                <InspectorControls group="styles">
+
+                    <PanelBody>
+
+                        <TabPanel
+                            className="wpbs-editor-tabs"
+                            activeClass="active"
+                            orientation="horizontal"
+                            initialTabName="options"
+                            tabs={[
+                                {
+                                    name: 'options',
+                                    title: 'Options',
+                                    className: 'tab-options',
+                                },
+                                {
+                                    name: 'gallery',
+                                    title: 'Gallery',
+                                    className: 'tab-gallery',
+                                },
+                            ]}>
+                            {
+                                (tab) => (<>{tabs[tab.name]}</>)
+                            }
+                        </TabPanel>
+
+                    </PanelBody>
+
+
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 

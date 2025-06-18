@@ -94,10 +94,25 @@ class WPBS_Media_Gallery {
 					return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
 				},
 				'args'                => [
-					'galleryId' => [
+					'galleryId'    => [
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
+					],
+					'pageNumber'   => [
+						'type'              => 'integer',
+						'default'           => 0,
+						'sanitize_callback' => 'absint',
+					],
+					'pageSize'     => [
+						'type'              => 'integer',
+						'default'           => 0,
+						'sanitize_callback' => 'absint',
+					],
+					'cardTemplate' => [
+						'type'              => 'string',
+						'default'           => '',
+						'sanitize_callback' => 'wp_kses_post',
 					],
 
 				],
@@ -165,33 +180,25 @@ class WPBS_Media_Gallery {
 		return $new_block;
 	}
 
-
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$params = $request->get_params();
+		$gallery_id  = $request->get_param( 'galleryId' );
+		$page_number = $request->get_param( 'pageNumber' );
+		$page_size   = $request->get_param( 'pageSize' );
+		$card        = $request->get_param( 'cardTemplate' );
 
-		$id        = $params['galleryId'] ?? false;
-		$page_size = intval( $params['page-size'] ?? false );
-
-		if ( empty( $id ) ) {
-			return new WP_Error( 'no_id', 'Missing ID parameter.', [
-				'status'  => 400,
-				'params'  => $params,
-				'request' => $request,
+		if ( empty( $gallery_id ) || ! is_int( $gallery_id ) || ! is_string( $card ) ) {
+			return new WP_Error( 'error', 'Something went wrong.', [
+				'status' => 400
 			] );
 		}
 
-		$query = self::query( $id );
+		$query = self::query( $gallery_id );
 
-		$full_gallery = ( $params['full_gallery'] ?? false ) === true;
-		$total_pages  = intval( $params['max'] ?? 1 );
-		$cur_page     = intval( $params['cur'] ?? 1 );
-		$card         = $params['card'] ?? [];
-		$is_last      = $cur_page >= $total_pages;
+		$start_index = ( $page_number ?: 1 ) * ( $page_size ?: 1 );
+		$is_last     = $start_index >= count( $query['images'] );
 
-		$start_index = $cur_page * $page_size;
-
-		$query_slice = ! $full_gallery ? array_slice( ( $query['images'] ?? [] ), $start_index, $page_size ) : $query['images'];
+		$query_slice = ! empty( $page_size ) ? array_slice( ( $query['images'] ?? [] ), $start_index, $page_size ) : $query['images'];
 
 		$new_content = '';
 
@@ -207,8 +214,8 @@ class WPBS_Media_Gallery {
 		return new WP_REST_Response(
 			[
 				'status'   => 200,
-				'response' => $new_content,
-				'last'     => $is_last,
+				'response' => wp_kses_post( $new_content ),
+				'is_last'  => ! empty( $is_last ),
 			]
 		);
 

@@ -73,7 +73,7 @@ if ( ( $is_gallery || $is_loop ) && ! empty( $block->parsed_block['innerBlocks']
 
 	if ( $is_gallery ) {
 
-		$gallery = WPBS_Media_Gallery::query( intVal( $attributes['wpbs-media-gallery']['gallery-id'] ?? false ), $attributes['wpbs-media-gallery'] ?? [] );
+		$gallery = WPBS_Media_Gallery::query( intVal( $attributes['wpbs-media-gallery']['galleryId'] ?? false ), $attributes['wpbs-media-gallery'] ?? [] );
 
 		$image_cards = WPBS_Grid::render( $attributes, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, array_merge( $gallery['images'] ?? [], $gallery['video'] ?? [] ), $attributes['wpbs-media-gallery']['page-size'] ?? false );
 

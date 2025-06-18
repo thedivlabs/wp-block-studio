@@ -1,56 +1,62 @@
 {
-  "name": "wpbs/media-gallery-card",
-  "title": "Media Card",
-  "description": "Display a media card",
+  "name": "wpbs/media-gallery",
+  "title": "Media Gallery",
+  "description": "Display a media gallery",
   "selectors": {
-    "root": ".wpbs-media-gallery-card"
+    "root": ".wpbs-media-gallery"
   },
   "attributes": {
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
     },
-    "postId": {
+    "galleryId": {
       "type": "integer",
-      "show_in_rest": true
-    },
-    "cardClass": {
-      "type": "string",
       "show_in_rest": true
     }
   },
-  "parent": [
-    "wpbs/media-gallery",
-    "wpbs/layout-grid",
-    "wpbs/slider-wrapper"
+  "allowedBlocks": [
+    "wpbs/media-gallery-card"
   ],
   "providesContext": {
     "postId": "postId"
   },
-  "usesContext": [
-    "cardClass",
-    "index"
-  ],
   "supports": {
+    "layout": false,
     "interactivity": true,
+    "innerBlocks": true,
     "color": {
       "background": true,
       "text": true,
       "link": true,
       "gradients": true
     },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
     "__experimentalBorder": {
       "size": true,
       "color": true,
       "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
     }
   },
   "editorScript": "file:./js/edit.js",
   "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
-  "icon": "format-gallery",
-  "render": "file:./render.php"
+  "icon": "format-gallery"
 }
 
 

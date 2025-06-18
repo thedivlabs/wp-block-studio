@@ -94,7 +94,7 @@ class WPBS_Media_Gallery {
 					return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
 				},
 				'args'                => [
-					'gallery-id' => [
+					'galleryId' => [
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
@@ -170,8 +170,8 @@ class WPBS_Media_Gallery {
 
 		$params = $request->get_params();
 
-		$id        = $params['attrs']['gallery-id'] ?? false;
-		$page_size = intval( $params['attrs']['page-size'] ?? false );
+		$id        = $params['galleryId'] ?? false;
+		$page_size = intval( $params['page-size'] ?? false );
 
 		if ( empty( $id ) ) {
 			return new WP_Error( 'no_id', 'Missing ID parameter.', [
@@ -183,18 +183,21 @@ class WPBS_Media_Gallery {
 
 		$query = self::query( $id );
 
-		$total_pages = intval( $params['max'] ?? 1 );
-		$cur_page    = intval( $params['cur'] ?? 1 );
-		$card        = $params['card'] ?? [];
-		$is_last     = $cur_page >= $total_pages;
+		$full_gallery = ( $params['full_gallery'] ?? false ) === true;
+		$total_pages  = intval( $params['max'] ?? 1 );
+		$cur_page     = intval( $params['cur'] ?? 1 );
+		$card         = $params['card'] ?? [];
+		$is_last      = $cur_page >= $total_pages;
 
-		$query_slice = array_slice( ( $query['images'] ?? [] ), ( $cur_page - 0 ) * $page_size, $page_size );
+		$start_index = $cur_page * $page_size;
+
+		$query_slice = ! $full_gallery ? array_slice( ( $query['images'] ?? [] ), $start_index, $page_size ) : $query['images'];
 
 		$new_content = '';
 
 		foreach ( $query_slice as $k => $data ) {
 
-			$new_block = self::loop_card( $card, $data, $k );
+			$new_block = self::loop_card( $card, $data, $k + $start_index );
 
 			$new_content .= $new_block->render();
 

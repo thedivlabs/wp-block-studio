@@ -2,6 +2,7 @@ import Modals from './modules/modals'
 import Loader from './modules/loader'
 import Popup from './modules/popup'
 import Lightbox from './modules/Lightbox'
+import {gridDividers, setMasonry} from 'Includes/helper'
 
 
 class WPBS_Theme {
@@ -40,6 +41,10 @@ class WPBS_Theme {
             }, 500);
         });
     }
+
+    setMasonry = setMasonry;
+    gridDividers = gridDividers;
+
 
     set_cookie(cname, cvalue, exdays = false) {
         const d = new Date();

@@ -8,11 +8,58 @@ export default class Lightbox {
         test.textContent = 'Lightbox';
 
         const slider = this.component([test]);
-        
-        window.addEventListener('load', () => {
-            this.toggle(slider);
-            console.log(slider);
+
+        document.addEventListener('click', (e) => this.clickHandler(e), {passive: true});
+
+    }
+
+    static async fetchGallery(args) {
+
+        const endpoint = '/wp-json/wpbs/v1/media-gallery';
+
+        const request = {
+            card: args.card,
+            index: args.index,
+            galleryId: args.galleryId,
+        };
+
+        WPBS.loader.toggle();
+
+        return await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-WP-Nonce': WPBS?.settings?.nonce ?? false,
+            },
+            body: JSON.stringify(request),
+        }).then((response) => {
+            WPBS.loader.remove();
+            return response;
         });
+    }
+
+    static clickHandler(e) {
+
+        const parent = e.target.closest('.lightbox-gallery');
+        const data = JSON.parse(JSON.parse(parent.dataset?.wpContext ?? '{}').gallery ?? '{}');
+        const card = e.target.closest('.wpbs-lightbox-card');
+
+        console.log(data);
+
+        if (!card || !data) {
+            return;
+        }
+
+        const index = card.dataset.index;
+
+        this.fetchGallery({
+            index: index,
+            card: card,
+            galleryId: data.galleryId,
+        }).then(response => response.json())
+            .then(result => {
+                console.log(result);
+            });
 
     }
 
@@ -26,10 +73,10 @@ export default class Lightbox {
 
     }
 
-    static toggle(component, args = {}) {
+    static toggle(args = {}) {
 
         WPBS.modals.show_modal(false, {
-            template: component
+            template: this.component([])
         });
 
     }

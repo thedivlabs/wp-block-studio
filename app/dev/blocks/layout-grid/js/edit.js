@@ -32,12 +32,14 @@ import {useSelect} from "@wordpress/data";
 
 
 function classNames(attributes = {}) {
+
     return [
         'wpbs-layout-grid',
         !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
+        (attributes?.className ?? []).includes('is-style-gallery') ? 'lightbox-gallery' : null,
         attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -340,6 +342,7 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({
+                gallery: JSON.stringify(props.attributes?.['wpbs-media-gallery'] ?? {}),
                 uniqueId: props.attributes.uniqueId,
                 divider: !!Object.keys(props.attributes['wpbs-grid']?.['divider'] ?? {}).length,
                 breakpoints: {

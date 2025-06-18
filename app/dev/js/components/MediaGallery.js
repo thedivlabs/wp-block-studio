@@ -51,7 +51,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes, cardClass 
         <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label="Select Gallery"
-                value={settings?.['gallery-id'] ?? ''}
+                value={settings?.['galleryId'] ?? ''}
                 options={[
                     {label: 'Select a gallery', value: ''},
                     ...(galleries || []).map(post => ({
@@ -59,7 +59,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes, cardClass 
                         value: String(post.id)
                     }))
                 ]}
-                onChange={(newValue) => updateSettings({'gallery-id': newValue})}
+                onChange={(newValue) => updateSettings({'galleryId': newValue})}
             />
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <NumberControl

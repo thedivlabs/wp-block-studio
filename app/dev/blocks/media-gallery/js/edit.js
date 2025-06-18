@@ -19,7 +19,7 @@ import {
 
 function blockClassnames(attributes = {}) {
     return [
-        'wpbs-media-gallery-card',
+        'wpbs-media-gallery',
         attributes?.cardClass ?? null,
         'w-full block relative',
         attributes.uniqueId,
@@ -32,7 +32,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-media-gallery-card': {
+        'wpbs-media-gallery': {
             type: 'object',
             default: {}
         }
@@ -42,28 +42,24 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const {cardClass = '', index} = context;
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         useEffect(() => {
             setAttributes({
                 uniqueId: uniqueId,
-                cardClass: cardClass
             });
         }, []);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-media-gallery-card'],
+                ...attributes['wpbs-media-gallery'],
                 ...newValue
             };
 
             setAttributes({
-                'wpbs-media-gallery-card': result,
-                cardClass: cardClass
+                'wpbs-media-gallery': result,
             });
-        }, [setAttributes, attributes['wpbs-media-gallery-card']]);
+        }, [setAttributes, attributes['wpbs-media-gallery']]);
 
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
@@ -78,7 +74,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <figure {...blockProps}></figure>
+                <div {...blockProps}></div>
 
                 <Style attributes={attributes} setAttributes={setAttributes}/>
             </>

@@ -33,7 +33,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'uniqueId'    => $attributes['uniqueId'] ?? null,
 		'divider'     => ! empty( $settings['divider'] ),
 		'breakpoints' => [
-			'small' => $settings['breakpoint-small'],
+			'small' => $settings['breakpoint-small'] ?? null,
 			'large' => $settings['breakpoint-large'] ?? $attributes['wpbs-layout']['breakpoint'] ?? 'lg',
 		],
 		'columns'     => [
@@ -86,6 +86,9 @@ WPBS::console_log( $block ?? false );
 
 	<?php
 
+	if ( ! empty( $block->inner_content ) ) {
+		echo $block->inner_content[ array_key_last( $block->inner_content ) ];
+	}
 
 	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [

@@ -20,7 +20,6 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/media-gallery-card",
     "wpbs/layout-grid-card",
     "core/query-pagination"
   ],
@@ -31,10 +30,6 @@
     {
       "name": "loop",
       "label": "Loop"
-    },
-    {
-      "name": "gallery",
-      "label": "Gallery"
     }
   ],
   "supports": {

@@ -154,7 +154,6 @@ registerBlockType(metadata.name, {
             ref: previewContainerRef
         }, {
             allowedBlocks: [
-                "wpbs/media-gallery-card",
                 "wpbs/layout-grid-card",
                 "core/query-pagination"
             ]

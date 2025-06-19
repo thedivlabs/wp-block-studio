@@ -378,7 +378,7 @@ function parseSpecial(prop, attributes) {
             result = {'padding-top': 'calc(' + getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px') + ' + var(--wpbs-header-height, 0px)) !important'}
             break;
     }
-
+    
     Object.entries(result).forEach(([k, val]) => {
 
         if (typeof val === 'object') {

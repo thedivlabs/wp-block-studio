@@ -44,8 +44,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 ] );
 
-WPBS::console_log( $block ?? false );
-
 ?>
 
 <div <?php echo $wrapper_attributes ?>>

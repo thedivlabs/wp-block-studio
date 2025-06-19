@@ -79,7 +79,6 @@ const Media = React.memo(({settings, breakpoint}) => {
 });
 
 
-
 const MemoSelectControl = React.memo(({label, options, value, callback}) => (
     <SelectControl
         label={label}
@@ -390,7 +389,9 @@ registerBlockType(metadata.name, {
 
         </>;
     },
-    save: () => null
+    save: (props) => {
+        return <></>;
+    }
 
 })
 

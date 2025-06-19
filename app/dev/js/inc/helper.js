@@ -42,7 +42,7 @@ export const imageButtonStyle = {
     textAlign: 'center',
 }
 
-export const gridControls = (grid, callback) => {
+export const GridControls = ({grid, callback}) => {
     return <Grid columns={1} columnGap={15} rowGap={20}>
         <BaseControl label={'Grid Columns'} __nextHasNoMarginBottom={true}>
             <Grid columns={3} columnGap={15} rowGap={20}>

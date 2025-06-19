@@ -94,6 +94,42 @@ class WPBS_Grid {
 
 	}
 
+
+	public static function output_pagination( $query ): void {
+		$big = 999999999;
+
+		$current_page = max( 1, get_query_var( 'paged' ) );
+
+		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
+
+		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
+			return str_replace( [ '<span', '</span>', 'current' ], [
+				'<button type="button" disabled',
+				'</button>',
+				'current wp-element-button ',
+			], $link );
+		}, paginate_links( [
+			'base'      => $base,
+			'format'    => '/page/%#%/',
+			'current'   => $current_page,
+			'total'     => $query->max_num_pages,
+			'prev_next' => false,
+			'mid_size'  => 6,
+			'type'      => 'array',
+		] ) );
+
+		do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
+
+		if ( ! empty( $pagination_links ) ) {
+			$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
+			$pagination = '<div class="wp-block-query-pagination-numbers inline-flex w-max">' . implode( '', $pagination_links ) . '</div>';
+			$pagination .= '</nav>';
+		}
+
+
+		echo $pagination ?? false;
+	}
+
 	public static function sanitize_loop_attrs( $attrs ): array {
 
 		$query = $attrs['wpbs-query'] ?? false;

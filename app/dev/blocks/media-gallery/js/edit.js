@@ -25,7 +25,7 @@ import {
 } from "@wordpress/components";
 import Breakpoint from "Components/Breakpoint.js";
 import {MediaGalleryControls} from "Components/MediaGallery.js";
-import {gridControls} from "Includes/helper.js";
+import {GridControls} from "Includes/helper.js";
 
 function blockClassnames(attributes = {}) {
     return [
@@ -76,8 +76,8 @@ registerBlockType(metadata.name, {
         }, [setAttributes, setMediaGallery])
 
         const tabOptions = useMemo(() => {
-            return gridControls(mediaGallery, updateSettings);
-        }, [mediaGallery]);
+            return <GridControls grid={mediaGallery} callback={updateSettings}/>;
+        }, [mediaGallery, updateSettings]);
 
         const tabGallery = useMemo(() => {
             return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}

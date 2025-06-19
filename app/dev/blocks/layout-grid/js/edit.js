@@ -3,7 +3,6 @@ import "../scss/block.scss";
 import {
     BlockContextProvider,
     InspectorControls,
-    PanelColorSettings,
     useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
@@ -11,32 +10,22 @@ import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
-import {MEDIA_GALLERY_ATTRIBUTES, MediaGalleryControls} from "Components/MediaGallery"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import {gridControls} from "Includes/helper"
+import {GridControls} from "Includes/helper"
 import Loop from "Components/Loop"
 import {
-    __experimentalBorderControl as BorderControl,
-    __experimentalGrid as Grid,
-    __experimentalInputControl as InputControl,
-    __experimentalNumberControl as NumberControl,
-    __experimentalUnitControl as UnitControl,
-    BaseControl,
     PanelBody,
     TabPanel,
-    ToggleControl
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import Breakpoint from 'Components/Breakpoint';
-import {useSelect} from "@wordpress/data";
 
 
 function classNames(attributes = {}) {
 
     return [
         'wpbs-layout-grid',
-        !!attributes?.['wpbs-masonry'] ? 'wpbs-layout-grid--masonry masonry !block' : null,
+        !!attributes?.['wpbs-grid']?.masonry ? 'wpbs-layout-grid--masonry masonry !block' : null,
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
@@ -52,7 +41,6 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        ...MEDIA_GALLERY_ATTRIBUTES,
         'wpbs-grid': {
             type: 'object',
             default: {
@@ -77,8 +65,6 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
         const breakpoints = WPBS?.settings?.breakpoints ?? {};
-
-        const previewContainerRef = useRef();
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
@@ -133,8 +119,8 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-grid']]);
 
         const tabOptions = useMemo(() => {
-            return gridControls(grid, updateSettings);
-        }, [grid]);
+            return <GridControls grid={grid} callback={updateSettings}/>;
+        }, [grid, updateSettings]);
 
         const tabLoop = useMemo(() => {
             return <Loop attributes={attributes} setAttributes={setAttributes}/>
@@ -150,8 +136,7 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-layout-grid__container relative z-20',
-            ref: previewContainerRef
+            className: 'wpbs-layout-grid__container relative z-20'
         }, {
             allowedBlocks: [
                 "wpbs/layout-grid-card",
@@ -213,14 +198,14 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => {
+    save: () => null
+    /*save: (props) => {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({
-                gallery: JSON.stringify(props.attributes?.['wpbs-media-gallery'] ?? {}),
                 uniqueId: props.attributes.uniqueId,
                 divider: !!Object.keys(props.attributes['wpbs-grid']?.['divider'] ?? {}).length,
                 breakpoints: {
@@ -254,7 +239,7 @@ registerBlockType(metadata.name, {
                            data-wp-on-async--click="actions.pagination">
                 {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
             </button>;
-            /*if ((props.attributes?.className ?? '').includes('is-style-gallery') || ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current')) {
+            /!*if ((props.attributes?.className ?? '').includes('is-style-gallery') || ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current')) {
                 return <button type="button"
                                className={"wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"}
                                data-wp-on-async--click="actions.pagination">
@@ -262,7 +247,7 @@ registerBlockType(metadata.name, {
                 </button>;
             } else {
                 return <></>;
-            }*/
+            }*!/
         }
 
         return (
@@ -274,11 +259,9 @@ registerBlockType(metadata.name, {
                 </div>
                 <PaginationButton/>
                 <BackgroundElement attributes={props.attributes} editor={false}/>
-                {((props.attributes?.className ?? '').includes('is-style-loop') || (props.attributes?.className ?? '').includes('is-style-gallery')) &&
-                    <script class="wpbs-layout-grid-args" type="application/json"/>}
             </div>
         );
-    }
+    }*/
 })
 
 

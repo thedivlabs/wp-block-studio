@@ -352,7 +352,6 @@ function parseSpecial(prop, attributes) {
         case 'min-height':
         case 'min-height-custom':
 
-
             result = {'min-height': heightVal(settings?.['min-height-custom'] ?? settings?.['min-height'] ?? null)}
 
             break;
@@ -378,10 +377,11 @@ function parseSpecial(prop, attributes) {
             result = {'padding-top': 'calc(' + getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px') + ' + var(--wpbs-header-height, 0px)) !important'}
             break;
     }
-    
-    Object.entries(result).forEach(([k, val]) => {
 
-        if (typeof val === 'object') {
+    console.log(result);
+
+    Object.entries(result).forEach(([k, val]) => {
+        if (val && typeof val === 'object' && !Array.isArray(val)) {
             result[k] = Object.entries(val)
                 .filter(([_, v]) => v !== undefined && v !== null)
                 .map(([k, v]) => `${k}: ${v};`)

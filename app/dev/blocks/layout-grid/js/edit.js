@@ -1,7 +1,7 @@
 import "../scss/block.scss";
 
 import {
-    BlockContextProvider,
+    BlockContextProvider, InnerBlocks,
     InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
@@ -198,70 +198,10 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: () => null
-    /*save: (props) => {
+    save: (props) => {
 
-        const blockProps = useBlockProps.save({
-            className: classNames(props.attributes),
-            'data-wp-interactive': 'wpbs/grid',
-            'data-wp-init': 'actions.init',
-            'data-wp-context': JSON.stringify({
-                uniqueId: props.attributes.uniqueId,
-                divider: !!Object.keys(props.attributes['wpbs-grid']?.['divider'] ?? {}).length,
-                breakpoints: {
-                    small: props.attributes?.['wpbs-grid']?.['breakpoint-small'],
-                    large: props.attributes?.['wpbs-grid']?.['breakpoint-large'] ?? props.attributes?.['wpbs-layout']?.['breakpoint'] ?? 'lg',
-                },
-                columns: {
-                    mobile: props.attributes['wpbs-grid']?.['columns-mobile'] ?? 1,
-                    small: props.attributes['wpbs-grid']?.['columns-small'] ?? 2,
-                    large: props.attributes['wpbs-grid']?.['columns-large'] ?? 3,
-                }
-            })
-        });
-
-        const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-layout-grid__container relative z-20',
-        }, {});
-
-        const GutterSizer = () => {
-            if (!!props.attributes['wpbs-masonry']) {
-                return <span className={"gutter-sizer"}
-                             style={{width: 'var(--row-gap, var(--column-gap, 0px))'}}></span>;
-            } else {
-                return <></>;
-            }
-        }
-
-        const PaginationButton = () => {
-            return <button type="button"
-                           className={"wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"}
-                           data-wp-on-async--click="actions.pagination">
-                {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
-            </button>;
-            /!*if ((props.attributes?.className ?? '').includes('is-style-gallery') || ((props.attributes?.className ?? '').includes('is-style-loop') && !!props.attributes['wpbs-query']?.pagination && props.attributes?.['wpbs-query']?.['post_type'] !== 'current')) {
-                return <button type="button"
-                               className={"wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"}
-                               data-wp-on-async--click="actions.pagination">
-                    {props.attributes['wpbs-grid']?.['pagination-label'] || 'Show More'}
-                </button>;
-            } else {
-                return <></>;
-            }*!/
-        }
-
-        return (
-            <div {...blockProps}>
-                <div {...innerBlocksProps} >
-                    {innerBlocksProps.children}
-                    <GutterSizer/>
-
-                </div>
-                <PaginationButton/>
-                <BackgroundElement attributes={props.attributes} editor={false}/>
-            </div>
-        );
-    }*/
+        return <><InnerBlocks.Content/><BackgroundElement attributes={props.attributes} editor={false}/></>
+    }
 })
 
 

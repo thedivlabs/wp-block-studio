@@ -44,6 +44,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 ] );
 
+WPBS::console_log( $block ?? false );
+
 ?>
 
 <div <?php echo $wrapper_attributes ?>>
@@ -67,23 +69,25 @@ $wrapper_attributes = get_block_wrapper_attributes( [
             <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
 		<?php } ?>
 
+		<?php if ( $is_loop && $query->max_num_pages > 1 ) { ?>
+            <button type="button"
+                    class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
+                    data-wp-on-async--click="actions.pagination">
+				<?= $settings['pagination-label'] ?? 'View More' ?>
+            </button>
+		<?php } ?>
+
+		<?php if ( ! empty( $pagination ) ) {
+			echo $pagination;
+		} ?>
+
     </div>
 
-	<?php if ( $is_loop && $query->max_num_pages > 1 ) { ?>
-        <button type="button"
-                class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
-                data-wp-on-async--click="actions.pagination">
-			<?= $settings['pagination-label'] ?? 'View More' ?>
-        </button>
-	<?php } ?>
 
-	<?php if ( ! empty( $pagination ) ) {
-		echo $pagination;
-	} ?>
+	<?php
 
 
-
-	<?php if ( $is_loop ) {
+	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
 				'query' => $query->query ?? false,
@@ -91,7 +95,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 				'max'   => $query->max_num_pages ?? 1,
 				'attrs' => $query_settings,
 			] ) ) . '</script>';
-	} ?>
+	}
+
+	?>
 
 </div>
 

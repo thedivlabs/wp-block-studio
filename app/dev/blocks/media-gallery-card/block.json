@@ -20,9 +20,7 @@
     }
   },
   "parent": [
-    "wpbs/media-gallery",
-    "wpbs/layout-grid",
-    "wpbs/slider-wrapper"
+    "wpbs/media-gallery"
   ],
   "providesContext": {
     "postId": "postId"

@@ -89,7 +89,7 @@ registerBlockType(metadata.name, {
             });
             setGrid(result);
 
-        }, [setAttributes, setGrid])
+        }, [setAttributes, setGrid, grid])
 
         const cssProps = useMemo(() => {
             const grid = attributes['wpbs-grid'] ?? {};

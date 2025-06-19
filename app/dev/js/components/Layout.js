@@ -378,8 +378,6 @@ function parseSpecial(prop, attributes) {
             break;
     }
 
-    console.log(result);
-
     Object.entries(result).forEach(([k, val]) => {
         if (val && typeof val === 'object' && !Array.isArray(val)) {
             result[k] = Object.entries(val)

@@ -67,20 +67,19 @@ $wrapper_attributes = get_block_wrapper_attributes( [
             <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
 		<?php } ?>
 
-		<?php if ( $is_loop && $query->max_num_pages > 1 ) { ?>
-            <button type="button"
-                    class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
-                    data-wp-on-async--click="actions.pagination">
-				<?= $settings['pagination-label'] ?? 'View More' ?>
-            </button>
-		<?php } ?>
-
-		<?php if ( ! empty( $pagination ) ) {
-			echo $pagination;
-		} ?>
-
     </div>
 
+	<?php if ( $is_loop && $query->max_num_pages > 1 ) { ?>
+        <button type="button"
+                class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
+                data-wp-on-async--click="actions.pagination">
+			<?= $settings['pagination-label'] ?? 'View More' ?>
+        </button>
+	<?php } ?>
+
+	<?php if ( ! empty( $pagination ) ) {
+		echo $pagination;
+	} ?>
 
 	<?php
 

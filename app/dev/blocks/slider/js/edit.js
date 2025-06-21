@@ -32,7 +32,7 @@ function blockClasses(attributes = {}, editor = false) {
         attributes.uniqueId,
         !!sliderArgs?.collapse ? 'wpbs-slider--collapse' : null,
         !!sliderArgs?.['fade-in'] ? 'wpbs-slider--fade-in' : null,
-        !!editor ? '.swiper-initialized' : null,
+        !!editor ? 'swiper-initialized' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -158,7 +158,7 @@ registerBlockType(metadata.name, {
                 'from-end': undefined,
                 'rewind': undefined,
                 'fade-in': undefined,
-                'drag': undefined,
+                'drag': true,
                 'swiperArgs': undefined,
             }
         }

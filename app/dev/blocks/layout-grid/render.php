@@ -11,8 +11,6 @@ $is_current     = $is_loop && ( $query_settings['post_type'] ?? false ) === 'cur
 
 $grid = ! $is_loop ? false : WPBS_Grid::render( $block->parsed_block['innerBlocks'][0] ?? false, $is_current ? $wp_query : $query_settings );
 
-WPBS::console_log( $grid );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-layout-grid',

@@ -44,7 +44,7 @@ const {state} = store('wpbs/grid', {
             const request = {
                 card: card,
                 query: query,
-                page: page,
+                page: grid.dataset.page,
             };
 
             console.log(request);

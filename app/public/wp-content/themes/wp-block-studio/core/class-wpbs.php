@@ -453,23 +453,28 @@ class WPBS {
 
 	public static function get_block_template( $block ): array {
 
-		if ( empty( $block['blockName'] ) ) {
+		if ( ! is_array( $block ) || empty( $block['blockName'] ) ) {
 			return [];
 		}
 
 		$template = [
 			'blockName'    => $block['blockName'],
-			'attrs'        => $block['attrs'] ?? [] ?? null,
-			'innerContent' => $block['innerContent'] ?? null,
-			'context'      => $block['context'] ?? null,
+			'attrs'        => $block['attrs'] ?? [],
 			'innerBlocks'  => [],
+			'innerContent' => [],
 			'innerHTML'    => ''
 		];
+
+		if ( isset( $block['context'] ) ) {
+			$template['context'] = $block['context'];
+		}
+		if ( isset( $block['innerContent'] ) ) {
+			$template['innerContent'] = $block['innerContent'];
+		}
 
 		if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 			foreach ( $block['innerBlocks'] as $inner_block ) {
 				$child = self::get_block_template( $inner_block );
-
 				if ( $child ) {
 					$template['innerBlocks'][] = $child;
 				}

@@ -35,8 +35,6 @@ const {state} = store('wpbs/grid', {
 
             const {page, query, max, card} = data;
 
-            console.log(card);
-
             grid.dataset.page = String(page + 1);
 
             const nonce = WPBS?.settings?.nonce ?? false;
@@ -48,6 +46,8 @@ const {state} = store('wpbs/grid', {
                 query: query,
                 page: page,
             };
+
+            console.log(request);
 
 
             WPBS.loader.toggle();
@@ -61,6 +61,8 @@ const {state} = store('wpbs/grid', {
                 body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
+
+                    console.log(result);
 
                     WPBS.loader.toggle({
                         remove: true

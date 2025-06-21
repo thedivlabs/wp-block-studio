@@ -11,6 +11,9 @@ $is_current     = $is_loop && ( $query_settings['post_type'] ?? false ) === 'cur
 
 $grid = ! $is_loop ? false : WPBS_Grid::render_loop( $block->parsed_block['innerBlocks'][0] ?? false, $is_current ? $wp_query : $query_settings );
 
+$show_button     = $is_loop && ! $is_current && empty( $grid['last'] ) && ! empty( $query_settings['pagination'] );
+$show_pagination = $is_current && ! empty( $query_settings['pagination'] );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-layout-grid',
@@ -20,7 +23,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-init'        => 'actions.init',
 ] );
 
-
+WPBS::console_log( $grid );
+WPBS::console_log( $show_button );
 ?>
 
 <div <?php echo $wrapper_attributes ?>>
@@ -46,7 +50,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
     </div>
 
-	<?php if ( $is_loop && ! $is_current ) { ?>
+	<?php if ( $show_button ) { ?>
         <button type="button"
                 class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
                 data-wp-on-async--click="actions.pagination">
@@ -54,8 +58,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
         </button>
 	<?php } ?>
 
-	<?php if ( $is_current && ! empty( $grid['pagination'] ) ) {
-		echo $grid['pagination'];
+	<?php if ( $show_pagination ) {
+		echo WPBS_Grid::pagination( $grid['query'] ?? false );
 	} ?>
 
 	<?php

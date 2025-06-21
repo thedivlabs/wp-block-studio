@@ -9,7 +9,7 @@ const {state} = store('wpbs/grid', {
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
 
             const {page = 1, max = 1} = data;
-
+            
             WPBS.setMasonry(grid);
 
             WPBS.gridDividers(grid, data);
@@ -62,7 +62,7 @@ const {state} = store('wpbs/grid', {
                     WPBS.loader.toggle({
                         remove: true
                     });
-                    
+
                     const newNodes = parser.parseFromString(result.content, 'text/html');
                     container.append(...newNodes.body.childNodes);
 

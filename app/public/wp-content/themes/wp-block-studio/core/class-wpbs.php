@@ -640,6 +640,51 @@ class WPBS {
 		//return $new_block;
 	}
 
+	public static function query( $query, $page = 1 ): WP_Query|bool|array {
+
+		if ( empty( $query ) ) {
+			return false;
+		}
+
+		if ( ! empty( $query['loop_terms'] ) ) {
+
+			return get_terms( [
+				'taxonomy'   => $query['taxonomy'] ?? false,
+				'hide_empty' => true,
+				'orderby'    => $query['orderby'] ?? 'date',
+				'order'      => $query['order'] ?? 'DESC',
+			] );
+		}
+
+		$query_args = [
+			'post_type'      => $query['post_type'] ?? 'post',
+			'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
+			'orderby'        => $query['orderby'] ?? 'date',
+			'order'          => $query['order'] ?? 'DESC',
+			'post__not_in'   => $query['post__not_in'] ?? [],
+			'paged'          => $query['paged'] ?? $page ?: 1,
+		];
+
+		if ( ! empty( $query['taxonomy'] ) ) {
+
+			$taxonomy = get_term( $query['term'] ?? false )->taxonomy ?? false;
+
+			if ( ! empty( $taxonomy ) ) {
+				$query_args['tax_query'] = [
+					[
+						'taxonomy' => $taxonomy,
+						'field'    => 'term_id',
+						'terms'    => $query['term'] ?? false,
+					]
+				];
+			}
+
+		}
+
+		return new WP_Query( $query_args );
+
+	}
+
 
 }
 

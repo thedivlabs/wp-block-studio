@@ -23,7 +23,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 
 
-function blockClasses(attributes = {}) {
+function blockClasses(attributes = {}, editor = false) {
 
     const {'wpbs-slider': sliderArgs} = attributes;
 
@@ -32,6 +32,7 @@ function blockClasses(attributes = {}) {
         attributes.uniqueId,
         !!sliderArgs?.collapse ? 'wpbs-slider--collapse' : null,
         !!sliderArgs?.['fade-in'] ? 'wpbs-slider--fade-in' : null,
+        !!editor ? '.swiper-initialized' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -221,7 +222,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             ref: swiperRef,
-            className: blockClasses(attributes)
+            className: blockClasses(attributes, true)
         });
 
         const updateOptions = useCallback((newValue) => {

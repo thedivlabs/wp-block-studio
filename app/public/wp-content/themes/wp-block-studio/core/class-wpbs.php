@@ -28,7 +28,7 @@ class WPBS {
 
 		$this->set_nonce();
 
-		if ( isset( $_GET['wpbs-cache'] ) ) {
+		if ( isset( $_GET['wpbs-cache'] ) && current_user_can( 'manage_options' ) ) {
 			self::clear_transients();
 		}
 
@@ -121,7 +121,7 @@ class WPBS {
 		wp_enqueue_script( 'wpbs-fontawesome' );
 		wp_enqueue_style( 'wpbs-theme-css' );
 
-		wp_enqueue_style( 'wpbs-admin-css' );
+
 		wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
@@ -131,7 +131,7 @@ class WPBS {
 	}
 
 	public function editor_assets(): void {
-
+		wp_enqueue_style( 'wpbs-admin-css' );
 	}
 
 	public function view_assets(): void {
@@ -326,55 +326,6 @@ class WPBS {
 
 	}
 
-	public static function parse_style( string $attr = '', bool $property = true ): string|bool|array {
-
-		if ( empty( $attr ) ) {
-			return false;
-		}
-
-		if ( preg_match( '/^#[a-f0-9]{8}$/i', $attr ) ) {
-			return $attr;
-		}
-
-		if ( str_contains( $attr, 'var:' ) ) {
-
-			$result = str_replace( [ 'var:', '|', ' ' ], [ '', '--', '' ], $attr );
-
-			if ( $property ) {
-				return 'var(' . '--wp--' . $result . ')';
-			}
-
-			return '--wp--' . $result;
-		}
-
-		//return preg_replace( '/\s+/', '|', $attr );
-		return $attr;
-
-	}
-
-	public static function block_type( $block = [] ): string|bool {
-
-		return array_values( array_filter( array_map( function ( $class ) {
-			return str_contains( $class, 'is-style-' ) ? str_replace( 'is-style-', '', $class ) : null;
-		}, explode( ' ', $block->attributes['className'] ?? '' ) ) ) )[0] ?? false;
-	}
-
-	public static function parse_prop( $prop ): string|false {
-
-		if ( ! is_string( $prop ) ) {
-			return false;
-		}
-
-
-		$prop = preg_split( '/(?=[A-Z])/', $prop );
-
-		unset( $prop[0] );
-
-		return strtolower( str_replace( ' ', '-', implode( ' ', $prop ) ) );
-
-
-	}
-
 	public function pre_load_critical(): void {
 
 		global $wp_scripts;
@@ -417,20 +368,18 @@ class WPBS {
 
 			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
 
-			echo 'href="' . ( $webp ? $src . '.webp' : $src ) . '"';
+			echo 'href="' . ( $src . '.webp' ) . '"';
 
 			if ( ! empty( $image_data['breakpoint'] ) ) {
 				echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';
 			}
 
 
-			if ( $image_srcset ) {
-				//echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [ '.jpg','.png','.jpeg' ], [ '.jpg.webp','.png.webp','.jpeg.webp' ], $image_srcset ) ) . '"';
-			}
+			/*if ( $image_srcset ) {
+				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [ '.jpg','.png','.jpeg' ], [ '.jpg.webp','.png.webp','.jpeg.webp' ], $image_srcset ) ) . '"';
+			}*/
 
-			if ( $webp ) {
-				echo 'type="image/webp"';
-			}
+			echo 'type="image/webp"';
 
 			echo '/>';
 
@@ -535,6 +484,24 @@ class WPBS {
 		return $template;
 	}
 
+	public static function sanitize_block_template( $block ): array {
+
+		return [
+			'blockName'    => $block['blockName'] ?? '',
+			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
+			'innerBlocks'  => array_map( [ __CLASS__, 'sanitize_block_template' ], $block['innerBlocks'] ?? [] ),
+			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
+			'innerContent' => array_map( function ( $item ) {
+				if ( is_string( $item ) ) {
+					return wp_kses_post( $item );
+				}
+
+				return null;
+			}, $block['innerContent'] ?? [] ),
+		];
+
+	}
+
 	public static function sanitize_query_args( $args ): array {
 		$sanitized = [];
 
@@ -548,7 +515,7 @@ class WPBS {
 			};
 		}
 
-		return $sanitized;
+		return WPBS::clean_array( $sanitized );
 	}
 
 	public static function init_classes( $dir, $init = true ): void {
@@ -599,6 +566,92 @@ class WPBS {
 
 
 	}
+
+	public static function recursive_sanitize( $input ) {
+
+		if ( is_array( $input ) ) {
+			$sanitized = [];
+
+			foreach ( $input as $key => $value ) {
+
+				$sanitized_key = is_string( $key ) ? sanitize_text_field( $key ) : $key;
+
+				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
+			}
+
+			return $sanitized;
+
+		} elseif ( is_string( $input ) ) {
+			return sanitize_text_field( $input );
+
+		} elseif ( is_int( $input ) ) {
+			return intval( $input );
+
+		} elseif ( is_float( $input ) ) {
+			return floatval( $input );
+
+		} elseif ( is_bool( $input ) ) {
+			return (bool) $input;
+
+		} else {
+
+			return $input;
+		}
+	}
+
+	public static function loop_card( $block = [], $args = [], $index = false ): WP_Block|bool {
+
+		$block_template = [
+			'blockName'    => $block['blockName'] ?? '',
+			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
+			'innerBlocks'  => array_map( [ __CLASS__, 'sanitize_block_template' ], $block['innerBlocks'] ?? [] ),
+			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
+			'innerContent' => array_map( function ( $item ) {
+				if ( is_string( $item ) ) {
+					return wp_kses_post( $item );
+				}
+
+				return null;
+			}, $block['innerContent'] ?? [] ),
+		];
+
+		$original_id = $block_template['attrs']['uniqueId'] ?? '';
+
+		$post_id = $args['postId'] ?? get_the_ID();
+		$term_id = $args['termId'] ?? false;
+
+		$new_id = ! empty( $term_id ?? $post_id ?? null ) ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
+
+		$unique_id = join( ' ', array_filter( [
+			$original_id ?? null,
+			$new_id
+		] ) );
+
+		$selector = '.' . join( '.', array_filter( [
+				$original_id ?? null,
+				$new_id
+			] ) );
+
+		$block_template['attrs']['postId']   = $post_id;
+		$block_template['attrs']['termId']   = $term_id;
+		$block_template['attrs']['uniqueId'] = $unique_id;
+		$block_template['attrs']['index']    = $index;
+
+		$new_block = new WP_Block( $block_template, array_filter( [
+			'termId'   => $term_id,
+			'postId'   => $post_id,
+			'uniqueId' => $unique_id,
+			'index'    => $index,
+		] ) );
+
+		return apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
+
+		//$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
+		//$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
+
+		//return $new_block;
+	}
+
 
 }
 

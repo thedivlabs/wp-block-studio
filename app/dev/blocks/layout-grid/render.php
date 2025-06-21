@@ -6,21 +6,10 @@ global $wp_query;
 
 $settings       = WPBS::clean_array( $attributes['wpbs-grid'] ?? [] );
 $query_settings = WPBS::clean_array( $attributes['wpbs-query'] ?? [] );
-$is_current     = ( $query_settings['post_type'] ?? false ) === 'current';
+$is_loop        = str_contains( $attributes['className'] ?? '', 'is-style-loop' );
+$is_current     = $is_loop && ( $query_settings['post_type'] ?? false ) === 'current';
 
-$query = ! str_contains( $attributes['className'] ?? '', 'is-style-loop' ) ? false : match ( true ) {
-	$is_current => $wp_query,
-	default => WPBS_Grid::query( $attributes ?? [] )
-};
-
-$is_loop    = is_a( $query, 'WP_Query' );
-$grid_cards = ! $is_loop ? false : WPBS_Grid::render( $attributes ?? false, $page = 1, $block->parsed_block['innerBlocks'][0] ?? false, $query );
-
-if ( $is_loop && $is_current && ! empty( $query_settings['pagination'] ) && $query->max_num_pages > 1 ) {
-
-	WPBS_Grid::output_pagination( $query );
-
-}
+$grid = ! $is_loop ? false : WPBS_Grid::render( $block->parsed_block['innerBlocks'][0] ?? false, $is_current ? $wp_query : $query_settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
@@ -50,7 +39,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
     <div class="wpbs-layout-grid__container relative z-20">
 
 		<?php if ( $is_loop ) {
-			echo $grid_cards['content'] ?? false;
+			echo $grid['content'] ?? false;
 		} elseif ( ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
 			foreach ( $block->parsed_block['innerBlocks'] ?? [] as $parsed_block ) {
@@ -69,7 +58,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
     </div>
 
-	<?php if ( $is_loop && $query->max_num_pages > 1 ) { ?>
+	<?php if ( $is_loop && ! $is_current ) { ?>
         <button type="button"
                 class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden"
                 data-wp-on-async--click="actions.pagination">
@@ -77,8 +66,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
         </button>
 	<?php } ?>
 
-	<?php if ( ! empty( $pagination ) ) {
-		echo $pagination;
+	<?php if ( $is_current && ! empty( $grid['pagination'] ) ) {
+		echo $grid['pagination'];
 	} ?>
 
 	<?php

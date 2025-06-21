@@ -23,18 +23,23 @@ class WPBS_Grid {
 							'default'           => 1,
 							'sanitize_callback' => 'absint',
 						],
-						'attrs' => [
-							'type'              => 'object',
-							'sanitize_callback' => [ 'WPBS_Grid', 'sanitize_loop_attrs' ],
-
-						],
 						'card'  => [
 							'type'              => 'object',
-							'sanitize_callback' => [ 'WPBS_Grid', 'sanitize_block_template' ],
+							'sanitize_callback' => [ 'WPBS', 'sanitize_block_template' ],
 						],
 						'query' => [
 							'type'              => 'array',
 							'sanitize_callback' => [ 'WPBS', 'sanitize_query_args' ],
+						],
+						'terms' => [
+							'type'              => 'array',
+							'sanitize_callback' => function ( $value ) {
+								if ( ! is_array( $value ) ) {
+									return [];
+								}
+
+								return array_values( array_filter( array_map( 'absint', $value ) ) );
+							},
 						],
 					],
 				]
@@ -44,58 +49,12 @@ class WPBS_Grid {
 
 	}
 
-	public static function recursive_sanitize( $input ) {
+	public static function pagination( $query ): string|bool {
 
-		if ( is_array( $input ) ) {
-			$sanitized = [];
-
-			foreach ( $input as $key => $value ) {
-
-				$sanitized_key = is_string( $key ) ? sanitize_text_field( $key ) : $key;
-
-				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
-			}
-
-			return $sanitized;
-
-		} elseif ( is_string( $input ) ) {
-			return sanitize_text_field( $input );
-
-		} elseif ( is_int( $input ) ) {
-			return intval( $input );
-
-		} elseif ( is_float( $input ) ) {
-			return floatval( $input );
-
-		} elseif ( is_bool( $input ) ) {
-			return (bool) $input;
-
-		} else {
-
-			return $input;
+		if ( ! is_a( $query, 'WP_Query' ) ) {
+			return false;
 		}
-	}
 
-	public static function sanitize_block_template( $block ): array {
-
-		return [
-			'blockName'    => $block['blockName'] ?? '',
-			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
-			'innerBlocks'  => array_map( [ __CLASS__, 'sanitize_block_template' ], $block['innerBlocks'] ?? [] ),
-			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
-			'innerContent' => array_map( function ( $item ) {
-				if ( is_string( $item ) ) {
-					return wp_kses_post( $item );
-				}
-
-				return null;
-			}, $block['innerContent'] ?? [] ),
-		];
-
-	}
-
-
-	public static function output_pagination( $query ): void {
 		$big = 999999999;
 
 		$current_page = max( 1, get_query_var( 'paged' ) );
@@ -118,50 +77,37 @@ class WPBS_Grid {
 			'type'      => 'array',
 		] ) );
 
-		do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
 		if ( ! empty( $pagination_links ) ) {
-			$pagination = '<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">';
-			$pagination = '<div class="wp-block-query-pagination-numbers inline-flex w-max">' . implode( '', $pagination_links ) . '</div>';
-			$pagination .= '</nav>';
+			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
+
+			return implode( ' ', [
+				'<nav class="wp-block-query-pagination mt-8" aria-label="Pagination">',
+				'<div class="wp-block-query-pagination-numbers inline-flex w-max">' . implode( '', $pagination_links ) . '</div>',
+				'</nav>'
+			] );
+		} else {
+			return false;
 		}
 
 
-		echo $pagination ?? false;
 	}
 
-	public static function sanitize_loop_attrs( $attrs ): array {
+	public static function query( $query, $page = 1 ): WP_Query|bool|array {
 
-		$query = $attrs['wpbs-query'] ?? false;
-
-		return WPBS::clean_array( [
-			'queryArgs'           => [
-				'post_type'      => sanitize_text_field( $query['post_type'] ?? '' ) ?? null,
-				'term'           => sanitize_text_field( $query['term'] ?? '' ) ?? null,
-				'taxonomy'       => sanitize_text_field( $query['taxonomy'] ?? '' ) ?? null,
-				'posts_per_page' => sanitize_text_field( $query['posts_per_page'] ?? '' ) ?? null,
-				'orderby'        => sanitize_text_field( $query['orderby'] ?? '' ) ?? null,
-				'order'          => sanitize_text_field( $query['order'] ?? '' ) ?? null,
-				'post__not_in'   => sanitize_text_field( $query['post__not_in'] ?? '' ) ?? null,
-			],
-			'wpbs-loop-page-size' => sanitize_text_field( $attrs['wpbs-loop-page-size'] ?? '' ) ?? null,
-			'wpbs-loop-type'      => sanitize_text_field( $attrs['wpbs-loop-type'] ?? '' ) ?? null,
-		] );
-	}
-
-	public static function query( $attrs, $page = 1, $current_query = [] ): WP_Query|bool|array {
-
-		$query = $attrs['wpbs-query'] ?? $current_query ?? false;
+		$query = $query['wpbs-query'] ?? $query ?? false;
 
 		if ( empty( $query ) ) {
 			return false;
 		}
 
-		if ( ! empty( $query['term'] ) ) {
+		if ( ! empty( $query['loop_terms'] ) ) {
 
 			return get_terms( [
 				'taxonomy'   => $query['taxonomy'] ?? false,
 				'hide_empty' => true,
+				'orderby'    => $query['orderby'] ?? 'date',
+				'order'      => $query['order'] ?? 'DESC',
 			] );
 		}
 
@@ -171,7 +117,7 @@ class WPBS_Grid {
 			'orderby'        => $query['orderby'] ?? 'date',
 			'order'          => $query['order'] ?? 'DESC',
 			'post__not_in'   => $query['post__not_in'] ?? [],
-			'paged'          => $page ?: 1,
+			'paged'          => $query['paged'] ?? $page ?: 1,
 		];
 
 		if ( ! empty( $query['taxonomy'] ) ) {
@@ -194,64 +140,34 @@ class WPBS_Grid {
 
 	}
 
-	private static function loop_card( $card = [], $args = [], $index = false ): WP_Block|bool {
-
-		$block_template = $card;
-		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
-
-		$post_id = $args['id'] ?? $args['term_id'] ?? get_the_ID();
-
-		$unique_id = join( ' ', array_filter( [
-			$original_id ?? null,
-			$original_id . '--' . $post_id
-		] ) );
-
-		$selector = '.' . join( '.', array_filter( [
-				$original_id ?? null,
-				$original_id . '--' . $post_id
-			] ) );
-
-		$block_template['attrs']['postId']   = $post_id;
-		$block_template['attrs']['termId']   = $args['termId'] ?? 0;
-		$block_template['attrs']['uniqueId'] = $unique_id;
-		$block_template['attrs']['index']    = $index;
-
-		$new_block = new WP_Block( $block_template, array_filter( [
-			'termId'   => $args['termId'] ?? 0,
-			'postId'   => $post_id,
-			'uniqueId' => $unique_id,
-			'index'    => $index,
-		] ) );
-
-		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
-
-		$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
-		$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
-
-		return $new_block;
-	}
-
-	public static function render( $attrs = [], $page = 1, $card = [], $current_query = [], $max = false ): array|bool {
+	public static function render( $card = [], $query = [] ): array|bool {
 
 		if ( empty( $card ) ) {
 			return [];
 		}
 
-		$query = match ( true ) {
-			is_array( $current_query ) && empty( $attrs['wpbs-query']['loop_terms'] ) => $current_query,
-			is_a( $current_query, 'WP_Query' ), ! empty( $attrs['wpbs-query']['loop_terms'] ) && ! empty( $attrs['wpbs-query']['taxonomy'] ) && is_array( $current_query ) => $current_query,
-			default => self::query( $attrs, $page, $current_query )
-		};
-
 		$new_content = '';
 		$css         = '';
 
-		if ( is_a( $query, 'WP_Query' ) ) {
+		$query = match ( true ) {
+			is_a( $query, 'WP_Query' ) => $query,
+			is_array( $query ) => self::query( $query ),
+			default => false
+		};
+
+		if ( is_a( $query, 'WP_Query' ) && $query->have_posts() ) {
+
+			$query_counter = 0;
+
 			while ( $query->have_posts() ) {
 
 				$query->the_post();
 
-				$new_block = self::loop_card( $card );
+				$new_block = WPBS::loop_card( $card, [
+					'postId' => get_the_id(),
+				], $query_counter );
+
+				$query_counter ++;
 
 				$new_content .= $new_block->render();
 				$css         .= $new_block->attributes['wpbs-css'] ?? '';
@@ -263,64 +179,54 @@ class WPBS_Grid {
 			return array_filter( [
 				'content' => ! empty( $new_content ) ? $new_content : false,
 				'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
-				'query'   => $query,
 				'css'     => trim( $css ),
 			] );
 		}
 
-		if ( is_array( $query ) && ! empty( $attrs['wpbs-query']['loop_terms'] ) ) {
-
-			foreach ( $query as $k => $term_obj ) {
-
-				$new_block = self::loop_card( $card, [
-					'termId' => $term_obj->term_id,
-				] );
-
-				$new_content .= $new_block->render();
-
-			}
-
-		}
-
 		if ( is_array( $query ) ) {
 
-			foreach ( $query as $k => $data ) {
+			foreach ( $query as $k => $term_id ) {
 
-				if ( $k >= $max ) {
-					break;
+				$term = get_term( $term_id );
+
+				if ( ! is_a( $term, 'WP_Term' ) ) {
+					continue;
 				}
 
-				$new_block = self::loop_card( $card, $data, $k );
+				$new_block = WPBS::loop_card( $card, [
+					'termId' => $term->term_id,
+				], $k );
 
+				$css         .= $new_block->attributes['wpbs-css'] ?? '';
 				$new_content .= $new_block->render();
 
 			}
 
 		}
 
-
 		return array_filter( [
-			'content' => $new_content,
-			'last'    => false,
-			'query'   => $query,
+			'content'    => $new_content,
+			'css'        => $css,
+			'pagination' => self::pagination( $query )
 		] );
-
 
 	}
 
+
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$params = $request->get_params();
+		$card  = $request->get_param( 'card' );
+		$query = $request->get_param( 'query' );
+		$terms = $request->get_param( 'terms' );
 
-		$grid = self::render( $params['attrs'] ?? false, $params['page'] ?? 1, $params['card'] ?? false, $params['query'] ?? false );
+		$result = self::render( $card, $query, $terms );
 
 		return new WP_REST_Response(
 			[
-				'status'   => 200,
-				'response' => $grid['content'] ?? false,
-				'last'     => $grid['last'] ?? false,
-				'query'    => $grid['query'] ?? false,
-				'css'      => $grid['css'] ?? false
+				'status'  => 200,
+				'content' => $result['content'] ?? false,
+				'last'    => $result['last'] ?? false,
+				'css'     => $result['css'] ?? false
 			]
 		);
 

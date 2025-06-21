@@ -3,6 +3,10 @@
 
 $term_id = $block->context['wpbs/termId'] ?? get_queried_object()->term_id ?? false;
 
+if ( empty( $term_id ) ) {
+	return false;
+}
+
 $term = get_term( $term_id );
 
 if ( empty( $term ) ) {

@@ -601,19 +601,7 @@ class WPBS {
 
 	public static function loop_card( $block = [], $args = [], $index = false ): WP_Block|bool {
 
-		$block_template = [
-			'blockName'    => $block['blockName'] ?? '',
-			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
-			'innerBlocks'  => array_map( [ __CLASS__, 'sanitize_block_template' ], $block['innerBlocks'] ?? [] ),
-			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
-			'innerContent' => array_map( function ( $item ) {
-				if ( is_string( $item ) ) {
-					return wp_kses_post( $item );
-				}
-
-				return null;
-			}, $block['innerContent'] ?? [] ),
-		];
+		$block_template = self::sanitize_block_template( $block );
 
 		$original_id = $block_template['attrs']['uniqueId'] ?? '';
 

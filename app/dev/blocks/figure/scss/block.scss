@@ -1,5 +1,6 @@
 .wpbs-figure {
-  display: flex;
+  display: grid;
+  grid-template-columns: 100%;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -8,6 +9,8 @@
 
   picture {
     object-fit: inherit;
+    width: 100%;
+    height: auto;
 
     & > img {
       object-fit: inherit;

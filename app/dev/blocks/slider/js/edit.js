@@ -30,7 +30,8 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
         attributes.uniqueId,
-        !!sliderArgs.collapse ? 'wpbs-slider--collapse' : null,
+        !!sliderArgs?.collapse ? 'wpbs-slider--collapse' : null,
+        !!sliderArgs?.['fade-in'] ? 'wpbs-slider--fade-in' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -79,7 +80,8 @@ function getArgs(attributes, swiperRef) {
         loop: !!options['loop'],
         rewind: !!options['loop'] ? false : !!options['rewind'],
         initialSlide: !!options['from-end'] ? 99 : null,
-        breakpoints: {}
+        breakpoints: {},
+        simulateTouch: !!options?.drag
     };
 
     let breakpointArgs = {
@@ -154,6 +156,8 @@ registerBlockType(metadata.name, {
                 'dim': undefined,
                 'from-end': undefined,
                 'rewind': undefined,
+                'fade-in': undefined,
+                'drag': undefined,
                 'swiperArgs': undefined,
             }
         }
@@ -391,6 +395,20 @@ registerBlockType(metadata.name, {
                                 label="Rewind"
                                 onChange={(newValue) => updateOptions({'rewind': newValue})}
                                 checked={!!attributes['wpbs-slider']['rewind']}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Fade In"
+                                onChange={(newValue) => updateOptions({'fade-in': newValue})}
+                                checked={!!attributes['wpbs-slider']['fade-in']}
+                                className={'flex items-center'}
+                                __nextHasNoMarginBottom
+                            />
+                            <ToggleControl
+                                label="Drag"
+                                onChange={(newValue) => updateOptions({'drag': newValue})}
+                                checked={!!attributes['wpbs-slider']['drag']}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom
                             />

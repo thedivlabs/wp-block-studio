@@ -4,6 +4,16 @@
     width: min(5rem, 100%) !important;
   }
 
+  &--fade-in {
+    opacity: 0;
+    transition: opacity .3s linear;
+
+    &.swiper-initialized {
+      opacity: 1;
+    }
+  }
+
+
   &--collapse.swiper--disabled {
 
     .swiper-wrapper {
@@ -17,6 +27,14 @@
       flex-grow: 0 !important;
       height: auto !important;
     }
+  }
+
+  .swiper-slide {
+    pointer-events: none;
+  }
+
+  .swiper-slide.swiper-slide-active {
+    pointer-events: auto;
   }
 
   .swiper-button-disabled {

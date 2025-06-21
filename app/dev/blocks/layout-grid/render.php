@@ -9,7 +9,7 @@ $query_settings = WPBS::clean_array( $attributes['wpbs-query'] ?? [] );
 $is_loop        = str_contains( $attributes['className'] ?? '', 'is-style-loop' );
 $is_current     = $is_loop && ( $query_settings['post_type'] ?? false ) === 'current';
 
-$grid = ! $is_loop ? false : WPBS_Grid::render( $block->parsed_block['innerBlocks'][0] ?? false, $is_current ? $wp_query : $query_settings );
+$grid = ! $is_loop ? false : WPBS_Grid::render_loop( $block->parsed_block['innerBlocks'][0] ?? false, $is_current ? $wp_query : $query_settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [

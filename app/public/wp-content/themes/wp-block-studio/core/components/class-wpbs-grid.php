@@ -140,7 +140,7 @@ class WPBS_Grid {
 
 	}
 
-	public static function render( $card = [], $query = [], $page = 1 ): array|bool {
+	public static function render_loop( $card = [], $query = [], $page = 1 ): array|bool {
 
 		if ( empty( $card ) ) {
 			return [];
@@ -211,15 +211,14 @@ class WPBS_Grid {
 		] );
 
 	}
-
-
+	
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
 		$card  = $request->get_param( 'card' );
 		$query = $request->get_param( 'query' );
 		$page  = $request->get_param( 'page' );
 
-		$result = self::render( $card, $query, intval( $page ) );
+		$result = self::render_loop( $card, $query, intval( $page ) );
 
 		return new WP_REST_Response(
 			[

@@ -151,7 +151,7 @@ class WPBS_Grid {
 
 		$query = match ( true ) {
 			is_a( $query, 'WP_Query' ) => $query,
-			is_array( $query ) => self::query( $query ),
+			is_array( $query ) => self::query( array_merge( $query, [ 'paged' => $page ] ) ),
 			default => false
 		};
 
@@ -178,8 +178,7 @@ class WPBS_Grid {
 
 			return array_filter( [
 				'content' => ! empty( $new_content ) ? $new_content : false,
-				'page'    => $query->get( 'paged' ),
-				'max'     => $query->max_num_pages,
+				'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
 				'css'     => trim( $css ),
 			] );
 		}
@@ -220,14 +219,12 @@ class WPBS_Grid {
 		$query = $request->get_param( 'query' );
 		$page  = $request->get_param( 'page' );
 
-		$result = self::render( $card, $query, $page );
+		$result = self::render( $card, $query, intval( $page ) );
 
 		return new WP_REST_Response(
 			[
-				'status'  => 200,
-				'content' => $result['content'] ?? false,
-				'last'    => $result['last'] ?? false,
-				'css'     => $result['css'] ?? false
+				'status' => 200,
+				...$result
 			]
 		);
 

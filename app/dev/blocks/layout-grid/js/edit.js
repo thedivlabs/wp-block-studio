@@ -64,7 +64,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
         const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
-        const breakpoints = WPBS?.settings?.breakpoints ?? {};
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 

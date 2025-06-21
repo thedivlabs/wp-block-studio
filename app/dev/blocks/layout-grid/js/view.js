@@ -6,19 +6,19 @@ const {state} = store('wpbs/grid', {
         init: () => {
 
             const {ref: grid} = getElement();
-            const context = JSON.parse(JSON.stringify(getContext()));
-            const scriptTag = grid.querySelector('script.wpbs-layout-grid-args');
-            const {cur, max} = scriptTag?.innerHTML ? JSON.parse(scriptTag?.innerHTML ?? '') : {};
+            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
+
+            const {page = 1, max = 1} = data;
 
             WPBS.setMasonry(grid);
 
-            WPBS.gridDividers(grid, context);
+            WPBS.gridDividers(grid, data);
 
             [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
-                if (cur >= max) {
-                    el.remove();
-                } else {
+                if (page < max) {
                     el.classList.remove('hidden');
+                } else {
+                    el.remove();
                 }
             })
 
@@ -27,36 +27,28 @@ const {state} = store('wpbs/grid', {
         pagination: async () => {
 
             const {ref: element} = getElement();
-            const context = JSON.parse(JSON.stringify(getContext()));
             const parser = new DOMParser();
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
-            const page = parseInt(grid.dataset?.page ?? 2);
+            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
 
-            const isGallery = grid.classList.contains('is-style-gallery');
+            const {page, query, max, card} = data;
+
+            console.log(card);
 
             grid.dataset.page = String(page + 1);
 
-            const scriptTag = grid.querySelector('script.wpbs-layout-grid-args');
-
-            const data = scriptTag?.innerHTML ? JSON.parse(scriptTag?.innerHTML ?? '') : {};
-
             const nonce = WPBS?.settings?.nonce ?? false;
 
-            const endpoint = isGallery ? '/wp-json/wpbs/v1/media-gallery'
-                : '/wp-json/wpbs/v1/layout-grid';
+            const endpoint = '/wp-json/wpbs/v1/layout-grid';
 
-            const request = isGallery ? {
-                card: data.card,
-                attrs: data.attrs,
-                page: page
-            } : {
-                card: data.card,
-                attrs: data.attrs,
+            const request = {
+                card: card,
+                query: query,
                 page: page,
-                query: data.query,
             };
+
 
             WPBS.loader.toggle();
 
@@ -74,18 +66,14 @@ const {state} = store('wpbs/grid', {
                         remove: true
                     });
 
-
-                    const newNodes = parser.parseFromString(result.response, 'text/html');
+                    const newNodes = parser.parseFromString(result.content, 'text/html');
                     container.append(...newNodes.body.childNodes);
 
-                    setDividers(grid, context);
-                    setMasonry(grid);
+                    WPBS.gridDividers(grid, data);
+                    WPBS.setMasonry(grid);
 
-                    const media = grid.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
+                    [...grid.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
 
-                    [...media].forEach((media_element) => {
-                        WPBS.observeMedia(media_element);
-                    })
 
                     if (result.css) {
                         const styleTag = document.createElement('style');

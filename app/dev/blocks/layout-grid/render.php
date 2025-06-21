@@ -18,20 +18,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 	'data-wp-interactive' => 'wpbs/grid',
 	'data-wp-init'        => 'actions.init',
-	'data-wp-context'     => json_encode( WPBS::clean_array( [
-		'uniqueId'    => $attributes['uniqueId'] ?? null,
-		'divider'     => ! empty( $settings['divider'] ),
-		'breakpoints' => [
-			'small' => $settings['breakpoint-small'] ?? null,
-			'large' => $settings['breakpoint-large'] ?? $attributes['wpbs-layout']['breakpoint'] ?? 'lg',
-		],
-		'columns'     => [
-			'mobile' => $settings['columns-mobile'] ?? null,
-			'small'  => $settings['columns-small'] ?? null,
-			'large'  => $settings['columns-large'] ?? null,
-		],
-	] ) ),
 ] );
+
 
 ?>
 
@@ -78,11 +66,22 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
-				'card'  => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
-				'query' => $query->query ?? false,
-				'cur'   => ( $query->is_paged ?? false ) ?: 1,
-				'max'   => $query->max_num_pages ?? 1,
-				'attrs' => $query_settings,
+				'card'        => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
+				'query'       => $query->query ?? false,
+				'attrs'       => $query_settings,
+				'uniqueId'    => $attributes['uniqueId'] ?? null,
+				'divider'     => ! empty( $settings['divider'] ),
+				'breakpoints' => [
+					'small' => $settings['breakpoint-small'] ?? null,
+					'large' => $settings['breakpoint-large'] ?? $attributes['wpbs-layout']['breakpoint'] ?? 'lg',
+				],
+				'columns'     => [
+					'mobile' => $settings['columns-mobile'] ?? null,
+					'small'  => $settings['columns-small'] ?? null,
+					'large'  => $settings['columns-large'] ?? null,
+				],
+				'page'        => $grid['page'] ?? 1,
+				'max'         => $grid['max'] ?? null,
 			] ) ) . '</script>';
 	}
 

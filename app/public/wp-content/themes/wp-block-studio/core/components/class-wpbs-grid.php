@@ -140,7 +140,7 @@ class WPBS_Grid {
 
 	}
 
-	public static function render( $card = [], $query = [] ): array|bool {
+	public static function render( $card = [], $query = [], $page = 1 ): array|bool {
 
 		if ( empty( $card ) ) {
 			return [];
@@ -178,7 +178,8 @@ class WPBS_Grid {
 
 			return array_filter( [
 				'content' => ! empty( $new_content ) ? $new_content : false,
-				'last'    => $query->get( 'paged' ) >= $query->max_num_pages,
+				'page'    => $query->get( 'paged' ),
+				'max'     => $query->max_num_pages,
 				'css'     => trim( $css ),
 			] );
 		}
@@ -217,9 +218,9 @@ class WPBS_Grid {
 
 		$card  = $request->get_param( 'card' );
 		$query = $request->get_param( 'query' );
-		$terms = $request->get_param( 'terms' );
+		$page  = $request->get_param( 'page' );
 
-		$result = self::render( $card, $query, $terms );
+		$result = self::render( $card, $query, $page );
 
 		return new WP_REST_Response(
 			[

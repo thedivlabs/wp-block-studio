@@ -23,8 +23,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-init'        => 'actions.init',
 ] );
 
-WPBS::console_log( $grid );
-WPBS::console_log( $show_button );
 ?>
 
 <div <?php echo $wrapper_attributes ?>>

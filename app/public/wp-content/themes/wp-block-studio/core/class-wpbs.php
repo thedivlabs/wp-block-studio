@@ -640,10 +640,14 @@ class WPBS {
 		//return $new_block;
 	}
 
-	public static function query( $query, $page = 1 ): WP_Query|bool|array {
+	public static function loop_query( $query, $page = 1 ): WP_Query|bool|array {
 
 		if ( empty( $query ) ) {
 			return false;
+		}
+
+		if ( is_a( $query, 'WP_Query' ) ) {
+			return $query;
 		}
 
 		if ( ! empty( $query['loop_terms'] ) ) {

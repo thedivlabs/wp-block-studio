@@ -102,11 +102,7 @@ class WPBS_Grid {
 		$new_content = '';
 		$css         = '';
 
-		$query = match ( true ) {
-			is_a( $query, 'WP_Query' ) => $query,
-			is_array( $query ) => WPBS::query( array_merge( $query, [ 'paged' => $page ] ) ),
-			default => false
-		};
+		$query = WPBS::loop_query( $query, $page );
 
 		$is_last = is_a( $query, 'WP_Query' ) && $page >= ( $query->max_num_pages ?? 1 ) || is_array( $query );
 

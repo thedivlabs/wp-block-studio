@@ -1,6 +1,7 @@
 import '../scss/block.scss';
 
 import {
+    BlockContextProvider,
     InspectorControls,
     useBlockProps,
     useInnerBlocksProps
@@ -102,12 +103,16 @@ registerBlockType(metadata.name, {
             ]
         });
 
+        const query = attributes?.['wpbs-query'] ?? {};
+
         return <>
             <SliderControls attributes={attributes} setAttributes={setAttributes}/>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
-            <div {...innerBlocksProps} />
+            <BlockContextProvider value={query}>
+                <div {...innerBlocksProps} />
+            </BlockContextProvider>
         </>;
 
 

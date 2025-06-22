@@ -13,6 +13,9 @@
   "allowedBlocks": [
     "wpbs/slide"
   ],
+  "usesContext": [
+    "query"
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string"

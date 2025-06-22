@@ -75,13 +75,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-wpbs-slider-nav');
-
         const [paginationColor, setPaginationColor] = useState(attributes['wpbs-pagination-color']);
-
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),

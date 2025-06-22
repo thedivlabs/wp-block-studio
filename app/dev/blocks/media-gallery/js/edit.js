@@ -32,7 +32,7 @@ function blockClassnames(attributes = {}) {
         'wpbs-media-gallery',
         attributes?.cardClass ?? null,
         'w-full block relative',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -55,12 +55,6 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         const [mediaGallery, setMediaGallery] = useState(attributes['wpbs-media-gallery'] || {});
-
-        useEffect(() => {
-            setAttributes({
-                uniqueId: uniqueId,
-            });
-        }, []);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -128,7 +122,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}></div>
 
-                <Style attributes={attributes} setAttributes={setAttributes}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },

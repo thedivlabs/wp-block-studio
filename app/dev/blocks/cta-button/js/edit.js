@@ -29,7 +29,7 @@ function classNames(attributes = {}) {
         !!attributes['wpbs-cta']['icon'] ? 'wpbs-cta-button--icon' : null,
         !!attributes['wpbs-cta']['icon-only'] ? 'wpbs-cta-button--icon-only' : false,
         !!attributes['wpbs-cta']['icon-first'] ? 'wpbs-cta-button--icon-first' : false,
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -99,11 +99,6 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta-button');
 
         const [settings, setSettings] = useState(attributes['wpbs-cta']);
-
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
-
 
         const MemoSelectControl = React.memo(({label, prop, options}) => (
             <SelectControl
@@ -256,7 +251,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        uniqueId={uniqueId}
                        deps={['wpbs-cta']}
                        props={{

@@ -29,8 +29,8 @@ function classNames(attributes = {}) {
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
-        (attributes?.className ?? []).includes('is-style-gallery') ? 'lightbox-gallery' : null,
-        attributes.uniqueId,
+        (attributes?.className ?? '').includes('is-style-gallery') ? 'lightbox-gallery' : null,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -51,14 +51,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId
-            });
-        }, [uniqueId]);
-
         const cssProps = useMemo(() => {
-           return gridProps(attributes);
+            return gridProps(attributes);
         }, [attributes]);
 
         const tabOptions = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
@@ -71,7 +65,7 @@ registerBlockType(metadata.name, {
         }
 
         const blockProps = useBlockProps({
-            className: [classNames(attributes), 'empty:min-h-8'].join(' ')
+            className: classNames(attributes)
         });
 
         const innerBlocksProps = useInnerBlocksProps({
@@ -117,7 +111,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-grid']}
                        props={cssProps}
                 />

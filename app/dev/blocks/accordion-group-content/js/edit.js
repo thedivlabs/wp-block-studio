@@ -15,7 +15,6 @@ function classNames(attributes = {}, editor = false) {
 
     return [
         'wpbs-accordion-group-content',
-        attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
 
@@ -35,20 +34,8 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const {groupId = 'groupId'} = context;
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-content');
-
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId,
-                'groupId': groupId
-            });
-        }, []);
-
         const blockProps = useBlockProps({
             className: classNames(attributes, true),
-            id: groupId + '-content'
         });
 
         const innerBlocksProps = useInnerBlocksProps({
@@ -66,13 +53,11 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const {groupId} = props.attributes;
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/accordion-group-item',
             'data-wp-init': 'actions.init',
-            id: groupId + '-content'
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({

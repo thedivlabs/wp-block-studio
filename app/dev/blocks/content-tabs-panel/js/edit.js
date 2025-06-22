@@ -19,7 +19,7 @@ import {useInstanceId} from "@wordpress/compose";
 function classNames(attributes, isActive = false, editor = false) {
     return [
         'wpbs-content-tabs-panel',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
         !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');
 }
@@ -42,12 +42,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
 
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId
-            });
-        }, []);
-
         const blockProps = useBlockProps({
             className: classNames(attributes, isActive, true),
         });
@@ -57,7 +51,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-panel']}
             />
             <div {...innerBlocksProps} aria-selected={!!isActive} role={'tabpanel'}></div>

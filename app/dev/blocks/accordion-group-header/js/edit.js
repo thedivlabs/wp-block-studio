@@ -15,7 +15,6 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-accordion-group-header',
-        attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
 
@@ -34,19 +33,6 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-header');
-
-        const {groupId = 'groupId'} = context;
-
-        const anchorId = '#' + groupId + '-content';
-
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId,
-                'groupId': groupId
-            });
-        }, []);
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -87,10 +73,6 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps.save({
             className: wrapperClassNames()
         });
-
-        const {groupId = 'groupId'} = props.attributes;
-
-        const anchorId = '#' + groupId + '-content';
 
         return <div {...blockProps}>
             <div {...innerBlocksProps}></div>

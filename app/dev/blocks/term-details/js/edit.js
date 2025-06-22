@@ -10,7 +10,7 @@ function blockClassNames(attributes = {}) {
 
     return [
         'wpbs-term-details w-max inline-block',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -19,11 +19,9 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes}) => {
 
-
-        const {attributes, setAttributes} = props;
-
+        
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),
         });

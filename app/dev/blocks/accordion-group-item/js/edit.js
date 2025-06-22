@@ -22,7 +22,6 @@ function classNames(attributes = {}, editor = false) {
     return [
         'wpbs-accordion-group-item',
         !!attributes['wpbs-accordion-group-item']?.open ? 'active --open' : null,
-        attributes.uniqueId,
     ].filter(x => x).join(' ');
 }
 
@@ -42,14 +41,6 @@ registerBlockType(metadata.name, {
         const ElementTag = ['ul', 'ol'].includes(ParentElementTag) ? 'li' : 'div';
 
         const ref = useRef(null);
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group-item');
-
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId,
-                'ElementTag': ElementTag
-            });
-        }, []);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -97,7 +88,6 @@ registerBlockType(metadata.name, {
             }
         };
 
-        const groupId = clientId;
 
         return <>
 
@@ -115,9 +105,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
 
-            <BlockContextProvider value={{groupId}}>
-                <ElementTag {...innerBlocksProps} onClick={handleClick}></ElementTag>
-            </BlockContextProvider>
+            <ElementTag {...innerBlocksProps} onClick={handleClick}></ElementTag>
 
         </>;
     },

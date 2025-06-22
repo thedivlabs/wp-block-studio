@@ -32,7 +32,7 @@ function blockClasses(attributes = {}) {
 
     return [
         'wpbs-figure ',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -152,10 +152,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
-        useEffect(() => {
-            setAttributes({uniqueId});
-        }, []);
-
         const updateSettings = useCallback((newValue) => {
 
             const result = {
@@ -175,7 +171,7 @@ registerBlockType(metadata.name, {
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-figure']}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,

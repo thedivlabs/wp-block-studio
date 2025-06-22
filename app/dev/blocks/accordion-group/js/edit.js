@@ -34,7 +34,7 @@ function classNames(attributes = {}) {
         !!attributes['wpbs-accordion-group']?.['header-text-color-hover'] ? '--header-text-hover' : null,
         !!attributes['wpbs-accordion-group']?.['header-color-active'] ? '--header-active' : null,
         !!attributes['wpbs-accordion-group']?.['header-text-color-active'] ? '--header-text-active' : null,
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -55,12 +55,6 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group');
-
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId,
-            });
-        }, []);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -299,6 +293,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
+                   uniqueId={uniqueId}
                    deps={['wpbs-accordion-group']}
                    props={{
                        '--icon-open': `"\\${iconOpen}"`,

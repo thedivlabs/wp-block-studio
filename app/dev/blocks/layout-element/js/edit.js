@@ -22,7 +22,7 @@ const classNames = (attributes = {}) => {
     return [
         selector + ' w-full block relative wpbs-container',
         !!attributes['wpbs-background'] ? 'wpbs-has-container' : null,
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -62,10 +62,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
 
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
-
         const blockProps = useBlockProps({
             className: [classNames(attributes), 'empty:min-h-8'].join(' '),
         });
@@ -80,7 +76,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>

@@ -37,7 +37,7 @@ function classNames(attributes = {}, editor = false) {
         'w-full relative',
         !!editor ? 'editor' : null,
         !!attributes['wpbs-content-tabs']?.['hide-tabs'] ? '--hide-tabs' : null,
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -69,13 +69,6 @@ registerBlockType(metadata.name, {
         const [tabOptions, setTabOptions] = useState({});
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
-        const isFade = (attributes?.classNames ?? '').indexOf('is-style-fade') > -1;
-
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId
-            });
-        }, []);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -399,7 +392,7 @@ registerBlockType(metadata.name, {
                 </Grid>
             </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs']}
                    props={{
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,

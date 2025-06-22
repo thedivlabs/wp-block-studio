@@ -28,7 +28,7 @@ function blockClasses(attributes = {}, editor = false) {
 
     return [
         'wpbs-slider swiper overflow-hidden w-full relative !flex flex-col',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
         !!settings?.collapse ? 'wpbs-slider--collapse' : null,
         !!settings?.['fade-in'] ? 'wpbs-slider--fade-in' : null,
         !!editor ? 'swiper-initialized' : null,
@@ -50,17 +50,9 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
-        useEffect(() => {
-
-            setAttributes({
-                uniqueId: uniqueId,
-            });
-
-        }, []);
-
         const sliderOptions = useMemo(() => {
             return sliderArgs(attributes);
-        }, [attributes['wpbs-slider'], uniqueId]);
+        }, [attributes['wpbs-slider']]);
 
         useEffect(() => {
             if (swiperRef.current?.swiper) {
@@ -113,7 +105,7 @@ registerBlockType(metadata.name, {
         return <>
             <SliderControls attributes={attributes} setAttributes={setAttributes}/>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <div {...innerBlocksProps} />
         </>;

@@ -53,6 +53,7 @@ function getPreloadMedia(preloads) {
 }
 
 export function Style({
+                          uniqueId,
                           attributes,
                           setAttributes,
                           css = [],
@@ -227,6 +228,7 @@ export function Style({
 
             setAttributes({
                 'wpbs-css': resultCss,
+                uniqueId: uniqueId
             });
         }
         setAttributes({

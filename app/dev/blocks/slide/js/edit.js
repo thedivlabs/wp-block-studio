@@ -32,7 +32,7 @@ function blockClasses(attributes = {}) {
         'wpbs-slide',
         (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
         'wpbs-has-container swiper-slide w-full flex flex-col shrink-0 relative',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -136,10 +136,6 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
-
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
 
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-slide']]);
 
@@ -262,7 +258,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-slide']}
                    preload={preloadMedia}
             />

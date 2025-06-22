@@ -18,7 +18,7 @@ function classNames(attributes = {}) {
     return [
         'wpbs-content-tabs-navigation flex items-stretch',
         'relative',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -60,12 +60,6 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-navigation');
 
         useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId
-            });
-        }, []);
-
-        useEffect(() => {
             const prevClientIds = (attributes.tabPanels || []).map(panel => panel.clientId);
             const nextClientIds = tabPanels.map(panel => panel.clientId);
 
@@ -101,7 +95,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-navigation']}
             />
             <nav {...blockProps} >

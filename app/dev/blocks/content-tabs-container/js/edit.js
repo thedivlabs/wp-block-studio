@@ -20,7 +20,7 @@ function classNames(attributes = {}) {
     return [
         'wpbs-content-tabs-container',
         'relative',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -40,12 +40,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-container');
 
-        useEffect(() => {
-            setAttributes({
-                'uniqueId': uniqueId
-            });
-        }, []);
-
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
@@ -60,7 +54,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-container']}
             />
             <div {...innerBlocksProps}></div>

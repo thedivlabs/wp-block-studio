@@ -30,7 +30,7 @@ function blockClasses(attributes = {}) {
         'wpbs-icon-list',
         attributes['wpbs-icon-list']?.divider ? 'wpbs-icon-list--divider' : null,
         'w-fit max-w-full',
-        attributes.uniqueId,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -41,7 +41,7 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         'wpbs-icon-list': {
             type: 'object',
-            additionalProperties:true,
+            additionalProperties: true,
             default: {
                 icon: undefined,
                 iconStyle: undefined,
@@ -58,11 +58,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-icon-list');
         const breakpoint = WPBS.settings?.breakpoints[attributes['wpbs-icon-list']?.breakpoint ?? 'normal'];
-
-
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, []);
 
 
         const updateSettings = useCallback((newValue) => {
@@ -182,7 +177,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-icon-list']}
                    props={{
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',

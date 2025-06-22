@@ -58,7 +58,6 @@ class WPBS_Grid {
 
 		return new WP_REST_Response(
 			array_filter( [
-				'status'  => 200,
 				'content' => $loop->content ?? null,
 				'css'     => $loop->css ?? null,
 				'is_last' => $loop->is_last ?? null,

@@ -124,7 +124,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}>
                     <div {...innerBlocksProps} />
-                    <BackgroundElement attributes={props.attributes} editor={true}/>
+                    <BackgroundElement attributes={attributes} editor={true}/>
                 </div>
 
 

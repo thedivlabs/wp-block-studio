@@ -14,7 +14,7 @@
     "wpbs/slide"
   ],
   "usesContext": [
-    "query"
+    "loopQuery"
   ],
   "attributes": {
     "uniqueId": {

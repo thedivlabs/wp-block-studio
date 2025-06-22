@@ -4,7 +4,6 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 global $wp_query;
 
-$settings       = WPBS::clean_array( $attributes['wpbs-slider'] ?? [] );
 $query_settings = WPBS::clean_array( $attributes['wpbs-query'] ?? [] );
 $is_loop        = str_contains( $attributes['className'] ?? '', 'is-style-loop' );
 $is_current     = $is_loop && ( $query_settings['post_type'] ?? false ) === 'current';
@@ -17,6 +16,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		$attributes['uniqueId'] ?? null
 	] ) )
 ] );
+
+WPBS::console_log( $attributes['wpbs-query'] ?? false );
 
 ?>
 

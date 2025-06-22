@@ -6,7 +6,8 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {BackgroundElement} from "Components/Background.js";
-import React from "react";
+import React, {useEffect} from "react";
+import useBlockContext from "@wordpress/block-editor/build/components/inner-blocks/use-block-context";
 
 function blockClasses(attributes = {}) {
     return [
@@ -18,8 +19,15 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        'wpbs-query': {
+            type: 'object'
+        }
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: ({attributes, setAttributes, clientId, context}) => {
+
+        const {loopQuery = {}} = context;
+
+        console.log(loopQuery);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
@@ -30,6 +38,10 @@ registerBlockType(metadata.name, {
                 ['wpbs/slide', {content: 'Content Slide'}],
             ]
         });
+
+        /*useEffect(() => {
+            setAttributes({'wpbs-query': query});
+        }, [query, setAttributes]);*/
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

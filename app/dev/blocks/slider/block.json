@@ -18,7 +18,7 @@
     "wpbs/slider-navigation"
   ],
   "providesContext": {
-    "wpbs/query": "query"
+    "wpbs/loopQuery": "loopQuery"
   },
   "supports": {
     "innerBlocks": true,

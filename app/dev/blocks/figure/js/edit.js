@@ -170,17 +170,6 @@ registerBlockType(metadata.name, {
         });
 
         return <>
-            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   deps={['wpbs-figure']}
-                   props={{
-                       '--figure-type': attributes['wpbs-figure']?.type ?? null,
-                       '--overlay': attributes['wpbs-figure']?.overlay ?? null,
-                   }}
-                   preload={preloadMedia}
-            />
-            <Link defaultValue={attributes['wpbs-figure']?.link}
-                  callback={(newValue) => updateSettings({'link': newValue})}/>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
@@ -377,6 +366,17 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                   deps={['wpbs-figure']}
+                   props={{
+                       '--figure-type': attributes['wpbs-figure']?.type ?? null,
+                       '--overlay': attributes['wpbs-figure']?.overlay ?? null,
+                   }}
+                   preload={preloadMedia}
+            />
+            <Link defaultValue={attributes['wpbs-figure']?.link}
+                  callback={(newValue) => updateSettings({'link': newValue})}/>
 
 
             <figure {...blockProps}>

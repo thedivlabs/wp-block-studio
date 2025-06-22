@@ -16,11 +16,13 @@ import {
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
     PanelBody,
-    SelectControl,
+    SelectControl, TabPanel,
     ToggleControl
 } from "@wordpress/components";
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
+import {GridControls} from "Components/Grid.js";
+import {LoopControls, LOOP_ATTRIBUTES} from "Components/Loop.js";
 
 
 function blockClasses(attributes = {}, editor = false) {
@@ -44,10 +46,9 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...SLIDER_ATTRIBUTES,
+        ...LOOP_ATTRIBUTES,
     },
     edit: ({attributes, setAttributes}) => {
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         const swiperRef = useRef(null);
 
@@ -56,6 +57,8 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-slider']]);
 
         useEffect(() => {
+
+            return false;
             if (swiperRef.current?.swiper) {
 
                 const allowedParams = [
@@ -89,8 +92,16 @@ registerBlockType(metadata.name, {
             }
         }, [sliderOptions]);
 
-
         const cssProps = sliderProps(attributes);
+
+        const tabOptions = <SliderControls attributes={attributes} setAttributes={setAttributes}/>;
+
+        const tabLoop = <LoopControls attributes={attributes} setAttributes={setAttributes}/>;
+
+        const tabs = {
+            options: tabOptions,
+            loop: tabLoop,
+        }
 
         const blockProps = useBlockProps({
             ref: swiperRef,
@@ -103,14 +114,43 @@ registerBlockType(metadata.name, {
             ]
         });
 
-        const query = attributes?.['wpbs-query'] ?? {};
+        const loopQuery = attributes?.['wpbs-query'] ?? {};
 
         return <>
-            <SliderControls attributes={attributes} setAttributes={setAttributes}/>
-            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
+            <InspectorControls group="styles">
 
-            <BlockContextProvider value={query}>
+                <PanelBody>
+
+                    <TabPanel
+                        className="wpbs-editor-tabs"
+                        activeClass="active"
+                        orientation="horizontal"
+                        initialTabName="options"
+                        tabs={[
+                            {
+                                name: 'options',
+                                title: 'Options',
+                                className: 'tab-options',
+                            },
+                            {
+                                name: 'loop',
+                                title: 'Loop',
+                                className: 'tab-loop'
+                            },
+                        ]}>
+                        {
+                            (tab) => (<>{tabs[tab.name]}</>)
+                        }
+                    </TabPanel>
+
+                </PanelBody>
+
+
+            </InspectorControls>
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps}/>
+
+            <BlockContextProvider value={loopQuery}>
                 <div {...innerBlocksProps} />
             </BlockContextProvider>
         </>;
@@ -128,7 +168,7 @@ registerBlockType(metadata.name, {
             })
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps, {});
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
 
         return (
             <div {...innerBlocksProps} />

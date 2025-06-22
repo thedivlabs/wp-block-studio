@@ -9,8 +9,6 @@ $is_loop  = str_contains( $attributes['className'] ?? '', 'is-style-loop' );
 
 $loop = ! $is_loop ? false : new WPBS_Loop( $block ?? false );
 
-WPBS::console_log( $loop );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-layout-grid',

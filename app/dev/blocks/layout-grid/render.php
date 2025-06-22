@@ -61,7 +61,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 					'small'  => $settings['columns-small'] ?? null,
 					'large'  => $settings['columns-large'] ?? null,
 				],
-				'last'        => $loop->is_last ?? true,
+				'is_last'     => $loop->is_last ?? true,
 			] ) ) . '</script>';
 	}
 

@@ -34,7 +34,7 @@ class WPBS_Loop {
 		$this->query = $this->is_term_loop ? $query : $this->loop_query( $query, $page );
 
 		$this->is_query = is_a( $this->query, 'WP_Query' );
-		$this->is_last  = ( $this->is_query && ( $this->query->paged ?? 1 ) >= ( $this->query->max_num_pages ?? 1 ) ) || is_array( $this->query );
+		$this->is_last  = ( $this->is_query && ( $this->query->query_vars['paged'] ?? 1 ) >= ( $this->query->max_num_pages ?? 1 ) ) || is_array( $this->query );
 
 		if ( $this->is_query && $this->query->have_posts() ) {
 

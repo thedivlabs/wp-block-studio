@@ -45,8 +45,7 @@ class WPBS_Grid {
 				]
 			);
 		} );
-
-
+		
 	}
 
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
@@ -62,7 +61,7 @@ class WPBS_Grid {
 				'status'  => 200,
 				'content' => $loop->content ?? null,
 				'css'     => $loop->css ?? null,
-				'last'    => $loop->is_last ?? null,
+				'is_last' => $loop->is_last ?? null,
 				'$loop'   => $loop,
 			] )
 		);

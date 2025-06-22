@@ -483,22 +483,22 @@ class WPBS {
 		return $template;
 	}
 
-	public static function sanitize_block_template( $block ): array {
+	public static function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
+		if ( ++ $counter > $max_blocks ) {
+			return [];
+		}
 
 		return [
 			'blockName'    => $block['blockName'] ?? '',
 			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
-			'innerBlocks'  => array_map( [ __CLASS__, 'sanitize_block_template' ], $block['innerBlocks'] ?? [] ),
+			'innerBlocks'  => array_map( function ( $b ) use ( &$counter, $max_blocks ) {
+				return self::sanitize_block_template( $b, $counter, $max_blocks );
+			}, $block['innerBlocks'] ?? [] ),
 			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
 			'innerContent' => array_map( function ( $item ) {
-				if ( is_string( $item ) ) {
-					return wp_kses_post( $item );
-				}
-
-				return null;
+				return is_string( $item ) ? wp_kses_post( $item ) : null;
 			}, $block['innerContent'] ?? [] ),
 		];
-
 	}
 
 	public static function sanitize_query_args( $args ): array {

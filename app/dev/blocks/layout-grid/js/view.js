@@ -8,14 +8,14 @@ const {state} = store('wpbs/grid', {
             const {ref: grid} = getElement();
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
 
-            const {last} = data;
+            const {is_last} = data;
 
             WPBS.setMasonry(grid);
 
             WPBS.gridDividers(grid, data);
 
             [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
-                if (!last) {
+                if (!is_last) {
                     el.classList.remove('hidden');
                 } else {
                     el.remove();
@@ -58,7 +58,7 @@ const {state} = store('wpbs/grid', {
                 body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
-                    console.log(result);
+
                     WPBS.loader.toggle({
                         remove: true
                     });
@@ -80,7 +80,7 @@ const {state} = store('wpbs/grid', {
                         document.head.appendChild(styleTag);
                     }
 
-                    if (!!result.last) {
+                    if (!!result.is_last) {
                         element.remove();
                     }
 

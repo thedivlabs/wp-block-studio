@@ -20,7 +20,6 @@ function sectionClassNames(attributes = {}) {
 
     return [
         'wpbs-layout-grid-card',
-        attributes?.cardClass ?? null,
         'w-full block relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');
@@ -50,14 +49,11 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const {cardClass} = context;
-
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
         useEffect(() => {
             setAttributes({
                 uniqueId: uniqueId,
-                cardClass: cardClass
             });
         }, []);
 
@@ -69,7 +65,6 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 'wpbs-layout-grid-card': result,
-                cardClass: cardClass
             });
         }, [setAttributes, attributes['wpbs-layout-grid-card']]);
 

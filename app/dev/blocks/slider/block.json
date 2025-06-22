@@ -17,6 +17,9 @@
     "wpbs/layout-element",
     "wpbs/slider-navigation"
   ],
+  "providesContext": {
+    "wpbs/query": "wpbs-query"
+  },
   "supports": {
     "innerBlocks": true,
     "interactivity": true,
@@ -44,8 +47,7 @@
   "style": [
     "file:./js/edit.css"
   ],
-  "icon": "slides",
-  "render": "file:./render.php"
+  "icon": "slides"
 }
 
 

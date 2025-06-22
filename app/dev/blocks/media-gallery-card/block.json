@@ -13,10 +13,6 @@
     "postId": {
       "type": "integer",
       "show_in_rest": true
-    },
-    "cardClass": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
   "parent": [
@@ -26,7 +22,6 @@
     "postId": "postId"
   },
   "usesContext": [
-    "cardClass",
     "index"
   ],
   "supports": {

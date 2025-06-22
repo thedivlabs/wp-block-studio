@@ -11,8 +11,14 @@ import {
     ToggleControl
 } from "@wordpress/components";
 
+export const LOOP_ATTRIBUTES = {
+    'wpbs-query': {
+        type: 'object'
+    }
+}
 
-function Loop({attributes, setAttributes}) {
+
+export const LoopControls = ({attributes, setAttributes}) => {
 
     const [loop, setLoop] = useState({
         postTypes: [],
@@ -321,4 +327,3 @@ function Loop({attributes, setAttributes}) {
     </Grid>;
 }
 
-export default Loop;

@@ -12,10 +12,10 @@ class WPBS_Loop {
 	public array|WP_Query $query;
 
 
-	public function __construct( $block, $page = 1 ) {
+	public function __construct( WP_Block|false $block, $query = false, $page = 1 ) {
 
 		$card  = $block->parsed_block['innerBlocks'][0] ?? false;
-		$query = $block->attributes['wpbs-query'] ?? false;
+		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
 
 		if ( empty( $card ) || empty( $query ) ) {
 			return [];

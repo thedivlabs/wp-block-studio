@@ -18,17 +18,10 @@
       "type": "integer",
       "default": 0,
       "show_in_rest": true
-    },
-    "cardClass": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
   "parent": [
     "wpbs/layout-grid"
-  ],
-  "usesContext": [
-    "cardClass"
   ],
   "providesContext": {
     "postId": "postId",

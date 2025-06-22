@@ -11,8 +11,8 @@ import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import {GridControls} from "Includes/helper"
-import Loop from "Components/Loop"
+import {LOOP_ATTRIBUTES, LoopControls} from "Components/Loop"
+import {GRID_ATTRIBUTES, GridControls} from "Components/Grid"
 import {
     PanelBody,
     TabPanel,
@@ -41,29 +41,13 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-grid': {
-            type: 'object',
-            default: {
-                'columns-mobile': undefined,
-                'columns-small': undefined,
-                'columns-large': undefined,
-                'breakpoint-small': undefined,
-                'masonry': undefined,
-                'gallery': {},
-                'divider': {},
-                'divider-icon': undefined,
-                'divider-icon-size': undefined,
-                'divider-icon-color': undefined,
-                'pagination': undefined,
-                'pagination-size': undefined,
-                'pagination-label': undefined,
-            }
-        }
+        ...LOOP_ATTRIBUTES,
+        ...GRID_ATTRIBUTES,
+
     },
     edit: (props) => {
 
         const {attributes, setAttributes, clientId} = props;
-        const [grid, setGrid] = useState(attributes['wpbs-grid'] || {});
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
@@ -75,20 +59,6 @@ registerBlockType(metadata.name, {
                 cardClass: cardClass
             });
         }, [uniqueId]);
-
-        const updateSettings = useCallback((newValue) => {
-            const result = {
-                ...grid,
-                ...newValue
-            };
-
-            setAttributes({
-                'wpbs-grid': result,
-                cardClass: cardClass
-            });
-            setGrid(result);
-
-        }, [setAttributes, setGrid, grid])
 
         const cssProps = useMemo(() => {
             const grid = attributes['wpbs-grid'] ?? {};
@@ -118,12 +88,12 @@ registerBlockType(metadata.name, {
         }, [attributes['wpbs-grid']]);
 
         const tabOptions = useMemo(() => {
-            return <GridControls grid={grid} callback={updateSettings}/>;
-        }, [grid, updateSettings]);
+            return <GridControls attributes={attributes} setAttributes={setAttributes}/>;
+        }, [attributes, setAttributes]);
 
         const tabLoop = useMemo(() => {
-            return <Loop attributes={attributes} setAttributes={setAttributes}/>
-        }, [grid])
+            return <LoopControls attributes={attributes} setAttributes={setAttributes}/>
+        }, [attributes, setAttributes]);
 
         const tabs = {
             options: tabOptions,
@@ -182,16 +152,10 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <BlockContextProvider
-                    value={{
-                        cardClass,
-                    }}
-                >
-                    <div {...blockProps}>
-                        <div {...innerBlocksProps} />
-                        <BackgroundElement attributes={props.attributes} editor={true}/>
-                    </div>
-                </BlockContextProvider>
+                <div {...blockProps}>
+                    <div {...innerBlocksProps} />
+                    <BackgroundElement attributes={props.attributes} editor={true}/>
+                </div>
 
 
             </>

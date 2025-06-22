@@ -33,8 +33,6 @@ const {state} = store('wpbs/grid', {
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.textContent ?? '{}');
 
-            console.log(data);
-
             const {query, card} = data;
 
             grid.dataset.page = String(parseInt(grid.dataset?.page ?? 1) + 1);

@@ -49,7 +49,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'        => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
-				'query'       => $loop->query,
+				'query'       => $loop->query ?? false,
 				'uniqueId'    => $attributes['uniqueId'] ?? null,
 				'divider'     => ! empty( $settings['divider'] ),
 				'breakpoints' => [

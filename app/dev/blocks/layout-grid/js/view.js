@@ -62,31 +62,33 @@ const {state} = store('wpbs/grid', {
                     WPBS.loader.toggle({
                         remove: true
                     });
+                    console.log(result);
 
-                    const newNodes = parser.parseFromString(result.content, 'text/html');
+                    const {is_last, content, css} = result ?? {};
+
+                    if (!!is_last || !content) {
+                        element.remove();
+                        return;
+                    }
+
+
+                    const newNodes = parser.parseFromString(content, 'text/html');
 
                     if (newNodes) {
                         container.append(...newNodes.body.childNodes);
                     }
-
 
                     WPBS.gridDividers(grid, data);
                     WPBS.setMasonry(grid);
 
                     [...grid.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
 
-
-                    if (result.css) {
+                    if (css) {
                         const styleTag = document.createElement('style');
-
-                        styleTag.innerHTML = result.css;
-
+                        styleTag.innerHTML = css;
                         document.head.appendChild(styleTag);
                     }
 
-                    if (!!(result?.is_last ?? true)) {
-                        //element.remove();
-                    }
 
                 })
         }

@@ -10,7 +10,7 @@ import {registerBlockType,} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
-import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import {Style, STYLE_ATTRIBUTES, styleClasses} from "Components/Style"
 import {LOOP_ATTRIBUTES, LoopControls} from "Components/Loop"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {
@@ -30,7 +30,7 @@ function classNames(attributes = {}) {
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
         (attributes?.className ?? '').includes('is-style-gallery') ? 'lightbox-gallery' : null,
-        attributes?.uniqueId ?? '',
+        styleClasses(attributes),
     ].filter(x => x).join(' ');
 }
 

@@ -52,6 +52,13 @@ function getPreloadMedia(preloads) {
 
 }
 
+export const styleClasses = (attributes = {}) => {
+
+    return [
+        attributes?.uniqueId ?? '',
+    ].filter(x => x).join(' ');
+}
+
 export function Style({
                           uniqueId,
                           attributes,

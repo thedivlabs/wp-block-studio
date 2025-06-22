@@ -9,6 +9,8 @@ $is_loop  = str_contains( $attributes['className'] ?? '', 'is-style-loop' );
 
 $loop = ! $is_loop ? false : new WPBS_Loop( $block ?? false );
 
+WPBS::console_log( $loop );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-layout-grid',
@@ -48,7 +50,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
-				'card'        => WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] ),
+				'card'        => $loop->card,
 				'query'       => $loop->query ?? false,
 				'uniqueId'    => $attributes['uniqueId'] ?? null,
 				'divider'     => ! empty( $settings['divider'] ),

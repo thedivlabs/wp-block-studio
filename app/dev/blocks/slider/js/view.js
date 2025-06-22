@@ -68,9 +68,6 @@ const {state} = store('wpbs/slider', {
         observeSlider: () => {
             const {ref: element} = getElement();
 
-
-            console.log(element);
-
             if (element.classList.contains('swiper-initialized')) {
                 return;
             }

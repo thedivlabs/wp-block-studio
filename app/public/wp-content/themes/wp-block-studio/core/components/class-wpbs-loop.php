@@ -3,6 +3,7 @@
 class WPBS_Loop {
 
 	public string $content;
+	public array $card;
 	public string $css;
 	public string $pagination_label;
 	public bool $is_last;
@@ -18,7 +19,7 @@ class WPBS_Loop {
 		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
 
 		if ( empty( $card ) || empty( $query ) ) {
-			return [];
+			return;
 		}
 
 		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
@@ -77,12 +78,11 @@ class WPBS_Loop {
 
 		}
 
-		return array_filter( [
-			'content' => $new_content,
-			'css'     => $css,
-			'last'    => $this->is_last,
-			'query'   => $query
-		] );
+		$this->content = $new_content;
+		$this->query   = $query;
+		$this->css     = $css;
+		$this->card    = WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] );
+
 
 	}
 

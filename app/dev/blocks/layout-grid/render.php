@@ -46,7 +46,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	<?php
 
-	echo $loop->pagination( $loop->query ?? false );
+	echo $is_loop ? $loop->pagination( $loop->query ?? false ) : false;
 
 	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [

@@ -29,7 +29,7 @@ export const GRID_ATTRIBUTES = {
     }
 }
 
-export const gridProps = (attributes)=>{
+export const gridProps = (attributes) => {
 
     const grid = attributes['wpbs-grid'] ?? {};
     const layout = attributes['wpbs-layout'] ?? {};
@@ -60,19 +60,11 @@ export const gridProps = (attributes)=>{
 
 export const GridControls = ({attributes, setAttributes}) => {
 
+    const grid = attributes['wpbs-grid'] ?? {};
+
     const updateSettings = useCallback((newValue) => {
-
-        const result = {
-            ...attributes['wpbs-grid'],
-            ...newValue
-        };
-
-        setAttributes({
-            'wpbs-grid': result
-        });
-
-
-    }, [attributes['wpbs-grid'], setAttributes]);
+        setAttributes({ 'wpbs-grid': { ...grid, ...newValue } });
+    }, [grid, setAttributes]);
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>
@@ -83,39 +75,39 @@ export const GridControls = ({attributes, setAttributes}) => {
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => updateSettings({'columns-mobile': newValue})}
-                    value={attributes['columns-mobile']}
+                    value={grid?.['columns-mobile']}
                 />
                 <NumberControl
                     label={'Small'}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => updateSettings({'columns-small': newValue})}
-                    value={attributes['columns-small']}
+                    value={grid?.['columns-small']}
                 />
                 <NumberControl
                     label={'Large'}
                     __next40pxDefaultSize
                     isShiftStepEnabled={false}
                     onChange={(newValue) => updateSettings({'columns-large': newValue})}
-                    value={attributes['columns-large']}
+                    value={grid?.['columns-large']}
                 />
             </Grid>
         </BaseControl>
         <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
             <Breakpoint
                 label={'Breakpoint SM'}
-                defaultValue={attributes['breakpoint-small']}
+                defaultValue={grid?.['breakpoint-small']}
                 callback={(newValue) => updateSettings({'breakpoint-small': newValue})}/>
             <Breakpoint
                 label={'Breakpoint LG'}
-                defaultValue={attributes['breakpoint-large']}
+                defaultValue={grid?.['breakpoint-large']}
                 callback={(newValue) => updateSettings({'breakpoint-large': newValue})}/>
         </Grid>
         <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Masonry"
-                checked={!!attributes['masonry']}
+                checked={!!grid?.['masonry']}
                 onChange={(newValue) => updateSettings({'masonry': newValue})}
             />
         </Grid>
@@ -124,7 +116,7 @@ export const GridControls = ({attributes, setAttributes}) => {
             enableAlpha
             enableStyle
             disableUnits
-            value={attributes['divider'] || {}}
+            value={grid?.['divider'] || {}}
             colors={WPBS?.settings?.colors ?? []}
             __experimentalIsRenderedInSidebar={true}
             label="Divider"
@@ -136,19 +128,19 @@ export const GridControls = ({attributes, setAttributes}) => {
             <InputControl
                 label={'Divider Icon'}
                 __next40pxDefaultSize
-                value={attributes['divider-icon']}
+                value={grid?.['divider-icon']}
                 onChange={(newValue) => updateSettings({'divider-icon': newValue})}
             />
             <UnitControl
                 label={'Icon Size'}
-                value={attributes['divider-icon-size']}
+                value={grid?.['divider-icon-size']}
                 isResetValueOnUnitChange={true}
                 onChange={(newValue) => updateSettings({'divider-icon-size': newValue})}
                 units={[
-                    {value: 'px', label: 'px', default: 0},
-                    {value: 'em', label: 'em', default: 0},
-                    {value: 'rem', label: 'rem', default: 0},
-                    {value: 'vw', label: 'vw', default: 0},
+                    {value: 'px', label: 'px', default: '0px'},
+                    {value: 'em', label: 'em', default: '0em'},
+                    {value: 'rem', label: 'rem', default: '0rem'},
+                    {value: 'vw', label: 'vw', default: '0vw'},
                 ]}
                 __next40pxDefaultSize
             />
@@ -160,13 +152,14 @@ export const GridControls = ({attributes, setAttributes}) => {
                 {
                     slug: 'icon-color',
                     label: 'Divider Icon Color',
-                    value: attributes['divider-icon-color'],
+                    value: grid?.['divider-icon-color'],
                     onChange: (newValue) => updateSettings({'divider-icon-color': newValue}),
                     isShownByDefault: true
                 }
             ]}
         />
     </Grid>
+
 };
 
 

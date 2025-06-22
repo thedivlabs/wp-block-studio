@@ -61,13 +61,9 @@ registerBlockType(metadata.name, {
            return gridProps(attributes);
         }, [attributes]);
 
-        const tabOptions = useMemo(() => {
-            return <GridControls attributes={attributes} setAttributes={setAttributes}/>;
-        }, [attributes, setAttributes]);
+        const tabOptions = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
-        const tabLoop = useMemo(() => {
-            return <LoopControls attributes={attributes} setAttributes={setAttributes}/>
-        }, [attributes, setAttributes]);
+        const tabLoop = <LoopControls attributes={attributes} setAttributes={setAttributes}/>;
 
         const tabs = {
             options: tabOptions,

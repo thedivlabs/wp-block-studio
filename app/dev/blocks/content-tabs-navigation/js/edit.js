@@ -95,7 +95,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs-navigation']}
             />
             <nav {...blockProps} >

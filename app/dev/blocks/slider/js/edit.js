@@ -150,7 +150,7 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps}/>
 
-            <BlockContextProvider value={loopQuery}>
+            <BlockContextProvider value={{loopQuery}}>
                 <div {...innerBlocksProps} />
             </BlockContextProvider>
         </>;

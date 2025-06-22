@@ -25,7 +25,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const {loopQuery = {}} = context;
+        const {loopQuery} = context;
 
         console.log(loopQuery);
 

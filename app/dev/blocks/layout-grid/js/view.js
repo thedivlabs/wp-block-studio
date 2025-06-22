@@ -64,7 +64,11 @@ const {state} = store('wpbs/grid', {
                     });
 
                     const newNodes = parser.parseFromString(result.content, 'text/html');
-                    container.append(...newNodes.body.childNodes);
+
+                    if (newNodes) {
+                        container.append(...newNodes.body.childNodes);
+                    }
+
 
                     WPBS.gridDividers(grid, data);
                     WPBS.setMasonry(grid);
@@ -80,8 +84,8 @@ const {state} = store('wpbs/grid', {
                         document.head.appendChild(styleTag);
                     }
 
-                    if (!!result.is_last) {
-                        element.remove();
+                    if (!!(result?.is_last ?? true)) {
+                        //element.remove();
                     }
 
                 })

@@ -62,7 +62,6 @@ const {state} = store('wpbs/grid', {
                     WPBS.loader.toggle({
                         remove: true
                     });
-                    console.log(result);
 
                     const {is_last, content, css} = result ?? {};
 

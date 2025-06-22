@@ -63,7 +63,7 @@ function initLib() {
     }
 }
 
-const {state} = store('wpbs', {
+const {state} = store('wpbs/slider', {
     callbacks: {
         observeSlider: () => {
             const {ref: element} = getElement();

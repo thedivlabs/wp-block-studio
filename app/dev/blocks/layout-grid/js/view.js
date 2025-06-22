@@ -8,14 +8,14 @@ const {state} = store('wpbs/grid', {
             const {ref: grid} = getElement();
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
 
-            const {page = 1, max = 1} = data;
-            
+            const {last} = data;
+
             WPBS.setMasonry(grid);
 
             WPBS.gridDividers(grid, data);
 
             [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
-                if (!data?.last) {
+                if (!last) {
                     el.classList.remove('hidden');
                 } else {
                     el.remove();
@@ -33,9 +33,9 @@ const {state} = store('wpbs/grid', {
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
             const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
 
-            const {page = 1, query, max = 1, card} = data;
+            const {query, card} = data;
 
-            grid.dataset.page = String(parseInt(grid.dataset?.page ?? page) + 1);
+            grid.dataset.page = String(parseInt(grid.dataset?.page ?? 1) + 1);
 
             const nonce = WPBS?.settings?.nonce ?? false;
 

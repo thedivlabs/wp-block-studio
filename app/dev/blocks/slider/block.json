@@ -44,7 +44,8 @@
   "style": [
     "file:./js/edit.css"
   ],
-  "icon": "slides"
+  "icon": "slides",
+  "render": "file:./render.php"
 }
 
 

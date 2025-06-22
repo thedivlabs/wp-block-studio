@@ -115,13 +115,12 @@ class WPBS {
 	public function block_assets(): void {
 
 		wp_enqueue_script( 'wpbs-masonry-js' );
-		//wp_enqueue_script( 'wpbs-swiper-js' );
 
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_script( 'wpbs-fontawesome' );
 		wp_enqueue_style( 'wpbs-theme-css' );
 
-
+		wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
@@ -597,96 +596,6 @@ class WPBS {
 
 			return $input;
 		}
-	}
-
-	public static function loop_card( $block = [], $args = [], $index = false ): WP_Block|bool {
-
-		$block_template = self::sanitize_block_template( $block );
-
-		$original_id = $block_template['attrs']['uniqueId'] ?? '';
-
-		$post_id = $args['postId'] ?? get_the_ID();
-		$term_id = $args['termId'] ?? false;
-
-		$new_id = ! empty( $term_id ?? $post_id ?? null ) ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
-
-		$unique_id = join( ' ', array_filter( [
-			$original_id ?? null,
-			$new_id
-		] ) );
-
-		$selector = '.' . join( '.', array_filter( [
-				$original_id ?? null,
-				$new_id
-			] ) );
-
-		$block_template['attrs']['postId']   = $post_id;
-		$block_template['attrs']['termId']   = $term_id;
-		$block_template['attrs']['uniqueId'] = $unique_id;
-		$block_template['attrs']['index']    = $index;
-
-		$new_block = new WP_Block( $block_template, array_filter( [
-			'termId'   => $term_id,
-			'postId'   => $post_id,
-			'uniqueId' => $unique_id,
-			'index'    => $index,
-		] ) );
-
-		return apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
-
-		//$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
-		//$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
-
-		//return $new_block;
-	}
-
-	public static function loop_query( $query, $page = 1 ): WP_Query|bool|array {
-
-		if ( empty( $query ) ) {
-			return false;
-		}
-
-		if ( is_a( $query, 'WP_Query' ) ) {
-			return $query;
-		}
-
-		if ( ! empty( $query['loop_terms'] ) ) {
-
-			return get_terms( [
-				'taxonomy'   => $query['taxonomy'] ?? false,
-				'hide_empty' => true,
-				'orderby'    => $query['orderby'] ?? 'date',
-				'order'      => $query['order'] ?? 'DESC',
-			] );
-		}
-
-		$query_args = [
-			'post_type'      => $query['post_type'] ?? 'post',
-			'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-			'orderby'        => $query['orderby'] ?? 'date',
-			'order'          => $query['order'] ?? 'DESC',
-			'post__not_in'   => $query['post__not_in'] ?? [],
-			'paged'          => $query['paged'] ?? $page ?: 1,
-		];
-
-		if ( ! empty( $query['taxonomy'] ) ) {
-
-			$taxonomy = get_term( $query['term'] ?? false )->taxonomy ?? false;
-
-			if ( ! empty( $taxonomy ) ) {
-				$query_args['tax_query'] = [
-					[
-						'taxonomy' => $taxonomy,
-						'field'    => 'term_id',
-						'terms'    => $query['term'] ?? false,
-					]
-				];
-			}
-
-		}
-
-		return new WP_Query( $query_args );
-
 	}
 
 

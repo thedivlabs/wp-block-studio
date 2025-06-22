@@ -19,7 +19,7 @@ import {
 
 function blockClassnames(attributes = {}) {
     return [
-        'wpbs-media-gallery-card',
+        'wpbs-media-gallery-card loop-card',
         'w-full block relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');

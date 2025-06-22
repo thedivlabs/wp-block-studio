@@ -25,7 +25,7 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-layout-grid',
-        !!attributes?.['wpbs-grid']?.masonry ? 'wpbs-layout-grid--masonry masonry !block' : null,
+        !!attributes?.['wpbs-grid']?.masonry ? '--masonry masonry !block' : null,
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
@@ -50,13 +50,10 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
-
-        const cardClass = 'layout-grid-card';
-
+        
         useEffect(() => {
             setAttributes({
-                'uniqueId': uniqueId,
-                cardClass: cardClass
+                'uniqueId': uniqueId
             });
         }, [uniqueId]);
 

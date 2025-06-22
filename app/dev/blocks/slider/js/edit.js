@@ -110,7 +110,6 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            className: 'swiper-wrapper grow flex',
             template: [
                 ['wpbs/slider-wrapper'],
             ]
@@ -130,16 +129,14 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: blockClasses(props.attributes),
-            'data-wp-interactive': 'wpbs',
+            'data-wp-interactive': 'wpbs/slider',
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
                 args: sliderArgs(props.attributes)
             })
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps, {
-            className: 'swiper-wrapper grow flex',
-        });
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps, {});
 
         return (
             <div {...innerBlocksProps} />

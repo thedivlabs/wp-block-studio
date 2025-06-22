@@ -19,7 +19,7 @@ import {REL_OPTIONS} from "Includes/config.js";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-layout-grid-card',
+        'wpbs-layout-grid-card loop-card',
         'w-full block relative',
         attributes.uniqueId,
     ].filter(x => x).join(' ');

@@ -25,7 +25,7 @@ import {
 } from "@wordpress/components";
 import Breakpoint from "Components/Breakpoint.js";
 import {MediaGalleryControls} from "Components/MediaGallery.js";
-import {GridControls} from "Includes/helper.js";
+import {GridControls} from "Components/Grid.js";
 
 function blockClassnames(attributes = {}) {
     return [

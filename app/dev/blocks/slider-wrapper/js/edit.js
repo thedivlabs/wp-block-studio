@@ -1,10 +1,12 @@
 import {
     useBlockProps,
     BlockEdit,
-    useInnerBlocksProps
+    useInnerBlocksProps, InnerBlocks
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
+import {BackgroundElement} from "Components/Background.js";
+import React from "react";
 
 function blockClasses(attributes = {}) {
     return [
@@ -38,15 +40,7 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const blockProps = useBlockProps.save({
-            className: blockClasses(props.attributes),
-        });
-
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
-
-        return (
-            <div {...innerBlocksProps}></div>
-        );
+        return <InnerBlocks.Content/>;
     }
 })
 

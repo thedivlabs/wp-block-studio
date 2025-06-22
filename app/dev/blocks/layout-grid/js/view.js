@@ -31,7 +31,9 @@ const {state} = store('wpbs/grid', {
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
-            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.innerHTML ?? '{}');
+            const data = JSON.parse(grid.querySelector('script.wpbs-layout-grid-args')?.textContent ?? '{}');
+
+            console.log(data);
 
             const {query, card} = data;
 
@@ -58,7 +60,7 @@ const {state} = store('wpbs/grid', {
                 body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
-
+                    console.log(result);
                     WPBS.loader.toggle({
                         remove: true
                     });

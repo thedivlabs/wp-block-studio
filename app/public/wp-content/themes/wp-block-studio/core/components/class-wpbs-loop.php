@@ -29,18 +29,18 @@ class WPBS_Loop {
 		$new_content = '';
 		$css         = '';
 
-		$query = $this->loop_query( $query, $page );
+		$this->query = $this->loop_query( $query, $page );
 
-		$this->is_query = is_a( $query, 'WP_Query' );
-		$this->is_last  = $this->is_query && $page >= ( $query->max_num_pages ?? 1 ) || is_array( $query );
+		$this->is_query = is_a( $this->query, 'WP_Query' );
+		$this->is_last  = $this->is_query && $page >= ( $query->max_num_pages ?? 1 ) || is_array( $this->query );
 
-		if ( $this->is_query && $query->have_posts() ) {
+		if ( $this->is_query && $this->query->have_posts() ) {
 
 			$query_counter = 0;
 
-			while ( $query->have_posts() ) {
+			while ( $this->query->have_posts() ) {
 
-				$query->the_post();
+				$this->query->the_post();
 
 				$new_block = $this->loop_card( $card, [
 					'postId' => get_the_id(),
@@ -57,9 +57,9 @@ class WPBS_Loop {
 
 		}
 
-		if ( ! $this->is_query && is_array( $query ) ) {
+		if ( ! $this->is_query && is_array( $this->query ) ) {
 
-			foreach ( $query as $k => $term_id ) {
+			foreach ( $this->query as $k => $term_id ) {
 
 				$term = get_term( $term_id );
 
@@ -79,7 +79,6 @@ class WPBS_Loop {
 		}
 
 		$this->content = $new_content;
-		$this->query   = $query;
 		$this->css     = $css;
 		$this->card    = WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] );
 
@@ -183,6 +182,9 @@ class WPBS_Loop {
 		}
 
 
+		if ( ! $this->is_current ) {
+			return false;
+		}
 		$big = 999999999;
 
 		$current_page = max( 1, get_query_var( 'paged' ) );

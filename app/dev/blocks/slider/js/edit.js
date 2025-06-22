@@ -10,7 +10,6 @@ import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {SLIDER_ATTRIBUTES, SliderControls, sliderArgs, sliderProps} from "Components/Slider"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import Loop from "Components/Loop"
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -44,10 +43,6 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...SLIDER_ATTRIBUTES,
-        'wpbs-query': {
-            type: 'object',
-            default: {}
-        }
     },
     edit: ({attributes, setAttributes}) => {
 

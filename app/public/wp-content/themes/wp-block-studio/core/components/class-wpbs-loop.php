@@ -8,20 +8,22 @@ class WPBS_Loop {
 	public string $pagination_label;
 	public bool $is_last;
 	public bool $is_query;
+	public bool $is_term_loop;
 	public bool $is_current;
 	public bool $is_pagination;
 	public array|WP_Query $query;
 
 
-	public function __construct( WP_Block|false $block, $query = false, $page = 1 ) {
+	public function __construct( WP_Block|false|array $block, $query = false, $page = 1 ) {
 
-		$card  = $block->parsed_block['innerBlocks'][0] ?? false;
+		$card  = is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block;
 		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
 
 		if ( empty( $card ) || empty( $query ) ) {
 			return;
 		}
 
+		$this->is_term_loop     = ! empty( $query['loop_terms'] );
 		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
 		$this->is_pagination    = ! empty( $query['pagination'] );
 		$this->pagination_label = $query['pagination-label'] ?? 'Show More';
@@ -29,10 +31,10 @@ class WPBS_Loop {
 		$new_content = '';
 		$css         = '';
 
-		$this->query = $this->loop_query( $query, $page );
+		$this->query = $this->is_term_loop ? $query : $this->loop_query( $query, $page );
 
 		$this->is_query = is_a( $this->query, 'WP_Query' );
-		$this->is_last  = ( $this->is_query && ( $this->query->paged ?? 1) >= ( $this->query->max_num_pages ?? 1 ) ) || is_array( $this->query );
+		$this->is_last  = ( $this->is_query && ( $this->query->paged ?? 1 ) >= ( $this->query->max_num_pages ?? 1 ) ) || is_array( $this->query );
 
 		if ( $this->is_query && $this->query->have_posts() ) {
 

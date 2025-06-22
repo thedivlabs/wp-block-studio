@@ -21,7 +21,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ?>
 
 <div <?php echo $wrapper_attributes ?>>
-    <div class="wpbs-layout-grid__container relative z-20">
+    <div class="wpbs-layout-grid__container loop-container relative z-20">
 
 		<?php if ( $is_loop ) {
 			echo $loop->content ?? false;

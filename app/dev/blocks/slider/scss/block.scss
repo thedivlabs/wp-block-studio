@@ -30,7 +30,7 @@
   }
 
   &.swiper-initialized .swiper-slide {
-    pointer-events: none;
+    //pointer-events: none;
 
     &.swiper-slide-active {
       pointer-events: auto;

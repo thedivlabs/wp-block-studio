@@ -1,6 +1,8 @@
 import {useEffect, useMemo} from "react";
 import {backgroundCss, backgroundPreload} from "Components/Background.js";
 import {layoutCss} from "Components/Layout.js";
+import {useInstanceId} from "@wordpress/compose";
+import {registerBlockType} from "@wordpress/blocks";
 
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
@@ -54,13 +56,10 @@ function getPreloadMedia(preloads) {
 
 export const styleClasses = (attributes = {}) => {
 
-    return [
-        attributes?.uniqueId ?? '',
-    ].filter(x => x).join(' ');
+    return attributes?.uniqueId ?? '';
 }
 
 export function Style({
-                          uniqueId,
                           attributes,
                           setAttributes,
                           css = [],
@@ -70,11 +69,13 @@ export function Style({
                       }) {
 
 
-    if (!attributes || !attributes.uniqueId) {
+    if (!attributes) {
         return null;
     }
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes?.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
 
+
+    const uniqueId = useInstanceId(Style, 'wpbs-layout-grid');
 
     const {resultCss, preloadMedia} = useMemo(() => {
 

@@ -21,7 +21,7 @@ class WPBS_Loop {
 			return [];
 		}
 
-		$this->is_current       = $query['type'] == 'current';
+		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
 		$this->is_pagination    = ! empty( $query['pagination'] );
 		$this->pagination_label = $query['pagination-label'] ?? 'Show More';
 

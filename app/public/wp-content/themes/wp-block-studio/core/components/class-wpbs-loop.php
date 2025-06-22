@@ -174,18 +174,14 @@ class WPBS_Loop {
 
 	public function pagination( $query ): string|bool {
 
-		if ( ! $this->is_pagination ) {
+		if ( ! $this->is_pagination || ! is_a( $query, 'WP_Query' ) ) {
 			return false;
 		}
 
-		if ( ! $this->is_current ) {
+		if ( ! $this->is_current && ! $this->is_last ) {
 			echo '<button type="button" class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden" data-wp-on-async--click="actions.pagination">' . $this->pagination_label . '</button>';
 		}
 
-
-		if ( ! is_a( $query, 'WP_Query' ) ) {
-			return false;
-		}
 
 		$big = 999999999;
 

@@ -12,7 +12,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LOOP_ATTRIBUTES, LoopControls} from "Components/Loop"
-import {GRID_ATTRIBUTES, GridControls} from "Components/Grid"
+import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {
     PanelBody,
     TabPanel,
@@ -50,7 +50,7 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
-        
+
         useEffect(() => {
             setAttributes({
                 'uniqueId': uniqueId
@@ -58,31 +58,8 @@ registerBlockType(metadata.name, {
         }, [uniqueId]);
 
         const cssProps = useMemo(() => {
-            const grid = attributes['wpbs-grid'] ?? {};
-            const layout = attributes['wpbs-layout'] ?? {};
-            const spacing = attributes?.style?.spacing?.blockGap ?? {};
-
-            return {
-                '--grid-row-gap': spacing.top,
-                '--grid-col-gap': spacing.left,
-                '--columns': grid['columns-mobile'],
-                '--divider-width': grid.divider?.width,
-                '--divider-color': grid.divider?.color,
-                '--divider-icon': grid?.['divider-icon'],
-                '--divider-icon-size': grid?.['divider-icon-size'],
-                '--divider-icon-color': grid?.['divider-icon-color'],
-                breakpoints: {
-                    [[grid?.['breakpoint-small'] ?? 'sm']]: {
-                        '--columns': grid['columns-small']
-                    },
-                    [[grid?.['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
-                        '--columns': grid['columns-large'],
-                        '--grid-row-gap': layout?.['gap-mobile']?.top,
-                        '--grid-col-gap': layout?.['gap-mobile']?.left,
-                    }
-                }
-            };
-        }, [attributes['wpbs-grid']]);
+           return gridProps(attributes);
+        }, [attributes]);
 
         const tabOptions = useMemo(() => {
             return <GridControls attributes={attributes} setAttributes={setAttributes}/>;

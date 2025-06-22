@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalBorderControl as BorderControl,
     __experimentalGrid as Grid, __experimentalInputControl as InputControl,
@@ -28,6 +28,35 @@ export const GRID_ATTRIBUTES = {
         }
     }
 }
+
+export const gridProps = (attributes)=>{
+
+    const grid = attributes['wpbs-grid'] ?? {};
+    const layout = attributes['wpbs-layout'] ?? {};
+    const spacing = attributes?.style?.spacing?.blockGap ?? {};
+
+    return {
+        '--grid-row-gap': spacing.top,
+        '--grid-col-gap': spacing.left,
+        '--columns': grid['columns-mobile'],
+        '--divider-width': grid.divider?.width,
+        '--divider-color': grid.divider?.color,
+        '--divider-icon': grid?.['divider-icon'],
+        '--divider-icon-size': grid?.['divider-icon-size'],
+        '--divider-icon-color': grid?.['divider-icon-color'],
+        breakpoints: {
+            [[grid?.['breakpoint-small'] ?? 'sm']]: {
+                '--columns': grid['columns-small']
+            },
+            [[grid?.['breakpoint-large'] ?? layout.breakpoint ?? 'normal']]: {
+                '--columns': grid['columns-large'],
+                '--grid-row-gap': layout?.['gap-mobile']?.top,
+                '--grid-col-gap': layout?.['gap-mobile']?.left,
+            }
+        }
+    };
+};
+
 
 export const GridControls = ({attributes, setAttributes}) => {
 

@@ -28,6 +28,7 @@ export const SWIPER_OPTIONS_DEFAULT = {
     passiveListeners: true,
     grabCursor: true,
     uniqueNavElements: true,
+    preventClicks: false,
 };
 
 

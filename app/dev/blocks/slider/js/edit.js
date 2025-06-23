@@ -54,11 +54,11 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
-        /*const sliderOptions = useMemo(() => {
+        const sliderOptions = useMemo(() => {
             return sliderArgs(attributes);
-        }, [attributes['wpbs-slider']]);*/
+        }, [attributes['wpbs-slider']]);
 
-        /*useEffect(() => {
+        useEffect(() => {
 
 
             if (swiperRef.current?.swiper) {
@@ -92,7 +92,7 @@ registerBlockType(metadata.name, {
 
                 new Swiper(swiperRef.current, sliderOptions);
             }
-        }, [sliderOptions]);*/
+        }, [sliderOptions]);
 
         const cssProps = sliderProps(attributes);
 

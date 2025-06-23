@@ -53,6 +53,12 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
+
         const {tabPanels = [], tabActive = null, setTabActive} = context;
 
         const {tabOptions} = context;
@@ -93,7 +99,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-content-tabs-navigation'}
+            <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-content-tabs-navigation']}
             />
             <nav {...blockProps} >

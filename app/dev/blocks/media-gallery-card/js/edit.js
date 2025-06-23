@@ -38,6 +38,11 @@ registerBlockType(metadata.name, {
     },
     edit: (props) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
 
         const {attributes, setAttributes, context} = props;
 

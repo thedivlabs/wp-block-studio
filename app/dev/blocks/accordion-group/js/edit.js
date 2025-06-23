@@ -54,6 +54,11 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -292,7 +297,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   selector={'wpbs-accordion-group'}
+                   selector={uniqueId}
                    deps={['wpbs-accordion-group']}
                    props={{
                        '--icon-open': `"\\${iconOpen}"`,

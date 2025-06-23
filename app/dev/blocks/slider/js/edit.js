@@ -50,6 +50,12 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes}) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
+
         const swiperRef = useRef(null);
 
         const sliderOptions = useMemo(() => {

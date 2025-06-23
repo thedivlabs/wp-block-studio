@@ -46,6 +46,11 @@ registerBlockType(metadata.name, {
     },
     edit: (props) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
 
         const {attributes, setAttributes, context} = props;
 

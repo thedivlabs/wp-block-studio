@@ -58,6 +58,12 @@ registerBlockType(metadata.name, {
     },
     edit: (props) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
+
         const {attributes, setAttributes, clientId} = props;
 
         const blockProps = useBlockProps({

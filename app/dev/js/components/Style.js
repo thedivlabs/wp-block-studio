@@ -60,7 +60,6 @@ export const styleClasses = (attributes = {}) => {
 }
 
 export function Style({
-                          selector,
                           attributes,
                           setAttributes,
                           css = [],
@@ -73,8 +72,6 @@ export function Style({
         return null;
     }
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes?.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
-
-    const uniqueId = useInstanceId(Style, selector);
 
     const {resultCss, preloadMedia} = useMemo(() => {
 
@@ -235,7 +232,6 @@ export function Style({
 
             setAttributes({
                 'wpbs-css': resultCss,
-                uniqueId: uniqueId
             });
         }
         setAttributes({

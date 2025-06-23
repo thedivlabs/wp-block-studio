@@ -47,6 +47,12 @@ registerBlockType(metadata.name, {
     },
     edit: (props) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
+
         const {attributes, setAttributes, clientId} = props;
 
         const cssProps = useMemo(() => {

@@ -96,6 +96,12 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta');
+
+        useEffect(() => {
+            setAttributes({uniqueId: uniqueId})
+        }, [uniqueId]);
+
         const [settings, setSettings] = useState(attributes['wpbs-cta']);
 
         const MemoSelectControl = React.memo(({label, prop, options}) => (

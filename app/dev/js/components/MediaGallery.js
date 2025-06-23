@@ -17,21 +17,24 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
 };
 
 
-export function MediaGalleryControls({attributes = {}, setAttributes, cardClass = ''}) {
+export function MediaGalleryControls({attributes = {}, setAttributes}) {
 
-    const [settings, setSettings] = useState(attributes?.['wpbs-media-gallery'] ?? {});
-    
+    const {'wpbs-media-gallery': settings} = attributes;
+
     const galleries = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
     }, []);
 
     const updateSettings = useCallback((newValue) => {
-        setSettings((prev) => ({
-            ...prev,
-            ...newValue,
-            'card-class': cardClass,
-        }));
-    }, [cardClass]);
+
+        const result = {
+            ...attributes['wpbs-media-gallery'],
+            ...newValue
+        }
+
+        setAttributes({'wpbs-media-gallery': result});
+
+    }, [setAttributes, attributes]);
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

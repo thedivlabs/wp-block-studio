@@ -70,12 +70,11 @@ registerBlockType(metadata.name, {
         }, [setAttributes, setMediaGallery])
 
         const tabOptions = useMemo(() => {
-            return <GridControls grid={mediaGallery} callback={updateSettings}/>;
+            return <GridControls grid={mediaGallery} callback={updateSettings} setAttributes={setAttributes}/>;
         }, [mediaGallery, updateSettings]);
 
         const tabGallery = useMemo(() => {
-            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}
-                                         cardClass={'layout-grid-card'}/>
+            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>
         }, [attributes['wpbs-media-gallery']])
         const tabs = {
             options: tabOptions,

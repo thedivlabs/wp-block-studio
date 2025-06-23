@@ -9,20 +9,17 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
-    },
-    "postId": {
-      "type": "integer",
-      "show_in_rest": true
     }
   },
   "parent": [
     "wpbs/media-gallery"
   ],
   "providesContext": {
-    "wpbs/postId": "postId"
+    "wpbs/imageId": "imageId"
   },
   "usesContext": [
-    "index"
+    "index",
+    "imageId"
   ],
   "supports": {
     "interactivity": true,

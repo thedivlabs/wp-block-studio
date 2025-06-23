@@ -9,10 +9,6 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
-    },
-    "galleryId": {
-      "type": "integer",
-      "show_in_rest": true
     }
   },
   "allowedBlocks": [
@@ -56,7 +52,8 @@
   "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
   "editorStyle": "file:./js/edit.css",
-  "icon": "format-gallery"
+  "icon": "format-gallery",
+  "render": "file:./render.php"
 }
 
 

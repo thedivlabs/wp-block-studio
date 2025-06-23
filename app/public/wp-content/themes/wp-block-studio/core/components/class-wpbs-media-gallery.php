@@ -112,7 +112,7 @@ class WPBS_Media_Gallery {
 					'cardTemplate' => [
 						'type'              => 'string',
 						'default'           => '',
-						'sanitize_callback' => 'wp_kses_post',
+						'sanitize_callback' => [ 'WPBS', 'sanitize_block_template' ],
 					],
 
 				],
@@ -124,6 +124,49 @@ class WPBS_Media_Gallery {
 		if ( get_post_type( $post_id ) === self::$slug ) {
 			delete_transient( self::TRANSIENT_PREFIX . $post_id );
 		}
+	}
+
+	public static function loop( $block, $id = 0, $args = [] ): object|bool {
+
+		if ( empty( $block ) || empty( $id ) ) {
+			return false;
+		}
+
+		$block_template = WPBS::get_block_template( $block->parsed_block['innerBlocks'][0] ?? false );
+		$query          = self::query( $id );
+
+		$content = '';
+
+		foreach ( $query['images'] ?? [] as $k => $image ) {
+			$original_id = $block_template['attrs']['uniqueId'] ?? '';
+
+			$image_id = $image['id'];
+
+			$new_id = ! empty( $image_id ) ? $original_id . '--' . $image_id : null;
+
+			$unique_id = join( ' ', array_filter( [
+				$original_id ?? null,
+				$new_id
+			] ) );
+
+			$block_template['attrs']['imageId'] = $image_id;
+			$block_template['attrs']['index']   = $k;
+
+			$new_block = new WP_Block( $block_template, array_filter( [
+				'imageId' => $image_id,
+				'index'   => $k,
+			] ) );
+
+			$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
+			$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
+
+			$content .= $new_block->render();
+		}
+
+		return (object) [
+			'content' => $content,
+			'is_last' => true
+		];
 	}
 
 	public static function query( $id = 0, $args = [] ): array {
@@ -153,31 +196,6 @@ class WPBS_Media_Gallery {
 		}
 
 		return $result;
-	}
-
-	private static function loop_card( $card = [], $data = [], $index = false ): WP_Block|bool {
-
-		$block_template = $card;
-		$original_id    = $block_template['attrs']['uniqueId'] ?? '';
-
-		$unique_id = join( ' ', array_filter( [
-			$original_id ?? null,
-			$original_id . '--' . $index
-		] ) );
-
-		$block_template['attrs']['index']  = $index;
-		$block_template['attrs']['postId'] = $data['id'] ?? false;
-
-		$new_block = new WP_Block( $block_template, array_filter( [
-			'uniqueId' => $unique_id,
-			'index'    => $index,
-			'postId'   => $data['id'] ?? false,
-		] ) );
-
-		$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
-		$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
-
-		return $new_block;
 	}
 
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {

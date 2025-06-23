@@ -2,6 +2,7 @@ import "../scss/block.scss";
 
 
 import {
+    InnerBlocks,
     InspectorControls, PanelColorSettings,
     useBlockProps,
     useInnerBlocksProps,
@@ -85,6 +86,8 @@ registerBlockType(metadata.name, {
             className: blockClassnames(attributes),
         });
 
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {});
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -119,13 +122,16 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <div {...blockProps}></div>
+                <div {...innerBlocksProps}></div>
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },
-    save: (props) => null
+    save: () => {
+
+        return <InnerBlocks.Content/>;
+    }
 })
 
 

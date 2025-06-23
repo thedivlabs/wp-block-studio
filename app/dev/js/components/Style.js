@@ -1,8 +1,6 @@
 import {useEffect, useMemo} from "react";
 import {backgroundCss, backgroundPreload} from "Components/Background.js";
 import {layoutCss} from "Components/Layout.js";
-import {useInstanceId} from "@wordpress/compose";
-import {registerBlockType} from "@wordpress/blocks";
 
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {

@@ -234,7 +234,7 @@ export function Style({
 
             setAttributes({
                 'wpbs-css': resultCss,
-                uniqueId: selector
+                uniqueId: uniqueId
             });
         }
 
@@ -242,7 +242,7 @@ export function Style({
             'wpbs-preload': preloadMedia
         });
 
-    }, [resultCss, preloadMedia, selector]);
+    }, [resultCss, preloadMedia, uniqueId]);
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

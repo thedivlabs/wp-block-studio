@@ -26,7 +26,8 @@ function blockClasses(attributes = {}) {
 function blockStyles(attributes = {}) {
     return Object.fromEntries(
         Object.entries({
-            '--swiper-pagination-color': attributes['wpbs-pagination-color'] || null,
+            '--swiper-pagination-color': attributes['wpbs-slider-navigation']?.['pagination-color'] || null,
+            '--swiper-pagination-bullet-inactive-color': attributes['wpbs-slider-navigation']?.['pagination-track-color'] || null,
         }).filter(([key, value]) => value)
     );
 }
@@ -75,23 +76,28 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const [paginationColor, setPaginationColor] = useState(attributes['wpbs-pagination-color']);
-
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
             style: blockStyles(attributes)
         });
 
-        const updateSettings = useCallback(() => {
+        const updateSettings = useCallback((newValue) => {
 
-        }, [setAttributes, attributes]);
+            const result = {
+                ...attributes['wpbs-slider-navigation'],
+                ...newValue
+            }
+
+            setAttributes({'wpbs-slider-navigation': result});
+
+        }, [setAttributes, attributes['wpbs-slider-navigation']]);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
 
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
-                    <Grid columns={1} columnGap={15} rowGap={20}>
+                    <Grid columns={1} columnGap={15} rowGap={0}>
                         <PanelColorSettings
                             enableAlpha
                             className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
@@ -99,11 +105,21 @@ registerBlockType(metadata.name, {
                                 {
                                     slug: 'pagination-color',
                                     label: 'Pagination',
-                                    value: paginationColor,
-                                    onChange: (newValue) => {
-                                        setAttributes({['wpbs-pagination-color']: newValue});
-                                        setPaginationColor(newValue);
-                                    },
+                                    value: attributes['wpbs-slider-navigation']?.['pagination-color'] ?? '',
+                                    onChange: (newValue) => updateSettings({'pagination-color': newValue}),
+                                    isShownByDefault: true
+                                }
+                            ]}
+                        />
+                        <PanelColorSettings
+                            enableAlpha
+                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                            colorSettings={[
+                                {
+                                    slug: 'pagination-track-color',
+                                    label: 'Pagination Track',
+                                    value: attributes['wpbs-slider-navigation']?.['pagination-track-color'] ?? '',
+                                    onChange: (newValue) => updateSettings({'pagination-track-color': newValue}),
                                     isShownByDefault: true
                                 }
                             ]}

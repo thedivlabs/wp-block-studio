@@ -120,12 +120,7 @@ class WPBS_Loop {
 			'index'    => $index,
 		] ) );
 
-		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
-
-		//$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
-		//$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
-
-		return $new_block;
+		return apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
 	}
 
 	private function loop_query( $query, $page = 1 ): WP_Query|bool|array {

@@ -76,7 +76,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} selector={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>

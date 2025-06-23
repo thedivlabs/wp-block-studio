@@ -60,7 +60,7 @@ export const styleClasses = (selector) => {
 }
 
 export function Style({
-                          selector,
+                          uniqueId,
                           attributes,
                           setAttributes,
                           css = [],
@@ -69,16 +69,17 @@ export function Style({
                           preload = []
                       }) {
 
-    if (!attributes) {
-        return null;
+    if (!attributes || !uniqueId) {
+        return <></>;
     }
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, selector, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
+
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
 
     const {resultCss, preloadMedia} = useMemo(() => {
 
+
         const {containers, breakpoints} = WPBS?.settings ?? {};
 
-        const uniqueId = selector ?? '';
         const selector = '.' + uniqueId.slice(0, uniqueId.lastIndexOf('-')) + '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
 
@@ -236,12 +237,12 @@ export function Style({
                 uniqueId: selector
             });
         }
-        
+
         setAttributes({
             'wpbs-preload': preloadMedia
         });
 
-    }, [resultCss, preloadMedia]);
+    }, [resultCss, preloadMedia, selector]);
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

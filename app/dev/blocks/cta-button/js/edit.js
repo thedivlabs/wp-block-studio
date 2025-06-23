@@ -252,7 +252,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
-                       selector={uniqueId}
+                       uniqueId={uniqueId}
                        deps={['wpbs-cta']}
                        props={{
                            '--icon-color': settings?.['icon-color'] || null,

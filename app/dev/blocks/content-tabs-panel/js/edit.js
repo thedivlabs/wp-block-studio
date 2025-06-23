@@ -51,7 +51,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} selector={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-panel']}
             />
             <div {...innerBlocksProps} aria-selected={!!isActive} role={'tabpanel'}></div>

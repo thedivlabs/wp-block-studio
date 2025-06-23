@@ -121,7 +121,7 @@ registerBlockType(metadata.name, {
 
                 <div {...blockProps}></div>
 
-                <Style attributes={attributes} setAttributes={setAttributes} selector={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },

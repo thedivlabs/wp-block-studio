@@ -293,7 +293,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   selector={uniqueId}
+                   uniqueId={uniqueId}
                    deps={['wpbs-accordion-group']}
                    props={{
                        '--icon-open': `"\\${iconOpen}"`,

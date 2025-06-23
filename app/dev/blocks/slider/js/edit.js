@@ -151,7 +151,7 @@ registerBlockType(metadata.name, {
 
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} selector={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <BlockContextProvider value={{loopQuery}}>
                 <div {...innerBlocksProps} />

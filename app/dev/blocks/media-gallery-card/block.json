@@ -19,7 +19,7 @@
     "wpbs/media-gallery"
   ],
   "providesContext": {
-    "postId": "postId"
+    "wpbs/postId": "postId"
   },
   "usesContext": [
     "index"

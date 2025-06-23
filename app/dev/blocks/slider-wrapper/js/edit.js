@@ -22,8 +22,8 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const {loopQuery = {}, isLoop = false} = context;
-
+        const {loopQuery = {}} = context;
+        
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
         });
@@ -35,7 +35,7 @@ registerBlockType(metadata.name, {
         });
 
         useEffect(() => {
-            setAttributes({'wpbs-query': isLoop ? loopQuery : {}});
+            setAttributes({'wpbs-query': loopQuery});
         }, [loopQuery, setAttributes]);
 
         return <>

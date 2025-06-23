@@ -9,10 +9,6 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
-    },
-    "cardTemplate": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
   "allowedBlocks": [

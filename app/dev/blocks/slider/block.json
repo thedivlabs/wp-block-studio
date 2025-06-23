@@ -24,8 +24,7 @@
     }
   ],
   "providesContext": {
-    "wpbs/loopQuery": "loopQuery",
-    "wpbs/isLoop": "isLoop"
+    "wpbs/loopQuery": "loopQuery"
   },
   "supports": {
     "innerBlocks": true,

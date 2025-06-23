@@ -32,9 +32,9 @@
     }
   },
   "providesContext": {
-    "postId": "postId",
+    "wpbs/postId": "postId",
     "wpbs/termId": "termId",
-    "postType": "postType"
+    "wpbs/postType": "postType"
   },
   "supports": {
     "innerBlocks": true,

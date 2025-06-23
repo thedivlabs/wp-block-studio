@@ -58,7 +58,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
 
-            return false;
+
             if (swiperRef.current?.swiper) {
 
                 const allowedParams = [
@@ -114,8 +114,8 @@ registerBlockType(metadata.name, {
             ]
         });
 
-        const loopQuery = attributes?.['wpbs-query'] ?? {};
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
+        const loopQuery = isLoop ? attributes?.['wpbs-query'] ?? {} : {};
 
         return <>
             <InspectorControls group="styles">
@@ -151,7 +151,7 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} selector={'wpbs-slider'}/>
 
-            <BlockContextProvider value={{loopQuery, isLoop}}>
+            <BlockContextProvider value={{loopQuery}}>
                 <div {...innerBlocksProps} />
             </BlockContextProvider>
         </>;

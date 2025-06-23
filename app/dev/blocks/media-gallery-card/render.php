@@ -9,10 +9,12 @@ if ( empty( $imageId ) ) {
 	return false;
 }
 
+WPBS::console_log( $block );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery-card wpbs-lightbox-card loop-card',
-		sanitize_html_class( $attributes['uniqueId'] ?? '' )
+		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),
 	'data-wp-interactive' => 'wpbs/media-gallery-card',
@@ -21,8 +23,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'index' => intval( $index ?? 0 ),
 	] ) ),
 ] );
-
-//WPBS::console_log( $block ?? false );
 
 ?>
 

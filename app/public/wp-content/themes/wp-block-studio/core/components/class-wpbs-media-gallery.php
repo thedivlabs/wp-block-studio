@@ -134,11 +134,12 @@ class WPBS_Media_Gallery {
 
 		$block_template = WPBS::get_block_template( $block->parsed_block['innerBlocks'][0] ?? false );
 		$query          = self::query( $id );
+		$original_id    = $block->parsed_block['innerBlocks'][0]['attrs']['uniqueId'] ?? '';
 
 		$content = '';
 
 		foreach ( $query['images'] ?? [] as $k => $image ) {
-			$original_id = $block_template['attrs']['uniqueId'] ?? '';
+
 
 			$image_id = $image['id'];
 
@@ -156,7 +157,7 @@ class WPBS_Media_Gallery {
 				'imageId' => $image_id,
 				'index'   => $k,
 			] ) );
-
+			
 			$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
 			$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
 

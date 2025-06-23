@@ -1,15 +1,14 @@
 <?php
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
-$gallery_id = $attributes['wpbs-media-gallery']['galleryId'] ?? false;
 
+$gallery_id = $attributes['wpbs-media-gallery']['galleryId'] ?? false;
 
 if ( empty( $gallery_id ) ) {
 	return false;
 }
 $query = WPBS_Media_Gallery::loop( $block ?? false, $gallery_id );
 
-WPBS::console_log( $gallery_id );
 WPBS::console_log( $query );
 
 $wrapper_attributes = get_block_wrapper_attributes( [

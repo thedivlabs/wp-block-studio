@@ -227,7 +227,7 @@ export function Style({
 
         const {'wpbs-css': currentCss = ''} = attributes;
 
-        if ((currentCss || resultCss) && currentCss !== resultCss) {
+        if ((currentCss || resultCss) && currentCss !== resultCss || !attributes?.uniqueId) {
 
             setAttributes({
                 'wpbs-css': resultCss,

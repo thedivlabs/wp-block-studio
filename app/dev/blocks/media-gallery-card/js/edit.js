@@ -42,21 +42,10 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const updateSettings = useCallback((newValue) => {
-            const result = {
-                ...attributes['wpbs-media-gallery-card'],
-                ...newValue
-            };
-
-            setAttributes({
-                'wpbs-media-gallery-card': result,
-            });
-        }, [setAttributes, attributes['wpbs-media-gallery-card']]);
-
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
         });
-
+        
         return (
             <>
                 <InspectorControls group="advanced">
@@ -65,10 +54,10 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
                 <figure {...blockProps}></figure>
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },

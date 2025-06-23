@@ -10,7 +10,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-import {GRID_ATTRIBUTES, GridControls} from "Components/Grid"
+import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
@@ -55,32 +55,18 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const [mediaGallery, setMediaGallery] = useState(attributes['wpbs-media-gallery'] || {});
+        const tabOptions = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
-        const updateSettings = useCallback((newValue) => {
-            const result = {
-                ...mediaGallery,
-                ...newValue
-            };
+        const tabGallery = <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>;
 
-            setAttributes({
-                'wpbs-media-gallery': result,
-            });
-            setMediaGallery(result);
-
-        }, [setAttributes, setMediaGallery])
-
-        const tabOptions = useMemo(() => {
-            return <GridControls grid={mediaGallery} callback={updateSettings} setAttributes={setAttributes}/>;
-        }, [mediaGallery, updateSettings]);
-
-        const tabGallery = useMemo(() => {
-            return <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>
-        }, [attributes['wpbs-media-gallery']])
         const tabs = {
             options: tabOptions,
             gallery: tabGallery,
         }
+
+        const cssProps = useMemo(() => {
+            return gridProps(attributes);
+        }, [attributes]);
 
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
@@ -124,7 +110,10 @@ registerBlockType(metadata.name, {
 
                 <div {...innerBlocksProps}></div>
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                       deps={['wpbs-grid']}
+                       props={cssProps}
+                />
             </>
         )
     },

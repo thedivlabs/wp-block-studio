@@ -9,6 +9,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {GRID_ATTRIBUTES, GridControls} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect, useMemo, useState} from "react";
@@ -25,7 +26,6 @@ import {
 } from "@wordpress/components";
 import Breakpoint from "Components/Breakpoint.js";
 import {MediaGalleryControls} from "Components/MediaGallery.js";
-import {GridControls} from "Components/Grid.js";
 
 function blockClassnames(attributes = {}) {
     return [
@@ -42,6 +42,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
+        ...GRID_ATTRIBUTES,
         'wpbs-media-gallery': {
             type: 'object',
             default: {}

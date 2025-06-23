@@ -60,10 +60,10 @@ export const gridProps = (attributes) => {
 
 export const GridControls = ({attributes, setAttributes}) => {
 
-    const grid = attributes['wpbs-grid'] ?? {};
+    const grid = attributes?.['wpbs-grid'] ?? {};
 
     const updateSettings = useCallback((newValue) => {
-        setAttributes({ 'wpbs-grid': { ...grid, ...newValue } });
+        setAttributes({'wpbs-grid': {...grid, ...newValue}});
     }, [grid, setAttributes]);
 
 

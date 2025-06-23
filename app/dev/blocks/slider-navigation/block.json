@@ -13,10 +13,6 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
-    },
-    "styleCss": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
   "styles": [

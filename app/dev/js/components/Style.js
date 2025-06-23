@@ -223,7 +223,6 @@ export function Style({
 
     }, dependencyValues);
 
-
     useEffect(() => {
 
         const {'wpbs-css': currentCss = ''} = attributes;

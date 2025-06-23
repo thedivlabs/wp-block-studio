@@ -10,7 +10,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
 } from "@wordpress/components";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 
 function blockClasses(attributes = {}) {
@@ -69,8 +69,8 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        'wpbs-pagination-color': {
-            type: 'string'
+        'wpbs-slider-navigation': {
+            type: 'object'
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
@@ -81,6 +81,10 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
             style: blockStyles(attributes)
         });
+
+        const updateSettings = useCallback(() => {
+
+        }, [setAttributes, attributes]);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

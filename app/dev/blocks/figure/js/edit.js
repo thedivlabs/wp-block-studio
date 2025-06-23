@@ -32,6 +32,7 @@ function blockClasses(attributes = {}) {
 
     return [
         'wpbs-figure ',
+        attributes?.uniqueId ?? ''
     ].filter(x => x).join(' ');
 }
 

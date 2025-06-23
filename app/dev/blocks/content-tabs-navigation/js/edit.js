@@ -57,8 +57,6 @@ registerBlockType(metadata.name, {
 
         const {tabOptions} = context;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-navigation');
-
         useEffect(() => {
             const prevClientIds = (attributes.tabPanels || []).map(panel => panel.clientId);
             const nextClientIds = tabPanels.map(panel => panel.clientId);
@@ -95,7 +93,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes}
+            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-content-tabs-navigation'}
                    deps={['wpbs-content-tabs-navigation']}
             />
             <nav {...blockProps} >

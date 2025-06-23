@@ -10,17 +10,32 @@
   "parent": [
     "wpbs/slider-wrapper"
   ],
-  "attributes": {
-    "uniqueId": {
-      "type": "string"
-    }
-  },
   "styles": [
     {
       "name": "image",
       "label": "Image"
     }
   ],
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "postId": {
+      "type": "integer",
+      "show_in_rest": true
+    },
+    "termId": {
+      "type": "integer",
+      "default": 0,
+      "show_in_rest": true
+    }
+  },
+  "providesContext": {
+    "postId": "postId",
+    "wpbs/termId": "termId",
+    "postType": "postType"
+  },
   "supports": {
     "innerBlocks": true,
     "interactivity": true,

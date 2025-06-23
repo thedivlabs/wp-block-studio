@@ -40,8 +40,6 @@ registerBlockType(metadata.name, {
 
         const isActive = context.tabActive === clientId;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
-
         const blockProps = useBlockProps({
             className: classNames(attributes, isActive, true),
         });
@@ -51,7 +49,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-content-tabs-panel'}
                    deps={['wpbs-content-tabs-panel']}
             />
             <div {...innerBlocksProps} aria-selected={!!isActive} role={'tabpanel'}></div>

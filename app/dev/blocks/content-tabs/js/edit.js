@@ -68,8 +68,6 @@ registerBlockType(metadata.name, {
         const [tabPanels, setTabPanels] = useState([]);
         const [tabOptions, setTabOptions] = useState({});
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
-
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-content-tabs'],
@@ -392,7 +390,7 @@ registerBlockType(metadata.name, {
                 </Grid>
             </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-content-tabs'}
                    deps={['wpbs-content-tabs']}
                    props={{
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,

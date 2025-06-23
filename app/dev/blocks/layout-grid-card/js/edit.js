@@ -49,8 +49,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
-
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-layout-grid-card'],
@@ -98,7 +96,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-layout-grid-card'}/>
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

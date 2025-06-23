@@ -135,8 +135,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
-
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-slide']]);
 
         const updateSettings = useCallback((newValue, prop) => {
@@ -146,7 +144,7 @@ registerBlockType(metadata.name, {
                     [prop]: newValue,
                 },
             });
-        }, [attributes['wpbs-slide'], setAttributes, uniqueId]);
+        }, [attributes['wpbs-slide'], setAttributes]);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
@@ -258,7 +256,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-slide'}
                    deps={['wpbs-slide']}
                    preload={preloadMedia}
             />

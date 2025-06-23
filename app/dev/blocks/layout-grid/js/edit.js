@@ -49,8 +49,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
-
         const cssProps = useMemo(() => {
             return gridProps(attributes);
         }, [attributes]);
@@ -111,7 +109,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-layout-grid'}
                        deps={['wpbs-grid']}
                        props={cssProps}
                 />

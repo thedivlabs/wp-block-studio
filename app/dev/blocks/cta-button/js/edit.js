@@ -96,8 +96,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta-button');
-
         const [settings, setSettings] = useState(attributes['wpbs-cta']);
 
         const MemoSelectControl = React.memo(({label, prop, options}) => (
@@ -251,8 +249,8 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       uniqueId={uniqueId}
+                <Style attributes={attributes} setAttributes={setAttributes}
+                       selector={'wpbs-cta-button'}
                        deps={['wpbs-cta']}
                        props={{
                            '--icon-color': settings?.['icon-color'] || null,

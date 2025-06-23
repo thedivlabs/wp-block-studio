@@ -38,8 +38,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-container');
-
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
@@ -54,7 +52,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-content-tabs-container'}
                    deps={['wpbs-content-tabs-container']}
             />
             <div {...innerBlocksProps}></div>

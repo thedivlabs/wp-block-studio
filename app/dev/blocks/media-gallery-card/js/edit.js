@@ -41,8 +41,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
-
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-media-gallery-card'],
@@ -69,7 +67,7 @@ registerBlockType(metadata.name, {
 
                 <figure {...blockProps}></figure>
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-media-gallery-card'}/>
             </>
         )
     },

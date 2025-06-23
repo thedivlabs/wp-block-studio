@@ -68,13 +68,11 @@ export function Style({
                           preload = []
                       }) {
 
-
     if (!attributes) {
         return null;
     }
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes?.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
-
-
+    
     const uniqueId = useInstanceId(Style, 'wpbs-layout-grid');
 
     const {resultCss, preloadMedia} = useMemo(() => {

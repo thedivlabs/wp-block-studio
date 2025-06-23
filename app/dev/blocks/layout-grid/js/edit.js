@@ -30,7 +30,7 @@ function classNames(attributes = {}) {
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
         (attributes?.className ?? '').includes('is-style-gallery') ? 'lightbox-gallery' : null,
-        styleClasses(attributes),
+        attributes?.uniqueId,
     ].filter(x => x).join(' ');
 }
 

@@ -1,4 +1,5 @@
 import {
+    InnerBlocks,
     InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
@@ -108,38 +109,10 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => {
-
-        const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes),
-        });
-
-        const Anchor = () => {
-
-            if (!props.attributes['wpbs-layout-grid-card']?.linkPost) {
-                return <></>;
-            }
-
-            return <a
-                className="wpbs-layout-grid-card__anchor absolute top-0 left-0 z-50 w-full h-full"
-                href={'%__PERMALINK__%'}
-                target={!!props.attributes['wpbs-layout-grid-card']?.linkNewTab ? '_blank' : '_self'}
-                rel={props.attributes['wpbs-layout-grid-card'].linkRel || undefined}
-            ><span
-                className={'screen-reader-text'}>{props.attributes['wpbs-layout-grid-card']?.linkTitle ?? 'View post'}</span></a>;
-        }
-
-
-        return <div {...blockProps}>
-            <div {...useInnerBlocksProps.save({
-                className: containerClassNames,
-            })} />
-            <BackgroundElement attributes={props.attributes} editor={false}/>
-            <Anchor/>
-        </div>;
-
-
-    }
+    save: (props) => <>
+        <InnerBlocks.Content/>
+        <BackgroundElement attributes={props.attributes} editor={false}/>
+    </>
 })
 
 

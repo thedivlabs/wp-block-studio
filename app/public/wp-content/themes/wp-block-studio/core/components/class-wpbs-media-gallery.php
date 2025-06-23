@@ -150,23 +150,24 @@ class WPBS_Media_Gallery {
 				$new_id
 			] ) );
 
-			$block_template['attrs']['imageId'] = $image_id;
-			$block_template['attrs']['index']   = $k;
+			$block_template['attrs']['uniqueId'] = $unique_id;
+			$block_template['attrs']['imageId']  = $image_id;
+			$block_template['attrs']['index']    = $k;
 
 			$new_block = new WP_Block( $block_template, array_filter( [
-				'imageId' => $image_id,
-				'index'   => $k,
+				'uniqueId' => $unique_id,
+				'imageId'  => $image_id,
+				'index'    => $k,
 			] ) );
-			
-			$new_block->inner_content[0] = str_replace( $original_id, $unique_id, $new_block->inner_content[0] ?? '' );
-			$new_block->inner_html       = str_replace( $original_id, $unique_id, $new_block->inner_html ?? '' );
 
 			$content .= $new_block->render();
 		}
 
 		return (object) [
 			'content' => $content,
-			'is_last' => true
+			'is_last' => true,
+			'query'   => $query,
+			'card'    => $block_template
 		];
 	}
 

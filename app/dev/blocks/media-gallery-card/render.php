@@ -9,11 +9,9 @@ if ( empty( $imageId ) ) {
 	return false;
 }
 
-WPBS::console_log( $block );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery-card wpbs-lightbox-card loop-card',
+		'wpbs-media-gallery-card wpbs-lightbox-card loop-card relative',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),
@@ -27,9 +25,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ?>
 
 
-<figure <?php echo $wrapper_attributes ?>>
+<div <?php echo $wrapper_attributes ?>>
 	<?= wp_get_attachment_image( $imageId ?? false, 'medium', false, [
 		'loading' => 'lazy',
 		'class'   => 'w-full h-full object-cover'
 	] ) ?>
-</figure>
+</div>

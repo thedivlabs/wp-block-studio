@@ -60,10 +60,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
 
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId})
-        }, [uniqueId]);
-
         const {attributes, setAttributes, clientId} = props;
 
         const blockProps = useBlockProps({
@@ -80,7 +76,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-layout-element'}/>
+                <Style attributes={attributes} setAttributes={setAttributes} selector={uniqueId}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>

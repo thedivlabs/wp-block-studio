@@ -54,12 +54,13 @@ function getPreloadMedia(preloads) {
 
 }
 
-export const styleClasses = (attributes = {}) => {
+export const styleClasses = (selector) => {
 
-    return attributes?.uniqueId ?? '';
+    return selector;
 }
 
 export function Style({
+                          selector,
                           attributes,
                           setAttributes,
                           css = [],
@@ -71,13 +72,13 @@ export function Style({
     if (!attributes) {
         return null;
     }
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, attributes?.uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, selector, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
 
     const {resultCss, preloadMedia} = useMemo(() => {
 
         const {containers, breakpoints} = WPBS?.settings ?? {};
 
-        const uniqueId = attributes?.uniqueId ?? '';
+        const uniqueId = selector ?? '';
         const selector = '.' + uniqueId.slice(0, uniqueId.lastIndexOf('-')) + '.' + uniqueId.trim().split(' ').join('.');
         const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
 
@@ -232,8 +233,10 @@ export function Style({
 
             setAttributes({
                 'wpbs-css': resultCss,
+                uniqueId: selector
             });
         }
+        
         setAttributes({
             'wpbs-preload': preloadMedia
         });

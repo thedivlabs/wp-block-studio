@@ -20,7 +20,6 @@ registerBlockType(metadata.name, {
         ...metadata.attributes
     },
     edit: ({attributes, setAttributes}) => {
-
         
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),

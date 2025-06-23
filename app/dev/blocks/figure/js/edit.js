@@ -149,10 +149,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId})
-        }, [uniqueId]);
-        
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
 
         const updateSettings = useCallback((newValue) => {

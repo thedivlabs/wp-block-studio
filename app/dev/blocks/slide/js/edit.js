@@ -135,10 +135,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
 
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId})
-        }, [uniqueId]);
-
         const {attributes, setAttributes, clientId} = props;
 
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-slide']]);
@@ -262,7 +258,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-slide'}
+            <Style attributes={attributes} setAttributes={setAttributes} selector={uniqueId}
                    deps={['wpbs-slide']}
                    preload={preloadMedia}
             />

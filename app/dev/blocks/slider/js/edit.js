@@ -52,10 +52,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId})
-        }, [uniqueId]);
-
         const swiperRef = useRef(null);
 
         const sliderOptions = useMemo(() => {
@@ -155,7 +151,7 @@ registerBlockType(metadata.name, {
 
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} selector={'wpbs-slider'}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} selector={uniqueId}/>
 
             <BlockContextProvider value={{loopQuery}}>
                 <div {...innerBlocksProps} />

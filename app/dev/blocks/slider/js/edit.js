@@ -115,6 +115,7 @@ registerBlockType(metadata.name, {
         });
 
         const loopQuery = attributes?.['wpbs-query'] ?? {};
+        const isLoop = (attributes?.className ?? '').includes('is-style-loop');
 
         return <>
             <InspectorControls group="styles">
@@ -150,7 +151,7 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps}/>
 
-            <BlockContextProvider value={{loopQuery}}>
+            <BlockContextProvider value={{loopQuery, isLoop}}>
                 <div {...innerBlocksProps} />
             </BlockContextProvider>
         </>;

@@ -1,13 +1,10 @@
 import {
     useBlockProps,
-    BlockEdit,
     useInnerBlocksProps, InnerBlocks
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
-import {BackgroundElement} from "Components/Background.js";
 import React, {useEffect} from "react";
-import useBlockContext from "@wordpress/block-editor/build/components/inner-blocks/use-block-context";
 
 function blockClasses(attributes = {}) {
     return [
@@ -25,9 +22,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const {loopQuery} = context;
-
-        console.log(loopQuery);
+        const {loopQuery = {}, isLoop = false} = context;
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
@@ -39,18 +34,17 @@ registerBlockType(metadata.name, {
             ]
         });
 
-        /*useEffect(() => {
-            setAttributes({'wpbs-query': query});
-        }, [query, setAttributes]);*/
+        useEffect(() => {
+            setAttributes({'wpbs-query': isLoop ? loopQuery : {}});
+        }, [loopQuery, setAttributes]);
 
         return <>
-            <BlockEdit key="edit" {...blockProps} />
 
             <div {...innerBlocksProps}></div>
 
         </>;
     },
-    save: (props) => {
+    save: () => {
 
         return <InnerBlocks.Content/>;
     }

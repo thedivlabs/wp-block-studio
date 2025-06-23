@@ -32,7 +32,6 @@ function blockClasses(attributes = {}) {
 
     return [
         'wpbs-figure ',
-        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -147,10 +146,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
 
         const updateSettings = useCallback((newValue) => {
 
@@ -367,7 +363,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes}
                    deps={['wpbs-figure']}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,

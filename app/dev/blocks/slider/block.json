@@ -17,8 +17,15 @@
     "wpbs/layout-element",
     "wpbs/slider-navigation"
   ],
+  "styles": [
+    {
+      "name": "loop",
+      "label": "Loop"
+    }
+  ],
   "providesContext": {
-    "wpbs/loopQuery": "loopQuery"
+    "wpbs/loopQuery": "loopQuery",
+    "wpbs/isLoop": "isLoop"
   },
   "supports": {
     "innerBlocks": true,

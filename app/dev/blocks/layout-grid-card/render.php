@@ -30,8 +30,6 @@ $container_tag_open  = implode( ' ', array_filter( [
 ] ) );
 $container_tag_close = $is_link ? '</a>' : '</div>';
 
-WPBS::console_log( $attributes['wpbs-css'] ?? false );
-
 ?>
 
 

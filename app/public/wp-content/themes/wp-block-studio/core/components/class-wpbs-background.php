@@ -12,8 +12,9 @@ class WPBS_Background {
 
 	public function set_block_data( $block, $original_id, $selector ): WP_Block {
 
-		if ( ( $block->attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
 
+		if ( ( $block->attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
+			
 			$img_id_large  = get_post_thumbnail_id( get_the_ID() ) ?: ( $block->attributes['wpbs-background']['largeImage']['id'] ?? $block->attributes['wpbs-background']['mobileImage']['id'] ?? false );
 			$img_src_large = wp_get_attachment_image_src( $img_id_large, $block->attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
 

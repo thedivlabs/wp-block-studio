@@ -93,11 +93,11 @@ class WPBS_Loop {
 
 		$original_id = $block_template['attrs']['uniqueId'] ?? '';
 
-		$post_id = $args['postId'] ?? get_the_ID();
-		$term_id = $args['termId'] ?? false;
+		$post_id = $block['attrs']['postId'] ?? $args['postId'] ?? get_the_ID();
+		$term_id = $block['attrs']['termId'] ?? $args['termId'] ?? false;
 
-		$new_id = ! empty( $term_id ?? $post_id ?? null ) ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
-
+		$new_id = $term_id || $post_id ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
+		
 		$unique_id = join( ' ', array_filter( [
 			$original_id ?? null,
 			$new_id

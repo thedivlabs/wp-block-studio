@@ -48,20 +48,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	if ( $is_loop ) {
 		echo '<script class="wpbs-layout-grid-args" type="application/json">' . wp_json_encode( array_filter( [
-				'card'        => $loop->card,
-				'query'       => $loop->query ?? false,
-				'uniqueId'    => $attributes['uniqueId'] ?? null,
-				'divider'     => ! empty( $settings['divider'] ),
-				'breakpoints' => [
-					'small' => $settings['breakpoint-small'] ?? null,
-					'large' => $settings['breakpoint-large'] ?? $attributes['wpbs-layout']['breakpoint'] ?? 'lg',
-				],
-				'columns'     => [
-					'mobile' => $settings['columns-mobile'] ?? null,
-					'small'  => $settings['columns-small'] ?? null,
-					'large'  => $settings['columns-large'] ?? null,
-				],
-				'is_last'     => $loop->is_last ?? true,
+				'card'     => $loop->card,
+				'query'    => $loop->query ?? false,
+				'uniqueId' => $attributes['uniqueId'] ?? null,
+				'is_last'  => $loop->is_last ?? true,
+				...$settings
 			] ) ) . '</script>';
 	}
 

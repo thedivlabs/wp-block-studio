@@ -47,12 +47,16 @@ class WPBS_Theme {
             return;
         }
 
-        const {uniqueId, divider, columns} = context;
+        const {uniqueId, divider} = context;
+
+        const colMobile = context?.['columns-mobile'] ?? 3;
+        const colSmall = context?.['columns-small'] ?? 3;
+        const colLarge = context?.['columns-large'] ?? 3;
 
         const {breakpoints} = WPBS?.settings ?? {};
 
-        const breakpointLarge = breakpoints[context?.breakpoints?.large ?? 'lg'];
-        const breakpointSmall = breakpoints[context?.breakpoints?.small ?? 'sm'];
+        const breakpointLarge = breakpoints[context?.['breakpoint-large'] ?? 'lg'];
+        const breakpointSmall = breakpoints[context?.['breakpoint-small'] ?? 'sm'];
 
         if (!divider) {
             return;
@@ -66,14 +70,6 @@ class WPBS_Theme {
 
         const selector = '.' + uniqueId;
 
-        const {
-            mobile: colMobile = 1,
-            small: colSmall = 2,
-            large: colLarge = 3,
-        } = Object.fromEntries(
-            Object.entries(columns).map(([key, value]) => [key, Number(value)])
-        );
-
         const lastRow = {
             mobile: {
                 count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || colMobile,
@@ -85,6 +81,8 @@ class WPBS_Theme {
                 count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
             }
         }
+
+        console.log(selector);
 
         const styleCss = [
             '@media screen and (width < ' + breakpointSmall + ') {',

@@ -128,12 +128,12 @@ class WPBS_Media_Gallery {
 
 	public static function loop( $card, $query = [], $page = 1 ): object|bool {
 
-		if ( empty( $card ) || empty( $query['gallery-id'] ) ) {
+		if ( empty( $card ) || empty( $query['gallery_id'] ) ) {
 			return false;
 		}
 
 		$block_template = WPBS::get_block_template( $card );
-		$query          = self::query( $gallery_id, $query, $page );
+		$query          = self::query( $query, $page );
 		$original_id    = $card['attrs']['uniqueId'] ?? '';
 
 		$content = '';

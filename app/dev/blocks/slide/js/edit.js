@@ -3,7 +3,7 @@ import '../scss/block.scss';
 import {
     useBlockProps,
     BlockEdit,
-    useInnerBlocksProps, InspectorControls, MediaUploadCheck, MediaUpload
+    useInnerBlocksProps, InspectorControls, MediaUploadCheck, MediaUpload, InnerBlocks
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "../block.json"
@@ -271,7 +271,12 @@ registerBlockType(metadata.name, {
 
         </>;
     },
-    save: (props) => <BackgroundElement attributes={props.attributes} editor={false}/>
+    save: (props) => <>
+        <div className={containerClasses()}>
+            <InnerBlocks.Content/>
+        </div>
+        <BackgroundElement attributes={props.attributes} editor={false}/>
+    </>
 })
 
 

@@ -25,16 +25,7 @@ WPBS::console_log( $block );
 
 <div <?php echo $wrapper_attributes ?>>
 
-    <div class="<?= $container_class ?>">
-
-		<?php foreach ( ( $block->parsed_block['innerBlocks'] ?? [] ) as $inner_block ) {
-			echo render_block( $inner_block );
-		} ?>
-
-    </div>
-
-
-	<?php echo $block->inner_content[ count( $block->inner_content ?? [] ) - 1 ] ?? ''; ?>
+	<?php echo $content ?? ''; ?>
 
 
 </div>

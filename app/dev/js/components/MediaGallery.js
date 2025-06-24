@@ -16,6 +16,7 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
             gallery_id: undefined,
             lightbox: undefined,
             page_size: undefined,
+            video_first: undefined,
         }
     }
 };
@@ -69,6 +70,13 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                     label={'Lightbox'}
                     checked={!!settings?.['lightbox']}
                     onChange={(newValue) => updateSettings({'lightbox': newValue})}
+                    className={'flex items-center'}
+                    __nextHasNoMarginBottom
+                />
+                <ToggleControl
+                    label={'Video First'}
+                    checked={!!settings?.['video_first']}
+                    onChange={(newValue) => updateSettings({'video_first': newValue})}
                     className={'flex items-center'}
                     __nextHasNoMarginBottom
                 />

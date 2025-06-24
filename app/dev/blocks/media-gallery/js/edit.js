@@ -72,7 +72,11 @@ registerBlockType(metadata.name, {
             className: blockClassnames(attributes),
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {});
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            template: [
+                ['wpbs/media-gallery-card'],
+            ]
+        });
 
         return (
             <>

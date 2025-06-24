@@ -34,7 +34,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	echo '<script class="wpbs-media-gallery-args" type="application/json">' . wp_json_encode( array_filter( [
 			'card'        => $query->card,
-			'query'       => $query->query ?? false,
+			'query'       => $query,
 			'uniqueId'    => $attributes['uniqueId'] ?? null,
 			'divider'     => ! empty( $grid_settings['divider'] ),
 			'breakpoints' => [

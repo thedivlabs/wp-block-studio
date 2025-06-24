@@ -12,7 +12,11 @@ import {useSelect} from "@wordpress/data";
 export const MEDIA_GALLERY_ATTRIBUTES = {
     'wpbs-media-gallery': {
         type: 'object',
-        default: {}
+        default: {
+            gallery_id: undefined,
+            lightbox: undefined,
+            page_size: undefined,
+        }
     }
 };
 
@@ -40,7 +44,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 label="Select Gallery"
-                value={settings?.['galleryId'] ?? ''}
+                value={settings?.['gallery_id'] ?? ''}
                 options={[
                     {label: 'Select a gallery', value: ''},
                     ...(galleries || []).map(post => ({
@@ -48,7 +52,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                         value: String(post.id)
                     }))
                 ]}
-                onChange={(newValue) => updateSettings({'galleryId': newValue})}
+                onChange={(newValue) => updateSettings({'gallery_id': newValue})}
             />
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <NumberControl
@@ -56,8 +60,8 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                     __next40pxDefaultSize
                     min={1}
                     isShiftStepEnabled={false}
-                    onChange={(newValue) => updateSettings({'page-size': newValue})}
-                    value={settings?.['page-size']}
+                    onChange={(newValue) => updateSettings({'page_size': newValue})}
+                    value={settings?.['page_size']}
                 />
             </Grid>
             <Grid columns={1} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>

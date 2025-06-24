@@ -126,15 +126,15 @@ class WPBS_Media_Gallery {
 		}
 	}
 
-	public static function loop( $block, $id = 0, $page = 1 ): object|bool {
+	public static function loop( $card, $query = [], $page = 1 ): object|bool {
 
-		if ( empty( $block ) || empty( $id ) ) {
+		if ( empty( $card ) || empty( $query['gallery-id'] ) ) {
 			return false;
 		}
 
-		$block_template = WPBS::get_block_template( $block->parsed_block['innerBlocks'][0] ?? false );
-		$query          = self::query( $id, $block->attributes['wpbs-media-gallery'] ?? [], $page );
-		$original_id    = $block->parsed_block['innerBlocks'][0]['attrs']['uniqueId'] ?? '';
+		$block_template = WPBS::get_block_template( $card );
+		$query          = self::query( $gallery_id, $query, $page );
+		$original_id    = $card['attrs']['uniqueId'] ?? '';
 
 		$content = '';
 
@@ -174,7 +174,7 @@ class WPBS_Media_Gallery {
 		];
 	}
 
-	public static function query( $id = 0, $args = [], $page = 1 ): array {
+	public static function query( $id = 0, $query = [], $page = 1 ): array {
 
 		if ( ! is_numeric( $id ) || $id <= 0 ) {
 			return [];
@@ -189,7 +189,7 @@ class WPBS_Media_Gallery {
 			$images = self::parse_acf_data( get_field( 'wpbs_images', $id ) ?: [] );
 			$video  = self::parse_acf_data( get_field( 'wpbs_video', $id ) ?: [] );
 
-			if ( ! empty( $args['video-first'] ) ) {
+			if ( ! empty( $query['video-first'] ) ) {
 				$result = WPBS::clean_array( [ ...$video, ...$images ] );
 			} else {
 				$result = WPBS::clean_array( [ ...$images, ...$video ] );
@@ -201,8 +201,8 @@ class WPBS_Media_Gallery {
 
 		}
 
-		if ( ! empty( $args['page-size'] ) ) {
-			$result = array_slice( $result, $page * $args['page-size'], $args['page-size'] );
+		if ( ! empty( $query['page-size'] ) ) {
+			$result = array_slice( $result, $page * $query['page-size'], $query['page-size'] );
 		}
 
 		return $result;
@@ -221,16 +221,17 @@ class WPBS_Media_Gallery {
 			] );
 		}
 
-		$query = self::query( $gallery_id );
-
-		$loop = self::loop( $card, $gallery_id, $page_number );
+		$loop = self::loop( $card, $gallery_id, [
+			'page'      => $page_number,
+			'page_size' => $page_size
+		] );
 
 
 		return new WP_REST_Response(
 			[
-				'status'   => 200,
-				'response' => wp_kses_post( $new_content ),
-				'is_last'  => ! empty( $is_last ),
+				'status'  => 200,
+				'content' => wp_kses_post( $loop ),
+				'is_last' => ! empty( $loop['is_last'] ),
 			]
 		);
 

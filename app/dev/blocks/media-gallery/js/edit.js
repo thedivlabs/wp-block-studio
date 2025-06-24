@@ -26,12 +26,11 @@ import {
     __experimentalUnitControl as UnitControl, PanelBody, TabPanel
 } from "@wordpress/components";
 import Breakpoint from "Components/Breakpoint.js";
-import {MediaGalleryControls} from "Components/MediaGallery.js";
+import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 
 function blockClassnames(attributes = {}) {
     return [
         'wpbs-media-gallery',
-        attributes?.cardClass ?? null,
         'w-full block relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
@@ -44,16 +43,11 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...GRID_ATTRIBUTES,
-        'wpbs-media-gallery': {
-            type: 'object',
-            default: {}
-        }
+        ...MEDIA_GALLERY_ATTRIBUTES
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
-
-        const {attributes, setAttributes, context} = props;
 
         const tabOptions = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 

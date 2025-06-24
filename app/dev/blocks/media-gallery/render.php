@@ -4,16 +4,9 @@ if ( empty( $attributes['wpbs-media-gallery']['galleryId'] ) ) {
 	return false;
 }
 
-$query_settings = $attributes['wpbs-media-gallery'] ?? [];
-$grid_settings  = $attributes['wpbs-grid'] ?? [];
+$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $attributes['wpbs-media-gallery'] ?? [] );
 
-$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $query_settings );
-
-WPBS::console_log( $query_settings );
 WPBS::console_log( $loop );
-
-return;
-
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
@@ -35,23 +28,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 		<?php
 
-
-		echo '<script class="wpbs-media-gallery-args" type="application/json">' . wp_json_encode( array_filter( [
-				'card'        => $loop->card,
-				'uniqueId'    => $attributes['uniqueId'] ?? null,
-				'divider'     => ! empty( $grid_settings['divider'] ),
-				'breakpoints' => [
-					'small' => $grid_settings['breakpoint-small'] ?? null,
-					'large' => $grid_settings['breakpoint-large'] ?? $attributes['wpbs-layout']['breakpoint'] ?? 'lg',
-				],
-				'columns'     => [
-					'mobile' => $grid_settings['columns-mobile'] ?? null,
-					'small'  => $grid_settings['columns-small'] ?? null,
-					'large'  => $grid_settings['columns-large'] ?? null,
-				],
-				'is_last'     => $loop->is_last ?? true,
-			] ) ) . '</script>';
-
+		echo WPBS_Media_Gallery::output_args( $loop, $attributes['wpbs-grid'] ?? [] );
 
 		?>
     </div>

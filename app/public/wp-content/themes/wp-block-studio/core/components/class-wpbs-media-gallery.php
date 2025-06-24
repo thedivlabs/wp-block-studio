@@ -174,6 +174,32 @@ class WPBS_Media_Gallery {
 		];
 	}
 
+	public static function output_args( $loop, $grid_settings ): string|bool {
+
+		if ( empty( $loop->card ) || empty( $loop->query ) ) {
+			return false;
+		}
+
+		return '<script class="wpbs-media-gallery-args" type="application/json">' . wp_json_encode( array_filter( [
+				'card'        => $loop->card,
+				'uniqueId'    => $attributes['uniqueId'] ?? null,
+				'query'       => $loop->query,
+				'divider'     => ! empty( $grid_settings['divider'] ),
+				'breakpoints' => [
+					'small' => $grid_settings['breakpoint-small'] ?? null,
+					'large' => $grid_settings['breakpoint-large'] ?? $attributes['wpbs-layout']['breakpoint'] ?? 'lg',
+				],
+				'columns'     => [
+					'mobile' => $grid_settings['columns-mobile'] ?? null,
+					'small'  => $grid_settings['columns-small'] ?? null,
+					'large'  => $grid_settings['columns-large'] ?? null,
+				],
+				'is_last'     => $loop->is_last ?? true,
+			] ) ) . '</script>';
+
+
+	}
+
 	public static function query( $query = [], $page = 1 ): array {
 
 		if ( empty( $query['gallery_id'] ) || ! is_numeric( $query['gallery_id'] ) || $query['gallery_id'] <= 0 ) {
@@ -222,9 +248,10 @@ class WPBS_Media_Gallery {
 			] );
 		}
 
-		$loop = self::loop( $card, $gallery_id, [
-			'page'      => $page_number,
-			'page_size' => $page_size
+		$loop = self::loop( $card, [
+			'page'       => $page_number,
+			'page_size'  => $page_size,
+			'gallery_id' => $gallery_id,
 		] );
 
 

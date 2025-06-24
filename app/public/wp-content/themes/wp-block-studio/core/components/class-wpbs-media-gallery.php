@@ -223,20 +223,7 @@ class WPBS_Media_Gallery {
 
 		$query = self::query( $gallery_id );
 
-		$start_index = ( $page_number ?: 1 ) * ( $page_size ?: 1 );
-		$is_last     = $start_index >= count( $query['images'] );
-
-		$query_slice = ! empty( $page_size ) ? array_slice( ( $query['images'] ?? [] ), $start_index, $page_size ) : $query['images'];
-
-		$new_content = '';
-
-		foreach ( $query_slice as $k => $data ) {
-
-			$new_block = self::loop_card( $card, $data, $k + $start_index );
-
-			$new_content .= $new_block->render();
-
-		}
+		$loop = self::loop( $card, $gallery_id, $page_number );
 
 
 		return new WP_REST_Response(

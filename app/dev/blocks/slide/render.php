@@ -14,10 +14,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-index' => intval( $block->context['index'] ?? null ) ?: null
 ] );
 
-$container_class = implode( ' ', array_filter( [
-	'wpbs-slide__container wpbs-container wpbs-layout-wrapper w-full h-full relative z-20'
-] ) );
-
 ?>
 
 

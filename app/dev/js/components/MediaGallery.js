@@ -65,7 +65,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                     value={settings?.['page_size']}
                 />
             </Grid>
-            <Grid columns={1} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>
                 <ToggleControl
                     label={'Lightbox'}
                     checked={!!settings?.['lightbox']}

@@ -18,8 +18,6 @@ $container_class = implode( ' ', array_filter( [
 	'wpbs-slide__container wpbs-container wpbs-layout-wrapper w-full h-full relative z-20'
 ] ) );
 
-WPBS::console_log( $block );
-
 ?>
 
 

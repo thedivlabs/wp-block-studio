@@ -97,7 +97,7 @@ class WPBS_Loop {
 		$term_id = $block['attrs']['termId'] ?? $args['termId'] ?? false;
 
 		$new_id = $term_id || $post_id ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
-		
+
 		$unique_id = join( ' ', array_filter( [
 			$original_id ?? null,
 			$new_id
@@ -120,7 +120,9 @@ class WPBS_Loop {
 			'index'    => $index,
 		] ) );
 
-		return apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
+		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
+		
+		return $new_block;
 	}
 
 	private function loop_query( $query, $page = 1 ): WP_Query|bool|array {

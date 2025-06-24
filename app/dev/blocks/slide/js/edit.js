@@ -271,29 +271,7 @@ registerBlockType(metadata.name, {
 
         </>;
     },
-    save: (props) => {
-
-        const blockProps = useBlockProps.save({
-            className: blockClasses(props.attributes),
-            'data-wp-interactive': 'wpbs-slide',
-            'data-wp-init': 'callbacks.observe',
-        });
-
-        const innerBlocksProps = useInnerBlocksProps.save({
-            className: containerClasses(props.attributes),
-        });
-
-        const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');
-
-        return (
-
-            <div {...blockProps}>
-                <BlockContent isImageSlide={isImageSlide} attributes={props.attributes}
-                              innerBlocksProps={innerBlocksProps} isEditor={false}/>
-                <BackgroundElement attributes={props.attributes} editor={false}/>
-            </div>
-        );
-    }
+    save: (props) => <BackgroundElement attributes={props.attributes} editor={false}/>
 })
 
 

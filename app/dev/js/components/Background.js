@@ -373,6 +373,11 @@ export function backgroundCss(attributes, selector) {
 
     const {'wpbs-background': settings = {}} = attributes;
 
+    if (settings.type === 'featured-image') {
+        settings.mobileImage = settings?.mobileImage ?? '%POST_IMG_URL_MOBILE%';
+        settings.largeImage = settings?.largeImage ?? '%POST_IMG_URL_LARGE%';
+    }
+
     Object.entries(settings).filter(([k, value]) =>
         !SUPPRESS_PROPS.includes(String(k)) &&
         !String(k).toLowerCase().includes('mobile')).forEach(([prop, value]) => {
@@ -419,8 +424,6 @@ export function backgroundCss(attributes, selector) {
 
     if (Object.keys(mobile).length || settings.type === 'featured-image') {
         css += '@media(width < ' + breakpoint + '){' + selector + ' > .wpbs-background {';
-
-        mobile.mobileImage = mobile?.mobileImage ?? '%POST_IMG_URL_MOBILE%';
 
         Object.entries(mobile).forEach(([prop, value]) => {
             css += [prop, value].join(':') + ';';

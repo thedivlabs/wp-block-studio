@@ -58,7 +58,8 @@
   "editorScript": "file:./js/edit.js",
   "viewScriptModule": "file:./js/view.js",
   "style": "file:./js/edit.css",
-  "icon": "slides"
+  "icon": "slides",
+  "render": "file:./render.php"
 }
 
 

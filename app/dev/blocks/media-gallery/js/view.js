@@ -9,8 +9,6 @@ const {state} = store('wpbs/media-gallery', {
             const data = JSON.parse(grid.querySelector('script.wpbs-media-gallery-args')?.innerText ?? '{}');
 
             const {is_last} = data;
-            console.log(grid);
-            console.log(data);
 
             WPBS.setMasonry(grid);
 

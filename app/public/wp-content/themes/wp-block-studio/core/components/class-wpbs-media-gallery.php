@@ -180,14 +180,15 @@ class WPBS_Media_Gallery {
 			return false;
 		}
 
-		$grid_settings = $block->attributes['wpbs-grid'] ?? [];
+		$grid_settings  = $block->attributes['wpbs-grid'] ?? [];
+		$query_settings = $block->attributes['wpbs-media-gallery'] ?? [];
 
 		return '<script class="wpbs-media-gallery-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'     => $loop->card,
 				'uniqueId' => $block->attributes['uniqueId'] ?? null,
-				'query'    => $loop->query,
 				'is_last'  => $loop->is_last ?? true,
 				...$grid_settings,
+				...$query_settings,
 			] ) ) . '</script>';
 
 

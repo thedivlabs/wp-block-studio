@@ -6,8 +6,6 @@ if ( empty( $attributes['wpbs-media-gallery']['gallery_id'] ) ) {
 
 $loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $attributes['wpbs-media-gallery'] ?? [] );
 
-WPBS::console_log( $loop );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery',

@@ -49,9 +49,9 @@ class WPBS_Theme {
 
         const {uniqueId, divider} = context;
 
-        const colMobile = context?.['columns-mobile'] ?? 3;
-        const colSmall = context?.['columns-small'] ?? 3;
-        const colLarge = context?.['columns-large'] ?? 3;
+        const colMobile = parseInt(context?.['columns-mobile'] ?? 1);
+        const colSmall = parseInt(context?.['columns-small'] ?? 2);
+        const colLarge = parseInt(context?.['columns-large'] ?? 3);
 
         const {breakpoints} = WPBS?.settings ?? {};
 
@@ -72,60 +72,58 @@ class WPBS_Theme {
 
         const lastRow = {
             mobile: {
-                count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || colMobile,
+                count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || parseInt(colMobile),
             },
             small: {
-                count: Math.floor(total - (Math.floor(total / colSmall) * colSmall)) || colSmall,
+                count: Math.floor(total - (Math.floor(total / colSmall) * colSmall)) || parseInt(colSmall),
             },
             large: {
-                count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
+                count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || parseInt(colLarge),
             }
         }
 
-        console.log(selector);
-
         const styleCss = [
             '@media screen and (width < ' + breakpointSmall + ') {',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:before { content:"" }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-of-type(-n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: 0; }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-of-type(n+' + (colMobile + 2) + '):after { height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):before { width: ' + (colMobile > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',
+            selector + ' .loop-container > .loop-card:nth-of-type( n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:before { content:"" }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-of-type(-n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: 0; }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-of-type(n+' + (colMobile + 2) + '):after { height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):before { width: ' + (colMobile > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):before { content:none !important; }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):before { content:none !important; }',
             '}',
 
             '@media screen and (min-width: ' + breakpointSmall + ') and (max-width: calc(' + breakpointLarge + ' - 1px)) {',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n+1 ):after { content: none !important; }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( n+' + (colSmall + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:before { content:"" }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:nth-of-type(-n+' + (colSmall + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: 0; }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:nth-of-type(n+' + (colSmall + 2) + '):after { height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n+1 ):before { width: ' + (colSmall > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n+1 ):after { content: none !important; }',
+            selector + ' .loop-container > .loop-card:nth-of-type( n+' + (colSmall + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:before { content:"" }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:nth-of-type(-n+' + (colSmall + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: 0; }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:nth-of-type(n+' + (colSmall + 2) + '):after { height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n+1 ):before { width: ' + (colSmall > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
-            selector + ' > .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { content:none !important; }',
+            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { content:none !important; }',
             '}',
 
-            '@media screen and (width > ' + breakpointLarge + ') {',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n+1 ):after { content: none !important; }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:before { content:"" }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-of-type(-n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: 0; }',
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-of-type(n+' + (colLarge + 2) + '):after { height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n+1 ):before { width: ' + (colLarge > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
+            '@media screen and (min-width: ' + breakpointLarge + ') {',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n+1 ):after { content: none !important; }',
+            selector + ' .loop-container > .loop-card:nth-of-type( n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:before { content:"" }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-of-type(-n+' + (colLarge + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: 0; }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-of-type(n+' + (colLarge + 2) + '):after { height: calc(100% + var(--grid-row-gap, var(--grid-col-gap, 0px)));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n+1 ):before { width: ' + (colLarge > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
-            selector + ' > .loop-container:has(> div:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' > .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { content:none !important; }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { content:none !important; }',
 
             '}',
         ].join('\r\n');
-
+        
         const styleTag = document.createElement('style');
         const styleSelector = [uniqueId, 'divider-styles'].join('-');
 

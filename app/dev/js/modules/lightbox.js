@@ -18,6 +18,7 @@ export default class Lightbox {
         const request = {
             index: args.index,
             gallery_id: args.gallery_id,
+            card_class: 'w-full h-full object-contain object-center',
         };
 
         WPBS.loader.toggle();

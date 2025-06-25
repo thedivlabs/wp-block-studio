@@ -180,9 +180,10 @@ class WPBS_Media_Gallery {
 				}
 
 
-				$content[] = wp_get_attachment_image( $image['id'], 'large', false, [
-					'loading' => 'eager'
-				] );
+				$content[] = wp_get_attachment_image( $image['id'], 'large', false, array_filter( [
+					'loading' => 'eager',
+					'class'   => $query['card_class'] ?? null
+				] ) );
 			}
 		}
 

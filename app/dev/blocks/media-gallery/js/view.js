@@ -64,9 +64,7 @@ const {state} = store('wpbs/media-gallery', {
                 body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
-
-                    console.log(result);
-
+                    
                     WPBS.loader.toggle({
                         remove: true
                     });

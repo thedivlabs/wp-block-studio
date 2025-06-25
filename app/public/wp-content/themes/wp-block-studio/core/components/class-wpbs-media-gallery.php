@@ -94,22 +94,31 @@ class WPBS_Media_Gallery {
 					return $nonce && wp_verify_nonce( $nonce, 'wp_rest' );
 				},
 				'args'                => [
-					'galleryId'    => [
+					'gallery_id'  => [
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
 					],
-					'pageNumber'   => [
+					'page_number' => [
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
 					],
-					'pageSize'     => [
+					'page_size'   => [
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
 					],
-					'cardTemplate' => [
+					'card_class'  => [
+						'type'              => 'string',
+						'default'           => '',
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+					'video_first' => [
+						'type'    => 'boolean',
+						'default' => false,
+					],
+					'card'        => [
 						'type'              => 'string',
 						'default'           => '',
 						'sanitize_callback' => [ 'WPBS', 'sanitize_block_template' ],
@@ -270,6 +279,7 @@ class WPBS_Media_Gallery {
 		$page_number = $request->get_param( 'page_number' );
 		$page_size   = $request->get_param( 'page_size' );
 		$card        = $request->get_param( 'card' );
+		$card_class  = $request->get_param( 'card_class' );
 
 		if ( empty( $gallery_id ) ) {
 			return new WP_Error( 'error', 'Something went wrong.', [
@@ -279,6 +289,7 @@ class WPBS_Media_Gallery {
 
 		$loop = self::loop( $card, [
 			'page_size'   => $page_size,
+			'card_class'  => $card_class,
 			'gallery_id'  => $gallery_id,
 			'video_first' => ! empty( $video_first ),
 		], $page_number );

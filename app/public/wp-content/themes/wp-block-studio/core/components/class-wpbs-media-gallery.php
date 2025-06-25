@@ -184,7 +184,7 @@ class WPBS_Media_Gallery {
 		$grid_settings  = $block->attributes['wpbs-grid'] ?? [];
 		$query_settings = $block->attributes['wpbs-media-gallery'] ?? [];
 
-		return '<script class="wpbs-media-gallery-args" type="application/json">' . wp_json_encode( array_filter( [
+		return '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'     => $loop->card,
 				'uniqueId' => $block->attributes['uniqueId'] ?? null,
 				'is_last'  => $loop->is_last ?? true,

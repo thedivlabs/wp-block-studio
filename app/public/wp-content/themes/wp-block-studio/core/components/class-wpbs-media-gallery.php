@@ -133,8 +133,8 @@ class WPBS_Media_Gallery {
 		}
 
 		$block_template = WPBS::get_block_template( $card );
-		$media          = self::query( $query, $page );
-		$original_id    = $card['attrs']['uniqueId'] ?? '';
+		[ $media, $is_last ] = self::query( $query, $page );
+		$original_id = $card['attrs']['uniqueId'] ?? '';
 
 		$content = '';
 
@@ -168,7 +168,7 @@ class WPBS_Media_Gallery {
 
 		return (object) [
 			'content' => $content,
-			'is_last' => true,
+			'is_last' => $is_last,
 			'query'   => $query,
 			'media'   => $media,
 			'card'    => $block_template
@@ -200,24 +200,23 @@ class WPBS_Media_Gallery {
 			return [];
 		}
 
-
 		$transient_id = self::TRANSIENT_PREFIX . $query['gallery_id'];
 
-		$result = get_transient( $transient_id );
+		$media = get_transient( $transient_id );
 
-		if ( empty( $result ) ) {
+		if ( empty( $media ) ) {
 
 			$images = self::parse_acf_data( get_field( 'wpbs_images', $query['gallery_id'] ) ?: [] );
 			$video  = self::parse_acf_data( get_field( 'wpbs_video', $query['gallery_id'] ) ?: [] );
 
 			if ( ! empty( $query['video_first'] ) ) {
-				$result = WPBS::clean_array( [ ...$video, ...$images ] );
+				$media = WPBS::clean_array( [ ...$video, ...$images ] );
 			} else {
-				$result = WPBS::clean_array( [ ...$images, ...$video ] );
+				$media = WPBS::clean_array( [ ...$images, ...$video ] );
 			}
 
-			if ( ! empty( $result ) ) {
-				set_transient( $transient_id, $result, self::TRANSIENT_EXPIRATION );
+			if ( ! empty( $media ) ) {
+				set_transient( $transient_id, $media, self::TRANSIENT_EXPIRATION );
 			}
 
 		}
@@ -228,11 +227,14 @@ class WPBS_Media_Gallery {
 			$page_size = intval( $query['page_size'] );
 			$offset    = ( $page - 1 ) * $page_size;
 
-			$result = array_slice( $result, $offset, $page_size );
+			$media = array_slice( $media, $offset, $page_size );
 
 		}
 
-		return $result;
+		return [
+			'media'   => $media,
+			'is_last' => $page >= ( count( $media ) / ( $query['page_size'] ?? 0 ) )
+		];
 	}
 
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
@@ -260,6 +262,8 @@ class WPBS_Media_Gallery {
 			[
 				'status'  => 200,
 				'content' => wp_kses_post( $loop->content ?? '' ),
+				'query'   => $loop->query,
+				'media'   => $loop->media,
 				'is_last' => ! empty( $loop->is_last ),
 			]
 		);

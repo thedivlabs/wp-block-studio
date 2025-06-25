@@ -133,12 +133,12 @@ class WPBS_Media_Gallery {
 		}
 
 		$block_template = WPBS::get_block_template( $card );
-		$query          = self::query( $query, $page );
+		$media          = self::query( $query, $page );
 		$original_id    = $card['attrs']['uniqueId'] ?? '';
 
 		$content = '';
 
-		foreach ( $query ?: [] as $k => $image ) {
+		foreach ( $media ?: [] as $k => $image ) {
 
 			if ( empty( $image['id'] ) ) {
 				continue;
@@ -170,6 +170,7 @@ class WPBS_Media_Gallery {
 			'content' => $content,
 			'is_last' => true,
 			'query'   => $query,
+			'media'   => $media,
 			'card'    => $block_template
 		];
 	}
@@ -221,9 +222,15 @@ class WPBS_Media_Gallery {
 			}
 
 		}
+		
+		if ( ! empty( $query['page_size'] ) ) {
 
-		if ( ! empty( $query['page-size'] ) ) {
-			$result = array_slice( $result, $page * $query['page-size'], $query['page-size'] );
+			$page      = intval( $page );
+			$page_size = intval( $query['page_size'] );
+			$offset    = ( $page - 1 ) * $page_size;
+
+			$result = array_slice( $result, $offset, $page_size );
+
 		}
 
 		return $result;

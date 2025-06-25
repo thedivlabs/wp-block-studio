@@ -4,12 +4,16 @@ if ( empty( $attributes['wpbs-media-gallery']['gallery_id'] ) ) {
 	return false;
 }
 
-$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $attributes['wpbs-media-gallery'] ?? [] );
+$settings      = $attributes['wpbs-media-gallery'] ?? [];
+$grid_settings = $attributes['wpbs-grid'] ?? [];
+
+$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery',
-		$attributes['uniqueId'] ?? null
+		$attributes['uniqueId'] ?? null,
+		! empty( $grid_settings['masonry'] ) ? '--masonry masonry' : null,
 	] ) ),
 	'data-wp-interactive' => 'wpbs/media-gallery',
 	'data-wp-init'        => 'actions.init'
@@ -20,7 +24,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
     <div <?php echo $wrapper_attributes ?>>
         <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container">
-			<?= $loop->content ?? $content ?? false ?>
+			<?= $loop->content ?? $content ?? false; ?>
+
+			<?php if ( ! empty( $grid_settings['masonry'] ) ) { ?>
+                <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
+			<?php } ?>
         </div>
 
 

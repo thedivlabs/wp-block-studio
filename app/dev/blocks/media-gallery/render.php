@@ -31,6 +31,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			<?php } ?>
         </div>
 
+        <button type="button"
+                class="loop-button h-10 px-4 relative z-20 hidden"
+                data-wp-on-async--click="actions.pagination">
+			<?= $grid_settings['pagination-label'] ?? 'Show More' ?>
+        </button>
 
 		<?php
 

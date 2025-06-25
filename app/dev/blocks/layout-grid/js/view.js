@@ -14,7 +14,7 @@ const {state} = store('wpbs/grid', {
 
             WPBS.gridDividers(grid, data);
 
-            [...grid.querySelectorAll('.wpbs-layout-grid__button')].forEach((el) => {
+            [...grid.querySelectorAll('.loop-button')].forEach((el) => {
                 if (!is_last) {
                     el.classList.remove('hidden');
                 } else {
@@ -30,7 +30,7 @@ const {state} = store('wpbs/grid', {
             const parser = new DOMParser();
 
             const grid = element.closest('.wpbs-layout-grid');
-            const container = grid.querySelector(':scope > .wpbs-layout-grid__container');
+            const container = grid.querySelector(':scope > .loop-container');
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.textContent ?? '{}');
 
             const {query, card} = data;

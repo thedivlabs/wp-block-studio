@@ -121,7 +121,7 @@ class WPBS_Loop {
 		] ) );
 
 		$new_block = apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );
-		
+
 		return $new_block;
 	}
 
@@ -177,7 +177,7 @@ class WPBS_Loop {
 		}
 
 		if ( ! $this->is_current && ! $this->is_last ) {
-			echo '<button type="button" class="wpbs-layout-grid__button h-10 px-4 relative z-20 hidden" data-wp-on-async--click="actions.pagination">' . $this->pagination_label . '</button>';
+			echo '<button type="button" class="loop-button h-10 px-4 relative z-20 hidden" data-wp-on-async--click="actions.pagination">' . $this->pagination_label . '</button>';
 		}
 
 

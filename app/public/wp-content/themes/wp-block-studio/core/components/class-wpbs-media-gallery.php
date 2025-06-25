@@ -143,7 +143,6 @@ class WPBS_Media_Gallery {
 
 		[ 'media' => $media, 'is_last' => $is_last ] = self::query( $query, $page );
 
-
 		if ( ! empty( $card['blockName'] ) ) {
 			$block_template = WPBS::get_block_template( $card );
 			$original_id    = $card['attrs']['uniqueId'] ?? '';
@@ -251,7 +250,7 @@ class WPBS_Media_Gallery {
 			}
 
 		}
-
+		
 		$page_size   = intval( $query['page_size'] ) ?: 1;
 		$total_pages = ceil( count( $media ) / $page_size );
 		$is_last     = $page >= $total_pages;
@@ -262,7 +261,7 @@ class WPBS_Media_Gallery {
 			$page_size = intval( $query['page_size'] );
 			$offset    = ( $page - 1 ) * $page_size;
 
-			$media = array_slice( $media, $offset, $page_size );
+			$media = array_slice( $media, $offset, $page_size, true );
 
 		}
 

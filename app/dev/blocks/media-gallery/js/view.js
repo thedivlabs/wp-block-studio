@@ -23,15 +23,20 @@ const {state} = store('wpbs/media-gallery', {
             });
 
             if (grid.classList.contains('--lightbox')) {
-                [...grid.querySelectorAll('.loop-card')].forEach((card) => {
-                    card.addEventListener('click', (e) => {
+                grid.addEventListener('click', (event) => {
+                    const card = event.target.closest('.loop-card');
 
-                        WPBS.lightbox.toggle({
-                            index: card.dataset.index,
-                            gallery_id: data?.gallery_id,
-                        })
+                    if (!card) {
+                        return false;
+                    }
+
+                    WPBS.lightbox.toggle({
+                        index: card.dataset.index,
+                        gallery_id: data?.gallery_id,
                     })
+
                 });
+                
             }
 
 

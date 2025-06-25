@@ -243,7 +243,7 @@ class WPBS_Media_Gallery {
 		$page_size   = $request->get_param( 'page_size' );
 		$card        = $request->get_param( 'card' );
 
-		if ( empty( $gallery_id ) || ! is_int( $gallery_id ) || ! is_string( $card ) ) {
+		if ( empty( $gallery_id ) ) {
 			return new WP_Error( 'error', 'Something went wrong.', [
 				'status' => 400
 			] );
@@ -259,7 +259,7 @@ class WPBS_Media_Gallery {
 		return new WP_REST_Response(
 			[
 				'status'  => 200,
-				'content' => wp_kses_post( $loop ),
+				'content' => wp_kses_post( $loop->content ),
 				'is_last' => ! empty( $loop['is_last'] ),
 			]
 		);

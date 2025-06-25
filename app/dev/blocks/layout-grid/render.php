@@ -51,7 +51,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 				'card'     => $loop->card,
 				'query'    => $loop->query ?? false,
 				'uniqueId' => $attributes['uniqueId'] ?? null,
-				'is_last'  => $loop->is_last ?? true,
 				...$settings
 			] ) ) . '</script>';
 	}

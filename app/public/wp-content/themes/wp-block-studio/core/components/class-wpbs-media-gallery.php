@@ -222,7 +222,7 @@ class WPBS_Media_Gallery {
 			}
 
 		}
-		
+
 		if ( ! empty( $query['page_size'] ) ) {
 
 			$page      = intval( $page );
@@ -238,10 +238,10 @@ class WPBS_Media_Gallery {
 
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$gallery_id  = $request->get_param( 'galleryId' );
-		$page_number = $request->get_param( 'pageNumber' );
-		$page_size   = $request->get_param( 'pageSize' );
-		$card        = $request->get_param( 'cardTemplate' );
+		$gallery_id  = $request->get_param( 'gallery_id' );
+		$page_number = $request->get_param( 'page_number' );
+		$page_size   = $request->get_param( 'page_size' );
+		$card        = $request->get_param( 'card' );
 
 		if ( empty( $gallery_id ) || ! is_int( $gallery_id ) || ! is_string( $card ) ) {
 			return new WP_Error( 'error', 'Something went wrong.', [

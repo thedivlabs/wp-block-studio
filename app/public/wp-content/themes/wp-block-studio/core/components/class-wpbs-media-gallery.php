@@ -264,8 +264,6 @@ class WPBS_Media_Gallery {
 			[
 				'status'  => 200,
 				'content' => wp_kses_post( $loop->content ?? '' ),
-				'query'   => $loop->query,
-				'media'   => $loop->media,
 				'is_last' => ! empty( $loop->is_last ),
 			]
 		);

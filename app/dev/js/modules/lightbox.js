@@ -9,8 +9,6 @@ export default class Lightbox {
 
         const slider = this.component([test]);
 
-        document.addEventListener('click', (e) => this.clickHandler(e), {passive: true});
-
     }
 
     static async fetchGallery(args) {
@@ -18,9 +16,8 @@ export default class Lightbox {
         const endpoint = '/wp-json/wpbs/v1/media-gallery';
 
         const request = {
-            card: args.card,
             index: args.index,
-            galleryId: args.galleryId,
+            gallery_id: args.gallery_id,
         };
 
         WPBS.loader.toggle();
@@ -34,33 +31,9 @@ export default class Lightbox {
             body: JSON.stringify(request),
         }).then((response) => {
             WPBS.loader.remove();
-            return response;
+
+            return response.json();
         });
-    }
-
-    static clickHandler(e) {
-
-        const parent = e.target.closest('.lightbox-gallery');
-        const data = JSON.parse(JSON.parse(parent?.dataset?.wpContext ?? '{}')?.gallery ?? '{}');
-        const card = e.target.closest('.wpbs-lightbox-card');
-
-        //console.log(data);
-
-        if (!card || !data) {
-            return;
-        }
-
-        const index = card.dataset.index;
-
-        this.fetchGallery({
-            index: index,
-            card: card,
-            galleryId: data.galleryId,
-        }).then(response => response.json())
-            .then(result => {
-                console.log(result);
-            });
-
     }
 
     static image(args = {}) {
@@ -75,9 +48,18 @@ export default class Lightbox {
 
     static toggle(args = {}) {
 
-        WPBS.modals.show_modal(false, {
-            template: this.component([])
+        this.fetchGallery(args).then(gallery => {
+
+            WPBS.modals.show_modal(false, {
+                template: this.component(gallery.content),
+                callback: (modal) => {
+                    [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
+                        new Swiper(slider_element);
+                    })
+                }
+            });
         });
+
 
     }
 
@@ -99,7 +81,12 @@ export default class Lightbox {
         sliderButtonPrev.classList.add('wpbs-lightbox__button', 'wpbs-lightbox__button--prev');
         sliderPagination.classList.add('wpbs-lightbox__pagination');
 
+        const parser = new DOMParser();
+
         slides.forEach((slide) => {
+
+            slide = parser.parseFromString(slide, 'text/html').body.firstChild;
+
             const slideElement = document.createElement('div');
             slideElement.classList.add('swiper-slide');
             slideElement.append(slide);

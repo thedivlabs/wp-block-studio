@@ -128,51 +128,72 @@ class WPBS_Media_Gallery {
 
 	public static function loop( $card, $query = [], $page = 1 ): object|bool {
 
-		if ( empty( $card ) || empty( $query['gallery_id'] ) ) {
+		if ( empty( $query['gallery_id'] ) ) {
 			return false;
 		}
 
-		$block_template = WPBS::get_block_template( $card );
 		[ 'media' => $media, 'is_last' => $is_last ] = self::query( $query, $page );
-		$original_id = $card['attrs']['uniqueId'] ?? '';
 
-		$content = '';
 
-		foreach ( $media ?: [] as $k => $image ) {
+		if ( ! empty( $card ) ) {
+			$block_template = WPBS::get_block_template( $card );
+			$original_id    = $card['attrs']['uniqueId'] ?? '';
 
-			if ( empty( $image['id'] ) ) {
-				continue;
+			$content = '';
+
+			foreach ( $media ?: [] as $k => $image ) {
+
+				if ( empty( $image['id'] ) ) {
+					continue;
+				}
+
+				$image_id = $image['id'];
+
+				$new_id = $original_id . '--' . $image_id;
+
+				$unique_id = join( ' ', array_filter( [
+					$original_id ?? null,
+					$new_id
+				] ) );
+
+				$block_template['attrs']['uniqueId'] = $unique_id;
+				$block_template['attrs']['imageId']  = $image_id;
+				$block_template['attrs']['index']    = $k;
+
+				$new_block = new WP_Block( $block_template, array_filter( [
+					'uniqueId' => $unique_id,
+					'imageId'  => $image_id,
+					'index'    => $k,
+				] ) );
+
+				$content .= $new_block->render();
 			}
+		} else {
 
-			$image_id = $image['id'];
+			$content = [];
 
-			$new_id = $original_id . '--' . $image_id;
 
-			$unique_id = join( ' ', array_filter( [
-				$original_id ?? null,
-				$new_id
-			] ) );
+			foreach ( $media ?: [] as $k => $image ) {
 
-			$block_template['attrs']['uniqueId'] = $unique_id;
-			$block_template['attrs']['imageId']  = $image_id;
-			$block_template['attrs']['index']    = $k;
+				if ( empty( $image['id'] ) ) {
+					continue;
+				}
 
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'uniqueId' => $unique_id,
-				'imageId'  => $image_id,
-				'index'    => $k,
-			] ) );
 
-			$content .= $new_block->render();
+				$content[] = wp_get_attachment_image( $image['id'], 'large', false, [
+					'loading' => 'eager'
+				] );
+			}
 		}
 
-		return (object) [
+
+		return (object) array_filter( [
 			'content' => $content,
 			'is_last' => $is_last,
 			'query'   => $query,
 			'media'   => $media,
-			'card'    => $block_template
-		];
+			'card'    => $block_template ?? null
+		] );
 	}
 
 	public static function output_args( $loop, $block ): string|bool {
@@ -188,7 +209,7 @@ class WPBS_Media_Gallery {
 				'card'     => $loop->card,
 				'uniqueId' => $block->attributes['uniqueId'] ?? null,
 				...$grid_settings,
-				...$query_settings,
+				...$query_settings
 			] ) ) . '</script>';
 
 
@@ -221,7 +242,9 @@ class WPBS_Media_Gallery {
 
 		}
 
-		$is_last = $page >= ( count( $media ) / ( $query['page_size'] ?? 0 ) );
+		$page_size   = intval( $query['page_size'] ) ?: 1;
+		$total_pages = ceil( count( $media ) / $page_size );
+		$is_last     = $page >= $total_pages;
 
 		if ( ! empty( $query['page_size'] ) ) {
 
@@ -263,7 +286,9 @@ class WPBS_Media_Gallery {
 		return new WP_REST_Response(
 			[
 				'status'  => 200,
-				'content' => wp_kses_post( $loop->content ?? '' ),
+				'content' => is_array( $loop->content ?? false ) ? array_map( function ( $c ) {
+					return wp_kses_post( $c );
+				}, $loop->content ) : wp_kses_post( $loop->content ?? '' ),
 				'is_last' => ! empty( $loop->is_last ),
 			]
 		);

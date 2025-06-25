@@ -9,9 +9,7 @@ const {state} = store('wpbs/media-gallery', {
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerText ?? '{}');
 
             const {is_last} = data;
-
-            console.log(data);
-
+            
             WPBS.setMasonry(grid);
 
             WPBS.gridDividers(grid, data);
@@ -50,7 +48,7 @@ const {state} = store('wpbs/media-gallery', {
                 page_size: page_size,
                 card: card,
             };
-            
+
             WPBS.loader.toggle();
 
             await fetch(endpoint, {

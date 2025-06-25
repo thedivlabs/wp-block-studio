@@ -17,6 +17,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-index'          => intval( $index ?? 0 ),
 	'data-wp-interactive' => 'wpbs/media-gallery-card',
 	'data-wp-init'        => 'actions.init',
+	'data-wp-on--click'   => 'actions.lightbox',
 	'data-wp-context'     => json_encode( array_filter( [
 		'index' => intval( $index ?? 0 ),
 	] ) ),

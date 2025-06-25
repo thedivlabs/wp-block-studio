@@ -187,7 +187,6 @@ class WPBS_Media_Gallery {
 		return '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'     => $loop->card,
 				'uniqueId' => $block->attributes['uniqueId'] ?? null,
-				'is_last'  => $loop->is_last ?? true,
 				...$grid_settings,
 				...$query_settings,
 			] ) ) . '</script>';
@@ -239,6 +238,7 @@ class WPBS_Media_Gallery {
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
 		$gallery_id  = $request->get_param( 'gallery_id' );
+		$video_first = $request->get_param( 'video_first' );
 		$page_number = $request->get_param( 'page_number' );
 		$page_size   = $request->get_param( 'page_size' );
 		$card        = $request->get_param( 'card' );
@@ -250,10 +250,10 @@ class WPBS_Media_Gallery {
 		}
 
 		$loop = self::loop( $card, [
-			'page'       => $page_number,
-			'page_size'  => $page_size,
-			'gallery_id' => $gallery_id,
-		] );
+			'page_size'   => $page_size,
+			'gallery_id'  => $gallery_id,
+			'video_first' => ! empty( $video_first ),
+		], $page_number );
 
 
 		return new WP_REST_Response(

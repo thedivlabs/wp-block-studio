@@ -144,7 +144,7 @@ class WPBS_Media_Gallery {
 		[ 'media' => $media, 'is_last' => $is_last ] = self::query( $query, $page );
 
 
-		if ( ! empty( $card ) ) {
+		if ( ! empty( $card['blockName'] ) ) {
 			$block_template = WPBS::get_block_template( $card );
 			$original_id    = $card['attrs']['uniqueId'] ?? '';
 

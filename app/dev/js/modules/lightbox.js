@@ -4,10 +4,6 @@ export default class Lightbox {
 
     static init() {
 
-        const test = document.createElement('div');
-        test.textContent = 'Lightbox';
-
-        const slider = this.component([test]);
 
     }
 
@@ -17,7 +13,7 @@ export default class Lightbox {
 
         const request = {
             index: args.index,
-            gallery_id: args.gallery_id,
+            gallery_id: parseInt(args.gallery_id),
             card_class: 'w-full h-full object-contain object-center',
         };
 
@@ -74,7 +70,7 @@ export default class Lightbox {
         const sliderButtonPrev = document.createElement('button');
         const sliderPagination = document.createElement('div');
 
-        component.classList.add('wpbs-lightbox');
+        component.classList.add('wpbs-lightbox', 'flex', 'w-full', 'h-screen', 'overflow-hidden');
         slider.classList.add('wpbs-lightbox__slider', 'swiper');
         sliderWrapper.classList.add('swiper-wrapper');
         sliderNav.classList.add('wpbs-lightbox__nav');

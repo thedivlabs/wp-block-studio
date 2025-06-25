@@ -50,9 +50,7 @@ const {state} = store('wpbs/media-gallery', {
                 page_size: page_size,
                 card: card,
             };
-
-            console.log(request);
-
+            
             WPBS.loader.toggle();
 
             await fetch(endpoint, {
@@ -64,7 +62,7 @@ const {state} = store('wpbs/media-gallery', {
                 body: JSON.stringify(request),
             }).then(response => response.json())
                 .then(result => {
-                    
+
                     WPBS.loader.toggle({
                         remove: true
                     });

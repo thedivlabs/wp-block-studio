@@ -9,7 +9,7 @@ const {state} = store('wpbs/media-gallery', {
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerText ?? '{}');
 
             const {is_last} = data;
-            
+
             WPBS.setMasonry(grid);
 
             WPBS.gridDividers(grid, data);
@@ -20,7 +20,19 @@ const {state} = store('wpbs/media-gallery', {
                 } else {
                     el.remove();
                 }
-            })
+            });
+
+            if (grid.classList.contains('--lightbox')) {
+                [...grid.querySelectorAll('.loop-card')].forEach((card) => {
+                    card.addEventListener('click', (e) => {
+
+                        WPBS.lightbox.toggle({
+                            index: card.dataset.index,
+                            gallery_id: data?.gallery_id,
+                        })
+                    })
+                });
+            }
 
 
         },
@@ -92,6 +104,20 @@ const {state} = store('wpbs/media-gallery', {
 
 
                 })
+        },
+        lightbox: () => {
+            const {ref: block} = getElement();
+
+            const context = JSON.parse(JSON.stringify(getContext()));
+            const data = JSON.parse(block.closest('.wpbs-media-gallery').querySelector('script.wpbs-args')?.innerText ?? '{}');
+
+            const {index = 0} = context;
+
+            WPBS.lightbox.toggle({
+                index: index,
+                gallery_id: data?.gallery_id,
+            })
+
         }
     },
 });

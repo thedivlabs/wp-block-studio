@@ -2,6 +2,19 @@ export default class Lightbox {
 
     static class_name = 'wpbs-lightbox';
 
+    static swiper_args = (index = 0) => {
+        return {
+            initialSlide: index,
+            spaceBetween: 10,
+            slidesPerView: 1,
+            zoom: {
+                limitToOriginalSize: true,
+                maxRatio: 8,
+                containerClass: 'swiper-zoom-container',
+            }
+        };
+    };
+
     static init() {
 
 
@@ -51,7 +64,7 @@ export default class Lightbox {
                 template: this.component(gallery.content),
                 callback: (modal) => {
                     [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
-                        new Swiper(slider_element);
+                        new Swiper(slider_element, this.swiper_args(args.index));
                     })
                 }
             });

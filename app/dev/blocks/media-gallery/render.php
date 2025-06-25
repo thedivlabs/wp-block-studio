@@ -14,6 +14,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-media-gallery',
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid_settings['masonry'] ) ? '--masonry masonry' : null,
+		! empty( $settings['lightbox'] ) ? '--lightbox' : null,
 	] ) ),
 	'data-wp-interactive' => 'wpbs/media-gallery',
 	'data-wp-init'        => 'actions.init'

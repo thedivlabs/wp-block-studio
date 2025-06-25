@@ -183,15 +183,18 @@ class WPBS_Media_Gallery {
 
 			foreach ( $media ?: [] as $k => $image ) {
 
-				if ( empty( $image['id'] ) ) {
-					continue;
+				if ( ! empty( $image['id'] ) ) {
+					$content[] = wp_get_attachment_image( $image['id'], 'large', false, array_filter( [
+						'loading' => 'eager',
+						'class'   => $query['card_class'] ?? null
+					] ) );
+				}
+
+				if ( ! empty( $image['share_link'] ) ) {
+					$content[] = '<div class="wpbs-video">VIDEO</div>';
 				}
 
 
-				$content[] = wp_get_attachment_image( $image['id'], 'large', false, array_filter( [
-					'loading' => 'eager',
-					'class'   => $query['card_class'] ?? null
-				] ) );
 			}
 		}
 
@@ -250,7 +253,7 @@ class WPBS_Media_Gallery {
 			}
 
 		}
-		
+
 		$page_size   = intval( $query['page_size'] ) ?: 1;
 		$total_pages = ceil( count( $media ) / $page_size );
 		$is_last     = $page >= $total_pages;

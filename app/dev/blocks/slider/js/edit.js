@@ -34,7 +34,6 @@ function blockClasses(attributes = {}, editor = false) {
         attributes?.uniqueId ?? '',
         !!settings?.collapse ? 'wpbs-slider--collapse' : null,
         !!settings?.['fade-in'] ? 'wpbs-slider--fade-in' : null,
-        !!editor ? 'swiper-initialized' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -88,9 +87,10 @@ registerBlockType(metadata.name, {
 
                 swiperRef.current.swiper.update();
 
-            } else if ('Swiper' in window) {
-
-                new Swiper(swiperRef.current, sliderOptions);
+            } else if ('Swiper' in window && !!swiperRef.current) {
+                const element = swiperRef.current;
+                console.log(element);
+                new Swiper(element, sliderOptions);
             }
         }, [sliderOptions]);
 

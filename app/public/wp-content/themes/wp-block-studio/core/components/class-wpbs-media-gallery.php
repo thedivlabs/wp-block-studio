@@ -259,8 +259,8 @@ class WPBS_Media_Gallery {
 		return new WP_REST_Response(
 			[
 				'status'  => 200,
-				'content' => wp_kses_post( $loop->content ),
-				'is_last' => ! empty( $loop['is_last'] ),
+				'content' => wp_kses_post( $loop->content ?? '' ),
+				'is_last' => ! empty( $loop->is_last ),
 			]
 		);
 

@@ -67,7 +67,7 @@ const {state} = store('wpbs/grid', {
 
                     if (!!is_last || !content) {
                         element.remove();
-                        return;
+                        //return;
                     }
 
 

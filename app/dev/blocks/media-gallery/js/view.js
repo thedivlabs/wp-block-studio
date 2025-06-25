@@ -75,7 +75,7 @@ const {state} = store('wpbs/media-gallery', {
 
                     if (!!is_last || !content) {
                         element.remove();
-                        return;
+                        // return;
                     }
 
 

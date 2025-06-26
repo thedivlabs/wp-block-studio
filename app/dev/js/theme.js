@@ -2,6 +2,7 @@ import Modals from './modules/modals'
 import Loader from './modules/loader'
 import Popup from './modules/popup'
 import Lightbox from './modules/Lightbox'
+import Video from './modules/video'
 
 
 class WPBS_Theme {
@@ -10,8 +11,8 @@ class WPBS_Theme {
     static loader;
     static popup;
     static settings;
-    static videos;
     static lightbox;
+    static video;
 
     constructor() {
 
@@ -19,26 +20,16 @@ class WPBS_Theme {
         this.loader = Loader;
         this.popup = Popup;
         this.lightbox = Lightbox;
-        this.videos = [];
+        this.video = Video;
 
         this.settings = window.wpbsData ?? {};
         this.modals.init();
         this.loader.init();
         this.lightbox.init();
-
+        this.video.init();
 
         this.init();
 
-        let timer;
-
-        window.addEventListener('resize', () => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                this.videos.forEach((video) => {
-                    this.responsiveVideoSrc(video);
-                })
-            }, 500);
-        });
     }
 
     gridDividers(grid, context) {
@@ -123,7 +114,7 @@ class WPBS_Theme {
 
             '}',
         ].join('\r\n');
-        
+
         const styleTag = document.createElement('style');
         const styleSelector = [uniqueId, 'divider-styles'].join('-');
 
@@ -164,7 +155,6 @@ class WPBS_Theme {
 
         }
     }
-
 
     set_cookie(cname, cvalue, exdays = false) {
         const d = new Date();

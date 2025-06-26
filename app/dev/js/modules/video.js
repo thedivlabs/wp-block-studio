@@ -3,16 +3,20 @@ export default class Video {
     static init() {
 
         document.addEventListener('click', (e) => {
-            if (e.closest('.wpbs-video')) {
-                this.clickHandler(e.closest('.wpbs-video'));
+            if (e.target.closest('.wpbs-video')) {
+                this.clickHandler(e.target.closest('.wpbs-video'));
             }
         });
 
     }
 
     static clickHandler(element) {
-        //const {ref: element} = getElement();
-        const {url, title, platform} = element.dataset;
+
+        const {title, vid, platform} = element.dataset;
+
+        console.log(vid);
+        console.log(title);
+        console.log(platform);
 
         if (element.classList.contains('active')) {
             return false;
@@ -30,7 +34,6 @@ export default class Video {
             'vimeo': '',
         }
 
-        const vid = (new URL(url)).pathname;
         const isModal = element.classList.contains('wpbs-video--modal');
         const classNames = [
             'divlabs-video-player',

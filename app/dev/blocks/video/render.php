@@ -4,6 +4,8 @@ WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:afte
 
 [ 'wpbs-video' => $settings ] = $attributes ?? [];
 
+$video_id = preg_replace( '/^\/+/', '', parse_url( $settings['link'] ?? '', PHP_URL_PATH ) ?: '' );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
 		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden cursor-pointer',
@@ -14,7 +16,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
 	] ) ),
 	'data-title'    => $settings['title'] ?? null,
-	'data-url'      => $settings['url'] ?? null,
+	'data-vid'      => $video_id,
 	'data-platform' => $settings['platform'] ?? null,
 ] );
 
@@ -29,7 +31,6 @@ $button_class = implode( ' ', array_filter( [
 
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover';
 
-$video_url = preg_replace( '/^\/+/', '', parse_url( $settings['share-link'] ?? '', PHP_URL_PATH ) ?: '' );
 
 ?>
 

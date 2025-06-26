@@ -22,15 +22,15 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ] );
 
 $media_class = implode( ' ', array_filter( [
-	'wpbs-video__media w-full h-full overflow-hidden relative object-cover object-center hover:after:opacity-50 hover:[&_button]:opacity-90',
-	'after:content-[""] after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out',
+	'wpbs-video__media w-full h-full overflow-hidden relative hover:after:opacity-50',
+	'after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out',
 ] ) );
 
 $button_class = implode( ' ', array_filter( [
-	'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 text-3xl leading-none text-white/50 rounded-full',
+	'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 text-3xl leading-none text-white opacity-50 rounded-full',
 ] ) );
 
-$poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover';
+$poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';
 
 
 ?>

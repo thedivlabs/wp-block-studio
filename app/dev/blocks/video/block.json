@@ -39,7 +39,6 @@
     }
   },
   "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
   "icon": "format-video",
   "render": "file:./render.php"
 }

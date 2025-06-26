@@ -24,7 +24,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ?>
 
     <div <?php echo $wrapper_attributes ?>>
-        <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container !h-max">
+        <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container">
 			<?= $loop->content ?? $content ?? false; ?>
 
 			<?php if ( ! empty( $grid_settings['masonry'] ) ) { ?>

@@ -141,9 +141,9 @@ class WPBS_Media_Gallery {
 			return false;
 		}
 
-		[ 'media' => $media, 'is_last' => $is_last ] = self::query( $query, $page );
+		[ 'media' => $media_gallery, 'is_last' => $is_last ] = self::query( $query, $page );
 
-		WPBS::console_log( $media );
+		WPBS::console_log( $media_gallery );
 
 		if ( ! empty( $card['blockName'] ) ) {
 			$block_template = WPBS::get_block_template( $card );
@@ -151,15 +151,21 @@ class WPBS_Media_Gallery {
 
 			$content = '';
 
-			foreach ( $media ?: [] as $k => $image ) {
+			foreach ( $media_gallery ?: [] as $k => $media ) {
 
-				if ( empty( $image['id'] ) ) {
-					continue;
-				}
+				$image_id = $media['id'] ?? null;
 
-				$image_id = $image['id'];
+				$video = array_filter( [
+					'link'     => $media['link'] ?? null,
+					'title'    => $media['title'] ?? null,
+					'poster'   => $media['poster'] ?? null,
+					'platform' => $media['platform'] ?? null,
+				] );
 
-				$new_id = $original_id . '--' . $image_id;
+				$new_id = implode( '--', array_filter( [
+					$original_id,
+					$image_id
+				] ) );
 
 				$unique_id = join( ' ', array_filter( [
 					$original_id ?? null,
@@ -167,33 +173,52 @@ class WPBS_Media_Gallery {
 				] ) );
 
 				$block_template['attrs']['uniqueId'] = $unique_id;
-				$block_template['attrs']['imageId']  = $image_id;
 				$block_template['attrs']['index']    = $k;
+				$block_template['attrs']['imageId']  = $image_id;
+				$block_template['attrs']['video']    = $video;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
 					'uniqueId' => $unique_id,
 					'imageId'  => $image_id,
+					'video'    => $image_id,
 					'index'    => $k,
 				] ) );
 
 				$content .= $new_block->render();
+
+
 			}
 		} else {
 
 			$content = [];
 
 
-			foreach ( $media ?: [] as $k => $image ) {
+			foreach ( $media_gallery ?: [] as $k => $media ) {
 
-				if ( ! empty( $image['id'] ) ) {
-					$content[] = wp_get_attachment_image( $image['id'], 'large', false, array_filter( [
+				if ( ! empty( $media['id'] ) ) {
+					$content[] = wp_get_attachment_image( $media['id'], 'large', false, array_filter( [
 						'loading' => 'eager',
 						'class'   => $query['card_class'] ?? null
 					] ) );
 				}
 
-				if ( ! empty( $image['share_link'] ) ) {
-					$content[] = '<div class="wpbs-video">VIDEO</div>';
+				if ( ! empty( $media['link'] ) ) {
+
+					$video = array_filter( [
+						'link'     => $media['link'],
+						'title'    => $media['title'] ?? null,
+						'poster'   => $media['poster'] ?? null,
+						'platform' => $media['platform'] ?? null,
+					] );
+
+					$content[] = ( new WP_Block( [
+						'blockName' => 'wpbs/video-element',
+						'attrs'     => [
+							'wpbs-video' => $video
+						]
+					], array_filter( [
+						'index' => $k,
+					] ) ) )->render();
 				}
 
 
@@ -205,7 +230,7 @@ class WPBS_Media_Gallery {
 			'content' => $content,
 			'is_last' => $is_last,
 			'query'   => $query,
-			'media'   => $media,
+			'media'   => $media_gallery,
 			'card'    => $block_template ?? null
 		] );
 	}

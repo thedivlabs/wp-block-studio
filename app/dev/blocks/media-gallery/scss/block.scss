@@ -3,4 +3,8 @@
   width: 100%;
   flex-wrap: wrap;
   position: relative;
+
+  &__container {
+    height: max-content !important;
+  }
 }

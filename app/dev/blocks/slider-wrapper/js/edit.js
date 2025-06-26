@@ -23,15 +23,15 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId, context}) => {
 
         const {loopQuery = {}} = context;
-        
+
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/slide', {content: 'Content Slide'}],
-            ]
+            /* template: [
+                 ['wpbs/slide', {content: 'Content Slide'}],
+             ]*/
         });
 
         useEffect(() => {

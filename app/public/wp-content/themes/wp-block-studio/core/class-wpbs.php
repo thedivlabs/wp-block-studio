@@ -92,10 +92,7 @@ class WPBS {
 
 		/* Swiper */
 		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
-		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
-			'strategy'  => 'defer',
-			'in_footer' => true,
-		] );
+		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js' );
 
 		/* Masonry */
 		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [

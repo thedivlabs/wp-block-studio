@@ -36,6 +36,10 @@
     "wpbs/termId": "termId",
     "wpbs/postType": "postType"
   },
+  "usesContext": [
+    "postId",
+    "termId"
+  ],
   "supports": {
     "innerBlocks": true,
     "interactivity": true,

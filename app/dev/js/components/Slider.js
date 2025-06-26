@@ -44,7 +44,7 @@ export function sliderArgs(attributes) {
 
     const {'wpbs-slider': options} = attributes;
 
-    const breakpoint = attributes.breakpoint || 992;
+    const breakpoint = attributes?.breakpoint ?? 992;
 
     let args = {
         enabled: true,

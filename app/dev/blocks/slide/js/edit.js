@@ -31,7 +31,7 @@ function blockClasses(attributes = {}) {
     return [
         'wpbs-slide',
         (attributes.className || '').split(' ').includes('is-style-image') ? 'wpbs-slide--image' : null,
-        'wpbs-has-container swiper-slide w-full flex flex-col shrink-0 relative',
+        'wpbs-has-container swiper-slide w-full h-auto flex flex-col shrink-0 relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -76,7 +76,7 @@ function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = fa
 
 function getPreloadMedia(attributes) {
 
-    const {'wpbs-figure': settings = {}} = attributes;
+    const {'wpbs-slide': settings = {}} = attributes;
 
     /*preload={{
                     large: [attributes['wpbs-slide']?.imageLarge],

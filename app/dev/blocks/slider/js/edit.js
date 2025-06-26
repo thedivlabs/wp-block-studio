@@ -89,7 +89,8 @@ registerBlockType(metadata.name, {
 
             } else if ('Swiper' in window && !!swiperRef.current) {
                 const element = swiperRef.current;
-                console.log(element);
+                console.log(typeof element);
+                console.log(swiperRef.current instanceof Element);
                 new Swiper(element, sliderOptions);
             }
         }, [sliderOptions]);
@@ -106,11 +107,12 @@ registerBlockType(metadata.name, {
         }
 
         const blockProps = useBlockProps({
-            ref: swiperRef,
+
             className: blockClasses(attributes, true)
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            ref: swiperRef,
             template: [
                 ['wpbs/slider-wrapper'],
             ]

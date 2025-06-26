@@ -34,6 +34,7 @@ function blockClasses(attributes = {}, editor = false) {
         attributes?.uniqueId ?? '',
         !!settings?.collapse ? 'wpbs-slider--collapse' : null,
         !!settings?.['fade-in'] ? 'wpbs-slider--fade-in' : null,
+        !!editor ? 'swiper-initialized' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -107,12 +108,10 @@ registerBlockType(metadata.name, {
         }
 
         const blockProps = useBlockProps({
-
             className: blockClasses(attributes, true)
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            ref: swiperRef,
             template: [
                 ['wpbs/slider-wrapper'],
             ]
@@ -156,7 +155,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <BlockContextProvider value={{loopQuery}}>
-                <div {...innerBlocksProps} />
+                <div {...innerBlocksProps} ref={swiperRef}/>
             </BlockContextProvider>
         </>;
 

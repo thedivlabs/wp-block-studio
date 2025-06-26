@@ -10,9 +10,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['modal'] ) ? 'wpbs-video--modal' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => array_filter( [
-		'--overlay' => $settings['overlay'] ?? null
-	] )
+	'style' => implode( '; ', array_filter( [
+		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
+	] ) )
 ] );
 
 $media_class = implode( ' ', array_filter( [

@@ -38,6 +38,7 @@ registerBlockType(metadata.name, {
                 link: undefined,
                 platform: undefined,
                 title: undefined,
+                resolution: undefined,
             }
         }
     },
@@ -64,8 +65,9 @@ registerBlockType(metadata.name, {
             }
         });
 
-        const posterSrc = '#';
-
+        const vid = !!attributes['wpbs-video']?.link ? (new URL(attributes['wpbs-video'].link)).pathname.replace(/^\/+/g, '') : '#';
+        const posterSrc = attributes?.['wpbs-video']?.poster?.sizes?.[attributes?.['wpbs-video']?.resolution ?? 'medium']?.url ?? 'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg';
+        
         return <>
             <BlockEdit key="edit" {...blockProps} />
             <InspectorControls group="styles">

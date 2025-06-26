@@ -30,7 +30,7 @@ import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGa
 
 function blockClassnames(attributes = {}) {
     return [
-        'wpbs-media-gallery',
+        'wpbs-media-gallery h-max',
         'flex flex-wrap w-full block relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');

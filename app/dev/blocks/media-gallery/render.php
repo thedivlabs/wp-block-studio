@@ -11,7 +11,7 @@ $loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? fals
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery',
+		'wpbs-media-gallery h-max',
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid_settings['masonry'] ) ? '--masonry masonry' : null,
 		! empty( $settings['lightbox'] ) ? '--lightbox' : null,
@@ -24,7 +24,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ?>
 
     <div <?php echo $wrapper_attributes ?>>
-        <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container">
+        <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container !h-max">
 			<?= $loop->content ?? $content ?? false; ?>
 
 			<?php if ( ! empty( $grid_settings['masonry'] ) ) { ?>

@@ -2,6 +2,9 @@ module.exports = {
     content: [
         './**/*.{js,scss,php}',
     ],
+    safelist: [
+        '!h-max'
+    ],
     theme: {
         extend: {
             minHeight: {

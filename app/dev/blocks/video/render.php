@@ -22,11 +22,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 $media_class = implode( ' ', array_filter( [
 	'wpbs-video__media w-full h-full overflow-hidden relative hover:after:opacity-50',
-	'after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out',
+	'after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out ',
 ] ) );
 
 $button_class = implode( ' ', array_filter( [
-	'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 text-[6rem] leading-none text-white opacity-50 rounded-full',
+	'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 leading-none text-white rounded-full opacity-50',
 ] ) );
 
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';
@@ -37,7 +37,7 @@ $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-ce
 
 <div <?php echo $wrapper_attributes ?>>
     <div class="<?= $media_class ?>">
-        <button type="button" class="<?= $button_class ?>">
+        <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
             <i class="fa-solid fa-circle-play"></i>
         </button>
 

@@ -26,7 +26,7 @@ $media_class = implode( ' ', array_filter( [
 ] ) );
 
 $button_class = implode( ' ', array_filter( [
-	'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 text-[\'32px\'] leading-none text-white opacity-50 rounded-full',
+	'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 text-[6rem] leading-none text-white opacity-50 rounded-full',
 ] ) );
 
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';

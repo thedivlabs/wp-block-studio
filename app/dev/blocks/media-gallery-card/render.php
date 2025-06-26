@@ -11,7 +11,7 @@ if ( empty( $imageId ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery-card wpbs-lightbox-card loop-card relative',
+		'wpbs-media-gallery-card flex h-max wpbs-lightbox-card loop-card relative',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),
@@ -28,6 +28,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <div <?php echo $wrapper_attributes ?>>
 	<?= wp_get_attachment_image( $imageId ?? false, 'medium', false, [
 		'loading' => 'lazy',
-		'class'   => 'w-full h-full object-cover'
+		'class'   => 'w-full h-full object-cover flex overflow-hidden'
 	] ) ?>
 </div>

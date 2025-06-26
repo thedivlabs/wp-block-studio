@@ -31,11 +31,11 @@ registerBlockType(metadata.name, {
         'wpbs-video': {
             type: 'object',
             default: {
-                posterImage: undefined,
+                poster: undefined,
                 eager: undefined,
                 modal: undefined,
                 overlay: undefined,
-                shareLink: undefined,
+                link: undefined,
                 platform: undefined,
                 title: undefined,
             }
@@ -86,9 +86,9 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
                                     label="Share Link"
-                                    value={attributes?.['wpbs-video']?.shareLink}
+                                    value={attributes?.['wpbs-video']?.link}
                                     className={'col-span-full'}
-                                    onChange={(newValue) => updateSettings({shareLink: newValue})}
+                                    onChange={(newValue) => updateSettings({link: newValue})}
                                 />
 
                                 <TextControl
@@ -107,7 +107,7 @@ registerBlockType(metadata.name, {
                                     <MediaUpload
                                         title={'Poster Image'}
                                         onSelect={(value) => updateSettings({
-                                            posterImage: {
+                                            poster: {
                                                 type: value.type,
                                                 id: value.id,
                                                 url: value.url,
@@ -116,11 +116,11 @@ registerBlockType(metadata.name, {
                                             }
                                         })}
                                         allowedTypes={['image']}
-                                        value={attributes?.['wpbs-video']?.posterImage}
+                                        value={attributes?.['wpbs-video']?.poster}
                                         render={({open}) => {
                                             return <PreviewThumbnail
-                                                image={attributes?.['wpbs-video']?.posterImage || {}}
-                                                callback={() => updateSettings({'posterImage': undefined})}
+                                                image={attributes?.['wpbs-video']?.poster || {}}
+                                                callback={() => updateSettings({poster: undefined})}
                                                 onClick={open}
                                             />
                                         }}
@@ -149,7 +149,7 @@ registerBlockType(metadata.name, {
                                             setAttributes({
                                                 preload: [
                                                     {
-                                                        large: attributes?.['wpbs-video']?.posterImage?.id ?? null,
+                                                        large: attributes?.['wpbs-video']?.poster?.id ?? null,
                                                         size: attributes['wpbs-video']?.resolution || null
                                                     }
                                                 ]

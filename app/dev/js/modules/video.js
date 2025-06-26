@@ -12,11 +12,7 @@ export default class Video {
 
     static clickHandler(element) {
 
-        const {title, vid, platform} = element.dataset;
-
-        console.log(vid);
-        console.log(title);
-        console.log(platform);
+        const {title, vid, platform, modal} = element.dataset;
 
         if (element.classList.contains('active')) {
             return false;
@@ -34,7 +30,7 @@ export default class Video {
             'vimeo': '',
         }
 
-        const isModal = element.classList.contains('--modal');
+        const isModal = !!modal;
         const classNames = [
             'divlabs-video-player',
             isModal ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
@@ -44,7 +40,7 @@ export default class Video {
             src: baseURL[platform || 'youtube'] + vid + queryString[platform],
             allow: 'autoplay;',
             allowFullScreen: true,
-            title: 'YouTube video player',
+            title: title || 'YouTube video player',
             frameBorder: 0,
             width: '100%',
             height: '100%',

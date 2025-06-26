@@ -8,13 +8,14 @@ $video_id = preg_replace( '/^\/+/', '', parse_url( $settings['link'] ?? '', PHP_
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
-		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden cursor-pointer',
-		! empty( $settings['modal'] ) ? '--modal' : null,
+		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video overflow-hidden cursor-pointer',
+
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style'         => implode( '; ', array_filter( [
 		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
 	] ) ),
+	'data-modal'    => ! empty( $settings['modal'] ),
 	'data-title'    => $settings['title'] ?? null,
 	'data-vid'      => $video_id,
 	'data-platform' => $settings['platform'] ?? null,
@@ -37,8 +38,21 @@ $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover';
 
 <div <?php echo $wrapper_attributes ?>>
     <div class="<?= $media_class ?>">
-        <button type="button" class="">
+        <button type="button" class="<?= $button_class ?>">
             <i class="fa-solid fa-circle-play"></i>
         </button>
+
+		<?php
+
+		if ( ! empty( $settings['poster']['id'] ) ) {
+			echo wp_get_attachment_image( $settings['poster']['id'], $settings['resolution'] ?? 'small', false, [
+				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
+				'class'   => $poster_class
+			] );
+		} else {
+			echo '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $poster_class . '" alt="" />';
+		}
+
+		?>
     </div>
 </div>

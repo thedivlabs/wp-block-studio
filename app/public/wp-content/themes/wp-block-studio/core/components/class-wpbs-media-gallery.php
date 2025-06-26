@@ -143,8 +143,6 @@ class WPBS_Media_Gallery {
 
 		[ 'media' => $media_gallery, 'is_last' => $is_last ] = self::query( $query, $page );
 
-		WPBS::console_log( $media_gallery );
-
 		if ( ! empty( $card['blockName'] ) ) {
 			$block_template = WPBS::get_block_template( $card );
 			$original_id    = $card['attrs']['uniqueId'] ?? '';
@@ -172,10 +170,10 @@ class WPBS_Media_Gallery {
 					$new_id
 				] ) );
 
-				$block_template['attrs']['uniqueId'] = $unique_id;
-				$block_template['attrs']['index']    = $k;
-				$block_template['attrs']['imageId']  = $image_id;
-				$block_template['attrs']['video']    = $video;
+				$block_template['attrs']['uniqueId']   = $unique_id;
+				$block_template['attrs']['index']      = $k;
+				$block_template['attrs']['imageId']    = $image_id;
+				$block_template['attrs']['wpbs-video'] = $video;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
 					'uniqueId' => $unique_id,
@@ -266,14 +264,19 @@ class WPBS_Media_Gallery {
 
 		if ( empty( $media ) ) {
 
-			$images = self::parse_acf_data( get_field( 'wpbs_images', $query['gallery_id'] ) ?: [] );
-			$video  = self::parse_acf_data( get_field( 'wpbs_video', $query['gallery_id'] ) ?: [] );
+			$fields = get_field( 'wpbs', $query['gallery_id'] );
+
+			$images = self::parse_acf_data( $fields['images'] ?? [] );
+			$video  = $fields['video'];
+
 
 			if ( ! empty( $query['video_first'] ) ) {
 				$media = WPBS::clean_array( [ ...$video, ...$images ] );
 			} else {
 				$media = WPBS::clean_array( [ ...$images, ...$video ] );
 			}
+
+			WPBS::console_log( $media );
 
 			if ( ! empty( $media ) ) {
 				set_transient( $transient_id, $media, self::TRANSIENT_EXPIRATION );

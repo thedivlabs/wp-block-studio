@@ -2,12 +2,17 @@ export default class Video {
 
     static init() {
 
+        document.addEventListener('click', (e) => {
+            if (e.closest('.wpbs-video')) {
+                this.clickHandler(e.closest('.wpbs-video'));
+            }
+        });
 
     }
 
-    static clickHandler(args = {}) {
+    static clickHandler(element) {
         //const {ref: element} = getElement();
-        //const {url, title, platform} = getContext();
+        const {url, title, platform} = element.dataset;
 
         if (element.classList.contains('active')) {
             return false;

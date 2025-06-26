@@ -5,14 +5,17 @@ WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:afte
 [ 'wpbs-video' => $settings ] = $attributes ?? [];
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( [
+	'class'         => implode( ' ', array_filter( [
 		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden cursor-pointer',
 		! empty( $settings['modal'] ) ? 'wpbs-video--modal' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => implode( '; ', array_filter( [
+	'style'         => implode( '; ', array_filter( [
 		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
-	] ) )
+	] ) ),
+	'data-title'    => $settings['title'] ?? null,
+	'data-url'      => $settings['url'] ?? null,
+	'data-platform' => $settings['platform'] ?? null,
 ] );
 
 $media_class = implode( ' ', array_filter( [

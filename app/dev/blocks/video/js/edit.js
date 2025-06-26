@@ -47,14 +47,14 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-layout-grid-card'],
+                ...attributes['wpbs-video'],
                 ...newValue
             };
 
             setAttributes({
-                'wpbs-layout-grid-card': result,
+                'wpbs-video': result,
             });
-        }, [setAttributes, attributes['wpbs-layout-grid-card']]);
+        }, [setAttributes, attributes['wpbs-video']]);
 
 
         const blockProps = useBlockProps({
@@ -141,7 +141,7 @@ registerBlockType(metadata.name, {
                                   style={{padding: '1rem 0'}}>
                                 <ToggleControl
                                     label="Eager"
-                                    checked={!attributes?.['wpbs-video']?.eager}
+                                    checked={!!attributes?.['wpbs-video']?.eager}
                                     onChange={(value) => {
                                         updateSettings({'eager': value});
 
@@ -162,7 +162,7 @@ registerBlockType(metadata.name, {
                                 />
                                 <ToggleControl
                                     label="Modal"
-                                    checked={attributes?.['wpbs-video']?.modal}
+                                    checked={!!attributes?.['wpbs-video']?.modal}
                                     onChange={(newValue) => updateSettings({modal: newValue})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom

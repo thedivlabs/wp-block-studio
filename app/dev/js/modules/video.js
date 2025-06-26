@@ -34,7 +34,7 @@ export default class Video {
             'vimeo': '',
         }
 
-        const isModal = element.classList.contains('wpbs-video--modal');
+        const isModal = element.classList.contains('--modal');
         const classNames = [
             'divlabs-video-player',
             isModal ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',

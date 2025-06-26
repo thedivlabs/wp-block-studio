@@ -9,7 +9,7 @@ $video_id = preg_replace( '/^\/+/', '', parse_url( $settings['link'] ?? '', PHP_
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
 		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden cursor-pointer',
-		! empty( $settings['modal'] ) ? 'wpbs-video--modal' : null,
+		! empty( $settings['modal'] ) ? '--modal' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style'         => implode( '; ', array_filter( [

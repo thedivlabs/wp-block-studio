@@ -1,5 +1,3 @@
-import '../scss/block.scss';
-
 import {
     useBlockProps,
     InspectorControls,
@@ -23,43 +21,6 @@ import {RESOLUTION_OPTIONS} from "Includes/config";
 import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-
-
-function blockClasses(attributes = {}) {
-    return [
-        'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video relative overflow-hidden cursor-pointer',
-        attributes.uniqueId,
-        attributes['wpbs-modal'] ? 'wpbs-video--modal' : null,
-    ].filter(x => x).join(' ');
-}
-
-function Media({attributes, editor = false}) {
-
-
-    const mediaClasses = [
-        'wpbs-video__media w-full h-full overflow-hidden relative object-cover object-center',
-    ].filter(x => x).join(' ');
-
-    const mediaProps = Object.fromEntries(Object.entries({
-        '--overlay': attributes['wpbs-overlay'],
-    }).filter(([_, v]) => v != null));
-
-    const vid = (!!attributes['wpbs-shareLink'] ? (new URL(attributes['wpbs-shareLink'])).pathname : '').replace(/^\/+/g, '');
-    const posterClasses = 'w-full !h-full absolute top-0 left-0 z-0 object-cover';
-
-    return <div class={mediaClasses} style={mediaProps}>
-        <button type={'button'} class={'wpbs-video__button'}>
-            <i class="fa-solid fa-circle-play"></i>
-        </button>
-        {!!attributes['wpbs-posterImage'] ? <ResponsivePicture mobile={attributes['wpbs-posterImage']} settings={{
-                resolution: attributes['wpbs-resolution'],
-                className: posterClasses,
-                eager: attributes['wpbs-eager']
-            }} editor={editor}></ResponsivePicture> :
-            <img src={'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg'} class={posterClasses} alt={''}
-                 aria-hidden={'true'} loading={!!attributes['wpbs-eager'] ? 'eager' : 'lazy'}/>}
-    </div>
-}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -97,7 +58,7 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps({
-            className: blockClasses(attributes),
+            className: '',
         });
 
         return <>
@@ -245,9 +206,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
 
-            <div {...blockProps}>
-                <Media attributes={attributes} editor={true}/>
-            </div>
+            <div {...blockProps}></div>
 
         </>;
     },

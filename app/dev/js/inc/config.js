@@ -126,7 +126,6 @@ export const BORDER_UNITS = [
 ];
 
 
-
 export const REL_OPTIONS = [
     {label: 'None', value: ''},
     {label: 'noopener', value: 'noopener'},
@@ -170,3 +169,60 @@ export const RESOLUTION_OPTIONS = [
     {label: 'Extra Large', value: 'xlarge'},
     {label: 'Full', value: 'full'},
 ];
+
+
+export const SWIPER_DEFAULT_ARGS = {
+    createElements: false,
+    pagination: {
+        enabled: true,
+        el: '.swiper-pagination',
+    },
+    passiveListeners: true,
+    preventClicks: false,
+    watchSlidesProgress: true,
+    updateOnWindowResize: true,
+    watchOverflow: true,
+    grabCursor: true,
+    uniqueNavElements: true,
+    enabled: true,
+    slidesPerView: 1,
+    slidesPerGroup: 1,
+    spaceBetween: 0,
+    autoplay: false,
+    speed: 300,
+    mousewheel: {
+        forceToAxis: true
+    },
+    effect: 'slide',
+    freeMode: false,
+    centeredSlides: false,
+    loop: false,
+    rewind: false,
+    initialSlide: 0,
+    breakpoints: {},
+    simulateTouch: false,
+    on: {
+        init: (swiper) => {
+
+        },
+        transitionEnd: (swiper) => {
+            const el = 'el' in swiper ? swiper.el : swiper;
+            console.log(swiper);
+            const pause_videos = el.querySelectorAll('.swiper-slide:not(:only-of-type):not(.swiper-slide-active) video');
+            const active_videos = el.querySelectorAll('.swiper-slide.swiper-slide-active video, .swiper-slide:only-of-type video');
+            const embed_videos = el.querySelectorAll('iframe[src]');
+
+
+            [...embed_videos].forEach(function (video_el) {
+                video_el.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*')
+            });
+
+            [...pause_videos].forEach((video) => {
+                video.pause();
+            });
+
+            [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
+
+        }
+    }
+}

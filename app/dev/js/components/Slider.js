@@ -1,7 +1,7 @@
 import {
     InspectorControls,
 } from "@wordpress/block-editor"
-import {SWIPER_OPTIONS_DEFAULT} from 'Includes/helper'
+import {SWIPER_DEFAULT_ARGS} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -47,6 +47,11 @@ export function sliderArgs(attributes) {
     const breakpoint = attributes?.breakpoint ?? 992;
 
     let args = {
+        navigation: {
+            enabled: true,
+            nextEl: '.wpbs-slider-btn--next',
+            prevEl: '.wpbs-slider-btn--prev',
+        },
         enabled: true,
         slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
         slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
@@ -95,7 +100,7 @@ export function sliderArgs(attributes) {
     };
 
     return {
-        ...SWIPER_OPTIONS_DEFAULT,
+        ...SWIPER_DEFAULT_ARGS,
         ...args
     };
 }

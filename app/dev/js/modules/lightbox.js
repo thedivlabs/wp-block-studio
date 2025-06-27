@@ -1,9 +1,12 @@
+import {SWIPER_DEFAULT_ARGS} from "Includes/config";
+
 export default class Lightbox {
 
     static class_name = 'wpbs-lightbox';
 
     static swiper_args = (index = 0) => {
         return {
+            ...SWIPER_DEFAULT_ARGS,
             initialSlide: index,
             spaceBetween: 10,
             slidesPerView: 1,
@@ -11,11 +14,6 @@ export default class Lightbox {
                 limitToOriginalSize: true,
                 maxRatio: 8,
                 containerClass: 'swiper-zoom-container',
-            },
-            on: {
-                init: (swiper) => {
-                    [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
-                }
             }
         };
     };

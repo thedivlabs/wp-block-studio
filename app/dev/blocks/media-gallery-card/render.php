@@ -2,16 +2,16 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
-$imageId = $block->context['imageId'] ?? false;
-$index   = $block->context['index'] ?? false;
+$media = $block->context['media'] ?? false;
+$index = $block->context['index'] ?? 0;
 
-if ( empty( $imageId ) ) {
+if ( empty( $media ) ) {
 	return false;
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery-card flex h-max wpbs-lightbox-card loop-card relative',
+		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card loop-card relative',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),
@@ -26,8 +26,13 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 
 <div <?php echo $wrapper_attributes ?>>
-	<?= wp_get_attachment_image( $imageId ?? false, 'medium', false, [
+	<?php
+
+	echo wp_get_attachment_image( $media['poster'] ?? $media['id'], 'medium', false, [
 		'loading' => 'lazy',
 		'class'   => 'w-full h-full object-cover flex overflow-hidden'
-	] ) ?>
+	] );
+
+
+	?>
 </div>

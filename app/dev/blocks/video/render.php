@@ -2,9 +2,12 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:after {background: var(--overlay, rgba(0, 0, 0, .5));}' );
 
-[ 'wpbs-video' => $settings ] = $attributes ?? [];
+$settings = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
 
 $video_id = preg_replace( '/^\/+/', '', parse_url( $settings['link'] ?? '', PHP_URL_PATH ) ?: '' );
+
+WPBS::console_log( $settings );
+WPBS::console_log( $video_id );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
@@ -31,6 +34,7 @@ $button_class = implode( ' ', array_filter( [
 
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';
 
+$poster_id = $settings['poster']['id'] ?? $settings['poster'] ?? false;
 
 ?>
 
@@ -43,8 +47,8 @@ $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-ce
 
 		<?php
 
-		if ( ! empty( $settings['poster']['id'] ) ) {
-			echo wp_get_attachment_image( $settings['poster']['id'], $settings['resolution'] ?? 'small', false, [
+		if ( ! empty( $poster_id ) ) {
+			echo wp_get_attachment_image( $poster_id, $settings['resolution'] ?? 'small', false, [
 				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
 				'class'   => $poster_class
 			] );

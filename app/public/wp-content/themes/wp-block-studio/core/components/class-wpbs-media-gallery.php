@@ -145,42 +145,21 @@ class WPBS_Media_Gallery {
 
 		if ( ! empty( $card['blockName'] ) ) {
 			$block_template = WPBS::get_block_template( $card );
-			$original_id    = $card['attrs']['uniqueId'] ?? '';
 
 			$content = '';
 
 			foreach ( $media_gallery ?: [] as $k => $media ) {
 
-				$image_id = $media['id'] ?? null;
-
-				$video = array_filter( [
-					'link'     => $media['link'] ?? null,
-					'title'    => $media['title'] ?? null,
-					'poster'   => $media['poster'] ?? null,
-					'platform' => $media['platform'] ?? null,
-				] );
-
-				$new_id = implode( '--', array_filter( [
-					$original_id,
-					$image_id
-				] ) );
-
-				$unique_id = join( ' ', array_filter( [
-					$original_id ?? null,
-					$new_id
-				] ) );
-
-				$block_template['attrs']['uniqueId']   = $unique_id;
-				$block_template['attrs']['index']      = $k;
-				$block_template['attrs']['imageId']    = $image_id;
-				$block_template['attrs']['wpbs-video'] = $video;
+				$block_template['attrs']['uniqueId'] = $card['attrs']['uniqueId'] ?? '';
+				$block_template['attrs']['index']    = $k;
+				$block_template['attrs']['media']    = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
-					'uniqueId' => $unique_id,
-					'imageId'  => $image_id,
-					'video'    => $image_id,
-					'index'    => $k,
+					'media' => $media,
+					'index' => $k,
 				] ) );
+
+				$new_block->attributes['media'] = $media;
 
 				$content .= $new_block->render();
 

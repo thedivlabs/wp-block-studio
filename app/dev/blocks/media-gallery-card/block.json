@@ -14,12 +14,9 @@
   "parent": [
     "wpbs/media-gallery"
   ],
-  "providesContext": {
-    "wpbs/imageId": "imageId"
-  },
   "usesContext": [
     "index",
-    "imageId"
+    "media"
   ],
   "supports": {
     "interactivity": true,

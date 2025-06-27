@@ -150,6 +150,11 @@ class WPBS_Media_Gallery {
 
 			foreach ( $media_gallery ?: [] as $k => $media ) {
 
+				$media = [
+					...$media,
+					'modal' => false
+				];
+
 				$block_template['attrs']['uniqueId'] = $card['attrs']['uniqueId'] ?? '';
 				$block_template['attrs']['index']    = $k;
 				$block_template['attrs']['media']    = $media;

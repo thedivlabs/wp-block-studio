@@ -6,9 +6,6 @@ $settings = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes
 
 $video_id = preg_replace( '/^\/+/', '', parse_url( $settings['link'] ?? '', PHP_URL_PATH ) ?: '' );
 
-WPBS::console_log( $settings );
-WPBS::console_log( $video_id );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
 		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video overflow-hidden cursor-pointer',

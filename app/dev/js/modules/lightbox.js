@@ -11,6 +11,11 @@ export default class Lightbox {
                 limitToOriginalSize: true,
                 maxRatio: 8,
                 containerClass: 'swiper-zoom-container',
+            },
+            on: {
+                init: (swiper) => {
+                    [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
+                }
             }
         };
     };

@@ -1,10 +1,5 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const wordpressConfig = require('@wordpress/scripts/config/webpack.config');
 const path = require('path');
-
-const cssEntries = {
-    theme: path.resolve(__dirname, 'app/dev/scss/theme.css'),
-};
 
 function extendSharedConfig(config) {
     return {
@@ -13,7 +8,7 @@ function extendSharedConfig(config) {
         module: {
             rules: [
                 // Remove existing SCSS rules from defaultConfig
-                ...config.module.rules.filter(rule => !String(rule.test).includes('.css')),
+                ...config.module.rules.filter(rule => !String(rule.test).includes('.scss')),
                 // SCSS loader with includePaths to fix your '@use "includes"' import
             ],
         }

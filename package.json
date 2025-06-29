@@ -1,6 +1,5 @@
 {
-  "dependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
+  "devDependencies": {
     "@wordpress/block-editor": "^14.4.0",
     "@wordpress/blocks": "^13.9.0",
     "@wordpress/components": "^28.9.0",
@@ -10,29 +9,20 @@
     "@wordpress/element": "^6.25.0",
     "@wordpress/icons": "^10.9.0",
     "@wordpress/interactivity": "^6.24.0",
-    "@wordpress/scripts": "^30.7.0",
-    "autoprefixer": "^10.4.21",
-    "style-loader": "^4.0.0"
+    "@wordpress/scripts": "^30.7.0"
   },
   "scripts": {
     "start": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/blocks/ --watch --experimental-modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "css-loader": "^7.1.2",
-    "gulp": "^5.0.0",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-postcss": "^10.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^6.0.1",
-    "mini-css-extract-plugin": "^2.9.2",
+  "dependencies": {
     "postcss": "^8.5.6",
     "postcss-import": "^16.1.1",
     "postcss-loader": "^8.1.1",
     "react": "^18.3.1",
-    "sass": "^1.86.0",
-    "sass-loader": "^16.0.5",
     "tailwindcss": "^4.1.11",
-    "webpack-stream": "^7.0.0"
+    "@tailwindcss/cli": "^4.0.6",
+    "autoprefixer": "^10.4.21",
+    "npm-run-all": "^4.1.5"
   }
 }

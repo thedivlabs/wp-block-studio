@@ -51,7 +51,7 @@
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
   "style": [
-    "file:./js/edit.css"
+    "file:./block.css"
   ],
   "icon": "slides"
 }

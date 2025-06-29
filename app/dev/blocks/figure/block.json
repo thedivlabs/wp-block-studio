@@ -37,7 +37,7 @@
       "radius": true
     }
   },
-  "editorScript": "file:./block.js",
+  "editorScript": "file:./block.min.js",
   "viewScriptModule": "file:./view.js",
   "render": "file:./render.php",
   "style": "file:./block.css",

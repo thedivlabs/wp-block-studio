@@ -47,7 +47,7 @@
       "lineHeight": true
     }
   },
-  "editorScript": "file:./block.js",
+  "editorScript": "file:./block.min.js",
   "style": "file:./block.css",
   "editorStyle": "file:./block.css",
   "icon": "tag",

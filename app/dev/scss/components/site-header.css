@@ -1,19 +1,17 @@
-@use 'includes';
-
 :root {
   --wpbs-header-height: var(--wp--custom--header--height--xs);
 
   --wpbs-header-offset: var(--wpbs-header-height);
 
-  @include includes.mq('sm') {
-    --wpbs-header-height: var(--wp--custom--header--height--sm);
-  }
-  @include includes.mq('lg') {
-    --wpbs-header-height: var(--wp--custom--header--height--lg);
-  }
-  @include includes.mq('xl') {
-    --wpbs-header-height: var(--wp--custom--header--height--xl);
-  }
+  /*  @include includes.mq('sm') {
+      --wpbs-header-height: var(--wp--custom--header--height--sm);
+    }
+    @include includes.mq('lg') {
+      --wpbs-header-height: var(--wp--custom--header--height--lg);
+    }
+    @include includes.mq('xl') {
+      --wpbs-header-height: var(--wp--custom--header--height--xl);
+    }*/
 }
 
 

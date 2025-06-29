@@ -22,9 +22,8 @@
     &:after {
 
       background: var(--overlay, transparent);
-
+      content: '';
       @apply
-      content-['']
       block
       absolute
       top-0
@@ -53,8 +52,8 @@
       background-attachment: var(--attachment, initial);
       background-position: var(--origin, center);
       max-height: var(--max-height, 100%);
+      content: '';
       @apply
-      content-['']
       absolute
       top-0
       left-0

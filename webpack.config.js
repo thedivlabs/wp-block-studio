@@ -16,7 +16,6 @@ function extendSharedConfig(config) {
 function extendScriptConfig(config) {
     return {
         ...config,
-        mode: 'production',
         // Add non-module config extensions here...
         entry: {
             ...config.entry(),

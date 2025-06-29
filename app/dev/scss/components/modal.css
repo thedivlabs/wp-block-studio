@@ -2,11 +2,12 @@
 
   backdrop-filter: grayscale(.8) blur(7px);
   -webkit-backdrop-filter: grayscale(.8) blur(7px);
+  z-index: 900;
 
   &:before {
+    content: '';
     transition-timing-function: linear !important;
     @apply
-    content-['']
     fixed
     top-0
     left-0
@@ -46,8 +47,8 @@
     m-auto
     bg-transparent
     z-20
-    translate-y-28
     max-h-full
+    max-w-full
     overflow-auto
     justify-start
     items-center
@@ -63,7 +64,6 @@
 
   }
 
-  &.active > &__container,
   &.active > &__container {
     transition: opacity .4s linear .3s, transform .4s ease-out .3s !important;
     @apply

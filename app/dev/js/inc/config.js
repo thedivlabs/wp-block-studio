@@ -205,24 +205,24 @@ export const SWIPER_DEFAULT_ARGS = {
         init: (swiper) => {
 
         },
-        transitionEnd: (swiper) => {
-            const el = 'el' in swiper ? swiper.el : swiper;
-            console.log(swiper);
-            const pause_videos = el.querySelectorAll('.swiper-slide:not(:only-of-type):not(.swiper-slide-active) video');
-            const active_videos = el.querySelectorAll('.swiper-slide.swiper-slide-active video, .swiper-slide:only-of-type video');
-            const embed_videos = el.querySelectorAll('iframe[src]');
+        /*      transitionEnd: (swiper) => {
+                  const el = 'el' in swiper ? swiper.el : swiper;
+
+                  const pause_videos = el.querySelectorAll('.swiper-slide:not(:only-of-type):not(.swiper-slide-active) video');
+                  const active_videos = el.querySelectorAll('.swiper-slide.swiper-slide-active video, .swiper-slide:only-of-type video');
+                  const embed_videos = el.querySelectorAll('iframe[src]');
 
 
-            [...embed_videos].forEach(function (video_el) {
-                video_el.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*')
-            });
+                  [...embed_videos].forEach(function (video_el) {
+                      video_el.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*')
+                  });
 
-            [...pause_videos].forEach((video) => {
-                video.pause();
-            });
+                  [...pause_videos].forEach((video) => {
+                      video.pause();
+                  });
 
-            [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
+                  [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
 
-        }
+              }*/
     }
 }

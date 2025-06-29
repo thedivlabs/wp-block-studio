@@ -1,14 +1,13 @@
-@import "core/tw-base";
-@import "core/tw-components";
-@import "core/tw-utilities";
-@import "core/layout";
-@import "components/background";
-@import "components/container";
-@import "components/modal";
-@import "components/site-header";
-@import "components/loader";
+@layer base, components, utilities;
 
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind utilities;
-@tailwind components;
+@import "./core/tw-base";
+@import "./core/tw-components";
+@import "./core/tw-utilities";
+@import "./core/layout";
+@import "./components/background";
+@import "./components/container";
+@import "./components/modal";
+@import "./components/site-header";
+@import "./components/loader";

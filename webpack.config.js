@@ -4,6 +4,7 @@ const path = require('path');
 function extendSharedConfig(config) {
     return {
         ...config,
+        mode:'production',
         module: {
             rules: [
 

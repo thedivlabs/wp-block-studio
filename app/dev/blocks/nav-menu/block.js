@@ -1,4 +1,4 @@
-import "../scss/block.scss";
+import "./scss/block.scss";
 
 import {
     useBlockProps,

@@ -23,7 +23,7 @@ class WPBS {
 		self::$transient_base = 'wpbs';
 		self::$path           = trailingslashit( get_template_directory() );
 		self::$core_path      = self::$path . 'core/';
-		self::$dist_path      = ( is_child_theme() ? trailingslashit( get_stylesheet_directory() ) : self::$path ) . 'dist/';
+		self::$dist_path      = ( is_child_theme() ? trailingslashit( get_stylesheet_directory() ) : self::$path ) . 'build/';
 		self::$dist_uri       = str_replace( get_stylesheet_directory(), get_stylesheet_directory_uri(), self::$dist_path );
 
 		$this->set_nonce();
@@ -76,9 +76,9 @@ class WPBS {
 	}
 
 	public function theme_assets(): void {
-		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/dist/theme.min.css' );
-		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/dist/admin.min.css' );
-		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/dist/theme.min.js', [
+		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/build/theme.css' );
+		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/build/admin.css' );
+		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/build/theme.js', [
 			'wp-dom-ready',
 			'jquery'
 		], false, [

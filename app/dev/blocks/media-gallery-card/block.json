@@ -32,7 +32,7 @@
       "radius": true
     }
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "style": "file:./block.css",
   "editorStyle": "file:./block.css",
   "icon": "format-gallery",

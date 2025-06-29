@@ -41,7 +41,7 @@
       "radius": true
     }
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "icon": "welcome-widgets-menus"
 }
 

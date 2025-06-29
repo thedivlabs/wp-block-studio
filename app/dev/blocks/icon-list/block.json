@@ -44,7 +44,7 @@
       "fontStyle": true
     }
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "style": "file:./block.css",
   "icon": "list-view"
 }

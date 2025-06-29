@@ -4,7 +4,7 @@ const path = require('path');
 function extendSharedConfig(config) {
     return {
         ...config,
-        mode:'production',
+        mode: 'production',
         module: {
             rules: [
 
@@ -23,8 +23,8 @@ function extendScriptConfig(config) {
             theme: './app/dev/js/theme.js', // Your theme's main JS file
         },
         output: {
-            filename: '[name].min.js', // This will output theme.js, admin.js, etc.
-            path: path.resolve(__dirname, 'dist'), // Specify your desired output directory
+            filename: '[name].js', // This will output theme.js, admin.js, etc.
+            path: path.resolve(__dirname, 'build'), // Specify your desired output directory
         },
         resolve: {
             ...wordpressConfig.resolve,

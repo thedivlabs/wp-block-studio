@@ -24,7 +24,7 @@
   "supports": {
     "innerBlocks": true
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "icon": "slides",
   "render": "file:./render.php"
 }

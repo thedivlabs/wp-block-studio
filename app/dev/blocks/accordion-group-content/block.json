@@ -50,7 +50,7 @@
       "fontWeight": true
     }
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "icon": "excerpt-view"
 }
 

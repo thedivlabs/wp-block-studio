@@ -58,7 +58,7 @@
       "lineHeight": true
     }
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "icon": "grid-view",
   "render": "file:./render.php"
 }

@@ -69,7 +69,7 @@
       "__experimentalTextTransform": true
     }
   },
-  "editorScript": "file:./block.min.js",
+  "editorScript": "file:./block.js",
   "editorStyle": "file:./block.css",
   "style": "file:./block.css",
   "icon": "admin-links",

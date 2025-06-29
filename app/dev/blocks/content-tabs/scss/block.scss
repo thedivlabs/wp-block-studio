@@ -1,7 +1,8 @@
 .wpbs-content-tabs {
 
   &.animating {
-    pointer-events: none;
+    @apply
+    pointer-events-none
   }
 
   &:not(.editor):not(:has(.wpbs-content-tabs-container > .wpbs-content-tabs-panel.active)) {

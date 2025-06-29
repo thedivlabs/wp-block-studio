@@ -1,6 +1,8 @@
 .wpbs-accordion-group {
-  display: flex;
-  flex-direction: column;
+  @apply
+  flex
+  flex-col
+  ;
 
   &.animating {
     pointer-events: none;

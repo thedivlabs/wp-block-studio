@@ -1,3 +1,5 @@
+import "../scss/theme.scss";
+
 import Modals from './modules/modals'
 import Loader from './modules/loader'
 import Popup from './modules/popup'

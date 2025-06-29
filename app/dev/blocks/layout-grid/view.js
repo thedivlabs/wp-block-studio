@@ -36,6 +36,7 @@ const {state} = store('wpbs/grid', {
             const {query, card} = data;
 
             grid.dataset.page = String(parseInt(grid.dataset?.page ?? 1) + 1);
+            query.paged = grid.dataset.page;
 
             const nonce = WPBS?.settings?.nonce ?? false;
 
@@ -46,7 +47,7 @@ const {state} = store('wpbs/grid', {
                 query: query,
                 page: grid.dataset.page,
             };
-
+            
             WPBS.loader.toggle();
 
             await fetch(endpoint, {

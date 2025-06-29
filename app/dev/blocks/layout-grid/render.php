@@ -49,7 +49,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	if ( $is_loop ) {
 		echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'     => $loop->card,
-				'query'    => $loop->query ?? false,
+				'query'    => $loop->query->query ?? false,
 				'uniqueId' => $attributes['uniqueId'] ?? null,
 				...$settings
 			] ) ) . '</script>';

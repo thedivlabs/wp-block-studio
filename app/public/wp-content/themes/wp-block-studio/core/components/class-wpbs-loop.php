@@ -147,7 +147,7 @@ class WPBS_Loop {
 
 		$query_args = [
 			'post_type'      => $query['post_type'] ?? 'post',
-			'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
+			'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
 			'orderby'        => $query['orderby'] ?? 'date',
 			'order'          => $query['order'] ?? 'DESC',
 			'post__not_in'   => $query['post__not_in'] ?? [],

@@ -4,7 +4,6 @@ const path = require('path');
 function extendSharedConfig(config) {
     return {
         ...config,
-        mode: 'production',
         module: {
             rules: [
 
@@ -17,15 +16,16 @@ function extendSharedConfig(config) {
 function extendScriptConfig(config) {
     return {
         ...config,
+        mode: 'production',
         // Add non-module config extensions here...
         entry: {
             ...config.entry(),
             theme: './app/dev/js/theme.js',
-            admin: './app/dev/js/theme.js',
+            admin: './app/dev/js/admin.js',
         },
         output: {
-            filename: '[name].js', // This will output theme.js, admin.js, etc.
-            path: path.resolve(__dirname, 'build'), // Specify your desired output directory
+            filename: '[name].js',
+            path: path.resolve(__dirname, 'build'),
         },
         resolve: {
             ...wordpressConfig.resolve,

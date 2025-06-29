@@ -73,7 +73,7 @@ class WPBS_Blocks {
 
 	public function register_blocks(): void {
 
-		$block_dirs = glob( WPBS::$path . '/blocks/*', GLOB_ONLYDIR );
+		$block_dirs = glob( WPBS::$path . '/dist/*', GLOB_ONLYDIR );
 
 		foreach ( $block_dirs as $block_dir ) {
 

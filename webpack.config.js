@@ -18,6 +18,14 @@ function extendScriptConfig(config) {
     return {
         ...config,
         // Add non-module config extensions here...
+        entry: {
+            ...config.entry(), // Include default block entry points
+            theme: './app/dev/js/theme.js', // Your theme's main JS file
+        },
+        output: {
+            filename: '[name].js', // This will output theme.js, admin.js, etc.
+            path: path.resolve(__dirname, 'dist'), // Specify your desired output directory
+        },
         resolve: {
             ...wordpressConfig.resolve,
             alias: {

@@ -544,8 +544,6 @@ class WPBS {
 		}, array_merge(
 			glob( $path . $dir . '/class-*.php' ),
 			glob( $path . $dir . '/**/class-*.php' ),
-			glob( $path . $dir . '/**/classes/class-*.php' ),
-			glob( $path . $dir . '/**/blocks/**/classes/class-*.php' )
 		) );
 
 		usort( $files, function ( $a, $b ) {

@@ -1,11 +1,11 @@
-import '../scss/block.scss'
+import './scss/block.scss'
 
 import {
     useBlockProps,
     useInnerBlocksProps, InspectorControls, PanelColorSettings, BlockContextProvider
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
-import metadata from "../block.json"
+import metadata from "./block.json"
 
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"

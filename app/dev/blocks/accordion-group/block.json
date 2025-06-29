@@ -53,9 +53,9 @@
       "fontWeight": true
     }
   },
-  "editorScript": "file:./js/block.js",
-  "viewScriptModule": "file:./js/view.js",
-  "style": "file:./js/block.css",
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "style": "file:./block.css",
   "icon": "excerpt-view"
 }
 

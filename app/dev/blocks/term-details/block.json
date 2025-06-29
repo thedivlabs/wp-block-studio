@@ -47,9 +47,9 @@
       "lineHeight": true
     }
   },
-  "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
-  "editorStyle": "file:./js/edit.css",
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "editorStyle": "file:./block.css",
   "icon": "tag",
   "render": "file:./render.php"
 }

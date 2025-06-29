@@ -38,7 +38,7 @@
       "radius": true
     }
   },
-  "editorScript": "file:./js/edit.js",
+  "editorScript": "file:./block.js",
   "icon": "format-video",
   "render": "file:./render.php"
 }

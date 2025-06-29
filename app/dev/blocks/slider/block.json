@@ -48,8 +48,8 @@
       "radius": true
     }
   },
-  "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
   "style": [
     "file:./js/edit.css"
   ],

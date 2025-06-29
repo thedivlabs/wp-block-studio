@@ -48,10 +48,10 @@
       "lineHeight": true
     }
   },
-  "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
-  "style": "file:./js/edit.css",
-  "editorStyle": "file:./js/edit.css",
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "style": "file:./block.css",
+  "editorStyle": "file:./block.css",
   "icon": "format-gallery",
   "render": "file:./render.php"
 }

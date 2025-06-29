@@ -41,8 +41,8 @@
       "lineHeight": true
     }
   },
-  "editorScript": "file:./js/edit.js",
-  "style": "file:./js/edit.css",
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
   "icon": "editor-kitchensink"
 }
 

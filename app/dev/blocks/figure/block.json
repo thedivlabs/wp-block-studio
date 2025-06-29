@@ -37,10 +37,10 @@
       "radius": true
     }
   },
-  "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
   "render": "file:./render.php",
-  "style": "file:./js/edit.css",
+  "style": "file:./block.css",
   "icon": "format-image"
 }
 

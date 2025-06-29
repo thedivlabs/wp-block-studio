@@ -47,9 +47,9 @@
       "radius": true
     }
   },
-  "editorScript": "file:./js/edit.js",
-  "viewScriptModule": "file:./js/view.js",
-  "style": "file:./js/edit.css",
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "style": "file:./block.css",
   "icon": "welcome-widgets-menus"
 }
 

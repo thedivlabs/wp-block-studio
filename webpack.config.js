@@ -4,12 +4,10 @@ const path = require('path');
 function extendSharedConfig(config) {
     return {
         ...config,
-        // Add shared config extensions here...
         module: {
             rules: [
-                // Remove existing SCSS rules from defaultConfig
+
                 ...config.module.rules.filter(rule => !String(rule.test).includes('.scss')),
-                // SCSS loader with includePaths to fix your '@use "includes"' import
             ],
         }
     };

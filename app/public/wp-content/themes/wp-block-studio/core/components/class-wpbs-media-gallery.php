@@ -248,10 +248,10 @@ class WPBS_Media_Gallery {
 
 		if ( empty( $media ) ) {
 
-			$fields = get_field( 'wpbs', $query['gallery_id'] );
+			$fields = WPBS::clean_array( get_field( 'wpbs', $query['gallery_id'] ) );
 
 			$images = self::parse_acf_data( $fields['images'] ?? [] );
-			$video  = $fields['video'];
+			$video  = $fields['video'] ?? [];
 
 
 			if ( ! empty( $query['video_first'] ) ) {

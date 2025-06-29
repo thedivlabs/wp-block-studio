@@ -1,4 +1,4 @@
-@use "admin/acf";
-@use "admin/admin-menu";
-@use "admin/editor";
+@import "./admin/acf";
+@import "./admin/admin-menu";
+@import "./admin/editor";
 //@use "admin/editor-sidebar";

@@ -1,30 +1,37 @@
+.wpbs-modal__container:has(> .wpbs-lightbox) {
+  padding: 0 !important;
+}
+
 .wpbs-lightbox {
+  pointer-events: none !important;
+  height: 100svh;
   @apply
-  h-full
   w-full
-  m-auto
   p-0
-  overflow-visible
+  overflow-hidden
   ;
 
   img, picture {
-    max-width: min(100%, 95vh);
     @apply
     object-contain
     w-auto
-    h-auto
-    pointer-events-auto
+    h-full
+    pointer-events-none
+    max-w-full
   }
 
   .wpbs-lightbox__media {
+    padding: min(1.25rem, 2vh) .5rem;
     @apply
-    w-full
+    w-fit
     h-full
-    pointer-events-none
+    pointer-events-auto
     relative
+    overflow-hidden
+    max-w-full
   }
 
-  .swiper {
+  .wpbs-lightbox__slider.swiper {
     grid-template-rows: calc(100% - clamp(24px, 3rem, 5vh)) 1fr;
     @apply
     grid
@@ -32,15 +39,20 @@
     justify-start
     gap-0
     h-full
+    pointer-events-none
     ;
 
     &.swiper--disabled {
       grid-template-rows: 100%;
     }
-  }
 
-  .swiper-slide {
-    padding: min(1.25rem, 2vh) .5rem;
+    .swiper-slide {
+      pointer-events: none;
+      grid-template-columns: 100%;
+      grid-template-rows: 100%;
+      @apply
+      grid
+    }
   }
 
   iframe {
@@ -59,16 +71,14 @@
     bg-black/50
   }
 
-  .wpbs-lightbox-nav:has(> button.swiper-button-lock) {
-    display: none !important;
-  }
-
   .wpbs-lightbox-nav {
     z-index: 200;
     display: flex !important;
     height: clamp(24px, 3rem, 5vh);
     opacity: 1 !important;
+
     @apply
+    pointer-events-auto
     w-full
     items-center
     justify-center
@@ -84,7 +94,7 @@
       display: none !important;
     }
 
-    .wpbs-lightbox-nav__btn {
+    .wpbs-lightbox-nav__button {
       background: transparent !important;
       font-size: 1.2rem !important;
       line-height: 1.3em !important;
@@ -93,12 +103,12 @@
     }
   }
 
-  & .wpbs-lightbox--group .wpbs-lightbox__btn {
-    font-size: clamp(20px, 1.8rem, 4vh);
-    height: 100%;
-  }
 
+}
 
+.wpbs-lightbox--group .wpbs-lightbox-nav__btn {
+  font-size: clamp(20px, 1.8rem, 4vh);
+  height: 100%;
 }
 
 

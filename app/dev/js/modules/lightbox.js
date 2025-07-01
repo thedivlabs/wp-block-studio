@@ -10,6 +10,7 @@ export default class Lightbox {
             initialSlide: index,
             spaceBetween: 10,
             slidesPerView: 1,
+            simulateTouch:true,
             zoom: {
                 limitToOriginalSize: true,
                 maxRatio: 8,
@@ -72,17 +73,18 @@ export default class Lightbox {
         const slider = document.createElement('div');
         const sliderWrapper = document.createElement('div');
         const sliderNav = document.createElement('div');
+
         const sliderButtonNext = document.createElement('button');
         const sliderButtonPrev = document.createElement('button');
         const sliderPagination = document.createElement('div');
 
-        component.classList.add('wpbs-lightbox', 'flex', 'w-full', 'h-screen', 'overflow-hidden');
-        slider.classList.add('wpbs-lightbox__media', 'swiper');
+        component.classList.add('wpbs-lightbox', 'flex', 'w-full', 'h-screen', 'overflow-hidden', 'wpbs-lightbox--group');
+        slider.classList.add('wpbs-lightbox__slider', 'swiper');
         sliderWrapper.classList.add('swiper-wrapper');
-        sliderNav.classList.add('wpbs-lightbox-nav');
-        sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next');
+        sliderNav.classList.add('wpbs-lightbox-nav', 'wpbs-slider-nav');
+        sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next', 'wpbs-slider-nav__btn', 'wpbs-slider-nav__btn--next');
         sliderPagination.classList.add('wpbs-lightbox-nav__pagination');
-        sliderButtonPrev.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--prev');
+        sliderButtonPrev.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--prev', 'wpbs-slider-nav__btn', 'wpbs-slider-nav__btn--prev');
 
         const parser = new DOMParser();
 
@@ -92,7 +94,11 @@ export default class Lightbox {
 
             const slideElement = document.createElement('div');
             slideElement.classList.add('swiper-slide');
-            slideElement.append(slide);
+            const mediaElement = document.createElement('div');
+            mediaElement.classList.add('wpbs-lightbox__media');
+
+            mediaElement.append(slide);
+            slideElement.append(mediaElement);
             sliderWrapper.appendChild(slideElement);
         })
 

@@ -12,8 +12,8 @@ export default class Lightbox {
             slidesPerView: 1,
             simulateTouch:true,
             navigation: {
-                nextEl: 'wpbs-lightbox-nav__button--next',
-                prevEl: 'wpbs-lightbox-nav__button--prev',
+                nextEl: '.wpbs-lightbox-nav__button--next',
+                prevEl: '.wpbs-lightbox-nav__button--prev',
             },
             zoom: {
                 limitToOriginalSize: true,

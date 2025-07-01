@@ -99,7 +99,7 @@
     }
 
     .wpbs-lightbox-nav__button {
-      background: transparent !important;
+      //background: transparent !important;
       font-size: 1.2rem !important;
       line-height: 1.3em !important;
       color: white !important;
@@ -107,6 +107,7 @@
 
       @apply
       aspect-square
+      bg-red-500
     }
   }
 

@@ -151,8 +151,8 @@ class WPBS_Media_Gallery {
 				$block_template['attrs']['media']    = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
-					'media' => $media,
-					'index' => $k,
+					'media'    => $media,
+					'index'    => $k,
 					'isSlider' => $is_slider,
 				] ) );
 
@@ -219,15 +219,15 @@ class WPBS_Media_Gallery {
 
 		$grid_settings   = ! $is_slider ? $block->attributes['wpbs-grid'] ?? [] : [];
 		$query_settings  = $block->attributes['wpbs-media-gallery'] ?? [];
-		$slider_settings = $is_slider ? $block->attributes['wpbs-slider'] ?? [] : [];
+		$slider_settings = $is_slider ? $block->attributes['wpbs-swiper-args'] ?? [] : [];
 
 		return '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
-				'card'     => $loop->card,
-				'uniqueId' => $block->attributes['uniqueId'] ?? null,
-				'is_slider' => $is_slider,
+				'card'        => $loop->card,
+				'uniqueId'    => $block->attributes['uniqueId'] ?? null,
+				'is_slider'   => $is_slider,
+				'swiper' => $slider_settings,
 				...$grid_settings,
 				...$query_settings,
-				...$slider_settings,
 			] ) ) . '</script>';
 
 

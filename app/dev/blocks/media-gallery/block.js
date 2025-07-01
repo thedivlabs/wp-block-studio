@@ -13,17 +13,18 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useMemo} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import {
     PanelBody, TabPanel
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
-import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
+import {SLIDER_ATTRIBUTES, sliderArgs, SliderControls, sliderProps} from "Components/Slider"
 
 function blockClassnames(attributes = {}) {
     return [
         'wpbs-media-gallery h-max',
         'flex flex-wrap w-full block relative',
+        attributes?.className.includes('is-style-slider') ? 'swiper' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -36,13 +37,60 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         ...GRID_ATTRIBUTES,
         ...MEDIA_GALLERY_ATTRIBUTES,
-        ...SLIDER_ATTRIBUTES
+        ...SLIDER_ATTRIBUTES,
+        'wpbs-swiper-args': {
+            type: 'object',
+        }
     },
     edit: ({attributes, setAttributes}) => {
 
         const isSlider = (attributes?.className ?? '').includes('is-style-slider');
 
+        const swiperRef = useRef(null);
+
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
+
+        const sliderOptions = useMemo(() => {
+            return sliderArgs(attributes);
+        }, [attributes?.['wpbs-slider']]);
+
+        useEffect(() => {
+
+            setAttributes({'wpbs-swiper-args': sliderOptions});
+
+
+            if (swiperRef.current?.swiper) {
+
+                const allowedParams = [
+                    'breakpoints',
+                    'slidesPerView',
+                    //'rewind',
+                    'slidesPerGroup',
+                    'spaceBetween',
+                ];
+
+                const newParams = Object.fromEntries(
+                    Object.entries({
+                        ...swiperRef.current.swiper.params,
+                        ...sliderOptions
+                    }).filter(([key]) => allowedParams.includes(key))
+                );
+
+
+                if (swiperRef.current?.swiper?.currentBreakpoint) {
+                    swiperRef.current.swiper.currentBreakpoint = null;
+                }
+
+
+                swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
+
+                swiperRef.current.swiper.update();
+
+            } else if ('Swiper' in window && !!swiperRef.current) {
+                const element = swiperRef.current;
+                new Swiper(element, sliderOptions);
+            }
+        }, [sliderOptions]);
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
@@ -74,9 +122,7 @@ registerBlockType(metadata.name, {
             }
         ].filter(Boolean); // removes false entries
 
-        const cssProps = useMemo(() => {
-            return gridProps(attributes);
-        }, [attributes]);
+        const cssProps = !isSlider ? gridProps(attributes) : sliderProps(attributes);
 
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
@@ -87,6 +133,18 @@ registerBlockType(metadata.name, {
                 ['wpbs/media-gallery-card'],
             ]
         });
+
+        const BlockContent = () => {
+            return isSlider ? <div {...blockProps}>
+                <div className={'swiper-wrapper'}>
+                    {innerBlocksProps.children}
+                    <div className={'swiper-slide'}/>
+                    <div className={'swiper-slide'}/>
+                    <div className={'swiper-slide'}/>
+                    <div className={'swiper-slide'}/>
+                </div>
+            </div> : <div {...innerBlocksProps}/>;
+        }
 
         return (
             <>
@@ -109,7 +167,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
                 <BlockContextProvider value={{isSlider}}>
-                    <InnerBlocks {...innerBlocksProps} />
+                    <BlockContent/>
                 </BlockContextProvider>
 
 

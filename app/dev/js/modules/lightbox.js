@@ -77,7 +77,7 @@ export default class Lightbox {
         const sliderPagination = document.createElement('div');
 
         component.classList.add('wpbs-lightbox', 'flex', 'w-full', 'h-screen', 'overflow-hidden');
-        slider.classList.add('wpbs-lightbox__slider', 'swiper');
+        slider.classList.add('wpbs-lightbox__media', 'swiper');
         sliderWrapper.classList.add('swiper-wrapper');
         sliderNav.classList.add('wpbs-lightbox-nav');
         sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next');

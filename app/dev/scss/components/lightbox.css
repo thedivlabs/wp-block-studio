@@ -109,6 +109,15 @@
       aspect-square
       cursor-pointer
     }
+
+
+    .wpbs-lightbox-nav__pagination {
+      @apply
+      max-w-12
+      relative
+      top-auto
+      left-auto
+    }
   }
 
 

@@ -106,9 +106,9 @@ export default class Lightbox {
             sliderWrapper.appendChild(slideElement);
         })
 
-        sliderNav.appendChild(sliderButtonNext);
         sliderNav.appendChild(sliderButtonPrev);
         sliderNav.appendChild(sliderPagination);
+        sliderNav.appendChild(sliderButtonNext);
         slider.appendChild(sliderWrapper);
         slider.appendChild(sliderNav);
         component.appendChild(slider);

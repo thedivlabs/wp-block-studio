@@ -124,6 +124,8 @@ registerBlockType(metadata.name, {
 
         const cssProps = !isSlider ? gridProps(attributes) : sliderProps(attributes);
 
+        console.log(cssProps);
+
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
         });
@@ -135,7 +137,7 @@ registerBlockType(metadata.name, {
         });
 
         const BlockContent = () => {
-            return isSlider ? <div {...blockProps} ref={swiperRef}>
+            return isSlider ? <div {...blockProps}>
                 <div className={'swiper-wrapper'}>
                     {innerBlocksProps.children}
                     <div className={'swiper-slide'}/>

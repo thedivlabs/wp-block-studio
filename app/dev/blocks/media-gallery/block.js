@@ -1,6 +1,5 @@
 import "./scss/block.scss";
 
-
 import {
     InnerBlocks,
     InspectorControls, PanelColorSettings,
@@ -13,21 +12,12 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useMemo} from "react";
 import {
-    __experimentalGrid as Grid,
-    ToggleControl,
-    SelectControl,
-    TextControl,
-    BaseControl,
-    __experimentalNumberControl as NumberControl,
-    __experimentalBorderControl as BorderControl,
-    __experimentalInputControl as InputControl,
-    __experimentalUnitControl as UnitControl, PanelBody, TabPanel
+    PanelBody, TabPanel
 } from "@wordpress/components";
-import Breakpoint from "Components/Breakpoint.js";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
-import {SLIDER_ATTRIBUTES, SliderControls, sliderArgs, sliderProps} from "Components/Slider"
+import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
 
 function blockClassnames(attributes = {}) {
     return [
@@ -45,41 +35,49 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         ...GRID_ATTRIBUTES,
         ...MEDIA_GALLERY_ATTRIBUTES,
-        ...SLIDER_ATTRIBUTES,
-        'wpbs-swiper-args': {
-            type: 'object'
-        }
+        ...SLIDER_ATTRIBUTES
     },
     edit: ({attributes, setAttributes}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
-        const tabOptions = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
+        const isSlider = (attributes?.className ?? '').includes('is-style-slider');
+
+        const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
         const tabSlider = <SliderControls attributes={attributes} setAttributes={setAttributes}/>;
 
         const tabGallery = <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>;
 
-        const tabs = {
-            options: tabOptions,
+        const tabsContent = {
             gallery: tabGallery,
+            grid: tabGrid,
             slider: tabSlider,
         }
 
-        const sliderOptions = useMemo(() => {
-            return sliderArgs(attributes);
-        }, [attributes['wpbs-slider']]);
-
-        useEffect(() => {
-            setAttributes({'wpbs-swiper-args': sliderOptions});
-        }, [sliderOptions]);
+        const visibleTabs = [
+            {
+                name: 'gallery',
+                title: 'Gallery',
+                className: 'tab-gallery',
+            },
+            !isSlider && {
+                name: 'grid',
+                title: 'Grid',
+                className: 'tab-grid',
+            },
+            !!isSlider && {
+                name: 'slider',
+                title: 'Slider',
+                className: 'tab-slider',
+            }
+        ].filter(Boolean); // removes false entries
 
         const cssProps = useMemo(() => {
-            return {
-                ...gridProps(attributes),
-                ...sliderProps(attributes)
-            };
+            return gridProps(attributes);
         }, [attributes]);
+
+        console.log(cssProps);
 
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
@@ -96,34 +94,15 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="styles">
 
                     <PanelBody>
-
                         <TabPanel
                             className="wpbs-editor-tabs"
                             activeClass="active"
                             orientation="horizontal"
-                            initialTabName="options"
-                            tabs={[
-                                {
-                                    name: 'options',
-                                    title: 'Options',
-                                    className: 'tab-options',
-                                },
-                                {
-                                    name: 'gallery',
-                                    title: 'Gallery',
-                                    className: 'tab-gallery',
-                                },
-                                {
-                                    name: 'slider',
-                                    title: 'Slider',
-                                    className: 'tab-slider',
-                                },
-                            ]}>
-                            {
-                                (tab) => (<>{tabs[tab.name]}</>)
-                            }
+                            initialTabName={visibleTabs[0]?.name}
+                            tabs={visibleTabs}
+                        >
+                            {(tab) => <>{tabsContent[tab.name]}</>}
                         </TabPanel>
-
                     </PanelBody>
 
 
@@ -133,7 +112,7 @@ registerBlockType(metadata.name, {
                 <div {...innerBlocksProps}></div>
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       deps={['wpbs-grid']}
+                       deps={['wpbs-grid', 'wpbs-slider']}
                        props={cssProps}
                 />
             </>

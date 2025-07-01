@@ -17,6 +17,17 @@
   "providesContext": {
     "postId": "postId"
   },
+  "styles": [
+    {
+      "label": "Grid",
+      "name": "grid",
+      "isDefault": true
+    },
+    {
+      "label": "Slider",
+      "name": "slider"
+    }
+  ],
   "supports": {
     "layout": false,
     "interactivity": true,

@@ -40,6 +40,11 @@ export const SLIDER_ATTRIBUTES = {
     }
 };
 
+export const SliderComponent = ({attributes, blockProps})=>{
+
+    return <></>;
+}
+
 export function sliderArgs(attributes) {
 
     const {'wpbs-slider': options} = attributes;

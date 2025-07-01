@@ -22,16 +22,26 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 ] );
 
+
+$video_id = preg_replace( '/^\/+/', '', parse_url( $media['link'] ?? '', PHP_URL_PATH ) ?: '' );
+
+WPBS::console_log( $media );
+WPBS::console_log( $video_id );
+
 ?>
 
 
 <div <?php echo $wrapper_attributes ?>>
 	<?php
 
-	echo wp_get_attachment_image( $media['poster'] ?? $media['id'], 'medium', false, [
-		'loading' => 'lazy',
-		'class'   => 'w-full h-full object-cover flex overflow-hidden'
-	] );
+	if ( ! empty( $media['poster'] ) || ! empty( $media['id'] ) ) {
+		echo wp_get_attachment_image( $media['poster'] ?? $media['id'] ?? false, 'medium', false, [
+			'loading' => 'lazy',
+			'class'   => 'w-full h-full object-cover flex overflow-hidden'
+		] );
+	} else {
+		echo '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="w-full h-full object-cover" alt="" />';
+	}
 
 
 	?>

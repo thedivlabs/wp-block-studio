@@ -1,3 +1,4 @@
+/* Shared layout rules */
 .wpbs-layout-container.wpbs-has-container > .container,
 .wpbs-layout-wrapper {
   display: inherit;
@@ -11,86 +12,84 @@
   height: 100%;
 }
 
-.wpbs-layout-container {
-
-
-  &-xs:not(.wpbs-has-container),
-  &-xs.wpbs-has-container > .container {
-    max-width: var(--wp--custom--container--xs);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-sm:not(.wpbs-has-container),
-  &-sm.wpbs-has-container > .container {
-    max-width: var(--wp--custom--container--sm);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-md:not(.wpbs-has-container),
-  &-md.wpbs-has-container > .container {
-    max-width: var(--wp--custom--container--lg);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-normal:not(.wpbs-has-container),
-  &-normal.wpbs-has-container > .container {
-    max-width: var(--wp--custom--container--xl);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-lg:not(.wpbs-has-container),
-  &-lg.wpbs-has-container > .container {
-    max-width: var(--wp--custom--container--2-xl);
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  &-none:not(.wpbs-has-container),
-  &-none.wpbs-has-container > .container {
-    max-width: 100%;
-  }
-
+/* Container width modifiers */
+.wpbs-layout-container-xs:not(.wpbs-has-container),
+.wpbs-layout-container-xs.wpbs-has-container > .container {
+  max-width: var(--wp--custom--container--xs);
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.wpbs-layout-container-sm:not(.wpbs-has-container),
+.wpbs-layout-container-sm.wpbs-has-container > .container {
+  max-width: var(--wp--custom--container--sm);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wpbs-layout-container-md:not(.wpbs-has-container),
+.wpbs-layout-container-md.wpbs-has-container > .container {
+  max-width: var(--wp--custom--container--lg);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wpbs-layout-container-normal:not(.wpbs-has-container),
+.wpbs-layout-container-normal.wpbs-has-container > .container {
+  max-width: var(--wp--custom--container--xl);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wpbs-layout-container-lg:not(.wpbs-has-container),
+.wpbs-layout-container-lg.wpbs-has-container > .container {
+  max-width: var(--wp--custom--container--2-xl);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wpbs-layout-container-none:not(.wpbs-has-container),
+.wpbs-layout-container-none.wpbs-has-container > .container {
+  max-width: 100%;
+}
+
+/* Loop card sizing */
 .loop-card {
   max-width: calc((100% - (var(--grid-row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
 }
 
+/* Masonry layout */
 .--masonry .loop-card {
   margin-bottom: var(--grid-row-gap, var(--grid-col-gap, 0px));
 }
 
-.--divider .loop-card {
+/* Divider styles for loop-card */
+.--divider .loop-card::before,
+.--divider .loop-card::after {
+  left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
+  color: var(--divider-color, lightgray);
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Font Awesome 6 Pro', sans-serif;
+}
 
-  &:before,
-  &:after {
-    left: calc(0px - (var(--grid-col-gap, var(--grid-row-gap, 0px)) / 2));
-    color: var(--divider-color, lightgray);
-    position: absolute;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Font Awesome 6 Pro', sans-serif;
-  }
+/* Divider horizontal line */
+.--divider .loop-card::before {
+  content: "";
+  width: calc(100% + var(--grid-col-gap, var(--grid-row-gap, 0px)));
+  border-bottom: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
+  font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-row-gap, var(--grid-col-gap, 0px)) - 1rem)));
+  bottom: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
+}
 
-  &:before {
-    content: "";
-    width: calc(100% + var(--grid-col-gap, var(--grid-row-gap, 0px)));
-    border-bottom: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
-    font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-row-gap, var(--grid-col-gap, 0px)) - 1rem)));
-    bottom: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
-  }
-
-  &:after {
-    top: 0;
-    height: 100%;
-    border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
-    content: var(--divider-icon-large, '');
-    font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-col-gap, var(--grid-row-gap, 0px)) - 1rem)));
-  }
+/* Divider vertical icon */
+.--divider .loop-card::after {
+  top: 0;
+  height: 100%;
+  border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
+  content: var(--divider-icon-large, '');
+  font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-col-gap, var(--grid-row-gap, 0px)) - 1rem)));
 }

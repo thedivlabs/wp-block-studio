@@ -1,75 +1,59 @@
 .wpbs-background {
   background-color: inherit;
+}
 
-  &--mask &__media {
-    mask-image: var(--mask-image, none);
-    mask-repeat: no-repeat;
-    mask-size: var(--mask-size, contain);
-    mask-position: var(--mask-origin, center);
-  }
+/* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
+.wpbs-background--mask .wpbs-background__media {
+  mask-image: var(--mask-image, none);
+  mask-repeat: no-repeat;
+  mask-size: var(--mask-size, contain);
+  mask-position: var(--mask-origin, center);
+}
 
-  &__media {
-    background-color: var(--color, inherit);
-    top: var(--top, 0);
-    left: var(--left, 0);
-    right: var(--right, auto);
-    bottom: var(--bottom, auto);
+/* Main background media element */
+.wpbs-background__media {
+  background-color: var(--color, inherit);
+  top: var(--top, 0);
+  left: var(--left, 0);
+  right: var(--right, auto);
+  bottom: var(--bottom, auto);
 
-    width: var(--width, 100%);
-    height: var(--height, 100%);
-    transform: var(--transform, none);
+  width: var(--width, 100%);
+  height: var(--height, 100%);
+  transform: var(--transform, none);
+  position: absolute;
+}
 
-    &:after {
+/* Overlay after pseudo */
+.wpbs-background__media::after {
+  background: var(--overlay, transparent);
+  content: '';
+  @apply block absolute top-0 left-0 w-full h-full z-10;
+}
 
-      background: var(--overlay, transparent);
-      content: '';
-      @apply
-      block
-      absolute
-      top-0
-      left-0
-      w-full
-      h-full
-      z-10
-    }
-  }
+/* Image & pattern fallback styles when not lazy OR inside block editor */
+.wpbs-background:not(.lazy) .wpbs-background__media--image::before,
+.wpbs-background:not(.lazy) .wpbs-background__media--pattern::before,
+.block-editor-page .wpbs-background__media--image::before,
+.block-editor-page .wpbs-background__media--pattern::before {
+  mask-image: var(--fade, none);
+  background-color: inherit;
+  opacity: var(--opacity, 1);
+  background-image: var(--image, none);
+  background-repeat: var(--repeat, no-repeat);
+  background-size: var(--scale, var(--size, cover));
+  background-blend-mode: var(--blend, none);
+  background-attachment: var(--attachment, initial);
+  background-position: var(--origin, center);
+  max-height: var(--max-height, 100%);
+  content: '';
+  @apply absolute top-0 left-0 w-full h-full z-0;
+}
 
-  &:not(.lazy) &__media--image,
-  &:not(.lazy) &__media--patern,
-  .block-editor-page &__media--image,
-  .block-editor-page &__media--patern,
-  {
-
-
-    &:before {
-      mask-image: var(--fade, none);
-      background-color: inherit;
-      opacity: var(--opacity, 1);
-      background-image: var(--image, none);
-      background-repeat: var(--repeat, no-repeat);
-      background-size: var(--scale, var(--size, cover));
-      background-blend-mode: var(--blend, none);
-      background-attachment: var(--attachment, initial);
-      background-position: var(--origin, center);
-      max-height: var(--max-height, 100%);
-      content: '';
-      @apply
-      absolute
-      top-0
-      left-0
-      w-full
-      h-full
-      z-0
-    }
-
-
-  }
-
-  &__media--video video {
-    max-height: var(--max-height, 100%);
-    mask-image: var(--fade, none);
-    mix-blend-mode: var(--blend, none);
-    opacity: var(--opacity, 1);
-  }
-
+/* Video-specific styling */
+.wpbs-background__media--video video {
+  max-height: var(--max-height, 100%);
+  mask-image: var(--fade, none);
+  mix-blend-mode: var(--blend, none);
+  opacity: var(--opacity, 1);
 }

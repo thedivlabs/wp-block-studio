@@ -1,64 +1,55 @@
 .wpbs-loader {
-  @apply
-  fixed
-  top-0
-  left-0
-  w-full
-  h-full
-  z-[9999999999999]
-  flex
-  justify-center
-  items-center
-  ;
+  @apply fixed top-0 left-0 w-full h-full z-[9999999999999] flex justify-center items-center;
+  position: fixed;
+}
 
-  &.fade-out {
-    opacity: 0;
-    transition: opacity 500ms ease;
-  }
+/* .fade-out modifier */
+.wpbs-loader.fade-out {
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
 
-  &.target {
-    @apply
-    absolute
-  }
+/* .target modifier */
+.wpbs-loader.target {
+  @apply absolute;
+}
 
-  &.reverse &__anim {
-    background: white;
-  }
+/* .reverse modifier affecting child .wpbs-loader__anim */
+.wpbs-loader.reverse .wpbs-loader__anim {
+  background: white;
+}
 
-  &__anim {
-    width: 60px;
-    padding: 8px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: var(--wp--preset--color--primary);
-    --_m: conic-gradient(#0000 10%, #000),
-    linear-gradient(#000 0 0) content-box;
-    -webkit-mask: var(--_m);
-    mask: var(--_m);
-    -webkit-mask-composite: source-out;
-    mask-composite: subtract;
-    animation: l3 1s infinite linear;
-    position: relative;
-    z-index: 10;
-  }
+/* animation block */
+.wpbs-loader__anim {
+  width: 60px;
+  padding: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--wp--preset--color--primary);
 
-  &:before {
-    background-color: var(--wp--custom--loader--background, transparent);
-    opacity: var(--wp--custom--loader--opacity, 0);
-    content: '';
-    @apply
-    absolute
-    top-0
-    left-0
-    w-full
-    h-full
-    z-0
-    pointer-events-none
-  }
+  --_m: conic-gradient(#0000 10%, #000), linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+  mask: var(--_m);
+  -webkit-mask-composite: source-out;
+  mask-composite: subtract;
 
-  @keyframes l3 {
-    to {
-      transform: rotate(1turn)
-    }
+  animation: l3 1s infinite linear;
+
+  position: relative;
+  z-index: 10;
+}
+
+/* backdrop layer */
+.wpbs-loader::before {
+  background-color: var(--wp--custom--loader--background, transparent);
+  opacity: var(--wp--custom--loader--opacity, 0);
+  content: '';
+  @apply absolute top-0 left-0 w-full h-full z-0 pointer-events-none;
+}
+
+/* Keyframe animation */
+@keyframes l3 {
+  to {
+    transform: rotate(1turn);
   }
 }

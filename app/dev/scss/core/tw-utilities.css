@@ -1,26 +1,15 @@
 @layer utilities {
 
-  .rounded {
-
-    &-inherit {
-      border-radius: inherit;
-    }
-
+  .rounded-inherit {
+    border-radius: inherit;
   }
 
-  .aspect {
-
-    &-video {
-      aspect-ratio: 16/9;
-    }
-
+  .aspect-video {
+    aspect-ratio: 16/9;
   }
 
-  .z {
-
-    &-modal {
-      z-index: 120000;
-    }
+  .z-modal {
+    z-index: 120000;
   }
 
   .font-size-inherit {

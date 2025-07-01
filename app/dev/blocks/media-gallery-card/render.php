@@ -2,8 +2,10 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
-$media = $block->context['media'] ?? false;
-$index = $block->context['index'] ?? 0;
+$media     = $block->context['media'] ?? false;
+$index     = $block->context['index'] ?? 0;
+
+
 
 if ( empty( $media ) ) {
 	return false;
@@ -11,7 +13,8 @@ if ( empty( $media ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card loop-card relative',
+		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card relative',
+        $is_slider ? 'swiper-slide' : 'loop-card',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),
@@ -21,9 +24,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'index' => intval( $index ?? 0 ),
 	] ) ),
 ] );
-
-
-
 
 
 ?>
@@ -38,7 +38,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	} else {
-		echo WPBS::get_youtube_poster_image($media['link'] ?? '');
+		echo WPBS::get_youtube_poster_image( $media['link'] ?? '' );
 	}
 
 

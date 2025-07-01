@@ -9,13 +9,6 @@ $grid_settings = $attributes['wpbs-grid'] ?? [];
 
 $is_slider = str_contains( ( $attributes['className'] ?? '' ), 'is-style-slider' );
 
-if ( $is_slider ) {
-	$settings['card_class'] = join( ' ', [
-		$settings['card_class'] ?? '',
-		'swiper-slide'
-	] );
-}
-
 $loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
@@ -30,7 +23,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-init'        => 'actions.init',
 ] );
 
-WPBS::console_log( $block ?? false );
 
 ?>
 

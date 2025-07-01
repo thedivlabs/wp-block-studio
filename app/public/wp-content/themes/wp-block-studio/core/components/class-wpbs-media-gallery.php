@@ -146,9 +146,9 @@ class WPBS_Media_Gallery {
 					'modal' => false
 				];
 
-				$block_template['attrs']['uniqueId'] = $card['attrs']['uniqueId'] ?? '';
-				$block_template['attrs']['index']    = $k;
-				$block_template['attrs']['media']    = $media;
+				$block_template['attrs']['uniqueId']  = $card['attrs']['uniqueId'] ?? '';
+				$block_template['attrs']['index']     = $k;
+				$block_template['attrs']['media']     = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
 					'media' => $media,

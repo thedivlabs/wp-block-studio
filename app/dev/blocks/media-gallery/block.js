@@ -1,6 +1,7 @@
 import "./scss/block.scss";
 
 import {
+    BlockContextProvider,
     InnerBlocks,
     InspectorControls, PanelColorSettings,
     useBlockProps,
@@ -39,9 +40,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
-
         const isSlider = (attributes?.className ?? '').includes('is-style-slider');
+
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
@@ -107,7 +108,10 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <div {...innerBlocksProps}></div>
+                <BlockContextProvider value={{isSlider}}>
+                    <InnerBlocks {...innerBlocksProps} />
+                </BlockContextProvider>
+
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-grid', 'wpbs-slider']}

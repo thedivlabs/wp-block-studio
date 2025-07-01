@@ -9,13 +9,17 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
+    },
+    "isSlider": {
+      "type": "boolean",
+      "show_in_rest": true
     }
   },
   "allowedBlocks": [
     "wpbs/media-gallery-card"
   ],
   "providesContext": {
-    "postId": "postId"
+    "wpbs/isSlider": "isSlider"
   },
   "styles": [
     {

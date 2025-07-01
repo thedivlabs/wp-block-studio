@@ -15,8 +15,7 @@
     "wpbs/media-gallery"
   ],
   "usesContext": [
-    "index",
-    "media"
+    "isSlider"
   ],
   "supports": {
     "interactivity": true,

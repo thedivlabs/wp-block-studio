@@ -29,6 +29,10 @@
     relative
     overflow-hidden
     max-w-full
+    flex
+    justify-center
+    items-center
+    m-auto
   }
 
   .wpbs-lightbox__slider.swiper {

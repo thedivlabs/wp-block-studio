@@ -259,7 +259,7 @@ class WPBS_Media_Gallery {
 			} else {
 				$media = WPBS::clean_array( [ ...$images, ...$video ] );
 			}
-			
+
 			if ( ! empty( $media ) ) {
 				set_transient( $transient_id, $media, self::TRANSIENT_EXPIRATION );
 			}

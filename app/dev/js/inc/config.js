@@ -176,6 +176,7 @@ export const SWIPER_DEFAULT_ARGS = {
     pagination: {
         enabled: true,
         el: '.swiper-pagination',
+        type: 'progressbar'
     },
     passiveListeners: true,
     preventClicks: false,

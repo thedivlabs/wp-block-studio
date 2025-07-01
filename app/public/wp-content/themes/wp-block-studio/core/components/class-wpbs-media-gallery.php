@@ -126,7 +126,7 @@ class WPBS_Media_Gallery {
 		}
 	}
 
-	public static function loop( $card, $query = [], $page = 1 ): object|bool {
+	public static function loop( $card, $query = [], $page = 1, $is_slider = false ): object|bool {
 
 		if ( empty( $query['gallery_id'] ) ) {
 			return false;
@@ -146,13 +146,14 @@ class WPBS_Media_Gallery {
 					'modal' => false
 				];
 
-				$block_template['attrs']['uniqueId']  = $card['attrs']['uniqueId'] ?? '';
-				$block_template['attrs']['index']     = $k;
-				$block_template['attrs']['media']     = $media;
+				$block_template['attrs']['uniqueId'] = $card['attrs']['uniqueId'] ?? '';
+				$block_template['attrs']['index']    = $k;
+				$block_template['attrs']['media']    = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
 					'media' => $media,
 					'index' => $k,
+					'isSlider' => $is_slider,
 				] ) );
 
 				$new_block->attributes['media'] = $media;
@@ -223,6 +224,7 @@ class WPBS_Media_Gallery {
 		return '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'     => $loop->card,
 				'uniqueId' => $block->attributes['uniqueId'] ?? null,
+				'is_slider' => $is_slider,
 				...$grid_settings,
 				...$query_settings,
 				...$slider_settings,

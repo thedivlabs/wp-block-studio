@@ -1,6 +1,5 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
-
 const {state} = store('wpbs/media-gallery', {
     actions: {
         init: () => {
@@ -8,7 +7,12 @@ const {state} = store('wpbs/media-gallery', {
             const {ref: grid} = getElement();
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerText ?? '{}');
 
-            const {is_last} = data;
+            const {is_last, is_slider} = data;
+
+            if(is_slider){
+                new Swiper(grid);
+            }
+
 
             WPBS.setMasonry(grid);
 
@@ -24,7 +28,7 @@ const {state} = store('wpbs/media-gallery', {
 
             if (grid.classList.contains('--lightbox')) {
                 grid.addEventListener('click', (event) => {
-                    const card = event.target.closest('.loop-card');
+                    const card = event.target.closest('.wpbs-lightbox-card');
 
                     if (!card) {
                         return false;
@@ -36,7 +40,7 @@ const {state} = store('wpbs/media-gallery', {
                     })
 
                 });
-                
+
             }
 
 

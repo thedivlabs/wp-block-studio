@@ -4,8 +4,7 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 $media     = $block->context['media'] ?? false;
 $index     = $block->context['index'] ?? 0;
-
-
+$is_slider = $block->context['isSlider'] ?? false;
 
 if ( empty( $media ) ) {
 	return false;
@@ -14,7 +13,7 @@ if ( empty( $media ) ) {
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card relative',
-        $is_slider ? 'swiper-slide' : 'loop-card',
+		$is_slider ? 'swiper-slide' : 'loop-card',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),

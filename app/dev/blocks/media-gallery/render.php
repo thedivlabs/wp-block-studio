@@ -20,6 +20,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-init'        => 'actions.init'
 ] );
 
+WPBS::console_log($attributes);
 
 ?>
 

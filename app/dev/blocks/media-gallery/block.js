@@ -27,6 +27,7 @@ import {
 } from "@wordpress/components";
 import Breakpoint from "Components/Breakpoint.js";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
+import {SLIDER_ATTRIBUTES, SliderControls, sliderArgs, sliderProps} from "Components/Slider"
 
 function blockClassnames(attributes = {}) {
     return [
@@ -43,7 +44,11 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...GRID_ATTRIBUTES,
-        ...MEDIA_GALLERY_ATTRIBUTES
+        ...MEDIA_GALLERY_ATTRIBUTES,
+        ...SLIDER_ATTRIBUTES,
+        'wpbs-swiper-args': {
+            type: 'object'
+        }
     },
     edit: ({attributes, setAttributes}) => {
 
@@ -51,15 +56,29 @@ registerBlockType(metadata.name, {
 
         const tabOptions = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
+        const tabSlider = <SliderControls attributes={attributes} setAttributes={setAttributes}/>;
+
         const tabGallery = <MediaGalleryControls attributes={attributes} setAttributes={setAttributes}/>;
 
         const tabs = {
             options: tabOptions,
             gallery: tabGallery,
+            slider: tabSlider,
         }
 
+        const sliderOptions = useMemo(() => {
+            return sliderArgs(attributes);
+        }, [attributes['wpbs-slider']]);
+
+        useEffect(() => {
+            setAttributes({'wpbs-swiper-args': sliderOptions});
+        }, [sliderOptions]);
+
         const cssProps = useMemo(() => {
-            return gridProps(attributes);
+            return {
+                ...gridProps(attributes),
+                ...sliderProps(attributes)
+            };
         }, [attributes]);
 
         const blockProps = useBlockProps({
@@ -93,6 +112,11 @@ registerBlockType(metadata.name, {
                                     name: 'gallery',
                                     title: 'Gallery',
                                     className: 'tab-gallery',
+                                },
+                                {
+                                    name: 'slider',
+                                    title: 'Slider',
+                                    className: 'tab-slider',
                                 },
                             ]}>
                             {

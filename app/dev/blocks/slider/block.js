@@ -90,8 +90,6 @@ registerBlockType(metadata.name, {
 
             } else if ('Swiper' in window && !!swiperRef.current) {
                 const element = swiperRef.current;
-                console.log(typeof element);
-                console.log(swiperRef.current instanceof Element);
                 new Swiper(element, sliderOptions);
             }
         }, [sliderOptions]);

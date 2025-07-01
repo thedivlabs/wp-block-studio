@@ -25,8 +25,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 $video_id = preg_replace( '/^\/+/', '', parse_url( $media['link'] ?? '', PHP_URL_PATH ) ?: '' );
 
-WPBS::console_log( $media );
-WPBS::console_log( $video_id );
 
 ?>
 

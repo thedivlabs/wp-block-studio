@@ -1,49 +1,42 @@
 .wpbs-cta-button {
-  display: inline-block;
-  width: fit-content;
-  position: relative;
-  user-select: none;
+  @apply inline-block relative select-none w-fit;
+}
 
-  &--icon &__link {
+/* Icon layout behavior: modifies link and its child icon */
+.wpbs-cta-button--icon .wpbs-cta-button__link:hover > i {
+  color: inherit;
+}
 
-    &:hover > i {
-      color: inherit;
-    }
-  }
+/* Icon first: reorder the icon */
+.wpbs-cta-button--icon-first .wpbs-cta-button__link > i {
+  order: 0;
+}
 
-  &--icon-first &__link > i {
-    order: 0;
-  }
+/* Icon only: hide the label */
+.wpbs-cta-button--icon-only .wpbs-cta-button__link > span {
+  display: none;
+}
 
-  &--icon-only &__link > span {
-    display:none;
-  }
+/* Main button link */
+.wpbs-cta-button__link {
+  @apply inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
 
-  &__link {
-    user-select: none;
-    gap: inherit;
-    position: relative;
-    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+/* Label span inside button */
+.wpbs-cta-button__link > span {
+  order: 1;
+}
 
-    & > span {
-      order: 1;
-    }
-
-    & > i {
-      transition: color 0.3s ease;
-      color: var(--icon-color, inherit);
-      order: 2;
-      height: 1em;
-      aspect-ratio: 1/1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-  }
-
+/* Icon inside button */
+.wpbs-cta-button__link > i {
+  color: var(--icon-color, inherit);
+  order: 2;
+  height: 1em;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: color 0.3s ease;
 }

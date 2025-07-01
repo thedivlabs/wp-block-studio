@@ -203,26 +203,29 @@ export const SWIPER_DEFAULT_ARGS = {
     simulateTouch: false,
     on: {
         init: (swiper) => {
-
+            console.log(swiper);
         },
-        /*      transitionEnd: (swiper) => {
-                  const el = 'el' in swiper ? swiper.el : swiper;
-
-                  const pause_videos = el.querySelectorAll('.swiper-slide:not(:only-of-type):not(.swiper-slide-active) video');
-                  const active_videos = el.querySelectorAll('.swiper-slide.swiper-slide-active video, .swiper-slide:only-of-type video');
-                  const embed_videos = el.querySelectorAll('iframe[src]');
+        transitionEnd: (swiper) => {
 
 
-                  [...embed_videos].forEach(function (video_el) {
-                      video_el.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*')
-                  });
+            const el = 'el' in swiper ? swiper.el : swiper;
+            console.log(el);
 
-                  [...pause_videos].forEach((video) => {
-                      video.pause();
-                  });
+            const pause_videos = el.querySelectorAll('.swiper-slide:not(:only-of-type):not(.swiper-slide-active) video');
+            const active_videos = el.querySelectorAll('.swiper-slide.swiper-slide-active video, .swiper-slide:only-of-type video');
+            const embed_videos = el.querySelectorAll('iframe[src]');
 
-                  [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
 
-              }*/
+            [...embed_videos].forEach(function (video_el) {
+                video_el.contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*')
+            });
+
+            [...pause_videos].forEach((video) => {
+                video.pause();
+            });
+
+            [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
+
+        }
     }
 }

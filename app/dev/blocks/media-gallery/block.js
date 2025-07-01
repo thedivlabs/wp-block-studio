@@ -135,7 +135,7 @@ registerBlockType(metadata.name, {
         });
 
         const BlockContent = () => {
-            return isSlider ? <div {...blockProps}>
+            return isSlider ? <div {...blockProps} ref={swiperRef}>
                 <div className={'swiper-wrapper'}>
                     {innerBlocksProps.children}
                     <div className={'swiper-slide'}/>

@@ -71,7 +71,7 @@ export function Style({
         return <></>;
     }
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
 
     const {resultCss, preloadMedia} = useMemo(() => {
 

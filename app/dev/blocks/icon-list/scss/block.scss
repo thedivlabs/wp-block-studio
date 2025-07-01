@@ -1,51 +1,50 @@
 .wpbs-icon-list {
   position: relative;
   width: 100%;
-  display: inline-block;
+  @apply inline-block;
   line-height: var(--line-height, 1.5em);
+}
 
-  &--divider &__list {
+/* Modifier: .wpbs-icon-list--divider affecting the list */
+.wpbs-icon-list--divider .wpbs-icon-list__list > li:not(:last-of-type) {
+  padding-bottom: var(--row-gap, 1em);
+  border-bottom: var(--divider, none);
+}
 
-    & > li:not(:last-of-type) {
-      padding-bottom: var(--row-gap, 1em);
-      border-bottom: var(--divider, none);
-    }
-  }
+/* List container */
+.wpbs-icon-list__list {
+  width: fit-content;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--list-columns, 1), max-content);
+  list-style: none;
+  position: relative;
+  gap: inherit;
+  line-height: inherit;
+}
 
-  &__list {
-    width: fit-content;
-    display: inline-grid;
-    grid-template-columns: repeat(var(--list-columns, 1), max-content);
-    list-style: none;
-    position: relative;
-    gap: inherit;
-    line-height: inherit;
+/* List items */
+.wpbs-icon-list__list > li {
+  position: relative;
+  padding-left: var(--icon-space, calc(var(--icon-size, 1.5em) + 0.2em));
+  line-height: inherit;
+}
 
-    & > li {
-      position: relative;
-      padding-left: var(--icon-space, calc(var(--icon-size, 1.5em) + .2em));
-      line-height: inherit;
-    }
-
-    & > li::before {
-      content: var(--icon, "\f00c");
-      font-family: "Font Awesome 6 Pro", sans-serif;
-      font-weight: var(--icon-style, 300);
-      font-size: var(--icon-size, 1.2em);
-      color: var(--icon-color, inherit);
-      line-height: inherit;
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: var(--line-height, 1.5em);
-      font-style: normal;
-      font-variant: normal;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      pointer-events: none;
-      user-select: none;
-    }
-  }
-
-
+/* List item icon before pseudo-element */
+.wpbs-icon-list__list > li::before {
+  content: var(--icon, "\f00c");
+  font-family: "Font Awesome 6 Pro", sans-serif;
+  font-weight: var(--icon-style, 300);
+  font-size: var(--icon-size, 1.2em);
+  color: var(--icon-color, inherit);
+  line-height: inherit;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: var(--line-height, 1.5em);
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  pointer-events: none;
+  user-select: none;
 }

@@ -1,12 +1,12 @@
 .wpbs-slide {
   max-width: calc(100% / var(--slides, 1));
+}
 
-  &--image picture > img {
-    width: 100% !important;
-    height: 100% !important;
-  }
+.wpbs-slide--image picture > img {
+  width: 100% !important;
+  height: 100% !important;
+}
 
-  &__container {
-    display: flex !important;
-  }
+.wpbs-slide__container {
+  display: flex !important;
 }

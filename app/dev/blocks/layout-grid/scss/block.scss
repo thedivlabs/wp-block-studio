@@ -1,55 +1,56 @@
 .wpbs-layout-grid {
   display: flex;
   flex-direction: column;
+}
 
-  .wp-block-query-pagination {
-    width: 100%;
-    display: block;
+/* Pagination block full width */
+.wpbs-layout-grid .wp-block-query-pagination {
+  width: 100%;
+  display: block;
+}
 
-    .wp-block-query-pagination-numbers {
-      display: inline-grid;
-      grid-template-columns: repeat(auto-fit, minmax(1em, 1fr));
-      width: fit-content;
-      max-width: 100%;
-      align-items: stretch;
+/* Pagination numbers grid */
+.wpbs-layout-grid .wp-block-query-pagination .wp-block-query-pagination-numbers {
+  display: inline-grid;
+  grid-template-columns: repeat(auto-fit, minmax(1em, 1fr));
+  width: fit-content;
+  max-width: 100%;
+  align-items: stretch;
+}
 
-      .page-numbers {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        height: auto;
-        width: auto;
+/* Individual page numbers */
+.wpbs-layout-grid .wp-block-query-pagination .wp-block-query-pagination-numbers .page-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: auto;
+  width: auto;
+}
 
-        &.current {
-          pointer-events: none;
-        }
-      }
-    }
-  }
+/* Current page number disables pointer events */
+.wpbs-layout-grid .wp-block-query-pagination .wp-block-query-pagination-numbers .page-numbers.current {
+  pointer-events: none;
+}
 
+/* Container inside layout grid */
+.wpbs-layout-grid__container {
+  @apply flex flex-wrap;
+  flex-direction: row;
+  justify-content: inherit;
+  align-items: inherit;
+  row-gap: inherit;
+  column-gap: inherit;
+  width: 100%;
+}
 
-  &__container {
-    flex-wrap: wrap;
-    display: flex;
-    flex-direction: row;
+/* Button inside pagination modifier */
+.wpbs-layout-grid--pagination .wpbs-layout-grid__button {
+  @apply inline-block;
+}
 
-
-    justify-content: inherit;
-    align-items: inherit;
-    row-gap: inherit;
-    column-gap: inherit;
-    width: 100%;
-
-  }
-
-  &--pagination &__button {
-    display: inline-block;
-  }
-
-  &--pagination &__container:empty + &__button {
-    display: none !important;
-    pointer-events: none;
-  }
-
+/* Hide button if container is empty */
+.wpbs-layout-grid--pagination .wpbs-layout-grid__container:empty + .wpbs-layout-grid__button {
+  display: none !important;
+  pointer-events: none;
 }

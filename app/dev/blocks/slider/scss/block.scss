@@ -1,59 +1,57 @@
-.wpbs-slider {
+.wpbs-slider .swiper-pagination-progressbar {
+  width: min(5rem, 100%) !important;
+}
 
-  .swiper-pagination-progressbar {
-    width: min(5rem, 100%) !important;
-  }
+.wpbs-slider .swiper-slide {
+  height: auto;
+}
 
-  .swiper-slide {
-    height: auto;
-  }
+/* Fade-in modifier */
+.wpbs-slider--fade-in {
+  opacity: 0;
+  transition: opacity 0.3s linear;
+}
 
-  &--fade-in {
-    opacity: 0;
-    transition: opacity .3s linear;
+.wpbs-slider--fade-in.swiper-initialized {
+  opacity: 1;
+}
 
-    &.swiper-initialized {
-      opacity: 1;
-    }
-  }
+/* Collapse + disabled modifiers */
+.wpbs-slider--collapse.swiper--disabled .swiper-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: inherit !important;
+}
 
+.wpbs-slider--collapse.swiper--disabled .swiper-slide {
+  flex-grow: 0 !important;
+  height: auto !important;
+}
 
-  &--collapse.swiper--disabled {
+/* Initialized slider with active slide pointer-events */
+.wpbs-slider.swiper-initialized .swiper-slide {
+  /* pointer-events: none; */
+  /* commented out as in original */
 
-    .swiper-wrapper {
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: flex-start !important;
-      gap: inherit !important;
-    }
+}
 
-    .swiper-slide {
-      flex-grow: 0 !important;
-      height: auto !important;
-    }
-  }
+.wpbs-slider.swiper-initialized .swiper-slide.swiper-slide-active {
+  pointer-events: auto;
+}
 
-  &.swiper-initialized .swiper-slide {
-    //pointer-events: none;
+/* Disabled buttons */
+.wpbs-slider .swiper-button-disabled {
+  opacity: 0.5;
+  cursor: auto;
+}
 
-    &.swiper-slide-active {
-      pointer-events: auto;
-    }
-  }
+/* Slider nav hidden when not initialized */
+.wpbs-slider:not(.swiper-initialized) .wpbs-slider-nav {
+  opacity: 0;
+  pointer-events: none !important;
+}
 
-
-  .swiper-button-disabled {
-    opacity: .5;
-    cursor: auto;
-  }
-
-  &:not(.swiper-initialized) .wpbs-slider-nav {
-    opacity: 0;
-    pointer-events: none !important;
-
-    * {
-      pointer-events: none !important;
-    }
-  }
-
+.wpbs-slider:not(.swiper-initialized) .wpbs-slider-nav * {
+  pointer-events: none !important;
 }

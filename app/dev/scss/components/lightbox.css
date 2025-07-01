@@ -107,7 +107,7 @@
 
       @apply
       aspect-square
-      bg-red-500
+      cursor-pointer
     }
   }
 

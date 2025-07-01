@@ -214,14 +214,18 @@ class WPBS_Media_Gallery {
 			return false;
 		}
 
-		$grid_settings  = $block->attributes['wpbs-grid'] ?? [];
-		$query_settings = $block->attributes['wpbs-media-gallery'] ?? [];
+		$is_slider = str_contains( ( $block->attributes['className'] ?? '' ), 'is-style-slider' );
+
+		$grid_settings   = ! $is_slider ? $block->attributes['wpbs-grid'] ?? [] : [];
+		$query_settings  = $block->attributes['wpbs-media-gallery'] ?? [];
+		$slider_settings = $is_slider ? $block->attributes['wpbs-slider'] ?? [] : [];
 
 		return '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 				'card'     => $loop->card,
 				'uniqueId' => $block->attributes['uniqueId'] ?? null,
 				...$grid_settings,
-				...$query_settings
+				...$query_settings,
+				...$slider_settings,
 			] ) ) . '</script>';
 
 

@@ -7,37 +7,57 @@ if ( empty( $attributes['wpbs-media-gallery']['gallery_id'] ) ) {
 $settings      = $attributes['wpbs-media-gallery'] ?? [];
 $grid_settings = $attributes['wpbs-grid'] ?? [];
 
+$is_slider = str_contains( ( $attributes['className'] ?? '' ), 'is-style-slider' );
+
+if ( $is_slider ) {
+	$settings['card_class'] = join( ' ', [
+		$settings['card_class'] ?? '',
+		'swiper-slide'
+	] );
+}
+
 $loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery h-max',
+		$is_slider ? 'swiper' : null,
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid_settings['masonry'] ) ? '--masonry masonry' : null,
 		! empty( $settings['lightbox'] ) ? '--lightbox' : null,
 	] ) ),
 	'data-wp-interactive' => 'wpbs/media-gallery',
-	'data-wp-init'        => 'actions.init'
+	'data-wp-init'        => 'actions.init',
 ] );
 
-WPBS::console_log($attributes);
+WPBS::console_log( $block ?? false );
 
 ?>
 
     <div <?php echo $wrapper_attributes ?>>
-        <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container">
-			<?= $loop->content ?? $content ?? false; ?>
 
-			<?php if ( ! empty( $grid_settings['masonry'] ) ) { ?>
-                <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
-			<?php } ?>
-        </div>
+		<?php if ( ! $is_slider ) { ?>
+            <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container">
+				<?= $loop->content ?? $content ?? false; ?>
 
-        <button type="button"
-                class="loop-button h-10 px-4 relative z-20 hidden"
-                data-wp-on-async--click="actions.pagination">
-			<?= $grid_settings['pagination-label'] ?? 'Show More' ?>
-        </button>
+				<?php if ( ! empty( $grid_settings['masonry'] ) ) { ?>
+                    <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
+				<?php } ?>
+            </div>
+
+            <button type="button"
+                    class="loop-button h-10 px-4 relative z-20 hidden"
+                    data-wp-on-async--click="actions.pagination">
+				<?= $grid_settings['pagination-label'] ?? 'Show More' ?>
+            </button>
+
+		<?php } else { ?>
+            <div class="swiper-wrapper">
+				<?= $loop->content ?? $content ?? false; ?>
+            </div>
+		<?php } ?>
+
+
 
 		<?php
 

@@ -23,7 +23,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ] );
 
 
-$video_id = preg_replace( '/^\/+/', '', parse_url( $media['link'] ?? '', PHP_URL_PATH ) ?: '' );
+
 
 
 ?>
@@ -38,7 +38,7 @@ $video_id = preg_replace( '/^\/+/', '', parse_url( $media['link'] ?? '', PHP_URL
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	} else {
-		echo '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="w-full h-full object-cover" alt="" />';
+		echo WPBS::get_youtube_poster_image($media['link'] ?? '');
 	}
 
 

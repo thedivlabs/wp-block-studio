@@ -77,8 +77,6 @@ registerBlockType(metadata.name, {
             return gridProps(attributes);
         }, [attributes]);
 
-        console.log(cssProps);
-
         const blockProps = useBlockProps({
             className: blockClassnames(attributes),
         });

@@ -11,6 +11,10 @@ export default class Lightbox {
             spaceBetween: 10,
             slidesPerView: 1,
             simulateTouch:true,
+            navigation: {
+                nextEl: 'wpbs-lightbox-nav__button--next',
+                prevEl: 'wpbs-lightbox-nav__button--prev',
+            },
             zoom: {
                 limitToOriginalSize: true,
                 maxRatio: 8,
@@ -82,9 +86,9 @@ export default class Lightbox {
         slider.classList.add('wpbs-lightbox__slider', 'swiper');
         sliderWrapper.classList.add('swiper-wrapper');
         sliderNav.classList.add('wpbs-lightbox-nav', 'wpbs-slider-nav');
-        sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next', 'wpbs-slider-nav__btn', 'wpbs-slider-nav__btn--next');
-        sliderPagination.classList.add('wpbs-lightbox-nav__pagination');
-        sliderButtonPrev.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--prev', 'wpbs-slider-nav__btn', 'wpbs-slider-nav__btn--prev');
+        sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next');
+        sliderPagination.classList.add('wpbs-lightbox-nav__pagination', 'swiper-pagination');
+        sliderButtonPrev.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--prev');
 
         const parser = new DOMParser();
 

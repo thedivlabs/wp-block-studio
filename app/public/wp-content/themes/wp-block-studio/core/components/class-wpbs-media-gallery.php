@@ -6,26 +6,17 @@ class WPBS_Media_Gallery {
 
 	private const TRANSIENT_PREFIX = 'wpbs_media_gallery_';
 	private const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
-	private const ACF_FIELD = 'wpbs_media_gallery';
 
-	public static string $singular;
-	public static string $plural;
-	public static string $slug;
+	public const SINGULAR = 'Media Gallery';
+	public const PLURAL = 'Media Galleries';
+	public const SLUG = 'media-gallery';
 
-	public static string $tax_singular;
-	public static string $tax_plural;
-	public static string $tax_slug;
+	public const TAX_SINGULAR = 'Category';
+	public const TAX_PLURAL = 'Categories';
+	public const TAX_SLUG = 'media-gallery-category';
 
 
 	private function __construct() {
-
-		self::$singular = 'Media Gallery';
-		self::$plural   = 'Media Galleries';
-		self::$slug     = 'media-gallery';
-
-		self::$tax_singular = 'Category';
-		self::$tax_plural   = 'Categories';
-		self::$tax_slug     = 'media-gallery-category';
 
 		add_action( 'rest_api_init', [ $this, 'init_rest' ] );
 		add_action( 'acf/save_post', [ $this, 'clear_transients' ], 20 );
@@ -45,9 +36,9 @@ class WPBS_Media_Gallery {
 			'archives'  => 'Media Gallery',
 		];
 
-		WPBS_CPT::register( self::$singular, self::$plural, self::$slug, $args, $labels );
+		WPBS_CPT::register( self::SINGULAR, self::PLURAL, self::SLUG, $args, $labels );
 
-		WPBS_Taxonomy::register( self::$tax_singular, self::$tax_plural, self::$slug, self::$tax_slug, false );
+		WPBS_Taxonomy::register( self::TAX_SINGULAR, self::TAX_PLURAL, self::SLUG, self::TAX_SLUG, false );
 
 	}
 
@@ -130,7 +121,7 @@ class WPBS_Media_Gallery {
 	}
 
 	public function clear_transients( $post_id ): void {
-		if ( get_post_type( $post_id ) === self::$slug ) {
+		if ( get_post_type( $post_id ) === self::SLUG ) {
 			delete_transient( self::TRANSIENT_PREFIX . $post_id );
 		}
 	}

@@ -49,16 +49,6 @@ export default class Lightbox {
         });
     }
 
-    static image(args = {}) {
-
-
-    }
-
-    static video(args = {}) {
-
-
-    }
-
     static toggle(args = {}) {
 
         this.fetchGallery(args).then(gallery => {
@@ -89,10 +79,10 @@ export default class Lightbox {
         component.classList.add('wpbs-lightbox', 'flex', 'w-full', 'h-screen', 'overflow-hidden');
         slider.classList.add('wpbs-lightbox__slider', 'swiper');
         sliderWrapper.classList.add('swiper-wrapper');
-        sliderNav.classList.add('wpbs-lightbox__nav');
-        sliderButtonNext.classList.add('wpbs-lightbox__button', 'wpbs-lightbox__button--next');
-        sliderPagination.classList.add('wpbs-lightbox__pagination');
-        sliderButtonPrev.classList.add('wpbs-lightbox__button', 'wpbs-lightbox__button--prev');
+        sliderNav.classList.add('wpbs-lightbox-nav');
+        sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next');
+        sliderPagination.classList.add('wpbs-lightbox-nav__pagination');
+        sliderButtonPrev.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--prev');
 
         const parser = new DOMParser();
 

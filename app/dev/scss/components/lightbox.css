@@ -1,0 +1,105 @@
+.wpbs-lightbox {
+  @apply
+  h-full
+  w-full
+  m-auto
+  p-0
+  overflow-visible
+  ;
+
+  img, picture {
+    max-width: min(100%, 95vh);
+    @apply
+    object-contain
+    w-auto
+    h-auto
+    pointer-events-auto
+  }
+
+  .wpbs-lightbox__media {
+    @apply
+    w-full
+    h-full
+    pointer-events-none
+    relative
+  }
+
+  .swiper {
+    grid-template-rows: calc(100% - clamp(24px, 3rem, 5vh)) 1fr;
+    @apply
+    grid
+    grid-cols-1
+    justify-start
+    gap-0
+    h-full
+    ;
+
+    &.swiper--disabled {
+      grid-template-rows: 100%;
+    }
+  }
+
+  .swiper-slide {
+    padding: min(1.25rem, 2vh) .5rem;
+  }
+
+  iframe {
+    max-width: min(110svh, 72rem);
+
+    @apply
+    pointer-events-auto
+    aspect-video
+    md:h-auto
+    md:w-full
+    w-full
+    h-auto
+    select-none
+    rounded
+    overflow-hidden
+    bg-black/50
+  }
+
+  .wpbs-lightbox-nav:has(> button.swiper-button-lock) {
+    display: none !important;
+  }
+
+  .wpbs-lightbox-nav {
+    z-index: 200;
+    display: flex !important;
+    height: clamp(24px, 3rem, 5vh);
+    opacity: 1 !important;
+    @apply
+    w-full
+    items-center
+    justify-center
+    bg-black/50
+    text-center
+    absolute
+    left-0
+    bottom-0
+    text-white
+    ;
+
+    &:has(> button.swiper-button-lock) {
+      display: none !important;
+    }
+
+    .wpbs-lightbox-nav__btn {
+      background: transparent !important;
+      font-size: 1.2rem !important;
+      line-height: 1.3em !important;
+      color: white !important;
+      height: 1.4em !important;
+    }
+  }
+
+  & .wpbs-lightbox--group .wpbs-lightbox__btn {
+    font-size: clamp(20px, 1.8rem, 4vh);
+    height: 100%;
+  }
+
+
+}
+
+
+

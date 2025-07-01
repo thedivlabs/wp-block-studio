@@ -4,7 +4,9 @@ WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:afte
 
 $settings = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
 
-$video_id = preg_replace( '/^\/+/', '', parse_url( $settings['link'] ?? '', PHP_URL_PATH ) ?: '' );
+$video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
+	'id_only' => true
+] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
@@ -50,7 +52,9 @@ $poster_id = $settings['poster']['id'] ?? $settings['poster'] ?? false;
 				'class'   => $poster_class
 			] );
 		} else {
-			echo '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $poster_class . '" alt="" />';
+			echo WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
+				'class' => $poster_class
+			] );
 		}
 
 		?>

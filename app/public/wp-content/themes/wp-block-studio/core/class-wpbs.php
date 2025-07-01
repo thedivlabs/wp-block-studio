@@ -601,6 +601,30 @@ class WPBS {
 		}
 	}
 
+	public static function get_youtube_poster_image( $share_link = '', $args = [] ): string|bool {
+
+		if ( ! is_string( $share_link ) || empty( $share_link ) ) {
+			return false;
+		}
+
+		$pattern = '/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/';
+
+		$video_id = preg_match( $pattern, $share_link, $matches ) ? $matches[1] : false;
+
+		if ( empty( $video_id ) ) {
+			return false;
+		}
+
+		if ( ! empty( $args['id_only'] ) ) {
+			return $video_id;
+		}
+
+		$class = $args['class'] ?? 'w-full h-full z-0 object-cover object-center';
+
+		return '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $class . '" alt="" />';
+
+	}
+
 
 }
 

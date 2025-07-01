@@ -619,7 +619,7 @@ class WPBS {
 			return $video_id;
 		}
 
-		$class = $args['class'] ?? 'w-full h-full z-0 object-cover object-center';
+		$class = $args['class'] ?? 'w-full h-full z-0 relative object-cover object-center';
 
 		return '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $class . '" alt="" />';
 

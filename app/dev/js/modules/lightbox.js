@@ -91,8 +91,8 @@ export default class Lightbox {
         sliderWrapper.classList.add('swiper-wrapper');
         sliderNav.classList.add('wpbs-lightbox__nav');
         sliderButtonNext.classList.add('wpbs-lightbox__button', 'wpbs-lightbox__button--next');
-        sliderButtonPrev.classList.add('wpbs-lightbox__button', 'wpbs-lightbox__button--prev');
         sliderPagination.classList.add('wpbs-lightbox__pagination');
+        sliderButtonPrev.classList.add('wpbs-lightbox__button', 'wpbs-lightbox__button--prev');
 
         const parser = new DOMParser();
 

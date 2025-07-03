@@ -53,9 +53,7 @@ registerBlockType(metadata.name, {
         const sliderOptions = useMemo(() => {
             return sliderArgs(attributes);
         }, [attributes?.['wpbs-slider']]);
-
-        console.log(sliderOptions);
-
+        
         useEffect(() => {
 
             setAttributes({'wpbs-swiper-args': sliderOptions});
@@ -93,7 +91,6 @@ registerBlockType(metadata.name, {
                 const swiper = new Swiper(element, {
                     ...sliderOptions
                 });
-                console.log(swiper);
             }
         }, [sliderOptions]);
 
@@ -129,8 +126,6 @@ registerBlockType(metadata.name, {
 
         const cssProps = !isSlider ? gridProps(attributes) : sliderProps(attributes);
 
-        console.log(cssProps);
-
         const baseProps = {
             className: blockClassnames(attributes, isSlider),
         };
@@ -144,21 +139,6 @@ registerBlockType(metadata.name, {
                 ['wpbs/media-gallery-card'],
             ]
         });
-
-        const BlockContent = () => isSlider ? (
-            <div {...blockProps}>
-                <div className="swiper-wrapper">
-                    {innerBlocksProps.children}
-                    <div className={'swiper-slide'}/>
-                    <div className={'swiper-slide'}/>
-                    <div className={'swiper-slide'}/>
-                    <div className={'swiper-slide'}/>
-                    <div className={'swiper-slide'}/>
-                </div>
-            </div>
-        ) : (
-            <div {...innerBlocksProps} />
-        );
 
         return (
             <>
@@ -181,7 +161,18 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
                 <BlockContextProvider value={{isSlider}}>
-                    <BlockContent/>
+                    {
+                        isSlider ? <div {...blockProps}>
+                            <div className="swiper-wrapper">
+                                {innerBlocksProps.children}
+                                <div className={'swiper-slide'}/>
+                                <div className={'swiper-slide'}/>
+                                <div className={'swiper-slide'}/>
+                                <div className={'swiper-slide'}/>
+                                <div className={'swiper-slide'}/>
+                            </div>
+                        </div> : <div {...innerBlocksProps} />
+                    }
                 </BlockContextProvider>
 
 

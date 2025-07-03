@@ -20,11 +20,11 @@ import {
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, sliderArgs, SliderControls, sliderProps} from "Components/Slider"
 
-function blockClassnames(attributes = {}) {
+function blockClassnames(attributes = {}, isSlider = false) {
     return [
         'wpbs-media-gallery h-max',
         'flex flex-wrap w-full block relative',
-        attributes?.className.includes('is-style-slider') ? 'swiper' : null,
+        isSlider ? 'swiper' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -53,6 +53,8 @@ registerBlockType(metadata.name, {
         const sliderOptions = useMemo(() => {
             return sliderArgs(attributes);
         }, [attributes?.['wpbs-slider']]);
+
+        console.log(sliderOptions);
 
         useEffect(() => {
 
@@ -86,9 +88,12 @@ registerBlockType(metadata.name, {
 
                 swiperRef.current.swiper.update();
 
-            } else if ('Swiper' in window && !!swiperRef.current) {
+            } else if ('Swiper' in window && swiperRef.current) {
                 const element = swiperRef.current;
-                new Swiper(element, sliderOptions);
+                const swiper = new Swiper(element, {
+                    ...sliderOptions
+                });
+                console.log(swiper);
             }
         }, [sliderOptions]);
 
@@ -126,9 +131,13 @@ registerBlockType(metadata.name, {
 
         console.log(cssProps);
 
-        const blockProps = useBlockProps({
-            className: blockClassnames(attributes),
-        });
+        const baseProps = {
+            className: blockClassnames(attributes, isSlider),
+        };
+
+        const blockProps = isSlider
+            ? useBlockProps({...baseProps, ref: swiperRef})
+            : useBlockProps(baseProps);
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
@@ -136,17 +145,20 @@ registerBlockType(metadata.name, {
             ]
         });
 
-        const BlockContent = () => {
-            return isSlider ? <div {...blockProps} ref={swiperRef}>
-                <div className={'swiper-wrapper'}>
+        const BlockContent = () => isSlider ? (
+            <div {...blockProps}>
+                <div className="swiper-wrapper">
                     {innerBlocksProps.children}
                     <div className={'swiper-slide'}/>
                     <div className={'swiper-slide'}/>
                     <div className={'swiper-slide'}/>
                     <div className={'swiper-slide'}/>
+                    <div className={'swiper-slide'}/>
                 </div>
-            </div> : <div {...innerBlocksProps} ref={swiperRef}/>;
-        }
+            </div>
+        ) : (
+            <div {...innerBlocksProps} />
+        );
 
         return (
             <>

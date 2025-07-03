@@ -17,6 +17,7 @@ function extendSharedConfig(config) {
 function extendScriptConfig(config) {
     return {
         ...config,
+        mode: 'production',
         entry: {
             ...config.entry(),
             theme: './app/dev/js/theme.js',

@@ -46,7 +46,7 @@ registerBlockType(metadata.name, {
         const {isSlider = {}} = context;
 
         const blockProps = useBlockProps({
-            className: blockClassnames(attributes,isSlider),
+            className: blockClassnames(attributes, isSlider),
         });
 
         return (
@@ -59,7 +59,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
-                <figure {...blockProps}></figure>
+                <div {...blockProps}></div>
 
             </>
         )

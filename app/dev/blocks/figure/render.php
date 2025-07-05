@@ -46,40 +46,54 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 $mq_large  = 'media="(min-width: ' . $breakpoint . ')"';
 $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
 
+$is_link = ! empty( $attributes['wpbs-figure']['linkPost']['enabled'] );
+$link    = $is_link ? ( ! empty( $attributes['termId'] ) ? get_term_link( $attributes['termId'] ) : get_the_permalink() ) : false;
+$target  = $is_link ? ( ! empty( $attributes['wpbs-figure']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
+$rel     = $is_link && ( $attributes['wpbs-figure']['linkRel'] ?? false );
+
+$container_tag_open  = implode( ' ', array_filter( [
+	$is_link ? '<a' : '<div',
+	$is_link ? 'href="' . $link . '"' : null,
+	$is_link ? 'target="' . $target . '"' : null,
+	$is_link && $rel ? 'rel="' . $rel . '"' : null,
+	'class="wpbs-figure__media">',
+] ) );
+$container_tag_close = $is_link ? '</a>' : '</div>';
+
 ?>
 
 <div <?php echo $wrapper_attributes ?>>
 
-    <div class="wpbs-figure__media">
-        <picture class="w-full h-full">
-			<?php if ( ! empty( $src_large ) ) { ?>
-                <source type="image/webp"
-					<?php echo $mq_large ?>
-					<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
-                />
-                <source type="image/jpeg"
-					<?php echo $mq_large ?>
-					<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
-                />
-			<?php } ?>
+	<?= $container_tag_open; ?>
+    <picture class="w-full h-full">
+		<?php if ( ! empty( $src_large ) ) { ?>
+            <source type="image/webp"
+				<?php echo $mq_large ?>
+				<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
+            />
+            <source type="image/jpeg"
+				<?php echo $mq_large ?>
+				<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
+            />
+		<?php } ?>
 
 
-			<?php if ( ! empty( $src_mobile ) ) { ?>
-                <source type="image/webp"
-					<?php echo $mq_mobile ?>
-					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
-                />
-                <source type="image/jpeg"
-					<?php echo $mq_mobile ?>
-					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
-                />
-			<?php } ?>
+		<?php if ( ! empty( $src_mobile ) ) { ?>
+            <source type="image/webp"
+				<?php echo $mq_mobile ?>
+				<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
+            />
+            <source type="image/jpeg"
+				<?php echo $mq_mobile ?>
+				<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
+            />
+		<?php } ?>
 
-			<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
-				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
-				'style'   => trim( $style )
-			] ) ?>
-        </picture>
-    </div>
+		<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
+			'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
+			'style'   => trim( $style )
+		] ) ?>
+    </picture>
+	<?= $container_tag_close; ?>
 
 </div>

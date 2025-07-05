@@ -15,7 +15,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 ] );
 
-$is_link = ! empty( $attributes['wpbs-layout-grid-card']['linkPost'] );
+$is_link = ! empty( $attributes['wpbs-layout-grid-card']['linkPost']['enabled'] );
 $link    = $is_link ? ( ! empty( $attributes['termId'] ) ? get_term_link( $attributes['termId'] ) : get_the_permalink() ) : false;
 $target  = $is_link ? ( ! empty( $attributes['wpbs-layout-grid-card']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
 $rel     = $is_link && ( $attributes['wpbs-layout-grid-card']['linkRel'] ?? false );

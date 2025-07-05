@@ -26,6 +26,7 @@ import {
     ORIGIN_OPTIONS,
     RESOLUTION_OPTIONS,
 } from "Includes/config"
+import {LinkPost} from "Components/LinkPost";
 
 
 function blockClasses(attributes = {}) {
@@ -352,13 +353,6 @@ registerBlockType(metadata.name, {
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />
-                                {attributes['wpbs-figure']?.type === 'featured-image' && <ToggleControl
-                                    label="Link Post"
-                                    checked={!!attributes['wpbs-figure']?.linkPost}
-                                    onChange={(value) => updateSettings({linkPost: value})}
-                                    className="flex items-center"
-                                    __nextHasNoMarginBottom
-                                />}
 
                             </Grid>
                         </Grid>
@@ -366,6 +360,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <LinkPost attribute={attributes?.['LinkPost']} callback={updateSettings} />
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-figure']}
                    props={{

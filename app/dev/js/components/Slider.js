@@ -61,7 +61,7 @@ export function sliderArgs(attributes) {
         slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
         slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
         spaceBetween: parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0),
-        autoplay: options['autoplay'] ? {
+        autoplay: (options?.['autoplay'] ?? 0) > 0 ? {
             delay: options['autoplay'] * 1000,
             pauseOnMouseEnter: !!options['hover-pause']
         } : false,

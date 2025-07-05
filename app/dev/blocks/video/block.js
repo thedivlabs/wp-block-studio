@@ -215,7 +215,7 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <div
-                    className={'wpbs-video__media w-full h-full overflow-hidden relative hover:after:opacity-50 after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out'}>
+                    className={'wpbs-video__media --disabled w-full h-full overflow-hidden relative hover:after:opacity-50 after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out'}>
                     <div
                         className={'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 aspect-square z-20 transition-colors duration-300 text-[6rem] leading-none text-white opacity-50 rounded-full'}>
                         <i class="fa-solid fa-circle-play"></i>

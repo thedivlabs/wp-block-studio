@@ -374,9 +374,9 @@ registerBlockType(metadata.name, {
                       callback={(newValue) => updateSettings({linkPost: newValue})}/>
 
 
-            <figure {...blockProps}>
+            <div {...blockProps}>
                 <Media settings={attributes['wpbs-figure']} breakpoint={attributes?.['wpbs-breakpoint']?.large}/>
-            </figure>
+            </div>
 
         </>;
     },

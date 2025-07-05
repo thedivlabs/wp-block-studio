@@ -48,7 +48,7 @@ $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
 
 ?>
 
-<figure <?php echo $wrapper_attributes ?>>
+<div <?php echo $wrapper_attributes ?>>
 
     <div class="wpbs-figure__media">
         <picture class="w-full h-full">
@@ -82,4 +82,4 @@ $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
         </picture>
     </div>
 
-</figure>
+</div>

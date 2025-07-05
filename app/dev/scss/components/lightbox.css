@@ -39,7 +39,7 @@
       max-width: 92rem;
       @apply
       w-full
-      aspect-video
+      h-auto
       ;
 
       img {

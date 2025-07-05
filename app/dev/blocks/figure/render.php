@@ -46,7 +46,7 @@ $src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
 $mq_large  = 'media="(min-width: ' . $breakpoint . ')"';
 $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
 
-$is_link = ! empty( $attributes['wpbs-figure']['linkPost']['enabled'] );
+$is_link = ! empty( $attributes['wpbs-figure']['linkPost']['enabled'] ) || !empty($attributes['wpbs-figure']['link']);
 $target  = $is_link ? ( ! empty( $attributes['wpbs-figure']['linkPost']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
 $rel     = $is_link && ( $attributes['wpbs-figure']['linkPost']['linkRel'] ?? false );
 
@@ -59,6 +59,8 @@ $container_tag_open  = implode( ' ', array_filter( [
 ] ) );
 $container_tag_close = $is_link ? '</a>' : '</div>';
 
+
+WPBS::console_log($attributes);
 ?>
 
 <div <?php echo $wrapper_attributes ?>>

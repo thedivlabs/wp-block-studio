@@ -1,11 +1,19 @@
 import {
     DropdownMenu, MenuGroup, MenuItem, ToolbarGroup
 } from "@wordpress/components";
-import React from "react";
+import React, {useState} from "react";
 import {__experimentalLinkControl as LinkControl, BlockControls} from "@wordpress/block-editor";
 import {customLink} from "@wordpress/icons";
 
 function Link({defaultValue, callback}) {
+
+    const [settings, setSettings] = useState(defaultValue || {});
+
+    function updateSettings(newValue) {
+
+        setSettings(newValue);
+        callback(newValue);
+    }
 
 
     return <BlockControls>
@@ -20,7 +28,7 @@ function Link({defaultValue, callback}) {
                             <LinkControl
                                 searchInputPlaceholder="Search here..."
                                 allowDirectEntry={true}
-                                //forceIsEditingLink={true}
+                                forceIsEditingLink={true}
                                 hasTextControl={true}
                                 value={defaultValue}
                                 settings={[
@@ -29,7 +37,7 @@ function Link({defaultValue, callback}) {
                                         title: 'Open in new tab',
                                     }
                                 ]}
-                                onChange={(newValue) => callback}
+                                onChange={(newValue) => updateSettings(newValue)}
                                 //withCreateSuggestion={true}
                             ></LinkControl>
                         </MenuItem>

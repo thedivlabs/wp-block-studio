@@ -554,8 +554,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
     }, [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     return <InspectorControls group="styles">
-        <PanelBody title={'Layout'} initialOpen={false}>
-            <ToolsPanel label={'Large'} resetAll={resetAll_layout} columnGap={15} rowGap={20}>
+        <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'} >
+            <ToolsPanel label={'Large'} resetAll={resetAll_layout} >
 
                 <ToolsPanelItem
                     style={{gridColumn: 'span 1'}}
@@ -1017,7 +1017,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
             </ToolsPanel>
 
-            <ToolsPanel label={'Mobile'} resetAll={resetAll_mobile}>
+            <ToolsPanel label={'Mobile'} resetAll={resetAll_mobile} >
 
 
                 <ToolsPanelItem

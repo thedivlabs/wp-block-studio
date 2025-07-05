@@ -101,6 +101,10 @@ export default class Lightbox {
             const mediaElement = document.createElement('div');
             mediaElement.classList.add('wpbs-lightbox__media');
 
+            if (slide && !(slide instanceof HTMLImageElement)) {
+                mediaElement.classList.add('--video');
+            }
+
             mediaElement.append(slide);
             slideElement.append(mediaElement);
             sliderWrapper.appendChild(slideElement);

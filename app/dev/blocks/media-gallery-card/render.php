@@ -15,6 +15,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card relative',
 		$is_slider ? 'swiper-slide' : 'loop-card',
+		$is_lightbox ? 'cursor-pointer' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index'          => intval( $index ?? 0 ),
@@ -38,7 +39,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	} else {
-
 		echo ( new WP_Block( [
 			'blockName' => 'wpbs/video-element',
 		], [

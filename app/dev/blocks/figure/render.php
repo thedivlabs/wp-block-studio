@@ -51,18 +51,20 @@ $is_link = ! empty( $attributes['wpbs-figure']['linkPost']['enabled'] ) || ! emp
 $url    = ! $is_link ? false : $attributes['wpbs-figure']['link']['url'] ?? get_the_permalink();
 $target = ! $is_link ? false : ( ! empty( $attributes['wpbs-figure']['linkPost']['linkNewTab'] ?? $attributes['wpbs-figure']['link']['linkNewTab'] ?? false ) ? '_blank' : '_self' );
 $rel    = ! $is_link ? false : $attributes['wpbs-figure']['linkPost']['linkRel'] ?? false;
+$title  = ! $is_link ? false : $attributes['wpbs-figure']['link']['title'] ?? $attributes['wpbs-figure']['linkPost']['title'] ?? 'Learn More';
+
 
 $container_tag_open  = implode( ' ', array_filter( [
 	$is_link ? '<a' : '<div',
 	$is_link ? 'href="' . $url . '"' : null,
 	$is_link ? 'target="' . $target . '"' : null,
+	$is_link ? 'title="' . $title . '"' : null,
 	$is_link && $rel ? 'rel="' . $rel . '"' : null,
 	'class="wpbs-figure__media">',
+	$is_link ? '<span class="screen-reader-text">' . $title . '</span>' : null,
 ] ) );
 $container_tag_close = $is_link ? '</a>' : '</div>';
 
-
-WPBS::console_log( $attributes );
 ?>
 
 <div <?php echo $wrapper_attributes ?>>

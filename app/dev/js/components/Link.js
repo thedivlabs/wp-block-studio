@@ -26,7 +26,7 @@ function Link({defaultValue, callback}) {
                     <MenuGroup>
                         <MenuItem>
                             <LinkControl
-                                searchInputPlaceholder="Search here..."
+                                searchInputPlaceholder={"Search here..."}
                                 allowDirectEntry={true}
                                 forceIsEditingLink={true}
                                 hasTextControl={true}

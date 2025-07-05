@@ -1,6 +1,6 @@
 {
   "name": "wpbs/grid-pagination-button",
-  "title": "Grid Pagination Button",
+  "title": "Grid Button",
   "description": "Display a pagination button",
   "selectors": {
     "root": ".wpbs-grid-pagination-button"
@@ -8,8 +8,25 @@
   "usesContext": [
     "label"
   ],
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "styles": [
+    {
+      "name": "default",
+      "label": "Default",
+      "isDefault": true
+    },
+    {
+      "name": "fancy",
+      "label": "Fancy Style"
+    }
+  ],
   "supports": {
-    "inserter": false,
+    "interactivity": true,
     "color": {
       "background": true,
       "text": true,

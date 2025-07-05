@@ -42,7 +42,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			echo ( new WP_Block( [
 				'blockName' => 'wpbs/grid-pagination-button',
 			], [
-				'label' => 'Testing dynamic label from context'
+				'label' => $settings['button_label'] ?? null
 			] ) )->render();
 
 			?>

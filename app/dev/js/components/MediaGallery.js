@@ -4,7 +4,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
-    SelectControl, ToggleControl,
+    SelectControl, TextControl, ToggleControl,
 } from "@wordpress/components";
 
 import {useSelect} from "@wordpress/data";
@@ -63,6 +63,12 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                     isShiftStepEnabled={false}
                     onChange={(newValue) => updateSettings({'page_size': newValue})}
                     value={settings?.['page_size']}
+                />
+                <TextControl
+                    label={'Button Label'}
+                    __next40pxDefaultSize
+                    onChange={(newValue) => updateSettings({'button_label': newValue})}
+                    value={settings?.['button_label']}
                 />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>

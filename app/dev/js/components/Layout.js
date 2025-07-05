@@ -1656,7 +1656,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         </ToolsPanel>
 
         <PanelColorSettings
-            title={'Additional Colors'}
+            title={'Special'}
             enableAlpha
             __experimentalIsRenderedInSidebar
             colorSettings={[

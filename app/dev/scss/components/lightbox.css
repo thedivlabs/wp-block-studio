@@ -40,6 +40,14 @@
       @apply
       w-full
       aspect-video
+      ;
+
+      img {
+        @apply
+        w-full
+        h-full
+        object-cover
+      }
     }
   }
 

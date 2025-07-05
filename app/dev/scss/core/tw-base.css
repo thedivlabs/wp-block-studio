@@ -72,7 +72,7 @@
     flex-grow: 1;
 
     & > .entry-content {
-      display: flex;
+      display: flex !important;
       flex-direction: column;
       flex-grow: 1;
     }

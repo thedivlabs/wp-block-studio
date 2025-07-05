@@ -2,6 +2,9 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:after {background: var(--overlay, rgba(0, 0, 0, .5));}' );
 
+WPBS::console_log( 'pppppppppp' );
+WPBS::console_log( $block->context['media'] ?? false );
+
 $settings = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
 
 $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [

@@ -7,8 +7,6 @@ $index       = $block->context['index'] ?? 0;
 $is_slider   = $block->context['isSlider'] ?? false;
 $is_lightbox = $block->context['isLightbox'] ?? false;
 
-WPBS::console_log( $block->context ?? false );
-
 if ( empty( $media ) ) {
 	return false;
 }
@@ -40,7 +38,19 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	} else {
-		echo WPBS::get_youtube_poster_image( $media['link'] ?? '' );
+		if ( $is_lightbox ) {
+			echo WPBS::get_youtube_poster_image( $media['link'] ?? '' );
+		} else {
+			echo ( new WP_Block( [
+				'blockName' => 'wpbs/video-element',
+			], [
+				'media' => [
+					'link'  => $media['link'] ?? '',
+					'modal' => true
+				],
+			] ) )->render();
+		}
+
 	}
 
 

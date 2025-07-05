@@ -13,12 +13,11 @@
     },
     "preload": {
       "type": "array"
-    },
-    "styleCss": {
-      "type": "string",
-      "show_in_rest": true
     }
   },
+  "usesContext": [
+    "media"
+  ],
   "supports": {
     "layout": false,
     "interactivity": true,

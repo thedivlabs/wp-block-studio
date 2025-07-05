@@ -30,15 +30,15 @@ function Link({defaultValue, callback}) {
                                 allowDirectEntry={true}
                                 forceIsEditingLink={true}
                                 hasTextControl={true}
-                                value={defaultValue}
+                                value={settings}
                                 settings={[
                                     {
-                                        id: 'opensInNewTab',
+                                        id: 'linkNewTab',
                                         title: 'Open in new tab',
                                     }
                                 ]}
                                 onChange={(newValue) => updateSettings(newValue)}
-                                //withCreateSuggestion={true}
+                                withCreateSuggestion={true}
                             ></LinkControl>
                         </MenuItem>
                     </MenuGroup>

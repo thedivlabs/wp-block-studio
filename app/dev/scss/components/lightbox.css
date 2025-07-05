@@ -15,17 +15,17 @@
     @apply
     object-contain
     w-auto
-    h-full
-    pointer-events-none
+    h-auto
     max-w-full
+    select-none
   }
 
   .wpbs-lightbox__media {
     padding: min(1.25rem, 2vh) .5rem;
     @apply
-    w-fit
-    h-fit
-    pointer-events-auto
+    w-full
+    h-full
+    pointer-events-none
     relative
     overflow-hidden
     max-w-full
@@ -33,13 +33,11 @@
     justify-center
     items-center
     m-auto
+    max-h-full
     ;
 
     &.--video {
       max-width: 92rem;
-      @apply
-      w-full
-      ;
 
       img {
         @apply
@@ -47,6 +45,10 @@
         h-full
         object-cover
       }
+    }
+
+    & * {
+      pointer-events: auto;
     }
   }
 

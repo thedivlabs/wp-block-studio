@@ -11,7 +11,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        'wpbs-grid-pagination-button': {
+        'wpbs-loop-pagination-button': {
             type: 'object'
         }
     },
@@ -19,11 +19,11 @@ registerBlockType(metadata.name, {
 
         const {label = 'View More'} = context;
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-grid-pagination-button');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-loop-pagination-button');
 
         useEffect(() => {
             setAttributes({
-                'wpbs-grid-pagination-button': {
+                'wpbs-loop-pagination-button': {
                     label: label
                 },
                 uniqueId: uniqueId
@@ -31,7 +31,7 @@ registerBlockType(metadata.name, {
         }, [label, uniqueId]);
 
         const blockProps = useBlockProps({
-            className: 'wpbs-grid-pagination-button loop-button min-h-10 px-4 relative z-20 hidden cursor-pointer',
+            className: 'wpbs-loop-pagination-button loop-button min-h-10 px-4 relative z-20 hidden cursor-pointer',
         });
 
         return <button {...blockProps}>{label}</button>;
@@ -39,10 +39,10 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: 'wpbs-grid-pagination-button loop-button min-h-10 px-4 relative z-20 hidden cursor-pointer',
+            className: 'wpbs-loop-pagination-button loop-button min-h-10 px-4 relative z-20 hidden cursor-pointer',
         });
 
-        return <button {...blockProps}>{props.attributes?.['wpbs-grid-pagination-button']?.label ?? 'View More'}</button>;
+        return <button {...blockProps}>{props.attributes?.['wpbs-loop-pagination-button']?.label ?? 'View More'}</button>;
 
     }
 

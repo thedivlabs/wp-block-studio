@@ -42,15 +42,13 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes}) => {
 
         const isSlider = (attributes?.className ?? '').includes('is-style-slider');
-        
+
         const swiperRef = useRef(null);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         useEffect(() => {
-
-            console.log(attributes?.['wpbs-swiper-args']);
-
+            
             if (swiperRef.current?.swiper) {
 
                 const allowedParams = [

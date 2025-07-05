@@ -20,24 +20,24 @@ export function LinkPost({attribute, callback}) {
             <ToggleControl
                 style={{marginTop: '20px'}}
                 label="Link Post"
-                checked={!!settings?.enabled}
+                checked={!!attribute?.enabled}
                 onChange={(value) => updateSettings({enabled: value})}
             />
             <ToggleControl
                 label="New tab"
-                checked={!!settings?.linkNewTab}
+                checked={!!attribute?.linkNewTab}
                 onChange={(isChecked) => updateSettings({linkNewTab: !!isChecked})}
             />
             <Grid columns={2} columnGap={15} rowGap={20} style={{'grid-column': '1/-1'}}>
                 <SelectControl
                     label="Rel"
-                    value={settings?.linkRel ?? ''}
+                    value={attribute?.linkRel ?? ''}
                     options={REL_OPTIONS}
                     onChange={(value) => updateSettings({linkRel: value})}
                 />
                 <TextControl
                     label="Title"
-                    value={settings?.linkTitle ?? ''}
+                    value={attribute?.linkTitle ?? ''}
                     onChange={(value) => updateSettings({linkTitle: value})}
                 />
             </Grid>

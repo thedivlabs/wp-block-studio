@@ -37,6 +37,10 @@ export const SLIDER_ATTRIBUTES = {
             'drag': true,
             'swiperArgs': undefined,
         }
+    },
+    'wpbs-swiper-args': {
+        type: 'object',
+        default: undefined,
     }
 };
 
@@ -134,12 +138,12 @@ export const SliderControls = ({attributes, setAttributes}) => {
         setAttributes({
             'wpbs-slider': {
                 ...attributes['wpbs-slider'],
-                ...newValue,
-                swiperArgs: swiperArgs,
-            }
+                ...newValue
+            },
+            'wpbs-swiper-args': swiperArgs,
         });
 
-    }, [setAttributes, attributes['wpbs-slider']]);
+    }, [setAttributes, attributes['wpbs-slider'], attributes['wpbs-swiper-args']]);
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>

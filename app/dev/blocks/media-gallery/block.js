@@ -13,7 +13,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {
     PanelBody, TabPanel
 } from "@wordpress/components";
@@ -37,14 +37,13 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         ...GRID_ATTRIBUTES,
         ...MEDIA_GALLERY_ATTRIBUTES,
-        ...SLIDER_ATTRIBUTES,
-        'wpbs-swiper-args': {
-            type: 'object',
-        }
+        ...SLIDER_ATTRIBUTES
     },
     edit: ({attributes, setAttributes}) => {
 
         const isSlider = (attributes?.className ?? '').includes('is-style-slider');
+
+        console.log(attributes);
 
         const swiperRef = useRef(null);
 
@@ -65,7 +64,7 @@ registerBlockType(metadata.name, {
                 const newParams = Object.fromEntries(
                     Object.entries({
                         ...swiperRef.current.swiper.params,
-                        ...attributes?.['wpbs-slider']?.swiperArgs ?? {}
+                        ...attributes?.['wpbs-slider-args'] ?? {}
                     }).filter(([key]) => allowedParams.includes(key))
                 );
 
@@ -82,10 +81,10 @@ registerBlockType(metadata.name, {
             } else if ('Swiper' in window && swiperRef.current) {
                 const element = swiperRef.current;
                 const swiper = new Swiper(element, {
-                    ...attributes?.['wpbs-slider']?.swiperArgs ?? {},
+                    ...attributes?.['wpbs-slider-args'] ?? {},
                 });
             }
-        }, [attributes?.['wpbs-slider']?.swiperArgs]);
+        }, [attributes?.['wpbs-slider-args']]);
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 

@@ -37,11 +37,15 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 				<?php } ?>
             </div>
 
-            <button type="button"
-                    class="loop-button h-10 px-4 relative z-20 hidden"
-                    data-wp-on-async--click="actions.pagination">
-				<?= $grid_settings['pagination-label'] ?? 'Show More' ?>
-            </button>
+			<?php
+
+			echo ( new WP_Block( [
+				'blockName' => 'wpbs/grid-pagination-button',
+			], [
+				'label' => 'Testing dynamic label from context'
+			] ) )->render();
+
+			?>
 
 		<?php } else { ?>
             <div class="swiper-wrapper">

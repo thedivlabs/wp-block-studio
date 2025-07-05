@@ -40,7 +40,7 @@ export const SLIDER_ATTRIBUTES = {
     }
 };
 
-export const SliderComponent = ({attributes, blockProps})=>{
+export const SliderComponent = ({attributes, blockProps}) => {
 
     return <></>;
 }
@@ -175,7 +175,7 @@ export const SliderControls = ({attributes, setAttributes}) => {
                 __next40pxDefaultSize
                 isShiftStepEnabled={true}
                 onChange={(newValue) => updateOptions({'autoplay': newValue})}
-                value={!!attributes['wpbs-slider']['autoplay']}
+                value={attributes['wpbs-slider']['autoplay']}
                 step={1}
             />
             <NumberControl

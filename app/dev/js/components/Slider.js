@@ -10,7 +10,7 @@ import {
     SelectControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 
 
 export const SLIDER_ATTRIBUTES = {
@@ -133,17 +133,24 @@ export const SliderControls = ({attributes, setAttributes}) => {
 
     const updateOptions = useCallback((newValue) => {
 
-        const swiperArgs = getSliderArgs(attributes);
-        
+
         setAttributes({
             'wpbs-slider': {
                 ...attributes['wpbs-slider'],
                 ...newValue
-            },
-            'wpbs-swiper-args': swiperArgs,
+            }
         });
 
     }, [setAttributes, attributes['wpbs-slider']]);
+
+    useEffect(() => {
+        const swiperArgs = getSliderArgs(attributes);
+
+        setAttributes({
+            'wpbs-swiper-args': swiperArgs,
+        });
+
+    }, [attributes['wpbs-slider']]);
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>

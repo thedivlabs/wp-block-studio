@@ -76,19 +76,17 @@
   }
 
   iframe {
-    max-width: min(110svh, 72rem);
+    //max-width: min(110svh, 72rem);
 
     @apply
     pointer-events-auto
     aspect-video
-    md:h-auto
-    md:w-full
-    w-full
     h-auto
+    w-full
     select-none
     rounded
     overflow-hidden
-    bg-black/50
+    bg-black/70
   }
 
   .wpbs-lightbox-nav {

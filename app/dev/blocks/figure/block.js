@@ -158,7 +158,7 @@ registerBlockType(metadata.name, {
                 ...attributes['wpbs-figure'],
                 ...newValue
             };
-            console.log(result);
+
             setAttributes({
                 'wpbs-figure': result
             });

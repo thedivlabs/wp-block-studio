@@ -3,15 +3,18 @@ import {REL_OPTIONS} from "Includes/config";
 import {InspectorControls} from "@wordpress/block-editor";
 import React, {useCallback, useState} from "react";
 
-export function LinkPost({attribute, callback}) {
+export function LinkPost({defaultValue, callback}) {
+
+    const [settings, setSettings] = useState(defaultValue || {});
 
     function updateSettings(newValue) {
 
         const result = {
-            ...attribute,
+            ...settings,
             ...newValue
         };
 
+        setSettings(result);
         callback(result);
     }
 
@@ -20,24 +23,24 @@ export function LinkPost({attribute, callback}) {
             <ToggleControl
                 style={{marginTop: '20px'}}
                 label="Link Post"
-                checked={!!attribute?.enabled}
+                checked={!!settings?.enabled}
                 onChange={(value) => updateSettings({enabled: value})}
             />
             <ToggleControl
                 label="New tab"
-                checked={!!attribute?.linkNewTab}
+                checked={!!settings?.linkNewTab}
                 onChange={(isChecked) => updateSettings({linkNewTab: !!isChecked})}
             />
             <Grid columns={2} columnGap={15} rowGap={20} style={{'grid-column': '1/-1'}}>
                 <SelectControl
                     label="Rel"
-                    value={attribute?.linkRel ?? ''}
+                    value={settings?.linkRel ?? ''}
                     options={REL_OPTIONS}
                     onChange={(value) => updateSettings({linkRel: value})}
                 />
                 <TextControl
                     label="Title"
-                    value={attribute?.linkTitle ?? ''}
+                    value={settings?.linkTitle ?? ''}
                     onChange={(value) => updateSettings({linkTitle: value})}
                 />
             </Grid>

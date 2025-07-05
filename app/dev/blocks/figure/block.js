@@ -158,7 +158,7 @@ registerBlockType(metadata.name, {
                 ...attributes['wpbs-figure'],
                 ...newValue
             };
-
+            console.log(result);
             setAttributes({
                 'wpbs-figure': result
             });
@@ -360,7 +360,6 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <LinkPost attribute={attributes?.['LinkPost']} callback={updateSettings} />
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-figure']}
                    props={{
@@ -371,6 +370,8 @@ registerBlockType(metadata.name, {
             />
             <Link defaultValue={attributes['wpbs-figure']?.link}
                   callback={(newValue) => updateSettings({'link': newValue})}/>
+            <LinkPost defaultValue={attributes['wpbs-figure']?.linkPost}
+                      callback={(newValue) => updateSettings({linkPost: newValue})}/>
 
 
             <figure {...blockProps}>

@@ -16,6 +16,7 @@ import {
     ToggleControl, SelectControl, TextControl
 } from "@wordpress/components";
 import {REL_OPTIONS} from "Includes/config.js";
+import {LinkPost} from "Components/LinkPost";
 
 function sectionClassNames(attributes = {}) {
 
@@ -68,34 +69,7 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <InspectorControls group="advanced">
-                    <Grid columns={2} rowGap={20} style={{'margin-top': '25px'}}>
-                        <ToggleControl
-                            style={{marginTop: '20px'}}
-                            label="Link Post"
-                            checked={!!attributes['wpbs-layout-grid-card'].linkPost}
-                            onChange={(value) => updateSettings({linkPost: value})}
-                        />
-                        <ToggleControl
-                            label="New tab"
-                            checked={!!attributes['wpbs-layout-grid-card']?.linkNewTab}
-                            onChange={(isChecked) => updateSettings({linkNewTab: !!isChecked})}
-                        />
-                        <Grid columns={2} columnGap={15} rowGap={20} style={{'grid-column': '1/-1'}}>
-                            <SelectControl
-                                label="Rel"
-                                value={attributes['wpbs-layout-grid-card']?.linkRel ?? ''}
-                                options={REL_OPTIONS}
-                                onChange={(value) => updateSettings({linkRel: value})}
-                            />
-                            <TextControl
-                                label="Title"
-                                value={attributes['wpbs-layout-grid-card']?.linkTitle ?? ''}
-                                onChange={(value) => updateSettings({linkTitle: value})}
-                            />
-                        </Grid>
-                    </Grid>
-                </InspectorControls>
+                <LinkPost defaultValue={attributes?.['wpbs-layout-grid-card']?.linkPost} callback={(value) => updateSettings({linkPost: value})} />
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>

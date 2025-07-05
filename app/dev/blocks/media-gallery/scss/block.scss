@@ -1,10 +1,12 @@
 .wpbs-media-gallery {
   display: flex;
   width: 100%;
-  flex-wrap: wrap;
+  flex-direction: column;
   position: relative;
 }
 
 .wpbs-media-gallery__container {
   height: max-content !important;
+  flex-wrap: wrap !important;
+  flex-direction: row !important;
 }

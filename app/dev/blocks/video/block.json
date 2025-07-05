@@ -16,7 +16,8 @@
     }
   },
   "usesContext": [
-    "media"
+    "media",
+    "is_thumbnail"
   ],
   "supports": {
     "layout": false,

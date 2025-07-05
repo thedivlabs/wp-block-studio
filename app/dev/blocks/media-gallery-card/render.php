@@ -32,24 +32,22 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <div <?php echo $wrapper_attributes ?>>
 	<?php
 
-	if ( ! empty( $media['poster'] ) || ! empty( $media['id'] ) ) {
+	if ( ! empty( $media['id'] ) ) {
 		echo wp_get_attachment_image( $media['poster'] ?? $media['id'] ?? false, 'medium', false, [
 			'loading' => 'lazy',
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	} else {
-		if ( $is_lightbox ) {
-			echo WPBS::get_youtube_poster_image( $media['link'] ?? '' );
-		} else {
-			echo ( new WP_Block( [
-				'blockName' => 'wpbs/video-element',
-			], [
-				'media' => [
-					'link'  => $media['link'] ?? '',
-					'modal' => true
-				],
-			] ) )->render();
-		}
+
+		echo ( new WP_Block( [
+			'blockName' => 'wpbs/video-element',
+		], [
+			'media'        => [
+				'link'  => $media['link'] ?? '',
+				'modal' => true
+			],
+			'is_thumbnail' => $is_lightbox,
+		] ) )->render();
 
 	}
 

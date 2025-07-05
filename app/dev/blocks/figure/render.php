@@ -47,13 +47,12 @@ $mq_large  = 'media="(min-width: ' . $breakpoint . ')"';
 $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';
 
 $is_link = ! empty( $attributes['wpbs-figure']['linkPost']['enabled'] );
-$link    = $is_link ? ( ! empty( $attributes['termId'] ) ? get_term_link( $attributes['termId'] ) : get_the_permalink() ) : false;
-$target  = $is_link ? ( ! empty( $attributes['wpbs-figure']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
-$rel     = $is_link && ( $attributes['wpbs-figure']['linkRel'] ?? false );
+$target  = $is_link ? ( ! empty( $attributes['wpbs-figure']['linkPost']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
+$rel     = $is_link && ( $attributes['wpbs-figure']['linkPost']['linkRel'] ?? false );
 
 $container_tag_open  = implode( ' ', array_filter( [
 	$is_link ? '<a' : '<div',
-	$is_link ? 'href="' . $link . '"' : null,
+	$is_link ? 'href="' . get_the_permalink() . '"' : null,
 	$is_link ? 'target="' . $target . '"' : null,
 	$is_link && $rel ? 'rel="' . $rel . '"' : null,
 	'class="wpbs-figure__media">',

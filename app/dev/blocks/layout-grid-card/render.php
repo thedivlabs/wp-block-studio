@@ -17,39 +17,27 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 $is_link = ! empty( $attributes['wpbs-layout-grid-card']['linkPost']['enabled'] );
 $link    = $is_link ? ( ! empty( $attributes['termId'] ) ? get_term_link( $attributes['termId'] ) : get_the_permalink() ) : false;
-$target  = $is_link ? ( ! empty( $attributes['wpbs-layout-grid-card']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
-$rel     = $is_link && ( $attributes['wpbs-layout-grid-card']['linkRel'] ?? false );
+$target  = $is_link ? ( ! empty( $attributes['wpbs-layout-grid-card']['linkPost']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
+$rel     = $is_link && ( $attributes['wpbs-layout-grid-card']['linkPost']['linkRel'] ?? false );
 
-$container_class     = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20';
-$container_tag_open  = implode( ' ', array_filter( [
-	$is_link ? '<a' : '<div',
-	$is_link ? 'href="' . $link . '"' : null,
-	$is_link ? 'target="' . $target . '"' : null,
-	$is_link && $rel ? 'rel="' . $rel . '"' : null,
-	'class="' . $container_class . '">',
-] ) );
-$container_tag_close = $is_link ? '</a>' : '</div>';
+$container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20';
 
 ?>
 
 
 <div <?php echo $wrapper_attributes ?>>
-
+    <div class="<?= $container_class ?>">
+		<?php foreach ( ( $block->parsed_block['innerBlocks'] ?? [] ) as $inner_block ) {
+			echo render_block( $inner_block );
+		} ?>
+    </div>
 	<?php
 
-	echo $container_tag_open;
-
-	foreach ( ( $block->parsed_block['innerBlocks'] ?? [] ) as $inner_block ) {
-		echo render_block( $inner_block );
+	if ( $is_link ) {
+		echo '<a class="absolute top-0 left-0 w-full h-full z-50" href="' . $link . '" target="' . $target . '" rel="' . $rel . '"><span class="screen-reader-text">' . ( $attributes['wpbs-layout-grid-card']['linkPost']['linkTitle'] ?? 'View Post' ) . '</span></a>';
 	}
-
-	echo $is_link ? '<span class="screen-reader-text">' . ( $attributes['wpbs-layout-grid-card']['linkTitle'] ?? 'View Post' ) . '</span>' : false;
-
-	echo $container_tag_close;
 
 	echo $block->inner_content[ count( $block->inner_content ?? [] ) - 1 ] ?? '';
 
 	?>
-
-
 </div>

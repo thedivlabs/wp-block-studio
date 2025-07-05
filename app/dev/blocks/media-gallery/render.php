@@ -9,7 +9,10 @@ $grid_settings = $attributes['wpbs-grid'] ?? [];
 
 $is_slider = str_contains( ( $attributes['className'] ?? '' ), 'is-style-slider' );
 
-$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $settings, 1, $is_slider );
+$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $settings, 1, [
+	'isSlider'   => $is_slider,
+	'isLightbox' => ! empty( $settings['lightbox'] ),
+] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [

@@ -17,6 +17,7 @@
   "usesContext": [
     "index",
     "media",
+    "isLightbox",
     "isSlider"
   ],
   "supports": {

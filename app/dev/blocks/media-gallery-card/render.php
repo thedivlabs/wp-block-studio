@@ -2,9 +2,12 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
-$media     = $block->context['media'] ?? false;
-$index     = $block->context['index'] ?? 0;
-$is_slider = $block->context['isSlider'] ?? false;
+$media       = $block->context['media'] ?? false;
+$index       = $block->context['index'] ?? 0;
+$is_slider   = $block->context['isSlider'] ?? false;
+$is_lightbox = $block->context['isLightbox'] ?? false;
+
+WPBS::console_log( $block->context ?? false );
 
 if ( empty( $media ) ) {
 	return false;

@@ -126,7 +126,7 @@ class WPBS_Media_Gallery {
 		}
 	}
 
-	public static function loop( $card, $query = [], $page = 1, $is_slider = false ): object|bool {
+	public static function loop( $card, $query = [], $page = 1, $args = [] ): object|bool {
 
 		if ( empty( $query['gallery_id'] ) ) {
 			return false;
@@ -151,9 +151,10 @@ class WPBS_Media_Gallery {
 				$block_template['attrs']['media']    = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
-					'media'    => $media,
-					'index'    => $k,
-					'isSlider' => $is_slider,
+					'media'      => $media,
+					'index'      => $k,
+					'isSlider'   => ! empty( $args['isSlider'] ),
+					'isLightbox' => ! empty( $args['isLightbox'] ),
 				] ) );
 
 				$new_block->attributes['media'] = $media;
@@ -222,10 +223,10 @@ class WPBS_Media_Gallery {
 		$slider_settings = $is_slider ? $block->attributes['wpbs-swiper-args'] ?? [] : [];
 
 		return '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
-				'card'        => $loop->card,
-				'uniqueId'    => $block->attributes['uniqueId'] ?? null,
-				'is_slider'   => $is_slider,
-				'swiper' => $slider_settings,
+				'card'      => $loop->card,
+				'uniqueId'  => $block->attributes['uniqueId'] ?? null,
+				'is_slider' => $is_slider,
+				'swiper'    => $slider_settings,
 				...$grid_settings,
 				...$query_settings,
 			] ) ) . '</script>';

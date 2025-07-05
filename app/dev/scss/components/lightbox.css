@@ -24,7 +24,7 @@
     padding: min(1.25rem, 2vh) .5rem;
     @apply
     w-fit
-    h-full
+    h-fit
     pointer-events-auto
     relative
     overflow-hidden
@@ -39,7 +39,6 @@
       max-width: 92rem;
       @apply
       w-full
-      h-auto
       ;
 
       img {

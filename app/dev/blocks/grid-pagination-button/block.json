@@ -14,19 +14,7 @@
       "show_in_rest": true
     }
   },
-  "styles": [
-    {
-      "name": "default",
-      "label": "Default",
-      "isDefault": true
-    },
-    {
-      "name": "fancy",
-      "label": "Fancy Style"
-    }
-  ],
   "supports": {
-    "interactivity": true,
     "color": {
       "background": true,
       "text": true,

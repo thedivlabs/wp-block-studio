@@ -611,18 +611,6 @@
       "fontFamily": "var(--wp--preset--font-family--roboto)"
     },
     "blocks": {
-      "wpbs/grid-pagination-button": {
-        "color": {
-          "background": "var(--wp--preset--color--primary)",
-          "text": "black"
-        },
-        "spacing": {
-          "padding": "1rem"
-        },
-        "typography": {
-          "fontSize": "18px"
-        }
-      },
       "core/query-pagination": {
         "typography": {
           "textAlign": "center",

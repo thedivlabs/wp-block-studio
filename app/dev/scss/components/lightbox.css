@@ -33,6 +33,14 @@
     justify-center
     items-center
     m-auto
+    ;
+
+    &.--video {
+      max-width: 72rem;
+      @apply
+      w-full
+      aspect-video
+    }
   }
 
   .wpbs-lightbox__slider.swiper {

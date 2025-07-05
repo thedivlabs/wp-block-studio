@@ -50,14 +50,7 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
-        const sliderOptions = useMemo(() => {
-            return sliderArgs(attributes);
-        }, [attributes?.['wpbs-slider']]);
-        
         useEffect(() => {
-
-            setAttributes({'wpbs-swiper-args': sliderOptions});
-
 
             if (swiperRef.current?.swiper) {
 
@@ -72,7 +65,7 @@ registerBlockType(metadata.name, {
                 const newParams = Object.fromEntries(
                     Object.entries({
                         ...swiperRef.current.swiper.params,
-                        ...sliderOptions
+                        ...attributes?.['wpbs-slider']?.swiperArgs ?? {}
                     }).filter(([key]) => allowedParams.includes(key))
                 );
 
@@ -89,10 +82,10 @@ registerBlockType(metadata.name, {
             } else if ('Swiper' in window && swiperRef.current) {
                 const element = swiperRef.current;
                 const swiper = new Swiper(element, {
-                    ...sliderOptions
+                    ...attributes?.['wpbs-slider']?.swiperArgs ?? {},
                 });
             }
-        }, [sliderOptions]);
+        }, [attributes?.['wpbs-slider']?.swiperArgs]);
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 

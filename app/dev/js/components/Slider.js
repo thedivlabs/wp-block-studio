@@ -45,7 +45,7 @@ export const SliderComponent = ({attributes, blockProps}) => {
     return <></>;
 }
 
-export function sliderArgs(attributes) {
+export function getSliderArgs(attributes) {
 
     const {'wpbs-slider': options} = attributes;
 
@@ -129,11 +129,13 @@ export const SliderControls = ({attributes, setAttributes}) => {
 
     const updateOptions = useCallback((newValue) => {
 
+        const swiperArgs = getSliderArgs(attributes);
 
         setAttributes({
             'wpbs-slider': {
                 ...attributes['wpbs-slider'],
-                ...newValue
+                ...newValue,
+                swiperArgs: swiperArgs,
             }
         });
 

@@ -54,10 +54,6 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
-        const sliderOptions = useMemo(() => {
-            return sliderArgs(attributes);
-        }, [attributes['wpbs-slider']]);
-
         useEffect(() => {
 
 
@@ -74,7 +70,7 @@ registerBlockType(metadata.name, {
                 const newParams = Object.fromEntries(
                     Object.entries({
                         ...swiperRef.current.swiper.params,
-                        ...sliderOptions
+                        ...attributes?.['wpbs-slider']?.swiperArgs ?? {}
                     }).filter(([key]) => allowedParams.includes(key))
                 );
 
@@ -90,9 +86,9 @@ registerBlockType(metadata.name, {
 
             } else if ('Swiper' in window && !!swiperRef.current) {
                 const element = swiperRef.current;
-                new Swiper(element, sliderOptions);
+                new Swiper(element, attributes?.['wpbs-slider']?.swiperArgs ?? {});
             }
-        }, [sliderOptions]);
+        }, [attributes?.['wpbs-slider']?.swiperArgs]);
 
         const cssProps = sliderProps(attributes);
 
@@ -166,7 +162,7 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs/slider',
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
-                args: sliderArgs(props.attributes)
+                args: props.attributes?.['wpbs-slider']?.swiperArgs ?? {},
             })
         });
 

@@ -160,6 +160,8 @@ export default class Modals {
                 modal.classList.add('active');
             }, 50);
 
+            [...modal.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
+
 
         }, delay);
 

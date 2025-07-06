@@ -3,7 +3,7 @@
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-loop-pagination-button inline-block loop-button relative z-20 hidden cursor-pointer h-fit',
+		'wpbs-loop-pagination-button inline-block loop-button relative z-20 hidden cursor-pointer h-fit w-fit max-w-full',
 	] ) )
 ] );
 

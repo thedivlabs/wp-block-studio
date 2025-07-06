@@ -48,7 +48,7 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         useEffect(() => {
-            
+
             if (swiperRef.current?.swiper) {
 
                 const allowedParams = [
@@ -114,7 +114,16 @@ registerBlockType(metadata.name, {
             }
         ].filter(Boolean); // removes false entries
 
-        const cssProps = !isSlider ? gridProps(attributes) : sliderProps(attributes);
+        const cssPropsGrid = useMemo(() => {
+            return gridProps(attributes);
+        }, [attributes?.['wpbs-grid']]);
+
+        const cssPropsSlider = useMemo(() => {
+            return sliderProps(attributes);
+        }, [attributes?.['wpbs-slider']]);
+
+        const cssProps = !isSlider ? cssPropsGrid : cssPropsSlider;
+
 
         const baseProps = {
             className: blockClassnames(attributes, isSlider),

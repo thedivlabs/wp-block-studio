@@ -51,7 +51,7 @@ export const SliderComponent = ({attributes, blockProps}) => {
 
 export function getSliderArgs(attributes) {
 
-    const {'wpbs-slider': options} = attributes;
+    const {'wpbs-slider': options = {}} = attributes;
 
     const breakpoint = attributes?.breakpoint ?? 992;
 
@@ -118,16 +118,14 @@ export function sliderProps(attributes) {
 
     const breakpoint = WPBS?.settings?.breakpoints?.[attributes?.['wpbs-breakpoint']?.large ?? 'normal'];
 
-    return useMemo(() => {
-        return cleanArgs({
-            '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
-            breakpoints: {
-                [breakpoint]: {
-                    '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,
-                }
+    return cleanArgs({
+        '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
+        breakpoints: {
+            [breakpoint]: {
+                '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,
             }
-        });
-    }, [attributes?.['wpbs-slider']]);
+        }
+    });
 
 
 }
@@ -139,7 +137,7 @@ export const SliderControls = ({attributes, setAttributes}) => {
 
         setAttributes({
             'wpbs-slider': {
-                ...attributes['wpbs-slider'],
+                ...(attributes?.['wpbs-slider'] ?? {}),
                 ...newValue
             }
         });

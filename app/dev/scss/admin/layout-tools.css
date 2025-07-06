@@ -13,14 +13,14 @@
   }
 
   .wpbs-layout-tools__grid {
-    padding: 12px 12px;
+    padding: 10px;
     background: #dedede;
   }
 
   .components-tools-panel-header {
 
     h2 {
-      color: var(--color-gray-400);
+      color: black;
     }
   }
 

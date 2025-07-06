@@ -59,7 +59,7 @@ registerBlockType(metadata.name, {
 
 
         const blockProps = useBlockProps({
-            className: 'wpbs-video --disabled flex items-center justify-center relative w-full h-auto aspect-video overflow-hidden cursor-pointer',
+            className: 'wpbs-video --disabled flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer',
             style: {
                 '--overlay': attributes?.['wpbs-video']?.overlay ?? 'none'
             }

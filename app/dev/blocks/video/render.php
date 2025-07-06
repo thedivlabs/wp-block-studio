@@ -11,8 +11,8 @@ $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
-		'wpbs-video flex items-center justify-center relative w-full h-auto aspect-video overflow-hidden cursor-pointer',
-		$is_thumbnail ? '--disabled' : null,
+		'wpbs-video flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer',
+		$is_thumbnail ? '--disabled h-full' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style'         => implode( '; ', array_filter( [

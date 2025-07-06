@@ -38,7 +38,7 @@ class WPBS {
 		add_action( 'admin_init', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
-		add_action( 'wp_head', [ $this, 'critical_css' ], 40 );
+		add_action( 'wp_head', [ $this, 'critical_css' ], 5 );
 		add_action( 'wp_footer', [ $this, 'output_vars' ], 30 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
@@ -65,12 +65,26 @@ class WPBS {
 
 	public function critical_css(): void {
 
+		global $wp_styles;
+
+		$theme_css      = $wp_styles->registered['wpbs-theme-css']->src ?? '';
+		$theme_css_path = ABSPATH . ltrim( str_replace( home_url(), '', $theme_css ), '/' );
+
+		$wp_styles->dequeue( 'wpbs-theme-css' );
+
+		WPBS::console_log( $wp_styles->queue );
+		WPBS::console_log( $wp_styles->registered );
+		WPBS::console_log( $theme_css );
+		WPBS::console_log( $theme_css_path );
+
+
 		$css = apply_filters( 'wpbs_critical_css', [] );
 
 		$css = array_unique( $css );
 
 		echo '<style class="wpbs-critical-css">';
 		echo join( ' ', array_values( $css ) );
+		echo file_get_contents( $theme_css_path );
 		echo '</style>';
 
 	}

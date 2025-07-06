@@ -1,8 +1,3 @@
-@layer utilities;
-
-@import "tailwindcss/theme.css" layer(utilities);
-
-
 @import "./admin/acf";
 @import "./admin/admin-menu";
 @import "./admin/editor";

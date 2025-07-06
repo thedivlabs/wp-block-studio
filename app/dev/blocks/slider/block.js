@@ -9,7 +9,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
+import {SLIDER_ATTRIBUTES, SliderComponent, SliderControls, sliderProps} from "Components/Slider"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {
     __experimentalGrid as Grid,
@@ -55,46 +55,6 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
-        useEffect(() => {
-
-
-            if (swiperRef.current?.swiper) {
-
-                const allowedParams = [
-                    'breakpoints',
-                    'slidesPerView',
-                    //'rewind',
-                    'slidesPerGroup',
-                    'spaceBetween',
-                ];
-
-                const newParams = Object.fromEntries(
-                    Object.entries({
-                        ...swiperRef.current.swiper.params,
-                        ...attributes?.['wpbs-swiper-args'] ?? {},
-                        ...SWIPER_ARGS_EDITOR
-                    }).filter(([key]) => allowedParams.includes(key))
-                );
-
-
-                if (swiperRef.current?.swiper?.currentBreakpoint) {
-                    swiperRef.current.swiper.currentBreakpoint = null;
-                }
-
-
-                swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
-
-                swiperRef.current.swiper.update();
-
-            } else if ('Swiper' in window && !!swiperRef.current) {
-                const element = swiperRef.current;
-                new Swiper(element, {
-                    ...attributes?.['wpbs-swiper-args'] ?? {},
-                    ...SWIPER_ARGS_EDITOR
-                });
-            }
-        }, [attributes?.['wpbs-swiper-args']]);
-
         const cssProps = useMemo(() => {
             return sliderProps(attributes);
         }, [attributes?.['wpbs-slider']]);
@@ -117,7 +77,7 @@ registerBlockType(metadata.name, {
                 ['wpbs/slider-wrapper'],
             ]*/
         });
-        
+
         const loopQuery = attributes?.['wpbs-query'] ?? {};
 
         return <>
@@ -155,7 +115,8 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <BlockContextProvider value={{loopQuery}}>
-                <div {...innerBlocksProps} ref={swiperRef}/>
+                <SliderComponent attributes={attributes} blockProps={blockProps} innerBlocksProps={innerBlocksProps}
+                                 ref={swiperRef}/>
             </BlockContextProvider>
         </>;
 

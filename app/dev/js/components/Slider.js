@@ -46,11 +46,16 @@ export const SLIDER_ATTRIBUTES = {
 };
 
 export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps}, ref) => {
-    console.log(ref);
 
     useEffect(() => {
 
-        if (ref.current?.swiper) {
+        const element = ref.current;
+
+        if (!element) {
+            return <></>
+        }
+
+        if (element?.swiper) {
 
             const allowedParams = [
                 'breakpoints',
@@ -63,24 +68,23 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
             const newParams = Object.fromEntries(
                 Object.entries({
                     ...SWIPER_ARGS_DEFAULT,
-                    ...ref.current.swiper.params,
+                    ...element.swiper.params,
                     ...attributes?.['wpbs-swiper-args'] ?? {},
                     ...SWIPER_ARGS_EDITOR
                 }).filter(([key]) => allowedParams.includes(key))
             );
 
 
-            if (ref.current?.swiper?.currentBreakpoint) {
-                ref.current.swiper.currentBreakpoint = null;
+            if (element?.swiper?.currentBreakpoint) {
+                element.swiper.currentBreakpoint = null;
             }
 
 
-            ref.current.swiper.params = Object.assign(ref.current.swiper.params, newParams);
+            element.swiper.params = Object.assign(element.swiper.params, newParams);
 
-            ref.current.swiper.update();
+            element.swiper.update();
 
-        } else if ('Swiper' in window && ref.current) {
-            const element = ref.current;
+        } else if ('Swiper' in window && element) {
             const swiper = new Swiper(element, {
                 ...SWIPER_ARGS_DEFAULT,
                 ...attributes?.['wpbs-swiper-args'] ?? {},

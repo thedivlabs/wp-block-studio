@@ -6,11 +6,8 @@ const {state} = store('wpbs/media-gallery', {
         init: () => {
 
             const {ref: grid} = getElement();
-            const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerText ?? '{}');
-            console.log(grid);
-            const {is_last, is_slider} = data;
-
-            const swiper_args = getContext();
+            const context = getContext();
+            const {is_last, is_slider, swiper: swiper_args, gallery_id} = context;
 
             if (is_slider) {
                 WPBS.slider.observe(grid, swiper_args);
@@ -18,7 +15,7 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.setMasonry(grid);
 
-            WPBS.gridDividers(grid, data);
+            WPBS.gridDividers(grid, context);
 
             [...grid.querySelectorAll('.loop-button')].forEach((el) => {
                 if (!is_last) {
@@ -38,7 +35,7 @@ const {state} = store('wpbs/media-gallery', {
 
                     WPBS.lightbox.toggle({
                         index: card.dataset.index,
-                        gallery_id: data?.gallery_id,
+                        gallery_id: gallery_id,
                     })
 
                 });
@@ -54,9 +51,9 @@ const {state} = store('wpbs/media-gallery', {
 
             const gallery = element.closest('.wpbs-media-gallery');
             const container = gallery.querySelector(':scope > .loop-container');
-            const data = JSON.parse(gallery.querySelector('script.wpbs-args')?.textContent ?? '{}');
+            const context = getContext();
 
-            const {card, gallery_id, video_first, page_size} = data;
+            const {card, gallery_id, video_first, page_size} = context;
 
             gallery.dataset.page = String(parseInt(gallery.dataset?.page ?? 1) + 1);
 
@@ -101,7 +98,7 @@ const {state} = store('wpbs/media-gallery', {
                         container.append(...newNodes.body.childNodes);
                     }
 
-                    WPBS.gridDividers(gallery, data);
+                    WPBS.gridDividers(gallery, context);
                     WPBS.setMasonry(gallery);
 
                     [...gallery.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
@@ -118,14 +115,14 @@ const {state} = store('wpbs/media-gallery', {
         lightbox: () => {
             const {ref: block} = getElement();
 
-            const context = JSON.parse(JSON.stringify(getContext()));
-            const data = JSON.parse(block.closest('.wpbs-media-gallery').querySelector('script.wpbs-args')?.innerText ?? '{}');
+            const context = getContext();
+            const {gallery_id} = context;
 
             const {index = 0} = context;
 
             WPBS.lightbox.toggle({
                 index: index,
-                gallery_id: data?.gallery_id,
+                gallery_id: gallery_id,
             })
 
         }

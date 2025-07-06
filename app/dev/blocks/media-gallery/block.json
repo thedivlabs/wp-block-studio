@@ -16,7 +16,9 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/media-gallery-card"
+    "wpbs/media-gallery-card",
+    "wpbs/slider-wrapper",
+    "wpbs/slider-navigation"
   ],
   "providesContext": {
     "wpbs/isSlider": "isSlider"

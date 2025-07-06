@@ -24,7 +24,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 	'data-wp-interactive' => 'wpbs/media-gallery',
 	'data-wp-init'        => 'actions.init',
-	'data-wp-context'     => json_encode( $attributes['wpbs-swiper-args'] ?? [] ),
+	'data-wp-context'     => WPBS_Media_Gallery::output_args( $loop, $block ?? false ),
 ] );
 
 
@@ -58,12 +58,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		<?php } ?>
 
 
-
-		<?php
-
-		echo WPBS_Media_Gallery::output_args( $loop, $block ?? false );
-
-		?>
     </div>
 
 

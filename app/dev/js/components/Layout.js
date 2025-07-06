@@ -175,7 +175,7 @@ const LAYOUT_PROPS = {
 
 };
 
-const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => (
+const MemoMediaControl = React.memo(({label, allowedTypes, value, callback, clear}) => (
     <BaseControl
         label={label}
         __nextHasNoMarginBottom={true}
@@ -189,7 +189,7 @@ const MemoMediaControl = React.memo(({label, allowedTypes, value, callback}) => 
                 render={({open}) => {
                     return <PreviewThumbnail
                         image={value}
-                        callback={callback}
+                        callback={clear}
                         style={{
                             objectFit: 'contain'
                         }}
@@ -976,7 +976,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         hasValue={() => !!settings?.['mask-image']}
                         label={'Mask'}
                         onDeselect={() => updateProp({
-                            ['mask-image']: {},
+                            ['mask-image']: undefined,
                             ['mask-origin']: '',
                             ['mask-size']: ''
                         })}
@@ -996,6 +996,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                     }
                                 })}
                                 allowedTypes={['image']}
+                                clear={(newValue) => updateProp({
+                                    'mask-image': undefined,
+                                })}
                             />
 
                             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -1483,7 +1486,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         label={'Mask'}
                         onDeselect={() => {
                             updateProp({
-                                ['mask-image-mobile']: {},
+                                ['mask-image-mobile']: undefined,
                                 ['mask-origin-mobile']: '',
                                 ['mask-size-mobile']: ''
                             });
@@ -1505,7 +1508,9 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 })}
 
                                 allowedTypes={['image']}
-
+                                clear={(newValue) => updateProp({
+                                    'mask-image-mobile': undefined,
+                                })}
                             />
 
                             <Grid columns={2} columnGap={15} rowGap={20}>

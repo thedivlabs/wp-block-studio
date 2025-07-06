@@ -14,7 +14,7 @@
 
   .wpbs-layout-tools__grid {
     padding: 12px 12px;
-    background: var(--color-gray-400, #efefef);
+    background: #efefef;
   }
 
   .components-tools-panel-header {

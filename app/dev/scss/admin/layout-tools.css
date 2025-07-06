@@ -26,7 +26,7 @@
   .components-tools-panel-header:not(:only-child) {
     padding: 0 16px 14px;
     margin: 0 -16px;
-    border-bottom: 1px solid #dedede;
+    border-bottom: 1px solid var(--wp-admin-theme-color, #dedede);
     width: auto;
 
     h2 {

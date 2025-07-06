@@ -9,7 +9,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-import {SLIDER_ATTRIBUTES, SliderControls, sliderArgs, sliderProps} from "Components/Slider"
+import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {
     __experimentalGrid as Grid,
@@ -23,6 +23,7 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {GridControls} from "Components/Grid.js";
 import {LoopControls, LOOP_ATTRIBUTES} from "Components/Loop.js";
+import {SWIPER_ARGS_EDITOR} from 'Includes/config'
 
 
 function blockClasses(attributes = {}, editor = false) {
@@ -70,7 +71,8 @@ registerBlockType(metadata.name, {
                 const newParams = Object.fromEntries(
                     Object.entries({
                         ...swiperRef.current.swiper.params,
-                        ...attributes?.['wpbs-swiper-args'] ?? {}
+                        ...attributes?.['wpbs-swiper-args'] ?? {},
+                        ...SWIPER_ARGS_EDITOR
                     }).filter(([key]) => allowedParams.includes(key))
                 );
 
@@ -86,7 +88,10 @@ registerBlockType(metadata.name, {
 
             } else if ('Swiper' in window && !!swiperRef.current) {
                 const element = swiperRef.current;
-                new Swiper(element, attributes?.['wpbs-swiper-args'] ?? {});
+                new Swiper(element, {
+                    ...attributes?.['wpbs-swiper-args'] ?? {},
+                    ...SWIPER_ARGS_EDITOR
+                });
             }
         }, [attributes?.['wpbs-swiper-args']]);
 

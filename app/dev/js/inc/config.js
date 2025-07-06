@@ -202,6 +202,19 @@ export const SWIPER_ARGS_DEFAULT = {
     initialSlide: 0,
     breakpoints: {},
     simulateTouch: false,
+};
+
+export const SWIPER_ARGS_EDITOR = {
+
+    watchSlidesProgress: false,
+    updateOnWindowResize: false,
+    watchOverflow: false,
+    allowTouchMove: false,         // disables swiping
+    simulateTouch: false,          // disables fake mouse events
+    keyboard: false,               // disables keyboard control
+    mousewheel: false,             // disables mousewheel
+    autoplay: false,               // disables autoplay
+    loop: false,                   // disables looping
 }
 
 export const SWIPER_ARGS_VIEW = {

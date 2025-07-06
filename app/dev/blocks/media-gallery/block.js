@@ -19,6 +19,7 @@ import {
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
+import {SWIPER_ARGS_EDITOR} from 'Includes/config';
 
 function blockClassnames(attributes = {}, isSlider = false) {
     return [
@@ -27,17 +28,6 @@ function blockClassnames(attributes = {}, isSlider = false) {
         isSlider ? 'swiper' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
-}
-
-const swiperEditorOptions = {
-    allowTouchMove: false,         // disables swiping
-    simulateTouch: false,          // disables fake mouse events
-    keyboard: false,               // disables keyboard control
-    mousewheel: false,             // disables mousewheel
-    autoplay: false,               // disables autoplay
-    loop: false,                   // disables looping
-    speed: 0,                      // removes animation delay
-    effect: 'slide',
 }
 
 registerBlockType(metadata.name, {
@@ -74,7 +64,7 @@ registerBlockType(metadata.name, {
                     Object.entries({
                         ...swiperRef.current.swiper.params,
                         ...attributes?.['wpbs-swiper-args'] ?? {},
-                        ...swiperEditorOptions
+                        ...SWIPER_ARGS_EDITOR
                     }).filter(([key]) => allowedParams.includes(key))
                 );
 
@@ -92,7 +82,7 @@ registerBlockType(metadata.name, {
                 const element = swiperRef.current;
                 const swiper = new Swiper(element, {
                     ...attributes?.['wpbs-swiper-args'] ?? {},
-                    ...swiperEditorOptions
+                    ...SWIPER_ARGS_EDITOR
                 });
             }
         }, [attributes?.['wpbs-swiper-args']]);

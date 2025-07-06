@@ -162,6 +162,7 @@ export const SliderControls = ({attributes, setAttributes}) => {
         <Grid columns={2} columnGap={15} rowGap={20}>
             <NumberControl
                 label={'Slides Mobile'}
+                min={1}
                 __next40pxDefaultSize
                 isShiftStepEnabled={true}
                 onChange={(newValue) => updateOptions({'slides-mobile': newValue})}
@@ -169,6 +170,7 @@ export const SliderControls = ({attributes, setAttributes}) => {
             />
             <NumberControl
                 label={'Slides Large'}
+                min={1}
                 __next40pxDefaultSize
                 isShiftStepEnabled={true}
                 onChange={(newValue) => updateOptions({'slides-large': newValue})}

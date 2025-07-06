@@ -18,7 +18,7 @@ import {
     PanelBody, TabPanel
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
-import {SLIDER_ATTRIBUTES, sliderArgs, SliderControls, sliderProps} from "Components/Slider"
+import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
 
 function blockClassnames(attributes = {}, isSlider = false) {
     return [
@@ -27,6 +27,17 @@ function blockClassnames(attributes = {}, isSlider = false) {
         isSlider ? 'swiper' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
+}
+
+const swiperEditorOptions = {
+    allowTouchMove: false,         // disables swiping
+    simulateTouch: false,          // disables fake mouse events
+    keyboard: false,               // disables keyboard control
+    mousewheel: false,             // disables mousewheel
+    autoplay: false,               // disables autoplay
+    loop: false,                   // disables looping
+    speed: 0,                      // removes animation delay
+    effect: 'slide',
 }
 
 registerBlockType(metadata.name, {
@@ -62,7 +73,8 @@ registerBlockType(metadata.name, {
                 const newParams = Object.fromEntries(
                     Object.entries({
                         ...swiperRef.current.swiper.params,
-                        ...attributes?.['wpbs-swiper-args'] ?? {}
+                        ...attributes?.['wpbs-swiper-args'] ?? {},
+                        ...swiperEditorOptions
                     }).filter(([key]) => allowedParams.includes(key))
                 );
 
@@ -80,6 +92,7 @@ registerBlockType(metadata.name, {
                 const element = swiperRef.current;
                 const swiper = new Swiper(element, {
                     ...attributes?.['wpbs-swiper-args'] ?? {},
+                    ...swiperEditorOptions
                 });
             }
         }, [attributes?.['wpbs-swiper-args']]);

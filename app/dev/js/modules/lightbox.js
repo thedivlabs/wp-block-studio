@@ -1,4 +1,4 @@
-import {SWIPER_DEFAULT_ARGS} from "Includes/config";
+import {SWIPER_ARGS_VIEW} from "Includes/config";
 
 export default class Lightbox {
 
@@ -6,11 +6,11 @@ export default class Lightbox {
 
     static swiper_args = (index = 0) => {
         return {
-            ...SWIPER_DEFAULT_ARGS,
+            ...SWIPER_ARGS_VIEW,
             initialSlide: index,
             spaceBetween: 10,
             slidesPerView: 1,
-            simulateTouch:true,
+            simulateTouch: true,
             navigation: {
                 nextEl: '.wpbs-lightbox-nav__button--next',
                 prevEl: '.wpbs-lightbox-nav__button--prev',

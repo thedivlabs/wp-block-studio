@@ -106,9 +106,9 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
+            /*template: [
                 ['wpbs/slider-wrapper'],
-            ]
+            ]*/
         });
 
         const isLoop = (attributes?.className ?? '').includes('is-style-loop');
@@ -148,8 +148,8 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
-            <BlockContextProvider value={{loopQuery}}>
-                <div {...innerBlocksProps} ref={swiperRef}/>
+            <BlockContextProvider value={{loopQuery}} ref={swiperRef}>
+                <div {...innerBlocksProps} />
             </BlockContextProvider>
         </>;
 
@@ -162,7 +162,7 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs/slider',
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
-                args: props.attributes?.['wpbs-swiper-args'] ?? {},
+                //args: props.attributes?.['wpbs-swiper-args'] ?? {},
             })
         });
 

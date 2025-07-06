@@ -1,7 +1,7 @@
 import {
     InspectorControls,
 } from "@wordpress/block-editor"
-import {SWIPER_DEFAULT_ARGS} from "Includes/config";
+import {SWIPER_ARGS_DEFAULT} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -109,7 +109,7 @@ export function getSliderArgs(attributes) {
     };
 
     return {
-        ...SWIPER_DEFAULT_ARGS,
+        ...SWIPER_ARGS_DEFAULT,
         ...args
     };
 }
@@ -118,14 +118,17 @@ export function sliderProps(attributes) {
 
     const breakpoint = WPBS?.settings?.breakpoints?.[attributes?.['wpbs-breakpoint']?.large ?? 'normal'];
 
-    return cleanArgs({
-        '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
-        breakpoints: {
-            [breakpoint]: {
-                '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,
+    return useMemo(() => {
+        return cleanArgs({
+            '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
+            breakpoints: {
+                [breakpoint]: {
+                    '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,
+                }
             }
-        }
-    });
+        });
+    }, [attributes?.['wpbs-slider']]);
+
 
 }
 
@@ -141,16 +144,20 @@ export const SliderControls = ({attributes, setAttributes}) => {
             }
         });
 
-    }, [setAttributes, attributes['wpbs-slider']]);
+    }, [setAttributes, attributes?.['wpbs-slider']]);
+
+    const swiperArgs = useMemo(() => {
+        return getSliderArgs(attributes);
+    }, [attributes?.['wpbs-slider']]);
 
     useEffect(() => {
-        const swiperArgs = getSliderArgs(attributes);
+
 
         setAttributes({
             'wpbs-swiper-args': swiperArgs,
         });
 
-    }, [attributes['wpbs-slider']]);
+    }, [swiperArgs]);
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>

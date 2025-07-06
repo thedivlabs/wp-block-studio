@@ -171,7 +171,7 @@ export const RESOLUTION_OPTIONS = [
 ];
 
 
-export const SWIPER_DEFAULT_ARGS = {
+export const SWIPER_ARGS_DEFAULT = {
     createElements: false,
     pagination: {
         enabled: true,
@@ -202,8 +202,41 @@ export const SWIPER_DEFAULT_ARGS = {
     initialSlide: 0,
     breakpoints: {},
     simulateTouch: false,
+}
+
+export const SWIPER_ARGS_VIEW = {
+    ...SWIPER_ARGS_DEFAULT,
     on: {
-        init: (swiper) => {
+        afterInit: (swiper) => {
+            if (swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
+            if (swiper.slides.length < 2) {
+                swiper.disable();
+            }
+            if (swiper.autoplay.running) {
+                swiper.autoplay.pause();
+                setTimeout(() => {
+                    swiper.autoplay.resume();
+                }, 5000);
+            }
+        },
+        paginationUpdate: (swiper, paginationEl) => {
+
+            if (!!swiper?.['isBeginning']) {
+                swiper.el.classList.add('swiper--start');
+            } else {
+                swiper.el.classList.remove('swiper--start');
+            }
+        },
+        resize: (swiper) => {
+            if (swiper.enabled === false) {
+                swiper.el.classList.add('swiper--disabled');
+            } else {
+                swiper.el.classList.remove('swiper--disabled');
+            }
         },
         transitionEnd: (swiper) => {
 
@@ -227,4 +260,4 @@ export const SWIPER_DEFAULT_ARGS = {
 
         }
     }
-}
+};

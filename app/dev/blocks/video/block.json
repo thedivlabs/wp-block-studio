@@ -40,6 +40,9 @@
   },
   "editorScript": "file:./block.js",
   "icon": "format-video",
+  "style": [
+    "file:./block.css"
+  ],
   "render": "file:./render.php"
 }
 

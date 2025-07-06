@@ -1,4 +1,6 @@
 import {SWIPER_ARGS_VIEW, SWIPER_ARGS_DEFAULT} from 'Includes/config';
+import merge from 'lodash.merge';
+
 
 export default class Slider {
 
@@ -14,7 +16,7 @@ export default class Slider {
             return;
         }
 
-        args = Object.assign({}, SWIPER_ARGS_DEFAULT, SWIPER_ARGS_VIEW, args);
+        args = merge({}, SWIPER_ARGS_DEFAULT, SWIPER_ARGS_VIEW, args);
 
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {
@@ -22,7 +24,7 @@ export default class Slider {
 
                     observerIntersection.unobserve(entry.target);
 
-                    if (entry.target.querySelectorAll(':scope > .swiper-wrapper > .wpbs-slide').length < 2) {
+                    if (entry.target.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length <= 1) {
                         return false;
                     }
 

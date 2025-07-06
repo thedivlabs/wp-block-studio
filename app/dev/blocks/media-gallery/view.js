@@ -7,18 +7,10 @@ const {state} = store('wpbs/media-gallery', {
 
             const {ref: grid} = getElement();
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerText ?? '{}');
-
-
+            console.log(grid);
             const {is_last, is_slider} = data;
 
-
-            const swiper_args = {
-                ...(data?.['swiper'] ?? {})
-            }
-
-            console.log(swiper_args);
-            console.log(is_slider);
-            console.log(grid);
+            const swiper_args = getContext();
 
             if (is_slider) {
                 WPBS.slider.observe(grid, swiper_args);

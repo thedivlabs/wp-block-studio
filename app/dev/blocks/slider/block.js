@@ -117,7 +117,7 @@ registerBlockType(metadata.name, {
                 ['wpbs/slider-wrapper'],
             ]*/
         });
-        console.log(attributes?.['wpbs-swiper-args']);
+        
         const loopQuery = attributes?.['wpbs-query'] ?? {};
 
         return <>

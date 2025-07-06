@@ -1,7 +1,8 @@
 import {
     InspectorControls,
 } from "@wordpress/block-editor"
-import {SWIPER_ARGS_DEFAULT} from "Includes/config";
+import {SWIPER_ARGS_DEFAULT, SWIPER_ARGS_EDITOR} from "Includes/config";
+import merge from 'lodash.merge';
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -10,7 +11,7 @@ import {
     SelectControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useEffect, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo, forwardRef} from "react";
 
 
 export const SLIDER_ATTRIBUTES = {
@@ -44,10 +45,61 @@ export const SLIDER_ATTRIBUTES = {
     }
 };
 
-export const SliderComponent = ({attributes, blockProps}) => {
+export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps}, ref) => {
+    console.log(ref);
 
-    return <></>;
-}
+    useEffect(() => {
+
+        if (ref.current?.swiper) {
+
+            const allowedParams = [
+                'breakpoints',
+                'slidesPerView',
+                //'rewind',
+                'slidesPerGroup',
+                'spaceBetween',
+            ];
+
+            const newParams = Object.fromEntries(
+                Object.entries({
+                    ...SWIPER_ARGS_DEFAULT,
+                    ...ref.current.swiper.params,
+                    ...attributes?.['wpbs-swiper-args'] ?? {},
+                    ...SWIPER_ARGS_EDITOR
+                }).filter(([key]) => allowedParams.includes(key))
+            );
+
+
+            if (ref.current?.swiper?.currentBreakpoint) {
+                ref.current.swiper.currentBreakpoint = null;
+            }
+
+
+            ref.current.swiper.params = Object.assign(ref.current.swiper.params, newParams);
+
+            ref.current.swiper.update();
+
+        } else if ('Swiper' in window && ref.current) {
+            const element = ref.current;
+            const swiper = new Swiper(element, {
+                ...SWIPER_ARGS_DEFAULT,
+                ...attributes?.['wpbs-swiper-args'] ?? {},
+                ...SWIPER_ARGS_EDITOR
+            });
+        }
+    }, [attributes?.['wpbs-swiper-args'], ref]);
+
+    return <div {...blockProps}>
+        <div className="swiper-wrapper">
+            {innerBlocksProps.children}
+            <div className={'swiper-slide'}/>
+            <div className={'swiper-slide'}/>
+            <div className={'swiper-slide'}/>
+            <div className={'swiper-slide'}/>
+            <div className={'swiper-slide'}/>
+        </div>
+    </div>;
+})
 
 export function getSliderArgs(attributes) {
 
@@ -67,7 +119,6 @@ export function getSliderArgs(attributes) {
         speed: parseInt(options['transition'] ? options['transition'] * 100 : null) || null,
         pagination: options['pagination'] ? {
             enabled: true,
-            el: '.swiper-pagination',
             type: options['pagination']
         } : false,
         effect: options['effect'] || 'slide',
@@ -103,7 +154,9 @@ export function getSliderArgs(attributes) {
         ...breakpointArgs
     };
 
-    return Object.fromEntries(Object.entries(args).filter(([_, value]) => Boolean(value)));
+    args = Object.fromEntries(Object.entries(args).filter(([_, value]) => Boolean(value)));
+
+    return merge({}, SWIPER_ARGS_DEFAULT, args);
 }
 
 export function sliderProps(attributes) {

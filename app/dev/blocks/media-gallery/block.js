@@ -18,7 +18,7 @@ import {
     PanelBody, TabPanel
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
-import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
+import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
 import {SWIPER_ARGS_DEFAULT, SWIPER_ARGS_EDITOR} from 'Includes/config';
 
 function blockClassnames(attributes = {}, isSlider = false) {
@@ -47,47 +47,6 @@ registerBlockType(metadata.name, {
         const swiperRef = useRef(null);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
-
-        useEffect(() => {
-
-            if (swiperRef.current?.swiper) {
-
-                const allowedParams = [
-                    'breakpoints',
-                    'slidesPerView',
-                    //'rewind',
-                    'slidesPerGroup',
-                    'spaceBetween',
-                ];
-
-                const newParams = Object.fromEntries(
-                    Object.entries({
-                        ...SWIPER_ARGS_DEFAULT,
-                        ...swiperRef.current.swiper.params,
-                        ...attributes?.['wpbs-swiper-args'] ?? {},
-                        ...SWIPER_ARGS_EDITOR
-                    }).filter(([key]) => allowedParams.includes(key))
-                );
-
-
-                if (swiperRef.current?.swiper?.currentBreakpoint) {
-                    swiperRef.current.swiper.currentBreakpoint = null;
-                }
-
-
-                swiperRef.current.swiper.params = Object.assign(swiperRef.current.swiper.params, newParams);
-
-                swiperRef.current.swiper.update();
-
-            } else if ('Swiper' in window && swiperRef.current) {
-                const element = swiperRef.current;
-                const swiper = new Swiper(element, {
-                    ...SWIPER_ARGS_DEFAULT,
-                    ...attributes?.['wpbs-swiper-args'] ?? {},
-                    ...SWIPER_ARGS_EDITOR
-                });
-            }
-        }, [attributes?.['wpbs-swiper-args']]);
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
@@ -166,16 +125,9 @@ registerBlockType(metadata.name, {
 
                 <BlockContextProvider value={{isSlider}}>
                     {
-                        isSlider ? <div {...blockProps}>
-                            <div className="swiper-wrapper">
-                                {innerBlocksProps.children}
-                                <div className={'swiper-slide'}/>
-                                <div className={'swiper-slide'}/>
-                                <div className={'swiper-slide'}/>
-                                <div className={'swiper-slide'}/>
-                                <div className={'swiper-slide'}/>
-                            </div>
-                        </div> : <div {...innerBlocksProps} />
+                        isSlider ? <SliderComponent attributes={attributes} blockProps={blockProps}
+                                                    innerBlocksProps={innerBlocksProps} ref={swiperRef}/> :
+                            <div {...innerBlocksProps} />
                     }
                 </BlockContextProvider>
 

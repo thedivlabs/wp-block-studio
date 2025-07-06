@@ -12,8 +12,8 @@
   }
 
   .wpbs-layout-tools__grid {
-    padding: 10px;
-    background: var(--wp-admin-theme-color, #cdcdcd);
+    padding: 8px;
+    background: var(--color-gray-400, #cdcdcd);
     gap: 5px;
   }
 

@@ -31,7 +31,7 @@
     width: auto;
 
     h2 {
-      color: black;
+      color: var(--wp-admin-theme-color, black);
     }
   }
 

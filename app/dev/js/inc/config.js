@@ -209,6 +209,7 @@ export const SWIPER_ARGS_EDITOR = {
     watchSlidesProgress: false,
     updateOnWindowResize: false,
     watchOverflow: false,
+    effect: 'slide',
     allowTouchMove: false,         // disables swiping
     simulateTouch: false,          // disables fake mouse events
     keyboard: false,               // disables keyboard control

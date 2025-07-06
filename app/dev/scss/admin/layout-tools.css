@@ -12,8 +12,9 @@
   }
 
   .wpbs-layout-tools__grid {
-    padding: 10px 8px;
-    background: #cdcdcd;
+    padding: 14px 8px;
+    background: var(--wp-admin-theme-color, #cdcdcd);
+    gap: 3px;
   }
 
   .components-tools-panel-header {

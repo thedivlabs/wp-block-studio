@@ -72,12 +72,6 @@ class WPBS {
 
 		$wp_styles->dequeue( 'wpbs-theme-css' );
 
-		WPBS::console_log( $wp_styles->queue );
-		WPBS::console_log( $wp_styles->registered );
-		WPBS::console_log( $theme_css );
-		WPBS::console_log( $theme_css_path );
-
-
 		$css = apply_filters( 'wpbs_critical_css', [] );
 
 		$css = array_unique( $css );

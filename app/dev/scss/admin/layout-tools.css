@@ -25,7 +25,8 @@
   }
 
   .components-tools-panel-header:not(:only-child) {
-    padding: 0 -16px 13px;
+    padding: 0 16px 13px;
+    margin: 0 -16px;
     border-bottom: 1px solid #dedede;
     width: auto;
 

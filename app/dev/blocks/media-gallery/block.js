@@ -19,7 +19,7 @@ import {
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps} from "Components/Slider"
-import {SWIPER_ARGS_EDITOR} from 'Includes/config';
+import {SWIPER_ARGS_DEFAULT, SWIPER_ARGS_EDITOR} from 'Includes/config';
 
 function blockClassnames(attributes = {}, isSlider = false) {
     return [
@@ -62,6 +62,7 @@ registerBlockType(metadata.name, {
 
                 const newParams = Object.fromEntries(
                     Object.entries({
+                        ...SWIPER_ARGS_DEFAULT,
                         ...swiperRef.current.swiper.params,
                         ...attributes?.['wpbs-swiper-args'] ?? {},
                         ...SWIPER_ARGS_EDITOR
@@ -81,6 +82,7 @@ registerBlockType(metadata.name, {
             } else if ('Swiper' in window && swiperRef.current) {
                 const element = swiperRef.current;
                 const swiper = new Swiper(element, {
+                    ...SWIPER_ARGS_DEFAULT,
                     ...attributes?.['wpbs-swiper-args'] ?? {},
                     ...SWIPER_ARGS_EDITOR
                 });

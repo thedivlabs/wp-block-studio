@@ -173,6 +173,11 @@ export const RESOLUTION_OPTIONS = [
 
 export const SWIPER_ARGS_DEFAULT = {
     createElements: false,
+    navigation: {
+        enabled: true,
+        nextEl: '.wpbs-slider-btn--next',
+        prevEl: '.wpbs-slider-btn--prev',
+    },
     pagination: {
         enabled: true,
         el: '.swiper-pagination',

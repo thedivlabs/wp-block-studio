@@ -56,11 +56,6 @@ export function getSliderArgs(attributes) {
     const breakpoint = attributes?.breakpoint ?? 992;
 
     let args = {
-        navigation: {
-            enabled: true,
-            nextEl: '.wpbs-slider-btn--next',
-            prevEl: '.wpbs-slider-btn--prev',
-        },
         enabled: true,
         slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
         slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
@@ -108,10 +103,7 @@ export function getSliderArgs(attributes) {
         ...breakpointArgs
     };
 
-    return {
-        ...SWIPER_ARGS_DEFAULT,
-        ...args
-    };
+    return Object.fromEntries(Object.entries(args).filter(([_, value]) => Boolean(value)));
 }
 
 export function sliderProps(attributes) {

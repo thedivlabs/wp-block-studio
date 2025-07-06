@@ -3,6 +3,7 @@ import Loader from './modules/loader'
 import Popup from './modules/popup'
 import Lightbox from './modules/Lightbox'
 import Video from './modules/video'
+import Slider from './modules/slider'
 
 
 class WPBS_Theme {
@@ -13,6 +14,7 @@ class WPBS_Theme {
     static settings;
     static lightbox;
     static video;
+    static slider;
 
     constructor() {
 
@@ -21,12 +23,14 @@ class WPBS_Theme {
         this.popup = Popup;
         this.lightbox = Lightbox;
         this.video = Video;
+        this.slider = Slider;
 
         this.settings = window.wpbsData ?? {};
         this.modals.init();
         this.loader.init();
         this.lightbox.init();
         this.video.init();
+        this.slider.init();
 
         this.init();
 
@@ -266,7 +270,6 @@ class WPBS_Theme {
     slideDown(element, duration, callback) {
         jQuery(element).slideDown(duration, callback);
     }
-
 
     init() {
 

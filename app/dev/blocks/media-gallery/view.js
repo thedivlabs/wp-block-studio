@@ -1,44 +1,6 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
 
-const SWIPER_OPTIONS_VIEW = {
-    on: {
-        afterInit: (swiper) => {
-            if (swiper.enabled === false) {
-                swiper.el.classList.add('swiper--disabled');
-            } else {
-                swiper.el.classList.remove('swiper--disabled');
-            }
-            if (swiper.slides.length < 2) {
-                swiper.disable();
-            }
-            if (swiper.autoplay.running) {
-                swiper.autoplay.pause();
-                setTimeout(() => {
-                    swiper.autoplay.resume();
-                }, 5000);
-            }
-        },
-        paginationUpdate: (swiper, paginationEl) => {
-
-            if (!!swiper?.['isBeginning']) {
-                swiper.el.classList.add('swiper--start');
-            } else {
-                swiper.el.classList.remove('swiper--start');
-            }
-        },
-        resize: (swiper) => {
-            if (swiper.enabled === false) {
-                swiper.el.classList.add('swiper--disabled');
-            } else {
-                swiper.el.classList.remove('swiper--disabled');
-            }
-        }
-    }
-};
-
-
-
 const {state} = store('wpbs/media-gallery', {
     actions: {
         init: () => {
@@ -46,15 +8,20 @@ const {state} = store('wpbs/media-gallery', {
             const {ref: grid} = getElement();
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerText ?? '{}');
 
+
             const {is_last, is_slider} = data;
 
+
             const swiper_args = {
-                ...SWIPER_OPTIONS_VIEW,
                 ...(data?.['swiper'] ?? {})
             }
 
-            if(is_slider){
-                new Swiper(grid, swiper_args);
+            console.log(swiper_args);
+            console.log(is_slider);
+            console.log(grid);
+
+            if (is_slider) {
+                WPBS.slider.observe(grid, swiper_args);
             }
 
             WPBS.setMasonry(grid);
@@ -135,7 +102,6 @@ const {state} = store('wpbs/media-gallery', {
                         element.remove();
                         // return;
                     }
-
 
                     const newNodes = parser.parseFromString(content, 'text/html');
 

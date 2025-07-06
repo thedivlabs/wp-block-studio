@@ -19,7 +19,7 @@
   .components-tools-panel-header {
 
     h2 {
-      color: black;
+      color: var(--color-gray-400);
     }
   }
 

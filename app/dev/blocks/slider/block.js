@@ -95,7 +95,9 @@ registerBlockType(metadata.name, {
             }
         }, [attributes?.['wpbs-swiper-args']]);
 
-        const cssProps = sliderProps(attributes);
+        const cssProps = useMemo(() => {
+            return sliderProps(attributes);
+        }, [attributes?.['wpbs-slider']]);
 
         const tabOptions = <SliderControls attributes={attributes} setAttributes={setAttributes}/>;
 
@@ -166,7 +168,7 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs/slider',
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
-                //args: props.attributes?.['wpbs-swiper-args'] ?? {},
+                args: props.attributes?.['wpbs-swiper-args'] ?? {},
             })
         });
 

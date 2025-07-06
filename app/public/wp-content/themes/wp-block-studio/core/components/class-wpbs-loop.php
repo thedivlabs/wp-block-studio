@@ -175,7 +175,11 @@ class WPBS_Loop {
 		}
 
 		if ( ! $this->is_current && ! $this->is_last ) {
-			echo '<button type="button" class="loop-button h-10 px-4 relative z-20 hidden" data-wp-on-async--click="actions.pagination">' . $this->pagination_label . '</button>';
+			echo ( new WP_Block( [
+				'blockName' => 'wpbs/loop-pagination-button',
+			], [
+				'label' => $this->pagination_label ?? null
+			] ) )->render();
 		}
 
 

@@ -16,7 +16,15 @@ export default class Slider {
             return;
         }
 
-        args = merge({}, SWIPER_ARGS_DEFAULT, SWIPER_ARGS_VIEW, args);
+        args = merge({}, SWIPER_ARGS_VIEW, args, {
+            navigation: {
+                enabled: true,
+                nextEl: element.querySelector('.wpbs-slider-btn--next'),
+                prevEl: element.querySelector('.wpbs-slider-btn--prev'),
+            },
+        });
+
+        console.log(args);
 
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {

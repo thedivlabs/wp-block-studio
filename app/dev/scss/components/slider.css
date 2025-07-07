@@ -1,0 +1,62 @@
+.wpbs-slider.swiper {
+
+
+  .wpbs-slider-nav {
+    @apply
+    pointer-events-none
+    z-50
+    flex
+    items-center
+    justify-center
+    gap-4
+    relative
+  }
+
+
+  .wpbs-slider-nav.--group {
+    @apply
+    absolute top-0 left-0 w-full h-full
+    ;
+
+
+    .wpbs-slider-nav__btn {
+      @apply
+      top-1/2
+      -translate-y-1/2
+      pointer-events-auto
+      h-[1.2em]
+      aspect-square
+      flex
+      items-center
+      justify-center
+      text-center
+      shrink-0
+      absolute
+    }
+
+    .wpbs-slider-nav__btn--prev {
+      @apply
+      left-2
+    }
+
+    .wpbs-slider-nav__btn--next {
+      @apply
+      right-2
+
+    }
+
+    .wpbs-slider-nav__pagination {
+      @apply
+      absolute top-auto right-auto left-1/2 bottom-2 -translate-x-1/2
+    }
+
+  }
+
+  .wpbs-slider-nav__pagination {
+    @apply
+    inline-flex items-center justify-center w-fit max-w-full shrink gap-1 h-auto leading-none empty:hidden
+    relative transform-none left-auto top-auto right-auto bottom-auto
+  }
+
+
+}

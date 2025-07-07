@@ -73,9 +73,9 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            /*template: [
+            template: [
                 ['wpbs/slider-wrapper'],
-            ]*/
+            ]
         });
 
         const loopQuery = attributes?.['wpbs-query'] ?? {};

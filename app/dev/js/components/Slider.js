@@ -56,7 +56,7 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
         }
 
         console.log(element);
-
+        
         if (element?.swiper) {
 
             const allowedParams = [
@@ -91,7 +91,7 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
                 ...SWIPER_ARGS_EDITOR
             });
         }
-    }, [attributes?.['wpbs-swiper-args'], ref]);
+    }, [attributes?.['wpbs-swiper-args']]);
 
     return <div {...blockProps}>
         <div className="swiper-wrapper">

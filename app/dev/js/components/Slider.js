@@ -47,50 +47,51 @@ export const SLIDER_ATTRIBUTES = {
 
 export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps}, ref) => {
 
-    const element = ref.current;
-    console.log(element);
-    if (!element) {
-        return <></>
-    }
+    useEffect(() => {
 
-    console.log(element);
+        const element = ref.current;
 
-    if (element?.swiper) {
+        if (!element) {
+            return <></>
+        }
 
-        const allowedParams = [
-            'breakpoints',
-            'slidesPerView',
-            //'rewind',
-            'slidesPerGroup',
-            'spaceBetween',
-        ];
+        console.log(element);
 
-        const newParams = Object.fromEntries(
-            Object.entries({
+        if (element?.swiper) {
+
+            const allowedParams = [
+                'breakpoints',
+                'slidesPerView',
+                //'rewind',
+                'slidesPerGroup',
+                'spaceBetween',
+            ];
+
+            const newParams = {
                 ...SWIPER_ARGS_DEFAULT,
                 ...element.swiper.params,
                 ...attributes?.['wpbs-swiper-args'] ?? {},
                 ...SWIPER_ARGS_EDITOR
-            }).filter(([key]) => allowedParams.includes(key))
-        );
+            };
 
 
-        if (element?.swiper?.currentBreakpoint) {
-            element.swiper.currentBreakpoint = null;
+            if (element?.swiper?.currentBreakpoint) {
+                element.swiper.currentBreakpoint = null;
+            }
+
+
+            element.swiper.params = Object.assign(element.swiper.params, newParams);
+
+            element.swiper.update();
+
+        } else if ('Swiper' in window && element) {
+            const swiper = new Swiper(element, {
+                ...SWIPER_ARGS_DEFAULT,
+                ...attributes?.['wpbs-swiper-args'] ?? {},
+                ...SWIPER_ARGS_EDITOR
+            });
         }
-
-
-        element.swiper.params = Object.assign(element.swiper.params, newParams);
-
-        element.swiper.update();
-
-    } else if ('Swiper' in window && element) {
-        const swiper = new Swiper(element, {
-            ...SWIPER_ARGS_DEFAULT,
-            ...attributes?.['wpbs-swiper-args'] ?? {},
-            ...SWIPER_ARGS_EDITOR
-        });
-    }
+    }, [attributes?.['wpbs-swiper-args'], ref]);
 
     return <div {...blockProps}>
         <div className="swiper-wrapper">

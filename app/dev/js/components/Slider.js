@@ -50,22 +50,15 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
     const element = ref.current;
 
     useEffect(() => {
-        
-        console.log(element);
+
+        if (!element) {
+            return;
+        }
 
         if (element?.swiper) {
 
-            const allowedParams = [
-                'breakpoints',
-                'slidesPerView',
-                //'rewind',
-                'slidesPerGroup',
-                'spaceBetween',
-            ];
-
             const newParams = {
                 ...SWIPER_ARGS_DEFAULT,
-                ...element.swiper.params,
                 ...attributes?.['wpbs-swiper-args'] ?? {},
                 ...SWIPER_ARGS_EDITOR
             };
@@ -75,28 +68,26 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
                 element.swiper.currentBreakpoint = null;
             }
 
-
-            element.swiper.params = Object.assign(element.swiper.params, newParams);
+            element.swiper.params = merge({}, element.swiper.params, newParams);
 
             element.swiper.update();
 
-        } else if ('Swiper' in window && element) {
-            const swiper = new Swiper(element, {
+        } else {
+
+            const swiperConfig = {
                 ...SWIPER_ARGS_DEFAULT,
                 ...attributes?.['wpbs-swiper-args'] ?? {},
                 ...SWIPER_ARGS_EDITOR
-            });
-        }
-    }, [attributes?.['wpbs-swiper-args']]);
+            };
 
-    return <div {...blockProps}>
+            const swiper = new Swiper(element, swiperConfig);
+
+        }
+    }, [attributes?.['wpbs-swiper-args'], element]);
+
+    return <div {...blockProps} ref={ref}>
         <div className={"swiper-wrapper"}>
             {innerBlocksProps.children}
-            <div className={'swiper-slide'}/>
-            <div className={'swiper-slide'}/>
-            <div className={'swiper-slide'}/>
-            <div className={'swiper-slide'}/>
-            <div className={'swiper-slide'}/>
         </div>
     </div>;
 })

@@ -54,9 +54,7 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         const swiperRef = useRef(null);
-
-        console.log(swiperRef.current);
-
+        
         const cssProps = useMemo(() => {
             return sliderProps(attributes);
         }, [attributes?.['wpbs-slider']]);

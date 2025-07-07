@@ -47,14 +47,10 @@ export const SLIDER_ATTRIBUTES = {
 
 export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps}, ref) => {
 
+    const element = ref.current;
+
     useEffect(() => {
-
-        const element = ref.current;
-
-        if (!element) {
-            return <></>
-        }
-
+        
         console.log(element);
 
         if (element?.swiper) {
@@ -94,7 +90,7 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
     }, [attributes?.['wpbs-swiper-args']]);
 
     return <div {...blockProps}>
-        <div className="swiper-wrapper">
+        <div className={"swiper-wrapper"}>
             {innerBlocksProps.children}
             <div className={'swiper-slide'}/>
             <div className={'swiper-slide'}/>
@@ -105,9 +101,8 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
     </div>;
 })
 
-export function getSliderArgs(attributes) {
+export function getSliderArgs(options, attributes) {
 
-    const {'wpbs-slider': options = {}} = attributes;
 
     const breakpoint = attributes?.breakpoint ?? 992;
 
@@ -117,7 +112,7 @@ export function getSliderArgs(attributes) {
         slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
         spaceBetween: parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0),
         autoplay: (options?.['autoplay'] ?? 0) > 0 ? {
-            delay: options['autoplay'] * 1000,
+            delay: options?.['autoplay'] * 1000,
             pauseOnMouseEnter: !!options['hover-pause']
         } : false,
         speed: parseInt(options['transition'] ? options['transition'] * 100 : null) || null,
@@ -130,7 +125,7 @@ export function getSliderArgs(attributes) {
         centeredSlides: !!options['centered'],
         loop: !!options['loop'],
         rewind: !!options['loop'] ? false : !!options['rewind'],
-        initialSlide: !!options['from-end'] ? 99 : null,
+        initialSlide: !!options['from-end'] ? 99 : 1,
         breakpoints: {},
         simulateTouch: !!options?.drag
     };
@@ -183,29 +178,19 @@ export const SliderControls = ({attributes, setAttributes}) => {
 
     const updateOptions = useCallback((newValue) => {
 
+        const result = {
+            ...(attributes?.['wpbs-slider'] ?? {}),
+            ...newValue
+        };
+
+        const swiperArgs = getSliderArgs(result, attributes);
 
         setAttributes({
-            'wpbs-slider': {
-                ...(attributes?.['wpbs-slider'] ?? {}),
-                ...newValue
-            }
-        });
-
-    }, [setAttributes, attributes?.['wpbs-slider']]);
-
-    const swiperArgs = useMemo(() => {
-        
-        return getSliderArgs(attributes);
-    }, [attributes?.['wpbs-slider']]);
-
-    useEffect(() => {
-
-
-        setAttributes({
+            'wpbs-slider': result,
             'wpbs-swiper-args': swiperArgs,
         });
 
-    }, [swiperArgs]);
+    }, [setAttributes, attributes?.['wpbs-slider'], attributes?.['wpbs-swiper-args']]);
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>
@@ -245,7 +230,7 @@ export const SliderControls = ({attributes, setAttributes}) => {
                 __next40pxDefaultSize
                 isShiftStepEnabled={true}
                 onChange={(newValue) => updateOptions({'autoplay': newValue})}
-                value={attributes['wpbs-slider']['autoplay']}
+                value={attributes?.['wpbs-slider']?.['autoplay']}
                 step={1}
             />
             <NumberControl
@@ -309,70 +294,70 @@ export const SliderControls = ({attributes, setAttributes}) => {
             <ToggleControl
                 label="Hover Pause"
                 onChange={(newValue) => updateOptions({'hover-pause': newValue})}
-                checked={!!attributes['wpbs-slider']['hover-pause']}
+                checked={!!attributes?.['wpbs-slider']?.['hover-pause']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Free Mode"
                 onChange={(newValue) => updateOptions({'free-mode': newValue})}
-                checked={!!attributes['wpbs-slider']['free-mode']}
+                checked={!!attributes?.['wpbs-slider']?.['free-mode']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Centered"
                 onChange={(newValue) => updateOptions({'centered': newValue})}
-                checked={!!attributes['wpbs-slider']['centered']}
+                checked={!!attributes?.['wpbs-slider']?.['centered']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Collapse"
                 onChange={(newValue) => updateOptions({'collapse': newValue})}
-                checked={!!attributes['wpbs-slider']['collapse']}
+                checked={!!attributes?.['wpbs-slider']?.['collapse']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Loop"
                 onChange={(newValue) => updateOptions({'loop': newValue})}
-                checked={!!attributes['wpbs-slider']['loop']}
+                checked={!!attributes?.['wpbs-slider']?.['loop']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Dim"
                 onChange={(newValue) => updateOptions({'dim': newValue})}
-                checked={!!attributes['wpbs-slider']['dim']}
+                checked={!!attributes?.['wpbs-slider']?.['dim']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="From End"
                 onChange={(newValue) => updateOptions({'from-end': newValue})}
-                checked={!!attributes['wpbs-slider']['from-end']}
+                checked={!!attributes?.['wpbs-slider']?.['from-end']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Rewind"
                 onChange={(newValue) => updateOptions({'rewind': newValue})}
-                checked={!!attributes['wpbs-slider']['rewind']}
+                checked={!!attributes?.['wpbs-slider']?.['rewind']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Fade In"
                 onChange={(newValue) => updateOptions({'fade-in': newValue})}
-                checked={!!attributes['wpbs-slider']['fade-in']}
+                checked={!!attributes?.['wpbs-slider']?.['fade-in']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />
             <ToggleControl
                 label="Drag"
                 onChange={(newValue) => updateOptions({'drag': newValue})}
-                checked={!!attributes['wpbs-slider']['drag']}
+                checked={!!attributes?.['wpbs-slider']?.['drag']}
                 className={'flex items-center'}
                 __nextHasNoMarginBottom
             />

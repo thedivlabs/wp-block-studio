@@ -55,6 +55,8 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
+        console.log(swiperRef.current);
+
         const cssProps = useMemo(() => {
             return sliderProps(attributes);
         }, [attributes?.['wpbs-slider']]);
@@ -72,11 +74,7 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes, true)
         });
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            /*template: [
-                ['wpbs/slider-wrapper'],
-            ]*/
-        });
+        const innerBlocksProps = useInnerBlocksProps();
 
         const loopQuery = attributes?.['wpbs-query'] ?? {};
 

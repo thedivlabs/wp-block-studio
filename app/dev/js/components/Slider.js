@@ -49,13 +49,13 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
 
     useEffect(() => {
 
-        const element = ref.current;
+        const element = ref?.current;
 
         if (!element) {
             return;
         }
 
-        if (element?.swiper) {
+        if (element?.['swiper']) {
 
             const newParams = {
                 ...SWIPER_ARGS_DEFAULT,
@@ -83,7 +83,7 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
             const swiper = new Swiper(element, swiperConfig);
 
         }
-    }, [attributes?.['wpbs-swiper-args'], element]);
+    }, [attributes?.['wpbs-swiper-args']]);
 
     return <div {...blockProps} ref={ref}>
         <div className={"swiper-wrapper"}>

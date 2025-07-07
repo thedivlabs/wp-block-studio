@@ -56,7 +56,7 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
         }
 
         console.log(element);
-        
+
         if (element?.swiper) {
 
             const allowedParams = [
@@ -194,6 +194,7 @@ export const SliderControls = ({attributes, setAttributes}) => {
     }, [setAttributes, attributes?.['wpbs-slider']]);
 
     const swiperArgs = useMemo(() => {
+        
         return getSliderArgs(attributes);
     }, [attributes?.['wpbs-slider']]);
 

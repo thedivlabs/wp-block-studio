@@ -47,9 +47,9 @@ export const SLIDER_ATTRIBUTES = {
 
 export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps}, ref) => {
 
-    const element = ref.current;
-
     useEffect(() => {
+
+        const element = ref.current;
 
         if (!element) {
             return;
@@ -107,7 +107,7 @@ export function getSliderArgs(options, attributes) {
             pauseOnMouseEnter: !!options['hover-pause']
         } : false,
         speed: parseInt(options['transition'] ? options['transition'] * 100 : null) || null,
-        pagination: options['pagination'] ? {
+        pagination: (options?.['pagination'] !== 'none') ? {
             enabled: true,
             type: options['pagination']
         } : false,

@@ -1,4 +1,5 @@
 import {
+    InnerBlocks,
     InspectorControls,
 } from "@wordpress/block-editor"
 import {SWIPER_ARGS_DEFAULT, SWIPER_ARGS_EDITOR} from "Includes/config";
@@ -45,7 +46,13 @@ export const SLIDER_ATTRIBUTES = {
     }
 };
 
-export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps, wrapper = true}, ref) => {
+export const SliderComponent = forwardRef(({
+                                               attributes,
+                                               blockProps,
+                                               innerBlocksProps,
+                                               clientId,
+                                               wrapper = true
+                                           }, ref) => {
 
     useEffect(() => {
 
@@ -89,6 +96,8 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
         {!!wrapper ? <div className={"swiper-wrapper"}>
             {innerBlocksProps.children}
         </div> : innerBlocksProps.children}
+        {clientId ?
+            <InnerBlocks.ButtonBlockAppender className={'wpbs-block-appender-button'} clientId={clientId}/> : null}
 
     </div>;
 })

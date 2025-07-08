@@ -6,6 +6,40 @@
   z-index: 40;
 }
 
+div[class*='wp-block-wpbs'] .block-editor-button-block-appender {
+
+  @apply
+  absolute
+  right-3
+  bottom-3
+  z-50
+  w-[30px]
+  h-auto
+  aspect-square
+  flex
+  items-center
+  justify-center
+  text-center
+  bg-black/70
+  text-white
+  cursor-pointer
+  border-none
+  rounded
+  overflow-hidden
+  p-0
+  m-0
+  transition-opacity
+  opacity-60
+  hover:opacity-100
+  hover:border-none
+  hover:text-white
+}
+
+div[class*='wp-block-wpbs'] .block-editor-button-block-appender:hover {
+  outline: 1px solid var(--wp-admin-theme-color, #3858e9);
+  box-shadow: none;
+}
+
 .editor-visual-editor {
   /* min-height: calc(100svh - 60px) !important; */
   flex-grow: 1;

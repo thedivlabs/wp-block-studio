@@ -3,7 +3,7 @@ import "./scss/block.scss";
 import {
     BlockContextProvider,
     InnerBlocks,
-    InspectorControls, PanelColorSettings,
+    InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
@@ -13,13 +13,12 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useMemo, useRef} from "react";
 import {
     PanelBody, TabPanel
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
-import {SWIPER_ARGS_DEFAULT, SWIPER_ARGS_EDITOR} from 'Includes/config';
 
 function blockClassnames(attributes = {}, isSlider = false) {
     return [
@@ -40,7 +39,7 @@ registerBlockType(metadata.name, {
         ...MEDIA_GALLERY_ATTRIBUTES,
         ...SLIDER_ATTRIBUTES
     },
-    edit: ({attributes, setAttributes}) => {
+    edit: ({attributes, setAttributes, clientId}) => {
 
         const isSlider = (attributes?.className ?? '').includes('is-style-slider');
 
@@ -100,8 +99,10 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
                 ['wpbs/media-gallery-card'],
-            ]
+            ],
+            renderAppender: false
         });
+
 
         return (
             <>
@@ -125,7 +126,7 @@ registerBlockType(metadata.name, {
 
                 <BlockContextProvider value={{isSlider}}>
                     {
-                        isSlider ? <SliderComponent attributes={attributes} blockProps={blockProps}
+                        isSlider ? <SliderComponent attributes={attributes} blockProps={blockProps} clientId={clientId}
                                                     innerBlocksProps={innerBlocksProps} ref={swiperRef}/> :
                             <div {...innerBlocksProps} />
                     }

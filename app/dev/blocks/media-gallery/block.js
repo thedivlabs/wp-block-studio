@@ -22,7 +22,7 @@ import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "C
 
 function blockClassnames(attributes = {}, isSlider = false) {
     return [
-        'wpbs-media-gallery h-max',
+        'wpbs-media-gallery h-max wpbs-slider',
         'flex flex-wrap w-full block relative',
         isSlider ? 'swiper' : null,
         attributes?.uniqueId ?? '',

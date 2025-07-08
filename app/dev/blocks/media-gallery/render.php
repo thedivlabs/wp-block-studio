@@ -20,7 +20,7 @@ $loop = WPBS_Media_Gallery::loop( $card_block, $settings, 1, [
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery h-max',
+		'wpbs-media-gallery h-max wpbs-slider',
 		$is_slider ? 'swiper' : null,
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid_settings['masonry'] ) ? '--masonry masonry' : null,
@@ -58,9 +58,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		<?php } else {
 
 
-			$nav_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+			$nav_block = array_values( array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 				return $inner_block['blockName'] === 'wpbs/slider-navigation';
-			} )[0] ?? false;
+			} ) )[0] ?? false;
+
+			WPBS::console_log( $block->parsed_block['innerBlocks'] ?? [] );
 
 			?>
             <div class="swiper-wrapper">

@@ -69,7 +69,7 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps();
 
         const loopQuery = attributes?.['wpbs-query'] ?? {};
-        
+
         return <>
             <InspectorControls group="styles">
 
@@ -106,7 +106,7 @@ registerBlockType(metadata.name, {
 
             <BlockContextProvider value={{loopQuery}}>
                 <SliderComponent attributes={attributes} blockProps={blockProps} innerBlocksProps={innerBlocksProps}
-                                 ref={swiperRef}/>
+                                 ref={swiperRef} wrapper={true}/>
             </BlockContextProvider>
         </>;
 

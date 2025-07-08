@@ -1,10 +1,12 @@
 <?php
 
-if ( empty( $attributes['wpbs-media-gallery']['gallery_id'] ) ) {
-	return false;
-}
 
-$settings      = $attributes['wpbs-media-gallery'] ?? [];
+WPBS::console_log( $block ?? false );
+
+
+return false;
+
+$settings      = $attributes['wpbs-media-gallery-container'] ?? [];
 $grid_settings = $attributes['wpbs-grid'] ?? [];
 
 $is_slider = str_contains( ( $attributes['className'] ?? '' ), 'is-style-slider' );
@@ -20,7 +22,7 @@ $loop = WPBS_Media_Gallery::loop( $card_block, $settings, 1, [
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-media-gallery h-max wpbs-slider',
+		'wpbs-media-gallery-container h-max wpbs-slider',
 		$is_slider ? 'swiper' : null,
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid_settings['masonry'] ) ? '--masonry masonry' : null,
@@ -37,7 +39,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
     <div <?php echo $wrapper_attributes ?>>
 
 		<?php if ( ! $is_slider ) { ?>
-            <div class="wpbs-media-gallery__container wpbs-layout-wrapper loop-container">
+            <div class="wpbs-media-gallery-container__container wpbs-layout-wrapper loop-container">
 				<?= $loop->content ?? $content ?? false; ?>
 
 				<?php if ( ! empty( $grid_settings['masonry'] ) ) { ?>

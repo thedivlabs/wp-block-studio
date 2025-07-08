@@ -17,12 +17,11 @@
   },
   "allowedBlocks": [
     "wpbs/media-gallery-container",
-    "wpbs/media-gallery-card",
     "wpbs/layout-element",
     "wpbs/slider-navigation"
   ],
   "providesContext": {
-    "wpbs/isSlider": "isSlider"
+    "wpbs/settings": "settings"
   },
   "styles": [
     {
@@ -68,10 +67,7 @@
   },
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
-  "style": "file:./block.css",
-  "editorStyle": "file:./block.css",
-  "icon": "format-gallery",
-  "render": "file:./render.php"
+  "icon": "format-gallery"
 }
 
 

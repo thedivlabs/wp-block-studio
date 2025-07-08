@@ -50,7 +50,6 @@ export const SliderComponent = forwardRef(({
                                                attributes,
                                                blockProps,
                                                innerBlocksProps,
-                                               clientId,
                                                wrapper = true
                                            }, ref) => {
 
@@ -96,9 +95,6 @@ export const SliderComponent = forwardRef(({
         {!!wrapper ? <div className={"swiper-wrapper"}>
             {innerBlocksProps.children}
         </div> : innerBlocksProps.children}
-        {clientId ?
-            <InnerBlocks.ButtonBlockAppender className={'wpbs-block-appender-button'} clientId={clientId}/> : null}
-
     </div>;
 })
 

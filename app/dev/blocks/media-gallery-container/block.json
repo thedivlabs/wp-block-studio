@@ -1,0 +1,35 @@
+{
+  "name": "wpbs/media-gallery-container",
+  "title": "Media Gallery Container",
+  "description": "Display a media gallery container",
+  "selectors": {
+    "root": ".wpbs-media-gallery-container"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "isSlider": {
+      "type": "boolean",
+      "show_in_rest": true
+    }
+  },
+  "allowedBlocks": [
+    "wpbs/media-gallery-container-card"
+  ],
+  "usesContext": [
+    "isSlider"
+  ],
+  "supports": {
+    "layout": false,
+    "innerBlocks": true
+  },
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "editorStyle": "file:./block.css",
+  "icon": "format-gallery",
+  "render": "file:./render.php"
+}
+
+

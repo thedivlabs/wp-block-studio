@@ -2,42 +2,61 @@
   content: none !important;
 }
 
-.block-editor-block-list__block .block-list-appender.block-list-appender {
-  z-index: 40;
-}
-
-div[class*='wp-block-wpbs'] .block-editor-button-block-appender {
-
+div[class*='wp-block-wpbs'] .block-list-appender .block-list-appender__toggle,
+div[class*='wp-block-wpbs'] .block-list-appender .block-editor-inserter__toggle {
+  height: 30px !important;
+  width: auto !important;
+  background-color: #000000b3 !important;
+  transition: opacity .2s ease-in-out, background-color .2s ease-in-out;
+  border-radius: 4px;
   @apply
-  absolute
-  right-3
-  bottom-3
-  z-50
-  w-[30px]
-  h-auto
-  aspect-square
   flex
   items-center
   justify-center
   text-center
-  bg-black/70
+  aspect-square
   text-white
   cursor-pointer
   border-none
-  rounded
+  outline-none
   overflow-hidden
   p-0
   m-0
-  transition-opacity
   opacity-30
   hover:opacity-90
   hover:border-none
   hover:text-white
 }
 
-div[class*='wp-block-wpbs'] .block-editor-button-block-appender:hover {
-  outline: 1px solid var(--wp-admin-theme-color, #3858e9);
+div[class*='wp-block-wpbs'] .block-list-appender {
+  z-index: 40;
+  @apply
+  absolute
+  right-3
+  bottom-3
+  z-50
+  flex
+  ;
+
+  .block-editor-inserter {
+    @apply
+    relative
+    top-auto
+    right-auto
+  }
+
+  .block-editor-default-block-appender {
+    @apply
+    clear-none
+    m-0
+  }
+}
+
+div[class*='wp-block-wpbs'] .block-list-appender .block-list-appender__toggle:hover,
+div[class*='wp-block-wpbs'] .block-list-appender .block-editor-inserter__toggle:hover {
+  outline: none;
   box-shadow: none;
+  background-color: var(--wp-admin-theme-color, black) !important;
 }
 
 .editor-visual-editor {

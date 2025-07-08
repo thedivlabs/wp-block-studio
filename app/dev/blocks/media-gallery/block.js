@@ -1,5 +1,3 @@
-import "./scss/block.scss";
-
 import {
     BlockContextProvider,
     InnerBlocks,
@@ -22,9 +20,11 @@ import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "C
 
 function blockClassnames(attributes = {}, isSlider = false) {
     return [
-        'wpbs-media-gallery h-max wpbs-slider',
-        'flex flex-wrap w-full block relative',
-        isSlider ? 'swiper' : null,
+        'wpbs-media-gallery h-max',
+        'flex flex-col w-full relative',
+        isSlider ? 'swiper wpbs-slider' : null,
+        !!attributes?.['wpbs-grid']?.masonry ? 'masonry --masonry' : null,
+        !!attributes?.['wpbs-media-gallery']?.lightbox ? '--lightbox' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -98,11 +98,18 @@ registerBlockType(metadata.name, {
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
-                ['wpbs/media-gallery-card'],
+                ['wpbs/media-gallery-container'],
             ],
-            renderAppender: false
         });
 
+        const settings = useMemo(() => {
+            return {
+                grid: attributes?.['wpbs-grid'],
+                slider: attributes?.['wpbs-slider'],
+                query: attributes?.['wpbs-query'],
+                gallery: attributes?.['wpbs-media-gallery'],
+            }
+        }, [attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-media-gallery']]);
 
         return (
             <>
@@ -124,10 +131,11 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <BlockContextProvider value={{isSlider}}>
+                <BlockContextProvider value={{settings}}>
                     {
-                        isSlider ? <SliderComponent attributes={attributes} blockProps={blockProps} clientId={clientId}
-                                                    innerBlocksProps={innerBlocksProps} ref={swiperRef}/> :
+                        isSlider ? <SliderComponent attributes={attributes} blockProps={blockProps}
+                                                    innerBlocksProps={innerBlocksProps} ref={swiperRef}
+                                                    wrapper={false}/> :
                             <div {...innerBlocksProps} />
                     }
                 </BlockContextProvider>
@@ -140,9 +148,20 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: () => {
+    save: (props) => {
 
-        return <InnerBlocks.Content/>;
+        const blockProps = useBlockProps.save({
+            className: blockClassnames(props.attributes),
+            'data-wp-interactive': 'wpbs/media-gallery',
+            'data-wp-init': 'callbacks.init',
+            'data-wp-context': JSON.stringify({
+                uniqueId: props.attributes?.uniqueId,
+            })
+        });
+
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+
+        return <div {...innerBlocksProps} />;
     }
 })
 

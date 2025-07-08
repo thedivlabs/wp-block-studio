@@ -7,7 +7,7 @@ const {state} = store('wpbs/slider', {
             const {ref: element} = getElement();
 
             let {args} = getContext();
-
+            
             WPBS.slider.observe(element, args);
 
         },

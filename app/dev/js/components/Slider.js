@@ -116,7 +116,7 @@ export function getSliderArgs(options, attributes) {
         centeredSlides: !!options['centered'],
         loop: !!options['loop'],
         rewind: !!options['loop'] ? false : !!options['rewind'],
-        initialSlide: !!options['from-end'] ? 99 : 1,
+        initialSlide: !!options['from-end'] ? 99 : 0,
         breakpoints: {},
         simulateTouch: !!options?.drag
     };
@@ -146,7 +146,9 @@ export function getSliderArgs(options, attributes) {
 
     args = Object.fromEntries(Object.entries(args).filter(([_, value]) => Boolean(value)));
 
-    return merge({}, SWIPER_ARGS_DEFAULT, args);
+    console.log(args);
+
+    return merge({}, args);
 }
 
 export function sliderProps(attributes) {

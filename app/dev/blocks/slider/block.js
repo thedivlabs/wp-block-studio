@@ -12,18 +12,12 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {SLIDER_ATTRIBUTES, SliderComponent, SliderControls, sliderProps} from "Components/Slider"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {
-    __experimentalGrid as Grid,
-    __experimentalNumberControl as NumberControl,
-    __experimentalUnitControl as UnitControl,
     PanelBody,
-    SelectControl, TabPanel,
-    ToggleControl
+    TabPanel,
 } from "@wordpress/components";
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useMemo, useRef} from "react";
 import {useInstanceId} from '@wordpress/compose';
-import {GridControls} from "Components/Grid.js";
 import {LoopControls, LOOP_ATTRIBUTES} from "Components/Loop.js";
-import {SWIPER_ARGS_EDITOR} from 'Includes/config'
 
 
 function blockClasses(attributes = {}, editor = false) {
@@ -54,7 +48,7 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
         const swiperRef = useRef(null);
-        
+
         const cssProps = useMemo(() => {
             return sliderProps(attributes);
         }, [attributes?.['wpbs-slider']]);
@@ -75,7 +69,7 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps();
 
         const loopQuery = attributes?.['wpbs-query'] ?? {};
-
+        
         return <>
             <InspectorControls group="styles">
 

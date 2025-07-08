@@ -172,7 +172,7 @@ export const RESOLUTION_OPTIONS = [
 
 
 export const SWIPER_ARGS_DEFAULT = {
-    createElements: true,
+    createElements: false,
     pagination: {
         enabled: true,
         el: '.swiper-pagination',

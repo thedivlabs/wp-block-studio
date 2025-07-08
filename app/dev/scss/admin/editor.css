@@ -29,8 +29,8 @@ div[class*='wp-block-wpbs'] .block-editor-button-block-appender {
   p-0
   m-0
   transition-opacity
-  opacity-60
-  hover:opacity-100
+  opacity-30
+  hover:opacity-90
   hover:border-none
   hover:text-white
 }

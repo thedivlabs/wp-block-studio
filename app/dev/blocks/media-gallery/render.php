@@ -9,7 +9,11 @@ $grid_settings = $attributes['wpbs-grid'] ?? [];
 
 $is_slider = str_contains( ( $attributes['className'] ?? '' ), 'is-style-slider' );
 
-$loop = WPBS_Media_Gallery::loop( $block->parsed_block['innerBlocks'][0] ?? false, $settings, 1, [
+$card_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
+} )[0] ?? false;
+
+$loop = WPBS_Media_Gallery::loop( $card_block, $settings, 1, [
 	'isSlider'   => $is_slider,
 	'isLightbox' => ! empty( $settings['lightbox'] ),
 ] );
@@ -51,11 +55,24 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 			?>
 
-		<?php } else { ?>
+		<?php } else {
+
+
+			$nav_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+				return $inner_block['blockName'] === 'wpbs/slider-navigation';
+			} )[0] ?? false;
+
+			?>
             <div class="swiper-wrapper">
 				<?= $loop->content ?? $content ?? false; ?>
             </div>
-		<?php } ?>
+			<?php
+
+			if ( ! empty( $nav_block ) ) {
+				echo render_block( $nav_block );
+			}
+
+		} ?>
 
 
     </div>

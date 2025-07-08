@@ -7,10 +7,6 @@
   "selectors": {
     "root": ".wpbs-slider-navigation"
   },
-  "ancestor": [
-    "wpbs/slider",
-    "wpbs/media-gallery"
-  ],
   "attributes": {
     "uniqueId": {
       "type": "string"

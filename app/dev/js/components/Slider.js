@@ -45,7 +45,7 @@ export const SLIDER_ATTRIBUTES = {
     }
 };
 
-export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps, wrapper = false}, ref) => {
+export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksProps, wrapper = true}, ref) => {
 
     useEffect(() => {
 
@@ -86,7 +86,7 @@ export const SliderComponent = forwardRef(({attributes, blockProps, innerBlocksP
     }, [attributes?.['wpbs-swiper-args']]);
 
     return <div {...blockProps} ref={ref}>
-        {!wrapper ? <div className={"swiper-wrapper"}>
+        {!!wrapper ? <div className={"swiper-wrapper"}>
             {innerBlocksProps.children}
         </div> : innerBlocksProps.children}
 
@@ -156,9 +156,11 @@ export function sliderProps(attributes) {
 
     return cleanArgs({
         '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
+        '--margin': attributes['wpbs-slider']?.['margin-mobile'] ?? attributes['wpbs-slider']?.['margin-large'] ?? 1,
         breakpoints: {
             [breakpoint]: {
                 '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,
+                '--margin': attributes['wpbs-slider']?.['margin-large'] ?? null,
             }
         }
     });

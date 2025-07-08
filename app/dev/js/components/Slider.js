@@ -146,8 +146,6 @@ export function getSliderArgs(options, attributes) {
 
     args = Object.fromEntries(Object.entries(args).filter(([_, value]) => Boolean(value)));
 
-    console.log(args);
-
     return merge({}, args);
 }
 

@@ -62,8 +62,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 				return $inner_block['blockName'] === 'wpbs/slider-navigation';
 			} ) )[0] ?? false;
 
-			WPBS::console_log( $block->parsed_block['innerBlocks'] ?? [] );
-
 			?>
             <div class="swiper-wrapper">
 				<?= $loop->content ?? $content ?? false; ?>

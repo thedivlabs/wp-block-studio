@@ -115,12 +115,14 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                {isSlider ? <SliderComponent
-                    attributes={attributes}
-                    blockProps={blockProps}
-                    innerBlocksProps={innerBlocksProps}
-                    ref={swiperRef}
-                /> : <div {...innerBlocksProps} />}
+                <BlockContextProvider value={{isSlider}}>
+                    {isSlider ? <SliderComponent
+                        attributes={attributes}
+                        blockProps={blockProps}
+                        innerBlocksProps={innerBlocksProps}
+                        ref={swiperRef}
+                    /> : <div {...innerBlocksProps} />}
+                </BlockContextProvider>
 
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}

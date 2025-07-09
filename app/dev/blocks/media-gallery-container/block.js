@@ -12,7 +12,7 @@ import React from "react";
 
 function blockClassnames(attributes = {}, isSlider) {
     return [
-        'wpbs-media-gallery-container swiper-wrapper',
+        'wpbs-media-gallery-container swiper-wrapper loop-container',
         isSlider ? null : 'flex flex-wrap w-full relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
@@ -25,7 +25,7 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-        
+
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         const {isSlider = false} = context;

@@ -12,7 +12,7 @@
     }
   },
   "parent": [
-    "wpbs/media-gallery"
+    "wpbs/media-gallery-container"
   ],
   "usesContext": [
     "index",

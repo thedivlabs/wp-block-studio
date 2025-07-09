@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 
 
 import {
@@ -29,6 +29,26 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
     const galleries = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
     }, []);
+
+    const isSlider = (attributes?.className ?? '')?.includes('is-style-slider');
+
+    const gallerySettings = useMemo(() => {
+
+
+        return {
+            grid: attributes?.['wpbs-grid'],
+            slider: attributes?.['wpbs-slider'],
+            query: attributes?.['wpbs-query'],
+            settings: attributes?.['wpbs-media-gallery'],
+            is_slider: isSlider,
+        };
+    }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], isSlider]);
+
+    useEffect(() => {
+        setAttributes({
+            'wpbs-media-gallery-settings': gallerySettings || attributes['wpbs-media-gallery-settings'] || {},
+        })
+    }, [gallerySettings])
 
     const updateSettings = useCallback((newValue) => {
 

@@ -132,12 +132,12 @@ class WPBS {
 	}
 
 	public function admin_assets(): void {
-		//wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 	}
 
 	public function editor_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
+		wp_enqueue_style( 'wpbs-theme-css' );
 	}
 
 	public function view_assets(): void {

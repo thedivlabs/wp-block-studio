@@ -11,7 +11,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useMemo, useRef} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import {
     PanelBody, TabPanel
 } from "@wordpress/components";
@@ -87,29 +87,13 @@ registerBlockType(metadata.name, {
 
         const cssProps = !isSlider ? cssPropsGrid : cssPropsSlider;
 
-
-        const baseProps = {
-            className: blockClassnames(attributes, isSlider),
-        };
-
-        const blockProps = isSlider
-            ? useBlockProps({...baseProps, ref: swiperRef})
-            : useBlockProps(baseProps);
+        const blockProps = useBlockProps({className: blockClassnames(attributes, isSlider)});
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [
                 ['wpbs/media-gallery-container'],
             ],
         });
-
-        const settings = useMemo(() => {
-            return {
-                grid: attributes?.['wpbs-grid'],
-                slider: attributes?.['wpbs-slider'],
-                query: attributes?.['wpbs-query'],
-                gallery: attributes?.['wpbs-media-gallery'],
-            }
-        }, [attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-media-gallery']]);
 
         return (
             <>
@@ -131,14 +115,12 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <BlockContextProvider value={{settings}}>
-                    {
-                        isSlider ? <SliderComponent attributes={attributes} blockProps={blockProps}
-                                                    innerBlocksProps={innerBlocksProps} ref={swiperRef}
-                                                    wrapper={false}/> :
-                            <div {...innerBlocksProps} />
-                    }
-                </BlockContextProvider>
+                {isSlider ? <SliderComponent
+                    attributes={attributes}
+                    blockProps={blockProps}
+                    innerBlocksProps={innerBlocksProps}
+                    ref={swiperRef}
+                /> : <div {...innerBlocksProps} />}
 
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}

@@ -1,6 +1,7 @@
 .wpbs-slider .swiper-pagination-progressbar {
   width: min(5rem, 100%) !important;
   height: 4px;
+  position: relative;
 }
 
 .wpbs-slider .swiper-slide {

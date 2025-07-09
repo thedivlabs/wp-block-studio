@@ -9,21 +9,23 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
-    },
-    "isSlider": {
-      "type": "boolean",
-      "show_in_rest": true
     }
   },
   "allowedBlocks": [
-    "wpbs/media-gallery-container-card"
+    "wpbs/media-gallery-card"
   ],
   "usesContext": [
-    "isSlider"
+    "wpbs/gallery"
   ],
   "supports": {
     "layout": false,
-    "innerBlocks": true
+    "innerBlocks": true,
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ]
+    }
   },
   "editorScript": "file:./block.js",
   "style": "file:./block.css",

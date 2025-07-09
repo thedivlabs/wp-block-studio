@@ -10,8 +10,8 @@
       "type": "string",
       "show_in_rest": true
     },
-    "isSlider": {
-      "type": "boolean",
+    "wpbs-media-gallery-settings": {
+      "type": "object",
       "show_in_rest": true
     }
   },
@@ -21,7 +21,7 @@
     "wpbs/slider-navigation"
   ],
   "providesContext": {
-    "wpbs/settings": "settings"
+    "wpbs/gallery": "wpbs-media-gallery-settings"
   },
   "styles": [
     {

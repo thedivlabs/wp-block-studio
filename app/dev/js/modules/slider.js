@@ -15,7 +15,7 @@ export default class Slider {
         if (element.classList.contains('swiper-initialized')) {
             return;
         }
-
+        
         args = merge({}, SWIPER_ARGS_VIEW, args, {
             navigation: {
                 enabled: true,

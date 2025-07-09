@@ -1,29 +1,19 @@
 import "./scss/block.scss";
 
 import {
-    BlockContextProvider,
     InnerBlocks,
-    InspectorControls,
-    useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useMemo, useRef} from "react";
-import {
-    PanelBody, TabPanel
-} from "@wordpress/components";
-import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
-import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
+import React from "react";
 
-function blockClassnames(attributes = {}, isSlider = false) {
+function blockClassnames(attributes = {}, isSlider) {
     return [
-        'wpbs-media-gallery-container',
-        'flex flex-wrap w-full relative',
+        'wpbs-media-gallery-container swiper-wrapper',
+        isSlider ? null : 'flex flex-wrap w-full relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -32,14 +22,16 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...STYLE_ATTRIBUTES
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
+        
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
-        console.log(context);
-
+        const {isSlider = false} = context;
 
         const blockProps = {
-            className: blockClassnames(attributes),
+            className: blockClassnames(attributes, isSlider),
         };
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
@@ -54,6 +46,7 @@ registerBlockType(metadata.name, {
 
                 <div {...innerBlocksProps} />
 
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
             </>
         )
     },

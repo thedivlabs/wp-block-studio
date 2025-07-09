@@ -106,7 +106,7 @@ registerBlockType(metadata.name, {
 
             <BlockContextProvider value={{loopQuery}}>
                 <SliderComponent attributes={attributes} blockProps={blockProps} innerBlocksProps={innerBlocksProps}
-                                 ref={swiperRef} wrapper={false}/>
+                                 ref={swiperRef}/>
             </BlockContextProvider>
         </>;
 

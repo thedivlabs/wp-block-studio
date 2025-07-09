@@ -46,7 +46,10 @@ registerBlockType(metadata.name, {
 
                 <div {...innerBlocksProps} />
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={{
+                    '--grid-col-gap': 'var(--column-gap, 0px)',
+                    '--grid-row-gap': 'var(--row-gap, 0px)',
+                }}/>
             </>
         )
     },

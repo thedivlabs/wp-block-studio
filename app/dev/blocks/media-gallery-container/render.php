@@ -19,7 +19,7 @@ $loop = WPBS_Media_Gallery::loop( $card_block, $settings );
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-media-gallery-container',
-		$is_slider ? 'swiper-wrapper' : 'wpbs-layout-wrapper loop-container relative z-20',
+		$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap loop-container relative z-20',
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid['masonry'] ) ? '--masonry masonry' : null,
 		! empty( $settings['lightbox'] ) ? '--lightbox' : null,

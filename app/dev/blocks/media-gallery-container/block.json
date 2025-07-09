@@ -1,6 +1,6 @@
 {
   "name": "wpbs/media-gallery-container",
-  "title": "Media Gallery Container",
+  "title": "Media Container",
   "description": "Display a media gallery container",
   "selectors": {
     "root": ".wpbs-media-gallery-container"

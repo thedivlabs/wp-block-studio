@@ -11,7 +11,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {useMemo, useRef} from "react";
 import {
     PanelBody, TabPanel
 } from "@wordpress/components";

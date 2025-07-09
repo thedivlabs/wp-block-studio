@@ -2,7 +2,6 @@
 
 
 WPBS::console_log( $block ?? false );
-WPBS::console_log( $block->context ?? false );
 
 $card_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
@@ -10,17 +9,20 @@ $card_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function 
 
 $gallery = $block->context['wpbs/gallery'] ?? [];
 
-$is_slider = $gallery['is_slider'] ?? false;
+[ 'settings' => $settings, 'is_slider' => $is_slider, 'grid' => $grid ] = $gallery;
 
-$loop = WPBS_Media_Gallery::loop( $card_block, $gallery['loop'] ?? false, 1 );
+WPBS::console_log( $block->context['wpbs/gallery'] ?? false );
+WPBS::console_log( $gallery );
+
+$loop = WPBS_Media_Gallery::loop( $card_block, $settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-media-gallery-container',
 		$is_slider ? 'swiper-wrapper' : 'wpbs-layout-wrapper loop-container relative z-20',
 		$attributes['uniqueId'] ?? null,
-		! empty( $gallery['grid']['masonry'] ) ? '--masonry masonry' : null,
-		! empty( $gallery['settings']['lightbox'] ) ? '--lightbox' : null,
+		! empty( $grid['masonry'] ) ? '--masonry masonry' : null,
+		! empty( $settings['lightbox'] ) ? '--lightbox' : null,
 	] ) ),
 ] );
 
@@ -32,7 +34,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		<?php if ( ! $is_slider ) { ?>
 			<?= $loop->content ?? $content ?? false; ?>
 
-			<?php if ( ! empty( $gallery['grid']['masonry'] ) ) { ?>
+			<?php if ( ! empty( $grid['masonry'] ) ) { ?>
                 <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
 			<?php } ?>
 
@@ -41,7 +43,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			echo ( new WP_Block( [
 				'blockName' => 'wpbs/loop-pagination-button',
 			], [
-				'label' => $gallery['settings']['button_label'] ?? null
+				'label' => $settings['button_label'] ?? null
 			] ) )->render();
 
 			?>

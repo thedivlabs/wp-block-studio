@@ -126,7 +126,7 @@
 
   .wpbs-slider-nav__pagination {
     @apply
-    inline-flex items-center justify-center w-fit max-w-full shrink gap-1 h-auto leading-none empty:hidden
+    inline-flex items-center justify-center w-fit max-w-full shrink gap-1 leading-none empty:hidden
     relative transform-none left-auto top-auto right-auto bottom-auto
   }
 

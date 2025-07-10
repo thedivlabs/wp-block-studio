@@ -10,6 +10,8 @@ const {state} = store('wpbs/media-gallery', {
 
             const {settings, slider: swiper_args} = context;
 
+            console.log(context);
+
             const {is_last, gallery_id} = settings;
 
             if (!!settings?.is_slider) {
@@ -55,7 +57,12 @@ const {state} = store('wpbs/media-gallery', {
             const container = gallery.querySelector(':scope > .loop-container');
             const context = getContext();
 
-            const {card, gallery_id, video_first, page_size} = context;
+            const scriptElement = gallery.querySelector('script.wpbs-media-gallery-args');
+            const card = scriptElement ? JSON.parse(scriptElement.textContent) : {};
+
+            console.log(card);
+
+            const {gallery_id, video_first, page_size} = context;
 
             gallery.dataset.page = String(parseInt(gallery.dataset?.page ?? 1) + 1);
 

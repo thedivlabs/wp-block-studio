@@ -203,9 +203,22 @@ class WPBS_Media_Gallery {
 		return (object) array_filter( [
 			'content' => $content,
 			'is_last' => $is_last,
+			'card'    => $block_template ?? null
 		] );
 	}
-	
+
+	public static function output_args( $loop ): void {
+
+		if ( empty( $loop->card ) ) {
+			return;
+		}
+
+
+		echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
+				'card' => $loop->card,
+			] ) ) . '</script>';
+	}
+
 	public static function query( $settings = [], $page = 1 ): array {
 
 		if ( empty( $settings['gallery_id'] ) || ! is_numeric( $settings['gallery_id'] ) || $settings['gallery_id'] <= 0 ) {

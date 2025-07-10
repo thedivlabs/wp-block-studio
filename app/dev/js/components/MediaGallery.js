@@ -66,18 +66,18 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
     }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], attributes?.className]);
 
     const updateSettings = useCallback((newValue) => {
-
-        const result = {
-            ...attributes['wpbs-media-gallery'],
-            ...newValue,
-        }
-
-        setAttributes({
-            'wpbs-media-gallery': result,
-            'wpbs-media-gallery-settings': gallerySettings,
+        setAttributes((prevAttrs) => {
+            return {
+                ...prevAttrs,
+                'wpbs-media-gallery': {
+                    ...prevAttrs['wpbs-media-gallery'],
+                    ...newValue,
+                },
+                'wpbs-media-gallery-settings': gallerySettings,
+            };
         });
+    }, [setAttributes, gallerySettings]);
 
-    }, [setAttributes, attributes]);
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

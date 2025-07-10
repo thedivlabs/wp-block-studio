@@ -10,7 +10,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useMemo, useRef} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import {
     PanelBody, TabPanel
 } from "@wordpress/components";
@@ -49,6 +49,20 @@ registerBlockType(metadata.name, {
         const swiperRef = useRef(null);
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
+
+        useEffect(() => {
+            
+            setAttributes({
+                'wpbs-media-gallery-settings': cleanObject({
+                    grid: attributes?.['wpbs-grid'],
+                    slider: attributes?.['wpbs-swiper-args'],
+                    settings: {
+                        ...attributes?.['wpbs-media-gallery'],
+                        is_slider: (attributes?.className ?? '')?.includes('is-style-slider'),
+                    },
+                })
+            });
+        }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], attributes?.className])
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 
@@ -143,12 +157,7 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.init',
             'data-wp-context': JSON.stringify(cleanObject({
                 uniqueId: props.attributes?.uniqueId,
-                grid: props.attributes?.['wpbs-grid'],
-                slider: props.attributes?.['wpbs-swiper-args'],
-                settings: {
-                    ...props.attributes?.['wpbs-media-gallery'],
-                    is_slider: (props.attributes?.className ?? '')?.includes('is-style-slider'),
-                },
+                ...props.attributes?.['wpbs-media-gallery-settings'],
             }))
         });
 

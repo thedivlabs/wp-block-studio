@@ -17,8 +17,8 @@
   "usesContext": [
     "index",
     "media",
-    "isLightbox",
-    "isSlider"
+    "is_lightbox",
+    "is_slider"
   ],
   "supports": {
     "interactivity": true,

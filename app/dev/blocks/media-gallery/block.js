@@ -18,7 +18,10 @@ import {
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
 
-function blockClassnames(attributes = {}, isSlider = false) {
+function blockClassnames(attributes = {}) {
+
+    const isSlider = (attributes?.className ?? '').includes('is-style-slider');
+
     return [
         'wpbs-media-gallery h-max',
         'flex flex-col w-full relative',
@@ -87,7 +90,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = !isSlider ? cssPropsGrid : cssPropsSlider;
 
-        const blockProps = useBlockProps({className: blockClassnames(attributes, isSlider)});
+        const blockProps = useBlockProps({className: blockClassnames(attributes)});
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
             template: [

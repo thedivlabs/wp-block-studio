@@ -14,9 +14,9 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
         type: 'object',
         default: {
             gallery_id: undefined,
-            lightbox: undefined,
+            lightbox: false,
             page_size: undefined,
-            video_first: undefined,
+            video_first: false,
         }
     }
 };
@@ -47,7 +47,9 @@ function cleanResult(obj) {
 
 export function MediaGalleryControls({attributes = {}, setAttributes}) {
 
-    const {'wpbs-media-gallery': settings} = attributes;
+//    const {'wpbs-media-gallery': settings} = attributes;
+
+    const [settings, setSettings] = useState(attributes['wpbs-media-gallery']);
 
     const galleries = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
@@ -59,7 +61,6 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         return cleanResult({
             grid: attributes?.['wpbs-grid'],
             slider: attributes?.['wpbs-slider'],
-            query: attributes?.['wpbs-query'],
             settings: {
                 ...attributes?.['wpbs-media-gallery'],
                 is_slider: isSlider,
@@ -67,19 +68,31 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         })
     }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], attributes?.className]);
 
-    const updateSettings = useCallback((newValue) => {
-        setAttributes((prevAttrs) => {
-            return {
-                ...prevAttrs,
-                'wpbs-media-gallery': {
-                    ...prevAttrs['wpbs-media-gallery'],
-                    ...newValue,
-                },
-                'wpbs-media-gallery-settings': gallerySettings,
-            };
-        });
-    }, [setAttributes, gallerySettings]);
 
+    const updateSettings = useCallback((newValue) => {
+
+        const result = {
+            ...attributes['wpbs-media-gallery'],
+            ...newValue,
+        }
+
+        setAttributes({
+            'wpbs-media-gallery': result,
+        });
+
+        setSettings(result);
+
+    }, [setAttributes, attributes['wpbs-media-gallery']]);
+
+    useEffect(() => {
+        setAttributes({
+            'wpbs-media-gallery-settings': gallerySettings
+        });
+    }, [gallerySettings])
+
+
+    console.log(attributes['wpbs-media-gallery']?.['gallery_id']);
+    console.log(gallerySettings?.settings?.['gallery_id']);
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

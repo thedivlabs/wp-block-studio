@@ -2,16 +2,16 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
+//WPBS::console_log( $block->context ?? false );
+
 $media       = $block->context['media'] ?? false;
 $index       = $block->context['index'] ?? 0;
-$is_slider   = $block->context['isSlider'] ?? false;
-$is_lightbox = $block->context['isLightbox'] ?? false;
+$is_slider   = $block->context['is_slider'] ?? false;
+$is_lightbox = $block->context['is_lightbox'] ?? false;
 
 if ( empty( $media ) ) {
 	return false;
 }
-
-WPBS::console_log( $block );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [

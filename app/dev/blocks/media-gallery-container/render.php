@@ -7,8 +7,10 @@ $card_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function 
 
 $gallery = $block->context['wpbs/gallery'] ?? [];
 
+WPBS::console_log( $gallery );
+
 $settings  = $gallery['settings'] ?? false;
-$is_slider = $gallery['is_slider'] ?? false;
+$is_slider = $settings['is_slider'] ?? false;
 $grid      = $gallery['grid'] ?? false;
 
 $loop = WPBS_Media_Gallery::loop( $card_block, $settings );

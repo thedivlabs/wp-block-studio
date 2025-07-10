@@ -153,8 +153,8 @@ class WPBS_Media_Gallery {
 				$new_block = new WP_Block( $block_template, array_filter( [
 					'media'       => $media,
 					'index'       => $k,
-					'is_slider'   => ! empty( $media_item['is_slider'] ),
-					'is_lightbox' => ! empty( $media_item['lightbox'] ),
+					'is_slider'   => ! empty( $settings['is_slider'] ),
+					'is_lightbox' => ! empty( $settings['lightbox'] ),
 				] ) );
 
 				$new_block->attributes['media'] = $media;
@@ -203,9 +203,6 @@ class WPBS_Media_Gallery {
 		return (object) array_filter( [
 			'content' => $content,
 			'is_last' => $is_last,
-			'query'   => $gallery,
-			'media'   => $media_gallery,
-			'card'    => $block_template ?? null
 		] );
 	}
 
@@ -276,7 +273,7 @@ class WPBS_Media_Gallery {
 			$media = array_slice( $media, $offset, $page_size, true );
 
 		}
-
+		
 		return [
 			'media'   => $media,
 			'is_last' => $is_last,

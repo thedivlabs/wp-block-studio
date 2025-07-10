@@ -29,6 +29,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-container');
 
+        console.log(context);
+
         const {is_slider = false} = context;
 
         const blockProps = {

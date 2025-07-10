@@ -17,11 +17,11 @@ import {
     ToggleControl, SelectControl, TextControl
 } from "@wordpress/components";
 
-function blockClassnames(attributes = {}, isSlider = false) {
+function blockClassnames(attributes = {}, is_slider = false) {
     return [
         'wpbs-media-gallery-card',
         'w-full block relative',
-        !!isSlider ? 'swiper-slide' : 'loop-card',
+        !!is_slider ? 'swiper-slide' : 'loop-card',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -43,10 +43,10 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context} = props;
 
-        const {isSlider = {}} = context;
-
+        const {is_slider = {}} = context;
+        
         const blockProps = useBlockProps({
-            className: blockClassnames(attributes, isSlider),
+            className: blockClassnames(attributes, is_slider),
         });
 
         return (

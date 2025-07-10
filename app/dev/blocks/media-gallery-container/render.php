@@ -35,16 +35,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
                 <span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>
 			<?php } ?>
 
-			<?php
-
-			echo ( new WP_Block( [
-				'blockName' => 'wpbs/loop-pagination-button',
-			], [
-				'label' => $settings['button_label'] ?? null
-			] ) )->render();
-
-			?>
-
 		<?php } else {
 
 
@@ -58,6 +48,17 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 
     </div>
+
+<?php
+if ( ! $is_slider ) {
+	echo ( new WP_Block( [
+		'blockName' => 'wpbs/loop-pagination-button',
+	], [
+		'label' => $settings['button_label'] ?? null
+	] ) )->render();
+}
+
+?>
 
 
 <?php WPBS_Blocks::render_block_styles( $attributes ?? false );

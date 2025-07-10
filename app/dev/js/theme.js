@@ -36,28 +36,30 @@ class WPBS_Theme {
 
     }
 
-    gridDividers(grid, context) {
-
-        if (!grid) {
+    gridDividers(element, context) {
+        
+        if (!element || !context?.grid) {
             return;
         }
 
-        const {uniqueId, divider} = context;
+        const {uniqueId, grid} = context;
 
-        const colMobile = parseInt(context?.['columns-mobile'] ?? 1);
-        const colSmall = parseInt(context?.['columns-small'] ?? 2);
-        const colLarge = parseInt(context?.['columns-large'] ?? 3);
+        const {divider} = grid;
+
+        const colMobile = parseInt(grid?.['columns-mobile'] ?? 1);
+        const colSmall = parseInt(grid?.['columns-small'] ?? 2);
+        const colLarge = parseInt(grid?.['columns-large'] ?? 3);
 
         const {breakpoints} = WPBS?.settings ?? {};
 
-        const breakpointLarge = breakpoints[context?.['breakpoint-large'] ?? 'lg'];
-        const breakpointSmall = breakpoints[context?.['breakpoint-small'] ?? 'sm'];
+        const breakpointLarge = breakpoints[grid?.['breakpoint-large'] ?? 'lg'];
+        const breakpointSmall = breakpoints[grid?.['breakpoint-small'] ?? 'sm'];
 
         if (!divider) {
             return;
         }
 
-        const container = grid.querySelector(':scope > .loop-container');
+        const container = element.querySelector(':scope > .loop-container');
 
         const cards = container.querySelectorAll('.loop-card');
 
@@ -67,13 +69,13 @@ class WPBS_Theme {
 
         const lastRow = {
             mobile: {
-                count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || parseInt(colMobile),
+                count: Math.floor(total - (Math.floor(total / colMobile) * colMobile)) || colMobile,
             },
             small: {
-                count: Math.floor(total - (Math.floor(total / colSmall) * colSmall)) || parseInt(colSmall),
+                count: Math.floor(total - (Math.floor(total / colSmall) * colSmall)) || colSmall,
             },
             large: {
-                count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || parseInt(colLarge),
+                count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
             }
         }
 
@@ -129,7 +131,7 @@ class WPBS_Theme {
 
         document.head.appendChild(styleTag);
 
-        grid.classList.add('--divider');
+        element.classList.add('--divider');
 
     }
 

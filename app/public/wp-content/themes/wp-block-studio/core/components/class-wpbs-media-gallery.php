@@ -205,31 +205,7 @@ class WPBS_Media_Gallery {
 			'is_last' => $is_last,
 		] );
 	}
-
-	public static function output_args( $loop, $block ): string|bool {
-
-		if ( empty( $loop->card ) || empty( $loop->query ) ) {
-			return false;
-		}
-
-		$is_slider = str_contains( ( $block->attributes['className'] ?? '' ), 'is-style-slider' );
-
-		$grid_settings   = ! $is_slider ? $block->attributes['wpbs-grid'] ?? [] : [];
-		$query_settings  = $block->attributes['wpbs-media-gallery'] ?? [];
-		$slider_settings = $is_slider ? $block->attributes['wpbs-swiper-args'] ?? [] : [];
-
-		return wp_json_encode( array_filter( [
-			'card'      => ! $is_slider ? $loop->card : null,
-			'uniqueId'  => $block->attributes['uniqueId'] ?? null,
-			'is_slider' => $is_slider,
-			'swiper'    => $is_slider ? $slider_settings : null,
-			...$grid_settings,
-			...$query_settings,
-		] ) );
-
-
-	}
-
+	
 	public static function query( $settings = [], $page = 1 ): array {
 
 		if ( empty( $settings['gallery_id'] ) || ! is_numeric( $settings['gallery_id'] ) || $settings['gallery_id'] <= 0 ) {
@@ -273,7 +249,7 @@ class WPBS_Media_Gallery {
 			$media = array_slice( $media, $offset, $page_size, true );
 
 		}
-		
+
 		return [
 			'media'   => $media,
 			'is_last' => $is_last,
@@ -287,7 +263,6 @@ class WPBS_Media_Gallery {
 		$page_number = $request->get_param( 'page_number' );
 		$page_size   = $request->get_param( 'page_size' );
 		$card        = $request->get_param( 'card' );
-		$card_class  = $request->get_param( 'card_class' );
 
 		if ( empty( $gallery_id ) ) {
 			return new WP_Error( 'error', 'Something went wrong.', [
@@ -297,7 +272,6 @@ class WPBS_Media_Gallery {
 
 		$loop = self::loop( $card, [
 			'page_size'   => $page_size,
-			'card_class'  => $card_class,
 			'gallery_id'  => $gallery_id,
 			'video_first' => ! empty( $video_first ),
 		], $page_number );

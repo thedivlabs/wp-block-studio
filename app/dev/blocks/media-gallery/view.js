@@ -2,7 +2,7 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 
 const {state} = store('wpbs/media-gallery', {
-    callbacks: {
+    actions: {
         init: () => {
 
             const {ref: grid} = getElement();
@@ -20,6 +20,22 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.gridDividers(grid, context);
 
+
+            grid.addEventListener('click', (event) => {
+
+
+                if (grid.classList.contains('--lightbox')) {
+                    const card = event.target.closest('.wpbs-lightbox-card');
+
+                    if (card) {
+                        return WPBS.lightbox.toggle({
+                            index: card.dataset.index,
+                            gallery_id: gallery_id,
+                        })
+                    }
+                }
+            });
+
             [...grid.querySelectorAll('.loop-button')].forEach((el) => {
                 if (!is_last) {
                     el.classList.remove('hidden');
@@ -27,23 +43,6 @@ const {state} = store('wpbs/media-gallery', {
                     el.remove();
                 }
             });
-
-            if (grid.classList.contains('--lightbox')) {
-                grid.addEventListener('click', (event) => {
-                    const card = event.target.closest('.wpbs-lightbox-card');
-
-                    if (!card) {
-                        return false;
-                    }
-
-                    WPBS.lightbox.toggle({
-                        index: card.dataset.index,
-                        gallery_id: gallery_id,
-                    })
-
-                });
-
-            }
 
 
         },

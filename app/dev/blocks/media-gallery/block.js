@@ -156,7 +156,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClassnames(props.attributes),
             'data-wp-interactive': 'wpbs/media-gallery',
-            'data-wp-init': 'callbacks.init',
+            'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify(cleanObject({
                 uniqueId: props.attributes?.uniqueId,
                 ...props.attributes?.['wpbs-media-gallery-settings'],

@@ -11,6 +11,8 @@ if ( empty( $media ) ) {
 	return false;
 }
 
+WPBS::console_log( $block );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card relative',

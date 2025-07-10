@@ -60,8 +60,10 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
             grid: attributes?.['wpbs-grid'],
             slider: attributes?.['wpbs-slider'],
             query: attributes?.['wpbs-query'],
-            settings: attributes?.['wpbs-media-gallery'],
-            is_slider: isSlider,
+            settings: {
+                ...attributes?.['wpbs-media-gallery'],
+                is_slider: isSlider,
+            },
         })
     }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], attributes?.className]);
 

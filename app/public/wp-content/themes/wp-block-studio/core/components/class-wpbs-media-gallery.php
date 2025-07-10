@@ -126,13 +126,13 @@ class WPBS_Media_Gallery {
 		}
 	}
 
-	public static function loop( $card, $query = [], $page = 1, $args = [] ): object|bool {
+	public static function loop( $card, $settings = [], $page = 1 ): object|bool {
 
-		if ( empty( $query['gallery_id'] ) ) {
+		if ( empty( $settings['gallery_id'] ) ) {
 			return false;
 		}
 
-		[ 'media' => $media_gallery, 'is_last' => $is_last ] = self::query( $query, $page );
+		[ 'media' => $media_gallery, 'is_last' => $is_last ] = self::query( $settings, $page );
 
 		if ( ! empty( $card['blockName'] ) ) {
 			$block_template = WPBS::get_block_template( $card );
@@ -151,10 +151,10 @@ class WPBS_Media_Gallery {
 				$block_template['attrs']['media']    = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
-					'media'      => $media,
-					'index'      => $k,
-					'isSlider'   => ! empty( $args['isSlider'] ),
-					'isLightbox' => ! empty( $args['isLightbox'] ),
+					'media'       => $media,
+					'index'       => $k,
+					'is_slider'   => ! empty( $media_item['is_slider'] ),
+					'is_lightbox' => ! empty( $media_item['lightbox'] ),
 				] ) );
 
 				$new_block->attributes['media'] = $media;
@@ -172,8 +172,7 @@ class WPBS_Media_Gallery {
 
 				if ( ! empty( $media['id'] ) ) {
 					$content[] = wp_get_attachment_image( $media['id'], 'large', false, array_filter( [
-						'loading' => 'eager',
-						'class'   => $query['card_class'] ?? null
+						'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
 					] ) );
 				}
 
@@ -204,7 +203,7 @@ class WPBS_Media_Gallery {
 		return (object) array_filter( [
 			'content' => $content,
 			'is_last' => $is_last,
-			'query'   => $query,
+			'query'   => $gallery,
 			'media'   => $media_gallery,
 			'card'    => $block_template ?? null
 		] );
@@ -234,25 +233,25 @@ class WPBS_Media_Gallery {
 
 	}
 
-	public static function query( $query = [], $page = 1 ): array {
+	public static function query( $settings = [], $page = 1 ): array {
 
-		if ( empty( $query['gallery_id'] ) || ! is_numeric( $query['gallery_id'] ) || $query['gallery_id'] <= 0 ) {
+		if ( empty( $settings['gallery_id'] ) || ! is_numeric( $settings['gallery_id'] ) || $settings['gallery_id'] <= 0 ) {
 			return [];
 		}
 
-		$transient_id = self::TRANSIENT_PREFIX . $query['gallery_id'];
+		$transient_id = self::TRANSIENT_PREFIX . $settings['gallery_id'];
 
 		$media = get_transient( $transient_id );
 
 		if ( empty( $media ) ) {
 
-			$fields = WPBS::clean_array( get_field( 'wpbs', $query['gallery_id'] ) );
+			$fields = WPBS::clean_array( get_field( 'wpbs', $settings['gallery_id'] ) );
 
 			$images = self::parse_acf_data( $fields['images'] ?? [] );
 			$video  = $fields['video'] ?? [];
 
 
-			if ( ! empty( $query['video_first'] ) ) {
+			if ( ! empty( $settings['video_first'] ) ) {
 				$media = WPBS::clean_array( [ ...$video, ...$images ] );
 			} else {
 				$media = WPBS::clean_array( [ ...$images, ...$video ] );
@@ -264,14 +263,14 @@ class WPBS_Media_Gallery {
 
 		}
 
-		$page_size   = intval( $query['page_size'] ) ?: 1;
+		$page_size   = intval( $settings['page_size'] ) ?: 1;
 		$total_pages = ceil( count( $media ) / $page_size );
 		$is_last     = $page >= $total_pages;
 
-		if ( ! empty( $query['page_size'] ) ) {
+		if ( ! empty( $settings['page_size'] ) ) {
 
 			$page      = intval( $page );
-			$page_size = intval( $query['page_size'] );
+			$page_size = intval( $settings['page_size'] );
 			$offset    = ( $page - 1 ) * $page_size;
 
 			$media = array_slice( $media, $offset, $page_size, true );

@@ -56,7 +56,7 @@ export const SliderComponent = forwardRef(({
     useEffect(() => {
 
         const element = ref?.current;
-        
+
         if (!element) {
             return;
         }
@@ -87,7 +87,6 @@ export const SliderComponent = forwardRef(({
             };
 
             if (element instanceof Element) {
-                console.log(swiperConfig);
                 const swiper = new Swiper(element, swiperConfig);
             }
 

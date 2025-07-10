@@ -15,8 +15,10 @@ export default class Slider {
         if (element.classList.contains('swiper-initialized')) {
             return;
         }
-        
-        args = merge({}, SWIPER_ARGS_VIEW, args, {
+
+        const {on, ...safeArgs} = args || {};
+
+        args = merge({}, SWIPER_ARGS_VIEW, safeArgs, {
             navigation: {
                 enabled: true,
                 nextEl: element.querySelector('.wpbs-slider-btn--next'),

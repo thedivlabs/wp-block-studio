@@ -140,6 +140,7 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.init',
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes?.uniqueId,
+                ...props.attributes?.['wpbs-media-gallery-settings'] ?? {},
             })
         });
 

@@ -21,6 +21,29 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
     }
 };
 
+function cleanResult(obj) {
+    if (Array.isArray(obj)) {
+        return obj
+            .map(cleanResult)
+            .filter(v => v != null && v !== '' && !(typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length));
+    }
+
+    if (typeof obj === 'object' && obj !== null) {
+        return Object.fromEntries(
+            Object.entries(obj)
+                .map(([k, v]) => [k, cleanResult(v)])
+                .filter(([_, v]) =>
+                    v != null &&
+                    v !== '' &&
+                    !(Array.isArray(v) && v.length === 0) &&
+                    !(typeof v === 'object' && Object.keys(v).length === 0)
+                )
+        );
+    }
+
+    return obj;
+}
+
 
 export function MediaGalleryControls({attributes = {}, setAttributes}) {
 
@@ -30,34 +53,29 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
     }, []);
 
-    const isSlider = (attributes?.className ?? '')?.includes('is-style-slider');
-
     const gallerySettings = useMemo(() => {
+        const isSlider = (attributes?.className ?? '')?.includes('is-style-slider');
 
-
-        return {
+        return cleanResult({
             grid: attributes?.['wpbs-grid'],
             slider: attributes?.['wpbs-slider'],
             query: attributes?.['wpbs-query'],
             settings: attributes?.['wpbs-media-gallery'],
             is_slider: isSlider,
-        };
-    }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], isSlider]);
-
-    useEffect(() => {
-        setAttributes({
-            'wpbs-media-gallery-settings': gallerySettings || attributes['wpbs-media-gallery-settings'] || {},
         })
-    }, [gallerySettings])
+    }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], attributes?.className]);
 
     const updateSettings = useCallback((newValue) => {
 
         const result = {
             ...attributes['wpbs-media-gallery'],
-            ...newValue
+            ...newValue,
         }
 
-        setAttributes({'wpbs-media-gallery': result});
+        setAttributes({
+            'wpbs-media-gallery': result,
+            'wpbs-media-gallery-settings': gallerySettings,
+        });
 
     }, [setAttributes, attributes]);
 

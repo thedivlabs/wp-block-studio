@@ -1,17 +1,17 @@
 <?php
 
 
-WPBS::console_log( $block ?? false );
-
 $card_block = array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
 } )[0] ?? false;
 
 $gallery = $block->context['wpbs/gallery'] ?? [];
 
-[ 'settings' => $settings, 'is_slider' => $is_slider, 'grid' => $grid ] = $gallery;
 
-WPBS::console_log( $block->context['wpbs/gallery'] ?? false );
+$settings  = $gallery['settings'] ?? false;
+$is_slider = $gallery['is_slider'] ?? false;
+$grid      = $gallery['grid'] ?? false;
+
 WPBS::console_log( $gallery );
 
 $loop = WPBS_Media_Gallery::loop( $card_block, $settings );

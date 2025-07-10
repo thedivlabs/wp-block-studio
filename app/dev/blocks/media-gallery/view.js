@@ -58,12 +58,8 @@ const {state} = store('wpbs/media-gallery', {
             const context = getContext();
 
             const scriptElement = gallery.querySelector('script.wpbs-media-gallery-args');
-            const card = scriptElement ? JSON.parse(scriptElement.textContent) : {};
-
-            console.log(card);
-
-            const {gallery_id, video_first, page_size} = context;
-
+            const card = scriptElement ? JSON.parse(scriptElement.textContent)?.card ?? false : false;
+            
             gallery.dataset.page = String(parseInt(gallery.dataset?.page ?? 1) + 1);
 
             const nonce = WPBS?.settings?.nonce ?? false;
@@ -71,10 +67,8 @@ const {state} = store('wpbs/media-gallery', {
             const endpoint = '/wp-json/wpbs/v1/media-gallery';
 
             const request = {
-                gallery_id: gallery_id,
-                video_first: !!video_first,
+                ...context?.settings ?? {},
                 page_number: gallery.dataset.page,
-                page_size: page_size,
                 card: card,
             };
 

@@ -45,7 +45,7 @@ registerBlockType(metadata.name, {
         return (
             <>
 
-                <BlockContextProvider value={{is_slider: is_slider}}>
+                <BlockContextProvider value={{is_slider}}>
                     <div {...innerBlocksProps} />
                 </BlockContextProvider>
 

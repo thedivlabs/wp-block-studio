@@ -44,7 +44,9 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, context} = props;
 
         const {is_slider = {}} = context;
-        
+
+        console.log(context);
+
         const blockProps = useBlockProps({
             className: blockClassnames(attributes, is_slider),
         });

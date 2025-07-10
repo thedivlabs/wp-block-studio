@@ -24,9 +24,9 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
 
 export function MediaGalleryControls({attributes = {}, setAttributes}) {
 
-//    const {'wpbs-media-gallery': settings} = attributes;
+    const {'wpbs-media-gallery': settings} = attributes;
 
-    const [settings, setSettings] = useState(attributes['wpbs-media-gallery']);
+    //const [settings, setSettings] = useState(attributes['wpbs-media-gallery']);
 
     const galleries = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
@@ -44,7 +44,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
             'wpbs-media-gallery': result,
         });
 
-        setSettings(result);
+        //setSettings(result);
 
     }, [setAttributes, attributes['wpbs-media-gallery']]);
 

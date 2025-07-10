@@ -53,6 +53,8 @@ export const SliderComponent = forwardRef(({
                                            }, ref) => {
 
 
+    const {'wpbs-swiper-args': swiperArgs = {}} = attributes;
+
     useEffect(() => {
 
         const element = ref?.current;
@@ -65,7 +67,7 @@ export const SliderComponent = forwardRef(({
 
             const newParams = {
                 ...SWIPER_ARGS_DEFAULT,
-                ...attributes?.['wpbs-swiper-args'] ?? {},
+                ...swiperArgs,
                 ...SWIPER_ARGS_EDITOR
             };
 
@@ -82,7 +84,7 @@ export const SliderComponent = forwardRef(({
 
             const swiperConfig = {
                 ...SWIPER_ARGS_DEFAULT,
-                ...attributes?.['wpbs-swiper-args'] ?? {},
+                ...swiperArgs,
                 ...SWIPER_ARGS_EDITOR
             };
 
@@ -92,22 +94,23 @@ export const SliderComponent = forwardRef(({
 
 
         }
-    }, [attributes?.['wpbs-swiper-args'], ref]);
+    }, [swiperArgs, ref]);
 
     return <div {...blockProps} ref={ref}>
         {innerBlocksProps.children}
     </div>;
 })
 
-export function getSliderArgs(options, attributes) {
+export function getSliderArgs(attributes) {
 
+    const {'wpbs-slider': options} = attributes;
 
     const breakpoint = attributes?.breakpoint ?? 992;
 
     let args = {
         enabled: true,
         slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
-        slidesPerGroup: parseInt(options['group-mobile'] || options['group-large'] || 1),
+        slidesPerGroup: parseInt(options?.['group-mobile'] ?? options?.['group-large'] ?? 1),
         spaceBetween: parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0),
         autoplay: (options?.['autoplay'] ?? 0) > 0 ? {
             delay: options?.['autoplay'] * 1000,
@@ -129,8 +132,8 @@ export function getSliderArgs(options, attributes) {
     };
 
     let breakpointArgs = {
-        slidesPerView: parseInt(options['slides-mobile'] && options['slides-large'] ? options['slides-large'] : 1),
-        slidesPerGroup: parseInt(options['group-mobile'] && options['group-large'] ? options['group-large'] : 1),
+        slidesPerView: parseInt(options?.['slides-large'] ?? options?.['slides-mobile'] ?? 1),
+        slidesPerGroup: parseInt(options?.['group-mobile'] ?? 1),
         spaceBetween: parseInt(options?.['margin-large'] ?? options?.['margin-mobile'] ?? 0),
     };
 
@@ -153,7 +156,7 @@ export function getSliderArgs(options, attributes) {
 
     args = Object.fromEntries(Object.entries(args).filter(([_, value]) => Boolean(value)));
 
-    return merge({}, args);
+    return args;
 }
 
 export function sliderProps(attributes) {
@@ -183,14 +186,21 @@ export const SliderControls = ({attributes, setAttributes}) => {
             ...newValue
         };
 
-        const swiperArgs = getSliderArgs(result, attributes);
-
         setAttributes({
             'wpbs-slider': result,
+        });
+
+    }, [setAttributes, attributes?.['wpbs-slider']]);
+
+    useEffect(() => {
+
+        const swiperArgs = getSliderArgs(attributes);
+
+        setAttributes({
             'wpbs-swiper-args': swiperArgs,
         });
 
-    }, [setAttributes, attributes?.['wpbs-slider'], attributes?.['wpbs-swiper-args']]);
+    }, [attributes?.['wpbs-slider']])
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>

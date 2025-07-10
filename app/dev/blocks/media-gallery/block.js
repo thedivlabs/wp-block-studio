@@ -53,7 +53,6 @@ registerBlockType(metadata.name, {
         useEffect(() => {
 
             setAttributes({
-                uniqueId: uniqueId,
                 'wpbs-media-gallery-settings': cleanObject({
                     uniqueId: uniqueId,
                     grid: attributes?.['wpbs-grid'],
@@ -64,7 +63,7 @@ registerBlockType(metadata.name, {
                     },
                 })
             });
-        }, [uniqueId, attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], attributes?.className])
+        }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], attributes?.className])
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 

@@ -6,6 +6,12 @@ import metadata from "./block.json"
 import {useEffect} from "react";
 import {useInstanceId} from "@wordpress/compose";
 
+function blockClassNames(attributes = {}, editor = false) {
+    return [
+        'wpbs-loop-pagination-button w-fit min-h-10 px-4 relative z-20 cursor-pointer',
+        !editor ? 'loop-button' : null,
+    ].filter(x => x).join(' ');
+}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -17,29 +23,29 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, context}) => {
 
-        const {label = 'View More'} = context;
+        const {button_label = 'View More'} = context?.settings ?? {};
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-loop-pagination-button');
+        console.log(context);
 
         useEffect(() => {
             setAttributes({
                 'wpbs-loop-pagination-button': {
-                    label: label
-                },
-                uniqueId: uniqueId
+                    label: button_label
+                }
             });
-        }, [label, uniqueId]);
+        }, [button_label]);
 
         const blockProps = useBlockProps({
-            className: 'wpbs-loop-pagination-button loop-button min-h-10 px-4 relative z-20 hidden cursor-pointer',
+            className: blockClassNames(attributes, true),
         });
 
-        return <button {...blockProps}>{label}</button>;
+        return <button {...blockProps}>{button_label}</button>;
     },
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: 'wpbs-loop-pagination-button loop-button min-h-10 px-4 relative z-20 hidden cursor-pointer',
+            className: blockClassNames(props.attributes),
+            'data-wp-on-async--click': 'actions.pagination'
         });
 
         return <button {...blockProps}>{props.attributes?.['wpbs-loop-pagination-button']?.label ?? 'View More'}</button>;

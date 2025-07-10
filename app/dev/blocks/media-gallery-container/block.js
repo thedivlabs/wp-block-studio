@@ -29,10 +29,10 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-container');
 
-
+        console.log(context);
         const {settings = {}} = context?.['wpbs/gallery'];
         const {is_slider = false} = settings;
-        
+
         const blockProps = {
             className: blockClassnames(attributes, is_slider),
         };

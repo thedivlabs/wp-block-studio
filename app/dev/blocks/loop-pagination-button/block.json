@@ -6,7 +6,7 @@
     "root": ".wpbs-loop-pagination-button"
   },
   "usesContext": [
-    "label"
+    "settings"
   ],
   "attributes": {
     "uniqueId": {
@@ -29,7 +29,6 @@
     }
   ],
   "supports": {
-    "inserter": false,
     "color": {
       "background": true,
       "text": true,
@@ -58,8 +57,7 @@
     }
   },
   "editorScript": "file:./block.js",
-  "icon": "grid-view",
-  "render": "file:./render.php"
+  "icon": "grid-view"
 }
 
 

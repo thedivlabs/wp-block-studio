@@ -113,6 +113,8 @@ registerBlockType(metadata.name, {
             ],
         });
 
+        const settings = attributes?.['wpbs-media-gallery'];
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -133,7 +135,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <BlockContextProvider value={{isSlider}}>
+                <BlockContextProvider value={{settings}}>
                     {isSlider ? <SliderComponent
                         attributes={attributes}
                         blockProps={blockProps}

@@ -50,17 +50,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
     </div>
 
-<?php
-if ( ! $is_slider ) {
-	echo ( new WP_Block( [
-		'blockName' => 'wpbs/loop-pagination-button',
-	], [
-		'label' => $settings['button_label'] ?? null
-	] ) )->render();
-}
-
-?>
-
 
 <?php
 

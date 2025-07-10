@@ -8,7 +8,7 @@ import {useInstanceId} from "@wordpress/compose";
 
 function blockClassNames(attributes = {}, editor = false) {
     return [
-        'wpbs-loop-pagination-button inline-block w-fit min-h-10 px-4 relative z-20 cursor-pointer',
+        'wpbs-loop-pagination-button inline-block w-fit min-h-10 py-1 px-4 relative z-20 cursor-pointer',
         !editor ? 'loop-button' : null,
     ].filter(x => x).join(' ');
 }

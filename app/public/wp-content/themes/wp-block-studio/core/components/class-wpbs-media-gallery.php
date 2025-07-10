@@ -249,7 +249,7 @@ class WPBS_Media_Gallery {
 
 		}
 
-		$page_size   = intval( $settings['page_size'] ?? 1 );
+		$page_size   = intval( $settings['page_size'] ?? 1 ) ?: 1;
 		$total_pages = ceil( count( $media ) / $page_size );
 		$is_last     = $page >= $total_pages;
 

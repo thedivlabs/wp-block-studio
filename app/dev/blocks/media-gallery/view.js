@@ -10,8 +10,6 @@ const {state} = store('wpbs/media-gallery', {
 
             const {settings, slider: swiper_args} = context;
 
-            console.log(context);
-
             const {is_last, gallery_id} = settings;
 
             if (!!settings?.is_slider) {
@@ -59,7 +57,7 @@ const {state} = store('wpbs/media-gallery', {
 
             const scriptElement = gallery.querySelector('script.wpbs-media-gallery-args');
             const card = scriptElement ? JSON.parse(scriptElement.textContent)?.card ?? false : false;
-            
+
             gallery.dataset.page = String(parseInt(gallery.dataset?.page ?? 1) + 1);
 
             const nonce = WPBS?.settings?.nonce ?? false;
@@ -115,19 +113,5 @@ const {state} = store('wpbs/media-gallery', {
 
                 })
         },
-        lightbox: () => {
-            const {ref: block} = getElement();
-
-            const context = getContext();
-            const {gallery_id} = context;
-
-            const {index = 0} = context;
-
-            WPBS.lightbox.toggle({
-                index: index,
-                gallery_id: gallery_id,
-            })
-
-        }
     },
 });

@@ -10,17 +10,13 @@ const {state} = store('wpbs/media-gallery', {
 
             const {settings, slider: swiper_args} = context;
 
-            console.log(settings);
-
             if (!!settings?.is_slider) {
-                //console.log(swiper_args);
-                //console.log(grid);
                 WPBS.slider.observe(grid, swiper_args);
             }
 
             WPBS.setMasonry(grid);
 
-            WPBS.gridDividers(grid, context);
+            WPBS.gridDividers(grid, context?.grid);
 
             [...grid.querySelectorAll('.loop-button')].forEach((el) => {
                 if (!is_last) {

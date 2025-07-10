@@ -12,18 +12,13 @@ if ( empty( $media ) ) {
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class'               => implode( ' ', array_filter( [
+	'class'      => implode( ' ', array_filter( [
 		'wpbs-media-gallery-card flex w-full h-max wpbs-lightbox-card relative',
 		$is_slider ? 'swiper-slide' : 'loop-card',
-		$is_lightbox ? 'cursor-pointer' : null,
+		$is_lightbox ? 'cursor-pointer wpbs-lightbox-card' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'data-index'          => intval( $index ?? 0 ),
-	'data-wp-interactive' => 'wpbs/media-gallery-card',
-	'data-wp-init'        => 'actions.init',
-	'data-wp-context'     => json_encode( array_filter( [
-		'index' => intval( $index ?? 0 ),
-	] ) ),
+	'data-index' => intval( $index ?? 0 ),
 ] );
 
 

@@ -2,14 +2,19 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 
 const {state} = store('wpbs/media-gallery', {
-    actions: {
+    callbacks: {
         init: () => {
 
             const {ref: grid} = getElement();
             const context = getContext();
-            const {is_last, is_slider, swiper: swiper_args, gallery_id} = context;
 
-            if (is_slider) {
+            const {settings, slider: swiper_args} = context;
+
+            console.log(settings);
+
+            if (!!settings?.is_slider) {
+                //console.log(swiper_args);
+                //console.log(grid);
                 WPBS.slider.observe(grid, swiper_args);
             }
 

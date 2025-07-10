@@ -2,8 +2,6 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false );
 
-//WPBS::console_log( $block->context ?? false );
-
 $media       = $block->context['media'] ?? false;
 $index       = $block->context['index'] ?? 0;
 $is_slider   = $block->context['is_slider'] ?? false;

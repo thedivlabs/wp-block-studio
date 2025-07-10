@@ -21,29 +21,6 @@ export const MEDIA_GALLERY_ATTRIBUTES = {
     }
 };
 
-function cleanResult(obj) {
-    if (Array.isArray(obj)) {
-        return obj
-            .map(cleanResult)
-            .filter(v => v != null && v !== '' && !(typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length));
-    }
-
-    if (typeof obj === 'object' && obj !== null) {
-        return Object.fromEntries(
-            Object.entries(obj)
-                .map(([k, v]) => [k, cleanResult(v)])
-                .filter(([_, v]) =>
-                    v != null &&
-                    v !== '' &&
-                    !(Array.isArray(v) && v.length === 0) &&
-                    !(typeof v === 'object' && Object.keys(v).length === 0)
-                )
-        );
-    }
-
-    return obj;
-}
-
 
 export function MediaGalleryControls({attributes = {}, setAttributes}) {
 
@@ -54,19 +31,6 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
     const galleries = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'media-gallery', {per_page: -1});
     }, []);
-
-    const gallerySettings = useMemo(() => {
-        const isSlider = (attributes?.className ?? '')?.includes('is-style-slider');
-
-        return cleanResult({
-            grid: attributes?.['wpbs-grid'],
-            slider: attributes?.['wpbs-slider'],
-            settings: {
-                ...attributes?.['wpbs-media-gallery'],
-                is_slider: isSlider,
-            },
-        })
-    }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-slider'], attributes?.['wpbs-query'], attributes?.className]);
 
 
     const updateSettings = useCallback((newValue) => {
@@ -83,16 +47,6 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         setSettings(result);
 
     }, [setAttributes, attributes['wpbs-media-gallery']]);
-
-    useEffect(() => {
-        setAttributes({
-            'wpbs-media-gallery-settings': gallerySettings
-        });
-    }, [gallerySettings])
-
-
-    console.log(attributes['wpbs-media-gallery']?.['gallery_id']);
-    console.log(gallerySettings?.settings?.['gallery_id']);
 
     return (
         <Grid columns={1} columnGap={15} rowGap={20}>

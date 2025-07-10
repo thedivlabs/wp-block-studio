@@ -1,6 +1,5 @@
 import {
     BlockContextProvider,
-    InnerBlocks,
     InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
@@ -17,6 +16,7 @@ import {
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
+import {cleanObject} from "Includes/helper"
 
 function blockClassnames(attributes = {}) {
 
@@ -24,7 +24,7 @@ function blockClassnames(attributes = {}) {
 
     return [
         'wpbs-media-gallery h-max',
-        'flex flex-col w-full relative',
+        'flex flex-col w-full relative overflow-hidden',
         isSlider ? 'swiper wpbs-slider' : null,
         !!attributes?.['wpbs-grid']?.masonry ? 'masonry --masonry' : null,
         !!attributes?.['wpbs-media-gallery']?.lightbox ? '--lightbox' : null,
@@ -141,10 +141,15 @@ registerBlockType(metadata.name, {
             className: blockClassnames(props.attributes),
             'data-wp-interactive': 'wpbs/media-gallery',
             'data-wp-init': 'callbacks.init',
-            'data-wp-context': JSON.stringify({
+            'data-wp-context': JSON.stringify(cleanObject({
                 uniqueId: props.attributes?.uniqueId,
-                ...props.attributes?.['wpbs-media-gallery-settings'] ?? {},
-            })
+                grid: props.attributes?.['wpbs-grid'],
+                slider: props.attributes?.['wpbs-swiper-args'],
+                settings: {
+                    ...props.attributes?.['wpbs-media-gallery'],
+                    is_slider: (props.attributes?.className ?? '')?.includes('is-style-slider'),
+                },
+            }))
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

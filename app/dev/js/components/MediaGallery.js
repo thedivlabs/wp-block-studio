@@ -102,6 +102,13 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                     className={'flex items-center'}
                     __nextHasNoMarginBottom
                 />
+                <ToggleControl
+                    label={'Eager'}
+                    checked={!!settings?.['eager']}
+                    onChange={(newValue) => updateSettings({'eager': newValue})}
+                    className={'flex items-center'}
+                    __nextHasNoMarginBottom
+                />
             </Grid>
         </Grid>
     );

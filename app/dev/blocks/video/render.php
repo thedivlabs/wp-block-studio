@@ -2,8 +2,8 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:after {background: var(--overlay, rgba(0, 0, 0, .5));}' );
 
-$settings     = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
-$is_thumbnail = ! empty( $block->context['is_thumbnail'] );
+$settings    = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
+$is_lightbox = filter_var( $block->context['lightbox'] ?? true, FILTER_VALIDATE_BOOLEAN );
 
 $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 	'id_only' => true
@@ -11,14 +11,14 @@ $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
-		'wpbs-video flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer',
-		$is_thumbnail ? '--disabled h-full' : 'aspect-video',
+		'wpbs-video',
+		! $is_lightbox ? '--disabled h-full' : '--lightbox aspect-video',
+		'flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style'         => implode( '; ', array_filter( [
 		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
 	] ) ),
-	'data-modal'    => ! empty( $settings['modal'] ),
 	'data-title'    => $settings['title'] ?? null,
 	'data-vid'      => $video_id,
 	'data-platform' => $settings['platform'] ?? null,

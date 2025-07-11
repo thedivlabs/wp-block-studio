@@ -151,10 +151,10 @@ class WPBS_Media_Gallery {
 				$block_template['attrs']['media']    = $media;
 
 				$new_block = new WP_Block( $block_template, array_filter( [
-					'media'       => $media,
-					'index'       => $k,
-					'is_slider'   => ! empty( $settings['is_slider'] ),
-					'is_lightbox' => ! empty( $settings['lightbox'] ),
+					'media'     => $media,
+					'index'     => $k,
+					'is_slider' => ! empty( $settings['is_slider'] ),
+					'gallery'   => $settings,
 				] ) );
 
 				$new_block->attributes['media'] = $media;

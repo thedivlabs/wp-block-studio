@@ -10,7 +10,6 @@ class WPBS_WP {
 
 		add_action( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 100 );
 		add_action( 'after_setup_theme', [ $this, 'theme_support' ], 100 );
-		add_filter( 'upload_mimes', [ $this, 'add_media_library_mime_types' ] );
 
 		register_nav_menus( array(
 			'header-menu' => __( 'Header Menu', 'divlabs' ),
@@ -21,9 +20,6 @@ class WPBS_WP {
 		) );
 
 		add_post_type_support( 'page', 'excerpt' );
-
-		add_filter( 'mce_buttons_2', [ $this, 'mce_buttons' ] );
-		add_filter( 'tiny_mce_before_init', [ $this, 'mce_init' ] );
 
 		$this->shortcodes();
 
@@ -55,7 +51,7 @@ class WPBS_WP {
 
 		foreach ( $endpoints as $route => $handler ) {
 			if ( isset( $endpoints[ $route ][0] ) ) {
-				$endpoints[ $route ][0]['methods'] = [ WP_REST_Server::READABLE, WP_REST_Server::CREATABLE ];
+				$endpoints[ $route ][0]['methods'] = [ WP_REST_Server::READABLE ];
 			}
 		}
 
@@ -71,15 +67,6 @@ class WPBS_WP {
 
 			return date( $attributes['format'] );
 		} );
-	}
-
-
-	public function mce_buttons( $buttons ) {
-
-		array_unshift( $buttons, 'fontsizeselect' );
-		array_unshift( $buttons, 'styleselect' );
-
-		return $buttons;
 	}
 
 	public function remove_default_image_sizes( $sizes ): array {

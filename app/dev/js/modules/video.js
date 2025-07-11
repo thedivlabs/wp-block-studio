@@ -3,7 +3,7 @@ export default class Video {
     static init() {
 
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.wpbs-video:not(.--disabled)')) {
+            if (e.target.closest('.wpbs-video.--lightbox:not(.--disabled)')) {
                 this.clickHandler(e.target.closest('.wpbs-video'));
             }
         });

@@ -36,7 +36,7 @@ registerBlockType(metadata.name, {
             default: {
                 poster: undefined,
                 eager: undefined,
-                modal: undefined,
+                lightbox: undefined,
                 overlay: undefined,
                 link: undefined,
                 platform: undefined,
@@ -171,9 +171,9 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                 />
                                 <ToggleControl
-                                    label="Modal"
-                                    checked={!!attributes?.['wpbs-video']?.modal}
-                                    onChange={(newValue) => updateSettings({modal: newValue})}
+                                    label="Lightbox"
+                                    checked={!!attributes?.['wpbs-video']?.lightbox}
+                                    onChange={(newValue) => updateSettings({lightbox: newValue})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
                                 />

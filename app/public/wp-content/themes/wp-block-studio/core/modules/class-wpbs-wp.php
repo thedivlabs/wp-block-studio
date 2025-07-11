@@ -82,108 +82,10 @@ class WPBS_WP {
 		return $buttons;
 	}
 
-	public function mce_init( $init_array ) {
-
-		$global_styles = wp_get_global_styles()['elements'] ?? false;
-
-		$init_array['fontsize_formats'] = "14px 16px 18px 21px 24px 28px 32px 36px 40px 42px 48px 52px 56px 60px 72px";
-
-		$colors = wp_get_global_settings()['color']['palette'] ?? [];
-
-		$default_colors = ' ' . implode( ', ', array_map( function ( $theme_color ) {
-				return '"' . str_replace( '#', '', $theme_color['color'] ) . '", "' . $theme_color['name'] . '"';
-			}, $colors['default'] ?? [] ) ) . ' ';
-
-		$theme_colors = ' ' . implode( ', ', array_map( function ( $theme_color ) {
-				return '"' . str_replace( '#', '', $theme_color['color'] ) . '", "' . $theme_color['name'] . '"';
-			}, $colors['theme'] ?? [] ) ) . ' ';
-
-		$init_array['textcolor_map']  = '[' . $theme_colors . ',' . $default_colors . ']';
-		$init_array['textcolor_rows'] = 1 + ( ( count( $colors['default'] ?? [] ) + count( $colors['theme'] ?? [] ) ) / 8 );
-
-
-		$style_formats = [
-			[
-				'title'   => 'H1',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'display'     => 'inline-block',
-					'font-size'   => $global_styles['h1']['typography']['fontSize'] ?? null,
-					'line-height' => $global_styles['h1']['typography']['lineHeight'] ?? $global_styles['heading']['typography']['lineHeight'] ?? null,
-				] ),
-			],
-			[
-				'title'   => 'H2',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'display'     => 'inline-block',
-					'font-size'   => $global_styles['h2']['typography']['fontSize'] ?? 'inherit',
-					'line-height' => $global_styles['h2']['typography']['lineHeight'] ?? $global_styles['heading']['typography']['lineHeight'] ?? 'normal',
-				] ),
-			],
-			[
-				'title'   => 'H3',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'display'     => 'inline-block',
-					'font-size'   => $global_styles['h3']['typography']['fontSize'] ?? 'inherit',
-					'line-height' => $global_styles['h3']['typography']['lineHeight'] ?? $global_styles['heading']['typography']['lineHeight'] ?? 'normal',
-				] ),
-			],
-			[
-				'title'   => 'H4',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'display'     => 'inline-block',
-					'font-size'   => $global_styles['h4']['typography']['fontSize'] ?? 'inherit',
-					'line-height' => $global_styles['h4']['typography']['lineHeight'] ?? $global_styles['heading']['typography']['lineHeight'] ?? 'normal',
-				] ),
-			],
-			[
-				'title'   => 'Leading Tight',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'line-height' => '1.3',
-				] ),
-			],
-			[
-				'title'   => 'Leading Normal',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'line-height' => 'normal',
-				] ),
-			],
-			[
-				'title'   => 'Leading Loose',
-				'inline'  => 'span',
-				'wrapper' => false,
-				'styles'  => array_filter( [
-					'line-height' => '1.7',
-				] ),
-			],
-		];
-
-		$init_array['style_formats'] = wp_json_encode( $style_formats );
-
-		return $init_array;
-	}
-
-	public function add_media_library_mime_types( $types ) {
-		$types['json'] = 'text/plain';
-
-		return $types;
-	}
-
 	public function remove_default_image_sizes( $sizes ): array {
 
 		foreach ( $sizes as $k => $size ) {
-			if ( ! in_array( $size, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge', 'email' ] ) ) {
+			if ( ! in_array( $size, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] ) ) {
 				unset( $sizes[ $k ] );
 			}
 		}
@@ -207,7 +109,7 @@ class WPBS_WP {
 
 		add_image_size( 'xlarge', 1800 );
 		add_image_size( 'small', 640 );
-		add_image_size( 'medium', 1128 );
+		add_image_size( 'medium', 1130 );
 		add_image_size( 'mobile', 624, 1200 );
 
 	}

@@ -8,6 +8,7 @@ import {
 } from "@wordpress/components";
 
 import {useSelect} from "@wordpress/data";
+import {RESOLUTION_OPTIONS} from "Includes/config";
 
 export const MEDIA_GALLERY_ATTRIBUTES = {
     'wpbs-media-gallery': {
@@ -76,6 +77,14 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                     __next40pxDefaultSize
                     onChange={(newValue) => updateSettings({'button_label': newValue})}
                     value={settings?.['button_label']}
+                />
+                <SelectControl
+                    label={'Resolution'}
+                    options={RESOLUTION_OPTIONS}
+                    onChange={(newValue) => updateSettings({'resolution': newValue})}
+                    value={settings?.['resolution']}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>

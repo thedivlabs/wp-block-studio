@@ -557,7 +557,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
 
             <Grid columns={1} className={'wpbs-layout-tools__grid'}>
-                <ToolsPanel label={'Large'} resetAll={resetAll_layout}>
+                <ToolsPanel label={'Style'} resetAll={resetAll_layout}>
 
                     <ToolsPanelItem
                         style={{gridColumn: 'span 1'}}

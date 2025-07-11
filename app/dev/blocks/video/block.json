@@ -17,7 +17,7 @@
   },
   "usesContext": [
     "media",
-    "is_thumbnail"
+    "lightbox"
   ],
   "supports": {
     "layout": false,

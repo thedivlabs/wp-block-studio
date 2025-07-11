@@ -3,7 +3,7 @@
 WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:after {background: var(--overlay, rgba(0, 0, 0, .5));}' );
 
 $settings    = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
-$is_lightbox = filter_var( $block->context['lightbox'] ?? true, FILTER_VALIDATE_BOOLEAN );
+$is_lightbox = ! empty( $block->context['lightbox'] ) || ! empty( $attributes['wpbs-video']['lightbox'] );
 
 $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 	'id_only' => true

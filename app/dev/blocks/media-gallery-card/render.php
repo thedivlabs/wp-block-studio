@@ -8,8 +8,6 @@ $is_slider   = $block->context['is_slider'] ?? false;
 $gallery     = $block->context['gallery'] ?? false;
 $is_lightbox = ! empty( $gallery['lightbox'] );
 
-WPBS::console_log( $gallery );
-
 if ( empty( $media ) ) {
 	return false;
 }
@@ -44,7 +42,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 				'link'  => $media['link'] ?? '',
 				'modal' => true
 			],
-			'lightbox' => $is_lightbox,
+			'lightbox' => ! $is_lightbox,
 		] ) )->render();
 
 	}

@@ -165,7 +165,7 @@ export function sliderProps(attributes) {
 
     return cleanArgs({
         '--slides': attributes['wpbs-slider']?.['slides-mobile'] ?? attributes['wpbs-slider']?.['slides-large'] ?? 1,
-        '--margin': attributes['wpbs-slider']?.['margin-mobile'] ?? attributes['wpbs-slider']?.['margin-large'] ?? 1,
+        '--margin': attributes['wpbs-slider']?.['margin-mobile'] ?? attributes['wpbs-slider']?.['margin-large'] ?? '0px',
         breakpoints: {
             [breakpoint]: {
                 '--slides': attributes['wpbs-slider']?.['slides-large'] ?? null,

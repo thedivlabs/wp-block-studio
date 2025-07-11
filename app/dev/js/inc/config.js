@@ -163,6 +163,7 @@ export const BLEND_OPTIONS = [
 export const RESOLUTION_OPTIONS = [
     {label: 'Default', value: ''},
     {label: 'Thumbnail', value: 'thumbnail'},
+    {label: 'Mobile', value: 'mobile'},
     {label: 'Small', value: 'small'},
     {label: 'Medium', value: 'medium'},
     {label: 'Large', value: 'large'},

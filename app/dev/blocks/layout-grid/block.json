@@ -9,10 +9,16 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
+    },
+    "wpbs-grid": {
+      "type": "object",
+      "show_in_rest": true
     }
   },
   "allowedBlocks": [
     "wpbs/layout-grid-card",
+    "wpbs/layout-grid-container",
+    "wpbs/loop-pagination-button",
     "core/query-pagination"
   ],
   "styles": [
@@ -21,6 +27,9 @@
       "label": "Loop"
     }
   ],
+  "providesContext": {
+    "wpbs/grid": "wpbs-grid"
+  },
   "supports": {
     "layout": false,
     "interactivity": true,
@@ -56,8 +65,7 @@
   "viewScriptModule": "file:./view.js",
   "style": "file:./block.css",
   "editorStyle": "file:./block.css",
-  "icon": "grid-view",
-  "render": "file:./render.php"
+  "icon": "grid-view"
 }
 
 

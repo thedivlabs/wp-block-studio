@@ -1,0 +1,38 @@
+{
+  "name": "wpbs/layout-grid-container",
+  "title": "Grid Container",
+  "description": "Display a grid container",
+  "selectors": {
+    "root": ".wpbs-layout-grid-container"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "parent": [
+    "wpbs/layout-grid"
+  ],
+  "allowedBlocks": [
+    "wpbs/layout-grid-card"
+  ],
+  "usesContext": [
+    "wpbs/grid"
+  ],
+  "supports": {
+    "layout": false,
+    "innerBlocks": true,
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ]
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "format-gallery",
+  "render": "file:./render.php"
+}
+
+

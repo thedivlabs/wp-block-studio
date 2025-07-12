@@ -34,7 +34,7 @@
 }
 
 /* Container inside layout grid */
-.wpbs-layout-grid__container {
+.wpbs-layout-grid-container {
   @apply flex flex-wrap;
   flex-direction: row;
   justify-content: inherit;
@@ -50,7 +50,7 @@
 }
 
 /* Hide button if container is empty */
-.wpbs-layout-grid--pagination .wpbs-layout-grid__container:empty + .wpbs-layout-grid__button {
+.wpbs-layout-grid--pagination .wpbs-layout-grid-container:empty + .wpbs-layout-grid__button {
   display: none !important;
   pointer-events: none;
 }

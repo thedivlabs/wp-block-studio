@@ -127,7 +127,19 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        return <><InnerBlocks.Content/><BackgroundElement attributes={props.attributes} editor={false}/></>
+        const blockProps = useBlockProps.save({
+            className: classNames(props.attributes),
+            'data-wp-interactive': 'wpbs/layout-grid',
+            'data-wp-init': 'actions.init',
+            'data-wp-context': JSON.stringify({
+                uniqueId: props.attributes?.uniqueId,
+                ...props.attributes?.['wpbs-grid'],
+            })
+        });
+
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+
+        return <div {...innerBlocksProps} />;
     }
 })
 

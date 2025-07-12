@@ -18,7 +18,8 @@
     "wpbs/layout-grid-card"
   ],
   "usesContext": [
-    "wpbs/grid"
+    "wpbs/grid",
+    "wpbs/query"
   ],
   "supports": {
     "layout": false,

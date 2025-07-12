@@ -1,9 +1,9 @@
 {
-  "name": "wpbs/loop-pagination-button",
+  "name": "wpbs/pagination-button",
   "title": "Grid Button",
   "description": "Display a pagination button",
   "selectors": {
-    "root": ".wpbs-loop-pagination-button"
+    "root": ".wpbs-pagination-button"
   },
   "usesContext": [
     "settings"

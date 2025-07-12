@@ -12,6 +12,7 @@ export const GRID_ATTRIBUTES = {
     'wpbs-grid': {
         type: 'object',
         default: {
+            'loop': false,
             'columns-mobile': undefined,
             'columns-small': undefined,
             'columns-large': undefined,
@@ -63,7 +64,7 @@ export const GridControls = ({attributes, setAttributes}) => {
     const grid = attributes?.['wpbs-grid'] ?? {};
 
     const updateSettings = useCallback((newValue) => {
-        setAttributes({'wpbs-grid': {...grid, ...newValue}});
+        setAttributes({'wpbs-grid': {...grid, ...newValue, ...{loop: (attributes?.className ?? '').includes('is-style-loop')}}});
     }, [grid, setAttributes]);
 
 

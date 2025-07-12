@@ -11,7 +11,7 @@ import React from "react";
 
 function blockClassnames(attributes = {}, is_slider) {
     return [
-        'wpbs-layout-grid-container loop-container',
+        'wpbs-layout-grid-container loop-container w-full flex flex-wrap relative z-20 relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

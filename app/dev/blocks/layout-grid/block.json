@@ -9,16 +9,12 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
-    },
-    "wpbs-grid": {
-      "type": "object",
-      "show_in_rest": true
     }
   },
   "allowedBlocks": [
     "wpbs/layout-grid-card",
     "wpbs/layout-grid-container",
-    "wpbs/loop-pagination-button",
+    "wpbs/pagination-button",
     "core/query-pagination"
   ],
   "styles": [
@@ -28,7 +24,8 @@
     }
   ],
   "providesContext": {
-    "wpbs/grid": "wpbs-grid"
+    "wpbs/grid": "wpbs-grid",
+    "wpbs/query": "wpbs-query"
   },
   "supports": {
     "layout": false,

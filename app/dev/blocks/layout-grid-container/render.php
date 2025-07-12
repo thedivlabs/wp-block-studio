@@ -4,14 +4,11 @@ WPBS_Blocks::render_block_styles( $attributes ?? false );
 
 global $wp_query;
 
-WPBS::console_log( $block ?? false );
+$grid_settings  = WPBS::clean_array( $block->context['wpbs/grid'] ?? [] );
+$query_settings = WPBS::clean_array( $block->context['wpbs/query'] ?? [] );
+$is_loop        = ! empty( $grid_settings['loop'] );
 
-return;
-
-$settings = WPBS::clean_array( $attributes['wpbs-grid'] ?? [] );
-$is_loop  = str_contains( $attributes['className'] ?? '', 'is-style-loop' );
-
-$loop = ! $is_loop ? false : new WPBS_Loop( $block ?? false );
+$loop = ! $is_loop ? false : new WPBS_Loop( $block ?? false, $query_settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
@@ -48,7 +45,7 @@ if ( $is_loop ) {
 			'card'     => $loop->card,
 			'query'    => $loop->query->query ?? false,
 			'uniqueId' => $attributes['uniqueId'] ?? null,
-			...$settings
+			...$grid_settings
 		] ) ) . '</script>';
 }
 

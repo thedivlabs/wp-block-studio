@@ -17,7 +17,7 @@
   },
   "allowedBlocks": [
     "wpbs/media-gallery-container",
-    "wpbs/loop-pagination-button",
+    "wpbs/pagination-button",
     "wpbs/layout-element",
     "wpbs/slider-navigation"
   ],

@@ -12,7 +12,9 @@ export default class Video {
 
     static clickHandler(element) {
 
-        const {title, vid, platform, lightbox} = element.dataset;
+        const {title, vid, platform} = element.dataset;
+
+        const isLightbox = element.classList.contains('--lightbox');
 
         if (element.classList.contains('active')) {
             return false;
@@ -32,7 +34,7 @@ export default class Video {
 
         const classNames = [
             'divlabs-video-player',
-            !!lightbox ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
+            !!isLightbox ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
         ].filter(x => x).join(' ');
 
         const player = jQuery('<iframe />', {
@@ -56,7 +58,7 @@ export default class Video {
         }).append(player);
 
 
-        if (!!lightbox) {
+        if (!!isLightbox) {
             WPBS.modals.toggle_modal(false, {
                 template: component.get(0)
             });

@@ -18,7 +18,7 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.setMasonry(grid);
 
-            WPBS.gridDividers(grid, context);
+            WPBS.gridDividers(grid, context?.grid ?? {});
 
 
             grid.addEventListener('click', (event) => {
@@ -36,14 +36,6 @@ const {state} = store('wpbs/media-gallery', {
                 }
             });
 
-            [...grid.querySelectorAll('.loop-button')].forEach((el) => {
-                if (!is_last) {
-                    el.classList.remove('hidden');
-                } else {
-                    el.remove();
-                }
-            });
-
 
         },
         pagination: async (event) => {
@@ -52,7 +44,7 @@ const {state} = store('wpbs/media-gallery', {
 
             const {ref: element} = getElement();
             const parser = new DOMParser();
-            
+
             const gallery = element.closest('.wpbs-media-gallery');
             const container = gallery.querySelector(':scope > .loop-container');
             const context = getContext();

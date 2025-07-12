@@ -5,22 +5,14 @@ const {state} = store('wpbs/layout-grid', {
     actions: {
         init: () => {
 
-            const {ref: grid} = getElement();
-            const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerHTML ?? '{}');
+            const {ref: element} = getElement();
+            const data = JSON.parse(element.querySelector('script.wpbs-args')?.innerHTML ?? '{}');
 
-            const {is_last} = data;
+            const context = getContext();
+            
+            WPBS.setMasonry(element);
 
-            WPBS.setMasonry(grid);
-
-            WPBS.gridDividers(grid, data);
-
-            [...grid.querySelectorAll('.loop-button')].forEach((el) => {
-                if (!is_last) {
-                    el.classList.remove('hidden');
-                } else {
-                    el.remove();
-                }
-            })
+            WPBS.gridDividers(element, context);
 
 
         },

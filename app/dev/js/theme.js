@@ -37,14 +37,14 @@ class WPBS_Theme {
     }
 
     gridDividers(element, context) {
-        
-        if (!element || !context?.grid) {
+
+        if (!element || !context) {
             return;
         }
 
         const {uniqueId, grid} = context;
 
-        const {divider} = grid;
+        const {divider} = context;
 
         const colMobile = parseInt(grid?.['columns-mobile'] ?? 1);
         const colSmall = parseInt(grid?.['columns-small'] ?? 2);
@@ -58,6 +58,7 @@ class WPBS_Theme {
         if (!divider) {
             return;
         }
+
 
         const container = element.querySelector(':scope > .loop-container');
 

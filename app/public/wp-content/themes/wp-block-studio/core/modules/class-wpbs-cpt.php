@@ -22,20 +22,6 @@ class WPBS_CPT {
 
 		$singular_name = $labels['singular_name'] ?? $singular;
 
-		if ( is_array( $args['template'] ?? false ) ) {
-			$args['template'] = array_map( function ( $slug ) {
-				return [
-					$slug,
-					[
-						'lock' => [
-							'move'   => false,
-							'remove' => true
-						]
-					]
-				];
-			}, $args['template'] );
-		}
-
 		$default_labels = [
 			'name'               => _x( $plural, 'Post Type General Name', 'wpbs' ),
 			'singular_name'      => _x( $singular_name, 'Post Type Singular Name', 'wpbs' ),
@@ -52,7 +38,7 @@ class WPBS_CPT {
 			'not_found_in_trash' => __( 'Not found in Trash', 'wpbs' ),
 		];
 
-		$labels = is_array( $labels ?? false ) ? array_merge( [], $default_labels, $labels ) : $default_labels;
+		$labels = is_array( $labels ) ? array_merge( $default_labels, $labels ) : $default_labels;
 
 		$default_args = [
 			'label'               => __( $slug, 'wpbs' ),

@@ -46,11 +46,13 @@ const {state} = store('wpbs/media-gallery', {
 
 
         },
-        pagination: async () => {
+        pagination: async (event) => {
+
+            event.preventDefault();
 
             const {ref: element} = getElement();
             const parser = new DOMParser();
-            console.log(element);
+            
             const gallery = element.closest('.wpbs-media-gallery');
             const container = gallery.querySelector(':scope > .loop-container');
             const context = getContext();

@@ -20,7 +20,7 @@ class WPBS_Popup {
 		self::$slug     = 'popup';
 
 		$this->transients = (object) [
-			'query' => 'wpbs_popups_query'
+			'query' => implode( '_', [ 'wpbs_popups_query', get_queried_object_id() ] )
 		];
 
 		WPBS_CPT::register( $this->singular, $this->plural, self::$slug, [

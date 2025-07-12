@@ -1,9 +1,7 @@
 <?php
 
 
-class WPBS_Taxonomy {
-
-	private static WPBS_Taxonomy $instance;
+final class WPBS_Taxonomy {
 
 	private function __construct() {
 
@@ -11,7 +9,11 @@ class WPBS_Taxonomy {
 
 	public static function register( string $singular, string $plural, string|array $cpt, string|bool $slug = false, array|bool $args = [], array|bool $labels = [] ): void {
 
-		$slug = ( $slug ?? false ) ?: sanitize_title( $singular );
+		if ( empty( $singular ) || empty( $plural ) || empty( $cpt ) ) {
+			return;
+		}
+
+		$slug = sanitize_title( $slug ?: $singular );
 
 		$default_labels = [
 			'name'              => $plural,
@@ -45,21 +47,10 @@ class WPBS_Taxonomy {
 
 		$args = is_array( $args ) ? array_merge( $default_args, array_filter( $args ) ) : $default_args;
 
-		foreach ( (array) $cpt as $cpt_slug ) {
-			register_taxonomy_for_object_type( $slug, $cpt_slug );
-		}
-
 		$taxonomy_object = register_taxonomy( $slug, (array) $cpt, $args );
 
 
 	}
 
-	public static function init(): WPBS_Taxonomy {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new WPBS_Taxonomy();
-		}
-
-		return self::$instance;
-	}
 
 }

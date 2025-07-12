@@ -14,15 +14,13 @@ $grid      = $gallery['grid'] ?? false;
 $loop = WPBS_Media_Gallery::loop( $card_block, $settings );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class'     => implode( ' ', array_filter( [
+	'class' => implode( ' ', array_filter( [
 		'wpbs-media-gallery-container loop-container',
 		$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap relative z-20',
 		$attributes['uniqueId'] ?? null,
 		! empty( $grid['masonry'] ) ? 'masonry' : null,
-	] ) ),
-	'data-card' => json_encode( $loop->card ),
+	] ) )
 ] );
-
 
 ?>
 

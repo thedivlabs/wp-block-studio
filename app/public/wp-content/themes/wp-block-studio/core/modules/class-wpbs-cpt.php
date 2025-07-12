@@ -1,19 +1,10 @@
 <?php
 
-class WPBS_CPT {
+final class WPBS_CPT {
 
-	private static WPBS_CPT $instance;
 
 	private function __construct() {
 
-	}
-
-	public static function init(): WPBS_CPT {
-		if ( empty( self::$instance ) ) {
-			self::$instance = new WPBS_CPT();
-		}
-
-		return self::$instance;
 	}
 
 	public static function register( string $singular, string $plural, $slug = false, $args = [], $labels = [], bool $options_page = false, bool $search = false, bool $redirect_single = false, bool $public = true ): void {

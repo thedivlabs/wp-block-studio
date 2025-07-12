@@ -159,8 +159,6 @@ class WPBS {
 		WPBS_WP::init();
 		WPBS_Blocks::init();
 		WPBS_Style::init();
-		WPBS_CPT::init();
-		WPBS_Taxonomy::init();
 		WPBS_Popup::init();
 
 		self::init_classes( 'core/components' );

@@ -5,26 +5,28 @@ const {state} = store('wpbs/media-gallery', {
     actions: {
         init: () => {
 
-            const {ref: grid} = getElement();
+            const {ref: element} = getElement();
             const context = getContext();
 
             const {settings, slider: swiper_args} = context;
 
-            const {is_last, gallery_id} = settings;
+            const {gallery_id} = settings;
 
             if (!!settings?.is_slider) {
-                WPBS.slider.observe(grid, swiper_args);
+                WPBS.slider.observe(element, swiper_args);
             }
 
-            WPBS.setMasonry(grid);
+            WPBS.setMasonry(element);
 
-            WPBS.gridDividers(grid, context?.grid ?? {});
+            WPBS.gridDividers(element, context?.grid, context?.uniqueId);
+
+            console.log(context);
 
 
-            grid.addEventListener('click', (event) => {
+            element.addEventListener('click', (event) => {
 
 
-                if (grid.classList.contains('--lightbox')) {
+                if (element.classList.contains('--lightbox')) {
                     const card = event.target.closest('.wpbs-lightbox-card');
 
                     if (card) {
@@ -93,7 +95,7 @@ const {state} = store('wpbs/media-gallery', {
                         container.append(...newNodes.body.childNodes);
                     }
 
-                    WPBS.gridDividers(gallery, context);
+                    WPBS.gridDividers(gallery, context?.grid, context?.uniqueId);
                     WPBS.setMasonry(gallery);
 
                     [...gallery.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));

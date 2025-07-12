@@ -36,31 +36,26 @@ class WPBS_Theme {
 
     }
 
-    gridDividers(element, context) {
+    gridDividers(element, args = {}, uniqueId = false) {
 
-        if (!element || !context) {
+        if (!element || !uniqueId) {
             return;
         }
 
-        const {uniqueId, divider} = context;
+        const {divider} = args;
 
-        console.log(context);
-        console.log(element);
-
-
-        const colMobile = parseInt(context?.['columns-mobile'] ?? 1);
-        const colSmall = parseInt(context?.['columns-small'] ?? 2);
-        const colLarge = parseInt(context?.['columns-large'] ?? 3);
+        const colMobile = parseInt(args?.['columns-mobile'] ?? '1');
+        const colSmall = parseInt(args?.['columns-small'] ?? '2');
+        const colLarge = parseInt(args?.['columns-large'] ?? '3');
 
         const {breakpoints} = WPBS?.settings ?? {};
 
-        const breakpointLarge = breakpoints[context?.['breakpoint-large'] ?? 'lg'];
-        const breakpointSmall = breakpoints[context?.['breakpoint-small'] ?? 'sm'];
+        const breakpointLarge = breakpoints[args?.['breakpoint-large'] ?? 'lg'];
+        const breakpointSmall = breakpoints[args?.['breakpoint-small'] ?? 'sm'];
 
         if (!divider) {
             return;
         }
-
 
         const container = element.querySelector(':scope > .loop-container');
 
@@ -81,6 +76,7 @@ class WPBS_Theme {
                 count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
             }
         }
+        
 
         const styleCss = [
             '@media screen and (width < ' + breakpointSmall + ') {',

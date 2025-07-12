@@ -6,13 +6,12 @@ const {state} = store('wpbs/layout-grid', {
         init: () => {
 
             const {ref: element} = getElement();
-            const data = JSON.parse(element.querySelector('script.wpbs-args')?.innerHTML ?? '{}');
 
             const context = getContext();
-            
+
             WPBS.setMasonry(element);
 
-            WPBS.gridDividers(element, context);
+            WPBS.gridDividers(element, context, context?.uniqueId);
 
 
         },
@@ -26,6 +25,7 @@ const {state} = store('wpbs/layout-grid', {
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .loop-container');
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.textContent ?? '{}');
+            const context = getContext();
 
             const {query, card} = data;
 
@@ -72,7 +72,7 @@ const {state} = store('wpbs/layout-grid', {
                         container.append(...newNodes.body.childNodes);
                     }
 
-                    WPBS.gridDividers(grid, data);
+                    WPBS.gridDividers(grid, context, context?.uniqueId);
                     WPBS.setMasonry(grid);
 
                     [...grid.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));

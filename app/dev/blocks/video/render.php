@@ -2,8 +2,9 @@
 
 WPBS_Blocks::render_block_styles( $attributes ?? false, '.wpbs-video__media:after {background: var(--overlay, rgba(0, 0, 0, .5));}' );
 
-$settings    = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
-$is_lightbox = ! empty( $block->context['lightbox'] ) || ! empty( $attributes['wpbs-video']['lightbox'] );
+$settings     = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
+$is_lightbox  = ! empty( $attributes['wpbs-video']['lightbox'] );
+$is_thumbnail = ! empty( $block->context['thumbnail'] );
 
 $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 	'id_only' => true
@@ -12,8 +13,9 @@ $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
 		'wpbs-video',
-		! $is_lightbox ? '--disabled h-full' : '--lightbox aspect-video',
-		'flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer',
+		! $is_thumbnail ? '--disabled h-full' : 'h-auto',
+		$is_lightbox ? '--lightbox' : null,
+		'flex items-center justify-center relative w-full min-h-32 overflow-hidden cursor-pointer',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style'         => implode( '; ', array_filter( [

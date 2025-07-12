@@ -3,7 +3,7 @@ export default class Video {
     static init() {
 
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.wpbs-video.--lightbox:not(.--disabled)')) {
+            if (e.target.closest('.wpbs-video:not(.--disabled)')) {
                 this.clickHandler(e.target.closest('.wpbs-video'));
             }
         });
@@ -12,7 +12,7 @@ export default class Video {
 
     static clickHandler(element) {
 
-        const {title, vid, platform, modal} = element.dataset;
+        const {title, vid, platform, lightbox} = element.dataset;
 
         if (element.classList.contains('active')) {
             return false;
@@ -30,10 +30,9 @@ export default class Video {
             'vimeo': '',
         }
 
-        const isModal = !!modal;
         const classNames = [
             'divlabs-video-player',
-            isModal ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
+            !!lightbox ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
         ].filter(x => x).join(' ');
 
         const player = jQuery('<iframe />', {
@@ -57,7 +56,7 @@ export default class Video {
         }).append(player);
 
 
-        if (isModal) {
+        if (!!lightbox) {
             WPBS.modals.toggle_modal(false, {
                 template: component.get(0)
             });

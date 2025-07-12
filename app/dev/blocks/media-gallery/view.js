@@ -20,14 +20,10 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.gridDividers(element, context?.grid, context?.uniqueId);
 
-            console.log(context);
-
-
             element.addEventListener('click', (event) => {
 
-
                 if (element.classList.contains('--lightbox')) {
-                    const card = event.target.closest('.wpbs-lightbox-card');
+                    const card = event.target.closest('.loop-card');
 
                     if (card) {
                         return WPBS.lightbox.toggle({

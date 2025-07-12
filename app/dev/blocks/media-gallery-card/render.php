@@ -22,7 +22,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-index' => intval( $index ?? 0 ),
 ] );
 
-
 ?>
 
 

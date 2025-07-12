@@ -143,7 +143,7 @@ class WPBS_Media_Gallery {
 
 				$media = [
 					...$media,
-					'modal' => false
+					'lightbox' => false
 				];
 
 				$block_template['attrs']['uniqueId'] = $card['attrs']['uniqueId'] ?? '';
@@ -276,6 +276,7 @@ class WPBS_Media_Gallery {
 		$page_number = $request->get_param( 'page_number' );
 		$page_size   = $request->get_param( 'page_size' );
 		$card        = $request->get_param( 'card' );
+		$lightbox    = $request->get_param( 'lightbox' );
 
 		if ( empty( $gallery_id ) ) {
 			return new WP_Error( 'error', 'Something went wrong.', [
@@ -287,6 +288,7 @@ class WPBS_Media_Gallery {
 			'page_size'   => $page_size,
 			'gallery_id'  => $gallery_id,
 			'video_first' => ! empty( $video_first ),
+			'lightbox'    => ! empty( $lightbox ),
 		], $page_number );
 
 

@@ -1,7 +1,7 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
 
-const {state} = store('wpbs/grid', {
+const {state} = store('wpbs/layout-grid', {
     actions: {
         init: () => {
 
@@ -9,8 +9,6 @@ const {state} = store('wpbs/grid', {
             const data = JSON.parse(grid.querySelector('script.wpbs-args')?.innerHTML ?? '{}');
 
             const {is_last} = data;
-
-            console.log(grid);
 
             WPBS.setMasonry(grid);
 
@@ -32,8 +30,6 @@ const {state} = store('wpbs/grid', {
 
             const {ref: element} = getElement();
             const parser = new DOMParser();
-
-            console.log(element);
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .loop-container');

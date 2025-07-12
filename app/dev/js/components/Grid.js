@@ -64,7 +64,13 @@ export const GridControls = ({attributes, setAttributes}) => {
     const grid = attributes?.['wpbs-grid'] ?? {};
 
     const updateSettings = useCallback((newValue) => {
-        setAttributes({'wpbs-grid': {...grid, ...newValue, ...{loop: (attributes?.className ?? '').includes('is-style-loop')}}});
+        setAttributes({
+            'wpbs-grid': {
+                ...grid,
+                ...newValue,
+                loop: (attributes?.className ?? '').includes('is-style-loop')
+            }
+        });
     }, [grid, setAttributes]);
 
 

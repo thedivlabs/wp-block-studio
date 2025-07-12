@@ -55,7 +55,10 @@ registerBlockType(metadata.name, {
             setAttributes({
                 'wpbs-media-gallery-settings': cleanObject({
                     uniqueId: uniqueId,
-                    grid: attributes?.['wpbs-grid'],
+                    grid: {
+                        ...attributes?.['wpbs-grid'],
+                        uniqueId: uniqueId,
+                    },
                     slider: attributes?.['wpbs-swiper-args'],
                     settings: {
                         ...attributes?.['wpbs-media-gallery'],

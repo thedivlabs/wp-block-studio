@@ -42,18 +42,20 @@ class WPBS_Theme {
             return;
         }
 
-        const {uniqueId, grid} = context;
+        const {uniqueId, divider} = context;
 
-        const {divider} = context;
+        console.log(context);
+        console.log(element);
 
-        const colMobile = parseInt(grid?.['columns-mobile'] ?? 1);
-        const colSmall = parseInt(grid?.['columns-small'] ?? 2);
-        const colLarge = parseInt(grid?.['columns-large'] ?? 3);
+
+        const colMobile = parseInt(context?.['columns-mobile'] ?? 1);
+        const colSmall = parseInt(context?.['columns-small'] ?? 2);
+        const colLarge = parseInt(context?.['columns-large'] ?? 3);
 
         const {breakpoints} = WPBS?.settings ?? {};
 
-        const breakpointLarge = breakpoints[grid?.['breakpoint-large'] ?? 'lg'];
-        const breakpointSmall = breakpoints[grid?.['breakpoint-small'] ?? 'sm'];
+        const breakpointLarge = breakpoints[context?.['breakpoint-large'] ?? 'lg'];
+        const breakpointSmall = breakpoints[context?.['breakpoint-small'] ?? 'sm'];
 
         if (!divider) {
             return;

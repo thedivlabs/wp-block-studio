@@ -13,7 +13,7 @@ $video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'         => implode( ' ', array_filter( [
 		'wpbs-video',
-		! $is_thumbnail ? '--disabled h-full' : 'h-auto',
+		$is_thumbnail ? '--disabled h-full' : 'h-auto aspect-video',
 		$is_lightbox ? '--lightbox' : null,
 		'flex items-center justify-center relative w-full min-h-32 overflow-hidden cursor-pointer',
 		$attributes['uniqueId'] ?? ''

@@ -21,7 +21,7 @@
     }
   },
   "parent": [
-    "wpbs/layout-grid"
+    "wpbs/layout-grid-container"
   ],
   "providesContext": {
     "wpbs/postId": "postId",

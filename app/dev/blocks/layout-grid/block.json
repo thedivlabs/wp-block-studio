@@ -12,7 +12,7 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/layout-grid-card",
+    "wpbs/layout-element",
     "wpbs/layout-grid-container",
     "wpbs/pagination-button",
     "core/query-pagination"

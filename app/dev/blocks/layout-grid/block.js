@@ -68,12 +68,12 @@ registerBlockType(metadata.name, {
             className: classNames(attributes)
         });
 
-        const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-layout-grid__container relative z-20'
-        }, {
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
             allowedBlocks: [
-                "wpbs/layout-grid-card",
-                "core/query-pagination"
+                "wpbs/layout-element",
+                "wpbs/layout-grid-container",
+                "wpbs/pagination-button",
+                "core/query-pagination",
             ]
         });
 
@@ -117,7 +117,7 @@ registerBlockType(metadata.name, {
                 />
 
                 <div {...blockProps}>
-                    <div {...innerBlocksProps} />
+                    {innerBlocksProps.children}
                     <BackgroundElement attributes={attributes} editor={true}/>
                 </div>
 
@@ -129,7 +129,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
-            'data-wp-interactive': 'wpbs/layout-grid',
+            'data-wp-interactive': 'wpbs/grid',
             'data-wp-init': 'actions.init',
             'data-wp-context': JSON.stringify({
                 uniqueId: props.attributes?.uniqueId,
@@ -137,9 +137,12 @@ registerBlockType(metadata.name, {
             })
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
-
-        return <div {...innerBlocksProps} />;
+        return (
+            <div {...blockProps}>
+                <InnerBlocks.Content/>
+                <BackgroundElement attributes={props.attributes} editor={false}/>
+            </div>
+        );
     }
 })
 

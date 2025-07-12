@@ -3,7 +3,13 @@
   "title": "Grid Button",
   "description": "Display a pagination button",
   "selectors": {
-    "root": ".wpbs-pagination-button"
+    "root": ".wpbs-pagination-button",
+    "spacing": {
+      "root": ".wpbs-pagination-button",
+      "padding": ".wpbs-pagination-button > a"
+    },
+    "color": ".wpbs-pagination-button > a",
+    "border": ".wpbs-pagination-button > a"
   },
   "usesContext": [
     "settings"
@@ -29,6 +35,7 @@
     }
   ],
   "supports": {
+    "interactivity": true,
     "color": {
       "background": true,
       "text": true,

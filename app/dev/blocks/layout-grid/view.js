@@ -10,6 +10,8 @@ const {state} = store('wpbs/grid', {
 
             const {is_last} = data;
 
+            console.log(grid);
+
             WPBS.setMasonry(grid);
 
             WPBS.gridDividers(grid, data);
@@ -24,10 +26,14 @@ const {state} = store('wpbs/grid', {
 
 
         },
-        pagination: async () => {
+        pagination: async (event) => {
+
+            event.preventDefault();
 
             const {ref: element} = getElement();
             const parser = new DOMParser();
+
+            console.log(element);
 
             const grid = element.closest('.wpbs-layout-grid');
             const container = grid.querySelector(':scope > .loop-container');
@@ -47,7 +53,7 @@ const {state} = store('wpbs/grid', {
                 query: query,
                 page: grid.dataset.page,
             };
-            
+
             WPBS.loader.toggle();
 
             await fetch(endpoint, {

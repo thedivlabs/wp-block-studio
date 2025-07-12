@@ -104,7 +104,7 @@ class WPBS_CPT {
 		) {
 			acf_add_options_page( array(
 				'page_title'  => implode( ' ', array_filter( [
-					$labels['plural_name'] ?? $labels['name'] ?? null
+					$labels['plural'] ?? $labels['name'] ?? null
 				] ) ),
 				'menu_title'  => 'Options',
 				'menu_slug'   => implode( '-', [

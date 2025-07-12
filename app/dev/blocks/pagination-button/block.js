@@ -37,7 +37,7 @@ registerBlockType(metadata.name, {
         });
 
         return <div {...blockProps}>
-            <a href={'#'} className={'cursor-pointer'}>
+            <a href={'#'} className={'cursor-pointer no-underline block'}>
                 {button_label}
             </a>
         </div>
@@ -53,7 +53,7 @@ registerBlockType(metadata.name, {
         return <div {...blockProps}>
             <a href={'#'}
                data-wp-on-async--click={'actions.pagination'}
-               className={'loop-button cursor-pointer'}
+               className={'loop-button cursor-pointer no-underline block'}
                role={"button"}
                tabIndex={0}
                aria-label={label}

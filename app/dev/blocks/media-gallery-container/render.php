@@ -20,7 +20,7 @@ $page             = intval( $block->context['wpbs/page'] ?? 1 );
 $is_slider        = ! empty( $gallery_settings['is_slider'] );
 $transient_id     = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];
 $media            = get_transient( $transient_id );
-$page_size        = intval( $gallery_settings['page_size'] ?? 1 ) ?: 1;
+$page_size        = intval( $gallery_settings['page_size'] ?? 0 );
 $total_pages      = ceil( count( $media ) / $page_size );
 $is_last          = $page >= $total_pages;
 

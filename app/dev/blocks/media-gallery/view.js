@@ -16,7 +16,6 @@ const {state} = store('wpbs/media-gallery', {
             }
 
             const is_slider = gallery?.type === 'slider';
-            const gallery_id = gallery?.gallery_id ?? false;
 
             if (!!is_slider) {
                 WPBS.slider.observe(element, swiper_args);
@@ -121,9 +120,6 @@ const {state} = store('wpbs/media-gallery', {
                     if (!!gallery?.masonry) {
                         WPBS.setMasonry(container);
                     }
-
-
-                    console.log([...container.querySelectorAll('[data-src],[data-srcset]')]);
 
                     [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
 

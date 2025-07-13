@@ -488,32 +488,6 @@ class WPBS {
 		return $template;
 	}
 
-	public static function sanitize_block_template( $block ): array {
-
-		$counter = 0;
-
-		return self::sanitize_block_template_recursive( $block, $counter );
-
-	}
-
-	private static function sanitize_block_template_recursive( $block, &$counter = 0, $max_blocks = 30 ): array {
-		if ( ++ $counter > $max_blocks ) {
-			return [];
-		}
-
-		return [
-			'blockName'    => $block['blockName'] ?? '',
-			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
-			'innerBlocks'  => array_map( function ( $b ) use ( &$counter, $max_blocks ) {
-				return self::sanitize_block_template_recursive( $b, $counter, $max_blocks );
-			}, $block['innerBlocks'] ?? [] ),
-			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),
-			'innerContent' => array_map( function ( $item ) {
-				return is_string( $item ) ? wp_kses_post( $item ) : null;
-			}, $block['innerContent'] ?? [] ),
-		];
-	}
-
 	public static function sanitize_query_args( $args ): array {
 		$sanitized = [];
 
@@ -577,15 +551,30 @@ class WPBS {
 
 	}
 
-	public static function recursive_sanitize( $input ) {
+	public static function sanitize_block_template( $block, &$counter = 0, $max_blocks = 30 ): array {
+		if ( ++ $counter > $max_blocks ) {
+			return [];
+		}
 
+		return [
+			'blockName'    => $block['blockName'] ?? '',
+			'attrs'        => array_map( [ __CLASS__, 'recursive_sanitize' ], $block['attrs'] ?? [] ),
+			'innerBlocks'  => array_map( function ( $b ) use ( &$counter, $max_blocks ) {
+				return self::sanitize_block_template( $b, $counter, $max_blocks );
+			}, $block['innerBlocks'] ?? [] ),
+			'innerHTML'    => wp_kses_post( $block['innerHTML'] ?? '' ),          // Allow safe HTML
+			'innerContent' => array_map( function ( $item ) {
+				return is_string( $item ) ? wp_kses_post( $item ) : null;          // Allow safe HTML
+			}, $block['innerContent'] ?? [] ),
+		];
+	}
+
+	public static function recursive_sanitize( $input ) {
 		if ( is_array( $input ) ) {
 			$sanitized = [];
 
 			foreach ( $input as $key => $value ) {
-
-				$sanitized_key = is_string( $key ) ? sanitize_text_field( $key ) : $key;
-
+				$sanitized_key               = is_string( $key ) ? sanitize_text_field( $key ) : $key;
 				$sanitized[ $sanitized_key ] = self::recursive_sanitize( $value );
 			}
 
@@ -603,8 +592,10 @@ class WPBS {
 		} elseif ( is_bool( $input ) ) {
 			return (bool) $input;
 
-		} else {
+		} elseif ( is_null( $input ) ) {
+			return null;
 
+		} else {
 			return $input;
 		}
 	}

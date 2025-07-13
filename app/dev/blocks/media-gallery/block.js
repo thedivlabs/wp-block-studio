@@ -18,9 +18,8 @@ import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGa
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
 import {cleanObject} from "Includes/helper"
 
-function blockClassnames(attributes = {}) {
+function blockClassnames(attributes = {}, isSlider = false) {
 
-    const isSlider = (attributes?.className ?? '').includes('is-style-slider');
 
     return [
         'wpbs-media-gallery h-max',
@@ -44,7 +43,11 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const isSlider = (attributes?.className ?? '').includes('is-style-slider');
+        const styleType = useMemo(() => {
+            return (attributes?.className?.match(/is-style-(\S+)/) || [])[1] || 'default';
+        }, [attributes?.className]);
+
+        const isSlider = styleType === 'slider';
 
         const swiperRef = useRef(null);
 
@@ -55,18 +58,17 @@ registerBlockType(metadata.name, {
             setAttributes({
                 'wpbs-media-gallery-settings': cleanObject({
                     uniqueId: uniqueId,
+                    type: styleType,
                     grid: {
-                        ...attributes?.['wpbs-grid'],
-                        uniqueId: uniqueId,
+                        ...attributes?.['wpbs-grid']
                     },
                     slider: attributes?.['wpbs-swiper-args'],
                     settings: {
-                        ...attributes?.['wpbs-media-gallery'],
-                        is_slider: (attributes?.className ?? '')?.includes('is-style-slider'),
+                        ...attributes?.['wpbs-media-gallery']
                     },
                 })
             });
-        }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], attributes?.className])
+        }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], styleType])
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 

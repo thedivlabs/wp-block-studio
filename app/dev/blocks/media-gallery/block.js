@@ -58,13 +58,13 @@ registerBlockType(metadata.name, {
             setAttributes({
                 'wpbs-media-gallery-settings': cleanObject({
                     uniqueId: uniqueId,
-                    type: styleType,
                     grid: {
                         ...attributes?.['wpbs-grid']
                     },
                     slider: attributes?.['wpbs-swiper-args'],
                     gallery: {
-                        ...attributes?.['wpbs-media-gallery']
+                        ...attributes?.['wpbs-media-gallery'],
+                        type: styleType,
                     },
                 })
             });
@@ -118,8 +118,6 @@ registerBlockType(metadata.name, {
             ],
         });
 
-        const settings = attributes?.['wpbs-media-gallery-settings'];
-
         return (
             <>
                 <InspectorControls group="styles">
@@ -140,14 +138,12 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <BlockContextProvider value={{settings}}>
-                    {isSlider ? <SliderComponent
-                        attributes={attributes}
-                        blockProps={blockProps}
-                        innerBlocksProps={innerBlocksProps}
-                        ref={swiperRef}
-                    /> : <div {...innerBlocksProps} />}
-                </BlockContextProvider>
+                {isSlider ? <SliderComponent
+                    attributes={attributes}
+                    blockProps={blockProps}
+                    innerBlocksProps={innerBlocksProps}
+                    ref={swiperRef}
+                /> : <div {...innerBlocksProps} />}
 
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}

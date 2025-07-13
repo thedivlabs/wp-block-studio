@@ -29,10 +29,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-container');
 
-        const {gallery = {}} = context?.['wpbs/settings'];
+        const {gallery = {}} = context?.['wpbs/settings'] ?? {};
         const is_slider = gallery?.type === 'slider';
-
-        console.log(context);
 
         const blockProps = {
             className: blockClassnames(attributes, is_slider),
@@ -48,9 +46,7 @@ registerBlockType(metadata.name, {
         return (
             <>
 
-                <BlockContextProvider value={{is_slider}}>
-                    <div {...innerBlocksProps} />
-                </BlockContextProvider>
+                <div {...innerBlocksProps} />
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={{
                     '--grid-col-gap': 'var(--column-gap, 0px)',

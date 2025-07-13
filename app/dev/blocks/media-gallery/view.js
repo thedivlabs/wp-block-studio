@@ -65,12 +65,15 @@ const {state} = store('wpbs/media-gallery', {
             const request = {
                 attributes: {
                     ...containerAttributes,
-                    context: context
+                    context: {
+                        'wpbs/interactive':true,
+                        'wpbs/page':page,
+                        'wpbs/settings':context,
+                        'wpbs/card':card
+                    }
                 },
                 context: 'edit',
             };
-
-            console.log(request);
 
             WPBS.loader.toggle();
 
@@ -86,21 +89,13 @@ const {state} = store('wpbs/media-gallery', {
 
                     console.log(result);
 
-                    return false;
-
                     WPBS.loader.toggle({
                         remove: true
                     });
 
                     const parser = new DOMParser();
-                    const {is_last, content, css} = result ?? {};
 
-                    element.dataset.page = String(parseInt(page) + 1);
-
-                    if (!!is_last || !content) {
-                        button.remove();
-                        // return;
-                    }
+                    element.dataset.page = String(page + 1);
 
                     const newNodes = parser.parseFromString(content, 'text/html');
 

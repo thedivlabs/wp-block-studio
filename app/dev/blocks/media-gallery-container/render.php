@@ -94,7 +94,7 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 <?php
 
-if ( ! empty( $unique_id ) ) {
+if ( ! empty( $unique_id ) && empty( $block->attributes['context'] ) ) {
 	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
 			'card'      => $card_block,
 			'container' => $attributes ?? [],

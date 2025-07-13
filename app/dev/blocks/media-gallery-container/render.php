@@ -17,8 +17,9 @@ $grid_settings    = $settings['grid'] ?? [];
 $slider_settings  = $settings['slider'] ?? [];
 
 $gallery_id = $gallery_settings['gallery_id'];
+$unique_id  = $attributes['uniqueId'] ?? false;
 
-if ( empty( $gallery_id ) ) {
+if ( empty( $gallery_id ) || empty( $unique_id ) ) {
 	return;
 }
 
@@ -28,6 +29,7 @@ $media        = get_transient( $transient_id ) ?: [];
 $page_size    = intval( $gallery_settings['page_size'] ?? 0 );
 $total_pages  = ceil( count( $media ) / $page_size );
 $is_last      = $page >= $total_pages;
+
 
 if ( empty( $media ) ) {
 
@@ -43,8 +45,6 @@ if ( empty( $media ) ) {
 
 }
 
-WPBS::console_log( $block );
-
 if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
 	$offset = ( $page - 1 ) * $page_size;
@@ -55,7 +55,7 @@ if ( ! empty( $page_size ) && ! empty( $media ) ) {
 $classes = [
 	'wpbs-media-gallery-container loop-container',
 	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap relative z-20',
-	$attributes['uniqueId'] ?? null,
+	$unique_id,
 	! empty( $grid_settings['masonry'] ) ? 'masonry' : null,
 ];
 
@@ -68,18 +68,16 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
     <div <?php echo $wrapper_attributes ?>>
 
-		<?php foreach ( $media ?: [] as $k => $media ) {
+		<?php foreach ( $media ?: [] as $k => $media_item ) {
 
 			$block_template                      = $card_block;
 			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
 
 			$new_block = new WP_Block( $block_template, array_filter( [
 				'wpbs/index'    => $k,
-				'wpbs/media'    => $media,
+				'wpbs/media'    => $media_item,
 				'wpbs/settings' => $gallery_settings,
 			] ) );
-
-			$new_block->attributes['media'] = $media;
 
 			echo $new_block->render();
 
@@ -89,16 +87,16 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 			echo '<span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>';
 		} ?>
 
-
     </div>
 
 
 <?php
 
-if ( ! empty( $attributes['uniqueId'] ) ) {
-	add_action( 'wp_footer', function () use ( $card_block, $attributes ) {
-		echo '<script type="application/json" class="' . ( $attributes['uniqueId'] . '-args' ) . '">' . wp_json_encode( array_filter( [
-				'card' => $card_block,
+if ( ! empty( $unique_id ) ) {
+	add_action( 'wp_footer', function () use ( $card_block, $unique_id, $media ) {
+		echo '<script type="application/json" class="' . ( $unique_id . '-args' ) . '">' . wp_json_encode( array_filter( [
+				'card'  => $card_block,
+				'media' => $media,
 			] ) ) . '</script>';
 	} );
 }

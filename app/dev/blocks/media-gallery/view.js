@@ -33,7 +33,7 @@ const {state} = store('wpbs/media-gallery', {
                     if (card) {
                         return WPBS.lightbox.toggle({
                             index: card.dataset.index,
-                            gallery_id: gallery_id,
+                            context: context,
                         })
                     }
                 }

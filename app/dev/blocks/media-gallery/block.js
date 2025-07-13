@@ -118,7 +118,7 @@ registerBlockType(metadata.name, {
             ],
         });
 
-        const settings = attributes?.['wpbs-media-gallery'];
+        const settings = attributes?.['wpbs-media-gallery-settings'];
 
         return (
             <>

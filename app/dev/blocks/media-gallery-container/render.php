@@ -10,11 +10,16 @@ $card_block = WPBS::get_block_template( $block->context['wpbs/card'] ?? array_fi
 $interactive = $block->context['wpbs/interactive'] ?? true;
 
 $page             = intval( $block->context['wpbs/page'] ?? 1 );
-$gallery          = $block->context['wpbs/gallery'] ?? [];
+$gallery          = $block->context['wpbs/settings'] ?? [];
 $type             = $gallery['type'] ?? [];
 $gallery_settings = $gallery['settings'] ?? [];
 $grid_settings    = $gallery['grid'] ?? [];
 $slider_settings  = $gallery['slider'] ?? [];
+
+
+if ( empty( $gallery_settings['gallery_id'] ) ) {
+	return;
+}
 
 $is_slider    = $type == 'slider';
 $transient_id = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];

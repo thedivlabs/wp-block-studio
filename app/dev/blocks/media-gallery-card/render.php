@@ -1,12 +1,10 @@
 <?php
 
-WPBS_Blocks::render_block_styles( $attributes ?? false );
-
 $media       = $block->context['media'] ?? false;
 $index       = $block->context['index'] ?? 0;
-$is_slider   = $block->context['is_slider'] ?? false;
-$gallery     = $block->context['gallery'] ?? false;
-$is_lightbox = ! empty( $gallery['lightbox'] );
+$settings    = $block->context['settings'] ?? false;
+$is_slider   = ! empty( $settings['is_slider'] );
+$is_lightbox = ! empty( $settings['lightbox'] );
 
 if ( empty( $media ) ) {
 	return false;
@@ -29,8 +27,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	<?php
 
 	if ( ! empty( $media['id'] ) || ! empty( $media['poster'] ) ) {
-		echo wp_get_attachment_image( $media['poster'] ?? $media['id'], $gallery['resolution'] ?? 'medium', false, [
-			'loading' => ! empty( $gallery['eager'] ) ? 'eager' : 'lazy',
+		echo wp_get_attachment_image( $media['poster'] ?? $media['id'], $settings['resolution'] ?? 'medium', false, [
+			'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	} else {
@@ -49,3 +47,5 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	?>
 </div>
+
+<?php WPBS_Blocks::render_block_styles( $attributes ?? false ); ?>

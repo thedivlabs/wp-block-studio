@@ -74,8 +74,7 @@ WPBS::console_log( $block ?? false );
 			$new_block = new WP_Block( $block_template, array_filter( [
 				'media'     => $media,
 				'index'     => $k,
-				'is_slider' => $is_slider,
-				'gallery'   => $gallery_settings,
+				'settings'   => $gallery_settings,
 			] ) );
 
 			$new_block->attributes['media'] = $media;

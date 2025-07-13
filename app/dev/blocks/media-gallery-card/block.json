@@ -17,8 +17,7 @@
   "usesContext": [
     "index",
     "media",
-    "gallery",
-    "is_slider"
+    "settings"
   ],
   "supports": {
     "interactivity": true,

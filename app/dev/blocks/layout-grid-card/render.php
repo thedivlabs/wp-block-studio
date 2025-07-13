@@ -1,7 +1,5 @@
 <?php
 
-WPBS_Blocks::render_block_styles( $attributes ?? false );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-layout-grid-card loop-card w-full block relative',

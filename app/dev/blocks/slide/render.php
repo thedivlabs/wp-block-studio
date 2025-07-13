@@ -1,7 +1,5 @@
 <?php
 
-WPBS_Blocks::render_block_styles( $attributes ?? false );
-
 $is_image = str_contains( $attributes['className'] ?? '', 'is-style-image' );
 
 $wrapper_attributes = get_block_wrapper_attributes( [

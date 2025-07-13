@@ -10,19 +10,20 @@ $card_block = WPBS::get_block_template( $block->context['wpbs/card'] ?? array_fi
 $interactive = $block->context['wpbs/interactive'] ?? true;
 
 $page             = intval( $block->context['wpbs/page'] ?? 1 );
-$gallery          = $block->context['wpbs/settings'] ?? [];
+$settings         = $block->context['wpbs/settings'] ?? [];
 $type             = $gallery['type'] ?? [];
-$gallery_settings = $gallery['settings'] ?? [];
-$grid_settings    = $gallery['grid'] ?? [];
-$slider_settings  = $gallery['slider'] ?? [];
+$gallery_settings = $settings['gallery'] ?? [];
+$grid_settings    = $settings['grid'] ?? [];
+$slider_settings  = $settings['slider'] ?? [];
 
+$gallery_id = $gallery_settings['gallery_id'];
 
-if ( empty( $gallery_settings['gallery_id'] ) ) {
+if ( empty( $gallery_id ) ) {
 	return;
 }
 
 $is_slider    = $type == 'slider';
-$transient_id = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];
+$transient_id = TRANSIENT_PREFIX . $gallery_id;
 $media        = get_transient( $transient_id ) ?: [];
 $page_size    = intval( $gallery_settings['page_size'] ?? 0 );
 $total_pages  = ceil( count( $media ) / $page_size );
@@ -30,7 +31,7 @@ $is_last      = $page >= $total_pages;
 
 if ( empty( $media ) ) {
 
-	$fields = WPBS::clean_array( get_field( 'wpbs', $gallery_settings['gallery_id'] ) );
+	$fields = WPBS::clean_array( get_field( 'wpbs', $gallery_id ) );
 
 	if ( ! empty( $gallery_settings['video_first'] ) ) {
 		$media = WPBS::clean_array( [ ...( $fields['video'] ?? [] ), ...( $fields['images'] ?? [] ) ] );
@@ -38,11 +39,11 @@ if ( empty( $media ) ) {
 		$media = WPBS::clean_array( [ ...( $fields['images'] ?? [] ), ...( $fields['video'] ?? [] ) ] );
 	}
 
-	if ( ! empty( $media ) ) {
-		set_transient( $transient_id, $media, TRANSIENT_EXPIRATION );
-	}
+	set_transient( $transient_id, $media, TRANSIENT_EXPIRATION );
 
 }
+
+WPBS::console_log( $block );
 
 if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
@@ -101,6 +102,3 @@ if ( ! empty( $attributes['uniqueId'] ) ) {
 			] ) ) . '</script>';
 	} );
 }
-
-
-WPBS_Blocks::render_block_styles( $attributes ?? false );

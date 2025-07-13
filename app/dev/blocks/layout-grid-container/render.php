@@ -1,7 +1,5 @@
 <?php
 
-WPBS_Blocks::render_block_styles( $attributes ?? false );
-
 global $wp_query;
 
 $grid_settings  = WPBS::clean_array( $block->context['wpbs/grid'] ?? [] );

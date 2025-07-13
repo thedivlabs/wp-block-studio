@@ -1,7 +1,5 @@
 <?php
 
-WPBS_Blocks::render_block_styles( $attributes ?? false );
-
 $settings = $attributes['wpbs-figure'] ?? [];
 
 $is_featured_image = 'featured-image' === ( $settings['type'] ?? false );

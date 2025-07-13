@@ -11,6 +11,18 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
+		add_filter( 'render_block_data', function ( $parsed_block ) {
+			if (
+				isset( $parsed_block['blockName'] ) &&
+				str_starts_with( $parsed_block['blockName'], 'wpbs/' ) &&
+				! empty( $parsed_block['attrs']['wpbs-css'] )
+			) {
+				WPBS_Blocks::render_block_styles( $parsed_block['attrs'] );
+			}
+
+			return $parsed_block;
+		}, 10 );
+
 	}
 
 	public static function render_block_styles( $attributes, $custom_css = '' ): void {

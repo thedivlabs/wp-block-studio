@@ -8,17 +8,22 @@ const {state} = store('wpbs/media-gallery', {
             const {ref: element} = getElement();
             const context = getContext();
 
-            const {settings, slider: swiper_args} = context;
+            const {gallery, slider: swiper_args, grid, uniqueId} = context;
 
-            const {gallery_id} = settings;
+            if (!uniqueId) {
+                return;
+            }
 
-            if (!!settings?.is_slider) {
+            const is_slider = gallery?.type === 'slider';
+            const gallery_id = gallery?.gallery_id ?? false;
+
+            if (!!is_slider) {
                 WPBS.slider.observe(element, swiper_args);
             }
 
             WPBS.setMasonry(element);
 
-            WPBS.gridDividers(element, context?.grid, context?.uniqueId);
+            WPBS.gridDividers(element, grid, uniqueId);
 
             element.addEventListener('click', (event) => {
 

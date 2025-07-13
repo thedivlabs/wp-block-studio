@@ -80,28 +80,20 @@ class WPBS_Media_Gallery {
 
 	public function rest_request( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 
-		$gallery = $request->get_param( 'gallery' );
 
-
-		$gallery_id  = $request->get_param( 'gallery_id' );
-		$video_first = $request->get_param( 'video_first' );
-		$page_number = $request->get_param( 'page_number' );
-		$page_size   = $request->get_param( 'page_size' );
 		$card        = $request->get_param( 'card' );
-		$lightbox    = $request->get_param( 'lightbox' );
+		$gallery     = $request->get_param( 'gallery' );
+		$page_number = $request->get_param( 'page_number' );
 
-		if ( empty( $gallery_id ) ) {
+		if ( empty( $gallery['settings']['galleryId'] ) ) {
 			return new WP_Error( 'error', 'Something went wrong.', [
 				'status' => 400
 			] );
 		}
 
-		$loop = self::loop( $card, [
-			'page_size'   => $page_size,
-			'gallery_id'  => $gallery_id,
-			'video_first' => ! empty( $video_first ),
-			'lightbox'    => ! empty( $lightbox ),
-		], $page_number );
+		$container_block = ( new WP_Block( [
+			'blockName' => 'wpbs/media-gallery-container',
+		] ) );
 
 
 		return new WP_REST_Response(

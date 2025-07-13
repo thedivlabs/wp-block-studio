@@ -37,6 +37,9 @@ const {state} = store('wpbs/media-gallery', {
                         })
                     }
                 }
+            }, {
+                once: true,
+                passive: true,
             });
 
 

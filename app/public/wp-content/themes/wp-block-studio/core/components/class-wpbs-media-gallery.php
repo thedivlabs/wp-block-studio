@@ -5,7 +5,6 @@ class WPBS_Media_Gallery {
 	private static WPBS_Media_Gallery $instance;
 
 	private const TRANSIENT_PREFIX = 'wpbs_media_gallery_';
-	private const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 
 	public const SINGULAR = 'Media Gallery';
 	public const PLURAL = 'Media Galleries';
@@ -42,37 +41,6 @@ class WPBS_Media_Gallery {
 
 	}
 
-	private static function parse_acf_data( $field_data ): array {
-
-		if ( ! is_array( $field_data ) ) {
-			return [];
-		}
-
-		return array_values( array_filter( array_map( function ( $media_id ) {
-
-			$attachment_id = absint( $media_id );
-
-			if ( ! $attachment_id || 'attachment' !== get_post_type( $attachment_id ) ) {
-				return null;
-			}
-
-			$src    = wp_get_attachment_image_url( $attachment_id, 'full' );
-			$srcset = wp_get_attachment_image_srcset( $attachment_id, 'full' );
-			$alt    = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
-			$meta   = wp_get_attachment_metadata( $attachment_id ) ?: [];
-
-			return array_filter( [
-				'id'     => $attachment_id,
-				'alt'    => $alt ?: '',
-				'src'    => $src,
-				'srcset' => $srcset,
-				'width'  => $meta['width'] ?? null,
-				'height' => $meta['height'] ?? null,
-			] );
-
-		}, $field_data ) ) );
-	}
-
 	public function init_rest(): void {
 		register_rest_route( 'wpbs/v1', "/media-gallery/",
 			[
@@ -99,11 +67,6 @@ class WPBS_Media_Gallery {
 						'type'              => 'integer',
 						'default'           => 0,
 						'sanitize_callback' => 'absint',
-					],
-					'card_class'  => [
-						'type'              => 'string',
-						'default'           => '',
-						'sanitize_callback' => 'sanitize_text_field',
 					],
 					'video_first' => [
 						'type'    => 'boolean',

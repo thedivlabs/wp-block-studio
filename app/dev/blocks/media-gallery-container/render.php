@@ -29,8 +29,6 @@ $is_slider    = $type == 'slider';
 $transient_id = TRANSIENT_PREFIX . $gallery_id;
 $media        = get_transient( $transient_id ) ?: [];
 $page_size    = intval( $gallery_settings['page_size'] ?? 0 );
-$total_pages  = ceil( count( $media ) / $page_size );
-$is_last      = $page >= $total_pages;
 
 
 if ( empty( $media ) ) {
@@ -47,6 +45,9 @@ if ( empty( $media ) ) {
 
 }
 
+$total_pages = ceil( count( $media ) / $page_size );
+$is_last     = $page >= $total_pages;
+
 if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
 	$offset = ( $page - 1 ) * $page_size;
@@ -57,6 +58,7 @@ if ( ! empty( $page_size ) && ! empty( $media ) ) {
 $classes = array_filter( [
 	'wpbs-media-gallery-container loop-container',
 	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap relative z-20',
+	$is_last ? '--last-page' : null,
 	$unique_id,
 	! empty( $grid_settings['masonry'] ) ? 'masonry' : null,
 ] );
@@ -96,7 +98,6 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 if ( ! empty( $unique_id ) && empty( $block->attributes['context'] ) ) {
 	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
-			'card'      => $card_block,
-			'container' => $attributes ?? [],
+			'card' => $card_block,
 		] ) ) . '</script>';
 }

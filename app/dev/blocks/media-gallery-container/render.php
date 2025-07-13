@@ -1,16 +1,18 @@
 <?php
-print_r( $block->attributes ?? false );
+
 const TRANSIENT_PREFIX     = 'wpbs_media_gallery_';
 const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 
-$card_block = WPBS::get_block_template( $block->context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+$context = $block->attributes['context'] ?? $block->context ?? [];
+
+$card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
 } )[0] ?? false );
 
-$interactive = ( $block->context['wpbs/interactive'] ?? true ) != false;
+$interactive = ( $context['wpbs/interactive'] ?? true ) != false;
 
-$page             = intval( $block->context['wpbs/page'] ?? 1 );
-$settings         = $block->context['wpbs/settings'] ?? [];
+$page             = intval( $context['wpbs/page'] ?? 1 );
+$settings         = $context['wpbs/settings'] ?? [];
 $type             = $gallery['type'] ?? [];
 $gallery_settings = $settings['gallery'] ?? [];
 $grid_settings    = $settings['grid'] ?? [];

@@ -107,20 +107,6 @@ class WPBS_Blocks {
 						'show_in_rest' => true,
 					]
 				],
-				'context'    => [
-					'wpbs/settings' => [
-						'type'    => 'array',
-						'context' => [ 'edit' ],
-					],
-					'wpbs/card'     => [
-						'type'    => 'array',
-						'context' => [ 'edit' ],
-					],
-					'wpbs/page'     => [
-						'type'    => 'integer',
-						'context' => [ 'edit' ],
-					],
-				],
 			];
 
 

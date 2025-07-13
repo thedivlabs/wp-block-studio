@@ -64,13 +64,10 @@ const {state} = store('wpbs/media-gallery', {
 
             const request = {
                 attributes: {
-                    testing: 'QQQQQQ',
                     ...containerAttributes,
+                    context: context
                 },
                 context: 'edit',
-                'wpbs/settings': context,
-                'wpbs/card': card,
-                'wpbs/page': page
             };
 
             console.log(request);

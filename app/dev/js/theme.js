@@ -76,7 +76,7 @@ class WPBS_Theme {
                 count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
             }
         }
-        
+
 
         const styleCss = [
             '@media screen and (width < ' + breakpointSmall + ') {',
@@ -134,15 +134,14 @@ class WPBS_Theme {
 
     }
 
-    setMasonry(grid) {
+    setMasonry(container) {
 
-        if (!'Masonry' in window) {
+        if (!('Masonry' in window)) {
             return;
         }
 
-        if (grid && grid.classList.contains('--masonry')) {
+        if (container) {
 
-            const container = grid.querySelector(':scope > .loop-container');
             const masonryData = Masonry.data(container) || false;
             const gutterSizer = container.querySelector(':scope > .gutter-sizer');
             if (masonryData) {

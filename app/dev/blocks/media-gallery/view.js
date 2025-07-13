@@ -7,6 +7,7 @@ const {state} = store('wpbs/media-gallery', {
 
             const {ref: element} = getElement();
             const context = getContext();
+            const container = element.querySelector(':scope > .wpbs-media-gallery-container');
 
             const {gallery, slider: swiper_args, grid, uniqueId} = context;
 
@@ -21,7 +22,7 @@ const {state} = store('wpbs/media-gallery', {
                 WPBS.slider.observe(element, swiper_args);
             }
 
-            WPBS.setMasonry(element);
+            WPBS.setMasonry(container);
 
             WPBS.gridDividers(element, grid, uniqueId);
 
@@ -56,7 +57,6 @@ const {state} = store('wpbs/media-gallery', {
 
             const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
             const {card} = args;
-            const containerAttributes = args?.container ?? false;
             const page = parseInt(element.dataset?.page ?? 1);
             const next_page = page + 1;
 
@@ -68,7 +68,6 @@ const {state} = store('wpbs/media-gallery', {
 
             const request = {
                 attributes: {
-                    ...containerAttributes,
                     uniqueId: uniqueId,
                     context: {
                         'wpbs/interactive': true,
@@ -101,7 +100,7 @@ const {state} = store('wpbs/media-gallery', {
                     element.dataset.page = String(next_page);
 
 
-                    const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.loop-container');
+                    const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-media-gallery-container');
                     const grid_cards = grid_container.querySelectorAll('.loop-card');
                     const is_last = grid_container.classList.contains('--last-page');
 
@@ -118,16 +117,11 @@ const {state} = store('wpbs/media-gallery', {
                     }
 
                     WPBS.gridDividers(element, grid, uniqueId);
-                    WPBS.setMasonry(element);
+                    WPBS.setMasonry(container);
 
-                    [...element.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
+                    console.log([...container.querySelectorAll('[data-src],[data-srcset]')]);
 
-                    /*if (css) {
-                        const styleTag = document.createElement('style');
-                        styleTag.innerHTML = css;
-                        document.head.appendChild(styleTag);
-                    }*/
-
+                    [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
 
                 })
         },

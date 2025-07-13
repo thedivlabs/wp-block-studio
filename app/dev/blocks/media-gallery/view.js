@@ -117,7 +117,11 @@ const {state} = store('wpbs/media-gallery', {
                     }
 
                     WPBS.gridDividers(element, grid, uniqueId);
-                    WPBS.setMasonry(container);
+
+                    if (!!gallery?.masonry) {
+                        WPBS.setMasonry(container);
+                    }
+
 
                     console.log([...container.querySelectorAll('[data-src],[data-srcset]')]);
 

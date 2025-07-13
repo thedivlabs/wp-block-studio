@@ -7,21 +7,22 @@ $card_block = WPBS::get_block_template( $block->context['wpbs/card'] ?? array_fi
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
 } )[0] ?? false );
 
-$gallery_settings = $block->context['wpbs/gallery'] ?? [];
+$context = $block->context['wpbs/gallery'] ?? [];
 
-if ( empty( $gallery_settings['gallery_id'] ) || empty( $card_block ) ) {
+if ( empty( $context['settings']['gallery_id'] ) || empty( $card_block ) ) {
 	return false;
 }
 
-$grid_settings   = $gallery_settings['grid'] ?? [];
-$slider_settings = $gallery_settings['slider'] ?? [];
-$page            = intval( $block->context['wpbs/page'] ?? 1 );
-$is_slider       = ! empty( $gallery_settings['is_slider'] );
-$transient_id    = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];
-$media           = get_transient( $transient_id );
-$page_size       = intval( $gallery_settings['page_size'] ?? 1 ) ?: 1;
-$total_pages     = ceil( count( $media ) / $page_size );
-$is_last         = $page >= $total_pages;
+$gallery_settings = $context['settings'] ?? [];
+$grid_settings    = $context['grid'] ?? [];
+$slider_settings  = $context['slider'] ?? [];
+$page             = intval( $block->context['wpbs/page'] ?? 1 );
+$is_slider        = ! empty( $gallery_settings['is_slider'] );
+$transient_id     = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];
+$media            = get_transient( $transient_id );
+$page_size        = intval( $gallery_settings['page_size'] ?? 1 ) ?: 1;
+$total_pages      = ceil( count( $media ) / $page_size );
+$is_last          = $page >= $total_pages;
 
 if ( empty( $media ) ) {
 
@@ -39,7 +40,7 @@ if ( empty( $media ) ) {
 
 }
 
-if ( ! empty( $gallery_settings['page_size'] ) && ! empty( $media ) ) {
+if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
 	$offset = ( $page - 1 ) * $page_size;
 	$media  = array_slice( $media, $offset, $page_size, true );

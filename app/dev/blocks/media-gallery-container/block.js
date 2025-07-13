@@ -29,10 +29,6 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-container');
 
-        useEffect(() => {
-            setAttributes({uniqueId: uniqueId});
-        }, [])
-
         const {settings = {}} = context?.['wpbs/settings'];
         const {is_slider = false} = settings;
 

@@ -45,27 +45,35 @@ const {state} = store('wpbs/media-gallery', {
 
             event.preventDefault();
 
-            const {ref: element} = getElement();
-            const parser = new DOMParser();
+            const {ref: button} = getElement();
 
-            const gallery = element.closest('.wpbs-media-gallery');
-            const container = gallery.querySelector(':scope > .loop-container');
+            const element = button.closest('.wpbs-media-gallery');
+            const container = element.querySelector(':scope > .wpbs-media-gallery-container');
             const context = getContext();
 
-            const scriptElement = gallery.querySelector('script.wpbs-media-gallery-args');
-            const card = scriptElement ? JSON.parse(scriptElement.textContent)?.card ?? false : false;
+            const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
+            const card = args?.card ?? false;
+            const containerAttributes = args?.container ?? false;
+            const page = parseInt(element.dataset?.page ?? 1);
 
-            gallery.dataset.page = String(parseInt(gallery.dataset?.page ?? 1) + 1);
+            const {gallery, grid, slider, type, uniqueId} = context;
 
             const nonce = WPBS?.settings?.nonce ?? false;
 
-            const endpoint = '/wp-json/wpbs/v1/media-gallery';
+            const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/media-gallery-container';
 
             const request = {
-                ...context?.settings ?? {},
-                page_number: gallery.dataset.page,
-                card: card,
+                attributes: {
+                    testing: 'QQQQQQ',
+                    ...containerAttributes,
+                },
+                context: 'edit',
+                'wpbs/settings': context,
+                'wpbs/card': card,
+                'wpbs/page': page
             };
+
+            console.log(request);
 
             WPBS.loader.toggle();
 
@@ -79,14 +87,21 @@ const {state} = store('wpbs/media-gallery', {
             }).then(response => response.json())
                 .then(result => {
 
+                    console.log(result);
+
+                    return false;
+
                     WPBS.loader.toggle({
                         remove: true
                     });
 
+                    const parser = new DOMParser();
                     const {is_last, content, css} = result ?? {};
 
+                    element.dataset.page = String(parseInt(page) + 1);
+
                     if (!!is_last || !content) {
-                        element.remove();
+                        button.remove();
                         // return;
                     }
 
@@ -96,10 +111,10 @@ const {state} = store('wpbs/media-gallery', {
                         container.append(...newNodes.body.childNodes);
                     }
 
-                    WPBS.gridDividers(gallery, context?.grid, context?.uniqueId);
-                    WPBS.setMasonry(gallery);
+                    WPBS.gridDividers(element, context?.grid, context?.uniqueId);
+                    WPBS.setMasonry(element);
 
-                    [...gallery.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
+                    [...element.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
 
                     if (css) {
                         const styleTag = document.createElement('style');

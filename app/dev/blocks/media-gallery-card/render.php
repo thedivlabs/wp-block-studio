@@ -4,7 +4,7 @@ $media       = $block->context['wpbs/media'] ?? false;
 $index       = $block->context['wpbs/index'] ?? 0;
 $settings    = $block->context['wpbs/settings'] ?? false;
 $is_slider   = 'slider' == ( $settings['type'] ?? false );
-$is_lightbox = ! empty( $settings['lightbox'] );
+$is_lightbox = ! empty( $settings['gallery']['lightbox'] );
 
 if ( empty( $media ) ) {
 	return false;

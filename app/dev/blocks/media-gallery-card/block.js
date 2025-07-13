@@ -43,8 +43,8 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, context = {}} = props;
 
-        const {gallery = {}} = context?.['wpbs/settings'] ?? {};
-        const is_slider = gallery?.type === 'slider';
+        const {type} = context?.['wpbs/settings'] ?? {};
+        const is_slider = type === 'slider';
 
         const blockProps = useBlockProps({
             className: blockClassnames(attributes, is_slider),

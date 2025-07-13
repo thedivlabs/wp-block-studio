@@ -1,5 +1,5 @@
 <?php
-
+print_r( $block->attributes ?? false );
 const TRANSIENT_PREFIX     = 'wpbs_media_gallery_';
 const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 
@@ -7,7 +7,7 @@ $card_block = WPBS::get_block_template( $block->context['wpbs/card'] ?? array_fi
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
 } )[0] ?? false );
 
-$interactive = $block->context['wpbs/interactive'] ?? true;
+$interactive = ( $block->context['wpbs/interactive'] ?? true ) != false;
 
 $page             = intval( $block->context['wpbs/page'] ?? 1 );
 $settings         = $block->context['wpbs/settings'] ?? [];
@@ -17,7 +17,7 @@ $grid_settings    = $settings['grid'] ?? [];
 $slider_settings  = $settings['slider'] ?? [];
 
 $gallery_id = $gallery_settings['gallery_id'];
-$unique_id  = $attributes['uniqueId'] ?? false;
+$unique_id  = $attributes['uniqueId'] ?? null;
 
 if ( empty( $gallery_id ) || empty( $unique_id ) ) {
 	return;
@@ -52,12 +52,12 @@ if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
 }
 
-$classes = [
+$classes = array_filter( [
 	'wpbs-media-gallery-container loop-container',
 	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap relative z-20',
 	$unique_id,
 	! empty( $grid_settings['masonry'] ) ? 'masonry' : null,
-];
+] );
 
 $wrapper_attributes        = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( $classes ) )
@@ -76,7 +76,7 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 			$new_block = new WP_Block( $block_template, array_filter( [
 				'wpbs/index'    => $k,
 				'wpbs/media'    => $media_item,
-				'wpbs/settings' => $gallery_settings,
+				'wpbs/settings' => $settings,
 			] ) );
 
 			echo $new_block->render();
@@ -93,10 +93,8 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 <?php
 
 if ( ! empty( $unique_id ) ) {
-	add_action( 'wp_footer', function () use ( $card_block, $unique_id, $media ) {
-		echo '<script type="application/json" class="' . ( $unique_id . '-args' ) . '">' . wp_json_encode( array_filter( [
-				'card'  => $card_block,
-				'media' => $media,
-			] ) ) . '</script>';
-	} );
+	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
+			'card'      => $card_block,
+			'container' => $attributes ?? [],
+		] ) ) . '</script>';
 }

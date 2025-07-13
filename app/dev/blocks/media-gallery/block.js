@@ -58,13 +58,13 @@ registerBlockType(metadata.name, {
             setAttributes({
                 'wpbs-media-gallery-settings': cleanObject({
                     uniqueId: uniqueId,
+                    type: styleType,
                     grid: {
                         ...attributes?.['wpbs-grid']
                     },
                     slider: attributes?.['wpbs-swiper-args'],
                     gallery: {
-                        ...attributes?.['wpbs-media-gallery'],
-                        type: styleType,
+                        ...attributes?.['wpbs-media-gallery']
                     },
                 })
             });

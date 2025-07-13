@@ -95,6 +95,7 @@ class WPBS_Blocks {
 				continue;
 			}
 
+
 			$args = [
 				'attributes' => [
 					'wpbs-css'     => [
@@ -105,7 +106,21 @@ class WPBS_Blocks {
 						'type'         => 'object',
 						'show_in_rest' => true,
 					]
-				]
+				],
+				'context'    => [
+					'wpbs/settings' => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+					],
+					'wpbs/card'     => [
+						'type'    => 'array',
+						'context' => [ 'edit' ],
+					],
+					'wpbs/page'     => [
+						'type'    => 'integer',
+						'context' => [ 'edit' ],
+					],
+				],
 			];
 
 
@@ -115,7 +130,7 @@ class WPBS_Blocks {
 
 			}
 
-			$args = array_merge_recursive( [], $block_object, array_filter( $args ?? [] ) );
+			$args = array_merge_recursive( [], array_filter( $args ?? [] ), $block_object );
 
 			$block = register_block_type( $block_dir, $args );
 		}

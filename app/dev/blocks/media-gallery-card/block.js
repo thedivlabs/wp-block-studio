@@ -19,7 +19,7 @@ import {
 
 function blockClassnames(attributes = {}, is_slider = false) {
     return [
-        'wpbs-media-gallery-card',
+        'wpbs-media-gallery-card loop-card',
         'w-full block relative',
         !!is_slider ? 'swiper-slide' : 'loop-card',
         attributes?.uniqueId ?? '',
@@ -44,7 +44,7 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, context = {}} = props;
 
         const {is_slider = {}} = context;
-        
+
         const blockProps = useBlockProps({
             className: blockClassnames(attributes, is_slider),
         });

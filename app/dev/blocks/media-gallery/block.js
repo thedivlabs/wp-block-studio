@@ -63,7 +63,7 @@ registerBlockType(metadata.name, {
                         ...attributes?.['wpbs-grid']
                     },
                     slider: attributes?.['wpbs-swiper-args'],
-                    settings: {
+                    gallery: {
                         ...attributes?.['wpbs-media-gallery']
                     },
                 })

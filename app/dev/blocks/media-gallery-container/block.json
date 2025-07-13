@@ -15,9 +15,10 @@
     "wpbs/media-gallery-card"
   ],
   "usesContext": [
+    "wpbs/interactive",
     "wpbs/page",
-    "wpbs/card",
-    "wpbs/gallery"
+    "wpbs/settings",
+    "wpbs/card"
   ],
   "supports": {
     "layout": false,

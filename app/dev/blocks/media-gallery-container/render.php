@@ -7,22 +7,21 @@ $card_block = WPBS::get_block_template( $block->context['wpbs/card'] ?? array_fi
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
 } )[0] ?? false );
 
-$context = $block->context['wpbs/gallery'] ?? [];
+$interactive = $block->context['wpbs/interactive'] ?? true;
 
-if ( empty( $context['settings']['gallery_id'] ) || empty( $card_block ) ) {
-	return false;
-}
-
-$gallery_settings = $context['settings'] ?? [];
-$grid_settings    = $context['grid'] ?? [];
-$slider_settings  = $context['slider'] ?? [];
 $page             = intval( $block->context['wpbs/page'] ?? 1 );
-$is_slider        = ! empty( $gallery_settings['is_slider'] );
-$transient_id     = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];
-$media            = get_transient( $transient_id ) ?: [];
-$page_size        = intval( $gallery_settings['page_size'] ?? 0 );
-$total_pages      = ceil( count( $media ) / $page_size );
-$is_last          = $page >= $total_pages;
+$gallery          = $block->context['wpbs/gallery'] ?? [];
+$type             = $gallery['type'] ?? [];
+$gallery_settings = $gallery['settings'] ?? [];
+$grid_settings    = $gallery['grid'] ?? [];
+$slider_settings  = $gallery['slider'] ?? [];
+
+$is_slider    = $type == 'slider';
+$transient_id = TRANSIENT_PREFIX . $gallery_settings['gallery_id'];
+$media        = get_transient( $transient_id ) ?: [];
+$page_size    = intval( $gallery_settings['page_size'] ?? 0 );
+$total_pages  = ceil( count( $media ) / $page_size );
+$is_last      = $page >= $total_pages;
 
 if ( empty( $media ) ) {
 
@@ -58,7 +57,6 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( $classes ) )
 ] );
 
-WPBS::console_log( $block ?? false );
 
 ?>
 
@@ -68,13 +66,11 @@ WPBS::console_log( $block ?? false );
 
 			$block_template                      = $card_block;
 			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
-			$block_template['attrs']['index']    = $k;
-			$block_template['attrs']['media']    = $media;
 
 			$new_block = new WP_Block( $block_template, array_filter( [
-				'media'     => $media,
-				'index'     => $k,
-				'settings'   => $gallery_settings,
+				'wpbs/index'    => $k,
+				'wpbs/media'    => $media,
+				'wpbs/settings' => $gallery_settings,
 			] ) );
 
 			$new_block->attributes['media'] = $media;

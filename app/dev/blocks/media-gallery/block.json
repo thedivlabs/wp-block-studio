@@ -22,7 +22,7 @@
     "wpbs/slider-navigation"
   ],
   "providesContext": {
-    "wpbs/gallery": "wpbs-media-gallery-settings"
+    "wpbs/settings": "wpbs-media-gallery-settings"
   },
   "styles": [
     {

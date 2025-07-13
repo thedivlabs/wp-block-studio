@@ -15,9 +15,9 @@
     "wpbs/media-gallery-container"
   ],
   "usesContext": [
-    "index",
-    "media",
-    "settings"
+    "wpbs/index",
+    "wpbs/media",
+    "wpbs/settings"
   ],
   "supports": {
     "interactivity": true,

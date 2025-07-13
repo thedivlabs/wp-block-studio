@@ -6,7 +6,7 @@ $settings     = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attrib
 $is_lightbox  = ! empty( $attributes['wpbs-video']['lightbox'] );
 $is_thumbnail = ! empty( $block->context['thumbnail'] );
 
-$video_id = WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
+$video_id = WPBS::youtube_image( $settings['link'] ?? '', [
 	'id_only' => true
 ] );
 
@@ -56,7 +56,7 @@ $poster_id = $settings['poster']['id'] ?? $settings['poster'] ?? false;
 				'class'   => $poster_class
 			] );
 		} else {
-			echo WPBS::get_youtube_poster_image( $settings['link'] ?? '', [
+			echo WPBS::youtube_image( $settings['link'] ?? '', [
 				'class' => $poster_class
 			] );
 		}

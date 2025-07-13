@@ -600,7 +600,7 @@ class WPBS {
 		}
 	}
 
-	public static function get_youtube_poster_image( $share_link = '', $args = [] ): string|bool {
+	public static function youtube_image( $share_link = '', $args = [] ): string|bool {
 
 		if ( ! is_string( $share_link ) || empty( $share_link ) ) {
 			return false;

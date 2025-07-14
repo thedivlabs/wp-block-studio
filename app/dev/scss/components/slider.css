@@ -85,7 +85,7 @@
   }
 
 
-  .wpbs-slider-nav.--group {
+  .wpbs-slider-nav {
     @apply
     absolute top-0 left-0 w-full h-full
     ;

@@ -13,7 +13,7 @@ $interactive = ( $context['wpbs/interactive'] ?? true ) != false;
 
 $page             = intval( $context['wpbs/page'] ?? 1 );
 $settings         = $context['wpbs/settings'] ?? [];
-$type             = $gallery['type'] ?? [];
+$type             = $settings['type'] ?? [];
 $gallery_settings = $settings['gallery'] ?? [];
 $grid_settings    = $settings['grid'] ?? [];
 $slider_settings  = $settings['slider'] ?? [];
@@ -30,7 +30,6 @@ $transient_id = TRANSIENT_PREFIX . $gallery_id;
 $media        = get_transient( $transient_id ) ?: [];
 $page_size    = intval( $gallery_settings['page_size'] ?? 0 );
 
-
 if ( empty( $media ) ) {
 
 	$fields = WPBS::clean_array( get_field( 'wpbs', $gallery_id ) );
@@ -45,7 +44,7 @@ if ( empty( $media ) ) {
 
 }
 
-$total_pages = ceil( count( $media ) / $page_size );
+$total_pages = ceil( count( $media ) / ( $page_size ?: 1 ) );
 $is_last     = $page >= $total_pages;
 
 if ( ! empty( $page_size ) && ! empty( $media ) ) {

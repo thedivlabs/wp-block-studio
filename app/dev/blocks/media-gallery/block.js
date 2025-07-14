@@ -18,13 +18,14 @@ import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGa
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
 import {cleanObject} from "Includes/helper"
 
-function blockClassnames(attributes = {}, isSlider = false) {
+function blockClassnames(attributes = {}) {
 
+    const isSlider = attributes?.className?.includes('is-style-slider');
 
     return [
         'wpbs-media-gallery h-max',
         'flex flex-col w-full relative overflow-hidden',
-        isSlider ? 'swiper wpbs-slider' : null,
+        isSlider ? 'swiper wpbs-slider' : '--grid',
         !!attributes?.['wpbs-grid']?.masonry ? 'masonry --masonry' : null,
         !!attributes?.['wpbs-media-gallery']?.lightbox ? '--lightbox' : null,
         attributes?.uniqueId ?? '',

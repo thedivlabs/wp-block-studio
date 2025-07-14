@@ -14,16 +14,19 @@ const {state} = store('wpbs/media-gallery', {
             if (!uniqueId) {
                 return;
             }
-
-            const is_slider = gallery?.type === 'slider';
+            
+            const is_slider = context?.type === 'slider';
 
             if (!!is_slider) {
                 WPBS.slider.observe(element, swiper_args);
             }
 
-            WPBS.setMasonry(container);
+            if (!is_slider) {
+                WPBS.setMasonry(container);
 
-            WPBS.gridDividers(element, grid, uniqueId);
+                WPBS.gridDividers(element, grid, uniqueId);
+            }
+
 
             element.addEventListener('click', (event) => {
 

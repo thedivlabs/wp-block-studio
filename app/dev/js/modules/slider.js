@@ -1,4 +1,4 @@
-import {SWIPER_ARGS_VIEW, SWIPER_ARGS_DEFAULT} from 'Includes/config';
+import {SWIPER_ARGS_VIEW} from 'Includes/config';
 import merge from 'lodash.merge';
 
 
@@ -16,9 +16,9 @@ export default class Slider {
             return;
         }
 
-        const {on, ...safeArgs} = args || {};
+        //const {on, ...safeArgs} = args || {};
 
-        args = merge({}, SWIPER_ARGS_VIEW, safeArgs, {
+        args = merge({}, SWIPER_ARGS_VIEW, args, {
             navigation: {
                 enabled: true,
                 nextEl: element.querySelector('.wpbs-slider-btn--next'),

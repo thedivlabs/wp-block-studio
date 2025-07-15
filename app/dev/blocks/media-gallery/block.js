@@ -116,6 +116,11 @@ registerBlockType(metadata.name, {
             ],
         });
 
+        const buttonSettings = {
+            label: attributes?.['wpbs-media-gallery']?.button_label,
+            enabled: !!attributes?.['wpbs-media-gallery']?.page_size,
+        };
+
         return (
             <>
                 <InspectorControls group="styles">
@@ -136,13 +141,15 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                {isSlider ? <SliderComponent
-                    attributes={attributes}
-                    blockProps={blockProps}
-                    innerBlocksProps={innerBlocksProps}
-                    ref={swiperRef}
-                /> : <div {...innerBlocksProps} />}
+                <BlockContextProvider value={{settings: buttonSettings}}>
+                    {isSlider ? <SliderComponent
+                        attributes={attributes}
+                        blockProps={blockProps}
+                        innerBlocksProps={innerBlocksProps}
+                        ref={swiperRef}
+                    /> : <div {...innerBlocksProps} />}
 
+                </BlockContextProvider>
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-grid', 'wpbs-slider']}

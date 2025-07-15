@@ -9,7 +9,7 @@ import {useInstanceId} from "@wordpress/compose";
 function blockClassNames(attributes = {}, editor = false) {
     return [
         'wpbs-pagination-button w-fit relative z-20',
-        !attributes?.['wpbs-pagination-button']?.page_size ? 'hidden' : 'inline-block',
+        !!attributes?.['wpbs-pagination-button']?.enabled ? 'inline-block' : 'hidden',
     ].filter(x => x).join(' ');
 }
 
@@ -23,17 +23,16 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, context}) => {
 
-        const {gallery: gallery_settings = {}} = context?.['wpbs/settings'] ?? {};
-        const {button_label = 'View More', page_size} = gallery_settings;
+        const {label = 'View More', enabled = true} = context?.['settings'] ?? {};
 
         useEffect(() => {
             setAttributes({
                 'wpbs-pagination-button': {
-                    label: button_label,
-                    page_size: page_size,
+                    label: label,
+                    enabled: enabled,
                 }
             });
-        }, [button_label, page_size]);
+        }, [label, enabled]);
 
         const blockProps = useBlockProps({
             className: blockClassNames(attributes, true),
@@ -41,7 +40,7 @@ registerBlockType(metadata.name, {
 
         return <div {...blockProps}>
             <a href={'#'} className={'cursor-pointer no-underline block'}>
-                {button_label}
+                {label}
             </a>
         </div>
     },

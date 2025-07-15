@@ -56,7 +56,7 @@ export default class Lightbox {
     static toggle(args = {}) {
 
         WPBS.modals.show_modal(false, {
-            template: this.component(args.content),
+            template: this.component(args.cards),
             callback: (modal) => {
                 [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
                     new Swiper(slider_element, this.swiper_args(args.index));
@@ -88,9 +88,9 @@ export default class Lightbox {
 
         const parser = new DOMParser();
 
-        slides.forEach((slide) => {
+        [...slides].forEach((slide) => {
 
-            slide = parser.parseFromString(slide, 'text/html').body.firstChild;
+//            slide = parser.parseFromString(slide, 'text/html').body.firstChild;
 
             const slideElement = document.createElement('div');
             slideElement.classList.add('swiper-slide');

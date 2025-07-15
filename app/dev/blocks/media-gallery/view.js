@@ -37,6 +37,8 @@ const {state} = store('wpbs/media-gallery', {
             const {ref: element} = getElement();
             const context = getContext();
             const container = element.querySelector(':scope > .wpbs-media-gallery-container');
+            const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
+            const {card: card_template} = args;
 
             const {gallery, slider: swiper_args, grid, uniqueId} = context;
 
@@ -61,17 +63,51 @@ const {state} = store('wpbs/media-gallery', {
             }
 
 
-            element.addEventListener('click', (event) => {
+            element.addEventListener('click', async (event) => {
 
                 if (element.classList.contains('--lightbox')) {
                     const card = event.target.closest('.loop-card');
 
-                    if (card) {
-                        return WPBS.lightbox.toggle({
-                            index: card.dataset.index,
-                            context: context,
-                        })
+                    if (!card) {
+                        return
                     }
+
+                    const request = {
+                        attributes: {
+                            uniqueId: uniqueId,
+                            context: {
+                                'wpbs/interactive': false,
+                                'wpbs/settings': {
+                                    ...context,
+                                    type: 'slider',
+                                    page_size: false,
+                                },
+                                'wpbs/card': card_template
+                            }
+                        }
+                    };
+
+                    console.log(request);
+
+                    await fetchGallery(request, (result) => {
+                        WPBS.loader.toggle({
+                            remove: true
+                        });
+
+                        console.log(result);
+
+                        const parser = new DOMParser();
+                        const gallery_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-media-gallery-container');
+                        const gallery_cards = gallery_container.querySelectorAll('.loop-card');
+
+                        console.log(gallery_container);
+                        console.log(gallery_cards);
+
+                        WPBS.lightbox.toggle({
+                            index: card.dataset.index,
+                            cards: gallery_cards,
+                        })
+                    })
                 }
             }, {
                 once: true,
@@ -111,7 +147,7 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.loader.toggle();
 
-            await fetchGallery(request, (result)=>{
+            await fetchGallery(request, (result) => {
                 WPBS.loader.toggle({
                     remove: true
                 });

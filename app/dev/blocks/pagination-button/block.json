@@ -12,7 +12,7 @@
     "border": ".wpbs-pagination-button > a"
   },
   "usesContext": [
-    "wpbs/settings"
+    "settings"
   ],
   "attributes": {
     "uniqueId": {

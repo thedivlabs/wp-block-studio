@@ -19,6 +19,7 @@
     max-w-full
     max-h-full
     select-none
+    m-auto
   }
 
   .wpbs-lightbox-slide {
@@ -93,6 +94,7 @@
     rounded
     overflow-hidden
     bg-black/70
+    m-auto
   }
 
   .wpbs-lightbox-nav {

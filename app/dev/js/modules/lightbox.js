@@ -55,16 +55,13 @@ export default class Lightbox {
 
     static toggle(args = {}) {
 
-        this.fetchGallery(args).then(gallery => {
-
-            WPBS.modals.show_modal(false, {
-                template: this.component(gallery.content),
-                callback: (modal) => {
-                    [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
-                        new Swiper(slider_element, this.swiper_args(args.index));
-                    })
-                }
-            });
+        WPBS.modals.show_modal(false, {
+            template: this.component(args.content),
+            callback: (modal) => {
+                [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
+                    new Swiper(slider_element, this.swiper_args(args.index));
+                })
+            }
         });
 
 

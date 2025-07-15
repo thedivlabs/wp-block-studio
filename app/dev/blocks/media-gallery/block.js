@@ -61,13 +61,9 @@ registerBlockType(metadata.name, {
                 'wpbs-media-gallery-settings': cleanObject({
                     uniqueId: uniqueId,
                     type: styleType,
-                    grid: {
-                        ...attributes?.['wpbs-grid']
-                    },
-                    slider: attributes?.['wpbs-swiper-args'],
-                    gallery: {
-                        ...attributes?.['wpbs-media-gallery']
-                    },
+                    grid: !isSlider ? attributes?.['wpbs-grid'] : {},
+                    slider: isSlider ? attributes?.['wpbs-swiper-args'] : {},
+                    gallery: attributes?.['wpbs-media-gallery'],
                 })
             });
         }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], styleType])

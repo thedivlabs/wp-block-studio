@@ -14,7 +14,7 @@ import React, {useEffect} from "react";
 function blockClassnames(attributes = {}, is_slider) {
     return [
         'wpbs-media-gallery-container swiper-wrapper loop-container',
-        is_slider ? null : 'flex flex-wrap w-full relative',
+        is_slider ? null : 'flex flex-wrap items-start w-full relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

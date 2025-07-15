@@ -1,5 +1,34 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
+async function fetchGallery(data = {}, callback) {
+    const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/media-gallery-container';
+
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-WP-Nonce': WPBS?.settings?.nonce ?? '',
+            },
+            body: JSON.stringify({
+                ...data,
+                context: 'edit'
+            }),
+        });
+
+        const result = await response.json();
+
+        if (typeof callback === 'function') {
+            callback(result);
+        }
+
+        return result;
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
+    }
+}
 
 const {state} = store('wpbs/media-gallery', {
     actions: {
@@ -68,9 +97,6 @@ const {state} = store('wpbs/media-gallery', {
 
             const {gallery, grid, slider, type, uniqueId} = context;
 
-            const nonce = WPBS?.settings?.nonce ?? false;
-
-            const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/media-gallery-container';
 
             const request = {
                 attributes: {
@@ -81,20 +107,12 @@ const {state} = store('wpbs/media-gallery', {
                         'wpbs/settings': context,
                         'wpbs/card': card
                     }
-                },
-                context: 'edit',
+                }
             };
 
             WPBS.loader.toggle();
 
-            await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-WP-Nonce': nonce,
-                },
-                body: JSON.stringify(request),
-            }).then(response => response.json())
+            fetchGallery(request).then(response => response.json())
                 .then(result => {
 
                     WPBS.loader.toggle({
@@ -104,7 +122,6 @@ const {state} = store('wpbs/media-gallery', {
                     const parser = new DOMParser();
 
                     element.dataset.page = String(next_page);
-
 
                     const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-media-gallery-container');
                     const grid_cards = grid_container.querySelectorAll('.loop-card');

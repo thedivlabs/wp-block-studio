@@ -56,7 +56,7 @@ if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
 $classes = array_filter( [
 	'wpbs-media-gallery-container loop-container',
-	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap relative z-20',
+	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap items-start relative z-20',
 	$is_last ? '--last-page' : null,
 	$unique_id,
 	! empty( $grid_settings['masonry'] ) ? 'masonry' : null,

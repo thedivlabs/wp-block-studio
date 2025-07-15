@@ -1,0 +1,20 @@
+{
+  "name": "wpbs/lightbox-container",
+  "title": "Lightbox Container",
+  "description": "Return a lightbox container",
+  "usesContext": [
+    "wpbs/settings"
+  ],
+  "attributes": {
+    "media": {
+      "type": "object"
+    }
+  },
+  "supports": {
+    "inserter": false
+  },
+  "editorScript": "file:./block.js",
+  "render": "file:./render.php"
+}
+
+

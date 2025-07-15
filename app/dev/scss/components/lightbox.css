@@ -21,7 +21,7 @@
     select-none
   }
 
-  .wpbs-lightbox__media {
+  .wpbs-lightbox-slide {
     padding: min(1.25rem, 2vh) .5rem;
     @apply
     w-full

@@ -62,7 +62,6 @@ const {state} = store('wpbs/media-gallery', {
                 [...element.querySelectorAll(':scope > .wpbs-pagination-button')].forEach(button => button.remove());
             }
 
-
             element.addEventListener('click', async (event) => {
 
                 if (element.classList.contains('--lightbox')) {
@@ -72,7 +71,6 @@ const {state} = store('wpbs/media-gallery', {
                     })
                 }
             }, {
-                once: true,
                 passive: true,
             });
 

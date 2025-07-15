@@ -19,6 +19,7 @@
     "wpbs/media-gallery-card"
   ],
   "usesContext": [
+    "wpbs/lightbox",
     "wpbs/interactive",
     "wpbs/page",
     "wpbs/settings",

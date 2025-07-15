@@ -5,7 +5,9 @@ const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 
 $context = $block->attributes['context'] ?? $block->context ?? [];
 
-$card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+$lightbox_settings = $context['wpbs/lightbox'] ?? [];
+
+$card_block = WPBS::get_block_template( $lightbox_settings['template'] ?? $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
 } )[0] ?? false );
 
@@ -14,12 +16,12 @@ $interactive = ( $context['wpbs/interactive'] ?? true ) != false;
 $page             = intval( $context['wpbs/page'] ?? 1 );
 $settings         = $context['wpbs/settings'] ?? [];
 $type             = $settings['type'] ?? [];
-$gallery_settings = $settings['gallery'] ?? [];
+$gallery_settings = ! empty( $lightbox_settings ) ? $lightbox_settings : $settings['gallery'] ?? [];
 $grid_settings    = $settings['grid'] ?? [];
 $slider_settings  = $settings['slider'] ?? [];
 
 $gallery_id = $gallery_settings['gallery_id'];
-$unique_id  = $attributes['uniqueId'] ?? null;
+$unique_id  = $lightbox_settings['uniqueId'] ?? $attributes['uniqueId'] ?? null;
 
 if ( empty( $gallery_id ) || empty( $unique_id ) ) {
 	return;
@@ -28,7 +30,7 @@ if ( empty( $gallery_id ) || empty( $unique_id ) ) {
 $is_slider    = $type == 'slider';
 $transient_id = TRANSIENT_PREFIX . $gallery_id;
 $media        = get_transient( $transient_id ) ?: [];
-$page_size    = intval( $gallery_settings['page_size'] ?? 0 );
+$page_size    = ! empty( $lightbox_settings ) ? false : intval( $gallery_settings['page_size'] ?? 0 );
 
 if ( empty( $media ) ) {
 
@@ -66,36 +68,33 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( $classes ) )
 ] );
 
+if ( ! empty( $lightbox_settings ) ) {
+	WPBS_Media_Gallery::render_media( $media, $card_block, $settings, true );
+
+	return;
+}
+
 
 ?>
 
     <div <?php echo $wrapper_attributes ?>>
 
-		<?php foreach ( $media ?: [] as $k => $media_item ) {
+		<?php
 
-			$block_template                      = $card_block;
-			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
+		WPBS_Media_Gallery::render_media( $media, $card_block, $settings );
 
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'wpbs/index'    => $k,
-				'wpbs/media'    => $media_item,
-				'wpbs/settings' => $settings,
-			] ) );
-
-			echo $new_block->render();
-
+		if ( ! empty( $grid['masonry'] ) && empty( $lightbox_settings ) ) {
+			echo '<span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>';
 		}
 
-		if ( ! empty( $grid['masonry'] ) ) {
-			echo '<span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>';
-		} ?>
+		?>
 
     </div>
 
 
 <?php
 
-if ( ! empty( $unique_id ) && empty( $block->attributes['context'] ) ) {
+if ( ! empty( $unique_id ) && empty( $block->attributes['context'] ) && empty( $lightbox_settings ) ) {
 	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
 			'card' => $card_block,
 		] ) ) . '</script>';

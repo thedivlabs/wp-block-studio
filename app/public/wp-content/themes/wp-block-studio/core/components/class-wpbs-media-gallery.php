@@ -72,6 +72,25 @@ class WPBS_Media_Gallery {
 		);
 	}
 
+	public static function render_media($media, $card_block, $settings, $lightbox = false):void {
+
+		foreach ( $media ?? [] as $k => $media_item ) {
+
+			$block_template                      = $card_block;
+			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
+
+			$new_block = new WP_Block( $block_template, array_filter( [
+				'wpbs/index'    => $k,
+				'wpbs/media'    => $media_item,
+				'wpbs/settings' => $settings,
+				'wpbs/lightbox' => $lightbox,
+			] ) );
+
+			echo $new_block->render();
+
+		}
+	}
+
 	public function clear_transients( $post_id ): void {
 		if ( get_post_type( $post_id ) === self::SLUG ) {
 			delete_transient( self::TRANSIENT_PREFIX . $post_id );

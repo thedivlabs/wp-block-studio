@@ -5,6 +5,7 @@ $index       = $block->context['wpbs/index'] ?? 0;
 $settings    = $block->context['wpbs/settings'] ?? false;
 $is_slider   = 'slider' == ( $settings['type'] ?? false );
 $is_lightbox = ! empty( $settings['gallery']['lightbox'] );
+$media_only  = ! empty( $block->context['wpbs/lightbox'] );
 
 if ( empty( $media ) ) {
 	return false;
@@ -23,7 +24,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ?>
 
 
-<div <?php echo $wrapper_attributes ?>>
+<div <?php echo $media_only ? null : $wrapper_attributes ?>>
 	<?php
 
 	if ( ! empty( $media['link'] ) ) {

@@ -15,6 +15,7 @@
     "wpbs/media-gallery-container"
   ],
   "usesContext": [
+    "wpbs/lightbox",
     "wpbs/index",
     "wpbs/media",
     "wpbs/settings"

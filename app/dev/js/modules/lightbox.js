@@ -81,6 +81,9 @@ export default class Lightbox {
                 template: component,
                 callback: (modal) => {
                     [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
+                        console.log(this.swiper_args(args.index));
+                        console.log(args.index);
+                        console.log(args.index);
                         new Swiper(slider_element, this.swiper_args(args.index));
                         [...modal.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
                     })

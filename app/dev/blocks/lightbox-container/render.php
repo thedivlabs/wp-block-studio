@@ -25,7 +25,7 @@ $media = $block->attributes['media'] ?? false;
 					'link'  => $media_item['link'],
 					'modal' => false
 				],
-				//'lightbox' => true,
+				'lightbox' => true,
 			] ) )->render();
 		} else {
 			echo wp_get_attachment_image( $media_item, 'large', false, [

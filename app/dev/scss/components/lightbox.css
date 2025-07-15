@@ -37,7 +37,7 @@
     max-h-full
     ;
 
-    &.--video {
+    .wpbs-video {
       max-width: 92rem;
 
       img {
@@ -74,6 +74,10 @@
       grid-template-rows: 100%;
       @apply
       grid
+      justify-center
+      items-center
+      p-3
+      lg:p-12
     }
   }
 

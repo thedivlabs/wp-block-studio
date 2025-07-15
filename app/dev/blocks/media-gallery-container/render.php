@@ -4,7 +4,7 @@ const TRANSIENT_PREFIX     = 'wpbs_media_gallery_';
 const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 
 $context = $block->attributes['context'] ?? $block->context ?? [];
-$is_rest = ! empty( $block->attributes['context'] );
+$is_rest = ( $block->context ?? false) == 'edit';
 
 $card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
@@ -51,7 +51,7 @@ $is_last     = $page >= $total_pages;
 if ( ! empty( $page_size ) && ! empty( $media ) ) {
 
 	$offset = ( $page - 1 ) * $page_size;
-	$media  = array_slice( $media, $offset, $page_size, true );
+	$media_slice  = array_slice( $media, $offset, $page_size, true );
 
 }
 
@@ -74,7 +74,7 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 		<?php
 
-		foreach ( $media ?? [] as $k => $media_item ) {
+		foreach ( $media_slice ?? [] as $k => $media_item ) {
 
 			$block_template                      = $card_block;
 			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';

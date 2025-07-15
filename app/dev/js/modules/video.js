@@ -38,7 +38,7 @@ export default class Video {
         ].filter(x => x).join(' ');
 
         const player = jQuery('<iframe />', {
-            src: baseURL[platform || 'youtube'] + vid + queryString[platform],
+            src: baseURL[platform || 'youtube'] + vid + queryString[platform || 'youtube'],
             allow: 'autoplay;',
             allowFullScreen: true,
             title: title || 'YouTube video player',

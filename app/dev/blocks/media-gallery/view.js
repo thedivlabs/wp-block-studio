@@ -64,9 +64,14 @@ const {state} = store('wpbs/media-gallery', {
 
             element.addEventListener('click', async (event) => {
 
+
+
                 if (element.classList.contains('--lightbox')) {
+
+                    const card = event.target.closest('.wpbs-media-gallery-card');
+
                     WPBS.lightbox.toggle({
-                        index: element.dataset.index,
+                        index: card.dataset.index || 1,
                         media: args?.media,
                     })
                 }

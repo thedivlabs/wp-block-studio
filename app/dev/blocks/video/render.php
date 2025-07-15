@@ -1,7 +1,7 @@
 <?php
 
 $settings     = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
-$is_lightbox  = ! empty( $attributes['wpbs-video']['lightbox'] );
+$is_lightbox  = ! empty( $settings['lightbox'] );
 $is_thumbnail = ! empty( $block->context['thumbnail'] );
 
 $video_id = WPBS::youtube_image( $settings['link'] ?? '', [

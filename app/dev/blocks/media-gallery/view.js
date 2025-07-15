@@ -30,54 +30,6 @@ async function fetchGallery(data = {}, callback) {
     }
 }
 
-async function lightbox(element, template, settings, uniqueId) {
-
-    if (!element || !template || !settings || !uniqueId) {
-        return
-    }
-
-    const request = {
-        attributes: {
-            context: {
-                'wpbs/lightbox': {
-                    uniqueId: uniqueId,
-                    template: template,
-                    ...settings
-                },
-            }
-        }
-    };
-
-    console.log(request);
-
-    const gallery = fetchGallery(request, (result) => {
-        WPBS.loader.toggle({
-            remove: true
-        });
-
-        console.log(result);
-
-        const parser = new DOMParser();
-        const gallery_container = parser.parseFromString(result?.rendered ?? '', 'text/html');
-        const gallery_cards = [...gallery_container.querySelectorAll('body > div')].map((el)=>{
-            return el.querySelector(':scope > :first-child');
-        });
-
-        console.log(gallery_container);
-        console.log(gallery_cards);
-
-        WPBS.lightbox.toggle({
-            index: element.dataset.index,
-            cards: gallery_cards,
-        })
-
-        return result;
-    })
-
-    return await gallery;
-
-}
-
 const {state} = store('wpbs/media-gallery', {
     actions: {
         init: () => {
@@ -114,8 +66,9 @@ const {state} = store('wpbs/media-gallery', {
             element.addEventListener('click', async (event) => {
 
                 if (element.classList.contains('--lightbox')) {
-                    lightbox(event.target, card_template, gallery, uniqueId).then((result) => {
-                        console.log(result)
+                    WPBS.lightbox.toggle({
+                        index: element.dataset.index,
+                        media: args?.media,
                     })
                 }
             }, {

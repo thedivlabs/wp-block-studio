@@ -23,7 +23,8 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, context}) => {
 
-        const {button_label = 'View More', page_size} = context?.settings ?? {};
+        const {gallery: gallery_settings = {}} = context?.['wpbs/settings'] ?? {};
+        const {button_label = 'View More', page_size} = gallery_settings;
 
         useEffect(() => {
             setAttributes({
@@ -32,7 +33,7 @@ registerBlockType(metadata.name, {
                     page_size: page_size,
                 }
             });
-        }, [button_label]);
+        }, [button_label, page_size]);
 
         const blockProps = useBlockProps({
             className: blockClassNames(attributes, true),

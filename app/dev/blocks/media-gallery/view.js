@@ -97,7 +97,6 @@ const {state} = store('wpbs/media-gallery', {
 
             const {gallery, grid, slider, type, uniqueId} = context;
 
-
             const request = {
                 attributes: {
                     uniqueId: uniqueId,
@@ -112,42 +111,40 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.loader.toggle();
 
-            fetchGallery(request).then(response => response.json())
-                .then(result => {
+            await fetchGallery(request, (result)=>{
+                WPBS.loader.toggle({
+                    remove: true
+                });
 
-                    WPBS.loader.toggle({
-                        remove: true
-                    });
+                const parser = new DOMParser();
 
-                    const parser = new DOMParser();
+                element.dataset.page = String(next_page);
 
-                    element.dataset.page = String(next_page);
+                const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-media-gallery-container');
+                const grid_cards = grid_container.querySelectorAll('.loop-card');
+                const is_last = grid_container.classList.contains('--last-page');
 
-                    const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-media-gallery-container');
-                    const grid_cards = grid_container.querySelectorAll('.loop-card');
-                    const is_last = grid_container.classList.contains('--last-page');
+                if (is_last) {
+                    button.remove();
+                }
 
-                    if (is_last) {
-                        button.remove();
-                    }
+                if (grid_cards) {
 
-                    if (grid_cards) {
+                    [...grid_cards].forEach(node => {
+                        container.append(node);
+                    })
 
-                        [...grid_cards].forEach(node => {
-                            container.append(node);
-                        })
+                }
 
-                    }
+                WPBS.gridDividers(element, grid, uniqueId);
 
-                    WPBS.gridDividers(element, grid, uniqueId);
+                if (!!gallery?.masonry) {
+                    WPBS.setMasonry(container);
+                }
 
-                    if (!!gallery?.masonry) {
-                        WPBS.setMasonry(container);
-                    }
+                [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
 
-                    [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
-
-                })
+            })
         },
     },
 });

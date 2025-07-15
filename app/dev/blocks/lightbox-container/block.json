@@ -13,7 +13,6 @@
   "supports": {
     "inserter": false
   },
-  "editorScript": "file:./block.js",
   "render": "file:./render.php"
 }
 

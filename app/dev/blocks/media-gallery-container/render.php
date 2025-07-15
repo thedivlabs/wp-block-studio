@@ -4,18 +4,18 @@ const TRANSIENT_PREFIX     = 'wpbs_media_gallery_';
 const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
 
 $context = $block->attributes['context'] ?? $block->context ?? [];
-$is_rest = ( $block->context ?? false) == 'edit';
+$is_rest = ( $block->context ?? false ) == 'edit';
 
 $card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
-} )[0] ?? false);
+} )[0] ?? false );
 
-$page              = intval( $context['wpbs/page'] ?? 1 );
-$settings          = $context['wpbs/settings'] ?? [];
-$type              = $settings['type'] ?? false;
-$gallery_settings  = $settings['gallery'] ?? [];
-$grid_settings     = $settings['grid'] ?? [];
-$slider_settings   = $settings['slider'] ?? [];
+$page             = intval( $context['wpbs/page'] ?? 1 );
+$settings         = $context['wpbs/settings'] ?? [];
+$type             = $settings['type'] ?? false;
+$gallery_settings = $settings['gallery'] ?? [];
+$grid_settings    = $settings['grid'] ?? [];
+$slider_settings  = $settings['slider'] ?? [];
 
 $interactive = ( $context['wpbs/interactive'] ?? true ) != false;
 
@@ -48,10 +48,10 @@ if ( empty( $media ) ) {
 $total_pages = ceil( count( $media ) / ( $page_size ?: 1 ) );
 $is_last     = $page >= $total_pages;
 
-if ( ! empty( $page_size ) && ! empty( $media ) ) {
+if ( $page_size > 0 && ! empty( $media ) ) {
 
-	$offset = ( $page - 1 ) * $page_size;
-	$media_slice  = array_slice( $media, $offset, $page_size, true );
+	$offset      = ( $page - 1 ) * $page_size;
+	$media_slice = array_slice( $media, $offset, $page_size, true );
 
 }
 
@@ -74,7 +74,7 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 		<?php
 
-		foreach ( $media_slice ?? [] as $k => $media_item ) {
+		foreach ( $media_slice ?? $media as $k => $media_item ) {
 
 			$block_template                      = $card_block;
 			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
@@ -102,7 +102,7 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 if ( ! empty( $unique_id ) && ! $is_rest ) {
 	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
-			'card' => $card_block,
+			'card'  => $card_block,
 			'media' => $media,
 		] ) ) . '</script>';
 }

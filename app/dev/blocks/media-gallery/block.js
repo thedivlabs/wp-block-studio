@@ -28,6 +28,7 @@ function blockClassnames(attributes = {}) {
         isSlider ? 'swiper wpbs-slider' : '--grid',
         !!attributes?.['wpbs-grid']?.masonry ? 'masonry --masonry' : null,
         !!attributes?.['wpbs-media-gallery']?.lightbox ? '--lightbox' : null,
+        !attributes?.['wpbs-media-gallery']?.page_size ? '--last-page' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

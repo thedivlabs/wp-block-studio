@@ -14,7 +14,7 @@ const {state} = store('wpbs/media-gallery', {
             if (!uniqueId) {
                 return;
             }
-            
+
             const is_slider = context?.type === 'slider';
 
             if (!!is_slider) {
@@ -25,6 +25,10 @@ const {state} = store('wpbs/media-gallery', {
                 WPBS.setMasonry(container);
 
                 WPBS.gridDividers(element, grid, uniqueId);
+            }
+
+            if (element.classList.contains('--last-page')) {
+                [...element.querySelectorAll(':scope > .wpbs-pagination-button')].forEach(button => button.remove());
             }
 
 

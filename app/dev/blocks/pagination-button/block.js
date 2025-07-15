@@ -8,7 +8,8 @@ import {useInstanceId} from "@wordpress/compose";
 
 function blockClassNames(attributes = {}, editor = false) {
     return [
-        'wpbs-pagination-button inline-block w-fit relative z-20'
+        'wpbs-pagination-button w-fit relative z-20',
+        !attributes?.['wpbs-pagination-button']?.page_size ? 'hidden' : 'inline-block',
     ].filter(x => x).join(' ');
 }
 
@@ -22,12 +23,13 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, context}) => {
 
-        const {button_label = 'View More'} = context?.settings ?? {};
+        const {button_label = 'View More', page_size} = context?.settings ?? {};
 
         useEffect(() => {
             setAttributes({
                 'wpbs-pagination-button': {
-                    label: button_label
+                    label: button_label,
+                    page_size: page_size,
                 }
             });
         }, [button_label]);

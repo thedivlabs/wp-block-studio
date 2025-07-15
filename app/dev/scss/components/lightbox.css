@@ -39,7 +39,6 @@
     ;
 
     .wpbs-video {
-      max-width: 92rem;
 
       img {
         @apply
@@ -82,8 +81,8 @@
     }
   }
 
-  iframe {
-    //max-width: min(110svh, 72rem);
+  .wpbs-video {
+    max-width: min(110svh, 72rem);
 
     @apply
     pointer-events-auto

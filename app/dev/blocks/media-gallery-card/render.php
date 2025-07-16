@@ -31,10 +31,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		echo ( new WP_Block( [
 			'blockName' => 'wpbs/video-element',
 		], [
-			'media'     => [
-				'link'  => $media['link'],
-				'modal' => true
-			],
+			'media'     => $media,
 			'thumbnail' => $is_lightbox,
 		] ) )->render();
 	} else {

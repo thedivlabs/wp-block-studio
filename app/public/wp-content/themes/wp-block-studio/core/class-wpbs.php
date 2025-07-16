@@ -84,7 +84,7 @@ class WPBS {
 	}
 
 	public function theme_assets(): void {
-		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/build/theme.css' );
+		wp_register_style( 'wpbs-theme-css', get_stylesheet_directory_uri() . '/build/theme.css', [], '1.5' );
 		wp_register_style( 'wpbs-admin-css', get_stylesheet_directory_uri() . '/build/admin.css' );
 		wp_register_script( 'wpbs-theme-js', get_stylesheet_directory_uri() . '/build/theme.js', [
 			'wp-dom-ready',

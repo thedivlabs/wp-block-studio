@@ -23,7 +23,6 @@
   }
 
   .wpbs-lightbox-slide {
-    padding: min(1.25rem, 2vh) .5rem;
     @apply
     w-full
     h-full
@@ -77,12 +76,13 @@
       justify-center
       items-center
       p-3
-      lg:p-12
+      lg:p-5
+      xl:p-6
     }
   }
 
   .wpbs-video {
-    max-width: min(110svh, 72rem);
+    max-width: min(140svh, 92rem);
 
     @apply
     pointer-events-auto

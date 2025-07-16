@@ -67,8 +67,6 @@ export default class Lightbox {
 
             const sliderWrapper = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-lightbox-container');
 
-            console.log(result);
-
             sliderNav.appendChild(sliderButtonPrev);
             sliderNav.appendChild(sliderPagination);
             sliderNav.appendChild(sliderButtonNext);

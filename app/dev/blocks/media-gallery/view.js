@@ -140,7 +140,7 @@ const {state} = store('wpbs/media-gallery', {
                 WPBS.gridDividers(element, grid, uniqueId);
 
                 if (!!gallery?.masonry) {
-                    WPBS.setMasonry(container);
+                    //WPBS.setMasonry(container);
                 }
 
                 [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));

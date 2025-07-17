@@ -54,7 +54,7 @@ registerBlockType(metadata.name, {
 
         return <div {...blockProps}>
             <a href={'#'}
-               data-wp-on-async--click={'actions.pagination'}
+               data-wp-on--click={'actions.pagination'}
                className={'loop-button cursor-pointer no-underline block'}
                role={"button"}
                tabIndex={0}

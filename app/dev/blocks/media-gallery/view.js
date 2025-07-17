@@ -83,7 +83,7 @@ const {state} = store('wpbs/media-gallery', {
         pagination: async (event) => {
 
             event.preventDefault();
-
+            
             const {ref: button} = getElement();
 
             const element = button.closest('.wpbs-media-gallery');

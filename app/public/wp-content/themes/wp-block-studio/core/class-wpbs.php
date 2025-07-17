@@ -437,16 +437,18 @@ class WPBS {
 
 	public static function clean_array( $array, &$ref_array = [] ): mixed {
 		$array = ! empty( $array ) ? $array : $ref_array;
+
 		if ( ! is_array( $array ) ) {
 			return $array;
 		}
+
 		foreach ( $array as $key => &$value ) {
 			if ( is_array( $value ) ) {
-				$value = self::clean_array( false, $value );
+				$value = self::clean_array( $value );
 			}
 			if (
 				empty( $value ) ||
-				( empty( $key ) && $key !== 0 )
+				( $key === '' )
 			) {
 				unset( $array[ $key ] );
 			}
@@ -454,6 +456,7 @@ class WPBS {
 
 		return $array;
 	}
+
 
 	public static function get_block_template( $block ): array {
 

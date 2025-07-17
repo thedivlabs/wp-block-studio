@@ -1,8 +1,19 @@
 <?php
 
-$media = $block->attributes['media'] ?? false;
+$media = WPBS::clean_array( array_map( function ( $item ) {
+	if ( is_array( $item ) ) {
+		return [
+			'link'        => isset( $item['link'] ) ? esc_url_raw( $item['link'] ) : null,
+			'platform'    => isset( $item['platform'] ) ? sanitize_text_field( $item['platform'] ) : null,
+			'title'       => isset( $item['title'] ) ? sanitize_text_field( $item['title'] ) : null,
+			'description' => isset( $item['description'] ) ? sanitize_text_field( $item['description'] ) : null,
+			'poster'      => isset( $item['poster'] ) && is_numeric( $item['poster'] ) ? absint( $item['poster'] ) : null,
+		];
+	}
 
-WPBS::console_log( $media );
+	return is_numeric( $item ) ? absint( $item ) : null;
+}, $block->attributes['media'] ?? [] ) );
+
 
 ?>
 

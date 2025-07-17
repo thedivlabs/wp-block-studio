@@ -35,7 +35,7 @@ export default class Lightbox {
         const attributes = {
             media: args?.media
         }
-
+        
         fetch(endpoint, {
             method: 'POST',
             headers: {

@@ -1,7 +1,7 @@
 {
-  "name": "wpbs/lightbox-container",
-  "title": "Lightbox Container",
-  "description": "Return a lightbox container",
+  "name": "wpbs/lightbox",
+  "title": "Lightbox",
+  "description": "Return a lightbox component",
   "usesContext": [
     "wpbs/settings"
   ],

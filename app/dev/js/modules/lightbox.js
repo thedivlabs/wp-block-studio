@@ -30,21 +30,6 @@ export default class Lightbox {
 
     static async toggle(args = {}) {
 
-        const component = document.createElement('div');
-        const slider = document.createElement('div');
-        const sliderNav = document.createElement('div');
-
-        const sliderButtonNext = document.createElement('button');
-        const sliderButtonPrev = document.createElement('button');
-        const sliderPagination = document.createElement('div');
-
-        component.classList.add('wpbs-lightbox', 'flex', 'w-full', 'h-screen', 'overflow-hidden', 'wpbs-lightbox--group');
-        slider.classList.add('wpbs-lightbox__slider', 'swiper');
-        sliderNav.classList.add('wpbs-lightbox-nav', 'wpbs-slider-nav');
-        sliderButtonNext.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--next');
-        sliderPagination.classList.add('wpbs-lightbox-nav__pagination', 'swiper-pagination');
-        sliderButtonPrev.classList.add('wpbs-lightbox-nav__button', 'wpbs-lightbox-nav__button--prev');
-
         const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/lightbox-container';
 
         const attributes = {
@@ -65,18 +50,11 @@ export default class Lightbox {
 
             const parser = new DOMParser();
 
-            const sliderWrapper = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-lightbox-container');
-
-            sliderNav.appendChild(sliderButtonPrev);
-            sliderNav.appendChild(sliderPagination);
-            sliderNav.appendChild(sliderButtonNext);
-            slider.appendChild(sliderWrapper);
-            slider.appendChild(sliderNav);
-            component.appendChild(slider);
+            const lightbox_element = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('body > .wpbs-lightbox');
 
 
             WPBS.modals.show_modal(false, {
-                template: component,
+                template: compolightbox_elementnent,
                 callback: (modal) => {
                     [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
                         new Swiper(slider_element, this.swiper_args(args.index));

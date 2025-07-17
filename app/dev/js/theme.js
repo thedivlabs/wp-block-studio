@@ -140,7 +140,7 @@ class WPBS_Theme {
             return;
         }
 
-        if (container) {
+        if (container.classList.contains('masonry') || container.classList.contains('--masonry')) {
 
             const masonryData = Masonry.data(container) || false;
             const gutterSizer = container.querySelector(':scope > .gutter-sizer');

@@ -103,10 +103,10 @@ class WPBS {
 		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js' );
 
 		/* Masonry */
-		/*wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
+		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
 			'strategy'  => 'async',
 			'in_footer' => true,
-		] );*/
+		] );
 
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
 			'nonce'       => wp_create_nonce( 'wp_rest' ),

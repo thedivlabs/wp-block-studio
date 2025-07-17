@@ -65,7 +65,6 @@ const {state} = store('wpbs/media-gallery', {
             element.addEventListener('click', async (event) => {
 
 
-
                 if (element.classList.contains('--lightbox')) {
 
                     const card = event.target.closest('.wpbs-media-gallery-card');
@@ -140,7 +139,7 @@ const {state} = store('wpbs/media-gallery', {
                 WPBS.gridDividers(element, grid, uniqueId);
 
                 if (!!gallery?.masonry) {
-                    //WPBS.setMasonry(container);
+                    WPBS.setMasonry(container);
                 }
 
                 [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));

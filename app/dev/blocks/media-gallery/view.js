@@ -32,7 +32,6 @@ const {state} = store('wpbs/media-gallery', {
             const context = getContext();
             const container = element.querySelector(':scope > .wpbs-media-gallery-container');
             const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
-            const {card: card_template} = args;
 
             const {gallery, slider: swiper_args, grid, uniqueId} = context;
 

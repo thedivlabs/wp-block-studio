@@ -89,7 +89,7 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 		}
 
-		if ( ! empty( $grid['masonry'] ) && ! $is_rest ) {
+		if ( ! empty( $grid_settings['masonry'] ) && ! $is_rest ) {
 			echo '<span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>';
 		}
 

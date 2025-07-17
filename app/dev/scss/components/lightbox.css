@@ -103,6 +103,7 @@
     opacity: 1 !important;
 
     @apply
+    gap-3
     pointer-events-auto
     w-full
     items-center

@@ -2,6 +2,8 @@
 
 $media = $block->attributes['media'] ?? false;
 
+WPBS::console_log( $media );
+
 ?>
 
 <div class="wpbs-lightbox flex w-full h-screen overflow-hidden wpbs-lightbox--group">
@@ -43,14 +45,14 @@ $media = $block->attributes['media'] ?? false;
 			?>
 
         </div>
+        <div class="wpbs-lightbox-nav wpbs-slider-nav">
+            <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--prev">
+                <i class="fa-light fa-arrow-left"></i>
+            </button>
+            <div class="wpbs-lightbox-nav__pagination swiper-pagination"></div>
+            <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--next">
+                <i class="fa-light fa-arrow-right"></i>
+            </button>
+        </div>
     </div>
-    <nav class="wpbs-lightbox-nav wpbs-slider-nav">
-        <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--prev">
-            <i class="fa-light fa-arrow-left"></i>
-        </button>
-        <div class="wpbs-lightbox-nav__pagination swiper-pagination"></div>
-        <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--next">
-            <i class="fa-light fa-arrow-right"></i>
-        </button>
-    </nav>
 </div>

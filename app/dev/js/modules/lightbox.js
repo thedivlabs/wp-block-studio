@@ -30,7 +30,7 @@ export default class Lightbox {
 
     static async toggle(args = {}) {
 
-        const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/lightbox-container';
+        const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/lightbox';
 
         const attributes = {
             media: args?.media
@@ -54,7 +54,7 @@ export default class Lightbox {
 
 
             WPBS.modals.show_modal(false, {
-                template: compolightbox_elementnent,
+                template: lightbox_element,
                 callback: (modal) => {
                     [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
                         new Swiper(slider_element, this.swiper_args(args.index));

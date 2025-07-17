@@ -1,6 +1,6 @@
-import {store, getElement, getContext} from '@wordpress/interactivity';
+import {getContext, getElement, store} from '@wordpress/interactivity';
 
-async function fetchGallery(data = {}, callback) {
+async function fetchGallery(data = {}) {
     const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/media-gallery-container';
 
     try {
@@ -16,13 +16,7 @@ async function fetchGallery(data = {}, callback) {
             }),
         });
 
-        const result = await response.json();
-
-        if (typeof callback === 'function') {
-            callback(result);
-        }
-
-        return result;
+        return await response.json();
 
     } catch (error) {
         console.error('Fetch error:', error);
@@ -62,16 +56,22 @@ const {state} = store('wpbs/media-gallery', {
                 [...element.querySelectorAll(':scope > .wpbs-pagination-button')].forEach(button => button.remove());
             }
 
-            element.addEventListener('click', async (event) => {
+            element.addEventListener('click', (event) => {
 
 
                 if (element.classList.contains('--lightbox')) {
 
                     const card = event.target.closest('.wpbs-media-gallery-card');
 
+                    if (!card) {
+                        return;
+                    }
+
                     WPBS.lightbox.toggle({
                         index: card.dataset.index || 1,
                         media: args?.media,
+                    }).then(() => {
+
                     })
                 }
             }, {
@@ -80,10 +80,10 @@ const {state} = store('wpbs/media-gallery', {
 
 
         },
-        pagination: async (event) => {
+        pagination: (event) => {
 
             event.preventDefault();
-            
+
             const {ref: button} = getElement();
 
             const element = button.closest('.wpbs-media-gallery');
@@ -111,7 +111,8 @@ const {state} = store('wpbs/media-gallery', {
 
             WPBS.loader.toggle();
 
-            await fetchGallery(request, (result) => {
+            fetchGallery(request).then((result) => {
+
                 WPBS.loader.toggle({
                     remove: true
                 });

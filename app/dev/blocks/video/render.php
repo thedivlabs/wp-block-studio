@@ -13,7 +13,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-video',
 		$is_thumbnail ? '--disabled h-full' : 'h-auto aspect-video',
 		$is_lightbox ? '--lightbox' : null,
-		'flex items-center justify-center relative w-full min-h-32 overflow-hidden cursor-pointer',
+		'flex items-stretch relative w-full min-h-32 overflow-hidden cursor-pointer',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style'         => implode( '; ', array_filter( [
@@ -25,7 +25,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ] );
 
 $media_class = implode( ' ', array_filter( [
-	'wpbs-video__media w-full h-full overflow-hidden relative hover:after:opacity-50',
+	'wpbs-video__media w-full h-auto overflow-hidden relative hover:after:opacity-50',
 	'after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out ',
 ] ) );
 

@@ -3,6 +3,8 @@
   width: 100%;
   @apply inline-block;
   line-height: var(--line-height, 1.5em);
+
+
 }
 
 /* Modifier: .wpbs-icon-list--divider affecting the list */
@@ -27,6 +29,15 @@
   position: relative;
   padding-left: var(--icon-space, calc(var(--icon-size, 1.5em) + 0.2em));
   line-height: inherit;
+
+  p:not(p + p) {
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
 }
 
 /* List item icon before pseudo-element */

@@ -464,6 +464,8 @@ class WPBS {
 			return [];
 		}
 
+		$block = self::sanitize_block_template( $block );
+
 		$template = [
 			'blockName'    => $block['blockName'],
 			'attrs'        => $block['attrs'] ?? [],

@@ -137,8 +137,8 @@ const {state} = store('wpbs/media-gallery', {
                 }
 
                 WPBS.gridDividers(element, grid, uniqueId);
-
-                if (!!gallery?.masonry) {
+                
+                if (!!grid?.masonry) {
                     WPBS.setMasonry(container);
                 }
 

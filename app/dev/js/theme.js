@@ -77,6 +77,10 @@ class WPBS_Theme {
             }
         }
 
+        console.log(lastRow);
+        console.log(selector);
+        console.log(selector + ' .loop-card:nth-last-of-type(-n+' + lastRow.large.count + ') { margin-bottom: 0 !important; }');
+
 
         const styleCss = [
             '@media screen and (width < ' + breakpointSmall + ') {',
@@ -115,7 +119,7 @@ class WPBS_Theme {
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n+1 ):before { width: ' + (colLarge > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
             selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { content:none !important; }',
+            selector + ' .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { display:none !important; }',
 
             '}',
         ].join('\r\n');

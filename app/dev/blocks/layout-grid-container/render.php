@@ -1,28 +1,25 @@
 <?php
 
-const TRANSIENT_PREFIX     = 'wpbs_layout_grid_';
-const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
-
-
 global $wp_query;
 
 $context = $block->attributes['context'] ?? $block->context ?? [];
 $is_rest = ( $block->context ?? false ) == 'edit';
 
-$card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
-	return $inner_block['blockName'] === 'wpbs/media-gallery-card';
-} )[0] ?? false );
+$card_block = $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+	return $inner_block['blockName'] === 'wpbs/layout-grid-card';
+} )[0] ?? false;
 
 $page           = intval( $context['wpbs/page'] ?? 1 );
-$grid_settings  = WPBS::clean_array( $block->context['wpbs/grid'] ?? [] );
-$query_settings = WPBS::clean_array( $block->context['wpbs/query'] ?? [] );
+$grid_settings  = WPBS::clean_array( $context['wpbs/grid'] ?? [] );
+$query_settings = WPBS::clean_array( $context['wpbs/query'] ?? [] );
 $is_loop        = ! empty( $grid_settings['loop'] );
 
-$loop = ! $is_loop ? false : new WPBS_Loop( $block ?? false, $query_settings );
+$loop = ! $is_loop ? false : new WPBS_Loop( $card_block ?? false, $query_settings, $page );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-layout-grid-container loop-container w-full flex flex-wrap relative z-20 relative',
+		$loop->is_last ? '--last-page' : null,
 		$attributes['uniqueId'] ?? null
 	] ) )
 ] );
@@ -52,9 +49,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 if ( $is_loop ) {
 	echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
-			'card'  => $loop->card,
-			'query' => $loop->query->query ?? false,
-			...$grid_settings
+			'card'     => $loop->card,
+			'query'    => $query_settings,
+			'settings' => $grid_settings
 		] ) ) . '</script>';
 }
 

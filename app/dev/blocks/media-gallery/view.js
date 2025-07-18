@@ -29,17 +29,16 @@ const {state} = store('wpbs/media-gallery', {
         init: () => {
 
             const {ref: element} = getElement();
-            const context = getContext();
             const container = element.querySelector(':scope > .wpbs-media-gallery-container');
             const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
 
-            const {gallery, slider: swiper_args, grid, uniqueId} = context;
+            const {gallery, slider: swiper_args, grid, uniqueId} = args;
 
             if (!uniqueId) {
                 return;
             }
 
-            const is_slider = context?.type === 'slider';
+            const is_slider = gallery?.type === 'slider';
 
             if (!!is_slider && swiper_args) {
                 WPBS.slider.observe(element, swiper_args);
@@ -137,7 +136,7 @@ const {state} = store('wpbs/media-gallery', {
                 }
 
                 WPBS.gridDividers(element, grid, uniqueId);
-                
+
                 if (!!grid?.masonry) {
                     WPBS.setMasonry(container);
                 }

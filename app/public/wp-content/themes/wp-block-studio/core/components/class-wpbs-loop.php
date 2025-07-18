@@ -16,7 +16,7 @@ class WPBS_Loop {
 
 	public function __construct( WP_Block|false|array $block, $query = false, $page = 1 ) {
 
-		$card  = is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block;
+		$card  = WPBS::get_block_template( is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block );
 		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
 
 		if ( empty( $card ) || empty( $query ) ) {
@@ -82,14 +82,12 @@ class WPBS_Loop {
 
 		$this->content = $new_content;
 		$this->css     = $css;
-		$this->card    = WPBS::get_block_template( $block->inner_blocks[0]->parsed_block ?? [] );
+		$this->card    = $card;
 
 
 	}
 
-	private function loop_card( $block = [], $args = [], $index = false ): WP_Block|bool {
-
-		$block_template = WPBS::sanitize_block_template( $block );
+	private function loop_card( $block_template = [], $args = [], $index = false ): WP_Block|bool {
 
 		$original_id = $block_template['attrs']['uniqueId'] ?? '';
 
@@ -167,7 +165,7 @@ class WPBS_Loop {
 		return new WP_Query( $query_args );
 
 	}
-	
+
 
 }
 

@@ -21,7 +21,7 @@ import {cleanObject} from "Includes/helper"
 function blockClassnames(attributes = {}) {
 
     const isSlider = attributes?.className?.includes('is-style-slider');
-    console.log(attributes);
+    
     return [
         'wpbs-media-gallery h-max',
         'flex flex-col w-full relative overflow-hidden',
@@ -164,10 +164,6 @@ registerBlockType(metadata.name, {
             className: blockClassnames(props.attributes),
             'data-wp-interactive': 'wpbs/media-gallery',
             'data-wp-init': 'actions.init',
-            'data-wp-context': JSON.stringify(cleanObject({
-                uniqueId: props.attributes?.uniqueId,
-                ...props.attributes?.['wpbs-media-gallery-settings'],
-            }))
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

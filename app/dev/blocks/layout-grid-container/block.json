@@ -9,6 +9,10 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
+    },
+    "context": {
+      "type": "object",
+      "show_in_rest": true
     }
   },
   "parent": [
@@ -18,7 +22,9 @@
     "wpbs/layout-grid-card"
   ],
   "usesContext": [
+    "wpbs/page",
     "wpbs/grid",
+    "wpbs/card",
     "wpbs/query"
   ],
   "supports": {

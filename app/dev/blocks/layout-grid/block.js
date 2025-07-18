@@ -120,8 +120,7 @@ registerBlockType(metadata.name, {
                     {innerBlocksProps.children}
                     <BackgroundElement attributes={attributes} editor={true}/>
                 </div>
-
-
+                
             </>
         )
     },
@@ -130,11 +129,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/layout-grid',
-            'data-wp-init': 'actions.init',
-            'data-wp-context': JSON.stringify({
-                uniqueId: props.attributes?.uniqueId,
-                ...props.attributes?.['wpbs-grid'],
-            })
+            'data-wp-init': 'actions.init'
         });
 
         return (

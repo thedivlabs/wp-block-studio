@@ -77,11 +77,6 @@ class WPBS_Theme {
             }
         }
 
-        console.log(lastRow);
-        console.log(selector);
-        console.log(selector + ' .loop-card:nth-last-of-type(-n+' + lastRow.large.count + ') { margin-bottom: 0 !important; }');
-
-
         const styleCss = [
             '@media screen and (width < ' + breakpointSmall + ') {',
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',

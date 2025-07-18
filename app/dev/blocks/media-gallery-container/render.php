@@ -1,7 +1,7 @@
 <?php
 
-const TRANSIENT_PREFIX     = 'wpbs_media_gallery_';
-const TRANSIENT_EXPIRATION = DAY_IN_SECONDS;
+$transient_prefix     = 'wpbs_media_gallery_';
+$transient_expiration = DAY_IN_SECONDS;
 
 $context = $block->attributes['context'] ?? $block->context ?? [];
 $is_rest = ( $block->context ?? false ) == 'edit';
@@ -27,7 +27,7 @@ if ( empty( $gallery_id ) ) {
 }
 
 $is_slider    = $type == 'slider';
-$transient_id = TRANSIENT_PREFIX . $gallery_id;
+$transient_id = $transient_prefix . $gallery_id;
 $media        = get_transient( $transient_id ) ?: [];
 $page_size    = intval( $gallery_settings['page_size'] ?? 0 );
 
@@ -41,7 +41,7 @@ if ( empty( $media ) ) {
 		$media = WPBS::clean_array( [ ...( $fields['images'] ?? [] ), ...( $fields['video'] ?? [] ) ] );
 	}
 
-	set_transient( $transient_id, $media, TRANSIENT_EXPIRATION );
+	set_transient( $transient_id, $media, $transient_expiration );
 
 }
 
@@ -63,7 +63,7 @@ $classes = array_filter( [
 	! empty( $grid_settings['masonry'] ) ? 'masonry' : null,
 ] );
 
-$wrapper_attributes        = get_block_wrapper_attributes( [
+$wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( $classes ) )
 ] );
 
@@ -102,7 +102,8 @@ $wrapper_attributes        = get_block_wrapper_attributes( [
 
 if ( ! empty( $unique_id ) && ! $is_rest ) {
 	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
-			'card'  => $card_block,
-			'media' => $media,
+			'card'    => $card_block,
+			'media'   => $media,
+			'gallery' => $gallery_settings,
 		] ) ) . '</script>';
 }

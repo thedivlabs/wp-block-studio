@@ -53,7 +53,7 @@ const {state} = store('wpbs/media-gallery', {
             if (element.classList.contains('--last-page')) {
                 [...element.querySelectorAll(':scope > .wpbs-pagination-button')].forEach(button => button.remove());
             }
-
+            console.log(element);
             element.addEventListener('click', (event) => {
 
 
@@ -85,15 +85,18 @@ const {state} = store('wpbs/media-gallery', {
             const {ref: button} = getElement();
 
             const element = button.closest('.wpbs-media-gallery');
-            const container = element.querySelector(':scope > .wpbs-media-gallery-container');
-            const context = getContext();
+            const container = element ? element.querySelector(':scope > .wpbs-media-gallery-container') : false;
 
-            const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
-            const {card} = args;
+            const args = element ? JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}') : false;
+
+            if (!args) {
+                return false;
+            }
+
             const page = parseInt(element.dataset?.page ?? 1);
             const next_page = page + 1;
 
-            const {gallery, grid, slider, type, uniqueId} = context;
+            const {settings, grid, uniqueId, card} = args;
 
             const request = {
                 attributes: {
@@ -101,7 +104,7 @@ const {state} = store('wpbs/media-gallery', {
                     context: {
                         'wpbs/interactive': true,
                         'wpbs/page': next_page,
-                        'wpbs/settings': context,
+                        'wpbs/settings': settings,
                         'wpbs/card': card
                     }
                 }

@@ -67,7 +67,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( $classes ) )
 ] );
 
-
 ?>
 
     <div <?php echo $wrapper_attributes ?>>
@@ -102,8 +101,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 if ( ! empty( $unique_id ) && ! $is_rest ) {
 	echo '<script type="application/json" class="wpbs-media-gallery-args">' . wp_json_encode( array_filter( [
-			'card'    => $card_block,
-			'media'   => $media,
-			'gallery' => $gallery_settings,
+			'uniqueId' => $unique_id,
+			'card'     => $card_block,
+			'media'    => $media,
+			'settings' => $settings,
 		] ) ) . '</script>';
 }

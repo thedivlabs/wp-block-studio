@@ -53,7 +53,7 @@ const {state} = store('wpbs/media-gallery', {
             if (element.classList.contains('--last-page')) {
                 [...element.querySelectorAll(':scope > .wpbs-pagination-button')].forEach(button => button.remove());
             }
-            console.log(element);
+
             element.addEventListener('click', (event) => {
 
 

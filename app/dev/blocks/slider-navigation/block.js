@@ -32,7 +32,7 @@ function blockStyles(attributes = {}) {
     );
 }
 
-function BlockContent({props, attributes}) {
+function BlockContent({props, options}) {
 
     const buttonClass = 'wpbs-slider-nav__btn';
 
@@ -40,17 +40,19 @@ function BlockContent({props, attributes}) {
         buttonClass,
         'wpbs-slider-nav__btn--prev wpbs-slider-btn--prev',
     ].filter(x => x).join(' ');
+
     const nextClass = [
         buttonClass,
         'wpbs-slider-nav__btn--next wpbs-slider-btn--next',
     ].filter(x => x).join(' ');
+
     const paginationClass = 'wpbs-slider-nav__pagination swiper-pagination ';
 
     return <div {...props}>
         <button type="button" className={prevClass}>
             <span className="screen-reader-text">Previous Slide</span>
         </button>
-        <div className={paginationClass}></div>
+        {!!options?.pagination?.enabled ? <div className={paginationClass}></div> : null}
         <button type="button" className={nextClass}>
             <span className="screen-reader-text">Next Slide</span>
         </button>
@@ -75,6 +77,8 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
             style: blockStyles(attributes)
         });
+
+        const {slider = {}} = context?.['wpbs/settings'] ?? {};
         
         const updateSettings = useCallback((newValue) => {
 
@@ -130,7 +134,7 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-slider-navigation']}
             />
 
-            <BlockContent props={blockProps} attributes={attributes}/>
+            <BlockContent props={blockProps} options={slider}/>
         </>;
     },
     save: (props) => {

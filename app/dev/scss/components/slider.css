@@ -85,9 +85,9 @@
     .wpbs-slider-nav__btn {
       transition: opacity 0.3s;
       transform-origin: center;
+      transform: translateY(-50%);
       @apply
       top-1/2
-      -translate-y-1/2
       pointer-events-auto
       h-[1.2em]
       aspect-square
@@ -132,24 +132,27 @@
     }
 
     .wpbs-slider-nav__pagination {
+      transform: translateX(-50%);
+      height: 4px;
       @apply
-      absolute top-auto right-auto left-1/2 bottom-2 -translate-x-1/2
+      absolute top-auto right-auto left-1/2 bottom-2
+      inline-flex items-center justify-center gap-1 leading-none empty:hidden
     }
 
-  }
+    .wpbs-slider-nav__pagination.swiper-pagination-progressbar {
+      width: 5rem !important;
+    }
 
-  .wpbs-slider-nav__pagination {
-    @apply
-    inline-flex items-center justify-center gap-1 leading-none empty:hidden
+
   }
 
   .wpbs-slider-nav.is-style-group {
     transform: none !important;
+    top: unset !important;
+    left: unset !important;
+    right: unset !important;
+    bottom: unset !important;
     @apply
-    top-auto
-    left-auto
-    right-auto
-    bottom-auto
     relative
     w-fit
     inline-flex
@@ -159,19 +162,22 @@
     .wpbs-slider-nav__btn,
     .wpbs-slider-nav__pagination {
       transform: none !important;
+      top: unset !important;
+      left: unset !important;
+      right: unset !important;
+      bottom: unset !important;
       @apply
-      top-auto
-      left-auto
-      right-auto
-      bottom-auto
       relative
     }
 
     .wpbs-slider-nav__pagination.swiper-pagination-progressbar {
-      width: min(5rem, 100%) !important;
-      height: 4px;
       position: relative;
       flex-shrink: 0;
+      transform: none !important;
+      top: unset !important;
+      left: unset !important;
+      right: unset !important;
+      bottom: unset !important;
     }
   }
 

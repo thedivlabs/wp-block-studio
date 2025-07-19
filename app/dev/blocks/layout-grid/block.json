@@ -9,6 +9,10 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
+    },
+    "wpbs-grid-settings": {
+      "type": "object",
+      "show_in_rest": true
     }
   },
   "allowedBlocks": [
@@ -24,6 +28,7 @@
     }
   ],
   "providesContext": {
+    "wpbs/settings": "wpbs-grid-settings",
     "wpbs/grid": "wpbs-grid",
     "wpbs/query": "wpbs-query"
   },

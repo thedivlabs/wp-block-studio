@@ -23,8 +23,11 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, context}) => {
 
-        const {label = 'View More', enabled = true} = context?.['settings'] ?? {};
-
+        const {
+            label = 'View More',
+            enabled = true
+        } = context?.['wpbs/settings']?.button ?? context?.['wpbs/settings'] ?? {};
+        
         useEffect(() => {
             setAttributes({
                 'wpbs-pagination-button': {

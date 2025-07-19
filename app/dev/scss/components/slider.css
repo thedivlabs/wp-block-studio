@@ -134,13 +134,15 @@
     .wpbs-slider-nav__pagination {
       transform: translateX(-50%);
       height: 4px;
+      width: 5rem;
+      flex-shrink: 0;
       @apply
       absolute top-auto right-auto left-1/2 bottom-2
       inline-flex items-center justify-center gap-1 leading-none empty:hidden
     }
 
-    .wpbs-slider-nav__pagination.swiper-pagination-progressbar {
-      width: 5rem !important;
+    .wpbs-slider-nav__pagination.swiper-pagination-bullets {
+      width: auto;
     }
 
 
@@ -166,19 +168,12 @@
       left: unset !important;
       right: unset !important;
       bottom: unset !important;
+      position: relative;
       @apply
       relative
     }
 
-    .wpbs-slider-nav__pagination.swiper-pagination-progressbar {
-      position: relative;
-      flex-shrink: 0;
-      transform: none !important;
-      top: unset !important;
-      left: unset !important;
-      right: unset !important;
-      bottom: unset !important;
-    }
+ 
   }
 
 }

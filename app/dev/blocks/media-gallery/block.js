@@ -21,7 +21,7 @@ import {cleanObject} from "Includes/helper"
 function blockClassnames(attributes = {}) {
 
     const isSlider = attributes?.className?.includes('is-style-slider');
-    
+
     return [
         'wpbs-media-gallery h-max',
         'flex flex-col w-full relative overflow-hidden',
@@ -64,6 +64,10 @@ registerBlockType(metadata.name, {
                     grid: !isSlider ? attributes?.['wpbs-grid'] : {},
                     slider: isSlider ? attributes?.['wpbs-swiper-args'] : {},
                     gallery: attributes?.['wpbs-media-gallery'],
+                    button: {
+                        label: attributes?.['wpbs-media-gallery']?.button_label,
+                        enabled: !!attributes?.['wpbs-media-gallery']?.page_size,
+                    }
                 })
             });
         }, [attributes?.['wpbs-media-gallery'], attributes?.['wpbs-grid'], attributes?.['wpbs-swiper-args'], styleType])
@@ -116,11 +120,6 @@ registerBlockType(metadata.name, {
             ],
         });
 
-        const buttonSettings = {
-            label: attributes?.['wpbs-media-gallery']?.button_label,
-            enabled: !!attributes?.['wpbs-media-gallery']?.page_size,
-        };
-
         return (
             <>
                 <InspectorControls group="styles">
@@ -141,15 +140,12 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
 
-                <BlockContextProvider value={{settings: buttonSettings}}>
-                    {isSlider ? <SliderComponent
-                        attributes={attributes}
-                        blockProps={blockProps}
-                        innerBlocksProps={innerBlocksProps}
-                        ref={swiperRef}
-                    /> : <div {...innerBlocksProps} />}
-
-                </BlockContextProvider>
+                {isSlider ? <SliderComponent
+                    attributes={attributes}
+                    blockProps={blockProps}
+                    innerBlocksProps={innerBlocksProps}
+                    ref={swiperRef}
+                /> : <div {...innerBlocksProps} />}
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-grid', 'wpbs-slider']}

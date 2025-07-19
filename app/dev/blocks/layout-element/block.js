@@ -20,7 +20,7 @@ const selector = 'wpbs-layout-element';
 const classNames = (attributes = {}) => {
 
     return [
-        selector + ' w-full block relative',
+        selector + ' w-full block relative wpbs-container',
         !!attributes['wpbs-background'] ? 'wpbs-has-container' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');

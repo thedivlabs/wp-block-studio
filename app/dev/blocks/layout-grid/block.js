@@ -19,6 +19,7 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
+import {cleanObject} from "Includes/helper";
 
 
 function classNames(attributes = {}) {
@@ -50,6 +51,18 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
         const {attributes, setAttributes, clientId} = props;
+
+        useEffect(() => {
+
+            setAttributes({
+                'wpbs-grid-settings': cleanObject({
+                    button: {
+                        label: attributes?.['wpbs-loop']?.pagination_label,
+                        enabled: !!attributes?.['wpbs-loop']?.posts_per_page,
+                    }
+                })
+            });
+        }, [attributes?.['wpbs-loop']])
 
         const cssProps = useMemo(() => {
             return gridProps(attributes);
@@ -120,7 +133,7 @@ registerBlockType(metadata.name, {
                     {innerBlocksProps.children}
                     <BackgroundElement attributes={attributes} editor={true}/>
                 </div>
-                
+
             </>
         )
     },

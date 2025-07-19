@@ -18,6 +18,9 @@
       "label": "Group"
     }
   ],
+  "usesContext": [
+    "wpbs/settings"
+  ],
   "supports": {
     "typography": {
       "fontSize": true

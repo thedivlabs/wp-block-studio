@@ -67,7 +67,7 @@ registerBlockType(metadata.name, {
             type: 'object'
         }
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: ({attributes, setAttributes, clientId, context}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-nav');
 
@@ -75,7 +75,7 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
             style: blockStyles(attributes)
         });
-
+        
         const updateSettings = useCallback((newValue) => {
 
             const result = {

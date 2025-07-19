@@ -12,7 +12,8 @@
       "type": "string"
     },
     "wpbs-slider-settings": {
-      "type": "object"
+      "type": "object",
+      "show_in_rest": true
     }
   },
   "allowedBlocks": [

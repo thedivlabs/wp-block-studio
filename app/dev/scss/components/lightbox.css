@@ -52,7 +52,7 @@
     }
   }
 
-  .wpbs-lightbox__slider.swiper {
+  .wpbs-lightbox__slider.swiper.wpbs-slider {
     grid-template-rows: calc(100% - clamp(24px, 3rem, 5vh)) 1fr;
     @apply
     grid
@@ -79,6 +79,52 @@
       lg:p-5
       xl:p-6
     }
+
+    .wpbs-lightbox-nav {
+      z-index: 200;
+      display: flex !important;
+      height: clamp(24px, 3rem, 5vh);
+      opacity: 1 !important;
+
+      @apply
+      gap-3
+      pointer-events-auto
+      w-full
+      items-center
+      justify-center
+      bg-black/50
+      text-center
+      absolute
+      left-0
+      bottom-0
+      text-white
+      ;
+
+      &:has(> button.swiper-button-lock) {
+        display: none !important;
+      }
+
+      .wpbs-lightbox-nav__button {
+        //background: transparent !important;
+        font-size: 1.2rem !important;
+        line-height: 1.3em !important;
+        color: white !important;
+        height: 1.4em !important;
+
+        @apply
+        aspect-square
+        cursor-pointer
+      }
+
+
+      .wpbs-lightbox-nav__pagination {
+        @apply
+        max-w-12
+        relative
+        top-auto
+        left-auto
+      }
+    }
   }
 
   .wpbs-video {
@@ -94,52 +140,6 @@
     overflow-hidden
     bg-black/70
     m-auto
-  }
-
-  .wpbs-lightbox-nav {
-    z-index: 200;
-    display: flex !important;
-    height: clamp(24px, 3rem, 5vh);
-    opacity: 1 !important;
-
-    @apply
-    gap-3
-    pointer-events-auto
-    w-full
-    items-center
-    justify-center
-    bg-black/50
-    text-center
-    absolute
-    left-0
-    bottom-0
-    text-white
-    ;
-
-    &:has(> button.swiper-button-lock) {
-      display: none !important;
-    }
-
-    .wpbs-lightbox-nav__button {
-      //background: transparent !important;
-      font-size: 1.2rem !important;
-      line-height: 1.3em !important;
-      color: white !important;
-      height: 1.4em !important;
-
-      @apply
-      aspect-square
-      cursor-pointer
-    }
-
-
-    .wpbs-lightbox-nav__pagination {
-      @apply
-      max-w-12
-      relative
-      top-auto
-      left-auto
-    }
   }
 
 

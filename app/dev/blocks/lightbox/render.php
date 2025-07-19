@@ -18,7 +18,7 @@ $media = WPBS::clean_array( array_map( function ( $item ) {
 ?>
 
 <div class="wpbs-lightbox flex w-full h-screen overflow-hidden wpbs-lightbox--group">
-    <div class="wpbs-lightbox__slider swiper">
+    <div class="wpbs-lightbox__slider wpbs-slider swiper">
         <div class="wpbs-lightbox__container swiper-wrapper">
 
 			<?php
@@ -56,13 +56,13 @@ $media = WPBS::clean_array( array_map( function ( $item ) {
 			?>
 
         </div>
-        <div class="wpbs-lightbox-nav wpbs-slider-nav">
-            <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--prev">
-                <i class="fa-light fa-arrow-left"></i>
+        <div class="wpbs-lightbox-nav wpbs-slider-nav is-style-group">
+            <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--prev wpbs-slider-nav__btn wpbs-slider-nav__btn--prev">
+                <span class="screen-reader-text">Previous</span>
             </button>
-            <div class="wpbs-lightbox-nav__pagination swiper-pagination"></div>
-            <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--next">
-                <i class="fa-light fa-arrow-right"></i>
+            <div class="wpbs-lightbox-nav__pagination wpbs-slider-nav__pagination swiper-pagination"></div>
+            <button class="wpbs-lightbox-nav__button wpbs-lightbox-nav__button--next wpbs-slider-nav__btn wpbs-slider-nav__btn--next">
+                <span class="screen-reader-text">Next</span>
             </button>
         </div>
     </div>

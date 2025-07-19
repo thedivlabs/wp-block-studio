@@ -149,11 +149,11 @@
   }
 
   .wpbs-slider-nav.is-style-group {
-    transform: none !important;
-    top: unset !important;
-    left: unset !important;
-    right: unset !important;
-    bottom: unset !important;
+    transform: none;
+    top: unset;
+    left: unset;
+    right: unset;
+    bottom: unset;
     @apply
     relative
     w-fit
@@ -163,17 +163,17 @@
 
     .wpbs-slider-nav__btn,
     .wpbs-slider-nav__pagination {
-      transform: none !important;
-      top: unset !important;
-      left: unset !important;
-      right: unset !important;
-      bottom: unset !important;
+      transform: none;
+      top: unset;
+      left: unset;
+      right: unset;
+      bottom: unset;
       position: relative;
       @apply
       relative
     }
 
- 
+
   }
 
 }

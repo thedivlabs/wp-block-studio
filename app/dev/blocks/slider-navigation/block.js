@@ -54,7 +54,7 @@ function BlockContent({props, options = {}}) {
         <button type="button" className={prevClass}>
             <span className="screen-reader-text">Previous Slide</span>
         </button>
-        {!!slider?.pagination?.enabled ? <div className={paginationClass}></div> : null}
+        {!!slider?.pagination ? <div className={paginationClass}></div> : null}
         <button type="button" className={nextClass}>
             <span className="screen-reader-text">Next Slide</span>
         </button>
@@ -82,7 +82,9 @@ registerBlockType(metadata.name, {
 
 
         const slider = context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
-        
+
+        console.log(slider);
+
         useEffect(() => {
 
             const result = {

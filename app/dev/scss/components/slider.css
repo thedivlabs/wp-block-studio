@@ -55,7 +55,6 @@
 
 /* Slider nav hidden when not initialized */
 .wpbs-slider:not(.swiper-initialized) .wpbs-slider-nav {
-  opacity: 0;
   pointer-events: none !important;
 }
 
@@ -145,10 +144,16 @@
   }
 
   .wpbs-slider-nav.is-style-group {
+    translate: none !important;
     @apply
+    top-auto
+    left-auto
+    right-auto
+    bottom-auto
     relative
     w-fit
     inline-flex
+    h-auto
     ;
 
     .wpbs-slider-nav__btn,

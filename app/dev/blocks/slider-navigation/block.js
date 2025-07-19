@@ -49,12 +49,10 @@ function BlockContent({props, attributes}) {
 
     return <div {...props}>
         <button type="button" className={prevClass}>
-            <i className="fa-light fa-arrow-left"></i>
             <span className="screen-reader-text">Previous Slide</span>
         </button>
         <div className={paginationClass}></div>
         <button type="button" className={nextClass}>
-            <i className="fa-light fa-arrow-right"></i>
             <span className="screen-reader-text">Next Slide</span>
         </button>
     </div>;

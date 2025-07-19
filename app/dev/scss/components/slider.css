@@ -106,6 +106,7 @@
       line-height: inherit;
       color: inherit;
       display: block;
+      font-weight: inherit;
     }
 
     .wpbs-slider-nav__btn:active {
@@ -124,7 +125,6 @@
 
     .wpbs-slider-nav__btn--next:before {
       content: var(--wp--custom--slider--icon--next, '\f054');
-      background-color: red !important;
     }
 
     .wpbs-slider-nav__btn--prev:before {

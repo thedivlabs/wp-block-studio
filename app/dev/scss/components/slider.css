@@ -67,6 +67,7 @@
 
 
   .wpbs-slider-nav {
+    --btn-scale: 1;
     @apply
     absolute
     top-0
@@ -85,7 +86,7 @@
     .wpbs-slider-nav__btn {
       transition: opacity 0.3s;
       transform-origin: center;
-      transform: translateY(-50%);
+      transform: translateY(-50%) scale(var(--btn-scale, 1));
       @apply
       top-1/2
       pointer-events-auto
@@ -110,7 +111,7 @@
     }
 
     .wpbs-slider-nav__btn:active {
-      transform: scale(1.07);
+      --btn-scale: 1.07;
     }
 
     .wpbs-slider-nav__btn--prev {
@@ -171,6 +172,10 @@
       position: relative;
       @apply
       relative
+    }
+
+    .wpbs-slider-nav__btn {
+      transform: scale(var(--btn-scale, 1));
     }
 
 

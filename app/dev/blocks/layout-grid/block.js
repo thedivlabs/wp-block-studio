@@ -51,18 +51,18 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
         const {attributes, setAttributes, clientId} = props;
-
+        
         useEffect(() => {
 
             setAttributes({
                 'wpbs-grid-settings': cleanObject({
                     button: {
-                        label: attributes?.['wpbs-loop']?.pagination_label,
-                        enabled: !!attributes?.['wpbs-loop']?.posts_per_page,
+                        label: attributes?.['wpbs-query']?.pagination_label,
+                        enabled: !!attributes?.['wpbs-query']?.posts_per_page,
                     }
                 })
             });
-        }, [attributes?.['wpbs-loop']])
+        }, [attributes?.['wpbs-query']])
 
         const cssProps = useMemo(() => {
             return gridProps(attributes);

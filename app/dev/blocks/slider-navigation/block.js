@@ -10,17 +10,16 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
 } from "@wordpress/components";
-import {useCallback, useEffect, useState} from "react";
-import {select, useSelect} from "@wordpress/data";
+import React, {useCallback} from "react";
+import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
+import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
 
 function blockClasses(attributes = {}) {
 
-    const isGroupStyle = (attributes?.className ?? '').includes('is-style-group');
-
     return [
         'wpbs-slider-nav',
-        isGroupStyle ? '--group' : null,
+        attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
 
@@ -62,11 +61,15 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...LAYOUT_ATTRIBUTES,
+        ...STYLE_ATTRIBUTES,
         'wpbs-slider-navigation': {
             type: 'object'
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
+
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-nav');
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
@@ -121,6 +124,11 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
 
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <Style attributes={attributes} setAttributes={setAttributes}
+                   uniqueId={uniqueId}
+                   deps={['wpbs-slider-navigation']}
+            />
 
             <BlockContent props={blockProps} attributes={attributes}/>
         </>;

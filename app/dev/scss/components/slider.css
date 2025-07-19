@@ -144,7 +144,7 @@
     inline-flex items-center justify-center gap-1 leading-none empty:hidden
   }
 
-  .wpbs-slider-nav.--group {
+  .wpbs-slider-nav.is-style-group {
     @apply
     relative
     w-fit

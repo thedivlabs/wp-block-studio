@@ -10,7 +10,6 @@ import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
-import {useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 import {
     __experimentalUnitControl as UnitControl,
@@ -54,7 +53,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group');
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -238,8 +237,6 @@ registerBlockType(metadata.name, {
 
         const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
         const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
-
-        console.log(iconOpen);
 
         const ElementTag = attributes['wpbs-accordion-group']?.['tag'] ?? 'div';
 

@@ -82,9 +82,7 @@ registerBlockType(metadata.name, {
 
 
         const slider = context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
-
-        console.log(slider);
-
+        
         useEffect(() => {
 
             const result = {

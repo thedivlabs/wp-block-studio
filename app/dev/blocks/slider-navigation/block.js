@@ -11,6 +11,7 @@ import {
     PanelBody,
 } from "@wordpress/components";
 import {useCallback, useEffect, useState} from "react";
+import {select, useSelect} from "@wordpress/data";
 
 
 function blockClasses(attributes = {}) {
@@ -84,6 +85,7 @@ registerBlockType(metadata.name, {
             setAttributes({'wpbs-slider-navigation': result});
 
         }, [setAttributes, attributes['wpbs-slider-navigation']]);
+
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

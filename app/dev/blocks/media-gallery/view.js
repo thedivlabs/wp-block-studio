@@ -32,13 +32,14 @@ const {state} = store('wpbs/media-gallery', {
             const container = element.querySelector(':scope > .wpbs-media-gallery-container');
             const args = JSON.parse(element.querySelector('script.wpbs-media-gallery-args')?.textContent ?? '{}');
 
-            const {gallery, slider: swiper_args, grid, uniqueId} = args;
+            const {settings} = args;
+            const {gallery, slider: swiper_args, type, uniqueId, grid} = settings;
 
             if (!uniqueId) {
                 return;
             }
 
-            const is_slider = gallery?.type === 'slider';
+            const is_slider = type === 'slider';
 
             if (!!is_slider && swiper_args) {
                 WPBS.slider.observe(element, swiper_args);
@@ -47,7 +48,7 @@ const {state} = store('wpbs/media-gallery', {
             if (!is_slider) {
                 WPBS.setMasonry(container);
 
-                WPBS.gridDividers(element, grid, uniqueId);
+                WPBS.gridDividers(element, grid, settings?.uniqueId);
             }
 
             if (element.classList.contains('--last-page')) {

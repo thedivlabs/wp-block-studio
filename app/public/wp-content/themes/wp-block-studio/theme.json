@@ -557,6 +557,12 @@
         "color": "var:preset|color|primary-hover",
         "background": "transparent",
         "opacity": "0"
+      },
+      "slider": {
+        "icon": {
+          "prev": "\\f060",
+          "next": "\\f061"
+        }
       }
     },
     "spacing": {

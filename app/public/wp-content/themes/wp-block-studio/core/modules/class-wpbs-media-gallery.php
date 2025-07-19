@@ -34,6 +34,8 @@ class WPBS_Media_Gallery {
 			'archives'  => 'Media Gallery',
 		];
 
+		WPBS::console_log( 'qqqqq' );
+
 		WPBS_CPT::register( self::SINGULAR, self::PLURAL, self::SLUG, $args, $labels );
 
 		WPBS_Taxonomy::register( self::TAX_SINGULAR, self::TAX_PLURAL, self::SLUG, self::TAX_SLUG, false );

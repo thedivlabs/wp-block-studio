@@ -156,11 +156,13 @@ class WPBS {
 		require_once self::$core_path . 'modules/class-wpbs-cpt.php';
 		require_once self::$core_path . 'modules/class-wpbs-taxonomy.php';
 		require_once self::$core_path . 'modules/class-wpbs-popup.php';
+		require_once self::$core_path . 'modules/class-wpbs-media-gallery.php';
 
 		WPBS_WP::init();
 		WPBS_Blocks::init();
 		WPBS_Style::init();
 		WPBS_Popup::init();
+		WPBS_Media_Gallery::init();
 
 		self::init_classes( 'core/components' );
 
@@ -492,22 +494,6 @@ class WPBS {
 		}
 
 		return $template;
-	}
-
-	public static function sanitize_query_args( $args ): array {
-		$sanitized = [];
-
-		foreach ( $args as $key => $value ) {
-			$sanitized[ $key ] = match ( $key ) {
-				'post_type', 'orderby', 'order', 'post_status', 'author_name', 'name' => sanitize_key( $value ),
-				'posts_per_page', 'paged', 'author', 'p' => absint( $value ),
-				'post__in', 'post__not_in', 'category__in', 'tag__in' => array_map( 'absint', (array) $value ),
-				's' => sanitize_text_field( $value ),
-				default => is_scalar( $value ) ? sanitize_text_field( $value ) : $value,
-			};
-		}
-
-		return WPBS::clean_array( $sanitized );
 	}
 
 	public static function init_classes( $dir, $init = true ): void {

@@ -32,7 +32,7 @@ function blockStyles(attributes = {}) {
     );
 }
 
-function BlockContent({props, options}) {
+function BlockContent({props, options = {}}) {
 
     const buttonClass = 'wpbs-slider-nav__btn';
 
@@ -48,7 +48,7 @@ function BlockContent({props, options}) {
         'wpbs-slider-nav__btn--next wpbs-slider-btn--next',
     ].filter(x => x).join(' ');
 
-    const paginationClass = 'wpbs-slider-nav__pagination swiper-pagination ';
+    const paginationClass = 'wpbs-slider-nav__pagination swiper-pagination';
 
     return <div {...props}>
         <button type="button" className={prevClass}>
@@ -73,23 +73,27 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-nav');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-navigation');
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
             style: blockStyles(attributes)
         });
 
-        const {slider = {}} = context?.['wpbs/settings'] ?? {};
+
+        const {slider = {}} = context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
+
+        console.log(slider);
 
         useEffect(() => {
+
             const result = {
                 ...attributes['wpbs-slider-navigation'],
                 slider: slider
             }
 
             setAttributes({'wpbs-slider-navigation': result});
-        }, [slider]);
+        }, [context?.['wpbs/settings']]);
 
         const updateSettings = useCallback((newValue) => {
 
@@ -145,7 +149,7 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-slider-navigation']}
             />
 
-            <BlockContent props={blockProps} options={attributes?.['wpbs-slider-navigation']}/>
+            <BlockContent props={blockProps} options={attributes?.['wpbs-slider-navigation'] ?? {}}/>
         </>;
     },
     save: (props) => {
@@ -156,7 +160,7 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <BlockContent props={blockProps} options={props.attributes?.['wpbs-slider-navigation']}/>
+            <BlockContent props={blockProps} options={props.attributes?.['wpbs-slider-navigation'] ?? {}}/>
         );
     }
 })

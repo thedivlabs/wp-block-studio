@@ -10,6 +10,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "wpbs-slider-settings": {
+      "type": "object"
     }
   },
   "allowedBlocks": [
@@ -24,7 +27,8 @@
     }
   ],
   "providesContext": {
-    "wpbs/loopQuery": "loopQuery"
+    "wpbs/loopQuery": "loopQuery",
+    "wpbs/settings": "wpbs-slider-settings"
   },
   "supports": {
     "innerBlocks": true,

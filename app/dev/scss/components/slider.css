@@ -144,7 +144,7 @@
   }
 
   .wpbs-slider-nav.is-style-group {
-    translate: none !important;
+    transform: none !important;
     @apply
     top-auto
     left-auto
@@ -158,7 +158,7 @@
 
     .wpbs-slider-nav__btn,
     .wpbs-slider-nav__pagination {
-      translate: none !important;
+      transform: none !important;
       @apply
       top-auto
       left-auto

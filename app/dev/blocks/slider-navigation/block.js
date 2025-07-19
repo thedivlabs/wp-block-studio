@@ -10,7 +10,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
 } from "@wordpress/components";
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
@@ -32,7 +32,7 @@ function blockStyles(attributes = {}) {
     );
 }
 
-function BlockContent({props, options}) {
+function BlockContent({props, attributes}) {
 
     const buttonClass = 'wpbs-slider-nav__btn';
 
@@ -79,12 +79,21 @@ registerBlockType(metadata.name, {
         });
 
         const {slider = {}} = context?.['wpbs/settings'] ?? {};
-        
+
+        useEffect(() => {
+            const result = {
+                ...attributes['wpbs-slider-navigation'],
+                slider: slider
+            }
+
+            setAttributes({'wpbs-slider-navigation': result});
+        }, [slider]);
+
         const updateSettings = useCallback((newValue) => {
 
             const result = {
                 ...attributes['wpbs-slider-navigation'],
-                ...newValue
+                ...newValue,
             }
 
             setAttributes({'wpbs-slider-navigation': result});
@@ -134,7 +143,7 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-slider-navigation']}
             />
 
-            <BlockContent props={blockProps} options={slider}/>
+            <BlockContent props={blockProps} options={attributes?.['wpbs-slider-navigation']}/>
         </>;
     },
     save: (props) => {
@@ -145,7 +154,7 @@ registerBlockType(metadata.name, {
         });
 
         return (
-            <BlockContent props={blockProps} attributes={props.attributes}/>
+            <BlockContent props={blockProps} options={props.attributes?.['wpbs-slider-navigation']}/>
         );
     }
 })

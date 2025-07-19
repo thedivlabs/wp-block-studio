@@ -32,9 +32,11 @@ function blockStyles(attributes = {}) {
     );
 }
 
-function BlockContent({props, attributes}) {
+function BlockContent({props, options}) {
 
     const buttonClass = 'wpbs-slider-nav__btn';
+
+    const {slider = {}} = options;
 
     const prevClass = [
         buttonClass,
@@ -52,7 +54,7 @@ function BlockContent({props, attributes}) {
         <button type="button" className={prevClass}>
             <span className="screen-reader-text">Previous Slide</span>
         </button>
-        {!!options?.pagination?.enabled ? <div className={paginationClass}></div> : null}
+        {!!slider?.pagination?.enabled ? <div className={paginationClass}></div> : null}
         <button type="button" className={nextClass}>
             <span className="screen-reader-text">Next Slide</span>
         </button>

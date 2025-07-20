@@ -18,7 +18,6 @@ export const GRID_ATTRIBUTES = {
             'columns-large': undefined,
             'breakpoint-small': undefined,
             'masonry': undefined,
-            'gallery': {},
             'divider': {},
             'divider-icon': undefined,
             'divider-icon-size': undefined,
@@ -71,12 +70,12 @@ export const GridControls = ({attributes, setAttributes}) => {
         };
 
         result.loop = (attributes?.className ?? '').includes('is-style-loop');
-
+        
         setAttributes({
             'wpbs-grid': result,
         });
 
-    }, [grid, setAttributes]);
+    }, [grid, setAttributes, attributes?.className]);
 
 
     return <Grid columns={1} columnGap={15} rowGap={20}>

@@ -30,7 +30,6 @@ function classNames(attributes = {}) {
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',
-        (attributes?.className ?? '').includes('is-style-gallery') ? 'lightbox-gallery' : null,
         attributes?.uniqueId,
     ].filter(x => x).join(' ');
 }
@@ -51,7 +50,7 @@ registerBlockType(metadata.name, {
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
         const {attributes, setAttributes, clientId} = props;
-        
+
         useEffect(() => {
 
             setAttributes({

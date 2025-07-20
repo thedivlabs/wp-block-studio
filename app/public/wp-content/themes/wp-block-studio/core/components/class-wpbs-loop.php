@@ -10,7 +10,6 @@ class WPBS_Loop {
 	public bool $is_query;
 	public bool $is_term_loop;
 	public bool $is_current;
-	public bool $is_pagination;
 	public array|WP_Query $query;
 
 
@@ -25,7 +24,6 @@ class WPBS_Loop {
 
 		$this->is_term_loop     = ! empty( $query['loop_terms'] );
 		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
-		$this->is_pagination    = ! empty( $query['pagination'] );
 		$this->pagination_label = $query['pagination-label'] ?? 'Show More';
 
 		$new_content = '';
@@ -125,6 +123,12 @@ class WPBS_Loop {
 
 		if ( empty( $query ) ) {
 			return false;
+		}
+
+		if ( $this->is_current ) {
+			global $wp_query;
+
+			return $wp_query;
 		}
 
 		if ( is_a( $query, 'WP_Query' ) ) {

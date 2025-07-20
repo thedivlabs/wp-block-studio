@@ -19,7 +19,7 @@ $loop = ! $is_loop ? false : new WPBS_Loop( $card_block ?? false, $query_setting
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-layout-grid-container loop-container w-full flex flex-wrap relative z-20 relative',
-		$loop->is_last ? '--last-page' : null,
+		( $loop->is_last ?? false ) ? '--last-page' : null,
 		$attributes['uniqueId'] ?? null
 	] ) )
 ] );

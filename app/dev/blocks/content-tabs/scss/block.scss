@@ -58,6 +58,7 @@
 
     button {
 
+      cursor: pointer;
       background-color: var(--button-background, transparent);
       color: var(--button-text, inherit);
       border: var(--button-border, none);

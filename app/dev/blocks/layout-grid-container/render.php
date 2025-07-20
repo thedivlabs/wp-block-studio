@@ -48,7 +48,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <?php
 
 
-if ( $is_loop ) {
+if ( $is_loop && ! empty( $loop->query ) && ! empty( $loop->card ) ) {
 
 	echo $loop->pagination( $loop->query );
 

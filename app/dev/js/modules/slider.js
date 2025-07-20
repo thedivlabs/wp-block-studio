@@ -25,9 +25,7 @@ export default class Slider {
                 prevEl: element.querySelector('.wpbs-slider-btn--prev'),
             },
         });
-
-        console.log(args);
-
+        
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {

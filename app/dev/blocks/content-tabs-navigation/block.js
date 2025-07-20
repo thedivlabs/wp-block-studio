@@ -53,7 +53,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-navigation');
 
         const {tabPanels = [], tabActive = null, setTabActive} = context;
 
@@ -101,7 +101,7 @@ registerBlockType(metadata.name, {
             <nav {...blockProps} >
                 {tabPanels.map((panel) => {
                     const isActive = panel.clientId === tabActive;
-
+                    console.log(panel);
                     return (
                         <button
                             key={panel.clientId}

@@ -14,6 +14,7 @@ import {useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useMemo} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
+import {TextControl} from "@wordpress/components";
 
 
 function classNames(attributes, isActive = false, editor = false) {
@@ -49,7 +50,15 @@ registerBlockType(metadata.name, {
         const innerBlocksProps = useInnerBlocksProps(blockProps);
 
         return <>
-
+            <InspectorControls group={'advanced'}>
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Title"
+                    value={attributes?.title}
+                    onChange={(value) => setAttributes({title: value})}
+                />
+            </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-panel']}

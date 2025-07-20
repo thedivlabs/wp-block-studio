@@ -38,7 +38,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-container');
 
         const blockProps = useBlockProps({
             className: classNames(attributes),

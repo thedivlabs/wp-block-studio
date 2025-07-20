@@ -64,7 +64,7 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
 
         const [tabActive, setTabActive] = useState(0);
         const [tabPanels, setTabPanels] = useState([]);

@@ -10,6 +10,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "title": {
+      "type": "string"
     }
   },
   "usesContext": [

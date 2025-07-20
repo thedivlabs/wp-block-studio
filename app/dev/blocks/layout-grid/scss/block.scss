@@ -11,8 +11,7 @@
 
 /* Pagination numbers grid */
 .wpbs-layout-grid .wp-block-query-pagination .wp-block-query-pagination-numbers {
-  display: inline-grid;
-  grid-template-columns: repeat(auto-fit, minmax(1em, 1fr));
+  display: inline-flex;
   width: fit-content;
   max-width: 100%;
   align-items: stretch;

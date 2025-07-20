@@ -47,6 +47,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 <?php
 
+echo $loop->pagination( $loop->query );
+
 if ( $is_loop ) {
 	echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 			'card'     => $loop->card,

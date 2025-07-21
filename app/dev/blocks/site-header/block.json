@@ -10,13 +10,20 @@
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-site-header-settings": {
+    "wpbs-site-header": {
       "type": "object",
-      "show_in_rest": true
+      "show_in_rest": true,
+      "default": {
+        "float": false,
+        "sticky": false,
+        "hidden": false,
+        "reverse": false,
+        "reverse_color": false
+      }
     }
   },
   "providesContext": {
-    "wpbs/settings": "wpbs-site-header-settings"
+    "wpbs/settings": "wpbs-site-header"
   },
   "supports": {
     "layout": false,

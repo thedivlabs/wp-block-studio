@@ -34,16 +34,6 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-site-header': {
-            type: 'object',
-            default: {
-                float: false,
-                sticky: false,
-                hidden: false,
-                reverse: false,
-                reverse_color: false,
-            }
-        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 

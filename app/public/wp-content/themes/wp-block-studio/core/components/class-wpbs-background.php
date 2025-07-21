@@ -7,11 +7,37 @@ class WPBS_Background {
 	private function __construct() {
 
 		add_filter( 'wpbs_loop_block', [ $this, 'set_block_data' ], 10, 3 );
+		add_filter( 'wpbs_block_css', [ $this, 'parse_block_css' ], 10, 3 );
 
 	}
 
-	public function set_block_data( $block, $original_id, $selector ): WP_Block {
+	public function parse_block_css( $css, $attributes ): string {
 
+
+		if ( ( $attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
+
+			$img_id_large  = get_post_thumbnail_id( get_the_ID() ) ?: ( $attributes['wpbs-background']['largeImage']['id'] ?? $attributes['wpbs-background']['mobileImage']['id'] ?? false );
+			$img_src_large = wp_get_attachment_image_src( $img_id_large, $attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
+
+			$img_id_mobile  = get_post_thumbnail_id( get_the_ID() ) ?: ( $attributes['wpbs-background']['mobileImage']['id'] ?? $attributes['wpbs-background']['largeImage']['id'] ?? false );
+			$img_src_mobile = wp_get_attachment_image_src( $img_id_mobile, $attributes['wpbs-background']['resolutionMobile'] ?? $attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
+
+			$css = str_replace(
+				[ '%POST_IMG_URL_LARGE%', '%POST_IMG_URL_MOBILE%' ],
+				[
+					'url(' . $img_src_large . ')',
+					'url(' . $img_src_mobile . ')',
+				],
+				$css
+			);
+
+		}
+
+
+		return $css;
+	}
+
+	public function set_block_data( $block, $original_id, $selector ): WP_Block {
 
 		if ( ( $block->attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
 
@@ -30,7 +56,7 @@ class WPBS_Background {
 				],
 				$block->attributes['wpbs-css']
 			);
-			
+
 			return $block;
 
 		}

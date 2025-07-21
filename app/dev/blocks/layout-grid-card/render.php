@@ -38,4 +38,9 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 	echo $block->inner_content[ count( $block->inner_content ?? [] ) - 1 ] ?? '';
 
 	?>
+
+
+	<?php echo WPBS_Blocks::render_block_styles( $attributes ?? false, '', true ) ?>
 </div>
+
+

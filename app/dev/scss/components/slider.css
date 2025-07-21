@@ -144,6 +144,13 @@
 
     .wpbs-slider-nav__pagination.swiper-pagination-bullets {
       width: auto;
+      height: auto;
+      max-width: 100%;
+      display: block;
+
+      .swiper-pagination-bullet {
+        aspect-ratio: 1/1;
+      }
     }
 
 

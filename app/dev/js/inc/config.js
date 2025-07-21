@@ -177,7 +177,9 @@ export const SWIPER_ARGS_DEFAULT = {
     pagination: {
         enabled: true,
         el: '.swiper-pagination',
-        type: 'progressbar'
+        type: 'progressbar',
+        dynamicBullets: true,
+        dynamicMainBullets: 1,
     },
     passiveListeners: true,
     preventClicks: false,

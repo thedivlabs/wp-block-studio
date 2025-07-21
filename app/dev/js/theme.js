@@ -214,9 +214,6 @@ class WPBS_Theme {
     }
 
     observeMedia(refElement) {
-        if (!refElement) {
-            return false;
-        }
 
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {
@@ -255,7 +252,9 @@ class WPBS_Theme {
             threshold: 0,
         });
 
-        observerIntersection.observe(refElement);
+        [...(refElement || document).querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background')].forEach((el) => observerIntersection.observe(el));
+
+
     }
 
     slideToggle(element, duration, callback) {
@@ -273,12 +272,9 @@ class WPBS_Theme {
     init() {
 
         wp.domReady(() => {
-            const media = document.querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background');
 
 
-            [...media].forEach((media) => {
-                this.observeMedia(media);
-            });
+            this.observeMedia();
         })
 
 

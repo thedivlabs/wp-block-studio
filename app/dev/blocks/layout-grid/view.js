@@ -106,7 +106,7 @@ const {state} = store('wpbs/layout-grid', {
                     WPBS.setMasonry(container);
                 }
 
-                [...container.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
+                WPBS.observeMedia(container);
 
             })
 

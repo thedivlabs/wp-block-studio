@@ -3,9 +3,9 @@
   flex-direction: column;
 }
 
-.wpbs-layout-grid .wpbs-layout-element {
-  width: fit-content;
-  display: inline-block;
+.wpbs-layout-grid > .wpbs-layout-element {
+  position: relative;
+  z-index: 20;
 }
 
 /* Pagination block full width */

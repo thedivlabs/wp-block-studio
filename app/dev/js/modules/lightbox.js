@@ -35,7 +35,7 @@ export default class Lightbox {
         const attributes = {
             media: args?.media
         }
-        
+
         fetch(endpoint, {
             method: 'POST',
             headers: {
@@ -58,7 +58,7 @@ export default class Lightbox {
                 callback: (modal) => {
                     [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
                         new Swiper(slider_element, this.swiper_args(args.index));
-                        [...modal.querySelectorAll('[data-src],[data-srcset]')].forEach((el) => WPBS.observeMedia(el));
+                        WPBS.observeMedia(modal);
                     })
                 }
             });

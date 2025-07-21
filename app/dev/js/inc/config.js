@@ -270,8 +270,6 @@ export const SWIPER_ARGS_VIEW = {
                 video.pause();
             });
 
-            [...swiper.el.querySelectorAll('.swiper-slide [data-src]')].forEach((img) => WPBS.observeMedia(img))
-
         }
     }
 };

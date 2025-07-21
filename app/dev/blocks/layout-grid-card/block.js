@@ -10,12 +10,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useCallback, useEffect} from "react";
-import {
-    __experimentalGrid as Grid,
-    ToggleControl, SelectControl, TextControl
-} from "@wordpress/components";
-import {REL_OPTIONS} from "Includes/config.js";
+import React, {useCallback} from "react";
 import {LinkPost} from "Components/LinkPost";
 
 function sectionClassNames(attributes = {}) {
@@ -69,7 +64,8 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <LinkPost defaultValue={attributes?.['wpbs-layout-grid-card']?.linkPost} callback={(value) => updateSettings({linkPost: value})} />
+                <LinkPost defaultValue={attributes?.['wpbs-layout-grid-card']?.linkPost}
+                          callback={(value) => updateSettings({linkPost: value})}/>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>

@@ -6,8 +6,10 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {useInstanceId} from "@wordpress/compose";
 import React from "react";
+
 
 function blockClassnames(attributes = {}, is_slider) {
     return [
@@ -20,7 +22,8 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...STYLE_ATTRIBUTES
+        ...STYLE_ATTRIBUTES,
+        ...LAYOUT_ATTRIBUTES,
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
@@ -40,15 +43,16 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-
-                <BlockContextProvider>
-                    <div {...innerBlocksProps} />
-                </BlockContextProvider>
-
+                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={{
                     '--grid-col-gap': 'var(--column-gap, 0px)',
                     '--grid-row-gap': 'var(--row-gap, 0px)',
                 }}/>
+
+                <BlockContextProvider>
+                    <div {...innerBlocksProps} />
+                </BlockContextProvider>
+                
             </>
         )
     },

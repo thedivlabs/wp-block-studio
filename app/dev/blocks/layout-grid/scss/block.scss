@@ -3,6 +3,11 @@
   flex-direction: column;
 }
 
+.wpbs-layout-grid .wpbs-layout-element {
+  width: fit-content;
+  display: inline-block;
+}
+
 /* Pagination block full width */
 .wpbs-layout-grid .wp-block-query-pagination {
   width: fit-content;

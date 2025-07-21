@@ -1,5 +1,7 @@
 .wpbs-background {
   background-color: inherit;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 /* Modifier: .wpbs-background--mask targeting .wpbs-background__media */

@@ -7,6 +7,7 @@ class WPBS_Loop {
 	public string $css;
 	public string $pagination_label;
 	public bool $is_last;
+	public bool $is_rest;
 	public bool $is_query;
 	public bool $is_term_loop;
 	public bool $is_current;
@@ -14,7 +15,7 @@ class WPBS_Loop {
 	public array|WP_Query $query;
 
 
-	public function __construct( WP_Block|false|array $block, $query = false, $page = 1 ) {
+	public function __construct( WP_Block|false|array $block, $query = false, $page = 1, $is_rest = false ) {
 
 		$card  = WPBS::get_block_template( is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block );
 		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
@@ -33,6 +34,7 @@ class WPBS_Loop {
 
 		$this->query = $this->is_term_loop ? $query : $this->loop_query( $query, $page );
 
+		$this->is_rest  = ! empty( $is_rest );
 		$this->is_query = is_a( $this->query, 'WP_Query' );
 		$this->is_last  = ( $this->is_query && ( $this->query->query_vars['paged'] ?? 1 ) >= ( $this->query->max_num_pages ?? 1 ) ) || is_array( $this->query );
 
@@ -46,7 +48,7 @@ class WPBS_Loop {
 
 				$new_block = $this->loop_card( $card, [
 					'postId' => get_the_id(),
-				], $query_counter );
+				], $query_counter, $is_rest );
 
 				$query_counter ++;
 
@@ -71,7 +73,7 @@ class WPBS_Loop {
 
 				$new_block = $this->loop_card( $card, [
 					'termId' => $term->term_id,
-				], $k );
+				], $k, $is_rest );
 
 				$css         .= $new_block->attributes['wpbs-css'] ?? '';
 				$new_content .= $new_block->render();
@@ -87,7 +89,7 @@ class WPBS_Loop {
 
 	}
 
-	private function loop_card( $block_template = [], $args = [], $index = false ): WP_Block|bool {
+	private function loop_card( $block_template = [], $args = [], $index = false, $is_rest = false ): WP_Block|bool {
 
 		$original_id = $block_template['attrs']['uniqueId'] ?? '';
 
@@ -110,6 +112,7 @@ class WPBS_Loop {
 		$block_template['attrs']['termId']   = $term_id;
 		$block_template['attrs']['uniqueId'] = $unique_id;
 		$block_template['attrs']['index']    = $index;
+		$block_template['attrs']['is_rest']  = true;
 
 		$new_block = new WP_Block( $block_template, array_filter( [
 			'termId'   => $term_id,

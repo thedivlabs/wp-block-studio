@@ -25,8 +25,8 @@ class WPBS_Blocks {
 
 	}
 
-	public static function render_block_styles( $attributes, $custom_css = '', $is_rest = false ): string {
-		
+	public static function render_block_styles( $attributes, $custom_css = '', $is_rest = false ): string|bool {
+
 		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
 		$css         = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
@@ -76,7 +76,9 @@ class WPBS_Blocks {
 		} );
 
 		if ( $is_rest ) {
-			return '<style>' . join( ' ', array_filter( [ $css, $custom_css ] ) ) . '</style>';
+			echo '<style>' . join( ' ', array_filter( [ $css, $custom_css ] ) ) . '</style>';
+
+			return true;
 		} else {
 			return join( ' ', array_filter( [ $css, $custom_css ] ) );
 		}

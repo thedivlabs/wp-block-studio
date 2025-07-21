@@ -18,6 +18,11 @@
       "type": "integer",
       "default": 0,
       "show_in_rest": true
+    },
+    "is_rest": {
+      "type": "boolean",
+      "default": false,
+      "show_in_rest": true
     }
   },
   "parent": [

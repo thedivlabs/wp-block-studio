@@ -17,6 +17,8 @@ $is_link = ! empty( $attributes['wpbs-layout-grid-card']['linkPost']['enabled'] 
 $link    = $is_link ? ( ! empty( $attributes['termId'] ) ? get_term_link( $attributes['termId'] ) : get_the_permalink() ) : false;
 $target  = $is_link ? ( ! empty( $attributes['wpbs-layout-grid-card']['linkPost']['linkNewTab'] ) ? '_blank' : '_self' ) : false;
 $rel     = $is_link && ( $attributes['wpbs-layout-grid-card']['linkPost']['linkRel'] ?? false );
+$is_rest = ! empty( $block->attributes['is_rest'] );
+
 
 $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20';
 
@@ -40,7 +42,7 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 	?>
 
 
-	<?php echo WPBS_Blocks::render_block_styles( $attributes ?? false, '', true ) ?>
+	<?php WPBS_Blocks::render_block_styles( $attributes ?? false, '', $is_rest ) ?>
 </div>
 
 

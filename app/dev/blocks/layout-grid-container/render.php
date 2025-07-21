@@ -14,7 +14,7 @@ $grid_settings  = WPBS::clean_array( $context['wpbs/grid'] ?? [] );
 $query_settings = WPBS::clean_array( $context['wpbs/query'] ?? [] );
 $is_loop        = ! empty( $grid_settings['loop'] );
 
-$loop = ! $is_loop ? false : new WPBS_Loop( $card_block ?? false, $query_settings, $page );
+$loop = ! $is_loop ? false : new WPBS_Loop( $card_block ?? false, $query_settings, $page, $is_rest );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
@@ -27,7 +27,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ?>
 
 <div <?php echo $wrapper_attributes ?>>
-	<?php if ( $is_loop ) {
+	<?php
+
+	if ( $is_loop ) {
 		echo $loop->content ?? false;
 	} elseif ( ! empty( $block->parsed_block['innerBlocks'] ) ) {
 

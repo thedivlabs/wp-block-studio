@@ -37,7 +37,7 @@ class WPBS_Blocks {
 				'CONTAINER' => $key === 'none' ? '100%' : $containers[ $key ] ?? $full,
 				default => $full,
 			};
-		}, $attributes['wpbs-css'] ?? '' );
+		}, ( $attributes['wpbs-css'] ?? '' ) );
 		$custom_css  = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
 			[ $full, $type, $key ] = $matches;
 

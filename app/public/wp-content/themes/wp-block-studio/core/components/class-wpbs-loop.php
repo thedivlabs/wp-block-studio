@@ -219,7 +219,7 @@ class WPBS_Loop {
 			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );
 
 			return implode( ' ', [
-				'<nav class="wp-block-query-pagination" aria-label="Pagination">',
+				'<nav class="wp-block-query-pagination relative z-20" aria-label="Pagination">',
 				'<div class="wp-block-query-pagination-numbers inline-flex w-max">' . implode( '', $pagination_links ) . '</div>',
 				'</nav>'
 			] );

@@ -5,8 +5,8 @@
 
 /* Pagination block full width */
 .wpbs-layout-grid .wp-block-query-pagination {
-  width: 100%;
-  display: block;
+  width: fit-content;
+  display: inline-block;
 }
 
 /* Pagination numbers grid */

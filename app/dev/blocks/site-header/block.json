@@ -1,0 +1,57 @@
+{
+  "name": "wpbs/site-header",
+  "title": "Site Header",
+  "description": "Display a site header element",
+  "selectors": {
+    "root": ".wpbs-site-header"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-site-header-settings": {
+      "type": "object",
+      "show_in_rest": true
+    }
+  },
+  "providesContext": {
+    "wpbs/settings": "wpbs-site-header-settings"
+  },
+  "supports": {
+    "layout": false,
+    "interactivity": true,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "icon": "format-gallery"
+}
+
+

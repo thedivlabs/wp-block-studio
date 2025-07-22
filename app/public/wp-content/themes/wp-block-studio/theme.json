@@ -335,7 +335,6 @@
         "xl": "1500px"
       },
       "header": {
-        "position": "fixed",
         "height": {
           "xs": "70px",
           "sm": "80px",
@@ -346,14 +345,6 @@
           "xs": "1.5rem",
           "sm": "2rem",
           "lg": "3rem"
-        },
-        "color": {
-          "bg": "var:preset|color|dark",
-          "float": "transparent"
-        },
-        "reverse": {
-          "color": "rgba(255,255,255,.9)",
-          "hover": "rgba(255,255,255,1)"
         }
       },
       "form": {

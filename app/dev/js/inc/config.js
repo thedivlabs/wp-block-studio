@@ -205,6 +205,8 @@ export const SWIPER_ARGS_DEFAULT = {
     initialSlide: 0,
     breakpoints: {},
     simulateTouch: false,
+    loopAdditionalSlides: 3,
+
 };
 
 export const SWIPER_ARGS_EDITOR = {

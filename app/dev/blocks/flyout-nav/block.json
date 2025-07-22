@@ -12,12 +12,7 @@
     },
     "wpbs-flyout-nav": {
       "type": "object",
-      "show_in_rest": true,
-      "default": {
-        "float": false,
-        "sticky": false,
-        "hidden": false
-      }
+      "show_in_rest": true
     }
   },
   "providesContext": {
@@ -55,9 +50,7 @@
     }
   },
   "editorScript": "file:./block.js",
-  "viewScriptModule": "file:./view.js",
-  "icon": "format-gallery",
-  "render": "file:./render.php"
+  "icon": "format-gallery"
 }
 
 

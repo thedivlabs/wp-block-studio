@@ -12,11 +12,11 @@ import React, {useCallback, useMemo} from "react";
 
 function blockClassnames(attributes = {}) {
 
-    const {'wpbs-flyout-nav': settings = {}} = attributes;
+    const {'wpbs-flyout-nav-content': settings = {}} = attributes;
 
     return [
-        'wpbs-flyout-nav',
-        'flex flex-col w-full max-w-64 relative overflow-hidden',
+        'wpbs-flyout-nav-content',
+        'flex flex-col w-full relative',
     ].filter(x => x).join(' ');
 }
 
@@ -29,9 +29,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-nav');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-nav-content');
 
-        const {'wpbs-flyout-nav': settings = {}} = attributes;
+        const {'wpbs-flyout-nav-content': settings = {}} = attributes;
 
         const cssProps = useMemo(() => {
             return {};
@@ -52,7 +52,7 @@ registerBlockType(metadata.name, {
                 ...newValue
             }
 
-            setAttributes({'wpbs-flyout-nav': result});
+            setAttributes({'wpbs-flyout-nav-content': result});
 
         }, [setAttributes, settings])
 
@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       deps={['wpbs-flyout-nav']}
+                       deps={['wpbs-flyout-nav-content']}
                        props={cssProps}
                 />
 

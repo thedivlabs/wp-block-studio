@@ -1,39 +1,56 @@
 {
-  "name": "wpbs/divlabs-flyout-nav-content",
-  "title": "Flyout Navigation Content",
-  "category": "headers",
-  "description": "Display the default flyout content",
-  "parent": [
-    "divlabs-flyout-nav"
-  ],
+  "name": "wpbs/flyout-nav-content",
+  "title": "Flyout Nav",
+  "description": "Display a flyout nav content container",
+  "selectors": {
+    "root": ".wpbs-flyout-nav-content"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-flyout-nav-content": {
+      "type": "object",
+      "show_in_rest": true
+    }
+  },
+  "providesContext": {
+    "wpbs/settings": "wpbs-flyout-nav-content"
+  },
   "supports": {
+    "layout": false,
+    "interactivity": true,
     "innerBlocks": true,
     "color": {
       "background": true,
+      "text": true,
       "link": true,
-      "gradients": true,
-      "__experimentalSkipSerialization": true
+      "gradients": true
     },
     "spacing": {
-      "margin": true,
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
       "padding": true,
-      "blockGap": true,
-      "__experimentalSkipSerialization": true
+      "margin": true
     },
     "__experimentalBorder": {
+      "size": true,
       "color": true,
-      "radius": true,
-      "style": true,
-      "__experimentalSkipSerialization": true
+      "radius": true
     },
     "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
       "fontSize": true,
-      "__experimentalSkipSerialization": true
+      "lineHeight": true
     }
   },
-  "acf": {
-    "mode": "preview"
-  }
+  "editorScript": "file:./block.js",
+  "icon": "format-gallery"
 }
 
 

@@ -337,8 +337,8 @@
       "header": {
         "height": {
           "xs": "70px",
-          "sm": "80px",
-          "lg": "80px",
+          "md": "80px",
+          "normal": "80px",
           "xl": "90px"
         },
         "offset": {

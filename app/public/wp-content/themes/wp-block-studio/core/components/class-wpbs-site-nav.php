@@ -1,9 +1,9 @@
 <?php
 
 
-class DIVLABS_Site_Nav {
+class WPBS_Site_Nav {
 
-	private static DIVLABS_Site_Nav $instance;
+	private static WPBS_Site_Nav $instance;
 
 	public array $args;
 
@@ -50,9 +50,9 @@ class DIVLABS_Site_Nav {
 
 	}
 
-	public static function init(): DIVLABS_Site_Nav {
+	public static function init(): WPBS_Site_Nav {
 		if ( empty( self::$instance ) ) {
-			self::$instance = new DIVLABS_Site_Nav();
+			self::$instance = new WPBS_Site_Nav();
 		}
 
 		return self::$instance;

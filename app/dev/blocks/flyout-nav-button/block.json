@@ -1,0 +1,35 @@
+{
+  "name": "acf/divlabs-flyout-nav-button",
+  "title": "Flyout Navigation Button",
+  "description": "Display the flyout nav toggle button",
+  "supports": {
+    "shadow": {
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": false,
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    }
+  },
+  "acf": {
+    "mode": "preview"
+  }
+}
+
+

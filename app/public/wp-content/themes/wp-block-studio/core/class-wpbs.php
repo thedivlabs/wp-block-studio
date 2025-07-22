@@ -152,7 +152,6 @@ class WPBS {
 
 		require_once self::$core_path . 'modules/class-wpbs-wp.php';
 		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
-		require_once self::$core_path . 'modules/class-wpbs-style.php';
 		require_once self::$core_path . 'modules/class-wpbs-cpt.php';
 		require_once self::$core_path . 'modules/class-wpbs-taxonomy.php';
 		require_once self::$core_path . 'modules/class-wpbs-popup.php';
@@ -160,7 +159,6 @@ class WPBS {
 
 		WPBS_WP::init();
 		WPBS_Blocks::init();
-		WPBS_Style::init();
 		WPBS_Popup::init();
 		WPBS_Media_Gallery::init();
 

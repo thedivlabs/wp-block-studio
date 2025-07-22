@@ -46,6 +46,14 @@ const Media = React.memo(({settings, breakpoint}) => {
         ['object-fit']: !!settings.contain ? 'contain' : 'cover',
     };
 
+    const config = Object.fromEntries(Object.entries({
+        force: !!settings?.['force'],
+        eager: !!settings?.['eager'],
+        resolutionLarge: settings?.['resolutionLarge'] ?? null,
+        resolutionMobile: settings?.['resolutionMobile'] ?? settings?.['resolutionLarge'] ?? null,
+        breakpoint: breakpoint || 'normal',
+    }).filter(([_, v]) => v));
+    
     const Content = () => {
 
         switch (settings?.type ?? false) {
@@ -53,13 +61,7 @@ const Media = React.memo(({settings, breakpoint}) => {
 
                 return <ResponsivePicture mobile={settings?.['imageMobile']}
                                           large={settings?.['imageLarge']}
-                                          settings={{
-                                              force: !!settings?.['force'],
-                                              eager: !!settings?.['eager'],
-                                              resolutionLarge: settings?.['resolutionLarge'] ?? null,
-                                              resolutionMobile: settings?.['resolutionMobile'] ?? settings?.['resolutionLarge'] ?? null,
-                                              breakpoint: breakpoint || 'normal',
-                                          }}
+                                          settings={config}
                                           editor={true}
                 />;
             case 'featured-image':

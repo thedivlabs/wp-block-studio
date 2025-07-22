@@ -21,7 +21,7 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
         urlLarge = largeLarge.url || false;
         urlMobile = mobileLarge.url || false;
     }
-
+    
     if (!urlLarge && !urlMobile) {
         return false;
     }

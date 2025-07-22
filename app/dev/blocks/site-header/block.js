@@ -55,6 +55,8 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, settings])
 
+        const ElementTagName = ElementTag(attributes);
+        
         return (
             <>
                 <InspectorControls group="styles">
@@ -108,7 +110,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
 
-                <header {...innerBlocksProps} />
+                <ElementTagName {...innerBlocksProps} />
 
             </>
         )

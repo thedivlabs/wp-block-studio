@@ -1,5 +1,4 @@
 import {
-    BlockContextProvider,
     InspectorControls, PanelColorSettings,
     useBlockProps,
     useInnerBlocksProps,
@@ -7,17 +6,12 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
-import {GRID_ATTRIBUTES, GridControls, gridProps} from "Components/Grid"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
-import React, {useCallback, useEffect, useMemo, useRef} from "react";
+import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalGrid as Grid,
-    PanelBody, TabPanel, ToggleControl
+    __experimentalGrid as Grid, ToggleControl
 } from "@wordpress/components";
-import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
-import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
-import {cleanObject} from "Includes/helper"
 
 function blockClassnames(attributes = {}) {
 

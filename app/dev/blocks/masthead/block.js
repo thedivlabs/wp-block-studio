@@ -16,9 +16,14 @@ import {
 
 function blockClassnames(attributes = {}) {
 
+    const {'wpbs-site-header': settings = {}} = attributes;
+
     return [
         'wpbs-site-header',
         'flex w-full relative overflow-hidden wpbs-has-container',
+        !!settings?.float ? '--float is-style-reverse' : null,
+        !!settings?.sticky ? '--sticky' : null,
+        !!settings?.hidden ? '--hidden' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -29,6 +34,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
+        ...ELEMENT_TAG_ATTRIBUTES,
     },
     edit: ({attributes, setAttributes, clientId}) => {
 

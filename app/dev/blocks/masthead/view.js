@@ -9,7 +9,7 @@ const {state} = store('wpbs/site-header', {
 
             const context = getContext();
 
-            console.log(context);
+            //console.log(context);
 
         },
     },

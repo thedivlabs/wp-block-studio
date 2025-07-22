@@ -5,11 +5,15 @@
   @apply relative top-0 left-0 w-full flex items-stretch transition-transform duration-500;
 }
 
-.wpbs-site-header--sticky {
+body.--header-hidden .wpbs-site-header {
+  @apply hidden;
+}
+
+body.--header-sticky .wpbs-site-header {
   @apply fixed;
 }
 
-.wpbs-site-header--float {
+body.--header-float .wpbs-site-header {
   background-color: var(--wp--custom--header--color--float);
   @apply absolute;
 }

@@ -7,6 +7,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import {ElementTagSettings, ElementTag, ELEMENT_TAG_ATTRIBUTES} from "Components/ElementTag";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useMemo} from "react";
 import {
@@ -101,6 +102,11 @@ registerBlockType(metadata.name, {
                        deps={['wpbs-site-header']}
                        props={cssProps}
                 />
+                <InspectorControls group="advanced">
+                    <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
+                        <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
+                    </Grid>
+                </InspectorControls>
 
                 <header {...innerBlocksProps} />
 

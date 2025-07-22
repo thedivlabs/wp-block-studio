@@ -12,7 +12,7 @@ import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React, {useEffect} from "react";
+import React from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 
 const selector = 'wpbs-layout-element';

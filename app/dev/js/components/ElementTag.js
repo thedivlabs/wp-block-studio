@@ -17,7 +17,7 @@ export function ElementTag(attributes) {
 
 export function ElementTagSettings({attributes, callback}) {
 
-    const [value, setValue] = useState(attributes[prop]);
+    const [value, setValue] = useState(attributes?.[prop] ?? '');
 
     return <SelectControl
         value={value}

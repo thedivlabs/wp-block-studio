@@ -5,6 +5,12 @@
   "selectors": {
     "root": ".wpbs-site-header"
   },
+  "styles": [
+    {
+      "name": "reverse",
+      "label": "Reverse"
+    }
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string",
@@ -16,9 +22,7 @@
       "default": {
         "float": false,
         "sticky": false,
-        "hidden": false,
-        "reverse": false,
-        "reverse_color": false
+        "hidden": false
       }
     }
   },

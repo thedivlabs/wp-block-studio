@@ -11,14 +11,14 @@ import {ElementTagSettings, ElementTag, ELEMENT_TAG_ATTRIBUTES} from "Components
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalGrid as Grid, ToggleControl
+    __experimentalGrid as Grid, PanelBody, ToggleControl
 } from "@wordpress/components";
 
 function blockClassnames(attributes = {}) {
 
     return [
-        'wpbs-site-header h-max',
-        'flex flex-col w-full relative overflow-hidden',
+        'wpbs-site-header',
+        'flex w-full relative overflow-hidden wpbs-has-container',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -42,7 +42,9 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({className: blockClassnames(attributes)});
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps);
+        const innerBlocksProps = useInnerBlocksProps({
+            className: 'wpbs-site-header__container wpbs-container wpbs-layout-wrapper w-full'
+        });
 
         const updateSettings = useCallback((newValue) => {
 
@@ -56,47 +58,35 @@ registerBlockType(metadata.name, {
         }, [setAttributes, settings])
 
         const ElementTagName = ElementTag(attributes);
-        
+
         return (
             <>
                 <InspectorControls group="styles">
-                    <Grid columns={1} columnGap={30} rowGap={30}>
-                        <Grid columns={2} columnGap={20} rowGap={20}>
-                            <ToggleControl
-                                __nextHasNoMarginBottom
-                                label="Float"
-                                checked={!!settings?.float}
-                                onChange={(newValue) => updateSettings({float: newValue})}
-                            />
-                            <ToggleControl
-                                __nextHasNoMarginBottom
-                                label="Sticky"
-                                checked={!!settings?.sticky}
-                                onChange={(newValue) => updateSettings({sticky: newValue})}
-                            />
-                            <ToggleControl
-                                __nextHasNoMarginBottom
-                                label="Hidden"
-                                checked={!!settings?.hidden}
-                                onChange={(newValue) => updateSettings({hidden: newValue})}
-                            />
+
+                    <PanelBody title={"Options"}>
+                        <Grid columns={1} columnGap={30} rowGap={30}>
+                            <Grid columns={2} columnGap={20} rowGap={20}>
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Float"
+                                    checked={!!settings?.float}
+                                    onChange={(newValue) => updateSettings({float: newValue})}
+                                />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Sticky"
+                                    checked={!!settings?.sticky}
+                                    onChange={(newValue) => updateSettings({sticky: newValue})}
+                                />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Hidden"
+                                    checked={!!settings?.hidden}
+                                    onChange={(newValue) => updateSettings({hidden: newValue})}
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid columns={1} columnGap={20} rowGap={20}>
-                            <PanelColorSettings
-                                enableAlpha
-                                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                                colorSettings={[
-                                    {
-                                        slug: 'reverse',
-                                        label: 'Reverse',
-                                        value: settings?.reverseColor ?? '',
-                                        onChange: (newValue) => updateSettings({'icon-color': newValue}),
-                                        isShownByDefault: true
-                                    }
-                                ]}
-                            />
-                        </Grid>
-                    </Grid>
+                    </PanelBody>
 
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
@@ -110,7 +100,10 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </InspectorControls>
 
-                <ElementTagName {...innerBlocksProps} />
+
+                <ElementTagName {...blockProps} >
+                    <div {...innerBlocksProps}/>
+                </ElementTagName>
 
             </>
         )
@@ -124,9 +117,15 @@ registerBlockType(metadata.name, {
             'data-wp-context': props.settings,
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+        const ElementTagName = ElementTag(props.attributes);
 
-        return <header {...innerBlocksProps} />;
+        const innerBlocksProps = useInnerBlocksProps.save({
+            className: 'wpbs-site-header__container wpbs-container wpbs-layout-wrapper w-full'
+        });
+
+        return <ElementTagName {...blockProps} >
+            <div {...innerBlocksProps}/>
+        </ElementTagName>;
     }
 })
 

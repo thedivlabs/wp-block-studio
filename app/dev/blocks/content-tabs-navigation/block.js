@@ -60,13 +60,12 @@ registerBlockType(metadata.name, {
         const {tabOptions} = context;
 
         useEffect(() => {
-            const prevClientIds = (attributes.tabPanels || []).map(panel => panel.clientId);
-            const nextClientIds = tabPanels.map(panel => panel.clientId);
-
-            const isEqual = prevClientIds.length === nextClientIds.length &&
-                prevClientIds.every((id, index) => id === nextClientIds[index]);
-
-            if (!isEqual) {
+            if (
+                !attributes.tabPanels ||
+                Object.keys(tabPanels).some(
+                    (key) => tabPanels[key] !== attributes.tabPanels[key]
+                )
+            ) {
                 setAttributes({tabPanels});
             }
         }, [tabPanels]);
@@ -101,7 +100,7 @@ registerBlockType(metadata.name, {
             <nav {...blockProps} >
                 {tabPanels.map((panel) => {
                     const isActive = panel.clientId === tabActive;
-                    
+
                     return (
                         <button
                             key={panel.clientId}

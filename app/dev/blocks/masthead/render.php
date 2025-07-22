@@ -37,10 +37,6 @@ add_filter( 'body_class', function ( $classes ) use ( $attributes ) {
 		$classes[] = '--header-sticky';
 	}
 
-	if ( ! empty( $attributes['wpbs-site-header']['hidden'] ) ) {
-		$classes[] = '--header-hidden';
-	}
-
 	return $classes;
 } );
 

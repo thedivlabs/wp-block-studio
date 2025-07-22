@@ -84,12 +84,6 @@ registerBlockType(metadata.name, {
                                     checked={!!settings?.sticky}
                                     onChange={(newValue) => updateSettings({sticky: newValue})}
                                 />
-                                <ToggleControl
-                                    __nextHasNoMarginBottom
-                                    label="Hidden"
-                                    checked={!!settings?.hidden}
-                                    onChange={(newValue) => updateSettings({hidden: newValue})}
-                                />
                             </Grid>
                         </Grid>
                     </PanelBody>

@@ -5,10 +5,6 @@
   @apply relative top-0 left-0 w-full flex items-stretch transition-transform duration-500;
 }
 
-body.--header-hidden .wpbs-site-header {
-  @apply hidden;
-}
-
 body.--header-sticky .wpbs-site-header {
   @apply fixed;
 }

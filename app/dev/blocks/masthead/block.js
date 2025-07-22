@@ -21,7 +21,7 @@ function blockClassnames(attributes = {}) {
     return [
         'wpbs-site-header',
         'flex w-full relative overflow-hidden wpbs-has-container',
-        !!settings?.float ? '--float is-style-reverse' : null,
+        !!settings?.float ? '--float' : null,
         !!settings?.sticky ? '--sticky' : null,
         !!settings?.hidden ? '--hidden' : null,
         attributes?.uniqueId ?? '',

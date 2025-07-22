@@ -1,28 +1,5 @@
-:root {
-  --wpbs-header-height: var(--wp--custom--header--height--xs);
-}
-
-/* Responsive header height — replicate SCSS mixins via media queries */
-@media (min-width: 640px) {
-  :root {
-    --wpbs-header-height: var(--wp--custom--header--height--sm);
-  }
-}
-
-@media (min-width: 1024px) {
-  :root {
-    --wpbs-header-height: var(--wp--custom--header--height--lg);
-  }
-}
-
-@media (min-width: 1280px) {
-  :root {
-    --wpbs-header-height: var(--wp--custom--header--height--xl);
-  }
-}
-
 .wpbs-site-header {
-  height: var(--wpbs-header-height);
+  height: var(--wpbs-header-height, 70px);
   z-index: 90;
   background-color: var(--wp--custom--header--color--bg, transparent);
   @apply relative top-0 left-0 w-full flex items-stretch transition-transform duration-500;

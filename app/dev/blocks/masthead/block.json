@@ -1,6 +1,6 @@
 {
-  "name": "wpbs/site-header",
-  "title": "Site Header",
+  "name": "wpbs/masthead",
+  "title": "Masthead",
   "description": "Display a site header element",
   "selectors": {
     "root": ".wpbs-site-header"
@@ -58,7 +58,8 @@
   },
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
-  "icon": "format-gallery"
+  "icon": "format-gallery",
+  "render": "file:./render.php"
 }
 
 

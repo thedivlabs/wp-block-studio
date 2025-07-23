@@ -24,33 +24,34 @@
     bg-black/60
   }
 
-  &__container {
-    transform: translate(calc(100% + 2rem), 0);
-    @apply
-    w-fit
-    max-w-full
-    h-full
-    flex
-    flex-col
-    transition-transform
-    duration-500
-    ease-in-out
-    z-30
-    absolute
-    top-0
-    right-0
-    pointer-events-none
-    ;
 
-    & > * {
-      @apply
-      pointer-events-auto
-    }
-  }
-
-  &.active &__container {
+  &.active .wpbs-flyout-nav__container {
     @apply
     translate-x-0
   }
 
+}
+
+.wpbs-flyout-nav__container {
+  transform: translate(calc(100% + 2rem), 0);
+  @apply
+  w-full
+  max-w-sm
+  h-full
+  flex
+  flex-col
+  transition-transform
+  duration-500
+  ease-in-out
+  z-30
+  absolute
+  top-0
+  right-0
+  pointer-events-none
+  ;
+
+  & > * {
+    @apply
+    pointer-events-auto
+  }
 }

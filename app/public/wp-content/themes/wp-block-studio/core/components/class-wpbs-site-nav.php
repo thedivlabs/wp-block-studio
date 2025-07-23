@@ -11,7 +11,7 @@ class WPBS_Site_Nav {
 	function __construct() {
 
 		add_filter( 'default_wp_template_part_areas', [ $this, 'register_template_parts' ], 30 );
-		add_action( 'wp_head', [ $this, 'render_flyout' ], 1 );
+		add_action( 'wp_footer', [ $this, 'render_flyout' ], 50 );
 	}
 
 	public function register_template_parts( $areas ): array {
@@ -35,13 +35,11 @@ class WPBS_Site_Nav {
 
 		$template = do_blocks( '<!-- wp:template-part {"slug":"flyout-nav","area":"flyout-nav", "tagName":"div", "className":"w-full h-full flex flex-col"} /-->' );
 
-		add_action( 'wp_footer', function () use ( $template, $class ) {
-			echo '<div class="' . $class . '">';
-			echo '<div class="wpbs-flyout-nav__container">';
-			echo do_blocks( $template );
-			echo '</div>';
-			echo '</div>';
-		}, 1 );
+		echo '<div class="' . $class . '">';
+		echo '<div class="wpbs-flyout-nav__container">';
+		echo do_blocks( $template );
+		echo '</div>';
+		echo '</div>';
 
 
 	}

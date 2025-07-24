@@ -30,7 +30,7 @@ function RenderContent({attributes, blockProps, innerBlocksProps, editor = false
 
     const ElementTagName = ElementTag(attributes);
 
-    if (!!attributes['wpbs-background']) {
+    if (!!attributes['wpbs-background']?.type) {
         return (
             <ElementTagName {...blockProps}>
                 <div {...innerBlocksProps} />

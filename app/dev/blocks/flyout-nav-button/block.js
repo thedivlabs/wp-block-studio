@@ -1,3 +1,5 @@
+import './scss/block.scss';
+
 import {
     useBlockProps,
     InspectorControls
@@ -72,11 +74,11 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    props={{
-                       '--icon': attributes?.['wpbs-flyout-nav-button']?.icon ?? '',
+                       '--icon': '\"' + '\\' + (attributes?.['wpbs-flyout-nav-button']?.icon ?? 'f0c9') + '\"',
                    }}
             />
 
-            <div {...blockProps} >XXXX</div>
+            <div {...blockProps} ></div>
 
         </>;
     },

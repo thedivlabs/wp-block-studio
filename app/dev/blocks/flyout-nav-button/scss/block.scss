@@ -1,0 +1,10 @@
+.wpbs-flyout-nav-button {
+
+
+}
+
+.wpbs-flyout-nav-button:before {
+  content: var(--icon);
+  font-family: 'Font Awesome 6 Pro', sans-serif;
+  display: block;
+}

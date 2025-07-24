@@ -6,6 +6,7 @@
   left: 0;
   transition: all var(--animation, 500ms);
   background-color: var(--overlay, rgba(0, 0, 0, .5));
+  backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
   @apply
   opacity-0
   fixed
@@ -16,8 +17,7 @@
   ;
 
   &.active {
-    backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
-    -webkit-backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
+
     @apply
     opacity-100
     pointer-events-auto

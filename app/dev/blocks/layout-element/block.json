@@ -28,6 +28,7 @@
       "padding": true,
       "margin": true
     },
+    "shadow": true,
     "__experimentalBorder": {
       "size": true,
       "color": true,

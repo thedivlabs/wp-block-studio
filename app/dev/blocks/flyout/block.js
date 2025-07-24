@@ -17,14 +17,15 @@ import {
 } from "@wordpress/components";
 import {DIMENSION_UNITS} from "Includes/config";
 
-function blockClassnames(attributes = {}) {
+function blockClassnames(attributes = {}, editor = false) {
 
     const {'wpbs-flyout': settings = {}} = attributes;
 
     return [
         'wpbs-flyout',
         'flex flex-col w-full relative overflow-y-scroll',
-        attributes?.uniqueId ?? null
+        attributes?.uniqueId ?? null,
+        !!editor ? '--editor' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -53,7 +54,7 @@ registerBlockType(metadata.name, {
             };
         }, [settings]);
 
-        const blockProps = useBlockProps({className: blockClassnames(attributes)});
+        const blockProps = useBlockProps({className: blockClassnames(attributes, true)});
 
         const innerBlocksProps = useInnerBlocksProps({
             className: 'wpbs-flyout__container'
@@ -159,6 +160,7 @@ registerBlockType(metadata.name, {
             'data-wp-interactive': 'wpbs/flyout',
             'data-wp-on--click': 'actions.toggle',
             'data-wp-class--active': 'state.active',
+            'data-wp-state': 'active',
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({

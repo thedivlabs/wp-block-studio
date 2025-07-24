@@ -1,13 +1,23 @@
-import {store} from '@wordpress/interactivity';
+import {getElement, store} from '@wordpress/interactivity';
 
 const {state} = store('wpbs/flyout', {
     state: {
         active: false,
     },
     actions: {
-        toggle: () => {
+        toggle: (event) => {
+
+
+            const {ref} = getElement();
+
+            const isButton = ref.closest('.wpbs-flyout-button') !== null;
+
+            if (!isButton && event.target !== ref) {
+                return;
+            }
+
             state.active = !state.active;
-            console.log(state.active);
+
         },
     },
 });

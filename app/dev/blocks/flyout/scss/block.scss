@@ -28,6 +28,15 @@
     transform: translate(0, 0);
   }
 
+  &.--editor {
+    opacity: 1 !important;
+  }
+
+  &.--editor .wpbs-flyout__container {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
 }
 
 .wpbs-flyout__container {

@@ -45,7 +45,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-                '--width': attributes?.['wpbs-flyout']?.['max-width'],
+                '--container-width': attributes?.['wpbs-flyout']?.['max-width'],
                 '--blur': attributes?.['wpbs-flyout']?.['blur'],
                 '--grayscale': attributes?.['wpbs-flyout']?.['grayscale'],
                 '--animation': attributes?.['wpbs-flyout']?.['animation'],
@@ -107,12 +107,15 @@ registerBlockType(metadata.name, {
                                         {value: 'px', label: 'px', default: 0}
                                     ]}
                                 />
-                                <NumberControl
+                                <UnitControl
                                     label="Animation"
+                                    value={settings?.['animation']}
                                     step={50}
                                     min={100}
-                                    value={settings?.['animation']}
                                     onChange={(newValue) => updateSettings({'animation': newValue})}
+                                    units={[
+                                        {value: 'ms', label: 'ms', default: 100}
+                                    ]}
                                 />
 
                             </Grid>
@@ -152,7 +155,10 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: blockClassnames(props.attributes)
+            className: blockClassnames(props.attributes),
+            'data-wp-interactive': 'wpbs/flyout',
+            'data-wp-on--click': 'actions.toggle',
+            'data-wp-class--active': 'state.active',
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({

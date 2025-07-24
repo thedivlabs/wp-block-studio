@@ -1,15 +1,13 @@
-import {getContext, getElement, store} from '@wordpress/interactivity';
-
+import {store} from '@wordpress/interactivity';
 
 const {state} = store('wpbs/flyout', {
+    state: {
+        active: false,
+    },
     actions: {
-        init: () => {
-
-            const {ref: element} = getElement();
-
-            console.log(element);
-
-
+        toggle: () => {
+            state.active = !state.active;
+            console.log(state.active);
         },
     },
 });

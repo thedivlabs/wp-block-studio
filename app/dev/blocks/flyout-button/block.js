@@ -17,7 +17,7 @@ import {useCallback} from "react";
 function classNames(attributes = {}) {
 
     return [
-        'wpbs-flyout-button',
+        'wpbs-flyout-button wpbs-flyout-toggle',
         'relative flex items-center justify-center h-[1.2em] text-center cursor-pointer aspect-square overflow-hidden leading-none before:font-fa before:content-[var(--icon)] before:block',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
@@ -85,6 +85,9 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
+            'data-wp-interactive': 'wpbs/flyout',
+            'data-wp-on--click': 'actions.toggle',
+            'aria-expanded': 'false',
         });
 
 

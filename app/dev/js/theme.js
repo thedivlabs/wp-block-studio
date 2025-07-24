@@ -4,7 +4,6 @@ import Popup from './modules/popup'
 import Lightbox from './modules/Lightbox'
 import Video from './modules/video'
 import Slider from './modules/slider'
-import Flyout from './modules/flyout-nav'
 
 
 class WPBS_Theme {
@@ -25,7 +24,6 @@ class WPBS_Theme {
         this.lightbox = Lightbox;
         this.video = Video;
         this.slider = Slider;
-        this.flyout = Flyout;
 
         this.settings = window.wpbsData ?? {};
         this.modals.init();

@@ -4,22 +4,22 @@
   height: 100svh;
   top: 0;
   left: 0;
-  transition-duration: var(--animation, 500);
+  transition: all var(--animation, 500ms);
   background-color: var(--overlay, rgba(0, 0, 0, .5));
   @apply
+  opacity-0
   fixed
   flex
   overflow-hidden
   justify-end
   pointer-events-none
-  transition-all
-  ease-linear
   ;
 
   &.active {
     backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
     -webkit-backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
     @apply
+    opacity-100
     pointer-events-auto
   }
 
@@ -32,17 +32,15 @@
 
 .wpbs-flyout__container {
   transform: translate(calc(100% + 2rem), 0);
-  transition-timing-function: ease-in-out;
   top: 0;
-  left: 0;
-  max-width: max-content;
-  transition-duration: var(--animation, 500);
+  right: 0;
+  max-width: var(--container-width, 100%);
+  transition: all var(--animation, 500ms) ease-in-out;
   @apply
   w-full
   h-full
   flex
   flex-col
-  transition-transform
   z-30
   absolute
   pointer-events-none

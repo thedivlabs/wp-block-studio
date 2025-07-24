@@ -12,6 +12,7 @@
     }
   },
   "supports": {
+    "interactivity": true,
     "layout": false,
     "shadow": true,
     "color": {

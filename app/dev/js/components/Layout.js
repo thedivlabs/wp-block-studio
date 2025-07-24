@@ -505,7 +505,7 @@ export function layoutCss(attributes, selector) {
         css += selector + ':hover {';
         Object.entries(hover).forEach(([prop, value]) => {
 
-            css += [prop, value].join(':') + ';';
+            css += [prop, value].join(':') + ' !important;';
         })
 
         css += '}';

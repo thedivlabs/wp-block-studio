@@ -30,6 +30,8 @@
 
   &.--editor {
     opacity: 1 !important;
+    height: 100% !important;
+    flex-grow: 1;
   }
 
   &.--editor .wpbs-flyout__container {

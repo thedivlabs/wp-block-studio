@@ -2,6 +2,12 @@
   content: none !important;
 }
 
+.wp-site-blocks.is-root-container {
+  min-height: 100vh !important;
+  display: flex;
+  flex-direction: column;
+}
+
 div[class*='wp-block-wpbs'] .block-list-appender .block-list-appender__toggle,
 div[class*='wp-block-wpbs'] .block-list-appender .block-editor-inserter__toggle {
   height: 30px !important;

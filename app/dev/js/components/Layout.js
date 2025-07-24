@@ -458,6 +458,7 @@ export function layoutCss(attributes, selector) {
         String(k).toLowerCase().includes('hover')
     ).forEach(([prop, value]) => {
 
+
         if (!value) {
             return;
         }
@@ -502,7 +503,7 @@ export function layoutCss(attributes, selector) {
 
     if (Object.keys(hover).length) {
         css += selector + ':hover {';
-        Object.entries(desktop).forEach(([prop, value]) => {
+        Object.entries(hover).forEach(([prop, value]) => {
 
             css += [prop, value].join(':') + ';';
         })

@@ -76,6 +76,7 @@ registerBlockType(metadata.name, {
                    props={{
                        '--icon': '\"' + '\\' + (attributes?.['wpbs-flyout-nav-button']?.icon ?? 'f0c9') + '\"',
                    }}
+                   deps={['wpbs-flyout-nav-button']}
             />
 
             <div {...blockProps} ></div>

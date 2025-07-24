@@ -18,7 +18,7 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-flyout-nav-button',
-        'relative flex items-center justify-center text-center cursor-pointer aspect-square before:font-fa before:content-[var(--icon)] before:block',
+        'relative flex items-center justify-center h-[1.2em] text-center cursor-pointer aspect-square overflow-hidden leading-none before:font-fa before:content-[var(--icon)] before:block',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

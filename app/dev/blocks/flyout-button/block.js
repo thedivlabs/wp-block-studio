@@ -17,7 +17,7 @@ import {useCallback} from "react";
 function classNames(attributes = {}) {
 
     return [
-        'wpbs-flyout-nav-button',
+        'wpbs-flyout-button',
         'relative flex items-center justify-center h-[1.2em] text-center cursor-pointer aspect-square overflow-hidden leading-none before:font-fa before:content-[var(--icon)] before:block',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
@@ -29,26 +29,26 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-flyout-nav-button': {
+        'wpbs-flyout-button': {
             type: 'object',
             default: {}
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-nav-button');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-button');
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-flyout-nav-button'],
+                ...attributes['wpbs-flyout-button'],
                 ...newValue
             };
 
             setAttributes({
-                'wpbs-flyout-nav-button': result
+                'wpbs-flyout-button': result
             });
 
-        }, [setAttributes, attributes?.['wpbs-flyout-nav-button']])
+        }, [setAttributes, attributes?.['wpbs-flyout-button']])
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -61,7 +61,7 @@ registerBlockType(metadata.name, {
                     <Grid columns={1} columnGap={20} rowGap={20}>
                         <TextControl
                             label="Icon"
-                            value={attributes?.['wpbs-flyout-nav-button']?.icon ?? ''}
+                            value={attributes?.['wpbs-flyout-button']?.icon ?? ''}
                             onChange={(newValue) => updateSettings({icon: newValue})}
                         />
 
@@ -72,9 +72,9 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    props={{
-                       '--icon': '\"' + '\\' + (attributes?.['wpbs-flyout-nav-button']?.icon ?? 'f0c9') + '\"',
+                       '--icon': '\"' + '\\' + (attributes?.['wpbs-flyout-button']?.icon ?? 'f0c9') + '\"',
                    }}
-                   deps={['wpbs-flyout-nav-button']}
+                   deps={['wpbs-flyout-button']}
             />
 
             <div {...blockProps} ></div>

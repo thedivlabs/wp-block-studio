@@ -1,4 +1,4 @@
-.wpbs-flyout-nav {
+.wpbs-flyout {
   z-index: 900;
   width: 100svw;
   height: 100svh;
@@ -25,14 +25,14 @@
   }
 
 
-  &.active .wpbs-flyout-nav__container {
+  &.active .wpbs-flyout-container {
     @apply
     translate-x-0
   }
 
 }
 
-.wpbs-flyout-nav__container {
+.wpbs-flyout-container {
   transform: translate(calc(100% + 2rem), 0);
   @apply
   w-full

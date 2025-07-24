@@ -1,9 +1,9 @@
 {
-  "name": "wpbs/flyout-nav-button",
-  "title": "Flyout Navigation Button",
-  "description": "Display the flyout nav toggle button",
+  "name": "wpbs/flyout-button",
+  "title": "Flyout Button",
+  "description": "Display the flyout toggle button",
   "selectors": {
-    "root": ".wpbs-flyout-nav-button"
+    "root": ".wpbs-flyout-button"
   },
   "attributes": {
     "uniqueId": {

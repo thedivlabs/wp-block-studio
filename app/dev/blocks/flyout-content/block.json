@@ -1,22 +1,22 @@
 {
-  "name": "wpbs/flyout-nav-content",
-  "title": "Flyout Nav",
-  "description": "Display a flyout nav content container",
+  "name": "wpbs/flyout-content",
+  "title": "Flyout Content",
+  "description": "Display a flyout content area",
   "selectors": {
-    "root": ".wpbs-flyout-nav-content"
+    "root": ".wpbs-flyout-content"
   },
   "attributes": {
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-flyout-nav-content": {
+    "wpbs-flyout-content": {
       "type": "object",
       "show_in_rest": true
     }
   },
   "providesContext": {
-    "wpbs/settings": "wpbs-flyout-nav-content"
+    "wpbs/settings": "wpbs-flyout-content"
   },
   "supports": {
     "layout": false,
@@ -50,7 +50,8 @@
     }
   },
   "editorScript": "file:./block.js",
-  "icon": "format-gallery"
+  "icon": "format-gallery",
+  "viewScriptModule": "file:./view.js"
 }
 
 

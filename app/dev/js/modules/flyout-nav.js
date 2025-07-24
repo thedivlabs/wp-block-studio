@@ -1,15 +1,17 @@
-export default class WPBS_Flyout {
+export default class Flyout {
 
 
     static init() {
 
-        this.nav = document.querySelector('.wpbs-flyout-nav');
+        this.nav = document.querySelector('.wpbs-flyout');
+
+        console.log(this.nav);
 
         if (this.nav == null) {
             return false;
         }
 
-        document.querySelectorAll('.wpbs-flyout-nav-toggle').forEach((el) => {
+        document.querySelectorAll('.wpbs-flyout-toggle').forEach((el) => {
             el.addEventListener('click', (e) => {
                 this.toggle();
             }, {
@@ -17,7 +19,7 @@ export default class WPBS_Flyout {
             });
         })
 
-        document.querySelector('.wpbs-flyout-nav').addEventListener('click', (e) => {
+        document.querySelector('.wpbs-flyout').addEventListener('click', (e) => {
             if (
                 e.target !== e.currentTarget ||
                 !this.nav.classList.contains('active')

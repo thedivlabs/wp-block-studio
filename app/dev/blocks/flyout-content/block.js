@@ -12,11 +12,12 @@ import React, {useCallback, useMemo} from "react";
 
 function blockClassnames(attributes = {}) {
 
-    const {'wpbs-flyout-nav-content': settings = {}} = attributes;
+    const {'wpbs-flyout-content': settings = {}} = attributes;
 
     return [
-        'wpbs-flyout-nav-content',
-        'flex flex-col w-full relative',
+        'wpbs-flyout-content',
+        'flex flex-col w-full relative overflow-y-scroll',
+        attributes?.uniqueId ?? null
     ].filter(x => x).join(' ');
 }
 
@@ -29,9 +30,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-nav-content');
+        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-content');
 
-        const {'wpbs-flyout-nav-content': settings = {}} = attributes;
+        const {'wpbs-flyout-content': settings = {}} = attributes;
 
         const cssProps = useMemo(() => {
             return {};
@@ -39,11 +40,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({className: blockClassnames(attributes)});
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                'wpbs/flyout-nav-content'
-            ]
-        });
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {});
 
         const updateSettings = useCallback((newValue) => {
 
@@ -52,7 +49,7 @@ registerBlockType(metadata.name, {
                 ...newValue
             }
 
-            setAttributes({'wpbs-flyout-nav-content': result});
+            setAttributes({'wpbs-flyout-content': result});
 
         }, [setAttributes, settings])
 
@@ -62,7 +59,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       deps={['wpbs-flyout-nav-content']}
+                       deps={['wpbs-flyout-content']}
                        props={cssProps}
                 />
 
@@ -75,7 +72,7 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: blockClassnames(props.attributes),
+            className: blockClassnames(props.attributes)
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

@@ -12,6 +12,9 @@ class WPBS_Site_Nav {
 
 		add_filter( 'default_wp_template_part_areas', [ $this, 'register_template_parts' ], 30 );
 		add_action( 'wp_footer', [ $this, 'render_flyout' ], 50 );
+		add_action( 'wp_head', function () {
+			do_blocks( '<!-- wp:template-part {"slug":"flyout-nav","area":"flyout-nav", "tagName":"div", "className":"w-full h-full flex flex-col"} /-->' );
+		}, 5 );
 	}
 
 	public function register_template_parts( $areas ): array {
@@ -30,15 +33,13 @@ class WPBS_Site_Nav {
 	public function render_flyout(): void {
 
 		$class = implode( ' ', array_filter( [
-			'wpbs-flyout-nav'
+			'wpbs-flyout'
 		] ) );
 
-		$template = do_blocks( '<!-- wp:template-part {"slug":"flyout-nav","area":"flyout-nav", "tagName":"div", "className":"w-full h-full flex flex-col"} /-->' );
+		$template = do_blocks( '<!-- wp:template-part {"slug":"flyout-nav","area":"flyout-nav", "tagName":"div", "className":"wpbs-flyout-container"} /-->' );
 
 		echo '<div class="' . $class . '">';
-		echo '<div class="wpbs-flyout-nav__container">';
 		echo do_blocks( $template );
-		echo '</div>';
 		echo '</div>';
 
 

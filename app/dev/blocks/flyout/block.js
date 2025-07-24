@@ -44,7 +44,12 @@ registerBlockType(metadata.name, {
         const {'wpbs-flyout': settings = {}} = attributes;
 
         const cssProps = useMemo(() => {
-            return {};
+            return {
+                '--width': attributes?.['wpbs-flyout']?.['max-width'],
+                '--blur': attributes?.['wpbs-flyout']?.['blur'],
+                '--grayscale': attributes?.['wpbs-flyout']?.['grayscale'],
+                '--animation': attributes?.['wpbs-flyout']?.['animation'],
+            };
         }, [settings]);
 
         const blockProps = useBlockProps({className: blockClassnames(attributes)});

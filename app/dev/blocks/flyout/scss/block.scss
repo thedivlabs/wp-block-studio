@@ -17,8 +17,8 @@
   ;
 
   &.active {
-    backdrop-filter: grayscale(var(--gayscale, 0)) blur(var(--blur, 0px));
-    -webkit-backdrop-filter: grayscale(var(--gayscale, 0)) blur(var(--blur, 0px));
+    backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
+    -webkit-backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
     @apply
     pointer-events-auto
   }

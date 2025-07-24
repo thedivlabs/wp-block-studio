@@ -25,14 +25,14 @@
   }
 
 
-  &.active .wpbs-flyout-container {
+  &.active .wpbs-flyout__container {
     @apply
     translate-x-0
   }
 
 }
 
-.wpbs-flyout-container {
+.wpbs-flyout__container {
   transform: translate(calc(100% + 2rem), 0);
   @apply
   w-full

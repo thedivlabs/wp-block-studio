@@ -1,22 +1,22 @@
 {
-  "name": "wpbs/flyout-content",
-  "title": "Flyout Content",
-  "description": "Display a flyout content area",
+  "name": "wpbs/flyout",
+  "title": "Flyout",
+  "description": "Display a flyout container",
   "selectors": {
-    "root": ".wpbs-flyout-content"
+    "root": ".wpbs-flyout"
   },
   "attributes": {
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-flyout-content": {
+    "wpbs-flyout": {
       "type": "object",
       "show_in_rest": true
     }
   },
   "providesContext": {
-    "wpbs/settings": "wpbs-flyout-content"
+    "wpbs/settings": "wpbs-flyout"
   },
   "supports": {
     "layout": false,

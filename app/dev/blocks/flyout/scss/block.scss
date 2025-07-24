@@ -4,7 +4,7 @@
   height: 100svh;
   top: 0;
   left: 0;
-  transition: all var(--animation, 500ms);
+  transition: opacity var(--animation, 500ms);
   background-color: var(--overlay, rgba(0, 0, 0, .5));
   backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
   @apply
@@ -46,7 +46,7 @@
   top: 0;
   right: 0;
   max-width: var(--container-width, 100%);
-  transition: all var(--animation, 500ms) ease-in-out;
+  transition: transform var(--animation, 500ms) ease-in-out, opacity var(--animation, 500ms) linear;
   @apply
   w-full
   h-full

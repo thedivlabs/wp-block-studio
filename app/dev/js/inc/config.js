@@ -76,6 +76,7 @@ export const OVERFLOW_OPTIONS = [
     {label: 'Select', value: ''},
     {label: 'Hidden', value: 'hidden'},
     {label: 'Visible', value: 'visible'},
+    {label: 'Scroll', value: 'scroll'},
 ];
 
 export const SHAPE_OPTIONS = [

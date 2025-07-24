@@ -87,7 +87,6 @@ registerBlockType(metadata.name, {
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/flyout',
             'data-wp-on--click': 'actions.toggle',
-            'aria-expanded': 'false',
         });
 
 

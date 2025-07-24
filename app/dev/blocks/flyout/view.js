@@ -18,11 +18,8 @@ const {state} = store('wpbs/flyout', {
 
             state.active = !state.active;
 
-            if (state.active) {
-                document.body.classList.add('wpbs-body-lock');
-            } else {
-                document.body.classList.remove('wpbs-body-lock');
-            }
+            document.body.classList.toggle('wpbs-body-lock', state.active);
+
 
         },
     },

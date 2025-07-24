@@ -1,3 +1,5 @@
+import './scss/block.scss'
+
 import {
     InspectorControls, PanelColorSettings,
     useBlockProps,
@@ -5,10 +7,15 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useMemo} from "react";
+import {
+    __experimentalUnitControl as UnitControl,
+    __experimentalGrid as Grid,
+    __experimentalNumberControl as NumberControl, PanelBody,
+} from "@wordpress/components";
+import {DIMENSION_UNITS} from "Includes/config";
 
 function blockClassnames(attributes = {}) {
 
@@ -25,7 +32,6 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         'wpbs-flyout': {
             type: 'object'
@@ -62,7 +68,68 @@ registerBlockType(metadata.name, {
         return (
             <>
 
-                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+                <InspectorControls group="styles">
+
+                    <PanelBody initialOpen={true}>
+
+                        <Grid columnGap={20} columns={1} rowGap={20}>
+
+
+                            <Grid columnGap={20} columns={2} rowGap={15}>
+
+                                <UnitControl
+                                    label="Max-Width"
+                                    value={settings?.['max-width']}
+                                    onChange={(newValue) => updateSettings({'max-width': newValue})}
+                                    units={DIMENSION_UNITS}
+                                />
+
+                                <NumberControl
+                                    label="Grayscale"
+                                    step={.1}
+                                    min={0}
+                                    max={1}
+                                    value={settings?.['grayscale']}
+                                    onChange={(newValue) => updateSettings({'grayscale': newValue})}
+                                />
+                                <UnitControl
+                                    label="Blur"
+                                    value={settings?.['blur']}
+                                    step={1}
+                                    onChange={(newValue) => updateSettings({'blur': newValue})}
+                                    units={[
+                                        {value: 'px', label: 'px', default: 0}
+                                    ]}
+                                />
+                                <NumberControl
+                                    label="Animation"
+                                    step={50}
+                                    min={100}
+                                    value={settings?.['animation']}
+                                    onChange={(newValue) => updateSettings({'animation': newValue})}
+                                />
+
+                            </Grid>
+
+                            <PanelColorSettings
+                                enableAlpha
+                                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                                colorSettings={[
+                                    {
+                                        slug: 'overlay',
+                                        label: 'Overlay',
+                                        value: settings?.['overlay'],
+                                        onChange: (newValue) => updateSettings({'overlay': newValue}),
+                                        isShownByDefault: true
+                                    }
+                                ]}
+                            />
+                        </Grid>
+
+                    </PanelBody>
+
+                </InspectorControls>
+
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-flyout']}
                        props={cssProps}

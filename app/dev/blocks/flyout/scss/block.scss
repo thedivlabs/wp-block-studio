@@ -2,51 +2,49 @@
   z-index: 900;
   width: 100svw;
   height: 100svh;
+  top: 0;
+  left: 0;
+  transition-duration: var(--animation, 500);
   @apply
   fixed
   flex
-  top-0
-  left-0
   overflow-hidden
   bg-transparent
   justify-end
   pointer-events-none
   transition-all
-  duration-500
   ease-linear
   ;
 
   &.active {
-    backdrop-filter: grayscale(.8) blur(5px);
-    -webkit-backdrop-filter: grayscale(.8) blur(5px);
+    backdrop-filter: grayscale(var(--gayscale, 0)) blur(var(--blur, 0px));
+    -webkit-backdrop-filter: grayscale(var(--gayscale, 0)) blur(var(--blur, 0px));
     @apply
     pointer-events-auto
-    bg-black/60
   }
 
 
   &.active .wpbs-flyout__container {
-    @apply
-    translate-x-0
+    transform: translate(0, 0);
   }
 
 }
 
 .wpbs-flyout__container {
   transform: translate(calc(100% + 2rem), 0);
+  transition-timing-function: ease-in-out;
+  top: 0;
+  left: 0;
+  max-width: max-content;
+  transition-duration: var(--animation, 500);
   @apply
   w-full
-  max-w-sm
   h-full
   flex
   flex-col
   transition-transform
-  duration-500
-  ease-in-out
   z-30
   absolute
-  top-0
-  right-0
   pointer-events-none
   ;
 

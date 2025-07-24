@@ -51,6 +51,7 @@
   },
   "editorScript": "file:./block.js",
   "icon": "format-gallery",
+  "style": "file:./block.css",
   "viewScriptModule": "file:./view.js"
 }
 

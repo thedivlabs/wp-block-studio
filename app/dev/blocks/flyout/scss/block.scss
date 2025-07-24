@@ -5,11 +5,11 @@
   top: 0;
   left: 0;
   transition-duration: var(--animation, 500);
+  background-color: var(--overlay, rgba(0, 0, 0, .5));
   @apply
   fixed
   flex
   overflow-hidden
-  bg-transparent
   justify-end
   pointer-events-none
   transition-all

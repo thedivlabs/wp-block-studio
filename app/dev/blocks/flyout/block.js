@@ -49,6 +49,7 @@ registerBlockType(metadata.name, {
                 '--blur': attributes?.['wpbs-flyout']?.['blur'],
                 '--grayscale': attributes?.['wpbs-flyout']?.['grayscale'],
                 '--animation': attributes?.['wpbs-flyout']?.['animation'],
+                '--overlay': attributes?.['wpbs-flyout']?.['overlay'],
             };
         }, [settings]);
 

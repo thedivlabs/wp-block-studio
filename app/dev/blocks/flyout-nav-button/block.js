@@ -5,7 +5,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 
-import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
+import {Style, STYLE_ATTRIBUTES} from "Components/Style";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useInstanceId} from "@wordpress/compose";
 import {
@@ -60,12 +60,11 @@ registerBlockType(metadata.name, {
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={20} rowGap={20}>
                         <TextControl
-                            __nextHasNoMarginBottom
-                            __next40pxDefaultSize
                             label="Icon"
                             value={attributes?.['wpbs-flyout-nav-button']?.icon ?? ''}
                             onChange={(newValue) => updateSettings({icon: newValue})}
                         />
+
                     </Grid>
                 </PanelBody>
             </InspectorControls>
@@ -75,10 +74,9 @@ registerBlockType(metadata.name, {
                    props={{
                        '--icon': attributes?.['wpbs-flyout-nav-button']?.icon ?? '',
                    }}
-                   deps={['wpbs-flyout-nav-button']}
             />
 
-            <button {...blockProps} type={'button'}></button>
+            <div {...blockProps} >XXXX</div>
 
         </>;
     },
@@ -89,7 +87,9 @@ registerBlockType(metadata.name, {
         });
 
 
-        return <button {...blockProps} type={'button'}></button>;
+        return <button {...blockProps} type={'button'}>
+            <span className={'screen-reader-text'}>Toggle navigation menu</span>
+        </button>;
     }
 })
 

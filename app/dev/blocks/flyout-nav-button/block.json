@@ -3,14 +3,17 @@
   "title": "Flyout Navigation Button",
   "description": "Display the flyout nav toggle button",
   "selectors": {
-    "root": ".wpbs-flyout-nav-button",
-    "color": ".wpbs-flyout-nav-button"
+    "root": ".wpbs-flyout-nav-button"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
   },
   "supports": {
-    "shadow": {
-      "__experimentalSkipSerialization": true,
-      "__experimentalDefaultControls": true
-    },
+    "layout": false,
+    "shadow": true,
     "color": {
       "background": true,
       "text": true,
@@ -20,19 +23,14 @@
     "__experimentalBorder": {
       "color": true,
       "radius": true,
-      "style": true,
-      "__experimentalSkipSerialization": true,
-      "__experimentalDefaultControls": true
+      "style": true
     },
     "typography": {
       "fontSize": true,
-      "lineHeight": false,
-      "__experimentalSkipSerialization": true,
-      "__experimentalDefaultControls": true
+      "lineHeight": false
     }
   },
   "editorScript": "file:./block.js",
-  "style": "file:./block.css",
   "icon": "button"
 }
 

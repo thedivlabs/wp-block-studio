@@ -1,5 +1,3 @@
-import './scss/block.scss';
-
 import {
     useBlockProps,
     InspectorControls
@@ -20,7 +18,7 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-flyout-nav-button',
-        'relative',
+        'relative flex items-center justify-center text-center cursor-pointer aspect-square before:font-fa before:content-[var(--icon)] before:block',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

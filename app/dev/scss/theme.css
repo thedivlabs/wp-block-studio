@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@utility font-fa {
+  font-family: 'Font Awesome 6 Pro', sans-serif;
+}
+
 @import "./core/tw-base";
 @import "./core/tw-components";
 @import "./core/tw-utilities";

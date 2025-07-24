@@ -30,9 +30,6 @@
       "lineHeight": false
     }
   },
-  "style": [
-    "file:./block.css"
-  ],
   "editorScript": "file:./block.js",
   "icon": "button"
 }

@@ -156,11 +156,13 @@ class WPBS {
 		require_once self::$core_path . 'modules/class-wpbs-taxonomy.php';
 		require_once self::$core_path . 'modules/class-wpbs-popup.php';
 		require_once self::$core_path . 'modules/class-wpbs-media-gallery.php';
+		require_once self::$core_path . 'modules/class-wpbs-company.php';
 
 		WPBS_WP::init();
 		WPBS_Blocks::init();
 		WPBS_Popup::init();
 		WPBS_Media_Gallery::init();
+		WPBS_Company::init();
 
 		self::init_classes( 'core/components' );
 

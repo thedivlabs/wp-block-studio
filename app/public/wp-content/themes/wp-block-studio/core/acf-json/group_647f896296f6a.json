@@ -1,0 +1,53 @@
+{
+    "key": "group_647f896296f6a",
+    "title": "Menu Item",
+    "fields": [
+        {
+            "key": "field_647f8962b5c04",
+            "label": "Icon",
+            "name": "icon",
+            "aria-label": "",
+            "type": "font-awesome",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "icon_sets": [
+                "light",
+                "brands"
+            ],
+            "custom_icon_set": "",
+            "default_label": "",
+            "default_value": "",
+            "save_format": "element",
+            "allow_null": 1,
+            "show_preview": 0,
+            "enqueue_fa": 0,
+            "fa_live_preview": "",
+            "choices": []
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "nav_menu_item",
+                "operator": "==",
+                "value": "all"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 0,
+    "modified": 1695064640
+}

@@ -142,7 +142,7 @@ registerBlockType(metadata.name, {
         useEffect(() => {
             const buttonGrow = !!attributes['wpbs-content-tabs']?.['button-grow'];
             const result = {buttonGrow};
-
+            console.log('qqq');
             if (!shallowEqual(tabOptions, result)) {
                 setTabOptions(result);
             }

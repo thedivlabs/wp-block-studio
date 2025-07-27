@@ -19,7 +19,6 @@
     max-w-full
     max-h-full
     select-none
-    m-auto
   }
 
   .wpbs-lightbox-slide {
@@ -33,7 +32,6 @@
     flex
     justify-center
     items-center
-    m-auto
     max-h-full
     ;
 
@@ -47,7 +45,7 @@
       }
     }
 
-    & * {
+    & > .swiper-zoom-container * {
       pointer-events: auto;
     }
   }
@@ -139,7 +137,6 @@
     rounded
     overflow-hidden
     bg-black/70
-    m-auto
   }
 
 

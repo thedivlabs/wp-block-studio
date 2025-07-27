@@ -16,6 +16,7 @@ export default class Lightbox {
                 prevEl: '.wpbs-lightbox-nav__button--prev',
             },
             zoom: {
+                toggle:true,
                 limitToOriginalSize: true,
                 maxRatio: 8,
                 containerClass: 'swiper-zoom-container',

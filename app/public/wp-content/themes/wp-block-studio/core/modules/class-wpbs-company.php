@@ -47,6 +47,7 @@ class WPBS_Company {
 			'supports'      => [
 				'title',
 				'editor',
+				'excerpt',
 				'thumbnail'
 			],
 			'has_archive'   => true,

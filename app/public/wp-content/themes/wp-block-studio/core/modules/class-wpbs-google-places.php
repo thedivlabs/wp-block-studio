@@ -14,12 +14,9 @@ class WPBS_Google_Places {
 
 		add_action( 'rest_api_init', function () {
 			register_rest_route( 'wpbs/v1', '/place-details', [
-				'methods'             => 'GET',
-				'callback'            => [ $this, 'fetch_place_details' ],
-				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
-				},
-				'args'                => [
+				'methods'  => 'GET',
+				'callback' => [ $this, 'fetch_place_details' ],
+				'args'     => [
 					'place_id' => [
 						'required'          => true,
 						'type'              => 'string',
@@ -27,15 +24,9 @@ class WPBS_Google_Places {
 							return is_string( $param ) && strlen( $param ) <= 50;
 						},
 						'sanitize_callback' => 'sanitize_text_field',
-					],
+					]
 				],
-				'nonce'               => [
-					'required'          => true,
-					'type'              => 'string',
-					'validate_callback' => function ( $param ) {
-						return wp_verify_nonce( $param, 'wpbs_google_places' );
-					},
-				],
+
 			] );
 		} );
 
@@ -57,7 +48,7 @@ class WPBS_Google_Places {
 
 		$place_id  = sanitize_text_field( $request['place_id'] );
 		$place_ids = array_map( function ( $loc_id ) {
-			return get_field( 'divlabs_map_google_place_id', $loc_id );
+			return get_field( 'wpbs_map_google_place_id', $loc_id );
 		}, ( new WP_Query( [
 			'post_type'      => 'company',
 			'post_status'    => 'publish',

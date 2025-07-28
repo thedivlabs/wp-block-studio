@@ -29,14 +29,6 @@ export class WPBS_Google_Places {
                 this.fetch_details(place_id).then((response) => {
                     console.log(response);
 
-                    if (
-                        'status' in response &&
-                        response.status === 0
-                    ) {
-                        window.alert('Error');
-                        return false;
-                    }
-
                     this.populate_fields(response);
                 });
             });
@@ -51,9 +43,15 @@ export class WPBS_Google_Places {
         }
 
         this.endpoint.searchParams.set('place_id', place_id);
-        this.endpoint.searchParams.set('post_id', WPBS.settings.post_id);
+        this.endpoint.searchParams.set('token', WPBS.settings?.places?.token);
 
-        const response = await fetch(this.endpoint);
+        const response = await fetch(this.endpoint.href, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         return await response.json();
     }
 
@@ -64,36 +62,18 @@ export class WPBS_Google_Places {
         }
 
         const fields = {
-            lng: $('.wpbs-location--longitude input[type=text]'),
-            lat: $('.wpbs-location--latitude input[type=text]'),
-            map: $('.wpbs-location--map-url input[type=text]'),
-            dir: $('.wpbs-location--dir-url input[type=text]'),
-            new_review: $('.wpbs-location--new-review-url input[type=text]'),
-            reviews: $('.wpbs-location--reviews-url input[type=text]'),
-            address_1: $('.wpbs-location--address input[type=text]'),
-            address_2: $('.wpbs-location--address2 input[type=text]'),
-            city: $('.wpbs-location--city input[type=text]'),
-            state: $('.wpbs-location--state input[type=text]'),
-            zip: $('.wpbs-location--zip input[type=text]'),
-            phone: $('.wpbs-location--phone input[type=text]'),
-        }
-
-        const hours = {
-            monday_open: $('.wpbs-location--monday_open .hasDatepicker'),
-            monday_close: $('.wpbs-location--monday_close .hasDatepicker'),
-            tuesday_open: $('.wpbs-location--tuesday_open .hasDatepicker'),
-            tuesday_close: $('.wpbs-location--tuesday_close .hasDatepicker'),
-            wednesday_open: $('.wpbs-location--wednesday_open .hasDatepicker'),
-            wednesday_close: $('.wpbs-location--wednesday_close .hasDatepicker'),
-            thursday_open: $('.wpbs-location--thursday_open .hasDatepicker'),
-            thursday_close: $('.wpbs-location--thursday_close .hasDatepicker'),
-            friday_open: $('.wpbs-location--friday_open .hasDatepicker'),
-            friday_close: $('.wpbs-location--friday_close .hasDatepicker'),
-            saturday_open: $('.wpbs-location--saturday_open .hasDatepicker'),
-            saturday_close: $('.wpbs-location--saturday_close .hasDatepicker'),
-            sunday_open: $('.wpbs-location--sunday_open .hasDatepicker'),
-            sunday_close: $('.wpbs-location--sunday_close .hasDatepicker'),
-            closed_text: ''
+            lng: jQuery('.wpbs-location--longitude input[type=text]'),
+            lat: jQuery('.wpbs-location--latitude input[type=text]'),
+            map: jQuery('.wpbs-location--map-url input[type=text]'),
+            dir: jQuery('.wpbs-location--dir-url input[type=text]'),
+            new_review: jQuery('.wpbs-location--new-review-url input[type=text]'),
+            reviews: jQuery('.wpbs-location--reviews-url input[type=text]'),
+            address_1: jQuery('.wpbs-location--address input[type=text]'),
+            address_2: jQuery('.wpbs-location--address2 input[type=text]'),
+            city: jQuery('.wpbs-location--city input[type=text]'),
+            state: jQuery('.wpbs-location--state input[type=text]'),
+            zip: jQuery('.wpbs-location--zip input[type=text]'),
+            phone: jQuery('.wpbs-location--phone input[type=text]'),
         }
 
         if (
@@ -171,67 +151,6 @@ export class WPBS_Google_Places {
             fields.phone.val(data.phone);
         }
 
-        // Hours
-
-        if (data.hasOwnProperty('hours')) {
-            if (!hours.monday_open.val() && data.hours.hasOwnProperty('monday')) {
-                hours.monday_open.datetimepicker('setTime', data.hours.monday.open);
-            }
-
-            if (!hours.monday_close.val() && data.hours.hasOwnProperty('monday')) {
-                hours.monday_close.datetimepicker('setTime', data.hours.monday.close);
-            }
-
-            if (!hours.tuesday_open.val() && data.hours.hasOwnProperty('tuesday')) {
-                hours.tuesday_open.datetimepicker('setTime', data.hours.tuesday.open);
-            }
-
-            if (!hours.tuesday_close.val() && data.hours.hasOwnProperty('tuesday')) {
-                hours.tuesday_close.datetimepicker('setTime', data.hours.tuesday.close);
-            }
-
-            if (!hours.wednesday_open.val() && data.hours.hasOwnProperty('wednesday')) {
-                hours.wednesday_open.datetimepicker('setTime', data.hours.wednesday.open);
-            }
-
-            if (!hours.wednesday_close.val() && data.hours.hasOwnProperty('wednesday')) {
-                hours.wednesday_close.datetimepicker('setTime', data.hours.wednesday.close);
-            }
-
-            if (!hours.thursday_open.val() && data.hours.hasOwnProperty('thursday')) {
-                hours.thursday_open.datetimepicker('setTime', data.hours.thursday.open);
-            }
-
-            if (!hours.thursday_close.val() && data.hours.hasOwnProperty('thursday')) {
-                hours.thursday_close.datetimepicker('setTime', data.hours.thursday.close);
-            }
-
-            if (!hours.friday_open.val() && data.hours.hasOwnProperty('friday')) {
-                hours.friday_open.datetimepicker('setTime', data.hours.friday.open);
-            }
-
-            if (!hours.friday_close.val() && data.hours.hasOwnProperty('friday')) {
-                hours.friday_close.datetimepicker('setTime', data.hours.friday.close);
-            }
-
-            if (!hours.saturday_open.val() && data.hours.hasOwnProperty('saturday')) {
-                hours.saturday_open.datetimepicker('setTime', data.hours.saturday.open);
-            }
-
-            if (!hours.saturday_close.val() && data.hours.hasOwnProperty('saturday')) {
-                hours.saturday_close.datetimepicker('setTime', data.hours.saturday.close);
-            }
-
-            if (!hours.sunday_open.val() && data.hours.hasOwnProperty('sunday')) {
-                hours.sunday_open.datetimepicker('setTime', data.hours.sunday.open);
-            }
-
-            if (!hours.sunday_close.val() && data.hours.hasOwnProperty('sunday')) {
-                hours.sunday_close.datetimepicker('setTime', data.hours['sunday'].close);
-            }
-        }
-
-
     }
 
 
@@ -273,7 +192,7 @@ export class WPBS_Google {
             this.observer.observe(el);
         });
 
-        $('body').on('focus', 'input[type=text].wpbs-autocomplete, .wpbs-autocomplete input[type=text]', (e) => {
+        jQuery('body').on('focus', 'input[type=text].wpbs-autocomplete, .wpbs-autocomplete input[type=text]', (e) => {
             this.init_autocomplete(e.target);
         });
 
@@ -285,7 +204,7 @@ export class WPBS_Google {
         if (typeof google === 'object' && typeof google.maps === 'object') {
             this.init_components();
         } else {
-            $.getScript({
+            jQuery.getScript({
                 //url: 'https://maps.googleapis.com/maps/api/js?key=' + this.google_id + '&libraries=places,marker&callback=wpbs_google&loading=async',
                 url: 'https://maps.googleapis.com/maps/api/js?key=' + this.google_id + '&libraries=places,marker&callback=wpbs_google&loading=async',
                 cache: true

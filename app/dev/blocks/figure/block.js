@@ -32,7 +32,7 @@ import {LinkPost} from "Components/LinkPost";
 function blockClasses(attributes = {}) {
 
     return [
-        'wpbs-figure ',
+        'wpbs-figure h-full',
         attributes?.uniqueId ?? ''
     ].filter(x => x).join(' ');
 }
@@ -53,7 +53,7 @@ const Media = React.memo(({settings, breakpoint}) => {
         resolutionMobile: settings?.['resolutionMobile'] ?? settings?.['resolutionLarge'] ?? null,
         breakpoint: breakpoint || 'normal',
     }).filter(([_, v]) => v));
-    
+
     const Content = () => {
 
         switch (settings?.type ?? false) {

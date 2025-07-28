@@ -18,7 +18,7 @@ if ( ! empty( $settings['contain'] ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-figure',
+		'wpbs-figure h-full',
 		$attributes['uniqueId'] ?? null
 	] ) ),
 	'data-wp-interactive' => 'wpbs',

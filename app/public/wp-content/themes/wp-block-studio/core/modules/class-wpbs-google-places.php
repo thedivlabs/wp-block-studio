@@ -1,38 +1,48 @@
 <?php
 
 
-class DIVLABS_Google_Places {
+class WPBS_Google_Places {
 
-	private static DIVLABS_Google_Places $instance;
+	private static WPBS_Google_Places $instance;
 	private string|bool $google_api_key;
 	private string|bool $google_maps_key;
 
 	private function __construct() {
 
-		$this->init_class();
-		add_filter( 'divlabs_init_vars', [ $this, 'init_vars' ] );
+		$this->google_api_key  = get_field( 'theme_settings_api_google_api_key', 'option' ) ?? false; // secret key
+		$this->google_maps_key = get_field( 'theme_settings_api_google_maps_key', 'option' ) ?? false; // open key
+
+		add_action( 'rest_api_init', function () {
+			register_rest_route( 'wpbs/v1', '/place-details', [
+				'methods'             => 'GET',
+				'callback'            => [ $this, 'fetch_place_details' ],
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
+				'args'                => [
+					'place_id' => [
+						'required'          => true,
+						'type'              => 'string',
+						'validate_callback' => function ( $param ) {
+							return is_string( $param ) && strlen( $param ) <= 50;
+						},
+						'sanitize_callback' => 'sanitize_text_field',
+					],
+				],
+			] );
+		} );
+
+		add_filter( 'wpbs_init_vars', [ $this, 'init_vars' ] );
 
 	}
 
 	public function init_vars( $vars ): array {
 		$vars['google_places'] = [
-			'token'    => wp_create_nonce( 'divlabs_google_places' ),
-			'key'      => $this->google_api_key,
+			'token'    => wp_create_nonce( 'wpbs_google_places' ),
 			'style_id' => $this->google_maps_key,
 		];
 
 		return $vars;
-	}
-
-	public function init_class(): void {
-
-		$this->google_api_key  = get_field( 'divlabs_advanced_settings_api_google_api_key', 'option' ) ?? false; // secret key
-		$this->google_maps_key = get_field( 'divlabs_advanced_settings_api_google_maps_key', 'option' ) ?? false; // open key
-
-		DIVLABS_Endpoints::add( 'place-details', false, [
-			'methods'  => 'GET',
-			'callback' => [ $this, 'fetch_place_details' ]
-		] );
 	}
 
 	public function fetch_place_details( WP_REST_Request $request ): array {
@@ -231,9 +241,9 @@ class DIVLABS_Google_Places {
 		return $details;
 	}
 
-	public static function init(): DIVLABS_Google_Places {
+	public static function init(): WPBS_Google_Places {
 		if ( empty( self::$instance ) ) {
-			self::$instance = new DIVLABS_Google_Places();
+			self::$instance = new WPBS_Google_Places();
 		}
 
 		return self::$instance;

@@ -25,7 +25,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-init'        => 'callbacks.observe',
 ] );
 
-$breakpoint = ( wp_get_global_settings()['custom']['breakpoints'] ?? [] )[ $attributes['wpbs-breakpoint']['large'] ?? 'normal' ] ?? false;
+$bp_key = ! empty( $attributes['wpbs-breakpoint']['large'] ) ? $attributes['wpbs-breakpoint']['large'] : 'normal';
+
+$breakpoint = ( wp_get_global_settings()['custom']['breakpoints'] ?? [] )[ $bp_key ] ?? false;
 
 $fallback_large_id  = ! empty( $settings['force'] ) ? $settings['imageLarge']['id'] ?? false : $settings['imageLarge']['id'] ?? $settings['imageMobile']['id'] ?? false;
 $fallback_mobile_id = ! empty( $settings['force'] ) ? $settings['imageMobile']['id'] ?? false : $settings['imageMobile']['id'] ?? $settings['imageLarge']['id'] ?? false;

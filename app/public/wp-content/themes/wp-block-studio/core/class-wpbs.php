@@ -10,7 +10,7 @@ class WPBS {
 
 	public static string $path;
 	public static string $nonce;
-	public static string $nonce_id;
+	public static string $nonce_rest;
 	public static string $transient_base;
 
 	private function __construct() {
@@ -119,6 +119,7 @@ class WPBS {
 				'theme' => get_theme_file_uri()
 			],
 			'nonce'       => self::$nonce,
+			'nonce_rest'  => self::$nonce_rest,
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
 			'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
 		], false ) );
@@ -288,11 +289,8 @@ class WPBS {
 	}
 
 	public function set_nonce(): void {
-		self::$nonce_id = join( '_', [
-			'wpbs_page_id',
-			//(string) current_time( 'timestamp' )
-		] );
-		self::$nonce    = wp_create_nonce( self::$nonce_id );
+		self::$nonce      = wp_create_nonce( 'wpbs_page_id' );
+		self::$nonce_rest = wp_create_nonce( 'wp_rest' );
 	}
 
 	public static function init(): WPBS {

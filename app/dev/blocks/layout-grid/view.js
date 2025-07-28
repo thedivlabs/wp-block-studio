@@ -8,7 +8,7 @@ async function fetchGrid(data = {}) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-WP-Nonce': WPBS?.settings?.nonce ?? '',
+                'X-WP-Nonce': WPBS?.settings?.nonce_rest ?? '',
             },
             body: JSON.stringify({
                 ...data,

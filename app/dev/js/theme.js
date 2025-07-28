@@ -50,7 +50,7 @@ class WPBS_Theme {
 
         const {breakpoints} = WPBS?.settings ?? {};
 
-        const breakpointLarge = breakpoints[args?.['breakpoint-large'] ?? 'lg'];
+        const breakpointLarge = breakpoints[args?.['breakpoint-large'] ?? 'normal'];
         const breakpointSmall = breakpoints[args?.['breakpoint-small'] ?? 'sm'];
 
         if (!divider) {
@@ -78,7 +78,7 @@ class WPBS_Theme {
         }
 
         const styleCss = [
-            '@media screen and (width < ' + breakpointSmall + ') {',
+            '@media screen and (width < ' + breakpointSmall + ') and (max-width: calc(' + breakpointSmall + ' - 1px)) {',
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',
             selector + ' .loop-container > .loop-card:nth-of-type( n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
             selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:before { content:"" }',
@@ -100,8 +100,8 @@ class WPBS_Theme {
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n ):before { width: calc(100% + calc(var(--grid-col-gap) / 2)); }',
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n+1 ):before { width: ' + (colSmall > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
-            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { content:none !important; }',
+            selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
+            selector + ' .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { display:none !important; }',
             '}',
 
             '@media screen and (min-width: ' + breakpointLarge + ') {',

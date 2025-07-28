@@ -8,7 +8,7 @@ async function fetchGallery(data = {}) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-WP-Nonce': WPBS?.settings?.nonce ?? '',
+                'X-WP-Nonce': WPBS?.settings?.nonce_rest ?? '',
             },
             body: JSON.stringify({
                 ...data,
@@ -122,6 +122,10 @@ const {state} = store('wpbs/media-gallery', {
                 const parser = new DOMParser();
 
                 element.dataset.page = String(next_page);
+
+                if (!result?.rendered) {
+                    return false;
+                }
 
                 const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-media-gallery-container');
                 const grid_cards = grid_container.querySelectorAll('.loop-card');

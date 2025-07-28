@@ -400,7 +400,9 @@ export function layoutCss(attributes, selector) {
 
     const {'wpbs-layout': settings = {}} = attributes;
 
-    const breakpoint = '%__BREAKPOINT__' + (settings?.breakpoint ?? 'normal') + '__%';
+    const bp_key = settings?.breakpoint ? settings?.breakpoint : 'normal';
+
+    const breakpoint = '%__BREAKPOINT__' + bp_key + '__%';
     const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
 
     let css = '';

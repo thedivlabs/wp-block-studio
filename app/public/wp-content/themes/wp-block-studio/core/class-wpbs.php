@@ -104,6 +104,13 @@ class WPBS {
 			'strategy'  => 'defer',
 			'in_footer' => false,
 		] );
+		wp_register_script( 'wpbs-admin-js', get_stylesheet_directory_uri() . '/build/admin.js', [
+			'wp-dom-ready',
+			'jquery'
+		], false, [
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		] );
 
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
@@ -130,6 +137,7 @@ class WPBS {
 
 	public function admin_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
+		wp_enqueue_script( 'wpbs-admin-js' );
 	}
 
 	public function editor_assets(): void {

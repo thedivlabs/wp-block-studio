@@ -7,19 +7,14 @@ class WPBS_Place {
 	public string|bool $slug;
 	public int|bool $id;
 	public int|bool $image;
-	public WPBS_Logo $logo;
 	public array|bool $address;
 	public array|bool $phone;
 	public array|bool $phone_other;
 	public array|bool $email;
 	public array|bool $email_other;
 	public array|bool $social;
-	public array|bool $gallery;
-	public array|bool $video;
 	public array|bool $service_areas;
-	public int|string|bool $faq;
 	public int|bool $marker;
-	public string|bool $hours_inline;
 
 	public string|bool $google_place_id;
 	public string|bool $longitude;
@@ -37,7 +32,6 @@ class WPBS_Place {
 		$this->image           = get_post_thumbnail_id( $id );
 		$this->slug            = get_post_field( 'post_name', $id );
 		$this->id              = $id;
-		$this->logo            = new WPBS_Logo( get_field( 'wpbs_logo', $id ) ?: false );
 		$this->google_place_id = get_field( 'wpbs_map_google_place_id', $id ) ?: false;
 		$this->longitude       = get_field( 'wpbs_map_longitude', $id ) ?: false;
 		$this->latitude        = get_field( 'wpbs_map_latitude', $id ) ?: false;
@@ -51,10 +45,6 @@ class WPBS_Place {
 		$this->email           = get_field( 'wpbs_contact_email_primary', $id ) ?: false;
 		$this->email_other     = WPBS::clean_array( get_field( 'wpbs_contact_email_additional', $id ) ?: [] );
 		$this->social          = get_field( 'wpbs_social', $id ) ?: false;
-		$this->gallery         = (array) WPBS::clean_array( get_field( 'wpbs_media_photo_gallery', $id ) ?: [] );
-		$this->video           = (array) WPBS::clean_array( get_field( 'wpbs_media_videos', $id ) ?: [] );
-		$this->faq             = get_field( 'wpbs_options_faq_group', $id ) ?: false;
-		$this->hours_inline    = get_field( 'wpbs_hours_normal_inline', $id ) ?: false;
 		$this->marker          = get_field( 'wpbs_map_marker', $id ) ?: false;
 		$this->service_areas   = [
 			'title'     => get_field( 'wpbs_service_areas_title', $id ),
@@ -207,96 +197,7 @@ class WPBS_Place {
 	public function summary(): string|bool|null {
 		return get_field( 'wpbs_content_description', $this->id );
 	}
-
-	public function get_hours( $args = [], $render = true ): array|bool {
-		$fields = WPBS::clean_array( get_field( 'wpbs_hours_normal', $this->id ) );
-
-		if ( empty( $fields ) ) {
-			return false;
-		}
-
-		if ( ! empty( $args['inline'] ) ) {
-			$inline_hours = $this->hours_inline;
-
-			if ( empty( $inline_hours ) ) {
-				return false;
-			}
-
-			if ( $render ) {
-				echo $inline_hours;
-
-				return true;
-			} else {
-				return $inline_hours;
-			}
-		}
-
-		$hours = [
-			'monday'    => [
-				'title' => 'Monday',
-				'open'  => $fields['monday_open'] ?? false,
-				'close' => $fields['monday_close'] ?? false,
-			],
-			'tuesday'   => [
-				'title' => 'Tuesday',
-				'open'  => $fields['tuesday_open'] ?? false,
-				'close' => $fields['tuesday_close'] ?? false,
-			],
-			'wednesday' => [
-				'title' => 'Wednesday',
-				'open'  => $fields['wednesday_open'] ?? false,
-				'close' => $fields['wednesday_close'] ?? false,
-			],
-			'thursday'  => [
-				'title' => 'Thursday',
-				'open'  => $fields['thursday_open'] ?? false,
-				'close' => $fields['thursday_close'] ?? false,
-			],
-			'friday'    => [
-				'title' => 'Friday',
-				'open'  => $fields['friday_open'] ?? false,
-				'close' => $fields['friday_close'] ?? false,
-			],
-			'saturday'  => [
-				'title' => 'Saturday',
-				'open'  => $fields['saturday_open'] ?? false,
-				'close' => $fields['saturday_close'] ?? false,
-			],
-			'sunday'    => [
-				'title' => 'Sunday',
-				'open'  => $fields['sunday_open'] ?? false,
-				'close' => $fields['sunday_close'] ?? false,
-			]
-		];
-
-		if ( $render ) {
-			echo '<table class="' . ( implode( ' ', array_filter( [
-					'wpbs-hours wpbs-table',
-					$args['class'] ?? null
-				] ) ) ) . '">';
-
-			echo '<tr><th>Day</th><th>Open</th><th>Close</th></tr>';
-
-			foreach ( $hours as $k => $day ) {
-
-				if ( empty( $day['open'] ) || empty( $day['close'] ) ) {
-					continue;
-				}
-				echo '<tr>';
-				echo '<td>' . $day['title'] . '</td><td>' . ( $day['open'] ?: '-' ) . '</td><td>' . ( $day['close'] ?: '-' ) . '</td>';
-				echo '</tr>';
-
-			}
-
-			echo '</table>';
-
-			return true;
-		}
-
-
-		return $hours;
-	}
-
+	
 	public function get_service_areas( $args = [], $render = true ): array {
 
 		$service_areas = WPBS_Company::service_areas( $this->id, $args );

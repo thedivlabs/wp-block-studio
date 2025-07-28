@@ -40,6 +40,10 @@ class WPBS {
 		add_filter( 'acf/settings/load_json', [ $this, 'load_json' ], 100 );
 		add_filter( 'acf/settings/save_json', [ $this, 'save_json' ] );
 
+		add_action( 'wp_head', [ $this, 'header_scripts' ], 110 );
+		add_action( 'wp_body_open', [ $this, 'body_open_scripts' ], 1 );
+		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
+
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
 
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
@@ -238,7 +242,13 @@ class WPBS {
 
 			$data = get_field( $field_id, $post_id ?? false );
 
-			$data = WPBS::clean_array( $data );
+			if ( is_array( $data ) ) {
+				$data = WPBS::clean_array( $data );
+			}
+
+			if ( is_string( $data ) ) {
+				$data = trim( $data );
+			}
 
 			if ( ! empty( $data ) ) {
 				set_transient( $name, $data, DAY_IN_SECONDS );
@@ -433,7 +443,6 @@ class WPBS {
 		return $array;
 	}
 
-
 	public static function get_block_template( $block ): array {
 
 		if ( ! is_array( $block ) || empty( $block['blockName'] ) ) {
@@ -589,6 +598,70 @@ class WPBS {
 
 	}
 
+	public function body_open_scripts(): void {
+
+		$analytics_id = trim( self::get_transient( 'theme_settings_api_google_analytics_id', 'theme_settings', 'option' ) ?: '' );
+
+		if ( ! empty( $analytics_id ) ) {
+			get_template_part( 'core/parts/site/google', 'analytics', [
+				'id' => $analytics_id
+			] );
+		}
+
+	}
+
+	public function header_scripts(): void {
+
+		$analytics_id = trim( self::get_transient( 'theme_settings_api_google_analytics_id', 'theme_settings', 'option' ) ?: '' );
+
+		if ( ! empty( $analytics_id ) ) {
+			get_template_part( 'core/parts/google', 'analytics', [
+				'id'   => $analytics_id,
+				'head' => true
+			] );
+		}
+
+		$scripts = array_merge(
+			array_filter( get_field( 'theme_settings', 'option' )['scripts'] ?? false ?: [], function ( $script ) {
+				return ! empty( $script['in_header'] ) && ! empty( $script['enabled'] ) && ! in_array( get_the_ID(), (array) ( $script['suppress'] ?? [] ) );
+			}, ARRAY_FILTER_USE_BOTH ),
+			array_filter( get_field( 'page_settings', get_the_ID() )['scripts'] ?? false ?: [], function ( $script ) {
+				return ! empty( $script['in_header'] ) && ! empty( $script['enabled'] ) && ! in_array( get_the_ID(), (array) ( $script['suppress'] ?? [] ) );
+			}, ARRAY_FILTER_USE_BOTH ),
+
+		);
+
+		if ( ! empty( $scripts ) ) {
+			echo "<!-- Header Scripts -->\r\n";
+
+			foreach ( $scripts as $script ) {
+				echo $script['script'] ?? false;
+			}
+		}
+
+	}
+
+	public function footer_scripts(): void {
+
+		$scripts = array_merge(
+			array_filter( get_field( 'theme_settings', 'option' )['scripts'] ?? false ?: [], function ( $script ) {
+				return empty( $script['in_header'] ) && ! empty( $script['enabled'] ) && ! in_array( get_the_ID(), (array) ( $script['suppress'] ?? [] ) );
+			}, ARRAY_FILTER_USE_BOTH ),
+			array_filter( get_field( 'page_settings', get_the_ID() )['scripts'] ?? false ?: [], function ( $script ) {
+				return empty( $script['in_header'] ) && ! empty( $script['enabled'] ) && ! in_array( get_the_ID(), (array) ( $script['suppress'] ?? [] ) );
+			}, ARRAY_FILTER_USE_BOTH ),
+		);
+
+		if ( ! empty( $scripts ) ) {
+
+			echo "<!-- Footer Scripts -->\r\n";
+
+			foreach ( $scripts as $script ) {
+				echo $script['script'] ?? false;
+			}
+		}
+
+	}
 
 }
 

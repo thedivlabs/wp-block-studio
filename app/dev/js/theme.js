@@ -76,9 +76,9 @@ class WPBS_Theme {
                 count: Math.floor(total - (Math.floor(total / colLarge) * colLarge)) || colLarge,
             }
         }
-        
+
         const styleCss = [
-            '@media screen and (width < ' + breakpointSmall + ') and (max-width: calc(' + breakpointSmall + ' - 1px)) {',
+            '@media screen (max-width: calc(' + breakpointSmall + ' - 1px)) {',
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):after { content: none !important; }',
             selector + ' .loop-container > .loop-card:nth-of-type( n+' + (colMobile + 1) + '):after { height: calc(100% + (var(--grid-row-gap, var(--grid-col-gap)) / 2));top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
             selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:before { content:"" }',
@@ -88,7 +88,7 @@ class WPBS_Theme {
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colMobile + 'n+1 ):before { width: ' + (colMobile > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
             selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colMobile + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + (lastRow.mobile.count + 1) + '):before { content:none !important; }',
+            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.mobile.count + '):before { content:none !important; }',
             '}',
 
             '@media screen and (min-width: ' + breakpointSmall + ') and (max-width: calc(' + breakpointLarge + ' - 1px)) {',
@@ -101,7 +101,7 @@ class WPBS_Theme {
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colSmall + 'n+1 ):before { width: ' + (colSmall > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
             selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colSmall + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' .loop-card:nth-last-of-type(-n+' + (lastRow.small.count + 1) + '):before { display:none !important; }',
+            selector + ' .loop-card:nth-last-of-type(-n+' + lastRow.small.count + '):before { display:none !important; }',
             '}',
 
             '@media screen and (min-width: ' + breakpointLarge + ') {',
@@ -114,7 +114,7 @@ class WPBS_Theme {
             selector + ' .loop-container > .loop-card:nth-of-type( ' + colLarge + 'n+1 ):before { width: ' + (colLarge > 1 ? 'calc(100% + calc(var(--grid-col-gap) / 2))' : '100%') + '; left: 0; }',
 
             selector + ' .loop-container:has(> .loop-card:nth-of-type(' + (colLarge + 1) + ')) > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):after { height:calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2)); }',
-            selector + ' .loop-card:nth-last-of-type(-n+' + (lastRow.large.count + 1) + '):before { display:none !important; }',
+            selector + ' .loop-container > .loop-card:nth-last-of-type(-n+' + lastRow.large.count + '):before { display:none !important; }',
 
             '}',
         ].join('\r\n');
@@ -122,10 +122,10 @@ class WPBS_Theme {
         const styleTag = document.createElement('style');
         const styleSelector = [uniqueId, 'divider-styles'].join('-');
 
+        [...document.querySelectorAll('.' + styleSelector)].forEach(tag => tag.remove());
+
         styleTag.classList.add(styleSelector);
         styleTag.textContent = styleCss;
-
-        document.head.querySelector('.' + styleSelector)?.remove();
 
         document.head.appendChild(styleTag);
 

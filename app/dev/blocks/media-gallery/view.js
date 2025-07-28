@@ -97,9 +97,9 @@ const {state} = store('wpbs/media-gallery', {
             const page = parseInt(element.dataset?.page ?? 1);
             const next_page = page + 1;
 
-            const {settings, uniqueId, card} = args;
+            const {settings, card} = args;
 
-            const {grid = {}} = settings;
+            const {grid = {}, uniqueId} = settings;
 
             const request = {
                 attributes: {
@@ -144,7 +144,7 @@ const {state} = store('wpbs/media-gallery', {
                     })
 
                 }
-                
+
                 WPBS.gridDividers(element, grid, uniqueId);
 
                 if (!!grid?.masonry) {

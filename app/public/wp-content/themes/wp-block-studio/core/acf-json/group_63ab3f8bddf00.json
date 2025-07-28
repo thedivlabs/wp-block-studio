@@ -75,7 +75,8 @@
                             "taxonomy": "",
                             "return_format": "id",
                             "multiple": 0,
-                            "allow_null": 0,
+                            "allow_null": 1,
+                            "allow_in_bindings": 1,
                             "bidirectional": 0,
                             "ui": 1,
                             "bidirectional_target": []
@@ -103,5 +104,5 @@
     "active": true,
     "description": "Location settings",
     "show_in_rest": 0,
-    "modified": 1723057372
+    "modified": 1753662404
 }

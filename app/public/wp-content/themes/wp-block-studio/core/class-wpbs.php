@@ -192,7 +192,7 @@ class WPBS {
 		}
 
 
-		return array_merge( $paths, self::get_acf_load_paths() );
+		return array_merge( self::get_acf_load_paths(), $paths );
 
 	}
 

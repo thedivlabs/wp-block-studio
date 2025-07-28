@@ -366,13 +366,13 @@ class WPBS {
 			$src          = wp_get_attachment_image_src( $image_id, $image_data['resolution'] ?? 'large' )[0] ?? false;
 			$image_srcset = wp_get_attachment_image_srcset( $image_id );
 			$path         = str_replace( home_url(), ABSPATH, $src );
-			$webp         = true;
+			$webp         = ! str_contains( $path, '.svg' );
 			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
 
 			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
 
-			echo 'href="' . ( $src . '.webp' ) . '"';
+			echo 'href="' . ( $src . ( $webp ? '.webp' : '' ) ) . '"';
 
 			if ( ! empty( $image_data['breakpoint'] ) ) {
 				echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';

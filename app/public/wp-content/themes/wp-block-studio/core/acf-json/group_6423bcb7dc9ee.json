@@ -132,8 +132,8 @@
                         },
                         {
                             "key": "field_663e0cf30cfc0",
-                            "label": "Google Map ID",
-                            "name": "google_map_id",
+                            "label": "Google Maps Key",
+                            "name": "google_maps_key",
                             "aria-label": "",
                             "type": "text",
                             "instructions": "",
@@ -146,6 +146,7 @@
                             },
                             "default_value": "",
                             "maxlength": "",
+                            "allow_in_bindings": 1,
                             "placeholder": "",
                             "prepend": "",
                             "append": ""
@@ -277,5 +278,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1753661725
+    "modified": 1753712509
 }

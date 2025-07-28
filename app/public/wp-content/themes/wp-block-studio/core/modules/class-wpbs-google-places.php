@@ -5,7 +5,7 @@ class DIVLABS_Google_Places {
 
 	private static DIVLABS_Google_Places $instance;
 	private string|bool $google_api_key;
-	private string|bool $google_map_id;
+	private string|bool $google_maps_key;
 
 	private function __construct() {
 
@@ -18,7 +18,7 @@ class DIVLABS_Google_Places {
 		$vars['google_places'] = [
 			'token'    => wp_create_nonce( 'divlabs_google_places' ),
 			'key'      => $this->google_api_key,
-			'style_id' => $this->google_map_id,
+			'style_id' => $this->google_maps_key,
 		];
 
 		return $vars;
@@ -26,8 +26,8 @@ class DIVLABS_Google_Places {
 
 	public function init_class(): void {
 
-		$this->google_api_key = get_field( 'divlabs_advanced_settings_api_google_api_key', 'option' ) ?? false;
-		$this->google_map_id  = get_field( 'divlabs_advanced_settings_api_google_map_id', 'option' ) ?? false;
+		$this->google_api_key  = get_field( 'divlabs_advanced_settings_api_google_api_key', 'option' ) ?? false; // secret key
+		$this->google_maps_key = get_field( 'divlabs_advanced_settings_api_google_maps_key', 'option' ) ?? false; // open key
 
 		DIVLABS_Endpoints::add( 'place-details', false, [
 			'methods'  => 'GET',

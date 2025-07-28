@@ -73,10 +73,14 @@ $container_tag_close = $is_link ? '</a>' : '</div>';
 	<?= $container_tag_open; ?>
     <picture class="w-full h-full">
 		<?php if ( ! empty( $src_large ) ) { ?>
-            <source type="image/webp"
-				<?php echo $mq_large ?>
-				<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
-            />
+
+			<?php if ( ! empty( $src_large_webp ) ) { ?>
+                <source type="image/webp"
+					<?php echo $mq_large ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
+                />
+			<?php } ?>
+
             <source type="image/jpeg"
 				<?php echo $mq_large ?>
 				<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
@@ -85,10 +89,14 @@ $container_tag_close = $is_link ? '</a>' : '</div>';
 
 
 		<?php if ( ! empty( $src_mobile ) ) { ?>
-            <source type="image/webp"
-				<?php echo $mq_mobile ?>
-				<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
-            />
+
+			<?php if ( ! empty( $src_mobile_webp ) ) { ?>
+                <source type="image/webp"
+					<?php echo $mq_mobile ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
+                />
+			<?php } ?>
+
             <source type="image/jpeg"
 				<?php echo $mq_mobile ?>
 				<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>

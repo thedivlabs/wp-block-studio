@@ -156,6 +156,7 @@ class WPBS {
 		require_once $core_path . 'modules/class-wpbs-popup.php';
 		require_once $core_path . 'modules/class-wpbs-media-gallery.php';
 		require_once $core_path . 'modules/class-wpbs-company.php';
+		require_once $core_path . 'modules/class-wpbs-google-places.php';
 
 		WPBS_WP::init();
 		WPBS_ACF::init();

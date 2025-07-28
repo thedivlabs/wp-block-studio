@@ -24,11 +24,6 @@ import {
 } from "@wordpress/components";
 import React, {useCallback} from "react";
 
-const DIMENSION_UNITS = [
-    {value: 'px', label: 'px', default: 0},
-    {value: 'em', label: 'em', default: 0},
-    {value: 'rem', label: 'rem', default: 0},
-]
 
 function classNames(attributes = {}, editor = false) {
 
@@ -227,7 +222,11 @@ registerBlockType(metadata.name, {
                 sides={['top', 'left', 'bottom', 'right']}
                 onChange={(newValue) => updateSettings({'button-padding': newValue})}
                 inputProps={{
-                    units: DIMENSION_UNITS
+                    units: [
+                        {value: 'px', label: 'px', default: 0},
+                        {value: 'em', label: 'em', default: 0},
+                        {value: 'rem', label: 'rem', default: 0},
+                    ]
                 }}
                 __nextHasNoMarginBottom={true}
             />

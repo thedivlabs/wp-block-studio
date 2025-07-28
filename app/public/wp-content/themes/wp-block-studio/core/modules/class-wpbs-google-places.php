@@ -44,9 +44,10 @@ class WPBS_Google_Places {
 	}
 
 	public function init_vars( $vars ): array {
-		$vars['google_places'] = [
+
+		$vars['places'] = [
 			'token'    => wp_create_nonce( 'wpbs_google_places' ),
-			'style_id' => $this->google_maps_key,
+			'maps_key' => $this->google_maps_key,
 		];
 
 		return $vars;

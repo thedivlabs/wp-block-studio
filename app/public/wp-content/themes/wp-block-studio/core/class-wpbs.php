@@ -31,7 +31,6 @@ class WPBS {
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 		add_action( 'wp_head', [ $this, 'critical_css' ], 5 );
-		add_action( 'wp_footer', [ $this, 'output_vars' ], 30 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ] );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
@@ -112,12 +111,19 @@ class WPBS {
 			'in_footer' => true,
 		] );
 
-		wp_localize_script( 'wpbs-theme-js', 'wpbsData', [
+
+		wp_localize_script( 'wpbs-theme-js', 'wpbsData', apply_filters( 'wpbs_init_vars', [
+			'page_id'     => self::$nonce ?? false,
+			'path'        => [
+				'site'  => home_url(),
+				'ajax'  => admin_url( 'admin-ajax.php' ),
+				'theme' => get_theme_file_uri()
+			],
+			'post_id'     => get_the_id(),
 			'nonce'       => wp_create_nonce( 'wp_rest' ),
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
 			'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
-			'colors'      => array_values( array_merge( wp_get_global_settings()['color']['palette']['theme'] ?? [], wp_get_global_settings()['color']['palette']['default'] ?? [] ) ),
-		] );
+		], false ) );
 
 	}
 
@@ -412,22 +418,6 @@ class WPBS {
 		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_styles', $preload_styles ) ) ) as $url ) {
 			echo '<link rel="preload" as="style" href="' . $url . '">';
 		}
-
-	}
-
-	public static function output_vars(): void {
-
-		$vars = apply_filters( 'wpbs_init_vars', [
-			//'page_id' => DIVLABS::$nonce ?? false,
-			'path'    => [
-				'site'  => home_url(),
-				'ajax'  => admin_url( 'admin-ajax.php' ),
-				'theme' => get_theme_file_uri()
-			],
-			'post_id' => get_the_id()
-		], false );
-
-		echo '<script type="application/json" id="wpbs-args">' . json_encode( $vars ) . '</script>';
 
 	}
 

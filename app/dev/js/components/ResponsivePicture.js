@@ -21,7 +21,7 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
         urlLarge = largeLarge.url || false;
         urlMobile = mobileLarge.url || false;
     }
-    
+
     if (!urlLarge && !urlMobile) {
         return false;
     }
@@ -42,12 +42,19 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
         srcsetAttr = !!settings.eager ? 'srcset' : 'data-srcset';
     }
 
+    if (!urlLarge && !urlMobile) {
+        return false;
+    }
+
+    const webpExtLarge = typeof urlLarge === 'string' && !urlLarge.includes('.svg') ? '.webp' : '';
+    const webpExtMobile = typeof urlMobile === 'string' && !urlMobile.includes('.svg') ? '.webp' : '';
+
     return <picture className={className} style={{
         ...settings.style || {},
         ['object-fit']: 'inherit'
     }}>
         <source {...{
-            [srcsetAttr]: urlLarge ? urlLarge + '.webp' : '#',
+            [srcsetAttr]: urlLarge ? urlLarge + webpExtLarge : '#',
             media: '(width >= ' + breakpoint + ')',
         }}/>
         <source {...{
@@ -55,7 +62,7 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
             media: '(width >= ' + breakpoint + ')',
         }}/>
         <source {...{
-            [srcsetAttr]: urlMobile ? urlMobile + '.webp' : '#',
+            [srcsetAttr]: urlMobile ? urlMobile + webpExtMobile : '#',
             media: '(width >= 32px)',
         }}/>
         <source {...{
@@ -63,7 +70,7 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
             media: '(width >= 32px)',
         }}/>
         <img {...{
-            [srcAttr]: urlMobile + '.webp' || '#',
+            [srcAttr]: urlMobile + webpExtMobile || '#',
             alt: large.alt || mobile.alt || '',
             ariaHidden: true,
             loading: settings.eager ? 'eager' : 'lazy'

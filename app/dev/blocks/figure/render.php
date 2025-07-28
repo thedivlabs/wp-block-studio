@@ -35,11 +35,12 @@ $srcset_attr = ! empty( $settings['eager'] ) ? 'srcset' : 'data-srcset';
 
 $featured_image_id = $is_featured_image ? get_post_thumbnail_id() : 0;
 
+
 $src_large      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? 'medium' )[0] ?? false;
-$src_large_webp = $src_large ? $src_large . '.webp' : false;
+$src_large_webp = $src_large && ! str_contains( $src_large, '.svg' ) ? $src_large . '.webp' : false;
 
 $src_mobile      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_mobile_id, $settings['resolutionMobile'] ?? $settings['resolutionLarge'] ?? 'large' )[0] ?? false;
-$src_mobile_webp = $src_mobile ? $src_mobile . '.webp' : false;
+$src_mobile_webp = $src_mobile && ! str_contains( $src_mobile, '.svg' ) ? $src_mobile . '.webp' : false;
 
 $mq_large  = 'media="(min-width: ' . $breakpoint . ')"';
 $mq_mobile = 'media="(max-width: calc( ' . ( $breakpoint ) . ' - 1px))"';

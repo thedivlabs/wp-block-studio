@@ -495,7 +495,7 @@ export function layoutCss(attributes, selector) {
         css += '@media(width < ' + breakpoint + '){' + selector + '{';
 
         Object.entries(mobile).forEach(([prop, value]) => {
-            css += [prop, value].join(':') + ';';
+            css += [prop, value].join(':') + ' !important;';
         })
 
         css += '}}';

@@ -164,6 +164,7 @@ class WPBS {
 		WPBS_Popup::init();
 		WPBS_Media_Gallery::init();
 		WPBS_Company::init();
+		WPBS_Google_Places::init();
 
 		self::init_classes( 'core/components' );
 

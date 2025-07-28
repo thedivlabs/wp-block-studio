@@ -29,6 +29,13 @@ class WPBS_Google_Places {
 						'sanitize_callback' => 'sanitize_text_field',
 					],
 				],
+				'nonce'               => [
+					'required'          => true,
+					'type'              => 'string',
+					'validate_callback' => function ( $param ) {
+						return wp_verify_nonce( $param, 'wpbs_google_places' );
+					},
+				],
 			] );
 		} );
 

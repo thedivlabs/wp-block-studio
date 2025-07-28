@@ -192,7 +192,7 @@ class WPBS {
 		}
 
 
-		return array_merge( $paths, self::get_acf_load_paths() );
+		return array_merge( self::get_acf_load_paths(), $paths );
 
 	}
 
@@ -203,7 +203,7 @@ class WPBS {
 			glob( self::$path . 'core/acf-json', GLOB_ONLYDIR ),
 			glob( self::$path . 'features/**/acf-json', GLOB_ONLYDIR ),
 		) );
-		
+
 		return array_merge( $acf_json_paths, [
 			//get_stylesheet_directory() . '/acf-json',
 		] );

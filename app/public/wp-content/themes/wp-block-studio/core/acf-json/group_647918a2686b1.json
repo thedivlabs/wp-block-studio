@@ -698,37 +698,6 @@
                                     "layout": "block",
                                     "sub_fields": [
                                         {
-                                            "key": "field_678e4ed2deab7",
-                                            "label": "Icon",
-                                            "name": "icon",
-                                            "aria-label": "",
-                                            "type": "font-awesome",
-                                            "instructions": "",
-                                            "required": 0,
-                                            "conditional_logic": 0,
-                                            "wrapper": {
-                                                "width": "33",
-                                                "class": "",
-                                                "id": ""
-                                            },
-                                            "icon_sets": [
-                                                "solid",
-                                                "regular",
-                                                "light",
-                                                "duotone_solid"
-                                            ],
-                                            "custom_icon_set": "",
-                                            "default_label": "",
-                                            "default_value": "",
-                                            "save_format": "element",
-                                            "allow_null": 1,
-                                            "show_preview": 0,
-                                            "enqueue_fa": 0,
-                                            "allow_in_bindings": 0,
-                                            "fa_live_preview": "",
-                                            "choices": []
-                                        },
-                                        {
                                             "key": "field_647918a27867f",
                                             "label": "Label",
                                             "name": "label",
@@ -794,38 +763,6 @@
                                     "button_label": "Add Phone Number",
                                     "rows_per_page": 20,
                                     "sub_fields": [
-                                        {
-                                            "key": "field_678e4f01deab8",
-                                            "label": "Icon",
-                                            "name": "icon",
-                                            "aria-label": "",
-                                            "type": "font-awesome",
-                                            "instructions": "",
-                                            "required": 0,
-                                            "conditional_logic": 0,
-                                            "wrapper": {
-                                                "width": "33",
-                                                "class": "",
-                                                "id": ""
-                                            },
-                                            "icon_sets": [
-                                                "solid",
-                                                "regular",
-                                                "light",
-                                                "duotone_solid"
-                                            ],
-                                            "custom_icon_set": "",
-                                            "default_label": "",
-                                            "default_value": "",
-                                            "save_format": "element",
-                                            "allow_null": 1,
-                                            "show_preview": 0,
-                                            "enqueue_fa": 0,
-                                            "allow_in_bindings": 0,
-                                            "fa_live_preview": "",
-                                            "choices": [],
-                                            "parent_repeater": "field_647918a277ca1"
-                                        },
                                         {
                                             "key": "field_647918a27aba0",
                                             "label": "Label",
@@ -2208,5 +2145,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1753662536
+    "modified": 1753662800
 }

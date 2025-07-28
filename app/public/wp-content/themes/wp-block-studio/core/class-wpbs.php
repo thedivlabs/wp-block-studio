@@ -113,14 +113,12 @@ class WPBS {
 
 
 		wp_localize_script( 'wpbs-theme-js', 'wpbsData', apply_filters( 'wpbs_init_vars', [
-			'page_id'     => self::$nonce ?? false,
 			'path'        => [
 				'site'  => home_url(),
 				'ajax'  => admin_url( 'admin-ajax.php' ),
 				'theme' => get_theme_file_uri()
 			],
-			'post_id'     => get_the_id(),
-			'nonce'       => wp_create_nonce( 'wp_rest' ),
+			'nonce'       => self::$nonce,
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
 			'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
 		], false ) );

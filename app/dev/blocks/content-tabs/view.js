@@ -2,7 +2,7 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 function setMinHeight(component) {
 
-    if (component.classList.contains('--hide-tabs')) {
+    if (component.classList.contains('--hide-inactive')) {
         return;
     }
 

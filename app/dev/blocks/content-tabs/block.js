@@ -86,9 +86,11 @@ registerBlockType(metadata.name, {
 
             let unsubscribed = false;
 
+            const {getBlock} = select(blockEditorStore);
+            const thisBlock = getBlock(clientId);
+
             const update = () => {
-                const {getBlock} = select(blockEditorStore);
-                const thisBlock = getBlock(clientId);
+
                 if (!thisBlock) {
                     return
                 }
@@ -142,7 +144,7 @@ registerBlockType(metadata.name, {
         useEffect(() => {
             const buttonGrow = !!attributes['wpbs-content-tabs']?.['button-grow'];
             const result = {buttonGrow};
-            console.log('qqq');
+
             if (!shallowEqual(tabOptions, result)) {
                 setTabOptions(result);
             }

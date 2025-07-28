@@ -1,11 +1,11 @@
 {
     "key": "group_6423bcb7dc9ee",
-    "title": "Advanced Settings",
+    "title": "Theme Settings",
     "fields": [
         {
             "key": "field_6423bcb8a6f10",
-            "label": "Advanced Settings",
-            "name": "divlabs_advanced_settings",
+            "label": "Theme Settings",
+            "name": "theme_settings",
             "aria-label": "",
             "type": "group",
             "instructions": "",
@@ -264,7 +264,7 @@
             {
                 "param": "options_page",
                 "operator": "==",
-                "value": "acf-options-advanced"
+                "value": "theme-settings"
             }
         ]
     ],
@@ -277,5 +277,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1742067115
+    "modified": 1753661725
 }

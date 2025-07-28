@@ -9,22 +9,14 @@ class WPBS {
 	private static WPBS $instance;
 
 	public static string $path;
-	public static string $core_path;
 	public static string $nonce;
 	public static string $nonce_id;
 	public static string $transient_base;
-	public static string $dist_path;
-	public static string $dist_uri;
-
-	public static int|bool $pid = false;
 
 	private function __construct() {
 
 		self::$transient_base = 'wpbs';
 		self::$path           = trailingslashit( get_template_directory() );
-		self::$core_path      = self::$path . 'core/';
-		self::$dist_path      = ( is_child_theme() ? trailingslashit( get_stylesheet_directory() ) : self::$path ) . 'build/';
-		self::$dist_uri       = str_replace( get_stylesheet_directory(), get_stylesheet_directory_uri(), self::$dist_path );
 
 		$this->set_nonce();
 
@@ -150,15 +142,19 @@ class WPBS {
 
 	public function init_theme(): void {
 
-		require_once self::$core_path . 'modules/class-wpbs-wp.php';
-		require_once self::$core_path . 'modules/class-wpbs-blocks.php';
-		require_once self::$core_path . 'modules/class-wpbs-cpt.php';
-		require_once self::$core_path . 'modules/class-wpbs-taxonomy.php';
-		require_once self::$core_path . 'modules/class-wpbs-popup.php';
-		require_once self::$core_path . 'modules/class-wpbs-media-gallery.php';
-		require_once self::$core_path . 'modules/class-wpbs-company.php';
+		$core_path = self::$path . 'core/';
+
+		require_once $core_path . 'modules/class-wpbs-wp.php';
+		require_once $core_path . 'modules/class-wpbs-acf.php';
+		require_once $core_path . 'modules/class-wpbs-blocks.php';
+		require_once $core_path . 'modules/class-wpbs-cpt.php';
+		require_once $core_path . 'modules/class-wpbs-taxonomy.php';
+		require_once $core_path . 'modules/class-wpbs-popup.php';
+		require_once $core_path . 'modules/class-wpbs-media-gallery.php';
+		require_once $core_path . 'modules/class-wpbs-company.php';
 
 		WPBS_WP::init();
+		WPBS_ACF::init();
 		WPBS_Blocks::init();
 		WPBS_Popup::init();
 		WPBS_Media_Gallery::init();
@@ -170,8 +166,6 @@ class WPBS {
 	}
 
 	public function init_hook(): void {
-
-		self::$pid = self::get_pid();
 
 		do_action( 'wpbs' );
 	}
@@ -215,25 +209,6 @@ class WPBS {
 		return array_merge( $acf_json_paths, [
 			//get_stylesheet_directory() . '/acf-json',
 		] );
-
-	}
-
-	public static function get_pid(): int|bool {
-		global $post;
-		if (
-			is_admin() ||
-			( is_admin() && ( $_GET['action'] ?? false ) == 'edit' )
-		) {
-			return is_int( $_GET['post'] ?? false ) || is_string( $_GET['post'] ?? false ) ? $_GET['post'] : false;
-		} else {
-			return match ( true ) {
-				is_home() => get_option( 'page_for_posts' ),
-				is_post_type_archive() => false,
-				is_tax() => get_taxonomy( get_queried_object()->taxonomy ?? false )->name ?? false,
-				default => $post->ID ?? false,
-			};
-		}
-
 
 	}
 
@@ -431,7 +406,7 @@ class WPBS {
 				'ajax'  => admin_url( 'admin-ajax.php' ),
 				'theme' => get_theme_file_uri()
 			],
-			'post_id' => self::$pid
+			'post_id' => get_the_id()
 		], false );
 
 		echo '<script type="application/json" id="wpbs-args">' . json_encode( $vars ) . '</script>';

@@ -36,6 +36,8 @@
     opacity: 1 !important;
     height: 100% !important;
     flex-grow: 1;
+    position: relative;
+    z-index: auto;
   }
 
   &.--editor .wpbs-flyout__container {

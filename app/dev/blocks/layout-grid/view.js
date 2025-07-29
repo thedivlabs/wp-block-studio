@@ -30,12 +30,15 @@ const {state} = store('wpbs/layout-grid', {
         init: () => {
 
             const {ref: element} = getElement();
+            const container = element.querySelector(':scope > .loop-container');
 
-            const context = getContext();
+            const args = JSON.parse(element.querySelector('script.wpbs-args')?.textContent ?? '{}');
 
-            WPBS.setMasonry(element);
+            const {settings, uniqueId} = args;
 
-            WPBS.gridDividers(element, context, context?.uniqueId);
+            WPBS.setMasonry(container);
+
+            WPBS.gridDividers(element, settings, uniqueId);
 
 
         },
@@ -53,7 +56,7 @@ const {state} = store('wpbs/layout-grid', {
             const page = parseInt(grid.dataset?.page ?? 1);
             const next_page = page + 1;
 
-            const {card, uniqueId, query} = args;
+            const {card, uniqueId, query, settings} = args;
 
             const request = {
                 attributes: {
@@ -61,7 +64,7 @@ const {state} = store('wpbs/layout-grid', {
                     context: {
                         'wpbs/page': next_page,
                         'wpbs/query': query,
-                        'wpbs/grid': args?.settings,
+                        'wpbs/grid': settings,
                         'wpbs/card': card
                     }
                 }
@@ -100,7 +103,7 @@ const {state} = store('wpbs/layout-grid', {
 
                 }
 
-                WPBS.gridDividers(grid, args, uniqueId);
+                WPBS.gridDividers(grid, settings, uniqueId);
 
                 if (!!args?.masonry) {
                     WPBS.setMasonry(container);

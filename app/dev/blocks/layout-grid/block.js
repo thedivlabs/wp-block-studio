@@ -55,13 +55,14 @@ registerBlockType(metadata.name, {
 
             setAttributes({
                 'wpbs-grid-settings': cleanObject({
+                    uniqueId: uniqueId,
                     button: {
                         label: attributes?.['wpbs-query']?.pagination_label,
                         enabled: !!attributes?.['wpbs-query']?.posts_per_page,
                     }
                 })
             });
-        }, [attributes?.['wpbs-query']])
+        }, [attributes?.['wpbs-query'], uniqueId])
 
         const cssProps = useMemo(() => {
             return gridProps(attributes);

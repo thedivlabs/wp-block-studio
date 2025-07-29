@@ -13,7 +13,7 @@ import React, {useCallback, useMemo} from "react";
 import {
     __experimentalUnitControl as UnitControl,
     __experimentalGrid as Grid,
-    __experimentalNumberControl as NumberControl, PanelBody,
+    __experimentalNumberControl as NumberControl, PanelBody, ToggleControl,
 } from "@wordpress/components";
 import {DIMENSION_UNITS} from "Includes/config";
 
@@ -25,6 +25,7 @@ function blockClassnames(attributes = {}, editor = false) {
         'wpbs-flyout',
         'flex flex-col w-full relative overflow-y-scroll',
         attributes?.uniqueId ?? null,
+        attributes?.fade ? '--fade' : null,
         !!editor ? '--editor' : null,
     ].filter(x => x).join(' ');
 }
@@ -81,7 +82,6 @@ registerBlockType(metadata.name, {
 
                         <Grid columnGap={20} columns={1} rowGap={20}>
 
-
                             <Grid columnGap={20} columns={2} rowGap={15}>
 
                                 <UnitControl
@@ -89,6 +89,8 @@ registerBlockType(metadata.name, {
                                     value={settings?.['max-width']}
                                     onChange={(newValue) => updateSettings({'max-width': newValue})}
                                     units={DIMENSION_UNITS}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
                                 />
 
                                 <NumberControl
@@ -98,6 +100,8 @@ registerBlockType(metadata.name, {
                                     max={1}
                                     value={settings?.['grayscale']}
                                     onChange={(newValue) => updateSettings({'grayscale': newValue})}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
                                 />
                                 <UnitControl
                                     label="Blur"
@@ -107,8 +111,11 @@ registerBlockType(metadata.name, {
                                     units={[
                                         {value: 'px', label: 'px', default: 0}
                                     ]}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
                                 />
                                 <UnitControl
+
                                     label="Animation"
                                     value={settings?.['animation']}
                                     step={50}
@@ -117,8 +124,21 @@ registerBlockType(metadata.name, {
                                     units={[
                                         {value: 'ms', label: 'ms', default: 100}
                                     ]}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
                                 />
 
+                            </Grid>
+
+                            <Grid columnGap={20} columns={2} rowGap={15} style={{marginTop: '15px'}}>
+                                <ToggleControl
+
+                                    label="Fade"
+                                    checked={!!settings?.['fade']}
+                                    onChange={(newValue) => updateSettings({'fade': newValue})}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
+                                />
                             </Grid>
 
                             <PanelColorSettings

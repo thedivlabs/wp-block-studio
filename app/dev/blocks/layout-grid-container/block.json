@@ -22,6 +22,7 @@
     "wpbs/layout-grid-card"
   ],
   "usesContext": [
+    "wpbs/settings",
     "wpbs/page",
     "wpbs/grid",
     "wpbs/card",

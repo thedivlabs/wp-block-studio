@@ -26,6 +26,10 @@
       "radius": true,
       "style": true
     },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
     "typography": {
       "fontSize": true,
       "lineHeight": false

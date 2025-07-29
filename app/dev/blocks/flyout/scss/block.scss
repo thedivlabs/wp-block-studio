@@ -4,11 +4,9 @@
   height: 100svh;
   top: 0;
   left: 0;
-  transition: opacity var(--animation, 500ms);
-  background-color: var(--overlay, rgba(0, 0, 0, .5));
-  backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
+  transition: all calc(var(--animation, 500ms) + 300ms);
+  background-color: rgba(0, 0, 0, 0);
   @apply
-  opacity-0
   fixed
   flex
   overflow-hidden
@@ -17,18 +15,24 @@
   ;
 
   &.active {
-
+    background-color: var(--overlay, rgba(0, 0, 0, .5));
+    backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
     @apply
     opacity-100
     pointer-events-auto
   }
 
-
   &.active .wpbs-flyout__container {
     transform: translate(0, 0);
+    opacity: 1;
+  }
+
+  &.fade .wpbs-flyout__container {
+    opacity: 0;
   }
 
   &.--editor {
+    background-color: var(--overlay, rgba(0, 0, 0, .5)) !important;
     opacity: 1 !important;
     height: 100% !important;
     flex-grow: 1;

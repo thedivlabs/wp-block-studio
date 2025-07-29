@@ -235,9 +235,12 @@ export function Style({
             });
         }
 
-        setAttributes({
-            'wpbs-preload': preloadMedia
-        });
+        if (attributes?.['wpbs-preload'] !== preloadMedia && preloadMedia.length > 0) {
+
+            setAttributes({
+                'wpbs-preload': preloadMedia
+            });
+        }
 
     }, [resultCss, preloadMedia, uniqueId]);
 

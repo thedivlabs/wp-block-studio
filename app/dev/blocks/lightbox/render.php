@@ -32,15 +32,16 @@ $media = WPBS::clean_array( array_map( function ( $item ) {
 						$is_video ? '--video' : null,
 					] ) ) . '">';
 
-                echo '<div class="swiper-zoom-container">';
+				echo '<div class="swiper-zoom-container">';
 
 				if ( $is_video ) {
 					echo ( new WP_Block( [
 						'blockName' => 'wpbs/video-element',
 					], [
 						'media'    => [
-							'link'  => $media_item['link'],
-							'modal' => false
+							'poster' => $media_item['poster'] ?? false,
+							'link'   => $media_item['link'] ?? false,
+							'modal'  => false
 						],
 						'lightbox' => true,
 					] ) )->render();

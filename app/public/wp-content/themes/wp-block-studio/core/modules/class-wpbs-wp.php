@@ -9,7 +9,7 @@ class WPBS_WP {
 		$this->image_sizes();
 
 		add_action( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 100 );
-		add_action( 'after_setup_theme', [ $this, 'theme_support' ], 100 );
+		add_filter( 'rest_endpoints', [ $this, 'add_rest_method' ] );
 
 		register_nav_menus( array(
 			'header-menu' => __( 'Header Menu', 'divlabs' ),
@@ -19,15 +19,15 @@ class WPBS_WP {
 			'legal-menu'  => __( 'Legal Menu', 'divlabs' ),
 		) );
 
-		add_post_type_support( 'page', 'excerpt' );
-
 		$this->shortcodes();
+		$this->theme_support();
 
-		add_filter( 'rest_endpoints', [ $this, 'add_rest_method' ] );
 
 	}
 
 	public function theme_support(): void {
+
+		add_post_type_support( 'page', 'excerpt' );
 
 		add_theme_support( 'custom-spacing' );
 		add_theme_support( 'custom-units' );
@@ -39,8 +39,19 @@ class WPBS_WP {
 		add_theme_support( 'appearance-tools' );
 		add_theme_support( 'wp-block-styles' );
 		add_theme_support( 'border' );
+		add_theme_support( 'menus' );
 		//add_theme_support( 'editor-color-palette' );
 		//add_theme_support( 'editor-gradient-presets' );
+
+		register_block_style( 'core/navigation', [
+			'name'  => 'inline',
+			'label' => 'Inline',
+		] );
+
+		register_block_style( 'core/navigation', [
+			'name'  => 'accordion',
+			'label' => 'Accordion',
+		] );
 
 	}
 

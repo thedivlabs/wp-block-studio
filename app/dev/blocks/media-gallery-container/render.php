@@ -60,7 +60,6 @@ $classes = array_filter( [
 	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap items-start relative z-20',
 	$is_last ? '--last-page' : null,
 	$unique_id,
-	! empty( $grid_settings['masonry'] ) ? 'masonry' : null,
 ] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [

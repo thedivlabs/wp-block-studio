@@ -26,7 +26,7 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-layout-grid',
-        !!attributes?.['wpbs-grid']?.masonry ? '--masonry masonry !block' : null,
+        !!attributes?.['wpbs-grid']?.masonry ? '--masonry' : null,
         'w-full flex relative',
         !!attributes['wpbs-query']?.pagination ? 'wpbs-layout-grid--pagination' : null,
         'wpbs-container',

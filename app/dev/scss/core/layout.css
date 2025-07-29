@@ -59,11 +59,11 @@
 }
 
 /* Masonry layout */
-.--masonry .loop-card {
+.loop-container.masonry .loop-card {
   margin-bottom: var(--grid-row-gap, var(--grid-col-gap, 0px));
 }
 
-.--masonry .loop-card.last-row-item {
+.loop-container.masonry .loop-card.last-row-item {
   margin-bottom: 0;
 
   &:before {

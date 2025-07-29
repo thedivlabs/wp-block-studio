@@ -148,7 +148,7 @@ class WPBS_Theme {
                 masonryData.destroy();
             }
 
-            [...container.querySelectorAll('.last-row-item')].forEach(item => item.classList.remove('last-row-item'));
+            //[...container.querySelectorAll('.last-row-item')].forEach(item => item.classList.remove('last-row-item'));
 
             const masonry = new Masonry(container, {
                 itemSelector: '.loop-card',

@@ -57,29 +57,29 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
-        useEffect(() => {
-            const newSettings = cleanObject({
-                uniqueId: uniqueId,
-                type: styleType,
-                grid: !isSlider ? attributes?.['wpbs-grid'] : {},
-                slider: isSlider ? attributes?.['wpbs-swiper-args'] : {},
-                gallery: attributes?.['wpbs-media-gallery'],
-                button: {
-                    label: attributes?.['wpbs-media-gallery']?.button_label,
-                    enabled: !!attributes?.['wpbs-media-gallery']?.page_size,
-                }
-            });
-
-            if (!isEqual(attributes?.['wpbs-media-gallery-settings'], newSettings)) {
-                setAttributes({'wpbs-media-gallery-settings': newSettings});
+        const newSettings = useMemo(() => cleanObject({
+            uniqueId,
+            type: styleType,
+            grid: !isSlider ? attributes?.['wpbs-grid'] : {},
+            slider: isSlider ? attributes?.['wpbs-swiper-args'] : {},
+            gallery: attributes?.['wpbs-media-gallery'],
+            button: {
+                label: attributes?.['wpbs-media-gallery']?.button_label,
+                enabled: !!attributes?.['wpbs-media-gallery']?.page_size,
             }
-        }, [
-            attributes?.['wpbs-media-gallery'],
+        }), [
+            uniqueId,
+            styleType,
             attributes?.['wpbs-grid'],
             attributes?.['wpbs-swiper-args'],
-            styleType,
-            uniqueId
+            attributes?.['wpbs-media-gallery'],
         ]);
+
+        useEffect(() => {
+            if (JSON.stringify(attributes?.['wpbs-media-gallery-settings']) !== JSON.stringify(newSettings)) {
+                setAttributes({'wpbs-media-gallery-settings': newSettings});
+            }
+        }, [newSettings]);
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
 

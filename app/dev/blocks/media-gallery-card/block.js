@@ -52,11 +52,7 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <InspectorControls group="advanced">
-                    <Grid columns={2} rowGap={20} style={{'margin-top': '25px'}}>
-                        <></>
-                    </Grid>
-                </InspectorControls>
+                
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 

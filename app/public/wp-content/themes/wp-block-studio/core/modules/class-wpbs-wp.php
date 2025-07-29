@@ -44,11 +44,6 @@ class WPBS_WP {
 		//add_theme_support( 'editor-gradient-presets' );
 
 		register_block_style( 'core/navigation', [
-			'name'  => 'inline',
-			'label' => 'Inline',
-		] );
-
-		register_block_style( 'core/navigation', [
 			'name'  => 'accordion',
 			'label' => 'Accordion',
 		] );

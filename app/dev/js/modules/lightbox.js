@@ -16,7 +16,7 @@ export default class Lightbox {
                 prevEl: '.wpbs-lightbox-nav__button--prev',
             },
             zoom: {
-                toggle:true,
+                toggle: true,
                 limitToOriginalSize: true,
                 maxRatio: 8,
                 containerClass: 'swiper-zoom-container',
@@ -41,7 +41,7 @@ export default class Lightbox {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-WP-Nonce': WPBS?.settings?.nonce ?? '',
+                'X-WP-Nonce': WPBS?.settings?.nonce_rest ?? '',
             },
             body: JSON.stringify({
                 attributes: attributes,

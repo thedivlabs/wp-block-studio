@@ -161,10 +161,12 @@ class WPBS_Theme {
 
             const total = container.querySelectorAll(':scope > .loop-card').length;
             const cols = parseInt(getComputedStyle(container).getPropertyValue('--columns'));
+            const lastItems = Math.ceil(total - (Math.floor(total / cols) * cols)) || cols;
+            const lastRow = Math.min(lastItems, cols);
 
             if (total > cols) {
-                masonry.getItemElements().slice(-Math.abs(cols)).forEach((element) => {
-                    //element.classList.add('last-row-item');
+                masonry.getItemElements().slice(-Math.abs(lastRow)).forEach((element) => {
+                    // element.classList.add('last-row-item');
                 })
             }
 

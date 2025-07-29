@@ -36,7 +36,7 @@ $button_class = implode( ' ', array_filter( [
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';
 
 $poster_id = $settings['poster']['id'] ?? $settings['poster'] ?? false;
-
+WPBS::console_log( $settings );
 ?>
 
 

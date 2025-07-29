@@ -159,16 +159,10 @@ class WPBS_Theme {
             });
             masonry.layout();
 
-            const total = container.querySelectorAll(':scope > .loop-card').length;
-            const cols = parseInt(getComputedStyle(container).getPropertyValue('--columns'));
-            const lastItems = Math.ceil(total - (Math.floor(total / cols) * cols)) || cols;
-            const lastRow = Math.min(lastItems, cols);
+            /*masonry.on('layoutComplete', function () {
 
-            if (total > cols) {
-                masonry.getItemElements().slice(-Math.abs(lastRow)).forEach((element) => {
-                    // element.classList.add('last-row-item');
-                })
-            }
+            });*/
+
 
         }
     }

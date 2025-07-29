@@ -145,6 +145,7 @@ class WPBS_Theme {
             const gutterSizer = container.querySelector(':scope > .gutter-sizer');
             const total = container.querySelectorAll(':scope > .loop-card').length;
             const cols = parseInt(getComputedStyle(container).getPropertyValue('--columns'));
+            const lastRow = Math.floor(total - (Math.floor(total / cols) * cols)) || cols;
 
             if (masonryData) {
                 masonryData.destroy();
@@ -163,7 +164,7 @@ class WPBS_Theme {
 
 
             if (total > cols) {
-                masonry.getItemElements().slice(-Math.abs(cols)).forEach((element) => {
+                masonry.getItemElements().slice(-Math.abs(lastRow)).forEach((element) => {
                     element.classList.add('last-row-item');
                 })
             }

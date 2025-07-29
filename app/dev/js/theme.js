@@ -143,9 +143,14 @@ class WPBS_Theme {
 
             const masonryData = Masonry.data(container) || false;
             const gutterSizer = container.querySelector(':scope > .gutter-sizer');
+            const total = container.querySelectorAll(':scope > .loop-card').length;
+            const cols = parseInt(getComputedStyle(container).getPropertyValue('--columns'));
+
             if (masonryData) {
                 masonryData.destroy();
             }
+
+            [...container.querySelectorAll('.last-row-item')].forEach(item => item.classList.remove('last-row-item'));
 
             const masonry = new Masonry(container, {
                 itemSelector: '.loop-card',
@@ -155,6 +160,13 @@ class WPBS_Theme {
                 horizontalOrder: true,
             });
             masonry.layout();
+
+
+            if (total > cols) {
+                masonry.getItemElements().slice(-Math.abs(cols)).forEach((element) => {
+                    element.classList.add('last-row-item');
+                })
+            }
 
         }
     }

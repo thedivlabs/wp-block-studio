@@ -63,6 +63,19 @@
   margin-bottom: var(--grid-row-gap, var(--grid-col-gap, 0px));
 }
 
+.--masonry .loop-card.last-row-item {
+  margin-bottom: 0;
+
+  &:before {
+    content: none !important;
+  }
+
+  &:after {
+    height: calc(100% + calc(var(--grid-row-gap, var(--grid-col-gap)) / 2)) !important;
+    top: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
+  }
+}
+
 /* Divider styles for loop-card */
 .--divider .loop-card::before,
 .--divider .loop-card::after {

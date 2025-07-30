@@ -39,20 +39,21 @@ registerBlockType(metadata.name, {
         };
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/media-gallery-card'],
-            ]
+            /*  template: [
+                  ['wpbs/media-gallery-card'],
+              ]*/
         });
 
+        const styleProps = {
+            '--grid-col-gap': 'var(--column-gap, 0px)',
+            '--grid-row-gap': 'var(--row-gap, 0px)',
+        };
 
         return (
             <>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={{
-                    '--grid-col-gap': 'var(--column-gap, 0px)',
-                    '--grid-row-gap': 'var(--row-gap, 0px)',
-                }}/>
-                
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={styleProps}/>
+
                 <div {...innerBlocksProps} />
 
             </>

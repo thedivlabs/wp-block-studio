@@ -54,12 +54,18 @@ registerBlockType(metadata.name, {
             className: classNames(attributes),
         });
 
+        const styleProps = {
+            '--icon': '\"' + '\\' + (attributes?.['wpbs-flyout-button']?.icon ?? 'f0c9') + '\"',
+        };
+
         return <>
 
             <InspectorControls group={'styles'}>
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={20} rowGap={20}>
                         <TextControl
+                            __nextHasNoMarginBottom
+                            __next40pxDefaultSize
                             label="Icon"
                             value={attributes?.['wpbs-flyout-button']?.icon ?? ''}
                             onChange={(newValue) => updateSettings({icon: newValue})}
@@ -71,9 +77,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   props={{
-                       '--icon': '\"' + '\\' + (attributes?.['wpbs-flyout-button']?.icon ?? 'f0c9') + '\"',
-                   }}
+                   props={styleProps}
                    deps={['wpbs-flyout-button']}
             />
 

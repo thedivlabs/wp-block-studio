@@ -1,6 +1,7 @@
 import {useEffect, useMemo} from "react";
 import {backgroundCss, backgroundPreload} from "Components/Background.js";
 import {layoutCss} from "Components/Layout.js";
+import {isEqual} from "lodash";
 
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
@@ -227,15 +228,15 @@ export function Style({
 
         const {'wpbs-css': currentCss = ''} = attributes;
 
-        if ((currentCss !== resultCss) || !attributes?.uniqueId) {
 
+        if (!isEqual(currentCss, resultCss) || !attributes?.uniqueId) {
             setAttributes({
                 'wpbs-css': resultCss,
                 uniqueId: uniqueId
             });
         }
 
-        if (attributes?.['wpbs-preload'] !== preloadMedia && preloadMedia.length > 0) {
+        if (!isEqual(attributes?.['wpbs-preload'], preloadMedia) && preloadMedia.length > 0) {
 
             setAttributes({
                 'wpbs-preload': preloadMedia

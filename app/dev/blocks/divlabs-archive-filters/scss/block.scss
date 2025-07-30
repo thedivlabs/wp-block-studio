@@ -1,0 +1,26 @@
+.divlabs-archive-filters {
+
+  input[type=text],
+  input[type=search] {
+
+    background: transparent;
+    padding: .2rem var(--field-padding, .5rem);
+
+    &::placeholder {
+      color: var(--placeholder-color, gray) !important;
+    }
+  }
+
+
+  button {
+    color: var(--button-text-color, inherit);
+    background-color: var(--button-color, transparent);
+    transition: color .3s, background-color .3s, border-color .3s;
+
+    &:hover {
+      color: var(--button-text-hover-color, inherit);
+      background-color: var(--button-hover-color, inherit);
+    }
+  }
+
+}

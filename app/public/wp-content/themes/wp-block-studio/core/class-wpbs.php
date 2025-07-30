@@ -135,7 +135,7 @@ class WPBS {
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_script( 'wpbs-fontawesome' );
 		wp_enqueue_style( 'wpbs-theme-css' );
-
+		wp_enqueue_style( 'wpbs-admin-css' );
 
 	}
 
@@ -145,8 +145,6 @@ class WPBS {
 	}
 
 	public function editor_assets(): void {
-		wp_enqueue_style( 'wpbs-admin-css' );
-		wp_enqueue_style( 'wpbs-theme-css' );
 
 		wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_style( 'wpbs-swiper-css' );

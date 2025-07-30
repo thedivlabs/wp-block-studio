@@ -47,11 +47,11 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-                '--container-width': attributes?.['wpbs-flyout']?.['max-width'],
-                '--blur': attributes?.['wpbs-flyout']?.['blur'],
-                '--grayscale': attributes?.['wpbs-flyout']?.['grayscale'],
-                '--animation': attributes?.['wpbs-flyout']?.['animation'],
-                '--overlay': attributes?.['wpbs-flyout']?.['overlay'],
+                '--container-width': settings?.['max-width'],
+                '--blur': settings?.['blur'],
+                '--grayscale': settings?.['grayscale'],
+                '--animation': settings?.['animation'],
+                '--overlay': settings?.['overlay'],
             };
         }, [settings]);
 

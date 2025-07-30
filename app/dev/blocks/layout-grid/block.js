@@ -20,6 +20,7 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {cleanObject} from "Includes/helper";
+import {isEqual} from "lodash";
 
 
 function classNames(attributes = {}) {
@@ -53,16 +54,22 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
 
-            setAttributes({
-                'wpbs-grid-settings': cleanObject({
-                    uniqueId: uniqueId,
-                    loop: attributes?.className.includes('is-style-loop'),
-                    button: {
-                        label: attributes?.['wpbs-query']?.pagination_label,
-                        enabled: !!attributes?.['wpbs-query']?.posts_per_page,
-                    }
-                })
+            const newSettings = cleanObject({
+                uniqueId: uniqueId,
+                loop: attributes?.className.includes('is-style-loop'),
+                button: {
+                    label: attributes?.['wpbs-query']?.pagination_label,
+                    enabled: !!attributes?.['wpbs-query']?.posts_per_page,
+                }
             });
+
+            if (!isEqual(attributes['wpbs-grid-settings'], newSettings)) {
+                setAttributes({
+                    'wpbs-grid-settings': newSettings
+                });
+            }
+
+
         }, [attributes?.['wpbs-query'], uniqueId])
 
         const cssProps = useMemo(() => {

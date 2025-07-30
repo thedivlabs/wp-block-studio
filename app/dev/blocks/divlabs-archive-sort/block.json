@@ -1,0 +1,14 @@
+{
+  "name": "acf/divlabs-archive-sort",
+  "title": "Archive Sort",
+  "category": "divlabs",
+  "description": "Display a sort field",
+  "ancestor": [
+    "acf/divlabs-archive-filters"
+  ],
+  "acf": {
+    "mode": "preview"
+  }
+}
+
+

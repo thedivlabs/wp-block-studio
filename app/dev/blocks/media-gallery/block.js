@@ -76,9 +76,11 @@ registerBlockType(metadata.name, {
         ]);
 
         useEffect(() => {
-            if (JSON.stringify(attributes?.['wpbs-media-gallery-settings']) !== JSON.stringify(newSettings)) {
+
+            if (!isEqual(attributes?.['wpbs-media-gallery-settings'], newSettings)) {
                 setAttributes({'wpbs-media-gallery-settings': newSettings});
             }
+
         }, [newSettings]);
 
         const tabGrid = <GridControls attributes={attributes} setAttributes={setAttributes}/>;
@@ -124,9 +126,9 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({className: blockClassnames(attributes)});
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/media-gallery-container'],
-            ],
+            /*  template: [
+                  ['wpbs/media-gallery-container'],
+              ],*/
         });
 
         return (

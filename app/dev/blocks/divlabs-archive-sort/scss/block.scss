@@ -1,0 +1,24 @@
+.divlabs-archive-sort {
+
+  &__input {
+    padding: .2rem var(--field-padding, .5rem);
+    border: solid var(--field-border, 0) var(--field-border-color, unset);
+    border-radius: var(--field-rounded, 0) 0 0 var(--field-rounded, 0);
+    background-color: var(--background-color, transparent);
+    color: var(--text-color, inherit);
+    height: var(--wp--custom--form--default--input--height, auto);
+  }
+
+
+  &__icon {
+    color: var(--button-color, var(--button-text-color, inherit));
+    //background-color: var(--button-color, transparent);
+    transition: color .3s, background-color .3s, border-color .3s;
+
+    &:hover {
+      color: var(--button-hover-color, var(--button-text-hover-color, inherit));
+      //background-color: var(--button-hover-color, inherit);
+    }
+  }
+
+}

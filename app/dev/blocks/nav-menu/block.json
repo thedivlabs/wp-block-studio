@@ -35,6 +35,7 @@
     }
   },
   "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
   "icon": "menu",
   "render": "file:./render.php"
 }

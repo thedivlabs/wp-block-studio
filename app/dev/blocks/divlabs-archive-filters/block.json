@@ -1,0 +1,88 @@
+{
+  "name": "acf/divlabs-archive-filters",
+  "title": "Archive Filters",
+  "category": "divlabs",
+  "description": "Display archive filters",
+  "attributes": {
+    "text-color": {
+      "type": "string",
+      "default": "inherit"
+    },
+    "background-color": {
+      "type": "string",
+      "default": "transparent"
+    },
+    "button-text-color": {
+      "type": "string",
+      "default": "var:preset|color|primary"
+    },
+    "button-text-hover-color": {
+      "type": "string",
+      "default": "var:preset|color|primary-hover"
+    },
+    "button-color": {
+      "type": "string"
+    },
+    "button-hover-color": {
+      "type": "string"
+    },
+    "placeholder-color": {
+      "type": "string",
+      "default": "gray"
+    },
+    "field-border-color": {
+      "type": "string",
+      "default": "var:preset|color|light"
+    },
+    "field-border": {
+      "type": "string",
+      "default": "1px"
+    },
+    "field-rounded": {
+      "type": "string",
+      "default": "4px"
+    },
+    "field-padding": {
+      "type": "string",
+      "default": ".5rem"
+    }
+  },
+  "supports": {
+    "innerBlocks": true,
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true,
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    },
+    "__experimentalBorder": {
+      "style": true,
+      "color": true,
+      "radius": true,
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "__experimentalSkipSerialization": true,
+      "__experimentalDefaultControls": true
+    }
+  },
+  "acf": {
+    "mode": "preview"
+  }
+}
+
+

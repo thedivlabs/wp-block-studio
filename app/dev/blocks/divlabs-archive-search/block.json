@@ -1,0 +1,14 @@
+{
+  "name": "acf/divlabs-archive-search",
+  "title": "Archive Search",
+  "category": "divlabs",
+  "ancestor": [
+    "acf/divlabs-archive-filters"
+  ],
+  "description": "Display a search form",
+  "acf": {
+    "mode": "preview"
+  }
+}
+
+

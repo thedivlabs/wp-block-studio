@@ -5,6 +5,8 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {useEffect} from "react";
 import {useInstanceId} from "@wordpress/compose";
+import {isEqual} from "lodash";
+
 
 function blockClassNames(attributes = {}, editor = false) {
     return [
@@ -27,14 +29,21 @@ registerBlockType(metadata.name, {
             label = 'View More',
             enabled = true
         } = context?.['wpbs/settings']?.button ?? context?.['wpbs/settings'] ?? {};
-        
+
         useEffect(() => {
-            setAttributes({
-                'wpbs-pagination-button': {
-                    label: label,
-                    enabled: enabled,
-                }
-            });
+
+
+            const newSettings = {
+                label: label,
+                enabled: enabled,
+            };
+
+            if (!isEqual(attributes['wpbs-pagination-button'], newSettings)) {
+                setAttributes({
+                    'wpbs-pagination-button': newSettings
+                });
+            }
+
         }, [label, enabled]);
 
         const blockProps = useBlockProps({

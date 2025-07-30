@@ -8,11 +8,19 @@
   "attributes": {
     "uniqueId": {
       "type": "string",
-      "show_in_rest": true
+      "show_in_rest": true,
+      "context": [
+        "view",
+        "edit"
+      ]
     },
-    "context": {
+    "blockContext": {
       "type": "object",
-      "show_in_rest": true
+      "show_in_rest": true,
+      "context": [
+        "view",
+        "edit"
+      ]
     }
   },
   "allowedBlocks": [

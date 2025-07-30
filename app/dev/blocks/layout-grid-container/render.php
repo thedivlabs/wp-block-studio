@@ -10,7 +10,7 @@ $card_block = $context['wpbs/card'] ?? array_filter( $block->parsed_block['inner
 } )[0] ?? false;
 
 $page           = intval( $context['wpbs/page'] ?? 1 );
-$grid_settings  = WPBS::clean_array( $context['wpbs/grid'] ?? [] );
+$grid_settings  = WPBS::clean_array( array_merge( $context['wpbs/grid'] ?? [], $context['wpbs/settings'] ?? [] ) );
 $query_settings = WPBS::clean_array( $context['wpbs/query'] ?? [] );
 $is_loop        = ! empty( $grid_settings['loop'] );
 
@@ -23,6 +23,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		$attributes['uniqueId'] ?? null
 	] ) )
 ] );
+
 
 ?>
 

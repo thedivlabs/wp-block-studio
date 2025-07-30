@@ -1,10 +1,11 @@
 <?php
 
-$settings     = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
-$is_lightbox  = ! empty( $settings['lightbox'] );
+$media        = $block->context['media'] ?? $attributes['wpbs-video'] ?? $attributes['media'] ?? false;
+$settings     = $block->context['settings'] ?? false;
+$is_lightbox  = ! empty( $media['lightbox'] );
 $is_thumbnail = ! empty( $block->context['thumbnail'] );
 
-$video_id = WPBS::youtube_image( $settings['link'] ?? '', [
+$video_id = WPBS::youtube_image( $media['link'] ?? '', [
 	'id_only' => true
 ] );
 
@@ -19,9 +20,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'style'         => implode( '; ', array_filter( [
 		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
 	] ) ),
-	'data-title'    => $settings['title'] ?? null,
+	'data-title'    => $media['title'] ?? null,
 	'data-vid'      => $video_id,
-	'data-platform' => $settings['platform'] ?? null,
+	'data-platform' => $media['platform'] ?? null,
 ] );
 
 $media_class = implode( ' ', array_filter( [
@@ -35,12 +36,14 @@ $button_class = implode( ' ', array_filter( [
 
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';
 
-$poster_id = $settings['poster']['id'] ?? $settings['poster'] ?? false;
-WPBS::console_log( $settings );
+$poster_id = $media['poster']['id'] ?? $media['poster'] ?? false;
+
 ?>
 
 
 <div <?php echo $wrapper_attributes ?>>
+
+ 
     <div class="<?= $media_class ?>">
         <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
             <i class="fa-solid fa-circle-play"></i>
@@ -54,7 +57,7 @@ WPBS::console_log( $settings );
 				'class'   => $poster_class
 			] );
 		} else {
-			echo WPBS::youtube_image( $settings['link'] ?? '', [
+			echo WPBS::youtube_image( $media['link'] ?? '', [
 				'class' => $poster_class
 			] );
 		}

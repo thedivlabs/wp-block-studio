@@ -116,29 +116,28 @@ class WPBS_Blocks {
 				continue;
 			}
 
-			$args = [
-				'attributes' => [
-					'wpbs-css'     => [
-						'type'         => 'string',
-						'show_in_rest' => true,
-					],
-					'wpbs-preload' => [
-						'type'         => 'object',
-						'show_in_rest' => true,
-					]
+			$extra_attributes = [
+				'wpbs-css'     => [
+					'type'         => 'string',
+					'show_in_rest' => true,
+				],
+				'wpbs-preload' => [
+					'type'         => 'object',
+					'show_in_rest' => true,
 				],
 			];
 
+			$block_object['attributes'] = array_merge(
+				$block_object['attributes'] ?? [],
+				$extra_attributes
+			);
 
 			if ( empty( $block_object['render'] ) && empty( $block_object['render_callback'] ) ) {
-
-				$args['render_callback'] = [ $this, 'render_block' ];
-
+				$block_object['render_callback'] = [ $this, 'render_block' ];
 			}
 
-			$args = array_merge_recursive( [], array_filter( $args ?? [] ), $block_object );
+			$block = register_block_type( $block_dir, $block_object );
 
-			$block = register_block_type( $block_dir, $args );
 		}
 	}
 

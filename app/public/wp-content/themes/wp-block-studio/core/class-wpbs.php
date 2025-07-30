@@ -47,6 +47,9 @@ class WPBS {
 
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
 
+		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
+		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
+
 	}
 
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
@@ -657,6 +660,84 @@ class WPBS {
 			}
 		}
 
+	}
+
+	public function render_lightbox( WP_REST_Request $request ): WP_REST_Response {
+
+		$media = $request->get_param( 'media' );
+
+		$response_data = array(
+			'success'  => true,
+			'rendered' => ( new WP_Block( [
+				'blockName' => 'wpbs/lightbox',
+				'attrs'     => [
+					'media' => $media,
+				]
+			] ) )->render(),
+		);
+
+		return new WP_REST_Response( $response_data, 200 );
+	}
+
+	public function lightbox_endpoint(): void {
+		register_rest_route( 'wpbs/v1', '/lightbox', array(
+			'methods'             => 'POST',
+			'callback'            => [ $this, 'render_lightbox' ],
+			'permission_callback' => '__return_true',
+			'args'                => array(
+				'uniqueId'     => array(
+					'type'              => 'string',
+					'sanitize_callback' => 'sanitize_text_field',
+					'validate_callback' => function ( $param, $request, $key ) {
+						// Basic validation: check if it's not empty
+						return ! empty( $param );
+					},
+				),
+				'blockContext' => array(
+					'type' => 'object',
+				)
+			),
+		) );
+	}
+
+	public function render_grid( WP_REST_Request $request ): WP_REST_Response {
+
+		$uniqueId = $request->get_param( 'uniqueId' );
+		$context  = $request->get_param( 'context' );
+
+		$response_data = array(
+			'success'  => true,
+			'rendered' => ( new WP_Block( [
+				'blockName' => 'wpbs/layout-grid-container',
+				'attrs'     => [
+					'uniqueId' => $uniqueId,
+					'context'  => $context,
+				]
+			] ) )->render(),
+		);
+
+		return new WP_REST_Response( $response_data, 200 );
+	}
+
+	public function grid_endpoint(): void {
+		register_rest_route( 'wpbs/v1', '/layout-grid', array(
+			'methods'             => 'POST',
+			'callback'            => [ $this, 'render_grid' ],
+			'permission_callback' => '__return_true',
+			'args'                => array(
+				'uniqueId'     => array(
+					'type'              => 'string',
+					'sanitize_callback' => 'sanitize_text_field',
+					'validate_callback' => function ( $param, $request, $key ) {
+						// Basic validation: check if it's not empty
+						return ! empty( $param );
+					},
+				),
+				'blockContext' => array(
+					'type' => 'object',
+				)
+			),
+		) );
 	}
 
 }

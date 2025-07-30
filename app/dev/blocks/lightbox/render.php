@@ -44,6 +44,7 @@ $media = WPBS::clean_array( array_map( function ( $item ) {
 							'modal'  => false
 						],
 						'lightbox' => true,
+						'settings' => $block->context['settings'] ?? false,
 					] ) )->render();
 				} else {
 					echo wp_get_attachment_image( $media_item, 'large', false, [

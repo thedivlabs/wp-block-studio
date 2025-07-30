@@ -1,7 +1,7 @@
 import {store, getElement, getContext} from '@wordpress/interactivity';
 
 async function fetchGrid(data = {}) {
-    const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/layout-grid-container';
+    const endpoint = '/wp-json/wpbs/v1/layout-grid';
 
     try {
         const response = await fetch(endpoint, {
@@ -12,7 +12,6 @@ async function fetchGrid(data = {}) {
             },
             body: JSON.stringify({
                 ...data,
-                context: 'edit'
             }),
         });
 
@@ -59,14 +58,12 @@ const {state} = store('wpbs/layout-grid', {
             const {card, uniqueId, query, settings} = args;
 
             const request = {
-                attributes: {
-                    uniqueId: uniqueId,
-                    context: {
-                        'wpbs/page': next_page,
-                        'wpbs/query': query,
-                        'wpbs/grid': settings,
-                        'wpbs/card': card
-                    }
+                uniqueId: uniqueId,
+                context: {
+                    'wpbs/page': next_page,
+                    'wpbs/query': query,
+                    'wpbs/grid': settings,
+                    'wpbs/card': card
                 }
             };
 

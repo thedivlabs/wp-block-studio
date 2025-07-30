@@ -31,11 +31,7 @@ export default class Lightbox {
 
     static async toggle(args = {}) {
 
-        const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/lightbox';
-
-        const attributes = {
-            media: args?.media
-        }
+        const endpoint = '/wp-json/wpbs/v1/lightbox';
 
         fetch(endpoint, {
             method: 'POST',
@@ -44,8 +40,7 @@ export default class Lightbox {
                 'X-WP-Nonce': WPBS?.settings?.nonce_rest ?? '',
             },
             body: JSON.stringify({
-                attributes: attributes,
-                context: 'edit'
+                media: args?.media,
             }),
         }).then(response => response.json()).then(result => {
 

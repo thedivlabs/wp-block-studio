@@ -1,7 +1,9 @@
 import {getContext, getElement, store} from '@wordpress/interactivity';
 
 async function fetchGallery(data = {}) {
-    const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/media-gallery-container';
+
+    //const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/media-gallery-container';
+    const endpoint = '/wp-json/wpbs/v1/media-gallery';
 
     try {
         const response = await fetch(endpoint, {
@@ -12,7 +14,6 @@ async function fetchGallery(data = {}) {
             },
             body: JSON.stringify({
                 ...data,
-                context: 'edit'
             }),
         });
 
@@ -102,17 +103,15 @@ const {state} = store('wpbs/media-gallery', {
             const {grid = {}, uniqueId} = settings;
 
             const request = {
-                attributes: {
-                    uniqueId: uniqueId,
-                    context: {
-                        'wpbs/interactive': true,
-                        'wpbs/page': next_page,
-                        'wpbs/settings': settings,
-                        'wpbs/card': card
-                    }
+                uniqueId: uniqueId,
+                blockContext: {
+                    'wpbs/interactive': true,
+                    'wpbs/page': next_page,
+                    'wpbs/settings': settings,
+                    'wpbs/card': card
                 }
             };
-
+            
             WPBS.loader.toggle();
 
             fetchGallery(request).then((result) => {

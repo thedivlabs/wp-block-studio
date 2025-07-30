@@ -3,7 +3,7 @@
 $transient_prefix     = 'wpbs_media_gallery_';
 $transient_expiration = DAY_IN_SECONDS;
 
-$context = $block->attributes['context'] ?? $block->context ?? [];
+$context = $block->attributes['blockContext'] ?? $block->context ?? [];
 $is_rest = ( $block->context ?? false ) == 'edit';
 
 $card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {

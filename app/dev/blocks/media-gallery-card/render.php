@@ -3,8 +3,9 @@
 $media       = $block->context['wpbs/media'] ?? false;
 $index       = $block->context['wpbs/index'] ?? 0;
 $settings    = $block->context['wpbs/settings'] ?? false;
+$gallery     = $settings['gallery'] ?? false;
 $is_slider   = 'slider' == ( $settings['type'] ?? false );
-$is_lightbox = ! empty( $settings['gallery']['lightbox'] );
+$is_lightbox = ! empty( $gallery['lightbox'] );
 $media_only  = ! empty( $block->context['wpbs/lightbox'] );
 
 if ( empty( $media ) ) {
@@ -33,11 +34,12 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		], [
 			'media'     => $media,
 			'thumbnail' => $is_lightbox,
+			'settings'  => $gallery,
 		] ) )->render();
 	} else {
 
-		echo wp_get_attachment_image( $media['poster'] ?? $media, $settings['resolution'] ?? 'medium', false, [
-			'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
+		echo wp_get_attachment_image( $media['poster'] ?? $media, $gallery['resolution'] ?? 'medium', false, [
+			'loading' => ! empty( $gallery['eager'] ) ? 'eager' : 'lazy',
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	}

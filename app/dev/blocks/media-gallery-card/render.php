@@ -24,16 +24,16 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-index' => $index,
 ] );
 
-
 add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $media_id, $gallery ) {
 
-	if ( ! $is_eager || ! $media_id ) {
+	if ( ! $is_eager || ! $media_id || ! empty( $images[ $media_id ] ) ) {
 		return $images;
 	}
 
 	return array_replace( [], $images, [
 		$media_id => [
-			'resolution' => $gallery['resolution'] ?? 'medium'
+			'id'         => $media_id,
+			'resolution' => $gallery['resolution'] ?? 'small',
 		]
 	] );
 
@@ -55,7 +55,7 @@ add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $media_
 		] ) )->render();
 	} else {
 
-		echo wp_get_attachment_image( $media_id, $gallery['resolution'] ?? 'medium', false, [
+		echo wp_get_attachment_image( $media_id, $gallery['resolution'] ?? 'small', false, [
 			'loading' => $is_eager ? 'eager' : 'lazy',
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );

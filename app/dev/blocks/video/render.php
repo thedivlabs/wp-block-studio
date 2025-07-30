@@ -38,6 +38,25 @@ $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-ce
 
 $poster_id = $media['poster']['id'] ?? $media['poster'] ?? false;
 
+$is_eager = ! empty( $settings['eager'] );
+
+add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $poster_id, $settings ) {
+
+	if ( ! $is_eager || ! $poster_id || ! empty( $images[ $poster_id ] ) ) {
+		return $images;
+	}
+
+	$images[ $poster_id ] = [
+		'id'         => $poster_id,
+		'resolution' => $settings['resolution'] ?? 'small',
+	];
+
+
+	return $images;
+
+
+} );
+
 ?>
 
 
@@ -54,7 +73,7 @@ $poster_id = $media['poster']['id'] ?? $media['poster'] ?? false;
 		if ( ! empty( $poster_id ) ) {
 			echo wp_get_attachment_image( $poster_id, $settings['resolution'] ?? 'small', false, [
 				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
-				'class'   => $poster_class
+				'class'   => $poster_class,
 			] );
 		} else {
 			echo WPBS::youtube_image( $media['link'] ?? '', [

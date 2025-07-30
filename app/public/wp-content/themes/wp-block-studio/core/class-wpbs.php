@@ -359,10 +359,9 @@ class WPBS {
 			echo '<!-- Preload images -->';
 		}
 
-		foreach ( array_unique( array_keys( $preload_images ) ) as $k => $image_id ) {
+		foreach ( array_unique( array_keys( $preload_images ) ) as $image_id ) {
 
-			$image_data = $preload_images[ $image_id ];
-
+			$image_data   = $preload_images[ $image_id ];
 			$src          = wp_get_attachment_image_src( $image_id, $image_data['resolution'] ?? 'large' )[0] ?? false;
 			$image_srcset = wp_get_attachment_image_srcset( $image_id );
 			$path         = str_replace( home_url(), ABSPATH, $src );
@@ -379,9 +378,13 @@ class WPBS {
 			}
 
 
-			/*if ( $image_srcset ) {
-				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [ '.jpg','.png','.jpeg' ], [ '.jpg.webp','.png.webp','.jpeg.webp' ], $image_srcset ) ) . '"';
-			}*/
+			if ( $image_srcset ) {
+				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [
+						'.jpg',
+						'.png',
+						'.jpeg'
+					], [ '.jpg.webp', '.png.webp', '.jpeg.webp' ], $image_srcset ) ) . '"';
+			}
 
 			echo 'type="image/webp"';
 

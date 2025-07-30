@@ -43,7 +43,7 @@ $poster_id = $media['poster']['id'] ?? $media['poster'] ?? false;
 
 <div <?php echo $wrapper_attributes ?>>
 
- 
+
     <div class="<?= $media_class ?>">
         <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
             <i class="fa-solid fa-circle-play"></i>

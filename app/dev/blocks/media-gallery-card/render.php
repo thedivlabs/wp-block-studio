@@ -7,6 +7,7 @@ $gallery     = $settings['gallery'] ?? false;
 $is_slider   = 'slider' == ( $settings['type'] ?? false );
 $is_lightbox = ! empty( $gallery['lightbox'] );
 $media_only  = ! empty( $block->context['wpbs/lightbox'] );
+$is_eager    = ! empty( $gallery['eager'] );
 
 if ( empty( $media ) ) {
 	return false;
@@ -21,6 +22,22 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 	'data-index' => $index,
 ] );
+
+$media_id = $media['poster'] ?? $media ?? false;
+
+add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $media_id, $gallery ) {
+
+	if ( ! $is_eager || ! $media_id ) {
+		return $images;
+	}
+
+	return array_replace( [], $images, [
+		$media_id => [
+			'resolution' => $gallery['resolution'] ?? 'medium'
+		]
+	] );
+
+} );
 
 ?>
 
@@ -39,7 +56,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	} else {
 
 		echo wp_get_attachment_image( $media['poster'] ?? $media, $gallery['resolution'] ?? 'medium', false, [
-			'loading' => ! empty( $gallery['eager'] ) ? 'eager' : 'lazy',
+			'loading' => $is_eager ? 'eager' : 'lazy',
 			'class'   => 'w-full h-full object-cover flex overflow-hidden'
 		] );
 	}

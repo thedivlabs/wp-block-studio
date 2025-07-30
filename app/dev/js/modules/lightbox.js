@@ -6,15 +6,12 @@ export default class Lightbox {
 
     static swiper_args = (index = 0) => {
         return {
-            ...SWIPER_ARGS_VIEW,
+            //...SWIPER_ARGS_VIEW,
             initialSlide: index,
             spaceBetween: 10,
             slidesPerView: 1,
             simulateTouch: true,
-            navigation: {
-                nextEl: '.wpbs-lightbox-nav__button--next',
-                prevEl: '.wpbs-lightbox-nav__button--prev',
-            },
+
             zoom: {
                 toggle: true,
                 limitToOriginalSize: true,

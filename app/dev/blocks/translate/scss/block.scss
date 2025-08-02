@@ -4,8 +4,6 @@
     relative
     flex
     h-full
-    text-sm
-    leading-normal
     ;
 
     .gt_switcher {
@@ -51,7 +49,6 @@
       w-full
       flex
       items-center
-      gap-2
       rounded-none
       bg-transparent
       h-full
@@ -70,21 +67,16 @@
 
         .gt-current-lang {
           @apply
-          p-0
           flex
           justify-start
           items-center
-          gap-2
           h-full
           w-full
           text-inherit
-          font-normal
-          text-base
           ;
 
           & > img {
             @apply
-            h-em-lg
             hidden
             w-auto
             aspect-square
@@ -98,13 +90,12 @@
             static
             block
             text-inherit
-            text-xs
-            leading-tight
+
+
           }
 
           .gt_float_switcher-arrow {
             @apply
-            h-em-lg
             flex
             justify-center
             items-center
@@ -117,8 +108,8 @@
             &:before {
               @apply
               content-['\f077']
-              leading-tight
-              text-xs
+
+
             }
           }
         }
@@ -128,10 +119,8 @@
         @apply
         absolute
         top-full
-        right-0
-        w-44
-        text-sm
-        leading-normal
+
+
         z-50
         ;
 
@@ -140,16 +129,15 @@
           w-full
           flex
           items-center
-          gap-3
+
           justify-start
           text-inherit
-          text-xs
-          leading-tight
+
+
           ;
 
           & > img {
             @apply
-            h-4
             aspect-square
             flex
             w-auto

@@ -9,7 +9,13 @@
   },
   "attributes": {
     "uniqueId": {
-      "type": "string"
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-nav-menu": {
+      "type": "object",
+      "show_in_rest": true,
+      "default": {}
     }
   },
   "supports": {

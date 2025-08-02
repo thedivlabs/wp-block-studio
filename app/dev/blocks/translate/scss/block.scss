@@ -1,0 +1,175 @@
+.wpbs-translate {
+  .gtranslate_wrapper {
+    @apply
+    relative
+    m-0
+    flex
+    h-full
+    text-sm
+    leading-normal
+    ;
+
+    .gt_switcher {
+      overflow: visible !important;
+
+      .gt_option {
+        position: absolute !important;
+        top: 100% !important;
+      }
+    }
+
+    .gt_selected {
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      & > a {
+        padding: 0 !important;
+        border: none !important;
+        height: auto !important;
+        width: auto !important;
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+
+        & > img {
+          width: auto !important;
+          display: block !important;
+        }
+      }
+    }
+
+    #gt_float_wrapper {
+      @apply
+      relative
+      flex
+      w-full
+    }
+
+    .gt_float_switcher,
+    .gt_switcher-popup {
+      @apply
+      w-full
+      flex
+      items-center
+      gap-2
+      rounded-none
+      bg-transparent
+      h-full
+      relative
+      overflow-visible
+      shadow-none
+      ;
+
+      .gt-selected {
+        @apply
+        w-full
+        h-full
+        flex
+        bg-transparent
+        ;
+
+        .gt-current-lang {
+          @apply
+          p-0
+          flex
+          justify-start
+          items-center
+          gap-2
+          h-full
+          w-full
+          text-inherit
+          font-normal
+          text-base
+          ;
+
+          & > img {
+            @apply
+            h-em-lg
+            hidden
+            w-auto
+            aspect-square
+            object-contain
+            m-0
+          }
+
+          .gt-lang-code {
+            width: 4ch;
+            @apply
+            top-auto
+            static
+            block
+            text-inherit
+            text-xs
+            leading-tight
+          }
+
+          .gt_float_switcher-arrow {
+            @apply
+            h-em-lg
+            flex
+            justify-center
+            items-center
+            aspect-square
+            w-auto
+            bg-none
+            ml-auto
+            ;
+
+            &:before {
+              @apply
+              content-['\f077']
+              font-fa
+              leading-tight
+              text-xs
+            }
+          }
+        }
+      }
+
+      .gt_options {
+        @apply
+        absolute
+        top-full
+        right-0
+        w-44
+        text-sm
+        leading-normal
+        z-50
+        ;
+
+        & > a {
+          @apply
+          w-full
+          flex
+          items-center
+          gap-3
+          justify-start
+          text-inherit
+          text-xs
+          leading-tight
+          ;
+
+          & > img {
+            @apply
+            h-4
+            aspect-square
+            flex
+            w-auto
+            m-0
+          }
+        }
+      }
+    }
+  }
+}
+
+.wpbs-translate.is-style-flag {
+  .gt-current-lang,
+  .gt_switcher-popup {
+    & > img {
+      @apply
+      flex
+    }
+  }
+}

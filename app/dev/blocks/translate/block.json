@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/translate",
+  "title": "Translate",
+  "description": "Display a google translate component",
+  "selectors": {
+    "root": ".wpbs-translate"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "styles": [
+    {
+      "name": "flag",
+      "label": "Flag"
+    }
+  ],
+  "supports": {
+    "innerBlocks": false,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "icon": "admin-site-alt2"
+}
+
+

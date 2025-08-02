@@ -13,8 +13,6 @@ import {useInstanceId} from '@wordpress/compose';
 
 function blockClasses(attributes = {}, editor = false) {
 
-    const {'wpbs-translate': settings} = attributes;
-
     return [
         'wpbs-translate relative',
         attributes?.uniqueId ?? '',

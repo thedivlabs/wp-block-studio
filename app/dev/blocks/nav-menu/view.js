@@ -12,28 +12,38 @@ const {state} = store('wpbs/nav-menu', {
 
             [...element.querySelectorAll('li:has(> .sub-menu)')].forEach((menu_item) => {
 
-                const link = menu_item.querySelector(':scope > a');
                 const sub_menu = menu_item.querySelector(':scope > .sub-menu');
 
-                if (!is_accordion) {
-                    menu_item.addEventListener('mouseenter', (e) => {
+                menu_item.addEventListener('mouseenter', (e) => {
+
+                    if (!is_accordion) {
                         const bounds = sub_menu.getBoundingClientRect();
                         const width = sub_menu.offsetWidth;
 
                         if (bounds.left + width > window.outerWidth) {
                             sub_menu.classList.add('offset-right');
-                        } else {
-                            sub_menu.classList.remove('offset-right');
                         }
                         if (bounds.left < 0) {
                             sub_menu.classList.add('offset-left');
-                        } else {
-                            sub_menu.classList.remove('offset-left');
                         }
-                    }, {
-                        passive: true
-                    });
-                }
+                    }
+
+                }, {
+                    passive: true
+                });
+
+                menu_item.addEventListener('mouseleave', (e) => {
+
+                    if (!is_accordion) {
+                        sub_menu.classList.remove('offset-right');
+                        sub_menu.classList.remove('offset-left');
+                    }
+
+                }, {
+                    passive: true
+                });
+
+
 
 
             });

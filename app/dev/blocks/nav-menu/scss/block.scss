@@ -1,11 +1,6 @@
 .wpbs-nav-menu {
 
-  .wpbs-menu-container {
-
-    justify-content: inherit;
-    align-items: inherit;
-    gap: inherit;
-    flex-wrap: inherit;
+  .wpbs-nav-menu-container {
 
     & li.current-menu-item:not(:hover),
     & li.current-menu-ancestor:not(:hover) {
@@ -14,33 +9,27 @@
 
     & > li {
       background-color: var(--link-bg, transparent);
-      color: var(--link-color, inherit);
       @apply
       relative
       ;
-
-      &:hover {
-        color: var(--link-color-hover, inherit);
-      }
 
       &:hover > a {
         background-color: var(--link-bg-hover, transparent);
       }
 
       &.active > a {
-        background-color: var(--link-active-bg, transparent);
+        background-color: var(--link-bg-active, transparent);
         color: var(--link-active, inherit);
       }
 
       & > a {
-        padding: var(--link-padding-y, var(--link-padding-x, initial)) var(--link-padding-x, var(--link-padding-y, initial));
-        color: inherit;
+        padding: var(--link-padding, initial);
+        color: var(--link-color, inherit);
         @apply
         whitespace-nowrap
         flex
         transition-colors
         duration-200
-        ease-linear
         relative
         items-center
       }
@@ -72,22 +61,12 @@
       }
     }
 
-    .sub-menu {
-      padding: var(--sub-menu-spacing, 1rem) 0 !important;
+    & > li > .sub-menu {
+      padding: var(--sub-menu-padding, 1rem) 0 !important;
+      border-radius: var(--sub-menu-rounded, 0);
+      overflow: hidden;
 
       & > li {
-
-        &:first-of-type > a {
-          border-radius: var(--sub-menu-rounded, 0) var(--sub-menu-rounded, 0) 0 0;
-        }
-
-        &:last-of-type > a {
-          border-radius: 0 0 var(--sub-menu-rounded, 0) var(--sub-menu-rounded, 0);
-        }
-
-        &:only-of-type > a {
-          border-radius: var(--sub-menu-rounded, 0);
-        }
 
         &:last-of-type {
           border-bottom: none;
@@ -112,119 +91,108 @@
           color: var(--sub-menu-text, black);
           background-color: var(--sub-menu, white);
           padding: var(--sub-menu-padding-y, var(--sub-menu-padding-x, initial)) var(--sub-menu-padding-x, var(--sub-menu-padding-y, initial));
+          transition-duration: 300ms;
           @apply
           transition-colors
-          duration-300
           block
         }
       }
     }
 
-    .wpbs-menu-container:not(.is-style-accordion) {
+  }
+
+  .wpbs-nav-menu-container {
+    @apply
+    flex
+    ;
+
+     & > li > .sub-menu {
+      width: max(100%, 12rem);
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      transition:opacity .3s;
+      padding-top:var(--row-gap, .7rem);
+      position: absolute;
       @apply
-      flex
-      ;
-
-      & > li:hover > .sub-menu {
-        max-width: min(20rem, 100vw);
-        @apply
-        opacity-100
-        pointer-events-auto
-      }
-
-      & > li > .sub-menu.offset-right {
-        right: 0;
-        left: auto;
-        transform: translateX(0px);
-      }
-
-      & > li > .sub-menu.offset-left {
-        left: 0;
-        transform: translateX(0px);
-      }
-
-      & > li > .sub-menu {
-        width: max(100%, 12rem);
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        transition-duration: 300ms;
-        @apply
-        text-left
-        flex
-        flex-col
-        opacity-0
-        transition-opacity
-        pointer-events-none
-        absolute
-        transform
-        z-50
-        ;
-
-        & > li {
-          @apply
-          w-full
-        }
-
-        & > li > a {
-          @apply
-          block
-          w-full
-        }
-      }
-    }
-
-    .wpbs-menu-container.is-style-accordion {
-      @apply
-      w-full
+      text-left
       flex
       flex-col
+      opacity-0
+      pointer-events-none
+      absolute
+      z-50
       ;
 
       & > li {
         @apply
         w-full
+      }
+
+      & > li > a {
+        @apply
         block
-        ;
+        w-full
+      }
+    }
 
-        &.menu-item-has-children {
+    & > li:hover > .sub-menu {
+      max-width: min(20rem, 100vw);
+      @apply
+      opacity-100
+      pointer-events-auto
+    }
 
-          .sub-menu {
-            background-color: var(--sub-menu, transparent);
-          }
+  }
 
-          & > a {
-            padding-right: calc(var(--sub-menu-padding-x, 0px) + 1.5em);
+  &.is-style-accordion .wpbs-nav-menu-container {
+    @apply
+    w-full
+    flex
+    flex-col
+    ;
 
-            &:after {
-              content: '\f078';
-              margin-right: var(--sub-menu-padding-x, initial);
-              top: 50%;
-              right: 0;
-              height: 1.2em;
-              transform: translateX(-50%);
-              @apply
-              absolute
-              w-auto
-              text-inherit
-            }
+    & > li {
+      @apply
+      w-full
+      block
+      ;
+
+      &.menu-item-has-children {
+
+        .sub-menu {
+          background-color: var(--sub-menu, transparent);
+        }
+
+        & > a {
+          padding-right: calc(var(--sub-menu-padding-x, 0px) + 1.5em);
+
+          &:after {
+            content: '\f078';
+            margin-right: var(--sub-menu-padding-x, initial);
+            top: 50%;
+            right: 0;
+            height: 1.2em;
+            @apply
+            absolute
+            w-auto
+            text-inherit
           }
         }
       }
-
-      & li > a {
-        @apply
-        w-full
-      }
-
-      & > li > .sub-menu {
-        @apply
-        w-full
-        hidden
-      }
-
-
     }
+
+    & li > a {
+      @apply
+      w-full
+    }
+
+    & > li > .sub-menu {
+      @apply
+      w-full
+      hidden
+    }
+
 
   }
 

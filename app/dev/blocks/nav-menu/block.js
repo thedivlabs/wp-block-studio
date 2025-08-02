@@ -106,16 +106,21 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <div {...blockProps}>
-                <ul className={'wpbs-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>
+                <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>
                     <li className={'menu-item menu-item-has-children'}>
                         <a href={'#'}>Link 1</a>
                         <ul className={'sub-menu'}>
                             <li className={'menu-item'}>
                                 <a href={'#'}>Sub-Link 1</a>
-                                <a href={'#'}>Sub-Link 2</a>
-                                <a href={'#'}>Sub-Link 3</a>
-                                <a href={'#'}>Sub-Link 4</a>
-                                <a href={'#'}>Sub-Link 5</a>
+                            </li>
+                            <li className={'menu-item'}>
+                                <a href={'#'}>Sub-Link 1</a>
+                            </li>
+                            <li className={'menu-item'}>
+                                <a href={'#'}>Sub-Link 1</a>
+                            </li>
+                            <li className={'menu-item'}>
+                                <a href={'#'}>Sub-Link 1</a>
                             </li>
                         </ul>
                     </li>
@@ -124,8 +129,15 @@ registerBlockType(metadata.name, {
                         <ul className={'sub-menu'}>
                             <li className={'menu-item'}>
                                 <a href={'#'}>Sub-Link 1</a>
-                                <a href={'#'}>Sub-Link 2</a>
-                                <a href={'#'}>Sub-Link 3</a>
+                            </li>
+                            <li className={'menu-item'}>
+                                <a href={'#'}>Sub-Link 1</a>
+                            </li>
+                            <li className={'menu-item'}>
+                                <a href={'#'}>Sub-Link 1</a>
+                            </li>
+                            <li className={'menu-item'}>
+                                <a href={'#'}>Sub-Link 1</a>
                             </li>
                         </ul>
                     </li>

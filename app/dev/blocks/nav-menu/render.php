@@ -12,7 +12,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ] );
 
 $menu_class = implode( ' ', array_filter( [
-        'wpbs-menu-container wpbs-container wpbs-layout-wrapper',
+        'wpbs-nav-menu-container wpbs-container wpbs-layout-wrapper',
 ]));
 
 if ( empty( $menu_id ) ) {

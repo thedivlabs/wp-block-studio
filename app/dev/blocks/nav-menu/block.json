@@ -5,10 +5,7 @@
   "title": "Nav Menu",
   "description": "Display a menu",
   "selectors": {
-    "root": ".wpbs-nav-menu",
-    "spacing": {
-      "root": ".wpbs-menu-container"
-    }
+    "root": ".wpbs-nav-menu"
   },
   "styles": [
     {
@@ -52,6 +49,7 @@
   },
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
+  "style": "file:./block.css",
   "icon": "menu",
   "render": "file:./render.php"
 }

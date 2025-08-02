@@ -68,7 +68,7 @@ registerBlockType(metadata.name, {
         }, [settings]);
 
         const blockProps = useBlockProps({
-            classname: blockClassNames(attributes),
+            className: blockClassNames(attributes),
         });
 
         const selectedMenu = useMemo(() => {
@@ -76,7 +76,7 @@ registerBlockType(metadata.name, {
             return menus.find(menu => menu.id === parseInt(settings?.menu ?? '0'));
         }, [menus, settings?.menu]);
 
-        const Content = ()=>{
+        const Content = () => {
 
 
             return !selectedMenu ? 'Loading Menu...' : <a href={'#'}
@@ -105,9 +105,13 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
-            <nav {...blockProps}>
-
-            </nav>
+            <div {...blockProps}>
+                <div className={'wpbs-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>
+                    <a href={'#'}>Link 1</a>
+                    <a href={'#'}>Link 2</a>
+                    <a href={'#'}>Link 3</a>
+                </div>
+            </div>
         </>
 
     },

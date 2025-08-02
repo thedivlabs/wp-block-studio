@@ -1,5 +1,3 @@
-import '../scss/admin.css';
-
 import {WPBS_Google_Places} from "Modules/google-places";
 
 console.log('Admin scripts');

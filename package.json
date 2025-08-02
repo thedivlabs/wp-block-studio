@@ -13,7 +13,10 @@
     "postcss-nesting": "^13.0.2"
   },
   "scripts": {
-    "start": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/build/ --watch --experimental-modules"
+    "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/themes/wp-block-studio/build/theme.css --watch --minify",
+    "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/themes/wp-block-studio/build/admin.css --minify",
+    "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/build/ --watch --experimental-modules",
+    "start": "npm-run-all --parallel wp tailwind-theme"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.0.6",

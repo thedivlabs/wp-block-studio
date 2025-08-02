@@ -27,7 +27,6 @@ div[class*='wp-block-wpbs'] .block-list-appender .block-editor-inserter__toggle 
   outline-none
   overflow-hidden
   p-0
-  m-0
   opacity-30
   hover:opacity-90
   hover:border-none
@@ -54,7 +53,6 @@ div[class*='wp-block-wpbs'] .block-list-appender {
   .block-editor-default-block-appender {
     @apply
     clear-none
-    m-0
   }
 }
 

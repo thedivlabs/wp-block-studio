@@ -2,7 +2,6 @@
   .gtranslate_wrapper {
     @apply
     relative
-    m-0
     flex
     h-full
     text-sm
@@ -90,7 +89,6 @@
             w-auto
             aspect-square
             object-contain
-            m-0
           }
 
           .gt-lang-code {
@@ -155,7 +153,6 @@
             aspect-square
             flex
             w-auto
-            m-0
           }
         }
       }

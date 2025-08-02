@@ -13,17 +13,16 @@
     "postcss-nesting": "^13.0.2"
   },
   "scripts": {
-    "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/themes/wp-block-studio/build/theme.css --watch --minify",
-    "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/themes/wp-block-studio/build/admin.css --minify",
-    "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/build/ --watch --experimental-modules",
-    "start": "npm-run-all --parallel wp tailwind-theme"
+    "start": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/themes/wp-block-studio/build/ --watch --experimental-modules"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.0.6",
     "@tailwindcss/postcss": "^4.1.11",
+    "@wordpress/server-side-render": "^6.3.0",
     "autoprefixer": "^10.4.21",
     "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
+    "mini-css-extract-plugin": "^2.9.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.5.6",
     "postcss-import": "^16.1.1",

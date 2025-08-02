@@ -10,7 +10,8 @@
   "attributes": {
     "uniqueId": {
       "type": "string",
-      "show_in_rest": true
+      "show_in_rest": true,
+      "default": ""
     },
     "wpbs-nav-menu": {
       "type": "object",

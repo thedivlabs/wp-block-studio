@@ -56,8 +56,6 @@ registerBlockType(metadata.name, {
 
         }, [settings, setAttributes]);
 
-        console.log(menus);
-
         const cssProps = useMemo(() => {
             return {};
         }, [settings]);
@@ -85,7 +83,8 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <ServerSideRender
-                block={metadata.name}
+                block={'wpbs/nav-menu'}
+                urlQueryArgs={ { menu: 6 } }
             />
         </>
 

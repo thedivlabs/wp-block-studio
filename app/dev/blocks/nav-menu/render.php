@@ -1,6 +1,7 @@
 <?php
 
-$menu_id = $attributes['menu'] ?? false;
+
+$menu_id = $_GET['menu'] ?? $attributes['wpbs-nav-menu']['menu'] ?? false;
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
@@ -8,9 +9,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		$attributes['uniqueId'] ?? ''
 	] ) )
 ] );
-
-print_r( $menu_id ?? false );
-print_r( $attributes ?? false );
 
 if ( empty( $menu_id ) ) {
 	echo '<div ' . $wrapper_attributes . '>Menu not found.</div>';

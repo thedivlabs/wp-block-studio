@@ -9,7 +9,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-nav-menu wpbs-has-container flex flex-wrap',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-    'data-wp-interactive' => 'wpbs/nav-menu'
+    'data-wp-interactive' => 'wpbs/nav-menu',
+    'data-wp-init' => 'actions.init'
 ] );
 
 $menu_class = implode( ' ', array_filter( [

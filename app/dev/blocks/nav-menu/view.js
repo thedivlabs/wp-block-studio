@@ -4,7 +4,7 @@ import {store, getElement, getContext} from '@wordpress/interactivity';
 
 const {state} = store('wpbs/nav-menu', {
     actions: {
-        popup: () => {
+        init: () => {
 
             const {ref: element} = getElement();
 

@@ -84,7 +84,7 @@ registerBlockType(metadata.name, {
 
             <ServerSideRender
                 block={'wpbs/nav-menu'}
-                urlQueryArgs={ { menu: 6 } }
+                urlQueryArgs={ { menu: settings?.menu } }
             />
         </>
 

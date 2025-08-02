@@ -7,6 +7,12 @@
   "selectors": {
     "root": ".wpbs-nav-menu"
   },
+  "styles": [
+    {
+      "name": "accordion",
+      "label": "Accordion"
+    }
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string",

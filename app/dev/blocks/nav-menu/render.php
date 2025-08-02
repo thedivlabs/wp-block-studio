@@ -1,14 +1,19 @@
 <?php
 
+$settings = $_GET['settings'] ?? $attributes['wpbs-nav-menu'] ?? false;
 
-$menu_id = $_GET['menu'] ?? $attributes['wpbs-nav-menu']['menu'] ?? false;
+$menu_id = $settings['menu'] ?? false;
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-nav-menu',
+		'wpbs-nav-menu wpbs-has-container flex flex-wrap',
 		$attributes['uniqueId'] ?? ''
 	] ) )
 ] );
+
+$menu_class = implode( ' ', array_filter( [
+        'wpbs-menu-container wpbs-container wpbs-layout-wrapper',
+]));
 
 if ( empty( $menu_id ) ) {
 	echo '<div ' . $wrapper_attributes . '>Menu not found.</div>';
@@ -23,8 +28,8 @@ if ( empty( $menu_id ) ) {
 
 	<?php echo wp_nav_menu( [
 		'menu'            => intval( $menu_id ),
-		'menu_class'      => 'wpbs-menu',
-		'container_class' => 'wpbs-menu-container',
+		'menu_class'      => $menu_class,
+		'container'      => false,
 		'echo'            => false,
 	] ); ?>
 

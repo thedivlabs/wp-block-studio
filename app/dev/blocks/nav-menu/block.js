@@ -14,6 +14,13 @@ import {useCallback, useEffect, useMemo} from "react";
 import {useSelect} from "@wordpress/data";
 import {PanelBody, SelectControl} from "@wordpress/components";
 
+function blockClassNames(attributes = {}) {
+    return [
+        'wpbs-nav-menu wpbs-has-container flex flex-wrap',
+        attributes?.uniqueId ?? null
+    ].filter(x => x).join(' ');
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -60,6 +67,22 @@ registerBlockType(metadata.name, {
             return {};
         }, [settings]);
 
+        const blockProps = useBlockProps({
+            classname: blockClassNames(attributes),
+        });
+
+        const selectedMenu = useMemo(() => {
+
+            return menus.find(menu => menu.id === parseInt(settings?.menu ?? '0'));
+        }, [menus, settings?.menu]);
+
+        const Content = ()=>{
+
+
+            return !selectedMenu ? 'Loading Menu...' : <a href={'#'}
+                                                          className={'uppercase'}>{selectedMenu?.name ?? 'NAVIGATION MENU'}</a>;
+        };
+
         return <>
 
             <InspectorControls group={'styles'}>
@@ -82,10 +105,9 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
-            <ServerSideRender
-                block={'wpbs/nav-menu'}
-                urlQueryArgs={ { menu: settings?.menu } }
-            />
+            <nav {...blockProps}>
+
+            </nav>
         </>
 
     },

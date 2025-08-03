@@ -101,7 +101,7 @@
 
   }
 
-  .wpbs-nav-menu-container {
+  &:not(.is-style-accordion) .wpbs-nav-menu-container {
     @apply
     flex
     ;
@@ -117,13 +117,13 @@
       transform: translateX(0px);
     }
 
-     & > li > .sub-menu {
+    & > li > .sub-menu {
       width: max(100%, 12rem);
       top: 100%;
       left: 50%;
       transform: translate(-50%, 0);
-      transition:opacity .3s;
-      padding-top:var(--row-gap, .7rem);
+      transition: opacity .3s;
+      padding-top: var(--row-gap, .7rem);
       position: absolute;
       @apply
       text-left

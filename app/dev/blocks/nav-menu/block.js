@@ -83,7 +83,7 @@ registerBlockType(metadata.name, {
             className: blockClassNames(attributes),
         });
 
-        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
+        const tabOptions = <Grid columns={1} columnGap={15} rowGap={15}>
             <SelectControl
                 label="Menu"
                 value={settings?.menu}
@@ -93,7 +93,7 @@ registerBlockType(metadata.name, {
                 }))}
                 onChange={(newValue) => updateSettings({menu: newValue})}
             />
-            <Grid columns={2} columnGap={15} rowGap={20}>
+            <Grid columns={2} columnGap={15} rowGap={15}>
                 <TextControl
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
@@ -119,16 +119,16 @@ registerBlockType(metadata.name, {
                 __next40pxDefaultSize
                 enableAlpha
                 enableStyle
-                value={settings?.['link-border'] || {}}
+                value={settings?.['divider'] || {}}
                 colors={themeColors}
                 __experimentalIsRenderedInSidebar={true}
-                label="Link Border"
+                label="Divider"
                 onChange={(newValue) => {
-                    updateSettings({'link-border': newValue})
+                    updateSettings({'divider': newValue})
                 }}
                 shouldSanitizeBorder
             />
-            <Grid columns={2} columnGap={15} rowGap={20}
+            <Grid columns={2} columnGap={15} rowGap={15}
                   style={{padding: '1rem 0'}}>
                 <ToggleControl
                     label="Icon Below"
@@ -137,18 +137,11 @@ registerBlockType(metadata.name, {
                     className={'flex items-center'}
                     __nextHasNoMarginBottom
                 />
-                <ToggleControl
-                    label="Dividers"
-                    onChange={(newValue) => updateSettings({'dividers': newValue})}
-                    checked={!!settings?.['dividers']}
-                    className={'flex items-center'}
-                    __nextHasNoMarginBottom
-                />
             </Grid>
         </Grid>;
 
-        const tabSubMenu = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
+        const tabSubMenu = <Grid columns={1} columnGap={15} rowGap={15}>
+            <Grid columns={2} columnGap={15} rowGap={15}>
                 <TextControl
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
@@ -194,6 +187,13 @@ registerBlockType(metadata.name, {
                         label: 'Border Hover',
                         value: settings?.['color-submenu-border-hover'],
                         onChange: (newValue) => updateSettings({'color-submenu-border-hover': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'color-submenu-divider-hover',
+                        label: 'Divider Hover',
+                        value: settings?.['color-submenu-divider-hover'],
+                        onChange: (newValue) => updateSettings({'color-submenu-divider-hover': newValue}),
                         isShownByDefault: true
                     }
                 ]}

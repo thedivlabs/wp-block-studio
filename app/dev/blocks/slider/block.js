@@ -18,7 +18,6 @@ import {
 import React, {useEffect, useMemo, useRef} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {LoopControls, LOOP_ATTRIBUTES} from "Components/Loop.js";
-import {cleanObject} from "Includes/helper";
 
 
 function blockClasses(attributes = {}, editor = false) {

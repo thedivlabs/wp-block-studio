@@ -1,14 +1,9 @@
-import {
-    InnerBlocks,
-    InspectorControls,
-} from "@wordpress/block-editor"
 import {SWIPER_ARGS_DEFAULT, SWIPER_ARGS_EDITOR} from "Includes/config";
 import merge from 'lodash.merge';
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl,
-    PanelBody,
     SelectControl,
     ToggleControl
 } from "@wordpress/components";

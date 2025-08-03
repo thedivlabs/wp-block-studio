@@ -8,7 +8,6 @@
     }
 
     & > li {
-      background-color: var(--link-bg, transparent);
       @apply
       relative
       ;
@@ -25,6 +24,7 @@
       & > a {
         padding: var(--link-padding, initial);
         color: var(--link-color, inherit);
+        background-color: var(--link-bg, transparent);
         @apply
         whitespace-nowrap
         flex
@@ -63,6 +63,7 @@
     }
 
     & > li > .sub-menu {
+      display: none;
 
       & > li {
 
@@ -99,7 +100,7 @@
 
   }
 
-  &:not(.is-style-accordion) .wpbs-nav-menu-container {
+  &.is-style-dropdown .wpbs-nav-menu-container {
     @apply
     flex
     ;
@@ -116,7 +117,6 @@
     }
 
     & > li > .sub-menu {
-
       width: max(100%, 12rem);
       top: 100%;
       left: 50%;

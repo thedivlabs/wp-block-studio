@@ -17,7 +17,7 @@ function initDropdown(element) {
 
             const opacity = window.getComputedStyle(sub_menu).opacity;
 
-            if (parseFloat(opacity) < .1) {
+            if (parseFloat(opacity) < 1) {
                 sub_menu.classList.remove('offset-left', 'offset-right');
             }
 

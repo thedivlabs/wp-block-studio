@@ -63,9 +63,6 @@
     }
 
     & > li > .sub-menu {
-      padding: var(--sub-menu-padding, 1rem) 0 !important;
-      border-radius: var(--sub-menu-rounded, 0);
-      overflow: hidden;
 
       & > li {
 
@@ -119,13 +116,15 @@
     }
 
     & > li > .sub-menu {
+
       width: max(100%, 12rem);
       top: 100%;
       left: 50%;
-      transform: translate(-50%, 0);
-      transition: opacity .3s;
       padding-top: var(--row-gap, .7rem);
+      transition: opacity .3s;
       position: absolute;
+      background-color: transparent;
+      transform: translateX(-50%);
       @apply
       text-left
       flex
@@ -136,9 +135,22 @@
       z-50
       ;
 
+      & > li:first-of-type {
+        border-radius: var(--sub-menu-rounded, 6px) var(--sub-menu-rounded, 6px) 0 0;
+      }
+
+      & > li:last-of-type {
+        border-radius: 0 0 var(--sub-menu-rounded, 6px) var(--sub-menu-rounded, 6px);
+      }
+
+      & > li:only-of-type {
+        border-radius: var(--sub-menu-rounded, 6px);
+      }
+
       & > li {
         @apply
         w-full
+        overflow-hidden
       }
 
       & > li > a {
@@ -146,6 +158,7 @@
         block
         w-full
       }
+
     }
 
     & > li:hover > .sub-menu {

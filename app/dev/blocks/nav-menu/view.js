@@ -1,4 +1,4 @@
-import {store, getElement, getContext} from '@wordpress/interactivity';
+import {store, getElement} from '@wordpress/interactivity';
 
 function initDropdown(element) {
     if (!element || element.classList.contains('is-style-accordion')) {

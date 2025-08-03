@@ -125,9 +125,7 @@ registerBlockType(metadata.name, {
                         </ul>
                     </li>
                     <li className={'menu-item menu-item-has-children'}>
-                        <li className={'menu-item'}>
-                            <a href={'#'}>Link 2</a>
-                        </li>
+                        <a href={'#'}>Link 2</a>
                         <ul className={'sub-menu'}>
                             <li className={'menu-item'}>
                                 <a href={'#'}>Sub-Link 1</a>

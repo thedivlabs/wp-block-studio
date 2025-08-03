@@ -114,35 +114,41 @@ registerBlockType(metadata.name, {
                                 <a href={'#'}>Sub-Link 1</a>
                             </li>
                             <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                                <a href={'#'}>Sub-Link 2</a>
                             </li>
                             <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                                <a href={'#'}>Sub-Link 3</a>
                             </li>
                             <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                                <a href={'#'}>Sub-Link 4</a>
                             </li>
                         </ul>
                     </li>
                     <li className={'menu-item menu-item-has-children'}>
-                        <a href={'#'}>Link 2</a>
+                        <li className={'menu-item'}>
+                            <a href={'#'}>Link 2</a>
+                        </li>
                         <ul className={'sub-menu'}>
                             <li className={'menu-item'}>
                                 <a href={'#'}>Sub-Link 1</a>
                             </li>
                             <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                                <a href={'#'}>Sub-Link 2</a>
                             </li>
                             <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                                <a href={'#'}>Sub-Link 3</a>
                             </li>
                             <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                                <a href={'#'}>Sub-Link 4</a>
                             </li>
                         </ul>
                     </li>
-                    <a href={'#'}>Link 3</a>
-                    <a href={'#'}>Link 4</a>
+                    <li className={'menu-item'}>
+                        <a href={'#'}>Link 3</a>
+                    </li>
+                    <li className={'menu-item'}>
+                        <a href={'#'}>Link 4</a>
+                    </li>
                 </ul>
             </div>
         </>

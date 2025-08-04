@@ -250,7 +250,6 @@ export function Style({
         }
 
         if (Object.keys(result).length > 0) {
-            console.log(Object.keys(result).length > 0);
             setAttributes(result);
         }
 

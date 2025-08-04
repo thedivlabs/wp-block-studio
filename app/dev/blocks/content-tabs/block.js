@@ -251,26 +251,14 @@ registerBlockType(metadata.name, {
                         value: attributes['wpbs-content-tabs']?.['button-color-background-hover'],
                         onChange: (newValue) => updateSettings({'button-color-background-hover': newValue}),
                         isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
+                    },
                     {
                         slug: 'text-color-hover',
                         label: 'Text Color',
                         value: attributes['wpbs-content-tabs']?.['button-color-text-hover'],
                         onChange: (newValue) => updateSettings({'button-color-text-hover': newValue}),
                         isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
+                    },
                     {
                         slug: 'border-color-hover',
                         label: 'Border Color',
@@ -293,26 +281,14 @@ registerBlockType(metadata.name, {
                         value: attributes['wpbs-content-tabs']?.['button-color-background-active'],
                         onChange: (newValue) => updateSettings({'button-color-background-active': newValue}),
                         isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
+                    },
                     {
                         slug: 'text-color-active',
                         label: 'Text Color',
                         value: attributes['wpbs-content-tabs']?.['button-color-text-active'],
                         onChange: (newValue) => updateSettings({'button-color-text-active': newValue}),
                         isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
+                    },
                     {
                         slug: 'border-color-active',
                         label: 'Border Color',

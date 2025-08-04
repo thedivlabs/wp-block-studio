@@ -112,6 +112,8 @@ registerBlockType(metadata.name, {
             className: blockClassNames(attributes),
         });
 
+        console.log(attributes);
+
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={15}>
             <SelectControl
                 label="Menu"
@@ -171,10 +173,17 @@ registerBlockType(metadata.name, {
             </BaseControl>
             <BoxControl
                 label={'Link Padding'}
-                value={settings?.['link-padding'] ?? ''}
+                values={settings?.['link-padding'] ?? {}}
                 sides={['top', 'left']}
+                allowReset={false}
                 onChange={(newValue) => updateSettings({'link-padding': newValue})}
                 __nextHasNoMarginBottom={true}
+                splitOnAxis={true}
+                inputProps={{
+                    min: 0,
+                    max: 100,
+                    units: DIMENSION_UNITS
+                }}
             />
             <BorderControl
                 __next40pxDefaultSize
@@ -319,10 +328,17 @@ registerBlockType(metadata.name, {
             </BaseControl>
             <BoxControl
                 label={'Link Padding'}
-                value={settings?.['submenu-link-padding'] ?? ''}
+                values={settings?.['submenu-link-padding'] ?? {}}
                 sides={['top', 'left']}
+                allowReset={false}
                 onChange={(newValue) => updateSettings({'submenu-link-padding': newValue})}
                 __nextHasNoMarginBottom={true}
+                splitOnAxis={true}
+                inputProps={{
+                    min: 0,
+                    max: 100,
+                    units: DIMENSION_UNITS
+                }}
             />
             <BorderControl
                 __next40pxDefaultSize

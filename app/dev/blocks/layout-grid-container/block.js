@@ -44,7 +44,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={{
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId} props={{
                     '--grid-col-gap': 'var(--column-gap, 0px)',
                     '--grid-row-gap': 'var(--row-gap, 0px)',
                 }}/>
@@ -52,7 +52,7 @@ registerBlockType(metadata.name, {
                 <BlockContextProvider>
                     <div {...innerBlocksProps} />
                 </BlockContextProvider>
-                
+
             </>
         )
     },

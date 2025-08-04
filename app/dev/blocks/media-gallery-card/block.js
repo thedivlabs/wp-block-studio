@@ -41,7 +41,7 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
 
-        const {attributes, setAttributes, context = {}} = props;
+        const {attributes, setAttributes, context = {}, clientId} = props;
 
         const {type} = context?.['wpbs/settings'] ?? {};
         const is_slider = type === 'slider';
@@ -52,9 +52,9 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                
+
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
 
                 <div {...blockProps}></div>
 

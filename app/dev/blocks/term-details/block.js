@@ -19,8 +19,8 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes
     },
-    edit: ({attributes, setAttributes}) => {
-        
+    edit: ({attributes, setAttributes, clientId}) => {
+
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),
         });

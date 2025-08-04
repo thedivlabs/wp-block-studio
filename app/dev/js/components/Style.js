@@ -72,14 +72,23 @@ export function Style({
         return <></>;
     }
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
+    //const blockId = uniqueId;
+    const {uniqueId: blockId = uniqueId} = attributes
+
+    useEffect(() => {
+        if (!attributes?.uniqueId) {
+            setAttributes({uniqueId: blockId});
+        }
+    }, []);
+
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, blockId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
 
     const {resultCss, preloadMedia} = useMemo(() => {
 
-
         const {containers, breakpoints} = WPBS?.settings ?? {};
 
-        const selector = '.' + uniqueId.slice(0, uniqueId.lastIndexOf('-')) + '.' + uniqueId.trim().split(' ').join('.');
+        const selector = '.' + blockId;
+
         const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
 
         const cssLayout = layoutCss(attributes, selector);
@@ -228,22 +237,21 @@ export function Style({
 
         const {'wpbs-css': currentCss = ''} = attributes;
 
+        const result = {};
 
-        if (!isEqual(currentCss, resultCss) || !attributes?.uniqueId) {
-            setAttributes({
-                'wpbs-css': resultCss,
-                uniqueId: uniqueId
-            });
+        if (!isEqual(currentCss, resultCss)) {
+            result['wpbs-css'] = resultCss
         }
 
-        if (!isEqual(attributes?.['wpbs-preload'], preloadMedia) && preloadMedia.length > 0) {
-
-            setAttributes({
-                'wpbs-preload': preloadMedia
-            });
+        if (!isEqual(attributes?.['wpbs-preload'], preloadMedia)) {
+            result['wpbs-preload'] = preloadMedia
         }
 
-    }, [resultCss, preloadMedia, uniqueId]);
+        if (Object.keys(result).length > 0) {
+            setAttributes(result);
+        }
+
+    }, [resultCss, preloadMedia]);
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

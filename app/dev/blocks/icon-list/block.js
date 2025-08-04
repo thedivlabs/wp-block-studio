@@ -177,7 +177,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
                    deps={['wpbs-icon-list']}
                    props={{
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',

@@ -31,7 +31,7 @@ function blockClassNames(attributes = {}) {
     return [
         'wpbs-nav-menu wpbs-has-container flex flex-wrap',
         !!settings?.['submenu-fade'] ? '--fade' : null,
-        attributes?.uniqueId ?? null
+        attributes?.clientId ?? null
     ].filter(x => x).join(' ');
 }
 
@@ -45,9 +45,7 @@ registerBlockType(metadata.name, {
             type: 'object',
         }
     },
-    edit: ({attributes, setAttributes}) => {
-
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-nav-menu');
+    edit: ({attributes, setAttributes, clientId}) => {
 
         const {'wpbs-nav-menu': settings = {}} = attributes;
         const themeColors = useSetting('color.palette');
@@ -111,8 +109,6 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),
         });
-
-        console.log(attributes);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={15}>
             <SelectControl
@@ -414,7 +410,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={clientId}/>
 
             <div {...blockProps}>
                 <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>

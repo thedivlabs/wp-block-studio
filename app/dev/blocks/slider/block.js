@@ -43,7 +43,7 @@ registerBlockType(metadata.name, {
         ...SLIDER_ATTRIBUTES,
         ...LOOP_ATTRIBUTES,
     },
-    edit: ({attributes, setAttributes}) => {
+    edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
 
@@ -109,7 +109,7 @@ registerBlockType(metadata.name, {
 
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={clientId}/>
 
             <BlockContextProvider value={{loopQuery}}>
                 <SliderComponent attributes={attributes} blockProps={blockProps} innerBlocksProps={innerBlocksProps}

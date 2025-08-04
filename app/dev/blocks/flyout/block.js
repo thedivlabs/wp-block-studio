@@ -160,7 +160,7 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
                        deps={['wpbs-flyout']}
                        props={cssProps}
                 />

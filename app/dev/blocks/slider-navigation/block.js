@@ -82,7 +82,7 @@ registerBlockType(metadata.name, {
 
 
         const slider = context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
-        
+
         useEffect(() => {
 
             const result = {
@@ -143,7 +143,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   uniqueId={uniqueId}
+                   uniqueId={clientId}
                    deps={['wpbs-slider-navigation']}
             />
 

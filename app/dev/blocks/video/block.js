@@ -213,7 +213,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
 
 
             <div {...blockProps}>

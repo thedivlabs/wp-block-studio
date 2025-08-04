@@ -27,7 +27,7 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
     },
-    edit: ({attributes, setAttributes}) => {
+    edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useInstanceId(registerBlockType, 'wpbs-translate');
 
@@ -37,7 +37,7 @@ registerBlockType(metadata.name, {
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
 
             <div {...blockProps}>GTRANSLATE</div>
 

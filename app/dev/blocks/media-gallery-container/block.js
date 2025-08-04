@@ -52,7 +52,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={styleProps}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId} props={styleProps}/>
 
                 <div {...innerBlocksProps} />
 

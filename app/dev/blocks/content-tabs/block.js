@@ -369,7 +369,7 @@ registerBlockType(metadata.name, {
                 </Grid>
             </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
                    deps={['wpbs-content-tabs']}
                    props={{
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,

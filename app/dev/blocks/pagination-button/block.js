@@ -23,7 +23,7 @@ registerBlockType(metadata.name, {
             type: 'object'
         }
     },
-    edit: ({attributes, setAttributes, context}) => {
+    edit: ({attributes, setAttributes, context, clientId}) => {
 
         const {
             label = 'View More',

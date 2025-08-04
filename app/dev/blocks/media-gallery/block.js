@@ -158,7 +158,7 @@ registerBlockType(metadata.name, {
                     ref={swiperRef}
                 /> : <div {...innerBlocksProps} />}
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
                        deps={['wpbs-grid', 'wpbs-slider']}
                        props={cssProps}
                 />

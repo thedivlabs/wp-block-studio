@@ -59,7 +59,6 @@ export const styleClasses = (selector) => {
 }
 
 export function Style({
-                          uniqueId,
                           attributes,
                           setAttributes,
                           css = [],
@@ -68,26 +67,29 @@ export function Style({
                           preload = []
                       }) {
 
-    if (!attributes || !uniqueId) {
+    if (!attributes) {
         return <></>;
     }
 
-    //const blockId = uniqueId;
-    const {uniqueId: blockId = uniqueId} = attributes
+    const {uniqueId} = attributes;
 
     useEffect(() => {
-        if (!attributes?.uniqueId) {
-            setAttributes({uniqueId: blockId});
+        if (!uniqueId) {
+            setAttributes({uniqueId: `block-${Math.random().toString(36).slice(2, 8)}`});
         }
     }, []);
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, blockId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
 
     const {resultCss, preloadMedia} = useMemo(() => {
 
+        if (!uniqueId) {
+            return '';
+        }
+
         const {containers, breakpoints} = WPBS?.settings ?? {};
 
-        const selector = '.' + blockId;
+        const selector = '.' + uniqueId;
 
         const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
 
@@ -248,6 +250,7 @@ export function Style({
         }
 
         if (Object.keys(result).length > 0) {
+            console.log(Object.keys(result).length > 0);
             setAttributes(result);
         }
 

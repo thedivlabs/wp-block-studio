@@ -11,6 +11,7 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useEffect} from "react";
+import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}, is_slider) {
     return [
@@ -29,7 +30,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-container');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-container');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {type} = context?.['wpbs/settings'] ?? {};
         const is_slider = type === 'slider';
@@ -52,7 +55,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId} props={styleProps}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={styleProps}/>
 
                 <div {...innerBlocksProps} />
 

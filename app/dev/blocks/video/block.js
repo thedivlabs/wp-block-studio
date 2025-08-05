@@ -24,6 +24,7 @@ import {RESOLUTION_OPTIONS} from "Includes/config";
 import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {useUniqueId} from "Includes/helper";
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -47,7 +48,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-video');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -213,7 +216,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
 
             <div {...blockProps}>

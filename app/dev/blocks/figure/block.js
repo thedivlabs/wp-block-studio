@@ -27,6 +27,7 @@ import {
     RESOLUTION_OPTIONS,
 } from "Includes/config"
 import {LinkPost} from "Components/LinkPost";
+import {useUniqueId} from "Includes/helper";
 
 
 function blockClasses(attributes = {}) {
@@ -150,7 +151,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-figure');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-figure']]);
 
@@ -362,7 +365,7 @@ registerBlockType(metadata.name, {
                 </PanelBody>
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-figure']}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,

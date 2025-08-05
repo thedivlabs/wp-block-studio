@@ -15,6 +15,7 @@ import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useMemo} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 import {TextControl} from "@wordpress/components";
+import {useUniqueId} from "Includes/helper";
 
 
 function classNames(attributes, isActive = false, editor = false) {
@@ -39,7 +40,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const isActive = context.tabActive === clientId;
 
@@ -60,7 +63,7 @@ registerBlockType(metadata.name, {
                 />
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-panel']}
             />
             <div {...innerBlocksProps} aria-selected={!!isActive} role={'tabpanel'}></div>

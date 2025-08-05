@@ -19,7 +19,7 @@ import {
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {cleanObject} from "Includes/helper";
+import {cleanObject, useUniqueId} from "Includes/helper";
 import {isEqual} from "lodash";
 
 
@@ -46,11 +46,11 @@ registerBlockType(metadata.name, {
         ...GRID_ATTRIBUTES,
 
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid');
 
-        const {attributes, setAttributes, clientId} = props;
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         useEffect(() => {
 
@@ -132,7 +132,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-grid']}
                        props={cssProps}
                 />

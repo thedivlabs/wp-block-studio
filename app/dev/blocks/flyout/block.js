@@ -16,6 +16,7 @@ import {
     __experimentalNumberControl as NumberControl, PanelBody, ToggleControl,
 } from "@wordpress/components";
 import {DIMENSION_UNITS} from "Includes/config";
+import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -41,7 +42,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-flyout': settings = {}} = attributes;
 
@@ -160,7 +163,7 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-flyout']}
                        props={cssProps}
                 />

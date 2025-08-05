@@ -1,12 +1,5 @@
-import {
-    __experimentalBorderControl as BorderControl,
-    __experimentalGrid as Grid, __experimentalInputControl as InputControl,
-    __experimentalNumberControl as NumberControl, __experimentalUnitControl as UnitControl,
-    BaseControl, ToggleControl
-} from "@wordpress/components";
-import Breakpoint from "Components/Breakpoint.js";
-import {PanelColorSettings} from "@wordpress/block-editor";
-import React from "react";
+import {useEffect} from 'react';
+
 
 export const imageButtonStyle = {
     border: '1px dashed lightgray',
@@ -40,4 +33,27 @@ export function cleanObject(obj) {
     }
 
     return obj;
+}
+
+
+export function useUniqueId(attributes, setAttributes, clientId, prefix = 'block') {
+    useEffect(() => {
+        const hasId = !!attributes.uniqueId;
+
+        // Grab all blocks from the editor
+        const allBlocks = wp.data.select('core/block-editor').getBlocks();
+
+        // Check if any other block shares this uniqueId
+        const isDuplicate = allBlocks.some((block) =>
+            block.clientId !== clientId &&
+            block.attributes?.uniqueId === attributes.uniqueId
+        );
+
+        if (!hasId || isDuplicate) {
+            const newId = `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+            setAttributes({uniqueId: newId});
+        }
+    }, [attributes.uniqueId, setAttributes, clientId, prefix]);
+
+    return attributes.uniqueId;
 }

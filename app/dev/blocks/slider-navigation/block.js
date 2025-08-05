@@ -13,6 +13,7 @@ import {
 import React, {useCallback, useEffect} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
+import {useUniqueId} from "Includes/helper";
 
 
 function blockClasses(attributes = {}) {
@@ -73,7 +74,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-navigation');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-navigation');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
@@ -143,7 +146,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   uniqueId={clientId}
+                   uniqueId={uniqueId}
                    deps={['wpbs-slider-navigation']}
             />
 

@@ -16,6 +16,7 @@ import {
     __experimentalGrid as Grid,
     ToggleControl, SelectControl, TextControl
 } from "@wordpress/components";
+import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}, is_slider = false) {
     return [
@@ -37,11 +38,11 @@ registerBlockType(metadata.name, {
             default: {}
         }
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes, context = {}, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery-card');
 
-        const {attributes, setAttributes, context = {}, clientId} = props;
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {type} = context?.['wpbs/settings'] ?? {};
         const is_slider = type === 'slider';
@@ -54,7 +55,7 @@ registerBlockType(metadata.name, {
             <>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
                 <div {...blockProps}></div>
 

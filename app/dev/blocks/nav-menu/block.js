@@ -22,6 +22,7 @@ import {
 } from "@wordpress/components";
 import {useSetting} from '@wordpress/block-editor';
 import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
+import {useUniqueId} from "Includes/helper";
 
 
 function blockClassNames(attributes = {}) {
@@ -46,6 +47,8 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-nav-menu': settings = {}} = attributes;
         const themeColors = useSetting('color.palette');
@@ -410,7 +413,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={clientId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <div {...blockProps}>
                 <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>

@@ -26,6 +26,7 @@ import {
     IMAGE_SIZE_OPTIONS,
     RESOLUTION_OPTIONS
 } from "Includes/config"
+import {useUniqueId} from "Includes/helper";
 
 function blockClasses(attributes = {}) {
     return [
@@ -131,11 +132,11 @@ registerBlockType(metadata.name, {
             }
         }
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-slide');
 
-        const {attributes, setAttributes, clientId} = props;
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const preloadMedia = useMemo(() => getPreloadMedia(attributes), [attributes['wpbs-slide']]);
 
@@ -258,7 +259,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-slide']}
                    preload={preloadMedia}
             />

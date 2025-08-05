@@ -14,6 +14,7 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import React from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
+import {useUniqueId} from "Includes/helper";
 
 const selector = 'wpbs-layout-element';
 
@@ -56,11 +57,11 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         ...ELEMENT_TAG_ATTRIBUTES,
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-element');
 
-        const {attributes, setAttributes, clientId} = props;
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
             className: [classNames(attributes), 'empty:min-h-8'].join(' '),
@@ -76,7 +77,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>

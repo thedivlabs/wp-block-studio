@@ -23,6 +23,7 @@ import {
     ICON_STYLES,
     DIMENSION_UNITS_TEXT,
 } from "Includes/config"
+import {useUniqueId} from "Includes/helper";
 
 
 function blockClasses(attributes = {}) {
@@ -56,7 +57,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-icon-list');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-icon-list');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const breakpoint = WPBS.settings?.breakpoints[attributes['wpbs-icon-list']?.breakpoint ?? 'normal'];
 
@@ -177,7 +180,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-icon-list']}
                    props={{
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',

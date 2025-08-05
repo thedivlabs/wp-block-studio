@@ -20,6 +20,7 @@ import {
     DIMENSION_UNITS_TEXT,
     ICON_STYLES,
 } from "Includes/config";
+import {useUniqueId} from "Includes/helper";
 
 
 function classNames(attributes = {}) {
@@ -53,7 +54,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -292,7 +295,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   uniqueId={clientId}
+                   uniqueId={uniqueId}
                    deps={['wpbs-accordion-group']}
                    props={{
                        '--icon-open': `"\\${iconOpen}"`,

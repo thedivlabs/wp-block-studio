@@ -16,7 +16,7 @@ import {
 } from "@wordpress/components";
 import {MediaGalleryControls, MEDIA_GALLERY_ATTRIBUTES} from "Components/MediaGallery.js";
 import {SLIDER_ATTRIBUTES, SliderControls, sliderProps, SliderComponent} from "Components/Slider"
-import {cleanObject} from "Includes/helper"
+import {cleanObject, useUniqueId} from "Includes/helper"
 import {isEqual} from 'lodash';
 
 
@@ -47,6 +47,11 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
+
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
+
         const styleType = useMemo(() => {
             return (attributes?.className?.match(/is-style-(\S+)/) || [])[1] || 'default';
         }, [attributes?.className]);
@@ -55,7 +60,6 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
 
         const newSettings = useMemo(() => cleanObject({
             uniqueId,
@@ -158,8 +162,8 @@ registerBlockType(metadata.name, {
                     ref={swiperRef}
                 /> : <div {...innerBlocksProps} />}
 
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
-                       deps={['wpbs-grid', 'wpbs-slider']}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                       deps={['wpbs-grid', 'wpbs-slider']} clientId={clientId}
                        props={cssProps}
                 />
             </>

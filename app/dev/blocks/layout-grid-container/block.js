@@ -9,6 +9,7 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {useInstanceId} from "@wordpress/compose";
 import React from "react";
+import {useUniqueId} from "Includes/helper";
 
 
 function blockClassnames(attributes = {}, is_slider) {
@@ -27,7 +28,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-container');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-container');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
 
         const blockProps = {
@@ -44,7 +47,7 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId} props={{
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={{
                     '--grid-col-gap': 'var(--column-gap, 0px)',
                     '--grid-row-gap': 'var(--row-gap, 0px)',
                 }}/>

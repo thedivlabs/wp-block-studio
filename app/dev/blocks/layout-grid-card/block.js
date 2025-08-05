@@ -12,6 +12,7 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback} from "react";
 import {LinkPost} from "Components/LinkPost";
+import {useUniqueId} from "Includes/helper";
 
 function sectionClassNames(attributes = {}) {
 
@@ -41,11 +42,11 @@ registerBlockType(metadata.name, {
             }
         }
     },
-    edit: (props) => {
+    edit: ({attributes, setAttributes, context, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-layout-grid-card');
 
-        const {attributes, setAttributes, context, clientId} = props;
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -68,7 +69,7 @@ registerBlockType(metadata.name, {
                           callback={(value) => updateSettings({linkPost: value})}/>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

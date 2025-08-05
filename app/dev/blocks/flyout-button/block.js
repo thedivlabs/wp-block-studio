@@ -13,6 +13,7 @@ import {
     TextControl
 } from "@wordpress/components";
 import {useCallback} from "react";
+import {useUniqueId} from "Includes/helper";
 
 function classNames(attributes = {}) {
 
@@ -36,7 +37,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-button');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout-button');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -76,7 +79,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    props={styleProps}
                    deps={['wpbs-flyout-button']}
             />

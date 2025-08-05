@@ -23,6 +23,7 @@ import {
     ToggleControl, __experimentalBoxControl as BoxControl
 } from "@wordpress/components";
 import React, {useCallback} from "react";
+import {useUniqueId} from "Includes/helper";
 
 
 function classNames(attributes = {}, editor = false) {
@@ -59,7 +60,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const [tabActive, setTabActive] = useState(0);
         const [tabPanels, setTabPanels] = useState([]);
@@ -369,7 +372,7 @@ registerBlockType(metadata.name, {
                 </Grid>
             </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs']}
                    props={{
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,

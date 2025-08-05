@@ -37,7 +37,7 @@ registerBlockType(metadata.name, {
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
 
             <div {...blockProps}>GTRANSLATE</div>
 

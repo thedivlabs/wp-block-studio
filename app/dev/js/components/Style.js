@@ -2,6 +2,7 @@ import {useEffect, useMemo} from "react";
 import {backgroundCss, backgroundPreload} from "Components/Background.js";
 import {layoutCss} from "Components/Layout.js";
 import {isEqual} from "lodash";
+import {cleanObject} from "Includes/helper";
 
 export const STYLE_ATTRIBUTES = {
     'wpbs-css': {
@@ -59,6 +60,7 @@ export const styleClasses = (selector) => {
 }
 
 export function Style({
+                          uniqueId,
                           attributes,
                           setAttributes,
                           css = [],
@@ -70,14 +72,6 @@ export function Style({
     if (!attributes) {
         return <></>;
     }
-
-    const {uniqueId} = attributes;
-
-    useEffect(() => {
-        if (!uniqueId) {
-            setAttributes({uniqueId: `block-${Math.random().toString(36).slice(2, 8)}`});
-        }
-    }, []);
 
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
 
@@ -135,15 +129,15 @@ export function Style({
             '--column-gap': colGapMobile,
         }).filter(([k, v]) => !!v));
 
-        desktopProps = {
+        desktopProps = cleanObject({
             ...desktopProps,
             ...desktop
-        };
+        });
 
-        mobileProps = {
+        mobileProps = cleanObject({
             ...mobileProps,
             ...mobile
-        }
+        });
 
         if (Object.keys(desktopProps).length) {
             propsCss += selector + '{';
@@ -152,7 +146,6 @@ export function Style({
                 if (!value) {
                     return;
                 }
-
                 propsCss += [prop, value].join(':') + ';';
             })
 
@@ -167,14 +160,13 @@ export function Style({
                 if (!value) {
                     return;
                 }
-
                 propsCss += [prop, value].join(':') + ';';
             })
 
             propsCss += '}}';
         }
 
-        if (Object.keys(props).length) {
+        if (Object.keys(cleanObject(props)).length) {
 
             propsCss += selector + '{';
             Object.entries(props).forEach(([prop, value]) => {
@@ -182,7 +174,6 @@ export function Style({
                 if (!value || prop === 'breakpoints') {
                     return;
                 }
-
                 value = getCSSFromStyle(value);
 
                 propsCss += [prop, value].join(':') + ';';
@@ -191,7 +182,7 @@ export function Style({
             propsCss += '}';
 
             if (Object.keys(props?.breakpoints ?? {}).length) {
-                Object.entries(props.breakpoints).forEach(([bp, rules]) => {
+                Object.entries(cleanObject(props.breakpoints)).forEach(([bp, rules]) => {
 
                     if (typeof rules !== 'object') {
                         return;
@@ -241,8 +232,12 @@ export function Style({
 
         const result = {};
 
+        if (attributes?.uniqueId !== uniqueId) {
+            result.uniqueId = uniqueId;
+        }
+
         if (!isEqual(currentCss, resultCss)) {
-            result['wpbs-css'] = resultCss
+            result['wpbs-css'] = resultCss;
         }
 
         if (!isEqual(attributes?.['wpbs-preload'], preloadMedia)) {
@@ -253,7 +248,8 @@ export function Style({
             setAttributes(result);
         }
 
-    }, [resultCss, preloadMedia]);
+
+    }, [resultCss, preloadMedia, uniqueId]);
 
 
     return <style className='wpbs-styles'>{resultCss}</style>;

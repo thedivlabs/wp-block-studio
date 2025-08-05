@@ -13,6 +13,7 @@ import React, {useCallback, useMemo} from "react";
 import {
     __experimentalGrid as Grid, PanelBody, ToggleControl
 } from "@wordpress/components";
+import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}) {
 
@@ -38,7 +39,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-site-header');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-site-header');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-site-header': settings = {}} = attributes;
 
@@ -90,7 +93,7 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-site-header']}
                        props={cssProps}
                 />

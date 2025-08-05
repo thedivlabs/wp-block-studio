@@ -20,6 +20,7 @@ import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
+import {useUniqueId} from "Includes/helper";
 
 
 function classNames(attributes = {}) {
@@ -96,7 +97,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const [settings, setSettings] = useState(attributes['wpbs-cta']);
 
@@ -252,7 +255,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
-                       uniqueId={clientId}
+                       uniqueId={uniqueId}
                        deps={['wpbs-cta']}
                        props={{
                            '--icon-color': settings?.['icon-color'] || null,

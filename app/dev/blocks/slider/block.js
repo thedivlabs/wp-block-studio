@@ -18,6 +18,7 @@ import {
 import React, {useEffect, useMemo, useRef} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {LoopControls, LOOP_ATTRIBUTES} from "Components/Loop.js";
+import {useUniqueId} from "Includes/helper";
 
 
 function blockClasses(attributes = {}, editor = false) {
@@ -45,7 +46,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const swiperRef = useRef(null);
 
@@ -109,7 +112,7 @@ registerBlockType(metadata.name, {
 
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={clientId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
 
             <BlockContextProvider value={{loopQuery}}>
                 <SliderComponent attributes={attributes} blockProps={blockProps} innerBlocksProps={innerBlocksProps}

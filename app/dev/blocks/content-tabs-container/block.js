@@ -14,6 +14,7 @@ import {useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useMemo} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
+import {useUniqueId} from "Includes/helper";
 
 
 function classNames(attributes = {}) {
@@ -38,7 +39,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-container');
+        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-container');
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -54,7 +57,7 @@ registerBlockType(metadata.name, {
         return <>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={clientId}
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-container']}
             />
             <div {...innerBlocksProps}></div>

@@ -366,7 +366,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   deps={['wpbs-figure']}
+                   deps={['wpbs-figure']} selector={'wpbs-figure'}
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,

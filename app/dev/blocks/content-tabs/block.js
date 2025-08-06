@@ -373,7 +373,7 @@ registerBlockType(metadata.name, {
             </InspectorAdvancedControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   deps={['wpbs-content-tabs']}
+                   deps={['wpbs-content-tabs']} selector={'wpbs-content-tabs'}
                    props={{
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,
                        '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],

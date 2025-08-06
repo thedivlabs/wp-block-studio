@@ -427,7 +427,8 @@ registerBlockType(metadata.name, {
             </InspectorControls>
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}
+                   selector={'wpbs-nav-menu'}/>
 
             <div {...blockProps}>
                 <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>

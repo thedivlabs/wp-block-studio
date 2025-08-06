@@ -164,7 +164,7 @@ registerBlockType(metadata.name, {
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-grid', 'wpbs-slider']} clientId={clientId}
-                       props={cssProps}
+                       props={cssProps} selector={'wpbs-media-gallery'}
                 />
             </>
         )

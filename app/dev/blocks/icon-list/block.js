@@ -182,6 +182,7 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-icon-list']}
+                   selector={'wpbs-icon-list'}
                    props={{
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',
                        '--icon': `"\\${icon}"`,

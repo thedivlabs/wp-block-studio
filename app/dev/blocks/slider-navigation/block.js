@@ -146,7 +146,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes}
-                   uniqueId={uniqueId}
+                   uniqueId={uniqueId} selector={'wpbs-slider-navigation'}
                    deps={['wpbs-slider-navigation']}
             />
 

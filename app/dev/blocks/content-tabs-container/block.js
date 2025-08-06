@@ -58,7 +58,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   deps={['wpbs-content-tabs-container']}
+                   deps={['wpbs-content-tabs-container']} selector={'wpbs-content-tabs-container'}
             />
             <div {...innerBlocksProps}></div>
         </>;

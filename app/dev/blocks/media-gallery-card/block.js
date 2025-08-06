@@ -55,7 +55,8 @@ registerBlockType(metadata.name, {
             <>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                       selector={'wpbs-media-gallery-card'}/>
 
                 <div {...blockProps}></div>
 

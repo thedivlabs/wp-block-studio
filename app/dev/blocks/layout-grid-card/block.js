@@ -69,7 +69,8 @@ registerBlockType(metadata.name, {
                           callback={(value) => updateSettings({linkPost: value})}/>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-layout-grid-card'}
+                       uniqueId={uniqueId}/>
 
                 <div {...blockProps}>
                     <div {...useInnerBlocksProps({

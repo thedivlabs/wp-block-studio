@@ -98,7 +98,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   deps={['wpbs-content-tabs-navigation']}
+                   deps={['wpbs-content-tabs-navigation']} selector={'wpbs-content-tabs-navigation'}
             />
             <nav {...blockProps} >
                 {tabPanels.map((panel) => {

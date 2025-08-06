@@ -80,7 +80,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   props={styleProps}
+                   props={styleProps} selector={'wpbs-flyout-button'}
                    deps={['wpbs-flyout-button']}
             />
 

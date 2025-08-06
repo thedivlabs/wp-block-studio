@@ -37,7 +37,8 @@ registerBlockType(metadata.name, {
 
         return <>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                   selector={'wpbs-translate'}/>
 
             <div {...blockProps}>GTRANSLATE</div>
 

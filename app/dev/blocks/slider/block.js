@@ -112,7 +112,8 @@ registerBlockType(metadata.name, {
 
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}/>
+            <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}
+                   selector={'wpbs-slider'}/>
 
             <BlockContextProvider value={{loopQuery}}>
                 <SliderComponent attributes={attributes} blockProps={blockProps} innerBlocksProps={innerBlocksProps}

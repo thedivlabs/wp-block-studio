@@ -260,7 +260,7 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                   deps={['wpbs-slide']}
+                   deps={['wpbs-slide']} selector={'wpbs-slide'}
                    preload={preloadMedia}
             />
 

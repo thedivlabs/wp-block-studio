@@ -55,7 +55,8 @@ registerBlockType(metadata.name, {
         return (
             <>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={styleProps}/>
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                       selector={'wpbs-media-gallery-container'} props={styleProps}/>
 
                 <div {...innerBlocksProps} />
 

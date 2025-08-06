@@ -60,6 +60,7 @@ export const styleClasses = (selector) => {
 }
 
 export function Style({
+                          selector,
                           uniqueId,
                           attributes,
                           setAttributes,
@@ -83,12 +84,12 @@ export function Style({
 
         const {containers, breakpoints} = WPBS?.settings ?? {};
 
-        const selector = '.' + uniqueId;
+        const cssSelector = selector ? '.' + selector + '.' + uniqueId : '.' + uniqueId;
 
         const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
 
-        const cssLayout = layoutCss(attributes, selector);
-        const cssBackground = backgroundCss(attributes, selector);
+        const cssLayout = layoutCss(attributes, cssSelector);
+        const cssBackground = backgroundCss(attributes, cssSelector);
 
         let desktopProps = {};
         let mobileProps = {};
@@ -140,7 +141,7 @@ export function Style({
         });
 
         if (Object.keys(desktopProps).length) {
-            propsCss += selector + '{';
+            propsCss += cssSelector + '{';
             Object.entries(desktopProps).forEach(([prop, value]) => {
 
                 if (!value) {
@@ -153,7 +154,7 @@ export function Style({
         }
 
         if (Object.keys(mobileProps).length) {
-            propsCss += '@media(width < ' + breakpoint + '){' + selector + '{';
+            propsCss += '@media(width < ' + breakpoint + '){' + cssSelector + '{';
 
             Object.entries(mobileProps).forEach(([prop, value]) => {
 
@@ -168,7 +169,7 @@ export function Style({
 
         if (Object.keys(cleanObject(props)).length) {
 
-            propsCss += selector + '{';
+            propsCss += cssSelector + '{';
             Object.entries(props).forEach(([prop, value]) => {
 
                 if (!value || prop === 'breakpoints') {
@@ -188,7 +189,7 @@ export function Style({
                         return;
                     }
 
-                    propsCss += '@media(min-width: %__BREAKPOINT__' + bp + '__%){' + selector + '{';
+                    propsCss += '@media(min-width: %__BREAKPOINT__' + bp + '__%){' + cssSelector + '{';
 
                     Object.entries(rules).forEach(([prop, value]) => {
 

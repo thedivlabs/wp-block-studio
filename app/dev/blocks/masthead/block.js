@@ -94,7 +94,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       deps={['wpbs-site-header']}
+                       selector={'wpbs-site-header'}
                        props={cssProps}
                 />
                 <InspectorControls group="advanced">

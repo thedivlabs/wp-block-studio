@@ -83,7 +83,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--icon': settings?.['icon'] ?? null,
+                '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
@@ -146,6 +146,20 @@ registerBlockType(metadata.name, {
                     enableAlpha
                     className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
                     colorSettings={[
+                        {
+                            slug: 'color-background',
+                            label: 'Background',
+                            value: settings?.['color-background'],
+                            onChange: (newValue) => updateSettings({'color-background': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-background-hover',
+                            label: 'Background Hover',
+                            value: settings?.['color-background-hover'],
+                            onChange: (newValue) => updateSettings({'color-background-hover': newValue}),
+                            isShownByDefault: true
+                        },
                         {
                             slug: 'color-background-active',
                             label: 'Background Active',

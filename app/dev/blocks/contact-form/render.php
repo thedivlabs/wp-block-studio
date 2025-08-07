@@ -6,7 +6,7 @@ if ( ! function_exists( 'gravity_form' ) ) {
 
 $settings = $attributes['wpbs-contact-form'] ?? false;
 
-$form_id = $settings['form'] ?? false;
+$form_id = $settings['form'] ?? 1;
 
 if ( empty( $form_id ) ) {
 	return false;

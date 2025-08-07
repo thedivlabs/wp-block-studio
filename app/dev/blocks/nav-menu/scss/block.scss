@@ -75,9 +75,13 @@
   }
 
   .wpbs-nav-menu-container {
-    & li.current-menu-item:not(:hover),
-    & li.current-menu-ancestor:not(:hover) {
-      color: var(--color-text-active, inherit) !important;
+    & > li.current-menu-item:not(:hover),
+    & > li.current-menu-ancestor:not(:hover) {
+
+      & > a {
+        color: var(--color-text-active, inherit) !important;
+        background-color: var(--color-background-active, transparent);
+      }
     }
 
     & > li {
@@ -87,7 +91,8 @@
         background-color: var(--color-background-hover, transparent);
       }
 
-      &.current-menu-item > a {
+      &.current-menu-item > a,
+      &.current-menu-ancestor > a {
         background-color: var(--color-background-active, transparent);
         color: var(--color-text-active, inherit);
       }
@@ -141,6 +146,7 @@
         &.current-menu-item > a:not(:hover),
         &.current-menu-ancestor > a:not(:hover) {
           color: var(--color-submenu-text-active, inherit) !important;
+          background-color: var(--color-submenu-background-active, var(--color-submenu-background, #efefef)) !important;
         }
 
         & > a {
@@ -154,15 +160,18 @@
     }
   }
 
-  &:not(.--icon-below) .wpbs-nav-menu-container {
+  &.is-style-dropdown:not(.--icon-below) .wpbs-nav-menu-container {
     & > li {
       &.menu-item-has-children {
-        &:hover > a:after,
-        &.active > a:after {
+        &:hover > a:after {
           @apply rotate-180;
         }
       }
     }
+  }
+
+  .wpbs-nav-menu-container & > li > .sub-menu {
+    gap: var(--submenu-gap, 0px);
   }
 
   &.is-style-dropdown .wpbs-nav-menu-container {
@@ -225,23 +234,22 @@
       @apply w-full block;
 
       &.menu-item-has-children {
-        .sub-menu {
-          background-color: var(--color-submenu-background, transparent);
-        }
 
         & > a {
           padding-right: calc(var(--submenu-icon-space, 0px) + 1.5em);
 
           &:after {
             content: var(--submenu-icon, '\f078');
-            margin-right: var(--submenu-icon-space, initial);
+            margin-right: var(--submenu-icon-space, 10px);
             top: 50%;
             right: 0;
             height: 1.2em;
+            transform: translateY(-50%);
             @apply absolute w-auto text-inherit;
           }
         }
       }
+
     }
 
     & li > a {
@@ -249,7 +257,31 @@
     }
 
     & > li > .sub-menu {
+      background-color: var(--color-submenu-background, transparent);
+      border-radius: var(--submenu-rounded, initial);
+      overflow: hidden;
+      padding: var(--submenu-padding, initial);
+      gap: var(--submenu-gap, 0px);
+      margin-top: var(--submenu-space, 0px);
+
       @apply w-full hidden;
     }
+
+    & > li.active > .sub-menu {
+      @apply block
+    }
+
+    & > li > a {
+      display: block;
+      padding: var(--submenu-link-padding, initial);
+    }
   }
+
+  &.is-style-accordion .wpbs-nav-menu-container {
+    & > li.active > a:after {
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
+
+
 }

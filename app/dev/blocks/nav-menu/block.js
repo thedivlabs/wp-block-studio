@@ -95,9 +95,9 @@ registerBlockType(metadata.name, {
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
-                '--submenu-padding': settings?.['submenu-padding'] ?? null,
+                '--submenu-padding': !!settings?.['submenu-padding'] ? Object.values(settings['submenu-padding']).join(' ') : null,
                 '--submenu-gap': settings?.['submenu-gap'] ?? null,
-                '--submenu-icon': settings?.['submenu-icon'] ?? null,
+                '--submenu-icon': !!settings?.['submenu-icon'] ? '"\\' + settings['submenu-icon'] + '"' : null,
                 '--submenu-icon-space': settings?.['submenu-icon-space'] ?? null,
                 '--color-submenu-background': settings?.['color-submenu-background'] ?? null,
                 '--color-submenu-background-hover': settings?.['color-submenu-background-hover'] ?? null,
@@ -108,8 +108,8 @@ registerBlockType(metadata.name, {
                 '--color-submenu-background-active': settings?.['color-submenu-background-active'] ?? null,
                 '--color-submenu-text-active': settings?.['color-submenu-text-active'] ?? null,
                 '--submenu-link-padding': !!settings?.['submenu-link-padding'] ? Object.values(settings['submenu-link-padding']).join(' ') : null,
-                '--submenu-border': settings?.['submenu-border'] ?? null,
-                '--submenu-divider': settings?.['submenu-divider'] ?? null,
+                '--submenu-border': !!settings?.['submenu-border'] ? Object.values(settings['submenu-border']).join(' ') : null,
+                '--submenu-divider': !!settings?.['submenu-divider'] ? Object.values(settings['submenu-divider']).join(' ') : null,
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
@@ -444,7 +444,7 @@ registerBlockType(metadata.name, {
                     <li className={'menu-item current-menu-item'}>
                         <a href={'#'}>Home</a>
                     </li>
-                    <li className={'menu-item menu-item-has-children current-menu-ancestor current-menu-parent'}>
+                    <li className={'menu-item menu-item-has-children current-menu-ancestor current-menu-parent active'}>
                         <a href={'#'}>Link 1</a>
                         <ul className={'sub-menu'}>
                             <li className={'menu-item current-menu-item'}>

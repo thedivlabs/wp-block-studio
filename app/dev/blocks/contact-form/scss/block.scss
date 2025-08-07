@@ -284,7 +284,7 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
 
   }
 
-  .wpbs-contact-form.--button-icon & {
+  .divlabs-form-block--button-icon & {
     .gform_button {
 
       &:after {
@@ -299,8 +299,8 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
 
 
 /* INLINE */
-.wpbs-contact-form {
-  &.--inline {
+.divlabs-form {
+  &--inline {
     .gform_wrapper.gravity-theme {
       & > form {
         text-align: $inline_form_align !important;
@@ -377,8 +377,8 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
 }
 
 /* DARK */
-.wpbs-contact-form {
-  &.--button-icon.wpbs-contact-form.is-style-dark {
+.divlabs-form {
+  &--button-icon.divlabs-form--dark {
     .gform_button {
 
       &:after {
@@ -393,7 +393,7 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   }
 
 
-  &.is-style-dark {
+  &--dark {
 
     .gform_wrapper.gravity-theme {
 
@@ -518,65 +518,74 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   select {
     display: block !important;
     width: 100% !important;
-    outline: none;
+
+    @apply
+    outline-none
   }
 }
 
 
-.wpbs-contact-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+.divlabs-form {
+  @apply
+  flex
+  flex-col
+  w-full
+  ;
 
   & > p {
-    display: none;
+    @apply
+    hidden
   }
 
   &.active form {
-    opacity: 0.4;
-    pointer-events: none;
+    @apply
+    opacity-40
+    pointer-events-none
   }
 
-  &.--center {
+  &--center {
 
     .gform_wrapper.gravity-theme {
       .gform_footer,
       .gform_page_footer {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        @apply
+        flex
+        flex-wrap
+        justify-center
       }
     }
 
   }
 
-  &.--inline {
+  &--inline {
 
     .gform_wrapper.gravity-theme {
 
       .gform-body {
-        flex-grow: 1;
+        @apply
+        grow
       }
 
       & > form {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-end;
+        @apply
+        flex-row
+        items-end
       }
 
       .gform_fields {
-        height: 100%;
-        @media (min-width: 640px) {
-          display: flex;
-        }
+        @apply
+        h-full
+        flex
       }
 
       .gfield {
-        height: 100%;
+        @apply
+        h-full
       }
 
       .ginput_container {
-        height: 100%;
+        @apply
+        h-full
       }
     }
 
@@ -585,11 +594,13 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
 }
 
 .gf_invisible {
-  display: none;
+  @apply
+  hidden
 }
 
+
 @media screen and (max-width: 768px) {
-  .wpbs-contact-form.--collapse {
+  .divlabs-form--collapse {
     .gform_wrapper.gravity-theme {
       .gform_fields {
         .gfield[class*='gfield--width'] {
@@ -600,29 +611,20 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   }
 }
 
-
 .gform_wrapper.gravity-theme {
 
   .gform_page_footer {
-    margin-top: 1.75rem;
     padding: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
+    gap: 1rem;
+    @apply
+    w-full
+    flex
+    justify-between
   }
 
   .gfield--type-section {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
 
-    &:first-child {
-      margin-top: 0;
-    }
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+    margin: 0;
   }
 
   .gform_fields {
@@ -639,22 +641,21 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
       }
     }
 
-
     .gfield.gfield--width-half {
-      @media (min-width: 1024px) {
-        grid-column: span 6 / span 6;
+      @media screen and (min-width: 768px) {
+        grid-column: span 6;
       }
     }
 
     .gfield.gfield--width-third {
-      @media (min-width: 1024px) {
-        grid-column: span 4 / span 4;
+      @media screen and (min-width: 768px) {
+        grid-column: span 4;
       }
     }
 
     .gfield.gfield--width-quarter {
-      @media (min-width: 1024px) {
-        grid-column: span 3 / span 3;
+      @media screen and (min-width: 768px) {
+        grid-column: span 3;
       }
     }
 
@@ -663,12 +664,15 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     }
 
     .ginput_complex {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 1rem;
+      @apply
+      flex
+      flex-wrap
+      ;
 
       [class*='gform-grid-col'] {
-        flex-grow: 1;
+        @apply
+        grow
       }
     }
 
@@ -678,26 +682,29 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   .gform_next_button,
   .gform_previous_button {
     margin: 0 !important;
-    margin: 0;
-    margin-left: auto;
-    margin-right: auto;
-    @media (min-width: 1280px) {
+
+    @media screen and (min-width: 768px) {
       margin-left: 0;
       margin-right: 0;
     }
-    cursor: pointer;
-    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+
+    @apply
+    mx-auto
+    cursor-pointer
+    transition-colors
+    duration-300
+    inline-flex
+    justify-center
+    items-center
   }
 
   .gform_button {
 
     &:after {
       font-family: 'Font Awesome 6 Pro', sans-serif;
-      display: inline-block;
-      margin-left: 0.5rem;
+      margin-left: .5rem;
+      @apply
+      inline-block
     }
 
     &:hover:after {
@@ -706,25 +713,29 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   }
 
   & > form {
-    transition: opacity 0.3s ease;
-    display: flex;
-    flex-direction: column;
+    @apply
+    transition-opacity
+    flex
+    flex-col
+    ;
 
     .gfield {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      position: relative;
+      @apply
+      w-full
+      flex
+      flex-col
+      relative
+      ;
 
       &:is(fieldset) {
 
+        margin-bottom: .5rem;
+
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+
         .gfield_label {
-          margin-bottom: 1rem;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
           font-weight: bold;
         }
       }
@@ -741,67 +752,78 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
       input[type=tel],
       {
         text-align: inherit;
-        width: 100%;
+        @apply
+        w-full
       }
 
       select {
-        appearance: none;
-        padding-right: 2.5rem;
+        padding-right: 2rem;
+        @apply
+        appearance-none
       }
 
       .ginput_container_select {
-        position: relative;
+        @apply
+        relative
+        ;
 
         &:after {
           content: '\f078';
-          font-family: 'Font Awesome 6 Pro', sans-serif;
-          position: absolute;
           top: 0;
           right: 0;
           bottom: 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 1rem;
-          width: 2.5rem;
-          user-select: none;
-          pointer-events: none;
+          font-family: 'Font Awesome 6 Pro', sans-serif;
+          font-size: var(--wp--preset--font-size--normal);
+          width: 2rem;
+          @apply
+          absolute
+          flex
+          justify-center
+          items-center
+          select-none
+          pointer-events-none
         }
       }
 
-      &.--type-hidden {
-        display: none;
+      &--type-hidden {
+        @apply
+        hidden
       }
 
-      &.--width-half {
-        grid-column: span 6;
+      &--width-half {
+        @apply
+        col-span-6
       }
 
-      &.--type-honeypot {
-        position: absolute;
-        width: 0;
-        height: 0;
-        overflow: hidden;
-        z-index: 0;
+      &--type-honeypot {
         top: 0;
+        height: 0;
+        width: 0;
+        @apply
+        absolute
+        overflow-hidden
+        z-0
       }
 
     }
 
     .gfield_label {
       margin: 0;
-      line-height: 1.25;
-      position: relative;
-      width: 100%;
-      display: block;
+      line-height: var(--wp--preset--line-height--small);
+      @apply
+      relative
+      w-full
+      block
     }
 
     .gfield.hidden_label .gfield_label {
-      display: none;
+      @apply
+      hidden
     }
 
     .gfield--type-choice {
-      margin-top: 0.75rem;
+
+      margin-top: .5rem;
 
       &:first-child {
         margin-top: 0;
@@ -809,15 +831,18 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     }
 
     .gfield_required {
-      display: inline-block;
-      margin-left: 0.125rem;
+      font-size: inherit !important;
       padding: 0;
-      color: inherit;
+      margin-left: .5rem;
       line-height: 1;
-      color: #9ca3af;
+      color: gray;
+      @apply
+      inline-block
+      ;
 
       .gfield_required_text {
-        display: none;
+        @apply
+        hidden
       }
 
       &:before {
@@ -833,8 +858,339 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
       margin: 0 !important;
 
       p, br {
-        display: none;
+        @apply
+        hidden
       }
     }
   }
+}
+
+
+.gform_wrapper.gravity-theme {
+  form {
+    @apply
+    transition-opacity
+    duration-300
+  }
+
+  @keyframes wiggle {
+    25% {
+      transform: translate(-2px, 0)
+    }
+    50% {
+      transform: translate(0, 0)
+    }
+    75% {
+      transform: translate(2px, 0)
+    }
+    100% {
+      transform: translate(0, 0)
+    }
+
+  }
+
+  &.gform_validation_error {
+
+    .gform_body {
+
+      animation: wiggle .2s ease-in-out 2;
+    }
+
+    .gfield.gfield_error {
+
+      .ginput_container {
+        @apply
+        relative
+        ;
+
+        &:after {
+          top: 0;
+          font-size: var(--wp--preset--font-size--extra-small);
+          transform: translateY(-50%);
+          font-family: 'Font Awesome 6 Pro', sans-serif;
+          color: darkred;
+          right: .5rem;
+          font-weight: bold;
+          @apply
+          content-['\f111']
+          absolute
+          pointer-events-none
+        }
+      }
+    }
+  }
+
+  .gfield_radio {
+    .gchoice label:before {
+      border-radius: var(--wp--custom--form--radio--rounded) !important;
+    }
+  }
+
+  .gfield_radio,
+  .gfield_checkbox {
+    gap: 1rem 2rem;
+    @apply
+    inline-flex
+    flex-wrap
+    justify-start
+    items-center
+    text-left
+    relative
+    select-none
+    ;
+
+    .gchoice {
+      @apply
+      flex
+      relative
+      ;
+
+      input {
+        width: 0;
+        height: 0;
+        @apply
+        absolute
+        overflow-hidden
+        opacity-0
+      }
+
+      label {
+        font-size: inherit;
+        line-height: var(--wp--preset--line-height--normal);
+        padding-left: 2rem;
+        @apply
+        relative
+        cursor-pointer
+        max-w-full
+        ;
+
+        &:before {
+          content: '';
+          height: 1.8em;
+          border-style: solid;
+          font-family: 'Font Awesome 6 Pro', sans-serif;
+          font-size: var(--wp--preset--font-size--extra-small);
+          line-height: 1;
+          top: 0;
+          left: 0;
+          font-weight: bold;
+          @apply
+          absolute
+          w-auto
+          aspect-square
+          flex
+          justify-center
+          items-center
+          text-center
+          overflow-hidden
+        }
+      }
+
+      input:checked ~ label:before {
+        font-family: 'Font Awesome 6 Pro', sans-serif;
+        color: white;
+      }
+    }
+  }
+
+  .validation_message {
+    @apply
+    hidden
+  }
+
+  .gform_ajax_spinner,
+  .gform-loader {
+    display: none !important;
+  }
+
+  .gform_validation_errors {
+    @apply
+    hidden
+  }
+
+}
+
+
+div.ui-datepicker.gravity-theme#ui-datepicker-div[style] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 10000009999999999 !important;
+  max-width: 100%;
+  background-color: rgba(0, 0, 0, .3);
+  @apply
+  w-full
+  h-full
+  flex
+  flex-col
+  items-center
+  justify-center
+  text-center
+  pointer-events-none
+  ;
+
+  .ui-datepicker-calendar,
+  .ui-datepicker-header {
+    background-color: white;
+    max-width: 22rem;
+    @apply
+    w-full
+    pointer-events-auto
+  }
+
+  .ui-datepicker-header {
+    gap: .5rem;
+    padding: 1rem;
+    @apply
+    flex
+    justify-center
+    items-center
+  }
+
+  .ui-datepicker-prev,
+  .ui-datepicker-next {
+    height: 1.5rem;
+    font-size: .9rem;
+    line-height: 1.5rem;
+    font-family: 'Font Awesome 6 Pro', sans-serif;
+    background: transparent;
+    @apply
+    aspect-square
+    block
+    text-center
+    cursor-pointer
+    transition-colors
+    grow-0
+    shrink-0
+
+    ;
+
+    & > span {
+      @apply
+      hidden
+    }
+  }
+
+  .ui-datepicker-prev {
+    @apply
+    before:content-['\f060']
+    order-first
+  }
+
+  .ui-datepicker-next {
+    @apply
+    before:content-['\f061']
+    order-last
+  }
+
+  .ui-datepicker-title {
+    gap: 2rem;
+    padding: .5rem;
+    @apply
+    grow
+    h-full
+    flex
+    items-center
+
+    ;
+
+    font-size: var(--wp--preset--font-size--small);
+
+    select {
+      @apply
+      w-full
+      h-full
+      bg-transparent
+      cursor-pointer
+      focus:outline-0
+
+    }
+  }
+
+  /*.ui-datepicker-calendar {
+    border: 1rem solid white;
+    border-top-width: .5rem;
+    @apply
+    rounded-bl
+    rounded-br
+    overflow-hidden
+  }*/
+
+  .ui-datepicker-calendar {
+    gap: .5rem;
+    padding: .5rem 1rem;
+    @apply
+    w-full
+    flex
+    flex-col
+    overflow-hidden
+    ;
+
+    thead {
+      font-size: var(--wp--preset--font-size--small);
+      line-height: var(--wp--preset--line-height--small);
+      font-weight: bold;
+      @apply
+      text-center
+    }
+
+    tbody {
+      //grid-template-rows: repeat(6, 1fr);
+      gap: .5rem;
+      @apply
+      grid
+      grid-rows-6
+    }
+
+    tr {
+      gap: .5rem;
+      @apply
+      w-full
+      grid
+      grid-cols-7
+    }
+
+    td, th {
+      @apply
+      w-full
+      aspect-square
+      flex
+      ;
+
+      & > span,
+      & > a {
+        @apply
+        w-full
+        h-full
+        flex
+        justify-center
+        items-center
+        bg-transparent
+      }
+    }
+
+    td {
+      @apply
+      transition-colors
+      ;
+
+      & > span,
+      & > a {
+
+      }
+
+      &:has(span) {
+        @apply
+        opacity-40
+        bg-transparent
+      }
+
+      &:has(a) {
+        @apply
+        cursor-pointer
+      }
+    }
+  }
+
+
 }

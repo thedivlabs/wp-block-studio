@@ -83,6 +83,8 @@ registerBlockType(metadata.name, {
 
         }, [settings, setAttributes]);
 
+        //console.log(settings);
+
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
@@ -95,7 +97,7 @@ registerBlockType(metadata.name, {
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
-                '--submenu-padding': !!settings?.['submenu-padding'] ? Object.values(settings['submenu-padding']).join(' ') : null,
+                '--submenu-padding': settings['submenu-padding'],
                 '--submenu-gap': settings?.['submenu-gap'] ?? null,
                 '--submenu-icon': !!settings?.['submenu-icon'] ? '"\\' + settings['submenu-icon'] + '"' : null,
                 '--submenu-icon-space': settings?.['submenu-icon-space'] ?? null,

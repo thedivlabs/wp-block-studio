@@ -171,6 +171,8 @@
   }
 
   .wpbs-nav-menu-container & > li > .sub-menu {
+    display: flex;
+    flex-direction: column;
     gap: var(--submenu-gap, 0px);
   }
 
@@ -193,12 +195,11 @@
       top: 100%;
       left: 50%;
       padding-top: var(--submenu-space, .7rem);
-      gap: var(--submenu-gap, 0px);
       transition: opacity .3s;
       position: absolute;
       background-color: transparent;
       transform: translateX(-50%);
-      @apply text-left flex flex-col opacity-0 pointer-events-none absolute z-50;
+      @apply flex flex-col text-left opacity-0 pointer-events-none absolute z-50;
 
       & > li:first-of-type {
         border-radius: var(--submenu-rounded, 6px) var(--submenu-rounded, 6px) 0 0;
@@ -239,7 +240,6 @@
           padding-right: calc(var(--submenu-icon-space, 0px) + 1.5em);
 
           &:after {
-            content: var(--submenu-icon, '\f078');
             margin-right: var(--submenu-icon-space, 10px);
             top: 50%;
             right: 0;
@@ -259,16 +259,17 @@
     & > li > .sub-menu {
       background-color: var(--color-submenu-background, transparent);
       border-radius: var(--submenu-rounded, initial);
+      border: var(--submenu-border, none);
       overflow: hidden;
       padding: var(--submenu-padding, initial);
       gap: var(--submenu-gap, 0px);
       margin-top: var(--submenu-space, 0px);
 
-      @apply w-full hidden;
+      @apply w-full hidden flex-col;
     }
 
     & > li.active > .sub-menu {
-      @apply block
+      @apply flex
     }
 
     & > li > a {

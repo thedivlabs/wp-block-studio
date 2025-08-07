@@ -77,8 +77,8 @@
   .wpbs-nav-menu-container {
     display: flex;
 
-    & > li.current-menu-item:not(:hover),
-    & > li.current-menu-ancestor:not(:hover) {
+    & > li.current-menu-item,
+    & > li.current-menu-ancestor {
 
       & > a {
         color: var(--color-text-active, inherit) !important;
@@ -95,8 +95,8 @@
 
       &.current-menu-item > a,
       &.current-menu-ancestor > a {
-        background-color: var(--color-background-active, transparent);
-        color: var(--color-text-active, inherit);
+        background-color: var(--color-background-active, transparent) !important;
+        color: var(--color-text-active, inherit) !important;
       }
 
       & > a {
@@ -162,8 +162,8 @@
           background-color: var(--color-submenu-background-hover, var(--color-submenu-background, #efefef));
         }
 
-        &.current-menu-item > a:not(:hover),
-        &.current-menu-ancestor > a:not(:hover) {
+        &.current-menu-item > a,
+        &.current-menu-ancestor > a {
           color: var(--color-submenu-text-active, inherit) !important;
           background-color: var(--color-submenu-background-active, var(--color-submenu-background, #efefef)) !important;
         }
@@ -171,7 +171,7 @@
         & > a {
           gap: var(--icon-space, initial);
           color: var(--color-submenu-text, black);
-          background-color: var(--color-submenu-background, white);
+          background-color: var(--color-submenu-background, white) !important;
           padding: var(--submenu-link-padding, initial);
           transition-duration: 300ms;
           @apply transition-colors flex;
@@ -313,7 +313,6 @@
     }
 
     & > li > a {
-      display: block;
       padding: var(--submenu-link-padding, initial);
     }
   }

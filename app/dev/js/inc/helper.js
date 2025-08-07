@@ -62,7 +62,6 @@ export function useUniqueId(attributes, setAttributes, clientId, prefix = 'block
 
         if (!hasId || isDuplicate) {
             const newId = `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
-            console.log('Generating new uniqueId:', newId);
             setAttributes({uniqueId: newId});
         }
     }, [attributes.uniqueId, setAttributes, clientId, prefix]);

@@ -9,7 +9,8 @@ class WPBS_WP {
 		$this->image_sizes();
 
 		add_action( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 100 );
-		add_filter( 'rest_endpoints', [ $this, 'add_rest_method' ] );
+		add_filter( 'nav_menu_link_attributes', 'menu_item_icon', 10, 4 );
+
 
 		register_nav_menus( array(
 			'header-menu' => __( 'Header Menu', 'divlabs' ),
@@ -23,6 +24,29 @@ class WPBS_WP {
 		$this->theme_support();
 
 
+	}
+
+
+	public function menu_item_icon( $attrs, $item, $args, $depth ): array {
+
+
+		$icon = get_field( 'icon', $item );
+
+		if ( ! empty( $icon ) ) {
+
+			$attrs['class'] = join( ' ', array_filter( [
+				trim( $attrs['class'] ?? '' ),
+				'--icon'
+			] ) );
+
+			$attrs['style'] = join( '; ', array_filter( [
+					rtrim( trim( $attrs['style'] ?? '' ), ';' ),
+					'--icon: "\\' . esc_attr( $icon )
+				] ) ) . '";';
+
+		}
+
+		return $attrs;
 	}
 
 	public function theme_support(): void {
@@ -48,20 +72,6 @@ class WPBS_WP {
 			'label' => 'Accordion',
 		] );
 
-	}
-
-	public function add_rest_method( $endpoints ) {
-		if ( is_wp_version_compatible( '5.5' ) ) {
-			return $endpoints;
-		}
-
-		foreach ( $endpoints as $route => $handler ) {
-			if ( isset( $endpoints[ $route ][0] ) ) {
-				$endpoints[ $route ][0]['methods'] = [ WP_REST_Server::READABLE ];
-			}
-		}
-
-		return $endpoints;
 	}
 
 	public function shortcodes(): void {

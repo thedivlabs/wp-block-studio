@@ -7,7 +7,7 @@
             "label": "Icon",
             "name": "icon",
             "aria-label": "",
-            "type": "font-awesome",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -16,19 +16,12 @@
                 "class": "",
                 "id": ""
             },
-            "icon_sets": [
-                "light",
-                "brands"
-            ],
-            "custom_icon_set": "",
-            "default_label": "",
             "default_value": "",
-            "save_format": "element",
-            "allow_null": 1,
-            "show_preview": 0,
-            "enqueue_fa": 0,
-            "fa_live_preview": "",
-            "choices": []
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -49,5 +42,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1695064640
+    "modified": 1754571024
 }

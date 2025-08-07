@@ -31,6 +31,7 @@ function blockClassNames(attributes = {}) {
 
     return [
         'wpbs-nav-menu wpbs-has-container flex flex-wrap',
+        !!settings?.['icon-below'] ? '--icon-below' : null,
         !!settings?.['submenu-fade'] ? '--fade' : null,
         !!settings?.['divider'] ? '--divider' : null,
         attributes?.uniqueId ?? null
@@ -91,7 +92,7 @@ registerBlockType(metadata.name, {
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
                 '--color-icon': settings?.['color-icon'] ?? null,
-                '--link-padding': settings?.['link-padding'] ?? null,
+                '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
                 '--submenu-padding': settings?.['submenu-padding'] ?? null,
@@ -106,11 +107,11 @@ registerBlockType(metadata.name, {
                 '--submenu-color-divider-hover': settings?.['submenu-color-divider-hover'] ?? null,
                 '--submenu-color-background-active': settings?.['submenu-color-background-active'] ?? null,
                 '--submenu-color-text-active': settings?.['submenu-color-text-active'] ?? null,
-                '--submenu-link-padding': settings?.['submenu-link-padding'] ?? null,
+                '--submenu-link-padding': !!settings?.['submenu-link-padding'] ? Object.values(settings['submenu-link-padding']).join(' ') : null,
                 '--submenu-border': settings?.['submenu-border'] ?? null,
                 '--submenu-divider': settings?.['submenu-divider'] ?? null,
                 breakpoints: {
-                    [attributes?.['wpbs-breakpoint'] ?? 'lg']: {
+                    [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
                     }
                 }
@@ -440,11 +441,14 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>
-                    <li className={'menu-item menu-item-has-children'}>
+                    <li className={'menu-item current-menu-item'}>
+                        <a href={'#'}>Home</a>
+                    </li>
+                    <li className={'menu-item menu-item-has-children current-menu-ancestor current-menu-parent'}>
                         <a href={'#'}>Link 1</a>
                         <ul className={'sub-menu'}>
-                            <li className={'menu-item'}>
-                                <a href={'#'}>Sub-Link 1</a>
+                            <li className={'menu-item current-menu-item'}>
+                                <a href={'#'}>Home</a>
                             </li>
                             <li className={'menu-item'}>
                                 <a href={'#'}>Sub-Link 2</a>

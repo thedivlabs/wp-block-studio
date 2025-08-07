@@ -5,7 +5,10 @@
   "title": "Nav Menu",
   "description": "Display a menu",
   "selectors": {
-    "root": ".wpbs-nav-menu"
+    "root": ".wpbs-nav-menu",
+    "color": {
+      "links": ".wpbs-nav-menu > .wpbs-nav-menu-container > li > a"
+    }
   },
   "styles": [
     {

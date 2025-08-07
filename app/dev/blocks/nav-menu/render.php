@@ -11,7 +11,9 @@ if ( empty( $menu_id ) ) {
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-nav-menu wpbs-has-container flex flex-wrap',
-		$attributes['uniqueId'] ?? ''
+		$attributes['uniqueId'] ?? '',
+		! empty( $settings['divider'] ) ? '--divider' : null,
+		! empty( $settings['fade'] ) ? '--fade' : null,
 	] ) ),
 	'data-wp-interactive' => 'wpbs/nav-menu',
 	'data-wp-init'        => 'actions.init'

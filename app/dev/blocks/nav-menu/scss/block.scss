@@ -7,6 +7,7 @@
 --color-background-active
 --color-background-hover
 --color-text-active
+--color-icon
 --link-padding
 --divider
 --submenu-space
@@ -32,6 +33,31 @@
 
 
 .wpbs-nav-menu {
+
+  &.--divider {
+
+    .wpbs-nav-menu-container {
+
+      & > li:not(:last-of-type) > a {
+        @apply relative;
+
+        &:before {
+          content: '';
+          border-left: var(--divider, none);
+          top: 0;
+          right: 0;
+          height: 100%;
+          position: absolute;
+          transform: translateX(calc(var(--column-gap, 1px) / 2));
+
+        }
+      }
+
+    }
+
+
+  }
+
   .wpbs-nav-menu-container {
     & li.current-menu-item:not(:hover),
     & li.current-menu-ancestor:not(:hover) {
@@ -45,7 +71,7 @@
         background-color: var(--color-background-hover, transparent);
       }
 
-      &.active > a {
+      &.current-menu-item > a {
         background-color: var(--color-background-active, transparent);
         color: var(--color-text-active, inherit);
       }
@@ -55,9 +81,6 @@
         background-color: var(--color-background, transparent);
         @apply whitespace-nowrap flex transition-colors duration-200 relative items-center no-underline;
 
-        &:hover {
-          background-color: var(--color-background-active, transparent);
-        }
       }
 
       &.menu-item-has-children {
@@ -65,23 +88,27 @@
           gap: var(--icon-space, .3rem);
         }
 
+        &:hover > a:after,
         &.active > a:after {
           @apply rotate-180;
+
+          color: inherit;
         }
 
         & > a {
           &:after {
+            color: var(--color-icon, inherit);
             content: var(--icon, '\f078');
             transition-timing-function: ease-in-out;
             font-family: 'Font Awesome 6 Pro', sans-serif;
             @apply aspect-square transition-transform duration-300 flex text-center justify-center items-center pointer-events-none;
           }
         }
+
       }
     }
 
     & > li > .sub-menu {
-      display: none;
 
       & > li {
         &:last-of-type {

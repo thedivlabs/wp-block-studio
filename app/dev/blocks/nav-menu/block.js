@@ -32,7 +32,8 @@ function blockClassNames(attributes = {}) {
     return [
         'wpbs-nav-menu wpbs-has-container flex flex-wrap',
         !!settings?.['submenu-fade'] ? '--fade' : null,
-        attributes?.clientId ?? null
+        !!settings?.['divider'] ? '--divider' : null,
+        attributes?.uniqueId ?? null
     ].filter(x => x).join(' ');
 }
 
@@ -85,10 +86,12 @@ registerBlockType(metadata.name, {
             return Object.fromEntries(Object.entries({
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
+                '--color-background': settings?.['color-background'] ?? null,
+                '--color-background-hover': settings?.['color-background-hover'] ?? null,
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
+                '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': settings?.['link-padding'] ?? null,
-                '--divider': settings?.['divider'] ?? null,
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
                 '--submenu-padding': settings?.['submenu-padding'] ?? null,
@@ -106,6 +109,11 @@ registerBlockType(metadata.name, {
                 '--submenu-link-padding': settings?.['submenu-link-padding'] ?? null,
                 '--submenu-border': settings?.['submenu-border'] ?? null,
                 '--submenu-divider': settings?.['submenu-divider'] ?? null,
+                breakpoints: {
+                    [attributes?.['wpbs-breakpoint'] ?? 'lg']: {
+                        '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
+                    }
+                }
             }).filter(x => !!x))
         }, [settings]);
 
@@ -428,7 +436,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}
-                   selector={'wpbs-nav-menu'}/>
+                   selector={'wpbs-nav-menu'} deps={['wpbs-nav-menu']}/>
 
             <div {...blockProps}>
                 <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>

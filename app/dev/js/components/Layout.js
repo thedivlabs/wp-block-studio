@@ -11,7 +11,7 @@ import {
     __experimentalNumberControl as NumberControl,
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
-    __experimentalUnitControl as UnitControl, BaseControl, PanelBody,
+    __experimentalUnitControl as UnitControl, BaseControl, FormTokenField, PanelBody,
     RangeControl,
     SelectControl,
 } from "@wordpress/components";
@@ -52,6 +52,7 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'transition',
         'breakpoint',
         'mask-image',
         'mask-image-mobile',
@@ -99,6 +100,8 @@ const LAYOUT_PROPS = {
         'opacity',
         'basis',
         'width',
+        'transition',
+        'duration',
         'width-custom',
         'max-width',
         'height',
@@ -339,6 +342,12 @@ function parseSpecial(prop, attributes) {
             break;
         case 'basis':
             result = {'flex-basis': value + '%'}
+            break;
+        case 'transition':
+            result = {
+                'transition-property': value.join(', '),
+                'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300ms',
+            }
             break;
         case 'text-color':
             result = {'color': value}
@@ -973,6 +982,60 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             value={settings?.['outline']}
                             callback={(newValue) => updateProp({'outline': newValue})}
                         />
+                    </ToolsPanelItem>
+
+                    <ToolsPanelItem
+                        style={{gridColumn: 'span 2'}}
+                        hasValue={() => !!settings?.['transition']}
+                        label={'Transition'}
+                        onDeselect={() => updateProp({['transition']: ''})}
+                    >
+
+                        <FormTokenField
+                            tokenizeOnSpace={true}
+                            __experimentalExpandOnFocus={true}
+                            label="Transition"
+                            value={settings?.['transition']}
+                            suggestions={[
+                                'opacity',
+                                'transform',
+                                'background-color',
+                                'color',
+                                'border-color',
+                                'all'
+                            ]}
+                            onChange={(newValue) => updateProp({'transition': newValue})}
+                        />
+
+
+                    </ToolsPanelItem>
+
+                    <ToolsPanelItem
+                        style={{gridColumn: 'span 1'}}
+                        hasValue={() => !!settings?.['duration']}
+                        label={'Duration'}
+                        onDeselect={() => updateProp({['duration']: ''})}
+                    >
+
+                        <UnitControl
+                            isResetValueOnUnitChange={true}
+                            __next40pxDefaultSize
+                            step={50}
+                            min={0}
+                            max={900}
+                            label="Duration"
+                            value={settings?.['duration']}
+                            onChange={(newValue) => updateProp({'duration': newValue})}
+                            units={[
+                                {
+                                    label: 'ms',
+                                    value: 'ms',
+                                    default: 0
+                                }
+                            ]}
+                        />
+
+
                     </ToolsPanelItem>
 
                     <ToolsPanelItem

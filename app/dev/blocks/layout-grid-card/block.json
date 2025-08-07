@@ -50,7 +50,8 @@
       "padding": true,
       "margin": true
     },
-    "border": {
+    "shadow": true,
+    "__experimentalBorder": {
       "color": true,
       "radius": true,
       "style": true,

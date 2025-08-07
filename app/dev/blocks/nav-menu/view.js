@@ -1,5 +1,30 @@
 import {store, getElement} from '@wordpress/interactivity';
 
+function initAccordion(element) {
+    
+    const toggleItems = element.querySelectorAll(':scope > .wpbs-nav-menu-container > li.menu-item-has-children > a');
+
+    if (!toggleItems.length) {
+        return false;
+    }
+
+    [...toggleItems].forEach((toggleItem) => {
+
+        toggleItem.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const parent = e.target.parentElement;
+            const submenu = parent.querySelector(':scope > .sub-menu');
+
+            WPBS.slideToggle(submenu, 'fast', () => {
+                parent.classList.toggle('active');
+            });
+        })
+
+    })
+
+}
+
 function initDropdown(element) {
     if (!element || element.classList.contains('is-style-accordion')) {
         return false;
@@ -53,10 +78,14 @@ const {state} = store('wpbs/nav-menu', {
 
             const {ref: element} = getElement();
 
+            const is_dropdown = element.classList.contains('is-style-dropdown');
             const is_accordion = element.classList.contains('is-style-accordion');
 
-            if (!is_accordion) {
+            if (is_dropdown) {
                 initDropdown(element);
+            }
+            if (is_accordion) {
+                initAccordion(element);
             }
 
         }

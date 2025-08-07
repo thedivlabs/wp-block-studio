@@ -13,8 +13,7 @@
   "styles": [
     {
       "name": "dropdown",
-      "label": "Dropdown",
-      "isDefault": true
+      "label": "Dropdown"
     },
     {
       "name": "accordion",

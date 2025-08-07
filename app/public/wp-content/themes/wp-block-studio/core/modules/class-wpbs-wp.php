@@ -10,7 +10,7 @@ class WPBS_WP {
 
 		add_action( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 100 );
 		add_filter( 'nav_menu_link_attributes', [ $this, 'menu_item_icon' ], 10, 4 );
-
+		add_filter( 'walker_nav_menu_start_el', [ $this, 'menu_item_span' ], 10, 4 );
 
 		register_nav_menus( array(
 			'header-menu' => __( 'Header Menu', 'divlabs' ),
@@ -26,6 +26,14 @@ class WPBS_WP {
 
 	}
 
+
+	public function menu_item_span( $item_output, $item, $depth, $args ): string {
+		return preg_replace(
+			'#(<a[^>]*>)(.*?)(</a>)#',
+			'$1<span>$2</span>$3',
+			$item_output
+		);
+	}
 
 	public function menu_item_icon( $attrs, $item, $args, $depth ): array {
 

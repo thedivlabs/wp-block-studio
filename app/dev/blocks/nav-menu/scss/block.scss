@@ -170,6 +170,16 @@
     }
   }
 
+  &.--submenu-divider {
+    .wpbs-nav-menu-container & > li > .sub-menu > li {
+      border-bottom: var(--submenu-divider, none);
+
+      &:last-of-type {
+        border-bottom: none;
+      }
+    }
+  }
+
   .wpbs-nav-menu-container & > li > .sub-menu {
     display: flex;
     flex-direction: column;

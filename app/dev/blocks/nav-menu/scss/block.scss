@@ -171,16 +171,26 @@
   }
 
   &.--submenu-divider {
-    .wpbs-nav-menu-container & > li > .sub-menu > li {
-      border-bottom: var(--submenu-divider, none);
+    .wpbs-nav-menu-container > li > .sub-menu > li {
+      position: relative;
 
-      &:last-of-type {
-        border-bottom: none;
+      &:after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        border-bottom: var(--submenu-divider, none);
+        transform: translateY(calc(var(--submnenu-gap, 1px) / 2));
+      }
+
+      &:last-of-type:after {
+        content: none;
       }
     }
   }
 
-  .wpbs-nav-menu-container & > li > .sub-menu {
+  .wpbs-nav-menu-container > li > .sub-menu {
     display: flex;
     flex-direction: column;
     gap: var(--submenu-gap, 0px);

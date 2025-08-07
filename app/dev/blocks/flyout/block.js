@@ -49,13 +49,13 @@ registerBlockType(metadata.name, {
         const {'wpbs-flyout': settings = {}} = attributes;
 
         const cssProps = useMemo(() => {
-            return {
-                '--container-width': settings?.['max-width'],
-                '--blur': settings?.['blur'],
-                '--grayscale': settings?.['grayscale'],
-                '--animation': settings?.['animation'],
-                '--overlay': settings?.['overlay'],
-            };
+            return Object.fromEntries(Object.entries({
+                '--container-width': settings?.['max-width'] ?? null,
+                '--blur': settings?.['blur'] ?? null,
+                '--grayscale': settings?.['grayscale'] ?? null,
+                '--animation': settings?.['animation'] ?? null,
+                '--overlay': settings?.['overlay'] ?? null,
+            }).filter(x => x));
         }, [settings]);
 
         const blockProps = useBlockProps({className: blockClassnames(attributes, true)});

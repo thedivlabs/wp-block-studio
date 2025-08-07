@@ -9,7 +9,7 @@ class WPBS_WP {
 		$this->image_sizes();
 
 		add_action( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 100 );
-		add_filter( 'nav_menu_link_attributes', 'menu_item_icon', 10, 4 );
+		add_filter( 'nav_menu_link_attributes', [ $this, 'menu_item_icon' ], 10, 4 );
 
 
 		register_nav_menus( array(
@@ -41,8 +41,8 @@ class WPBS_WP {
 
 			$attrs['style'] = join( '; ', array_filter( [
 					rtrim( trim( $attrs['style'] ?? '' ), ';' ),
-					'--icon: "\\' . esc_attr( $icon )
-				] ) ) . '";';
+					'--icon: "\\' . $icon . '"'
+				] ) ) . ';';
 
 		}
 

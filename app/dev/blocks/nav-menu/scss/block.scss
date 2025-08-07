@@ -131,7 +131,7 @@
 
         &:hover > a,
         & > a:hover {
-          color: var(--color-submenu-text-hover, var(--color-submenu-text, black));
+          color: var(--color-submenu-text-hover, var(--color-submenu-text, black)) !important;
         }
 
         &:hover > a {

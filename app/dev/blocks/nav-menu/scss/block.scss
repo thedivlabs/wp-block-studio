@@ -119,7 +119,6 @@
             align-items: center;
             text-align: center;
             aspect-ratio: 1/1;
-            margin-right: var(--icon-space, initial);
           }
         }
       }
@@ -170,6 +169,7 @@
         }
 
         & > a {
+          gap: var(--icon-space, initial);
           color: var(--color-submenu-text, black);
           background-color: var(--color-submenu-background, white);
           padding: var(--submenu-link-padding, initial);

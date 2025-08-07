@@ -26,7 +26,7 @@ function blockClassnames(attributes = {}, editor = false) {
         'wpbs-flyout',
         'flex flex-col w-full relative overflow-y-scroll',
         attributes?.uniqueId ?? null,
-        attributes?.fade ? '--fade' : null,
+        !!settings?.fade ? '--fade' : null,
         !!editor ? '--editor' : null,
     ].filter(x => x).join(' ');
 }

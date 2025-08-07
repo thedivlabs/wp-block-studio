@@ -16,14 +16,14 @@
 --submenu-gap
 --submenu-icon
 --submenu-icon-space
---submenu-color-background
---submenu-color-background-hover
---submenu-color-text-hover
---submenu-color-text
---submenu-color-icon
---submenu-color-divider-hover
---submenu-color-background-active
---submenu-color-text-active
+--color-submenu-background
+--color-submenu-background-hover
+--color-submenu-text-hover
+--color-submenu-text
+--color-submenu-icon
+--color-submenu-divider-hover
+--color-submenu-background-active
+--color-submenu-text-active
 --submenu-link-padding
 --submenu-border
 --submenu-divider
@@ -131,21 +131,21 @@
 
         &:hover > a,
         & > a:hover {
-          color: var(--submenu-color-text-hover, var(--submenu-color-text, black));
+          color: var(--color-submenu-text-hover, var(--color-submenu-text, black));
         }
 
         &:hover > a {
-          background-color: var(--submenu-color-background-hover, var(--submenu-color-background, #efefef));
+          background-color: var(--color-submenu-background-hover, var(--color-submenu-background, #efefef));
         }
 
         &.current-menu-item > a:not(:hover),
         &.current-menu-ancestor > a:not(:hover) {
-          color: var(--submenu-color-text-active, inherit) !important;
+          color: var(--color-submenu-text-active, inherit) !important;
         }
 
         & > a {
-          color: var(--submenu-color-text, black);
-          background-color: var(--submenu-color-background, white);
+          color: var(--color-submenu-text, black);
+          background-color: var(--color-submenu-background, white);
           padding: var(--submenu-link-padding, initial);
           transition-duration: 300ms;
           @apply transition-colors block;
@@ -183,7 +183,8 @@
       width: max(100%, 12rem);
       top: 100%;
       left: 50%;
-      padding-top: var(--submenu-gap, .7rem);
+      padding-top: var(--submenu-space, .7rem);
+      gap: var(--submenu-gap, 0px);
       transition: opacity .3s;
       position: absolute;
       background-color: transparent;
@@ -225,7 +226,7 @@
 
       &.menu-item-has-children {
         .sub-menu {
-          background-color: var(--submenu-color-background, transparent);
+          background-color: var(--color-submenu-background, transparent);
         }
 
         & > a {

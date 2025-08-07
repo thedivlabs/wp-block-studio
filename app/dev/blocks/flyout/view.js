@@ -11,15 +11,17 @@ const {state} = store('wpbs/flyout', {
             const {ref} = getElement();
 
             const isButton = ref.closest('.wpbs-flyout-button') !== null;
-
+            console.log(ref);
+            console.log(event.target);
             if (!isButton && event.target !== ref) {
                 return;
             }
 
             state.active = !state.active;
 
-            document.body.classList.toggle('wpbs-body-lock', state.active);
-
+            requestAnimationFrame(() => {
+                document.body.classList.toggle('wpbs-body-lock', state.active);
+            });
 
         },
     },

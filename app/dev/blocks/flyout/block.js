@@ -41,9 +41,7 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
-
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-flyout');
-
+        
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-flyout': settings = {}} = attributes;

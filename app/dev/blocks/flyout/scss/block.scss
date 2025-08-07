@@ -4,7 +4,7 @@
   height: 100svh;
   top: 0;
   left: 0;
-  transition: all calc(var(--animation, 500ms) + 300ms);
+  transition: background-color var(--animation, 300ms) linear, backdrop-filter var(--animation, 300ms) linear;
   background-color: rgba(0, 0, 0, 0);
   @apply
   fixed
@@ -14,9 +14,17 @@
   pointer-events-none
   ;
 
+  @media (prefers-reduced-transparency: reduce) {
+    transition: background-color var(--animation, 300ms) linear;
+
+    &.active {
+      backdrop-filter: none;
+    }
+  }
+
   &.active {
     background-color: var(--overlay, rgba(0, 0, 0, .5));
-    backdrop-filter: grayscale(var(--grayscale, 0)) blur(var(--blur, 0px));
+    backdrop-filter: grayscale(var(--grayscale, 0)) blur(clamp(0px, var(--blur, 0px), 10px));
     @apply
     opacity-100
     pointer-events-auto
@@ -52,7 +60,7 @@
   top: 0;
   right: 0;
   max-width: var(--container-width, 100%);
-  transition: transform var(--animation, 400ms) ease-in-out, opacity var(--animation, 400ms) linear;
+  transition: transform var(--animation, 300ms) ease-in-out, opacity var(--animation, 300ms) linear;
   @apply
   w-full
   h-full

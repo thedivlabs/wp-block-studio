@@ -1,4 +1,5 @@
 import {useEffect} from 'react';
+import {select, useSelect} from '@wordpress/data';
 
 
 export const imageButtonStyle = {
@@ -36,21 +37,32 @@ export function cleanObject(obj) {
 }
 
 
+function getAllBlocks(blocks) {
+    return blocks.reduce((all, block) => {
+        all.push(block);
+        if (block.innerBlocks.length) {
+            all.push(...getAllBlocks(block.innerBlocks));
+        }
+        return all;
+    }, []);
+}
+
+
 export function useUniqueId(attributes, setAttributes, clientId, prefix = 'block') {
     useEffect(() => {
         const hasId = !!attributes.uniqueId;
 
-        // Grab all blocks from the editor
-        const allBlocks = wp.data.select('core/block-editor').getBlocks();
+        const allTopBlocks = select('core/block-editor').getBlocks();
+        const allBlocks = getAllBlocks(allTopBlocks);
 
-        // Check if any other block shares this uniqueId
-        const isDuplicate = allBlocks.some((block) =>
-            block.clientId !== clientId &&
-            block.attributes?.uniqueId === attributes.uniqueId
-        );
+        const isDuplicate = allBlocks.some((block) => {
+
+            return block.clientId !== clientId && block.attributes?.uniqueId === attributes.uniqueId;
+        });
 
         if (!hasId || isDuplicate) {
             const newId = `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+            console.log('Generating new uniqueId:', newId);
             setAttributes({uniqueId: newId});
         }
     }, [attributes.uniqueId, setAttributes, clientId, prefix]);

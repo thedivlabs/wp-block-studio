@@ -129,10 +129,16 @@ registerBlockType(metadata.name, {
             <SelectControl
                 label="Menu"
                 value={settings?.menu}
-                options={menus.map((menu) => ({
-                    label: menu.name,
-                    value: menu.id,
-                }))}
+                options={[
+                    {
+                        label: 'Select',
+                        value: ''
+                    },
+                    ...menus.map((menu) => ({
+                        label: menu.name,
+                        value: menu.id,
+                    }))
+                ]}
                 onChange={(newValue) => updateSettings({menu: newValue})}
             />
             <Grid columns={2} columnGap={15} rowGap={15}>

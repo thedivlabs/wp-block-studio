@@ -24,7 +24,7 @@
 
   &.active .wpbs-flyout__container {
     transform: translate(0, 0);
-    opacity: 1;
+    opacity: 1 !important;
   }
 
   &.--fade .wpbs-flyout__container {
@@ -52,7 +52,7 @@
   top: 0;
   right: 0;
   max-width: var(--container-width, 100%);
-  transition: transform var(--animation, 500ms) ease-in-out, opacity var(--animation, 500ms) linear;
+  transition: transform var(--animation, 400ms) ease-in-out, opacity var(--animation, 400ms) linear;
   @apply
   w-full
   h-full

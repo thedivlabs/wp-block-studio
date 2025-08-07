@@ -10,7 +10,7 @@ if ( empty( $menu_id ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-nav-menu wpbs-has-container flex flex-wrap',
+		'wpbs-nav-menu wpbs-has-container',
 		$attributes['uniqueId'] ?? '',
 		! empty( $settings['divider'] ) ? '--divider' : null,
 		! empty( $settings['fade'] ) ? '--fade' : null,

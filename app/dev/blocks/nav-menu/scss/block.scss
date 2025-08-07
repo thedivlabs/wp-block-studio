@@ -75,6 +75,8 @@
   }
 
   .wpbs-nav-menu-container {
+    display: flex;
+
     & > li.current-menu-item:not(:hover),
     & > li.current-menu-ancestor:not(:hover) {
 
@@ -214,7 +216,7 @@
   }
 
   &.is-style-dropdown .wpbs-nav-menu-container {
-    @apply flex;
+    flex-wrap: wrap;
 
     & > li > .sub-menu.offset-right {
       right: 0;

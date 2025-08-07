@@ -50,7 +50,12 @@
       "padding": true,
       "margin": true
     },
-    "__experimentalBorder": true,
+    "border": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
     "typography": {
       "__experimentalFontFamily": true,
       "__experimentalFontWeight": true,

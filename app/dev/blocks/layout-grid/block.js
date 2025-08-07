@@ -56,7 +56,7 @@ registerBlockType(metadata.name, {
 
             const newSettings = cleanObject({
                 uniqueId: uniqueId,
-                loop: attributes?.className.includes('is-style-loop'),
+                loop: !!(attributes?.className ?? '').includes('is-style-loop'),
                 button: {
                     label: attributes?.['wpbs-query']?.pagination_label,
                     enabled: !!attributes?.['wpbs-query']?.posts_per_page,

@@ -12,7 +12,7 @@
     "border": ".wpbs-cta-button > .wpbs-cta-button__link",
     "color": ".wpbs-cta-button > .wpbs-cta-button__link",
     "spacing": ".wpbs-cta-button > .wpbs-cta-button__link",
-    "typography": ".wpbs-cta-button",
+    "typography": ".wpbs-cta-button > .wpbs-cta-button__link",
     "dimensions": ".wpbs-cta-button > .wpbs-cta-button__link"
   },
   "styles": [
@@ -46,7 +46,7 @@
     "shadow": true,
     "color": {
       "background": true,
-      "text": false,
+      "text": true,
       "link": true,
       "gradients": true
     },

@@ -752,9 +752,6 @@
                   "border": {
                     "color": "var:preset|color|primary"
                   }
-                },
-                "typography": {
-                  "textTransform": "uppercase"
                 }
               }
             }

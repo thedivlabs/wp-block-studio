@@ -62,7 +62,7 @@ registerBlockType(metadata.name, {
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...ELEMENT_TAG_ATTRIBUTES,
-        'wpbs-layout-elemen': {
+        'wpbs-layout-element': {
             type: 'object'
         }
     },

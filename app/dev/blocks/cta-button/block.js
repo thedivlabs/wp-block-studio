@@ -156,6 +156,7 @@ registerBlockType(metadata.name, {
             [POPUP_QUERY]
         ) || [];
 
+
         const popupOptions = useMemo(() => {
             return [
                 {label: 'Select', value: ''},
@@ -180,7 +181,7 @@ registerBlockType(metadata.name, {
                     />
                 </Grid>
             </Grid>
-        ), [settings]);
+        ), [settings, popups]);
 
         const tabIcon = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>

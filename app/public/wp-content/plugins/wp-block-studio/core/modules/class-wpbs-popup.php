@@ -50,7 +50,6 @@ class WPBS_Popup {
 
 	public function parse_template(): void {
 
-
 		if (
 			self::$enabled &&
 			is_array( $this->current ?? false )
@@ -96,8 +95,8 @@ class WPBS_Popup {
 
 	public function define_vars(): void {
 
-		$this->settings = WPBS::clean_array( get_field( 'popup_options', 'option' ) );
-		self::$enabled  = ! empty( $this->settings['general']['enabled'] );
+		$this->settings = [];
+		self::$enabled  = true;
 	}
 
 	public function set_current(): void {

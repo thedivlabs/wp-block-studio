@@ -9,10 +9,10 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {BACKGROUND_ATTRIBUTES, BackgroundControls, BackgroundElement} from "Components/Background"
 import {ElementTagSettings, ElementTag, ELEMENT_TAG_ATTRIBUTES} from "Components/ElementTag";
 import {
-    __experimentalGrid as Grid,
+    __experimentalGrid as Grid, ToggleControl,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import React from "react";
+import React, {useCallback} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useUniqueId} from "Includes/helper";
 
@@ -20,8 +20,11 @@ const selector = 'wpbs-layout-element';
 
 const classNames = (attributes = {}) => {
 
+    const {'wpbs-layout-element': settings} = attributes;
+
     return [
-        selector + ' w-full block relative wpbs-container wpbs-has-container',
+        selector + ' w-full block relative wpbs-container',
+        !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -30,7 +33,11 @@ function RenderContent({attributes, blockProps, innerBlocksProps, editor = false
 
     const ElementTagName = ElementTag(attributes);
 
-    if (!!attributes['wpbs-background']?.type) {
+    const {'wpbs-layout-element': settings} = attributes;
+
+    const hasContainer = !!settings?.container || !!attributes?.['wpbs-background']?.type;
+
+    if (hasContainer) {
         return (
             <ElementTagName {...blockProps}>
                 <div {...innerBlocksProps} />
@@ -55,6 +62,9 @@ registerBlockType(metadata.name, {
         ...BACKGROUND_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...ELEMENT_TAG_ATTRIBUTES,
+        'wpbs-layout-elemen': {
+            type: 'object'
+        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -70,6 +80,16 @@ registerBlockType(metadata.name, {
             ? useInnerBlocksProps({className: selector + '__container wpbs-layout-wrapper wpbs-container w-full h-full relative z-20'}, {})
             : useInnerBlocksProps(blockProps, {});
 
+        const updateSettings = useCallback((newValue) => {
+
+            const result = {
+                ...(attributes?.['wpbs-layout-element'] ?? {}),
+                ...newValue,
+            }
+
+            setAttributes({'wpbs-layout-element': result});
+
+        }, [attributes, setAttributes])
 
         return (
             <>
@@ -80,6 +100,12 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
                         <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
+                        <ToggleControl
+                            __nextHasNoMarginBottom
+                            label="Container"
+                            checked={!!attributes?.['wpbs-layout-element']?.container}
+                            onChange={(newValue) => updateSettings({container: newValue})}
+                        />
                     </Grid>
                 </InspectorControls>
                 <RenderContent

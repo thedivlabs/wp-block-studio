@@ -34,11 +34,11 @@
   line-height: inherit;
 
   p:not(p + p) {
-    margin-top: 0;
+    margin-top: 0 !important;
   }
 
   p {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
 
 }

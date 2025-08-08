@@ -44,41 +44,34 @@ class WPBS_Popup {
 
 		add_action( 'wp_footer', [ $this, 'output_container' ], 10 );
 
-		add_action( 'wp_head', [ $this, 'parse_template' ], 5 );
+		add_action( 'wp_head', [ $this, 'parse_template' ], 1 );
 
 	}
 
 	public function parse_template(): void {
 
-		if (
-			self::$enabled &&
-			is_array( $this->current ?? false )
-		) {
+		foreach ( $this->current ?? [] as $popup ) {
 
-			foreach ( $this->current ?? [] as $popup ) {
-				if ( ! is_a( $popup, 'WPBS_Popup_Single' ) ) {
-					continue;
-				}
-
-				$id         = "wpbs-popup-$popup->id";
-				$class_slug = sanitize_title( get_the_title( $popup->id ) );
-				$class      = "wpbs-popup wpbs-popup--$class_slug max-w-full m-auto w-auto flex justify-center items-center";
-
-				$content = get_the_content( null, null, $popup->id );
-				//$content = apply_filters( 'the_content', $content );
-				//$content = str_replace( ']]>', ']]&gt;', $content );
-				$blocks = do_blocks( $content );
-
-				add_action( 'wpbs_popup_content', function () use ( $blocks, $popup, $class, $id ) {
-					echo "<div id='$id' data-id='$popup->id' class='$class'>";
-
-					echo $blocks;
-
-					echo '</div>';
-				} );
+			if ( ! is_a( $popup, 'WPBS_Popup_Single' ) ) {
+				continue;
 			}
 
+			$id         = "wpbs-popup-$popup->id";
+			$class_slug = sanitize_title( get_the_title( $popup->id ) );
+			$class      = "wpbs-popup wpbs-popup--$class_slug max-w-full m-auto w-auto flex justify-center items-center";
 
+			$content = get_the_content( null, null, $popup->id );
+			//$content = apply_filters( 'the_content', $content );
+			//$content = str_replace( ']]>', ']]&gt;', $content );
+			$blocks = do_blocks( $content );
+
+			add_action( 'wpbs_popup_content', function () use ( $blocks, $popup, $class, $id ) {
+				echo "<div id='$id' data-id='$popup->id' class='$class'>";
+
+				echo $blocks;
+
+				echo '</div>';
+			} );
 		}
 
 	}
@@ -247,17 +240,19 @@ class WPBS_Popup_Single {
 
 		$this->id = is_a( $post, 'WP_Post' ) ? $post->ID : (int) $post;
 
-		$this->type             = WPBS::get_transient( 'wpbs_general_type', 'popup', $this->id ) ?: 'sitewide';
-		$this->trigger          = WPBS::get_transient( 'wpbs_general_trigger', 'popup', $this->id ) ?: 'cta';
-		$this->click_selector   = WPBS::get_transient( 'wpbs_general_click_selector', 'popup', $this->id ) ?: false;
-		$this->pages            = WPBS::get_transient( 'wpbs_general_pages', 'popup', $this->id ) ?: [];
-		$this->frequency        = WPBS::get_transient( 'wpbs_general_frequency', 'popup', $this->id ) ?: false;
-		$this->target           = WPBS::get_transient( 'wpbs_general_target', 'popup', $this->id ) ?: 'all';
-		$this->utm_parameter    = WPBS::get_transient( 'wpbs_general_utm_parameter', 'popup', $this->id ) ?: false;
-		$this->utm_value        = WPBS::get_transient( 'wpbs_general_utm_value', 'popup', $this->id ) ?: false;
-		$this->enabled          = ! empty( WPBS::get_transient( 'wpbs_options_enabled', 'popup', $this->id ) );
-		$this->delay            = WPBS::get_transient( 'wpbs_options_delay', 'popup', $this->id ) ?: 0;
-		$this->background_color = WPBS::get_transient( 'wpbs_options_background_color', 'popup', $this->id ) ?: false;
+		$fields = WPBS::get_transient( 'wpbs', 'popup', $this->id );
+
+		$this->type             = $fields['type'] ?? 'sitewide';
+		$this->trigger          = $fields['trigger'] ?? 'cta';
+		$this->click_selector   = $fields['click_selector'] ?? false;
+		$this->pages            = $fields['pages'] ?? [];
+		$this->frequency        = $fields['frequency'] ?? false;
+		$this->target           = $fields['target'] ?? 'all';
+		$this->utm_parameter    = $fields['utm_parameter'] ?? false;
+		$this->utm_value        = $fields['utm_value'] ?? false;
+		$this->enabled          = ! empty( $fields['enabled'] );
+		$this->delay            = $fields['delay'] ?? 0;
+		$this->background_color = $fields['background_color'] ?? false;
 		$this->cta              = $this->type === 'cta';
 
 	}

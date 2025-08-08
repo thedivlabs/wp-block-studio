@@ -17,10 +17,13 @@ package-lock.json
 
 !app/public/
 !app/public/wp-content/
+!app/public/wp-content/plugins/
 !app/public/wp-content/themes/
 
 !app/public/wp-content/themes/wp-block-studio/
-!app/public/wp-content/themes/wp-block-studio/**
-app/public/wp-content/themes/wp-block-studio/build
-app/public/wp-content/themes/wp-block-studio/build/**
-app/public/wp-content/themes/wp-block-studio/**/*.min.*
+!app/public/wp-content/themes/wp-block-studio/theme.json
+!app/public/wp-content/plugins/wp-block-studio/
+!app/public/wp-content/plugins/wp-block-studio/**
+app/public/wp-content/plugins/wp-block-studio/build
+app/public/wp-content/plugins/wp-block-studio/build/**
+app/public/wp-content/plugins/wp-block-studio/**/*.min.*

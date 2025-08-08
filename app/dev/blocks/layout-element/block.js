@@ -23,8 +23,8 @@ const classNames = (attributes = {}) => {
     const {'wpbs-layout-element': settings} = attributes;
 
     return [
-        selector + ' w-full block relative wpbs-container',
-        !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : null,
+        selector + ' w-full block relative',
+        !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : 'wpbs-container',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

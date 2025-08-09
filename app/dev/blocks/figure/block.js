@@ -171,7 +171,8 @@ registerBlockType(metadata.name, {
         }, [setAttributes, attributes['wpbs-figure']])
 
         const blockProps = useBlockProps({
-            className: blockClasses(attributes)
+            className: blockClasses(attributes),
+            ...attributes?.['wpbs-props']
         });
 
         return <>

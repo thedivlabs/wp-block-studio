@@ -16,6 +16,8 @@ if ( ! empty( $settings['contain'] ) ) {
 	$style .= 'object-fit:cover;';
 }
 
+//WPBS::console_log( $attributes );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-figure h-full',
@@ -23,6 +25,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	] ) ),
 	'data-wp-interactive' => 'wpbs',
 	'data-wp-init'        => 'callbacks.observe',
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 $bp_key = ! empty( $attributes['wpbs-breakpoint']['large'] ) ? $attributes['wpbs-breakpoint']['large'] : 'normal';

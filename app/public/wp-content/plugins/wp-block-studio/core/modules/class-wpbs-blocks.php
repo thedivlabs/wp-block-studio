@@ -125,6 +125,10 @@ class WPBS_Blocks {
 					'type'         => 'object',
 					'show_in_rest' => true,
 				],
+				'wpbs-props'   => [
+					'type'         => 'object',
+					'show_in_rest' => true,
+				],
 			];
 
 			$block_object['attributes'] = array_merge(

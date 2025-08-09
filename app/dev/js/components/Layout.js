@@ -54,6 +54,7 @@ const LAYOUT_PROPS = {
     special: [
         'align-header',
         'reveal',
+        'reveal-duration',
         'transition',
         'breakpoint',
         'mask-image',
@@ -506,12 +507,6 @@ export function layoutCss(attributes, selector) {
             css += '--container-width: ' + container + ';';
         }
 
-        if (settings?.['reveal']) {
-            css += '--reveal: ' + settings?.['reveal'] + ';';
-            css += '--reveal-duration: ' + (settings?.['reveal-duration'] ?? 500) + ';';
-
-        }
-
         css += '}';
     }
 
@@ -536,6 +531,19 @@ export function layoutCss(attributes, selector) {
     }
 
     return css.trim();
+
+}
+
+function getProps(settings) {
+
+    const result = {};
+
+    if (!!settings?.reveal) {
+        result['data-aos'] = settings?.reveal;
+        result['data-aos-duration'] = settings?.['reveal-duration'];
+    }
+
+    return result;
 
 }
 
@@ -564,8 +572,16 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             ...newValue,
         }
 
+        const props = {
+            ...(attributes?.['wpbs-props'] ?? {}),
+            ...getProps(result)
+        }
+
+        console.log(props);
+
         setAttributes(Object.fromEntries(Object.entries({
             'wpbs-layout': result,
+            'wpbs-props': props,
             'wpbs-breakpoint': Object.fromEntries(Object.entries({
                 ...(attributes?.['wpbs-breakpoint'] ?? {}),
                 ...{

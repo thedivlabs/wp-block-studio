@@ -4,6 +4,7 @@ import Popup from './modules/popup'
 import Lightbox from './modules/Lightbox'
 import Video from './modules/video'
 import Slider from './modules/slider'
+import Reveal from './modules/reveal'
 
 
 class WPBS_Theme {
@@ -15,6 +16,7 @@ class WPBS_Theme {
     static lightbox;
     static video;
     static slider;
+    static reveal;
 
     constructor() {
 
@@ -24,6 +26,7 @@ class WPBS_Theme {
         this.lightbox = Lightbox;
         this.video = Video;
         this.slider = Slider;
+        this.reveal = Reveal;
 
         this.settings = window.wpbsData ?? {};
         this.modals.init();

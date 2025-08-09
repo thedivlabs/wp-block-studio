@@ -1104,6 +1104,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label={'Duration'}
                                 value={settings?.['reveal-duration']}
                                 min={0}
+                                step={50}
                                 onChange={(newValue) => updateProp({'reveal-duration': newValue})}
                                 __next40pxDefaultSize
                             />

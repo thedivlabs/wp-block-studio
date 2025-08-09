@@ -1067,16 +1067,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             <SelectControl
                                 __nextHasNoMarginBottom
                                 options={[
+                                    {label: 'Select', value: ''},
                                     {label: 'Fade', value: 'fade'},
                                     {label: 'Fade Up', value: 'fade-up'},
                                     {label: 'Fade Down', value: 'fade-down'},
                                     {label: 'Fade Left', value: 'fade-left'},
                                     {label: 'Fade Right', value: 'fade-right'},
-                                    {label: 'Flip Up', value: 'flip-up'},
-                                    {label: 'Flip Down', value: 'flip-down'},
-                                    {label: 'Zoom In', value: 'zoom-in'},
-                                    {label: 'Zoom In Up', value: 'zoom-in-up'},
-                                    {label: 'Zoom In Down', value: 'zoom-in-down'},
                                 ]}
                                 __next40pxDefaultSize
                                 label="Animation"

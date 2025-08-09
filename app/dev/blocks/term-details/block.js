@@ -35,6 +35,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: blockClassNames(props.attributes),
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
 

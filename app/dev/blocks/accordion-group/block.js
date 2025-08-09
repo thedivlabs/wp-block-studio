@@ -326,6 +326,7 @@ registerBlockType(metadata.name, {
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/accordion-group',
             'data-wp-init': 'actions.init',
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

@@ -23,6 +23,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-title'    => $media['title'] ?? null,
 	'data-vid'      => $video_id,
 	'data-platform' => $media['platform'] ?? null,
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 $media_class = implode( ' ', array_filter( [

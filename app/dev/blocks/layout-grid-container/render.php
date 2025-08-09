@@ -21,7 +21,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-layout-grid-container loop-container w-full flex flex-wrap relative z-20 relative',
 		( $loop->is_last ?? false ) ? '--last-page' : null,
 		$attributes['uniqueId'] ?? null
-	] ) )
+	] ) ),
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 

@@ -131,7 +131,8 @@ registerBlockType(metadata.name, {
             'data-wp-init': 'callbacks.observeSlider',
             'data-wp-context': JSON.stringify({
                 args: props.attributes?.['wpbs-swiper-args'] ?? {},
-            })
+            }),
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

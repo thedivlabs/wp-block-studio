@@ -59,7 +59,8 @@ registerBlockType(metadata.name, {
     save: (props) => {
 
         const blockProps = useBlockProps.save({
-            className: blockClassNames(props.attributes)
+            className: blockClassNames(props.attributes),
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const label = props.attributes?.['wpbs-pagination-button']?.label ?? 'View More';

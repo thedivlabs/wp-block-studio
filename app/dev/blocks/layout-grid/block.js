@@ -150,7 +150,8 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             'data-wp-interactive': 'wpbs/layout-grid',
-            'data-wp-init': 'actions.init'
+            'data-wp-init': 'actions.init',
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         return (

@@ -175,6 +175,7 @@ registerBlockType(metadata.name, {
             className: blockClassnames(props.attributes),
             'data-wp-interactive': 'wpbs/media-gallery',
             'data-wp-init': 'actions.init',
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const innerBlocksProps = useInnerBlocksProps.save(blockProps);

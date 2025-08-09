@@ -12,7 +12,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-slider-wrapper swiper-wrapper !flex !items-stretch grow min-w-full',
 		$attributes['uniqueId'] ?? null
-	] ) )
+	] ) ),
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 ?>

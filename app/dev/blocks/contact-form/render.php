@@ -20,7 +20,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		$attributes['uniqueId'] ?? '',
 	] ) ),
 	'data-wp-interactive' => 'wpbs/contact-form',
-	'data-wp-init'        => 'actions.init'
+	'data-wp-init'        => 'actions.init',
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 ?>

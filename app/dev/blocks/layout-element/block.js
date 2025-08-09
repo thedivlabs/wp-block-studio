@@ -73,7 +73,7 @@ registerBlockType(metadata.name, {
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
-            className: [classNames(attributes), 'empty:min-h-8'].join(' '),
+            className: [classNames(attributes), 'empty:min-h-8'].join(' ')
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']?.type || !!attributes['wpbs-layout-element']?.container
@@ -124,6 +124,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(attributes),
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const innerBlocksProps = !!props.attributes['wpbs-background']

@@ -11,6 +11,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-context'     => json_encode( array_filter( [
 		'index' => intval( $index ?? 0 ),
 	] ) ),
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 $is_link = ! empty( $attributes['wpbs-layout-grid-card']['linkPost']['enabled'] );

@@ -124,6 +124,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         return <nav {...blockProps} role={'tablist'}>

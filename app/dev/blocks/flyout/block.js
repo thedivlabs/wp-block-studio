@@ -41,7 +41,7 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
-        
+
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-flyout': settings = {}} = attributes;
@@ -182,6 +182,7 @@ registerBlockType(metadata.name, {
             'data-wp-on--click': 'actions.toggle',
             'data-wp-class--active': 'state.active',
             'data-wp-state': 'active',
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const innerBlocksProps = useInnerBlocksProps.save({

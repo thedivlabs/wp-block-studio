@@ -63,7 +63,8 @@ $classes = array_filter( [
 ] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( $classes ) )
+	'class' => implode( ' ', array_filter( $classes ) ),
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 ?>

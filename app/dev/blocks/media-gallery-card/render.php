@@ -22,6 +22,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-index' => $index,
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $media_id, $gallery ) {

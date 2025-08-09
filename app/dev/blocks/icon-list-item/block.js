@@ -32,6 +32,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: 'wpbs-list-item',
+            ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         return <li {...useInnerBlocksProps.save(blockProps)}></li>;

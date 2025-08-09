@@ -9,6 +9,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-has-container swiper-slide w-full flex flex-col shrink-0 relative',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
+	...( $attributes['wpbs-props'] ?? [] ),
 	'data-index' => intval( $block->context['index'] ?? null ) ?: null
 ] );
 

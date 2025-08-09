@@ -16,7 +16,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['fade'] ) ? '--fade' : null,
 	] ) ),
 	'data-wp-interactive' => 'wpbs/nav-menu',
-	'data-wp-init'        => 'actions.init'
+	'data-wp-init'        => 'actions.init',
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 $menu_class = implode( ' ', array_filter( [

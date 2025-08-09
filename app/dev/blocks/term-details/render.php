@@ -30,7 +30,8 @@ if ( empty( $content ) ) {
 ?>
 
 <div <?= get_block_wrapper_attributes( [
-	'class' => 'wpbs-term-details'
+	'class' => 'wpbs-term-details',
+	...( $attributes['wpbs-props'] ?? [] )
 ] ) ?>>
 	<?= $content ?>
 </div>

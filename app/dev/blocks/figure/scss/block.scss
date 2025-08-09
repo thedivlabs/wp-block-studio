@@ -25,6 +25,10 @@
   border-radius: inherit;
   object-fit: inherit;
   position: relative; /* needed for ::before overlay */
+
+  img {
+    object-position: var(--origin, center);
+  }
 }
 
 /* Overlay layer inside media */

@@ -370,6 +370,7 @@ registerBlockType(metadata.name, {
                    props={{
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,
+                       '--origin': attributes['wpbs-figure']?.origin ?? null,
                    }}
                    preload={preloadMedia}
             />

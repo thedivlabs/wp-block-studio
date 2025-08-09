@@ -531,39 +531,6 @@ export function layoutCss(attributes, selector) {
 
 }
 
-function getLayoutClassNames(settings) {
-
-    const result = [];
-
-    if (settings?.position === 'sticky-dynamic') {
-        result.push('sticky-dynamic');
-    }
-
-    return result.join(' ');
-
-}
-
-export function LayoutElement({blockProps, attributes, children, tagName = 'div'}) {
-
-    const {className, ...rest} = blockProps;
-
-    const {'wpbs-layout': settings = {}} = attributes;
-
-    const Tag = tagName;
-
-    const layoutClassNames = useMemo(() => {
-        return getLayoutClassNames(settings);
-    }, [settings]);
-
-    return <Tag
-        {...rest}
-        className={`${className} ${layoutClassNames}`.trim()}
-    >
-        {children}
-    </Tag>;
-
-}
-
 export function LayoutControls({attributes = {}, setAttributes}) {
 
     const [settings, setSettings] = useState(() => attributes['wpbs-layout'] || {});

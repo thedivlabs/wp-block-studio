@@ -8,7 +8,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls, LayoutElement} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useEffect} from "react";
@@ -58,7 +58,10 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        selector={'wpbs-media-gallery-card'}/>
 
-                <div {...blockProps}></div>
+                <LayoutElement
+                    blockProps={blockProps}
+                    attributes={attributes}
+                />
 
             </>
         )

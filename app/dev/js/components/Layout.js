@@ -531,6 +531,39 @@ export function layoutCss(attributes, selector) {
 
 }
 
+function getLayoutClassNames(settings) {
+
+    const result = [];
+
+    if (settings?.position === 'sticky-dynamic') {
+        result.push('sticky-dynamic');
+    }
+
+    return result.join(' ');
+
+}
+
+export function LayoutElement({blockProps, attributes, children, tagName = 'div'}) {
+
+    const {className, ...rest} = blockProps;
+
+    const {'wpbs-layout': settings = {}} = attributes;
+
+    const Tag = tagName;
+
+    const layoutClassNames = useMemo(() => {
+        return getLayoutClassNames(settings);
+    }, [settings]);
+
+    return <Tag
+        {...rest}
+        className={`${className} ${layoutClassNames}`.trim()}
+    >
+        {children}
+    </Tag>;
+
+}
+
 export function LayoutControls({attributes = {}, setAttributes}) {
 
     const [settings, setSettings] = useState(() => attributes['wpbs-layout'] || {});
@@ -541,12 +574,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     const resetAll_layout = useCallback(() => updateProp({
         ...attributes?.['wpbs-layout'] || {},
-        ...Object.keys(LAYOUT_PROPS.layout).reduce((o, key) => ({...o, [key]: undefined}), {})
+        ...Object.keys(LAYOUT_PROPS.layout).reduce((o, key) => ({...o, [key]: ''}), {})
     }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const resetAll_mobile = useCallback(() => updateProp({
         ...attributes?.['wpbs-layout'] || {},
-        ...Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: undefined}), {})
+        ...Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: ''}), {})
     }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const updateProp = useCallback((newValue) => {

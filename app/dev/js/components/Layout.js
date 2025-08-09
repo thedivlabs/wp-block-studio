@@ -53,6 +53,7 @@ export const LAYOUT_ATTRIBUTES = {
 const LAYOUT_PROPS = {
     special: [
         'align-header',
+        'reveal',
         'transition',
         'breakpoint',
         'mask-image',
@@ -89,6 +90,7 @@ const LAYOUT_PROPS = {
         'container-mobile',
     ],
     layout: [
+        'reveal',
         'offset-header',
         'align-header',
         'display',
@@ -1026,7 +1028,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         style={{gridColumn: 'span 1'}}
                         hasValue={() => !!settings?.['duration']}
                         label={'Duration'}
-                        onDeselect={() => updateProp({['duration']: ''})}
+                        onDeselect={() => updateProp({'duration': ''})}
                     >
 
                         <UnitControl
@@ -1046,6 +1048,50 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 }
                             ]}
                         />
+
+
+                    </ToolsPanelItem>
+                    <ToolsPanelItem
+                        style={{gridColumn: 'span 2'}}
+                        hasValue={() => !!settings?.['reveal']}
+                        label={'Reveal'}
+                        onDeselect={() => updateProp({'reveal': ''})}
+                    >
+                        <Grid columns={2} columnGap={15}>
+                            <SelectControl
+                                __nextHasNoMarginBottom
+                                options={[
+                                    {label: 'Fade', value: 'fade'},
+                                    {label: 'Fade Up', value: 'fade-up'},
+                                    {label: 'Fade Down', value: 'fade-down'},
+                                    {label: 'Fade Left', value: 'fade-left'},
+                                    {label: 'Fade Right', value: 'fade-right'},
+                                    {label: 'Flip Up', value: 'flip-up'},
+                                    {label: 'Flip Down', value: 'flip-down'},
+                                    {label: 'Zoom In', value: 'zoom-in'},
+                                    {label: 'Zoom In Up', value: 'zoom-in-up'},
+                                    {label: 'Zoom In Down', value: 'zoom-in-down'},
+                                ]}
+                                __next40pxDefaultSize
+                                label="Animation"
+                                value={settings?.['reveal']}
+                                onChange={(newValue) => updateProp({'reveal': newValue})}
+
+                            />
+
+                            <UnitControl
+                                label={'Duration'}
+                                value={settings?.['reveal-duration']}
+                                units={[
+                                    {value: 'ms', label: 'ms', default: 0, min: 100, step: 50, shiftStep: 500},
+                                    {value: 's', label: 's', default: 0, min: .1, step: .1, shiftStep: .5},
+                                ]}
+                                isResetValueOnUnitChange={true}
+                                onChange={(newValue) => updateProp({'reveal-duration': newValue})}
+                                __next40pxDefaultSize
+                            />
+
+                        </Grid>
 
 
                     </ToolsPanelItem>

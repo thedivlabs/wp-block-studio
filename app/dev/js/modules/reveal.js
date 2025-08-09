@@ -20,7 +20,6 @@ export default class Reveal {
             if (typeof AOS !== 'undefined') {
                 AOS.init({
                     offset: 0,
-                    duration: 1200,
                     once: true,
                 });
             }

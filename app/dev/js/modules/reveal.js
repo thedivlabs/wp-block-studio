@@ -19,7 +19,7 @@ export default class Reveal {
         script.onload = () => {
             if (typeof AOS !== 'undefined') {
                 AOS.init({
-                    offset: -100,
+                    offset: 100,
                     duration: 1200,
                     once: true,
                 });

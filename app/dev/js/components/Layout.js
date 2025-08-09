@@ -13,7 +13,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl, BaseControl, FormTokenField, PanelBody,
     RangeControl,
-    SelectControl,
+    SelectControl, ToggleControl,
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -52,6 +52,7 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'align-header',
         'transition',
         'breakpoint',
         'mask-image',
@@ -89,6 +90,7 @@ const LAYOUT_PROPS = {
     ],
     layout: [
         'offset-header',
+        'align-header',
         'display',
         'mask-image',
         'mask-origin',
@@ -384,6 +386,9 @@ function parseSpecial(prop, attributes) {
             break;
         case 'offset-header':
             result = {'padding-top': 'calc(' + getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px') + ' + var(--wpbs-header-height, 0px)) !important'}
+            break;
+        case 'align-header':
+            result = {'top': 'var(--wpbs-header-height, auto)'}
             break;
     }
 
@@ -883,6 +888,13 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label="Left"
                                 value={settings?.['left']}
                                 callback={(newValue) => updateProp({'left': newValue})}
+                            />
+
+                            <ToggleControl
+                                __nextHasNoMarginBottom
+                                label="Align with Header"
+                                checked={!!settings?.['align-header']}
+                                onChange={(newValue) => updateProp({'align-header': newValue})}
                             />
 
                         </Grid>

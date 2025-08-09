@@ -46,6 +46,20 @@ class WPBS {
 		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
 		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
 
+		add_filter( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 30 );
+
+	}
+
+	public function remove_default_image_sizes( $sizes ): array {
+		
+		foreach ( $sizes as $k => $size ) {
+
+			if ( ! in_array( $size, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] ) ) {
+				unset( $sizes[ $k ] );
+			}
+		}
+
+		return $sizes;
 	}
 
 

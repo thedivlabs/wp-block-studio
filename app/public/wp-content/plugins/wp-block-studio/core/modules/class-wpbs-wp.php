@@ -8,7 +8,7 @@ class WPBS_WP {
 
 		$this->image_sizes();
 
-		add_action( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 100 );
+
 		add_filter( 'nav_menu_link_attributes', [ $this, 'menu_item_icon' ], 10, 4 );
 		add_filter( 'walker_nav_menu_start_el', [ $this, 'menu_item_span' ], 10, 4 );
 
@@ -93,16 +93,6 @@ class WPBS_WP {
 		} );
 	}
 
-	public function remove_default_image_sizes( $sizes ): array {
-
-		foreach ( $sizes as $k => $size ) {
-			if ( ! in_array( $size, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] ) ) {
-				unset( $sizes[ $k ] );
-			}
-		}
-
-		return $sizes;
-	}
 
 	public function image_sizes(): void {
 
@@ -122,6 +112,7 @@ class WPBS_WP {
 		add_image_size( 'small', 640 );
 		add_image_size( 'medium', 1130 );
 		add_image_size( 'mobile', 624, 1200 );
+
 
 	}
 

@@ -48,7 +48,12 @@ class WPBS {
 
 	}
 
+
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
+
+		if ( is_admin() ) {
+			return $html;
+		}
 
 		if ( ( $attr['loading'] ?? false ) == 'eager' ) {
 			return $html;

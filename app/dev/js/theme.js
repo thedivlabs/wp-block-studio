@@ -34,6 +34,7 @@ class WPBS_Theme {
         this.lightbox.init();
         this.video.init();
         this.slider.init();
+        this.reveal.init();
 
         this.init();
 

@@ -1,3 +1,9 @@
+/* AOS */
+[data-aos]:not(.aos-init) {
+  opacity: 0;
+}
+
+
 /* Shared layout rules */
 .wpbs-layout-container.wpbs-has-container > .container,
 .wpbs-layout-wrapper {

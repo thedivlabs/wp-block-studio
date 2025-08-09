@@ -506,6 +506,12 @@ export function layoutCss(attributes, selector) {
             css += '--container-width: ' + container + ';';
         }
 
+        if (settings?.['reveal']) {
+            css += '--reveal: ' + settings?.['reveal'] + ';';
+            css += '--reveal-duration: ' + (settings?.['reveal-duration'] ?? 500) + ';';
+
+        }
+
         css += '}';
     }
 

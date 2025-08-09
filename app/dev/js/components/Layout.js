@@ -354,7 +354,7 @@ function parseSpecial(prop, attributes) {
         case 'transition':
             result = {
                 'transition-property': value.join(', '),
-                'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300ms',
+                'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300',
             }
             break;
         case 'text-color':
@@ -1100,15 +1100,10 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
                             />
 
-                            <UnitControl
+                            <NumberControl
                                 label={'Duration'}
                                 value={settings?.['reveal-duration']}
-                                units={[
-                                    {value: 'ms', label: 'ms', default: 300, step: 50},
-                                    {value: 's', label: 's', default: .3, step: .1},
-                                ]}
                                 min={0}
-                                isResetValueOnUnitChange={true}
                                 onChange={(newValue) => updateProp({'reveal-duration': newValue})}
                                 __next40pxDefaultSize
                             />

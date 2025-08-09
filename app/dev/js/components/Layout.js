@@ -1083,9 +1083,10 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label={'Duration'}
                                 value={settings?.['reveal-duration']}
                                 units={[
-                                    {value: 'ms', label: 'ms', default: 0, min: 100, step: 50, shiftStep: 500},
-                                    {value: 's', label: 's', default: 0, min: .1, step: .1, shiftStep: .5},
+                                    {value: 'ms', label: 'ms', default: 300, step: 50},
+                                    {value: 's', label: 's', default: .3, step: .1},
                                 ]}
+                                min={0}
                                 isResetValueOnUnitChange={true}
                                 onChange={(newValue) => updateProp({'reveal-duration': newValue})}
                                 __next40pxDefaultSize

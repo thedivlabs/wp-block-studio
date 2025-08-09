@@ -541,12 +541,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     const resetAll_layout = useCallback(() => updateProp({
         ...attributes?.['wpbs-layout'] || {},
-        ...Object.keys(LAYOUT_PROPS.layout).reduce((o, key) => ({...o, [key]: ''}), {})
+        ...Object.keys(LAYOUT_PROPS.layout).reduce((o, key) => ({...o, [key]: undefined}), {})
     }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const resetAll_mobile = useCallback(() => updateProp({
         ...attributes?.['wpbs-layout'] || {},
-        ...Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: ''}), {})
+        ...Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: undefined}), {})
     }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const updateProp = useCallback((newValue) => {

@@ -128,6 +128,7 @@ class WPBS_Blocks {
 				'wpbs-props'   => [
 					'type'         => 'object',
 					'show_in_rest' => true,
+					'default'      => (object) [],
 				],
 			];
 

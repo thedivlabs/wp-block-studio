@@ -47,6 +47,9 @@ export const LAYOUT_ATTRIBUTES = {
             mobile: 'small',
             large: 'normal'
         }
+    },
+    'wpbs-props': {
+        type: 'object',
     }
 };
 

@@ -16,7 +16,7 @@ if ( ! empty( $settings['contain'] ) ) {
 	$style .= 'object-fit:cover;';
 }
 
-//WPBS::console_log( $attributes );
+WPBS::console_log( $attributes );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [

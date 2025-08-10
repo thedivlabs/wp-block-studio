@@ -42,6 +42,9 @@ export class WPBS_Google_Places {
             return false;
         }
 
+        const post_id = document.getElementById('post_ID')?.value;
+
+        this.endpoint.searchParams.set('post_id', post_id);
         this.endpoint.searchParams.set('place_id', place_id);
         this.endpoint.searchParams.set('token', WPBS.settings?.places?.token);
 

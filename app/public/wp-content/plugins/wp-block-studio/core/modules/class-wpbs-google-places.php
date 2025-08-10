@@ -180,7 +180,8 @@ class WPBS_Google_Places {
 				}
 
 				return false;
-			}, $response['address_components'] ?? [] ) ) )
+			}, $response['address_components'] ?? [] ) ) ),
+			'reviews'        => $response['reviews'] ?? [],
 		] );
 
 
@@ -220,7 +221,7 @@ class WPBS_Google_Places {
 				$date = date( 'Y-m-d H:i:s', $review['time'] ?? '' );
 
 				wp_insert_comment( [
-					'comment_post_ID'    => $_GET['post_id'],
+					'comment_post_ID'    => intval( $_GET['post_id'] ),
 					'comment_author'     => $review['author_name'],
 					'comment_author_url' => $review['author_url'],
 					'comment_content'    => $review['text'],

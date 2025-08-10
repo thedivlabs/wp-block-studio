@@ -1,0 +1,45 @@
+{
+  "name": "wpbs/odometer",
+  "title": "Odometer",
+  "description": "Display an odometer animation",
+  "selectors": {
+    "root": ".wpbs-odometer"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "supports": {
+    "layout": false,
+    "interactivity": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "icon": "format-gallery"
+}
+
+

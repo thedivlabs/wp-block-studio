@@ -1,148 +1,36 @@
 /* CONTAINER */
 
-$form_align: var(--wp--custom--form--default--container--align, inherit);
-$form_gap_row: var(--wp--custom--form--default--container--gap--row, 1rem);
-$form_gap_col: var(--wp--custom--form--default--container--gap--col, 1rem);
-$form_gap_wrapper: var(--wp--custom--form--default--container--gap--wrapper, 1rem);
-
-
 /* LABEL */
-$label_text_transform: var(--wp--custom--form--default--label--text-transform, inherit);
-$label_font_size: var(--wp--custom--form--default--label--font-size, inherit);
-$label_color: var(--wp--custom--form--default--label--color, inherit);
-$label_weight: var(--wp--custom--form--default--label--weight, inherit);
-$label_gap: var(--wp--custom--form--default--label--gap, .2rem);
-
 
 /* INPUT */
-$input_padding: var(--wp--custom--form--default--input--padding, .2rem .5rem);
-$input_font_size: var(--wp--custom--form--default--input--font-size, inherit);
-$input_height: var(--wp--custom--form--default--input--height, 2.5rem);
-$input_color_background: var(--wp--custom--form--default--input--color--background, white);
-$input_color_text: var(--wp--custom--form--default--input--color--text, inherit);
-$input_color_placeholder: var(--wp--custom--form--default--input--color--placeholder, gray);
-$input_border_color: var(--wp--custom--form--default--input--border--color, transparent);
-$input_border_width: var(--wp--custom--form--default--input--border--width, 1px);
-$input_border_radius: var(--wp--custom--form--default--input--border--radius, 0);
-$input_border_style: var(--wp--custom--form--default--input--border--style, solid);
 
 /* INPUT FOCUS */
-$input_focus_color_background: var(--wp--custom--form--default--input--focus--color--background, $input_color_background);
-$input_focus_border_color: var(--wp--custom--form--default--input--focus--border--color, $input_border_color);
 
 /* INPUT ERROR */
-$input_error_color_background: var(--wp--custom--form--default--input--error--color--background, $input_color_background);
-$input_error_color_text: var(--wp--custom--form--default--input--error--color--text, $input_color_text);
-$input_error_color_placeholder: var(--wp--custom--form--default--input--error--color--placeholder, $input_color_placeholder);
-$input_error_border_color: var(--wp--custom--form--default--input--error--border--color, darkred);
 
 /* CHECKBOX */
-$checkbox_icon: var(--wp--custom--form--default--checkbox--icon);
-$checkbox_color_background: var(--wp--custom--form--default--checkbox--color--background, $input_color_background);
-$checkbox_color_text: var(--wp--custom--form--default--checkbox--color--text, $input_color_text);
-$checkbox_height: var(--wp--custom--form--default--checkbox--height, $input_height);
-$checkbox_border_width: var(--wp--custom--form--default--checkbox--border--width, $input_border_width);
-$checkbox_border_color: var(--wp--custom--form--default--checkbox--border--color, $input_border_color);
-$checkbox_border_style: var(--wp--custom--form--default--checkbox--border--style, $input_border_style);
-$checkbox_border_radius: var(--wp--custom--form--default--checkbox--border--radius, $input_border_radius);
 
 /* CHECKBOX ACTIVE */
-$checkbox_active_icon: var(--wp--custom--form--default--checkbox--active--icon);
-$checkbox_active_color_background: var(--wp--custom--form--default--checkbox--active--color--background, $checkbox_color_background);
-$checkbox_active_color_text: var(--wp--custom--form--default--checkbox--active--color--text, $checkbox_color_text);
-$checkbox_active_border_color: var(--wp--custom--form--default--checkbox--active--border--color, $checkbox_border_color);
 
 /* RADIO */
-$radio_icon: var(--wp--custom--form--default--radio--icon, $checkbox_active_icon);
-$radio_border_radius: var(--wp--custom--form--default--radio--border--radius, $checkbox_border_radius);
 
 /* BUTTON */
-$button_icon: var(--wp--custom--form--default--button--icon);
-$button_icon_color: var(--wp--custom--form--default--button--color--icon, inherit);
-$button_width: var(--wp--custom--form--default--button--width, auto);
-$button_height: var(--wp--custom--form--default--button--height, $input_height);
-$button_padding: var(--wp--custom--form--default--button--padding, .2rem 1rem);
-$button_font_size: var(--wp--custom--form--default--button--font-size, 1rem);
-$button_text_transform: var(--wp--custom--form--default--button--text-transform, none);
-$button_color_background: var(--wp--custom--form--default--button--color--background, var(--wp--preset--color--primary));
-$button_color_text: var(--wp--custom--form--default--button--color--text, white);
-$button_border_width: var(--wp--custom--form--default--button--border--width, 0);
-$button_border_color: var(--wp--custom--form--default--button--border--color, var(--wp--preset--color--primary));
-$button_border_radius: var(--wp--custom--form--default--button--border--radius, 0);
-$button_hover_color_background: var(--wp--custom--form--default--button--hover--color--background, var(--wp--preset--color--primary-hover));
-$button_hover_color_text: var(--wp--custom--form--default--button--hover--color--text, white);
-$button_hover_border_color: var(--wp--custom--form--default--button--hover--border--color, var(--wp--preset--color--primary-hover));
 
 /* LABEL DARK */
-$dark_label_color: var(--wp--custom--form--dark--label--color, inherit);
-$dark_label_weight: var(--wp--custom--form--dark--label--weight, inherit);
-$dark_label_gap: var(--wp--custom--form--dark--label--gap, $label_gap);
 
 /* INPUT DARK */
-$dark_input_padding: var(--wp--custom--form--dark--input--padding, $input_padding);
-$dark_input_color_background: var(--wp--custom--form--dark--input--color--background, $input_color_background);
-$dark_input_color_text: var(--wp--custom--form--dark--input--color--text, inherit);
-$dark_input_color_placeholder: var(--wp--custom--form--dark--input--color--placeholder, $input_color_placeholder);
-$dark_input_border_color: var(--wp--custom--form--dark--input--border--color, $input_border_color);
-$dark_input_border_radius: var(--wp--custom--form--dark--input--border--radius, $input_border_radius);
-$dark_input_border_style: var(--wp--custom--form--dark--input--border--style, $input_border_style);
-$dark_input_border_width: var(--wp--custom--form--dark--input--border--width, $input_border_width);
 
 /* INPUT FOCUS DARK */
-$dark_input_focus_color_background: var(--wp--custom--form--dark--input--focus--color--background, $input_focus_color_background);
-$dark_input_focus_border_color: var(--wp--custom--form--dark--input--focus--border--color, $input_focus_border_color);
 
 /* INPUT ERROR DARK */
-$dark_input_error_color_background: var(--wp--custom--form--dark--input--error--color--background, $input_error_color_background);
-$dark_input_error_color_text: var(--wp--custom--form--dark--input--error--color--text, $input_error_color_text);
-$dark_input_error_color_placeholder: var(--wp--custom--form--dark--input--error--color--placeholder, $input_color_placeholder);
-$dark_input_error_border_color: var(--wp--custom--form--dark--input--error--border--color, $input_error_border_color);
 
 /* CHECKBOX DARK */
-$dark_checkbox_color_background: var(--wp--custom--form--dark--checkbox--color--background, $checkbox_color_background);
-$dark_checkbox_color_text: var(--wp--custom--form--dark--checkbox--color--text, $checkbox_color_text);
-$dark_checkbox_border_color: var(--wp--custom--form--dark--checkbox--border--color, $checkbox_border_color);
 
 /* CHECKBOX ACTIVE DARK */
-$dark_checkbox_active_color_background: var(--wp--custom--form--dark--checkbox--active--color--background, $checkbox_active_color_background);
-$dark_checkbox_active_color_text: var(--wp--custom--form--dark--checkbox--active--color--text, $checkbox_active_color_text);
-$dark_checkbox_active_border_color: var(--wp--custom--form--dark--checkbox--active--border--color, $checkbox_active_border_color);
 
 /* BUTTON DARK */
-$dark_button_icon: var(--wp--custom--form--dark--button--icon);
-$dark_button_icon_color: var(--wp--custom--form--dark--button--color--icon, inherit);
-$dark_button_color_background: var(--wp--custom--form--dark--button--color--background, var(--wp--preset--color--primary));
-$dark_button_color_text: var(--wp--custom--form--dark--button--color--text, white);
-$dark_button_border_color: var(--wp--custom--form--dark--button--border--color, var(--wp--preset--color--primary));
-$dark_button_hover_color_background: var(--wp--custom--form--dark--button--hover--color--background, var(--wp--preset--color--primary-hover));
-$dark_button_hover_color_text: var(--wp--custom--form--dark--button--hover--color--text, white);
-$dark_button_hover_border_color: var(--wp--custom--form--dark--button--hover--border--color, var(--wp--preset--color--primary-hover));
 
 /* INLINE */
-$inline_form_align: var(--wp--custom--form--inline--container--align, inherit);
-$inline_form_gap_row: var(--wp--custom--form--inline--container--gap--row, .5rem);
-$inline_form_gap_wrapper: var(--wp--custom--form--inline--container--gap--wrapper, 1rem);
-$inline_button_color_background: var(--wp--custom--form--inline--button--color--background, var(--wp--preset--color--primary));
-$inline_button_color_text: var(--wp--custom--form--inline--button--color--text, white);
-$inline_button_border_color: var(--wp--custom--form--inline--button--border--color, var(--wp--preset--color--primary));
-$inline_button_border_radius: var(--wp--custom--form--inline--button--border--radius, 0);
-$inline_button_hover_color_background: var(--wp--custom--form--inline--button--hover--color--background, var(--wp--preset--color--primary-hover));
-$inline_button_hover_color_text: var(--wp--custom--form--inline--button--hover--color--text, white);
-$inline_button_hover_border_color: var(--wp--custom--form--inline--button--hover--border--color, var(--wp--preset--color--primary-hover));
-$inline_button_padding: var(--wp--custom--form--inline--button--padding, .2rem 1rem);
-$inline_input_padding: var(--wp--custom--form--inline--input--padding, .2rem .5rem);
-$inline_input_height: var(--wp--custom--form--inline--input--height, 2.5rem);
-$inline_input_color_background: var(--wp--custom--form--inline--input--color--background, $input_color_background);
-$inline_input_color_text: var(--wp--custom--form--inline--input--color--text, inherit);
-$inline_input_color_placeholder: var(--wp--custom--form--inline--input--color--placeholder, $input_color_placeholder);
-$inline_input_border_color: var(--wp--custom--form--inline--input--border--color, $input_border_color);
-$inline_input_border_width: var(--wp--custom--form--inline--input--border--width, $input_border_width);
-$inline_input_border_radius: var(--wp--custom--form--inline--input--border--radius, $input_border_radius);
-$inline_input_border_style: var(--wp--custom--form--inline--input--border--style, $input_border_style);
-$inline_input_error_color_background: var(--wp--custom--form--inline--input--error--color--background, $input_color_background);
-$inline_input_error_color_text: var(--wp--custom--form--inline--input--error--color--text, $input_color_text);
-$inline_input_error_color_placeholder: var(--wp--custom--form--inline--input--error--color--placeholder, $input_color_placeholder);
-$inline_input_error_border_color: var(--wp--custom--form--inline--input--error--border--color, darkred);
 
 
 .gform_wrapper.gravity-theme {
@@ -154,56 +42,56 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   input[type=tel],
   textarea,
   select {
-    font-size: $input_font_size !important;
-    min-height: $input_height !important;
-    background-color: $input_color_background !important;
-    color: $input_color_text !important;
-    border-color: $input_border_color !important;
-    border-width: $input_border_width !important;
-    border-radius: $input_border_radius !important;
-    border-style: $input_border_style !important;
-    padding: $input_padding !important;
+    font-size: var(--wp--custom--form--default--input--font-size, inherit) !important;
+    min-height: var(--wp--custom--form--default--input--height, 2.5rem) !important;
+    background-color: var(--wp--custom--form--default--input--color--background, white) !important;
+    color: var(--wp--custom--form--default--input--color--text, inherit) !important;
+    border-color: var(--wp--custom--form--default--input--border--color, transparent) !important;
+    border-width: var(--wp--custom--form--default--input--border--width, 1px) !important;
+    border-radius: var(--wp--custom--form--default--input--border--radius, 0) !important;
+    border-style: var(--wp--custom--form--default--input--border--style, solid) !important;
+    padding: var(--wp--custom--form--default--input--padding, .2rem .5rem) !important;
 
     &::placeholder {
-      color: $input_color_placeholder !important;
+      color: var(--wp--custom--form--default--input--color--placeholder, gray) !important;
     }
 
     &:focus {
-      background-color: $input_focus_color_background !important;
-      border-color: $input_focus_border_color !important;
+      background-color: var(--wp--custom--form--default--input--focus--color--background, var(--wp--custom--form--default--input--color--background, white)) !important;
+      border-color: var(--wp--custom--form--default--input--focus--border--color, var(--wp--custom--form--default--input--border--color, transparent)) !important;
     }
   }
 
 
   /* CONTAINER */
   & > form {
-    row-gap: $form_gap_wrapper !important;
-    text-align: $form_align !important;
+    row-gap: var(--wp--custom--form--default--container--gap--wrapper, 1rem) !important;
+    text-align: var(--wp--custom--form--default--container--align, inherit) !important;
   }
 
   .gform_fields {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    column-gap: $form_gap_col !important;
-    row-gap: $form_gap_row !important;
+    column-gap: var(--wp--custom--form--default--container--gap--col, 1rem) !important;
+    row-gap: var(--wp--custom--form--default--container--gap--row, 1rem) !important;
 
     .ginput_complex {
-      column-gap: $form_gap_col !important;
-      row-gap: $form_gap_row !important;
+      column-gap: var(--wp--custom--form--default--container--gap--col, 1rem) !important;
+      row-gap: var(--wp--custom--form--default--container--gap--row, 1rem) !important;
     }
 
   }
 
   /* LABEL */
   .gfield_label {
-    font-weight: $label_weight !important;
-    color: $label_color !important;
-    text-transform: $label_text_transform !important;
-    font-size: $label_font_size !important;
+    font-weight: var(--wp--custom--form--default--label--weight, inherit) !important;
+    color: var(--wp--custom--form--default--label--color, inherit) !important;
+    text-transform: var(--wp--custom--form--default--label--text-transform, inherit) !important;
+    font-size: var(--wp--custom--form--default--label--font-size, inherit) !important;
   }
 
   & > form .gfield {
-    gap: $label_gap;
+    gap: var(--wp--custom--form--default--label--gap, .2rem);
   }
 
   /* CHECKBOX */
@@ -213,20 +101,20 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     .gchoice {
       label {
         &:before {
-          content: $checkbox_icon !important;
-          background: $checkbox_color_background !important;
-          color: $checkbox_color_text !important;
-          height: $checkbox_height !important;
-          border-width: $checkbox_border_width !important;
-          border-color: $checkbox_border_color !important;
-          border-style: $checkbox_border_style !important;
+          content: var(--wp--custom--form--default--checkbox--icon) !important;
+          background: var(--wp--custom--form--default--checkbox--color--background, var(--wp--custom--form--default--input--color--background, white)) !important;
+          color: var(--wp--custom--form--default--checkbox--color--text, var(--wp--custom--form--default--input--color--text, inherit)) !important;
+          height: var(--wp--custom--form--default--checkbox--height, var(--wp--custom--form--default--input--height, 2.5rem)) !important;
+          border-width: var(--wp--custom--form--default--checkbox--border--width, var(--wp--custom--form--default--input--border--width, 1px)) !important;
+          border-color: var(--wp--custom--form--default--checkbox--border--color, var(--wp--custom--form--default--input--border--color, transparent)) !important;
+          border-style: var(--wp--custom--form--default--checkbox--border--style, var(--wp--custom--form--default--input--border--style, solid)) !important;
         }
       }
 
       input:checked ~ label:before {
-        background: $checkbox_active_color_background !important;
-        border: $checkbox_active_border_color !important;
-        color: $checkbox_active_color_text !important;
+        background: var(--wp--custom--form--default--checkbox--active--color--background, var(--wp--custom--form--default--checkbox--color--background, var(--wp--custom--form--default--input--color--background, white))) !important;
+        border: var(--wp--custom--form--default--checkbox--active--border--color, var(--wp--custom--form--default--checkbox--border--color, var(--wp--custom--form--default--input--border--color, transparent))) !important;
+        color: var(--wp--custom--form--default--checkbox--active--color--text, var(--wp--custom--form--default--checkbox--color--text, var(--wp--custom--form--default--input--color--text, inherit))) !important;
       }
     }
   }
@@ -235,12 +123,12 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     .gchoice {
       label {
         &:before {
-          border-radius: $checkbox_border_radius !important;
+          border-radius: var(--wp--custom--form--default--checkbox--border--radius, var(--wp--custom--form--default--input--border--radius, 0)) !important;
         }
       }
 
       input:checked ~ label:before {
-        content: $checkbox_active_icon !important;
+        content: var(--wp--custom--form--default--checkbox--active--icon) !important;
       }
     }
   }
@@ -249,12 +137,12 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     .gchoice {
       label {
         &:before {
-          border-radius: $radio_border_radius !important;
+          border-radius: var(--wp--custom--form--default--radio--border--radius, var(--wp--custom--form--default--checkbox--border--radius, var(--wp--custom--form--default--input--border--radius, 0))) !important;
         }
       }
 
       input:checked ~ label:before {
-        content: $radio_icon !important;
+        content: var(--wp--custom--form--default--radio--icon, var(--wp--custom--form--default--checkbox--active--icon)) !important;
       }
     }
   }
@@ -263,229 +151,140 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
   .gform_button,
   .gform_next_button,
   .gform_previous_button {
-    min-width: $button_width !important;
-    height: $button_height !important;
+    min-width: var(--wp--custom--form--default--button--width, auto) !important;
+    height: var(--wp--custom--form--default--button--height, var(--wp--custom--form--default--input--height, 2.5rem)) !important;
     line-height: 1 !important;
-    padding: $button_padding !important;
-    font-size: $button_font_size !important;
-    text-transform: $button_text_transform !important;
-    background-color: $button_color_background !important;
-    color: $button_color_text !important;
-    border-width: $button_border_width !important;
-    border-color: $button_border_color !important;
-    border-radius: $button_border_radius !important;
+    padding: var(--wp--custom--form--default--button--padding, .2rem 1rem) !important;
+    font-size: var(--wp--custom--form--default--button--font-size, 1rem) !important;
+    text-transform: var(--wp--custom--form--default--button--text-transform, none) !important;
+    background-color: var(--wp--custom--form--default--button--color--background, var(--wp--preset--color--primary)) !important;
+    color: var(--wp--custom--form--default--button--color--text, white) !important;
+    border-width: var(--wp--custom--form--default--button--border--width, 0) !important;
+    border-color: var(--wp--custom--form--default--button--border--color, var(--wp--preset--color--primary)) !important;
+    border-radius: var(--wp--custom--form--default--button--border--radius, 0) !important;
     white-space: nowrap;
 
     &:hover {
-      background-color: $button_hover_color_background !important;
-      border-color: $button_hover_border_color !important;
-      color: $button_hover_color_text !important;
+      background-color: var(--wp--custom--form--default--button--hover--color--background, var(--wp--preset--color--primary-hover)) !important;
+      border-color: var(--wp--custom--form--default--button--hover--border--color, var(--wp--preset--color--primary-hover)) !important;
+      color: var(--wp--custom--form--default--button--hover--color--text, white) !important;
     }
 
   }
 
-  .divlabs-form-block--button-icon & {
-    .gform_button {
+  .gform_button {
 
-      &:after {
-        content: $button_icon;
-        color: $button_icon_color;
-        line-height: 1;
-      }
+    &:after {
+      content: var(--wp--custom--form--default--button--icon);
+      color: var(--wp--custom--form--default--button--color--icon, inherit);
+      line-height: 1;
     }
   }
 
-}
-
-
-/* INLINE */
-.divlabs-form {
-  &--inline {
-    .gform_wrapper.gravity-theme {
-      & > form {
-        text-align: $inline_form_align !important;
-        gap: $inline_form_gap_wrapper !important;
-      }
-
-      .gform_fields {
-        column-gap: $inline_form_gap_row !important;
-        row-gap: $form_gap_col !important;
-
-        .ginput_complex {
-          gap: $inline_form_gap_row !important;
-        }
-      }
-
-      .gform_button,
-      .gform_next_button,
-      .gform_previous_button {
-        height: $inline_input_height !important;
-        line-height: $inline_input_height !important;
-        padding: $inline_button_padding !important;
-        background-color: $inline_button_color_background !important;
-        color: $inline_button_color_text !important;
-        border-color: $inline_button_border_color !important;
-        border-radius: $inline_button_border_radius !important;
-
-        &:hover {
-          background-color: $inline_button_hover_color_background !important;
-          border-color: $inline_button_hover_border_color !important;
-          color: $inline_button_hover_color_text !important;
-        }
-
-      }
-
-      input[type=text],
-      input[type=number],
-      input[type=email],
-      input[type=tel],
-      textarea,
-      select {
-        height: $inline_input_height !important;
-        background-color: $inline_input_color_background !important;
-        color: $inline_input_color_text !important;
-        border-color: $inline_input_border_color !important;
-        border-width: $inline_input_border_width !important;
-        border-radius: $inline_input_border_radius !important;
-        border-style: $inline_input_border_style !important;
-        padding: $inline_input_padding !important;
-
-        &::placeholder {
-          color: $inline_input_color_placeholder !important;
-        }
-
-      }
-
-      &.gform_validation_error {
-        .gfield.gfield_error {
-
-          input,
-          textarea,
-          select {
-            background-color: $inline_input_error_color_background !important;
-            color: $inline_input_error_color_text !important;
-            border-color: $inline_input_error_border_color !important;
-
-            &::placeholder {
-              color: $inline_input_error_color_placeholder !important;
-            }
-          }
-        }
-      }
-    }
-  }
 }
 
 /* DARK */
-.divlabs-form {
-  &--button-icon.divlabs-form--dark {
-    .gform_button {
 
-      &:after {
-        content: $dark_button_icon;
-        color: $dark_button_icon_color;
+
+.gform_wrapper.gravity-theme.is-style-dark {
+
+  .gform_button {
+
+    &:after {
+      content: var(--wp--custom--form--dark--button--icon);
+      color: var(--wp--custom--form--dark--button--color--icon, inherit);
+    }
+
+    &:hover:after {
+      color: inherit !important
+    }
+  }
+
+  .gfield {
+
+    gap: var(--wp--custom--form--dark--label--gap, var(--wp--custom--form--default--label--gap, .2rem));
+
+    input[type=text],
+    input[type=email],
+    input[type=tel],
+    textarea,
+    select {
+      background-color: var(--wp--custom--form--dark--input--color--background, var(--wp--custom--form--default--input--color--background, white)) !important;
+      color: var(--wp--custom--form--dark--input--color--text, inherit) !important;
+      border-color: var(--wp--custom--form--dark--input--border--color, var(--wp--custom--form--default--input--border--color, transparent)) !important;
+      border-style: var(--wp--custom--form--dark--input--border--style, var(--wp--custom--form--default--input--border--style, solid)) !important;
+      border-width: var(--wp--custom--form--dark--input--border--width, var(--wp--custom--form--default--input--border--width, 1px)) !important;
+      border-radius: var(--wp--custom--form--dark--input--border--radius, var(--wp--custom--form--default--input--border--radius, 0)) !important;
+      padding: var(--wp--custom--form--dark--input--padding, var(--wp--custom--form--default--input--padding, .2rem .5rem)) !important;
+
+      &::placeholder {
+        color: var(--wp--custom--form--dark--input--color--placeholder, var(--wp--custom--form--default--input--color--placeholder, gray)) !important;
       }
 
-      &:hover:after {
-        color: inherit !important
+      &:focus {
+        background-color: var(--wp--custom--form--dark--input--focus--color--background, var(--wp--custom--form--default--input--focus--color--background, var(--wp--custom--form--default--input--color--background, white))) !important;
+        border-color: var(--wp--custom--form--dark--input--focus--border--color, var(--wp--custom--form--default--input--focus--border--color, var(--wp--custom--form--default--input--border--color, transparent))) !important;
       }
     }
   }
 
+  .gfield_radio,
+  .gfield_checkbox {
 
-  &--dark {
-
-    .gform_wrapper.gravity-theme {
-
-      .gfield {
-
-        gap: $dark_label_gap;
-
-        input[type=text],
-        input[type=email],
-        input[type=tel],
-        textarea,
-        select {
-          background-color: $dark_input_color_background !important;
-          color: $dark_input_color_text !important;
-          border-color: $dark_input_border_color !important;
-          border-style: $dark_input_border_style !important;
-          border-width: $dark_input_border_width !important;
-          border-radius: $dark_input_border_radius !important;
-          padding: $dark_input_padding !important;
-
-          &::placeholder {
-            color: $dark_input_color_placeholder !important;
-          }
-
-          &:focus {
-            background-color: $dark_input_focus_color_background !important;
-            border-color: $dark_input_focus_border_color !important;
-          }
+    .gchoice {
+      label {
+        &:before {
+          background: var(--wp--custom--form--dark--checkbox--color--background, var(--wp--custom--form--default--checkbox--color--background, var(--wp--custom--form--default--input--color--background, white))) !important;
+          color: var(--wp--custom--form--dark--checkbox--color--text, var(--wp--custom--form--default--checkbox--color--text, var(--wp--custom--form--default--input--color--text, inherit))) !important;
+          border-color: var(--wp--custom--form--dark--checkbox--border--color, var(--wp--custom--form--default--checkbox--border--color, var(--wp--custom--form--default--input--border--color, transparent))) !important;
         }
       }
 
-      .gfield_radio,
-      .gfield_checkbox {
-
-        .gchoice {
-          label {
-            &:before {
-              background: $dark_checkbox_color_background !important;
-              color: $dark_checkbox_color_text !important;
-              border-color: $dark_checkbox_border_color !important;
-            }
-          }
-
-          input:checked ~ label:before {
-            background: $dark_checkbox_active_color_background !important;
-            border: $dark_checkbox_active_border_color !important;
-            color: $dark_checkbox_active_color_text !important;
-          }
-        }
+      input:checked ~ label:before {
+        background: var(--wp--custom--form--dark--checkbox--active--color--background, var(--wp--custom--form--default--checkbox--active--color--background, var(--wp--custom--form--default--checkbox--color--background, var(--wp--custom--form--default--input--color--background, white)))) !important;
+        border: var(--wp--custom--form--dark--checkbox--active--border--color, var(--wp--custom--form--default--checkbox--active--border--color, var(--wp--custom--form--default--checkbox--border--color, var(--wp--custom--form--default--input--border--color, transparent)))) !important;
+        color: var(--wp--custom--form--dark--checkbox--active--color--text, var(--wp--custom--form--default--checkbox--active--color--text, var(--wp--custom--form--default--checkbox--color--text, var(--wp--custom--form--default--input--color--text, inherit)))) !important;
       }
-
-      .gform_button,
-      .gform_next_button,
-      .gform_previous_button {
-        background-color: $dark_button_color_background !important;
-        color: $dark_button_color_text !important;
-        border-color: $dark_button_border_color !important;
-
-        &:hover {
-          background-color: $dark_button_hover_color_background !important;
-          color: $dark_button_hover_color_text !important;
-          border-color: $dark_button_hover_border_color !important;
-        }
-      }
-
-      .gfield_label {
-        color: $dark_label_color !important;
-        font-weight: $dark_label_weight !important;
-      }
-
-
-      &.gform_validation_error {
-        .gfield.gfield_error {
-
-          input,
-          textarea,
-          select {
-            background-color: $dark_input_error_color_background !important;
-            color: $dark_input_error_color_text !important;
-            border-color: $dark_input_error_border_color !important;
-
-            &::placeholder {
-              color: $dark_input_error_color_placeholder !important;
-            }
-          }
-        }
-      }
-
     }
-
-
   }
+
+  .gform_button,
+  .gform_next_button,
+  .gform_previous_button {
+    background-color: var(--wp--custom--form--dark--button--color--background, var(--wp--preset--color--primary)) !important;
+    color: var(--wp--custom--form--dark--button--color--text, white) !important;
+    border-color: var(--wp--custom--form--dark--button--border--color, var(--wp--preset--color--primary)) !important;
+
+    &:hover {
+      background-color: var(--wp--custom--form--dark--button--hover--color--background, var(--wp--preset--color--primary-hover)) !important;
+      color: var(--wp--custom--form--dark--button--hover--color--text, white) !important;
+      border-color: var(--wp--custom--form--dark--button--hover--border--color, var(--wp--preset--color--primary-hover)) !important;
+    }
+  }
+
+  .gfield_label {
+    color: var(--wp--custom--form--dark--label--color, inherit) !important;
+    font-weight: var(--wp--custom--form--dark--label--weight, inherit) !important;
+  }
+
+
+  &.gform_validation_error {
+    .gfield.gfield_error {
+
+      input,
+      textarea,
+      select {
+        background-color: var(--wp--custom--form--dark--input--error--color--background, var(--wp--custom--form--default--input--error--color--background, var(--wp--custom--form--default--input--color--background, white))) !important;
+        color: var(--wp--custom--form--dark--input--error--color--text, var(--wp--custom--form--default--input--error--color--text, var(--wp--custom--form--default--input--color--text, inherit))) !important;
+        border-color: var(--wp--custom--form--dark--input--error--border--color, var(--wp--custom--form--default--input--error--border--color, darkred)) !important;
+
+        &::placeholder {
+          color: var(--wp--custom--form--dark--input--error--color--placeholder, var(--wp--custom--form--default--input--color--placeholder, gray)) !important;
+        }
+      }
+    }
+  }
+
 }
 
 /* ERROR */
@@ -496,12 +295,12 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     input,
     textarea,
     select {
-      background-color: $input_error_color_background !important;
-      color: $input_error_color_text !important;
-      border-color: $input_error_border_color !important;
+      background-color: var(--wp--custom--form--default--input--error--color--background, var(--wp--custom--form--default--input--color--background, white)) !important;
+      color: var(--wp--custom--form--default--input--error--color--text, var(--wp--custom--form--default--input--color--text, inherit)) !important;
+      border-color: var(--wp--custom--form--default--input--error--border--color, darkred) !important;
 
       &::placeholder {
-        color: $input_error_color_placeholder !important;
+        color: var(--wp--custom--form--default--input--error--color--placeholder, var(--wp--custom--form--default--input--color--placeholder, gray)) !important;
       }
     }
   }
@@ -525,7 +324,7 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
 }
 
 
-.divlabs-form {
+.gform_wrapper.gravity-theme {
   @apply
   flex
   flex-col
@@ -543,72 +342,12 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
     pointer-events-none
   }
 
-  &--center {
-
-    .gform_wrapper.gravity-theme {
-      .gform_footer,
-      .gform_page_footer {
-        @apply
-        flex
-        flex-wrap
-        justify-center
-      }
-    }
-
-  }
-
-  &--inline {
-
-    .gform_wrapper.gravity-theme {
-
-      .gform-body {
-        @apply
-        grow
-      }
-
-      & > form {
-        @apply
-        flex-row
-        items-end
-      }
-
-      .gform_fields {
-        @apply
-        h-full
-        flex
-      }
-
-      .gfield {
-        @apply
-        h-full
-      }
-
-      .ginput_container {
-        @apply
-        h-full
-      }
-    }
-
-  }
 
 }
 
 .gf_invisible {
   @apply
   hidden
-}
-
-
-@media screen and (max-width: 768px) {
-  .divlabs-form--collapse {
-    .gform_wrapper.gravity-theme {
-      .gform_fields {
-        .gfield[class*='gfield--width'] {
-          grid-column: 1 / -1 !important;
-        }
-      }
-    }
-  }
 }
 
 .gform_wrapper.gravity-theme {
@@ -905,7 +644,7 @@ $inline_input_error_border_color: var(--wp--custom--form--inline--input--error--
 
         &:after {
           top: 0;
-          font-size: var(--wp--preset--font-size--extra-small);
+          font-size: 12px;
           transform: translateY(-50%);
           font-family: 'Font Awesome 6 Pro', sans-serif;
           color: darkred;

@@ -264,17 +264,17 @@
         "xs": "640px",
         "sm": "768px",
         "md": "1040px",
-        "normal": "1304px",
-        "lg": "1404px",
-        "xl": "1500px"
+        "normal": "1404px",
+        "lg": "1500px",
+        "xl": "1800px"
       },
       "container": {
         "xs": "768px",
         "sm": "1040px",
         "md": "1200px",
-        "normal": "1304px",
-        "lg": "1404px",
-        "xl": "1500px"
+        "normal": "1404px",
+        "lg": "1500px",
+        "xl": "1800px"
       },
       "header": {
         "height": {
@@ -289,9 +289,9 @@
           "container": {
             "align": "inherit",
             "gap": {
-              "row": "1rem",
-              "col": ".5rem",
-              "wrapper": "1.5rem"
+              "row": ".8rem",
+              "col": ".8rem",
+              "wrapper": "2rem"
             }
           },
           "label": {
@@ -302,23 +302,23 @@
             "gap": ".4rem"
           },
           "input": {
-            "padding": "0 0 .2rem",
-            "font-size": "16px !important",
-            "height": "2.4rem",
+            "padding": ".2rem .8rem",
+            "font-size": "17px !important",
+            "height": "60px",
             "color": {
-              "background": "transparent",
+              "background": "white",
               "text": "black",
-              "placeholder": "var:preset|color|light-500"
+              "placeholder": "gray"
             },
             "border": {
-              "color": "var:preset|color|primary",
-              "width": "0 0 1px",
-              "radius": "0",
+              "color": "white",
+              "width": "1px",
+              "radius": "6px",
               "style": "solid"
             },
             "focus": {
               "color": {
-                "background": "transparent",
+                "background": "white",
                 "text": "black"
               },
               "border": {
@@ -368,20 +368,20 @@
           },
           "button": {
             "width": "auto",
-            "height": "auto",
-            "padding": ".4rem 1rem",
-            "text-transform": "none",
+            "height": "60px",
+            "padding": ".2rem 1.5rem",
+            "text-transform": "uppercase",
             "font-size": "inherit",
             "icon": "\"\\f061\"",
             "color": {
-              "background": "var:preset|color|primary-600",
+              "background": "var:preset|color|primary",
               "text": "white",
               "icon": "inherit"
             },
             "border": {
-              "color": "var:preset|color|primary-600",
+              "color": "var:preset|color|primary",
               "width": "1px",
-              "radius": "4px"
+              "radius": "0"
             },
             "hover": {
               "color": {
@@ -523,6 +523,31 @@
           "name": "2-XL"
         }
       ]
+    },
+    "shadow": {
+      "defaultPresets": true,
+      "presets": [
+        {
+          "slug": "tight",
+          "name": "Tight",
+          "shadow": "0 0 15px rgba(0, 0, 0, 0.2)"
+        },
+        {
+          "slug": "xsmall",
+          "name": "Extra Small",
+          "shadow": "0 5px 10px rgba(0, 0, 0, 0.2)"
+        },
+        {
+          "slug": "small",
+          "name": "Small",
+          "shadow": "0 5px 20px rgba(0, 0, 0, 0.2)"
+        },
+        {
+          "slug": "large",
+          "name": "Large",
+          "shadow": "0 10px 30px rgba(0, 0, 0, 0.2)"
+        }
+      ]
     }
   },
   "styles": {
@@ -568,8 +593,13 @@
           "style": ""
         }
       },
+      "h2": {
+        "typography": {
+          "lineHeight": "5.2rem"
+        }
+      },
       "heading": {
-        "css": "& mark {font-family:var(--wp--preset--font-family--kepler,inherit); font-size:1.15em; font-weight:normal;}",
+        "css": "& mark {font-family:var(--wp--preset--font-family--kepler,inherit); font-size:1.2em; line-height:inherit; font-weight:normal;}",
         "spacing": {
           "margin": {
             "top": "1.5rem",
@@ -802,21 +832,6 @@
               "color": ""
             },
             "elements": {
-              "link": {
-                "color": {
-                  "text": "inherit",
-                  "background": "transparent"
-                },
-                ":hover": {
-                  "color": {
-                    "background": "",
-                    "text": "var:preset|color|primary"
-                  },
-                  "border": {
-                    "color": ""
-                  }
-                }
-              },
               "button": {
                 "color": {
                   "text": "inherit",

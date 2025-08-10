@@ -20,6 +20,16 @@ class WPBS {
 		self::$path           = $path;
 		self::$uri            = plugins_url( '/wp-block-studio/' );
 
+		add_action( 'init', function () {
+			register_block_style(
+				'gravityforms/form',
+				array(
+					'name'  => 'dark',
+					'label' => 'Dark',
+				)
+			);
+		} );
+
 		add_action( 'init', [ $this, 'theme_assets' ], 20 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'block_assets' ] );
@@ -51,7 +61,7 @@ class WPBS {
 	}
 
 	public function remove_default_image_sizes( $sizes ): array {
-		
+
 		foreach ( $sizes as $k => $size ) {
 
 			if ( ! in_array( $size, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] ) ) {

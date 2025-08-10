@@ -14,6 +14,7 @@ import {useSelect} from "@wordpress/data";
 import {
     __experimentalBorderControl as BorderControl, __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
+    __experimentalNumberControl as NumberControl,
     __experimentalUnitControl as UnitControl, BaseControl,
     PanelBody,
     SelectControl,
@@ -84,10 +85,9 @@ registerBlockType(metadata.name, {
 
         }, [settings, setAttributes]);
 
-        //console.log(settings);
-
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
+                '--columns-mobile': settings?.['columns'] ?? settings?.['columns-mobile'] ?? null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
@@ -116,6 +116,7 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
+                        '--columns': settings?.['columns-mobile'] ?? settings?.['columns'] ?? null,
                     }
                 }
             }).filter(x => !!x))
@@ -155,6 +156,26 @@ registerBlockType(metadata.name, {
                     onChange={(newValue) => updateSettings({'icon-space': newValue})}
                     units={DIMENSION_UNITS_TEXT}
                     isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+
+            </Grid>
+            <Grid columns={2} columnGap={15} rowGap={15}
+                  style={{display: !attributes?.className.includes('is-style-default') ? 'none' : 'grid'}}>
+                <NumberControl
+                    label="Columns"
+                    value={settings?.['columns'] ?? undefined}
+                    min={1}
+                    onChange={(newValue) => updateSettings({'columns': newValue})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <NumberControl
+                    label="Columns Mobile"
+                    value={settings?.['columns-mobile'] ?? undefined}
+                    min={1}
+                    onChange={(newValue) => updateSettings({'columns-mobile': newValue})}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />

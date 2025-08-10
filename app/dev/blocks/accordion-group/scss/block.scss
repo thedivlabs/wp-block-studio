@@ -48,7 +48,7 @@
     font-family: 'Font Awesome 6 Pro', sans-serif;
     height: 1.2em;
     line-height: normal;
-    transition: transform .3s ease-in-out, color .3s linear;
+    transition: transform .2s ease-in-out, color .3s linear;
 
     &:before {
       content: var(--icon-closed, "\f078");
@@ -71,7 +71,7 @@
   }
 
   .wpbs-accordion-group-item.--open .wpbs-accordion-group-header__toggle {
-    transform: rotate(-540deg);
+    transform: rotate(-180deg);
   }
 
   .wpbs-accordion-group-content {

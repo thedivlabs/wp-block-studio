@@ -16,7 +16,7 @@ import {
     ToggleControl,
     __experimentalGrid as Grid, PanelBody
 } from "@wordpress/components";
-import {Style} from "Components/Style";
+import {Style, STYLE_ATTRIBUTES} from "Components/Style";
 import {useUniqueId} from "Includes/helper";
 
 function classNames(attributes = {}, editor = false) {
@@ -31,6 +31,7 @@ function classNames(attributes = {}, editor = false) {
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
+        ...STYLE_ATTRIBUTES,
         ...metadata.attributes,
         'wpbs-accordion-group-item': {
             type: 'object',

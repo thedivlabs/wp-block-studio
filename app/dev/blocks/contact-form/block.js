@@ -8,20 +8,9 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import React, {useCallback, useMemo} from "react";
-import {useSelect} from "@wordpress/data";
-import {
-    __experimentalBorderControl as BorderControl, __experimentalBoxControl as BoxControl,
-    __experimentalGrid as Grid,
-    __experimentalUnitControl as UnitControl, BaseControl,
-    PanelBody,
-    SelectControl,
-    TabPanel, TextControl,
-    ToggleControl
-} from "@wordpress/components";
-import {useSetting} from '@wordpress/block-editor';
-import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {useUniqueId} from "Includes/helper";
+import apiFetch from '@wordpress/api-fetch';
 
 
 function blockClassNames(attributes = {}) {
@@ -49,24 +38,19 @@ registerBlockType(metadata.name, {
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-contact-form': settings = {}} = attributes;
-        const menus = useSelect((select) => {
-            const core = select('core');
 
-            // Always call the selector to trigger resolution
-            const data = core.getMenus?.();
+        const [forms, setForms] = useState([]);
 
-            if (!core.hasFinishedResolution('getMenus')) {
-                return []; // Use undefined instead of null
-            }
-
-            return data?.map(menu => ({
-                id: menu.id,
-                name: menu.name,
-                slug: menu.slug,
-                locations: menu.locations,
-            }));
+        useEffect(() => {
+            apiFetch({path: '/gf/v2/forms'})
+                .then((response) => {
+                    setForms(response); // response is an array of form objects
+                })
+                .catch((error) => {
+                    console.error('Error fetching forms:', error);
+                });
         }, []);
-
+        
         const updateSettings = useCallback((newValue) => {
 
             const result = {

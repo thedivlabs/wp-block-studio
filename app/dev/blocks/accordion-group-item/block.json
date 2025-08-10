@@ -42,8 +42,8 @@
       "padding": true,
       "margin": false
     },
+    "shadow": true,
     "__experimentalBorder": {
-      "shadow": true,
       "size": true,
       "color": true,
       "radius": true

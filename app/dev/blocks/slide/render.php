@@ -2,9 +2,6 @@
 
 $is_image = str_contains( $attributes['className'] ?? '', 'is-style-image' );
 
-WPBS::console_log( $is_image );
-WPBS::console_log( $attributes );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'      => implode( ' ', array_filter( [
 		'wpbs-slide',

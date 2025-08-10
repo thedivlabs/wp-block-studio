@@ -560,9 +560,9 @@ function getProps(settings) {
 
     if (!!settings?.reveal) {
         result['data-aos'] = settings?.reveal;
-        result['data-aos-duration'] = settings?.['reveal-duration'];
-        result['data-aos-easing'] = settings?.['reveal-easing'];
-        result['data-aos-offset'] = settings?.['reveal-offset'];
+        result['data-aos-duration'] = settings?.['reveal-duration'] ?? 400;
+        result['data-aos-easing'] = settings?.['reveal-easing'] ?? 'ease';
+        result['data-aos-offset'] = settings?.['reveal-offset'] ?? 200;
         result['data-aos-once'] = !settings?.['reveal-repeat'];
         result['data-aos-mirror'] = !!settings?.['reveal-mirror'];
     }
@@ -600,8 +600,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
             ...(attributes?.['wpbs-props'] ?? {}),
             ...getProps(result)
         }
-
-        console.log(props);
 
         setAttributes(Object.fromEntries(Object.entries({
             'wpbs-layout': result,

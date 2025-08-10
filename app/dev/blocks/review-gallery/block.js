@@ -22,9 +22,9 @@ import {useSelect} from "@wordpress/data";
 function blockClassnames(attributes = {}) {
 
     return [
-        'wpbs-reviews-gallery swiper wpbs-slider h-max',
+        'wpbs-review-gallery swiper wpbs-slider h-max',
         'flex flex-col w-full relative overflow-hidden',
-        !!attributes?.['wpbs-reviews-gallery']?.lightbox ? '--lightbox' : null,
+        !!attributes?.['wpbs-review-gallery']?.lightbox ? '--lightbox' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -36,7 +36,7 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         ...SLIDER_ATTRIBUTES,
-        'wpbs-reviews-gallery': {
+        'wpbs-review-gallery': {
             type: 'object'
         }
     },
@@ -46,22 +46,22 @@ registerBlockType(metadata.name, {
 
         const swiperRef = useRef(null);
 
-        const {'wpbs-reviews-gallery': settings = {}} = attributes;
+        const {'wpbs-review-gallery': settings = {}} = attributes;
 
         const newSettings = useMemo(() => cleanObject({
             uniqueId,
             slider: attributes?.['wpbs-swiper-args'],
-            settings: attributes?.['wpbs-reviews-gallery'],
+            settings: attributes?.['wpbs-review-gallery'],
         }), [
             uniqueId,
             attributes?.['wpbs-swiper-args'],
-            attributes?.['wpbs-reviews-gallery'],
+            attributes?.['wpbs-review-gallery'],
         ]);
 
         useEffect(() => {
 
-            if (!isEqual(attributes?.['wpbs-reviews-gallery-settings'], newSettings)) {
-                setAttributes({'wpbs-reviews-gallery-settings': newSettings});
+            if (!isEqual(attributes?.['wpbs-review-gallery-settings'], newSettings)) {
+                setAttributes({'wpbs-review-gallery-settings': newSettings});
             }
 
         }, [newSettings]);
@@ -74,12 +74,12 @@ registerBlockType(metadata.name, {
         const updateSettings = useCallback((newValue) => {
 
             const result = {
-                ...attributes['wpbs-reviews-gallery'],
+                ...attributes['wpbs-review-gallery'],
                 ...newValue,
             }
 
             setAttributes({
-                'wpbs-reviews-gallery': result,
+                'wpbs-review-gallery': result,
             });
 
         }, [setAttributes, attributes['wpbs-media-gallery']]);
@@ -127,8 +127,8 @@ registerBlockType(metadata.name, {
                 />
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
-                       deps={['wpbs-slider', 'wpbs-reviews-gallery']} clientId={clientId}
-                       props={cssProps} selector={'wpbs-reviews-gallery'}
+                       deps={['wpbs-slider', 'wpbs-review-gallery']} clientId={clientId}
+                       props={cssProps} selector={'wpbs-review-gallery'}
                 />
             </>
         )
@@ -137,7 +137,7 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: blockClassnames(props.attributes),
-            'data-wp-interactive': 'wpbs/reviews-gallery',
+            'data-wp-interactive': 'wpbs/review-gallery',
             'data-wp-init': 'actions.init',
             ...(props.attributes?.['wpbs-props'] ?? {})
         });

@@ -9,7 +9,7 @@ $context = $block->attributes['blockContext'] ?? $block->context ?? [];
 $is_rest = ( $block->context ?? false ) == 'edit';
 
 $card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
-	return $inner_block['blockName'] === 'wpbs/reviews-gallery-card';
+	return $inner_block['blockName'] === 'wpbs/review-gallery-card';
 } )[0] ?? false );
 
 $page             = intval( $context['wpbs/page'] ?? 1 );
@@ -58,7 +58,7 @@ if ( $page_size > 0 && ! empty( $reviews ) ) {
 }
 
 $classes = array_filter( [
-	'wpbs-reviews-gallery-container loop-container',
+	'wpbs-review-gallery-container loop-container',
 	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap items-start relative z-20',
 	$is_last ? '--last-page' : null,
 	$unique_id,
@@ -102,7 +102,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <?php
 
 if ( ! empty( $unique_id ) && ! $is_rest ) {
-	echo '<script type="application/json" class="wpbs-reviews-gallery-args">' . wp_json_encode( array_filter( [
+	echo '<script type="application/json" class="wpbs-review-gallery-args">' . wp_json_encode( array_filter( [
 			'uniqueId' => $unique_id,
 			'card'     => $card_block,
 			'reviews'  => $reviews,

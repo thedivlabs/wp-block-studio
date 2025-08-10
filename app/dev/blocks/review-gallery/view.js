@@ -2,8 +2,8 @@ import {getContext, getElement, store} from '@wordpress/interactivity';
 
 async function fetchGallery(data = {}) {
 
-    //const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/reviews-gallery-container';
-    const endpoint = '/wp-json/wpbs/v1/reviews-gallery';
+    //const endpoint = '/wp-json/wp/v2/block-renderer/wpbs/review-gallery-container';
+    const endpoint = '/wp-json/wpbs/v1/review-gallery';
 
     try {
         const response = await fetch(endpoint, {
@@ -25,13 +25,13 @@ async function fetchGallery(data = {}) {
     }
 }
 
-const {state} = store('wpbs/reviews-gallery', {
+const {state} = store('wpbs/review-gallery', {
     actions: {
         init: () => {
 
             const {ref: element} = getElement();
-            const container = element.querySelector(':scope > .wpbs-reviews-gallery-container');
-            const args = JSON.parse(element.querySelector('script.wpbs-reviews-gallery-args')?.textContent ?? '{}');
+            const container = element.querySelector(':scope > .wpbs-review-gallery-container');
+            const args = JSON.parse(element.querySelector('script.wpbs-review-gallery-args')?.textContent ?? '{}');
 
             const {settings} = args;
             const {gallery, slider: swiper_args, type, uniqueId, grid} = settings;
@@ -61,7 +61,7 @@ const {state} = store('wpbs/reviews-gallery', {
 
                 if (element.classList.contains('--lightbox')) {
 
-                    const card = event.target.closest('.wpbs-reviews-gallery-card');
+                    const card = event.target.closest('.wpbs-review-gallery-card');
 
                     if (!card) {
                         return;
@@ -86,10 +86,10 @@ const {state} = store('wpbs/reviews-gallery', {
 
             const {ref: button} = getElement();
 
-            const element = button.closest('.wpbs-reviews-gallery');
-            const container = element ? element.querySelector(':scope > .wpbs-reviews-gallery-container') : false;
+            const element = button.closest('.wpbs-review-gallery');
+            const container = element ? element.querySelector(':scope > .wpbs-review-gallery-container') : false;
 
-            const args = element ? JSON.parse(element.querySelector('script.wpbs-reviews-gallery-args')?.textContent ?? '{}') : false;
+            const args = element ? JSON.parse(element.querySelector('script.wpbs-review-gallery-args')?.textContent ?? '{}') : false;
 
             if (!args) {
                 return false;
@@ -128,7 +128,7 @@ const {state} = store('wpbs/reviews-gallery', {
                     return false;
                 }
 
-                const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-reviews-gallery-container');
+                const grid_container = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('.wpbs-review-gallery-container');
                 const grid_cards = grid_container.querySelectorAll('.loop-card');
                 const is_last = grid_container.classList.contains('--last-page');
 

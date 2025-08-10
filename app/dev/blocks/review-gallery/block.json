@@ -1,0 +1,62 @@
+{
+  "name": "wpbs/review-gallery",
+  "title": "Review Gallery",
+  "description": "Display a review gallery",
+  "selectors": {
+    "root": ".wpbs-review-gallery"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-review-gallery-settings": {
+      "type": "object",
+      "show_in_rest": true
+    }
+  },
+  "allowedBlocks": [
+    "wpbs/review-card",
+    "wpbs/slider-navigation"
+  ],
+  "providesContext": {
+    "wpbs/settings": "wpbs-review-gallery-settings"
+  },
+  "supports": {
+    "layout": false,
+    "interactivity": true,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "icon": "format-gallery",
+  "render": "file:./render.php"
+}
+
+

@@ -1,29 +1,39 @@
 {
-  "name": "wpbs/reviews-gallery",
-  "title": "Reviews Gallery",
-  "description": "Display a reviews gallery",
+  "name": "wpbs/review-card",
+  "title": "Review Card",
+  "description": "Display a review card",
   "selectors": {
-    "root": ".wpbs-reviews-gallery"
+    "root": ".wpbs-review-card"
   },
   "attributes": {
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-reviews-gallery-settings": {
-      "type": "object",
+    "postId": {
+      "type": "integer",
+      "show_in_rest": true
+    },
+    "termId": {
+      "type": "integer",
+      "default": 0,
+      "show_in_rest": true
+    },
+    "is_rest": {
+      "type": "boolean",
+      "default": false,
       "show_in_rest": true
     }
   },
-  "allowedBlocks": [
-    "wpbs/reviews-card",
-    "wpbs/slider-navigation"
+  "parent": [
+    "wpbs/review-gallery"
   ],
   "providesContext": {
-    "wpbs/settings": "wpbs-reviews-gallery-settings"
+    "wpbs/postId": "postId",
+    "wpbs/termId": "termId",
+    "wpbs/postType": "postType"
   },
   "supports": {
-    "layout": false,
     "interactivity": true,
     "innerBlocks": true,
     "color": {
@@ -40,10 +50,12 @@
       "padding": true,
       "margin": true
     },
+    "shadow": true,
     "__experimentalBorder": {
-      "size": true,
       "color": true,
-      "radius": true
+      "radius": true,
+      "style": true,
+      "width": true
     },
     "typography": {
       "__experimentalFontFamily": true,
@@ -54,8 +66,7 @@
     }
   },
   "editorScript": "file:./block.js",
-  "viewScriptModule": "file:./view.js",
-  "icon": "format-gallery",
+  "icon": "grid-view",
   "render": "file:./render.php"
 }
 

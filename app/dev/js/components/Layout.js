@@ -367,7 +367,7 @@ function parseSpecial(prop, attributes) {
         case 'transition':
             result = {
                 'transition-property': value.join(', '),
-                'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300',
+                'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300ms',
             }
             break;
         case 'text-color':

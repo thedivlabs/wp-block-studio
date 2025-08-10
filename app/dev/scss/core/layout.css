@@ -99,7 +99,7 @@
 .--divider .loop-card::before {
   content: "";
   width: calc(100% + var(--grid-col-gap, var(--grid-row-gap, 0px)));
-  border-bottom: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
+  border-bottom: var(--divider, none);
   font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-row-gap, var(--grid-col-gap, 0px)) - 1rem)));
   bottom: calc(0px - (var(--grid-row-gap, var(--grid-col-gap, 0px)) / 2));
 }
@@ -108,7 +108,7 @@
 .--divider .loop-card::after {
   top: 0;
   height: 100%;
-  border-left: var(--divider-size, 1px) var(--divider-color, lightgray) var(--divider-style, dashed);
+  border-left: var(--divider, none);
   content: var(--divider-icon-large, '');
   font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-col-gap, var(--grid-row-gap, 0px)) - 1rem)));
 }

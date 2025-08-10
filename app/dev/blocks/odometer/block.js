@@ -115,7 +115,7 @@ registerBlockType(metadata.name, {
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <div {...blockProps} >{props.attributes?.['wpbs-odometer']?.end}</div>;
+        return <div {...blockProps} >{props.attributes?.['wpbs-odometer']?.start}</div>;
     }
 })
 

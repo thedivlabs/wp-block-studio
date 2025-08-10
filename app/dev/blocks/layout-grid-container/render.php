@@ -52,17 +52,14 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <?php
 
 
-if ( $is_loop && ! empty( $loop->query ) && ! empty( $loop->card ) ) {
+echo $loop->pagination( $loop->query );
 
-	echo $loop->pagination( $loop->query );
-
-	echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
-			'uniqueId' => $block->context['wpbs/settings']['uniqueId'] ?? false,
-			'card'     => $loop->card,
-			'query'    => $query_settings,
-			'settings' => $grid_settings
-		] ) ) . '</script>';
-}
+echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
+		'uniqueId' => $block->context['wpbs/settings']['uniqueId'] ?? false,
+		'card'     => $loop->card,
+		'query'    => $query_settings,
+		'settings' => $grid_settings
+	] ) ) . '</script>';
 
 
 ?>

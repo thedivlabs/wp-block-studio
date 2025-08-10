@@ -30,14 +30,13 @@ const {state} = store('wpbs/layout-grid', {
 
             const {ref: element} = getElement();
             const container = element.querySelector(':scope > .loop-container');
-
             const args = JSON.parse(element.querySelector('script.wpbs-args')?.textContent ?? '{}');
 
             const {settings, uniqueId} = args;
 
             WPBS.setMasonry(container);
 
-            WPBS.gridDividers(element, settings, uniqueId);
+            WPBS.gridDividers(element, settings, args?.uniqueId ?? context?.uniqueId);
 
 
         },

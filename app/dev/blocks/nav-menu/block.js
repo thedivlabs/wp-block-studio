@@ -162,7 +162,7 @@ registerBlockType(metadata.name, {
 
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={15}
-                  style={{display: !(attributes?.className ?? '').includes('is-style-default') ? 'none' : 'grid'}}>
+                  style={{display: !(attributes?.className ?? '').includes('is-style-columns') ? 'none' : 'grid'}}>
                 <NumberControl
                     label="Columns"
                     value={settings?.['columns'] ?? undefined}

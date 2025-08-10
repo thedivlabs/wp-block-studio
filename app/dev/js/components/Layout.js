@@ -524,7 +524,7 @@ export function layoutCss(attributes, selector) {
         }
 
         if (settings?.reveal) {
-            css += '--aos-distance: ' + (settings?.['reveal-distance'] ?? 120) + 'px;';
+            css += '--aos-distance: ' + (settings?.['reveal-distance'] || 120) + 'px;';
         }
 
         css += '}';
@@ -560,9 +560,9 @@ function getProps(settings) {
 
     if (!!settings?.reveal) {
         result['data-aos'] = settings?.reveal;
-        result['data-aos-duration'] = settings?.['reveal-duration'] ?? 400;
-        result['data-aos-easing'] = settings?.['reveal-easing'] ?? 'ease';
-        result['data-aos-offset'] = settings?.['reveal-offset'] ?? 200;
+        result['data-aos-duration'] = settings?.['reveal-duration'] || 400;
+        result['data-aos-easing'] = settings?.['reveal-easing'] || 'ease';
+        result['data-aos-offset'] = settings?.['reveal-offset'] || 200;
         result['data-aos-once'] = !settings?.['reveal-repeat'];
         result['data-aos-mirror'] = !!settings?.['reveal-mirror'];
     }

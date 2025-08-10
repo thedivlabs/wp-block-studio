@@ -106,10 +106,18 @@
   &.is-style-default {
     .wpbs-nav-menu-container {
       display: grid;
-      grid-template-columns: repeat(var(--columns, 1), 1fr);
+      grid-template-columns: repeat(var(--columns, 1), auto);
 
-      & > li > .sub-menu {
-        display: none;
+      & > li {
+        width: auto;
+
+        & > a {
+          width: auto;
+        }
+
+        .sub-menu {
+          display: none;
+        }
       }
     }
   }

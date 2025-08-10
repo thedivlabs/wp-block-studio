@@ -87,7 +87,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--columns-mobile': settings?.['columns'] ?? settings?.['columns-mobile'] ?? null,
+                '--columns': settings?.['columns'] ?? settings?.['columns-mobile'] ?? null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,

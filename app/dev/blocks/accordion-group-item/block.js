@@ -16,6 +16,8 @@ import {
     ToggleControl,
     __experimentalGrid as Grid, PanelBody
 } from "@wordpress/components";
+import {Style} from "Components/Style";
+import {useUniqueId} from "Includes/helper";
 
 function classNames(attributes = {}, editor = false) {
 
@@ -35,6 +37,8 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
+
+        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {ElementTag: ParentElementTag = 'div'} = context || {};
 
@@ -104,6 +108,9 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
+
+            <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
+                   selector={'wpbs-accordion-group-item'} deps={['wpbs-accordion-group-item']}/>
 
             <ElementTag {...innerBlocksProps} onClick={handleClick}></ElementTag>
 

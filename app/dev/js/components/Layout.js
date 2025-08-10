@@ -524,7 +524,7 @@ export function layoutCss(attributes, selector) {
         }
 
         if (settings?.reveal) {
-            css += '--aos-distance: ' + (settings?.['reveal-distance'] ?? 100) + 'px;';
+            css += '--aos-distance: ' + (settings?.['reveal-distance'] ?? 120) + 'px;';
         }
 
         css += '}';

@@ -1,5 +1,5 @@
 /* AOS */
-[data-aos] {
+[data-aos]:not(.aos-init) {
   opacity: 0;
 }
 

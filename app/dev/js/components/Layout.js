@@ -523,9 +523,12 @@ export function layoutCss(attributes, selector) {
             css += '--container-width: ' + container + ';';
         }
 
-        if (settings?.reveal) {
-            css += '--aos-distance: ' + (settings?.['reveal-distance'] || 120) + 'px;';
-        }
+        css += '}';
+    }
+
+    if (!!settings?.reveal) {
+        css += selector + '{';
+        css += '--aos-distance: ' + (settings?.['reveal-distance'] || 120) + 'px;';
 
         css += '}';
     }

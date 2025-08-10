@@ -1,0 +1,117 @@
+/* Fade Up */
+[data-aos="fade-up"] {
+  transform: translate3d(0, var(--aos-distance), 0) !important;
+}
+
+[data-aos="fade-up"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Down */
+[data-aos="fade-down"] {
+  transform: translate3d(0, calc(-1 * var(--aos-distance)), 0) !important;
+}
+
+[data-aos="fade-down"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Left */
+[data-aos="fade-left"] {
+  transform: translate3d(var(--aos-distance), 0, 0) !important;
+}
+
+[data-aos="fade-left"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Right */
+[data-aos="fade-right"] {
+  transform: translate3d(calc(-1 * var(--aos-distance)), 0, 0) !important;
+}
+
+[data-aos="fade-right"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Up Right */
+[data-aos="fade-up-right"] {
+  transform: translate3d(calc(-0.7071 * var(--aos-distance)), var(--aos-distance), 0) !important;
+}
+
+[data-aos="fade-up-right"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Up Left */
+[data-aos="fade-up-left"] {
+  transform: translate3d(var(--aos-distance), var(--aos-distance), 0) !important;
+}
+
+[data-aos="fade-up-left"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Down Right */
+[data-aos="fade-down-right"] {
+  transform: translate3d(calc(-0.7071 * var(--aos-distance)), calc(-1 * var(--aos-distance)), 0) !important;
+}
+
+[data-aos="fade-down-right"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fade Down Left */
+[data-aos="fade-down-left"] {
+  transform: translate3d(var(--aos-distance), calc(-1 * var(--aos-distance)), 0) !important;
+}
+
+[data-aos="fade-down-left"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Slide Up */
+[data-aos="slide-up"] {
+  transform: translate3d(0, var(--aos-distance), 0) !important;
+}
+
+[data-aos="slide-up"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Slide Down */
+[data-aos="slide-down"] {
+  transform: translate3d(0, calc(-1 * var(--aos-distance)), 0) !important;
+}
+
+[data-aos="slide-down"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Slide Left */
+[data-aos="slide-left"] {
+  transform: translate3d(var(--aos-distance), 0, 0) !important;
+}
+
+[data-aos="slide-left"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Slide Right */
+[data-aos="slide-right"] {
+  transform: translate3d(calc(-1 * var(--aos-distance)), 0, 0) !important;
+}
+
+[data-aos="slide-right"].aos-animate {
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Flip Up - usually rotates, so no translate override needed */
+
+/* Flip Down - same */
+
+/* Flip Left - same */
+
+/* Flip Right - same */
+
+/* Zoom animations don’t use translate3d so no distance override needed */

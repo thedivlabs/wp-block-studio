@@ -57,7 +57,14 @@ const LAYOUT_PROPS = {
     special: [
         'align-header',
         'reveal',
+        'reveal-easing',
         'reveal-duration',
+        'reveal-offset',
+        'reveal-distance',
+        'reveal-repeat',
+        'reveal-mirror',
+        'offset-header',
+        'align-header',
         'transition',
         'breakpoint',
         'mask-image',
@@ -95,6 +102,12 @@ const LAYOUT_PROPS = {
     ],
     layout: [
         'reveal',
+        'reveal-easing',
+        'reveal-duration',
+        'reveal-offset',
+        'reveal-distance',
+        'reveal-repeat',
+        'reveal-mirror',
         'offset-header',
         'align-header',
         'display',
@@ -510,6 +523,10 @@ export function layoutCss(attributes, selector) {
             css += '--container-width: ' + container + ';';
         }
 
+        if (settings?.reveal) {
+            css += '--aos-distance: ' + (settings?.['reveal-distance'] ?? 100) + 'px;';
+        }
+
         css += '}';
     }
 
@@ -544,6 +561,10 @@ function getProps(settings) {
     if (!!settings?.reveal) {
         result['data-aos'] = settings?.reveal;
         result['data-aos-duration'] = settings?.['reveal-duration'];
+        result['data-aos-easing'] = settings?.['reveal-easing'];
+        result['data-aos-offset'] = settings?.['reveal-offset'];
+        result['data-aos-once'] = !settings?.['reveal-repeat'];
+        result['data-aos-mirror'] = !!settings?.['reveal-mirror'];
     }
 
     return result;
@@ -1082,33 +1103,122 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         label={'Reveal'}
                         onDeselect={() => updateProp({'reveal': ''})}
                     >
-                        <Grid columns={2} columnGap={15}>
-                            <SelectControl
-                                __nextHasNoMarginBottom
-                                options={[
-                                    {label: 'Select', value: ''},
-                                    {label: 'Fade', value: 'fade'},
-                                    {label: 'Fade Up', value: 'fade-up'},
-                                    {label: 'Fade Down', value: 'fade-down'},
-                                    {label: 'Fade Left', value: 'fade-left'},
-                                    {label: 'Fade Right', value: 'fade-right'},
-                                ]}
-                                __next40pxDefaultSize
-                                label="Animation"
-                                value={settings?.['reveal']}
-                                onChange={(newValue) => updateProp({'reveal': newValue})}
+                        <Grid columns={1} rowGap={20} columnGap={15}>
+                            <Grid columns={2} columnGap={15}>
 
-                            />
+                                <SelectControl
+                                    __nextHasNoMarginBottom
+                                    options={[
+                                        {label: 'Select', value: ''},
+                                        {label: 'Fade', value: 'fade'},
+                                        {label: 'Fade Up', value: 'fade-up'},
+                                        {label: 'Fade Down', value: 'fade-down'},
+                                        {label: 'Fade Left', value: 'fade-left'},
+                                        {label: 'Fade Right', value: 'fade-right'},
+                                        {label: 'Fade Up Right', value: 'fade-up-right'},
+                                        {label: 'Fade Up Left', value: 'fade-up-left'},
+                                        {label: 'Fade Down Right', value: 'fade-down-right'},
+                                        {label: 'Fade Down Left', value: 'fade-down-left'},
+                                        {label: 'Flip Up', value: 'flip-up'},
+                                        {label: 'Flip Down', value: 'flip-down'},
+                                        {label: 'Flip Left', value: 'flip-left'},
+                                        {label: 'Flip Right', value: 'flip-right'},
+                                        {label: 'Slide Up', value: 'slide-up'},
+                                        {label: 'Slide Down', value: 'slide-down'},
+                                        {label: 'Slide Left', value: 'slide-left'},
+                                        {label: 'Slide Right', value: 'slide-right'},
+                                        {label: 'Zoom In', value: 'zoom-in'},
+                                        {label: 'Zoom In Up', value: 'zoom-in-up'},
+                                        {label: 'Zoom In Down', value: 'zoom-in-down'},
+                                        {label: 'Zoom In Left', value: 'zoom-in-left'},
+                                        {label: 'Zoom In Right', value: 'zoom-in-right'},
+                                        {label: 'Zoom Out', value: 'zoom-out'},
+                                        {label: 'Zoom Out Up', value: 'zoom-out-up'},
+                                        {label: 'Zoom Out Down', value: 'zoom-out-down'},
+                                        {label: 'Zoom Out Left', value: 'zoom-out-left'},
+                                        {label: 'Zoom Out Right', value: 'zoom-out-right'},
+                                    ]}
+                                    __next40pxDefaultSize
+                                    label="Animation"
+                                    value={settings?.['reveal']}
+                                    onChange={(newValue) => updateProp({'reveal': newValue})}
 
-                            <NumberControl
-                                label={'Duration'}
-                                value={settings?.['reveal-duration']}
-                                min={0}
-                                step={50}
-                                onChange={(newValue) => updateProp({'reveal-duration': newValue})}
-                                __next40pxDefaultSize
-                            />
+                                />
 
+                                <SelectControl
+                                    __nextHasNoMarginBottom
+                                    label="Easing"
+                                    value={settings?.['reveal-easing']}
+                                    options={[
+                                        {label: 'Select', value: ''},
+                                        {label: 'Linear', value: 'linear'},
+                                        {label: 'Ease In', value: 'ease-in'},
+                                        {label: 'Ease Out', value: 'ease-out'},
+                                        {label: 'Ease In Out', value: 'ease-in-out'},
+                                        {label: 'Ease In Back', value: 'ease-in-back'},
+                                        {label: 'Ease Out Back', value: 'ease-out-back'},
+                                        {label: 'Ease In Out Back', value: 'ease-in-out-back'},
+                                        {label: 'Ease In Circ', value: 'ease-in-circ'},
+                                        {label: 'Ease Out Circ', value: 'ease-out-circ'},
+                                        {label: 'Ease In Out Circ', value: 'ease-in-out-circ'},
+                                        {label: 'Ease In Cubic', value: 'ease-in-cubic'},
+                                        {label: 'Ease Out Cubic', value: 'ease-out-cubic'},
+                                        {label: 'Ease In Out Cubic', value: 'ease-in-out-cubic'},
+                                        {label: 'Ease In Quad', value: 'ease-in-quad'},
+                                        {label: 'Ease Out Quad', value: 'ease-out-quad'},
+                                        {label: 'Ease In Out Quad', value: 'ease-in-out-quad'},
+                                        {label: 'Ease In Quart', value: 'ease-in-quart'},
+                                        {label: 'Ease Out Quart', value: 'ease-out-quart'},
+                                        {label: 'Ease In Out Quart', value: 'ease-in-out-quart'},
+                                        {label: 'Ease In Quint', value: 'ease-in-quint'},
+                                        {label: 'Ease Out Quint', value: 'ease-out-quint'},
+                                        {label: 'Ease In Out Quint', value: 'ease-in-out-quint'},
+                                    ]}
+                                    onChange={(newValue) => updateProp({'reveal-easing': newValue})}
+                                />
+
+                                <NumberControl
+                                    label={'Duration'}
+                                    value={settings?.['reveal-duration']}
+                                    min={0}
+                                    step={50}
+                                    onChange={(newValue) => updateProp({'reveal-duration': newValue})}
+                                    __next40pxDefaultSize
+                                />
+
+                                <NumberControl
+                                    label={'Offset'}
+                                    value={settings?.['reveal-offset']}
+                                    min={0}
+                                    step={10}
+                                    onChange={(newValue) => updateProp({'reveal-offset': newValue})}
+                                    __next40pxDefaultSize
+                                />
+                                <NumberControl
+                                    label={'Distance'}
+                                    value={settings?.['reveal-distance']}
+                                    min={0}
+                                    step={10}
+                                    onChange={(newValue) => updateProp({'reveal-distance': newValue})}
+                                    __next40pxDefaultSize
+                                />
+
+
+                            </Grid>
+                            <Grid columns={2} columnGap={15}>
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Repeat"
+                                    value={!!settings?.['reveal-repeat']}
+                                    onChange={(newValue) => updateProp({'reveal-repeat': newValue})}
+                                />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Mirror"
+                                    value={!!settings?.['reveal-mirror']}
+                                    onChange={(newValue) => updateProp({'reveal-mirror': newValue})}
+                                />
+                            </Grid>
                         </Grid>
 
 

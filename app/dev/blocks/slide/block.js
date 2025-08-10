@@ -250,7 +250,7 @@ registerBlockType(metadata.name, {
                             />
                             <ToggleControl
                                 label="Force"
-                                value={!!attributes['wpbs-slide']?.force}
+                                checked={!!attributes['wpbs-slide']?.force}
                                 onChange={(value) => updateSettings(value, 'force')}
                                 className={'flex items-center'}
                                 __nextHasNoMarginBottom

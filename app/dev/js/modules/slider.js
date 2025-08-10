@@ -18,14 +18,28 @@ export default class Slider {
 
         //const {on, ...safeArgs} = args || {};
 
-        args = merge({}, SWIPER_ARGS_VIEW, {
+        /*args = merge({}, SWIPER_ARGS_VIEW, {
             navigation: {
                 enabled: true,
                 nextEl: element.querySelector('.wpbs-slider-nav__btn--next'),
                 prevEl: element.querySelector('.wpbs-slider-nav__btn--prev'),
             },
             args
-        });
+        });*/
+
+        args = {
+            ...SWIPER_ARGS_VIEW,
+            ...{
+                navigation: {
+                    enabled: true,
+                    nextEl: element.querySelector('.wpbs-slider-nav__btn--next'),
+                    prevEl: element.querySelector('.wpbs-slider-nav__btn--prev'),
+                }
+            },
+            ...args
+        }
+
+        console.log(args);
 
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {

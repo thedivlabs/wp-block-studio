@@ -36,12 +36,14 @@
     },
     "spacing": {
       "blockGap": [
-        "vertical"
+        "vertical",
+        "horizontal"
       ],
       "padding": true,
       "margin": false
     },
     "__experimentalBorder": {
+      "shadow": true,
       "size": true,
       "color": true,
       "radius": true

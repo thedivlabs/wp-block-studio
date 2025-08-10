@@ -5,6 +5,7 @@
 .wpbs-slide--image picture > img {
   width: 100% !important;
   height: 100% !important;
+  object-fit: var(--image-size, contain);
 }
 
 .wpbs-slide__container {

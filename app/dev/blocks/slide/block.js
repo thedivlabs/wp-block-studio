@@ -161,6 +161,12 @@ registerBlockType(metadata.name, {
 
         const isImageSlide = (blockProps.className || '').split(' ').includes('is-style-image');
 
+        const cssProps = useMemo(() => {
+            return {
+                '--image-size': settings?.imageSize
+            }
+        }, [settings?.imageSize]);
+
         return <>
             <BlockEdit key="edit" {...blockProps} />
             <InspectorControls group="styles">
@@ -263,7 +269,7 @@ registerBlockType(metadata.name, {
             <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-slide']} selector={'wpbs-slide'}
-                   preload={preloadMedia}
+                   preload={preloadMedia} props={cssProps}
             />
 
             <div {...blockProps}>

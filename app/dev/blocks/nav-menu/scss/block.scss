@@ -99,6 +99,22 @@
   }
 
   //
+  // ============ DEFAULT STYLE ============
+  //
+
+
+  &.is-style-default {
+    .wpbs-nav-menu-container {
+      flex-wrap: wrap;
+
+      & > li > .sub-menu {
+        display: none;
+      }
+    }
+  }
+
+
+  //
   // ============ DROPDOWN STYLE ============
   //
   &.is-style-dropdown {

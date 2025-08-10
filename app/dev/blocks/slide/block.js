@@ -163,9 +163,9 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-                '--image-size': settings?.imageSize
+                '--image-size': attributes?.['wpbs-slide']?.imageSize
             }
-        }, [settings?.imageSize]);
+        }, [attributes?.['wpbs-slide']?.imageSize]);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

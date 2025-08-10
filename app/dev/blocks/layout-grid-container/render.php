@@ -52,7 +52,12 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 <?php
 
 
-echo $loop->pagination( $loop->query );
+if ( $is_loop && ! empty( $loop->query ) && ! empty( $loop->card ) ) {
+
+	echo $loop->pagination( $loop->query );
+
+
+}
 
 echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 		'uniqueId' => $block->context['wpbs/settings']['uniqueId'] ?? false,
@@ -60,8 +65,6 @@ echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( arra
 		'query'    => $query_settings,
 		'settings' => $grid_settings
 	] ) ) . '</script>';
-
-
 ?>
 
 

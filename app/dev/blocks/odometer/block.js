@@ -13,7 +13,7 @@ import React, {useCallback, useEffect, useMemo, useRef} from "react";
 import {cleanObject, useUniqueId} from "Includes/helper"
 import {
     __experimentalNumberControl as NumberControl,
-    __experimentalGrid as Grid, PanelBody,
+    __experimentalGrid as Grid, PanelBody, TextControl,
 } from "@wordpress/components";
 
 function blockClassnames(attributes = {}) {
@@ -88,6 +88,12 @@ registerBlockType(metadata.name, {
                                     step={50}
                                     isDragEnabled={false}
                                     onChange={(newValue) => updateSettings({duration: newValue})}
+                                    __next40pxDefaultSize
+                                />
+                                <TextControl
+                                    label={'Format'}
+                                    value={settings?.format}
+                                    onChange={(newValue) => updateSettings({format: newValue})}
                                     __next40pxDefaultSize
                                 />
 

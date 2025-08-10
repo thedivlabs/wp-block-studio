@@ -5,7 +5,7 @@ const {state} = store('wpbs/odometer', {
         init: () => {
             const {ref: element} = getElement();
             const context = getContext();
-            const {start = 0, end = 100, duration = 1200} = context;
+            const {start = 0, end = 100, duration = 1200, format = '(,ddd).dd'} = context;
 
             // Inject Odometer CSS
             const link = document.createElement('link');
@@ -22,7 +22,8 @@ const {state} = store('wpbs/odometer', {
                         el: element,
                         value: start,
                         duration: duration,
-                        theme: 'default'
+                        theme: 'default',
+                        format: format,
                     });
 
                     const observer = new IntersectionObserver((entries) => {

@@ -16,25 +16,12 @@
     }
   },
   "allowedBlocks": [
-    "wpbs/reviews-gallery-container",
-    "wpbs/pagination-button",
-    "wpbs/layout-element",
+    "wpbs/reviews-card",
     "wpbs/slider-navigation"
   ],
   "providesContext": {
     "wpbs/settings": "wpbs-reviews-gallery-settings"
   },
-  "styles": [
-    {
-      "label": "Grid",
-      "name": "grid",
-      "isDefault": true
-    },
-    {
-      "label": "Slider",
-      "name": "slider"
-    }
-  ],
   "supports": {
     "layout": false,
     "interactivity": true,
@@ -68,7 +55,8 @@
   },
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
-  "icon": "format-gallery"
+  "icon": "format-gallery",
+  "render": "file:./render.php"
 }
 
 

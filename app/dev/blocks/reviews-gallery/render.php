@@ -1,5 +1,7 @@
 <?php
+echo 'QQQQQQ';
 
+return;
 $transient_prefix     = 'wpbs_reviews_gallery_';
 $transient_expiration = DAY_IN_SECONDS;
 

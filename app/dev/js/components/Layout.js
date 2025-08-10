@@ -1209,13 +1209,13 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 <ToggleControl
                                     __nextHasNoMarginBottom
                                     label="Repeat"
-                                    value={!!settings?.['reveal-repeat']}
+                                    checked={!!settings?.['reveal-repeat']}
                                     onChange={(newValue) => updateProp({'reveal-repeat': newValue})}
                                 />
                                 <ToggleControl
                                     __nextHasNoMarginBottom
                                     label="Mirror"
-                                    value={!!settings?.['reveal-mirror']}
+                                    checked={!!settings?.['reveal-mirror']}
                                     onChange={(newValue) => updateProp({'reveal-mirror': newValue})}
                                 />
                             </Grid>

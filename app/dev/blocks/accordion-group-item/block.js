@@ -20,7 +20,7 @@ import {
 function classNames(attributes = {}, editor = false) {
 
     return [
-        'wpbs-accordion-group-item',
+        'wpbs-accordion-group-item flex flex-col',
         !!attributes['wpbs-accordion-group-item']?.open ? 'active --open' : null,
     ].filter(x => x).join(' ');
 }

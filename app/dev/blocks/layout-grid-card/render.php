@@ -1,15 +1,9 @@
 <?php
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class'               => implode( ' ', array_filter( [
+	'class' => implode( ' ', array_filter( [
 		'wpbs-layout-grid-card loop-card w-full block relative',
 		$attributes['uniqueId'] ?? ''
-	] ) ),
-	'data-index'          => intval( $block->context['index'] ?? null ),
-	'data-wp-interactive' => 'wpbs/media-gallery-card',
-	'data-wp-init'        => 'actions.init',
-	'data-wp-context'     => json_encode( array_filter( [
-		'index' => intval( $index ?? 0 ),
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )
 ] );

@@ -42,9 +42,9 @@ registerBlockType(metadata.name, {
         };
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            /*  template: [
-                  ['wpbs/media-gallery-card'],
-              ]*/
+            template: [
+                ['wpbs/media-gallery-card'],
+            ]
         });
 
         const styleProps = {

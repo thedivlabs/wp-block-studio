@@ -130,9 +130,9 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({className: blockClassnames(attributes)});
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            template: [
-                ['wpbs/media-gallery-container'],
-            ],
+            /*  template: [
+                  ['wpbs/media-gallery-container'],
+              ],*/
         });
 
         return (
@@ -154,7 +154,6 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-
                 {isSlider ? <SliderComponent
                     attributes={attributes}
                     blockProps={blockProps}

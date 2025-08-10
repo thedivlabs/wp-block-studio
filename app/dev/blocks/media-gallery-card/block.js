@@ -20,9 +20,9 @@ import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}, is_slider = false) {
     return [
-        'wpbs-media-gallery-card loop-card',
+        'wpbs-media-gallery-card loop-card aspect-square',
         'w-full block relative',
-        !!is_slider ? 'swiper-slide' : 'loop-card',
+        !!is_slider ? 'swiper-slide' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

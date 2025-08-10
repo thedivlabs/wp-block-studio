@@ -84,12 +84,17 @@ export const SliderComponent = forwardRef(({
             };
 
             if (element instanceof Element) {
-                //const swiper = new Swiper(element, swiperConfig);
+
+                const wrapper = element?.querySelector('.swiper-wrapper');
+                if (wrapper) {
+                    const swiper = new Swiper(element, swiperConfig);
+                }
+
             }
 
 
         }
-    }, [swiperArgs, ref]);
+    }, [swiperArgs, ref, innerBlocksProps.children]);
 
     return <div {...blockProps} ref={ref}>
         {innerBlocksProps.children}

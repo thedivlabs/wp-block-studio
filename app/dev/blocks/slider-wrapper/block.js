@@ -29,9 +29,9 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            /* template: [
-                 ['wpbs/slide', {content: 'Content Slide'}],
-             ]*/
+            template: [
+                ['wpbs/slide', {content: 'Content Slide'}],
+            ]
         });
 
         useEffect(() => {

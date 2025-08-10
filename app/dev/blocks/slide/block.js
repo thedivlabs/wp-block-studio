@@ -43,16 +43,18 @@ function containerClasses(attributes = {}) {
 
 function BlockContent({isImageSlide, attributes, innerBlocksProps, isEditor = false}) {
 
+    const {'wpbs-slide': settings} = attributes;
+
     if (isImageSlide) {
 
         const {
-            ['wpbs-imageMobile']: imageMobile,
-            ['wpbs-imageLarge']: largeImage,
-            ['wpbs-eagerSlide']: eager,
-            ['wpbs-forceSlide']: force,
-            ['wpbs-resolutionSlide']: resolution,
-            ['wpbs-imageSize']: size,
-        } = attributes;
+            ['imageMobile']: imageMobile,
+            ['imageLarge']: largeImage,
+            ['eagerSlide']: eager,
+            ['forceSlide']: force,
+            ['resolutionSlide']: resolution,
+            ['imageSize']: size,
+        } = settings;
 
         return <ResponsivePicture
             mobile={imageMobile}
@@ -272,12 +274,43 @@ registerBlockType(metadata.name, {
 
         </>;
     },
-    save: (props) => <>
-        <div className={containerClasses()}>
-            <InnerBlocks.Content/>
-        </div>
-        <BackgroundElement attributes={props.attributes} editor={false}/>
-    </>
+    save: (props) => {
+
+        const {'wpbs-slide': settings} = props?.attributes ?? {};
+
+        const isImageSlide = (props?.attributes?.className ?? '').includes('is-style-image');
+
+        const {
+            ['imageMobile']: imageMobile,
+            ['imageLarge']: largeImage,
+            ['eagerSlide']: eager,
+            ['forceSlide']: force,
+            ['resolutionSlide']: resolution,
+            ['imageSize']: size,
+        } = settings;
+
+        return isImageSlide ?
+            <ResponsivePicture
+                mobile={imageMobile}
+                large={largeImage}
+                settings={{
+                    eager: !!eager,
+                    force: !!force,
+                    className: [
+                        'w-full h-full !object-cover absolute top-0 left-0'
+                    ].filter(s => !!s).join(' '),
+                    sizeLarge: resolution,
+                }}
+                style={{'object-fit': size}}
+                editor={false}
+            ></ResponsivePicture> :
+            <>
+                <div className={containerClasses()}>
+                    <InnerBlocks.Content/>
+                </div>
+                <BackgroundElement attributes={props.attributes} editor={false}/>
+            </>
+    }
 })
 
 

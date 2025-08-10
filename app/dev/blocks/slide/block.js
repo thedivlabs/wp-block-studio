@@ -267,7 +267,7 @@ registerBlockType(metadata.name, {
             <div {...blockProps}>
                 <BlockContent isImageSlide={isImageSlide} attributes={attributes} innerBlocksProps={innerBlocksProps}
                               isEditor={true}/>
-                <BackgroundElement attributes={props.attributes} editor={true}/>
+                <BackgroundElement attributes={attributes} editor={true}/>
             </div>
 
         </>;

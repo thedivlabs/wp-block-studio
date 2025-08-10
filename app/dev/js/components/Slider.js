@@ -84,7 +84,7 @@ export const SliderComponent = forwardRef(({
             };
 
             if (element instanceof Element) {
-                const swiper = new Swiper(element, swiperConfig);
+                //const swiper = new Swiper(element, swiperConfig);
             }
 
 

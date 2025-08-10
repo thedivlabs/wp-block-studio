@@ -15,7 +15,7 @@ import {
     __experimentalUnitControl as UnitControl,
     __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl, SelectControl,
 } from "@wordpress/components";
-import React, {useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import {
     DIMENSION_UNITS_TEXT,
     ICON_STYLES,
@@ -243,6 +243,22 @@ registerBlockType(metadata.name, {
 
         const ElementTag = attributes['wpbs-accordion-group']?.['tag'] ?? 'div';
 
+        const cssProps = useMemo(() => {
+            return {
+                '--icon-open': `"\\${iconOpen}"`,
+                '--icon-closed': `"\\${iconClosed}"`,
+                '--icon-style': attributes['wpbs-accordion-group']?.['icon-style'],
+                '--icon-size': attributes['wpbs-accordion-group']?.['icon-size'],
+                '--icon-color': attributes['wpbs-accordion-group']?.['icon-color'],
+                '--icon-color-hover': attributes['wpbs-accordion-group']?.['icon-color-hover'],
+                '--header-color-hover': attributes['wpbs-accordion-group']?.['header-color-hover'],
+                '--header-text-color-hover': attributes['wpbs-accordion-group']?.['header-text-color-hover'],
+                '--icon-color-active': attributes['wpbs-accordion-group']?.['icon-color-active'],
+                '--header-color-active': attributes['wpbs-accordion-group']?.['header-color-active'],
+                '--text-color-active': attributes['wpbs-accordion-group']?.['text-color-active'],
+            }
+        }, [attributes['wpbs-accordion-group'], iconOpen, iconClosed]);
+
         return <>
 
             <InspectorControls group="advanced">
@@ -297,19 +313,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes}
                    uniqueId={uniqueId} selector={'wpbs-accordion-group'}
                    deps={['wpbs-accordion-group']}
-                   props={{
-                       '--icon-open': `"\\${iconOpen}"`,
-                       '--icon-closed': `"\\${iconClosed}"`,
-                       '--icon-style': attributes['wpbs-accordion-group']?.['icon-style'],
-                       '--icon-size': attributes['wpbs-accordion-group']?.['icon-size'],
-                       '--icon-color': attributes['wpbs-accordion-group']?.['icon-color'],
-                       '--icon-color-hover': attributes['wpbs-accordion-group']?.['icon-color-hover'],
-                       '--header-color-hover': attributes['wpbs-accordion-group']?.['header-color-hover'],
-                       '--header-text-color-hover': attributes['wpbs-accordion-group']?.['header-text-color-hover'],
-                       '--icon-color-active': attributes['wpbs-accordion-group']?.['icon-color-active'],
-                       '--header-color-active': attributes['wpbs-accordion-group']?.['header-color-active'],
-                       '--text-color-active': attributes['wpbs-accordion-group']?.['text-color-active'],
-                   }}
+                   props={cssProps}
             />
 
             <BlockContextProvider value={{ElementTag}}>

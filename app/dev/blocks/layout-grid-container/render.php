@@ -61,7 +61,7 @@ if ( $is_loop && ! empty( $loop->query ) && ! empty( $loop->card ) ) {
 
 echo '<script class="wpbs-args" type="application/json">' . wp_json_encode( array_filter( [
 		'uniqueId' => $block->context['wpbs/settings']['uniqueId'] ?? false,
-		'card'     => $loop->card,
+		'card'     => $loop->card ?? null,
 		'query'    => $query_settings,
 		'settings' => $grid_settings
 	] ) ) . '</script>';

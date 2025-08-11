@@ -6,7 +6,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import React, {useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
 import {
     __experimentalGrid as Grid,
@@ -52,6 +52,13 @@ registerBlockType(metadata.name, {
             className: sectionClassNames(attributes),
         });
 
+        const label = useMemo(() => {
+
+            const styleName = className.match(/is-style-(\S+)/)?.[1];
+
+            return (metadata?.styles ?? []).find(item => item.name === styleName)?.label;
+        }, [attributes?.className]);
+
         return (
             <>
 
@@ -88,7 +95,9 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-review-content'}
                        uniqueId={uniqueId}/>
 
-                <div {...blockProps}/>
+                <div {...blockProps}>
+                    {label}
+                </div>
 
 
             </>

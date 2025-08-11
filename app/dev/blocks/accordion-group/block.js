@@ -201,26 +201,14 @@ registerBlockType(metadata.name, {
                         value: attributes['wpbs-accordion-group']?.['icon-color-active'],
                         onChange: (newValue) => updateSettings({'icon-color-active': newValue}),
                         isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
+                    },
                     {
                         slug: 'header-color-active',
                         label: 'Header Color',
                         value: attributes['wpbs-accordion-group']?.['header-color-active'],
                         onChange: (newValue) => updateSettings({'header-color-active': newValue}),
                         isShownByDefault: true
-                    }
-                ]}
-            />
-            <PanelColorSettings
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
+                    },
                     {
                         slug: 'header-text-color-active',
                         label: 'Header Text Color',
@@ -255,7 +243,7 @@ registerBlockType(metadata.name, {
                 '--header-text-color-hover': attributes['wpbs-accordion-group']?.['header-text-color-hover'],
                 '--icon-color-active': attributes['wpbs-accordion-group']?.['icon-color-active'],
                 '--header-color-active': attributes['wpbs-accordion-group']?.['header-color-active'],
-                '--text-color-active': attributes['wpbs-accordion-group']?.['text-color-active'],
+                '--header-text-color-active': attributes['wpbs-accordion-group']?.['header-text-color-active'],
             }
         }, [attributes['wpbs-accordion-group'], iconOpen, iconClosed]);
 

@@ -31,25 +31,15 @@ const {state} = store('wpbs/review-gallery', {
 
             const {ref: element} = getElement();
 
-            if (!uniqueId) {
+            const context = getContext();
+
+            const {slider: swiper_args} = context;
+
+            if (!swiper_args) {
                 return;
             }
-
-            const is_slider = type === 'slider';
-
-            if (!!is_slider && swiper_args) {
-                WPBS.slider.observe(element, swiper_args);
-            }
-
-            if (!is_slider) {
-                WPBS.setMasonry(container);
-
-                WPBS.gridDividers(element, grid, settings?.uniqueId);
-            }
-
-            if (element.classList.contains('--last-page')) {
-                [...element.querySelectorAll(':scope > .wpbs-pagination-button')].forEach(button => button.remove());
-            }
+            
+            WPBS.slider.observe(element, swiper_args);
 
 
         },

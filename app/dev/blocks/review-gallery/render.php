@@ -36,8 +36,15 @@ $classes = array_filter( [
 ] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( $classes ) ),
-	...( $attributes['wpbs-props'] ?? [] )
+	'class'               => implode( ' ', array_filter( $classes ) ),
+	...( $attributes['wpbs-props'] ?? [] ),
+	'data-wp-interactive' => 'wpbs/review-gallery',
+	'data-wp-init'        => 'actions.init',
+	'data-wp-context'     => json_encode( array_filter( [
+		'slider' => $attributes['wpbs-swiper-args'] ?? null,
+	] ) ),
+
+
 ] );
 
 $reviews = get_comments( array_filter( [

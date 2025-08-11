@@ -21,9 +21,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 $style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
 
 $review_content = match ( $style ) {
-	'avatar' => get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ),
+	'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" />>',
 	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
-	'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: '' ),
+	'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: 0 ),
 	'content' => $comment->comment_content ?? false,
 	'name' => $comment->comment_author ?? false,
 	default => false
@@ -38,7 +38,20 @@ if ( ! $review_content ) {
 
 
 <div <?php echo $wrapper_attributes ?>>
-	<?= $review_content ?>
+	<?php
+
+	switch ( $style ) {
+		case 'rating':
+			for ( $i = 1; $i <= $review_content; $i ++ ) {
+				echo '<i class="fa-solid fa-star-sharp"></i>';
+			}
+			break;
+		default:
+			echo $review_content;
+	}
+
+
+	?>
 </div>
 
 

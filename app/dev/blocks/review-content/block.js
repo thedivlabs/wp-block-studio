@@ -56,7 +56,10 @@ registerBlockType(metadata.name, {
 
             const styleName = attributes?.className.match(/is-style-(\S+)/)?.[1];
 
-            return (metadata?.styles ?? []).find(item => item.name === styleName)?.label ?? 'Review Content';
+            const label = (metadata?.styles ?? []).find(item => item.name === styleName)?.label ?? 'Review Content';
+
+            return styleName === 'avatar' ?
+                <i className="fa-solid fa-user-astronaut flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/> : label;
         }, [attributes?.className]);
 
         return (

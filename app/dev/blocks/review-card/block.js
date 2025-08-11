@@ -15,7 +15,7 @@ import {useUniqueId} from "Includes/helper";
 function sectionClassNames(attributes = {}) {
 
     return [
-        'wpbs-review-card loop-card swiper-slide',
+        'wpbs-review-card loop-card',
         'w-full block relative',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');

@@ -22,6 +22,10 @@ $review_content = match ( $style ) {
 	'time' => get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ),
 	'content' => $comment['comment_content'] ?? false,
 	default => false
+};
+
+if ( ! $review_content ) {
+	return false;
 }
 
 ?>

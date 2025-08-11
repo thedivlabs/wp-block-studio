@@ -21,7 +21,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 $style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
 
 $review_content = match ( $style ) {
-	'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" />>',
+	'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" />',
 	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
 	'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: 0 ),
 	'content' => $comment->comment_content ?? false,

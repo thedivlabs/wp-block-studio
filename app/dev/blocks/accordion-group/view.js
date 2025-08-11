@@ -30,7 +30,7 @@ const {state} = store('wpbs/accordion-group', {
                     const groupItem = header.closest('.wpbs-accordion-group-item');
                     const content = groupItem.querySelector('.wpbs-accordion-group-content');
 
-                    if (!content || (isSingle && groupItem.classList.contains('active'))) {
+                    if (!content || groupItem.classList.contains('animating') || (isSingle && groupItem.classList.contains('active'))) {
                         return;
                     }
 
@@ -66,8 +66,6 @@ const {state} = store('wpbs/accordion-group', {
 
                         component.classList.remove('animating');
                     })
-
-
 
 
                 })

@@ -34,7 +34,7 @@ if ( empty( $company_id ) ) {
 
 
 $classes = array_filter( [
-	'wpbs-review-gallery swiper wpbs-slider w-full',
+	'wpbs-review-gallery swiper wpbs-slider w-full wpbs-container',
 	$attributes['uniqueId'] ?? null,
 ] );
 

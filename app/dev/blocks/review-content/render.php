@@ -14,12 +14,24 @@ if ( intval( $rating ) < 4 ) {
 	return false;
 }
 
+$style_attribute = [
+	...( $attributes['wpbs-props'] ?? [] ),
+];
+
+if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
+	$attributes['line-clamp']         = $attributes['wpbs-review-content']['line-clamp'];
+	$attributes['-webkit-line-clamp'] = $attributes['wpbs-review-content']['line-clamp'];
+	$attributes['display']            = '-webkit-box';
+	$attributes['-webkit-box-orient'] = 'vertical';
+	$attributes['overflow']           = 'ellipsis';
+}
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-review-content inline-block',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	...( $attributes['wpbs-props'] ?? [] )
+	'style' => $style_attribute
 ] );
 
 $style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
@@ -47,7 +59,7 @@ if ( ! $review_content ) {
 	switch ( $style ) {
 		case 'rating':
 			for ( $i = 1; $i <= $review_content; $i ++ ) {
-				echo '<i class="fa-solid fa-star-sharp"></i>';
+				echo $attributes['wpbs-review-content']['icon'] ?? '<i class="fa-solid fa-star-sharp"></i>';
 			}
 			break;
 		default:

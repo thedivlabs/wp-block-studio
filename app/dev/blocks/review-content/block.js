@@ -1,16 +1,19 @@
 import {
-    InnerBlocks,
     InspectorControls,
     useBlockProps,
-    useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback} from "react";
-import {LinkPost} from "Components/LinkPost";
 import {useUniqueId} from "Includes/helper";
+import {
+    __experimentalGrid as Grid,
+    PanelBody,
+    TextControl,
+    __experimentalNumberControl as NumberControl,
+} from "@wordpress/components";
 
 function sectionClassNames(attributes = {}) {
 
@@ -35,6 +38,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const {'wpbs-review-content':settings} = attributes;
+
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-review-content'],
@@ -52,8 +57,36 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <LinkPost defaultValue={attributes?.['wpbs-review-content']?.linkPost}
-                          callback={(value) => updateSettings({linkPost: value})}/>
+
+
+                <InspectorControls group="styles">
+                    <PanelBody initialOpen={true} title={'Settings'}>
+                        <Grid columns={1} columnGap={15} rowGap={20}>
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+
+                                <NumberControl
+                                    __nextHasNoMarginBottom
+                                    __next40pxDefaultSize
+                                    label="Line Clamp"
+                                    value={settings?.['line-clamp']}
+                                    onChange={(newValue) => updateSettings({'line-clamp':newValue})}
+
+                                />
+
+                                <TextControl
+                                    __nextHasNoMarginBottom
+                                    __next40pxDefaultSize
+                                    label="Icon"
+                                    value={settings?.icon}
+                                    onChange={(newValue) => updateSettings({icon:newValue})}
+                                />
+                            </Grid>
+
+
+                        </Grid>
+                    </PanelBody>
+                </InspectorControls>
+
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-review-content'}
                        uniqueId={uniqueId}/>

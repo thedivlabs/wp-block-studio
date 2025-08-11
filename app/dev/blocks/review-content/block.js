@@ -59,7 +59,7 @@ registerBlockType(metadata.name, {
             const label = (metadata?.styles ?? []).find(item => item.name === styleName)?.label ?? 'Review Content';
 
             return styleName === 'avatar' ?
-                <i className="fa-solid fa-user-astronaut flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/> : label;
+                <i className="fa-solid fa-user-tie flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/> : label;
         }, [attributes?.className]);
 
         return (

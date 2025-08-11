@@ -14,16 +14,18 @@ if ( intval( $rating ) < 4 ) {
 	return false;
 }
 
-$style_attribute = [
-	...( $attributes['wpbs-props'] ?? [] ),
-];
+$style_attribute = $attributes['wpbs-props'] ?? '';
+
 
 if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
-	$attributes['line-clamp']         = $attributes['wpbs-review-content']['line-clamp'];
-	$attributes['-webkit-line-clamp'] = $attributes['wpbs-review-content']['line-clamp'];
-	$attributes['display']            = '-webkit-box';
-	$attributes['-webkit-box-orient'] = 'vertical';
-	$attributes['overflow']           = 'ellipsis';
+
+	$style_attribute .= implode( '; ', [
+		'line-clamp:' . $attributes['wpbs-review-content']['line-clamp'],
+		'-webkit-line-clamp:' . $attributes['wpbs-review-content']['line-clamp'],
+		'display:-webkit-box',
+		'-webkit-box-orient:vertical',
+		'overflow:hidden',
+	] );
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [

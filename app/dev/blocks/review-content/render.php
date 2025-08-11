@@ -19,8 +19,9 @@ $style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? 
 $review_content = match ( $style ) {
 	'avatar' => get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ),
 	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
-	'time' => get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ),
+	'date' => get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ),
 	'content' => $comment['comment_content'] ?? false,
+	'name' => $comment['comment_author'] ?? false,
 	default => false
 };
 

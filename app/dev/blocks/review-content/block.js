@@ -54,9 +54,9 @@ registerBlockType(metadata.name, {
 
         const label = useMemo(() => {
 
-            const styleName = className.match(/is-style-(\S+)/)?.[1];
+            const styleName = attributes?.className.match(/is-style-(\S+)/)?.[1];
 
-            return (metadata?.styles ?? []).find(item => item.name === styleName)?.label;
+            return (metadata?.styles ?? []).find(item => item.name === styleName)?.label ?? 'Review Content';
         }, [attributes?.className]);
 
         return (

@@ -4,6 +4,7 @@
 
 .swiper .swiper-wrapper {
   min-width: 100%;
+  display: flex;
 }
 
 .swiper .swiper-slide {

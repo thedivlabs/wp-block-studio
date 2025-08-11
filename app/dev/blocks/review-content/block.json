@@ -9,6 +9,10 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
+    },
+    "wpbs-review-content": {
+      "type": "object",
+      "show_in_rest": true
     }
   },
   "ancestor": [

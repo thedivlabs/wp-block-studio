@@ -29,16 +29,13 @@ registerBlockType(metadata.name, {
     attributes: {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
-        ...STYLE_ATTRIBUTES,
-        'wpbs-review-content': {
-            type: 'object'
-        }
+        ...STYLE_ATTRIBUTES
     },
     edit: ({attributes, setAttributes, context, clientId}) => {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const {'wpbs-review-content':settings} = attributes;
+        const {'wpbs-review-content': settings} = attributes;
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -69,7 +66,7 @@ registerBlockType(metadata.name, {
                                     __next40pxDefaultSize
                                     label="Line Clamp"
                                     value={settings?.['line-clamp']}
-                                    onChange={(newValue) => updateSettings({'line-clamp':newValue})}
+                                    onChange={(newValue) => updateSettings({'line-clamp': newValue})}
 
                                 />
 
@@ -78,7 +75,7 @@ registerBlockType(metadata.name, {
                                     __next40pxDefaultSize
                                     label="Icon"
                                     value={settings?.icon}
-                                    onChange={(newValue) => updateSettings({icon:newValue})}
+                                    onChange={(newValue) => updateSettings({icon: newValue})}
                                 />
                             </Grid>
 

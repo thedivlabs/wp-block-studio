@@ -10,9 +10,6 @@ $avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
 $rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 $time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
 
-if ( intval( $rating ) < 4 ) {
-	return false;
-}
 
 $style_attribute = $attributes['wpbs-props'] ?? '';
 
@@ -51,7 +48,6 @@ $review_content = match ( $style ) {
 if ( ! $review_content ) {
 	return false;
 }
-
 ?>
 
 
@@ -61,7 +57,8 @@ if ( ! $review_content ) {
 	switch ( $style ) {
 		case 'rating':
 			for ( $i = 1; $i <= $review_content; $i ++ ) {
-				echo $attributes['wpbs-review-content']['icon'] ?? '<i class="fa-solid fa-star-sharp"></i>';
+				//echo $attributes['wpbs-review-content']['icon'] ?? '<i class="fa-solid fa-star-sharp"></i>';
+				echo '<i class="fa-solid fa-star-sharp"></i>';
 			}
 			break;
 		default:

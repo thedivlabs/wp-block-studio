@@ -272,7 +272,12 @@ class WPBS_Theme {
     }
 
     slideToggle(element, duration, callback) {
-        jQuery(element).slideToggle(duration, callback);
+        jQuery(element).slideToggle(duration, function () {
+            if (typeof callback === 'function') {
+                callback();
+            }
+
+        });
     }
 
     slideUp(element, duration, callback) {

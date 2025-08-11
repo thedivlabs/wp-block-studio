@@ -1,5 +1,7 @@
+import './scss/block.scss';
+
 import {
-    BlockContextProvider,
+    BlockContextProvider, InnerBlocks,
     InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
@@ -19,12 +21,12 @@ import {isEqual} from 'lodash';
 import {useSelect} from "@wordpress/data";
 
 
-function blockClassnames(attributes = {}) {
+function blockClassnames(attributes = {}, editor = false) {
 
     return [
-        'wpbs-review-gallery swiper wpbs-slider h-max',
-        'flex flex-col w-full relative overflow-hidden',
-        !!attributes?.['wpbs-review-gallery']?.lightbox ? '--lightbox' : null,
+        'wpbs-review-gallery h-max',
+        !!editor ? 'editor' : null,
+        'flex flex-col w-full justify-center items-center relative overflow-hidden',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -37,34 +39,14 @@ registerBlockType(metadata.name, {
         ...STYLE_ATTRIBUTES,
         ...SLIDER_ATTRIBUTES,
         'wpbs-review-gallery': {
-            type: 'object'
+            type: 'object',
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const swiperRef = useRef(null);
-
         const {'wpbs-review-gallery': settings = {}} = attributes;
-
-        const newSettings = useMemo(() => cleanObject({
-            uniqueId,
-            slider: attributes?.['wpbs-swiper-args'],
-            settings: attributes?.['wpbs-review-gallery'],
-        }), [
-            uniqueId,
-            attributes?.['wpbs-swiper-args'],
-            attributes?.['wpbs-review-gallery'],
-        ]);
-
-        useEffect(() => {
-
-            if (!isEqual(attributes?.['wpbs-review-gallery-settings'], newSettings)) {
-                setAttributes({'wpbs-review-gallery-settings': newSettings});
-            }
-
-        }, [newSettings]);
 
         const companies = useSelect((select) => {
             return select('core').getEntityRecords('postType', 'company', {per_page: -1});
@@ -89,9 +71,14 @@ registerBlockType(metadata.name, {
             return sliderProps(attributes);
         }, [attributes?.['wpbs-slider']]);
 
-        const blockProps = useBlockProps({className: blockClassnames(attributes)});
+        const blockProps = useBlockProps({className: blockClassnames(attributes, true)});
 
-        const innerBlocksProps = useInnerBlocksProps(blockProps, {});
+        const innerBlocksProps = useInnerBlocksProps(blockProps, {
+            template: [
+                ['wpbs/review-card'],
+                ['wpbs/slider-navigation'],
+            ],
+        });
 
         return (
             <>
@@ -119,12 +106,8 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <SliderComponent
-                    attributes={attributes}
-                    blockProps={blockProps}
-                    innerBlocksProps={innerBlocksProps}
-                    ref={swiperRef}
-                />
+
+                <div {...innerBlocksProps}/>
 
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-slider', 'wpbs-review-gallery']} clientId={clientId}
@@ -133,18 +116,9 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => {
+    save: () => {
 
-        const blockProps = useBlockProps.save({
-            className: blockClassnames(props.attributes),
-            'data-wp-interactive': 'wpbs/review-gallery',
-            'data-wp-init': 'actions.init',
-            ...(props.attributes?.['wpbs-props'] ?? {})
-        });
-
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
-
-        return <div {...innerBlocksProps} />;
+        return <InnerBlocks.Content/>;
     }
 })
 

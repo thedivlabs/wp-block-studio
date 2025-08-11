@@ -8,8 +8,6 @@ const {state} = store('wpbs/slider', {
 
             let {args} = getContext();
 
-            console.log({...args});
-
             WPBS.slider.observe(element, {...args});
 
         },

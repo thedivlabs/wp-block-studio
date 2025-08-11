@@ -10,28 +10,19 @@
       "type": "string",
       "show_in_rest": true
     },
-    "postId": {
-      "type": "integer",
-      "show_in_rest": true
-    },
-    "termId": {
-      "type": "integer",
-      "default": 0,
-      "show_in_rest": true
-    },
-    "is_rest": {
-      "type": "boolean",
-      "default": false,
+    "review": {
+      "type": "object",
       "show_in_rest": true
     }
   },
   "parent": [
     "wpbs/review-gallery"
   ],
+  "usesContext": [
+    "wpbs/review"
+  ],
   "providesContext": {
-    "wpbs/postId": "postId",
-    "wpbs/termId": "termId",
-    "wpbs/postType": "postType"
+    "wpbs/review": "review"
   },
   "supports": {
     "interactivity": true,

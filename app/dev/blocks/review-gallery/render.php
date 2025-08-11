@@ -1,67 +1,38 @@
 <?php
-echo 'QQQQQQ';
 
-return;
-$transient_prefix     = 'wpbs_reviews_gallery_';
-$transient_expiration = DAY_IN_SECONDS;
+/*
+ * {
 
-$context = $block->attributes['blockContext'] ?? $block->context ?? [];
-$is_rest = ( $block->context ?? false ) == 'edit';
+        const blockProps = useBlockProps.save({
+            className: blockClassnames(props.attributes),
+            'data-wp-interactive': 'wpbs/review-gallery',
+            'data-wp-init': 'actions.init',
+            ...(props.attributes?.['wpbs-props'] ?? {})
+        });
 
-$card_block = WPBS::get_block_template( $context['wpbs/card'] ?? array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
-	return $inner_block['blockName'] === 'wpbs/review-gallery-card';
+        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
+
+        return <div {...innerBlocksProps} />;
+    }
+ *
+ * */
+
+
+$card_block = WPBS::get_block_template( array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
+	return $inner_block['blockName'] === 'wpbs/review-card';
 } )[0] ?? false );
 
-$page             = intval( $context['wpbs/page'] ?? 1 );
-$settings         = $context['wpbs/settings'] ?? [];
-$type             = $settings['type'] ?? false;
-$gallery_settings = $settings['gallery'] ?? [];
-$grid_settings    = $settings['grid'] ?? [];
-$slider_settings  = $settings['slider'] ?? [];
 
-$interactive = ( $context['wpbs/interactive'] ?? true ) != false;
+$company_id = $attributes['wpbs-review-gallery']['company_id'] ?? false;
 
-$gallery_id = $gallery_settings['gallery_id'] ?? false;
-$unique_id  = $attributes['uniqueId'] ?? null;
-
-if ( empty( $gallery_id ) ) {
+if ( empty( $company_id ) ) {
 	return;
 }
 
-$is_slider    = $type == 'slider';
-$transient_id = $transient_prefix . $gallery_id;
-$reviews      = get_transient( $transient_id ) ?: [];
-$page_size    = intval( $gallery_settings['page_size'] ?? 0 );
-
-if ( empty( $reviews ) ) {
-
-	$fields = WPBS::clean_array( get_field( 'wpbs', $gallery_id ) );
-
-	if ( ! empty( $gallery_settings['video_first'] ) ) {
-		$reviews = WPBS::clean_array( [ ...( $fields['video'] ?? [] ), ...( $fields['images'] ?? [] ) ] );
-	} else {
-		$reviews = WPBS::clean_array( [ ...( $fields['images'] ?? [] ), ...( $fields['video'] ?? [] ) ] );
-	}
-
-	set_transient( $transient_id, $reviews, $transient_expiration );
-
-}
-
-$total_pages = ceil( count( $reviews ) / ( $page_size ?: 1 ) );
-$is_last     = $page >= $total_pages;
-
-if ( $page_size > 0 && ! empty( $reviews ) ) {
-
-	$offset        = ( $page - 1 ) * $page_size;
-	$reviews_slice = array_slice( $reviews, $offset, $page_size, true );
-
-}
 
 $classes = array_filter( [
-	'wpbs-review-gallery-container loop-container',
-	$is_slider ? 'swiper-wrapper' : 'w-full flex flex-wrap items-start relative z-20',
-	$is_last ? '--last-page' : null,
-	$unique_id,
+	'wpbs-review-gallery swiper wpbs-slider w-full',
+	$attributes['uniqueId'] ?? null,
 ] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
@@ -69,43 +40,29 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
+$reviews = get_comments( array_filter( [
+	'post_ID' => $company_id,
+] ) ) ?? [];
+
 ?>
 
-    <div <?php echo $wrapper_attributes ?>>
+<div <?php echo $wrapper_attributes ?>>
 
-		<?php
+	<?php
 
-		foreach ( $reviews_slice ?? $reviews as $k => $reviews_item ) {
+	foreach ( $reviews as $k => $reviews_item ) {
+		//WPBS::console_log( $reviews_item );
+		$block_template                      = $card_block;
+		$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
 
-			$block_template                      = $card_block;
-			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
+		$new_block = new WP_Block( $block_template, array_filter( [
+			'wpbs/review' => $reviews_item,
+		] ) );
 
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'wpbs/index'    => $k,
-				'wpbs/reviews'  => $reviews_item,
-				'wpbs/settings' => $settings,
-			] ) );
+		echo $new_block->render();
 
-			echo $new_block->render();
+	}
 
-		}
+	?>
 
-		if ( ! empty( $grid_settings['masonry'] ) && ! $is_rest ) {
-			echo '<span class="gutter-sizer" style="width: var(--row-gap, var(--column-gap, 0px))"></span>';
-		}
-
-		?>
-
-    </div>
-
-
-<?php
-
-if ( ! empty( $unique_id ) && ! $is_rest ) {
-	echo '<script type="application/json" class="wpbs-review-gallery-args">' . wp_json_encode( array_filter( [
-			'uniqueId' => $unique_id,
-			'card'     => $card_block,
-			'reviews'  => $reviews,
-			'settings' => $settings,
-		] ) ) . '</script>';
-}
+</div>

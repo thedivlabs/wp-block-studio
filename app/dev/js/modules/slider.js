@@ -39,8 +39,6 @@ export default class Slider {
             ...args
         }
 
-        console.log(args);
-
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {

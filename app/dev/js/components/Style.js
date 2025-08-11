@@ -86,7 +86,8 @@ export function Style({
 
         const cssSelector = selector ? '.' + selector + '.' + uniqueId : '.' + uniqueId;
 
-        const breakpoint = '%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%';
+
+        const breakpoint = '%__BREAKPOINT__' + (attributes?.['wpbs-breakpoint']?.large ?? 'normal') + '__%';
 
         const cssLayout = layoutCss(attributes, cssSelector);
         const cssBackground = backgroundCss(attributes, cssSelector);
@@ -253,6 +254,6 @@ export function Style({
     }, [resultCss, preloadMedia, uniqueId]);
 
 
-    return <style className='wpbs-styles'>{resultCss}</style>;
+    return <style className='wpbs-styles'>{(resultCss || '').replace(/%__BREAKPOINT__(\d+px)__%/, "$1")}</style>;
 }
 

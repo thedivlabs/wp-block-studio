@@ -1,6 +1,19 @@
 <?php
 echo 'REVIEW CARD';
 
+
+$comment = $block->context['wpbs/review'] ?? false;
+
+$avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
+$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
+$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
+
+WPBS::console_log( $comment );
+WPBS::console_log( $avatar );
+WPBS::console_log( $rating );
+WPBS::console_log( $time );
+
+
 return;
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [

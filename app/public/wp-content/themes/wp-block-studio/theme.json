@@ -264,8 +264,8 @@
         "xs": "640px",
         "sm": "768px",
         "md": "1040px",
-        "normal": "1404px",
-        "lg": "1500px",
+        "normal": "1240px",
+        "lg": "1404px",
         "xl": "1800px"
       },
       "container": {

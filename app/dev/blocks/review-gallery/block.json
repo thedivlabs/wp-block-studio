@@ -9,19 +9,12 @@
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
-    },
-    "wpbs-review-gallery-settings": {
-      "type": "object",
-      "show_in_rest": true
     }
   },
   "allowedBlocks": [
     "wpbs/review-card",
     "wpbs/slider-navigation"
   ],
-  "providesContext": {
-    "wpbs/settings": "wpbs-review-gallery-settings"
-  },
   "supports": {
     "layout": false,
     "interactivity": true,
@@ -55,6 +48,7 @@
   },
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
+  "style": "file:./block.css",
   "icon": "format-gallery",
   "render": "file:./render.php"
 }

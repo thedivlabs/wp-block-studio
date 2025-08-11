@@ -24,7 +24,7 @@ import {useSelect} from "@wordpress/data";
 function blockClassnames(attributes = {}, editor = false) {
 
     return [
-        'wpbs-review-gallery h-max',
+        'wpbs-review-gallery h-max wpbs-container',
         !!editor ? 'editor' : null,
         'flex flex-col w-full justify-center items-center relative overflow-hidden',
         attributes?.uniqueId ?? '',

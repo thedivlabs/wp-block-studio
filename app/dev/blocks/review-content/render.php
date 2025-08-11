@@ -2,6 +2,10 @@
 
 $comment = $block->context['wpbs/review'] ?? false;
 
+if ( empty( $comment ) ) {
+	return false;
+}
+
 $avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
 $rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 $time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
@@ -20,8 +24,8 @@ $review_content = match ( $style ) {
 	'avatar' => get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ),
 	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
 	'date' => get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ),
-	'content' => $comment['comment_content'] ?? false,
-	'name' => $comment['comment_author'] ?? false,
+	'content' => $comment->comment_content ?? false,
+	'name' => $comment->comment_author ?? false,
 	default => false
 };
 

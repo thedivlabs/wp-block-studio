@@ -78,7 +78,8 @@
     display: none;
   }
 
-  .wpbs-accordion-group-item.active .wpbs-accordion-group-content {
+  .wpbs-accordion-group-item.active .wpbs-accordion-group-content,
+  .wpbs-accordion-group-item.is-selected .wpbs-accordion-group-content {
     display: block;
   }
 

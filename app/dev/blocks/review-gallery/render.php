@@ -54,6 +54,7 @@ $reviews = get_comments( array_filter( [
 		//WPBS::console_log( $reviews_item );
 		$block_template                      = $card_block;
 		$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
+		$block_template['attrs']['review']   = $reviews_item;
 
 		$new_block = new WP_Block( $block_template, array_filter( [
 			'wpbs/review' => $reviews_item,

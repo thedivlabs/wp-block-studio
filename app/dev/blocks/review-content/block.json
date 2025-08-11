@@ -1,0 +1,74 @@
+{
+  "name": "wpbs/review-content",
+  "title": "Review Content",
+  "description": "Display review content",
+  "selectors": {
+    "root": ".wpbs-review-content"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "ancestor": [
+    "wpbs/review-card"
+  ],
+  "usesContext": [
+    "wpbs/review"
+  ],
+  "styles": [
+    {
+      "name": "name",
+      "label": "Name",
+      "isDefault": true
+    },
+    {
+      "name": "content",
+      "label": "Content"
+    },
+    {
+      "name": "date",
+      "label": "Date"
+    },
+    {
+      "name": "rating",
+      "label": "Rating"
+    },
+    {
+      "name": "avatar",
+      "label": "Avatar"
+    }
+  ],
+  "supports": {
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "grid-view",
+  "render": "file:./render.php"
+}
+
+

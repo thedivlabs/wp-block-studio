@@ -1,0 +1,33 @@
+<?php
+
+$comment = $block->context['wpbs/review'] ?? false;
+
+$avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
+$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
+$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
+
+$wrapper_attributes = get_block_wrapper_attributes( [
+	'class' => implode( ' ', array_filter( [
+		'wpbs-review-content inline-block',
+		$attributes['uniqueId'] ?? ''
+	] ) ),
+	...( $attributes['wpbs-props'] ?? [] )
+] );
+
+$style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
+
+$review_content = match ( $style ) {
+	'avatar' => get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ),
+	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
+	'time' => get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ),
+	'content' => $comment['comment_content'] ?? false,
+}
+
+?>
+
+
+<div <?php echo $wrapper_attributes ?>>
+	<?= $review_content ?>
+</div>
+
+

@@ -1,5 +1,3 @@
-import './scss/block.scss';
-
 import {
     BlockContextProvider,
     InspectorControls,

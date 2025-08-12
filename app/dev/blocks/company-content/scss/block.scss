@@ -1,0 +1,14 @@
+.wpbs-company-content {
+  @apply
+  relative;
+
+
+  &.--icon {
+
+    &:before {
+      content: var(--icon, none);
+      color: var(--icon-color, inherit);
+    }
+
+  }
+}

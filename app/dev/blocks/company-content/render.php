@@ -33,6 +33,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			'reviews-link' => null,
 			default => 'wpbs-company-content-container'
 		},
+		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style' => trim( join( ' ', [ $style_attribute ?? '', ] ) ),

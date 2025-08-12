@@ -25,6 +25,7 @@ if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-review-content inline-block',
+		! empty( $settings['icon'] ) ? '--icon' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style' => $style_attribute ?? null,

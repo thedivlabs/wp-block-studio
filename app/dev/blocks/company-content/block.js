@@ -1,3 +1,5 @@
+import './scss/block.scss';
+
 import {
     InspectorControls, PanelColorSettings,
     useBlockProps,
@@ -19,9 +21,12 @@ import {sliderProps} from "Components/Slider";
 
 function sectionClassNames(attributes = {}) {
 
+    const {'wpbs-company-content': settings = {}} = attributes;
+
     return [
         'wpbs-company-content',
         'w-fit inline-block',
+        settings?.icon ? '--icon' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

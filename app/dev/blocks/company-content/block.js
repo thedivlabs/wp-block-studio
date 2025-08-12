@@ -15,7 +15,6 @@ import {
     __experimentalNumberControl as NumberControl, SelectControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
-import {Companies} from 'Components/Companies';
 
 function sectionClassNames(attributes = {}) {
 
@@ -51,6 +50,10 @@ registerBlockType(metadata.name, {
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
+
+        const companies = useSelect((select) => {
+            return select('core').getEntityRecords('postType', 'company', {per_page: -1});
+        }, []);
 
         const {'wpbs-company-content': settings = {}} = attributes;
 
@@ -106,17 +109,32 @@ registerBlockType(metadata.name, {
                     <PanelBody initialOpen={true} title={'Settings'}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
 
-                            <Companies value={settings?.['company-id']}
-                                       callback={(newValue) => updateSettings({'company-id': newValue})}/>
+                            <SelectControl
+                                label="Select Company"
+                                value={settings?.['company-id'] ?? ''}
+                                options={[
+                                    {label: 'Select a company', value: ''},
+                                    ...(companies || []).map(post => ({
+                                        label: post.title.rendered,
+                                        value: String(post.id)
+                                    }))
+                                ]}
+                                onChange={(newValue) => updateSettings({'company-id': newValue})}
+                                __nextHasNoMarginBottom={true}
+                                __next40pxDefaultSize={true}
+                            />
+
+                            <SelectControl
+                                __nextHasNoMarginBottom={true}
+                                __next40pxDefaultSize={true}
+                                label="Type"
+                                value={settings?.type ?? ''}
+                                options={CONTENT_OPTIONS}
+                                onChange={(newValue) => updateSettings({type: newValue})}
+                            />
 
                             <Grid columns={2} columnGap={15} rowGap={20}>
-                                <SelectControl
-                                    __nextHasNoMarginBottom
-                                    label="Type"
-                                    value={settings?.type ?? ''}
-                                    options={CONTENT_OPTIONS}
-                                    onChange={(newValue) => updateSettings({type: newValue})}
-                                />
+
                                 <NumberControl
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
@@ -131,6 +149,13 @@ registerBlockType(metadata.name, {
                                     label="Icon"
                                     value={settings?.icon}
                                     onChange={(newValue) => updateSettings({icon: newValue})}
+                                />
+                                <TextControl
+                                    __nextHasNoMarginBottom
+                                    __next40pxDefaultSize
+                                    label="Label"
+                                    value={settings?.label}
+                                    onChange={(newValue) => updateSettings({label: newValue})}
                                 />
 
                             </Grid>

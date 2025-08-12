@@ -15,6 +15,7 @@ import {
     __experimentalNumberControl as NumberControl, SelectControl, BaseControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
+import {sliderProps} from "Components/Slider";
 
 function sectionClassNames(attributes = {}) {
 
@@ -70,6 +71,12 @@ registerBlockType(metadata.name, {
         }, [settings?.['company-id']]);
 
         console.log(fields);
+
+        const cssProps = useMemo(() => {
+            return {
+                '--icon': '"\\' + settings?.icon + '"'
+            };
+        }, [settings]);
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -195,7 +202,8 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-company-content'}
-                       uniqueId={uniqueId}/>
+                       uniqueId={uniqueId} props={cssProps}
+                />
 
                 <div {...blockProps}>
                     {label}

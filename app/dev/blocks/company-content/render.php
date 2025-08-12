@@ -1,10 +1,10 @@
 <?php
 
+$settings = $attributes['wpbs-company-content'] ?? false;
 
-WPBS::console_log( $attributes );
-
-$settings = $attributes['wpbs-company-content'];
-
+if ( empty( $settings ) ) {
+	return;
+}
 
 if ( ! empty( $settings['line-clamp'] ) ) {
 	$style_attribute = implode( '; ', [
@@ -40,46 +40,56 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 WPBS::console_log( $company );
 
 $is_link = in_array( $type, [ 'reviews-link', 'map-link', 'directions-link' ], true );
-
+$link    = ! $is_link ? false : match ( $type ) {
+	'reviews-link' => $company->reviews_page,
+	'map-link' => $company->map_page,
+	'directions-link' => $company->directions_page,
+	default => false
+}
 
 ?>
 
-
-<?php if ( $is_link ){ ?><a href="" target="_blank" <?php echo $wrapper_attributes ?>> <?php } else { ?>
-    <div <?php echo $wrapper_attributes ?>><?php } ?>
-
-        <div <?php echo $wrapper_attributes ?>>
+<?php
 
 
-			<?php
+if ( $is_link ) {
+	echo '<a href="' . $company->reviews_page . '" target="_blank" ' . $wrapper_attributes . '>';
+} else {
+	echo '<div ' . $wrapper_attributes . '>';
+}
 
-			switch ( $type ) {
-				case 'title':
-					echo get_the_title( $company_id );
-					break;
-				case 'phone':
-					echo $company->get_phone();
-					break;
-				case 'email':
-					echo $company->get_email();
-					break;
-				case 'address':
-					echo $company->get_address();
-					break;
-				case 'description':
-					echo $company->summary();
-					break;
-				case 'reviews-link':
-					if ( ! empty( $company->reviews_page ) && ! empty( $settings['label'] ) ) {
-						echo '<a href="' . $company->reviews_page . '" target="_blank" class="wpbs-company-content-container">' . $settings['label'] . '</a>';
-					}
-					break;
-				default:
-					echo '';
-			}
+switch ( $type ) {
+	case 'title':
+		echo get_the_title( $company_id );
+		break;
+	case 'phone':
+		echo $company->get_phone();
+		break;
+	case 'email':
+		echo $company->get_email();
+		break;
+	case 'address':
+		echo $company->get_address();
+		break;
+	case 'description':
+		echo $company->summary();
+		break;
+	case 'reviews-link':
+		if ( ! empty( $company->reviews_page ) && ! empty( $settings['label'] ) ) {
+			echo '<a href="' . $company->reviews_page . '" target="_blank" class="wpbs-company-content-container">' . $settings['label'] . '</a>';
+		}
+		break;
+	default:
+		echo '';
+}
 
 
-			?>
-        </div>
+if ( $is_link ) {
+	echo '</a>';
+} else {
+	echo '</div>';
+}
+
+?>
 
 

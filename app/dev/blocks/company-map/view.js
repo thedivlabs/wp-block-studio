@@ -104,9 +104,12 @@ const {state} = store('wpbs/company-map', {
                     latlngbounds.extend(new google.maps.LatLng(company.latitude, company.longitude));
                 });
 
-                if (!!zoom && companies.length > 1) {
+                if (!!zoom) {
+
+                    const mapMargin = companies.length > 1 ? 50 : 100;
+
                     map.setCenter(latlngbounds.getCenter());
-                    map.fitBounds(latlngbounds, {top: 50, right: 50, left: 50, bottom: 50});
+                    map.fitBounds(latlngbounds, {top: mapMargin, right: mapMargin, left: mapMargin, bottom: mapMargin});
                 }
             }
 

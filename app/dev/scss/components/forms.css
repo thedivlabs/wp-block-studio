@@ -419,11 +419,7 @@
 
   .gform_fields:has(> .gfield--type-submit) {
     display: flex !important;
-    gap: var(--wp--custom--form--inline--gap--field, 0px);
-
-    .gfield--type-submit {
-      margin-left: var(--wp--custom--form--inline--gap--button, 0px);
-    }
+    gap: var(--wp--custom--form--inline--gap, 0px) !important;
   }
 
   .gform_button, .gform-button,

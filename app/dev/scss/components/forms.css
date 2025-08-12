@@ -420,6 +420,10 @@
   .gform_fields:has(> .gfield--type-submit) {
     display: flex !important;
     gap: var(--wp--custom--form--inline--gap, 0px) !important;
+
+    & > .gfield:not(.gfield--type-submit) {
+      flex-grow: 1;
+    }
   }
 
   .gform_button, .gform-button,

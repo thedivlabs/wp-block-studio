@@ -75,8 +75,10 @@ switch ( $type ) {
 		] );
 		break;
 	case 'address':
+	case 'address-inline':
 		echo $company->get_address( [
-			'class' => $element_class
+			'class'  => $element_class,
+			'inline' => $type == 'address-inline'
 		] );
 		break;
 	case 'description':

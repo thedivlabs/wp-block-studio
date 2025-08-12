@@ -41,6 +41,7 @@ const CONTENT_OPTIONS = [
     {label: 'Email', value: 'email'},
     {label: 'Email Additional', value: 'email-additional'},
     {label: 'Address', value: 'address'},
+    {label: 'Address Inline', value: 'address-inline'},
     {label: 'Social', value: 'social'},
     {label: 'Hours', value: 'hours'},
     {label: 'Hours Inline', value: 'hours-inline'},

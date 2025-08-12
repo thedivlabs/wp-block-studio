@@ -27,9 +27,7 @@ function sectionClassNames(attributes = {}) {
     const {'wpbs-company-map': settings = {}} = attributes;
 
     return [
-        'wpbs-company-map',
-        'w-fit inline-block',
-        settings?.icon ? '--icon' : null,
+        'wpbs-company-map flex w-full aspect-video',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

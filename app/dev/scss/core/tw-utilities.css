@@ -7,6 +7,9 @@
   .aspect-video {
     aspect-ratio: 16/9;
   }
+  .aspect-banner {
+    aspect-ratio: 1/.4;
+  }
 
   .z-modal {
     z-index: 120000;

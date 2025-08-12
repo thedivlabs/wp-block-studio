@@ -136,7 +136,10 @@ class WPBS_Place {
 			$icon_only = $args['icon_only'] ?? false;
 			$label     = $args['label'] ?? false;
 
-			$class = 'wpbs-phone';
+			$class = implode( ' ', array_filter( [
+				'wpbs-phone',
+				$args['class'] ?? null
+			] ) );
 
 			return implode( ' ', array_filter( [
 				$link ? '<a href="tel:' . $phone['number'] . '" class="' . $class . '">' : '<div class="' . $class . '">',
@@ -172,8 +175,11 @@ class WPBS_Place {
 			$show_icon = $args['show_icon'] ?? false;
 			$icon_only = $args['icon_only'] ?? false;
 			$label     = $args['label'] ?? false;
-
-			$class = 'wpbs-email';
+			
+			$class = implode( ' ', array_filter( [
+				'wpbs-email',
+				$args['class'] ?? null
+			] ) );
 
 			return implode( ' ', array_filter( [
 				$link ? '<a href="mailto:' . $email['address'] . '" class="' . $class . '">' : '<div class="' . $class . '">',
@@ -197,7 +203,7 @@ class WPBS_Place {
 	public function summary(): string|bool|null {
 		return get_field( 'wpbs_content_description', $this->id );
 	}
-	
+
 	public function get_service_areas( $args = [], $render = true ): array {
 
 		$service_areas = WPBS_Company::service_areas( $this->id, $args );

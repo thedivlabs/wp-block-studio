@@ -3,7 +3,11 @@
   "title": "Company Content",
   "description": "Display company content",
   "selectors": {
-    "root": ".wpbs-company-content-container"
+    "root": ".wpbs-company-content-container",
+    "spacing": {
+      "root": ".wpbs-company-content-container",
+      "margin": ".wpbs-company-content"
+    }
   },
   "attributes": {
     "uniqueId": {

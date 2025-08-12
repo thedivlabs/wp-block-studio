@@ -19,10 +19,10 @@ const {state} = store('wpbs/company-map', {
             if (!document.querySelector('#wpbs-google-maps')) {
 
                 window.maps_callback = () => {
-                    init_maps();
+                    return true;
                 };
 
-                
+
                 const script = document.createElement('script');
                 script.src = `https://maps.googleapis.com/maps/api/js?key=${map_key}&libraries=places,marker&callback=maps_callback&loading=async`;
                 script.id = 'wpbs-google-maps';
@@ -39,10 +39,7 @@ const {state} = store('wpbs/company-map', {
                 if (map.isIntersecting) {
 
                     if (typeof google === 'object' && typeof google.maps === 'object') {
-                        console.log('library already loaded');
                         init_maps();
-                    } else {
-                        console.log('loading library');
                     }
 
                     map_observer.unobserve(element);

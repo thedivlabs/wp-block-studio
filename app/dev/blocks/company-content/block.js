@@ -1,5 +1,5 @@
 import {
-    InspectorControls,
+    InspectorControls, PanelColorSettings,
     useBlockProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -12,7 +12,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
     TextControl,
-    __experimentalNumberControl as NumberControl, SelectControl,
+    __experimentalNumberControl as NumberControl, SelectControl, BaseControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 
@@ -158,7 +158,37 @@ registerBlockType(metadata.name, {
                                     onChange={(newValue) => updateSettings({label: newValue})}
                                 />
 
+                                <SelectControl
+                                    label="Label Position"
+                                    value={settings?.['label-position'] ?? ''}
+                                    options={[
+                                        {label: 'Select', value: ''},
+                                        {label: 'Top', value: 'top'},
+                                        {label: 'Left', value: 'left'},
+                                        {label: 'Bottom', value: 'bottom'},
+                                    ]}
+                                    onChange={(newValue) => updateSettings({'label-position': newValue})}
+                                    __nextHasNoMarginBottom={true}
+                                    __next40pxDefaultSize={true}
+                                />
+
                             </Grid>
+
+                            <BaseControl label={'Colors'}>
+                                <PanelColorSettings
+                                    enableAlpha
+                                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                                    colorSettings={[
+                                        {
+                                            slug: 'icon-color',
+                                            label: 'Icon Color',
+                                            value: settings?.['icon-color'],
+                                            onChange: (newValue) => updateSettings({'icon-color': newValue}),
+                                            isShownByDefault: true
+                                        }
+                                    ]}
+                                />
+                            </BaseControl>
                         </Grid>
                     </PanelBody>
                 </InspectorControls>

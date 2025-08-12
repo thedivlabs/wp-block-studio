@@ -24,6 +24,8 @@ class WPBS_Place {
 	public string|bool $reviews_page;
 	public string|bool $new_review_url;
 
+	public string|bool $hours_inline;
+
 
 	function __construct( $id = false ) {
 
@@ -54,6 +56,97 @@ class WPBS_Place {
 			}
 		];
 
+		$this->hours_inline = get_field( 'divlabs_hours_normal_inline', $id ) ?: false;
+
+	}
+
+	public function get_hours( $args = [], $render = true ): array|bool {
+		$fields = WPBS::clean_array( get_field( 'wpbs_hours', $this->id ) );
+
+		if ( empty( $fields ) ) {
+			return false;
+		}
+
+		if ( ! empty( $args['inline'] ) ) {
+			$inline_hours = $this->hours_inline;
+
+			if ( empty( $inline_hours ) ) {
+				return false;
+			}
+
+			if ( $render ) {
+				echo $inline_hours;
+
+				return true;
+			} else {
+				return $inline_hours;
+			}
+		}
+
+		$hours = [
+			'monday'    => [
+				'title' => 'Monday',
+				'open'  => $fields['monday_open'] ?? false,
+				'close' => $fields['monday_close'] ?? false,
+			],
+			'tuesday'   => [
+				'title' => 'Tuesday',
+				'open'  => $fields['tuesday_open'] ?? false,
+				'close' => $fields['tuesday_close'] ?? false,
+			],
+			'wednesday' => [
+				'title' => 'Wednesday',
+				'open'  => $fields['wednesday_open'] ?? false,
+				'close' => $fields['wednesday_close'] ?? false,
+			],
+			'thursday'  => [
+				'title' => 'Thursday',
+				'open'  => $fields['thursday_open'] ?? false,
+				'close' => $fields['thursday_close'] ?? false,
+			],
+			'friday'    => [
+				'title' => 'Friday',
+				'open'  => $fields['friday_open'] ?? false,
+				'close' => $fields['friday_close'] ?? false,
+			],
+			'saturday'  => [
+				'title' => 'Saturday',
+				'open'  => $fields['saturday_open'] ?? false,
+				'close' => $fields['saturday_close'] ?? false,
+			],
+			'sunday'    => [
+				'title' => 'Sunday',
+				'open'  => $fields['sunday_open'] ?? false,
+				'close' => $fields['sunday_close'] ?? false,
+			]
+		];
+
+		if ( $render ) {
+			echo '<table class="' . ( implode( ' ', array_filter( [
+					'wpbs-hours wpbs-table',
+					$args['class'] ?? null
+				] ) ) ) . '">';
+
+			echo '<tr><th>Day</th><th>Open</th><th>Close</th></tr>';
+
+			foreach ( $hours as $k => $day ) {
+
+				if ( empty( $day['open'] ) && empty( $day['close'] ) ) {
+					continue;
+				}
+				echo '<tr>';
+				echo '<td>' . $day['title'] . '</td><td>' . ( $day['open'] ?? '-' ) . '</td><td>' . ( $day['close'] ?? '-' ) . '</td>';
+				echo '</tr>';
+
+			}
+
+			echo '</table>';
+
+			return true;
+		}
+
+
+		return $hours;
 	}
 
 	private function format_phone( $number = false ): string {
@@ -175,7 +268,7 @@ class WPBS_Place {
 			$show_icon = $args['show_icon'] ?? false;
 			$icon_only = $args['icon_only'] ?? false;
 			$label     = $args['label'] ?? false;
-			
+
 			$class = implode( ' ', array_filter( [
 				'wpbs-email',
 				$args['class'] ?? null

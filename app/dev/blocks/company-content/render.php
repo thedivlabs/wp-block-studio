@@ -75,9 +75,10 @@ switch ( $type ) {
 		echo $company->summary();
 		break;
 	case 'reviews-link':
-		if ( ! empty( $company->reviews_page ) && ! empty( $settings['label'] ) ) {
-			echo '<a href="' . $company->reviews_page . '" target="_blank" class="wpbs-company-content-container">' . $settings['label'] . '</a>';
-		}
+	case 'new-review-link':
+	case 'directions-link':
+	case 'map-link':
+		echo $settings['label'] ?? false;
 		break;
 	default:
 		echo '';

@@ -8,7 +8,7 @@ export function Companies({value = [], callback}) {
     const companies = useSelect((select) => {
         return select('core').getEntityRecords('postType', 'company', {per_page: -1});
     }, []);
-
+    
     // Create a map for easy label → ID lookup
     const {options, labelToId} = useMemo(() => {
         const opts = (companies || []).map(post => post.title.rendered);
@@ -32,6 +32,7 @@ export function Companies({value = [], callback}) {
         <FormTokenField
             label="Select Companies"
             value={selectedLabels}
+            __experimentalExpandOnFocus={true}
             suggestions={options}
             onChange={(newLabels) => {
                 // Map labels back to IDs

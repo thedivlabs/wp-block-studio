@@ -56,11 +56,11 @@ registerBlockType(metadata.name, {
 
         const fields = useSelect((select) => {
 
-            if (!settings?.settings?.['company-id']) {
+            if (!settings?.['company-id']) {
                 return {};
             }
 
-            const post = select('core').getEntityRecord('postType', 'company', settings?.settings?.['company-id']);
+            const post = select('core').getEntityRecord('postType', 'company', settings?.['company-id']);
 
             return post?.acf?.wpbs || null;
 

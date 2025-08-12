@@ -81,7 +81,7 @@ const {state} = store('wpbs/company-map', {
                         position: company_position,
                     };
 
-                    if ('marker' in company) {
+                    if ('marker' in company && company.marker.length) {
                         marker_args.content = jQuery('<img />', {
                             src: company.marker,
                             height: 80

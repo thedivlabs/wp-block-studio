@@ -65,7 +65,7 @@ const {state} = store('wpbs/company-map', {
                     zoomControl: true,
                     //scrollwheel: true,
                     tilt: 0.0,
-                    //mapId: this.style_id || this.map_key
+                    mapId: map_key
                 });
 
                 const latlngbounds = new google.maps.LatLngBounds();

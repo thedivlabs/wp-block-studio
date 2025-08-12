@@ -47,8 +47,6 @@ registerBlockType(metadata.name, {
                 ...newValue
             };
 
-            console.log(result);
-
             setAttributes({
                 'wpbs-company-map': result,
             });

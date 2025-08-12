@@ -31,17 +31,13 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'company-map': {
+        'wpbs-company-map': {
             type: 'object'
         }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
-
-        const companies = useSelect((select) => {
-            return select('core').getEntityRecords('postType', 'company', {per_page: -1});
-        }, []);
 
         const {'wpbs-company-map': settings = {}} = attributes;
 
@@ -50,6 +46,8 @@ registerBlockType(metadata.name, {
                 ...attributes['wpbs-company-map'],
                 ...newValue
             };
+
+            console.log(result);
 
             setAttributes({
                 'wpbs-company-map': result,
@@ -98,7 +96,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-company-map'}
-                       uniqueId={uniqueId} props={cssProps} deps={['wpbs-company-map']}
+                       uniqueId={uniqueId} deps={['wpbs-company-map']}
                 />
 
                 <div {...blockProps}></div>

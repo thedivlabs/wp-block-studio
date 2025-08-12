@@ -1,7 +1,6 @@
 import {getContext, getElement, store} from '@wordpress/interactivity';
 
 
-
 const {state} = store('wpbs/company-map', {
     actions: {
         init: () => {
@@ -10,42 +9,39 @@ const {state} = store('wpbs/company-map', {
 
             console.log(element);
 
-            const settings = getContext();
+            const {companies = [], marker = false, zoom = false} = getContext();
 
-            const map_key = WPBS?.settings?.map?.key;
+            const map_key = WPBS?.settings?.places?.maps_key;
 
-            console.log(settings);
-            console.log(map_key);
+            console.log(companies);
+            console.log(marker);
+            console.log(zoom);
 
-            return false;
-
-            if (map_key) {
+            if (!map_key) {
                 return false;
             }
 
-            const map_observer = new IntersectionObserver((entry)=>{
-                if (entry.isIntersecting) {
-                    let entry_target = entry.target;
+            const map_observer = new IntersectionObserver((entry) => {
 
+                const map = entry[0];
 
-                    if (entry.intersectionRatio >= 0.75) {
-                        if (typeof google === 'object' && typeof google.maps === 'object') {
-                            init_maps(element);
-                        } else {
-                            window.maps_callback = () => {
-                                init_maps(element);
-                            };
+                if (map.isIntersecting) {
 
-                            //AIzaSyAAmgjTHpzYiW_KyTVH2nwhZvTYgpoe4hw
+                    if (typeof google === 'object' && typeof google.maps === 'object') {
+                        init_maps();
+                    } else {
+                        window.maps_callback = () => {
+                            init_maps();
+                        };
 
-                            $.getScript({
-                                url: 'https://maps.googleapis.com/maps/api/js?key=' + map_key + '&libraries=places,marker&callback=maps_callback&loading=async',
-                                cache: true
-                            });
-                        }
-
-                        map_observer.unobserve(entry.target);
+                        const script = document.createElement('script');
+                        script.src = `https://maps.googleapis.com/maps/api/js?key=${map_key}&libraries=places,marker&callback=maps_callback&loading=async`;
+                        script.async = true;
+                        script.defer = true;
+                        document.head.appendChild(script);
                     }
+
+                    map_observer.unobserve(map.target);
                 }
             }, {
                 threshold: 1.0,
@@ -55,41 +51,40 @@ const {state} = store('wpbs/company-map', {
 
             function init_maps() {
 
+                console.log('init_maps');
+
                 const position = {
-                    lat: parseFloat(companies[0].latitude),
-                    lng: parseFloat(companies[0].longitude)
+                    lat: parseFloat(companies[0].lat),
+                    lng: parseFloat(companies[0].lng)
                 };
 
-                const map = new google.maps.Map(map_el, {
+                const map = new google.maps.Map(element, {
                     center: position,
                     zoom: 15,
                     disableDefaultUI: true,
                     zoomControl: true,
                     //scrollwheel: true,
                     tilt: 0.0,
-                    mapId: this.style_id || this.map_key
+                    //mapId: this.style_id || this.map_key
                 });
 
                 const latlngbounds = new google.maps.LatLngBounds();
 
-                companies.forEach((company) => {
+                companies.forEach((company, index) => {
 
                     const company_position = {
-                        lat: parseFloat(company.latitude),
-                        lng: parseFloat(company.longitude)
+                        lat: parseFloat(company.lat),
+                        lng: parseFloat(company.lng)
                     };
 
                     const marker_args = {
-                        map: map
+                        map: map,
+                        position: company_position,
                     };
 
-                    const icon_size = 'is_primary' in company && company.is_primary ? 80 : 70;
-
-                    marker_args.position = company_position;
-
-                    if ('marker_url' in company && company.marker_url !== '') {
-                        marker_args.content = $('<img />', {
-                            src: company.marker_url,
+                    if ('marker' in company) {
+                        marker_args.content = jQuery('<img />', {
+                            src: company.marker,
                             height: 100
                         }).get(0);
                     }
@@ -108,7 +103,7 @@ const {state} = store('wpbs/company-map', {
                     latlngbounds.extend(new google.maps.LatLng(company.latitude, company.longitude));
                 });
 
-                if ('zoom_to_fit' in options && companies.length > 1) {
+                if (zoom && companies.length > 1) {
                     map.setCenter(latlngbounds.getCenter());
                     map.fitBounds(latlngbounds, {top: 50, right: 50, left: 50, bottom: 50});
                 }

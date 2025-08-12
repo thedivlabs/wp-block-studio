@@ -8,7 +8,7 @@ $companies = array_map( function ( $id ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
-		'wpbs-company-map flex aspect-banner',
+		'wpbs-company-map flex aspect-banner w-full',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'data-wp-interactive' => 'wpbs/company-map',
@@ -31,4 +31,4 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 ?>
 
-<figure <?= $wrapper_attributes ?>></figure>
+<div <?= $wrapper_attributes ?>></div>

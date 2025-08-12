@@ -76,33 +76,35 @@ const {state} = store('wpbs/company-map', {
                         lng: parseFloat(company.lng)
                     };
 
-                    const marker_args = {
-                        map: map,
-                        position: company_position,
-                    };
-
                     if ('marker' in company && company.marker.length) {
+
+                        const marker_args = {
+                            map: map,
+                            position: company_position,
+                        };
+
                         marker_args.content = jQuery('<img />', {
                             src: company.marker,
                             height: 80
                         }).get(0);
+
+                        const marker = new google.maps.marker.AdvancedMarkerElement(marker_args);
+
+                        if (!!company?.map_url) {
+                            marker.addListener("gmp-click", () => {
+                                window.open(company.map_url);
+                            }, {
+                                passive: true
+                            });
+                        }
+
                     }
 
-                    const marker = new google.maps.marker.AdvancedMarkerElement(marker_args);
-
-
-                    if ('map_url' in company) {
-                        marker.addListener("gmp-click", () => {
-                            window.open(company.map_url);
-                        }, {
-                            passive: true
-                        });
-                    }
 
                     latlngbounds.extend(new google.maps.LatLng(company.latitude, company.longitude));
                 });
 
-                if (zoom && companies.length > 1) {
+                if (!!zoom && companies.length > 1) {
                     map.setCenter(latlngbounds.getCenter());
                     map.fitBounds(latlngbounds, {top: 50, right: 50, left: 50, bottom: 50});
                 }

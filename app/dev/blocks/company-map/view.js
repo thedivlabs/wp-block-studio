@@ -7,15 +7,9 @@ const {state} = store('wpbs/company-map', {
 
             const {ref: element} = getElement();
 
-            console.log(element);
-
             const {companies = [], marker = false, zoom = false} = getContext();
 
             const map_key = WPBS?.settings?.places?.maps_key;
-
-            console.log(companies);
-            console.log(marker);
-            console.log(zoom);
 
             if (!map_key) {
                 return false;
@@ -50,9 +44,7 @@ const {state} = store('wpbs/company-map', {
             map_observer.observe(element);
 
             function init_maps() {
-
-                console.log('init_maps');
-
+                
                 const position = {
                     lat: parseFloat(companies[0].lat),
                     lng: parseFloat(companies[0].lng)

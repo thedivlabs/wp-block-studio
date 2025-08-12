@@ -14,6 +14,11 @@ const {state} = store('wpbs/company-map', {
 
             const map_key = WPBS?.settings?.map?.key;
 
+            console.log(settings);
+            console.log(map_key);
+
+            return false;
+
             if (map_key) {
                 return false;
             }

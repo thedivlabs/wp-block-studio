@@ -417,11 +417,11 @@
 
   }
 
-  .gform_fields:has(> .gfield-type-submit) {
+  .gform_fields:has(> .gfield--type-submit) {
     display: flex !important;
     gap: var(--wp--custom--form--inline--gap--field, 0px);
 
-    .gfield-type-submit {
+    .gfield--type-submit {
       margin-left: var(--wp--custom--form--inline--gap--button, 0px);
     }
   }

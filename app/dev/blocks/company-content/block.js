@@ -73,9 +73,10 @@ registerBlockType(metadata.name, {
         console.log(fields);
 
         const cssProps = useMemo(() => {
-            return {
-                '--icon': '"\\' + settings?.icon + '"'
-            };
+            return Object.fromEntries(Object.entries({
+                '--icon': !!settings?.icon ? '"\\' + settings?.icon + '"' : null,
+                '--icon-color': settings?.['icon-color'] ?? null
+            }).filter(x => x));
         }, [settings]);
 
         const updateSettings = useCallback((newValue) => {

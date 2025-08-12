@@ -86,6 +86,13 @@ switch ( $type ) {
 	case 'map-link':
 		echo $settings['label'] ?? false;
 		break;
+
+	case 'hours':
+	case 'hours-inline':
+		echo $company->get_hours( [
+			'inline' => $type === 'hours-inline'
+		] );
+		break;
 	default:
 		echo '';
 }

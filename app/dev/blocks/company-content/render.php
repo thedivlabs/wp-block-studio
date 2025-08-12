@@ -37,8 +37,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-WPBS::console_log( $company );
-
 $is_link = in_array( $type, [ 'reviews-link', 'map-link', 'directions-link' ], true );
 $link    = ! $is_link ? false : match ( $type ) {
 	'reviews-link' => $company->reviews_page,

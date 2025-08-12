@@ -1,24 +1,10 @@
 <?php
 
-$comment = $block->context['wpbs/review'] ?? false;
 
-if ( empty( $comment ) ) {
-	return false;
-}
-
-$avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
-$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
-$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
-
-
-$style_attribute = $attributes['wpbs-props'] ?? '';
-
-
-if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
-
-	$style_attribute .= implode( '; ', [
-		'line-clamp:' . $attributes['wpbs-review-content']['line-clamp'],
-		'-webkit-line-clamp:' . $attributes['wpbs-review-content']['line-clamp'],
+if ( ! empty( $attributes['wpbs-company-content']['line-clamp'] ) ) {
+	$style_attribute = implode( '; ', [
+		'line-clamp:' . $attributes['wpbs-company-content']['line-clamp'],
+		'-webkit-line-clamp:' . $attributes['wpbs-company-content']['line-clamp'],
 		'display:-webkit-box',
 		'-webkit-box-orient:vertical',
 		'overflow:hidden',
@@ -27,25 +13,35 @@ if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-review-content inline-block',
+		'wpbs-company-content inline-block',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => $style_attribute
+	'style' => trim( join( ' ', [ $style_attribute ?? '', $attributes['wpbs-props'] ?? '' ] ) )
 ] );
 
-$style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
+$type       = $attributes['wpbs-company-content']['type'] ?? false;
+$company_id = $attributes['wpbs-company-content']['company-id'] ?? false;
 
-$review_content = match ( $style ) {
-	'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" />',
-	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
-	'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: 0 ),
-	'content' => $comment->comment_content ?? false,
-	'name' => $comment->comment_author ?? false,
+if ( ! $type || ! $company_id ) {
+	return;
+}
+
+$company_content = match ( $type ) {
+	'phone' => get_field( 'wpbs_contact_phone_primary', $company_id ),
+	'phone-additional' => get_field( 'wpbs_contact_phone_additional', $company_id ),
+	'email' => get_field( 'wpbs_contact_email_primary', $company_id ),
+	'email-additional' => get_field( 'wpbs_contact_email_additional', $company_id ),
+	'address' => get_field( 'wpbs_address', $company_id ),
+	'reviews-link' => get_field( 'wpbs_map_reviews_url', $company_id ),
+	'new-review-link' => get_field( 'wpbs_map_new_review_url', $company_id ),
+	'map-link' => get_field( 'wpbs_map_map_page_url', $company_id ),
+	'directions-link' => get_field( 'wpbs_map_directions_page_url', $company_id ),
+	'description' => get_field( 'wpbs_content_description', $company_id ),
+	'name' => get_the_title( $company_id ),
 	default => false
 };
 
-
-if ( ! $review_content ) {
+if ( ! $company_content ) {
 	return false;
 }
 ?>
@@ -54,15 +50,12 @@ if ( ! $review_content ) {
 <div <?php echo $wrapper_attributes ?>>
 	<?php
 
-	switch ( $style ) {
-		case 'rating':
-			for ( $i = 1; $i <= $review_content; $i ++ ) {
-				//echo $attributes['wpbs-review-content']['icon'] ?? '<i class="fa-solid fa-star-sharp"></i>';
-				echo '<i class="fa-solid fa-star-sharp"></i>';
-			}
+	switch ( $type ) {
+		case 'address':
+			echo 'ADDRESS';
 			break;
 		default:
-			echo $review_content;
+			echo $company_content;
 	}
 
 

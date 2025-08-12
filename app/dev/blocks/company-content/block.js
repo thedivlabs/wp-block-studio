@@ -27,6 +27,7 @@ function sectionClassNames(attributes = {}) {
 
 const CONTENT_OPTIONS = [
     {label: 'Select', value: ''},
+    {label: 'Title', value: 'title'},
     {label: 'Phone', value: 'phone'},
     {label: 'Phone Additional', value: 'phone-additional'},
     {label: 'Email', value: 'email'},
@@ -140,9 +141,9 @@ registerBlockType(metadata.name, {
                                 <TextControl
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
-                                    label="Label"
-                                    value={settings?.label}
-                                    onChange={(newValue) => updateSettings({label: newValue})}
+                                    label="Icon"
+                                    value={settings?.icon}
+                                    onChange={(newValue) => updateSettings({icon: newValue})}
                                 />
 
                             </Grid>

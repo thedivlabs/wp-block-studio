@@ -66,8 +66,8 @@ registerBlockType(metadata.name, {
                         <Grid columns={1} columnGap={15} rowGap={20}>
 
                             <Companies
-                                value={settings?.['company-id'] ?? []}
-                                callback={(newValue) => updateSettings({'company-id': newValue})}
+                                value={settings?.['company'] ?? []}
+                                callback={(newValue) => updateSettings({'company': newValue})}
                             />
 
                             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -75,17 +75,17 @@ registerBlockType(metadata.name, {
                                 <ToggleControl
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
-                                    label="Zoom to Fit"
-                                    checked={!!settings?.['zoom-to-fit']}
-                                    onChange={(newValue) => updateSettings({'zoom-to-fit': newValue})}
+                                    label="Zoom"
+                                    checked={!!settings?.['zoom']}
+                                    onChange={(newValue) => updateSettings({'zoom': newValue})}
 
                                 />
                                 <ToggleControl
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
-                                    label="Default Marker"
-                                    checked={!!settings?.['default-marker']}
-                                    onChange={(newValue) => updateSettings({'default-marker': newValue})}
+                                    label="Marker"
+                                    checked={!!settings?.['marker']}
+                                    onChange={(newValue) => updateSettings({'marker': newValue})}
 
                                 />
 

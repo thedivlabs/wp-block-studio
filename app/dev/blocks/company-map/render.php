@@ -2,18 +2,9 @@
 
 $settings = $attributes['wpbs-company-map'] ?? false;
 
-$company_id = $settings['company-id'] ?? [];
-
-WPBS::console_log( $settings );
-WPBS::console_log( $attributes );
-
-if ( empty( $company_id ) ) {
-	return;
-}
-
-$companies = array_map( function ( $id ) use ( $company_id ) {
+$companies = array_map( function ( $id ) {
 	return new WPBS_Place( $id );
-}, $company_id );
+}, $settings['company'] ?? [] );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
@@ -32,8 +23,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 				'map_url' => $company->map_page,
 			];
 		}, $companies ),
-		'default'   => ! empty( $settings['default-marker'] ),
-		'zoom'      => ! empty( $settings['zoom-to-fit'] ),
+		'marker'    => ! empty( $settings['marker'] ),
+		'zoom'      => ! empty( $settings['zoom'] ),
 	] ),
 	...( $attributes['wpbs-props'] ?? [] )
 ] );

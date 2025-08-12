@@ -45,7 +45,7 @@ $link    = ! $is_link ? false : match ( $type ) {
 	default => false
 };
 
-$element_class = 'wpbs-layout-wrapper';
+$element_class = '';
 
 ?>
 

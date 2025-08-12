@@ -1,0 +1,36 @@
+{
+  "name": "wpbs/company-map",
+  "title": "Company Map",
+  "description": "Display company map",
+  "selectors": {
+    "root": ".wpbs-company-map"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "supports": {
+    "color": {
+      "background": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "admin-site",
+  "style": "file:./block.css"
+}
+
+

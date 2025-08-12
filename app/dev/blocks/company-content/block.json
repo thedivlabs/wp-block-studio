@@ -15,29 +15,6 @@
       "show_in_rest": true
     }
   },
-  "styles": [
-    {
-      "name": "name",
-      "label": "Name",
-      "isDefault": true
-    },
-    {
-      "name": "content",
-      "label": "Content"
-    },
-    {
-      "name": "date",
-      "label": "Date"
-    },
-    {
-      "name": "rating",
-      "label": "Rating"
-    },
-    {
-      "name": "avatar",
-      "label": "Avatar"
-    }
-  ],
   "supports": {
     "color": {
       "background": true,

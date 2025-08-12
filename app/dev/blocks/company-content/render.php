@@ -16,7 +16,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-company-content inline-block',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => trim( join( ' ', [ $style_attribute ?? '', $attributes['wpbs-props'] ?? '' ] ) )
+	'style' => trim( join( ' ', [ $style_attribute ?? '', ] ) ),
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 $type       = $attributes['wpbs-company-content']['type'] ?? false;
@@ -51,6 +52,9 @@ if ( ! $company_content ) {
 	<?php
 
 	switch ( $type ) {
+		case 'reviews-link':
+			echo 'ADDRESS';
+			break;
 		case 'address':
 			echo 'ADDRESS';
 			break;

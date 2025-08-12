@@ -11,12 +11,9 @@ $rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 $time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
 
 
-$style_attribute = $attributes['wpbs-props'] ?? '';
-
-
 if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 
-	$style_attribute .= implode( '; ', [
+	$style_attribute = implode( '; ', [
 		'line-clamp:' . $attributes['wpbs-review-content']['line-clamp'],
 		'-webkit-line-clamp:' . $attributes['wpbs-review-content']['line-clamp'],
 		'display:-webkit-box',
@@ -30,7 +27,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-review-content inline-block',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => $style_attribute
+	'style' => $style_attribute ?? null,
+	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
 $style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;

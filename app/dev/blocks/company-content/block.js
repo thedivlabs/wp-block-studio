@@ -15,6 +15,7 @@ import {
     __experimentalNumberControl as NumberControl, SelectControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
+import {Companies} from 'Components/Companies';
 
 function sectionClassNames(attributes = {}) {
 
@@ -51,25 +52,21 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const companies = useSelect((select) => {
-            return select('core').getEntityRecords('postType', 'company', {per_page: -1});
-        }, []);
+        const {'wpbs-company-content': settings = {}} = attributes;
 
         const fields = useSelect((select) => {
 
-            if (!settings?.company - id) {
+            if (!settings?.settings?.['company-id']) {
                 return {};
             }
 
-            const post = select('core').getEntityRecord('postType', 'company', settings?.company - id);
+            const post = select('core').getEntityRecord('postType', 'company', settings?.settings?.['company-id']);
 
             return post?.acf?.wpbs || null;
 
-        }, [settings?.company - id]);
+        }, [settings?.['company-id']]);
 
         console.log(fields);
-
-        const {'wpbs-company-content': settings} = attributes;
 
         const updateSettings = useCallback((newValue) => {
             const result = {
@@ -109,18 +106,8 @@ registerBlockType(metadata.name, {
                     <PanelBody initialOpen={true} title={'Settings'}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
 
-                            <SelectControl
-                                label="Select Company"
-                                value={settings?.['company-id'] ?? ''}
-                                options={[
-                                    {label: 'Select a company', value: ''},
-                                    ...(companies || []).map(post => ({
-                                        label: post.title.rendered,
-                                        value: String(post.id)
-                                    }))
-                                ]}
-                                onChange={(newValue) => updateSettings({'company-id': newValue})}
-                            />
+                            <Companies value={settings?.['company-id']}
+                                       callback={(newValue) => updateSettings({'company-id': newValue})}/>
 
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 <SelectControl

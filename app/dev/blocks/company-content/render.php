@@ -29,10 +29,7 @@ $company = new WPBS_Place( $company_id );
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-company-content inline-block',
-		match ( $type ) {
-			'reviews-link' => null,
-			default => 'wpbs-company-content-container'
-		},
+		! empty( $settings['icon'] ) ? '--icon' : null,
 		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
@@ -42,40 +39,47 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 WPBS::console_log( $company );
 
+$is_link = in_array( $type, [ 'reviews-link', 'map-link', 'directions-link' ], true );
+
 
 ?>
 
 
-<div <?php echo $wrapper_attributes ?>>
-	<?php
+<?php if ( $is_link ){ ?><a href="" target="_blank" <?php echo $wrapper_attributes ?>> <?php } else { ?>
+    <div <?php echo $wrapper_attributes ?>><?php } ?>
 
-	switch ( $type ) {
-		case 'title':
-			echo get_the_title( $company_id );
-			break;
-		case 'phone':
-			echo $company->get_phone();
-			break;
-		case 'email':
-			echo $company->get_email();
-			break;
-		case 'address':
-			echo $company->get_address();
-			break;
-		case 'description':
-			echo $company->summary();
-			break;
-		case 'reviews-link':
-			if ( ! empty( $company->reviews_page ) && ! empty( $settings['label'] ) ) {
-				echo '<a href="' . $company->reviews_page . '" target="_blank" class="wpbs-company-content-container">' . $settings['label'] . '</a>';
+        <div <?php echo $wrapper_attributes ?>>
+
+
+			<?php
+
+			switch ( $type ) {
+				case 'title':
+					echo get_the_title( $company_id );
+					break;
+				case 'phone':
+					echo $company->get_phone();
+					break;
+				case 'email':
+					echo $company->get_email();
+					break;
+				case 'address':
+					echo $company->get_address();
+					break;
+				case 'description':
+					echo $company->summary();
+					break;
+				case 'reviews-link':
+					if ( ! empty( $company->reviews_page ) && ! empty( $settings['label'] ) ) {
+						echo '<a href="' . $company->reviews_page . '" target="_blank" class="wpbs-company-content-container">' . $settings['label'] . '</a>';
+					}
+					break;
+				default:
+					echo '';
 			}
-			break;
-		default:
-			echo '';
-	}
 
 
-	?>
-</div>
+			?>
+        </div>
 
 

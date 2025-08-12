@@ -472,12 +472,9 @@
           }
         },
         "inline": {
-          "container": {
-            "align": "inherit",
-            "gap": {
-              "row": ".7rem",
-              "wrapper": "1rem"
-            }
+          "gap": {
+            "field": ".7rem",
+            "button": "1rem"
           }
         }
       },

@@ -19,7 +19,7 @@ class WPBS_Background {
 			$img_id_large  = get_post_thumbnail_id( get_the_ID() ) ?: ( $attributes['wpbs-background']['largeImage']['id'] ?? $attributes['wpbs-background']['mobileImage']['id'] ?? false );
 			$img_src_large = wp_get_attachment_image_src( $img_id_large, $attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
 
-			$img_id_mobile  = get_post_thumbnail_id( get_the_ID() ) ?: ( $attributes['wpbs-background']['mobileImage']['id'] ?? $attributes['wpbs-background']['largeImage']['id'] ?? false );
+			$img_id_mobile  = get_field( 'page_settings_media_mobile_image', get_the_ID() ) ?: get_post_thumbnail_id( get_the_ID() ) ?: ( $attributes['wpbs-background']['mobileImage']['id'] ?? $attributes['wpbs-background']['largeImage']['id'] ?? false );
 			$img_src_mobile = wp_get_attachment_image_src( $img_id_mobile, $attributes['wpbs-background']['resolutionMobile'] ?? $attributes['wpbs-background']['resolution'] ?? 'large' )[0] ?? '#';
 
 			$css = str_replace(

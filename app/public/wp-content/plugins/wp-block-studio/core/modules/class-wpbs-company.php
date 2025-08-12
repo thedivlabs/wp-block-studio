@@ -326,7 +326,7 @@ class WPBS_Place {
 
 		$address = implode( $line_separator, array_filter( [
 			( '<span class="whitespace-nowrap">' . implode( ', ', array_filter( [
-					$this->address['street'],
+					$this->address['street'] ?? null,
 					empty( $args['split_address'] ) ? $this->address['number'] ?? null : null,
 				] ) ) . '</span>' ),
 			! empty( $args['split_address'] ) ? $this->address['number'] ?? null : null,
@@ -342,9 +342,7 @@ class WPBS_Place {
 		if ( $link_map || $link_dir ) {
 
 			$address_string = implode( ', ', array_filter( [
-				( implode( ', ', array_filter( [
-					$this->address['street']
-				] ) ) ),
+				$this->address['street'] ?? null,
 				( implode( ', ', array_filter( [
 					$this->address['city'] ?? null,
 					( implode( ' ', array_filter( [

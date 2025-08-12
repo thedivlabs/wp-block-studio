@@ -15,6 +15,23 @@ const {state} = store('wpbs/company-map', {
                 return false;
             }
 
+
+            if (!document.querySelector('#wpbs-google-maps')) {
+
+                window.maps_callback = () => {
+                    init_maps();
+                };
+
+                
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${map_key}&libraries=places,marker&callback=maps_callback&loading=async`;
+                script.id = 'wpbs-google-maps';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            }
+
+
             const map_observer = new IntersectionObserver((entry) => {
 
                 const map = entry[0];
@@ -22,20 +39,13 @@ const {state} = store('wpbs/company-map', {
                 if (map.isIntersecting) {
 
                     if (typeof google === 'object' && typeof google.maps === 'object') {
+                        console.log('library already loaded');
                         init_maps();
                     } else {
-                        window.maps_callback = () => {
-                            init_maps();
-                        };
-
-                        const script = document.createElement('script');
-                        script.src = `https://maps.googleapis.com/maps/api/js?key=${map_key}&libraries=places,marker&callback=maps_callback&loading=async`;
-                        script.async = true;
-                        script.defer = true;
-                        document.head.appendChild(script);
+                        console.log('loading library');
                     }
 
-                    map_observer.unobserve(map.target);
+                    map_observer.unobserve(element);
                 }
             }, {
                 threshold: 1.0,
@@ -44,7 +54,7 @@ const {state} = store('wpbs/company-map', {
             map_observer.observe(element);
 
             function init_maps() {
-                
+
                 const position = {
                     lat: parseFloat(companies[0].lat),
                     lng: parseFloat(companies[0].lng)

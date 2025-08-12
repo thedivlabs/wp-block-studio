@@ -24,7 +24,11 @@
     },
     "spacing": {
       "padding": true,
-      "margin": true
+      "margin": true,
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ]
     },
     "shadow": true,
     "__experimentalBorder": {
@@ -43,6 +47,7 @@
   },
   "editorScript": "file:./block.js",
   "icon": "grid-view",
+  "style": "file:./block.css",
   "render": "file:./render.php"
 }
 

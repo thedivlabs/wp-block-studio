@@ -10,11 +10,14 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
+import {DIMENSION_UNITS_TEXT} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     PanelBody,
     TextControl,
-    __experimentalNumberControl as NumberControl, SelectControl, BaseControl,
+    __experimentalUnitControl as UnitControl,
+    __experimentalNumberControl as NumberControl,
+    SelectControl, BaseControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 
@@ -73,11 +76,12 @@ registerBlockType(metadata.name, {
             return post?.acf?.wpbs || null;
 
         }, [settings?.['company-id']]);
-        
+
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
                 '--icon': !!settings?.icon ? '"\\' + settings?.icon + '"' : null,
-                '--icon-color': settings?.['icon-color'] ?? null
+                '--icon-color': settings?.['icon-color'] ?? null,
+                '--icon-size': settings?.['icon-size'] ?? null,
             }).filter(x => x));
         }, [settings]);
 
@@ -182,6 +186,15 @@ registerBlockType(metadata.name, {
                                     __next40pxDefaultSize={true}
                                 />
 
+                                <UnitControl
+                                    __nextHasNoMarginBottom
+                                    __next40pxDefaultSize
+                                    units={DIMENSION_UNITS_TEXT}
+                                    label="Icon Size"
+                                    value={settings?.['icon-size']}
+                                    onChange={(newValue) => updateSettings({'icon-size': newValue})}
+                                />
+
                             </Grid>
 
                             <BaseControl label={'Colors'}>
@@ -205,7 +218,7 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-company-content'}
-                       uniqueId={uniqueId} props={cssProps}
+                       uniqueId={uniqueId} props={cssProps} deps={['wpbs-company-content']}
                 />
 
                 <div {...blockProps}>

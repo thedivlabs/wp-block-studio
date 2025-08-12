@@ -1,5 +1,6 @@
 .wpbs-company-content {
   @apply
+  flex
   relative;
 
 
@@ -8,6 +9,9 @@
     &:before {
       content: var(--icon, none);
       color: var(--icon-color, inherit);
+      font-family: 'Font Awesome 6 Pro', sans-serif;
+      font-size: var(--icon-size, 1em);
+      line-height: inherit;
     }
 
   }

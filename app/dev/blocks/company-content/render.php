@@ -43,7 +43,9 @@ $link    = ! $is_link ? false : match ( $type ) {
 	'map-link' => $company->map_page,
 	'directions-link' => $company->directions_page,
 	default => false
-}
+};
+
+$element_class = 'wpbs-layout-wrapper';
 
 ?>
 
@@ -61,13 +63,19 @@ switch ( $type ) {
 		echo get_the_title( $company_id );
 		break;
 	case 'phone':
-		echo $company->get_phone();
+		echo $company->get_phone( [
+			'class' => $element_class
+		] );
 		break;
 	case 'email':
-		echo $company->get_email();
+		echo $company->get_email( [
+			'class' => $element_class
+		] );
 		break;
 	case 'address':
-		echo $company->get_address();
+		echo $company->get_address( [
+			'class' => $element_class
+		] );
 		break;
 	case 'description':
 		echo $company->summary();

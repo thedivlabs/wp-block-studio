@@ -148,7 +148,7 @@
   }
 
   /* BUTTON */
-  .gform_button,
+  .gform_button, .gform-button,
   .gform_next_button,
   .gform_previous_button {
     min-width: var(--wp--custom--form--default--button--width, auto) !important;
@@ -172,7 +172,7 @@
 
   }
 
-  .gform_button {
+  .gform_button, .gform-button {
 
     &:after {
       content: var(--wp--custom--form--default--button--icon);
@@ -188,7 +188,7 @@
 
 .gform_wrapper.gravity-theme.is-style-dark {
 
-  .gform_button {
+  .gform_button, .gform-button {
 
     &:after {
       content: var(--wp--custom--form--dark--button--icon);
@@ -248,7 +248,7 @@
     }
   }
 
-  .gform_button,
+  .gform_button, .gform-button,
   .gform_next_button,
   .gform_previous_button {
     background-color: var(--wp--custom--form--dark--button--color--background, var(--wp--preset--color--primary)) !important;
@@ -417,7 +417,7 @@
 
   }
 
-  .gform_button,
+  .gform_button, .gform-button,
   .gform_next_button,
   .gform_previous_button {
     margin: 0 !important;
@@ -437,7 +437,7 @@
     items-center
   }
 
-  .gform_button {
+  .gform_button, .gform-button {
 
     &:after {
       font-family: 'Font Awesome 6 Pro', sans-serif;

@@ -26,6 +26,8 @@ if ( ! $type || ! $company_id ) {
 
 $company = new WPBS_Place( $company_id );
 
+WPBS::console_log( $company );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-company-content inline-block',
@@ -90,7 +92,7 @@ switch ( $type ) {
 	case 'hours':
 	case 'hours-inline':
 		echo $company->get_hours( [
-			'inline' => $type === 'hours-inline'
+			'inline' => $type == 'hours-inline'
 		] );
 		break;
 	default:

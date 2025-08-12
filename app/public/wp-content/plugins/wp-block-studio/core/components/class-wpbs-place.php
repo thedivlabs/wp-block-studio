@@ -56,7 +56,7 @@ class WPBS_Place {
 			}
 		];
 
-		$this->hours_inline = get_field( 'divlabs_hours_normal_inline', $id ) ?: false;
+		$this->hours_inline = get_field( 'wpbs_hours_normal_inline', $id ) ?: false;
 
 	}
 

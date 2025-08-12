@@ -26,8 +26,6 @@ if ( ! $type || ! $company_id ) {
 
 $company = new WPBS_Place( $company_id );
 
-WPBS::console_log( $company );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-company-content inline-block',

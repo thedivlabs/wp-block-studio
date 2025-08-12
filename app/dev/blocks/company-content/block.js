@@ -17,7 +17,6 @@ import {
     __experimentalNumberControl as NumberControl, SelectControl, BaseControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
-import {sliderProps} from "Components/Slider";
 
 function sectionClassNames(attributes = {}) {
 
@@ -74,9 +73,7 @@ registerBlockType(metadata.name, {
             return post?.acf?.wpbs || null;
 
         }, [settings?.['company-id']]);
-
-        console.log(fields);
-
+        
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
                 '--icon': !!settings?.icon ? '"\\' + settings?.icon + '"' : null,

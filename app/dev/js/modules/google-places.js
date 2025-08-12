@@ -79,6 +79,23 @@ export class WPBS_Google_Places {
             phone: jQuery('.wpbs-location--phone input[type=text]'),
         }
 
+        const hours = {
+            monday_open: jQuery('.wpbs-location--monday_open .hasDatepicker'),
+            monday_close: jQuery('.wpbs-location--monday_close .hasDatepicker'),
+            tuesday_open: jQuery('.wpbs-location--tuesday_open .hasDatepicker'),
+            tuesday_close: jQuery('.wpbs-location--tuesday_close .hasDatepicker'),
+            wednesday_open: jQuery('.wpbs-location--wednesday_open .hasDatepicker'),
+            wednesday_close: jQuery('.wpbs-location--wednesday_close .hasDatepicker'),
+            thursday_open: jQuery('.wpbs-location--thursday_open .hasDatepicker'),
+            thursday_close: jQuery('.wpbs-location--thursday_close .hasDatepicker'),
+            friday_open: jQuery('.wpbs-location--friday_open .hasDatepicker'),
+            friday_close: jQuery('.wpbs-location--friday_close .hasDatepicker'),
+            saturday_open: jQuery('.wpbs-location--saturday_open .hasDatepicker'),
+            saturday_close: jQuery('.wpbs-location--saturday_close .hasDatepicker'),
+            sunday_open: jQuery('.wpbs-location--sunday_open .hasDatepicker'),
+            sunday_close: jQuery('.wpbs-location--sunday_close .hasDatepicker'),
+        }
+
         if (
             !fields.lng.val() &&
             data.hasOwnProperty('lng')
@@ -152,6 +169,64 @@ export class WPBS_Google_Places {
             data.hasOwnProperty('phone')
         ) {
             fields.phone.val(data.phone);
+        }
+
+        if (data.hasOwnProperty('hours')) {
+            if (!hours.monday_open.val() && data.hours.hasOwnProperty('monday')) {
+                hours.monday_open.datetimepicker('setTime', data?.hours?.monday.open);
+            }
+
+            if (!hours.monday_close.val() && data.hours.hasOwnProperty('monday')) {
+                hours.monday_close.datetimepicker('setTime', data?.hours?.monday.close);
+            }
+
+            if (!hours.tuesday_open.val() && data.hours.hasOwnProperty('tuesday')) {
+                hours.tuesday_open.datetimepicker('setTime', data?.hours?.tuesday.open);
+            }
+
+            if (!hours.tuesday_close.val() && data.hours.hasOwnProperty('tuesday')) {
+                hours.tuesday_close.datetimepicker('setTime', data?.hours?.tuesday.close);
+            }
+
+            if (!hours.wednesday_open.val() && data.hours.hasOwnProperty('wednesday')) {
+                hours.wednesday_open.datetimepicker('setTime', data?.hours?.wednesday.open);
+            }
+
+            if (!hours.wednesday_close.val() && data.hours.hasOwnProperty('wednesday')) {
+                hours.wednesday_close.datetimepicker('setTime', data?.hours?.wednesday.close);
+            }
+
+            if (!hours.thursday_open.val() && data.hours.hasOwnProperty('thursday')) {
+                hours.thursday_open.datetimepicker('setTime', data?.hours?.thursday.open);
+            }
+
+            if (!hours.thursday_close.val() && data.hours.hasOwnProperty('thursday')) {
+                hours.thursday_close.datetimepicker('setTime', data?.hours?.thursday.close);
+            }
+
+            if (!hours.friday_open.val() && data.hours.hasOwnProperty('friday')) {
+                hours.friday_open.datetimepicker('setTime', data?.hours?.friday.open);
+            }
+
+            if (!hours.friday_close.val() && data.hours.hasOwnProperty('friday')) {
+                hours.friday_close.datetimepicker('setTime', data?.hours?.friday.close);
+            }
+
+            if (!hours.saturday_open.val() && data.hours.hasOwnProperty('saturday')) {
+                hours.saturday_open.datetimepicker('setTime', data?.hours?.saturday.open);
+            }
+
+            if (!hours.saturday_close.val() && data.hours.hasOwnProperty('saturday')) {
+                hours.saturday_close.datetimepicker('setTime', data?.hours?.saturday.close);
+            }
+
+            if (!hours.sunday_open.val() && data.hours.hasOwnProperty('sunday')) {
+                hours.sunday_open.datetimepicker('setTime', data?.hours?.sunday.open);
+            }
+
+            if (!hours.sunday_close.val() && data.hours.hasOwnProperty('sunday')) {
+                hours.sunday_close.datetimepicker('setTime', data?.hours?.sunday.close);
+            }
         }
 
     }

@@ -29,8 +29,10 @@
     }
   },
   "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
   "icon": "admin-site",
-  "style": "file:./block.css"
+  "style": "file:./block.css",
+  "render": "file:./render.php"
 }
 
 

@@ -1,23 +1,18 @@
 import './scss/block.scss';
 
 import {
-    InspectorControls, PanelColorSettings,
-    useBlockProps, useInnerBlocksProps,
+    InspectorControls,
+    useBlockProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback} from "react";
 import {useUniqueId} from "Includes/helper";
-import {DIMENSION_UNITS_TEXT} from "Includes/config";
 import {
     __experimentalGrid as Grid,
-    PanelBody,
-    TextControl,
-    __experimentalUnitControl as UnitControl,
-    __experimentalNumberControl as NumberControl,
-    SelectControl, BaseControl, ToggleControl,
+    PanelBody, ToggleControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {Companies} from "Components/Companies";
@@ -27,7 +22,7 @@ function sectionClassNames(attributes = {}) {
     const {'wpbs-company-map': settings = {}} = attributes;
 
     return [
-        'wpbs-company-map flex w-full aspect-video',
+        'wpbs-company-map flex w-full aspect-banner',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -114,22 +109,7 @@ registerBlockType(metadata.name, {
             </>
         )
     },
-    save: (props) => {
-
-        const blockProps = useBlockProps.save({
-            className: sectionClassNames(props.attributes),
-            'data-wp-interactive': 'wpbs/company-map',
-            'data-wp-init': 'actions.init',
-            'data-wp-context': JSON.stringify({
-                id: props.attributes?.['wpbs-company-map']?.['company-id'],
-                default: props.attributes?.['wpbs-company-map']?.['default-marker'],
-                zoom: props.attributes?.['wpbs-company-map']?.['zoom-to-fit'],
-            }),
-            ...(props.attributes?.['wpbs-props'] ?? {})
-        });
-
-        return <figure {...blockProps}></figure>;
-    }
+    save: (props) => null
 })
 
 

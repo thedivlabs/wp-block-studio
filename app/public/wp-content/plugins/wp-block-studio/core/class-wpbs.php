@@ -204,6 +204,7 @@ class WPBS {
 		require_once $core_path . 'modules/class-wpbs-google-places.php';
 		require_once $core_path . 'modules/class-wpbs-gravity-forms.php';
 		require_once $core_path . 'modules/class-wpbs-review.php';
+		require_once $core_path . 'modules/class-wpbs-service.php';
 
 		WPBS_WP::init();
 		WPBS_ACF::init();
@@ -214,6 +215,7 @@ class WPBS {
 		WPBS_Google_Places::init();
 		WPBS_Gravity_Forms::init();
 		WPBS_Review::init();
+		WPBS_Service::init();
 
 		self::init_classes( 'core/components' );
 

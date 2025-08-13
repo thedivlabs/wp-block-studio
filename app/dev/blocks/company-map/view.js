@@ -11,26 +11,9 @@ const {state} = store('wpbs/company-map', {
 
             const map_key = WPBS?.settings?.places?.maps_key;
 
-            if (!map_key) {
-                return false;
-            }
-
-
-            if (!document.querySelector('#wpbs-google-maps')) {
-
-                window.maps_callback = () => {
-                    return true;
-                };
-
-
-                const script = document.createElement('script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${map_key}&libraries=places,marker&callback=maps_callback&loading=async`;
-                script.id = 'wpbs-google-maps';
-                script.async = true;
-                script.defer = true;
-                document.head.appendChild(script);
-            }
-
+            document.addEventListener('wpbs_maps_loaded', () => {
+                map_observer.observe(element);
+            })
 
             const map_observer = new IntersectionObserver((entry) => {
 
@@ -48,7 +31,6 @@ const {state} = store('wpbs/company-map', {
                 threshold: 1.0,
             });
 
-            map_observer.observe(element);
 
             function init_maps() {
 

@@ -38,6 +38,21 @@ class WPBS_Theme {
 
         this.init();
 
+        if (document.querySelector('.wpbs-map')) {
+            
+            window.maps_callback = () => {
+                const maps_loaded_event = new CustomEvent('wpbs_maps_loaded');
+                document.dispatchEvent(maps_loaded_event)
+            }
+
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${this?.settings?.places?.maps_key}&libraries=places,marker&callback=maps_callback&loading=async`;
+            script.id = 'wpbs-google-maps';
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+
     }
 
     gridDividers(element, args = {}, uniqueId = false) {
@@ -292,8 +307,8 @@ class WPBS_Theme {
 
         wp.domReady(() => {
 
-
             this.observeMedia();
+
         })
 
 

@@ -167,13 +167,7 @@ registerBlockType(metadata.name, {
                                     value={settings?.icon}
                                     onChange={(newValue) => updateSettings({icon: newValue})}
                                 />
-                                <TextControl
-                                    __nextHasNoMarginBottom
-                                    __next40pxDefaultSize
-                                    label="Label"
-                                    value={settings?.label}
-                                    onChange={(newValue) => updateSettings({label: newValue})}
-                                />
+
 
                                 <SelectControl
                                     label="Label Position"
@@ -199,6 +193,14 @@ registerBlockType(metadata.name, {
                                 />
 
                             </Grid>
+
+                            <TextControl
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                                label="Label"
+                                value={settings?.label}
+                                onChange={(newValue) => updateSettings({label: newValue})}
+                            />
 
                             <BaseControl label={'Colors'}>
                                 <PanelColorSettings

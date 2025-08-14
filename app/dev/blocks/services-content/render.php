@@ -20,11 +20,11 @@ $content = match ( $type ) {
 	'poster' => get_field( 'wpbs_media_featured_poster', $service_id ),
 	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $service_id ),
 	'icon' => get_field( 'wpbs_media_featured_icon', $service_id ),
-	'related-title' => get_field( 'wpbs_content_related_content_title', $service_id ),
-	'related-text' => get_field( 'wpbs_content_related_content_text', $service_id ),
-	'cta-title' => get_field( 'wpbs_content_cta_content_title', $service_id ),
-	'cta-text' => get_field( 'wpbs_content_cta_content_text', $service_id ),
-	'cta-image' => WPBS::clean_array( get_field( 'wpbs_content_cta_media', $service_id ) ),
+	'related-title' => get_field( 'wpbs_related_content_title', $service_id ),
+	'related-text' => get_field( 'wpbs_related_content_text', $service_id ),
+	'cta-title' => get_field( 'wpbs_cta_content_title', $service_id ),
+	'cta-text' => get_field( 'wpbs_cta_content_text', $service_id ),
+	'cta-image' => WPBS::clean_array( get_field( 'wpbs_cta_media', $service_id ) ),
 	default => null
 };
 
@@ -72,8 +72,8 @@ switch ( $type ) {
 	case 'cta-image':
 
 		echo WPBS::picture(
-			$content['mobile'] ?? false,
-			$content['large'] ?? false,
+			$content['image_mobile'] ?? false,
+			$content['image_large'] ?? false,
 			$attributes['wpbs-breakpoint']['large'] ?? false,
 			$settings['resolution'] ?? false, $loading );
 		break;

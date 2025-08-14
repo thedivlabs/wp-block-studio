@@ -58,6 +58,8 @@ add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $poster
 
 } );
 
+$loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
+
 ?>
 
 
@@ -74,12 +76,13 @@ add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $poster
 
 		if ( ! empty( $poster_id ) ) {
 			echo wp_get_attachment_image( $poster_id, $settings['resolution'] ?? 'small', false, [
-				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
+				'loading' => $loading,
 				'class'   => $poster_class,
 			] );
 		} else {
 			echo WPBS::youtube_image( $media['link'] ?? '', [
-				'class' => $poster_class
+				'class' => $poster_class,
+                'loading' => $loading,
 			] );
 		}
 

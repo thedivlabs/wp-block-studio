@@ -34,7 +34,7 @@ class WPBS_Service {
 			'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
 			'has_archive'   => 'services',
 			'taxonomies'    => array_merge( array_column( self::$taxonomies, 'slug' ), [ 'service-area' ] ),
-		], $labels, true, true );
+		], $labels, false, true );
 
 
 		foreach ( self::$taxonomies as $tax ) {

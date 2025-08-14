@@ -267,7 +267,7 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={cssProps}
                    selector={'wpbs-video'}
-                   deps={'wpbs-video'}
+                   deps={['wpbs-video']}
             />
 
 

@@ -361,6 +361,14 @@ function parseSpecial(prop, attributes) {
                 'margin-left': settings[prop]?.left,
             }).filter(([k, v]) => !!v))
             break;
+        case 'padding-mobile':
+            result = Object.fromEntries(Object.entries({
+                'padding-top': settings[prop]?.top,
+                'padding-right': settings[prop]?.right,
+                'padding-bottom': settings[prop]?.bottom,
+                'padding-left': settings[prop]?.left,
+            }).filter(([k, v]) => !!v))
+            break;
         case 'basis':
             result = {'flex-basis': value + '%'}
             break;

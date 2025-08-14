@@ -362,7 +362,7 @@ function parseSpecial(prop, attributes) {
                 'margin-left': settings[prop]?.left,
             }).filter(([k, v]) => !!v))
             break;
-        case 'padding-mobile':
+        case 'padding':
             result = Object.fromEntries(Object.entries({
                 'padding-top': settings[prop]?.top,
                 'padding-right': settings[prop]?.right,

@@ -315,7 +315,9 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
 
-            <ElementTag role="presentation" {...blockProps} />
+            <ElementTag role="presentation" {...blockProps} >
+                FAQS
+            </ElementTag>
 
         </>;
     },

@@ -69,7 +69,7 @@ $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 			echo '<div class="wpbs-video__title absolute z-20 top-0 left-0 w-full p-7"><span>' . $settings['title'] . '</span></div>';
 		} ?>
 
-        <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
+        <button type="button" class="<?= $button_class ?>">
             <span class="screen-reader-text">Play video</span>
         </button>
 

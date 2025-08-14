@@ -43,8 +43,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
             <div class="wpbs-faq-group__header">
 				<?= $faq['question'] ?>
             </div>
-            <div class="wpbs-faq-group__content">
-				<?= $faq['question'] ?>
+            <div class="wpbs-faq-group__answer">
+				<?= $faq['answer'] ?>
             </div>
         </li>
 	<?php } ?>

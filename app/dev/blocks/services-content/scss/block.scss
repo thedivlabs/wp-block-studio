@@ -1,0 +1,25 @@
+.wpbs-services-content {
+  @apply
+  flex
+  relative;
+
+
+  &.--icon {
+
+    &:before {
+      content: var(--icon, none);
+      color: var(--icon-color, inherit);
+      font-family: 'Font Awesome 6 Pro', sans-serif;
+      font-size: var(--icon-size, 1em);
+      line-height: inherit;
+      height: 1lh;
+      width: auto;
+      aspect-ratio: 1/1;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+  }
+}

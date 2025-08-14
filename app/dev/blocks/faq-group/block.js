@@ -269,7 +269,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-                '--divider': settings?.['divider'],
+                '--divider': Object.entries(settings?.['divider']).join(' '),
                 '--icon-open': `"\\${iconOpen}"`,
                 '--icon-closed': `"\\${iconClosed}"`,
                 '--icon-style': settings?.['icon-style'],

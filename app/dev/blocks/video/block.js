@@ -61,7 +61,7 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-video'],
+                ...settings,
                 ...newValue
             };
 

@@ -61,23 +61,23 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const companies = useSelect((select) => {
-            return select('core').getEntityRecords('postType', 'company', {per_page: -1});
+        const services = useSelect((select) => {
+            return select('core').getEntityRecords('postType', 'service', {per_page: -1});
         }, []);
 
         const {'wpbs-services-content': settings = {}} = attributes;
 
         const fields = useSelect((select) => {
 
-            if (!settings?.['company-id']) {
+            if (!settings?.['service-id']) {
                 return {};
             }
 
-            const post = select('core').getEntityRecord('postType', 'company', settings?.['company-id']);
+            const post = select('core').getEntityRecord('postType', 'service', settings?.['service-id']);
 
             return post?.acf?.wpbs || null;
 
-        }, [settings?.['company-id']]);
+        }, [settings?.['service-id']]);
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
@@ -106,7 +106,7 @@ registerBlockType(metadata.name, {
 
             const {type = ''} = settings;
 
-            const label = CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Company Content';
+            const label = CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Service Content';
 
             switch (type) {
                 case 'featured-image':
@@ -126,16 +126,16 @@ registerBlockType(metadata.name, {
                         <Grid columns={1} columnGap={15} rowGap={20}>
 
                             <SelectControl
-                                label="Select Company"
-                                value={settings?.['company-id'] ?? ''}
+                                label="Select Service"
+                                value={settings?.['service-id'] ?? ''}
                                 options={[
-                                    {label: 'Select a company', value: ''},
-                                    ...(companies || []).map(post => ({
+                                    {label: 'Select a service', value: ''},
+                                    ...(services || []).map(post => ({
                                         label: post.title.rendered,
                                         value: String(post.id)
                                     }))
                                 ]}
-                                onChange={(newValue) => updateSettings({'company-id': newValue})}
+                                onChange={(newValue) => updateSettings({'service-id': newValue})}
                                 __nextHasNoMarginBottom={true}
                                 __next40pxDefaultSize={true}
                             />
@@ -165,21 +165,6 @@ registerBlockType(metadata.name, {
                                     label="Icon"
                                     value={settings?.icon}
                                     onChange={(newValue) => updateSettings({icon: newValue})}
-                                />
-
-
-                                <SelectControl
-                                    label="Label Position"
-                                    value={settings?.['label-position'] ?? ''}
-                                    options={[
-                                        {label: 'Select', value: ''},
-                                        {label: 'Top', value: 'top'},
-                                        {label: 'Left', value: 'left'},
-                                        {label: 'Bottom', value: 'bottom'},
-                                    ]}
-                                    onChange={(newValue) => updateSettings({'label-position': newValue})}
-                                    __nextHasNoMarginBottom={true}
-                                    __next40pxDefaultSize={true}
                                 />
 
                                 <UnitControl

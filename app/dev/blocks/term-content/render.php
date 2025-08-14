@@ -25,6 +25,8 @@ $content = match ( $type ) {
 	'related-text' => get_field( 'wpbs_related_text', $term_ref ),
 	'content-title' => get_field( 'wpbs_content_title', $term_ref ),
 	'content-text' => get_field( 'wpbs_content_text', $term_ref ),
+	'cta-title' => get_field( 'wpbs_cta_title', $term_ref ),
+	'cta-text' => get_field( 'wpbs_cta_text', $term_ref ),
 	default => null
 };
 

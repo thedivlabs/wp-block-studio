@@ -33,7 +33,6 @@ class WPBS_Service {
 			'menu_position' => 25,
 			'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
 			'has_archive'   => 'services',
-			//'template'      => [ 'acf/wpbs-services-intro' ],
 			'taxonomies'    => array_merge( array_column( self::$taxonomies, 'slug' ), [ 'service-area' ] ),
 		], $labels, true, true );
 

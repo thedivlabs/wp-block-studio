@@ -17,9 +17,6 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'flex items-stretch relative w-full min-h-32 overflow-hidden cursor-pointer',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style'         => implode( '; ', array_filter( [
-		! empty( $settings['overlay'] ) ? '--overlay:' . $settings['overlay'] : null
-	] ) ),
 	'data-title'    => $media['title'] ?? null,
 	'data-vid'      => $video_id,
 	'data-platform' => $media['platform'] ?? null,
@@ -68,13 +65,13 @@ $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
     <div class="<?= $media_class ?>">
 
-<?php if(!empty($settings['title'])) {
-	echo '<div class="wpbs-video__title absolute z-20 top-0 left-0 w-full p-7">'.$settings['title'].'</div>';
-} ?>
+		<?php if ( ! empty( $settings['title'] ) ) {
+			echo '<div class="wpbs-video__title absolute z-20 top-0 left-0 w-full p-7"><span>' . $settings['title'] . '</span></div>';
+		} ?>
 
         <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
             <span class="screen-reader-text">Play video</span>
-            <?= $settings['button-icon'] ?? '<i class="fa-solid fa-circle-play"></i>' ?>
+			<?= $settings['button-icon'] ?? '<i class="fa-solid fa-circle-play"></i>' ?>
         </button>
 
 		<?php
@@ -86,8 +83,8 @@ $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 			] );
 		} else {
 			echo WPBS::youtube_image( $media['link'] ?? '', [
-				'class' => $poster_class,
-                'loading' => $loading,
+				'class'   => $poster_class,
+				'loading' => $loading,
 			] );
 		}
 

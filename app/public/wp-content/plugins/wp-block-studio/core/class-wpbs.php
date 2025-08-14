@@ -171,6 +171,8 @@ class WPBS {
 	public function editor_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
+		wp_enqueue_script( 'wpbs-fontawesome' );
+
 		wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_style( 'wpbs-swiper-css' );
 	}
@@ -630,7 +632,7 @@ class WPBS {
 
 		$class = $args['class'] ?? 'w-full h-full z-0 relative object-cover object-center';
 
-		return '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $class . '" alt="" loading="'.($args['loading'] ?? 'lazy').'" />';
+		return '<img src="https://i3.ytimg.com/vi/' . $video_id . '/hqdefault.jpg" class="' . $class . '" alt="" loading="' . ( $args['loading'] ?? 'lazy' ) . '" />';
 
 	}
 

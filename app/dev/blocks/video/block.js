@@ -282,7 +282,7 @@ registerBlockType(metadata.name, {
                         </div>
                     )}
                     <div
-                        className={'wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none opacity-50'}>
+                        className={'wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none'}>
                         <span className={'screen-reader-text'}>Play video</span>
                     </div>
                     <img src={posterSrc}

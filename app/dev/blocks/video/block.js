@@ -52,6 +52,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const {'wpbs-video':settings = {}} = attributes;
+
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-video'],
@@ -61,18 +63,20 @@ registerBlockType(metadata.name, {
             setAttributes({
                 'wpbs-video': result,
             });
-        }, [setAttributes, attributes['wpbs-video']]);
+        }, [setAttributes, settings]);
 
 
         const blockProps = useBlockProps({
             className: 'wpbs-video --disabled flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer ' + uniqueId,
             style: {
-                '--overlay': attributes?.['wpbs-video']?.overlay ?? 'none'
+                '--overlay': settings?.overlay ?? 'none'
             }
         });
 
-        const vid = !!attributes['wpbs-video']?.link ? (new URL(attributes['wpbs-video'].link)).pathname.replace(/^\/+/g, '') : '#';
-        const posterSrc = attributes?.['wpbs-video']?.poster?.sizes?.[attributes?.['wpbs-video']?.resolution ?? 'medium']?.url ?? 'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg';
+        const vid = !!settings?.link ? (new URL(settings.link)).pathname.replace(/^\/+/g, '') : '#';
+        const posterSrc = settings?.poster?.sizes?.[settings?.resolution ?? 'medium']?.url ?? 'https://i3.ytimg.com/vi/' + vid + '/hqdefault.jpg';
+
+        const Title = !!settings?.title ? <div className={'wpbs-video__title absolute z-20 top-0 left-0 w-full p-7'}>{settings.title}</div> : null;
 
         return <>
             <BlockEdit key="edit" {...blockProps} />
@@ -84,7 +88,7 @@ registerBlockType(metadata.name, {
                                 <SelectControl
                                     __next40pxDefaultSize
                                     label="Platform"
-                                    value={attributes?.['wpbs-video']?.platform}
+                                    value={settings?.platform}
                                     options={[
                                         {label: 'Select', value: ''},
                                         {label: 'Youtube', value: 'youtube'},
@@ -99,7 +103,7 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
                                     label="Share Link"
-                                    value={attributes?.['wpbs-video']?.link}
+                                    value={settings?.link}
                                     className={'col-span-full'}
                                     onChange={(newValue) => updateSettings({link: newValue})}
                                 />
@@ -108,7 +112,7 @@ registerBlockType(metadata.name, {
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
                                     label="Title"
-                                    value={attributes?.['wpbs-video']?.title}
+                                    value={settings?.title}
                                     className={'col-span-full'}
                                     onChange={(newValue) => updateSettings({title: newValue})}
 
@@ -129,10 +133,10 @@ registerBlockType(metadata.name, {
                                             }
                                         })}
                                         allowedTypes={['image']}
-                                        value={attributes?.['wpbs-video']?.poster}
+                                        value={settings?.poster}
                                         render={({open}) => {
                                             return <PreviewThumbnail
-                                                image={attributes?.['wpbs-video']?.poster || {}}
+                                                image={settings?.poster || {}}
                                                 callback={() => updateSettings({poster: undefined})}
                                                 onClick={open}
                                             />
@@ -144,7 +148,7 @@ registerBlockType(metadata.name, {
                             <SelectControl
                                 label={'Resolution'}
                                 options={RESOLUTION_OPTIONS}
-                                value={attributes?.['wpbs-video']?.resolution}
+                                value={settings?.resolution}
                                 onChange={(newValue) => updateSettings({resolution: newValue})}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
@@ -154,7 +158,7 @@ registerBlockType(metadata.name, {
                                   style={{padding: '1rem 0'}}>
                                 <ToggleControl
                                     label="Eager"
-                                    checked={!!attributes?.['wpbs-video']?.eager}
+                                    checked={!!settings?.eager}
                                     onChange={(value) => {
                                         updateSettings({'eager': value});
 
@@ -162,8 +166,8 @@ registerBlockType(metadata.name, {
                                             setAttributes({
                                                 preload: [
                                                     {
-                                                        large: attributes?.['wpbs-video']?.poster?.id ?? null,
-                                                        size: attributes['wpbs-video']?.resolution || null
+                                                        large: settings?.poster?.id ?? null,
+                                                        size: settings?.resolution || null
                                                     }
                                                 ]
                                             });
@@ -175,7 +179,7 @@ registerBlockType(metadata.name, {
                                 />
                                 <ToggleControl
                                     label="Lightbox"
-                                    checked={!!attributes?.['wpbs-video']?.lightbox}
+                                    checked={!!settings?.lightbox}
                                     onChange={(newValue) => updateSettings({lightbox: newValue})}
                                     className={'flex items-center'}
                                     __nextHasNoMarginBottom
@@ -206,7 +210,7 @@ registerBlockType(metadata.name, {
                                         }
                                     ]}
                                     clearable={true}
-                                    value={attributes['wpbs-video']?.overlay ?? undefined}
+                                    value={settings?.overlay ?? undefined}
                                     onChange={(newValue) => updateSettings({'overlay': newValue})}
                                 />
                             </BaseControl>
@@ -222,10 +226,11 @@ registerBlockType(metadata.name, {
             <div {...blockProps}>
                 <div
                     className={'wpbs-video__media w-full h-full overflow-hidden relative hover:after:opacity-50 after:content-[\'\'] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-10 after:pointer-events-none after:bg-black/50 after:opacity-100 after:transition-opacity after:duration-300 after:ease-in-out'}>
+<Title/>
                     <div
                         className={'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 text-[6rem] leading-none text-white opacity-50 rounded-full'}>
                         <span className={'screen-reader-text'}>Play video</span>
-                        <i className={"fa-solid fa-circle-play"}></i>
+                        {!attributes?.['button-icon'] && <i className={"fa-solid fa-circle-play"}></i>}
                     </div>
                     <img src={posterSrc}
                          className={'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center'} alt={''}/>

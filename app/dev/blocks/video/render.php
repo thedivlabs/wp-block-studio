@@ -69,7 +69,7 @@ $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
     <div class="<?= $media_class ?>">
         <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
             <span class="screen-reader-text">Play video</span>
-            <i class="fa-solid fa-circle-play"></i>
+            <?= $settings['button-icon'] ?? '<i class="fa-solid fa-circle-play"></i>' ?>
         </button>
 
 		<?php

@@ -27,7 +27,7 @@ import {useSelect} from "@wordpress/data";
 function classNames(attributes = {}) {
 
     const {'wpbs-faq-group': settings = {}} = attributes;
-    
+
     return [
         'wpbs-faq-group',
         'w-full relative',
@@ -144,31 +144,31 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
             </Grid>
-            <Grid columns={1} columnGap={0} rowGap={0}>
-                <PanelColorSettings
-                    enableAlpha
-                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                    colorSettings={[
-                        {
-                            slug: 'icon-color',
-                            label: 'Icon Color',
-                            value: settings?.['icon-color'],
-                            onChange: (newValue) => updateSettings({'icon-color': newValue}),
-                            isShownByDefault: true
-                        }
-                    ]}
-                />
+            <PanelColorSettings
+                label={'Colors'}
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'icon-color',
+                        label: 'Icon Color',
+                        value: settings?.['icon-color'],
+                        onChange: (newValue) => updateSettings({'icon-color': newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
 
-                <BorderControl
-                    clearable={true}
-                    enableAlpha={true}
-                    disableUnits={true}
-                    enableStyle={true}
-                    __next40pxDefaultSize={true}
-                    value={settings?.['divider']}
-                    onChange={(newValue) => updateSettings({'divider': newValue})}
-                />
-            </Grid>
+            <BorderControl
+                label={'Divider'}
+                clearable={true}
+                enableAlpha={true}
+                disableUnits={true}
+                enableStyle={true}
+                __next40pxDefaultSize={true}
+                value={settings?.['divider']}
+                onChange={(newValue) => updateSettings({'divider': newValue})}
+            />
         </Grid>;
 
         const tabHover = <Grid columns={1} columnGap={0} rowGap={0}>

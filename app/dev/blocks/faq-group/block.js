@@ -26,6 +26,8 @@ import {useSelect} from "@wordpress/data";
 
 function classNames(attributes = {}) {
 
+    const {'wpbs-faq-group': settings = {}} = attributes;
+    
     return [
         'wpbs-faq-group',
         'w-full relative',

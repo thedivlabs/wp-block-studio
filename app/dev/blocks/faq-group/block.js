@@ -173,6 +173,7 @@ registerBlockType(metadata.name, {
                 label={'Divider'}
                 clearable={true}
                 enableAlpha={true}
+                colors={WPBS?.settings?.colors}
                 disableUnits={true}
                 enableStyle={true}
                 __next40pxDefaultSize={true}

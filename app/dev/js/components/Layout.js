@@ -99,6 +99,7 @@ const LAYOUT_PROPS = {
         'text-color-mobile',
         'container',
         'container-mobile',
+        'padding-mobile'
     ],
     layout: [
         'reveal',

@@ -1,27 +1,12 @@
 {
-  "name": "wpbs/term-details",
-  "title": "Term Details",
-  "description": "Display term details",
+  "name": "wpbs/term-content",
+  "title": "Term Content",
+  "description": "Display term content",
   "selectors": {
-    "root": ".wpbs-term-details"
+    "root": ".wpbs-term-content"
   },
   "usesContext": [
     "wpbs/termId"
-  ],
-  "styles": [
-    {
-      "name": "name",
-      "label": "Name",
-      "isDefault": true
-    },
-    {
-      "name": "description",
-      "label": "Description"
-    },
-    {
-      "name": "thumbnail",
-      "label": "Thumbnail"
-    }
   ],
   "supports": {
     "color": {

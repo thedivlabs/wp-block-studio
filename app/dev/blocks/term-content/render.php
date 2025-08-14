@@ -1,40 +1,40 @@
 <?php
 
-$settings = $attributes['wpbs-services-content'] ?? false;
+$term_id = ! empty( $block->context['wpbs/termId'] ) ? $block->context['wpbs/termId'] : get_queried_object()?->term_id ?? false;
+$term    = get_term( $term_id );
 
-if ( empty( $settings ) ) {
-	return;
+if ( empty( $term ) ) {
+	return false;
 }
 
-$type       = $settings['type'] ?? false;
-$service_id = ( $settings['service-id'] ?? false ) == 'current' ? get_the_ID() : intval( $settings['service-id'] ?? false );
+$settings = $attributes['wpbs-term-content'] ?? false;
+$type     = $settings['type'] ?? false;
 
-if ( ! $type || ! $service_id ) {
-	return;
-}
+$term_ref = "{$term->taxonomy}_{$term->term_id}";
 
 $content = match ( $type ) {
-	'overview' => get_field( 'wpbs_content_overview', $service_id ),
-	'description' => get_field( 'wpbs_content_description', $service_id ),
-	'text' => get_field( 'wpbs_content_text', $service_id ),
-	'poster' => get_field( 'wpbs_media_featured_poster', $service_id ),
-	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $service_id ),
-	'icon' => get_field( 'wpbs_media_featured_icon', $service_id ),
-	'related-title' => get_field( 'wpbs_related_content_title', $service_id ),
-	'related-text' => get_field( 'wpbs_related_content_text', $service_id ),
-	'cta-title' => get_field( 'wpbs_cta_content_title', $service_id ),
-	'cta-text' => get_field( 'wpbs_cta_content_text', $service_id ),
-	'cta-image' => WPBS::clean_array( get_field( 'wpbs_cta_media', $service_id ) ),
+	'title' => $term->name,
+	'description' => $term->description,
+	'poster' => get_field( 'wpbs_media_poster', $term_ref ),
+	'thumbnail' => get_field( 'wpbs_media_thumbnail', $term_ref ),
+	'featured-image' => WPBS::clean_array( [
+		'large'  => get_field( 'wpbs_media_featured_image_large', $term_ref ),
+		'mobile' => get_field( 'wpbs_media_featured_image_mobile', $term_ref ),
+	] ),
+	'related-title' => get_field( 'wpbs_related_title', $term_ref ),
+	'related-text' => get_field( 'wpbs_related_text', $term_ref ),
+	'content-title' => get_field( 'wpbs_content_title', $term_ref ),
+	'content-text' => get_field( 'wpbs_content_text', $term_ref ),
 	default => null
 };
 
 if ( empty( $content ) ) {
-	return false;
+	return;
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-services-content inline-block',
+		'wpbs-term-details inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
@@ -48,11 +48,6 @@ $link_rel    = $settings['link-post']['linkRel'] ?? '';
 $link_title  = $settings['link-post']['linkTitle'] ?? '';
 
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
-
-?>
-
-<?php
-
 
 if ( $is_link ) {
 	echo '<a href="' . get_the_id() . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
@@ -68,11 +63,10 @@ switch ( $type ) {
 			'class'   => 'w-full h-full object-cover'
 		] );
 		break;
-	case 'cta-image':
-
+	case 'featured-image':
 		echo WPBS::picture(
-			$content['image_mobile'] ?? false,
-			$content['image_large'] ?? false,
+			$content['mobile'] ?? false,
+			$content['large'] ?? false,
 			$attributes['wpbs-breakpoint']['large'] ?? false,
 			$settings['resolution'] ?? false, $loading );
 		break;
@@ -86,7 +80,5 @@ if ( $is_link ) {
 } else {
 	echo '</div>';
 }
-
-?>
 
 

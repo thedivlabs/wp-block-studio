@@ -27,6 +27,7 @@ $content = match ( $type ) {
 	'content-text' => get_field( 'wpbs_content_text', $term_ref ),
 	'cta-title' => get_field( 'wpbs_cta_title', $term_ref ),
 	'cta-text' => get_field( 'wpbs_cta_text', $term_ref ),
+	'cta-image' => get_field( 'wpbs_cta_image', $term_ref ),
 	default => null
 };
 
@@ -60,6 +61,7 @@ if ( $is_link ) {
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
+	case 'cta-image':
 		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'

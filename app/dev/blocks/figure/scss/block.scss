@@ -8,13 +8,13 @@
   object-fit: inherit;
   width: 100%;
   height: auto;
-  display: grid;
+  display: flex;
 }
 
 /* <img> inside <picture> */
 .wpbs-figure picture > img {
   object-fit: inherit;
-  width: 100%;
+  width: auto;
   height: 100%;
 }
 

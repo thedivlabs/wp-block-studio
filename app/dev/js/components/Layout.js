@@ -56,6 +56,7 @@ export const LAYOUT_ATTRIBUTES = {
 const LAYOUT_PROPS = {
     special: [
         'align-header',
+        'duration',
         'reveal',
         'reveal-easing',
         'reveal-duration',

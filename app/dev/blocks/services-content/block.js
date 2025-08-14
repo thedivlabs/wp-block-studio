@@ -10,16 +10,17 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
-import {DIMENSION_UNITS_TEXT} from "Includes/config";
+import {DIMENSION_UNITS_TEXT, RESOLUTION_OPTIONS} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     PanelBody,
     TextControl,
     __experimentalUnitControl as UnitControl,
     __experimentalNumberControl as NumberControl,
-    SelectControl, BaseControl,
+    SelectControl, BaseControl, ToggleControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
+import {LinkPost} from "Components/LinkPost";
 
 function sectionClassNames(attributes = {}) {
 
@@ -152,6 +153,16 @@ registerBlockType(metadata.name, {
                                     onChange={(newValue) => updateSettings({'line-clamp': newValue})}
 
                                 />
+
+                                <SelectControl
+                                    __nextHasNoMarginBottom={true}
+                                    __next40pxDefaultSize={true}
+                                    label="Resolution"
+                                    value={settings?.resolution ?? ''}
+                                    options={RESOLUTION_OPTIONS}
+                                    onChange={(newValue) => updateSettings({resolution: newValue})}
+                                />
+
                                 <TextControl
                                     __nextHasNoMarginBottom
                                     __next40pxDefaultSize
@@ -194,9 +205,21 @@ registerBlockType(metadata.name, {
                                     ]}
                                 />
                             </BaseControl>
+
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Eager"
+                                    checked={!!settings?.eager}
+                                    onChange={(newValue) => updateSettings({eager: newValue})}
+                                />
+                            </Grid>
                         </Grid>
                     </PanelBody>
                 </InspectorControls>
+
+                <LinkPost defaultValue={settings?.['link-post']}
+                          callback={(newValue) => updateSettings({'link-post': newValue})}/>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-services-content'}

@@ -14,17 +14,17 @@ if ( ! $type || ! $service_id ) {
 }
 
 $content = match ( $type ) {
-	'overview' => get_field('wpbs_content_overview', $service_id),
-	'description' => get_field('wpbs_content_description', $service_id),
-	'text' => get_field('wpbs_content_text', $service_id),
-	'poster' => get_field('wpbs_media_featured_poster', $service_id),
-	'thumbnail' => get_field('wpbs_media_featured_thumbnail', $service_id),
-	'icon' => get_field('wpbs_media_featured_icon', $service_id),
-	'related-title' => get_field('wpbs_content_related_content_title', $service_id),
-	'related-text' => get_field('wpbs_content_related_content_text', $service_id),
-	'cta-title' => get_field('wpbs_content_cta_content_title', $service_id),
-	'cta-text' => get_field('wpbs_content_cta_content_text', $service_id),
-	'cta-image' => get_field('wpbs_content_cta_media', $service_id),
+	'overview' => get_field( 'wpbs_content_overview', $service_id ),
+	'description' => get_field( 'wpbs_content_description', $service_id ),
+	'text' => get_field( 'wpbs_content_text', $service_id ),
+	'poster' => get_field( 'wpbs_media_featured_poster', $service_id ),
+	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $service_id ),
+	'icon' => get_field( 'wpbs_media_featured_icon', $service_id ),
+	'related-title' => get_field( 'wpbs_content_related_content_title', $service_id ),
+	'related-text' => get_field( 'wpbs_content_related_content_text', $service_id ),
+	'cta-title' => get_field( 'wpbs_content_cta_content_title', $service_id ),
+	'cta-text' => get_field( 'wpbs_content_cta_content_text', $service_id ),
+	'cta-image' => get_field( 'wpbs_content_cta_media', $service_id ),
 	default => null
 };
 
@@ -42,7 +42,13 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-$is_link = ! empty( $settings['link'] );
+$is_link = ! empty( $settings['link-post'] );
+
+$link_target = ! empty( $settings['link-post']['linkNewTab'] ) ? '_blank' : '_self';
+$link_rel    = $settings['link-post']['linkRel'] ?? '';
+$link_title  = $settings['link-post']['linkTitle'] ?? '';
+
+$loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
 ?>
 
@@ -50,50 +56,22 @@ $is_link = ! empty( $settings['link'] );
 
 
 if ( $is_link ) {
-	echo '<a href="' . $service->reviews_page . '" target="_blank" ' . $wrapper_attributes . '>';
+	echo '<a href="' . get_the_id() . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
 } else {
 	echo '<div ' . $wrapper_attributes . '>';
 }
 
 switch ( $type ) {
-	case 'title':
-		echo get_the_title( $service_id );
-		break;
-	case 'phone':
-		echo $service->get_phone( [
-			'class' => $element_class
-		] );
-		break;
-	case 'email':
-		echo $service->get_email( [
-			'class' => $element_class
-		] );
-		break;
-	case 'address':
-	case 'address-inline':
-		echo $service->get_address( [
-			'class'  => $element_class,
-			'inline' => $type == 'address-inline'
-		] );
-		break;
-	case 'description':
-		echo $service->summary();
-		break;
-	case 'reviews-link':
-	case 'new-review-link':
-	case 'directions-link':
-	case 'map-link':
-		echo $settings['label'] ?? false;
-		break;
-
-	case 'hours':
-	case 'hours-inline':
-		$service->get_hours( [
-			'inline' => $type == 'hours-inline'
+	case 'poster':
+	case 'thumbnail':
+	case 'cta-image':
+		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
+			'loading' => $loading,
+			'class'   => 'w-full h-full object-cover'
 		] );
 		break;
 	default:
-		echo '';
+		echo $content;
 }
 
 

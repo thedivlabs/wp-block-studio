@@ -106,15 +106,7 @@ registerBlockType(metadata.name, {
 
             const {type = ''} = settings;
 
-            const label = CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Service Content';
-
-            switch (type) {
-                case 'featured-image':
-                    return <i
-                        className="fa-solid fa-user-tie !flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/>;
-                default:
-                    return label;
-            }
+            return CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Service Content';
 
         }, [settings?.type]);
 

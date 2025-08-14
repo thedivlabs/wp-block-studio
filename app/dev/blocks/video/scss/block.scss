@@ -22,6 +22,7 @@
     &:before {
       content: var(--icon, "\f144");
       font-family: 'Font Awesome 6 Pro', sans-serif;
+      font-weight: 900;
     }
   }
 }

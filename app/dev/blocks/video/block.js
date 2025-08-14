@@ -70,15 +70,13 @@ registerBlockType(metadata.name, {
             });
         }, [setAttributes, settings]);
 
-        const cssProps = useMemo(() => {
-            return Object.fromEntries(Object.entries({
-                '--overlay': settings?.overlay ?? 'none',
-                '--icon': !!settings?.['button-icon'] ? '"\\' + settings?.['button-icon'] + '"' : null,
-                '--icon-color': settings?.['icon-color'] ?? null,
-                '--icon-size': settings?.['icon-size'] ?? null,
-                '--title-color': settings?.['title-color'] ?? null,
-            }).filter(x => x));
-        }, [settings]);
+        const cssProps = Object.fromEntries(Object.entries({
+            '--overlay': settings?.overlay ?? 'none',
+            '--icon': !!settings?.['button-icon'] ? '"\\' + settings?.['button-icon'] + '"' : null,
+            '--icon-color': settings?.['icon-color'] ?? null,
+            '--icon-size': settings?.['icon-size'] ?? null,
+            '--title-color': settings?.['title-color'] ?? null,
+        }).filter(x => x));
 
         const blockProps = useBlockProps({
             className: 'wpbs-video --disabled flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer ' + uniqueId,

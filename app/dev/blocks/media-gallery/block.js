@@ -47,9 +47,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-media-gallery');
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const styleType = useMemo(() => {
@@ -59,8 +56,7 @@ registerBlockType(metadata.name, {
         const isSlider = styleType === 'slider';
 
         const swiperRef = useRef(null);
-
-
+        
         const newSettings = useMemo(() => cleanObject({
             uniqueId,
             type: styleType,

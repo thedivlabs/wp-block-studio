@@ -24,7 +24,7 @@ $content = match ( $type ) {
 	'related-text' => get_field( 'wpbs_content_related_content_text', $service_id ),
 	'cta-title' => get_field( 'wpbs_content_cta_content_title', $service_id ),
 	'cta-text' => get_field( 'wpbs_content_cta_content_text', $service_id ),
-	'cta-image' => get_field( 'wpbs_content_cta_media', $service_id ),
+	'cta-image' => WPBS::clean_array( get_field( 'wpbs_content_cta_media', $service_id ) ),
 	default => null
 };
 

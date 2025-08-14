@@ -13,7 +13,14 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useInstanceId} from "@wordpress/compose";
 import {
     __experimentalUnitControl as UnitControl,
-    __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl, SelectControl, BorderControl,
+    __experimentalGrid as Grid,
+    PanelBody,
+    TabPanel,
+    TextControl,
+    ToggleControl,
+    SelectControl,
+    BorderControl,
+    BaseControl,
 } from "@wordpress/components";
 import React, {useCallback, useMemo} from "react";
 import {
@@ -144,20 +151,23 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
             </Grid>
-            <PanelColorSettings
-                label={'Colors'}
-                enableAlpha
-                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                colorSettings={[
-                    {
-                        slug: 'icon-color',
-                        label: 'Icon Color',
-                        value: settings?.['icon-color'],
-                        onChange: (newValue) => updateSettings({'icon-color': newValue}),
-                        isShownByDefault: true
-                    }
-                ]}
-            />
+
+
+            <BaseControl label={'Colors'}>
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'icon-color',
+                            label: 'Icon Color',
+                            value: settings?.['icon-color'],
+                            onChange: (newValue) => updateSettings({'icon-color': newValue}),
+                            isShownByDefault: true
+                        }
+                    ]}
+                />
+            </BaseControl>
 
             <BorderControl
                 label={'Divider'}

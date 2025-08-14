@@ -284,7 +284,6 @@ registerBlockType(metadata.name, {
                     <div
                         className={'wpbs-video__button flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none text-white opacity-50 rounded-full'}>
                         <span className={'screen-reader-text'}>Play video</span>
-                        {!settings?.['button-icon'] && <i className={"fa-solid fa-circle-play"}></i>}
                     </div>
                     <img src={posterSrc}
                          className={'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center'} alt={''}/>

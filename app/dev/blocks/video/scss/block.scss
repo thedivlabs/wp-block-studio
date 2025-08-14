@@ -20,7 +20,7 @@
     color: var(--icon-color, white);
 
     &:before {
-      content: var(--icon, none);
+      content: var(--icon, "\f144");
       font-family: 'Font Awesome 6 Pro', sans-serif;
     }
   }

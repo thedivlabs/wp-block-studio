@@ -1,77 +1,53 @@
 <?php
 
-$settings = $attributes['wpbs-services-content'] ?? false;
+$settings = $attributes['wpbs-faq-group'] ?? false;
 
 if ( empty( $settings ) ) {
 	return;
 }
 
-$type       = $settings['type'] ?? false;
-$service_id = ( $settings['service-id'] ?? false ) == 'current' ? get_the_ID() : intval( $settings['service-id'] ?? false );
+$term_id  = is_tax() ? get_queried_object()?->term_id : false;
+$term     = $term_id ? get_term( $term_id ) : false;
+$term_ref = $term_id ? "{$term->taxonomy}_{$term->term_id}" : false;
 
-if ( ! $type || ! $service_id ) {
+$faq_id = match ( true ) {
+	( $settings['faq-id'] ?? false ) == 'current' && is_tax() => intval( get_field( 'wpbs_faq_group', $term_ref ) ?: get_field( 'wpbs_faq', $term_ref ) ?: false ),
+	( $settings['faq-id'] ?? false ) == 'current' => intval( get_field( 'wpbs_faq_group', get_the_ID() ) ?: get_field( 'wpbs_faq', get_the_ID() ) ?: false ),
+	default => intval( $settings['faq-id'] ?? false )
+};
+
+$faqs = WPBS::clean_array( get_field( 'wpbs_questions', $faq_id ) );
+
+if ( ! $faqs ) {
 	return;
-}
-
-if ( empty( $content ) ) {
-	return false;
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-services-content inline-block',
-		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
+		'wpbs-faq-group',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-$is_link = ! empty( $settings['link-post'] );
-
-$link_target = ! empty( $settings['link-post']['linkNewTab'] ) ? '_blank' : '_self';
-$link_rel    = $settings['link-post']['linkRel'] ?? '';
-$link_title  = $settings['link-post']['linkTitle'] ?? '';
-
-$loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
-
 ?>
 
-<?php
+<ul <?= $wrapper_attributes ?>>
+	<?php foreach ( $faqs as $faq ) {
 
-
-if ( $is_link ) {
-	echo '<a href="' . get_the_id() . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
-} else {
-	echo '<div ' . $wrapper_attributes . '>';
-}
-
-switch ( $type ) {
-	case 'poster':
-	case 'thumbnail':
-		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
-			'loading' => $loading,
-			'class'   => 'w-full h-full object-cover'
-		] );
-		break;
-	case 'cta-image':
-
-		echo WPBS::picture(
-			$content['image_mobile'] ?? false,
-			$content['image_large'] ?? false,
-			$attributes['wpbs-breakpoint']['large'] ?? false,
-			$settings['resolution'] ?? false, $loading );
-		break;
-	default:
-		echo $content;
-}
-
-
-if ( $is_link ) {
-	echo '</a>';
-} else {
-	echo '</div>';
-}
-
-?>
+		if ( empty( $faq['question'] ) || empty( $faq['answer'] ) ) {
+			continue;
+		}
+		?>
+        <li>
+            <div class="header">
+				<?= $faq['question'] ?>
+            </div>
+            <div class="content">
+				<?= $faq['question'] ?>
+            </div>
+        </li>
+	<?php } ?>
+</ul>
 
 

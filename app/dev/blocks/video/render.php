@@ -66,6 +66,7 @@ add_filter( 'wpbs_preload_images', function ( $images ) use ( $is_eager, $poster
 
     <div class="<?= $media_class ?>">
         <button type="button" class="<?= $button_class ?>" style="font-size: clamp(62px, 5rem, 6vw)">
+            <span class="screen-reader-text">Play video</span>
             <i class="fa-solid fa-circle-play"></i>
         </button>
 

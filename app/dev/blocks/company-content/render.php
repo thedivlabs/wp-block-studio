@@ -6,17 +6,6 @@ if ( empty( $settings ) ) {
 	return;
 }
 
-if ( ! empty( $settings['line-clamp'] ) ) {
-	$style_attribute = implode( '; ', [
-		'line-clamp:' . $settings['line-clamp'],
-		'-webkit-line-clamp:' . $settings['line-clamp'],
-		'display:-webkit-box',
-		'-webkit-box-orient:vertical',
-		'overflow:hidden',
-	] );
-}
-
-
 $type       = $settings['type'] ?? false;
 $company_id = intval( $settings['company-id'] ?? false );
 
@@ -29,11 +18,11 @@ $company = new WPBS_Place( $company_id );
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-company-content inline-block',
+		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		! empty( $settings['icon'] ) ? '--icon' : null,
 		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => trim( join( ' ', [ $style_attribute ?? '', ] ) ),
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 

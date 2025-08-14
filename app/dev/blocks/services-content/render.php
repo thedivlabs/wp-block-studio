@@ -6,46 +6,43 @@ if ( empty( $settings ) ) {
 	return;
 }
 
-if ( ! empty( $settings['line-clamp'] ) ) {
-	$style_attribute = implode( '; ', [
-		'line-clamp:' . $settings['line-clamp'],
-		'-webkit-line-clamp:' . $settings['line-clamp'],
-		'display:-webkit-box',
-		'-webkit-box-orient:vertical',
-		'overflow:hidden',
-	] );
-}
-
-
 $type       = $settings['type'] ?? false;
-$company_id = intval( $settings['company-id'] ?? false );
+$service_id = ( $settings['service-id'] ?? false ) == 'current' ? get_the_ID() : intval( $settings['service-id'] ?? false );
 
-if ( ! $type || ! $company_id ) {
+if ( ! $type || ! $service_id ) {
 	return;
 }
 
-$company = new WPBS_Place( $company_id );
+$content = match ( $type ) {
+	'overview' => get_field('wpbs_content_overview', $service_id),
+	'description' => get_field('wpbs_content_description', $service_id),
+	'text' => get_field('wpbs_content_text', $service_id),
+	'poster' => get_field('wpbs_media_featured_poster', $service_id),
+	'thumbnail' => get_field('wpbs_media_featured_thumbnail', $service_id),
+	'icon' => get_field('wpbs_media_featured_icon', $service_id),
+	'related-title' => get_field('wpbs_content_related_content_title', $service_id),
+	'related-text' => get_field('wpbs_content_related_content_text', $service_id),
+	'cta-title' => get_field('wpbs_content_cta_content_title', $service_id),
+	'cta-text' => get_field('wpbs_content_cta_content_text', $service_id),
+	'cta-image' => get_field('wpbs_content_cta_media', $service_id),
+	default => null
+};
+
+if ( empty( $content ) ) {
+	return false;
+}
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-services-content inline-block',
-		! empty( $settings['icon'] ) ? '--icon' : null,
-		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
+		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	'style' => trim( join( ' ', [ $style_attribute ?? '', ] ) ),
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-$is_link = in_array( $type, [ 'reviews-link', 'map-link', 'directions-link' ], true );
-$link    = ! $is_link ? false : match ( $type ) {
-	'reviews-link' => $company->reviews_page,
-	'map-link' => $company->map_page,
-	'directions-link' => $company->directions_page,
-	default => false
-};
-
-$element_class = '';
+$is_link = ! empty( $settings['link'] );
 
 ?>
 
@@ -53,34 +50,34 @@ $element_class = '';
 
 
 if ( $is_link ) {
-	echo '<a href="' . $company->reviews_page . '" target="_blank" ' . $wrapper_attributes . '>';
+	echo '<a href="' . $service->reviews_page . '" target="_blank" ' . $wrapper_attributes . '>';
 } else {
 	echo '<div ' . $wrapper_attributes . '>';
 }
 
 switch ( $type ) {
 	case 'title':
-		echo get_the_title( $company_id );
+		echo get_the_title( $service_id );
 		break;
 	case 'phone':
-		echo $company->get_phone( [
+		echo $service->get_phone( [
 			'class' => $element_class
 		] );
 		break;
 	case 'email':
-		echo $company->get_email( [
+		echo $service->get_email( [
 			'class' => $element_class
 		] );
 		break;
 	case 'address':
 	case 'address-inline':
-		echo $company->get_address( [
+		echo $service->get_address( [
 			'class'  => $element_class,
 			'inline' => $type == 'address-inline'
 		] );
 		break;
 	case 'description':
-		echo $company->summary();
+		echo $service->summary();
 		break;
 	case 'reviews-link':
 	case 'new-review-link':
@@ -91,7 +88,7 @@ switch ( $type ) {
 
 	case 'hours':
 	case 'hours-inline':
-		$company->get_hours( [
+		$service->get_hours( [
 			'inline' => $type == 'hours-inline'
 		] );
 		break;

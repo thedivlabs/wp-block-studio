@@ -85,6 +85,7 @@ registerBlockType(metadata.name, {
                 '--icon': !!settings?.icon ? '"\\' + settings?.icon + '"' : null,
                 '--icon-color': settings?.['icon-color'] ?? null,
                 '--icon-size': settings?.['icon-size'] ?? null,
+                '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));
         }, [settings]);
 

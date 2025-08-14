@@ -35,7 +35,6 @@ function sectionClassNames(attributes = {}) {
 
 const CONTENT_OPTIONS = [
     {label: 'Select', value: ''},
-    {label: 'Title', value: 'title'},
     {label: 'Overview', value: 'overview'},
     {label: 'Description', value: 'description'},
     {label: 'Text', value: 'text'},
@@ -84,6 +83,7 @@ registerBlockType(metadata.name, {
                 '--icon': !!settings?.icon ? '"\\' + settings?.icon + '"' : null,
                 '--icon-color': settings?.['icon-color'] ?? null,
                 '--icon-size': settings?.['icon-size'] ?? null,
+                '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));
         }, [settings]);
 
@@ -122,6 +122,7 @@ registerBlockType(metadata.name, {
                                 value={settings?.['service-id'] ?? ''}
                                 options={[
                                     {label: 'Select a service', value: ''},
+                                    {label: 'Current', value: 'current'},
                                     ...(services || []).map(post => ({
                                         label: post.title.rendered,
                                         value: String(post.id)

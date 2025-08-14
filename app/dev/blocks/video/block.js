@@ -266,7 +266,9 @@ registerBlockType(metadata.name, {
             </InspectorControls>
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} props={cssProps}
-                   selector={'wpbs-video'}/>
+                   selector={'wpbs-video'}
+                   deps={'wpbs-video'}
+            />
 
 
             <div {...blockProps}>

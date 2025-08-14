@@ -17,7 +17,7 @@
   .wpbs-video__button {
     transform: translate(-50%, -50%);
     font-size: var(--icon-size, clamp(60px, 4.5rem, 6vw));
-    color: var(--icon-color, white);
+    color: var(--icon-color, inherit);
 
     &:before {
       content: var(--icon, "\f144");

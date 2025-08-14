@@ -29,7 +29,7 @@ $media_class = implode( ' ', array_filter( [
 ] ) );
 
 $button_class = implode( ' ', array_filter( [
-	'wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none',
+	'wpbs-video__button wp-element-button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none',
 ] ) );
 
 $poster_class = 'w-full !h-full absolute top-0 left-0 z-0 object-cover object-center';

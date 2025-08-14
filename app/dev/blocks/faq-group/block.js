@@ -13,7 +13,7 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useInstanceId} from "@wordpress/compose";
 import {
     __experimentalUnitControl as UnitControl,
-    __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl, SelectControl,
+    __experimentalGrid as Grid, PanelBody, TabPanel, TextControl, ToggleControl, SelectControl, BorderControl,
 } from "@wordpress/components";
 import React, {useCallback, useMemo} from "react";
 import {
@@ -29,12 +29,12 @@ function classNames(attributes = {}) {
     return [
         'wpbs-faq-group',
         'w-full relative',
-        !attributes['wpbs-faq-group']?.['animate'] ? '--static' : null,
-        !!attributes['wpbs-faq-group']?.['icon-hide'] ? '--no-icon' : null,
-        !!attributes['wpbs-faq-group']?.['header-color-hover'] ? '--header-hover' : null,
-        !!attributes['wpbs-faq-group']?.['header-text-color-hover'] ? '--header-text-hover' : null,
-        !!attributes['wpbs-faq-group']?.['header-color-active'] ? '--header-active' : null,
-        !!attributes['wpbs-faq-group']?.['header-text-color-active'] ? '--header-text-active' : null,
+        !settings?.['animate'] ? '--static' : null,
+        !!settings?.['icon-hide'] ? '--no-icon' : null,
+        !!settings?.['header-color-hover'] ? '--header-hover' : null,
+        !!settings?.['header-text-color-hover'] ? '--header-text-hover' : null,
+        !!settings?.['header-color-active'] ? '--header-active' : null,
+        !!settings?.['header-text-color-active'] ? '--header-text-active' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -57,11 +57,11 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const {'wpbs-faq-group':settings = {}} = attributes;
+        const {'wpbs-faq-group': settings = {}} = attributes;
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-faq-group'],
+                ...settings,
                 ...newValue
             };
 
@@ -69,7 +69,7 @@ registerBlockType(metadata.name, {
                 'wpbs-faq-group': result,
             });
 
-        }, [setAttributes, attributes['wpbs-faq-group']]);
+        }, [setAttributes, settings]);
 
         const faqs = useSelect((select) => {
             return select('core').getEntityRecords('postType', 'faq', {per_page: -1});
@@ -100,19 +100,19 @@ registerBlockType(metadata.name, {
 
                 <TextControl
                     label={'Icon Closed'}
-                    value={attributes['wpbs-faq-group']?.['icon-closed']}
+                    value={settings?.['icon-closed']}
                     onChange={(newValue) => updateSettings({'icon-closed': newValue})}
                     __nextHasNoMarginBottom
                 />
                 <TextControl
                     label={'Icon Open'}
-                    value={attributes['wpbs-faq-group']?.['icon-open']}
+                    value={settings?.['icon-open']}
                     onChange={(newValue) => updateSettings({'icon-open': newValue})}
                     __nextHasNoMarginBottom
                 />
                 <UnitControl
                     label="Icon Size"
-                    value={attributes['wpbs-faq-group']?.['icon-size'] ?? ''}
+                    value={settings?.['icon-size'] ?? ''}
                     onChange={(val) => updateSettings({'icon-size': val})}
                     units={DIMENSION_UNITS_TEXT}
                     isResetValueOnUnitChange={true}
@@ -121,7 +121,7 @@ registerBlockType(metadata.name, {
                 />
                 <SelectControl
                     label="Icon Style"
-                    value={attributes['wpbs-faq-group']?.['icon-style'] ?? ''}
+                    value={settings?.['icon-style'] ?? ''}
                     options={ICON_STYLES}
                     onChange={(val) => updateSettings({'icon-style': val})}
                     __next40pxDefaultSize
@@ -131,13 +131,13 @@ registerBlockType(metadata.name, {
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
                     label={'Animate'}
-                    checked={attributes['wpbs-faq-group']?.['animate'] ?? true}
+                    checked={settings?.['animate'] ?? true}
                     onChange={(newValue) => updateSettings({'animate': newValue})}
                     __nextHasNoMarginBottom
                 />
                 <ToggleControl
                     label={'Hide Icon'}
-                    checked={!!attributes['wpbs-faq-group']?.['icon-hide']}
+                    checked={!!settings?.['icon-hide']}
                     onChange={(newValue) => updateSettings({'icon-hide': newValue})}
                     __nextHasNoMarginBottom
                 />
@@ -150,11 +150,21 @@ registerBlockType(metadata.name, {
                         {
                             slug: 'icon-color',
                             label: 'Icon Color',
-                            value: attributes['wpbs-faq-group']?.['icon-color'],
+                            value: settings?.['icon-color'],
                             onChange: (newValue) => updateSettings({'icon-color': newValue}),
                             isShownByDefault: true
                         }
                     ]}
+                />
+
+                <BorderControl
+                    clearable={true}
+                    enableAlpha={true}
+                    disableUnits={true}
+                    enableStyle={true}
+                    __next40pxDefaultSize={true}
+                    value={settings?.['divider']}
+                    onChange={(newValue) => updateSettings({'divider': newValue})}
                 />
             </Grid>
         </Grid>;
@@ -168,7 +178,7 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'icon-color-hover',
                         label: 'Icon Color',
-                        value: attributes['wpbs-faq-group']?.['icon-color-hover'],
+                        value: settings?.['icon-color-hover'],
                         onChange: (newValue) => updateSettings({'icon-color-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -181,7 +191,7 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'header-color-hover',
                         label: 'Header Color',
-                        value: attributes['wpbs-faq-group']?.['header-color-hover'],
+                        value: settings?.['header-color-hover'],
                         onChange: (newValue) => updateSettings({'header-color-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -194,7 +204,7 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'header-text-color-hover',
                         label: 'Header Text Color',
-                        value: attributes['wpbs-faq-group']?.['header-text-color-hover'],
+                        value: settings?.['header-text-color-hover'],
                         onChange: (newValue) => updateSettings({'header-text-color-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -211,21 +221,21 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'icon-color-active',
                         label: 'Icon Color',
-                        value: attributes['wpbs-faq-group']?.['icon-color-active'],
+                        value: settings?.['icon-color-active'],
                         onChange: (newValue) => updateSettings({'icon-color-active': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'header-color-active',
                         label: 'Header Color',
-                        value: attributes['wpbs-faq-group']?.['header-color-active'],
+                        value: settings?.['header-color-active'],
                         onChange: (newValue) => updateSettings({'header-color-active': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'header-text-color-active',
                         label: 'Header Text Color',
-                        value: attributes['wpbs-faq-group']?.['header-text-color-active'],
+                        value: settings?.['header-text-color-active'],
                         onChange: (newValue) => updateSettings({'header-text-color-active': newValue}),
                         isShownByDefault: true
                     }
@@ -239,33 +249,34 @@ registerBlockType(metadata.name, {
             active: tabActive
         }
 
-        const iconOpen = attributes['wpbs-faq-group']?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-faq-group']?.['icon-open'] : 'f078';
-        const iconClosed = attributes['wpbs-faq-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-faq-group']?.['icon-closed'] : 'f078';
+        const iconOpen = settings?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? settings?.['icon-open'] : 'f078';
+        const iconClosed = settings?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? settings?.['icon-closed'] : 'f078';
 
-        const ElementTag = attributes['wpbs-faq-group']?.['tag'] ?? 'div';
+        const ElementTag = settings?.['tag'] ?? 'div';
 
         const cssProps = useMemo(() => {
             return {
+                '--divider': settings?.['divider'],
                 '--icon-open': `"\\${iconOpen}"`,
                 '--icon-closed': `"\\${iconClosed}"`,
-                '--icon-style': attributes['wpbs-faq-group']?.['icon-style'],
-                '--icon-size': attributes['wpbs-faq-group']?.['icon-size'],
-                '--icon-color': attributes['wpbs-faq-group']?.['icon-color'],
-                '--icon-color-hover': attributes['wpbs-faq-group']?.['icon-color-hover'],
-                '--header-color-hover': attributes['wpbs-faq-group']?.['header-color-hover'],
-                '--header-text-color-hover': attributes['wpbs-faq-group']?.['header-text-color-hover'],
-                '--icon-color-active': attributes['wpbs-faq-group']?.['icon-color-active'],
-                '--header-color-active': attributes['wpbs-faq-group']?.['header-color-active'],
-                '--header-text-color-active': attributes['wpbs-faq-group']?.['header-text-color-active'],
+                '--icon-style': settings?.['icon-style'],
+                '--icon-size': settings?.['icon-size'],
+                '--icon-color': settings?.['icon-color'],
+                '--icon-color-hover': settings?.['icon-color-hover'],
+                '--header-color-hover': settings?.['header-color-hover'],
+                '--header-text-color-hover': settings?.['header-text-color-hover'],
+                '--icon-color-active': settings?.['icon-color-active'],
+                '--header-color-active': settings?.['header-color-active'],
+                '--header-text-color-active': settings?.['header-text-color-active'],
             }
-        }, [attributes['wpbs-faq-group'], iconOpen, iconClosed]);
+        }, [settings, iconOpen, iconClosed]);
 
         return <>
 
             <InspectorControls group="advanced">
                 <PanelBody style={{paddingTop: '20px'}}>
                     <SelectControl
-                        value={attributes['wpbs-faq-group']?.['tag']}
+                        value={settings?.['tag']}
                         label={'HTML element'}
                         options={[
                             {label: 'Default (<div>)', value: 'div'},

@@ -57,6 +57,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const {'wpbs-faq-group':settings = {}} = attributes;
+
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...attributes['wpbs-faq-group'],

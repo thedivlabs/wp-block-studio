@@ -1,0 +1,61 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/faq-group",
+  "title": "FAQ Group",
+  "description": "Display an FAQ section",
+  "selectors": {
+    "root": ".wpbs-faq-group"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    }
+  },
+  "styles": [
+    {
+      "name": "single",
+      "label": "Single"
+    },
+
+    {
+      "name": "list",
+      "label": "List"
+    }
+  ],
+  "supports": {
+    "interactivity": true,
+    "html": false,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "fontStyle": true,
+      "fontWeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "viewScriptModule": "file:./view.js",
+  "style": "file:./block.css",
+  "render": "file:./render.php",
+  "icon": "excerpt-view"
+}
+
+

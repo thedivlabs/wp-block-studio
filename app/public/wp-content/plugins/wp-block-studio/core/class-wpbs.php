@@ -612,6 +612,48 @@ class WPBS {
 		}
 	}
 
+	public static function picture( $mobile_id = false, $large_id = false, $breakpoint = 'normal', $resolution = 'large', $loading = 'lazy' ): string|bool {
+
+		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
+		$bp          = $breakpoints[ $breakpoint ] ?? '768px';
+
+		$mobile_src = wp_get_attachment_image_src( $mobile_id ?: $large_id, $resolution )[0] ?? false;
+		$large_src  = wp_get_attachment_image_src( $large_id ?: $mobile_id, $resolution )[0] ?? false;
+
+		$result = '<picture>';
+
+		$is_lazy     = $loading !== 'eager';
+		$srcset_attr = $is_lazy ? 'data-srcset' : 'srcset';
+
+		if ( $large_id ) {
+			$result .= '<source ' . $srcset_attr . '="' . esc_url( $large_src . '.webp' ) . '" type="image/webp" media="(min-width:' . esc_attr( $bp ) . ')">';
+		}
+		if ( $large_id ) {
+			$result .= '<source ' . $srcset_attr . '="' . esc_url( $large_src ) . '" media="(min-width:' . esc_attr( $bp ) . ')">';
+		}
+
+		if ( $mobile_id ) {
+			$result .= '<source ' . $srcset_attr . '="' . esc_url( $mobile_src . '.webp' ) . '" type="image/webp" media="(min-width:0px)">';
+		}
+		if ( $mobile_id ) {
+			$result .= '<source ' . $srcset_attr . '="' . esc_url( $mobile_src ) . '" media="(min-width:0px)">';
+		}
+
+		$result .= wp_get_attachment_image(
+			$large_id ?: $mobile_id,
+			$resolution,
+			false,
+			[
+				'loading' => $loading,
+				'class'   => 'w-full h-full object-cover'
+			]
+		);
+
+		$result .= '</picture>';
+
+		return $result;
+	}
+
 	public static function youtube_image( $share_link = '', $args = [] ): string|bool {
 
 		if ( ! is_string( $share_link ) || empty( $share_link ) ) {

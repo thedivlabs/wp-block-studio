@@ -64,11 +64,18 @@ if ( $is_link ) {
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
-	case 'cta-image':
 		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'
 		] );
+		break;
+	case 'cta-image':
+
+		echo WPBS::picture(
+			$content['mobile'] ?? false,
+			$content['large'] ?? false,
+			$attributes['wpbs-breakpoint']['large'] ?? false,
+			$settings['resolution'] ?? false, $loading );
 		break;
 	default:
 		echo $content;

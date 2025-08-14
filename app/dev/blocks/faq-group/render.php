@@ -30,6 +30,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
+WPBS::console_log( $attributes );
+
 ?>
 
 <ul <?= $wrapper_attributes ?>>

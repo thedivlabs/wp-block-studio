@@ -6,8 +6,8 @@
 /* <picture> inside .wpbs-figure */
 .wpbs-figure picture {
   object-fit: inherit;
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
   display: flex;
 }
 

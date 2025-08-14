@@ -206,6 +206,7 @@ class WPBS {
 		require_once $core_path . 'modules/class-wpbs-gravity-forms.php';
 		require_once $core_path . 'modules/class-wpbs-review.php';
 		require_once $core_path . 'modules/class-wpbs-service.php';
+		require_once $core_path . 'modules/class-wpbs-faq.php';
 
 		WPBS_WP::init();
 		WPBS_ACF::init();
@@ -217,6 +218,7 @@ class WPBS {
 		WPBS_Gravity_Forms::init();
 		WPBS_Review::init();
 		WPBS_Service::init();
+		WPBS_FAQ::init();
 
 		self::init_classes( 'core/components' );
 
@@ -370,7 +372,6 @@ class WPBS {
 	public function pre_load_critical(): void {
 
 		global $wp_scripts;
-		global $wp_styles;
 
 		$preconnect_sources = apply_filters( 'wpbs_preconnect_sources', [] );
 		$preload_sources    = apply_filters( 'wpbs_preload_sources', [] );
@@ -429,32 +430,17 @@ class WPBS {
 
 		}
 
-
-		$default_styles = [
-			//'wpbs-sandbox-bundle',
-		];
-
 		$default_scripts = [
 			'jquery',
 			'jquery-migrate',
-			//'wpbs-sandbox',
-			//'wpbs-sandbox-fontawesome',
 		];
 
 		$preload_scripts = array_values( array_filter( array_map( function ( $slug ) use ( $wp_scripts, $default_scripts ) {
 			return in_array( $slug, $default_scripts ) ? $wp_scripts->registered[ $slug ]->src ?? '' : [];
 		}, $wp_scripts->queue ?? [] ) ) );
 
-		$preload_styles = array_values( array_filter( array_map( function ( $slug ) use ( $wp_styles, $default_styles ) {
-			return in_array( $slug, $default_styles ) ? $wp_styles->registered[ $slug ]->src ?? '' : [];
-		}, $wp_styles->queue ?? [] ) ) );
-
 		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_scripts', $preload_scripts ) ) ) as $url ) {
 			echo '<link rel="preload" as="script" href="' . $url . '">';
-		}
-
-		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_styles', $preload_styles ) ) ) as $url ) {
-			echo '<link rel="preload" as="style" href="' . $url . '">';
 		}
 
 	}

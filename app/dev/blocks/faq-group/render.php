@@ -33,7 +33,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['header-text-color-active'] ) ? '--header-text-active' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'data-wp-interactive' => 'wpbs/accordion-group',
+	'data-wp-interactive' => 'wpbs/faq-group',
 	'data-wp-init'        => 'actions.init',
 	...( $attributes['wpbs-props'] ?? [] )
 ] );

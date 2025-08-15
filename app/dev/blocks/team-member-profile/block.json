@@ -22,7 +22,8 @@
     "wpbs/postId": "postId"
   },
   "usesContext": [
-    "wpbs/postId"
+    "wpbs/postId",
+    "wpbs/ajax"
   ],
   "supports": {
     "layout": false,

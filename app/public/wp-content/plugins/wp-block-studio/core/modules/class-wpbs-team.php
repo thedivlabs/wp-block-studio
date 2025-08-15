@@ -48,8 +48,8 @@ class WPBS_Team {
 
 		add_filter( 'default_wp_template_part_areas', [ $this, 'register_template_part' ] );
 
-		add_action( 'wp_ajax_team_profile', [$this,'wpbs_team_profile_ajax'] );
-		add_action( 'wp_ajax_nopriv_team_profile', [$this,'wpbs_team_profile_ajax'] );
+		add_action( 'wp_ajax_team_profile', [ $this, 'wpbs_team_profile_ajax' ] );
+		add_action( 'wp_ajax_nopriv_team_profile', [ $this, 'wpbs_team_profile_ajax' ] );
 
 
 	}
@@ -81,32 +81,95 @@ class WPBS_Team {
 			wp_send_json_error( 'Invalid post ID' );
 		}
 
+		// --- Render the template part ---
 		ob_start();
 
-		// Load template part (blocks or PHP file)
-		// If using block template part:
 		$block = new WP_Block(
 			[
 				'blockName' => 'core/template-part',
 				'attrs'     => [
-					'slug'    => 'team-profile',
-					'theme'   => wp_get_theme()->get_stylesheet(),
-					'tagName' => 'div',
+					'slug' => 'team-member-profile',
 				],
 			],
 			[
 				'wpbs/postId' => $post_id,
+				'wpbs/ajax'   => true,
 			]
 		);
 
 		echo $block->render();
-
 		$html = ob_get_clean();
 
+		// --- Get the template part post content ---
+		$template_posts = get_posts( [
+			'post_type'      => 'wp_template_part',
+			'name'           => 'team-member-profile',
+			'posts_per_page' => 1,
+		] );
+
+		$style_urls = [];
+		$inline_css = [];
+
+		if ( ! empty( $template_posts ) ) {
+			$template_content = $template_posts[0]->post_content;
+			$blocks           = parse_blocks( $template_content );
+
+			$collected = $this->collect_block_styles_and_inline( $blocks );
+
+			// Convert handles to URLs
+			foreach ( $collected['styles'] as $handle ) {
+				if ( isset( wp_styles()->registered[ $handle ] ) ) {
+					$style_urls[] = wp_styles()->registered[ $handle ]->src;
+				}
+			}
+
+			$style_urls = array_unique( array_filter( $style_urls ) );
+			$inline_css = $collected['inline_css'];
+		}
+
 		wp_send_json_success( [
-			'rendered' => $html,
+			'rendered'   => $html,
+			'postId'     => $post_id,
+			'styles'     => $style_urls,
+			'inline_css' => $inline_css,
 		] );
 	}
+
+
+	private function collect_block_styles_and_inline( $blocks ) {
+		$styles     = [];
+		$inline_css = [];
+		$registry   = WP_Block_Type_Registry::get_instance();
+
+		foreach ( $blocks as $block ) {
+			if ( ! empty( $block['blockName'] ) ) {
+				$block_type = $registry->get_registered( $block['blockName'] );
+
+				// 1. Collect style handle (from block.json)
+				if ( $block_type && ! empty( $block_type->style ) ) {
+					$styles[] = $block_type->style;
+				}
+
+				// 2. Collect inline CSS from wpbs-css attribute
+				if ( ! empty( $block['attrs']['wpbs-css'] ) && is_string( $block['attrs']['wpbs-css'] ) ) {
+					$inline_css[] = $block['attrs']['wpbs-css'];
+				}
+			}
+
+			// Recursively handle inner blocks
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$nested     = $this->collect_block_styles_and_inline( $block['innerBlocks'] );
+				$styles     = array_merge( $styles, $nested['styles'] );
+				$inline_css = array_merge( $inline_css, $nested['inline_css'] );
+			}
+		}
+
+		return [
+			'styles'     => array_unique( $styles ),
+			'inline_css' => $inline_css,
+		];
+	}
+
 
 	public function set_query_vars( $query ): void {
 		if (
@@ -117,39 +180,6 @@ class WPBS_Team {
 
 			$query->set( 'posts_per_page', - 1 );
 		}
-
-	}
-
-	#[NoReturn] public function modal(): void {
-
-		/*if ( ! WPBS_Ajax::security_check() ) {
-			wp_send_json_error( 'Invalid security token sent.' );
-			wp_die();
-		}*/
-
-
-		ob_start();
-		//echo $_GET['id'];
-
-		$id = sanitize_text_field( $_GET['id'] ?? '' );
-
-		$query = new WP_Query( [
-			'post_type' => 'team',
-			'post__in'  => [ $id ]
-		] );
-
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			echo '<div class="wpbs-team-member-profile w-fit max-w-full m-auto">';
-			block_template_part( 'team-profile' );
-			do_action( 'wpbs_ajax_block_properties' );
-			echo '</div>';
-		}
-
-
-		$result = ob_get_clean();
-
-		die( json_encode( $result ) );
 
 	}
 

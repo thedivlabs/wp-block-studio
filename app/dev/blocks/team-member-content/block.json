@@ -16,7 +16,8 @@
     }
   },
   "usesContext": [
-    "wpbs/postId"
+    "wpbs/postId",
+    "wpbs/ajax"
   ],
   "supports": {
     "color": {

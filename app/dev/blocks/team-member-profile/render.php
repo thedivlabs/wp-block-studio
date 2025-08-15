@@ -1,6 +1,6 @@
 <?php
 
-$postId = $_GET['postId'] ?? $attributes['postId'] ?? $block->context['wpbs/postId'] ?? false;
+$postId = $_GET['postId'] ?? $attributes['postId'] ?? $block->context['wpbs/postId'] ?? 6467;
 
 if ( empty( $postId ) ) {
 	return;
@@ -9,7 +9,7 @@ if ( empty( $postId ) ) {
 $fields = get_field( 'wpbs', $postId );
 
 if ( empty( $fields ) || empty( $content ) ) {
-	//return;
+	return;
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [

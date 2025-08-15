@@ -54,10 +54,30 @@ class WPBS_Theme {
         }
 
 
-        fetch('/wp-admin/admin-ajax.php' + '?action=team_profile&postId=4963')
+        fetch('/wp-admin/admin-ajax.php' + '?action=team_profile&postId=6467')
             .then(res => res.json())
-            .then(data => {
-                console.log(data?.data);
+            .then(response => {
+
+                const {data} = response;
+
+                console.log(data);
+
+                const element = jQuery(data?.rendered).find('.wpbs-team-member-profile');
+
+                element.appendTo('body');
+
+                data.styles.forEach(url => {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = url;
+                    document.head.appendChild(link);
+                });
+
+                if (data.inline_css.length) {
+                    const style = document.createElement('style');
+                    style.innerHTML = data.inline_css.join("\n");
+                    document.head.appendChild(style);
+                }
             });
 
     }

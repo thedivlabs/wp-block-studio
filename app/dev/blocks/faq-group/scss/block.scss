@@ -73,6 +73,18 @@
     transform: rotate(-180deg);
   }
 
+  .wpbs-faq-group__item {
+    position: relative;
+    padding: var(--item-padding, 0);
+    gap: var(--item-gap, 0);
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.--divider .wpbs-faq-group__item {
+    display: none !important;
+  }
+
   .wpbs-faq-group__answer {
     display: none;
     background-color: var(--content-color, transparent);

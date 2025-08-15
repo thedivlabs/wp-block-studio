@@ -155,6 +155,24 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+                <UnitControl
+                    label="Item Padding"
+                    value={settings?.['item-padding'] ?? ''}
+                    onChange={(val) => updateSettings({'item-padding': val})}
+                    units={DIMENSION_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <UnitControl
+                    label="Item Gap"
+                    value={settings?.['item-gap'] ?? ''}
+                    onChange={(val) => updateSettings({'item-gap': val})}
+                    units={DIMENSION_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
@@ -334,6 +352,8 @@ registerBlockType(metadata.name, {
                 '--content-color': settings?.['content-color'],
                 '--header-padding': settings?.['header-padding'],
                 '--content-padding': settings?.['content-padding'],
+                '--item-padding': settings?.['item-padding'],
+                '--item-gap': settings?.['item-gap'],
             }
         }, [settings, iconOpen, iconClosed]);
 

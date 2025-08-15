@@ -48,6 +48,25 @@ class WPBS_Team {
 
 		add_filter( 'default_wp_template_part_areas', [ $this, 'register_template_part' ] );
 
+		register_rest_route( 'wpbs/v1', '/team-profile', array(
+			'methods'             => 'POST',
+			'callback'            => [ $this, 'render_profile' ],
+			'permission_callback' => '__return_true',
+			'args'                => array(
+				'uniqueId'     => array(
+					'type'              => 'string',
+					'sanitize_callback' => 'sanitize_text_field',
+					'validate_callback' => function ( $param, $request, $key ) {
+						// Basic validation: check if it's not empty
+						return ! empty( $param );
+					},
+				),
+				'blockContext' => array(
+					'type' => 'object',
+				)
+			),
+		) );
+
 	}
 
 	public function redirect_taxonomy(): void {
@@ -69,6 +88,38 @@ class WPBS_Team {
 			]
 		] );
 	}
+
+	public function render_profile( WP_REST_Request $request ): WP_REST_Response {
+		$postId = absint( $request->get_param( 'postId' ) );
+		$theme  = wp_get_theme()->get_stylesheet();
+
+		$block = new WP_Block(
+			[
+				'blockName' => 'core/template-part',
+				'attrs'     => [
+					'slug'    => 'team-profile',
+					'theme'   => $theme,
+					'tagName' => 'div',
+				],
+			],
+			[
+				'postId'   => $postId,
+				'postType' => get_post_type( $postId ),
+			]
+		);
+
+		$html = $block->render();
+
+		return new WP_REST_Response(
+			[
+				'success'  => true,
+				'rendered' => $html,
+				//'styles'   => $styles,
+			],
+			200
+		);
+	}
+
 
 	public function set_query_vars( $query ): void {
 		if (

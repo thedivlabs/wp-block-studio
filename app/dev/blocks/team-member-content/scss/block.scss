@@ -1,0 +1,32 @@
+.wpbs-team-member-content {
+
+
+  &.--line-clamp {
+    line-clamp: var(--line-clamp, 6);
+    -webkit-line-clamp: var(--line-clamp, 6);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+
+  &.--icon {
+
+    &:before {
+      content: var(--icon, none);
+      color: var(--icon-color, inherit);
+      font-family: 'Font Awesome 6 Pro', sans-serif;
+      font-size: var(--icon-size, 1em);
+      line-height: inherit;
+      height: 1lh;
+      width: auto;
+      aspect-ratio: 1/1;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+  }
+
+}

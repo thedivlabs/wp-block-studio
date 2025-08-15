@@ -57,7 +57,7 @@ $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
 
 if ( $is_link ) {
-	echo '<a href="' . get_the_id() . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
+	echo '<a href="' . get_the_permalink( $service_id ) . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
 } else {
 	echo '<div ' . $wrapper_attributes . '>';
 }

@@ -183,6 +183,12 @@ registerBlockType(metadata.name, {
                                     checked={!!settings?.eager}
                                     onChange={(newValue) => updateSettings({eager: newValue})}
                                 />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Toggle Profile"
+                                    checked={!!settings?.toggle}
+                                    onChange={(newValue) => updateSettings({toggle: newValue})}
+                                />
                             </Grid>
                         </Grid>
                     </PanelBody>

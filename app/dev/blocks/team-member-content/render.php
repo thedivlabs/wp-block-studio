@@ -44,6 +44,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-team-member-content w-fit',
 		! empty( $settings['icon'] ) ? 'inline-flex --icon' : 'inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
+		! empty( $settings['toggle'] ) ? 'team-profile-toggle' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )

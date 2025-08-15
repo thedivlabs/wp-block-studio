@@ -23,7 +23,7 @@ if ( ! $faqs ) {
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( [
+	'class'               => implode( ' ', array_filter( [
 		'wpbs-faq-group',
 		! empty( $settings['icon-hide'] ) ? '--no-icon' : null,
 		empty( $settings['animate'] ) ? '--static' : null,
@@ -33,6 +33,8 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['header-text-color-active'] ) ? '--header-text-active' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
+	'data-wp-interactive' => 'wpbs/accordion-group',
+	'data-wp-init'        => 'actions.init',
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 

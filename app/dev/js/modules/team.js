@@ -3,39 +3,44 @@ export default class Team {
 
     static init() {
 
+        [...document.querySelectorAll('.team-profile-toggle')].forEach(el => {
+            el.addEventListener('click', (e) => {
+                fetch('/wp-admin/admin-ajax.php?action=team_profile&postId=6467')
+                    .then(res => res.json())
+                    .then(response => {
+                        const {data} = response;
 
-    }
+                        // 1. Inject block CSS files
+                        Object.values(data.styles).forEach(url => {
+                            if (!url) return;
+                            const link = document.createElement('link');
+                            link.rel = 'stylesheet';
+                            link.href = url;
+                            document.head.appendChild(link);
+                        });
 
-    static async toggle(args = {}) {
+                        // 2. Inject inline CSS
+                        if (data.inline_css.length) {
+                            const style = document.createElement('style');
+                            style.innerHTML = data.inline_css.join("\n");
+                            document.head.appendChild(style);
+                        }
 
-        const endpoint = '/wp-json/wpbs/v1/lightbox';
+                        // 3. Parse HTML string into DOM nodes
+                        const template = document.createElement('div');
+                        template.innerHTML = data.rendered;
 
-        fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-WP-Nonce': WPBS?.settings?.nonce_rest ?? '',
-            },
-            body: JSON.stringify({
-                media: args?.media,
-            }),
-        }).then(response => response.json()).then(result => {
+                        // 4. Extract the template part element
+                        const element = template.querySelector('.wpbs-team-member-profile');
+                        if (!element) return;
 
-            const parser = new DOMParser();
-
-            const lightbox_element = parser.parseFromString(result?.rendered ?? '', 'text/html').querySelector('body > .wpbs-lightbox');
-
-
-            WPBS.modals.show_modal(false, {
-                template: lightbox_element,
-                callback: (modal) => {
-                    [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
-                        WPBS.slider.observe(slider_element, this.swiper_args(args.index));
-                        WPBS.observeMedia(modal);
-                    })
-                }
-            });
-        });
+                        // 5. Append to the body (or any container)
+                        document.body.appendChild(element);
+                    });
+            }, {
+                passive: true,
+            })
+        })
 
 
     }

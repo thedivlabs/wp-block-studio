@@ -5,6 +5,7 @@ import Lightbox from './modules/Lightbox'
 import Video from './modules/video'
 import Slider from './modules/slider'
 import Reveal from './modules/reveal'
+import Team from './modules/team'
 
 
 class WPBS_Theme {
@@ -27,6 +28,7 @@ class WPBS_Theme {
         this.video = Video;
         this.slider = Slider;
         this.reveal = Reveal;
+        this.team = Team;
 
         this.settings = window.wpbsData ?? {};
         this.modals.init();
@@ -35,6 +37,7 @@ class WPBS_Theme {
         this.video.init();
         this.slider.init();
         this.reveal.init();
+        this.team.init();
 
         this.init();
 
@@ -52,40 +55,6 @@ class WPBS_Theme {
             script.defer = true;
             document.head.appendChild(script);
         }
-
-
-        fetch('/wp-admin/admin-ajax.php?action=team_profile&postId=6467')
-            .then(res => res.json())
-            .then(response => {
-                const {data} = response;
-
-                // 1. Inject block CSS files
-                Object.values(data.styles).forEach(url => {
-                    if (!url) return;
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = url;
-                    document.head.appendChild(link);
-                });
-
-                // 2. Inject inline CSS
-                if (data.inline_css.length) {
-                    const style = document.createElement('style');
-                    style.innerHTML = data.inline_css.join("\n");
-                    document.head.appendChild(style);
-                }
-
-                // 3. Parse HTML string into DOM nodes
-                const template = document.createElement('div');
-                template.innerHTML = data.rendered;
-
-                // 4. Extract the template part element
-                const element = template.querySelector('.wpbs-team-member-profile');
-                if (!element) return;
-
-                // 5. Append to the body (or any container)
-                document.body.appendChild(element);
-            });
 
 
     }

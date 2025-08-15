@@ -39,7 +39,7 @@ class WPBS_Theme {
         this.init();
 
         if (document.querySelector('.wpbs-map')) {
-            
+
             window.maps_callback = () => {
                 const maps_loaded_event = new CustomEvent('wpbs_maps_loaded');
                 document.dispatchEvent(maps_loaded_event)
@@ -52,6 +52,13 @@ class WPBS_Theme {
             script.defer = true;
             document.head.appendChild(script);
         }
+
+
+        fetch('/wp-admin/admin-ajax.php' + '?action=team_profile&postId=4963')
+            .then(res => res.json())
+            .then(data => {
+                console.log(data?.data);
+            });
 
     }
 

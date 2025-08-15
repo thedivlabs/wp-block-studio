@@ -38,7 +38,7 @@ class WPBS {
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 		add_action( 'wp_head', [ $this, 'critical_css' ], 5 );
 
-		add_action( 'acf/init', [ $this, 'init_theme' ] );
+		add_action( 'acf/init', [ $this, 'init_theme' ], 30 );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
 
 		add_action( 'wp_after_insert_post', [ $this, 'clear_transients' ], 100 );

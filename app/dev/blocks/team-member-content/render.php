@@ -21,7 +21,7 @@ $content = match ( $type ) {
 		get_field( 'wpbs_details_general_middle_name', $team_id ),
 		get_field( 'wpbs_details_general_last_name', $team_id ),
 	] ) ),
-	'job-title' => join( ' ', array_column( get_field( 'wpbs_details_general_job_title', $team_id ), 'title' ) ),
+	'job-title' => join( ' ', array_column( (get_field( 'wpbs_details_general_job_title', $team_id ) ?: []), 'title' ) ),
 	'location' => get_field( 'wpbs_details_general_location', $team_id ),
 	'profile' => get_field( 'wpbs_content_profile', $team_id ),
 	'summary' => get_field( 'wpbs_content_summary', $team_id ),

@@ -48,24 +48,9 @@ class WPBS_Team {
 
 		add_filter( 'default_wp_template_part_areas', [ $this, 'register_template_part' ] );
 
-		register_rest_route( 'wpbs/v1', '/team-profile', array(
-			'methods'             => 'POST',
-			'callback'            => [ $this, 'render_profile' ],
-			'permission_callback' => '__return_true',
-			'args'                => array(
-				'uniqueId'     => array(
-					'type'              => 'string',
-					'sanitize_callback' => 'sanitize_text_field',
-					'validate_callback' => function ( $param, $request, $key ) {
-						// Basic validation: check if it's not empty
-						return ! empty( $param );
-					},
-				),
-				'blockContext' => array(
-					'type' => 'object',
-				)
-			),
-		) );
+		add_action( 'wp_ajax_team_profile', [$this,'wpbs_team_profile_ajax'] );
+		add_action( 'wp_ajax_nopriv_team_profile', [$this,'wpbs_team_profile_ajax'] );
+
 
 	}
 
@@ -89,37 +74,39 @@ class WPBS_Team {
 		] );
 	}
 
-	public function render_profile( WP_REST_Request $request ): WP_REST_Response {
-		$postId = absint( $request->get_param( 'postId' ) );
-		$theme  = wp_get_theme()->get_stylesheet();
+	public function wpbs_team_profile_ajax() {
+		$post_id = absint( $_GET['postId'] ?? 0 );
 
+		if ( ! $post_id || ! get_post( $post_id ) ) {
+			wp_send_json_error( 'Invalid post ID' );
+		}
+
+		ob_start();
+
+		// Load template part (blocks or PHP file)
+		// If using block template part:
 		$block = new WP_Block(
 			[
 				'blockName' => 'core/template-part',
 				'attrs'     => [
 					'slug'    => 'team-profile',
-					'theme'   => $theme,
+					'theme'   => wp_get_theme()->get_stylesheet(),
 					'tagName' => 'div',
 				],
 			],
 			[
-				'postId'   => $postId,
-				'postType' => get_post_type( $postId ),
+				'wpbs/postId' => $post_id,
 			]
 		);
 
-		$html = $block->render();
+		echo $block->render();
 
-		return new WP_REST_Response(
-			[
-				'success'  => true,
-				'rendered' => $html,
-				//'styles'   => $styles,
-			],
-			200
-		);
+		$html = ob_get_clean();
+
+		wp_send_json_success( [
+			'rendered' => $html,
+		] );
 	}
-
 
 	public function set_query_vars( $query ): void {
 		if (

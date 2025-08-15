@@ -15,7 +15,7 @@ const {state} = store('wpbs/faq-group', {
             component.classList.add('accordion-initialized');
 
 
-            const headers = component.querySelectorAll('.wpbs-faq-group-header');
+            const headers = component.querySelectorAll('.wpbs-faq-group__header');
 
             if (!headers.length) {
                 return false;
@@ -27,8 +27,8 @@ const {state} = store('wpbs/faq-group', {
             headers.forEach(header => {
                 header.addEventListener('click', (e) => {
 
-                    const groupItem = header.closest('.wpbs-faq-group-item');
-                    const content = groupItem.querySelector('.wpbs-faq-group-content');
+                    const groupItem = header.closest('.wpbs-faq-group__item');
+                    const content = groupItem.querySelector('.wpbs-faq-group__answer');
 
                     if (!content || component.classList.contains('animating') || (isSingle && groupItem.classList.contains('active'))) {
                         return;
@@ -43,11 +43,11 @@ const {state} = store('wpbs/faq-group', {
                     component.classList.add('animating');
 
                     if (isSingle) {
-                        const openItems = component.querySelectorAll('.wpbs-faq-group-item.active');
+                        const openItems = component.querySelectorAll('.wpbs-faq-group__item.active');
 
                         openItems.forEach(item => {
 
-                            const openContent = item.querySelector('.wpbs-faq-group-content');
+                            const openContent = item.querySelector('.wpbs-faq-group__answer');
 
                             item.classList.remove('--open');
 

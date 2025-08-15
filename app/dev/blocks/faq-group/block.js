@@ -332,6 +332,8 @@ registerBlockType(metadata.name, {
                 '--content-text-color': settings?.['content-text-color'],
                 '--header-color': settings?.['header-color'],
                 '--content-color': settings?.['content-color'],
+                '--header-padding': settings?.['header-padding'],
+                '--content-padding': settings?.['content-padding'],
             }
         }, [settings, iconOpen, iconClosed]);
 

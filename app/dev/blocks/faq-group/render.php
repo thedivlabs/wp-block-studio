@@ -22,6 +22,8 @@ if ( ! $faqs ) {
 	return;
 }
 
+WPBS::console_log( $block ?? false );
+
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-faq-group',
@@ -33,6 +35,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['header-text-color-active'] ) ? '--header-text-active' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
+	'style'               => ! empty( $block->parsed_block['attrs']['style']['shadow'] ) ? 'filter:drop-shadow(' . $block->parsed_block['attrs']['style']['shadow'] . ');' : null,
 	'data-wp-interactive' => 'wpbs/faq-group',
 	'data-wp-init'        => 'actions.init',
 	...( $attributes['wpbs-props'] ?? [] )

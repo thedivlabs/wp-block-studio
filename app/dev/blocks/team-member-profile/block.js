@@ -1,5 +1,5 @@
 import {
-    InnerBlocks,
+    InnerBlocks, useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -21,14 +21,17 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...STYLE_ATTRIBUTES,
         ...LAYOUT_ATTRIBUTES,
+        'wpbs-team-member-profile': {
+            type: 'object'
+        }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-
+        
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const blockProps = {
+        const blockProps = useBlockProps({
             className: blockClassnames(attributes),
-        };
+        });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps);
 

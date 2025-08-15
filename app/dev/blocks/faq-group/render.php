@@ -22,8 +22,6 @@ if ( ! $faqs ) {
 	return;
 }
 
-WPBS::console_log( $block ?? false );
-
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-faq-group',

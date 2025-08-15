@@ -173,6 +173,15 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+                <UnitControl
+                    label="Item Radius"
+                    value={settings?.['item-radius'] ?? ''}
+                    onChange={(val) => updateSettings({'item-radius': val})}
+                    units={DIMENSION_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
@@ -354,6 +363,7 @@ registerBlockType(metadata.name, {
                 '--content-padding': settings?.['content-padding'],
                 '--item-padding': settings?.['item-padding'],
                 '--item-gap': settings?.['item-gap'],
+                '--item-radius': settings?.['item-radius'],
             }
         }, [settings, iconOpen, iconClosed]);
 

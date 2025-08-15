@@ -1,0 +1,59 @@
+{
+  "name": "wpbs/team-member-profile",
+  "title": "Team Member Profile",
+  "description": "Display a team member profile",
+  "selectors": {
+    "root": ".wpbs-team-member-profile"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "postId": {
+      "type": "integer",
+      "show_in_rest": true
+    }
+  },
+  "providesContext": {
+    "wpbs/postId": "postId"
+  },
+  "usesContext": [
+    "wpbs/postId"
+  ],
+  "supports": {
+    "layout": false,
+    "innerBlocks": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "format-gallery",
+  "render": "file:./render.php"
+}
+
+

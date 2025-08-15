@@ -17,7 +17,6 @@
       "name": "single",
       "label": "Single"
     },
-
     {
       "name": "list",
       "label": "List"
@@ -44,6 +43,7 @@
       "color": true,
       "radius": true
     },
+    "shadow": true,
     "typography": {
       "fontSize": true,
       "lineHeight": true,

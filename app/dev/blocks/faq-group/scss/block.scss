@@ -4,7 +4,7 @@
   flex-col
   ;
 
-  .wpbs-faq-group-header {
+  .wpbs-faq-group__header {
     width: 100%;
     display: flex;
     align-items: center;
@@ -12,26 +12,28 @@
     user-select: none;
     cursor: pointer;
     transition: color .3s linear;
+    background-color: var(--header-color, transparent);
+    color: var(--header-text-color, inherit);
   }
 
 
-  &.--header-hover .wpbs-faq-group-header:hover {
+  &.--header-hover .wpbs-faq-group__header:hover {
     background-color: var(--header-color-hover);
   }
 
-  &.--header-text-hover .wpbs-faq-group-header:hover {
+  &.--header-text-hover .wpbs-faq-group__header:hover {
     color: var(--header-text-color-hover);
   }
 
-  &.--header-active .wpbs-faq-group-item.active > .wpbs-faq-group-header {
+  &.--header-active .wpbs-faq-group__item.active > .wpbs-faq-group__header {
     background-color: var(--header-color-active);
   }
 
-  &.--header-text-active .wpbs-faq-group-item.active > .wpbs-faq-group-header {
+  &.--header-text-active .wpbs-faq-group__item.active > .wpbs-faq-group__header {
     color: var(--header-text-color-active);
   }
 
-  .wpbs-faq-group-header__toggle {
+  .wpbs-faq-group__toggle {
     pointer-events: none;
     display: flex;
     justify-content: center;
@@ -51,32 +53,34 @@
     }
   }
 
-  .wpbs-faq-group-item.--open .wpbs-faq-group-header__toggle {
+  .wpbs-faq-group__item.--open .wpbs-faq-group__toggle {
     &:before {
       content: var(--icon-open, var(--icon-closed, "\f077"));
     }
   }
 
-  &.--static .wpbs-faq-group-header__toggle {
+  &.--static .wpbs-faq-group__toggle {
     transform: none !important;
     transition: none !important;
   }
 
-  &.--no-icon .wpbs-faq-group-header__toggle {
+  &.--no-icon .wpbs-faq-group__toggle {
     display: none !important;
   }
 
-  .wpbs-faq-group-item.--open .wpbs-faq-group-header__toggle {
+  .wpbs-faq-group__item.--open .wpbs-faq-group__toggle {
     transform: rotate(-180deg);
   }
 
-  .wpbs-faq-group-content {
+  .wpbs-faq-group__answer {
     display: none;
+    background-color: var(--content-color, transparent);
+    color: var(--content-text-color, inherit);
   }
 
-  .wpbs-faq-group-item.active .wpbs-faq-group-content,
-  .wpbs-faq-group-item.is-selected .wpbs-faq-group-content,
-  .wpbs-faq-group-item.has-child-selected .wpbs-faq-group-content {
+  .wpbs-faq-group__item.active .wpbs-faq-group__answer,
+  .wpbs-faq-group__item.is-selected .wpbs-faq-group__answer,
+  .wpbs-faq-group__item.has-child-selected .wpbs-faq-group__answer {
     display: block;
   }
 

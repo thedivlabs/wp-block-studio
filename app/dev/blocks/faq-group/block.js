@@ -24,6 +24,7 @@ import {
 } from "@wordpress/components";
 import React, {useCallback, useMemo} from "react";
 import {
+    DIMENSION_UNITS,
     DIMENSION_UNITS_TEXT,
     ICON_STYLES,
 } from "Includes/config";
@@ -136,6 +137,24 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+                <UnitControl
+                    label="Header Padding"
+                    value={settings?.['header-padding'] ?? ''}
+                    onChange={(val) => updateSettings({'header-padding': val})}
+                    units={DIMENSION_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <UnitControl
+                    label="Content Padding"
+                    value={settings?.['content-padding'] ?? ''}
+                    onChange={(val) => updateSettings({'content-padding': val})}
+                    units={DIMENSION_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
@@ -163,6 +182,34 @@ registerBlockType(metadata.name, {
                             label: 'Icon Color',
                             value: settings?.['icon-color'],
                             onChange: (newValue) => updateSettings({'icon-color': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'header-color',
+                            label: 'Header Color',
+                            value: settings?.['header-color'],
+                            onChange: (newValue) => updateSettings({'header-color': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'header-text-color',
+                            label: 'Header Text Color',
+                            value: settings?.['header-text-color'],
+                            onChange: (newValue) => updateSettings({'header-text-color': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'content-color',
+                            label: 'Content Color',
+                            value: settings?.['content-color'],
+                            onChange: (newValue) => updateSettings({'content-color': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'content-text-color',
+                            label: 'Content Color',
+                            value: settings?.['content-text-color'],
+                            onChange: (newValue) => updateSettings({'content-text-color': newValue}),
                             isShownByDefault: true
                         }
                     ]}
@@ -281,6 +328,10 @@ registerBlockType(metadata.name, {
                 '--icon-color-active': settings?.['icon-color-active'],
                 '--header-color-active': settings?.['header-color-active'],
                 '--header-text-color-active': settings?.['header-text-color-active'],
+                '--header-text-color': settings?.['header-text-color'],
+                '--content-text-color': settings?.['content-text-color'],
+                '--header-color': settings?.['header-color'],
+                '--content-color': settings?.['content-color'],
             }
         }, [settings, iconOpen, iconClosed]);
 

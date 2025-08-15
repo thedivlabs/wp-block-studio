@@ -25,31 +25,60 @@ if ( ! $faqs ) {
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-faq-group',
+		! empty( $settings['icon-hide'] ) ? '--no-icon' : null,
+		empty( $settings['animate'] ) ? '--static' : null,
+		! empty( $settings['header-color-hover'] ) ? '--header-hover' : null,
+		! empty( $settings['header-text-color-hover'] ) ? '--header-text-hover' : null,
+		! empty( $settings['header-color-active'] ) ? '--header-active' : null,
+		! empty( $settings['header-text-color-active'] ) ? '--header-text-active' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-WPBS::console_log( $attributes );
+$tag_open  = join( ' ', [
+	'<' . ( $settings['tag'] ?? 'div' ),
+	$wrapper_attributes,
+	'>'
+] );
+$tag_close = '</' . ( $settings['tag'] ?? 'div' ) . '>';
 
-?>
+$item_tag_ref = match ( $settings['tag'] ?? false ) {
+	'ul', 'ol' => 'li',
+	default => 'div'
+};
 
-<ul <?= $wrapper_attributes ?>>
-	<?php foreach ( $faqs as $faq ) {
+$item_tag_open = '<' . $item_tag_ref . ' class="wpbs-faq-group__item">';
 
-		if ( empty( $faq['question'] ) || empty( $faq['answer'] ) ) {
-			continue;
-		}
-		?>
-        <li>
-            <div class="wpbs-faq-group__header">
-				<?= $faq['question'] ?>
-            </div>
-            <div class="wpbs-faq-group__answer">
-				<?= $faq['answer'] ?>
-            </div>
-        </li>
-	<?php } ?>
-</ul>
+$item_tag_close = '</' . $item_tag_ref . '>';
+
+
+echo $tag_open;
+
+foreach ( $faqs as $faq ) {
+	if ( empty( $faq['question'] ) || empty( $faq['answer'] ) ) {
+		continue;
+	}
+	echo $item_tag_open;
+	echo '<div class="wpbs-faq-group__header">';
+	echo $faq['question'];
+	echo '<button class="wpbs-faq-group__toggle">';
+
+	/*
+	 *
+	 * <button className={'wpbs-accordion-group-header__toggle'}><span
+					className={'screen-reader-text'}>Toggle content</span></button>
+	 *
+	 * */
+
+	echo '</div>';
+	echo '<div class="wpbs-faq-group__answer">';
+	echo $faq['answer'];
+	echo '</div>';
+	echo $item_tag_close;
+}
+
+echo $tag_close;
+
 
 

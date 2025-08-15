@@ -207,7 +207,7 @@ registerBlockType(metadata.name, {
                         },
                         {
                             slug: 'content-text-color',
-                            label: 'Content Color',
+                            label: 'Content Text Color',
                             value: settings?.['content-text-color'],
                             onChange: (newValue) => updateSettings({'content-text-color': newValue}),
                             isShownByDefault: true

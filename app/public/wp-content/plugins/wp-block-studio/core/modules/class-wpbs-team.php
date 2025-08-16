@@ -89,7 +89,7 @@ class WPBS_Team {
 				'blockName' => 'core/template-part',
 				'attrs'     => [
 					'slug'   => 'team-profile',
-					'postId' => intval( $post_id ),
+					'postId' => $post_id,
 				],
 			],
 			[

@@ -14,7 +14,7 @@ if ( empty( $fields ) || empty( $content ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-team-member-profile',
+		'wpbs-team-member-profile wpbs-container',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )

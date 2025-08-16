@@ -88,7 +88,7 @@ class WPBS_Team {
 			[
 				'blockName' => 'core/template-part',
 				'attrs'     => [
-					'slug' => 'team-member-profile',
+					'slug' => 'team-profile',
 				],
 			],
 			[
@@ -103,7 +103,7 @@ class WPBS_Team {
 		// --- Get the template part post content ---
 		$template_posts = get_posts( [
 			'post_type'      => 'wp_template_part',
-			'name'           => 'team-member-profile',
+			'name'           => 'team-profile',
 			'posts_per_page' => 1,
 		] );
 

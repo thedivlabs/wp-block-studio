@@ -52,8 +52,13 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 ] );
 
 $is_cv       = $type == 'cv';
-$is_link     = ! empty( $settings['link-post'] ) || $is_cv;
-$link_url    = $is_cv ? wp_get_attachment_url( $dynamic_content ) : get_the_permalink( $team_id );
+$is_link     = ! empty( $settings['link-post'] ) || $is_cv || in_array( $type, [ 'email', 'phone' ] );
+$link_url    = $is_link ? match ( $type ) {
+	'cv' => wp_get_attachment_url( $dynamic_content ),
+	'phone' => 'tel:' . $dynamic_content,
+	'email' => 'mailto:' . $dynamic_content,
+	default => get_the_permalink( $team_id )
+} : false;
 $link_target = ! empty( $settings['link-post']['linkNewTab'] ) || $is_cv ? '_blank' : '_self';
 $link_rel    = $settings['link-post']['linkRel'] ?? '';
 $link_title  = $settings['link-post']['linkTitle'] ?? '';

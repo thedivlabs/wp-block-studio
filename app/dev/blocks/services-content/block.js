@@ -1,5 +1,7 @@
 import './scss/block.scss';
 
+import {ElementTag, ELEMENT_TAG_ATTRIBUTES, ElementTagSettings} from 'Components/ElementTag'
+
 import {
     InspectorControls, PanelColorSettings,
     useBlockProps,
@@ -10,7 +12,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
-import {DIMENSION_UNITS_TEXT, RESOLUTION_OPTIONS} from "Includes/config";
+import {DIMENSION_UNITS_TEXT, RESOLUTION_OPTIONS, ELEMENT_TAG_TEXT_OPTIONS} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     PanelBody,
@@ -55,6 +57,7 @@ const CONTENT_OPTIONS = [
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
+        ...ELEMENT_TAG_ATTRIBUTES,
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES
@@ -227,10 +230,12 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-services-content'}
                        uniqueId={uniqueId} props={cssProps} deps={['wpbs-services-content']}
                 />
+                <ElementTagSettings attributes={attributes} setAttributes={setAttributes}
+                                    options={ELEMENT_TAG_TEXT_OPTIONS}/>
 
-                <div {...blockProps}>
+                <ElementTag {...blockProps}>
                     {label}
-                </div>
+                </ElementTag>
 
 
             </>

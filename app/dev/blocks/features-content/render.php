@@ -7,26 +7,27 @@ if ( empty( $settings ) ) {
 }
 
 $type       = $settings['type'] ?? false;
-$service_id = ( $settings['service-id'] ?? false ) == 'current' ? get_the_ID() : intval( $settings['service-id'] ?? false );
+$feature_id = ( $settings['feature-id'] ?? false ) == 'current' ? get_the_ID() : intval( $settings['feature-id'] ?? false );
 
-if ( ! $type || ! $service_id ) {
+if ( ! $type || ! $feature_id ) {
 	return;
 }
 
 $content = match ( $type ) {
-	'overview' => get_field( 'wpbs_content_overview', $service_id ),
-	'description' => get_field( 'wpbs_content_description', $service_id ),
-	'text' => get_field( 'wpbs_content_text', $service_id ),
-	'poster' => get_field( 'wpbs_media_featured_poster', $service_id ),
-	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $service_id ),
-	'icon' => get_field( 'wpbs_media_featured_icon', $service_id ),
-	'faq-title' => get_field( 'wpbs_faq_content_title', $service_id ),
-	'faq-text' => get_field( 'wpbs_faq_content_text', $service_id ),
-	'related-title' => get_field( 'wpbs_related_content_title', $service_id ),
-	'related-text' => get_field( 'wpbs_related_content_text', $service_id ),
-	'cta-title' => get_field( 'wpbs_cta_content_title', $service_id ),
-	'cta-text' => get_field( 'wpbs_cta_content_text', $service_id ),
-	'cta-image' => WPBS::clean_array( get_field( 'wpbs_cta_media', $service_id ) ),
+	'title' => get_the_title( $feature_id ),
+	'overview' => get_field( 'wpbs_content_overview', $feature_id ),
+	'description' => get_field( 'wpbs_content_description', $feature_id ),
+	'text' => get_field( 'wpbs_content_text', $feature_id ),
+	'poster' => get_field( 'wpbs_media_featured_poster', $feature_id ),
+	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $feature_id ),
+	'icon' => get_field( 'wpbs_media_featured_icon', $feature_id ),
+	'faq-title' => get_field( 'wpbs_faq_content_title', $feature_id ),
+	'faq-text' => get_field( 'wpbs_faq_content_text', $feature_id ),
+	'related-title' => get_field( 'wpbs_related_content_title', $feature_id ),
+	'related-text' => get_field( 'wpbs_related_content_text', $feature_id ),
+	'cta-title' => get_field( 'wpbs_cta_content_title', $feature_id ),
+	'cta-text' => get_field( 'wpbs_cta_content_text', $feature_id ),
+	'cta-image' => WPBS::clean_array( get_field( 'wpbs_cta_media', $feature_id ) ),
 	default => null
 };
 
@@ -51,15 +52,17 @@ $link_title  = $settings['link-post']['linkTitle'] ?? '';
 
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
+$element_tag = $attributes['wpbs-element-tag'] ?? 'div';
+
 ?>
 
 <?php
 
 
 if ( $is_link ) {
-	echo '<a href="' . get_the_permalink( $service_id ) . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
+	echo '<a href="' . get_the_permalink( $feature_id ) . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
 } else {
-	echo '<div ' . $wrapper_attributes . '>';
+	echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
 }
 
 switch ( $type ) {
@@ -86,7 +89,7 @@ switch ( $type ) {
 if ( $is_link ) {
 	echo '</a>';
 } else {
-	echo '</div>';
+	echo '</' . $element_tag . '>';
 }
 
 ?>

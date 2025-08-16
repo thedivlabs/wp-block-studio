@@ -1,5 +1,7 @@
-import {SelectControl} from "@wordpress/components";
-import {useState} from "react";
+import {__experimentalGrid as Grid, SelectControl} from "@wordpress/components";
+import React, {useState} from "react";
+import {InspectorControls} from "@wordpress/block-editor";
+import {ELEMENT_TAG_OPTIONS} from 'Includes/config'
 
 const prop = 'wpbs-element-tag';
 
@@ -15,28 +17,24 @@ export function ElementTag(attributes) {
     return attributes[prop] || 'div';
 }
 
-export function ElementTagSettings({attributes, callback}) {
+export function ElementTagSettings({attributes, setAttributes, options = []}) {
 
     const [value, setValue] = useState(attributes?.[prop] ?? '');
 
-    return <SelectControl
-        value={value}
-        label={'HTML element'}
-        options={[
-            {label: 'Default (<div>)', value: 'div'},
-            {label: '<header>', value: 'header'},
-            {label: '<main>', value: 'main'},
-            {label: '<section>', value: 'section'},
-            {label: '<article>', value: 'article'},
-            {label: '<aside>', value: 'aside'},
-            {label: '<footer>', value: 'footer'},
-        ]}
-        onChange={(newValue) => {
-            setValue(newValue);
-            callback({[prop]: newValue});
-        }}
-        __next40pxDefaultSize
-        __nextHasNoMarginBottom
-    />;
+    return <InspectorControls group="advanced">
+        <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
+            <SelectControl
+                value={value}
+                label={'HTML element'}
+                options={options || ELEMENT_TAG_OPTIONS}
+                onChange={(newValue) => {
+                    setValue(newValue);
+                    setAttributes({'wpbs-element-tag': newValue});
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+    </InspectorControls>;
 }
 

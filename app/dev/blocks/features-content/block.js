@@ -1,5 +1,6 @@
 import './scss/block.scss';
 
+import {ElementTag, ELEMENT_TAG_ATTRIBUTES, ElementTagSettings} from 'Components/ElementTag'
 import {
     InspectorControls, PanelColorSettings,
     useBlockProps,
@@ -10,7 +11,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
-import {DIMENSION_UNITS_TEXT, RESOLUTION_OPTIONS} from "Includes/config";
+import {DIMENSION_UNITS_TEXT, ELEMENT_TAG_TEXT_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     PanelBody,
@@ -36,6 +37,7 @@ function sectionClassNames(attributes = {}) {
 
 const CONTENT_OPTIONS = [
     {label: 'Select', value: ''},
+    {label: 'Title', value: 'title'},
     {label: 'Overview', value: 'overview'},
     {label: 'Description', value: 'description'},
     {label: 'Text', value: 'text'},
@@ -44,9 +46,6 @@ const CONTENT_OPTIONS = [
     {label: 'Icon', value: 'icon'},
     {label: 'Related Title', value: 'related-title'},
     {label: 'Related Text', value: 'related-text'},
-    {label: 'CTA Title', value: 'cta-title'},
-    {label: 'CTA Text', value: 'cta-text'},
-    {label: 'CTA Image', value: 'cta-image'},
     {label: 'FAQ Title', value: 'faq-title'},
     {label: 'FAQ Text', value: 'faq-text'},
 
@@ -56,6 +55,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...ELEMENT_TAG_ATTRIBUTES,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES
     },
@@ -112,6 +112,7 @@ registerBlockType(metadata.name, {
             return CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Feature Content';
 
         }, [settings?.type]);
+
 
         return (
             <>
@@ -227,10 +228,12 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-features-content'}
                        uniqueId={uniqueId} props={cssProps} deps={['wpbs-features-content']}
                 />
+                <ElementTagSettings attributes={attributes} setAttributes={setAttributes}
+                                    options={ELEMENT_TAG_TEXT_OPTIONS}/>
 
-                <div {...blockProps}>
+                <ElementTag {...blockProps}>
                     {label}
-                </div>
+                </ElementTag>
 
 
             </>

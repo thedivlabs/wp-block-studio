@@ -10,7 +10,7 @@ import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
-import {DIMENSION_UNITS_TEXT, RESOLUTION_OPTIONS} from "Includes/config";
+import {DIMENSION_UNITS_TEXT, ELEMENT_TAG_TEXT_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
 import {
     __experimentalGrid as Grid,
     PanelBody,
@@ -21,6 +21,7 @@ import {
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {LinkPost} from "Components/LinkPost";
+import {ELEMENT_TAG_ATTRIBUTES, ElementTagSettings, ElementTag} from "Components/ElementTag";
 
 function sectionClassNames(attributes = {}) {
 
@@ -56,6 +57,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...ELEMENT_TAG_ATTRIBUTES,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES
     },
@@ -201,10 +203,12 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-team-member-content'}
                        uniqueId={uniqueId} deps={['wpbs-team-member-content']} props={cssProps}
                 />
+                <ElementTagSettings attributes={attributes} setAttributes={setAttributes}
+                                    options={ELEMENT_TAG_TEXT_OPTIONS}/>
 
-                <div {...blockProps}>
+                <ElementTag {...blockProps}>
                     <span>{label}</span>
-                </div>
+                </ElementTag>
 
 
             </>

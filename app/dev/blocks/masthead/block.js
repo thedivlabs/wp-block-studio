@@ -1,5 +1,5 @@
 import {
-    InspectorControls, PanelColorSettings,
+    InspectorControls,
     useBlockProps,
     useInnerBlocksProps,
 } from "@wordpress/block-editor"
@@ -8,7 +8,6 @@ import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {ElementTagSettings, ElementTag, ELEMENT_TAG_ATTRIBUTES} from "Components/ElementTag";
-import {useInstanceId} from "@wordpress/compose";
 import React, {useCallback, useMemo} from "react";
 import {
     __experimentalGrid as Grid, PanelBody, ToggleControl
@@ -97,11 +96,7 @@ registerBlockType(metadata.name, {
                        selector={'wpbs-site-header'}
                        props={cssProps}
                 />
-                <InspectorControls group="advanced">
-                    <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
-                        <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
-                    </Grid>
-                </InspectorControls>
+                <ElementTagSettings attributes={attributes} setAttributes={setAttributes}/>
 
 
                 <ElementTagName {...blockProps} >

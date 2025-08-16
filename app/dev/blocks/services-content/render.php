@@ -51,6 +51,8 @@ $link_title  = $settings['link-post']['linkTitle'] ?? '';
 
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
+$element_tag = $attributes['wpbs-element-tag'] ?? 'div';
+
 ?>
 
 <?php
@@ -59,7 +61,7 @@ $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 if ( $is_link ) {
 	echo '<a href="' . get_the_permalink( $service_id ) . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
 } else {
-	echo '<div ' . $wrapper_attributes . '>';
+	echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
 }
 
 switch ( $type ) {
@@ -86,7 +88,7 @@ switch ( $type ) {
 if ( $is_link ) {
 	echo '</a>';
 } else {
-	echo '</div>';
+	echo '</' . $element_tag . '>';
 }
 
 ?>

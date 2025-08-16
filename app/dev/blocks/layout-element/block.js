@@ -99,7 +99,7 @@ registerBlockType(metadata.name, {
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={selector}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
-                        <ElementTagSettings attributes={attributes} callback={setAttributes}></ElementTagSettings>
+                        <ElementTagSettings attributes={attributes} setAttributes={setAttributes}/>
                         <ToggleControl
                             __nextHasNoMarginBottom
                             label="Container"

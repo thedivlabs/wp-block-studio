@@ -69,6 +69,8 @@ if ( $is_cv ) {
 	$dynamic_content = $settings['label'] ?? 'CV';
 }
 
+$element_tag = $attributes['wpbs-element-tag'] ?? 'div';
+
 ?>
 
 <?php
@@ -76,7 +78,7 @@ if ( $is_cv ) {
 if ( $is_link ) {
 	echo '<a href="' . $link_url . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
 } else {
-	echo '<div ' . $wrapper_attributes . '>';
+	echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
 }
 
 switch ( $type ) {
@@ -102,7 +104,7 @@ switch ( $type ) {
 if ( $is_link ) {
 	echo '</a>';
 } else {
-	echo '</div>';
+	echo '</' . $element_tag . '>';
 }
 
 ?>

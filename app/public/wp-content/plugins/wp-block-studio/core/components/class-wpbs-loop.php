@@ -148,8 +148,9 @@ class WPBS_Loop {
 			$post_ids  = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
 
 			return new WP_Query( [
+				'post_type'      => 'any',
 				'post__in'       => $post_ids,
-				'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
+				'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
 				'orderby'        => $query['orderby'] ?? 'date',
 				'order'          => $query['order'] ?? 'DESC',
 				'post__not_in'   => $query['post__not_in'] ?? [],

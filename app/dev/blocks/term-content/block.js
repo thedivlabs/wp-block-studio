@@ -73,6 +73,12 @@ registerBlockType(metadata.name, {
 
         }, [settings?.type]);
 
+        const cssProps = useMemo(() => {
+            return Object.fromEntries(Object.entries({
+                '--line-clamp': settings?.['line-clamp'] ?? null,
+            }).filter(x => x));
+        }, [settings]);
+
 
         return <>
             <InspectorControls group={'styles'}>

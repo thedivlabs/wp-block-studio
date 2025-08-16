@@ -40,13 +40,14 @@ if ( empty( $dynamic_content ) ) {
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( [
+	'class'   => implode( ' ', array_filter( [
 		'wpbs-team-member-content w-fit',
 		! empty( $settings['icon'] ) ? 'inline-flex --icon' : 'inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		! empty( $settings['toggle'] ) ? 'team-profile-toggle' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
+	'data-id' => $team_id,
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 

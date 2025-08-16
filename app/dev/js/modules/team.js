@@ -5,7 +5,15 @@ export default class Team {
 
         [...document.querySelectorAll('.team-profile-toggle')].forEach(el => {
             el.addEventListener('click', (e) => {
-                fetch('/wp-admin/admin-ajax.php?action=team_profile&postId=6467')
+
+
+                const el = e.target;
+                const id = el.dataset.id;
+
+                if (!id) return;
+
+
+                fetch('/wp-admin/admin-ajax.php?action=team_profile&postId=' + id)
                     .then(res => res.json())
                     .then(response => {
                         const {data} = response;

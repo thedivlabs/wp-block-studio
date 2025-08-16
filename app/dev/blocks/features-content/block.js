@@ -113,7 +113,8 @@ registerBlockType(metadata.name, {
 
         }, [settings?.type]);
 
-
+        const ElementTagName = ElementTag(attributes);
+        
         return (
             <>
 
@@ -231,9 +232,9 @@ registerBlockType(metadata.name, {
                 <ElementTagSettings attributes={attributes} setAttributes={setAttributes}
                                     options={ELEMENT_TAG_TEXT_OPTIONS}/>
 
-                <ElementTag {...blockProps}>
+                <ElementTagName {...blockProps}>
                     {label}
-                </ElementTag>
+                </ElementTagName>
 
 
             </>

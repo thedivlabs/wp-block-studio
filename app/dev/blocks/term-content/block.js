@@ -14,7 +14,8 @@ import {LinkPost} from "Components/LinkPost";
 import {LayoutControls} from "Components/Layout";
 import {Style} from "Components/Style";
 import {useUniqueId} from "Includes/helper";
-import {RESOLUTION_OPTIONS} from "Includes/config";
+import {ELEMENT_TAG_TEXT_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
+import {ELEMENT_TAG_ATTRIBUTES, ElementTagSettings, ElementTag} from "Components/ElementTag";
 
 
 function blockClassNames(attributes = {}) {
@@ -42,6 +43,7 @@ const CONTENT_OPTIONS = [
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
+        ...ELEMENT_TAG_ATTRIBUTES,
         ...metadata.attributes
     },
     edit: ({attributes, setAttributes, clientId}) => {
@@ -79,6 +81,7 @@ registerBlockType(metadata.name, {
             }).filter(x => x));
         }, [settings]);
 
+        const ElementTagName = ElementTag(attributes);
 
         return <>
             <InspectorControls group={'styles'}>
@@ -133,7 +136,11 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-term-content'}
                    uniqueId={uniqueId} props={cssProps} deps={['wpbs-term-content']}
             />
-            <div {...blockProps}>{label}</div>
+            <ElementTagSettings attributes={attributes} setAttributes={setAttributes}
+                                options={ELEMENT_TAG_TEXT_OPTIONS}/>
+
+
+            <ElementTagName {...blockProps}>{label}</ElementTagName>
         </>
 
     },

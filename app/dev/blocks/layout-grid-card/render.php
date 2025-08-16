@@ -23,16 +23,9 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 <div <?php echo $wrapper_attributes ?>>
     <div class="<?= esc_attr( $container_class ) ?>">
 		<?php
-        
-		if ( ! empty( $block->context ) ) {
-			foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
-				$inner_block_content = render_block( $inner_block );
-				if ( empty( $inner_block_content ) ) {
-					echo $content ?? false;
-				} else {
-					echo $inner_block_content;
-				}
-			}
+
+		foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
+			echo ( new WP_Block( $inner_block ) )->render();
 		}
 
 		?>

@@ -299,7 +299,7 @@ export const LoopControls = ({attributes, setAttributes}) => {
                 <NumberControl
                     label={'Page Size'}
                     __next40pxDefaultSize
-                    min={1}
+                    min={-1}
                     isShiftStepEnabled={false}
                     onChange={(newValue) => {
                         updateSettings({posts_per_page: newValue});

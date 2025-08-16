@@ -42,13 +42,13 @@ if ( empty( $content ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-term-details inline-block',
+		'wpbs-term-content',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		in_array( $type, [
 			'featured-image',
 			'poster',
 			'thumbnail'
-		], true ) ? 'w-full grid max-w-full max-h-full overflow-hidden' : null,
+		], true ) ? 'w-full grid max-w-full max-h-full overflow-hidden' : 'w-max inline-block',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )

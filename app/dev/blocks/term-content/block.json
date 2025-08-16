@@ -11,6 +11,10 @@
     "wpbs/postType"
   ],
   "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
     "wpbs-term-content": {
       "type": "object"
     }

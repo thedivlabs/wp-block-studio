@@ -19,22 +19,25 @@ export default class Team {
                         });
 
                         // 2. Inject inline CSS
-                        if (data.inline_css.length) {
+                        if (data.inline_css && data.inline_css.length) {
                             const style = document.createElement('style');
                             style.innerHTML = data.inline_css.join("\n");
                             document.head.appendChild(style);
                         }
 
-                        // 3. Parse HTML string into DOM nodes
-                        const template = document.createElement('div');
-                        template.innerHTML = data.rendered;
+                        if (data.rendered) {
+                            // 3. Parse HTML string into DOM nodes
+                            const template = document.createElement('div');
+                            template.innerHTML = data.rendered;
 
-                        // 4. Extract the template part element
-                        const element = template.querySelector('.wpbs-team-member-profile');
-                        if (!element) return;
+                            // 4. Extract the template part element
+                            const element = template.querySelector('.wpbs-team-member-profile');
+                            if (!element) return;
 
-                        // 5. Append to the body (or any container)
-                        document.body.appendChild(element);
+                            // 5. Append to the body (or any container)
+                            document.body.appendChild(element);
+                        }
+
                     });
             }, {
                 passive: true,

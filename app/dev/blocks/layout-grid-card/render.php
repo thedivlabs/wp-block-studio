@@ -28,10 +28,16 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 
 			$inner_block_content = trim( render_block( $inner_block ) );
 
+
 			if ( ! empty( $inner_block_content ) ) {
 				echo $inner_block_content;
 			} else {
-				echo ( new WP_Block( $inner_block ) )->render();
+				WPBS::console_log( $inner_block );
+				echo ( new WP_Block( $inner_block, [
+					"wpbs/postId"   => $block->context['wpbs/postId'] ?? false,
+					"wpbs/termId"   => $block->context['wpbs/termId'] ?? false,
+					"wpbs/postType" => $block->context['wpbs/postType'] ?? false
+				] ) )->render();
 			}
 
 

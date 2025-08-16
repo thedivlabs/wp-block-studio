@@ -13,8 +13,7 @@ $page           = intval( $context['wpbs/page'] ?? 1 );
 $grid_settings  = WPBS::clean_array( array_merge( $context['wpbs/grid'] ?? [], $context['wpbs/settings'] ?? [] ) );
 $query_settings = WPBS::clean_array( $context['wpbs/query'] ?? [] );
 $is_loop        = ! empty( $grid_settings['loop'] );
-
-$loop = ! $is_loop ? false : new WPBS_Loop( $card_block ?? false, $query_settings, $page, $is_rest );
+$loop           = ! $is_loop ? false : new WPBS_Loop( $card_block ?? false, $query_settings, $page, $is_rest );
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
@@ -35,9 +34,25 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		echo $loop->content ?? false;
 	} elseif ( ! empty( $block->parsed_block['innerBlocks'] ) ) {
 
-		foreach ( $block->parsed_block['innerBlocks'] ?? [] as $parsed_block ) {
-			echo render_block( $parsed_block );
+
+		foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
+
+			$inner_block_content = trim( render_block( $inner_block ) );
+
+			if ( ! empty( $inner_block_content ) ) {
+				echo $inner_block_content;
+			} else {
+
+				echo ( new WP_Block( $inner_block, [
+					"wpbs/postId"   => $block->context['wpbs/postId'] ?? false,
+					"wpbs/termId"   => $block->context['wpbs/termId'] ?? false,
+					"wpbs/postType" => $block->context['wpbs/postType'] ?? false
+				] ) )->render();
+			}
+
+
 		}
+
 
 	} else {
 		echo $content ?? false;

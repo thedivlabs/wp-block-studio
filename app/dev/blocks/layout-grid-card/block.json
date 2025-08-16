@@ -29,7 +29,9 @@
     "wpbs/layout-grid-container"
   ],
   "usesContext": [
-    "wpbs/postId"
+    "wpbs/postId",
+    "wpbs/termId",
+    "wpbs/postType"
   ],
   "providesContext": {
     "wpbs/postId": "postId",

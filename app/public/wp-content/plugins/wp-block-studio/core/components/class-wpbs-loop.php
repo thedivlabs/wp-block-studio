@@ -35,7 +35,7 @@ class WPBS_Loop {
 		$css         = '';
 
 
-		$this->query = $this->is_term_loop ? $query : $this->loop_query( $query, $page );
+		$this->query = $this->loop_query( $query, $page );
 
 
 		$this->is_rest  = ! empty( $is_rest );
@@ -51,7 +51,7 @@ class WPBS_Loop {
 				$this->query->the_post();
 
 				$new_block = $this->loop_card( $card, [
-					'postId' => get_the_id(),
+					'wpbs/postId' => get_the_id(),
 				], $query_counter, $is_rest );
 
 				$query_counter ++;
@@ -76,8 +76,9 @@ class WPBS_Loop {
 				}
 
 				$new_block = $this->loop_card( $card, [
-					'termId' => $term->term_id,
+					'wpbs/termId' => $term->term_id,
 				], $k, $is_rest );
+
 
 				$css         .= $new_block->attributes['wpbs-css'] ?? '';
 				$new_content .= $new_block->render();
@@ -90,15 +91,14 @@ class WPBS_Loop {
 		$this->css     = $css;
 		$this->card    = $card;
 
-
 	}
 
 	private function loop_card( $block_template = [], $args = [], $index = false, $is_rest = false ): WP_Block|bool {
 
 		$original_id = $block_template['attrs']['uniqueId'] ?? '';
 
-		$post_id = $block['attrs']['postId'] ?? $args['postId'] ?? get_the_ID();
-		$term_id = $block['attrs']['termId'] ?? $args['termId'] ?? false;
+		$post_id = $block['attrs']['postId'] ?? $args['wpbs/postId'] ?? get_the_ID();
+		$term_id = $block['attrs']['termId'] ?? $args['wpbs/termId'] ?? false;
 
 		$new_id = $term_id || $post_id ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
 
@@ -163,12 +163,14 @@ class WPBS_Loop {
 
 		if ( ! empty( $query['loop_terms'] ) ) {
 
-			return get_terms( [
+			$terms = get_terms( [
 				'taxonomy'   => $query['taxonomy'] ?? false,
 				'hide_empty' => true,
 				'orderby'    => $query['orderby'] ?? 'date',
 				'order'      => $query['order'] ?? 'DESC',
 			] );
+
+			return $terms;
 		}
 
 		$query_args = [

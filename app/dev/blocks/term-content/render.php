@@ -1,11 +1,20 @@
 <?php
 
 $term_id = ! empty( $block->context['wpbs/termId'] ) ? $block->context['wpbs/termId'] : get_queried_object()?->term_id ?? false;
-$term    = get_term( $term_id );
 
-if ( empty( $term ) ) {
+if ( ! $term_id ) {
+	return;
+}
+
+$term = get_term( $term_id );
+
+if ( ! is_a( $term, 'WP_Term' ) ) {
 	return false;
 }
+
+WPBS::console_log( $block->context ?? false );
+WPBS::console_log( $term );
+WPBS::console_log( $attributes );
 
 $settings = $attributes['wpbs-term-content'] ?? false;
 $type     = $settings['type'] ?? false;
@@ -57,6 +66,8 @@ if ( $is_link ) {
 } else {
 	echo '<div ' . $wrapper_attributes . '>';
 }
+
+WPBS::console_log( $type );
 
 switch ( $type ) {
 	case 'poster':

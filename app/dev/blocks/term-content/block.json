@@ -6,8 +6,15 @@
     "root": ".wpbs-term-content"
   },
   "usesContext": [
-    "wpbs/termId"
+    "wpbs/postId",
+    "wpbs/termId",
+    "wpbs/postType"
   ],
+  "attributes": {
+    "wpbs-term-content": {
+      "type": "object"
+    }
+  },
   "supports": {
     "color": {
       "background": true,

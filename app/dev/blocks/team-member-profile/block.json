@@ -14,8 +14,7 @@
     },
     "postId": {
       "type": "integer",
-      "show_in_rest": true,
-      "default": 6467
+      "show_in_rest": true
     }
   },
   "providesContext": {

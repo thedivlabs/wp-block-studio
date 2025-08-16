@@ -7,7 +7,7 @@ if ( empty( $settings ) ) {
 }
 
 $type    = $settings['type'] ?? false;
-$team_id = intval( $block->context['wpbs/postId'] ?? false );
+$team_id = intval( $block->context['wpbs/postId'] ?? $_GET['postId'] ?? get_the_ID() );;
 
 if ( ! $type || ! $team_id ) {
 	return;

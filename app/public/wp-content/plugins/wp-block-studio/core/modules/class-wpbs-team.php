@@ -88,7 +88,8 @@ class WPBS_Team {
 			[
 				'blockName' => 'core/template-part',
 				'attrs'     => [
-					'slug' => 'team-profile',
+					'slug'   => 'team-profile',
+					'postId' => intval( $post_id ),
 				],
 			],
 			[

@@ -1,6 +1,7 @@
 <?php
 
-$postId = $_GET['postId'] ?? $attributes['postId'] ?? $block->context['wpbs/postId'] ?? 6467;
+$postId = $_GET['postId'] ?? $attributes['postId'] ?? $block->context['wpbs/postId'] ?? get_the_ID();
+
 
 if ( empty( $postId ) ) {
 	return;
@@ -24,7 +25,17 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 
 <div <?= $wrapper_attributes ?>>
+	<?php
 
-	<?= $content ?? false ?>
+	foreach ( $block->parsed_block['innerBlocks'] as $inner ) {
+		echo ( new WP_Block(
+			$inner,
+			[ 'wpbs/postId' => $postId ]
+		) )->render();
+	}
+
+
+	?>
+
 
 </div>

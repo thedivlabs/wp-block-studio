@@ -1,7 +1,7 @@
 {
   "name": "wpbs/services-content",
-  "title": "Company Content",
-  "description": "Display company content",
+  "title": "Service Content",
+  "description": "Display services content",
   "selectors": {
     "root": ".wpbs-services-content"
   },

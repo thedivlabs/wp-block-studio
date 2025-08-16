@@ -142,13 +142,11 @@ class WPBS_Loop {
 
 		if ( $this->is_related ) {
 
-			$id        = get_queried_object()?->term_id ?? get_the_id();
-			$term      = is_tax() ? get_term( $id ) : false;
-			$field_ref = $term ? "{$term->taxonomy}_{$term->term_id}" : $id;
-			$post_ids  = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
-
-
-			return new WP_Query( [
+			$id            = get_queried_object()?->term_id ?? get_the_id();
+			$term          = is_tax() ? get_term( $id ) : false;
+			$field_ref     = $term ? "{$term->taxonomy}_{$term->term_id}" : $id;
+			$post_ids      = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
+			$related_query = new WP_Query( [
 				'post__in'       => $post_ids,
 				'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
 				'orderby'        => $query['orderby'] ?? 'date',
@@ -156,6 +154,11 @@ class WPBS_Loop {
 				'post__not_in'   => $query['post__not_in'] ?? [],
 				'paged'          => $query['paged'] ?? $page ?: 1,
 			] );
+
+			WPBS::console_log( $post_ids );
+			WPBS::console_log( $related_query );
+
+			return $related_query;
 		}
 
 		if ( is_a( $query, 'WP_Query' ) ) {

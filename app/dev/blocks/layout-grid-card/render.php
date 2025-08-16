@@ -14,7 +14,6 @@ $target  = $is_link ? ( ! empty( $attributes['wpbs-layout-grid-card']['linkPost'
 $rel     = $is_link && ( $attributes['wpbs-layout-grid-card']['linkPost']['linkRel'] ?? false );
 $is_rest = ! empty( $block->attributes['is_rest'] );
 
-
 $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relative z-20';
 
 ?>
@@ -24,8 +23,18 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
     <div class="<?= esc_attr( $container_class ) ?>">
 		<?php
 
+
 		foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
-			echo ( new WP_Block( $inner_block ) )->render();
+
+			$inner_block_content = trim( render_block( $inner_block ) );
+
+			if ( ! empty( $inner_block_content ) ) {
+				echo $inner_block_content;
+			} else {
+				echo ( new WP_Block( $inner_block ) )->render();
+			}
+
+
 		}
 
 		?>

@@ -21,11 +21,23 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 
 
 <div <?php echo $wrapper_attributes ?>>
-    <div class="<?= $container_class ?>">
-		<?php foreach ( ( $block->parsed_block['innerBlocks'] ?? [] ) as $inner_block ) {
-			echo render_block( $inner_block );
-		} ?>
+    <div class="<?= esc_attr( $container_class ) ?>">
+		<?php
+        
+		if ( ! empty( $block->context ) ) {
+			foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
+				$inner_block_content = render_block( $inner_block );
+				if ( empty( $inner_block_content ) ) {
+					echo $content ?? false;
+				} else {
+					echo $inner_block_content;
+				}
+			}
+		}
+
+		?>
     </div>
+
 	<?php
 
 	if ( $is_link ) {

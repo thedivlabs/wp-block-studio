@@ -13,7 +13,7 @@ if ( ! $type || ! $team_id ) {
 	return;
 }
 
-$content = match ( $type ) {
+$dynamic_content = match ( $type ) {
 	'first-name' => get_field( 'wpbs_details_general_first_name', $team_id ),
 	'last-name' => get_field( 'wpbs_details_general_last_name', $team_id ),
 	'full-name' => join( ' ', WPBS::clean_array( [
@@ -35,7 +35,7 @@ $content = match ( $type ) {
 	default => null
 };
 
-if ( empty( $content ) ) {
+if ( empty( $dynamic_content ) ) {
 	return false;
 }
 
@@ -52,7 +52,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 $is_cv       = $type == 'cv';
 $is_link     = ! empty( $settings['link-post'] ) || $is_cv;
-$link_url    = $is_cv ? wp_get_attachment_url( $content ) : get_the_permalink( $team_id );
+$link_url    = $is_cv ? wp_get_attachment_url( $dynamic_content ) : get_the_permalink( $team_id );
 $link_target = ! empty( $settings['link-post']['linkNewTab'] ) || $is_cv ? '_blank' : '_self';
 $link_rel    = $settings['link-post']['linkRel'] ?? '';
 $link_title  = $settings['link-post']['linkTitle'] ?? '';
@@ -60,7 +60,7 @@ $link_title  = $settings['link-post']['linkTitle'] ?? '';
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
 if ( $is_cv ) {
-	$content = $settings['label'] ?? 'CV';
+	$dynamic_content = $settings['label'] ?? 'CV';
 }
 
 ?>
@@ -77,7 +77,7 @@ switch ( $type ) {
 	case 'headshot':
 	case 'featured-image':
 	case 'signature':
-		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
+		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'
 		] );
@@ -85,9 +85,9 @@ switch ( $type ) {
 	default:
 
 		if ( ! empty( $settings['icon'] ) ) {
-			echo '<span>' . $content . '</span>';
+			echo '<span>' . $dynamic_content . '</span>';
 		} else {
-			echo $content;
+			echo $dynamic_content;
 		}
 
 }

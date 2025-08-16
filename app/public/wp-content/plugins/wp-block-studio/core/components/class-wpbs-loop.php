@@ -32,7 +32,9 @@ class WPBS_Loop {
 		$new_content = '';
 		$css         = '';
 
+
 		$this->query = $this->is_term_loop ? $query : $this->loop_query( $query, $page );
+
 
 		$this->is_rest  = ! empty( $is_rest );
 		$this->is_query = is_a( $this->query, 'WP_Query' );
@@ -40,10 +42,10 @@ class WPBS_Loop {
 
 		if ( $this->is_query && $this->query->have_posts() ) {
 
+
 			$query_counter = 0;
 
 			while ( $this->query->have_posts() ) {
-
 				$this->query->the_post();
 
 				$new_block = $this->loop_card( $card, [
@@ -115,10 +117,10 @@ class WPBS_Loop {
 		$block_template['attrs']['is_rest']  = true;
 
 		$new_block = new WP_Block( $block_template, array_filter( [
-			'termId'   => $term_id,
-			'postId'   => $post_id,
-			'uniqueId' => $unique_id,
-			'index'    => $index,
+			'wpbs/termId'   => $term_id,
+			'wpbs/postId'   => $post_id,
+			'wpbs/uniqueId' => $unique_id,
+			'wpbs/index'    => $index,
 		] ) );
 
 		return apply_filters( 'wpbs_loop_block', $new_block, $original_id, $selector );

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {select, subscribe} from "@wordpress/data";
+import {select, subscribe, useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {
     __experimentalGrid as Grid,
@@ -29,10 +29,26 @@ export const LoopControls = ({attributes, setAttributes}) => {
 
     const [queryArgs, setQueryArgs] = useState(attributes['wpbs-query'] || {});
 
+    const postTypes = useSelect(
+        (select) => {
+            const types = select(coreStore).getPostTypes({per_page: -1});
+            if (!types) return null; // still loading
+            return Object.values(types).filter(
+                (type) => !!type?.viewable && type.slug !== 'attachment'
+            );
+        },
+        [] // dependencies
+    );
+
+
     useEffect(() => {
 
-        if (queryArgs.post_type === 'current') {
+        if (!postTypes) {
             return;
+        }
+
+        if (queryArgs.post_type === 'current') {
+            //return;
         }
 
         const termsQuery = {
@@ -57,16 +73,15 @@ export const LoopControls = ({attributes, setAttributes}) => {
             mainQuery[tax_base] = queryArgs.term;
         }
 
-        select(coreStore).getPostTypes();
         select(coreStore).getTaxonomies();
         select(coreStore).getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
         select(coreStore).getEntityRecords('postType', queryArgs.post_type, mainQuery);
+
 
         const unsubscribe = subscribe(() => {
 
             const core = select(coreStore);
 
-            const isPostTypesReady = core.hasFinishedResolution('getPostTypes');
             const isTaxonomiesReady = core.hasFinishedResolution('getTaxonomies');
             const isTermsReady = core.hasFinishedResolution(
                 'getEntityRecords',
@@ -77,15 +92,14 @@ export const LoopControls = ({attributes, setAttributes}) => {
                 ['postType', queryArgs.post_type, mainQuery]
             );
 
-            if (isPostTypesReady && isTaxonomiesReady && isTermsReady && isSuppressReady) {
-                const postTypes = core.getPostTypes();
+            if (isTaxonomiesReady && isTermsReady && isSuppressReady) {
                 const taxonomies = core.getTaxonomies();
                 const terms = core.getEntityRecords('taxonomy', queryArgs.taxonomy, termsQuery);
                 const posts = core.getEntityRecords('postType', queryArgs.post_type, mainQuery);
 
                 setLoop((prev) => ({
                     ...prev,
-                    postTypes: postTypes?.filter((type) => type.viewable && type.slug !== 'attachment') || [],
+                    postTypes: postTypes,
                     taxonomies: taxonomies?.filter((tax) => tax.visibility?.public) || [],
                     terms: terms || [],
                     posts: posts || [],
@@ -94,7 +108,7 @@ export const LoopControls = ({attributes, setAttributes}) => {
                 unsubscribe();
             }
         });
-    }, [queryArgs]);
+    }, [queryArgs, postTypes]);
 
     function updateSettings(newValue) {
 

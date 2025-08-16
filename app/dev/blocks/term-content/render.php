@@ -12,10 +12,6 @@ if ( ! is_a( $term, 'WP_Term' ) ) {
 	return false;
 }
 
-WPBS::console_log( $block->context ?? false );
-WPBS::console_log( $term );
-WPBS::console_log( $attributes );
-
 $settings = $attributes['wpbs-term-content'] ?? false;
 $type     = $settings['type'] ?? false;
 
@@ -48,6 +44,11 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-term-details inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
+		in_array( $type, [
+			'featured-image',
+			'poster',
+			'thumbnail'
+		], true ) ? 'w-full grid max-w-full max-h-full overflow-hidden' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )
@@ -66,8 +67,6 @@ if ( $is_link ) {
 } else {
 	echo '<div ' . $wrapper_attributes . '>';
 }
-
-WPBS::console_log( $type );
 
 switch ( $type ) {
 	case 'poster':

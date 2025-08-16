@@ -53,9 +53,9 @@
                     "layout": "block",
                     "sub_fields": [
                         {
-                            "key": "field_6626e0cba7848",
-                            "label": "Featured Image Large",
-                            "name": "Featured_image_large",
+                            "key": "field_689e1d8d979f4",
+                            "label": "Featured Image Mobile",
+                            "name": "featured_image_mobile",
                             "aria-label": "",
                             "type": "image",
                             "instructions": "",
@@ -79,9 +79,9 @@
                             "preview_size": "thumbnail"
                         },
                         {
-                            "key": "field_689e1d8d979f4",
-                            "label": "Featured Image Mobile",
-                            "name": "featured_image_mobile",
+                            "key": "field_68a0b32607fed",
+                            "label": "Featured Image",
+                            "name": "featured_image",
                             "aria-label": "",
                             "type": "image",
                             "instructions": "",
@@ -471,5 +471,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1755194545
+    "modified": 1755362201
 }

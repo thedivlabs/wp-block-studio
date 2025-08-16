@@ -82,8 +82,8 @@ registerBlockType(metadata.name, {
 
         return <>
             <InspectorControls group={'styles'}>
-                <Grid columns={1} columnGap={15} rowGap={20}>
-                    <PanelBody initialOpen={true} title={'Settings'}>
+                <PanelBody initialOpen={true} title={'Settings'}>
+                    <Grid columns={1} columnGap={15} rowGap={20}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
                             <SelectControl
                                 __nextHasNoMarginBottom={true}
@@ -123,8 +123,8 @@ registerBlockType(metadata.name, {
                                 onChange={(newValue) => updateSettings({eager: newValue})}
                             />
                         </Grid>
-                    </PanelBody>
-                </Grid>
+                    </Grid>
+                </PanelBody>
             </InspectorControls>
             <LinkPost defaultValue={settings?.['link-post']}
                       callback={(newValue) => updateSettings({'link-post': newValue})}/>

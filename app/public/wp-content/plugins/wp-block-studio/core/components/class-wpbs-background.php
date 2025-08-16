@@ -22,8 +22,11 @@ class WPBS_Background {
 				if ( $term && isset( $term->term_id ) ) {
 					$term_ref = "{$term->taxonomy}_{$term->term_id}";
 
-					$img_id_large  = get_field( 'wpbs_media_featured_image_large', $term_ref );
-					$img_id_mobile = get_field( 'wpbs_media_featured_image_mobile', $term_ref );
+					$media_fields = get_field( 'wpbs_media', $term_ref );
+
+					$img_id_large  = $media_fields['featured_image'] ?? false;
+					$img_id_mobile = $media_fields['featured_image_mobile'] ?? false;
+
 				}
 			} else {
 				$img_id_large  = get_post_thumbnail_id( get_the_ID() ) ?: ( $attributes['wpbs-background']['largeImage']['id'] ?? $attributes['wpbs-background']['mobileImage']['id'] ?? false );

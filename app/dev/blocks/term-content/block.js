@@ -11,8 +11,8 @@ import {
     SelectControl, PanelBody, ToggleControl
 } from "@wordpress/components";
 import {LinkPost} from "Components/LinkPost";
-import {LayoutControls} from "Components/Layout";
-import {Style} from "Components/Style";
+import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout";
+import {Style, STYLE_ATTRIBUTES} from "Components/Style";
 import {useUniqueId} from "Includes/helper";
 import {ELEMENT_TAG_TEXT_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
 import {ELEMENT_TAG_ATTRIBUTES, ElementTagSettings, ElementTag} from "Components/ElementTag";
@@ -43,6 +43,8 @@ const CONTENT_OPTIONS = [
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
+        ...STYLE_ATTRIBUTES,
+        ...LAYOUT_ATTRIBUTES,
         ...ELEMENT_TAG_ATTRIBUTES,
         ...metadata.attributes
     },

@@ -64,22 +64,22 @@ registerBlockType(metadata.name, {
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const features = useSelect((select) => {
-            return select('core').getEntityRecords('postType', 'service', {per_page: -1});
+            return select('core').getEntityRecords('postType', 'feature', {per_page: -1});
         }, []);
 
         const {'wpbs-features-content': settings = {}} = attributes;
 
         const fields = useSelect((select) => {
 
-            if (!settings?.['service-id']) {
+            if (!settings?.['feature-id']) {
                 return {};
             }
 
-            const post = select('core').getEntityRecord('postType', 'service', settings?.['service-id']);
+            const post = select('core').getEntityRecord('postType', 'feature', settings?.['feature-id']);
 
             return post?.acf?.wpbs || null;
 
-        }, [settings?.['service-id']]);
+        }, [settings?.['feature-id']]);
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
@@ -109,7 +109,7 @@ registerBlockType(metadata.name, {
 
             const {type = ''} = settings;
 
-            return CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Service Content';
+            return CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Feature Content';
 
         }, [settings?.type]);
 
@@ -121,17 +121,17 @@ registerBlockType(metadata.name, {
                         <Grid columns={1} columnGap={15} rowGap={20}>
 
                             <SelectControl
-                                label="Select Service"
-                                value={settings?.['service-id'] ?? ''}
+                                label="Select Feature"
+                                value={settings?.['feature-id'] ?? ''}
                                 options={[
-                                    {label: 'Select a service', value: ''},
+                                    {label: 'Select a feature', value: ''},
                                     {label: 'Current', value: 'current'},
                                     ...(features || []).map(post => ({
                                         label: post.title.rendered,
                                         value: String(post.id)
                                     }))
                                 ]}
-                                onChange={(newValue) => updateSettings({'service-id': newValue})}
+                                onChange={(newValue) => updateSettings({'feature-id': newValue})}
                                 __nextHasNoMarginBottom={true}
                                 __next40pxDefaultSize={true}
                             />

@@ -10,8 +10,7 @@ export default class Team {
                     .then(response => {
                         const {data} = response;
 
-                        // 1. Inject block CSS files
-                        Object.values(data.styles).forEach(url => {
+                        Object.values(data?.styles ?? {}).forEach(url => {
                             if (!url) return;
                             const link = document.createElement('link');
                             link.rel = 'stylesheet';

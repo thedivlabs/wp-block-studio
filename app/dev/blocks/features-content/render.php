@@ -13,9 +13,10 @@ if ( ! $type || ! $feature_id ) {
 	return;
 }
 
-$content = match ( $type ) {
+$dynamic_content = match ( $type ) {
 	'title' => get_the_title( $feature_id ),
 	'overview' => get_field( 'wpbs_content_overview', $feature_id ),
+	'excerpt' => get_field( 'wpbs_content_description', $feature_id ) ?: get_the_excerpt( $feature_id ),
 	'description' => get_field( 'wpbs_content_description', $feature_id ),
 	'text' => get_field( 'wpbs_content_text', $feature_id ),
 	'poster' => get_field( 'wpbs_media_featured_poster', $feature_id ),
@@ -31,7 +32,7 @@ $content = match ( $type ) {
 	default => null
 };
 
-if ( empty( $content ) ) {
+if ( empty( $dynamic_content ) ) {
 	return false;
 }
 
@@ -68,7 +69,7 @@ if ( $is_link ) {
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
-		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
+		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'
 		] );
@@ -76,13 +77,13 @@ switch ( $type ) {
 	case 'cta-image':
 
 		echo WPBS::picture(
-			$content['image_mobile'] ?? false,
-			$content['image_large'] ?? false,
+			$dynamic_content['image_mobile'] ?? false,
+			$dynamic_content['image_large'] ?? false,
 			$attributes['wpbs-breakpoint']['large'] ?? false,
 			$settings['resolution'] ?? false, $loading );
 		break;
 	default:
-		echo $content;
+		echo $dynamic_content;
 }
 
 

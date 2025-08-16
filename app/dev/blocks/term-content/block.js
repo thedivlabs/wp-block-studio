@@ -82,47 +82,49 @@ registerBlockType(metadata.name, {
 
         return <>
             <InspectorControls group={'styles'}>
-                <PanelBody initialOpen={true} title={'Settings'}>
-                    <Grid columns={1} columnGap={15} rowGap={20}>
-                        <SelectControl
-                            __nextHasNoMarginBottom={true}
-                            __next40pxDefaultSize={true}
-                            label="Type"
-                            value={settings?.type ?? ''}
-                            options={CONTENT_OPTIONS}
-                            onChange={(newValue) => updateSettings({type: newValue})}
-                        />
-                    </Grid>
-                    <Grid columns={2} columnGap={15} rowGap={20}>
+                <Grid columns={1} columnGap={15} rowGap={20}>
+                    <PanelBody initialOpen={true} title={'Settings'}>
+                        <Grid columns={1} columnGap={15} rowGap={20}>
+                            <SelectControl
+                                __nextHasNoMarginBottom={true}
+                                __next40pxDefaultSize={true}
+                                label="Type"
+                                value={settings?.type ?? ''}
+                                options={CONTENT_OPTIONS}
+                                onChange={(newValue) => updateSettings({type: newValue})}
+                            />
+                        </Grid>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
 
-                        <NumberControl
-                            __nextHasNoMarginBottom
-                            __next40pxDefaultSize
-                            label="Line Clamp"
-                            value={settings?.['line-clamp']}
-                            onChange={(newValue) => updateSettings({'line-clamp': newValue})}
+                            <NumberControl
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                                label="Line Clamp"
+                                value={settings?.['line-clamp']}
+                                onChange={(newValue) => updateSettings({'line-clamp': newValue})}
 
-                        />
+                            />
 
-                        <SelectControl
-                            __nextHasNoMarginBottom={true}
-                            __next40pxDefaultSize={true}
-                            label="Resolution"
-                            value={settings?.resolution ?? ''}
-                            options={RESOLUTION_OPTIONS}
-                            onChange={(newValue) => updateSettings({resolution: newValue})}
-                        />
-                    </Grid>
+                            <SelectControl
+                                __nextHasNoMarginBottom={true}
+                                __next40pxDefaultSize={true}
+                                label="Resolution"
+                                value={settings?.resolution ?? ''}
+                                options={RESOLUTION_OPTIONS}
+                                onChange={(newValue) => updateSettings({resolution: newValue})}
+                            />
+                        </Grid>
 
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <ToggleControl
-                            __nextHasNoMarginBottom
-                            label="Eager"
-                            checked={!!settings?.eager}
-                            onChange={(newValue) => updateSettings({eager: newValue})}
-                        />
-                    </Grid>
-                </PanelBody>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            <ToggleControl
+                                __nextHasNoMarginBottom
+                                label="Eager"
+                                checked={!!settings?.eager}
+                                onChange={(newValue) => updateSettings({eager: newValue})}
+                            />
+                        </Grid>
+                    </PanelBody>
+                </Grid>
             </InspectorControls>
             <LinkPost defaultValue={settings?.['link-post']}
                       callback={(newValue) => updateSettings({'link-post': newValue})}/>

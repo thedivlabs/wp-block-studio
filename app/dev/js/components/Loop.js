@@ -192,6 +192,7 @@ export const LoopControls = ({attributes, setAttributes}) => {
         return [
             {value: 0, label: 'Select a post type'},
             {value: 'current', label: 'Current'},
+            {value: 'related', label: 'Related'},
             ...(loop?.postTypes ?? []).map((postType) => {
                 return {value: postType.slug, label: postType.name};
             })

@@ -11,6 +11,7 @@ class WPBS_Loop {
 	public bool $is_query;
 	public bool $is_term_loop;
 	public bool $is_current;
+	public bool $is_related;
 	public bool $is_pagination;
 	public array|WP_Query $query;
 
@@ -26,6 +27,7 @@ class WPBS_Loop {
 
 		$this->is_term_loop     = ! empty( $query['loop_terms'] );
 		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
+		$this->is_related       = ( $query['post_type'] ?? false ) == 'related';
 		$this->is_pagination    = ! empty( $query['pagination'] );
 		$this->pagination_label = $query['pagination-label'] ?? 'Show More';
 
@@ -136,6 +138,24 @@ class WPBS_Loop {
 			global $wp_query;
 
 			return $wp_query;
+		}
+
+		if ( $this->is_related ) {
+
+			$id        = get_queried_object()?->term_id ?? get_the_id();
+			$term      = is_tax() ? get_term( $id ) : false;
+			$field_ref = $term ? "{$term->taxonomy}_{$term->term_id}" : $id;
+			$post_ids  = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
+
+
+			return new WP_Query( [
+				'post__in'       => $post_ids,
+				'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
+				'orderby'        => $query['orderby'] ?? 'date',
+				'order'          => $query['order'] ?? 'DESC',
+				'post__not_in'   => $query['post__not_in'] ?? [],
+				'paged'          => $query['paged'] ?? $page ?: 1,
+			] );
 		}
 
 		if ( is_a( $query, 'WP_Query' ) ) {

@@ -1,16 +1,16 @@
 {
-  "name": "wpbs/services-content",
-  "title": "Company Content",
-  "description": "Display company content",
+  "name": "wpbs/features-content",
+  "title": "Features Content",
+  "description": "Display features content",
   "selectors": {
-    "root": ".wpbs-services-content"
+    "root": ".wpbs-features-content"
   },
   "attributes": {
     "uniqueId": {
       "type": "string",
       "show_in_rest": true
     },
-    "wpbs-services-content": {
+    "wpbs-features-content": {
       "type": "object",
       "show_in_rest": true
     }

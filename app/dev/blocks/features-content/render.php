@@ -1,6 +1,6 @@
 <?php
 
-$settings = $attributes['wpbs-services-content'] ?? false;
+$settings = $attributes['wpbs-features-content'] ?? false;
 
 if ( empty( $settings ) ) {
 	return;
@@ -36,7 +36,7 @@ if ( empty( $content ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-services-content inline-block',
+		'wpbs-features-content inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),

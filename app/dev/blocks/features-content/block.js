@@ -24,10 +24,10 @@ import {LinkPost} from "Components/LinkPost";
 
 function sectionClassNames(attributes = {}) {
 
-    const {'wpbs-services-content': settings = {}} = attributes;
+    const {'wpbs-features-content': settings = {}} = attributes;
 
     return [
-        'wpbs-services-content',
+        'wpbs-features-content',
         'w-fit inline-block',
         settings?.icon ? '--icon' : null,
         attributes?.uniqueId ?? '',
@@ -63,11 +63,11 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const services = useSelect((select) => {
+        const features = useSelect((select) => {
             return select('core').getEntityRecords('postType', 'service', {per_page: -1});
         }, []);
 
-        const {'wpbs-services-content': settings = {}} = attributes;
+        const {'wpbs-features-content': settings = {}} = attributes;
 
         const fields = useSelect((select) => {
 
@@ -92,14 +92,14 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-services-content'],
+                ...attributes['wpbs-features-content'],
                 ...newValue
             };
 
             setAttributes({
-                'wpbs-services-content': result,
+                'wpbs-features-content': result,
             });
-        }, [setAttributes, attributes['wpbs-services-content']]);
+        }, [setAttributes, attributes['wpbs-features-content']]);
 
         const blockProps = useBlockProps({
             className: sectionClassNames(attributes),
@@ -126,7 +126,7 @@ registerBlockType(metadata.name, {
                                 options={[
                                     {label: 'Select a service', value: ''},
                                     {label: 'Current', value: 'current'},
-                                    ...(services || []).map(post => ({
+                                    ...(features || []).map(post => ({
                                         label: post.title.rendered,
                                         value: String(post.id)
                                     }))
@@ -224,8 +224,8 @@ registerBlockType(metadata.name, {
                           callback={(newValue) => updateSettings({'link-post': newValue})}/>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-services-content'}
-                       uniqueId={uniqueId} props={cssProps} deps={['wpbs-services-content']}
+                <Style attributes={attributes} setAttributes={setAttributes} selector={'wpbs-features-content'}
+                       uniqueId={uniqueId} props={cssProps} deps={['wpbs-features-content']}
                 />
 
                 <div {...blockProps}>

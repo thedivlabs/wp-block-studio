@@ -10,7 +10,7 @@ import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}) {
     return [
-        'wpbs-team-member-profile',
+        'wpbs-team-member-profile wpbs-container',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -26,7 +26,7 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-        
+
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({

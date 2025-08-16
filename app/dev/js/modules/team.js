@@ -7,7 +7,7 @@ export default class Team {
             el.addEventListener('click', (e) => {
 
 
-                const el = e.target;
+                const el = e.target.closest('.team-profile-toggle');
                 const id = el.dataset.id;
 
                 if (!id) return;

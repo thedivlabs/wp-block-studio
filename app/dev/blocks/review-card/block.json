@@ -25,7 +25,6 @@
     "wpbs/review": "review"
   },
   "supports": {
-    "interactivity": true,
     "innerBlocks": true,
     "color": {
       "background": true,

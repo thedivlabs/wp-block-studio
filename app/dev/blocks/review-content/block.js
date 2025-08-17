@@ -94,7 +94,7 @@ registerBlockType(metadata.name, {
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 <ToggleControl
                                     __nextHasNoMarginBottom
-                                    label="Toggle Popup"
+                                    label="Popup"
                                     checked={!!settings?.toggle}
                                     onChange={(newValue) => updateSettings({toggle: newValue})}
                                 />

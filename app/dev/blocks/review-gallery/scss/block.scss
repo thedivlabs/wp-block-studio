@@ -1,3 +1,7 @@
-.wpbs-review-gallery.editor .loop-card {
+.wpbs-review-gallery .loop-card {
   max-width: calc((100% - (var(--margin, 0px) * (max(1, var(--slides, 1) - 1)))) / var(--slides, 1));
+}
+
+.wpbs-review-content.--modal {
+  line-clamp: unset !important;
 }

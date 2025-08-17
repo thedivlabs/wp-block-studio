@@ -9,7 +9,7 @@ if ( empty( $comment ) ) {
 $avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
 $rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 $time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
-
+$style  = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
 
 if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 
@@ -23,15 +23,17 @@ if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( [
-	'class' => implode( ' ', array_filter( [
+	'class'               => implode( ' ', array_filter( [
 		'wpbs-review-content inline-block',
+		! empty( $attributes['toggle'] ) ? '--toggle cursor-pointer' : null,
+		$style == 'content' ? '--content' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style' => $style_attribute ?? null,
+	'style'               => $style_attribute ?? null,
+	'data-wp-interactive' => 'wpbs/review-content',
+	'data-wp-init'        => 'actions.init',
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
-
-$style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
 
 $review_content = match ( $style ) {
 	'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" width="100" height="100"  />',

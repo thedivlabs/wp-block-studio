@@ -12,7 +12,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
     TextControl,
-    __experimentalNumberControl as NumberControl,
+    __experimentalNumberControl as NumberControl, ToggleControl,
 } from "@wordpress/components";
 
 function sectionClassNames(attributes = {}) {
@@ -86,6 +86,17 @@ registerBlockType(metadata.name, {
                                     label="Icon"
                                     value={settings?.icon}
                                     onChange={(newValue) => updateSettings({icon: newValue})}
+                                />
+
+
+                            </Grid>
+
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Toggle Popup"
+                                    checked={!!settings?.toggle}
+                                    onChange={(newValue) => updateSettings({toggle: newValue})}
                                 />
                             </Grid>
 

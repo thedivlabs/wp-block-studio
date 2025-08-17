@@ -45,6 +45,7 @@
     }
   ],
   "supports": {
+    "interactivity": true,
     "color": {
       "background": true,
       "text": true,
@@ -70,6 +71,7 @@
       "lineHeight": true
     }
   },
+  "viewScriptModule": "file:./view.js",
   "editorScript": "file:./block.js",
   "icon": "grid-view",
   "render": "file:./render.php"

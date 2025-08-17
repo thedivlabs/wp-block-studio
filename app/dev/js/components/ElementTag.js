@@ -21,12 +21,14 @@ export function ElementTagSettings({attributes, setAttributes, options = []}) {
 
     const [value, setValue] = useState(attributes?.[prop] ?? '');
 
+    const select_options = options.length > 0 ? options : ELEMENT_TAG_OPTIONS;
+
     return <InspectorControls group="advanced">
         <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
             <SelectControl
                 value={value}
                 label={'HTML element'}
-                options={options || ELEMENT_TAG_OPTIONS}
+                options={select_options}
                 onChange={(newValue) => {
                     setValue(newValue);
                     setAttributes({'wpbs-element-tag': newValue});

@@ -139,6 +139,25 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+
+                <UnitControl
+                    label="Header Line Height"
+                    value={settings?.['header-line-height'] ?? ''}
+                    onChange={(val) => updateSettings({'header-line-height': val})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <UnitControl
+                    label="Content Line Height"
+                    value={settings?.['content-line-height'] ?? ''}
+                    onChange={(val) => updateSettings({'content-line-height': val})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
                 <UnitControl
                     label="Icon Size"
                     value={settings?.['icon-size'] ?? ''}
@@ -425,6 +444,8 @@ registerBlockType(metadata.name, {
                 '--item-color-active': settings?.['item-color-active'],
                 '--header-text': settings?.['header-text'],
                 '--content-text': settings?.['content-text'],
+                '--header-line-height': settings?.['header-line-height'],
+                '--content-line-height': settings?.['content-line-height'],
             }
         }, [settings, iconOpen, iconClosed]);
 

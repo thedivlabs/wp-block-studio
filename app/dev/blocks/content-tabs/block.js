@@ -219,7 +219,6 @@ registerBlockType(metadata.name, {
                 __next40pxDefaultSize
                 enableAlpha
                 enableStyle
-                disableUnits
                 value={attributes['wpbs-content-tabs']?.['button-border']}
                 colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}
@@ -231,7 +230,6 @@ registerBlockType(metadata.name, {
                 __next40pxDefaultSize
                 enableAlpha
                 enableStyle
-                disableUnits
                 value={attributes['wpbs-content-tabs']?.['button-divider']}
                 colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}

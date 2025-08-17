@@ -63,9 +63,12 @@
       text-align: left;
 
       &:before {
+        border-left: none;
         border-bottom: var(--button-divider, none);
         width: 100%;
         height: 1px;
+        top: 0;
+        transform: translate(0, calc((var(--row-gap, 1px) / 2) * -1))
       }
     }
   }
@@ -116,12 +119,15 @@
         display: block;
         position: absolute;
         left: 0;
+        top: 0;
       }
 
       &:before {
         height: 100%;
         width: 1px;
         border-left: var(--button-divider, none);
+        border-bottom: none;
+        transform: translate(calc((var(--row-gap, 1px) / 2) * -1), 0)
       }
 
 

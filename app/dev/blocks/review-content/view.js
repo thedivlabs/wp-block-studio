@@ -15,7 +15,7 @@ const {state} = store('wpbs/review-content', {
                         return;
                     }
 
-                    const popup = card.cloneNode(false);
+                    const popup = card.cloneNode(true);
                     popup.classList.add('--modal');
 
                     WPBS.modals.show_modal(false, {

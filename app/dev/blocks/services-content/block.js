@@ -38,9 +38,12 @@ function sectionClassNames(attributes = {}) {
 
 const CONTENT_OPTIONS = [
     {label: 'Select', value: ''},
-    {label: 'Overview', value: 'overview'},
-    {label: 'Description', value: 'description'},
-    {label: 'Text', value: 'text'},
+    {label: 'Overview Title', value: 'overview-title'},
+    {label: 'Overview Text', value: 'overview-text'},
+    {label: 'Description Title', value: 'description-title'},
+    {label: 'Description Text', value: 'description-text'},
+    {label: 'General Title', value: 'general-title'},
+    {label: 'General Text', value: 'general-text'},
     {label: 'Poster', value: 'poster'},
     {label: 'Thumbnail', value: 'thumbnail'},
     {label: 'Icon', value: 'icon'},

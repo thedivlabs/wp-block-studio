@@ -14,9 +14,12 @@ if ( ! $type || ! $service_id ) {
 }
 
 $dynamic_content = match ( $type ) {
-	'overview' => get_field( 'wpbs_content_overview', $service_id ),
-	'description' => get_field( 'wpbs_content_description', $service_id ),
-	'text' => get_field( 'wpbs_content_text', $service_id ),
+	'overview-title' => get_field( 'wpbs_content_overview_title', $service_id ),
+	'overview-text' => get_field( 'wpbs_content_overview_text', $service_id ),
+	'description-title' => get_field( 'wpbs_content_description_title', $service_id ),
+	'description-text' => get_field( 'wpbs_content_description_text', $service_id ),
+	'general-title' => get_field( 'wpbs_content_general_title', $service_id ),
+	'general-text' => get_field( 'wpbs_content_general_text', $service_id ),
 	'poster' => get_field( 'wpbs_media_featured_poster', $service_id ),
 	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $service_id ),
 	'icon' => get_field( 'wpbs_media_featured_icon', $service_id ),

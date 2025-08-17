@@ -21,7 +21,7 @@ import {ELEMENT_TAG_ATTRIBUTES, ElementTagSettings, ElementTag} from "Components
 function blockClassNames(attributes = {}) {
 
     return [
-        'wpbs-term-content w-max inline-block',
+        'wpbs-term-content w-fit inline-block',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

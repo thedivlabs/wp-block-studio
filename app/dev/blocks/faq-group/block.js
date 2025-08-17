@@ -238,6 +238,13 @@ registerBlockType(metadata.name, {
                             value: settings?.['content-text-color'],
                             onChange: (newValue) => updateSettings({'content-text-color': newValue}),
                             isShownByDefault: true
+                        },
+                        {
+                            slug: 'item-color',
+                            label: 'Item Color',
+                            value: settings?.['item-color'],
+                            onChange: (newValue) => updateSettings({'item-color': newValue}),
+                            isShownByDefault: true
                         }
                     ]}
                 />
@@ -294,6 +301,13 @@ registerBlockType(metadata.name, {
                         value: settings?.['header-text-color-hover'],
                         onChange: (newValue) => updateSettings({'header-text-color-hover': newValue}),
                         isShownByDefault: true
+                    },
+                    {
+                        slug: 'item-color',
+                        label: 'Item Color',
+                        value: settings?.['item-color-hover'],
+                        onChange: (newValue) => updateSettings({'item-color-hover': newValue}),
+                        isShownByDefault: true
                     }
                 ]}
             />
@@ -324,6 +338,13 @@ registerBlockType(metadata.name, {
                         label: 'Header Text Color',
                         value: settings?.['header-text-color-active'],
                         onChange: (newValue) => updateSettings({'header-text-color-active': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'item-color',
+                        label: 'Item Color',
+                        value: settings?.['item-color-active'],
+                        onChange: (newValue) => updateSettings({'item-color-active': newValue}),
                         isShownByDefault: true
                     }
                 ]}
@@ -364,6 +385,9 @@ registerBlockType(metadata.name, {
                 '--item-padding': settings?.['item-padding'],
                 '--item-gap': settings?.['item-gap'],
                 '--item-radius': settings?.['item-radius'],
+                '--item-color': settings?.['item-color'],
+                '--item-color-active': settings?.['item-color-active'],
+                '--item-color-hover': settings?.['item-color-hover'],
             }
         }, [settings, iconOpen, iconClosed]);
 

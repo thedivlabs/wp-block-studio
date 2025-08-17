@@ -83,6 +83,15 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: var(--item-radius);
+    background-color: var(--item-color, transparent);
+
+    &.active {
+      background-color: var(--item-color-active, var(--item-color, transparent));
+    }
+
+    &:hover {
+      background-color: var(--item-color-hover, var(--item-color, transparent));
+    }
   }
 
   &.--divider .wpbs-faq-group__item {

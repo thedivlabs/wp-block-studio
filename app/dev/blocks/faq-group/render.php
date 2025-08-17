@@ -11,8 +11,8 @@ $term     = $term_id ? get_term( $term_id ) : false;
 $term_ref = $term_id ? "{$term->taxonomy}_{$term->term_id}" : false;
 
 $faq_id = match ( true ) {
-	( $settings['faq-id'] ?? false ) == 'current' && is_tax() => intval( get_field( 'wpbs_faq_group', $term_ref ) ?: get_field( 'wpbs_faq', $term_ref ) ?: false ),
-	( $settings['faq-id'] ?? false ) == 'current' => intval( get_field( 'wpbs_faq_group', get_the_ID() ) ?: get_field( 'wpbs_faq', get_the_ID() ) ?: false ),
+	( $settings['faq-id'] ?? false ) == 'current' && is_tax() => intval( get_field( 'wpbs_faq_group', $term_ref )[0] ?? false ?: get_field( 'wpbs_faq', $term_ref )[0] ?? false ?: false ),
+	( $settings['faq-id'] ?? false ) == 'current' => intval( get_field( 'wpbs_faq_group', get_the_ID() )[0] ?? false ?: get_field( 'wpbs_faq', get_the_ID() )[0] ?? false ?: false ),
 	default => intval( $settings['faq-id'] ?? false )
 };
 

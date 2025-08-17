@@ -122,6 +122,23 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
                 <UnitControl
+                    label="Icon Size"
+                    value={settings?.['icon-size'] ?? ''}
+                    onChange={(val) => updateSettings({'icon-size': val})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <SelectControl
+                    label="Icon Style"
+                    value={settings?.['icon-style'] ?? ''}
+                    options={ICON_STYLES}
+                    onChange={(val) => updateSettings({'icon-style': val})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <UnitControl
                     label="Header Text"
                     value={settings?.['header-text'] ?? ''}
                     onChange={(val) => updateSettings({'header-text': val})}
@@ -158,23 +175,7 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-                <UnitControl
-                    label="Icon Size"
-                    value={settings?.['icon-size'] ?? ''}
-                    onChange={(val) => updateSettings({'icon-size': val})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <SelectControl
-                    label="Icon Style"
-                    value={settings?.['icon-style'] ?? ''}
-                    options={ICON_STYLES}
-                    onChange={(val) => updateSettings({'icon-style': val})}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+
                 <UnitControl
                     label="Item Gap"
                     value={settings?.['item-gap'] ?? ''}

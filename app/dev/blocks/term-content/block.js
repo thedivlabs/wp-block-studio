@@ -37,6 +37,9 @@ const CONTENT_OPTIONS = [
     {label: 'Content Text', value: 'content-text'},
     {label: 'Related Title', value: 'related-title'},
     {label: 'Related Text', value: 'related-text'},
+    {label: 'CTA Title', value: 'cta-title'},
+    {label: 'CTA Text', value: 'cta-text'},
+    {label: 'CTA Image', value: 'cta-image'},
 
 ];
 

@@ -54,6 +54,7 @@
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
   "style": "file:./block.css",
+  "editorStyle": "file:./block.css",
   "render": "file:./render.php",
   "icon": "excerpt-view"
 }

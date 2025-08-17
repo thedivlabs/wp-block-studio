@@ -425,7 +425,7 @@ registerBlockType(metadata.name, {
             />
 
             <div role="presentation" {...blockProps} >
-                <div className={'wpbs-faq-group__item'}>
+                <div className={'wpbs-faq-group__item active'}>
                     <div className={'wpbs-faq-group__header'}>
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, provident?
                         <div className={'wpbs-faq-group__toggle'}/>

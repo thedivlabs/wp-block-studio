@@ -45,6 +45,7 @@ function classNames(attributes = {}) {
         !!settings?.['header-text-color-hover'] ? '--header-text-hover' : null,
         !!settings?.['header-color-active'] ? '--header-active' : null,
         !!settings?.['header-text-color-active'] ? '--header-text-active' : null,
+        !!settings?.['bold-header'] ? '--header-bold' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -118,6 +119,24 @@ registerBlockType(metadata.name, {
                     label={'Icon Open'}
                     value={settings?.['icon-open']}
                     onChange={(newValue) => updateSettings({'icon-open': newValue})}
+                    __nextHasNoMarginBottom
+                />
+                <UnitControl
+                    label="Header Text"
+                    value={settings?.['header-text'] ?? ''}
+                    onChange={(val) => updateSettings({'header-text': val})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+                <UnitControl
+                    label="Content Text"
+                    value={settings?.['content-text'] ?? ''}
+                    onChange={(val) => updateSettings({'content-text': val})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
                 <UnitControl
@@ -205,6 +224,12 @@ registerBlockType(metadata.name, {
                     label={'Hide Icon'}
                     checked={!!settings?.['icon-hide']}
                     onChange={(newValue) => updateSettings({'icon-hide': newValue})}
+                    __nextHasNoMarginBottom
+                />
+                <ToggleControl
+                    label={'Bold Header'}
+                    checked={!!settings?.['bold-header']}
+                    onChange={(newValue) => updateSettings({'bold-header': newValue})}
                     __nextHasNoMarginBottom
                 />
             </Grid>
@@ -398,7 +423,8 @@ registerBlockType(metadata.name, {
                 '--item-radius': settings?.['item-radius'],
                 '--item-color': settings?.['item-color'],
                 '--item-color-active': settings?.['item-color-active'],
-                '--item-color-hover': settings?.['item-color-hover'],
+                '--header-text': settings?.['header-text'],
+                '--content-text': settings?.['content-text'],
             }
         }, [settings, iconOpen, iconClosed]);
 

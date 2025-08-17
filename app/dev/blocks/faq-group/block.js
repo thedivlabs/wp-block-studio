@@ -20,7 +20,7 @@ import {
     ToggleControl,
     SelectControl,
     BorderControl,
-    BaseControl,
+    BaseControl, __experimentalBoxControl as BoxControl,
 } from "@wordpress/components";
 import React, {useCallback, useMemo} from "react";
 import {
@@ -138,33 +138,6 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
                 <UnitControl
-                    label="Header Padding"
-                    value={settings?.['header-padding'] ?? ''}
-                    onChange={(val) => updateSettings({'header-padding': val})}
-                    units={DIMENSION_UNITS}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <UnitControl
-                    label="Content Padding"
-                    value={settings?.['content-padding'] ?? ''}
-                    onChange={(val) => updateSettings({'content-padding': val})}
-                    units={DIMENSION_UNITS}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <UnitControl
-                    label="Item Padding"
-                    value={settings?.['item-padding'] ?? ''}
-                    onChange={(val) => updateSettings({'item-padding': val})}
-                    units={DIMENSION_UNITS}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <UnitControl
                     label="Item Gap"
                     value={settings?.['item-gap'] ?? ''}
                     onChange={(val) => updateSettings({'item-gap': val})}
@@ -181,6 +154,44 @@ registerBlockType(metadata.name, {
                     isResetValueOnUnitChange={true}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
+                />
+            </Grid>
+            <Grid columns={1} columnGap={15} rowGap={20}>
+                <BoxControl
+                    label="Header Padding"
+                    values={settings?.['header-padding'] ?? {}}
+                    sides={['top', 'left', 'right', 'bottom']}
+                    onChange={(val) => updateSettings({'header-padding': val})}
+                    __nextHasNoMarginBottom={true}
+                    inputProps={{
+                        min: -300,
+                        max: 300,
+                        units: DIMENSION_UNITS
+                    }}
+                />
+                <BoxControl
+                    label="Content Padding"
+                    values={settings?.['content-padding'] ?? {}}
+                    sides={['top', 'left', 'right', 'bottom']}
+                    onChange={(val) => updateSettings({'content-padding': val})}
+                    __nextHasNoMarginBottom={true}
+                    inputProps={{
+                        min: -300,
+                        max: 300,
+                        units: DIMENSION_UNITS
+                    }}
+                />
+                <BoxControl
+                    label="Item Padding"
+                    values={settings?.['item-padding'] ?? {}}
+                    sides={['top', 'left', 'right', 'bottom']}
+                    onChange={(val) => updateSettings({'item-padding': val})}
+                    __nextHasNoMarginBottom={true}
+                    inputProps={{
+                        min: -300,
+                        max: 300,
+                        units: DIMENSION_UNITS
+                    }}
                 />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -380,9 +391,9 @@ registerBlockType(metadata.name, {
                 '--content-text-color': settings?.['content-text-color'],
                 '--header-color': settings?.['header-color'],
                 '--content-color': settings?.['content-color'],
-                '--header-padding': settings?.['header-padding'],
-                '--content-padding': settings?.['content-padding'],
-                '--item-padding': settings?.['item-padding'],
+                '--header-padding': Object.values(settings?.['header-padding'] ?? {}).join(' '),
+                '--content-padding': Object.values(settings?.['content-padding'] ?? {}).join(' '),
+                '--item-padding': Object.values(settings?.['item-padding'] ?? {}).join(' '),
                 '--item-gap': settings?.['item-gap'],
                 '--item-radius': settings?.['item-radius'],
                 '--item-color': settings?.['item-color'],

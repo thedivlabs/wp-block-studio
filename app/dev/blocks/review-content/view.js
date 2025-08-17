@@ -18,6 +18,10 @@ const {state} = store('wpbs/review-content', {
                     const popup = card.cloneNode(true);
                     popup.classList.add('--modal');
 
+                    [...popup.querySelectorAll('.--toggle')].forEach(el => {
+                        el.classList.remove('--toggle');
+                    });
+
                     WPBS.modals.show_modal(false, {
                         template: popup
                     })

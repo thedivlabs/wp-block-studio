@@ -5,28 +5,17 @@
     pointer-events-none
   }
 
-  &:not(.editor):not(:has(.wpbs-content-tabs-container > .wpbs-content-tabs-panel.active)) {
-
-    .wpbs-content-tabs-panel:first-of-type {
-      display: flex;
-    }
-
-    .wpbs-content-tabs-panel:not(:first-of-type) {
-      display: none;
-    }
-
-  }
-
 
   &.tabs-initialized {
     .wpbs-content-tabs-panel {
       transition-property: opacity;
       transition-timing-function: ease-in-out;
       transition-duration: var(--fade-duration, .3s);
-      opacity: 0;
+      opacity: var(--panel-opacity, 0);
 
       &.active {
         opacity: 1;
+        display: flex !important;
       }
 
     }
@@ -42,7 +31,7 @@
     top: 0;
     left: 0;
     opacity: 0;
-    display: none;
+    display: var(--panel-display, none);
 
     &.active {
       display: flex;

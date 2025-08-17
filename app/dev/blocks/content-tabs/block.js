@@ -34,6 +34,7 @@ function classNames(attributes = {}, editor = false) {
         'wpbs-content-tabs',
         'w-full relative',
         !!editor ? 'editor' : null,
+        !!attributes['wpbs-content-tabs']?.['collapse'] ? '--collapse' : null,
         !!attributes['wpbs-content-tabs']?.['hide-inactive'] ? '--hide-inactive' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
@@ -331,15 +332,23 @@ registerBlockType(metadata.name, {
         const divider = attributes['wpbs-content-tabs']?.['button-divider'];
         const padding = attributes['wpbs-content-tabs']?.['button-padding'];
         const duration = Number(attributes['wpbs-content-tabs']?.duration);
+        const collapse = !!attributes?.['wpbs-content-tabs']?.collapse;
 
         return <>
             <InspectorControls group="styles">
                 <PanelBody title="Options" initialOpen={true}>
-                    <Grid columns={1} columnGap={15} rowGap={20}>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
                         <ToggleControl
-                            label={'Hide Inactive'}
+                            label={'Hide'}
                             checked={!!attributes['wpbs-content-tabs']?.['hide-inactive']}
                             onChange={(newValue) => updateSettings({'hide-inactive': newValue})}
+                            className={'flex items-center'}
+                            __nextHasNoMarginBottom
+                        />
+                        <ToggleControl
+                            label={'Collapse'}
+                            checked={!!attributes['wpbs-content-tabs']?.['collapse']}
+                            onChange={(newValue) => updateSettings({'collapse': newValue})}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom
                         />
@@ -393,6 +402,8 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs']} selector={'wpbs-content-tabs'}
                    props={{
+                       '--panel-display': collapse ? 'flex' : 'none',
+                       '--panel-opacity': collapse ? '1' : '0',
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,
                        '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
                        '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
@@ -408,6 +419,12 @@ registerBlockType(metadata.name, {
                        '--button-icon': !!attributes['wpbs-content-tabs']?.['button-icon'] ? '"\\' + attributes['wpbs-content-tabs']?.['button-icon'] + '"' : null,
                        '--button-icon-color': attributes['wpbs-content-tabs']?.['button-color-icon'],
                        '--button-icon-size': attributes['wpbs-content-tabs']?.['button-icon-size'],
+                       'breakpoints': {
+                           [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
+                               '--panel-display': 'none',
+                               '--panel-opacity': '0',
+                           }
+                       }
                    }}
             />
             <BlockContextProvider

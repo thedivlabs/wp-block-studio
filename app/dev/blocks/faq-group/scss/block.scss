@@ -18,7 +18,7 @@
     color: var(--header-text-color, inherit);
     padding: var(--header-padding, 0);
     font-size: var(--header-text, inherit);
-    line-height: 1.5;
+    line-height: var(--header-line-height, inherit);
   }
 
   &.--header-bold .wpbs-faq-group__header {
@@ -109,7 +109,7 @@
     color: var(--content-text-color, inherit);
     padding: var(--content-padding, 0);
     font-size: var(--content-text, inherit);
-    line-height: 1.5;
+    line-height: var(--content-line-height, inherit);
   }
 
   .wpbs-faq-group__item.active .wpbs-faq-group__answer,

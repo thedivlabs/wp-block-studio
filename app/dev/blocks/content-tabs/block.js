@@ -180,8 +180,8 @@ registerBlockType(metadata.name, {
                 />
                 <UnitControl
                     label="Icon Size"
-                    value={attributes['wpbs-content-tabs']?.['icon-size'] ?? ''}
-                    onChange={(val) => updateSettings({'icon-size': val})}
+                    value={attributes['wpbs-content-tabs']?.['button-icon-size'] ?? ''}
+                    onChange={(val) => updateSettings({'button-icon-size': val})}
                     units={DIMENSION_UNITS_TEXT}
                     isResetValueOnUnitChange={true}
                     __next40pxDefaultSize
@@ -407,6 +407,9 @@ registerBlockType(metadata.name, {
                        '--button-background-active': attributes['wpbs-content-tabs']?.['button-color-background-active'],
                        '--button-text-active': attributes['wpbs-content-tabs']?.['button-color-text-active'],
                        '--button-border-active': attributes['wpbs-content-tabs']?.['button-color-border-active'],
+                       '--button-icon': attributes['wpbs-content-tabs']?.['button-icon'],
+                       '--button-icon-color': attributes['wpbs-content-tabs']?.['button-color-icon'],
+                       '--button-icon-size': attributes['wpbs-content-tabs']?.['button-icon-size'],
                    }}
             />
             <BlockContextProvider

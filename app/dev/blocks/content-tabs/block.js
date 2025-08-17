@@ -407,7 +407,7 @@ registerBlockType(metadata.name, {
                        '--button-background-active': attributes['wpbs-content-tabs']?.['button-color-background-active'],
                        '--button-text-active': attributes['wpbs-content-tabs']?.['button-color-text-active'],
                        '--button-border-active': attributes['wpbs-content-tabs']?.['button-color-border-active'],
-                       '--button-icon': attributes['wpbs-content-tabs']?.['button-icon'],
+                       '--button-icon': !!attributes['wpbs-content-tabs']?.['button-icon'] ? '"\\' + attributes['wpbs-content-tabs']?.['button-icon'] + '"' : null,
                        '--button-icon-color': attributes['wpbs-content-tabs']?.['button-color-icon'],
                        '--button-icon-size': attributes['wpbs-content-tabs']?.['button-icon-size'],
                    }}

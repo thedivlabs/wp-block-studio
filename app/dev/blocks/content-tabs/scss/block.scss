@@ -53,11 +53,30 @@
 
   }
 
+  .wpbs-content-tabs-navigation.is-style-vertical {
+    flex-direction: column;
+    text-align: left;
+    align-items: flex-start;
+
+    button {
+      width: 100%;
+      text-align: left;
+
+      &:before {
+        border-width: 0 0 1px 0;
+        width: 100%;
+        height: 1px;
+      }
+    }
+  }
+
   .wpbs-content-tabs-navigation {
     display: flex;
     user-select: none;
 
     button {
+
+      position: relative;
 
       cursor: pointer;
       background-color: var(--button-background, transparent);
@@ -75,6 +94,36 @@
         background-color: var(--button-background-active, var(--button-background, transparent));
         color: var(--button-text-active, var(--button-text, inherit));
         border-color: var(--button-border-active, var(--button-border, transparent));
+      }
+
+      &:after {
+        content: var(--button-icon, none);
+        font-family: "Font Awesome 6 Pro", sans-serif;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: var(--button-icon-size, inherit);
+        color: var(--button-color-icon, inherit);
+        line-height: inherit;
+        height: 1lh;
+        aspect-ratio: 1/1;
+        float: right;
+      }
+
+      &:not(:first-of-type):before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        border-color: dimgray;
+        border-style: solid;
+      }
+
+      &:before {
+        height: 100%;
+        width: 1px;
+        border-width: 0 0 0 1px;
       }
 
 

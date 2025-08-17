@@ -7,6 +7,12 @@
   "selectors": {
     "root": ".wpbs-content-tabs-navigation"
   },
+  "styles": [
+    {
+      "name": "vertical",
+      "label": "Vertical"
+    }
+  ],
   "attributes": {
     "uniqueId": {
       "type": "string"
@@ -40,6 +46,13 @@
       ],
       "padding": true,
       "margin": true
+    },
+    "typography": {
+      "fontSize": true,
+      "textAlign": true,
+      "lineHeight": true,
+      "__experimentalTextTransform": true,
+      "__experimentalFontWeight": true
     },
     "__experimentalBorder": {
       "size": true,

@@ -424,9 +424,52 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
 
-            <ElementTag role="presentation" {...blockProps} >
-                FAQS
-            </ElementTag>
+            <div role="presentation" {...blockProps} >
+                <div className={'wpbs-faq-group__item'}>
+                    <div className={'wpbs-faq-group__header'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, provident?
+                        <div className={'wpbs-faq-group__toggle'}/>
+                    </div>
+                    <div className={'wpbs-faq-group__answer'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cupiditate dolorem impedit
+                        laborum reiciendis? Aliquam, architecto cum deleniti distinctio ex, ipsum iusto laborum
+                        molestiae porro quod rerum, totam voluptas? Maiores!
+                    </div>
+                </div>
+                <div className={'wpbs-faq-group__item'}>
+                    <div className={'wpbs-faq-group__header'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, provident?
+                        <div className={'wpbs-faq-group__toggle'}/>
+                    </div>
+                    <div className={'wpbs-faq-group__answer'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cupiditate dolorem impedit
+                        laborum reiciendis? Aliquam, architecto cum deleniti distinctio ex, ipsum iusto laborum
+                        molestiae porro quod rerum, totam voluptas? Maiores!
+                    </div>
+                </div>
+                <div className={'wpbs-faq-group__item'}>
+                    <div className={'wpbs-faq-group__header'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, provident?
+                        <div className={'wpbs-faq-group__toggle'}/>
+                    </div>
+                    <div className={'wpbs-faq-group__answer'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cupiditate dolorem impedit
+                        laborum reiciendis? Aliquam, architecto cum deleniti distinctio ex, ipsum iusto laborum
+                        molestiae porro quod rerum, totam voluptas? Maiores!
+                    </div>
+                </div>
+                <div className={'wpbs-faq-group__item'}>
+                    <div className={'wpbs-faq-group__header'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi, provident?
+                        <div className={'wpbs-faq-group__toggle'}/>
+                    </div>
+                    <div className={'wpbs-faq-group__answer'}>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet cupiditate dolorem impedit
+                        laborum reiciendis? Aliquam, architecto cum deleniti distinctio ex, ipsum iusto laborum
+                        molestiae porro quod rerum, totam voluptas? Maiores!
+                    </div>
+                </div>
+            </div>
 
         </>;
     },

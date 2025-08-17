@@ -66,6 +66,8 @@ foreach ( $faqs as $faq ) {
 	echo '<div class="wpbs-faq-group__header">';
 	echo $faq['question'];
 	echo '<button class="wpbs-faq-group__toggle"></button>';
+	echo '<span class="screen-reader-text">Toggle content</span>';
+	echo '</button>';
 
 	/*
 	 *

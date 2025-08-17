@@ -48,7 +48,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 			'featured-image',
 			'poster',
 			'thumbnail'
-		], true ) ? 'w-full grid max-w-full max-h-full overflow-hidden' : 'w-max inline-block',
+		], true ) ? 'w-full grid max-w-full max-h-full overflow-hidden' : 'w-fit inline-block',
 		$attributes['uniqueId'] ?? ''
 	] ) ),
 	...( $attributes['wpbs-props'] ?? [] )

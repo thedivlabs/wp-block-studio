@@ -16,14 +16,16 @@ import {select, subscribe} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useInstanceId} from "@wordpress/compose";
 import {
+    __experimentalUnitControl as UnitControl,
     __experimentalNumberControl as NumberControl,
     PanelBody, TabPanel,
     __experimentalBorderControl as BorderControl,
     __experimentalGrid as Grid,
-    ToggleControl, __experimentalBoxControl as BoxControl
+    ToggleControl, __experimentalBoxControl as BoxControl, TextControl
 } from "@wordpress/components";
 import React, {useCallback} from "react";
 import {useUniqueId} from "Includes/helper";
+import {DIMENSION_UNITS_TEXT} from "Includes/config";
 
 
 function classNames(attributes = {}, editor = false) {
@@ -167,34 +169,52 @@ registerBlockType(metadata.name, {
         });
 
         const buttonTabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={1} columnGap={0} rowGap={0}>
-                <PanelColorSettings
-                    enableAlpha
-                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                    colorSettings={[
-                        {
-                            slug: 'background-color',
-                            label: 'Background Color',
-                            value: attributes['wpbs-content-tabs']?.['button-color-background'],
-                            onChange: (newValue) => updateSettings({'button-color-background': newValue}),
-                            isShownByDefault: true
-                        }
-                    ]}
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Icon"
+                    value={attributes['wpbs-content-tabs']?.['button-icon']}
+                    onChange={(newValue) => updateSettings({'button-icon': newValue})}
+
                 />
-                <PanelColorSettings
-                    enableAlpha
-                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                    colorSettings={[
-                        {
-                            slug: 'text-color',
-                            label: 'Text Color',
-                            value: attributes['wpbs-content-tabs']?.['button-color-text'],
-                            onChange: (newValue) => updateSettings({'button-color-text': newValue}),
-                            isShownByDefault: true
-                        }
-                    ]}
+                <UnitControl
+                    label="Icon Size"
+                    value={attributes['wpbs-content-tabs']?.['icon-size'] ?? ''}
+                    onChange={(val) => updateSettings({'icon-size': val})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             </Grid>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'background-color',
+                        label: 'Background Color',
+                        value: attributes['wpbs-content-tabs']?.['button-color-background'],
+                        onChange: (newValue) => updateSettings({'button-color-background': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'text-color',
+                        label: 'Text Color',
+                        value: attributes['wpbs-content-tabs']?.['button-color-text'],
+                        onChange: (newValue) => updateSettings({'button-color-text': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'icon-color',
+                        label: 'Icon Color',
+                        value: attributes['wpbs-content-tabs']?.['button-color-icon'],
+                        onChange: (newValue) => updateSettings({'button-color-icon': newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
             <BorderControl
                 __next40pxDefaultSize
                 enableAlpha

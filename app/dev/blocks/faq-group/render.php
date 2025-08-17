@@ -31,9 +31,12 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		! empty( $settings['header-text-color-hover'] ) ? '--header-text-hover' : null,
 		! empty( $settings['header-color-active'] ) ? '--header-active' : null,
 		! empty( $settings['header-text-color-active'] ) ? '--header-text-active' : null,
+		! empty( $settings['bold-header'] ) ? '--header-bold' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),
-	'style'               => ! empty( $block->parsed_block['attrs']['style']['shadow'] ) ? 'filter:drop-shadow(' . preg_replace( '/^var:preset\|([^|]+)\|([^|]+)$/', 'var(--wp--preset--$1--$2)', $block->parsed_block['attrs']['style']['shadow'] ) . ');' : null,
+	'style'               => ! empty( $block->parsed_block['attrs']['style']['shadow'] ) ?
+		'filter:drop-shadow(' . preg_replace( '/^var:preset\|([^|]+)\|([^|]+)$/', 'var(--wp--preset--$1--$2)', $block->parsed_block['attrs']['style']['shadow'] ) . ');'
+		: null,
 	'data-wp-interactive' => 'wpbs/faq-group',
 	'data-wp-init'        => 'actions.init',
 	...( $attributes['wpbs-props'] ?? [] )

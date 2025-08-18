@@ -84,10 +84,10 @@ registerBlockType(metadata.name, {
             setAttributes({'wpbs-nav-menu': result});
 
         }, [settings, setAttributes]);
-
+        console.log(settings);
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--columns': settings?.['columns'] ?? settings?.['columns-mobile'] ?? null,
+                '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
@@ -116,7 +116,7 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
-                        '--columns': settings?.['columns-mobile'] ?? settings?.['columns'] ?? null,
+                        '--columns': parseInt(settings?.['columns-mobile'] ?? settings?.['columns'] ?? 0) || null,
                     }
                 }
             }).filter(x => !!x))

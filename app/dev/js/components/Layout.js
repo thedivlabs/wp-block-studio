@@ -382,27 +382,37 @@ function parseSpecial(prop, attributes) {
             break;
         case 'text-color':
             result = {'color': value}
+            break;
 
+        case 'height-custom':
+            result = {'height': heightVal(settings?.[prop] ?? null)}
             break;
         case 'height':
-        case 'height-custom':
-            result = {'height': heightVal(settings?.['height-custom'] ?? settings?.['height'] ?? null)}
-
+            result = {'height': heightVal(settings?.[prop] ?? null)}
             break;
-        case 'min-height':
+
         case 'min-height-custom':
-
-            result = {'min-height': heightVal(settings?.['min-height-custom'] ?? settings?.['min-height'] ?? null)}
-
+            result = {'min-height': heightVal(settings?.[prop] ?? null)}
             break;
-        case 'max-height':
+
+        case 'min-height':
+            result = {'min-height': heightVal(settings?.[prop] ?? null)}
+            break;
+
         case 'max-height-custom':
-            result = {'max-height': heightVal(settings?.['max-height-custom'] ?? settings?.['max-height'] ?? null)}
+            result = {'max-height': heightVal(settings?.[prop] ?? null)}
+            break;
+
+        case 'max-height':
+            result = {'max-height': heightVal(settings?.[prop] ?? null)}
+            break;
+
+        case 'width-custom':
+            result = {'width': settings?.[prop] ?? null}
             break;
 
         case 'width':
-        case 'width-custom':
-            result = {'width': settings?.['width-custom'] ?? settings?.['width'] ?? null}
+            result = {'width': settings?.[prop] ?? null}
 
             break;
         case 'translate':
@@ -425,7 +435,7 @@ function parseSpecial(prop, attributes) {
         if (val && typeof val === 'object' && !Array.isArray(val)) {
             result[k] = Object.entries(val)
                 .filter(([_, v]) => v !== undefined && v !== null)
-                .map(([k, v]) => `${k}: ${v};`)
+                .map(([k, v]) => `${k.replace('-mobile', '').replace('-hover', '')}: ${v};`)
                 .join(' ');
         }
     });

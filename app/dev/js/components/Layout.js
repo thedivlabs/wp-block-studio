@@ -89,6 +89,7 @@ const LAYOUT_PROPS = {
         'max-height-custom',
         'max-height-custom-mobile',
         'width',
+        'max-width-mobile',
         'width-mobile',
         'width-custom',
         'width-custom-mobile',

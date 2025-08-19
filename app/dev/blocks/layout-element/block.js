@@ -25,6 +25,7 @@ const classNames = (attributes = {}) => {
     return [
         selector + ' w-full block relative',
         !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : (attributes?.['wpbs-layout']?.container ? 'wpbs-container' : null),
+        !!settings?.['hide-empty'] ? '--hide-empty' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

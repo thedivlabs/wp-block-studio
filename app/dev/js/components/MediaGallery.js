@@ -42,7 +42,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
         setAttributes({
             'wpbs-media-gallery': result,
         });
-        
+
     }, [setAttributes, attributes['wpbs-media-gallery']]);
 
     return (
@@ -52,6 +52,7 @@ export function MediaGalleryControls({attributes = {}, setAttributes}) {
                 value={settings?.['gallery_id'] ?? ''}
                 options={[
                     {label: 'Select a gallery', value: ''},
+                    {label: 'Current', value: 'current'},
                     ...(galleries || []).map(post => ({
                         label: post.title.rendered,
                         value: String(post.id)

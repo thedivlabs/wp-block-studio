@@ -91,6 +91,7 @@ registerBlockType(metadata.name, {
                                 value={settings?.['company_id'] ?? ''}
                                 options={[
                                     {label: 'Select a company', value: ''},
+                                    {label: 'Current', value: 'current'},
                                     ...(companies || []).map(post => ({
                                         label: post.title.rendered,
                                         value: String(post.id)

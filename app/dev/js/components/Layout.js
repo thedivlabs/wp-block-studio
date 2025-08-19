@@ -592,6 +592,13 @@ function getProps(settings) {
         result['data-aos-mirror'] = !!settings?.['reveal-mirror'];
     }
 
+    if (!!settings?.['hide-empty']) {
+        result['data-hide-empty'] = 'all';
+    }
+    if (!!settings?.['required']) {
+        result['data-required'] = 'all';
+    }
+
     return result;
 
 }
@@ -649,6 +656,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                     label="Hide Empty"
                     checked={!!attributes?.['wpbs-layout-element']?.['hide-empty']}
                     onChange={(newValue) => updateProp({['hide-empty']: newValue})}
+                />
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Required"
+                    checked={!!attributes?.['wpbs-layout-element']?.['required']}
+                    onChange={(newValue) => updateProp({['required']: newValue})}
                 />
             </Grid>
         </InspectorControls>

@@ -115,7 +115,7 @@ registerBlockType(metadata.name, {
 
             const {type = ''} = settings;
 
-            return CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Service Content';
+            return CONTENT_OPTIONS.find(item => item.value === type)?.label ?? 'Case Study Content';
 
         }, [settings?.type]);
 
@@ -129,7 +129,7 @@ registerBlockType(metadata.name, {
                         <Grid columns={1} columnGap={15} rowGap={20}>
 
                             <SelectControl
-                                label="Select Service"
+                                label="Select Case Study"
                                 value={settings?.['case-study-id'] ?? ''}
                                 options={[
                                     {label: 'Select a case study', value: ''},

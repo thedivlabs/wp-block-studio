@@ -44,10 +44,12 @@
       "radius": true
     },
     "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalTextTransform": true,
+      "textAlign": true,
       "fontSize": true,
-      "lineHeight": true,
-      "fontStyle": true,
-      "fontWeight": true
+      "lineHeight": true
     }
   },
   "editorScript": "file:./block.js",

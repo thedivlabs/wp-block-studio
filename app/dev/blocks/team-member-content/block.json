@@ -42,9 +42,9 @@
       "width": true
     },
     "typography": {
-      "__experimentalTextTransform": true,
       "__experimentalFontFamily": true,
       "__experimentalFontWeight": true,
+      "__experimentalTextTransform": true,
       "textAlign": true,
       "fontSize": true,
       "lineHeight": true

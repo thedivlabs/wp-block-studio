@@ -147,7 +147,7 @@ registerBlockType(metadata.name, {
                                         value: String(post.id)
                                     }))
                                 ]}
-                                onChange={(newValue) => updateSettings({'service-id': newValue})}
+                                onChange={(newValue) => updateSettings({'case-study-id': newValue})}
                                 __nextHasNoMarginBottom={true}
                                 __next40pxDefaultSize={true}
                             />

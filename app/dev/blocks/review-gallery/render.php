@@ -17,9 +17,11 @@ if ( empty( $company_id ) ) {
 	return;
 }
 
+$is_empty = empty( $reviews ) || ( is_a( $reviews, 'WP_Query' ) && empty( $reviews->posts ) );
 
 $classes = array_filter( [
 	'wpbs-review-gallery swiper wpbs-slider w-full wpbs-container',
+	$is_empty ? '--empty' : null,
 	$attributes['uniqueId'] ?? null,
 ] );
 
@@ -43,6 +45,7 @@ $reviews = ! $is_current ? get_comments( array_filter( [
 	'post_status' => 'publish',
 	'post__in'    => [ get_field( 'wpbs_reviews' ) ],
 ] );
+
 
 ?>
 

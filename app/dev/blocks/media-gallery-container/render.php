@@ -20,7 +20,9 @@ $slider_settings  = $settings['slider'] ?? [];
 $interactive = ( $context['wpbs/interactive'] ?? true ) != false;
 
 $is_current = ( $gallery_settings['gallery_id'] ?? false ) == 'current' || empty( $gallery_settings['gallery_id'] );
-$gallery_id = $is_current ? get_field( 'wpbs_media_gallery' ) ?: get_field( 'wpbs_gallery' ) : $gallery_settings['gallery_id'] ?? false;
+$field      = get_field( 'wpbs_media_gallery' ) ?: get_field( 'wpbs_gallery' );
+$field      = is_array( $field ) ? intval( $field[0] ?? false ) : intval( $field );
+$gallery_id = $is_current ? $field : intval( $gallery_settings['gallery_id'] ) ?? $field;
 $unique_id  = $attributes['uniqueId'] ?? null;
 
 if ( empty( $gallery_id ) ) {

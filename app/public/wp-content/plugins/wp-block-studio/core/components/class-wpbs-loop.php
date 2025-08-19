@@ -223,13 +223,7 @@ class WPBS_Loop {
 
 		$base = str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) );
 
-		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-			return str_replace( [ '<span', '</span>', 'current' ], [
-				'<button type="button" disabled',
-				'</button>',
-				'current wp-element-button ',
-			], $link );
-		}, paginate_links( [
+		$pagination = paginate_links( [
 			'base'      => $base,
 			'format'    => '/page/%#%/',
 			'current'   => $current_page,
@@ -237,7 +231,15 @@ class WPBS_Loop {
 			'prev_next' => false,
 			'mid_size'  => 6,
 			'type'      => 'array',
-		] ) );
+		] );
+
+		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
+			return str_replace( [ '<span', '</span>', 'current' ], [
+				'<button type="button" disabled',
+				'</button>',
+				'current wp-element-button ',
+			], $link );
+		}, $pagination ?? [] );
 
 		if ( ! empty( $pagination_links ) ) {
 			do_blocks( '<!-- wp:query-pagination --><!-- wp:query-pagination-previous /--><!-- wp:query-pagination-numbers {"className":"inline-flex w-max"}  /--><!-- wp:query-pagination-next /--><!-- /wp:query-pagination -->' );

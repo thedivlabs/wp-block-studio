@@ -70,7 +70,7 @@ registerBlockType(metadata.name, {
 
             return styleName === 'avatar' ?
                 <i className="fa-solid fa-user-tie !flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/> : label;
-        }, [attributes?.className]);
+        }, [settings?.type]);
 
         return (
             <>

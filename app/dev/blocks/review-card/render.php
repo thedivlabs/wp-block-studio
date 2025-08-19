@@ -9,9 +9,8 @@ if ( empty( $comment ) ) {
 
 $rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 
-
 if ( intval( $rating ) < 4 ) {
-	return false;
+	//return false;
 }
 
 

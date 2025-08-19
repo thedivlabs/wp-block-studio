@@ -9,7 +9,6 @@ $nav_block = array_values( array_filter( $block->parsed_block['innerBlocks'] ?? 
 	return $inner_block['blockName'] === 'wpbs/slider-navigation';
 } ) )[0] ?? false;
 
-
 $is_current = ( $attributes['wpbs-review-gallery']['company_id'] ?? false ) == 'current';
 $company_id = $is_current ? get_the_ID() : $attributes['wpbs-review-gallery']['company_id'] ?? false;
 
@@ -17,7 +16,15 @@ if ( empty( $company_id ) ) {
 	return;
 }
 
-$is_empty = empty( $reviews ) || ( is_a( $reviews, 'WP_Query' ) && empty( $reviews->posts ) );
+$reviews = ! $is_current ? get_comments( array_filter( [
+	'post_ID' => $company_id,
+] ) ) ?? [] : new WP_Query( [
+	'post_type'   => 'review',
+	'post_status' => 'publish',
+	'post__in'    => (array) get_field( 'wpbs_reviews', $company_id ),
+] );
+
+$is_empty = empty( $reviews );
 
 $classes = array_filter( [
 	'wpbs-review-gallery swiper wpbs-slider w-full wpbs-container',
@@ -33,19 +40,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'data-wp-context'     => json_encode( array_filter( [
 		'slider' => $attributes['wpbs-swiper-args'] ?? null,
 	] ) ),
-
-
 ] );
-
-
-$reviews = ! $is_current ? get_comments( array_filter( [
-	'post_ID' => $company_id,
-] ) ) ?? [] : new WP_Query( [
-	'post_type'   => 'review',
-	'post_status' => 'publish',
-	'post__in'    => [ get_field( 'wpbs_reviews' ) ],
-] );
-
 
 ?>
 
@@ -71,6 +66,7 @@ $reviews = ! $is_current ? get_comments( array_filter( [
 			while ( $reviews->have_posts() ) {
 				$reviews->the_post();
 				global $post;
+
 				$block_template                      = $card_block;
 				$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
 				$block_template['attrs']['review']   = $post;

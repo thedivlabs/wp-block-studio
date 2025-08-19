@@ -12,7 +12,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
     TextControl,
-    __experimentalNumberControl as NumberControl, ToggleControl,
+    __experimentalNumberControl as NumberControl, ToggleControl, SelectControl,
 } from "@wordpress/components";
 
 function sectionClassNames(attributes = {}) {
@@ -23,6 +23,16 @@ function sectionClassNames(attributes = {}) {
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
+
+const CONTENT_OPTIONS = [
+    {label: 'Select', value: ''},
+    {label: 'Name', value: 'name'},
+    {label: 'Job Title', value: 'job-title'},
+    {label: 'Rating', value: 'rating'},
+    {label: 'Date', value: 'date'},
+    {label: 'Content', value: 'content'},
+    {label: 'Avatar', value: 'avatar'},
+];
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -69,6 +79,14 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true} title={'Settings'}>
                         <Grid columns={1} columnGap={15} rowGap={20}>
+                            <SelectControl
+                                __nextHasNoMarginBottom={true}
+                                __next40pxDefaultSize={true}
+                                label="Type"
+                                value={settings?.type ?? ''}
+                                options={CONTENT_OPTIONS}
+                                onChange={(newValue) => updateSettings({type: newValue})}
+                            />
                             <Grid columns={2} columnGap={15} rowGap={20}>
 
                                 <NumberControl

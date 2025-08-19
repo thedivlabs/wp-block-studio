@@ -11,14 +11,14 @@ if ( is_a( $comment, 'WP_Comment' ) ) {
 	$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 	$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
 } elseif ( is_a( $comment, 'WP_Post' ) ) {
-	$avatar = wp_get_attachment_image_src( get_field( 'wpbs_media_featured_thumbnail', $comment->ID ), 'small' )[0] ?? false;
+	$avatar = wp_get_attachment_image_src( get_field( 'wpbs_media_featured_thumbnail', $comment->ID ), 'small' )[0] ?? '#';
 	$time   = get_field( 'wpbs_details_date', $comment->ID );
 	$rating = get_field( 'wpbs_review_rating', $comment->ID );
 } else {
 	return false;
 }
 
-$style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
+$style = $attributes['wpbs-review-content']['type'] ?? false;
 
 if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 
@@ -55,11 +55,12 @@ if ( is_a( $comment, 'WP_Comment' ) ) {
 	};
 } elseif ( is_a( $comment, 'WP_Post' ) ) {
 	$review_content = match ( $style ) {
-		'avatar' => '<img src="' . $avatar . '" alt="" aria-hidden="true" width="100" height="100"  />',
+		'name' => get_the_title( $comment->ID ),
+		'job-title' => get_field( 'wpbs_details_job_title', $comment->ID ),
 		'rating' => $rating,
 		'date' => date( 'Y-m-d H:i:s', $time ?: 0 ),
 		'content' => get_field( 'wpbs_review_full_review', $comment->ID ),
-		'name' => get_the_title( $comment->ID ),
+		'avatar' => '<img src="' . $avatar . '" alt="" aria-hidden="true" width="100" height="100"  />',
 		default => false
 	};
 } else {

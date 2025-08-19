@@ -1,0 +1,54 @@
+{
+  "name": "wpbs/case-study-content",
+  "title": "Case Study Content",
+  "description": "Display case study content",
+  "selectors": {
+    "root": ".wpbs-case-study-content"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-case-study-content": {
+      "type": "object",
+      "show_in_rest": true
+    }
+  },
+  "supports": {
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true,
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ]
+    },
+    "shadow": true,
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "grid-view",
+  "style": "file:./block.css",
+  "render": "file:./render.php"
+}
+
+

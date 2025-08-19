@@ -209,6 +209,7 @@ class WPBS {
 		require_once $core_path . 'modules/class-wpbs-faq.php';
 		require_once $core_path . 'modules/class-wpbs-team.php';
 		require_once $core_path . 'modules/class-wpbs-features.php';
+		require_once $core_path . 'modules/class-wpbs-case-study.php';
 
 		WPBS_WP::init();
 		WPBS_ACF::init();
@@ -223,6 +224,7 @@ class WPBS {
 		WPBS_FAQ::init();
 		WPBS_Team::init();
 		WPBS_Features::init();
+		WPBS_Case_Study::init();
 
 		self::init_classes( 'core/components' );
 

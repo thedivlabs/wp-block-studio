@@ -6,10 +6,19 @@ if ( empty( $comment ) ) {
 	return false;
 }
 
-$avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
-$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
-$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
-$style  = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
+if ( is_a( $comment, 'WP_Comment' ) ) {
+	$avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
+	$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
+	$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
+} elseif ( is_a( $comment, 'WP_Post' ) ) {
+	$avatar = wp_get_attachment_image_src( get_field( 'wpbs_media_featured_thumbnail', $comment->ID ), 'small' )[0] ?? false;
+	$time   = get_field( 'wpbs_details_date', $comment->ID );
+	$rating = get_field( 'wpbs_review_rating', $comment->ID );
+} else {
+	return false;
+}
+
+$style = preg_match( '/is-style-([a-zA-Z0-9_-]+)/', $attributes['className'] ?? '', $m ) ? $m[1] : null;
 
 if ( ! empty( $attributes['wpbs-review-content']['line-clamp'] ) ) {
 
@@ -35,14 +44,27 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-$review_content = match ( $style ) {
-	'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" width="100" height="100"  />',
-	'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
-	'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: 0 ),
-	'content' => $comment->comment_content ?? false,
-	'name' => $comment->comment_author ?? false,
-	default => false
-};
+if ( is_a( $comment, 'WP_Comment' ) ) {
+	$review_content = match ( $style ) {
+		'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" width="100" height="100"  />',
+		'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
+		'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: 0 ),
+		'content' => $comment->comment_content ?? false,
+		'name' => $comment->comment_author ?? false,
+		default => false
+	};
+} elseif ( is_a( $comment, 'WP_Post' ) ) {
+	$review_content = match ( $style ) {
+		'avatar' => '<img src="' . $avatar . '" alt="" aria-hidden="true" width="100" height="100"  />',
+		'rating' => $rating,
+		'date' => date( 'Y-m-d H:i:s', $time ?: 0 ),
+		'content' => get_field( 'wpbs_review_full_review', $comment->ID ),
+		'name' => get_the_title( $comment->ID ),
+		default => false
+	};
+} else {
+	return false;
+}
 
 
 if ( ! $review_content ) {

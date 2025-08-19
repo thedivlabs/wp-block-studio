@@ -6,6 +6,7 @@ $comment = $block->context['wpbs/review'] ?? false;
 if ( empty( $comment ) ) {
 	return false;
 }
+
 $rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 
 

@@ -1,22 +1,5 @@
 <?php
 
-/*
- * {
-
-        const blockProps = useBlockProps.save({
-            className: blockClassnames(props.attributes),
-            'data-wp-interactive': 'wpbs/review-gallery',
-            'data-wp-init': 'actions.init',
-            ...(props.attributes?.['wpbs-props'] ?? {})
-        });
-
-        const innerBlocksProps = useInnerBlocksProps.save(blockProps);
-
-        return <div {...innerBlocksProps} />;
-    }
- *
- * */
-
 
 $card_block = WPBS::get_block_template( array_values( array_filter( $block->parsed_block['innerBlocks'] ?? [], function ( $inner_block ) {
 	return $inner_block['blockName'] === 'wpbs/review-card';
@@ -26,7 +9,9 @@ $nav_block = array_values( array_filter( $block->parsed_block['innerBlocks'] ?? 
 	return $inner_block['blockName'] === 'wpbs/slider-navigation';
 } ) )[0] ?? false;
 
-$company_id = $attributes['wpbs-review-gallery']['company_id'] ?? false;
+
+$is_current = ( $attributes['wpbs-review-gallery']['company_id'] ?? false ) == 'current';
+$company_id = $is_current ? get_the_ID() : $attributes['wpbs-review-gallery']['company_id'] ?? false;
 
 if ( empty( $company_id ) ) {
 	return;
@@ -50,9 +35,14 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 ] );
 
-$reviews = get_comments( array_filter( [
+
+$reviews = ! $is_current ? get_comments( array_filter( [
 	'post_ID' => $company_id,
-] ) ) ?? [];
+] ) ) ?? [] : new WP_Query( [
+	'post_type'   => 'review',
+	'post_status' => 'publish',
+	'post__in'    => [ get_field( 'wpbs_reviews' ) ],
+] );
 
 ?>
 
@@ -60,19 +50,36 @@ $reviews = get_comments( array_filter( [
     <div class="swiper-wrapper">
 		<?php
 
-		foreach ( $reviews as $k => $reviews_item ) {
-			//WPBS::console_log( $reviews_item );
-			$block_template                      = $card_block;
-			$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
-			$block_template['attrs']['review']   = $reviews_item;
+		if ( ! $is_current ) {
+			foreach ( $reviews as $k => $reviews_item ) {
+				//WPBS::console_log( $reviews_item );
+				$block_template                      = $card_block;
+				$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
+				$block_template['attrs']['review']   = $reviews_item;
 
-			$new_block = new WP_Block( $block_template, array_filter( [
-				'wpbs/review' => $reviews_item,
-			] ) );
+				$new_block = new WP_Block( $block_template, array_filter( [
+					'wpbs/review' => $reviews_item,
+				] ) );
 
-			echo $new_block->render();
+				echo $new_block->render();
 
+			}
+		} else {
+			while ( $reviews->have_posts() ) {
+				$reviews->the_post();
+				global $post;
+				$block_template                      = $card_block;
+				$block_template['attrs']['uniqueId'] = $card_block['attrs']['uniqueId'] ?? '';
+				$block_template['attrs']['review']   = $post;
+
+				$new_block = new WP_Block( $block_template, array_filter( [
+					'wpbs/review' => $post,
+				] ) );
+
+				echo $new_block->render();
+			}
 		}
+
 
 		?>
     </div>

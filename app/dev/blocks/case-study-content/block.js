@@ -38,22 +38,30 @@ function sectionClassNames(attributes = {}) {
 
 const CONTENT_OPTIONS = [
     {label: 'Select', value: ''},
+    {label: 'Name', value: 'name'},
+    {label: 'Date', value: 'date'},
+    {label: 'Location', value: 'location'},
+
     {label: 'Overview Title', value: 'overview-title'},
     {label: 'Overview Text', value: 'overview-text'},
-    {label: 'Description Title', value: 'description-title'},
-    {label: 'Description Text', value: 'description-text'},
-    {label: 'General Title', value: 'general-title'},
-    {label: 'General Text', value: 'general-text'},
+    {label: 'Objective Title', value: 'objective-title'},
+    {label: 'Objective Text', value: 'objective-text'},
+    {label: 'Solution Title', value: 'solution-title'},
+    {label: 'Solution Text', value: 'solution-text'},
+    {label: 'Results Title', value: 'results-title'},
+    {label: 'Results Text', value: 'results-text'},
+
     {label: 'Poster', value: 'poster'},
     {label: 'Thumbnail', value: 'thumbnail'},
-    {label: 'Icon', value: 'icon'},
-    {label: 'Related Title', value: 'related-title'},
-    {label: 'Related Text', value: 'related-text'},
+
+    {label: 'Client Name', value: 'client-name'},
+    {label: 'Client Company', value: 'client-company'},
+    {label: 'Client Location', value: 'client-location'},
+    {label: 'Client Description', value: 'client-description'},
+
     {label: 'CTA Title', value: 'cta-title'},
     {label: 'CTA Text', value: 'cta-text'},
     {label: 'CTA Image', value: 'cta-image'},
-    {label: 'FAQ Title', value: 'faq-title'},
-    {label: 'FAQ Text', value: 'faq-text'},
 
 ];
 
@@ -222,6 +230,12 @@ registerBlockType(metadata.name, {
                                     label="Eager"
                                     checked={!!settings?.eager}
                                     onChange={(newValue) => updateSettings({eager: newValue})}
+                                />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Link Client"
+                                    checked={!!settings?.['link-client']}
+                                    onChange={(newValue) => updateSettings({'link-client': newValue})}
                                 />
                             </Grid>
                         </Grid>

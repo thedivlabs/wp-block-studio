@@ -64,12 +64,10 @@ registerBlockType(metadata.name, {
 
         const label = useMemo(() => {
 
-            const styleName = (attributes?.className ?? '').match(/is-style-(\S+)/)?.[1];
+            const result = CONTENT_OPTIONS.find(item => item.value === settings?.type)?.label ?? 'Review Content';
 
-            const label = (metadata?.styles ?? []).find(item => item.name === styleName)?.label ?? 'Review Content';
-
-            return styleName === 'avatar' ?
-                <i className="fa-solid fa-user-tie !flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/> : label;
+            return settings?.type === 'avatar' ?
+                <i className="fa-solid fa-user-tie !flex w-full h-full text-center items-center justify-center text-[24px] leading-tight"/> : result;
         }, [settings?.type]);
 
         return (

@@ -30,7 +30,7 @@ if ( empty( $menu_id ) ) {
 	return;
 }
 
-$has_submenu = in_array( $attributes['className'] ?? '', [
+$has_submenu = in_array( explode( ' ', $attributes['className'] ?? '' ), [
 	'is-style-accordion',
 	'is-style-dropdown'
 ] )
@@ -45,7 +45,7 @@ $has_submenu = in_array( $attributes['className'] ?? '', [
 		'menu_class' => $menu_class,
 		'container'  => false,
 		'echo'       => false,
-		'depth'      => $has_submenu ? 3 : 2,
+		'depth'      => $has_submenu ? 2 : 1,
 	] ); ?>
 
 </nav>

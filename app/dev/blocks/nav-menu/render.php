@@ -45,7 +45,7 @@ $has_submenu = in_array( explode( ' ', $attributes['className'] ?? '' ), [
 		'menu_class' => $menu_class,
 		'container'  => false,
 		'echo'       => false,
-		'depth'      => $has_submenu ? 2 : 1,
+		'depth'      => $has_submenu ? 2 : 2,
 	] ); ?>
 
 </nav>

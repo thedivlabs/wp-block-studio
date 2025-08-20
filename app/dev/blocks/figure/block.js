@@ -32,8 +32,11 @@ import {useUniqueId} from "Includes/helper";
 
 function blockClasses(attributes = {}) {
 
+    const {'wpbs-figure': settings = {}} = attributes;
+
     return [
         'wpbs-figure h-full',
+        settings?.contain ? '--contain' : null,
         attributes?.uniqueId ?? ''
     ].filter(x => x).join(' ');
 }

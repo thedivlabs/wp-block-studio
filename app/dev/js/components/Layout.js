@@ -55,6 +55,7 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'gap-mobile',
         'align-header',
         'duration',
         'reveal',
@@ -429,6 +430,9 @@ function parseSpecial(prop, attributes) {
             break;
         case 'align-header':
             result = {'top': 'var(--wpbs-header-height, auto)'}
+            break;
+        case 'gap':
+            result = Object.values(value || {}).join(' ');
             break;
     }
 

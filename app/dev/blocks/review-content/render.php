@@ -6,11 +6,14 @@ if ( empty( $comment ) ) {
 	return false;
 }
 
-if ( is_a( $comment, 'WP_Comment' ) ) {
+$is_comment = is_a( $comment, 'WP_Comment' );
+$is_post    = is_a( $comment, 'WP_Post' );
+
+if ( $is_comment ) {
 	$avatar = get_comment_meta( $comment->comment_ID ?? false, 'avatar', true );
 	$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
 	$time   = get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true );
-} elseif ( is_a( $comment, 'WP_Post' ) ) {
+} elseif ( $is_post ) {
 	$avatar = wp_get_attachment_image_src( get_field( 'wpbs_media_featured_thumbnail', $comment->ID ), 'small' )[0] ?? '#';
 	$time   = get_field( 'wpbs_details_date', $comment->ID );
 	$rating = get_field( 'wpbs_review_rating', $comment->ID );
@@ -44,7 +47,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-if ( is_a( $comment, 'WP_Comment' ) ) {
+if ( $is_comment ) {
 	$review_content = match ( $style ) {
 		'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" width="100" height="100" class="w-full h-full object-cover" />',
 		'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
@@ -53,7 +56,7 @@ if ( is_a( $comment, 'WP_Comment' ) ) {
 		'name' => $comment->comment_author ?? false,
 		default => false
 	};
-} elseif ( is_a( $comment, 'WP_Post' ) ) {
+} elseif ( $is_post ) {
 	$review_content = match ( $style ) {
 		'name' => get_the_title( $comment->ID ),
 		'job-title' => get_field( 'wpbs_details_job_title', $comment->ID ),

@@ -7,12 +7,12 @@ if ( empty( $comment ) ) {
 	return false;
 }
 
-$rating = get_comment_meta( $comment->comment_ID ?? false, 'rating', true );
+$rating = is_a( $comment, 'WP_Comment' ) ? get_comment_meta( $comment->comment_ID ?? false, 'rating', true ) :
+	get_field( 'wpbs_review_rating', $comment );
 
-if ( intval( $rating ) < 4 ) {
-	//return false;
+if ( is_a( $comment, 'WP_Comment' ) && intval( $rating ) < 4 ) {
+	return false;
 }
-
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [

@@ -16,9 +16,12 @@ if ( empty( $company_id ) ) {
 	return;
 }
 
-$reviews = ! $is_current ? get_comments( array_filter( [
+$reviews = ! $is_current ? array_filter( get_comments( array_filter( [
 	'post_ID' => $company_id,
-] ) ) ?? [] : new WP_Query( [
+	'status'  => 'approve'
+] ) ) ?? [], function ( $comment ) {
+	return ( $comment->comment_type ?? false ) == 'google_review';
+} ) : new WP_Query( [
 	'post_type'   => 'review',
 	'post_status' => 'publish',
 	'post__in'    => (array) get_field( 'wpbs_reviews', $company_id ),

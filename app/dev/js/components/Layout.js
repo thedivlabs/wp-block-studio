@@ -431,9 +431,6 @@ function parseSpecial(prop, attributes) {
         case 'align-header':
             result = {'top': 'var(--wpbs-header-height, auto)'}
             break;
-        case 'gap':
-            result = Object.values(value || {}).join(' ');
-            break;
     }
 
     Object.entries(result).forEach(([k, val]) => {

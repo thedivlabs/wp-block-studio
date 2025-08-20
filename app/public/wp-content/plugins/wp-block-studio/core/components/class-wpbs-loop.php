@@ -179,6 +179,7 @@ class WPBS_Loop {
 			'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
 			'orderby'        => $query['orderby'] ?? 'date',
 			'order'          => $query['order'] ?? 'DESC',
+			'post__in'       => $query['post__in'] ?? [],
 			'post__not_in'   => $query['post__not_in'] ?? [],
 			'paged'          => $query['paged'] ?? $page ?: 1,
 		];
@@ -194,6 +195,7 @@ class WPBS_Loop {
 			];
 
 		}
+
 
 		return new WP_Query( $query_args );
 

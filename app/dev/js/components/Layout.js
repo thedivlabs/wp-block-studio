@@ -334,7 +334,7 @@ function parseSpecial(prop, attributes) {
         return result;
 
     }
-
+    
     switch (parsedProp) {
         case 'mask-image':
             const imageUrl = value?.sizes?.full?.url || '#';
@@ -431,6 +431,8 @@ function parseSpecial(prop, attributes) {
         case 'align-header':
             result = {'top': 'var(--wpbs-header-height, auto)'}
             break;
+        default:
+            result = {[parsedProp]: value}
     }
 
     Object.entries(result).forEach(([k, val]) => {
@@ -466,6 +468,7 @@ export function layoutCss(attributes, selector) {
     let hover = {};
 
 
+    // Not mobile
     Object.entries(settings).filter(([k, value]) =>
         !k.toLowerCase().includes('mobile') &&
         !k.toLowerCase().includes('hover')
@@ -488,6 +491,7 @@ export function layoutCss(attributes, selector) {
 
     });
 
+    // Mobile
     Object.entries(settings).filter(([k, value]) =>
         k.toLowerCase().includes('mobile') &&
         !k.toLowerCase().includes('hover')
@@ -511,6 +515,7 @@ export function layoutCss(attributes, selector) {
 
     });
 
+    // Hover
     Object.entries(settings).filter(([k, value]) =>
         String(k).toLowerCase().includes('hover')
     ).forEach(([prop, value]) => {
@@ -534,6 +539,7 @@ export function layoutCss(attributes, selector) {
 
     });
 
+    // Props
     if (Object.keys(desktop).length || container) {
         css += selector + '{';
         Object.entries(desktop).forEach(([prop, value]) => {
@@ -556,7 +562,8 @@ export function layoutCss(attributes, selector) {
     }
 
     if (Object.keys(mobile).length) {
-        css += '@media(width < ' + breakpoint + '){' + selector + '{';
+
+        css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
 
         Object.entries(mobile).forEach(([prop, value]) => {
             css += [prop, value].join(':') + ' !important;';

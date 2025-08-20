@@ -97,8 +97,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-cta');
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const [settings, setSettings] = useState(attributes['wpbs-cta']);
@@ -257,6 +255,7 @@ registerBlockType(metadata.name, {
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <Style attributes={attributes} setAttributes={setAttributes}
                        uniqueId={uniqueId}
+                       selector={'wpbs-cta-button'}
                        deps={['wpbs-cta']}
                        props={{
                            '--icon-color': settings?.['icon-color'] || null,

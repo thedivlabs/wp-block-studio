@@ -86,7 +86,6 @@ export function Style({
 
         const cssSelector = selector ? '.' + selector + '.' + uniqueId : '.' + uniqueId;
 
-
         const breakpoint = '%__BREAKPOINT__' + (attributes?.['wpbs-breakpoint']?.large ?? 'normal') + '__%';
 
         const cssLayout = layoutCss(attributes, cssSelector);

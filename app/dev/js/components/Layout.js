@@ -89,7 +89,6 @@ const LAYOUT_PROPS = {
         'max-height-custom',
         'max-height-custom-mobile',
         'width',
-        'max-width-mobile',
         'width-mobile',
         'width-custom',
         'width-custom-mobile',
@@ -334,7 +333,7 @@ function parseSpecial(prop, attributes) {
         return result;
 
     }
-    
+
     switch (parsedProp) {
         case 'mask-image':
             const imageUrl = value?.sizes?.full?.url || '#';
@@ -431,8 +430,6 @@ function parseSpecial(prop, attributes) {
         case 'align-header':
             result = {'top': 'var(--wpbs-header-height, auto)'}
             break;
-        default:
-            result = {[parsedProp]: value}
     }
 
     Object.entries(result).forEach(([k, val]) => {
@@ -539,7 +536,7 @@ export function layoutCss(attributes, selector) {
 
     });
 
-    // Props
+
     if (Object.keys(desktop).length || container) {
         css += selector + '{';
         Object.entries(desktop).forEach(([prop, value]) => {

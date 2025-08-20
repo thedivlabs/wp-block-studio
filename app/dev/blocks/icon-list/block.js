@@ -15,7 +15,7 @@ import {
     TextControl,
     SelectControl,
     __experimentalUnitControl as UnitControl,
-    __experimentalNumberControl as NumberControl, __experimentalBorderControl as BorderControl,
+    __experimentalNumberControl as NumberControl, __experimentalBorderControl as BorderControl, ToggleControl,
 } from "@wordpress/components";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import Breakpoint from "Components/Breakpoint"
@@ -52,6 +52,7 @@ registerBlockType(metadata.name, {
                 columnsMobile: undefined,
                 columnsLarge: undefined,
                 divider: undefined,
+                fit: undefined,
             }
         }
     },
@@ -177,6 +178,14 @@ registerBlockType(metadata.name, {
                             }}
                             shouldSanitizeBorder
                         />
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            <ToggleControl
+                                __nextHasNoMarginBottom
+                                label="Fit Column"
+                                checked={!!attributes['wpbs-icon-list'].fit ?? ''}
+                                onChange={(val) => updateSettings({fit: val})}
+                            />
+                        </Grid>
                     </Grid>
                 </PanelBody>
             </InspectorControls>
@@ -184,6 +193,7 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-icon-list']}
                    selector={'wpbs-icon-list'}
                    props={{
+                       '--list-fit': !!attributes['wpbs-icon-list']?.fit ? 'auto' : null,
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',
                        '--icon': `"\\${icon}"`,
                        '--icon-color': attributes['wpbs-icon-list']?.iconColor,

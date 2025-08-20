@@ -17,7 +17,7 @@
 .wpbs-icon-list__list {
   width: fit-content;
   display: inline-grid;
-  grid-template-columns: repeat(var(--list-columns, 1), max-content);
+  grid-template-columns: repeat(var(--list-columns, 1), var(--list-fit, 1fr));
   list-style: none;
   position: static;
   gap: inherit;

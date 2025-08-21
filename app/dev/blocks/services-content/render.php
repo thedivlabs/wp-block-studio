@@ -59,12 +59,10 @@ $element_tag = $attributes['wpbs-element-tag'] ?? 'div';
 ?>
 
 <?php
-
+echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
 
 if ( $is_link ) {
-	echo '<a href="' . get_the_permalink( $service_id ) . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
-} else {
-	echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
+	echo '<a href="' . get_the_permalink( $service_id ) . '" target="' . $link_target . '" title="' . $link_title . '">';
 }
 
 switch ( $type ) {
@@ -90,9 +88,9 @@ switch ( $type ) {
 
 if ( $is_link ) {
 	echo '</a>';
-} else {
-	echo '</' . $element_tag . '>';
 }
+
+echo '</' . $element_tag . '>';
 
 ?>
 

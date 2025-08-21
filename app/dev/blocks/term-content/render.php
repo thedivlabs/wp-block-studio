@@ -59,15 +59,17 @@ $is_link = ! empty( $settings['link-post'] );
 $link_target = ! empty( $settings['link-post']['linkNewTab'] ) ? '_blank' : '_self';
 $link_rel    = $settings['link-post']['linkRel'] ?? '';
 $link_title  = $settings['link-post']['linkTitle'] ?? '';
+$link_class  = '';
 
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
 $element_tag = $attributes['wpbs-element-tag'] ?? 'div';
 
+
+echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
+
 if ( $is_link ) {
-	echo '<a href="' . get_the_id() . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
-} else {
-	echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
+	echo '<a href="' . get_term_link( $term ) . '" target="' . $link_target . '" ' . ' title="' . $link_title . '">';
 }
 
 switch ( $type ) {
@@ -93,8 +95,8 @@ switch ( $type ) {
 
 if ( $is_link ) {
 	echo '</a>';
-} else {
-	echo '</' . $element_tag . '>';
 }
+
+echo '</' . $element_tag . '>';
 
 

@@ -174,8 +174,6 @@ class WPBS_Loop {
 				'order'      => $query['order'] ?? null,
 			] ) );
 
-			WPBS::console_log( $terms );
-
 			return $terms;
 		}
 

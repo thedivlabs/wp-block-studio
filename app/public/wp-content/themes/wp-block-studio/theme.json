@@ -264,8 +264,8 @@
         "xs": "640px",
         "sm": "768px",
         "md": "1040px",
-        "normal": "1240px",
-        "lg": "1404px",
+        "normal": "1404px",
+        "lg": "1500px",
         "xl": "1800px"
       },
       "container": {
@@ -273,7 +273,7 @@
         "sm": "1040px",
         "md": "1200px",
         "normal": "1404px",
-        "lg": "1500px",
+        "lg": "1600px",
         "xl": "1800px"
       },
       "header": {
@@ -313,7 +313,7 @@
             "border": {
               "color": "white",
               "width": "1px",
-              "radius": "6px",
+              "radius": "0px",
               "style": "solid"
             },
             "focus": {
@@ -472,10 +472,7 @@
           }
         },
         "inline": {
-          "gap": {
-            "field": ".7rem",
-            "button": "1rem"
-          }
+          "gap": "0px"
         }
       },
       "loader": {
@@ -564,6 +561,9 @@
       }
     },
     "elements": {
+      "link": {
+        "css": "transition: color .2s linear;"
+      },
       "button": {
         "typography": {
           "fontFamily": "",
@@ -590,9 +590,29 @@
           "style": ""
         }
       },
+      "h1": {
+        "typography": {
+          "fontSize": "clamp(40px, 4rem, 4vw)",
+          "lineHeight": "1.4em"
+        }
+      },
       "h2": {
         "typography": {
-          "lineHeight": "5.2rem"
+          "fontSize": "clamp(30px, 3rem, 4vw)",
+          "lineHeight": "1.4em"
+        }
+      },
+      "h3": {
+        "typography": {
+          "fontSize": "clamp(20px, 2rem, 3vw)",
+          "lineHeight": "1.4em"
+        }
+      },
+      "h4": {
+        "typography": {
+          "fontSize": "clamp(18px, 1.6rem, 2.5vw)",
+          "lineHeight": "1.4em",
+          "fontWeight": "normal"
         }
       },
       "heading": {
@@ -602,6 +622,9 @@
             "top": "1.5rem",
             "bottom": "1rem"
           }
+        },
+        "typography": {
+          "fontWeight": "bold"
         }
       }
     },
@@ -610,6 +633,9 @@
       "fontSize": "18px"
     },
     "blocks": {
+      "core/post-terms": {
+        "css": "& {display:flex; justify-content:flex-start; align-items:baseline; flex-wrap:wrap;} & .wp-block-post-terms__separator {margin:0 5px;}"
+      },
       "core/query-pagination": {
         "typography": {
           "textAlign": "center",
@@ -777,12 +803,12 @@
                 "border": {
                   "style": "solid",
                   "width": "1px",
-                  "color": "var:preset|color|primary"
+                  "color": "white"
                 },
                 ":hover": {
                   "color": {
-                    "text": "black",
-                    "background": "var:preset|color|primary-hover"
+                    "text": "white",
+                    "background": "transparent"
                   },
                   "border": {
                     "color": "var:preset|color|primary-hover"
@@ -797,12 +823,12 @@
                 "border": {
                   "style": "solid",
                   "width": "1px",
-                  "color": "var:preset|color|primary"
+                  "color": "white"
                 },
                 ":hover": {
                   "color": {
-                    "text": "black",
-                    "background": "var:preset|color|primary-hover"
+                    "text": "white",
+                    "background": "rgba(255,255,255,.2)"
                   },
                   "border": {
                     "color": "var:preset|color|primary-hover"
@@ -812,6 +838,10 @@
             }
           },
           "link": {
+            "typography": {
+              "fontSize": "inherit"
+            },
+            "css": "&:hover{gap:20px;}",
             "dimensions": {
               "minHeight": "1rem"
             },
@@ -836,8 +866,7 @@
                 },
                 ":hover": {
                   "color": {
-                    "background": "",
-                    "text": "var:preset|color|primary"
+                    "background": "transparent"
                   },
                   "border": {
                     "color": ""

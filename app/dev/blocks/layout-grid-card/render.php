@@ -22,21 +22,22 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 <div <?php echo $wrapper_attributes ?>>
     <div class="<?= esc_attr( $container_class ) ?>">
 		<?php
-
+        
 		foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
 
-
-			$inner_block_content = trim( render_block( $inner_block ) );
-
-			if ( ! str_contains( $inner_block['blockName'], 'wpbs/' ) ) {
-				echo $inner_block_content;
-			} else {
-				echo ( new WP_Block( $inner_block, [
-					"wpbs/postId"   => $block->context['wpbs/postId'] ?? false,
-					"wpbs/termId"   => $block->context['wpbs/termId'] ?? false,
-					"wpbs/postType" => $block->context['wpbs/postType'] ?? false
-				] ) )->render();
+			if (
+				empty( $block->context['wpbs/postId'] ) &&
+				empty( $block->context['wpbs/termId'] ) &&
+				empty( $block->context['wpbs/postType'] )
+			) {
+				continue;
 			}
+
+			echo ( new WP_Block( $inner_block, [
+				"wpbs/postId"   => $block->context['wpbs/postId'] ?? false,
+				"wpbs/termId"   => $block->context['wpbs/termId'] ?? false,
+				"wpbs/postType" => $block->context['wpbs/postType'] ?? false
+			] ) )->render();
 
 
 		}

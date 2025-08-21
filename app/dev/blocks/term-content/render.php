@@ -17,7 +17,7 @@ $type     = $settings['type'] ?? false;
 
 $term_ref = "{$term->taxonomy}_{$term->term_id}";
 
-$content = match ( $type ) {
+$dynamic_content = match ( $type ) {
 	'title' => $term->name,
 	'description' => $term->description,
 	'poster' => get_field( 'wpbs_media_poster', $term_ref ),
@@ -36,7 +36,7 @@ $content = match ( $type ) {
 	default => null
 };
 
-if ( empty( $content ) ) {
+if ( empty( $dynamic_content ) ) {
 	return;
 }
 
@@ -62,37 +62,39 @@ $link_title  = $settings['link-post']['linkTitle'] ?? '';
 
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
+$element_tag = $attributes['wpbs-element-tag'] ?? 'div';
+
 if ( $is_link ) {
 	echo '<a href="' . get_the_id() . '" target="' . $link_target . '" ' . $wrapper_attributes . ' title="' . $link_title . '">';
 } else {
-	echo '<div ' . $wrapper_attributes . '>';
+	echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
 }
 
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
 	case 'cta-image':
-		echo wp_get_attachment_image( $content, ( $settings['resolution'] ?? 'large' ), false, [
+		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'
 		] );
 		break;
 	case 'featured-image':
 		echo WPBS::picture(
-			$content['mobile'] ?? false,
-			$content['large'] ?? false,
+			$dynamic_content['mobile'] ?? false,
+			$dynamic_content['large'] ?? false,
 			$attributes['wpbs-breakpoint']['large'] ?? false,
 			$settings['resolution'] ?? false, $loading );
 		break;
 	default:
-		echo $content;
+		echo $dynamic_content;
 }
 
 
 if ( $is_link ) {
 	echo '</a>';
 } else {
-	echo '</div>';
+	echo '</' . $element_tag . '>';
 }
 
 

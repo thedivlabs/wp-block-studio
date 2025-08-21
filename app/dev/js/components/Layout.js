@@ -573,10 +573,12 @@ export function layoutCss(attributes, selector) {
     if (!!settings?.reveal) {
 
         const revealCss = '[data-aos]:not(.aos-init) {opacity: 0;}';
+        const revealCssMobile = '[data-aos] {opacity: 1;}';
 
         if (!!settings?.['reveal-mobile']) {
             css += selector + '{' + revealCss + '}';
         } else {
+            css += selector + '{' + revealCssMobile + '}';
             css += '@media screen and (min-width: ' + breakpoint + '){';
             css += selector + '{' + revealCss + '}';
             css += '}';

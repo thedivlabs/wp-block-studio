@@ -36,6 +36,26 @@ class WPBS_Blocks {
 			) );
 		}
 
+		add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
+
+			if ( str_contains( $handle, 'wpbs' ) ) {
+				$href_no_query = wp_parse_url( $href, PHP_URL_PATH );
+
+				$path = ABSPATH . ltrim( $href_no_query, '/' );
+
+				if ( file_exists( $path ) ) {
+					$css = file_get_contents( $path );
+
+					return '<style id="' . esc_attr( $handle ) . '">' . $css . '</style>';
+				}
+			} else {
+				//$html = str_replace( 'href=', 'data-href=', $html );
+			}
+
+			return $html;
+		}, 10, 3 );
+
+
 	}
 
 	public static function render_block_styles( $attributes, $custom_css = '', $is_rest = false ): string|bool {

@@ -49,7 +49,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 if ( $is_comment ) {
 	$review_content = match ( $style ) {
-		'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" width="100" height="100" class="w-full h-full object-cover" />',
+		'avatar' => '<img src="' . get_comment_meta( $comment->comment_ID ?? false, 'avatar', true ) . '" alt="" aria-hidden="true" width="100" height="100" class="w-full h-full object-cover" loading="lazy" />',
 		'rating' => get_comment_meta( $comment->comment_ID ?? false, 'rating', true ),
 		'date' => date( 'Y-m-d H:i:s', get_comment_meta( $comment->comment_ID ?? false, 'timestamp', true ) ?: 0 ),
 		'content' => $comment->comment_content ?? false,
@@ -63,7 +63,7 @@ if ( $is_comment ) {
 		'rating' => $rating,
 		'date' => date( 'Y-m-d H:i:s', $time ?: 0 ),
 		'content' => get_field( 'wpbs_review_full_review', $comment->ID ),
-		'avatar' => '<img src="' . $avatar . '" alt="" aria-hidden="true" width="100" height="100" class="w-full h-full object-cover"  />',
+		'avatar' => '<img src="' . $avatar . '" alt="" aria-hidden="true" width="100" height="100" class="w-full h-full object-cover" loading="lazy"  />',
 		default => false
 	};
 } else {

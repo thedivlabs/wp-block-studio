@@ -36,7 +36,7 @@ class WPBS {
 		add_action( 'admin_init', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
-		add_action( 'wp_head', [ $this, 'critical_css' ], 5 );
+		add_action( 'wp_print_styles', [ $this, 'critical_css' ], 1 );
 
 		add_action( 'acf/init', [ $this, 'init_theme' ], 30 );
 		add_action( 'acf/init', [ $this, 'init_hook' ] );
@@ -94,6 +94,7 @@ class WPBS {
 		$theme_css_path = ABSPATH . ltrim( str_replace( home_url(), '', $theme_css ), '/' );
 
 		$wp_styles->dequeue( 'wpbs-theme-css' );
+		$wp_styles->remove( 'wpbs-theme-css' );
 
 		$css = apply_filters( 'wpbs_critical_css', [] );
 
@@ -159,7 +160,6 @@ class WPBS {
 
 		wp_enqueue_script( 'wpbs-masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_enqueue_style( 'wpbs-theme-css' );
 
 	}
 
@@ -180,7 +180,6 @@ class WPBS {
 	public function view_assets(): void {
 		wp_enqueue_script( 'wpbs-fontawesome' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
-		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 	}
 

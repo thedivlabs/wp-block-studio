@@ -7,12 +7,10 @@ const {state} = store('wpbs/flyout', {
     actions: {
         toggle: (event) => {
 
-
             const {ref} = getElement();
 
             const isButton = ref.closest('.wpbs-flyout-button') !== null;
-            console.log(ref);
-            console.log(event.target);
+
             if (!isButton && event.target !== ref) {
                 return;
             }

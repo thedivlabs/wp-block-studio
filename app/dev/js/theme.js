@@ -313,6 +313,9 @@ class WPBS_Theme {
 
             this.observeMedia();
 
+            /* [...document.querySelectorAll('link[data-href]')].forEach((link) => {
+                 link.href = link.dataset.href;
+             })*/
         })
 
 

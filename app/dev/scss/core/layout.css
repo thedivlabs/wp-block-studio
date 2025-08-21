@@ -106,3 +106,12 @@
   content: var(--divider-icon-large, '');
   font-size: var(--divider-icon-size, min(2rem, calc(var(--grid-col-gap, var(--grid-row-gap, 0px)) - 1rem)));
 }
+
+
+.--line-clamp > p {
+  line-clamp: var(--line-clamp, 6);
+  -webkit-line-clamp: var(--line-clamp, 6);
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  overflow: hidden;
+}

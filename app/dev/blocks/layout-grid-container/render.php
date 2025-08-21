@@ -39,10 +39,9 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 			$inner_block_content = trim( render_block( $inner_block ) );
 
-			if ( ! empty( $inner_block_content ) ) {
+			if ( ! str_contains( $inner_block['blockName'], 'wpbs/' ) ) {
 				echo $inner_block_content;
 			} else {
-
 				echo ( new WP_Block( $inner_block, [
 					"wpbs/postId"   => $block->context['wpbs/postId'] ?? false,
 					"wpbs/termId"   => $block->context['wpbs/termId'] ?? false,

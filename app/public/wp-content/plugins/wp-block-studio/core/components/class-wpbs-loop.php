@@ -95,12 +95,15 @@ class WPBS_Loop {
 
 	private function loop_card( $block_template = [], $args = [], $index = false, $is_rest = false ): WP_Block|bool {
 
+		global $post;
+
 		$original_id = $block_template['attrs']['uniqueId'] ?? '';
 
-		$post_id = $block['attrs']['postId'] ?? $args['wpbs/postId'] ?? get_the_ID();
+		$post_id = $post->ID ?? $block['attrs']['postId'] ?? $args['wpbs/postId'] ?? get_the_ID();
 		$term_id = $block['attrs']['termId'] ?? $args['wpbs/termId'] ?? false;
 
 		$new_id = $term_id || $post_id ? $original_id . '--' . ( $term_id ?: $post_id ) : null;
+
 
 		$unique_id = join( ' ', array_filter( [
 			$original_id ?? null,
@@ -147,15 +150,15 @@ class WPBS_Loop {
 			$field_ref = $term ? "{$term->taxonomy}_{$term->term_id}" : $id;
 			$post_ids  = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
 
-			return new WP_Query( [
+			return new WP_Query( array_filter( [
 				'post_type'      => 'any',
 				'post__in'       => $post_ids,
 				'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-				'orderby'        => $query['orderby'] ?? 'date',
-				'order'          => $query['order'] ?? 'DESC',
+				'orderby'        => $query['orderby'] ?? null,
+				'order'          => $query['order'] ?? null,
 				'post__not_in'   => $query['post__not_in'] ?? [],
 				'paged'          => $query['paged'] ?? $page ?: 1,
-			] );
+			] ) );
 		}
 
 		if ( is_a( $query, 'WP_Query' ) ) {
@@ -164,12 +167,14 @@ class WPBS_Loop {
 
 		if ( ! empty( $query['loop_terms'] ) ) {
 
-			$terms = get_terms( [
+			$terms = get_terms( array_filter( [
 				'taxonomy'   => $query['taxonomy'] ?? false,
 				'hide_empty' => true,
-				'orderby'    => $query['orderby'] ?? 'date',
-				'order'      => $query['order'] ?? 'DESC',
-			] );
+				'orderby'    => $query['orderby'] ?? null,
+				'order'      => $query['order'] ?? null,
+			] ) );
+
+			WPBS::console_log( $terms );
 
 			return $terms;
 		}

@@ -555,15 +555,15 @@ export function layoutCss(attributes, selector) {
 
     if (!!settings?.reveal) {
 
-        const revealCss = '[data-aos]:not(.aos-init) {opacity: 0;}';
-        const revealCssMobile = '[data-aos] {opacity: 1;}';
+        const revealCss = selector + '[data-aos]:not(.aos-init){opacity: 0}';
+        const revealCssMobile = selector + '[data-aos]{opacity: 1}';
 
         if (!!settings?.['reveal-mobile']) {
-            css += selector + '{' + revealCss + '}';
+            css += revealCss;
         } else {
-            css += selector + '{' + revealCssMobile + '}';
+            css += revealCssMobile;
             css += '@media screen and (min-width: ' + breakpoint + '){';
-            css += selector + '{' + revealCss + '}';
+            css += revealCss;
             css += '}';
         }
 

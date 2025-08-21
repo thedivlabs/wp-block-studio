@@ -551,25 +551,6 @@ export function layoutCss(attributes, selector) {
         }
 
         css += '}';
-
-        if (!!settings?.reveal && !!settings?.['reveal-mobile']) {
-            css += '[data-aos]:not(.aos-init):not([data-aos="none"]) {opacity: 0;}';
-        }
-
-        if (!!settings?.reveal && !!settings?.['reveal-mobile']) {
-            css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
-            css += '[data-aos]:not(.aos-init):not([data-aos="none"]) {opacity: 0;}';
-            css += '}}';
-        }
-
-
-        css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
-
-        Object.entries(mobile).forEach(([prop, value]) => {
-            css += [prop, value].join(':') + ' !important;';
-        })
-
-        css += '}}';
     }
 
     if (!!settings?.reveal) {

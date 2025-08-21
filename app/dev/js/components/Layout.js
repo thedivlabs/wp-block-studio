@@ -190,7 +190,7 @@ const LAYOUT_PROPS = {
         'font-size-mobile',
         'line-height-mobile',
         'text-align-mobile',
-        'flex-wrap-mobile',
+        'flex-wrap-mobile'
     ],
 
     colors: [
@@ -537,7 +537,6 @@ export function layoutCss(attributes, selector) {
 
     });
 
-
     if (Object.keys(desktop).length || container) {
         css += selector + '{';
         Object.entries(desktop).forEach(([prop, value]) => {
@@ -550,9 +549,39 @@ export function layoutCss(attributes, selector) {
         }
 
         css += '}';
+
+        if (!!settings?.reveal && !!settings?.['reveal-mobile']) {
+            css += '[data-aos]:not(.aos-init):not([data-aos="none"]) {opacity: 0;}';
+        }
+
+        if (!!settings?.reveal && !!settings?.['reveal-mobile']) {
+            css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
+            css += '[data-aos]:not(.aos-init):not([data-aos="none"]) {opacity: 0;}';
+            css += '}}';
+        }
+
+
+        css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
+
+        Object.entries(mobile).forEach(([prop, value]) => {
+            css += [prop, value].join(':') + ' !important;';
+        })
+
+        css += '}}';
     }
 
     if (!!settings?.reveal) {
+
+        const revealCss = '[data-aos]:not(.aos-init) {opacity: 0;}';
+
+        if (!!settings?.['reveal-mobile']) {
+            css += selector + '{' + revealCss + '}';
+        } else {
+            css += '@media screen and (min-width: ' + breakpoint + '){';
+            css += selector + '{' + revealCss + '}';
+            css += '}';
+        }
+
         css += selector + '{';
         css += '--aos-distance: ' + (settings?.['reveal-distance'] || 120) + 'px;';
 
@@ -595,6 +624,11 @@ function getProps(settings) {
         result['data-aos-offset'] = settings?.['reveal-offset'] || 200;
         result['data-aos-once'] = !settings?.['reveal-repeat'];
         result['data-aos-mirror'] = !!settings?.['reveal-mirror'];
+        result['data-aos-mirror'] = !!settings?.['reveal-mirror'];
+
+        if (!settings?.['reveal-mobile']) {
+            result['data-aos-disable'] = 'mobile';
+        }
     }
 
     if (!!settings?.['hide-empty']) {
@@ -1270,6 +1304,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                         label="Mirror"
                                         checked={!!settings?.['reveal-mirror']}
                                         onChange={(newValue) => updateProp({'reveal-mirror': newValue})}
+                                    />
+                                    <ToggleControl
+                                        __nextHasNoMarginBottom
+                                        label="Mobile"
+                                        checked={!!settings?.['reveal-mobile']}
+                                        onChange={(newValue) => updateProp({'reveal-mobile': newValue})}
                                     />
                                 </Grid>
                             </Grid>

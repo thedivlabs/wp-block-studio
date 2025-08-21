@@ -175,6 +175,7 @@ class WPBS {
 
 		wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_style( 'wpbs-swiper-css' );
+		wp_enqueue_style( 'wpbs-theme-css' );
 	}
 
 	public function view_assets(): void {

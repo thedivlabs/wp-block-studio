@@ -59,7 +59,9 @@ $is_link = ! empty( $settings['link-post'] );
 $link_target = ! empty( $settings['link-post']['linkNewTab'] ) ? '_blank' : '_self';
 $link_rel    = $settings['link-post']['linkRel'] ?? '';
 $link_title  = $settings['link-post']['linkTitle'] ?? '';
-$link_class  = '';
+$link_class  = implode( ' ', array_filter( [
+	in_array( $type, [ 'poster', 'thumbnail', 'cta-image', 'featured-image' ] ) && $is_link ? 'overflow-hidden' : null,
+] ) );
 
 $loading = ! empty( $settings['eager'] ) ? 'eager' : 'lazy';
 
@@ -69,7 +71,7 @@ $element_tag = $attributes['wpbs-element-tag'] ?? 'div';
 echo '<' . $element_tag . ' ' . $wrapper_attributes . '>';
 
 if ( $is_link ) {
-	echo '<a href="' . get_term_link( $term ) . '" target="' . $link_target . '" ' . ' title="' . $link_title . '">';
+	echo '<a href="' . get_term_link( $term ) . '" target="' . $link_target . '" ' . ' title="' . $link_title . '" class="wpbs-term-content__link ' . $link_class . '">';
 }
 
 switch ( $type ) {

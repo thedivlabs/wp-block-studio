@@ -326,7 +326,7 @@ function parseSpecial(prop, attributes) {
         let result = val;
 
         if (val === 'screen') {
-            result = 'calc(100svh - var(--wpbs--header-height, 0px))'
+            result = 'calc(100svh - var(--wpbs-header-height, 0px))'
         }
 
         if (val === 'full-screen') {

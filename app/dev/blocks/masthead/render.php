@@ -2,7 +2,7 @@
 
 $attributes = $attributes ?? false;
 
-add_filter( 'wpbs_critical_css', function ( $css_array ) {
+/*add_filter( 'wpbs_critical_css', function ( $css_array ) {
 
 	$css_array['wpbs-site-header-settings'] = '';
 
@@ -25,7 +25,7 @@ add_filter( 'wpbs_critical_css', function ( $css_array ) {
 	return $css_array;
 
 
-} );
+} );*/
 
 add_filter( 'body_class', function ( $classes ) use ( $attributes ) {
 

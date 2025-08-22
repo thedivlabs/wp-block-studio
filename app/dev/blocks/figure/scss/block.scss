@@ -1,7 +1,7 @@
 .wpbs-figure {
   @apply grid relative max-w-full max-h-full items-center justify-center;
   grid-template-columns: 100%;
-  
+
 
 }
 
@@ -16,8 +16,8 @@
 /* <img> inside <picture> */
 .wpbs-figure picture > img {
   object-fit: inherit;
-  width: 100%;
-  height: 100%;
+  width: var(--element-width, 100%);
+  height: var(--element-height, 100%);
 }
 
 /* Media wrapper */

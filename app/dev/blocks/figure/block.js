@@ -337,8 +337,35 @@ registerBlockType(metadata.name, {
                             </Grid>
 
 
-                            <Grid columns={2} columnGap={15} rowGap={20}
-                                  style={{padding: '1rem 0'}}>
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label="Width"
+                                    value={attributes['wpbs-figure']?.['element-width']}
+                                    options={[
+                                        {label: 'Select', value: ''},
+                                        {label: 'Auto', value: 'auto'},
+                                        {label: 'Fit', value: 'fit'},
+                                        {label: 'Full', value: 'full'},
+                                    ]}
+                                    onChange={(newValue) => updateSettings({'element-width': newValue})}
+                                    __nextHasNoMarginBottom
+                                />
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label="Height"
+                                    value={attributes['wpbs-figure']?.['element-height']}
+                                    options={[
+                                        {label: 'Select', value: ''},
+                                        {label: 'Auto', value: 'auto'},
+                                        {label: 'Fit', value: 'fit'},
+                                        {label: 'Full', value: 'full'},
+                                    ]}
+                                    onChange={(newValue) => updateSettings({'element-height': newValue})}
+                                    __nextHasNoMarginBottom
+                                />
+                            </Grid>
+                            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                                 <ToggleControl
                                     label="Eager"
                                     checked={!!attributes['wpbs-figure']?.eager}
@@ -375,6 +402,8 @@ registerBlockType(metadata.name, {
                        '--figure-type': attributes['wpbs-figure']?.type ?? null,
                        '--overlay': attributes['wpbs-figure']?.overlay ?? null,
                        '--origin': attributes['wpbs-figure']?.origin ?? null,
+                       '--element-width': attributes['wpbs-figure']?.['element-width'] ?? null,
+                       '--element-height': attributes['wpbs-figure']?.['element-height'] ?? null,
                    }}
                    preload={preloadMedia}
             />

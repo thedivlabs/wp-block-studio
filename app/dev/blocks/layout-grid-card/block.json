@@ -19,6 +19,10 @@
       "default": 0,
       "show_in_rest": true
     },
+    "postType": {
+      "type": "string",
+      "show_in_rest": true
+    },
     "is_rest": {
       "type": "boolean",
       "default": false,

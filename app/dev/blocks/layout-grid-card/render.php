@@ -22,18 +22,15 @@ $container_class = 'wpbs-layout-grid-card__container wpbs-layout-wrapper relativ
 <div <?php echo $wrapper_attributes ?>>
     <div class="<?= esc_attr( $container_class ) ?>">
 		<?php
-        
+
+		global $post;
+
 		foreach ( $block->parsed_block['innerBlocks'] ?? [] as $inner_block ) {
 
-			if (
-				empty( $block->context['wpbs/postId'] ) &&
-				empty( $block->context['wpbs/termId'] ) &&
-				empty( $block->context['wpbs/postType'] )
-			) {
-				continue;
-			}
 
 			echo ( new WP_Block( $inner_block, [
+				"postId"        => $block->context['wpbs/postId'] ?? false,
+				"termId"        => $block->context['wpbs/termId'] ?? false,
 				"wpbs/postId"   => $block->context['wpbs/postId'] ?? false,
 				"wpbs/termId"   => $block->context['wpbs/termId'] ?? false,
 				"wpbs/postType" => $block->context['wpbs/postType'] ?? false

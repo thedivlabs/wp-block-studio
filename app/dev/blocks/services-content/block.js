@@ -31,6 +31,7 @@ function sectionClassNames(attributes = {}) {
     return [
         'wpbs-services-content',
         'w-fit inline-block',
+        !!settings?.['line-clamp'] ? '--line-clamp' : null,
         settings?.icon ? '--icon' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');

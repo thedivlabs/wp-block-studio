@@ -18,7 +18,10 @@ class WPBS_Loop {
 
 	public function __construct( WP_Block|false|array $block, $query = false, $page = 1, $is_rest = false ) {
 
-		$card  = WPBS::get_block_template( is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block );
+		$block = is_a( $block, 'WP_Block' ) ? $block->parsed_block['innerBlocks'][0] ?? false : $block;
+
+		$card = WPBS::get_block_template( $block );
+
 		$query = $query ?: $block->attributes['wpbs-query'] ?? false;
 
 		if ( empty( $card ) || empty( $query ) ) {
@@ -75,10 +78,11 @@ class WPBS_Loop {
 					continue;
 				}
 
+				$card['attrs']['termId'] = $term->term_id;
+
 				$new_block = $this->loop_card( $card, [
 					'wpbs/termId' => $term->term_id,
 				], $k, $is_rest );
-
 
 				$css         .= $new_block->attributes['wpbs-css'] ?? '';
 				$new_content .= $new_block->render();

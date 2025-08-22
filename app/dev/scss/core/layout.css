@@ -112,7 +112,7 @@
 .--line-clamp > p {
   line-clamp: var(--line-clamp, 6);
   -webkit-line-clamp: var(--line-clamp, 6);
-  display: -webkit-box;
+  display: -webkit-box !important;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

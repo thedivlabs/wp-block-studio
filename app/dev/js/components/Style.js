@@ -253,6 +253,6 @@ export function Style({
     }, [resultCss, preloadMedia, uniqueId]);
 
 
-    return <style className='wpbs-styles'>{(resultCss || '').replace(/%__BREAKPOINT__(\d+px)__%/, "$1").replace('fixed', "absolute")}</style>;
+    return <style className='wpbs-styles'>{(resultCss || '').replace(/%__BREAKPOINT__(\d+px)__%/, "$1").replace(/position:\s*fixed/g, "position:absolute")}</style>;
 }
 

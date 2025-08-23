@@ -483,6 +483,11 @@ export function layoutCss(attributes, selector) {
     const breakpoint = '%__BREAKPOINT__' + bp_key + '__%';
     const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
 
+    const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
+    const offsetHeight = !!settings?.['offset-height'] ? settings?.['offset-height'] : '0px';
+    const heightMobile = !!settings?.['height-custom-mobile'] ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%';
+    const offsetHeightMobile = !!settings?.['offset-height-mobile'] ? settings?.['offset-height-mobile'] : '0px';
+
     let css = '';
     let desktop = {};
     let mobile = {};
@@ -572,7 +577,7 @@ export function layoutCss(attributes, selector) {
         }
 
         if (!!settings?.['offset-height']) {
-            css += '--offset-height: ' + settings?.['offset-height'] + ';';
+            css += '--offset-height: ' + offsetHeight + ';';
         }
         css += '}';
     }
@@ -599,11 +604,9 @@ export function layoutCss(attributes, selector) {
 
     if (settings?.position === 'fixed-push') {
 
-        const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
-
         if (height) {
             css += selector + ' + * {';
-            css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
+            css += '--offset-height: ' + offsetHeight + ';';
             css += '--height:' + heightVal(height) + ';';
             css += 'margin-top:var(--height) !important;';
             css += '}';
@@ -613,12 +616,11 @@ export function layoutCss(attributes, selector) {
 
     if (settings?.['position-mobile'] === 'fixed-push') {
 
-        const heightMobile = !!settings?.['height-custom-mobile'] ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%';
 
         if (heightMobile) {
             css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
             css += selector + ' + * {';
-            css += '--offset-height: ' + (settings?.['offset-height-mobile'] ?? '0px') + ';';
+            css += '--offset-height: ' + offsetHeightMobile + ';';
             css += '--height:' + heightVal(heightMobile) + ';';
             css += 'margin-top:var(--height) !important;';
             css += '}}';
@@ -636,7 +638,7 @@ export function layoutCss(attributes, selector) {
         })
 
         if (!!settings?.['offset-height-mobile']) {
-            css += '--offset-height: ' + settings?.['offset-height-mobile'] + ';';
+            css += '--offset-height: ' + offsetHeightMobile + ';';
         }
 
         css += '}}';

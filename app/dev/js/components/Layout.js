@@ -1261,7 +1261,8 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                     <NumberControl
                                         label={'Offset'}
                                         value={settings?.['reveal-offset']}
-                                        min={0}
+                                        min={-900}
+                                        max={900}
                                         step={10}
                                         onChange={(newValue) => updateProp({'reveal-offset': newValue})}
                                         __next40pxDefaultSize

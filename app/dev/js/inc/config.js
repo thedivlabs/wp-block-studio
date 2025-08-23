@@ -89,6 +89,7 @@ export const POSITION_OPTIONS = [
     {label: 'Absolute', value: 'absolute'},
     {label: 'Sticky', value: 'sticky'},
     {label: 'Fixed', value: 'fixed'},
+    {label: 'Fixed Push', value: 'fixed-push'},
     {label: 'Static', value: 'static'},
 ];
 

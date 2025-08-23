@@ -102,6 +102,7 @@ const LAYOUT_PROPS = {
         'offset-header-mobile',
         'text-color-hover',
         'text-color-mobile',
+        'position',
         'container',
         'container-mobile',
         'padding-mobile'
@@ -393,10 +394,16 @@ function parseSpecial(prop, attributes) {
             break;
 
         case 'height-custom':
-            result = {'height': heightVal(settings?.[prop] ?? null)}
+            result = {
+                'height': heightVal(settings?.[prop] ?? null),
+                '--height': heightVal(settings?.[prop] ?? null),
+            }
             break;
         case 'height':
-            result = {'height': heightVal(settings?.[prop] ?? null)}
+            result = {
+                'height': heightVal(settings?.[prop] ?? null),
+                '--height': heightVal(settings?.[prop] ?? null),
+            }
             break;
 
         case 'min-height-custom':
@@ -436,6 +443,16 @@ function parseSpecial(prop, attributes) {
             break;
         case 'align-header':
             result = {'top': 'var(--wpbs-header-height, auto)'}
+            break;
+        case 'position':
+            switch (value) {
+                case 'fixed-push':
+                case 'fixed':
+                    result = {'position': 'fixed'}
+                    break;
+                default:
+                    result = {'position': value}
+            }
             break;
     }
 
@@ -604,6 +621,10 @@ export function layoutCss(attributes, selector) {
         })
 
         css += '}';
+    }
+
+    if (!!settings?.position === 'fixed-push') {
+        css += selector + ' + * {margin-top:var(--height) !important}';
     }
 
     return css.trim();

@@ -577,6 +577,7 @@ export function layoutCss(attributes, selector) {
 
         if (settings?.position === 'fixed-push') {
             const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
+            console.log(heightVal(height));
             if (height) {
                 css += selector + ' + * {';
                 css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';

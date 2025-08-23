@@ -304,7 +304,7 @@
           "input": {
             "padding": ".2rem .8rem",
             "font-size": "17px !important",
-            "height": "60px",
+            "height": "3.5rem",
             "color": {
               "background": "white",
               "text": "black",
@@ -368,7 +368,7 @@
           },
           "button": {
             "width": "auto",
-            "height": "60px",
+            "height": "3.5rem",
             "padding": ".2rem 1.5rem",
             "text-transform": "uppercase",
             "font-size": "inherit",

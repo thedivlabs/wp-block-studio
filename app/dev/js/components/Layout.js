@@ -325,6 +325,10 @@ const heightVal = (val) => {
         height = 'calc(100svh + var(--offset-height, 0px))'
     }
 
+    if (['auto', 'full', 'inherit'].includes(val)) {
+        height = val;
+    }
+
     return height;
 
 }
@@ -484,10 +488,10 @@ export function layoutCss(attributes, selector) {
     const breakpoint = '%__BREAKPOINT__' + bp_key + '__%';
     const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
 
-    const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
-    const offsetHeight = !!settings?.['offset-height'] ? settings?.['offset-height'] : '0px';
-    const heightMobile = !!settings?.['height-custom-mobile'] ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%';
-    const offsetHeightMobile = !!settings?.['offset-height-mobile'] ? settings?.['offset-height-mobile'] : '0px';
+    const height = heightVal(!!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%');
+    const offsetHeight = !!settings?.['offset-height']?.length ? settings?.['offset-height'] : '0px';
+    const heightMobile = heightVal(!!settings?.['height-custom-mobile']?.length ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%');
+    const offsetHeightMobile = !!settings?.['offset-height-mobile']?.length ? settings?.['offset-height-mobile'] : '0px';
 
     let css = '';
     let desktop = {};
@@ -604,9 +608,8 @@ export function layoutCss(attributes, selector) {
     if (settings?.position === 'fixed-push') {
 
         css += selector + ' + * {';
-        css += '--offset-height: ' + offsetHeight + ';';
-        css += '--height:' + heightVal(height) + ';';
-        css += 'margin-top:var(--height) !important;';
+        css += '--offset-height: ' + offsetHeight + ' !important;';
+        css += 'margin-top:' + height + ' !important;';
         css += '}';
 
     }
@@ -615,9 +618,8 @@ export function layoutCss(attributes, selector) {
 
         css += '@media screen and (max-width: ' + breakpoint + '){';
         css += selector + ' + * {';
-        css += '--offset-height: ' + offsetHeightMobile + ';';
-        css += '--height:' + heightVal(heightMobile) + ';';
-        css += 'margin-top:var(--height) !important;';
+        css += '--offset-height: ' + offsetHeightMobile + ' !important;';
+        css += 'margin-top:' + heightMobile + ' !important;';
         css += '}}';
 
     }

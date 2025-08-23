@@ -600,11 +600,30 @@ export function layoutCss(attributes, selector) {
     if (settings?.position === 'fixed-push') {
 
         const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
-        css += selector + ' + * {';
-        css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
-        css += '--height:' + heightVal(height) + ';';
-        css += 'margin-top:var(--height) !important;';
-        css += '}';
+
+        if (height) {
+            css += selector + ' + * {';
+            css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
+            css += '--height:' + heightVal(height) + ';';
+            css += 'margin-top:var(--height) !important;';
+            css += '}';
+        }
+
+    }
+
+    if (settings?.['position-mobile'] === 'fixed-push') {
+
+        const heightMobile = !!settings?.['height-custom-mobile'] ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%';
+
+        if (heightMobile) {
+            css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
+            css += selector + ' + * {';
+            css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
+            css += '--height:' + heightVal(heightMobile) + ';';
+            css += 'margin-top:var(--height) !important;';
+            css += '}}';
+        }
+
 
     }
 

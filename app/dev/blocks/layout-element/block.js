@@ -48,6 +48,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const {'wpbs-layout-element': settings = {}} = attributes;
+
         const blockProps = useBlockProps({
             className: [classNames(attributes), 'empty:min-h-8'].join(' ')
         });

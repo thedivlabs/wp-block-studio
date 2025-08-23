@@ -30,35 +30,6 @@ const classNames = (attributes = {}) => {
     ].filter(x => x).join(' ');
 }
 
-function RenderContent({attributes, blockProps, innerBlocksProps, content = false, editor = false}) {
-
-    const ElementTagName = ElementTag(attributes);
-
-    const CustomContent = content || <></>;
-
-    const {'wpbs-layout-element': settings} = attributes;
-
-    const hasContainer = !!settings?.container || !!attributes?.['wpbs-background']?.type;
-
-    if (hasContainer) {
-        return (
-            <ElementTagName {...blockProps}>
-                <div {...innerBlocksProps} />
-                <BackgroundElement attributes={attributes} editor={editor}/>
-                <CustomContent/>
-            </ElementTagName>
-        );
-    } else {
-        const {children, ...rest} = innerBlocksProps;
-        return (
-            <ElementTagName {...blockProps}>
-                {children}
-                <CustomContent/>
-            </ElementTagName>
-        );
-    }
-}
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -96,36 +67,37 @@ registerBlockType(metadata.name, {
 
         }, [attributes, setAttributes])
 
-        return (
-            <>
+        const hasContainer = !!settings?.container || !!attributes?.['wpbs-background']?.type;
 
-                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <ElementTagSettings attributes={attributes} setAttributes={setAttributes}/>
-                <InspectorControls group="advanced">
-                    <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
-                        <ToggleControl
-                            __nextHasNoMarginBottom
-                            label="Container"
-                            checked={!!attributes?.['wpbs-layout-element']?.container}
-                            onChange={(newValue) => updateSettings({container: newValue})}
-                        />
-                    </Grid>
-                </InspectorControls>
-                <RenderContent
-                    attributes={attributes}
-                    blockProps={blockProps}
-                    innerBlocksProps={innerBlocksProps}
-                    editor={true}
-                    content={<Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={selector}/>}
-                />
+        const ElementTagName = ElementTag(attributes);
+        return <>
 
-            </>
-        )
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+            <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
+            <ElementTagSettings attributes={attributes} setAttributes={setAttributes}/>
+            <InspectorControls group="advanced">
+                <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
+                    <ToggleControl
+                        __nextHasNoMarginBottom
+                        label="Container"
+                        checked={!!attributes?.['wpbs-layout-element']?.container}
+                        onChange={(newValue) => updateSettings({container: newValue})}
+                    />
+                </Grid>
+            </InspectorControls>
+            <ElementTagName {...blockProps}>
+                {hasContainer ? <>
+                    <div {...innerBlocksProps} />
+                    <BackgroundElement attributes={attributes} editor={true}/></> : <>{innerBlocksProps.children}</>}
+            </ElementTagName>
+
+        </>
     },
     save: (props) => {
 
         const {attributes} = props;
+
+        const {'wpbs-layout-element': settings = {}} = attributes;
 
         const blockProps = useBlockProps.save({
             className: classNames(attributes),
@@ -136,12 +108,16 @@ registerBlockType(metadata.name, {
             ? useInnerBlocksProps.save({className: selector + '__container wpbs-layout-wrapper wpbs-container w-full h-full relative z-20'})
             : useInnerBlocksProps.save(blockProps);
 
-        return <RenderContent
-            attributes={attributes}
-            blockProps={blockProps}
-            innerBlocksProps={innerBlocksProps}
-            editor={false}
-        />
+        const hasContainer = !!settings?.container || !!attributes?.['wpbs-background']?.type;
+
+        const ElementTagName = ElementTag(attributes);
+
+
+        return <ElementTagName {...blockProps}>
+            {hasContainer ? <>
+                <div {...innerBlocksProps} />
+                <BackgroundElement attributes={attributes}/></> : <>{innerBlocksProps.children}</>}
+        </ElementTagName>
     }
 })
 

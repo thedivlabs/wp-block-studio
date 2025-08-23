@@ -592,13 +592,13 @@
       },
       "h1": {
         "typography": {
-          "fontSize": "clamp(30px, 4rem, 4vw)",
+          "fontSize": "clamp(36px, 4rem, 6vw)",
           "lineHeight": "1.4em"
         }
       },
       "h2": {
         "typography": {
-          "fontSize": "clamp(28px, 3rem, 4vw)",
+          "fontSize": "clamp(30px, 3rem, 5vw)",
           "lineHeight": "1.4em"
         }
       },

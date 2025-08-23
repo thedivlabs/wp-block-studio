@@ -331,7 +331,7 @@
 
   --wpbs-form-columns: 2;
 
-  &.--collapse .gform_fields .gfield.gfield {
+  &.--collapse .gform_fields .gfield {
     grid-column: 1 / -1 !important;
   }
 

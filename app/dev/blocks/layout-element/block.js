@@ -90,6 +90,7 @@ registerBlockType(metadata.name, {
                     <div {...innerBlocksProps} />
                     <BackgroundElement attributes={attributes} editor={true}/>
                 </> : <>{innerBlocksProps.children}</>}
+                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={selector}/>
             </ElementTagName>
 
         </>

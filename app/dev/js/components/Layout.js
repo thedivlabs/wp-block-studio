@@ -312,6 +312,22 @@ const MemoRangeControl = React.memo(({label, callback, value, step, min, max}) =
     />
 ));
 
+const heightVal = (val) => {
+
+    let height = 'calc(' + val + ' + var(--offset-height, 0px))';
+
+    if (val === 'screen') {
+        height = 'calc((100svh - var(--wpbs-header-height, 0px)) + var(--offset-height, 0px))'
+    }
+
+    if (val === 'full-screen') {
+        height = 'calc(100svh + var(--offset-height, 0px))'
+    }
+
+    return height;
+
+}
+
 function parseSpecial(prop, attributes) {
 
     const {'wpbs-layout': settings = {}} = attributes;
@@ -325,22 +341,6 @@ function parseSpecial(prop, attributes) {
     const parsedProp = prop.replace(/-hover|-mobile/g, '');
 
     let result = {};
-
-    const heightVal = (val) => {
-
-        let height = 'calc(' + val + ' + var(--offset-height, 0px))';
-
-        if (val === 'screen') {
-            height = 'calc((100svh - var(--wpbs-header-height, 0px)) + var(--offset-height, 0px))'
-        }
-
-        if (val === 'full-screen') {
-            height = 'calc(100svh + var(--offset-height, 0px))'
-        }
-
-        return height;
-
-    }
 
     switch (parsedProp) {
         case 'mask-image':
@@ -572,7 +572,19 @@ export function layoutCss(attributes, selector) {
         }
 
         if (!!settings?.['offset-height']) {
-            css += '--offset-height: ' + settings?.['offset-height'];
+            css += '--offset-height: ' + settings?.['offset-height'] + ';';
+        }
+
+        if (settings?.position === 'fixed-push') {
+            const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
+            if (height) {
+                css += selector + ' + * {';
+                css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
+                css += '--height:' + heightVal(height) + ';';
+                css += 'margin-top:var(--height) !important;';
+                css += '}';
+            }
+
         }
 
         css += '}';
@@ -607,7 +619,7 @@ export function layoutCss(attributes, selector) {
         })
 
         if (!!settings?.['offset-height-mobile']) {
-            css += '--offset-height-mobile: ' + settings?.['offset-height-mobile'];
+            css += '--offset-height: ' + settings?.['offset-height-mobile'] + ';';
         }
 
         css += '}}';
@@ -621,10 +633,6 @@ export function layoutCss(attributes, selector) {
         })
 
         css += '}';
-    }
-
-    if (settings?.position === 'fixed-push') {
-        css += selector + ' + * {margin-top:var(--height) !important}';
     }
 
     return css.trim();

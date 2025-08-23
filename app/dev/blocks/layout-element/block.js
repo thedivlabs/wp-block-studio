@@ -30,9 +30,11 @@ const classNames = (attributes = {}) => {
     ].filter(x => x).join(' ');
 }
 
-function RenderContent({attributes, blockProps, innerBlocksProps, editor = false}) {
+function RenderContent({attributes, blockProps, innerBlocksProps, content = false, editor = false}) {
 
     const ElementTagName = ElementTag(attributes);
+
+    const CustomContent = content || <></>;
 
     const {'wpbs-layout-element': settings} = attributes;
 
@@ -43,6 +45,7 @@ function RenderContent({attributes, blockProps, innerBlocksProps, editor = false
             <ElementTagName {...blockProps}>
                 <div {...innerBlocksProps} />
                 <BackgroundElement attributes={attributes} editor={editor}/>
+                <CustomContent/>
             </ElementTagName>
         );
     } else {
@@ -50,6 +53,7 @@ function RenderContent({attributes, blockProps, innerBlocksProps, editor = false
         return (
             <ElementTagName {...blockProps}>
                 {children}
+                <CustomContent/>
             </ElementTagName>
         );
     }
@@ -97,7 +101,6 @@ registerBlockType(metadata.name, {
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
                 <BackgroundControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={selector}/>
                 <ElementTagSettings attributes={attributes} setAttributes={setAttributes}/>
                 <InspectorControls group="advanced">
                     <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
@@ -114,6 +117,7 @@ registerBlockType(metadata.name, {
                     blockProps={blockProps}
                     innerBlocksProps={innerBlocksProps}
                     editor={true}
+                    content={<Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId} selector={selector}/>}
                 />
 
             </>

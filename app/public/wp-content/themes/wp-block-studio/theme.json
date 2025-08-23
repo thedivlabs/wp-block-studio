@@ -592,13 +592,13 @@
       },
       "h1": {
         "typography": {
-          "fontSize": "clamp(40px, 4rem, 4vw)",
+          "fontSize": "clamp(30px, 4rem, 4vw)",
           "lineHeight": "1.4em"
         }
       },
       "h2": {
         "typography": {
-          "fontSize": "clamp(30px, 3rem, 4vw)",
+          "fontSize": "clamp(28px, 3rem, 4vw)",
           "lineHeight": "1.4em"
         }
       },
@@ -630,7 +630,7 @@
     },
     "typography": {
       "fontFamily": "var(--wp--preset--font-family--montserrat)",
-      "fontSize": "18px"
+      "fontSize": "clamp(17px,4vw,18px)"
     },
     "blocks": {
       "core/post-terms": {

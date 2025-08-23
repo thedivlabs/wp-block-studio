@@ -8,3 +8,11 @@ Author: DIVLABS
 Author URI: https://wpdivlabs.com
 
 */
+
+.that-hero {
+  height: calc((100svh - var(--wpbs-header-height, 0px)) - 4rem) !important;
+}
+
+.that-hero-offset {
+  margin-top: calc((100svh - var(--wpbs-header-height, 0px)) - 4rem) !important;
+}

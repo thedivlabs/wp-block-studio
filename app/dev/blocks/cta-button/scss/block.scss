@@ -19,7 +19,7 @@
 
 /* Main button link */
 .wpbs-cta-button__link {
-  @apply inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
+  @apply w-fit grow inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
   transition: opacity 0.3s linear, color 0.3s linear, background-color 0.3s linear, border-color 0.3s linear, gap 0.3s ease-in-out;
 }
 

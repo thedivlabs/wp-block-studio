@@ -88,7 +88,8 @@ registerBlockType(metadata.name, {
             <ElementTagName {...blockProps}>
                 {hasContainer ? <>
                     <div {...innerBlocksProps} />
-                    <BackgroundElement attributes={attributes} editor={true}/></> : <>{innerBlocksProps.children}</>}
+                    <BackgroundElement attributes={attributes} editor={true}/>
+                </> : <>{innerBlocksProps.children}</>}
             </ElementTagName>
 
         </>

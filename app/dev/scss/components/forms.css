@@ -331,10 +331,12 @@
 
   --wpbs-form-columns: 2;
 
-  &.--collapse .gform_fields .gfield {
-    grid-column: 1 / -1 !important;
+  @media screen and (max-width: 767px) {
+    &.--collapse .gform_fields .gfield {
+      grid-column: 1 / -1 !important;
+    }
   }
-
+  
   @media screen and (min-width: 768px) {
     --wpbs-form-columns: 12;
   }

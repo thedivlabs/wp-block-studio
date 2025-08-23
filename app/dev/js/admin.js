@@ -59,7 +59,7 @@ addFilter(
 
             return (
                 <Fragment>
-                    <InspectorControls group={'advanced'}>
+                    <InspectorControls group={'mobile'}>
                         <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
                             <ToggleControl
                                 label="Collapse"

@@ -1,7 +1,7 @@
 import {addFilter} from '@wordpress/hooks';
 import {Fragment} from '@wordpress/element';
 import {InspectorControls} from '@wordpress/block-editor';
-import {__experimentalGrid as Grid, ToggleControl} from '@wordpress/components';
+import {__experimentalGrid as Grid, PanelBody, ToggleControl} from '@wordpress/components';
 
 import {WPBS_Google_Places} from "Modules/google-places";
 
@@ -59,15 +59,17 @@ addFilter(
 
             return (
                 <Fragment>
-                    <InspectorControls group={'mobile'}>
-                        <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
-                            <ToggleControl
-                                label="Collapse"
-                                checked={!!attributes.collapseOnMobile}
-                                onChange={(value) => setAttributes({collapseOnMobile: value})}
-                            />
+                    <InspectorControls>
+                        <PanelBody title={'Mobile'}>
+                            <Grid columns={2} columnGap={15} rowGap={20} style={{paddingTop: '15px'}}>
+                                <ToggleControl
+                                    label="Collapse"
+                                    checked={!!attributes.collapseOnMobile}
+                                    onChange={(value) => setAttributes({collapseOnMobile: value})}
+                                />
 
-                        </Grid>
+                            </Grid>
+                        </PanelBody>
                     </InspectorControls>
                     {oldEdit(props)}
                 </Fragment>

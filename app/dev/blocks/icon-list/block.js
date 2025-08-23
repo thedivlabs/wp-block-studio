@@ -7,8 +7,8 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 
-import React, {useCallback, useEffect, useMemo} from "react";
-import {useInstanceId} from '@wordpress/compose';
+import React, {useCallback} from "react";
+import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {
     __experimentalGrid as Grid,
     PanelBody,
@@ -39,6 +39,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         'wpbs-icon-list': {
             type: 'object',
@@ -189,6 +190,7 @@ registerBlockType(metadata.name, {
                     </Grid>
                 </PanelBody>
             </InspectorControls>
+            <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-icon-list']}
                    selector={'wpbs-icon-list'}

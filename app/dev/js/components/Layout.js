@@ -55,6 +55,8 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'offset-height',
+        'offset-height-mobile',
         'gap-mobile',
         'align-header',
         'duration',
@@ -105,6 +107,7 @@ const LAYOUT_PROPS = {
         'padding-mobile'
     ],
     layout: [
+        'offset-height',
         'reveal',
         'reveal-easing',
         'reveal-duration',
@@ -154,6 +157,7 @@ const LAYOUT_PROPS = {
     ],
 
     mobile: [
+        'offset-height-mobile',
         'mask-image-mobile',
         'mask-origin-mobile',
         'mask-size-mobile',
@@ -323,17 +327,17 @@ function parseSpecial(prop, attributes) {
 
     const heightVal = (val) => {
 
-        let result = val;
+        let height = 'calc(' + val + ' + var(--offset-height, 0px))';
 
         if (val === 'screen') {
-            result = 'calc(100svh - var(--wpbs-header-height, 0px))'
+            height = 'calc((100svh - var(--wpbs-header-height, 0px)) + var(--offset-height, 0px))'
         }
 
         if (val === 'full-screen') {
-            result = '100svh'
+            height = 'calc(100svh + var(--offset-height, 0px))'
         }
 
-        return result;
+        return height;
 
     }
 
@@ -550,6 +554,10 @@ export function layoutCss(attributes, selector) {
             css += '--container-width: ' + container + ';';
         }
 
+        if (!!settings?.['offset-height']) {
+            css += '--offset-height: ' + settings?.['offset-height'];
+        }
+
         css += '}';
     }
 
@@ -580,6 +588,10 @@ export function layoutCss(attributes, selector) {
         Object.entries(mobile).forEach(([prop, value]) => {
             css += [prop, value].join(':') + ' !important;';
         })
+
+        if (!!settings?.['offset-height-mobile']) {
+            css += '--offset-height-mobile: ' + settings?.['offset-height-mobile'];
+        }
 
         css += '}}';
     }
@@ -855,6 +867,21 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label="Height Custom"
                                 value={settings?.['height-custom']}
                                 callback={(newValue) => updateProp({'height-custom': newValue})}
+                                units={DIMENSION_UNITS}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            style={{gridColumn: 'span 1'}}
+                            hasValue={() => !!settings?.['offset-height']}
+                            label={'Offset Height'}
+                            onDeselect={() => updateProp({['offset-height']: ''})}
+                        >
+                            <MemoUnitControl
+                                label="Offset Height"
+                                value={settings?.['offset-height']}
+                                min={-1000}
+                                max={1000}
+                                callback={(newValue) => updateProp({'offset-height': newValue})}
                                 units={DIMENSION_UNITS}
                             />
                         </ToolsPanelItem>
@@ -1516,6 +1543,21 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label="Height Custom"
                                 value={settings?.['height-custom-mobile']}
                                 callback={(newValue) => updateProp({'height-custom-mobile': newValue})}
+                                units={DIMENSION_UNITS}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            style={{gridColumn: 'span 1'}}
+                            hasValue={() => !!settings?.['offset-height-mobile']}
+                            label={'Offset Height'}
+                            onDeselect={() => updateProp({['offset-height-mobile']: ''})}
+                        >
+                            <MemoUnitControl
+                                label="Offset Height"
+                                value={settings?.['offset-height-mobile']}
+                                min={-1000}
+                                max={1000}
+                                callback={(newValue) => updateProp({'offset-height-mobile': newValue})}
                                 units={DIMENSION_UNITS}
                             />
                         </ToolsPanelItem>

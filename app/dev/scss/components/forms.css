@@ -329,6 +329,10 @@
     margin: 0;
   }
 
+  &.--collapse .gform_fields {
+    grid-template-columns: 100% !important;
+
+  }
 
   .gform_fields {
     display: grid;
@@ -382,12 +386,6 @@
 
   }
 
-  &.--collapse .gform_fields {
-    @media screen and (max-width: 767px) {
-      grid-template-columns: 100% !important;
-    }
-
-  }
 
   .gform_fields:has(> .gfield--type-submit) {
     display: flex !important;

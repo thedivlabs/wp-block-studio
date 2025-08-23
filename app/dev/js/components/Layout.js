@@ -618,7 +618,7 @@ export function layoutCss(attributes, selector) {
 
 
         if (heightMobile) {
-            css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
+            css += '@media screen and (max-width: ' + breakpoint + '){';
             css += selector + ' + * {';
             css += '--offset-height: ' + offsetHeightMobile + ';';
             css += '--height:' + heightVal(heightMobile) + ';';

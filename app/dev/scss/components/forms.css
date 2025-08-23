@@ -329,19 +329,20 @@
     margin: 0;
   }
 
-  &.--collapse .gform_fields {
-    grid-template-columns: 100% !important;
+  --wpbs-form-columns: 2;
 
+  &.--collapse .gform_fields .gfield.gfield {
+    grid-column: 1 / -1 !important;
+  }
+
+  @media screen and (min-width: 768px) {
+    --wpbs-form-columns: 12;
   }
 
   .gform_fields {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(var(--wpbs-form-columns), 1fr) !important;
 
-
-    @media screen and (min-width: 768px) {
-      grid-template-columns: repeat(12, 1fr) !important;
-    }
 
     @media screen and (max-width: 768px) {
       .gfield.gfield--width-half {

@@ -623,7 +623,7 @@ export function layoutCss(attributes, selector) {
         css += '}';
     }
 
-    if (!!settings?.position === 'fixed-push') {
+    if (settings?.position === 'fixed-push') {
         css += selector + ' + * {margin-top:var(--height) !important}';
     }
 

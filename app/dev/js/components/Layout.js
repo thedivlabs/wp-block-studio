@@ -576,9 +576,7 @@ export function layoutCss(attributes, selector) {
             css += '--container-width: ' + container + ';';
         }
 
-        if (!!settings?.['offset-height']) {
-            css += '--offset-height: ' + offsetHeight + ';';
-        }
+        css += '--offset-height: ' + offsetHeight + ';';
         css += '}';
     }
 
@@ -604,28 +602,22 @@ export function layoutCss(attributes, selector) {
 
     if (settings?.position === 'fixed-push') {
 
-        if (height) {
-            css += selector + ' + * {';
-            css += '--offset-height: ' + offsetHeight + ';';
-            css += '--height:' + heightVal(height) + ';';
-            css += 'margin-top:var(--height) !important;';
-            css += '}';
-        }
+        css += selector + ' + * {';
+        css += '--offset-height: ' + offsetHeight + ';';
+        css += '--height:' + heightVal(height) + ';';
+        css += 'margin-top:var(--height) !important;';
+        css += '}';
 
     }
 
     if (settings?.['position-mobile'] === 'fixed-push') {
 
-
-        if (heightMobile) {
-            css += '@media screen and (max-width: ' + breakpoint + '){';
-            css += selector + ' + * {';
-            css += '--offset-height: ' + offsetHeightMobile + ';';
-            css += '--height:' + heightVal(heightMobile) + ';';
-            css += 'margin-top:var(--height) !important;';
-            css += '}}';
-        }
-
+        css += '@media screen and (max-width: ' + breakpoint + '){';
+        css += selector + ' + * {';
+        css += '--offset-height: ' + offsetHeightMobile + ';';
+        css += '--height:' + heightVal(heightMobile) + ';';
+        css += 'margin-top:var(--height) !important;';
+        css += '}}';
 
     }
 
@@ -637,9 +629,7 @@ export function layoutCss(attributes, selector) {
             css += [prop, value].join(':') + ' !important;';
         })
 
-        if (!!settings?.['offset-height-mobile']) {
-            css += '--offset-height: ' + offsetHeightMobile + ';';
-        }
+        css += '--offset-height: ' + offsetHeightMobile + ';';
 
         css += '}}';
     }

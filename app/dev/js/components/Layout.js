@@ -574,20 +574,6 @@ export function layoutCss(attributes, selector) {
         if (!!settings?.['offset-height']) {
             css += '--offset-height: ' + settings?.['offset-height'] + ';';
         }
-
-        if (settings?.position === 'fixed-push') {
-            const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
-            console.log(heightVal(height));
-            if (height) {
-                css += selector + ' + * {';
-                css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
-                css += '--height:' + heightVal(height) + ';';
-                css += 'margin-top:var(--height) !important;';
-                css += '}';
-            }
-
-        }
-
         css += '}';
     }
 
@@ -609,6 +595,17 @@ export function layoutCss(attributes, selector) {
         css += '--aos-distance: ' + (settings?.['reveal-distance'] || 120) + 'px;';
 
         css += '}';
+    }
+
+    if (settings?.position === 'fixed-push') {
+
+        const height = !!settings?.['height-custom'] ? settings?.['height-custom'] : settings?.['height'] ?? '100%';
+        css += selector + ' + * {';
+        css += '--offset-height: ' + (settings?.['offset-height'] ?? '0px') + ';';
+        css += '--height:' + heightVal(height) + ';';
+        css += 'margin-top:var(--height) !important;';
+        css += '}';
+
     }
 
     if (Object.keys(mobile).length) {

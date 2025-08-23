@@ -103,6 +103,7 @@ const LAYOUT_PROPS = {
         'text-color-hover',
         'text-color-mobile',
         'position',
+        'position-mobile',
         'container',
         'container-mobile',
         'padding-mobile'

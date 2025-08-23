@@ -19,9 +19,10 @@ export default class Reveal {
         script.onload = () => {
             if (typeof AOS !== 'undefined') {
                 AOS.init({
-                    //offset: -900,
-                    //duration: 1200,
-                    //once: true,
+                    disable: function () {
+                        const maxWidth = parseInt(WPBS?.settings?.breakpoints?.normal ?? '768');
+                        return window.innerWidth < maxWidth;
+                    }
                 });
             }
         };

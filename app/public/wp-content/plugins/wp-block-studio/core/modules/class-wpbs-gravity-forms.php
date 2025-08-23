@@ -18,10 +18,24 @@ class WPBS_Gravity_Forms {
 		add_filter( 'gform_form_settings_fields', [ $this, 'custom_form_options' ], 10, 2 );
 
 		add_filter( 'register_block_type_args', [ $this, 'block_custom_attributes' ], 10, 2 );
+		add_filter( 'render_block', [ $this, 'block_custom_classes' ], 10, 2 );
 
 	}
 
-	public function block_custom_attributes( $args, $name ) {
+	public function block_custom_classes( $block_content, $block ) {
+		if ( $block['blockName'] === 'gravityforms/form' && ! empty( $block['attrs']['collapseOnMobile'] ) ) {
+			$block_content = preg_replace(
+				'/(<div[^>]*class=[\'"][^\'"]*gform_wrapper[^\'"]*)/',
+				'$1 --collapse',
+				$block_content,
+				1 // only modify the first match
+			);
+		}
+
+		return $block_content;
+	}
+
+	public function block_custom_attributes( $args, $name ): array {
 		if ( $name === 'gravityforms/form' ) {
 			$args['attributes']['collapseOnMobile'] = array(
 				'type'    => 'boolean',

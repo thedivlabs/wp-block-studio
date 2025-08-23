@@ -1,38 +1,3 @@
-/* CONTAINER */
-
-/* LABEL */
-
-/* INPUT */
-
-/* INPUT FOCUS */
-
-/* INPUT ERROR */
-
-/* CHECKBOX */
-
-/* CHECKBOX ACTIVE */
-
-/* RADIO */
-
-/* BUTTON */
-
-/* LABEL DARK */
-
-/* INPUT DARK */
-
-/* INPUT FOCUS DARK */
-
-/* INPUT ERROR DARK */
-
-/* CHECKBOX DARK */
-
-/* CHECKBOX ACTIVE DARK */
-
-/* BUTTON DARK */
-
-/* INLINE */
-
-
 .gform_wrapper.gravity-theme {
 
   /* INPUT */
@@ -70,8 +35,6 @@
   }
 
   .gform_fields {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
     column-gap: var(--wp--custom--form--default--container--gap--col, 1rem) !important;
     row-gap: var(--wp--custom--form--default--container--gap--row, 1rem) !important;
 
@@ -366,6 +329,7 @@
     margin: 0;
   }
 
+
   .gform_fields {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
@@ -374,6 +338,7 @@
     @media screen and (min-width: 768px) {
       grid-template-columns: repeat(12, 1fr) !important;
     }
+
     @media screen and (max-width: 768px) {
       .gfield.gfield--width-half {
         grid-column: span 1 !important;
@@ -413,6 +378,13 @@
         @apply
         grow
       }
+    }
+
+  }
+
+  &.--collapse .gform_fields {
+    @media screen and (max-width: 767px) {
+      grid-template-columns: 100% !important;
     }
 
   }

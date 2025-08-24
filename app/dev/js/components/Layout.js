@@ -262,6 +262,7 @@ const MemoBorderControl = React.memo(({label, value, callback, colors}) => (
         onChange={callback}
         __experimentalIsRenderedInSidebar={true}
         __next40pxDefaultSize
+        sides={['top', 'right', 'bottom', 'left']}
     />
 ));
 
@@ -1882,6 +1883,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             onDeselect={() => updateProp({['outline-mobile']: ''})}
                         >
                             <MemoBorderControl
+                                colors={editorColors}
                                 label={'Outline'}
                                 value={settings?.['outline-mobile']}
                                 callback={(newValue) => updateProp({'outline-mobile': newValue})}
@@ -1895,6 +1897,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             onDeselect={() => updateProp({['border-mobile']: ''})}
                         >
                             <MemoBorderControl
+                                colors={editorColors}
                                 label={'Border'}
                                 value={settings?.['border-mobile']}
                                 callback={(newValue) => updateProp({'border-mobile': newValue})}

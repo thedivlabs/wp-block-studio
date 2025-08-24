@@ -160,6 +160,7 @@ class WPBS {
 
 		wp_enqueue_script( 'wpbs-masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_enqueue_style( 'wpbs-theme-css' );
 
 	}
 

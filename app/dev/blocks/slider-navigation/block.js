@@ -73,7 +73,7 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-        
+
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
@@ -96,7 +96,6 @@ registerBlockType(metadata.name, {
             setAttributes({'wpbs-slider-navigation': result});
 
         }, [setAttributes, attributes['wpbs-slider-navigation'], slider]);
-
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

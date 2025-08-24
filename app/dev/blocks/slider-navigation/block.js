@@ -10,7 +10,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
 } from "@wordpress/components";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
@@ -73,9 +73,7 @@ registerBlockType(metadata.name, {
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-slider-navigation');
-
+        
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
@@ -83,7 +81,9 @@ registerBlockType(metadata.name, {
             style: blockStyles(attributes)
         });
 
-        const slider = context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
+        const slider = useMemo(() => {
+            return context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
+        }, [context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {}]);
 
         const updateSettings = useCallback((newValue) => {
 

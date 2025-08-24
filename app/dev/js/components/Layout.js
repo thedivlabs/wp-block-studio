@@ -384,11 +384,11 @@ function parseSpecial(prop, attributes) {
             break;
         case 'border':
             result = !!settings[prop]?.top ? Object.fromEntries(Object.entries({
-                'border-top': Object.values(settings[prop]?.top ?? {}).join(' '),
-                'border-right': Object.values(settings[prop]?.right ?? {}).join(' '),
-                'border-bottom': Object.values(settings[prop]?.bottom ?? {}).join(' '),
-                'border-left': Object.values(settings[prop]?.left ?? {}).join(' '),
-            }).filter(([k, v]) => !!v)) : {border: Object.values(settings[prop] ?? {}).join(' ')};
+                'border-top': Object.values({style: 'solid', ...(settings[prop]?.top ?? {})}).join(' '),
+                'border-right': Object.values({style: 'solid', ...(settings[prop]?.right ?? {})}).join(' '),
+                'border-bottom': Object.values({style: 'solid', ...(settings[prop]?.bottom ?? {})}).join(' '),
+                'border-left': Object.values({style: 'solid', ...(settings[prop]?.left ?? {})}).join(' '),
+            }).filter(([k, v]) => !!v)) : {border: Object.values({style: 'solid', ...(settings[prop] ?? {})}).join(' ')};
             break;
         case 'padding':
             result = Object.fromEntries(Object.entries({

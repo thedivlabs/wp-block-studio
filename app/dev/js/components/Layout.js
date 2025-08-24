@@ -61,6 +61,8 @@ const LAYOUT_PROPS = {
         'offset-height-mobile',
         'gap-mobile',
         'align-header',
+        'outline',
+        'outline-mobile',
         'duration',
         'reveal',
         'reveal-easing',
@@ -388,6 +390,14 @@ function parseSpecial(prop, attributes) {
                 'border-right': Object.values({style: 'solid', ...(settings[prop]?.right ?? {})}).join(' '),
                 'border-bottom': Object.values({style: 'solid', ...(settings[prop]?.bottom ?? {})}).join(' '),
                 'border-left': Object.values({style: 'solid', ...(settings[prop]?.left ?? {})}).join(' '),
+            }).filter(([k, v]) => !!v)) : {border: Object.values({style: 'solid', ...(settings[prop] ?? {})}).join(' ')};
+            break;
+        case 'outline':
+            result = !!settings[prop]?.top ? Object.fromEntries(Object.entries({
+                'outline-top': Object.values({style: 'solid', ...(settings[prop]?.top ?? {})}).join(' '),
+                'outline-right': Object.values({style: 'solid', ...(settings[prop]?.right ?? {})}).join(' '),
+                'outline-bottom': Object.values({style: 'solid', ...(settings[prop]?.bottom ?? {})}).join(' '),
+                'outline-left': Object.values({style: 'solid', ...(settings[prop]?.left ?? {})}).join(' '),
             }).filter(([k, v]) => !!v)) : {border: Object.values({style: 'solid', ...(settings[prop] ?? {})}).join(' ')};
             break;
         case 'padding':

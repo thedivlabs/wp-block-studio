@@ -10,7 +10,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody,
 } from "@wordpress/components";
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
@@ -83,29 +83,19 @@ registerBlockType(metadata.name, {
             style: blockStyles(attributes)
         });
 
-
         const slider = context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
-
-        useEffect(() => {
-
-            const result = {
-                ...attributes['wpbs-slider-navigation'],
-                slider: slider
-            }
-
-            setAttributes({'wpbs-slider-navigation': result});
-        }, [context?.['wpbs/settings']]);
 
         const updateSettings = useCallback((newValue) => {
 
             const result = {
                 ...attributes['wpbs-slider-navigation'],
                 ...newValue,
+                slider: slider
             }
 
             setAttributes({'wpbs-slider-navigation': result});
 
-        }, [setAttributes, attributes['wpbs-slider-navigation']]);
+        }, [setAttributes, attributes['wpbs-slider-navigation'], slider]);
 
 
         return <>
@@ -124,13 +114,7 @@ registerBlockType(metadata.name, {
                                     value: attributes['wpbs-slider-navigation']?.['pagination-color'] ?? '',
                                     onChange: (newValue) => updateSettings({'pagination-color': newValue}),
                                     isShownByDefault: true
-                                }
-                            ]}
-                        />
-                        <PanelColorSettings
-                            enableAlpha
-                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                            colorSettings={[
+                                },
                                 {
                                     slug: 'pagination-track-color',
                                     label: 'Pagination Track',
@@ -140,6 +124,7 @@ registerBlockType(metadata.name, {
                                 }
                             ]}
                         />
+
                     </Grid>
                 </PanelBody>
             </InspectorControls>

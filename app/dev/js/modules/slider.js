@@ -16,34 +16,25 @@ export default class Slider {
             return;
         }
 
-        //const {on, ...safeArgs} = args || {};
-
-        /*args = merge({}, SWIPER_ARGS_VIEW, {
-            navigation: {
-                enabled: true,
-                nextEl: element.querySelector('.wpbs-slider-nav__btn--next'),
-                prevEl: element.querySelector('.wpbs-slider-nav__btn--prev'),
-            },
-            args
-        });*/
-
-        args = {
-            ...SWIPER_ARGS_VIEW,
-            ...{
+        const mergedArgs = merge({}, SWIPER_ARGS_VIEW, {
                 navigation: {
                     enabled: true,
                     nextEl: element.querySelector('.wpbs-slider-nav__btn--next'),
                     prevEl: element.querySelector('.wpbs-slider-nav__btn--prev'),
+                },
+                pagination: {
+                    el: element.querySelector('.swiper-pagination'),
                 }
             },
-            ...args
-        }
+            args);
+
+        console.log(mergedArgs);
 
         let observerIntersection = new IntersectionObserver((entries, observer) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
 
-                    observerIntersection.unobserve(entry.target);
+                    observerIntersection.unobserve(element);
 
                     if (entry.target.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide').length <= 1) {
                         return false;
@@ -52,7 +43,7 @@ export default class Slider {
                     this.initLib().then(() => {
 
                         try {
-                            new Swiper(entry.target, args);
+                            new Swiper(entry.target, mergedArgs);
                         } catch (e) {
                             console.error('Failed to initialize Swiper:', e);
                         }

@@ -88,7 +88,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 	<?php
 	if ( $nav_block ) {
-		echo ( new WP_Block( $nav_block ) )->render();
+		echo render_block( $nav_block );
 	}
 	?>
 

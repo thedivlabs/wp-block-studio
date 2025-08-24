@@ -107,13 +107,16 @@ registerBlockType(metadata.name, {
 
                 </InspectorControls>
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-
-                <div {...innerBlocksProps}/>
-
                 <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                        deps={['wpbs-slider', 'wpbs-review-gallery']} clientId={clientId}
                        props={cssProps} selector={'wpbs-review-gallery'}
                 />
+
+                <BlockContextProvider value={{'wpbs/settings': attributes?.['wpbs-slider']}}>
+                    <div {...innerBlocksProps}/>
+                </BlockContextProvider>
+
+
             </>
         )
     },

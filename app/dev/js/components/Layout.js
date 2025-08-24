@@ -398,7 +398,7 @@ function parseSpecial(prop, attributes) {
                 'outline-right': Object.values({style: 'solid', ...(settings[prop]?.right ?? {})}).join(' '),
                 'outline-bottom': Object.values({style: 'solid', ...(settings[prop]?.bottom ?? {})}).join(' '),
                 'outline-left': Object.values({style: 'solid', ...(settings[prop]?.left ?? {})}).join(' '),
-            }).filter(([k, v]) => !!v)) : {border: Object.values({style: 'solid', ...(settings[prop] ?? {})}).join(' ')};
+            }).filter(([k, v]) => !!v)) : {outline: Object.values({style: 'solid', ...(settings[prop] ?? {})}).join(' ')};
             break;
         case 'padding':
             result = Object.fromEntries(Object.entries({

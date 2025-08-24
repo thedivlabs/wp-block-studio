@@ -5,6 +5,7 @@ import {
     PanelColorSettings,
 } from "@wordpress/block-editor";
 import {
+    BorderBoxControl,
     __experimentalBorderControl as BorderControl,
     __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
@@ -250,7 +251,8 @@ const MemoSelectControl = React.memo(({label, options, value, callback}) => (
 ));
 
 const MemoBorderControl = React.memo(({label, value, callback, colors}) => (
-    <BorderControl
+
+    <BorderBoxControl
         label={label}
         value={value}
         enableAlpha={true}
@@ -381,7 +383,12 @@ function parseSpecial(prop, attributes) {
             }).filter(([k, v]) => !!v))
             break;
         case 'border':
-            result = {border: Object.values(settings[prop]).join(' ')}
+            result = Object.fromEntries(Object.entries({
+                'border-top': settings[prop]?.top,
+                'border-right': settings[prop]?.right,
+                'border-bottom': settings[prop]?.bottom,
+                'border-left': settings[prop]?.left,
+            }).filter(([k, v]) => !!v))
             break;
         case 'padding':
             result = Object.fromEntries(Object.entries({

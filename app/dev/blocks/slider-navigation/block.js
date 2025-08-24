@@ -97,6 +97,10 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, attributes['wpbs-slider-navigation'], slider]);
 
+        useEffect(() => {
+            updateSettings({});
+        }, [slider]);
+
         return <>
             <BlockEdit key="edit" {...blockProps} />
 

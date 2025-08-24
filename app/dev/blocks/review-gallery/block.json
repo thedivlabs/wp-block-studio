@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/review-gallery",
   "title": "Review Gallery",
   "description": "Display a review gallery",
@@ -8,6 +9,10 @@
   "attributes": {
     "uniqueId": {
       "type": "string",
+      "show_in_rest": true
+    },
+    "wpbs-review-gallery": {
+      "type": "object",
       "show_in_rest": true
     }
   },

@@ -37,10 +37,7 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        ...SLIDER_ATTRIBUTES,
-        'wpbs-review-gallery': {
-            type: 'object',
-        }
+        ...SLIDER_ATTRIBUTES
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -79,6 +76,8 @@ registerBlockType(metadata.name, {
             ],
         });
 
+        const sliderSettings = attributes?.['wpbs-swiper-args'];
+        
         return (
             <>
                 <InspectorControls group="styles">
@@ -111,7 +110,7 @@ registerBlockType(metadata.name, {
                        props={cssProps} selector={'wpbs-review-gallery'}
                 />
 
-                <BlockContextProvider value={{'wpbs/settings': attributes?.['wpbs-slider']}}>
+                <BlockContextProvider value={{'wpbs/settings': sliderSettings}}>
                     <div {...innerBlocksProps}/>
                 </BlockContextProvider>
 

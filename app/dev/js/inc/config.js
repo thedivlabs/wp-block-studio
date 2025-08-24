@@ -200,8 +200,8 @@ export const SWIPER_ARGS_DEFAULT = {
         enabled: true,
         el: '.swiper-pagination',
         type: 'progressbar',
-        dynamicBullets: true,
-        dynamicMainBullets: 1,
+        clickable: true,
+        dynamicBullets: false
     },
     passiveListeners: true,
     preventClicks: false,

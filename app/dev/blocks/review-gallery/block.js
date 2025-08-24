@@ -52,7 +52,6 @@ registerBlockType(metadata.name, {
             return select('core').getEntityRecords('postType', 'company', {per_page: -1});
         }, []);
 
-
         const updateSettings = useCallback((newValue) => {
 
             const result = {

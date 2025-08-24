@@ -10,8 +10,11 @@
 .swiper .swiper-slide {
   width: 100%;
   flex-shrink: 0;
-  max-width: calc((100% - (var(--margin, 0px) * (var(--slides, 1) - 1))) / var(--slides, 1));
   margin-right: var(--margin, 0px);
+}
+
+.swiper:not(.swiper-initialized) .swiper-slide {
+  max-width: calc((100% - (var(--margin, 0px) * (var(--slides, 1) - 1))) / var(--slides, 1));
 }
 
 /* Fade-in modifier */
@@ -56,10 +59,6 @@
 
 /* Slider nav hidden when not initialized */
 .wpbs-slider:not(.swiper-initialized) .wpbs-slider-nav {
-  pointer-events: none !important;
-}
-
-.wpbs-slider:not(.swiper-initialized) .wpbs-slider-nav * {
   pointer-events: none !important;
 }
 
@@ -126,11 +125,11 @@
     }
 
     .wpbs-slider-nav__btn--next:before {
-      content: var(--wp--custom--slider--icon--next, '\f054');
+      content: var(--wp--custom--slider--button--next, "\f054");
     }
 
     .wpbs-slider-nav__btn--prev:before {
-      content: var(--wp--custom--slider--icon--prev, '\f053');
+      content: var(--wp--custom--slider--button--prev, "\f053");
     }
 
     .wpbs-slider-nav__pagination {
@@ -149,8 +148,26 @@
       max-width: 100%;
       display: block;
 
-      .swiper-pagination-bullet {
+      & > .swiper-pagination-bullet {
+        transform: scale(1);
+        opacity: .6;
+        pointer-events: auto;
+        height: var(--wp--custom--slider--bullet--height, 10px);
+        width: auto;
         aspect-ratio: 1/1;
+        margin: 0 var(--wp--custom--slider--bullet--gap, 5px);
+        background-color: var(--wp--custom--slider--bullet--background, var(--wp--preset--color--primary, currentColor));
+        border-color: var(--wp--custom--slider--bullet--border--color, var(--wp--preset--color--primary, currentColor));
+        border-width: var(--wp--custom--slider--bullet--border--width, 1px);
+        border-style: var(--wp--custom--slider--bullet--border--style, none);
+
+        &.swiper-pagination-bullet-active {
+          opacity: 1;
+          background-color: var(--wp--custom--slider--bullet--active--background, var(--wp--preset--color--primary, currentColor));
+          border-color: var(--wp--custom--slider--bullet--active--border--color, var(--wp--preset--color--primary, currentColor));
+          border-width: var(--wp--custom--slider--bullet--active--border--width, 1px);
+          border-style: var(--wp--custom--slider--bullet--active--border--style, none);
+        }
       }
     }
 

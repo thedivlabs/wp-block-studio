@@ -107,11 +107,18 @@ export function getSliderArgs(attributes) {
 
     const breakpoint = attributes?.breakpoint ?? 992;
 
+    const slidesPerViewMobile = parseInt(options?.['slides-mobile'] ?? options?.['slides-large'] ?? 1);
+    const slidesPerViewLarge = parseInt(options?.['slides-large'] ?? options?.['slides-mobile'] ?? 1);
+    const slidesPerGroupMobile = parseInt(options?.['group-mobile'] ?? options?.['group-large'] ?? 1);
+    const slidesPerGroupLarge = parseInt(options?.['group-large'] ?? options?.['group-mobile'] ?? 1);
+    const spaceBetweenMobile = parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0);
+    const spaceBetweenLarge = parseInt(options?.['margin-large'] ?? options?.['margin-mobile'] ?? 0);
+
     let args = {
         enabled: true,
-        slidesPerView: parseInt(options['slides-mobile'] || options['slides-large'] || 1),
-        slidesPerGroup: parseInt(options?.['group-mobile'] ?? options?.['group-large'] ?? 1),
-        spaceBetween: parseInt(options?.['margin-mobile'] ?? options?.['margin-large'] ?? 0),
+        slidesPerView: slidesPerViewMobile,
+        slidesPerGroup: slidesPerGroupMobile,
+        spaceBetween: spaceBetweenMobile,
         autoplay: (options?.['autoplay'] ?? 0) > 0 ? {
             delay: options?.['autoplay'] * 1000,
             pauseOnMouseEnter: !!options['hover-pause']
@@ -132,9 +139,9 @@ export function getSliderArgs(attributes) {
     };
 
     let breakpointArgs = {
-        slidesPerView: parseInt(options?.['slides-large'] ?? options?.['slides-mobile'] ?? 1),
-        slidesPerGroup: parseInt(options?.['group-mobile'] ?? 1),
-        spaceBetween: parseInt(options?.['margin-large'] ?? options?.['margin-mobile'] ?? 0),
+        slidesPerView: slidesPerViewLarge,
+        slidesPerGroup: slidesPerGroupLarge,
+        spaceBetween: spaceBetweenLarge,
     };
 
     if (!!options?.['collapse']) {

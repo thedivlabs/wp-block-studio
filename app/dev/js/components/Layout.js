@@ -55,6 +55,7 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'border-mobile',
         'offset-height',
         'offset-height-mobile',
         'gap-mobile',
@@ -257,6 +258,7 @@ const MemoBorderControl = React.memo(({label, value, callback, colors}) => (
         disableCustomColors={false}
         colors={colors}
         withSlider={true}
+        isStyleSettable={true}
         onChange={callback}
         __experimentalIsRenderedInSidebar={true}
         __next40pxDefaultSize
@@ -376,6 +378,9 @@ function parseSpecial(prop, attributes) {
                 'margin-bottom': settings[prop]?.bottom,
                 'margin-left': settings[prop]?.left,
             }).filter(([k, v]) => !!v))
+            break;
+        case 'border':
+            result = {border: Object.values(settings[prop]).join(' ')}
             break;
         case 'padding':
             result = Object.fromEntries(Object.entries({
@@ -1841,19 +1846,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                         </ToolsPanelItem>
 
                         <ToolsPanelItem
-                            hasValue={() => !!settings?.['outline-mobile']}
-                            label={'Outline'}
-                            onDeselect={() => updateProp({['outline-mobile']: ''})}
-                        >
-                            <MemoBorderControl
-                                colors={editorColors}
-                                label={'Outline'}
-                                value={settings?.['outline-mobile']}
-                                callback={(newValue) => updateProp({'outline-mobile': newValue})}
-                            />
-                        </ToolsPanelItem>
-
-                        <ToolsPanelItem
                             style={{gridColumn: 'span 1'}}
                             hasValue={() => !!settings?.['offset-header-mobile']}
                             label={'Offset Header'}
@@ -1893,6 +1885,19 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label={'Outline'}
                                 value={settings?.['outline-mobile']}
                                 callback={(newValue) => updateProp({'outline-mobile': newValue})}
+                            />
+                        </ToolsPanelItem>
+
+
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['border-mobile']}
+                            label={'Border'}
+                            onDeselect={() => updateProp({['border-mobile']: ''})}
+                        >
+                            <MemoBorderControl
+                                label={'Border'}
+                                value={settings?.['border-mobile']}
+                                callback={(newValue) => updateProp({'border-mobile': newValue})}
                             />
                         </ToolsPanelItem>
 

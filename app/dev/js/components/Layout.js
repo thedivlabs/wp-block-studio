@@ -56,6 +56,7 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'border-radius-mobile',
         'border-mobile',
         'offset-height',
         'offset-height-mobile',
@@ -355,6 +356,9 @@ function parseSpecial(prop, attributes) {
     let result = {};
 
     switch (parsedProp) {
+        case 'border-radius':
+            result = {'border-radius': Object.values(value).join(' ')};
+            break;
         case 'mask-image':
             const imageUrl = value?.sizes?.full?.url || '#';
             result = {

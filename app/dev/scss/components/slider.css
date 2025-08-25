@@ -2,9 +2,15 @@
   height: auto;
 }
 
+.swiper:not(.swiper--init) .swiper-wrapper {
+  width: 100%;
+}
+
 .swiper .swiper-wrapper {
   min-width: 100%;
   display: flex;
+  align-self: flex-start;
+  justify-self: flex-start;
 }
 
 .swiper .swiper-slide {
@@ -13,7 +19,7 @@
   margin-right: var(--margin, 0px);
 }
 
-.swiper:not(.swiper-initialized) .swiper-slide {
+.swiper:not(.swiper--init) .swiper-slide {
   max-width: calc((100% - (var(--margin, 0px) * (var(--slides, 1) - 1))) / var(--slides, 1));
 }
 

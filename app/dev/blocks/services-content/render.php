@@ -8,6 +8,12 @@ if ( empty( $settings ) ) {
 
 $type       = $settings['type'] ?? false;
 $service_id = ( $settings['service-id'] ?? false ) == 'current' ? get_the_ID() : intval( $settings['service-id'] ?? false );
+$is_image   = in_array( $type, [
+	'poster',
+	'thumbnail',
+	'cta-image',
+	'featured-image',
+], true );
 
 if ( ! $type || ! $service_id ) {
 	return;
@@ -39,7 +45,8 @@ if ( empty( $dynamic_content ) ) {
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
-		'wpbs-services-content inline-block',
+		'wpbs-services-content',
+		$is_image ? 'flex overflow-hidden' : 'inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),

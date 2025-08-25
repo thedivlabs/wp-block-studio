@@ -14,6 +14,12 @@ if ( ! is_a( $term, 'WP_Term' ) ) {
 
 $settings = $attributes['wpbs-term-content'] ?? false;
 $type     = $settings['type'] ?? false;
+$is_image = in_array( $type, [
+	'poster',
+	'thumbnail',
+	'cta-image',
+	'featured-image',
+], true );
 
 $term_ref = "{$term->taxonomy}_{$term->term_id}";
 
@@ -43,6 +49,7 @@ if ( empty( $dynamic_content ) ) {
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-term-content',
+		$is_image ? 'flex overflow-hidden' : 'inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		in_array( $type, [
 			'featured-image',

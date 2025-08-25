@@ -248,6 +248,7 @@ export const SWIPER_ARGS_VIEW = {
             if (swiper.enabled === false) {
                 swiper.el.classList.add('swiper--disabled');
             } else {
+                swiper.el.classList.add('swiper--init');
                 swiper.el.classList.remove('swiper--disabled');
             }
             if (swiper.slides.length < 2) {

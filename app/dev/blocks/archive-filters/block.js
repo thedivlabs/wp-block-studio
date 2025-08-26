@@ -24,7 +24,7 @@ function blockClassnames(attributes = {}, editor = false) {
     ].filter(x => x).join(' ');
 }
 
-const FilterFields = ({settings}) => {
+const FilterFields = ({settings, is_editor = false}) => {
 
     if (!settings?.type) return null;
 
@@ -38,7 +38,7 @@ const FilterFields = ({settings}) => {
 
     const showLabel = settings?.['label-position'] !== 'hidden';
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
-    const defaultValue = '#--' + settings.type.toUpperCase() + '--#';
+    const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
 
     switch (settings.type) {
         case 'sort':
@@ -212,7 +212,7 @@ registerBlockType(metadata.name, {
 
 
                 <nav {...blockProps}>
-                    <FilterFields settings={settings}/>
+                    <FilterFields settings={settings} is_editor={true}/>
                 </nav>
 
             </>

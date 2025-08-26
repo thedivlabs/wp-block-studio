@@ -1,0 +1,37 @@
+.wpbs-archive-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  gap: 0.75rem;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:not(.is-style-vertical) {
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2rem;
+      pointer-events: none;
+    }
+
+    &::before {
+      left: 0;
+      background: linear-gradient(to right, var(--background-color, #fff), transparent);
+    }
+
+    &::after {
+      right: 0;
+      background: linear-gradient(to left, var(--background-color, #fff), transparent);
+    }
+  }
+
+
+}

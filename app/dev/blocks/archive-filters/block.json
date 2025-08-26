@@ -1,0 +1,56 @@
+{
+  "apiVersion": 3,
+  "name": "wpbs/archive-filters",
+  "title": "Archive Filters",
+  "description": "Display archive filters",
+  "selectors": {
+    "root": ".wpbs-archive-filters"
+  },
+  "attributes": {
+    "uniqueId": {
+      "type": "string",
+      "show_in_rest": true
+    }
+  },
+  "styles": [
+    {
+      "name": "vertical",
+      "label": "Vertical"
+    }
+  ],
+  "supports": {
+    "layout": false,
+    "interactivity": true,
+    "color": {
+      "background": true,
+      "text": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "textAlign": true,
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "icon": "filter",
+  "style": "file:./block.css",
+  "viewScriptModule": "file:./view.js"
+}
+
+

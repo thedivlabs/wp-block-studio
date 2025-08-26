@@ -160,7 +160,7 @@ class WPBS_Loop {
 				'post_type'      => $query['post_type_filter'] ?? 'any',
 				'post__in'       => $post_ids,
 				'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-				'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
+				'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? 'post__in',
 				'order'          => $query['order'] ?? null,
 				'post__not_in'   => $query['post__not_in'] ?? [],
 				'paged'          => $query['paged'] ?? $page ?: 1,
@@ -173,20 +173,18 @@ class WPBS_Loop {
 
 		if ( ! empty( $query['loop_terms'] ) ) {
 
-			$terms = get_terms( array_filter( [
+			return get_terms( array_filter( [
 				'taxonomy'   => $query['taxonomy'] ?? false,
 				'hide_empty' => true,
 				'orderby'    => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
 				'order'      => $query['order'] ?? null,
 			] ) );
-
-			return $terms;
 		}
 
 		$query_args = [
 			'post_type'      => $query['post_type'] ?? 'post',
 			'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
-			'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
+			'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? 'post__in',
 			'order'          => $query['order'] ?? 'DESC',
 			'post__in'       => $query['post__in'] ?? [],
 			'post__not_in'   => $query['post__not_in'] ?? [],

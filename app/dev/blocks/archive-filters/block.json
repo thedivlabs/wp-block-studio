@@ -15,12 +15,6 @@
       "show_in_rest": true
     }
   },
-  "styles": [
-    {
-      "name": "vertical",
-      "label": "Vertical"
-    }
-  ],
   "supports": {
     "layout": false,
     "interactivity": true,

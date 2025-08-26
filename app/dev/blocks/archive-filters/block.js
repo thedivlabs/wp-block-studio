@@ -47,7 +47,8 @@ const FilterFields = ({settings, is_editor = false}) => {
                     <label htmlFor="wpbs-archive-filters-sort" className={labelClass}>
                         {settings?.label ?? 'Sort By'}
                     </label>
-                    <select id="wpbs-archive-filters-sort" defaultValue={defaultValue}>
+                    <select id="wpbs-archive-filters-sort" className={'wpbs-archive-filters__input'}
+                            defaultValue={defaultValue}>
                         <option value="">{settings?.placeholder ?? 'Select'}</option>
                         {sortOptions.map(opt => (
                             <option key={opt.value} value={opt.value}>
@@ -67,12 +68,13 @@ const FilterFields = ({settings, is_editor = false}) => {
                     <input
                         type="text"
                         id="wpbs-archive-filters-search"
+                        className={'wpbs-archive-filters__input'}
                         defaultValue={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
                     />
                     <button
                         type="button"
-                        className="wpbs-search-submit"
+                        className="wpbs-archive-filters__submit"
                         dangerouslySetInnerHTML={{__html: settings?.button ?? 'Search'}}
                     />
                 </>

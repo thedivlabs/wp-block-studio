@@ -6,7 +6,7 @@
   "selectors": {
     "root": ".wpbs-archive-filters",
     "spacing": ".wpbs-archive-filters__input",
-    "color": ".wpbs-archive-filters select",
+    "color": ".wpbs-archive-filters__input",
     "border": ".wpbs-archive-filters__input"
   },
   "attributes": {

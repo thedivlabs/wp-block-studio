@@ -9,18 +9,32 @@ import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalGrid as Grid, PanelBody, SelectControl, TextControl,
+    __experimentalBorderControl as BorderControl,
+    __experimentalBoxControl as BoxControl,
+    __experimentalGrid as Grid,
+    __experimentalUnitControl as UnitControl, BorderBoxControl,
+    PanelBody,
+    SelectControl, TabPanel,
+    TextControl,
+    ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
+import {BORDER_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 
 function blockClassnames(attributes = {}, editor = false) {
 
     const {'wpbs-archive-filters': settings = {}} = attributes;
 
-    return [
+    const result = [
         'wpbs-archive-filters',
         attributes?.uniqueId ?? null,
-    ].filter(x => x).join(' ');
+    ];
+
+    if (!!settings?.['label-position'] && settings?.['label-position'] !== 'hidden') {
+        result.push('--label-' + settings['label-position']);
+    }
+
+    return result.filter(x => x).join(' ');
 }
 
 const FilterFields = ({settings, uniqueId, is_editor = false}) => {
@@ -42,13 +56,13 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
 
     switch (settings.type) {
         case 'sort':
-            return (
-                <>
-                    <label htmlFor={fieldId} className={labelClass}>
-                        {settings?.label ?? 'Sort By'}
-                    </label>
-                    <select id={fieldId} className={'wpbs-archive-filters__input'}
-                            defaultValue={defaultValue}>
+            return <>
+
+                <span className={labelClass} dangerouslySetInnerHTML={{__html: settings?.label ?? 'Sort By'}}/>
+                <div className={'wpbs-archive-filters__input .--select'}>
+                    {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
+                    <select
+                        defaultValue={defaultValue}>
                         <option value="">{settings?.placeholder ?? 'Select'}</option>
                         {sortOptions.map(opt => (
                             <option key={opt.value} value={opt.value}>
@@ -56,19 +70,18 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                             </option>
                         ))}
                     </select>
-                </>
-            );
+                </div>
+
+            </>;
 
         case 'search':
-            return (
-                <>
-                    <label htmlFor={fieldId} className={labelClass}>
-                        {settings?.label ?? 'Search'}
-                    </label>
+            return <>
+
+                <span className={labelClass} dangerouslySetInnerHTML={{__html: settings?.label ?? 'Search'}}/>
+                <div className={'wpbs-archive-filters__input .--search'}>
+                    {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
                     <input
                         type="text"
-                        id={fieldId}
-                        className={'wpbs-archive-filters__input'}
                         defaultValue={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
                     />
@@ -77,8 +90,8 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         className="wpbs-archive-filters__submit"
                         dangerouslySetInnerHTML={{__html: settings?.button ?? 'Search'}}
                     />
-                </>
-            );
+                </div>
+            </>;
 
         default:
             return null;
@@ -105,10 +118,10 @@ registerBlockType(metadata.name, {
             return Object.fromEntries(
                 Object.entries({
                     '--overlay-color': settings?.['overlay-color'],
+                    '--prefix': settings?.['prefix'],
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings?.['overlay-color']]);
-
 
         const blockProps = useBlockProps({className: blockClassnames(attributes, true)});
 
@@ -121,8 +134,172 @@ registerBlockType(metadata.name, {
 
             setAttributes({'wpbs-archive-filters': result});
 
-        }, [setAttributes, settings])
+        }, [setAttributes, settings]);
 
+        const editorColors = useMemo(() => {
+            return wp.data.select('core/editor').getEditorSettings().colors || [];
+        }, []);
+
+        const tabOptions = <Grid columnGap={15} columns={1} rowGap={20}>
+
+            <SelectControl
+                __next40pxDefaultSize
+                label="Type"
+                value={settings?.type}
+                options={[
+                    {label: 'Select', value: ''},
+                    {label: 'Sort', value: 'sort'},
+                    {label: 'Search', value: 'search'}
+                ]}
+                onChange={(newValue) => updateSettings({'type': newValue})}
+                __nextHasNoMarginBottom
+            />
+
+            <TextControl
+                __nextHasNoMarginBottom
+                __next40pxDefaultSize
+                label="Label"
+                value={settings?.label}
+                onChange={(newValue) => updateSettings({'label': newValue})}
+            />
+            <TextControl
+                __nextHasNoMarginBottom
+                __next40pxDefaultSize
+                label="Placeholder"
+                value={settings?.placeholder}
+                onChange={(newValue) => updateSettings({'placeholder': newValue})}
+            />
+
+            {settings?.type === 'search' ? <TextControl
+                __nextHasNoMarginBottom
+                __next40pxDefaultSize
+                label="Button"
+                value={settings?.button}
+                onChange={(newValue) => updateSettings({'button': newValue})}
+            /> : null}
+
+
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'background',
+                        label: 'Background',
+                        value: settings?.['active-background-color'],
+                        onChange: (newValue) => updateSettings({'active-background-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'text',
+                        label: 'Text',
+                        value: settings?.['active-text-color'],
+                        onChange: (newValue) => updateSettings({'active-text-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'label',
+                        label: 'Label',
+                        value: settings?.['active-label-color'],
+                        onChange: (newValue) => updateSettings({'active-label-color': newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
+
+            <BorderBoxControl
+                label={'Border'}
+                value={settings?.['border']}
+                enableAlpha={true}
+                enableStyle={true}
+                disableCustomColors={false}
+                colors={editorColors}
+                withSlider={true}
+                isStyleSettable={true}
+                onChange={(newValue) => updateSettings({'border': newValue})}
+                __experimentalIsRenderedInSidebar={true}
+                __next40pxDefaultSize
+                sides={['top', 'right', 'bottom', 'left']}
+            />
+
+            <Grid columnGap={15} columns={2} rowGap={20}>
+                <SelectControl
+                    __next40pxDefaultSize
+                    label="Label Position"
+                    value={settings?.['label-position']}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Top', value: 'top'},
+                        {label: 'Bottom', value: 'bottom'},
+                        {label: 'Hidden', value: 'hidden'},
+                    ]}
+                    onChange={(newValue) => updateSettings({'label-position': newValue})}
+                    __nextHasNoMarginBottom
+                />
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Prefix Icon"
+                    value={settings?.prefix}
+                    onChange={(newValue) => updateSettings({prefix: newValue})}
+                />
+
+                <UnitControl
+                    label="Radius"
+                    value={settings?.radius}
+                    onChange={(newValue) => updateSettings({radius: newValue})}
+                    units={BORDER_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            </Grid>
+
+
+        </Grid>;
+        const tabActive = <Grid columnGap={15} columns={1} rowGap={20}>
+
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'border',
+                        label: 'Border',
+                        value: settings?.['active-border-color'],
+                        onChange: (newValue) => updateSettings({'active-border-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'background',
+                        label: 'Background',
+                        value: settings?.['active-background-color'],
+                        onChange: (newValue) => updateSettings({'active-background-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'text',
+                        label: 'Text',
+                        value: settings?.['active-text-color'],
+                        onChange: (newValue) => updateSettings({'active-text-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'label',
+                        label: 'Label',
+                        value: settings?.['active-label-color'],
+                        onChange: (newValue) => updateSettings({'active-label-color': newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
+
+
+        </Grid>;
+        const tabs = {
+            options: tabOptions,
+            active: tabActive,
+        }
 
         return (
             <>
@@ -130,79 +307,26 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="styles">
 
                     <PanelBody initialOpen={true}>
-
-                        <Grid columnGap={15} columns={1} rowGap={20}>
-
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Type"
-                                value={settings?.type}
-                                options={[
-                                    {label: 'Select', value: ''},
-                                    {label: 'Sort', value: 'sort'},
-                                    {label: 'Search', value: 'search'}
-                                ]}
-                                onChange={(newValue) => updateSettings({'type': newValue})}
-                                __nextHasNoMarginBottom
-                            />
-
-                            <TextControl
-                                __nextHasNoMarginBottom
-                                __next40pxDefaultSize
-                                label="Label"
-                                value={settings?.label}
-                                onChange={(newValue) => updateSettings({'label': newValue})}
-                            />
-                            <TextControl
-                                __nextHasNoMarginBottom
-                                __next40pxDefaultSize
-                                label="Placeholder"
-                                value={settings?.placeholder}
-                                onChange={(newValue) => updateSettings({'placeholder': newValue})}
-                            />
-
-                            {settings?.type === 'search' ? <TextControl
-                                __nextHasNoMarginBottom
-                                __next40pxDefaultSize
-                                label="Button"
-                                value={settings?.button}
-                                onChange={(newValue) => updateSettings({'button': newValue})}
-                            /> : null}
-
-
-                            <PanelColorSettings
-                                enableAlpha
-                                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                                colorSettings={[
-                                    {
-                                        slug: 'overlay',
-                                        label: 'Overlay',
-                                        value: settings?.['overlay-color'],
-                                        onChange: (newValue) => updateSettings({'overlay-color': newValue}),
-                                        isShownByDefault: true
-                                    }
-                                ]}
-                            />
-
-                            <Grid columnGap={15} columns={2} rowGap={20}>
-                                <SelectControl
-                                    __next40pxDefaultSize
-                                    label="Label Position"
-                                    value={settings?.['label-position']}
-                                    options={[
-                                        {label: 'Select', value: ''},
-                                        {label: 'Top', value: 'top'},
-                                        {label: 'Bottom', value: 'bottom'},
-                                        {label: 'Hidden', value: 'hidden'},
-                                    ]}
-                                    onChange={(newValue) => updateSettings({'label-position': newValue})}
-                                    __nextHasNoMarginBottom
-                                />
-                            </Grid>
-
-
-                        </Grid>
-
+                        <TabPanel
+                            className="wpbs-editor-tabs"
+                            activeClass="active"
+                            orientation="horizontal"
+                            initialTabName="options"
+                            tabs={[
+                                {
+                                    name: 'options',
+                                    title: 'Options',
+                                    className: 'tab-options',
+                                }, {
+                                    name: 'active',
+                                    title: 'Active',
+                                    className: 'tab-active',
+                                }
+                            ]}>
+                            {
+                                (tab) => (<>{tabs[tab.name]}</>)
+                            }
+                        </TabPanel>
                     </PanelBody>
 
                 </InspectorControls>
@@ -213,9 +337,9 @@ registerBlockType(metadata.name, {
                 />
 
 
-                <nav {...blockProps}>
+                <label {...blockProps}>
                     <FilterFields settings={settings} is_editor={true} uniqueId={uniqueId}/>
-                </nav>
+                </label>
 
             </>
         )
@@ -229,9 +353,9 @@ registerBlockType(metadata.name, {
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <nav {...blockProps}>
+        return <label {...blockProps}>
             <FilterFields settings={props.attributes?.['wpbs-archive-filters']} uniqueId={props.attributes?.uniqueId}/>
-        </nav>;
+        </label>;
     }
 })
 

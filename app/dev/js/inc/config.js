@@ -158,9 +158,9 @@ export const REL_OPTIONS = [
 ];
 
 export const DIMENSION_UNITS_TEXT = [
+    {value: 'rem', label: 'rem', default: 0},
     {value: 'px', label: 'px', default: 0},
     {value: 'em', label: 'em', default: 0},
-    {value: 'rem', label: 'rem', default: 0},
 ];
 
 export const ICON_STYLES = [

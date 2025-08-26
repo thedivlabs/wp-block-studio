@@ -3,11 +3,6 @@
   "name": "wpbs/archive-filters",
   "title": "Archive Filters",
   "description": "Display archive filters",
-  "selectors": {
-    "root": ".wpbs-archive-filters",
-    "color": ".wpbs-archive-filters__input",
-    "border": ".wpbs-archive-filters__input"
-  },
   "attributes": {
     "uniqueId": {
       "type": "string",
@@ -18,22 +13,15 @@
     "layout": false,
     "interactivity": true,
     "color": {
-      "background": true,
       "text": true,
-      "gradients": true
+      "background": false
     },
     "spacing": {
       "blockGap": [
         "horizontal",
         "vertical"
       ],
-      "padding": true,
       "margin": true
-    },
-    "__experimentalBorder": {
-      "size": true,
-      "color": true,
-      "radius": true
     },
     "typography": {
       "__experimentalFontFamily": true,

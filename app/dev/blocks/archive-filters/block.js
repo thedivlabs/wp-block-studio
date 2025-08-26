@@ -35,7 +35,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
         {label: 'Title Z → A', value: 'title-desc'}, // order=desc&orderby=title
     ];
 
-    const showLabel = settings?.['label-position'] !== 'hidden';
+    const showLabel = settings?.['label-position'] !== 'hidden' && !!settings?.label;
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
     const fieldId = [uniqueId, settings.type].filter(x => x).join('-');

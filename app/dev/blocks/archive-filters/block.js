@@ -203,7 +203,21 @@ registerBlockType(metadata.name, {
                         value: settings?.['active-label-color'],
                         onChange: (newValue) => updateSettings({'active-label-color': newValue}),
                         isShownByDefault: true
-                    }
+                    },
+                    {
+                        slug: 'button',
+                        label: 'Button',
+                        value: settings?.['active-button-color'],
+                        onChange: (newValue) => updateSettings({'active-button-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'button-text',
+                        label: 'Button Text',
+                        value: settings?.['active-button-text-color'],
+                        onChange: (newValue) => updateSettings({'active-button-text-color': newValue}),
+                        isShownByDefault: true
+                    },
                 ]}
             />
 
@@ -255,8 +269,18 @@ registerBlockType(metadata.name, {
                 />
             </Grid>
 
+            <Grid columnGap={15} columns={2} rowGap={20} style={{marginTop: '20px'}}>
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Grow"
+                    checked={!!settings?.grow}
+                    onChange={(newValue) => updateSettings({grow: newValue})}
+                />
+            </Grid>
 
         </Grid>;
+
         const tabActive = <Grid columnGap={15} columns={1} rowGap={20}>
 
             <PanelColorSettings
@@ -268,6 +292,20 @@ registerBlockType(metadata.name, {
                         label: 'Border',
                         value: settings?.['active-border-color'],
                         onChange: (newValue) => updateSettings({'active-border-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'button',
+                        label: 'Button',
+                        value: settings?.['active-button-color'],
+                        onChange: (newValue) => updateSettings({'active-button-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'button-text',
+                        label: 'Button Text',
+                        value: settings?.['active-button-text-color'],
+                        onChange: (newValue) => updateSettings({'active-button-text-color': newValue}),
                         isShownByDefault: true
                     },
                     {
@@ -296,9 +334,56 @@ registerBlockType(metadata.name, {
 
 
         </Grid>;
+
+        const tabHover = <Grid columnGap={15} columns={1} rowGap={20}>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'border',
+                        label: 'Border',
+                        value: settings?.['hover-border-color'],
+                        onChange: (newValue) => updateSettings({'hover-border-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'button',
+                        label: 'Button',
+                        value: settings?.['hover-button-color'],
+                        onChange: (newValue) => updateSettings({'hover-button-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'button-text',
+                        label: 'Button Text',
+                        value: settings?.['hover-button-text-color'],
+                        onChange: (newValue) => updateSettings({'hover-button-text-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'background',
+                        label: 'Background',
+                        value: settings?.['hover-background-color'],
+                        onChange: (newValue) => updateSettings({'hover-background-color': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'text',
+                        label: 'Text',
+                        value: settings?.['hover-text-color'],
+                        onChange: (newValue) => updateSettings({'hover-text-color': newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
+        </Grid>;
+
+
         const tabs = {
             options: tabOptions,
             active: tabActive,
+            hover: tabHover,
         }
 
         return (

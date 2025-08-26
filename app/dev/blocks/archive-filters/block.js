@@ -10,11 +10,8 @@ import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalUnitControl as UnitControl,
-    __experimentalGrid as Grid,
-    __experimentalNumberControl as NumberControl, PanelBody, ToggleControl, CheckboxControl,
+    __experimentalGrid as Grid, PanelBody, CheckboxControl,
 } from "@wordpress/components";
-import {DIMENSION_UNITS} from "Includes/config";
 import {useUniqueId} from "Includes/helper";
 
 function blockClassnames(attributes = {}, editor = false) {
@@ -23,10 +20,7 @@ function blockClassnames(attributes = {}, editor = false) {
 
     return [
         'wpbs-archive-filters',
-        'flex w-full relative',
         attributes?.uniqueId ?? null,
-        !!settings?.fade ? '--fade' : null,
-        !!editor ? '--editor' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -48,10 +42,10 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    '--background-color': attributes?.styles?.backgroundColor ?? null,
+                    '--overlay-color': settings?.['overlay-color'],
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
-        }, [attributes?.styles?.backgroundColor]);
+        }, [settings?.['overlay-color']]);
 
 
         const blockProps = useBlockProps({className: blockClassnames(attributes, true)});
@@ -68,10 +62,10 @@ registerBlockType(metadata.name, {
         }, [setAttributes, settings])
 
         const options = [
-            {label: 'Option 1', value: 'option1'},
-            {label: 'Option 2', value: 'option2'},
-            {label: 'Option 3', value: 'option3'},
+            {label: 'Order', value: 'order'},
+            {label: 'Orderby', value: 'orderby'},
         ];
+
 
         return (
             <>
@@ -86,13 +80,13 @@ registerBlockType(metadata.name, {
                                 <CheckboxControl
                                     key={opt.value}
                                     label={opt.label}
-                                    checked={settings?.['filters'].includes(opt.value)}
+                                    checked={(settings?.['filters'] || []).includes(opt.value)}
                                     onChange={(isChecked) => {
                                         let newFilters;
                                         if (isChecked) {
-                                            newFilters = [...(settings.filters || []), opt.value];
+                                            newFilters = [...(settings?.filters || []), opt.value];
                                         } else {
-                                            newFilters = settings.filters.filter((v) => v !== opt.value);
+                                            newFilters = (settings?.filters || []).filter((v) => v !== opt.value);
                                         }
                                         // call your callback
                                         updateSettings({filters: newFilters});
@@ -108,8 +102,8 @@ registerBlockType(metadata.name, {
                                     {
                                         slug: 'overlay',
                                         label: 'Overlay',
-                                        value: settings?.['overlay'],
-                                        onChange: (newValue) => updateSettings({'overlay': newValue}),
+                                        value: settings?.['overlay-color'],
+                                        onChange: (newValue) => updateSettings({'overlay-color': newValue}),
                                         isShownByDefault: true
                                     }
                                 ]}
@@ -126,9 +120,7 @@ registerBlockType(metadata.name, {
                 />
 
 
-                <nav {...blockProps}>
-                    <div {...innerBlocksProps} />
-                </nav>
+                <nav {...blockProps}>FILTERS</nav>
 
             </>
         )
@@ -137,20 +129,12 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: blockClassnames(props.attributes),
-            'data-wp-interactive': 'wpbs/flyout',
-            'data-wp-on--click': 'actions.toggle',
-            'data-wp-class--active': 'state.active',
-            'data-wp-state': 'active',
+            'data-wp-interactive': 'wpbs/archive-filters',
+            'aria-label': 'Archive Filters',
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        const innerBlocksProps = useInnerBlocksProps.save({
-            className: 'wpbs-archive-filters__container'
-        });
-
-        return <nav {...blockProps}>
-            <div {...innerBlocksProps} />
-        </nav>;
+        return <nav {...blockProps}>FILTERS</nav>;
     }
 })
 

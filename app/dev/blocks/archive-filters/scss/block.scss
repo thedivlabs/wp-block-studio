@@ -24,12 +24,12 @@
 
     &::before {
       left: 0;
-      background: linear-gradient(to right, var(--background-color, #fff), transparent);
+      background: linear-gradient(to right, var(--overlay-color, #fff), transparent);
     }
 
     &::after {
       right: 0;
-      background: linear-gradient(to left, var(--background-color, #fff), transparent);
+      background: linear-gradient(to left, var(--overlay-color, #fff), transparent);
     }
   }
 

@@ -267,6 +267,15 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+
+
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Button Icon"
+                    value={settings?.['button-icon']}
+                    onChange={(newValue) => updateSettings({'button-icon': newValue})}
+                />
             </Grid>
 
             <Grid columnGap={15} columns={2} rowGap={20} style={{marginTop: '20px'}}>

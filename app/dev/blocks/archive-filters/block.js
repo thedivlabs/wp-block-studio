@@ -3,14 +3,13 @@ import './scss/block.scss'
 import {
     InspectorControls, PanelColorSettings,
     useBlockProps,
-    useInnerBlocksProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalGrid as Grid, PanelBody, CheckboxControl, SelectControl, TextControl, ToggleControl,
+    __experimentalGrid as Grid, PanelBody, SelectControl, TextControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 
@@ -24,7 +23,7 @@ function blockClassnames(attributes = {}, editor = false) {
     ].filter(x => x).join(' ');
 }
 
-const FilterFields = ({settings, is_editor = false}) => {
+const FilterFields = ({settings, uniqueId, is_editor = false}) => {
 
     if (!settings?.type) return null;
 
@@ -39,15 +38,16 @@ const FilterFields = ({settings, is_editor = false}) => {
     const showLabel = settings?.['label-position'] !== 'hidden';
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
+    const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
 
     switch (settings.type) {
         case 'sort':
             return (
                 <>
-                    <label htmlFor="wpbs-archive-filters-sort" className={labelClass}>
+                    <label htmlFor={fieldId} className={labelClass}>
                         {settings?.label ?? 'Sort By'}
                     </label>
-                    <select id="wpbs-archive-filters-sort" className={'wpbs-archive-filters__input'}
+                    <select id={fieldId} className={'wpbs-archive-filters__input'}
                             defaultValue={defaultValue}>
                         <option value="">{settings?.placeholder ?? 'Select'}</option>
                         {sortOptions.map(opt => (
@@ -62,12 +62,12 @@ const FilterFields = ({settings, is_editor = false}) => {
         case 'search':
             return (
                 <>
-                    <label htmlFor="wpbs-archive-filters-search" className={labelClass}>
+                    <label htmlFor={fieldId} className={labelClass}>
                         {settings?.label ?? 'Search'}
                     </label>
                     <input
                         type="text"
-                        id="wpbs-archive-filters-search"
+                        id={fieldId}
                         className={'wpbs-archive-filters__input'}
                         defaultValue={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
@@ -214,7 +214,7 @@ registerBlockType(metadata.name, {
 
 
                 <nav {...blockProps}>
-                    <FilterFields settings={settings} is_editor={true}/>
+                    <FilterFields settings={settings} is_editor={true} uniqueId={uniqueId}/>
                 </nav>
 
             </>
@@ -230,7 +230,7 @@ registerBlockType(metadata.name, {
         });
 
         return <nav {...blockProps}>
-            <FilterFields settings={props.attributes?.['wpbs-archive-filters']}/>
+            <FilterFields settings={props.attributes?.['wpbs-archive-filters']} uniqueId={props.attributes?.uniqueId}/>
         </nav>;
     }
 })

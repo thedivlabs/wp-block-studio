@@ -4,7 +4,10 @@
   "title": "Archive Filters",
   "description": "Display archive filters",
   "selectors": {
-    "root": ".wpbs-archive-filters"
+    "root": ".wpbs-archive-filters",
+    "spacing": ".wpbs-archive-filters__input",
+    "color": ".wpbs-archive-filters__input",
+    "border": ".wpbs-archive-filters__input"
   },
   "attributes": {
     "uniqueId": {

@@ -12,7 +12,7 @@ import React, {useCallback, useMemo} from "react";
 import {
     __experimentalUnitControl as UnitControl,
     __experimentalGrid as Grid,
-    __experimentalNumberControl as NumberControl, PanelBody, ToggleControl,
+    __experimentalNumberControl as NumberControl, PanelBody, ToggleControl, CheckboxControl,
 } from "@wordpress/components";
 import {DIMENSION_UNITS} from "Includes/config";
 import {useUniqueId} from "Includes/helper";
@@ -46,20 +46,15 @@ registerBlockType(metadata.name, {
         const {'wpbs-archive-filters': settings = {}} = attributes;
 
         const cssProps = useMemo(() => {
-            return Object.fromEntries(Object.entries({
-                '--container-width': settings?.['max-width'] ?? null,
-                '--blur': settings?.['blur'] ?? null,
-                '--grayscale': settings?.['grayscale'] ?? null,
-                '--animation': settings?.['animation'] ?? null,
-                '--overlay': settings?.['overlay'] ?? null,
-            }).filter(x => x));
-        }, [settings]);
+            return Object.fromEntries(
+                Object.entries({
+                    '--background-color': attributes?.styles?.backgroundColor ?? null,
+                }).filter(([key, value]) => value != null) // keep only entries with a value
+            );
+        }, [attributes?.styles?.backgroundColor]);
+
 
         const blockProps = useBlockProps({className: blockClassnames(attributes, true)});
-
-        const innerBlocksProps = useInnerBlocksProps({
-            className: 'wpbs-archive-filters__container'
-        });
 
         const updateSettings = useCallback((newValue) => {
 
@@ -72,6 +67,11 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, settings])
 
+        const options = [
+            {label: 'Option 1', value: 'option1'},
+            {label: 'Option 2', value: 'option2'},
+            {label: 'Option 3', value: 'option3'},
+        ];
 
         return (
             <>
@@ -82,64 +82,24 @@ registerBlockType(metadata.name, {
 
                         <Grid columnGap={20} columns={1} rowGap={20}>
 
-                            <Grid columnGap={20} columns={2} rowGap={15}>
-
-                                <UnitControl
-                                    label="Max-Width"
-                                    value={settings?.['max-width']}
-                                    onChange={(newValue) => updateSettings({'max-width': newValue})}
-                                    units={DIMENSION_UNITS}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
+                            {options.map((opt) => (
+                                <CheckboxControl
+                                    key={opt.value}
+                                    label={opt.label}
+                                    checked={settings?.['filters'].includes(opt.value)}
+                                    onChange={(isChecked) => {
+                                        let newFilters;
+                                        if (isChecked) {
+                                            newFilters = [...(settings.filters || []), opt.value];
+                                        } else {
+                                            newFilters = settings.filters.filter((v) => v !== opt.value);
+                                        }
+                                        // call your callback
+                                        updateSettings({filters: newFilters});
+                                    }}
                                 />
+                            ))}
 
-                                <NumberControl
-                                    label="Grayscale"
-                                    step={.1}
-                                    min={0}
-                                    max={1}
-                                    value={settings?.['grayscale']}
-                                    onChange={(newValue) => updateSettings({'grayscale': newValue})}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <UnitControl
-                                    label="Blur"
-                                    value={settings?.['blur']}
-                                    step={1}
-                                    onChange={(newValue) => updateSettings({'blur': newValue})}
-                                    units={[
-                                        {value: 'px', label: 'px', default: 0}
-                                    ]}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <UnitControl
-
-                                    label="Animation"
-                                    value={settings?.['animation']}
-                                    step={50}
-                                    min={100}
-                                    onChange={(newValue) => updateSettings({'animation': newValue})}
-                                    units={[
-                                        {value: 'ms', label: 'ms', default: 100}
-                                    ]}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-
-                            </Grid>
-
-                            <Grid columnGap={20} columns={2} rowGap={15} style={{marginTop: '15px'}}>
-                                <ToggleControl
-
-                                    label="Fade"
-                                    checked={!!settings?.['fade']}
-                                    onChange={(newValue) => updateSettings({'fade': newValue})}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                            </Grid>
 
                             <PanelColorSettings
                                 enableAlpha

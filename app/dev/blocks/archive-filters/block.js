@@ -38,6 +38,7 @@ const FilterFields = ({settings}) => {
 
     const showLabel = settings?.['label-position'] !== 'hidden';
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
+    const defaultValue = '#--' + settings.type.toUpperCase() + '--#';
 
     switch (settings.type) {
         case 'sort':
@@ -46,7 +47,7 @@ const FilterFields = ({settings}) => {
                     <label htmlFor="wpbs-archive-filters-sort" className={labelClass}>
                         {settings?.label ?? 'Sort By'}
                     </label>
-                    <select id="wpbs-archive-filters-sort" defaultValue={'#--SORT--#'}>
+                    <select id="wpbs-archive-filters-sort" defaultValue={defaultValue}>
                         <option value="">{settings?.placeholder ?? 'Select'}</option>
                         {sortOptions.map(opt => (
                             <option key={opt.value} value={opt.value}>
@@ -66,16 +67,14 @@ const FilterFields = ({settings}) => {
                     <input
                         type="text"
                         id="wpbs-archive-filters-search"
-                        defaultValue={'#--SEARCH--#'}
+                        defaultValue={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
                     />
                     <button
                         type="button"
                         className="wpbs-search-submit"
-                        dangerouslySetInnerHTML={{__html: settings?.button || 'Search'}}
-                    >
-                        Search
-                    </button>
+                        dangerouslySetInnerHTML={{__html: settings?.button ?? 'Search'}}
+                    />
                 </>
             );
 

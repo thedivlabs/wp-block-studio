@@ -188,16 +188,18 @@ export const LoopControls = ({attributes, setAttributes}) => {
         );
     }
 
-    const postTypeOptions = () => {
+    const postTypeOptions = (suppress = []) => {
         return [
             {value: 0, label: 'Select a post type'},
             {value: 'current', label: 'Current'},
             {value: 'related', label: 'Related'},
-            ...(loop?.postTypes ?? []).map((postType) => {
-                return {value: postType.slug, label: postType.name};
-            })
-        ];
-    }
+            ...(loop?.postTypes ?? []).map((postType) => ({
+                value: postType.slug,
+                label: postType.name,
+            })),
+        ].filter(option => !suppress.includes(option.value));
+    };
+
 
     const taxonomyOptions = () => {
         return [
@@ -238,6 +240,24 @@ export const LoopControls = ({attributes, setAttributes}) => {
             __next40pxDefaultSize
             __nextHasNoMarginBottom
         />
+        <Grid columns={1} columnGap={15} rowGap={20}
+              style={queryArgs?.post_type !== 'related' ? {
+                  display: 'none'
+              } : {}}>
+            <SelectControl
+                label={'Filter'}
+                value={queryArgs?.post_type_filter}
+                options={postTypeOptions(['current', 'related'])}
+                onChange={(newValue) => {
+                    updateSettings({
+                        post_type_filter: newValue
+                    });
+
+                }}
+                __next40pxDefaultSize
+                __nextHasNoMarginBottom
+            />
+        </Grid>
         <Grid columns={1} columnGap={15} rowGap={20}
               style={queryArgs?.post_type === 'current' ? {
                   opacity: .4,
@@ -336,6 +356,14 @@ export const LoopControls = ({attributes, setAttributes}) => {
                 checked={!!queryArgs?.loop_terms}
                 onChange={(newValue) => {
                     updateSettings({loop_terms: newValue});
+                }}
+            />
+            <ToggleControl
+                __nextHasNoMarginBottom
+                label="Menu Order"
+                checked={!!queryArgs?.menu_order}
+                onChange={(newValue) => {
+                    updateSettings({menu_order: newValue});
                 }}
             />
         </Grid>

@@ -12,6 +12,7 @@ class WPBS_Loop {
 	public bool $is_term_loop;
 	public bool $is_current;
 	public bool $is_related;
+	public bool $is_menu_order;
 	public bool $is_pagination;
 	public array|WP_Query $query;
 
@@ -28,6 +29,7 @@ class WPBS_Loop {
 			return;
 		}
 
+		$this->is_menu_order    = ! empty( $query['menu_order'] );
 		$this->is_term_loop     = ! empty( $query['loop_terms'] );
 		$this->is_current       = ( $query['post_type'] ?? false ) == 'current';
 		$this->is_related       = ( $query['post_type'] ?? false ) == 'related';
@@ -155,10 +157,10 @@ class WPBS_Loop {
 			$post_ids  = get_field( 'wpbs_related_posts', $field_ref ) ?: get_field( 'wpbs_related' ) ?: [];
 
 			return new WP_Query( array_filter( [
-				'post_type'      => 'any',
+				'post_type'      => $query['post_type_filter'] ?? 'any',
 				'post__in'       => $post_ids,
 				'posts_per_page' => $query['posts_per_page'] ?? get_option( 'posts_per_page' ),
-				'orderby'        => $query['orderby'] ?? null,
+				'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
 				'order'          => $query['order'] ?? null,
 				'post__not_in'   => $query['post__not_in'] ?? [],
 				'paged'          => $query['paged'] ?? $page ?: 1,
@@ -174,7 +176,7 @@ class WPBS_Loop {
 			$terms = get_terms( array_filter( [
 				'taxonomy'   => $query['taxonomy'] ?? false,
 				'hide_empty' => true,
-				'orderby'    => $query['orderby'] ?? null,
+				'orderby'    => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
 				'order'      => $query['order'] ?? null,
 			] ) );
 
@@ -184,7 +186,7 @@ class WPBS_Loop {
 		$query_args = [
 			'post_type'      => $query['post_type'] ?? 'post',
 			'posts_per_page' => intval( $query['posts_per_page'] ?? get_option( 'posts_per_page' ) ),
-			'orderby'        => $query['orderby'] ?? 'date',
+			'orderby'        => $this->is_menu_order ? 'menu_order' : $query['orderby'] ?? null,
 			'order'          => $query['order'] ?? 'DESC',
 			'post__in'       => $query['post__in'] ?? [],
 			'post__not_in'   => $query['post__not_in'] ?? [],

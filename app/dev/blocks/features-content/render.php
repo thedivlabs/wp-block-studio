@@ -82,7 +82,9 @@ switch ( $type ) {
 			$settings['resolution'] ?? false, $loading );
 		break;
 	default:
-		echo $dynamic_content;
+		if ( is_string( $dynamic_content ) ) {
+			echo $dynamic_content;
+		}
 }
 
 

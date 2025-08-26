@@ -15,8 +15,6 @@ const {state} = store('wpbs/review-gallery', {
                 return;
             }
 
-            console.log(JSON.parse(JSON.stringify(swiper_args)));
-
             WPBS.slider.observe(element, JSON.parse(JSON.stringify(swiper_args)));
 
 

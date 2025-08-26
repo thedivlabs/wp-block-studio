@@ -7,31 +7,5 @@
   gap: 0.75rem;
   position: relative;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  &:not(.is-style-vertical) {
-    &::before,
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 2rem;
-      pointer-events: none;
-    }
-
-    &::before {
-      left: 0;
-      background: linear-gradient(to right, var(--overlay-color, #fff), transparent);
-    }
-
-    &::after {
-      right: 0;
-      background: linear-gradient(to left, var(--overlay-color, #fff), transparent);
-    }
-  }
-
 
 }

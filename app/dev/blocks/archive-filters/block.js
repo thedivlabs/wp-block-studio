@@ -10,7 +10,7 @@ import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalGrid as Grid, PanelBody, CheckboxControl,
+    __experimentalGrid as Grid, PanelBody, CheckboxControl, SelectControl, TextControl, ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 
@@ -22,6 +22,67 @@ function blockClassnames(attributes = {}, editor = false) {
         'wpbs-archive-filters',
         attributes?.uniqueId ?? null,
     ].filter(x => x).join(' ');
+}
+
+const FilterFields = ({settings}) => {
+
+    if (!settings?.type) return null;
+
+    // Sort options mapping to both order & orderby
+    const sortOptions = [
+        {label: 'Latest', value: 'latest'},       // maps to order=date&orderby=desc
+        {label: 'Oldest', value: 'oldest'},       // maps to order=date&orderby=asc
+        {label: 'Title A → Z', value: 'title-asc'}, // order=asc&orderby=title
+        {label: 'Title Z → A', value: 'title-desc'}, // order=desc&orderby=title
+    ];
+
+    const showLabel = settings?.['label-position'] !== 'hidden';
+    const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
+
+    switch (settings.type) {
+        case 'sort':
+            return (
+                <>
+                    <label htmlFor="wpbs-archive-filters-sort" className={labelClass}>
+                        {settings?.label ?? 'Sort By'}
+                    </label>
+                    <select id="wpbs-archive-filters-sort" defaultValue={'#--SORT--#'}>
+                        <option value="">{settings?.placeholder ?? 'Select'}</option>
+                        {sortOptions.map(opt => (
+                            <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </option>
+                        ))}
+                    </select>
+                </>
+            );
+
+        case 'search':
+            return (
+                <>
+                    <label htmlFor="wpbs-archive-filters-search" className={labelClass}>
+                        {settings?.label ?? 'Search'}
+                    </label>
+                    <input
+                        type="text"
+                        id="wpbs-archive-filters-search"
+                        defaultValue={'#--SEARCH--#'}
+                        placeholder={settings?.placeholder ?? 'Search...'}
+                    />
+                    <button
+                        type="button"
+                        className="wpbs-search-submit"
+                        dangerouslySetInnerHTML={{__html: settings?.button || 'Search'}}
+                    >
+                        Search
+                    </button>
+                </>
+            );
+
+        default:
+            return null;
+    }
+
 }
 
 registerBlockType(metadata.name, {
@@ -61,11 +122,6 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, settings])
 
-        const options = [
-            {label: 'Order', value: 'order'},
-            {label: 'Orderby', value: 'orderby'},
-        ];
-
 
         return (
             <>
@@ -74,25 +130,43 @@ registerBlockType(metadata.name, {
 
                     <PanelBody initialOpen={true}>
 
-                        <Grid columnGap={20} columns={1} rowGap={20}>
+                        <Grid columnGap={15} columns={1} rowGap={20}>
 
-                            {options.map((opt) => (
-                                <CheckboxControl
-                                    key={opt.value}
-                                    label={opt.label}
-                                    checked={(settings?.['filters'] || []).includes(opt.value)}
-                                    onChange={(isChecked) => {
-                                        let newFilters;
-                                        if (isChecked) {
-                                            newFilters = [...(settings?.filters || []), opt.value];
-                                        } else {
-                                            newFilters = (settings?.filters || []).filter((v) => v !== opt.value);
-                                        }
-                                        // call your callback
-                                        updateSettings({filters: newFilters});
-                                    }}
-                                />
-                            ))}
+                            <SelectControl
+                                __next40pxDefaultSize
+                                label="Type"
+                                value={settings?.type}
+                                options={[
+                                    {label: 'Select', value: ''},
+                                    {label: 'Sort', value: 'sort'},
+                                    {label: 'Search', value: 'search'}
+                                ]}
+                                onChange={(newValue) => updateSettings({'type': newValue})}
+                                __nextHasNoMarginBottom
+                            />
+
+                            <TextControl
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                                label="Label"
+                                value={settings?.label}
+                                onChange={(newValue) => updateSettings({'label': newValue})}
+                            />
+                            <TextControl
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                                label="Placeholder"
+                                value={settings?.placeholder}
+                                onChange={(newValue) => updateSettings({'placeholder': newValue})}
+                            />
+
+                            {settings?.type === 'search' ? <TextControl
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                                label="Button"
+                                value={settings?.button}
+                                onChange={(newValue) => updateSettings({'button': newValue})}
+                            /> : null}
 
 
                             <PanelColorSettings
@@ -108,6 +182,24 @@ registerBlockType(metadata.name, {
                                     }
                                 ]}
                             />
+
+                            <Grid columnGap={15} columns={2} rowGap={20}>
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label="Label Position"
+                                    value={settings?.['label-position']}
+                                    options={[
+                                        {label: 'Select', value: ''},
+                                        {label: 'Top', value: 'top'},
+                                        {label: 'Bottom', value: 'bottom'},
+                                        {label: 'Hidden', value: 'hidden'},
+                                    ]}
+                                    onChange={(newValue) => updateSettings({'label-position': newValue})}
+                                    __nextHasNoMarginBottom
+                                />
+                            </Grid>
+
+
                         </Grid>
 
                     </PanelBody>
@@ -120,7 +212,9 @@ registerBlockType(metadata.name, {
                 />
 
 
-                <nav {...blockProps}>FILTERS</nav>
+                <nav {...blockProps}>
+                    <FilterFields settings={settings}/>
+                </nav>
 
             </>
         )
@@ -134,7 +228,9 @@ registerBlockType(metadata.name, {
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <nav {...blockProps}>FILTERS</nav>;
+        return <nav {...blockProps}>
+            <FilterFields settings={props.attributes?.['wpbs-archive-filters']}/>
+        </nav>;
     }
 })
 

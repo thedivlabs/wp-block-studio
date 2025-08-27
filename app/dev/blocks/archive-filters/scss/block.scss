@@ -25,7 +25,21 @@
 
   &:hover {
     .wpbs-archive-filters__label {
-      color: var(--hover-color-label, inherit);
+      color: var(--hover-color-label, var(--color-label, inherit));
+    }
+
+    .wpbs-archive-filters__input {
+      background-color: var(--hover-color-background, var(--color-background, transparent));
+      color: var(--hover-color-text, var(--color-text, inherit));
+      border-color: var(--hover-color-border, var(--border-color, initial));
+    }
+  }
+
+  &:focus-within {
+    .wpbs-archive-filters__input {
+      background-color: var(--active-color-background, var(--color-background, transparent));
+      color: var(--active-color-text, var(--color-text, inherit));
+      border-color: var(--active-color-border, var(--border-color, initial));
     }
   }
 
@@ -34,8 +48,22 @@
     position: relative;
     background-color: var(--color-background, transparent);
     color: var(--color-text, inherit);
+    border-width: var(--border-size, initial);
+    border-style: var(--border-style, initial);
+    border-color: var(--border-color, initial);
     border-radius: var(--radius, initial);
-    
+
+    input,
+    select {
+      appearance: none;
+      border: none;
+      outline: none;
+      background-color: transparent;
+      color: inherit;
+      width: 100%;
+      display: block;
+      height: 100%;
+    }
   }
 
   .wpbs-archive-filters__input.--select {

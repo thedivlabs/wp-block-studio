@@ -141,7 +141,9 @@ registerBlockType(metadata.name, {
                     '--hover-color-background': settings?.['hover-color-background'] ?? null,
                     '--hover-color-text': settings?.['hover-color-text'] ?? null,
                     '--hover-color-label': settings?.['hover-color-label'] ?? null,
-                    '--border': Object.values(settings?.['border'] ?? {}).join(' ').trim() || null,
+                    '--border-size': settings?.['border']?.size ?? null,
+                    '--border-color': settings?.['border']?.color ?? null,
+                    '--border-style': settings?.['border']?.style ?? null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings?.['overlay-color']]);

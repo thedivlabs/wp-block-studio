@@ -26,11 +26,14 @@ import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 
 function classNames(attributes = {}) {
 
+    const {'wpbs-cta': settings = {}} = attributes;
+
     return [
         'wpbs-cta-button',
-        !!attributes['wpbs-cta']['icon'] ? 'wpbs-cta-button--icon' : null,
-        !!attributes['wpbs-cta']['icon-only'] ? 'wpbs-cta-button--icon-only' : false,
-        !!attributes['wpbs-cta']['icon-first'] ? 'wpbs-cta-button--icon-first' : false,
+        !!settings?.['icon'] ? 'wpbs-cta-button--icon' : null,
+        !!settings?.['icon-bold'] ? 'wpbs-cta-button--icon-bold' : null,
+        !!settings?.['icon-only'] ? 'wpbs-cta-button--icon-only' : false,
+        !!settings?.['icon-first'] ? 'wpbs-cta-button--icon-first' : false,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -215,6 +218,10 @@ registerBlockType(metadata.name, {
                         label="Icon First"
                         prop={'icon-first'}
                     />
+                    <MemoToggleControl
+                        label="Bold Icon"
+                        prop={'icon-bold'}
+                    />
                 </Grid>
                 <PanelColorSettings
                     enableAlpha
@@ -235,6 +242,16 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
+
+
+        const cssProps = useMemo(() => {
+            return Object.fromEntries(
+                Object.entries({
+                    '--icon': settings?.['icon'] ?? null,
+                    '--icon-size': settings?.['icon-size'] ?? null,
+                }).filter(([key, value]) => value != null) // keep only entries with a value
+            );
+        }, [settings]);
 
         return (
             <>

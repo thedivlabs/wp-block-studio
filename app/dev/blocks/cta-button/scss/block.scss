@@ -2,54 +2,52 @@
   @apply inline-block relative select-none w-fit;
 }
 
-/* Icon layout behavior: modifies link and its child icon */
-.wpbs-cta-button--icon .wpbs-cta-button__link:hover:after {
-  color: inherit;
-}
-
-/* Icon first: reorder the icon */
-.wpbs-cta-button--icon-first .wpbs-cta-button__link:after {
-  order: 0;
-}
-
-/* Icon only: hide the label */
-.wpbs-cta-button--icon-only .wpbs-cta-button__link > span {
-  display: none;
-}
-
-/* Main button link */
 .wpbs-cta-button__link {
   @apply w-fit grow inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
   transition: opacity 0.3s linear, color 0.3s linear, background-color 0.3s linear, border-color 0.3s linear, gap 0.3s ease-in-out;
 }
 
-/* Label span inside button */
 .wpbs-cta-button__link > span {
   order: 1;
 }
 
-.wpbs-cta-button__link.--icon-hide:after {
+.wpbs-cta-button.--icon-only .wpbs-cta-button__link > span {
+  display: none;
+}
+
+.wpbs-cta-button.--icon-first .wpbs-cta-button__link:after {
+  order: 0;
+}
+
+.wpbs-cta-button.--icon-hide .wpbs-cta-button__link:after {
   content: none !important;
 }
 
-.wpbs-cta-button__link.--icon-bold:after {
+.wpbs-cta-button.--icon-bold .wpbs-cta-button__link:after {
   font-weight: bold;
 }
 
-/* Icon inside button */
-.wpbs-cta-button__link:after {
-  content: var(--icon, none);
-  font-family: "Font Awesome 6 Pro", sans-serif;
-  font-size: var(--icon-size, 1em);
-  color: var(--icon-color, inherit);
-  order: 2;
-  height: 1.2em;
-  line-height: 1.2em;
-  aspect-ratio: 1 / 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  transition: color 0.3s ease;
-  font-weight: inherit;
+.wpbs-cta-button__link {
+
+  &:hover:after {
+    color: inherit;
+  }
+
+
+  &:after {
+    content: var(--icon, none);
+    font-family: "Font Awesome 6 Pro", sans-serif;
+    font-size: var(--icon-size, 1em);
+    color: var(--icon-color, inherit);
+    order: 2;
+    height: 1.2em;
+    line-height: 1.2em;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transition: color 0.3s ease;
+    font-weight: inherit;
+  }
 }

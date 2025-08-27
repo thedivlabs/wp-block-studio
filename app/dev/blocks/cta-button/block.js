@@ -30,10 +30,11 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-cta-button',
-        !!settings?.['icon'] ? 'wpbs-cta-button--icon' : null,
-        !!settings?.['icon-bold'] ? 'wpbs-cta-button--icon-bold' : null,
-        !!settings?.['icon-only'] ? 'wpbs-cta-button--icon-only' : false,
-        !!settings?.['icon-first'] ? 'wpbs-cta-button--icon-first' : false,
+        !!settings?.['icon'] ? '--icon' : null,
+        !!settings?.['icon-hide'] ? '--icon-hide' : null,
+        !!settings?.['icon-bold'] ? '--icon-bold' : null,
+        !!settings?.['icon-only'] ? '--icon-only' : false,
+        !!settings?.['icon-first'] ? '--icon-first' : false,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

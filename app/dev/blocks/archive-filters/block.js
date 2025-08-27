@@ -59,7 +59,6 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
 
                 <span className={labelClass} dangerouslySetInnerHTML={{__html: settings?.label ?? 'Sort By'}}/>
                 <div className={'wpbs-archive-filters__input .--select'}>
-                    {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
                     <select
                         id={fieldId}
                         defaultValue={defaultValue}>
@@ -84,7 +83,6 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
 
                 <span className={labelClass} dangerouslySetInnerHTML={{__html: settings?.label ?? 'Search'}}/>
                 <div className={'wpbs-archive-filters__input --search'}>
-                    {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
                     <input
                         id={fieldId}
                         type="text"

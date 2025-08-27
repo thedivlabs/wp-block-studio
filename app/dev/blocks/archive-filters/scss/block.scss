@@ -23,6 +23,8 @@
     display: block;
     width: fit-content;
     color: var(--color-label, inherit);
+    font-size: inherit;
+    line-height: inherit;
   }
 
   &:hover {
@@ -38,6 +40,10 @@
   }
 
   &:focus-within {
+    .wpbs-archive-filters__label {
+      color: var(--active-color-label, var(--color-label, inherit));
+    }
+
     .wpbs-archive-filters__input {
       background-color: var(--active-color-background, var(--color-background, transparent));
       color: var(--active-color-text, var(--color-text, inherit));
@@ -51,6 +57,8 @@
     flex-grow: 1;
     align-self: stretch;
     padding: .2rem .5rem;
+    font-size: inherit;
+    line-height: inherit;
     background-color: var(--color-background, transparent);
     color: var(--color-text, inherit);
     border-width: var(--border-width, initial);
@@ -68,11 +76,21 @@
       width: 100%;
       display: block;
       height: 100%;
+      border-radius: 0;
+
+      &:focus {
+        outline: none;
+        border: none;
+      }
+    }
+
+    &:before {
+      content: var(--prefix, none);
+      display: block;
     }
   }
 
   .wpbs-archive-filters__input.--select {
-
 
   }
 }

@@ -146,7 +146,7 @@ registerBlockType(metadata.name, {
                     '--border-style': settings?.['border']?.style ?? null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
-        }, [settings?.['overlay-color']]);
+        }, [settings]);
 
         const blockProps = useBlockProps({className: blockClassnames(attributes, true)});
 

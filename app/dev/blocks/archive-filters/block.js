@@ -17,7 +17,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
-import {BORDER_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
+import {BORDER_UNITS, DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -127,6 +127,7 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
+                    '--field-width': settings?.['field-width'] ?? null,
                     '--button-width': settings?.['button-width'] ?? null,
                     '--button-size': settings?.['button-size'] ?? null,
                     '--label-size': settings?.['label-size'] ?? null,
@@ -248,24 +249,33 @@ registerBlockType(metadata.name, {
                 ]}
             />
 
+            <BorderBoxControl
+                label={'Border'}
+                value={settings?.['border']}
+                enableAlpha={true}
+                enableStyle={true}
+                disableCustomColors={false}
+                colors={editorColors}
+                withSlider={false}
+                isStyleSettable={true}
+                onChange={(newValue) => updateSettings({'border': newValue})}
+                __experimentalIsRenderedInSidebar={true}
+                __next40pxDefaultSize
+                //sides={['top', 'right', 'bottom', 'left']}
+            />
+
 
             <Grid columnGap={15} columns={2} rowGap={20}>
 
-                <BorderBoxControl
-                    label={'Border'}
-                    value={settings?.['border']}
-                    enableAlpha={true}
-                    enableStyle={true}
-                    disableCustomColors={false}
-                    colors={editorColors}
-                    withSlider={false}
-                    isStyleSettable={true}
-                    onChange={(newValue) => updateSettings({'border': newValue})}
-                    __experimentalIsRenderedInSidebar={true}
+                <UnitControl
+                    label="Field Width"
+                    value={settings?.['field-width']}
+                    onChange={(newValue) => updateSettings({'field-width': newValue})}
+                    units={DIMENSION_UNITS}
+                    isResetValueOnUnitChange={true}
                     __next40pxDefaultSize
-                    //sides={['top', 'right', 'bottom', 'left']}
+                    __nextHasNoMarginBottom
                 />
-
                 <UnitControl
                     label="Radius"
                     value={settings?.radius}

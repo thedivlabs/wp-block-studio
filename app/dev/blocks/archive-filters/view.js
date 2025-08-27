@@ -6,6 +6,8 @@ const {state} = store('wpbs/archive-filters', {
 
             const {ref: block} = getElement();
 
+            console.log(block);
+
             if (!block) return;
 
             const searchInput = block.querySelector('input[type="text"]');

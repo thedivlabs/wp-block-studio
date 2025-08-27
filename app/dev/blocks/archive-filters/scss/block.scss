@@ -104,6 +104,10 @@
       duration-300
       ;
 
+      &::placeholder {
+        color: inherit;
+      }
+
       &:focus {
         outline: none;
         border: none;
@@ -123,13 +127,14 @@
       position: absolute;
       top: 0;
       left: 0;
-      @apply
-      transition-colors
-      duration-300
     }
 
     &.--select {
       cursor: pointer;
+
+      select {
+        cursor: pointer;
+      }
 
       .wpbs-archive-filters__button {
         pointer-events: none;
@@ -147,9 +152,18 @@
     background-color: var(--color-button, transparent);
     color: var(--color-button-text, inherit);
     cursor: pointer;
+    gap: .5rem;
     @apply
     transition-colors
     duration-300
+    ;
+
+    &:after {
+      font-family: "Font Awesome 6 Pro", sans-serif;
+      width: auto;
+      aspect-ratio: 1/1;
+      display: block;
+    }
   }
 
   .wpbs-archive-filters__button {
@@ -157,11 +171,19 @@
     top: 0;
     right: 0;
     width: 2em;
+
+    &:after {
+      content: var(--button-icon, '\f078');
+    }
   }
 
   .wpbs-archive-filters__submit {
     position: relative;
     padding: .2rem .6rem;
+
+    &:after {
+      content: var(--button-icon, none);
+    }
   }
 
 }

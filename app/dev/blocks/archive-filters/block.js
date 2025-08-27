@@ -73,8 +73,9 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                     <button
                         type="button"
                         className="wpbs-archive-filters__button"
-                        dangerouslySetInnerHTML={{__html: settings?.button ?? '<i class="fa-regular fa-chevron-down"></i>'}}
-                    />
+                    >
+                        <span> {settings?.button}</span>
+                    </button>
                 </div>
 
             </>;
@@ -93,8 +94,9 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                     <button
                         type="button"
                         className="wpbs-archive-filters__submit"
-                        dangerouslySetInnerHTML={{__html: settings?.button ?? 'Search'}}
-                    />
+                    >
+                        <span> {settings?.button ?? 'Search'}</span>
+                    </button>
                 </div>
             </>;
 

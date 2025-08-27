@@ -54,7 +54,7 @@
   &.--prefix .wpbs-archive-filters__input {
     input,
     select {
-      padding-left: 2.3em;
+      padding-left: 2.1em;
     }
   }
 
@@ -85,7 +85,7 @@
       display: block;
       height: 100%;
       border-radius: 0;
-      padding: .2rem 2.3em .2em .2em;
+      padding: .2rem 2.1em .2em .2em;
 
       &:focus {
         outline: none;
@@ -112,7 +112,7 @@
       pointer-events: none;
     }
   }
-  
+
   .wpbs-archive-filters__button {
     height: 100%;
     width: 2em;

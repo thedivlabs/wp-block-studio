@@ -17,7 +17,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
-import {BORDER_UNITS} from "Includes/config";
+import {BORDER_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -124,6 +124,8 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
+                    '--button-size': settings?.['button-size'] ?? null,
+                    '--prefix-size': settings?.['prefix-size'] ?? null,
                     '--color-background': settings?.['color-background'] ?? null,
                     '--color-text': settings?.['color-text'] ?? null,
                     '--color-label': settings?.['color-label'] ?? null,
@@ -304,6 +306,28 @@ registerBlockType(metadata.name, {
                     value={settings?.['button-icon']}
                     onChange={(newValue) => updateSettings({'button-icon': newValue})}
                 />
+
+                <UnitControl
+                    label="Button Size"
+                    value={settings?.['button-size']}
+                    onChange={(newValue) => updateSettings({'button-size': newValue})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+
+                <UnitControl
+                    label="Prefix Size"
+                    value={settings?.['prefix-size']}
+                    onChange={(newValue) => updateSettings({'prefix-size': newValue})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+
+
             </Grid>
 
             <Grid columnGap={15} columns={2} rowGap={20} style={{marginTop: '20px'}}>

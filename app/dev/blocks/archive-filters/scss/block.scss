@@ -56,7 +56,6 @@
     position: relative;
     flex-grow: 1;
     align-self: stretch;
-    padding: .2rem .5rem;
     font-size: inherit;
     line-height: inherit;
     background-color: var(--color-background, transparent);
@@ -77,6 +76,7 @@
       display: block;
       height: 100%;
       border-radius: 0;
+      padding: .2rem;
 
       &:focus {
         outline: none;
@@ -85,7 +85,7 @@
     }
 
     &:before {
-      content: var(--prefix, none);
+      content: var(--prefix-icon, none);
       display: block;
     }
   }

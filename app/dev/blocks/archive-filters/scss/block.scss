@@ -1,8 +1,12 @@
 .wpbs-archive-filters {
   display: flex;
   align-items: center;
-  width: clamp(8rem, var(--field-width, 16rem), 100%);
+  width: fit-content;
+  max-width: 100%;
 
+  &.--field-width {
+    width: clamp(12rem, var(--field-width), 100%);
+  }
 
   &.--label-top {
     flex-direction: column;

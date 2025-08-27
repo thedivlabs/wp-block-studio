@@ -28,6 +28,7 @@ function blockClassnames(attributes = {}, editor = false) {
         !!settings?.grow ? 'grow' : null,
         !!settings?.prefix ? '--prefix' : null,
         !!settings?.['bold-label'] ? '--bold-label' : null,
+        !!settings?.['field-width'] ? '--field-width' : null,
         attributes?.uniqueId ?? null,
     ];
 

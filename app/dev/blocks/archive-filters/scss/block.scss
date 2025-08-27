@@ -27,6 +27,7 @@
     line-height: inherit;
     @apply
     transition-colors
+    duration-300
   }
 
   &:hover {
@@ -83,6 +84,7 @@
     border-radius: var(--radius, initial);
     @apply
     transition-colors
+    duration-300
     ;
 
     input,
@@ -97,6 +99,10 @@
       height: 100%;
       border-radius: 0;
       padding: .2rem 2.1em .2em .2em;
+      @apply
+      transition-colors
+      duration-300
+      ;
 
       &:focus {
         outline: none;
@@ -119,10 +125,15 @@
       left: 0;
       @apply
       transition-colors
+      duration-300
     }
 
-    &.--select .wpbs-archive-filters__button {
-      pointer-events: none;
+    &.--select {
+      cursor: pointer;
+
+      .wpbs-archive-filters__button {
+        pointer-events: none;
+      }
     }
   }
 
@@ -138,6 +149,7 @@
     cursor: pointer;
     @apply
     transition-colors
+    duration-300
   }
 
   .wpbs-archive-filters__button {

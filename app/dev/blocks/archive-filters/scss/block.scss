@@ -138,7 +138,7 @@
     }
 
     select {
-      padding-right: 2.1em;
+      padding-right: var(--button-width, 2.1em);
     }
 
     &.--select {
@@ -184,7 +184,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 2em;
+    width: var(--button-width, 2em);
 
     &:after {
       content: var(--button-icon, '\f078');
@@ -194,6 +194,7 @@
   .wpbs-archive-filters__submit {
     position: relative;
     padding: .2rem .6rem;
+    width: var(--button-width, auto);
 
     &:after {
       content: var(--button-icon, none);

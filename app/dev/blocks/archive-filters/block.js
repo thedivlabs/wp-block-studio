@@ -54,7 +54,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
     const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
-    const buttonText = (settings?.['button-text'] ?? '').trim.length ? settings?.['button-text'] : false;
+    const buttonText = !!(settings?.['button-text'] ?? '').trim ? settings?.['button-text'] : false;
 
     switch (settings.type) {
         case 'sort':
@@ -126,6 +126,7 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
+                    '--button-width': settings?.['button-width'] ?? null,
                     '--button-size': settings?.['button-size'] ?? null,
                     '--prefix-size': settings?.['prefix-size'] ?? null,
                     '--color-background': settings?.['color-background'] ?? null,
@@ -311,6 +312,17 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+
+                <UnitControl
+                    label="Button Width"
+                    value={settings?.['button-width']}
+                    onChange={(newValue) => updateSettings({'button-width': newValue})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+
 
                 <TextControl
                     __nextHasNoMarginBottom

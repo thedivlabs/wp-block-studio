@@ -52,7 +52,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
     const showLabel = settings?.['label-position'] !== 'hidden' && !!settings?.label;
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
-    const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
+    //const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
 
     switch (settings.type) {
         case 'sort':
@@ -70,6 +70,11 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                             </option>
                         ))}
                     </select>
+                    <button
+                        type="button"
+                        className="wpbs-archive-filters__button"
+                        dangerouslySetInnerHTML={{__html: settings?.button ?? '<i class="fa-regular fa-chevron-down"></i>'}}
+                    />
                 </div>
 
             </>;
@@ -78,7 +83,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
             return <>
 
                 <span className={labelClass} dangerouslySetInnerHTML={{__html: settings?.label ?? 'Search'}}/>
-                <div className={'wpbs-archive-filters__input .--search'}>
+                <div className={'wpbs-archive-filters__input --search'}>
                     {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
                     <input
                         type="text"
@@ -117,8 +122,32 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    '--overlay-color': settings?.['overlay-color'],
-                    '--prefix': settings?.['prefix'],
+                    '--color-background': settings?.['color-background'] ?? null,
+                    '--color-text': settings?.['color-text'] ?? null,
+                    '--color-label': settings?.['color-label'] ?? null,
+                    '--color-button': settings?.['color-button'] ?? null,
+                    '--color-button-text': settings?.['color-button-text'] ?? null,
+                    '--prefix-icon': !!settings?.['prefix'] ? '\"\\' + settings?.['prefix'] + '\"' : null,
+                    '--button-icon': !!settings?.['button-icon'] ? '\"\\' + settings?.['button-icon'] + '\"' : null,
+                    '--radius': settings?.['radius'] ?? null,
+                    '--active-color-label': settings?.['active-color-label'] ?? null,
+                    '--active-color-text': settings?.['active-color-text'] ?? null,
+                    '--active-color-background': settings?.['active-color-background'] ?? null,
+                    '--active-color-border': settings?.['active-color-border'] ?? null,
+                    '--active-color-button': settings?.['active-color-button'] ?? null,
+                    '--active-color-button-text': settings?.['active-color-button-text'] ?? null,
+                    '--hover-color-border': settings?.['hover-color-border'] ?? null,
+                    '--hover-color-button': settings?.['hover-color-button'] ?? null,
+                    '--hover-color-button-text': settings?.['hover-color-button-text'] ?? null,
+                    '--hover-color-background': settings?.['hover-color-background'] ?? null,
+                    '--hover-color-text': settings?.['hover-color-text'] ?? null,
+                    '--hover-color-label': settings?.['hover-color-label'] ?? null,
+                    '--border': !!settings?.border?.top ? Object.fromEntries(Object.entries({
+                        'border-top': Object.values({style: 'solid', ...(settings?.border?.top ?? {})}).join(' '),
+                        'border-right': Object.values({style: 'solid', ...(settings?.border?.right ?? {})}).join(' '),
+                        'border-bottom': Object.values({style: 'solid', ...(settings?.border?.bottom ?? {})}).join(' '),
+                        'border-left': Object.values({style: 'solid', ...(settings?.border?.left ?? {})}).join(' '),
+                    }).filter(([k, v]) => !!v)) : {border: Object.values({style: 'solid', ...(settings?.border ?? {})}).join(' ')},
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings?.['overlay-color']]);
@@ -170,13 +199,13 @@ registerBlockType(metadata.name, {
                 onChange={(newValue) => updateSettings({'placeholder': newValue})}
             />
 
-            {settings?.type === 'search' ? <TextControl
+            <TextControl
                 __nextHasNoMarginBottom
                 __next40pxDefaultSize
                 label="Button"
                 value={settings?.button}
                 onChange={(newValue) => updateSettings({'button': newValue})}
-            /> : null}
+            />
 
 
             <PanelColorSettings
@@ -184,38 +213,38 @@ registerBlockType(metadata.name, {
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
                 colorSettings={[
                     {
-                        slug: 'background',
+                        slug: 'color-background',
                         label: 'Background',
-                        value: settings?.['active-background-color'],
-                        onChange: (newValue) => updateSettings({'active-background-color': newValue}),
+                        value: settings?.['color-background'],
+                        onChange: (newValue) => updateSettings({'color-background': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'text',
+                        slug: 'color-text',
                         label: 'Text',
-                        value: settings?.['active-text-color'],
-                        onChange: (newValue) => updateSettings({'active-text-color': newValue}),
+                        value: settings?.['color-text'],
+                        onChange: (newValue) => updateSettings({'color-text': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'label',
+                        slug: 'color-label',
                         label: 'Label',
-                        value: settings?.['active-label-color'],
-                        onChange: (newValue) => updateSettings({'active-label-color': newValue}),
+                        value: settings?.['color-label'],
+                        onChange: (newValue) => updateSettings({'color-label': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'button',
+                        slug: 'color-button',
                         label: 'Button',
-                        value: settings?.['active-button-color'],
-                        onChange: (newValue) => updateSettings({'active-button-color': newValue}),
+                        value: settings?.['color-button'],
+                        onChange: (newValue) => updateSettings({'color-button': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'button-text',
+                        slug: 'color-button-text',
                         label: 'Button Text',
-                        value: settings?.['active-button-text-color'],
-                        onChange: (newValue) => updateSettings({'active-button-text-color': newValue}),
+                        value: settings?.['color-button-text'],
+                        onChange: (newValue) => updateSettings({'color-button-text': newValue}),
                         isShownByDefault: true
                     },
                 ]}
@@ -297,45 +326,45 @@ registerBlockType(metadata.name, {
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
                 colorSettings={[
                     {
-                        slug: 'border',
+                        slug: 'active-color-border',
                         label: 'Border',
-                        value: settings?.['active-border-color'],
-                        onChange: (newValue) => updateSettings({'active-border-color': newValue}),
+                        value: settings?.['active-color-border'],
+                        onChange: (newValue) => updateSettings({'active-color-border': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'button',
+                        slug: 'active-color-button',
                         label: 'Button',
-                        value: settings?.['active-button-color'],
-                        onChange: (newValue) => updateSettings({'active-button-color': newValue}),
+                        value: settings?.['active-color-button'],
+                        onChange: (newValue) => updateSettings({'active-color-button': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'button-text',
+                        slug: 'active-color-button-text',
                         label: 'Button Text',
-                        value: settings?.['active-button-text-color'],
-                        onChange: (newValue) => updateSettings({'active-button-text-color': newValue}),
+                        value: settings?.['active-color-button-text'],
+                        onChange: (newValue) => updateSettings({'active-color-button-text': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'background',
+                        slug: 'active-color-background',
                         label: 'Background',
-                        value: settings?.['active-background-color'],
-                        onChange: (newValue) => updateSettings({'active-background-color': newValue}),
+                        value: settings?.['active-color-background'],
+                        onChange: (newValue) => updateSettings({'active-color-background': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'text',
+                        slug: 'active-color-text',
                         label: 'Text',
-                        value: settings?.['active-text-color'],
-                        onChange: (newValue) => updateSettings({'active-text-color': newValue}),
+                        value: settings?.['active-color-text'],
+                        onChange: (newValue) => updateSettings({'active-color-text': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'label',
+                        slug: 'active-color-label',
                         label: 'Label',
-                        value: settings?.['active-label-color'],
-                        onChange: (newValue) => updateSettings({'active-label-color': newValue}),
+                        value: settings?.['active-color-label'],
+                        onChange: (newValue) => updateSettings({'active-color-label': newValue}),
                         isShownByDefault: true
                     }
                 ]}
@@ -350,38 +379,45 @@ registerBlockType(metadata.name, {
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
                 colorSettings={[
                     {
-                        slug: 'border',
+                        slug: 'hover-color-border',
                         label: 'Border',
-                        value: settings?.['hover-border-color'],
-                        onChange: (newValue) => updateSettings({'hover-border-color': newValue}),
+                        value: settings?.['hover-color-border'],
+                        onChange: (newValue) => updateSettings({'hover-color-border': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'button',
+                        slug: 'hover-color-button',
                         label: 'Button',
-                        value: settings?.['hover-button-color'],
-                        onChange: (newValue) => updateSettings({'hover-button-color': newValue}),
+                        value: settings?.['hover-color-button'],
+                        onChange: (newValue) => updateSettings({'hover-color-button': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'button-text',
+                        slug: 'hover-color-button-text',
                         label: 'Button Text',
-                        value: settings?.['hover-button-text-color'],
-                        onChange: (newValue) => updateSettings({'hover-button-text-color': newValue}),
+                        value: settings?.['hover-color-button-text'],
+                        onChange: (newValue) => updateSettings({'hover-color-button-text': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'background',
+                        slug: 'hover-color-background',
                         label: 'Background',
-                        value: settings?.['hover-background-color'],
-                        onChange: (newValue) => updateSettings({'hover-background-color': newValue}),
+                        value: settings?.['hover-color-background'],
+                        onChange: (newValue) => updateSettings({'hover-color-background': newValue}),
                         isShownByDefault: true
                     },
                     {
-                        slug: 'text',
+                        slug: 'hover-color-text',
                         label: 'Text',
-                        value: settings?.['hover-text-color'],
-                        onChange: (newValue) => updateSettings({'hover-text-color': newValue}),
+                        value: settings?.['hover-color-text'],
+                        onChange: (newValue) => updateSettings({'hover-color-text': newValue}),
+                        isShownByDefault: true
+                    },
+                    {
+                        slug: 'hover-color-label',
+                        label: 'Label',
+                        value: settings?.['hover-color-label'],
+                        onChange: (newValue) => updateSettings({'hover-color-label': newValue}),
                         isShownByDefault: true
                     }
                 ]}
@@ -411,10 +447,16 @@ registerBlockType(metadata.name, {
                                     name: 'options',
                                     title: 'Options',
                                     className: 'tab-options',
-                                }, {
+                                },
+                                {
                                     name: 'active',
                                     title: 'Active',
                                     className: 'tab-active',
+                                },
+                                {
+                                    name: 'hover',
+                                    title: 'Hover',
+                                    className: 'tab-hover',
                                 }
                             ]}>
                             {

@@ -34,7 +34,7 @@
 
 /* Icon inside button */
 .wpbs-cta-button__link:after {
-  content: var(--button-icon, none);
+  content: var(--icon, none);
   font-family: "Font Awesome 6 Pro", sans-serif;
   font-size: var(--icon-size, inherit);
   color: var(--icon-color, inherit);

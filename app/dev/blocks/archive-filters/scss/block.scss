@@ -25,6 +25,8 @@
     color: var(--color-label, inherit);
     font-size: inherit;
     line-height: inherit;
+    @apply
+    transition-colors
   }
 
   &:hover {
@@ -79,6 +81,9 @@
     border-style: var(--border-style, initial);
     border-color: var(--border-color, initial);
     border-radius: var(--radius, initial);
+    @apply
+    transition-colors
+    ;
 
     input,
     select {
@@ -112,6 +117,8 @@
       position: absolute;
       top: 0;
       left: 0;
+      @apply
+      transition-colors
     }
 
     &.--select .wpbs-archive-filters__button {
@@ -129,6 +136,8 @@
     background-color: var(--color-button, transparent);
     color: var(--color-button-text, inherit);
     cursor: pointer;
+    @apply
+    transition-colors
   }
 
   .wpbs-archive-filters__button {

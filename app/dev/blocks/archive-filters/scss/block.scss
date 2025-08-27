@@ -161,7 +161,7 @@
     color: var(--color-button-text, inherit);
     cursor: pointer;
     gap: .5rem;
-    font-size: max(16px, var(--button-size, inherit));
+    font-size: max(16px, var(--button-size, 16px));
     line-height: 1.3;
     @apply
     transition-colors

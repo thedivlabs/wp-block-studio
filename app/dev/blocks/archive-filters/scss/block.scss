@@ -67,7 +67,7 @@
   &.--prefix .wpbs-archive-filters__input {
     input,
     select {
-      padding-left: 2.1em;
+      padding-left: 2em;
     }
   }
 
@@ -138,7 +138,7 @@
     }
 
     select {
-      padding-right: var(--button-width, 2.1em);
+      padding-right: var(--button-width, 2em);
     }
 
     &.--select {

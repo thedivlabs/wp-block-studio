@@ -129,6 +129,7 @@ registerBlockType(metadata.name, {
                 Object.entries({
                     '--button-width': settings?.['button-width'] ?? null,
                     '--button-size': settings?.['button-size'] ?? null,
+                    '--label-size': settings?.['label-size'] ?? null,
                     '--prefix-size': settings?.['prefix-size'] ?? null,
                     '--color-background': settings?.['color-background'] ?? null,
                     '--color-text': settings?.['color-text'] ?? null,
@@ -247,22 +248,23 @@ registerBlockType(metadata.name, {
                 ]}
             />
 
-            <BorderBoxControl
-                label={'Border'}
-                value={settings?.['border']}
-                enableAlpha={true}
-                enableStyle={true}
-                disableCustomColors={false}
-                colors={editorColors}
-                withSlider={true}
-                isStyleSettable={true}
-                onChange={(newValue) => updateSettings({'border': newValue})}
-                __experimentalIsRenderedInSidebar={true}
-                __next40pxDefaultSize
-                //sides={['top', 'right', 'bottom', 'left']}
-            />
 
             <Grid columnGap={15} columns={2} rowGap={20}>
+
+                <BorderBoxControl
+                    label={'Border'}
+                    value={settings?.['border']}
+                    enableAlpha={true}
+                    enableStyle={true}
+                    disableCustomColors={false}
+                    colors={editorColors}
+                    withSlider={false}
+                    isStyleSettable={true}
+                    onChange={(newValue) => updateSettings({'border': newValue})}
+                    __experimentalIsRenderedInSidebar={true}
+                    __next40pxDefaultSize
+                    //sides={['top', 'right', 'bottom', 'left']}
+                />
 
                 <UnitControl
                     label="Radius"
@@ -285,6 +287,16 @@ registerBlockType(metadata.name, {
                         {label: 'Hidden', value: 'hidden'},
                     ]}
                     onChange={(newValue) => updateSettings({'label-position': newValue})}
+                    __nextHasNoMarginBottom
+                />
+
+                <UnitControl
+                    label="Label Size"
+                    value={settings?.['label-size']}
+                    onChange={(newValue) => updateSettings({'label-size': newValue})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
 

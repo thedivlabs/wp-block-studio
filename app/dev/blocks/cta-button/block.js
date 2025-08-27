@@ -190,6 +190,7 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
+                    //'--color-background': attributes,
                     '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
                     '--icon-size': settings?.['icon-size'] ?? null,
                     '--icon-color': settings?.['icon-color'] || null,

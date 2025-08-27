@@ -29,7 +29,9 @@
 }
 
 /* Icon inside button */
-.wpbs-cta-button__link > i {
+.wpbs-cta-button__link:after {
+  content: var(--button-icon, none);
+  font-family: "Font Awesome 6 Pro", sans-serif;
   color: var(--icon-color, inherit);
   order: 2;
   height: 1em;

@@ -8,7 +8,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {
-    __experimentalGrid as Grid,
+    __experimentalGrid as Grid, __experimentalUnitControl as UnitControl,
     PanelBody,
     SelectControl, TabPanel,
     TextControl,
@@ -21,6 +21,7 @@ import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
+import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 
 
 function classNames(attributes = {}) {
@@ -183,14 +184,32 @@ registerBlockType(metadata.name, {
 
         const tabIcon = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>
-                <MemoTextControl
-                    label="Icon"
-                    prop={'icon'}
-                />
+                <Grid columns={2} columnGap={15} rowGap={20}>
+                    <MemoTextControl
+                        label="Icon"
+                        prop={'icon'}
+                    />
+                    <UnitControl
+                        label="Icon Size"
+                        value={settings?.['icon-size']}
+                        onChange={(newValue) => updateSettings({'icon-size': newValue})}
+                        units={[
+                            {value: 'em', label: 'em', default: 0},
+                        ]}
+                        isResetValueOnUnitChange={true}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <MemoToggleControl
                         label="Icon Only"
                         prop={'icon-only'}
+                    />
+                    <MemoToggleControl
+                        label="Hide Icon"
+                        prop={'icon-hide'}
                     />
                     <MemoToggleControl
                         label="Icon First"

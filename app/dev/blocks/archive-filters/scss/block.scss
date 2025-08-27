@@ -46,9 +46,10 @@
   .wpbs-archive-filters__input {
     display: flex;
     position: relative;
+    flex-grow: 1;
     background-color: var(--color-background, transparent);
     color: var(--color-text, inherit);
-    border-width: var(--border-size, initial);
+    border-width: var(--border-width, initial);
     border-style: var(--border-style, initial);
     border-color: var(--border-color, initial);
     border-radius: var(--radius, initial);

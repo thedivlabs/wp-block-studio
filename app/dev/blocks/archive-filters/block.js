@@ -51,7 +51,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
     const showLabel = settings?.['label-position'] !== 'hidden' && !!settings?.label;
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
-    //const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
+    const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
 
     switch (settings.type) {
         case 'sort':
@@ -61,6 +61,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                 <div className={'wpbs-archive-filters__input .--select'}>
                     {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
                     <select
+                        id={fieldId}
                         defaultValue={defaultValue}>
                         <option value="">{settings?.placeholder ?? 'Select'}</option>
                         {sortOptions.map(opt => (
@@ -85,6 +86,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                 <div className={'wpbs-archive-filters__input --search'}>
                     {!!settings?.prefix ? <div className={'wpbs-archive-filters__prefix'}/> : null}
                     <input
+                        id={fieldId}
                         type="text"
                         defaultValue={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
@@ -141,7 +143,7 @@ registerBlockType(metadata.name, {
                     '--hover-color-background': settings?.['hover-color-background'] ?? null,
                     '--hover-color-text': settings?.['hover-color-text'] ?? null,
                     '--hover-color-label': settings?.['hover-color-label'] ?? null,
-                    '--border-size': settings?.['border']?.size ?? null,
+                    '--border-width': settings?.['border']?.width ?? null,
                     '--border-color': settings?.['border']?.color ?? null,
                     '--border-style': settings?.['border']?.style ?? null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value

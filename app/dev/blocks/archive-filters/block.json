@@ -37,7 +37,8 @@
   "editorScript": "file:./block.js",
   "icon": "filter",
   "style": "file:./block.css",
-  "viewScriptModule": "file:./view.js"
+  "viewScriptModule": "file:./view.js",
+  "render": "file:./render.php"
 }
 
 

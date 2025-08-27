@@ -23,7 +23,32 @@ class WPBS_WP {
 		$this->shortcodes();
 		$this->theme_support();
 
+		add_action( 'pre_get_posts', [ $this, 'add_sort_query_string' ] );
+	}
 
+	public function add_sort_query_string( $query ): void {
+		if ( ! is_admin() && $query->is_main_query() ) {
+			$sort = $_GET['sort'] ?? '';
+
+			switch ( $sort ) {
+				case 'latest':
+					$query->set( 'orderby', 'date' );
+					$query->set( 'order', 'DESC' );
+					break;
+				case 'oldest':
+					$query->set( 'orderby', 'date' );
+					$query->set( 'order', 'ASC' );
+					break;
+				case 'title-asc':
+					$query->set( 'orderby', 'title' );
+					$query->set( 'order', 'ASC' );
+					break;
+				case 'title-desc':
+					$query->set( 'orderby', 'title' );
+					$query->set( 'order', 'DESC' );
+					break;
+			}
+		}
 	}
 
 

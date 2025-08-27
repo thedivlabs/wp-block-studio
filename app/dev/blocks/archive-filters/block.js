@@ -558,6 +558,7 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps.save({
             className: blockClassnames(props.attributes),
             'data-wp-interactive': 'wpbs/archive-filters',
+            'data-wp-init': 'actions.init',
             'aria-label': 'Archive Filters',
             ...(props.attributes?.['wpbs-props'] ?? {})
         });

@@ -52,7 +52,10 @@
   }
 
   &.--prefix .wpbs-archive-filters__input {
-    padding-left: 3em;
+    input,
+    select {
+      padding-left: 2.3em;
+    }
   }
 
   .wpbs-archive-filters__input {
@@ -94,7 +97,7 @@
       content: var(--prefix-icon, none);
       font-family: "Font Awesome 6 Pro", sans-serif;
       height: 100%;
-      width: 2.5em;
+      width: 2em;
       display: flex;
       align-items: center;
       justify-content: center;

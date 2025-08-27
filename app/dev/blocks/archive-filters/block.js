@@ -26,6 +26,7 @@ function blockClassnames(attributes = {}, editor = false) {
     const result = [
         'wpbs-archive-filters',
         !!settings?.grow ? 'grow' : null,
+        !!settings?.prefix ? '--prefix' : null,
         attributes?.uniqueId ?? null,
     ];
 
@@ -58,7 +59,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
             return <>
 
                 <span className={labelClass} dangerouslySetInnerHTML={{__html: settings?.label ?? 'Sort By'}}/>
-                <div className={'wpbs-archive-filters__input .--select'}>
+                <div className={'wpbs-archive-filters__input --select'}>
                     <select
                         id={fieldId}
                         defaultValue={defaultValue}>

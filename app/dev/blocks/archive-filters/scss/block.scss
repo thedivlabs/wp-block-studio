@@ -51,6 +51,10 @@
     }
   }
 
+  &.--prefix .wpbs-archive-filters__input {
+    padding-left: 3em;
+  }
+
   .wpbs-archive-filters__input {
     display: flex;
     align-items: center;
@@ -90,13 +94,15 @@
       content: var(--prefix-icon, none);
       font-family: "Font Awesome 6 Pro", sans-serif;
       height: 100%;
-      width: auto;
-      aspect-ratio: .8/1;
+      width: 2.5em;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 

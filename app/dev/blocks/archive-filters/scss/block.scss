@@ -1,5 +1,7 @@
 .wpbs-archive-filters {
   display: flex;
+  align-items: center;
+  width: fit-content;
 
   &.--label-top {
     flex-direction: column;
@@ -47,6 +49,8 @@
     display: flex;
     position: relative;
     flex-grow: 1;
+    align-self: stretch;
+    padding: .2rem .5rem;
     background-color: var(--color-background, transparent);
     color: var(--color-text, inherit);
     border-width: var(--border-width, initial);

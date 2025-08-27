@@ -12,6 +12,9 @@
   "supports": {
     "layout": false,
     "interactivity": true,
+    "dimensions": {
+      "minHeight": true
+    },
     "color": {
       "text": true,
       "background": false

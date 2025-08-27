@@ -87,14 +87,13 @@
 
     &:before {
       content: var(--prefix-icon, none);
-      
       font-family: "Font Awesome 6 Pro", sans-serif;
       height: 100%;
       width: auto;
       aspect-ratio: 1/1;
       display: flex;
       align-items: center;
-      justify-self: center;
+      justify-content: center;
       text-align: center;
     }
   }

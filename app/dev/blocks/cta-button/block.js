@@ -174,11 +174,14 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
+            'data-popup': settings?.popup ?? null,
+        });
+
+        const anchorProps = {
             title: title,
             href: '%%URL%%',
             target: !!openInNewTab ? "_blank" : "_self",
-            'data-popup': settings?.popup ?? null,
-        });
+        }
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(
@@ -233,9 +236,11 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <a {...blockProps}>
-                    <span>{title}</span>
-                </a>
+                <div {...blockProps} onClick={(e) => e.preventDefault()}>
+                    <a {...anchorProps}>
+                        <span>{title}</span>
+                    </a>
+                </div>
             </>
         )
     },
@@ -247,16 +252,21 @@ registerBlockType(metadata.name, {
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
-            title: title,
-            href: '%%URL%%',
-            target: !!openInNewTab ? "_blank" : "_self",
             'data-popup': settings?.popup ?? null,
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <a {...blockProps}>
-            <span>{title}</span>
-        </a>;
+        const anchorProps = {
+            title: title,
+            href: '%%URL%%',
+            target: !!openInNewTab ? "_blank" : "_self",
+        }
+
+        return <div {...blockProps}>
+            <a {...anchorProps}>
+                <span>{title}</span>
+            </a>
+        </div>;
     }
 })
 

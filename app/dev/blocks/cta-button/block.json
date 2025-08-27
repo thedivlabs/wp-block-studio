@@ -44,19 +44,22 @@
       "background": true,
       "text": true,
       "link": true,
-      "gradients": true
+      "gradients": true,
+      "__experimentalSkipSerialization": true
     },
     "__experimentalBorder": {
       "color": true,
       "radius": true,
-      "style": true
+      "style": true,
+      "__experimentalSkipSerialization": true
     },
     "spacing": {
       "blockGap": [
         "horizontal"
       ],
       "margin": true,
-      "padding": true
+      "padding": true,
+      "__experimentalSkipSerialization": true
     },
     "typography": {
       "__experimentalFontFamily": true,

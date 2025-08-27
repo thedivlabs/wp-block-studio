@@ -109,6 +109,10 @@
     }
   }
 
+  &.--select .wpbs-archive-filters__button {
+    pointer-events: none;
+  }
+
   .wpbs-archive-filters__button {
     height: 100%;
     width: 2em;

@@ -9,8 +9,6 @@ import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useMemo} from "react";
 import {
-    __experimentalBorderControl as BorderControl,
-    __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
     __experimentalUnitControl as UnitControl, BorderBoxControl,
     PanelBody,
@@ -19,7 +17,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
-import {BORDER_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
+import {BORDER_UNITS} from "Includes/config";
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -27,6 +25,7 @@ function blockClassnames(attributes = {}, editor = false) {
 
     const result = [
         'wpbs-archive-filters',
+        !!settings?.grow ? 'grow' : null,
         attributes?.uniqueId ?? null,
     ];
 
@@ -142,12 +141,7 @@ registerBlockType(metadata.name, {
                     '--hover-color-background': settings?.['hover-color-background'] ?? null,
                     '--hover-color-text': settings?.['hover-color-text'] ?? null,
                     '--hover-color-label': settings?.['hover-color-label'] ?? null,
-                    '--border': !!settings?.border?.top ? Object.fromEntries(Object.entries({
-                        'border-top': Object.values({style: 'solid', ...(settings?.border?.top ?? {})}).join(' '),
-                        'border-right': Object.values({style: 'solid', ...(settings?.border?.right ?? {})}).join(' '),
-                        'border-bottom': Object.values({style: 'solid', ...(settings?.border?.bottom ?? {})}).join(' '),
-                        'border-left': Object.values({style: 'solid', ...(settings?.border?.left ?? {})}).join(' '),
-                    }).filter(([k, v]) => !!v)) : {border: Object.values({style: 'solid', ...(settings?.border ?? {})}).join(' ')},
+                    '--border': Object.values(settings?.['border'] ?? {}).join(' ').trim() || null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings?.['overlay-color']]);
@@ -262,7 +256,7 @@ registerBlockType(metadata.name, {
                 onChange={(newValue) => updateSettings({'border': newValue})}
                 __experimentalIsRenderedInSidebar={true}
                 __next40pxDefaultSize
-                sides={['top', 'right', 'bottom', 'left']}
+                //sides={['top', 'right', 'bottom', 'left']}
             />
 
             <Grid columnGap={15} columns={2} rowGap={20}>

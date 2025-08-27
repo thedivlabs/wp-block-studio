@@ -1,5 +1,45 @@
 .wpbs-archive-filters {
   display: flex;
 
+  &.--label-top {
+    flex-direction: column;
+  }
 
+  &.--label-bottom {
+    flex-direction: column-reverse;
+  }
+
+  &.--label-bottom,
+  &.--label-top {
+
+    .wpbs-archive-filters__label {
+      width: 100%;
+    }
+  }
+
+  .wpbs-archive-filters__label {
+    display: block;
+    width: fit-content;
+    color: var(--color-label, inherit);
+  }
+
+  &:hover {
+    .wpbs-archive-filters__label {
+      color: var(--hover-color-label, inherit);
+    }
+  }
+
+  .wpbs-archive-filters__input {
+    display: flex;
+    position: relative;
+    background-color: var(--color-background, transparent);
+    color: var(--color-text, inherit);
+    border-radius: var(--radius, initial);
+    
+  }
+
+  .wpbs-archive-filters__input.--select {
+
+
+  }
 }

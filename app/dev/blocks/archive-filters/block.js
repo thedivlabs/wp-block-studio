@@ -54,14 +54,16 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
     const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
-    const buttonText = !!(settings?.['button-text'] ?? '').trim ? settings?.['button-text'] : false;
-    const labelText = !!(settings?.['label'] ?? '').trim ? settings?.['label'] : false;
+    const buttonText = (settings?.['button-text'] ?? '').trim() || false;
+    const labelText = (settings?.['label'] ?? '').trim() || false;
+
 
     switch (settings.type) {
         case 'sort':
             return <>
 
-                <span className={labelClass} dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
+                <label htmlFor={fieldId} className={labelClass}
+                       dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
                 <div className={'wpbs-archive-filters__input --select'}>
                     <select
                         id={fieldId}
@@ -86,7 +88,8 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
         case 'search':
             return <>
 
-                <span className={labelClass} dangerouslySetInnerHTML={{__html: labelText || 'Search'}}/>
+                <label htmlFor={fieldId} className={labelClass}
+                       dangerouslySetInnerHTML={{__html: labelText || 'Search'}}/>
                 <div className={'wpbs-archive-filters__input --search'}>
                     <input
                         id={fieldId}
@@ -542,9 +545,9 @@ registerBlockType(metadata.name, {
                 />
 
 
-                <label {...blockProps}>
+                <div {...blockProps}>
                     <FilterFields settings={settings} is_editor={true} uniqueId={uniqueId}/>
-                </label>
+                </div>
 
             </>
         )
@@ -558,9 +561,9 @@ registerBlockType(metadata.name, {
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <label {...blockProps}>
+        return <div {...blockProps}>
             <FilterFields settings={props.attributes?.['wpbs-archive-filters']} uniqueId={props.attributes?.uniqueId}/>
-        </label>;
+        </div>;
     }
 })
 

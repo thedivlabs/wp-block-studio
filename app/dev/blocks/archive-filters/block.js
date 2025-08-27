@@ -27,6 +27,7 @@ function blockClassnames(attributes = {}, editor = false) {
         'wpbs-archive-filters',
         !!settings?.grow ? 'grow' : null,
         !!settings?.prefix ? '--prefix' : null,
+        !!settings?.['bold-label'] ? '--bold-label' : null,
         attributes?.uniqueId ?? null,
     ];
 
@@ -74,7 +75,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__button"
                     >
-                        {!!settings?.button ? <span>{settings?.button}</span> : null}
+                        {!!settings?.button ? <span>{settings?.['button-text']}</span> : null}
                     </button>
                 </div>
 
@@ -95,7 +96,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__submit"
                     >
-                        <span> {settings?.button ?? 'Search'}</span>
+                        <span> {settings?.['button-text'] ?? 'Search'}</span>
                     </button>
                 </div>
             </>;
@@ -200,14 +201,6 @@ registerBlockType(metadata.name, {
                 onChange={(newValue) => updateSettings({'placeholder': newValue})}
             />
 
-            <TextControl
-                __nextHasNoMarginBottom
-                __next40pxDefaultSize
-                label="Button"
-                value={settings?.button}
-                onChange={(newValue) => updateSettings({'button': newValue})}
-            />
-
 
             <PanelColorSettings
                 enableAlpha
@@ -267,6 +260,17 @@ registerBlockType(metadata.name, {
             />
 
             <Grid columnGap={15} columns={2} rowGap={20}>
+
+                <UnitControl
+                    label="Radius"
+                    value={settings?.radius}
+                    onChange={(newValue) => updateSettings({radius: newValue})}
+                    units={BORDER_UNITS}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+
                 <SelectControl
                     __next40pxDefaultSize
                     label="Label Position"
@@ -280,24 +284,14 @@ registerBlockType(metadata.name, {
                     onChange={(newValue) => updateSettings({'label-position': newValue})}
                     __nextHasNoMarginBottom
                 />
+
                 <TextControl
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
-                    label="Prefix Icon"
-                    value={settings?.prefix}
-                    onChange={(newValue) => updateSettings({prefix: newValue})}
+                    label="Button Text"
+                    value={settings?.['button-text']}
+                    onChange={(newValue) => updateSettings({'button-text': newValue})}
                 />
-
-                <UnitControl
-                    label="Radius"
-                    value={settings?.radius}
-                    onChange={(newValue) => updateSettings({radius: newValue})}
-                    units={BORDER_UNITS}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-
 
                 <TextControl
                     __nextHasNoMarginBottom
@@ -315,6 +309,14 @@ registerBlockType(metadata.name, {
                     isResetValueOnUnitChange={true}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
+                />
+
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Prefix Icon"
+                    value={settings?.prefix}
+                    onChange={(newValue) => updateSettings({prefix: newValue})}
                 />
 
                 <UnitControl
@@ -337,6 +339,14 @@ registerBlockType(metadata.name, {
                     label="Grow"
                     checked={!!settings?.grow}
                     onChange={(newValue) => updateSettings({grow: newValue})}
+                />
+
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Bold Label"
+                    checked={!!settings?.['bold-label']}
+                    onChange={(newValue) => updateSettings({'bold-label': newValue})}
                 />
             </Grid>
 

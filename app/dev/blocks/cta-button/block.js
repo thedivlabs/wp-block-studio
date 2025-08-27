@@ -138,8 +138,8 @@ registerBlockType(metadata.name, {
                 <SelectControl
                     label="Popup"
                     __nextHasNoMarginBottom
-                    value={}
-                    options={settings?.popup}
+                    value={settings?.popup}
+                    options={popupOptions}
                     onChange={(newValue) => updateSettings({popup: newValue})}
                 />
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>

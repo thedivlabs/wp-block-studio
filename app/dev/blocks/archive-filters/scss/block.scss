@@ -38,7 +38,8 @@
       border-color: var(--hover-color-border, var(--border-color, initial));
     }
 
-    .wpbs-archive-filters__button {
+    .wpbs-archive-filters__button,
+    .wpbs-archive-filters__submit {
       background-color: var(--hover-color-button, var(--color-button, transparent));
       color: var(--hover-color-button-text, var(--color-button-text, inherit));
     }
@@ -118,30 +119,28 @@
     }
   }
 
-  .wpbs-archive-filters__button {
+  .wpbs-archive-filters__button,
+  .wpbs-archive-filters__submit {
     height: 100%;
-    width: 2em;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    background-color: var(--color-button, transparent);
+    color: var(--color-button-text, inherit);
+    cursor: pointer;
+  }
+
+  .wpbs-archive-filters__button {
     position: absolute;
     top: 0;
     right: 0;
-    background-color: var(--color-button, transparent);
-    color: var(--color-button-text, inherit);
+    width: 2em;
   }
 
   .wpbs-archive-filters__submit {
-    height: 100%;
-    width: 2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: relative;
+    padding: .2rem .6rem;
   }
 
 }

@@ -9,7 +9,11 @@
     }
   },
   "selectors": {
-    "root": ".wpbs-cta-button"
+    "root": ".wpbs-cta-button",
+    "spacing": ".wpbs-cta-button a",
+    "color": ".wpbs-cta-button a",
+    "dimensions": ".wpbs-cta-button a",
+    "border": ".wpbs-cta-button a"
   },
   "styles": [
     {
@@ -37,7 +41,8 @@
   "supports": {
     "interactivity": true,
     "dimensions": {
-      "minHeight": true
+      "minHeight": true,
+      "__experimentalTextTransform": true
     },
     "shadow": true,
     "color": {

@@ -245,6 +245,7 @@ registerBlockType(metadata.name, {
                 Object.entries({
                     '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
                     '--icon-size': settings?.['icon-size'] ?? null,
+                    '--icon-color': settings?.['icon-color'] || null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings]);
@@ -289,9 +290,7 @@ registerBlockType(metadata.name, {
                        uniqueId={uniqueId}
                        selector={'wpbs-cta-button'}
                        deps={['wpbs-cta']}
-                       props={{
-                           '--icon-color': settings?.['icon-color'] || null,
-                       }}
+                       props={cssProps}
                 />
 
                 <div {...blockProps}>

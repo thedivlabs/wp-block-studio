@@ -95,7 +95,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__submit"
                     >
-                        {!!settings?.button ? <span>{settings?.button}</span> : null}
+                        <span> {settings?.button ?? 'Search'}</span>
                     </button>
                 </div>
             </>;

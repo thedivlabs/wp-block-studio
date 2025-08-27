@@ -27,7 +27,7 @@ function classNames(attributes = {}) {
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
-        'wpbs-cta-button',
+        'wpbs-cta-button wp-element-button',
         !!settings?.['icon'] ? '--icon' : null,
         !!settings?.['icon-hide'] ? '--icon-hide' : null,
         !!settings?.['icon-bold'] ? '--icon-bold' : null,
@@ -37,51 +37,6 @@ function classNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function buttonProps(attributes = {}) {
-
-
-    return Object.fromEntries(
-        Object.entries({
-            type: 'button',
-            title: !!attributes['wpbs-cta']['icon-only'] && !!attributes['wpbs-cta']['link'] ? attributes['wpbs-cta']['link']?.title ?? null : null,
-            //'data-wp-interactive': 'wpbs/cta-button',
-            //'data-wp-on--click': 'actions.popup',
-            'data-popup': attributes['wpbs-cta']?.['popup'] ?? null,
-        }).filter(([key, value]) => value)
-    );
-}
-
-const Content = ({attributes, editor = false}) => {
-
-    const {link = {}, icon = '', popup = false} = attributes['wpbs-cta'];
-
-    const isButton = !!popup;
-    const title = link?.title ?? 'Learn More';
-
-    const className = [
-        'wpbs-cta-button__link wp-element-button',
-    ].filter(x => x).join(' ');
-
-    if (isButton || editor) {
-        return (
-            <button className={className} {...buttonProps(attributes)}>
-                <span>{title}</span>
-            </button>
-        );
-    }
-
-    const anchorProps = {
-        target: !!link.openInNewTab ? "_blank" : "_self",
-    }
-
-    const href = '%%URL%%';
-
-    return (
-        <a href={href} className={className} {...anchorProps} >
-            <span>{title}</span>
-        </a>
-    );
-}
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -121,7 +76,6 @@ registerBlockType(metadata.name, {
             (select) => select(coreStore).getEntityRecords('postType', 'popup', POPUP_QUERY),
             [POPUP_QUERY]
         ) || [];
-
 
         const popupOptions = useMemo(() => {
             return [
@@ -218,10 +172,15 @@ registerBlockType(metadata.name, {
             </Grid>
         ), [settings]);
 
+        const {title = 'Learn more', openInNewTab} = settings?.link ?? {};
+
         const blockProps = useBlockProps({
             className: classNames(attributes),
+            title: title,
+            href: '%%URL%%',
+            target: !!openInNewTab ? "_blank" : "_self",
+            'data-popup': settings?.popup ?? null,
         });
-
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(
@@ -276,22 +235,30 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <div {...blockProps}>
-                    <Content attributes={attributes} editor={true}/>
-                </div>
+                <a {...blockProps}>
+                    <span>{title}</span>
+                </a>
             </>
         )
     },
     save: (props) => {
 
-        const blockProps = useBlockProps.save({
+        const {'wpbs-cta': settings = {}} = props?.attributes ?? {};
+
+        const {title = 'Learn more', openInNewTab} = settings?.link ?? {};
+
+        const blockProps = useBlockProps({
             className: classNames(props.attributes),
+            title: title,
+            href: '%%URL%%',
+            target: !!openInNewTab ? "_blank" : "_self",
+            'data-popup': settings?.popup ?? null,
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <div {...blockProps}>
-            <Content attributes={props.attributes}/>
-        </div>;
+        return <a {...blockProps}>
+            <span>{title}</span>
+        </a>;
     }
 })
 

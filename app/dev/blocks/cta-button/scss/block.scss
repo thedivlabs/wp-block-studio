@@ -1,33 +1,27 @@
 .wpbs-cta-button {
-  @apply inline-flex items-stretch relative select-none w-fit;
-}
-
-.wpbs-cta-button__link {
-  @apply w-fit grow self-stretch h-auto inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
+  @apply inline-flex relative select-none w-fit items-center justify-center;
   transition: opacity 0.3s linear, color 0.3s linear, background-color 0.3s linear, border-color 0.3s linear, gap 0.3s ease-in-out;
-}
 
-.wpbs-cta-button__link > span {
-  order: 1;
-}
+  & > span {
+    order: 1;
+  }
 
-.wpbs-cta-button.--icon-only .wpbs-cta-button__link > span {
-  display: none;
-}
+  &.--icon-only > span {
+    display: none;
+  }
 
-.wpbs-cta-button.--icon-first .wpbs-cta-button__link:after {
-  order: 0;
-}
+  &.--icon-first:after {
+    order: 0;
+  }
 
-.wpbs-cta-button.--icon-hide .wpbs-cta-button__link:after {
-  content: none !important;
-}
+  &.--icon-hide:after {
+    content: none !important;
+  }
 
-.wpbs-cta-button.--icon-bold .wpbs-cta-button__link:after {
-  font-weight: bold;
-}
 
-.wpbs-cta-button__link {
+  &.--icon-bold:after {
+    font-weight: bold;
+  }
 
   &:hover:after {
     color: inherit;

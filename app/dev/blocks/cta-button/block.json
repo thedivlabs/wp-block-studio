@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/cta-button",
   "title": "CTA Button",
   "description": "Display a CTA button",
@@ -8,13 +9,7 @@
     }
   },
   "selectors": {
-    "root": ".wpbs-cta-button",
-    "border": ".wpbs-cta-button__link",
-    "color": ".wpbs-cta-button__link",
-    "spacing": ".wpbs-cta-button__link",
-    "typography": ".wpbs-cta-button__link",
-    "dimensions": ".wpbs-cta-button__link",
-    "link": ".wpbs-cta-button__link"
+    "root": ".wpbs-cta-button"
   },
   "styles": [
     {

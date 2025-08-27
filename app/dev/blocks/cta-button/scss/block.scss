@@ -28,6 +28,10 @@
   order: 1;
 }
 
+.wpbs-cta-button__link.--icon-hide:after {
+  content: none !important;
+}
+
 .wpbs-cta-button__link.--icon-bold:after {
   font-weight: bold;
 }
@@ -36,7 +40,7 @@
 .wpbs-cta-button__link:after {
   content: var(--icon, none);
   font-family: "Font Awesome 6 Pro", sans-serif;
-  font-size: var(--icon-size, inherit);
+  font-size: var(--icon-size, 1em);
   color: var(--icon-color, inherit);
   order: 2;
   height: 1.2em;

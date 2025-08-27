@@ -74,7 +74,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__button"
                     >
-                        <span> {settings?.button}</span>
+                        {!!settings?.button ? <span>{settings?.button}</span> : null}
                     </button>
                 </div>
 
@@ -95,7 +95,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__submit"
                     >
-                        <span> {settings?.button ?? 'Search'}</span>
+                        {!!settings?.button ? <span>{settings?.button}</span> : null}
                     </button>
                 </div>
             </>;

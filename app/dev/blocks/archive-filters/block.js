@@ -68,7 +68,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                 <div className={'wpbs-archive-filters__input --select'}>
                     <select
                         id={fieldId}
-                        defaultValue={defaultValue}>
+                        value={defaultValue}>
                         <option value="">{settings?.placeholder ?? 'Select'}</option>
                         {sortOptions.map(opt => (
                             <option key={opt.value} value={opt.value}>
@@ -95,7 +95,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                     <input
                         id={fieldId}
                         type="text"
-                        defaultValue={defaultValue}
+                        value={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
                     />
                     <button

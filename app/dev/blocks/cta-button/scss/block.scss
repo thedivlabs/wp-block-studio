@@ -3,12 +3,12 @@
 }
 
 /* Icon layout behavior: modifies link and its child icon */
-.wpbs-cta-button--icon .wpbs-cta-button__link:hover > i {
+.wpbs-cta-button--icon .wpbs-cta-button__link:hover:after {
   color: inherit;
 }
 
 /* Icon first: reorder the icon */
-.wpbs-cta-button--icon-first .wpbs-cta-button__link > i {
+.wpbs-cta-button--icon-first .wpbs-cta-button__link:after {
   order: 0;
 }
 

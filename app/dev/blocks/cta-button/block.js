@@ -49,7 +49,11 @@ registerBlockType(metadata.name, {
             default: {}
         }
     },
-    edit: ({attributes, setAttributes, clientId}) => {
+    edit: (props) => {
+
+        const {attributes, setAttributes, clientId} = props;
+
+        console.log(props);
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 

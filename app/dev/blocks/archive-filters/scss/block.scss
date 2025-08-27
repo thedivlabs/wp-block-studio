@@ -98,7 +98,7 @@
       display: block;
       height: 100%;
       border-radius: 0;
-      padding: .2rem 2.1em .2em .6em;
+      padding: .2rem .6rem;
       @apply
       transition-colors
       duration-300
@@ -127,6 +127,10 @@
       position: absolute;
       top: 0;
       left: 0;
+    }
+
+    select {
+      padding-right: 2.1em;
     }
 
     &.--select {

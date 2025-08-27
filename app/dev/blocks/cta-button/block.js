@@ -247,7 +247,7 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    '--icon': settings?.['icon'] ?? null,
+                    '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
                     '--icon-size': settings?.['icon-size'] ?? null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );

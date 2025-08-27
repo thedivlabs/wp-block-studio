@@ -107,12 +107,12 @@
       top: 0;
       left: 0;
     }
-  }
 
-  &.--select .wpbs-archive-filters__button {
-    pointer-events: none;
+    &.--select .wpbs-archive-filters__button {
+      pointer-events: none;
+    }
   }
-
+  
   .wpbs-archive-filters__button {
     height: 100%;
     width: 2em;

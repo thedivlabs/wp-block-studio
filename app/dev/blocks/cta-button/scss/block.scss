@@ -1,9 +1,9 @@
 .wpbs-cta-button {
-  @apply inline-block relative select-none w-fit;
+  @apply inline-flex items-stretch relative select-none w-fit;
 }
 
 .wpbs-cta-button__link {
-  @apply w-fit grow inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
+  @apply w-fit grow self-stretch h-auto inline-flex items-center justify-center relative select-none gap-[inherit] transition-colors;
   transition: opacity 0.3s linear, color 0.3s linear, background-color 0.3s linear, border-color 0.3s linear, gap 0.3s ease-in-out;
 }
 

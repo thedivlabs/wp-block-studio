@@ -63,13 +63,10 @@ const Content = ({attributes, editor = false}) => {
         'wpbs-cta-button__link wp-element-button',
     ].filter(x => x).join(' ');
 
-    const iconClass = icon.match(/<i[^>]*class=["']([^"']+)["'][^>]*>/i)?.[1] || '';
-
     if (isButton || editor) {
         return (
             <button className={className} {...buttonProps(attributes)}>
                 <span>{title}</span>
-                {iconClass && <i className={iconClass}/>}
             </button>
         );
     }
@@ -83,7 +80,6 @@ const Content = ({attributes, editor = false}) => {
     return (
         <a href={href} className={className} {...anchorProps} >
             <span>{title}</span>
-            {iconClass && <i className={iconClass}/>}
         </a>
     );
 }

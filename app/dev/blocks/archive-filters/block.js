@@ -54,6 +54,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
     const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
     const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
+    const buttonText = (settings?.['button-text'] ?? '').trim.length ? settings?.['button-text'] : false;
 
     switch (settings.type) {
         case 'sort':
@@ -75,7 +76,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__button"
                     >
-                        {!!settings?.button ? <span>{settings?.['button-text']}</span> : null}
+                        {buttonText ? <span>{buttonText}</span> : null}
                     </button>
                 </div>
 
@@ -96,7 +97,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         type="button"
                         className="wpbs-archive-filters__submit"
                     >
-                        <span> {(settings?.['button-text'] ?? '').trim || 'Search'}</span>
+                        <span> {buttonText || 'Search'}</span>
                     </button>
                 </div>
             </>;

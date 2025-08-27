@@ -53,6 +53,7 @@
 
   .wpbs-archive-filters__input {
     display: flex;
+    align-items: center;
     position: relative;
     flex-grow: 1;
     align-self: stretch;
@@ -86,7 +87,15 @@
 
     &:before {
       content: var(--prefix-icon, none);
-      display: block;
+      
+      font-family: "Font Awesome 6 Pro", sans-serif;
+      height: 100%;
+      width: auto;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-self: center;
+      text-align: center;
     }
   }
 

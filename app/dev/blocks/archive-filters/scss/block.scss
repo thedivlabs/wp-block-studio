@@ -59,6 +59,7 @@
     align-self: stretch;
     font-size: inherit;
     line-height: inherit;
+    overflow: hidden;
     background-color: var(--color-background, transparent);
     color: var(--color-text, inherit);
     border-width: var(--border-width, initial);
@@ -99,7 +100,13 @@
     }
   }
 
-  .wpbs-archive-filters__input.--select {
-
+  .wpbs-archive-filters__button {
+    height: 100%;
+    width: auto;
+    aspect-ratio: .8/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 }

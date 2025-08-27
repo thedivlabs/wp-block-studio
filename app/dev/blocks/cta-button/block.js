@@ -14,7 +14,7 @@ import {
     TextControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useMemo, useState} from "react";
+import React, {useCallback, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
@@ -53,12 +53,12 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const [settings, setSettings] = useState(attributes['wpbs-cta']);
+        const {'wpbs-cta': settings = {}} = attributes;
 
         const updateSettings = useCallback((newValue) => {
 
             const result = {
-                ...attributes['wpbs-cta'],
+                ...attributes?.['wpbs-cta'],
                 ...newValue,
             }
 
@@ -66,9 +66,7 @@ registerBlockType(metadata.name, {
                 'wpbs-cta': result
             });
 
-            setSettings(result);
-
-        }, [attributes['wpbs-cta']]);
+        }, [settings]);
 
         const POPUP_QUERY = useMemo(() => ({per_page: -1}), []);
 
@@ -172,7 +170,7 @@ registerBlockType(metadata.name, {
             </Grid>
         ), [settings]);
 
-        const {title = 'Learn more', openInNewTab} = settings?.link ?? {};
+        const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -245,9 +243,9 @@ registerBlockType(metadata.name, {
 
         const {'wpbs-cta': settings = {}} = props?.attributes ?? {};
 
-        const {title = 'Learn more', openInNewTab} = settings?.link ?? {};
+        const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
-        const blockProps = useBlockProps({
+        const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             title: title,
             href: '%%URL%%',

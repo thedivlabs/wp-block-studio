@@ -14,14 +14,12 @@ import {
     TextControl,
     ToggleControl
 } from "@wordpress/components";
-import {useInstanceId} from "@wordpress/compose";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
-import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 
 
 function classNames(attributes = {}) {
@@ -102,37 +100,6 @@ registerBlockType(metadata.name, {
 
         const [settings, setSettings] = useState(attributes['wpbs-cta']);
 
-        const MemoSelectControl = React.memo(({label, prop, options}) => (
-            <SelectControl
-                label={label}
-                value={settings?.[prop]}
-                onChange={(newValue) => updateSettings({[prop]: newValue})}
-                options={options}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-        ));
-
-        const MemoToggleControl = React.memo(({label, prop}) => (
-            <ToggleControl
-                label={label}
-                checked={!!settings?.[prop]}
-                onChange={(newValue) => updateSettings({[prop]: newValue})}
-                className={'flex items-center'}
-                __nextHasNoMarginBottom
-            />
-        ));
-
-        const MemoTextControl = React.memo(({label, prop}) => (
-            <TextControl
-                label={label}
-                value={settings?.[prop]}
-                onChange={(newValue) => updateSettings({[prop]: newValue})}
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-            />
-        ));
-
         const updateSettings = useCallback((newValue) => {
 
             const result = {
@@ -168,15 +135,19 @@ registerBlockType(metadata.name, {
 
         const tabOptions = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>
-                <MemoSelectControl
+                <SelectControl
                     label="Popup"
-                    prop={'popup'}
-                    options={popupOptions}
+                    __nextHasNoMarginBottom
+                    value={}
+                    options={settings?.popup}
+                    onChange={(newValue) => updateSettings({popup: newValue})}
                 />
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                    <MemoToggleControl
+                    <ToggleControl
                         label="Loop"
-                        prop={'loop'}
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.loop}
+                        onChange={(newValue) => updateSettings({loop: newValue})}
                     />
                 </Grid>
             </Grid>
@@ -185,9 +156,12 @@ registerBlockType(metadata.name, {
         const tabIcon = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>
                 <Grid columns={2} columnGap={15} rowGap={20}>
-                    <MemoTextControl
+                    <TextControl
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
                         label="Icon"
-                        prop={'icon'}
+                        value={settings?.icon}
+                        onChange={(newValue) => updateSettings({icon: newValue})}
                     />
                     <UnitControl
                         label="Icon Size"
@@ -203,21 +177,29 @@ registerBlockType(metadata.name, {
                 </Grid>
 
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                    <MemoToggleControl
+                    <ToggleControl
                         label="Icon Only"
-                        prop={'icon-only'}
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.['icon-only']}
+                        onChange={(newValue) => updateSettings({'icon-only': newValue})}
                     />
-                    <MemoToggleControl
+                    <ToggleControl
                         label="Hide Icon"
-                        prop={'icon-hide'}
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.['icon-hide']}
+                        onChange={(newValue) => updateSettings({'icon-hide': newValue})}
                     />
-                    <MemoToggleControl
+                    <ToggleControl
                         label="Icon First"
-                        prop={'icon-first'}
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.['icon-first']}
+                        onChange={(newValue) => updateSettings({'icon-first': newValue})}
                     />
-                    <MemoToggleControl
+                    <ToggleControl
                         label="Bold Icon"
-                        prop={'icon-bold'}
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.['icon-bold']}
+                        onChange={(newValue) => updateSettings({'icon-bold': newValue})}
                     />
                 </Grid>
                 <PanelColorSettings

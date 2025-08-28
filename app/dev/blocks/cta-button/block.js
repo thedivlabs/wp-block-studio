@@ -2,7 +2,7 @@ import './scss/block.scss'
 
 import {
     useBlockProps,
-    InspectorControls, PanelColorSettings, BlockEdit
+    InspectorControls, PanelColorSettings, BlockEdit, useSetting, getColorObjectByAttributeValues
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
@@ -56,6 +56,19 @@ registerBlockType(metadata.name, {
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-cta': settings = {}} = attributes;
+
+        const editorColors = useSetting('color.palette');
+
+        const { color: styleColorText } = getColorObjectByAttributeValues(
+            editorColors,
+            attributes.textColor,
+            null
+        );
+        const { color: styleColorBg } = getColorObjectByAttributeValues(
+            editorColors,
+            null,
+            attributes.backgroundColor
+        );
 
         const updateSettings = useCallback((newValue) => {
 
@@ -188,7 +201,8 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    //'--color-background': attributes,
+                    '--color-text': styleColorText,
+                    '--color-background': styleColorBg,
                     '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
                     '--icon-size': settings?.['icon-size'] ?? null,
                     '--icon-color': settings?.['icon-color'] || null,

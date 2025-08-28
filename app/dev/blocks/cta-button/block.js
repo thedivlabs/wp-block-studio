@@ -57,24 +57,6 @@ registerBlockType(metadata.name, {
 
         const {'wpbs-cta': settings = {}, style} = attributes;
 
-        const editorColors = useSetting('color.palette');
-
-        const {color: styleColorText} = getColorObjectByAttributeValues(
-            editorColors,
-            attributes.textColor,
-            null
-        );
-        const {color: styleColorBg} = getColorObjectByAttributeValues(
-            editorColors,
-            null,
-            attributes.backgroundColor
-        );
-        const {color: styleColorBorder} = getColorObjectByAttributeValues(
-            editorColors,
-            null,
-            attributes.borderColor
-        );
-
         const updateSettings = useCallback((newValue) => {
 
             const result = {
@@ -206,18 +188,6 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    '--color-text': getCSSFromStyle(styleColorText),
-                    '--color-background': getCSSFromStyle(styleColorBg),
-                    '--border-color': getCSSFromStyle(styleColorBorder, 'color'), // border color
-
-                    '--padding-top': getCSSFromStyle(style?.spacing?.padding?.top),
-                    '--padding-bottom': getCSSFromStyle(style?.spacing?.padding?.bottom),
-                    '--padding-left': getCSSFromStyle(style?.spacing?.padding?.left),
-                    '--padding-right': getCSSFromStyle(style?.spacing?.padding?.right),
-                    '--border-radius': getCSSFromStyle(style?.border?.radius),
-                    '--border-width': style?.border?.width,
-                    '--border-style': style?.border?.style,
-
                     '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
                     '--icon-size': settings?.['icon-size'] ?? null,
                     '--icon-color': settings?.['icon-color'] || null,

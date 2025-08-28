@@ -1,7 +1,7 @@
 import {store, getElement} from '@wordpress/interactivity';
 
 function initAccordion(element) {
-    
+
     const toggleItems = element.querySelectorAll(':scope > .wpbs-nav-menu-container > li.menu-item-has-children > a');
 
     if (!toggleItems.length) {
@@ -16,7 +16,7 @@ function initAccordion(element) {
             const parent = e.target.parentElement;
             const submenu = parent.querySelector(':scope > .sub-menu');
 
-            WPBS.slideToggle(submenu, 'fast', () => {
+            WPBS.slideToggle(submenu, 'medium', () => {
                 parent.classList.toggle('active');
             });
         })

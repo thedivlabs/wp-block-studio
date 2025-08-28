@@ -21,6 +21,7 @@
         gap: var(--icon-space, initial);
         text-decoration: var(--decoration, none);
         text-decoration-color: var(--color-text-decoration, initial);
+        text-underline-offset: .3em;
         @apply whitespace-nowrap flex transition-colors duration-200 relative items-center;
 
         &.--icon:before {

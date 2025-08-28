@@ -428,7 +428,13 @@ function parseSpecial(prop, attributes) {
 
             result = {
                 'transition-property': transitions.join(', '),
-                'transition-duration': (settings?.['duration'] ?? '').trim() || '300ms'
+            }
+
+            break;
+        case 'duration':
+
+            result = {
+                'transition-duration': settings?.['duration']
             }
 
             break;

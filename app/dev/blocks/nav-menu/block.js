@@ -8,7 +8,6 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import {useInstanceId} from '@wordpress/compose';
 import React, {useCallback, useMemo} from "react";
 import {useSelect} from "@wordpress/data";
 import {
@@ -197,20 +196,6 @@ registerBlockType(metadata.name, {
                             label: 'Background Hover',
                             value: settings?.['color-background-hover'],
                             onChange: (newValue) => updateSettings({'color-background-hover': newValue}),
-                            isShownByDefault: true
-                        },
-                        {
-                            slug: 'color-background-active',
-                            label: 'Background Active',
-                            value: settings?.['color-background-active'],
-                            onChange: (newValue) => updateSettings({'color-background-active': newValue}),
-                            isShownByDefault: true
-                        },
-                        {
-                            slug: 'color-active-text',
-                            label: 'Text Active',
-                            value: settings?.['color-text-active'],
-                            onChange: (newValue) => updateSettings({'color-text-active': newValue}),
                             isShownByDefault: true
                         },
                         {
@@ -430,9 +415,66 @@ registerBlockType(metadata.name, {
             </Grid>
         </Grid>;
 
+        const tabActive = <Grid columns={1} columnGap={15} rowGap={15}>
+            <Grid columns={2} columnGap={15} rowGap={15}>
+
+                <SelectControl
+                    label="Text Decoration"
+                    value={settings?.['text-decoration']}
+                    options={[
+                        {label: 'None', value: 'none'},
+                        {label: 'Underline', value: 'underline'},
+                        {label: 'Overline', value: 'overline'},
+                        {label: 'Line Through', value: 'line-through'},
+                    ]}
+                    onChange={(newValue) => updateSettings({'text-decoration': newValue})}
+                />
+
+            </Grid>
+            <BaseControl label={'Colors'}>
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'color-background-active',
+                            label: 'Background',
+                            value: settings?.['color-background-active'],
+                            onChange: (newValue) => updateSettings({'color-background-active': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-active-text',
+                            label: 'Text',
+                            value: settings?.['color-text-active'],
+                            onChange: (newValue) => updateSettings({'color-text-active': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-submenu-background-active',
+                            label: 'Sub-menu Background',
+                            value: settings?.['color-submenu-background-active'],
+                            onChange: (newValue) => updateSettings({'color-submenu-background-active': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-submenu-text-active',
+                            label: 'Sub-menu Text',
+                            value: settings?.['color-submenu-text-active'],
+                            onChange: (newValue) => updateSettings({'color-submenu-text-active': newValue}),
+                            isShownByDefault: true
+                        }
+                    ]}
+                />
+
+            </BaseControl>
+
+        </Grid>;
+
         const tabs = {
             options: tabOptions,
             submenu: tabSubMenu,
+            active: tabActive,
         }
 
         return <>
@@ -455,6 +497,11 @@ registerBlockType(metadata.name, {
                                 name: 'submenu',
                                 title: 'Sub-Menu',
                                 className: 'tab-submenu'
+                            },
+                            {
+                                name: 'active',
+                                title: 'Active',
+                                className: 'tab-active'
                             },
                         ]}>
                         {

@@ -173,18 +173,17 @@ registerBlockType(metadata.name, {
 
         const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
-        const anchorProps = Object.fromEntries(Object.entries({
+        const anchorProps = {
             title: title,
             href: settings?.popup ? '#' : '%%URL%%',
-            target: !!openInNewTab ? "_blank" : "_self",
-            role: settings?.popup ? 'button' : false,
-            onClick: settings?.popup ? '(e)=>{e.preventDefault()}' : false,
-        }).filter(x => !!x));
+            target: openInNewTab ? '_blank' : '_self',
+            ...(settings?.popup && {role: 'button'}),
+        };
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
             'data-popup': settings?.popup ?? null,
-            ...anchorProps
+            ...anchorProps,
         });
 
         const cssProps = useMemo(() => {
@@ -254,9 +253,13 @@ registerBlockType(metadata.name, {
 
         const anchorProps = {
             title: title,
-            href: '%%URL%%',
-            target: !!openInNewTab ? "_blank" : "_self",
-        }
+            href: settings?.popup ? '#' : '%%URL%%',
+            target: openInNewTab ? '_blank' : '_self',
+            ...(settings?.popup && {role: 'button'}),
+            ...(settings?.popup && {
+                onClick: (e) => e.preventDefault()
+            }),
+        };
 
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),

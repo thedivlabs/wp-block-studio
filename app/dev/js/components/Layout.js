@@ -211,6 +211,8 @@ const LAYOUT_PROPS = {
         'background-color-hover',
         'border-color-hover',
         'text-color-mobile',
+        'text-decoration-color',
+        'text-decoration-color-hover',
         'background-color-mobile',
     ],
 
@@ -2130,6 +2132,14 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             {
                                 slug: 'background-color-mobile',
                                 label: 'Background Mobile'
+                            },
+                            {
+                                slug: 'text-decoration-color',
+                                label: 'Text Decoration'
+                            },
+                            {
+                                slug: 'text-decoration-color-hover',
+                                label: 'Text Decoration Hover'
                             }
                         ].map((color_control) => {
                             return {

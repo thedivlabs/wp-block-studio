@@ -419,21 +419,18 @@ function parseSpecial(prop, attributes) {
             result = {'flex-basis': value + '%'}
             break;
         case 'transition':
-            switch (prop) {
-                case 'color':
-                    result = {
-                        'transition-property': [...value, 'text-decoration-color'].join(', '),
-                    }
-                    break;
-                default:
-                    result = {
-                        'transition-property': value.join(', '),
-                    }
+
+            const transitions = [...value];
+
+            if (value.includes('color') && !value.includes('text-decoration-color')) {
+                transitions.push('text-decoration-color');
             }
+
             result = {
-                ...result,
-                'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300ms',
+                'transition-property': transitions.join(', '),
+                'transition-duration': (settings?.['duration'] ?? '').trim() || '300ms'
             }
+
             break;
         case 'text-color':
             result = {'color': value}

@@ -50,7 +50,6 @@
         }
 
         &.active > a {
-          text-decoration: var(--decoration-active, none);
           text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
         }
 

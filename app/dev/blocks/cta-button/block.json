@@ -9,11 +9,7 @@
     }
   },
   "selectors": {
-    "root": "a.wpbs-cta-button",
-    "spacing": "a.wpbs-cta-button",
-    "color": "a.wpbs-cta-button",
-    "dimensions": "a.wpbs-cta-button",
-    "border": "a.wpbs-cta-button"
+    "root": ".wpbs-cta-button"
   },
   "styles": [
     {

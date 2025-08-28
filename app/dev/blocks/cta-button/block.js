@@ -53,8 +53,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        console.log(props);
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-cta': settings = {}} = attributes;
@@ -62,7 +60,7 @@ registerBlockType(metadata.name, {
         const updateSettings = useCallback((newValue) => {
 
             const result = {
-                ...attributes?.['wpbs-cta'],
+                ...settings,
                 ...newValue,
             }
 

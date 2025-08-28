@@ -419,8 +419,19 @@ function parseSpecial(prop, attributes) {
             result = {'flex-basis': value + '%'}
             break;
         case 'transition':
+            switch (prop) {
+                case 'color':
+                    result = {
+                        'transition-property': [...value, 'text-decoration-color'].join(', '),
+                    }
+                    break;
+                default:
+                    result = {
+                        'transition-property': value.join(', '),
+                    }
+            }
             result = {
-                'transition-property': value.join(', '),
+                ...result,
                 'transition-duration': !!settings?.['duration'] ? settings?.['duration'] : '300ms',
             }
             break;

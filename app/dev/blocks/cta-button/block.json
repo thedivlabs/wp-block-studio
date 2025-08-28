@@ -9,11 +9,11 @@
     }
   },
   "selectors": {
-    "root": "a.wpbs-cta-button.wp-element-button",
-    "spacing": "a.wpbs-cta-button.wp-element-button",
-    "color": "a.wpbs-cta-button.wp-element-button",
-    "dimensions": "a.wpbs-cta-button.wp-element-button",
-    "border": "a.wpbs-cta-button.wp-element-button"
+    "root": "a.wpbs-cta-button",
+    "spacing": "a.wpbs-cta-button",
+    "color": "a.wpbs-cta-button",
+    "dimensions": "a.wpbs-cta-button",
+    "border": "a.wpbs-cta-button"
   },
   "styles": [
     {

@@ -1,8 +1,8 @@
 import './scss/block.scss'
 
 import {
-    useBlockProps, getColorClassName,
-    InspectorControls, PanelColorSettings, BlockEdit, useSetting, getColorObjectByAttributeValues
+    useBlockProps,
+    InspectorControls, PanelColorSettings, BlockEdit,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
@@ -14,20 +14,19 @@ import {
     TextControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useEffect, useMemo} from "react";
+import React, {useCallback, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
-import {getCSSFromStyle} from "Components/Style";
 
 function classNames(attributes = {}) {
 
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
-        'wpbs-cta-button wp-element-button',
+        'wpbs-cta-button',
         !!settings?.['icon'] ? '--icon' : null,
         !!settings?.['icon-hide'] ? '--icon-hide' : null,
         !!settings?.['icon-bold'] ? '--icon-bold' : null,
@@ -174,16 +173,17 @@ registerBlockType(metadata.name, {
 
         const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
-        const blockProps = useBlockProps({
-            className: classNames(attributes),
-            'data-popup': settings?.popup ?? null,
-        });
-
         const anchorProps = {
             title: title,
             href: '%%URL%%',
             target: !!openInNewTab ? "_blank" : "_self",
         }
+
+        const blockProps = useBlockProps({
+            className: classNames(attributes),
+            'data-popup': settings?.popup ?? null,
+            ...anchorProps
+        });
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(
@@ -238,11 +238,9 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <div {...blockProps} onClick={(e) => e.preventDefault()}>
-                    <a {...anchorProps}>
-                        <span>{title}</span>
-                    </a>
-                </div>
+                <a {...blockProps} onClick={(e) => e.preventDefault()}>
+                    <span>{title}</span>
+                </a>
             </>
         )
     },
@@ -252,23 +250,23 @@ registerBlockType(metadata.name, {
 
         const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
-        const blockProps = useBlockProps.save({
-            className: classNames(props.attributes),
-            'data-popup': settings?.popup ?? null,
-            ...(props.attributes?.['wpbs-props'] ?? {})
-        });
-
         const anchorProps = {
             title: title,
             href: '%%URL%%',
             target: !!openInNewTab ? "_blank" : "_self",
         }
 
-        return <div {...blockProps}>
-            <a {...anchorProps}>
-                <span>{title}</span>
-            </a>
-        </div>;
+        const blockProps = useBlockProps.save({
+            className: classNames(props.attributes),
+            'data-popup': settings?.popup ?? null,
+            ...anchorProps,
+            ...(props.attributes?.['wpbs-props'] ?? {})
+        });
+
+
+        return <a {...blockProps}>
+            <span>{title}</span>
+        </a>;
     }
 })
 

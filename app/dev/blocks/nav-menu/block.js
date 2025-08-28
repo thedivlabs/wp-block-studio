@@ -166,6 +166,8 @@ registerBlockType(metadata.name, {
                     value={settings?.['text-decoration']}
                     options={TEXT_DECORATION_OPTIONS}
                     onChange={(newValue) => updateSettings({'text-decoration': newValue})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={15}

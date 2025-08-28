@@ -1,7 +1,7 @@
 .wpbs-flyout {
   z-index: 900;
-  width: 100svw;
-  height: 100svh;
+  width: 100vw;
+  height: 100vh;
   top: 0;
   left: 0;
   transition: background-color var(--animation, 300ms) linear, backdrop-filter var(--animation, 300ms) linear;

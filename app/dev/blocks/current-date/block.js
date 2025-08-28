@@ -62,9 +62,9 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: classNames(attributes)
         });
-        
+
         const Now = useMemo(() => {
-            return dateI18n(settings?.format ?? 'm/d/Y', new Date());
+            return <span>{dateI18n(settings?.format ?? 'm/d/Y', new Date())}</span>;
         }, [settings]);
 
         return (

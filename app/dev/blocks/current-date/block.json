@@ -6,6 +6,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "wpbs-current-date": {
+      "type": "object"
     }
   },
   "selectors": {

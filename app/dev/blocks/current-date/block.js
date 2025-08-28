@@ -22,7 +22,7 @@ function classNames(attributes = {}) {
     const {'wpbs-current-date': settings = {}} = attributes;
 
     return [
-        'wpbs-current-date w-fit inline-flex',
+        'wpbs-current-date w-fit inline-block whitespace-nowrap',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -34,10 +34,6 @@ registerBlockType(metadata.name, {
         ...metadata.attributes,
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
-        'wpbs-current-date': {
-            type: 'object',
-            default: {}
-        }
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
@@ -57,7 +53,6 @@ registerBlockType(metadata.name, {
             });
 
         }, [settings]);
-
 
         const blockProps = useBlockProps({
             className: classNames(attributes)

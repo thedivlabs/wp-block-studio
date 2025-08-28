@@ -89,7 +89,6 @@ registerBlockType(metadata.name, {
                 '--color-text-decoration-active': settings?.['color-text-decoration-active'] ?? null,
                 '--color-text-decoration': settings?.['color-text-decoration'] ?? null,
                 '--decoration': settings?.['text-decoration'] ?? null,
-                '--decoration-active': settings?.['text-decoration-active'] ?? null,
                 '--columns': parseInt(settings?.['columns-mobile'] ?? settings?.['columns'] ?? 0) || null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
@@ -162,7 +161,12 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-
+                <SelectControl
+                    label="Text Decoration"
+                    value={settings?.['text-decoration']}
+                    options={TEXT_DECORATION_OPTIONS}
+                    onChange={(newValue) => updateSettings({'text-decoration': newValue})}
+                />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={15}
                   style={{display: !(attributes?.className ?? '').includes('is-style-columns') ? 'none' : 'grid'}}>
@@ -361,20 +365,6 @@ registerBlockType(metadata.name, {
                             value: settings?.['color-submenu-icon'],
                             onChange: (newValue) => updateSettings({'color-submenu-icon': newValue}),
                             isShownByDefault: true
-                        },
-                        {
-                            slug: 'color-submenu-background-active',
-                            label: 'Background Active',
-                            value: settings?.['color-submenu-background-active'],
-                            onChange: (newValue) => updateSettings({'color-submenu-background-active': newValue}),
-                            isShownByDefault: true
-                        },
-                        {
-                            slug: 'color-submenu-text-active',
-                            label: 'Text Active',
-                            value: settings?.['color-submenu-text-active'],
-                            onChange: (newValue) => updateSettings({'color-submenu-text-active': newValue}),
-                            isShownByDefault: true
                         }
                     ]}
                 />
@@ -433,16 +423,6 @@ registerBlockType(metadata.name, {
         </Grid>;
 
         const tabActive = <Grid columns={1} columnGap={15} rowGap={15}>
-            <Grid columns={2} columnGap={15} rowGap={15}>
-
-                <SelectControl
-                    label="Text Decoration"
-                    value={settings?.['text-decoration-active']}
-                    options={TEXT_DECORATION_OPTIONS}
-                    onChange={(newValue) => updateSettings({'text-decoration-active': newValue})}
-                />
-
-            </Grid>
             <BaseControl label={'Colors'}>
                 <PanelColorSettings
                     enableAlpha
@@ -487,7 +467,6 @@ registerBlockType(metadata.name, {
                 />
 
             </BaseControl>
-
         </Grid>;
 
         const tabs = {

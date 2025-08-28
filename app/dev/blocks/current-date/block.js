@@ -62,13 +62,10 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: classNames(attributes)
         });
-
-        const Prefix = settings?.prefix ? `<span class="wpbs-current-date__prefix">${settings.prefix}</span>` : '';
+        
         const Now = useMemo(() => {
-            return `<span class="wpbs-current-date__date">${dateI18n(settings?.format ?? 'm/d/Y', new Date())}</span>`;
+            return dateI18n(settings?.format ?? 'm/d/Y', new Date());
         }, [settings]);
-
-        const Content = Prefix + Now;
 
         return (
             <>
@@ -116,13 +113,10 @@ registerBlockType(metadata.name, {
                        deps={['wpbs-current-date']}
                 />
 
-                <RichText
-                    tagName="span"
-                    value={Content}
-                    onChange={() => null}
-                    placeholder={Content}
-                    {...blockProps}
-                />
+                <div {...blockProps} >
+                    {!!settings?.prefix ? <span>{settings?.prefix}</span> : null}
+                    {Now}
+                </div>
             </>
         )
     },

@@ -1,7 +1,7 @@
 import './scss/block.scss'
 
 import {
-    useBlockProps,
+    useBlockProps, getColorClassName,
     InspectorControls, PanelColorSettings, BlockEdit, useSetting, getColorObjectByAttributeValues
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -54,7 +54,6 @@ registerBlockType(metadata.name, {
         const {attributes, setAttributes, clientId} = props;
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
-
 
         const {'wpbs-cta': settings = {}, style} = attributes;
 
@@ -225,11 +224,6 @@ registerBlockType(metadata.name, {
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings, style]);
-
-        useEffect(() => {
-            console.log(attributes);
-            console.log(cssProps);
-        }, [attributes]);
 
         return (
             <>

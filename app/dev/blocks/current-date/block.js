@@ -12,7 +12,7 @@ import {
     PanelBody, SelectControl,
     TextControl,
 } from "@wordpress/components";
-import React, {useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
 
@@ -22,7 +22,7 @@ function classNames(attributes = {}) {
     const {'wpbs-current-date': settings = {}} = attributes;
 
     return [
-        'wpbs-current-date-button wp-element-button',
+        'wpbs-current-date w-fit inline-flex',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -63,7 +63,12 @@ registerBlockType(metadata.name, {
             className: classNames(attributes)
         });
 
-        const now = dateI18n(settings?.format ?? 'm/d/Y', new Date());
+        const Prefix = settings?.prefix ? `<span class="wpbs-current-date__prefix">${settings.prefix}</span>` : '';
+        const Now = useMemo(() => {
+            return `<span class="wpbs-current-date__date">${dateI18n(settings?.format ?? 'm/d/Y', new Date())}</span>`;
+        }, [settings]);
+
+        const Content = Prefix + Now;
 
         return (
             <>
@@ -112,11 +117,11 @@ registerBlockType(metadata.name, {
                 />
 
                 <RichText
-                    tagName={"span"}
-                    value={settings?.content}
-                    onChange={(newValue) => updateSettings({content: newValue})}
-                    placeholder={now}
-                    className={"my-inline-block"}
+                    tagName="span"
+                    value={Content}
+                    onChange={() => null}
+                    placeholder={Content}
+                    {...blockProps}
                 />
             </>
         )

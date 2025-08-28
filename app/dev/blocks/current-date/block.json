@@ -11,29 +11,6 @@
   "selectors": {
     "root": ".wpbs-current-date"
   },
-  "styles": [
-    {
-      "name": "primary",
-      "label": "Primary",
-      "isDefault": true
-    },
-    {
-      "name": "secondary",
-      "label": "Secondary"
-    },
-    {
-      "name": "outline",
-      "label": "Outline"
-    },
-    {
-      "name": "reverse",
-      "label": "Reverse"
-    },
-    {
-      "name": "link",
-      "label": "Link"
-    }
-  ],
   "supports": {
     "interactivity": true,
     "dimensions": {

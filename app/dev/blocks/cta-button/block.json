@@ -66,7 +66,9 @@
       ],
       "margin": true,
       "padding": true,
-      "__experimentalSkipSerialization": true
+      "__experimentalSkipSerialization": {
+        "padding": true
+      }
     },
     "typography": {
       "__experimentalFontFamily": true,

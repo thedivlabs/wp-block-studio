@@ -14,13 +14,13 @@ import {
     TextControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
-
+import {getCSSFromStyle} from "Components/Style";
 
 function classNames(attributes = {}) {
 
@@ -55,19 +55,25 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const {'wpbs-cta': settings = {}} = attributes;
+
+        const {'wpbs-cta': settings = {}, style} = attributes;
 
         const editorColors = useSetting('color.palette');
 
-        const { color: styleColorText } = getColorObjectByAttributeValues(
+        const {color: styleColorText} = getColorObjectByAttributeValues(
             editorColors,
             attributes.textColor,
             null
         );
-        const { color: styleColorBg } = getColorObjectByAttributeValues(
+        const {color: styleColorBg} = getColorObjectByAttributeValues(
             editorColors,
             null,
             attributes.backgroundColor
+        );
+        const {color: styleColorBorder} = getColorObjectByAttributeValues(
+            editorColors,
+            null,
+            attributes.borderColor
         );
 
         const updateSettings = useCallback((newValue) => {
@@ -201,14 +207,29 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    '--color-text': styleColorText,
-                    '--color-background': styleColorBg,
+                    '--color-text': getCSSFromStyle(styleColorText),
+                    '--color-background': getCSSFromStyle(styleColorBg),
+                    '--border-color': getCSSFromStyle(styleColorBorder), // border color
+
+                    '--padding-top': getCSSFromStyle(style?.spacing?.padding?.top),
+                    '--padding-bottom': getCSSFromStyle(style?.spacing?.padding?.bottom),
+                    '--padding-left': getCSSFromStyle(style?.spacing?.padding?.left),
+                    '--padding-right': getCSSFromStyle(style?.spacing?.padding?.right),
+                    '--border-radius': getCSSFromStyle(style?.border?.radius),
+                    '--border-width': style?.border?.width,
+                    '--border-style': style?.border?.style,
+
                     '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
                     '--icon-size': settings?.['icon-size'] ?? null,
                     '--icon-color': settings?.['icon-color'] || null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
-        }, [settings]);
+        }, [settings, style]);
+
+        useEffect(() => {
+            console.log(attributes);
+            console.log(cssProps);
+        }, [attributes]);
 
         return (
             <>

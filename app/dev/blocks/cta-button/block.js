@@ -26,7 +26,7 @@ function classNames(attributes = {}) {
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
-        'wpbs-cta-button',
+        'wpbs-cta-button wp-element-button',
         !!settings?.['icon'] ? '--icon' : null,
         !!settings?.['icon-hide'] ? '--icon-hide' : null,
         !!settings?.['icon-bold'] ? '--icon-bold' : null,

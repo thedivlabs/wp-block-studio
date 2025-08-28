@@ -49,11 +49,14 @@
           }
         }
 
+        &.active > a:after {
+          text-decoration: var(--decoration-active, none);
+          text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
+        }
+
         &:hover > a:after,
         &.active > a:after {
           color: inherit;
-          text-decoration: var(--decoration-active, none);
-          text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
         }
       }
 

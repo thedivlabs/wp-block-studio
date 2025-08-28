@@ -19,7 +19,9 @@
         padding: var(--link-padding, initial);
         background-color: var(--color-background, transparent);
         gap: var(--icon-space, initial);
-        @apply whitespace-nowrap flex transition-colors duration-200 relative items-center no-underline;
+        text-decoration: var(--decoration, none);
+        text-decoration-color: var(--color-text-decoration, initial);
+        @apply whitespace-nowrap flex transition-colors duration-200 relative items-center;
 
         &.--icon:before {
           content: var(--icon, none);
@@ -50,6 +52,8 @@
         &:hover > a:after,
         &.active > a:after {
           color: inherit;
+          text-decoration: var(--decoration-active, none);
+          text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
         }
       }
 

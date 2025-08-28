@@ -157,6 +157,13 @@ export const REL_OPTIONS = [
     {label: 'nofollow noopener', value: 'nofollow noopener'},
 ];
 
+export const TEXT_DECORATION_OPTIONS = [
+    {label: 'None', value: 'none'},
+    {label: 'Underline', value: 'underline'},
+    {label: 'Overline', value: 'overline'},
+    {label: 'Line Through', value: 'line-through'},
+];
+
 export const DIMENSION_UNITS_TEXT = [
     {value: 'rem', label: 'rem', default: 0},
     {value: 'px', label: 'px', default: 0},

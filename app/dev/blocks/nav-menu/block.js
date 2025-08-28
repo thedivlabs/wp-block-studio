@@ -21,7 +21,7 @@ import {
     ToggleControl
 } from "@wordpress/components";
 import {useSetting} from '@wordpress/block-editor';
-import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
+import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT, TEXT_DECORATION_OPTIONS} from "Includes/config";
 import {useUniqueId} from "Includes/helper";
 
 
@@ -86,6 +86,10 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
+                '--color-text-decoration-active': settings?.['color-text-decoration-active'] ?? null,
+                '--color-text-decoration': settings?.['color-text-decoration'] ?? null,
+                '--decoration': settings?.['text-decoration'] ?? null,
+                '--decoration-active': settings?.['text-decoration-active'] ?? null,
                 '--columns': parseInt(settings?.['columns-mobile'] ?? settings?.['columns'] ?? 0) || null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
@@ -178,6 +182,12 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+                <SelectControl
+                    label="Text Decoration"
+                    value={settings?.['text-decoration']}
+                    options={TEXT_DECORATION_OPTIONS}
+                    onChange={(newValue) => updateSettings({'text-decoration': newValue})}
+                />
             </Grid>
             <BaseControl label={'Colors'}>
                 <PanelColorSettings
@@ -204,7 +214,14 @@ registerBlockType(metadata.name, {
                             value: settings?.['color-icon'],
                             onChange: (newValue) => updateSettings({'color-icon': newValue}),
                             isShownByDefault: true
-                        }
+                        },
+                        {
+                            slug: 'color-text-decoration',
+                            label: 'Text Decoration',
+                            value: settings?.['color-text-decoration'],
+                            onChange: (newValue) => updateSettings({'color-text-decoration': newValue}),
+                            isShownByDefault: true
+                        },
                     ]}
                 />
             </BaseControl>
@@ -420,14 +437,9 @@ registerBlockType(metadata.name, {
 
                 <SelectControl
                     label="Text Decoration"
-                    value={settings?.['text-decoration']}
-                    options={[
-                        {label: 'None', value: 'none'},
-                        {label: 'Underline', value: 'underline'},
-                        {label: 'Overline', value: 'overline'},
-                        {label: 'Line Through', value: 'line-through'},
-                    ]}
-                    onChange={(newValue) => updateSettings({'text-decoration': newValue})}
+                    value={settings?.['text-decoration-active']}
+                    options={TEXT_DECORATION_OPTIONS}
+                    onChange={(newValue) => updateSettings({'text-decoration-active': newValue})}
                 />
 
             </Grid>
@@ -448,6 +460,13 @@ registerBlockType(metadata.name, {
                             label: 'Text',
                             value: settings?.['color-text-active'],
                             onChange: (newValue) => updateSettings({'color-text-active': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-active-text',
+                            label: 'Text Decoration',
+                            value: settings?.['color-text-decoration-active'],
+                            onChange: (newValue) => updateSettings({'color-text-decoration-active': newValue}),
                             isShownByDefault: true
                         },
                         {

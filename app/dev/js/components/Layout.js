@@ -441,8 +441,12 @@ function parseSpecial(prop, attributes) {
         case 'text-color':
             result = {'color': value}
             break;
+            
         case 'text-decoration-color':
-            result = {'text-decoration-color': value + ' !important'}
+            result = {
+                'text-decoration-color': value + ' !important',
+                'text-underline-offset': '.3em'
+            }
             break;
 
         case 'height-custom':

@@ -42,7 +42,7 @@
     "color": {
       "background": true,
       "text": true,
-      "link": true,
+      "link": false,
       "gradients": true
     },
     "__experimentalBorder": {

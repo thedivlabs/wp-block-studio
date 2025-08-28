@@ -1,6 +1,8 @@
 .wpbs-cta-button {
   @apply inline-flex relative select-none w-fit items-center justify-center;
-  transition: opacity 0.3s linear, color 0.3s linear, background-color 0.3s linear, border-color 0.3s linear, gap 0.3s ease-in-out;
+  transition-property: opacity , color , background-color , border-color , gap;
+  transition-duration: 300ms;
+  transition-timing-function: linear;
 
   & > span {
     order: 1;

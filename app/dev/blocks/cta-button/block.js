@@ -173,11 +173,13 @@ registerBlockType(metadata.name, {
 
         const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
-        const anchorProps = {
+        const anchorProps = Object.fromEntries(Object.entries({
             title: title,
-            href: '%%URL%%',
+            href: settings?.popup ? '#' : '%%URL%%',
             target: !!openInNewTab ? "_blank" : "_self",
-        }
+            role: settings?.popup ? 'button' : false,
+            onClick: settings?.popup ? '(e)=>{e.preventDefault()}' : false,
+        }).filter(x => !!x));
 
         const blockProps = useBlockProps({
             className: classNames(attributes),

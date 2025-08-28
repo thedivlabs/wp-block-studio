@@ -14,7 +14,7 @@ export const STYLE_ATTRIBUTES = {
     }
 };
 
-export function getCSSFromStyle(raw) {
+export function getCSSFromStyle(raw, presetKeyword = '') {
 
     if (typeof raw !== 'string') return raw;
 
@@ -27,6 +27,10 @@ export function getCSSFromStyle(raw) {
 
     if (raw.startsWith('--wp--')) {
         return `var(${raw})`;
+    }
+
+    if (presetKeyword === 'color') {
+        return `var(--wp--preset--${presetKeyword}--${raw})`;
     }
 
     return raw;
@@ -253,6 +257,7 @@ export function Style({
     }, [resultCss, preloadMedia, uniqueId]);
 
 
-    return <style className='wpbs-styles'>{(resultCss || '').replace(/%__BREAKPOINT__(\d+px)__%/, "$1").replace(/position:\s*fixed/g, "position:absolute")}</style>;
+    return <style
+        className='wpbs-styles'>{(resultCss || '').replace(/%__BREAKPOINT__(\d+px)__%/, "$1").replace(/position:\s*fixed/g, "position:absolute")}</style>;
 }
 

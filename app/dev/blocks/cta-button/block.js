@@ -209,7 +209,7 @@ registerBlockType(metadata.name, {
                 Object.entries({
                     '--color-text': getCSSFromStyle(styleColorText),
                     '--color-background': getCSSFromStyle(styleColorBg),
-                    '--border-color': getCSSFromStyle(styleColorBorder), // border color
+                    '--border-color': getCSSFromStyle(styleColorBorder, 'color'), // border color
 
                     '--padding-top': getCSSFromStyle(style?.spacing?.padding?.top),
                     '--padding-bottom': getCSSFromStyle(style?.spacing?.padding?.bottom),

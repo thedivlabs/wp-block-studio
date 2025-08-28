@@ -186,12 +186,6 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-                <SelectControl
-                    label="Text Decoration"
-                    value={settings?.['text-decoration']}
-                    options={TEXT_DECORATION_OPTIONS}
-                    onChange={(newValue) => updateSettings({'text-decoration': newValue})}
-                />
             </Grid>
             <BaseControl label={'Colors'}>
                 <PanelColorSettings

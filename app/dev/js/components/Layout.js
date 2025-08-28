@@ -107,7 +107,6 @@ const LAYOUT_PROPS = {
         'offset-header-mobile',
         'text-color-hover',
         'text-color-mobile',
-        'text-decoration-color-hover',
         'text-decoration-color',
         'position',
         'position-mobile',
@@ -429,7 +428,7 @@ function parseSpecial(prop, attributes) {
             result = {'color': value}
             break;
         case 'text-decoration-color':
-            result = {'text-decoration-color': value}
+            result = {'text-decoration-color': value + ' !important'}
             break;
 
         case 'height-custom':

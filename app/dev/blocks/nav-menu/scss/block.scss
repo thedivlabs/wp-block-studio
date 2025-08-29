@@ -3,7 +3,9 @@
     display: flex;
 
     & > li {
-      border: var(--link-border, none);
+      border-width: var(--link-border-width, 0);
+      border-style: var(--link-border-style, none);
+      border-color: var(--link-border-color, transparent);
       @apply relative;
 
       &:hover > a {
@@ -52,7 +54,9 @@
         }
 
         &.active {
-          border-color: var(--color-link-border-active, var(--color-link-border, initial));
+          border-width: var(--link-border-width-active, 0);
+          border-style: var(--link-border-style-active, none);
+          border-color: var(--link-border-color-active, transparent);
 
           & > a {
             text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));

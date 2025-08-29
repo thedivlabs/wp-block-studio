@@ -93,7 +93,6 @@ registerBlockType(metadata.name, {
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
                 '--icon-size': settings?.['icon-size'] ?? null,
-                '--color-link-border': settings?.['link-border']?.color ?? null,
                 '--color-link-border-active': settings?.['color-link-border-active'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
                 '--color-background-hover': settings?.['color-background-hover'] ?? null,
@@ -101,7 +100,12 @@ registerBlockType(metadata.name, {
                 '--color-text-active': settings?.['color-text-active'] ?? null,
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
-                '--link-border': !!settings?.['link-border'] ? Object.values(settings['link-border']).join(' ') : null,
+                '--link-border-width': Object.values(settings?.['link-border']).map(side => side.width).join(' '),
+                '--link-border-style': Object.values(settings?.['link-border']).map(side => side.style).join(' '),
+                '--link-border-color': Object.values(settings?.['link-border']).map(side => side.color).join(' '),
+                '--link-border-width-active': Object.values(settings?.['link-border-active']).map(side => side.width).join(' '),
+                '--link-border-style-active': Object.values(settings?.['link-border-active']).map(side => side.style).join(' '),
+                '--link-border-color-active': Object.values(settings?.['link-border-active']).map(side => side.color).join(' '),
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
                 '--submenu-padding': settings['submenu-padding'],
@@ -526,18 +530,27 @@ registerBlockType(metadata.name, {
                             value: settings?.['color-submenu-text-active'],
                             onChange: (newValue) => updateSettings({'color-submenu-text-active': newValue}),
                             isShownByDefault: true
-                        },
-                        {
-                            slug: 'color-link-border-active',
-                            label: 'Link Border',
-                            value: settings?.['color-link-border-active'],
-                            onChange: (newValue) => updateSettings({'color-link-border-active': newValue}),
-                            isShownByDefault: true
                         }
                     ]}
                 />
 
             </BaseControl>
+            <BorderBoxControl
+                __next40pxDefaultSize
+                enableAlpha
+                enableStyle
+                value={settings?.['link-border-active'] || {}}
+                colors={themeColors}
+                __experimentalIsRenderedInSidebar={true}
+                label="Link Border"
+                onChange={(newValue) => {
+                    updateSettings({'link-border-active': newValue})
+                }}
+                shouldSanitizeBorder
+                withSlider={true}
+                isStyleSettable={true}
+                sides={['top', 'right', 'bottom', 'left']}
+            />
         </Grid>;
 
         const tabs = {

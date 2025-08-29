@@ -23,6 +23,7 @@ import {
 import {useSetting} from '@wordpress/block-editor';
 import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT, TEXT_DECORATION_OPTIONS} from "Includes/config";
 import {useUniqueId} from "Includes/helper";
+import merge from "lodash.merge";
 
 
 function blockClassNames(attributes = {}) {
@@ -85,6 +86,21 @@ registerBlockType(metadata.name, {
         }, [settings, setAttributes]);
 
         const cssProps = useMemo(() => {
+
+            const link_border = merge({
+                top: false,
+                right: false,
+                bottom: false,
+                left: false
+            }, settings?.['link-border']);
+
+            const link_border_active = merge({
+                top: false,
+                right: false,
+                bottom: false,
+                left: false
+            }, settings?.['link-border-active']);
+
             return Object.fromEntries(Object.entries({
                 '--color-text-decoration-active': settings?.['color-text-decoration-active'] ?? null,
                 '--color-text-decoration': settings?.['color-text-decoration'] ?? null,
@@ -100,12 +116,12 @@ registerBlockType(metadata.name, {
                 '--color-text-active': settings?.['color-text-active'] ?? null,
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
-                '--link-border-width': Object.values((settings?.['link-border'] ?? {})).map(side => side.width).join(' '),
-                '--link-border-style': Object.values((settings?.['link-border'] ?? {})).map(side => side.style).join(' '),
-                '--link-border-color': Object.values((settings?.['link-border'] ?? {})).map(side => side.color).join(' '),
-                '--link-border-width-active': Object.values((settings?.['link-border-active'] ?? {})).map(side => side.width).join(' '),
-                '--link-border-style-active': Object.values((settings?.['link-border-active'] ?? {})).map(side => side.style).join(' '),
-                '--link-border-color-active': Object.values((settings?.['link-border-active'] ?? {})).map(side => side.color).join(' '),
+                '--link-border-width': Object.values(link_border).map(side => side.width || '0px').join(' '),
+                '--link-border-style': Object.values(link_border).map(side => side.style || 'none').join(' '),
+                '--link-border-color': Object.values(link_border).map(side => side.color || 'transparent').join(' '),
+                '--link-border-width-active': Object.values(link_border_active).map(side => side.width || '0px').join(' '),
+                '--link-border-style-active': Object.values(link_border_active).map(side => side.style || 'none').join(' '),
+                '--link-border-color-active': Object.values(link_border_active).map(side => side.color || 'transparent').join(' '),
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
                 '--submenu-padding': settings['submenu-padding'],

@@ -118,19 +118,23 @@
     right: 0;
     height: 1em;
     line-height: inherit;
-    font-size: var(--divider-icon-size, 12px);
-    color: var(--divider-icon-color, inherit);
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc((var(--column-gap, 1px) / 2) + 50%), -50%);
-    font-family: 'Font Awesome 6 Pro', sans-serif;
-    font-weight: 600;
-    vertical-align: middle;
-    text-align: center;
   }
 
   &.is-style-default.--divider.--divider-icon .wpbs-nav-menu-container > li:not(:last-of-type):after {
-    height: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    text-align: center;
+    font-family: 'Font Awesome 6 Pro', sans-serif;
+    font-weight: 600;
+    font-size: var(--divider-icon-size, 12px);
+    color: var(--divider-icon-color, inherit);
+    border: none !important;
   }
 
   //

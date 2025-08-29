@@ -33,7 +33,7 @@ function blockClassNames(attributes = {}) {
         'wpbs-nav-menu wpbs-has-container flex flex-wrap',
         !!settings?.['icon-below'] ? '--icon-below' : null,
         !!settings?.['submenu-fade'] ? '--fade' : null,
-        !!settings?.['divider'] ? '--divider' : null,
+        !!settings?.['divider'] || !!settings?.['divider-icon'] ? '--divider' : null,
         !!settings?.['submenu-divider'] ? '--submenu-divider' : null,
         attributes?.uniqueId ?? null
     ].filter(x => x).join(' ');

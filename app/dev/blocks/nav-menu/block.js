@@ -14,7 +14,7 @@ import {
     __experimentalBorderControl as BorderControl, __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
-    __experimentalUnitControl as UnitControl, BaseControl,
+    __experimentalUnitControl as UnitControl, BaseControl, BorderBoxControl,
     PanelBody,
     SelectControl,
     TabPanel, TextControl,
@@ -277,6 +277,22 @@ registerBlockType(metadata.name, {
                     max: 100,
                     units: DIMENSION_UNITS
                 }}
+            />
+            <BorderBoxControl
+                __next40pxDefaultSize
+                enableAlpha
+                enableStyle
+                value={settings?.['link-border'] || {}}
+                colors={themeColors}
+                __experimentalIsRenderedInSidebar={true}
+                label="Link Border"
+                onChange={(newValue) => {
+                    updateSettings({'link-border': newValue})
+                }}
+                shouldSanitizeBorder
+                withSlider={true}
+                isStyleSettable={true}
+                sides={['top', 'right', 'bottom', 'left']}
             />
             <BorderControl
                 __next40pxDefaultSize

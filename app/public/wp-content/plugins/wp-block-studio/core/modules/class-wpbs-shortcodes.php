@@ -18,11 +18,13 @@ class WPBS_Shortcodes {
 			'current_date'
 		);
 
-		$block = new WP_Block( [
-			'blockName' => 'wpbs-current-date'
-		], $context );
-
-		return $block->render();
+		return (new WP_Block( [
+			'blockName' => 'wpbs/current-date',
+			'attrs'     => [],
+		], [
+			'format' => $context['format'],
+			'prefix' => $context['prefix'],
+		] ))->render();
 	}
 
 

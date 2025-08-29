@@ -1,6 +1,6 @@
 <?php
 
-$settings = $attributes['wpbs-current-date'] ?? [];
+$settings = WPBS::clean_array($attributes['wpbs-current-date'] ?? []);
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [

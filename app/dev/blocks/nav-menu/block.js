@@ -93,12 +93,15 @@ registerBlockType(metadata.name, {
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
                 '--icon-size': settings?.['icon-size'] ?? null,
+                '--color-link-border': settings?.['link-border']?.color ?? null,
+                '--color-link-border-active': settings?.['color-link-border-active'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
                 '--color-background-hover': settings?.['color-background-hover'] ?? null,
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
+                '--link-border': !!settings?.['link-border'] ? Object.values(settings['link-border']).join(' ') : null,
                 '--submenu-space': settings?.['submenu-space'] ?? null,
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
                 '--submenu-padding': settings['submenu-padding'],
@@ -274,6 +277,19 @@ registerBlockType(metadata.name, {
                     max: 100,
                     units: DIMENSION_UNITS
                 }}
+            />
+            <BorderControl
+                __next40pxDefaultSize
+                enableAlpha
+                enableStyle
+                value={settings?.['link-border'] || {}}
+                colors={themeColors}
+                __experimentalIsRenderedInSidebar={true}
+                label="Link Border"
+                onChange={(newValue) => {
+                    updateSettings({'link-border': newValue})
+                }}
+                shouldSanitizeBorder
             />
             <BorderControl
                 __next40pxDefaultSize
@@ -493,6 +509,13 @@ registerBlockType(metadata.name, {
                             label: 'Sub-menu Text',
                             value: settings?.['color-submenu-text-active'],
                             onChange: (newValue) => updateSettings({'color-submenu-text-active': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-link-border-active',
+                            label: 'Link Border',
+                            value: settings?.['color-link-border-active'],
+                            onChange: (newValue) => updateSettings({'color-link-border-active': newValue}),
                             isShownByDefault: true
                         }
                     ]}

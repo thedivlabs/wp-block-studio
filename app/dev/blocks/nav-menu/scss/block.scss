@@ -3,6 +3,7 @@
     display: flex;
 
     & > li {
+      border: var(--link-border, none);
       @apply relative;
 
       &:hover > a {
@@ -50,8 +51,12 @@
           }
         }
 
-        &.active > a {
-          text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
+        &.active {
+          border-color: var(--color-link-border-active, var(--color-link-border, initial));
+
+          & > a {
+            text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
+          }
         }
 
         &:hover > a:after,

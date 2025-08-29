@@ -117,7 +117,7 @@
     top: 50%;
     right: 0;
     height: 1em;
-    font-size: 1em;
+    font-size: var(--divider-icon-size, 12px);
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc(var(--column-gap, 1px) / 2), -50%);

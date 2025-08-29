@@ -13,6 +13,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 		'wpbs-nav-menu wpbs-has-container',
 		$attributes['uniqueId'] ?? '',
 		! empty( $settings['divider'] ) || ! empty( $settings['divider-icon'] ) ? '--divider' : null,
+		! empty( $settings['divider-icon'] ) ? '--divider-icon' : null,
 		! empty( $settings['fade'] ) ? '--fade' : null,
 	] ) ),
 	'data-wp-interactive' => 'wpbs/nav-menu',

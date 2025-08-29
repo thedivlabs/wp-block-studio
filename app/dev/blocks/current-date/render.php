@@ -21,15 +21,15 @@ $prefix = $settings['prefix'] ?? $block->context['prefix'] ?? false;
 
 ?>
 
-<div <?php echo $wrapper_attributes ?>>
+<span <?php echo $wrapper_attributes ?>>
 	<?php
 
 	if ( ! empty( $settings['prefix'] ) ) {
-		echo '<span class="wpbs-current-date__prefix">' . $prefix . '</span>';
-		echo '<span class="wpbs-current-date__date">' . date( $format ) . '</span>';
+		echo '<span class="wpbs-current-date__prefix">' . esc_html($prefix) . '</span>';
+		echo '<span class="wpbs-current-date__date">' . esc_html(date( $format )) . '</span>';
 	} else {
 		echo date( $format );
 	}
 
 	?>
-</div>
+</span>

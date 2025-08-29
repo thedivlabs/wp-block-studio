@@ -121,6 +121,7 @@ registerBlockType(metadata.name, {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
                         '--divider-icon': !!settings?.['divider-icon'] ? '"\\' + settings['divider-icon'] + '"' : null,
                         '--divider-icon-size': settings?.['divider-icon-size'] ?? null,
+                        '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }
                 }
@@ -248,6 +249,13 @@ registerBlockType(metadata.name, {
                             label: 'Text Decoration',
                             value: settings?.['color-text-decoration'],
                             onChange: (newValue) => updateSettings({'color-text-decoration': newValue}),
+                            isShownByDefault: true
+                        },
+                        {
+                            slug: 'color-divider-icon',
+                            label: 'Divider Icon',
+                            value: settings?.['color-divider-icon'],
+                            onChange: (newValue) => updateSettings({'color-divider-icon': newValue}),
                             isShownByDefault: true
                         },
                     ]}

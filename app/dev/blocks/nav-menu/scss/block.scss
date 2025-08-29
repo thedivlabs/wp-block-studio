@@ -118,6 +118,7 @@
     right: 0;
     height: 1em;
     font-size: var(--divider-icon-size, 12px);
+    color: var(--divider-icon-color, inherit);
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc(var(--column-gap, 1px) / 2), -50%);

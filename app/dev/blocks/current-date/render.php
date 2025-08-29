@@ -10,7 +10,14 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	...( $attributes['wpbs-props'] ?? [] )
 ] );
 
-$format = $settings['format-custom'] ?? $settings['format'] ?? 'm/d/Y';
+$format = $settings['format-custom'] ?? $settings['format'] ?? $block->context['format'] ?? 'm/d/Y';
+
+$format = match($format){
+    'year' => 'Y',
+    default => $format
+};
+
+$prefix = $settings['prefix'] ?? $block->context['prefix'] ?? false;
 
 ?>
 
@@ -18,7 +25,7 @@ $format = $settings['format-custom'] ?? $settings['format'] ?? 'm/d/Y';
 	<?php
 
 	if ( ! empty( $settings['prefix'] ) ) {
-		echo '<span class="wpbs-current-date__prefix">' . $settings['prefix'] . '</span>';
+		echo '<span class="wpbs-current-date__prefix">' . $prefix . '</span>';
 		echo '<span class="wpbs-current-date__date">' . date( $format ) . '</span>';
 	} else {
 		echo date( $format );

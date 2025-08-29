@@ -251,9 +251,12 @@
           border: var(--submenu-border, none);
           overflow: hidden;
           padding: var(--submenu-padding, initial);
-          gap: var(--submenu-gap, 0px);
           margin-top: var(--submenu-space, 0px);
           @apply w-full hidden flex-col;
+
+          & > li:not(:last-of-type) {
+            margin-bottom: var(--submenu-gap, 0px);
+          }
         }
 
         &.active > a:after {

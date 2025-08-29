@@ -290,7 +290,7 @@ class WPBS_Theme {
 
     }
 
-    slideToggle(element, duration, callback) {
+    slideToggle(element, duration, callback, display) {
         jQuery(element).slideToggle(duration, function () {
             if (typeof callback === 'function') {
                 callback();

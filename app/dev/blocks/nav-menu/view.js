@@ -15,9 +15,10 @@ function initAccordion(element) {
 
             const parent = e.target.parentElement;
             const submenu = parent.querySelector(':scope > .sub-menu');
+            parent.classList.toggle('active');
 
-            WPBS.slideToggle(submenu, 'medium', () => {
-                parent.classList.toggle('active');
+            WPBS.slideToggle(submenu, 500, () => {
+
             });
         })
 

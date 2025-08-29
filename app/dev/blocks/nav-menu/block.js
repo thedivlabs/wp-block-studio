@@ -118,6 +118,7 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
+                        '--divider-icon': !!settings?.['divider-icon'] ? '"\\' + settings['divider-icon'] + '"' : null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }
                 }
@@ -168,6 +169,13 @@ registerBlockType(metadata.name, {
                     onChange={(newValue) => updateSettings({'text-decoration': newValue})}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
+                />
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Divider Icon"
+                    value={settings?.['divider-icon'] ?? ''}
+                    onChange={(newValue) => updateSettings({'divider-icon': newValue})}
                 />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={15}

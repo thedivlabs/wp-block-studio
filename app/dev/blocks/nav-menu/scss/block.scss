@@ -27,7 +27,7 @@
         &.--icon:before {
           content: var(--icon, none);
           font-family: 'Font Awesome 6 Pro', sans-serif;
-          font-size: inherit;
+          font-size: var(--icon-size, inherit);
           color: inherit;
           display: inline-flex;
           justify-content: center;
@@ -117,6 +117,7 @@
     top: 50%;
     right: 0;
     height: 1em;
+    font-size: 1em;
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc(var(--column-gap, 1px) / 2), -50%);

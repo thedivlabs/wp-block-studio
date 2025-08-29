@@ -92,6 +92,7 @@ registerBlockType(metadata.name, {
                 '--columns': parseInt(settings?.['columns-mobile'] ?? settings?.['columns'] ?? 0) || null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
                 '--icon-space': settings?.['icon-space'] ?? null,
+                '--icon-size': settings?.['icon-size'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
                 '--color-background-hover': settings?.['color-background-hover'] ?? null,
                 '--color-background-active': settings?.['color-background-active'] ?? null,
@@ -119,6 +120,7 @@ registerBlockType(metadata.name, {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
                         '--divider-icon': !!settings?.['divider-icon'] ? '"\\' + settings['divider-icon'] + '"' : null,
+                        '--divider-icon-size': settings?.['divider-icon-size'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }
                 }
@@ -162,6 +164,15 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
+                <UnitControl
+                    label="Icon Size"
+                    value={settings?.['icon-size'] ?? ''}
+                    onChange={(newValue) => updateSettings({'icon-size': newValue})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
                 <SelectControl
                     label="Text Decoration"
                     value={settings?.['text-decoration']}
@@ -176,6 +187,15 @@ registerBlockType(metadata.name, {
                     label="Divider Icon"
                     value={settings?.['divider-icon'] ?? ''}
                     onChange={(newValue) => updateSettings({'divider-icon': newValue})}
+                />
+                <UnitControl
+                    label="Divider Icon Size"
+                    value={settings?.['divider-icon-size'] ?? ''}
+                    onChange={(newValue) => updateSettings({'divider-icon-size': newValue})}
+                    units={DIMENSION_UNITS_TEXT}
+                    isResetValueOnUnitChange={true}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={15}

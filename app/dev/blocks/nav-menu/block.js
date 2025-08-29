@@ -107,7 +107,7 @@ registerBlockType(metadata.name, {
                 '--decoration': settings?.['text-decoration'] ?? null,
                 '--columns': parseInt(settings?.['columns-mobile'] ?? settings?.['columns'] ?? 0) || null,
                 '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
-                '--icon-space': settings?.['icon-space'] ?? null,
+                '--icon-open': !!settings?.['icon-open'] ? '"\\' + settings['icon-open'] + '"' : null,
                 '--icon-size': settings?.['icon-size'] ?? null,
                 '--color-link-border-active': settings?.['color-link-border-active'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
@@ -179,14 +179,12 @@ registerBlockType(metadata.name, {
                     value={settings?.['icon'] ?? ''}
                     onChange={(newValue) => updateSettings({'icon': newValue})}
                 />
-                <UnitControl
-                    label="Icon Space"
-                    value={settings?.['icon-space'] ?? ''}
-                    onChange={(newValue) => updateSettings({'icon-space': newValue})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
+                <TextControl
                     __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Icon Open"
+                    value={settings?.['icon-open'] ?? ''}
+                    onChange={(newValue) => updateSettings({'icon-open': newValue})}
                 />
                 <UnitControl
                     label="Icon Size"
@@ -313,19 +311,6 @@ registerBlockType(metadata.name, {
                 withSlider={true}
                 isStyleSettable={true}
                 sides={['top', 'right', 'bottom', 'left']}
-            />
-            <BorderControl
-                __next40pxDefaultSize
-                enableAlpha
-                enableStyle
-                value={settings?.['link-border'] || {}}
-                colors={themeColors}
-                __experimentalIsRenderedInSidebar={true}
-                label="Link Border"
-                onChange={(newValue) => {
-                    updateSettings({'link-border': newValue})
-                }}
-                shouldSanitizeBorder
             />
             <BorderControl
                 __next40pxDefaultSize

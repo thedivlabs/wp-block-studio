@@ -21,7 +21,6 @@
         justify-content: space-between;
         padding: var(--link-padding, initial);
         background-color: var(--color-background, transparent);
-        gap: var(--icon-space, initial);
         text-decoration: var(--decoration, none);
         text-decoration-color: var(--color-text-decoration, initial);
         text-underline-offset: .3em;
@@ -50,7 +49,6 @@
 
       &.menu-item-has-children {
         & > a {
-          gap: var(--icon-space, 0.3rem);
 
           &:after {
             content: var(--icon, '\f078');
@@ -68,6 +66,10 @@
             border-width: var(--link-border-width-active, 0);
             border-style: var(--link-border-style-active, none);
             border-color: var(--link-border-color-active, transparent);
+
+            &:after {
+              content: var(--icon-open, '\f078');
+            }
           }
         }
 
@@ -91,7 +93,7 @@
           }
 
           & > a {
-            gap: var(--icon-space, initial);
+            gap: var(--submenu-icon-space, initial);
             padding: var(--submenu-link-padding, initial);
             color: var(--color-submenu-text, black);
             background-color: var(--color-submenu-background, white) !important;

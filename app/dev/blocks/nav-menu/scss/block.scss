@@ -245,7 +245,6 @@
         @apply w-full block;
 
         &.menu-item-has-children > a {
-          padding-right: calc(var(--submenu-icon-space, 0px) + 1.5em);
 
           &:after {
             height: 1.2em;

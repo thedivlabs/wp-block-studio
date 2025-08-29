@@ -117,17 +117,14 @@
     top: 50%;
     right: 0;
     height: 1em;
-    line-height: inherit;
+    line-height: 1;
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc((var(--column-gap, 1px) / 2) + 50%), -50%);
   }
 
   &.is-style-default.--divider.--divider-icon .wpbs-nav-menu-container > li:not(:last-of-type):after {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: auto;
     vertical-align: middle;
     text-align: center;
     font-family: 'Font Awesome 6 Pro', sans-serif;

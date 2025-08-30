@@ -212,7 +212,7 @@ class WPBS_Loop {
 
 	}
 
-	public function pagination( $query ): string|bool {
+	public function pagination( $query, $settings ): string|bool {
 
 		if ( ! $this->is_pagination || ! is_a( $query, 'WP_Query' ) ) {
 			return false;
@@ -244,8 +244,8 @@ class WPBS_Loop {
 			'prev_next' => $this->icon_prev && $this->icon_next,
 			'mid_size'  => 6,
 			'type'      => 'array',
-			'prev_text' => $this->icon_prev,
-			'next_text' => $this->icon_next,
+			'prev_text' => $settings['icon_prev'] ?? $this->icon_prev,
+			'next_text' => $settings['icon_next'] ?? $this->icon_next,
 		] );
 
 		$pagination_links = array_map( function ( $link ) use ( $current_page ) {

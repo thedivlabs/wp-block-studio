@@ -57,7 +57,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 
 if ( $is_loop && ! empty( $loop->query ) && ! empty( $loop->card ) ) {
 
-	echo $loop->pagination( $loop->query );
+	echo $loop->pagination( $loop->query, $grid_settings['loop'] ?? false );
 
 
 }

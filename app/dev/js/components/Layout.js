@@ -2139,14 +2139,14 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                     <ToolsPanel label={'Hover'} resetAll={resetAll_layout}>
 
                         <ToolsPanelItem
-                            hasValue={() => !!settings?.['shadow-hover']}
-                            label={'Colors'}
-                            onDeselect={() => updateProp({'shadow-hover': ''})}
+                            hasValue={() => !!settings?.['text-color-hover']}
+                            label={'Text Hover'}
+                            onDeselect={() => updateProp({'text-color-hover': ''})}
                         >
                             <ColorSelector
-                                label={'Hover Color'}
-                                value={''}
-                                onColorChange={updateProp({'shadow-hover': ''})}
+                                label={'Text Hover'}
+                                value={settings?.['text-color-hover']}
+                                onColorChange={(newValue) => updateProp({'text-color-hover': newValue})}
                             />
                         </ToolsPanelItem>
 

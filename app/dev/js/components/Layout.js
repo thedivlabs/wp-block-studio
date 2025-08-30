@@ -1471,7 +1471,17 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             </Grid>
 
                         </ToolsPanelItem>
-
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['text-decoration-color']}
+                            label={'Text Decoration'}
+                            onDeselect={() => updateProp({'text-decoration-color': ''})}
+                        >
+                            <ColorSelector
+                                label={'Text Decoration'}
+                                value={settings?.['text-decoration-color']}
+                                onColorChange={(newValue) => updateProp({'text-decoration-color': newValue})}
+                            />
+                        </ToolsPanelItem>
 
                     </ToolsPanel>
 
@@ -2129,7 +2139,28 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 ]}
                             />
                         </ToolsPanelItem>
-
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['text-color-mobile']}
+                            label={'Text'}
+                            onDeselect={() => updateProp({'text-color-mobile': ''})}
+                        >
+                            <ColorSelector
+                                label={'Text'}
+                                value={settings?.['text-color-mobile']}
+                                onColorChange={(newValue) => updateProp({'text-color-mobile': newValue})}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['background-color-mobile']}
+                            label={'Background'}
+                            onDeselect={() => updateProp({'background-color-mobile': ''})}
+                        >
+                            <ColorSelector
+                                label={'Background'}
+                                value={settings?.['background-color-mobile']}
+                                onColorChange={(newValue) => updateProp({'background-color-mobile': newValue})}
+                            />
+                        </ToolsPanelItem>
 
                     </ToolsPanel>
 
@@ -2183,48 +2214,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
 
                     </ToolsPanel>
-                    <PanelColorSettings
-                        label={'Colors'}
-                        enableAlpha
-                        __experimentalIsRenderedInSidebar
-                        colorSettings={[
-                            {
-                                slug: 'text-color-hover',
-                                label: 'Text Hover'
-                            },
-                            {
-                                slug: 'background-color-hover',
-                                label: 'Background Hover'
-                            },
-                            {
-                                slug: 'border-color-hover',
-                                label: 'Border Hover'
-                            },
-                            {
-                                slug: 'text-color-mobile',
-                                label: 'Text Mobile'
-                            },
-                            {
-                                slug: 'background-color-mobile',
-                                label: 'Background Mobile'
-                            },
-                            {
-                                slug: 'text-decoration-color',
-                                label: 'Text Decoration'
-                            },
-                            {
-                                slug: 'text-decoration-color-hover',
-                                label: 'Text Decoration Hover'
-                            }
-                        ].map((color_control) => {
-                            return {
-                                value: settings?.[color_control.slug],
-                                onChange: (color) => updateProp({[color_control.slug]: color}),
-                                label: color_control.label.trim(),
-                                isShownByDefault: false
-                            }
-                        })}
-                    />
 
                 </Grid>
 

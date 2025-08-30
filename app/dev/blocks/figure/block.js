@@ -17,9 +17,8 @@ import {
 } from "@wordpress/components";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import ResponsivePicture from "Components/ResponsivePicture.js";
-import React, {useCallback, useEffect, useMemo} from "react";
+import React, {useCallback, useMemo} from "react";
 import Link from "Components/Link";
-import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {
     BLEND_OPTIONS,

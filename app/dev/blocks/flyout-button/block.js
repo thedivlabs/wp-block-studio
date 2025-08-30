@@ -2,7 +2,7 @@ import './scss/block.scss';
 
 import {
     useBlockProps,
-    InspectorControls, PanelColorSettings
+    InspectorControls, PanelColorSettings, MediaUploadCheck, MediaUpload
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
@@ -12,17 +12,21 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {
     __experimentalGrid as Grid, PanelBody,
     __experimentalUnitControl as UnitControl,
-    TextControl
+    TextControl, BaseControl
 } from "@wordpress/components";
 import React, {useCallback} from "react";
 import {useUniqueId} from "Includes/helper";
 import {DIMENSION_UNITS_TEXT} from "Includes/config";
+import PreviewThumbnail from "Components/PreviewThumbnail";
 
 function classNames(attributes = {}) {
 
+    const {'wpbs-flyout-button': settings = {}} = attributes;
+
     return [
         'wpbs-flyout-button wpbs-flyout-toggle',
-        'relative flex flex-col gap-2 items-center justify-center h-fit text-center cursor-pointer leading-none before:font-fa before:content-[var(--icon)] before:block',
+        'relative flex flex-col gap-2 items-center justify-center h-fit text-center cursor-pointer leading-none',
+        !!settings?.image ? '--image' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -61,16 +65,48 @@ registerBlockType(metadata.name, {
         });
 
         const cssProps = {
-            '--icon': '\"' + '\\' + (settings?.icon ?? 'f0c9') + '\"',
+            '--icon': !!settings?.icon ? '\"\\' + settings?.icon + '\"' : null,
             '--color-label': settings?.['color-label'] ?? null,
             '--label-size': settings?.['label-size'] ?? null,
         };
+
+        const imageProps = {
+            className: 'h-auto w-auto object-contain flex items-center justify-center',
+            src: settings?.image?.url,
+            alt: settings?.image?.alt
+        }
 
         return <>
 
             <InspectorControls group={'styles'}>
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
+                        <BaseControl label={'Image'} __nextHasNoMarginBottom={true}>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title={'Image'}
+                                    onSelect={(newValue) => updateSettings({
+                                        'image': {
+                                            type: newValue.type,
+                                            id: newValue.id,
+                                            url: newValue.url,
+                                            alt: newValue.alt,
+                                            sizes: newValue.sizes,
+                                        }
+                                    })}
+                                    allowedTypes={['image']}
+                                    value={settings?.image}
+                                    render={({open}) => {
+                                        return <PreviewThumbnail
+                                            image={settings?.image}
+                                            callback={() => updateSettings({image: undefined})}
+                                            onClick={open}
+                                            contain={true}
+                                        />;
+                                    }}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             <TextControl
                                 __nextHasNoMarginBottom
@@ -121,6 +157,7 @@ registerBlockType(metadata.name, {
             />
 
             <div {...blockProps} >
+                {!!settings?.image ? <img {...imageProps} /> : null}
                 {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> : null}
             </div>
 
@@ -136,8 +173,14 @@ registerBlockType(metadata.name, {
             'data-wp-on--click': 'actions.toggle',
         });
 
+        const imageProps = {
+            className: 'h-auto w-auto object-contain flex items-center justify-center',
+            src: settings?.image?.url,
+            alt: settings?.image?.alt
+        }
 
         return <button {...blockProps} type={'button'}>
+            {!!settings?.image ? <img {...imageProps} /> : null}
             {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> :
                 <span className={'screen-reader-text'}>Toggle navigation menu</span>}
         </button>;

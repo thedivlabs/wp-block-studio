@@ -1,12 +1,12 @@
 import {Button, Icon} from '@wordpress/components'
 import React from "react";
 
-function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
+function PreviewThumbnail({image = {}, callback, style = {}, onClick, contain = false}) {
 
     const thumbnailStyle = {
         width: '100%',
         height: '100%',
-        objectFit: 'inherit',
+        objectFit: !!contain ? 'contain' : 'inherit',
         pointerEvents: 'none',
     }
 

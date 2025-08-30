@@ -1,5 +1,11 @@
 .wpbs-flyout-button {
 
+  &:not(.--image):before {
+    content: var(--icon, "\f0c9");
+    font-family: "Font Awesome 6 Pro", sans-serif;
+    line-height: 1;
+    display: block;
+  }
 
   .wpbs-flyout-button__label {
     font-size: var(--label-size, 13px);

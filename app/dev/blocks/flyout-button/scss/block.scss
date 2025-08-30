@@ -11,4 +11,10 @@
     font-size: var(--label-size, 13px);
     line-height: 1;
   }
+
+  .wpbs-flyout-button__image {
+    height: 1em;
+    @apply
+    w-auto object-contain object-center flex items-center justify-center
+  }
 }

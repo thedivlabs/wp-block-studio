@@ -1267,6 +1267,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                     'transform',
                                     'background-color',
                                     'color',
+                                    'box-shadow',
                                     'border-color',
                                     'all'
                                 ]}

@@ -367,7 +367,12 @@ function parseSpecial(prop, attributes) {
 
     switch (parsedProp) {
         case 'shadow':
-            result = {'box-shadow': value};
+
+            if (!value?.shadow) {
+                break;
+            }
+
+            result = {'box-shadow': value?.shadow};
             break;
         case 'border-radius':
             result = {'border-radius': Object.values(value).join(' ')};

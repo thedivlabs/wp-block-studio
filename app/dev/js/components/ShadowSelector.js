@@ -8,7 +8,7 @@ import {
 } from "@wordpress/block-editor";
 import {shadow} from '@wordpress/icons';
 
-export function ShadowSelector({label, value, onChange}) {
+export function ShadowSelector({label = 'Shadow', value, onChange}) {
 
 
     const shadowPresets = useSetting('shadow.presets') || [];
@@ -19,7 +19,7 @@ export function ShadowSelector({label, value, onChange}) {
         style={{width: '100%'}}
         popoverProps={{placement: 'left-start'}}
         renderToggle={({isOpen, onToggle}) => (
-            <BaseControl label={'Shadow'}>
+            <BaseControl label={label}>
                 <button
                     onClick={onToggle}
                     aria-expanded={isOpen}
@@ -35,7 +35,7 @@ export function ShadowSelector({label, value, onChange}) {
                     }}
                 >
                     <Icon icon={shadow} size={24}/>
-                    <span>{label}</span>
+                    <span>{value?.name ?? 'Select'}</span>
                 </button>
             </BaseControl>
         )}
@@ -64,7 +64,7 @@ export function ShadowSelector({label, value, onChange}) {
                     {shadows.map((s) => (
                         <div
                             key={s.slug}
-                            onClick={() => onChange(s.shadow)}
+                            onClick={() => onChange(s)}
                             style={{
                                 width: '100%',
                                 height: 'auto',

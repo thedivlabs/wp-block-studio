@@ -116,6 +116,7 @@ const LAYOUT_PROPS = {
         'container',
         'container-mobile',
         'padding-mobile',
+        'shadow-hover',
     ],
     layout: [
         'offset-height',
@@ -214,6 +215,7 @@ const LAYOUT_PROPS = {
     ],
 
     hover: [
+        'shadow-hover',
         'text-color-hover',
         'background-color-hover',
         'border-color-hover',
@@ -362,6 +364,9 @@ function parseSpecial(prop, attributes) {
     let result = {};
 
     switch (parsedProp) {
+        case 'shadow':
+            result = {'filter': !!value?.shadow ? 'drop-shadow(' + value?.shadow + ')' : null};
+            break;
         case 'border-radius':
             result = {'border-radius': Object.values(value).join(' ')};
             break;

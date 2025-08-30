@@ -6,13 +6,17 @@ import React from "react";
 import {
     useSetting,
 } from "@wordpress/block-editor";
-import {wordpress} from '@wordpress/icons';
+import {shadow} from '@wordpress/icons';
 
 export function ShadowSelector({label, value, onChange}) {
 
 
-    const shadows = useSetting('shadow.presets') || [];
-    
+    const shadowPresets = useSetting('shadow.presets') || [];
+
+    const shadows = [...shadows?.default ?? [], ...shadows?.theme ?? []];
+
+    console.log(shadows);
+
     return <Dropdown
         popoverProps={{placement: 'left-start'}}
         renderToggle={({isOpen, onToggle}) => (
@@ -25,10 +29,13 @@ export function ShadowSelector({label, value, onChange}) {
                         alignItems: 'center',
                         cursor: 'pointer',
                         gap: '8px',
+                        padding: '10px 12px',
+                        height: '40px',
+                        border: '1px solid #ddd',
                         width: '100%',
                     }}
                 >
-                    <Icon icon={wordpress} size={12}/>
+                    <Icon icon={shadow} size={24}/>
                     <span>{label}</span>
                 </button>
             </BaseControl>
@@ -42,7 +49,7 @@ export function ShadowSelector({label, value, onChange}) {
                             width: '100%',
                             height: 'auto',
                             aspectRatio: '1/1',
-                            border: '1px solid #ddd',
+                            border: value === '',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -55,7 +62,7 @@ export function ShadowSelector({label, value, onChange}) {
                         <i className="fa-regular fa-xmark"></i>
                     </div>
 
-                    {[...shadows?.default ?? [], ...shadows?.theme ?? []].map((s) => (
+                    {shadows.map((s) => (
                         <div
                             key={s.slug}
                             onClick={() => onChange(s.shadow)}
@@ -63,7 +70,7 @@ export function ShadowSelector({label, value, onChange}) {
                                 width: '100%',
                                 height: 'auto',
                                 aspectRatio: '1/1',
-                                border: '1px solid #ddd',
+                                border: value === s.shadow ? '2px solid #0073aa' : '1px solid #ddd',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',

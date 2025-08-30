@@ -1,12 +1,11 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 
 import {
     InspectorControls, MediaUpload, MediaUploadCheck,
-    PanelColorSettings,
+    PanelColorSettings, useSetting,
 } from "@wordpress/block-editor";
 import {
     BorderBoxControl,
-    __experimentalBorderControl as BorderControl,
     __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
@@ -14,7 +13,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl, BaseControl, FormTokenField, PanelBody,
     RangeControl,
-    SelectControl, ToggleControl,
+    SelectControl, ToggleControl
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -36,6 +35,7 @@ import {
     DIMENSION_UNITS,
     BORDER_UNITS,
 } from "Includes/config";
+import {ColorSelector} from "./ColorSelector";
 
 export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
@@ -441,7 +441,7 @@ function parseSpecial(prop, attributes) {
         case 'text-color':
             result = {'color': value}
             break;
-            
+
         case 'text-decoration-color':
             result = {
                 'text-decoration-color': value + ' !important',
@@ -775,6 +775,11 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         setSettings(result);
 
     }, [attributes['wpbs-layout'], setAttributes, setSettings]);
+
+    const shadows = useSetting('shadow.presets') || [];
+    const gradients = useSetting('color.gradients') || [];
+
+    console.log(shadows);
 
     return <>
         <InspectorControls group="advanced">
@@ -2130,8 +2135,25 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
                     </ToolsPanel>
 
+
+                    <ToolsPanel label={'Hover'} resetAll={resetAll_layout}>
+
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['shadow-hover']}
+                            label={'Colors'}
+                            onDeselect={() => updateProp({'shadow-hover': ''})}
+                        >
+                            <ColorSelector
+                                label={'Hover Color'}
+                                value={''}
+                                onColorChange={updateProp({'shadow-hover': ''})}
+                            />
+                        </ToolsPanelItem>
+
+
+                    </ToolsPanel>
                     <PanelColorSettings
-                        title={'Special'}
+                        label={'Colors'}
                         enableAlpha
                         __experimentalIsRenderedInSidebar
                         colorSettings={[
@@ -2172,6 +2194,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             }
                         })}
                     />
+
                 </Grid>
 
 

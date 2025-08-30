@@ -65,7 +65,6 @@ registerBlockType(metadata.name, {
         });
 
         const cssProps = {
-            '--icon': !!settings?.icon ? '\"\\' + settings?.icon + '\"' : null,
             '--color-label': settings?.['color-label'] ?? null,
             '--label-size': settings?.['label-size'] ?? null,
         };
@@ -107,14 +106,14 @@ registerBlockType(metadata.name, {
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
+                        <TextControl
+                            __nextHasNoMarginBottom
+                            __next40pxDefaultSize
+                            label="Icon"
+                            value={settings?.icon ?? ''}
+                            onChange={(newValue) => updateSettings({icon: newValue})}
+                        />
                         <Grid columns={2} columnGap={15} rowGap={20}>
-                            <TextControl
-                                __nextHasNoMarginBottom
-                                __next40pxDefaultSize
-                                label="Icon"
-                                value={settings?.icon ?? ''}
-                                onChange={(newValue) => updateSettings({icon: newValue})}
-                            />
                             <TextControl
                                 __nextHasNoMarginBottom
                                 __next40pxDefaultSize
@@ -157,7 +156,8 @@ registerBlockType(metadata.name, {
             />
 
             <div {...blockProps} >
-                {!!settings?.image ? <img {...imageProps} /> : null}
+                {!!settings?.image ? <img {...imageProps} /> :
+                    <span className={'wpbs-flyout-button__icon'} dangerouslySetInnerHTML={{__html: settings?.icon}}/>}
                 {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> : null}
             </div>
 
@@ -180,9 +180,9 @@ registerBlockType(metadata.name, {
         }
 
         return <button {...blockProps} type={'button'}>
-            {!!settings?.image ? <img {...imageProps} /> : null}
-            {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> :
-                <span className={'screen-reader-text'}>Toggle navigation menu</span>}
+            {!!settings?.image ? <img {...imageProps} /> :
+                <span className={'wpbs-flyout-button__icon'} dangerouslySetInnerHTML={{__html: settings?.icon}}/>}
+            {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> : null}
         </button>;
     }
 })

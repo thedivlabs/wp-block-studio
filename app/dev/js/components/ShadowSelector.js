@@ -60,6 +60,12 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
                 <Grid columns={6} columnGap={12} rowGap={12}>
                     {shadows.map((s) => (
                         <div
+                            role="button"
+                            aria-pressed={value?.shadow === s.shadow}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') onChange(s);
+                            }}
                             key={s.slug}
                             onClick={() => onChange(s)}
                             style={{

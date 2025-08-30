@@ -339,6 +339,28 @@ export const LoopControls = ({attributes, setAttributes}) => {
 
             </Grid>
 
+            <Grid columns={2} columnGap={15} rowGap={20}>
+
+                <TextControl
+                    label={'Icon Prev'}
+                    __next40pxDefaultSize
+                    onChange={(newValue) => {
+                        updateSettings({icon_prev: newValue});
+                    }}
+                    value={queryArgs?.icon_prev}
+                />
+
+                <TextControl
+                    label={'Icon Prev'}
+                    __next40pxDefaultSize
+                    onChange={(newValue) => {
+                        updateSettings({icon_next: newValue});
+                    }}
+                    value={queryArgs?.icon_next}
+                />
+                
+            </Grid>
+
 
         </Grid>
         <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '10px 0'}}>

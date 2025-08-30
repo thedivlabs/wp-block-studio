@@ -14,6 +14,8 @@ class WPBS_Loop {
 	public bool $is_related;
 	public bool $is_menu_order;
 	public bool $is_pagination;
+	public string|bool $icon_next;
+	public string|bool $icon_prev;
 	public array|WP_Query $query;
 
 
@@ -35,6 +37,8 @@ class WPBS_Loop {
 		$this->is_related       = ( $query['post_type'] ?? false ) == 'related';
 		$this->is_pagination    = ! empty( $query['pagination'] );
 		$this->pagination_label = $query['pagination-label'] ?? 'Show More';
+		$this->icon_next        = $query['icon_next'] ?? false;
+		$this->icon_prev        = $query['icon_prev'] ?? false;
 
 		$new_content = '';
 		$css         = '';
@@ -237,9 +241,11 @@ class WPBS_Loop {
 			'format'    => '/page/%#%/',
 			'current'   => $current_page,
 			'total'     => $query->max_num_pages,
-			'prev_next' => false,
+			'prev_next' => $this->icon_prev && $this->icon_next,
 			'mid_size'  => 6,
 			'type'      => 'array',
+			'prev_text' => $this->icon_prev,
+			'next_text' => $this->icon_next,
 		] );
 
 		$pagination_links = array_map( function ( $link ) use ( $current_page ) {

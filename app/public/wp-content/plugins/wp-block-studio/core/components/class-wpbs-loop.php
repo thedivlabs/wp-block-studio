@@ -241,7 +241,7 @@ class WPBS_Loop {
 			'format'    => '/page/%#%/',
 			'current'   => $current_page,
 			'total'     => $query->max_num_pages,
-			'prev_next' => $this->icon_prev && $this->icon_next,
+			'prev_next' => ! empty( $settings['icon_next'] ?? $this->icon_next ?? false ),
 			'mid_size'  => 6,
 			'type'      => 'array',
 			'prev_text' => $settings['icon_prev'] ?? $this->icon_prev,

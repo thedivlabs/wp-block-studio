@@ -25,7 +25,7 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-flyout-button wpbs-flyout-toggle',
-        'relative flex flex-col gap-2 items-center justify-center h-fit text-center cursor-pointer leading-none',
+        'relative flex flex-col gap-2 items-center justify-center h-fit w-fit text-center cursor-pointer leading-none',
         !!settings?.image ? '--image' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');

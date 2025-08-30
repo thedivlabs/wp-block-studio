@@ -18,12 +18,11 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
         slug: 'none',
         shadow: 'none'
     }, ...(shadowPresets?.default ?? []), ...(shadowPresets?.theme ?? [])];
-    console.log(shadows);
+
     const cardStyle = {
         width: '100%',
         height: 'auto',
         aspectRatio: '1/1',
-        border: !value ? '2px solid #0073aa' : '1px solid #ddd',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

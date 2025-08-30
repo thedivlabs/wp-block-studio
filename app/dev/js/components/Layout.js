@@ -36,6 +36,7 @@ import {
     BORDER_UNITS,
 } from "Includes/config";
 import {ColorSelector} from "./ColorSelector";
+import {ShadowSelector} from "Components/ShadowSelector";
 
 export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
@@ -2213,6 +2214,17 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label={'Text Decoration'}
                                 value={settings?.['text-decoration-color-hover']}
                                 onColorChange={(newValue) => updateProp({'text-decoration-color-hover': newValue})}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['shadow-hover']}
+                            label={'Shadow'}
+                            onDeselect={() => updateProp({'shadow-hover': ''})}
+                        >
+                            <ShadowSelector
+                                label={'Shadow'}
+                                value={settings?.['shadow-hover']}
+                                onChange={(newValue) => updateProp({'shadow-hover': newValue})}
                             />
                         </ToolsPanelItem>
 

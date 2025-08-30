@@ -14,10 +14,6 @@ export function ColorSelector({label, value, onColorChange}) {
         const editorColors = wp.data.select('core/editor').getEditorSettings().colors || [];
         const editorGradients = wp.data.select('core/editor').getEditorSettings().gradients || [];
 
-
-        console.log(editorColors);
-        console.log(editorGradients);
-
         return {
             colors: editorColors,
             gradients: editorGradients,

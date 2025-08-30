@@ -46,7 +46,8 @@
     }
   },
   "editorScript": "file:./block.js",
-  "icon": "button"
+  "icon": "button",
+  "style": "file:./block.css"
 }
 
 

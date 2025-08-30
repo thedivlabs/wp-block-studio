@@ -13,8 +13,12 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
 
     const shadowPresets = useSetting('shadow.presets') || [];
 
-    const shadows = [...shadowPresets?.default ?? [], ...shadowPresets?.theme ?? []];
-
+    const shadows = [{
+        name: 'None',
+        slug: 'none',
+        shadow: 'none'
+    }, ...(shadowPresets?.default ?? []), ...(shadowPresets?.theme ?? [])];
+    console.log(shadows);
     const cardStyle = {
         width: '100%',
         height: 'auto',
@@ -55,20 +59,13 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
         renderContent={() => (
             <div style={{padding: '12px', width: '260px'}}>
                 <Grid columns={6} columnGap={12} rowGap={12}>
-                    {[
-                        {
-                            name: 'None',
-                            slug: 'none',
-                            shadow: 'none'
-                        },
-                        ...shadows,
-                    ].map((s) => (
+                    {shadows.map((s) => (
                         <div
                             key={s.slug}
                             onClick={() => onChange(s)}
                             style={{
                                 ...cardStyle,
-                                border: value === s.shadow ? '2px solid #0073aa' : '1px solid #ddd',
+                                border: value?.shadow === s.shadow ? '2px solid #0073aa' : '1px solid #ddd',
                                 boxShadow: s.shadow,
                             }}
                             title={s.name}

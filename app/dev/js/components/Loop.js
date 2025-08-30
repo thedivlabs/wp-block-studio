@@ -353,7 +353,7 @@ export const LoopControls = ({attributes, setAttributes}) => {
             />
 
             <TextControl
-                label={'Icon Prev'}
+                label={'Icon Next'}
                 __next40pxDefaultSize
                 onChange={(newValue) => {
                     updateSettings({icon_next: newValue});

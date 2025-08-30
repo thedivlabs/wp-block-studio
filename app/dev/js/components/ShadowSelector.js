@@ -14,9 +14,7 @@ export function ShadowSelector({label, value, onChange}) {
     const shadowPresets = useSetting('shadow.presets') || [];
 
     const shadows = [...shadowPresets?.default ?? [], ...shadowPresets?.theme ?? []];
-
-    console.log(shadows);
-
+    
     return <Dropdown
         popoverProps={{placement: 'left-start'}}
         renderToggle={({isOpen, onToggle}) => (
@@ -42,7 +40,7 @@ export function ShadowSelector({label, value, onChange}) {
         )}
         renderContent={() => (
             <div style={{padding: '12px', width: '260px'}}>
-                <Grid columns={7} columnGap={12} rowGap={12}>
+                <Grid columns={6} columnGap={12} rowGap={12}>
                     <div
                         onClick={() => onChange('')}
                         style={{
@@ -77,6 +75,7 @@ export function ShadowSelector({label, value, onChange}) {
                                 cursor: 'pointer',
                                 borderRadius: 4,
                                 fontSize: '14px',
+                                boxShadow: s.shadow,
                             }}
                             title={s.name}
                         />

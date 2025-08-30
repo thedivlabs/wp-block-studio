@@ -71,7 +71,7 @@ registerBlockType(metadata.name, {
         };
 
         const imageProps = {
-            className: 'h-auto w-auto object-contain flex items-center justify-center',
+            className: 'wpbs-flyout-button__image h-[1em] block w-auto object-contain object-center flex items-center justify-center',
             src: settings?.image?.url,
             alt: settings?.image?.alt
         }

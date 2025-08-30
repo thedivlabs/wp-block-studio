@@ -14,8 +14,9 @@ export function ShadowSelector({label, value, onChange}) {
     const shadowPresets = useSetting('shadow.presets') || [];
 
     const shadows = [...shadowPresets?.default ?? [], ...shadowPresets?.theme ?? []];
-    
+
     return <Dropdown
+        style={{width: '100%'}}
         popoverProps={{placement: 'left-start'}}
         renderToggle={({isOpen, onToggle}) => (
             <BaseControl label={'Shadow'}>
@@ -47,7 +48,7 @@ export function ShadowSelector({label, value, onChange}) {
                             width: '100%',
                             height: 'auto',
                             aspectRatio: '1/1',
-                            border: value === '' ? '2px solid #0073aa' : '1px solid #ddd',
+                            border: !value ? '2px solid #0073aa' : '1px solid #ddd',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',

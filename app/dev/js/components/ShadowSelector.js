@@ -15,6 +15,19 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
 
     const shadows = [...shadowPresets?.default ?? [], ...shadowPresets?.theme ?? []];
 
+    const cardStyle = {
+        width: '100%',
+        height: 'auto',
+        aspectRatio: '1/1',
+        border: !value ? '2px solid #0073aa' : '1px solid #ddd',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        borderRadius: 4,
+        fontSize: '14px',
+    };
+
     return <Dropdown
         style={{width: '100%'}}
         popoverProps={{placement: 'left-start'}}
@@ -42,40 +55,20 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
         renderContent={() => (
             <div style={{padding: '12px', width: '260px'}}>
                 <Grid columns={6} columnGap={12} rowGap={12}>
-                    <div
-                        onClick={() => onChange('')}
-                        style={{
-                            width: '100%',
-                            height: 'auto',
-                            aspectRatio: '1/1',
-                            border: !value ? '2px solid #0073aa' : '1px solid #ddd',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: 'pointer',
-                            borderRadius: 4,
-                            fontSize: '14px',
-                        }}
-                        title="None"
-                    >
-                        <i className="fa-regular fa-xmark"></i>
-                    </div>
-
-                    {shadows.map((s) => (
+                    {[
+                        {
+                            name: 'None',
+                            slug: 'none',
+                            shadow: 'none'
+                        },
+                        ...shadows,
+                    ].map((s) => (
                         <div
                             key={s.slug}
                             onClick={() => onChange(s)}
                             style={{
-                                width: '100%',
-                                height: 'auto',
-                                aspectRatio: '1/1',
+                                ...cardStyle,
                                 border: value === s.shadow ? '2px solid #0073aa' : '1px solid #ddd',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                borderRadius: 4,
-                                fontSize: '14px',
                                 boxShadow: s.shadow,
                             }}
                             title={s.name}

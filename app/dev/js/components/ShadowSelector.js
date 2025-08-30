@@ -44,7 +44,7 @@ export function ShadowSelector({label = 'Shadow', value, onChange}) {
                         alignItems: 'center',
                         cursor: 'pointer',
                         gap: '8px',
-                        padding: '10px 12px',
+                        padding: '8px',
                         height: '40px',
                         border: '1px solid #ddd',
                         width: '100%',

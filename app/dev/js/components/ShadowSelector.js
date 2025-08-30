@@ -13,7 +13,7 @@ export function ShadowSelector({label, value, onChange}) {
 
     const shadowPresets = useSetting('shadow.presets') || [];
 
-    const shadows = [...shadows?.default ?? [], ...shadows?.theme ?? []];
+    const shadows = [...shadowPresets?.default ?? [], ...shadowPresets?.theme ?? []];
 
     console.log(shadows);
 

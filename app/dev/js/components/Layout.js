@@ -365,11 +365,11 @@ function parseSpecial(prop, attributes) {
 
     switch (parsedProp) {
         case 'shadow':
-            if (!value?.shadow) {
+            if (!value) {
                 break;
             }
-            console.log(value);
-            result = {'filter': !!value?.shadow ? 'drop-shadow(' + value?.shadow + ')' : null};
+
+            result = {'filter': 'drop-shadow(' + value?.shadow + ')'};
             break;
         case 'border-radius':
             result = {'border-radius': Object.values(value).join(' ')};

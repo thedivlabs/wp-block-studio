@@ -117,6 +117,7 @@ const LAYOUT_PROPS = {
         'container-mobile',
         'padding-mobile',
         'shadow-hover',
+        'shadow-mobile',
     ],
     layout: [
         'offset-height',
@@ -211,7 +212,8 @@ const LAYOUT_PROPS = {
         'text-align-mobile',
         'flex-wrap-mobile',
         'text-color-mobile',
-        'background-color-mobile'
+        'background-color-mobile',
+        'shadow-mobile'
     ],
 
     hover: [
@@ -2169,6 +2171,18 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label={'Background'}
                                 value={settings?.['background-color-mobile']}
                                 onColorChange={(newValue) => updateProp({'background-color-mobile': newValue})}
+                            />
+                        </ToolsPanelItem>
+
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['shadow-mobile']}
+                            label={'Shadow'}
+                            onDeselect={() => updateProp({'shadow-mobile': ''})}
+                        >
+                            <ShadowSelector
+                                label={'Shadow'}
+                                value={settings?.['shadow-mobile']}
+                                onChange={(newValue) => updateProp({'shadow-mobile': newValue})}
                             />
                         </ToolsPanelItem>
 

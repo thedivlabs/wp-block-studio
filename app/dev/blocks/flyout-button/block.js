@@ -1,3 +1,5 @@
+import './scss/block.scss';
+
 import {
     useBlockProps,
     InspectorControls, PanelColorSettings
@@ -20,7 +22,7 @@ function classNames(attributes = {}) {
 
     return [
         'wpbs-flyout-button wpbs-flyout-toggle',
-        'relative flex flex-col items-center justify-center h-[1.2em] text-center cursor-pointer leading-none before:font-fa before:content-[var(--icon)] before:block',
+        'relative flex flex-col gap-2 items-center justify-center h-fit text-center cursor-pointer leading-none before:font-fa before:content-[var(--icon)] before:block',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -61,6 +63,7 @@ registerBlockType(metadata.name, {
         const cssProps = {
             '--icon': '\"' + '\\' + (settings?.icon ?? 'f0c9') + '\"',
             '--color-label': settings?.['color-label'] ?? null,
+            '--label-size': settings?.['label-size'] ?? null,
         };
 
         return <>
@@ -118,7 +121,7 @@ registerBlockType(metadata.name, {
             />
 
             <div {...blockProps} >
-                {!!settings?.label ? <span>{settings?.label}</span> : null}
+                {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> : null}
             </div>
 
         </>;
@@ -135,7 +138,7 @@ registerBlockType(metadata.name, {
 
 
         return <button {...blockProps} type={'button'}>
-            {!!settings?.label ? <span>{settings?.label}</span> :
+            {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> :
                 <span className={'screen-reader-text'}>Toggle navigation menu</span>}
         </button>;
     }

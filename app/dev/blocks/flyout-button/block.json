@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/flyout-button",
   "title": "Flyout Button",
   "description": "Display the flyout toggle button",
@@ -18,21 +19,30 @@
     "color": {
       "background": true,
       "text": true,
-      "link": true,
+      "link": false,
       "gradients": true
     },
     "__experimentalBorder": {
       "color": true,
       "radius": true,
-      "style": true
-    },
-    "spacing": {
-      "padding": true,
-      "margin": true
+      "style": true,
+      "width": true
     },
     "typography": {
+      "__experimentalFontFamily": true,
+      "__experimentalFontWeight": true,
+      "__experimentalTextTransform": true,
+      "textAlign": true,
       "fontSize": true,
-      "lineHeight": false
+      "lineHeight": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
     }
   },
   "editorScript": "file:./block.js",

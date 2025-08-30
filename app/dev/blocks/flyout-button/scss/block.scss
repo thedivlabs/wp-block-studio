@@ -1,3 +1,8 @@
 .wpbs-flyout-button {
 
+
+  .wpbs-flyout-button__label {
+    font-size: var(--label-size, inherit);
+    line-height: 1;
+  }
 }

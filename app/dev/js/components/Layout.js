@@ -777,9 +777,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
     }, [attributes['wpbs-layout'], setAttributes, setSettings]);
 
     const shadows = useSetting('shadow.presets') || [];
-    const gradients = useSetting('color.gradients') || [];
 
-    console.log(shadows);
 
     return <>
         <InspectorControls group="advanced">
@@ -2140,13 +2138,46 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
                         <ToolsPanelItem
                             hasValue={() => !!settings?.['text-color-hover']}
-                            label={'Text Hover'}
+                            label={'Text'}
                             onDeselect={() => updateProp({'text-color-hover': ''})}
                         >
                             <ColorSelector
-                                label={'Text Hover'}
+                                label={'Text'}
                                 value={settings?.['text-color-hover']}
                                 onColorChange={(newValue) => updateProp({'text-color-hover': newValue})}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['background-color-hover']}
+                            label={'Background'}
+                            onDeselect={() => updateProp({'background-color-hover': ''})}
+                        >
+                            <ColorSelector
+                                label={'Background'}
+                                value={settings?.['background-color-hover']}
+                                onColorChange={(newValue) => updateProp({'background-color-hover': newValue})}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['border-color-hover']}
+                            label={'Border'}
+                            onDeselect={() => updateProp({'border-color-hover': ''})}
+                        >
+                            <ColorSelector
+                                label={'Border'}
+                                value={settings?.['border-color-hover']}
+                                onColorChange={(newValue) => updateProp({'border-color-hover': newValue})}
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            hasValue={() => !!settings?.['text-decoration-color-hover']}
+                            label={'Text Decoration'}
+                            onDeselect={() => updateProp({'text-decoration-color-hover': ''})}
+                        >
+                            <ColorSelector
+                                label={'Text Decoration'}
+                                value={settings?.['text-decoration-color-hover']}
+                                onColorChange={(newValue) => updateProp({'text-decoration-color-hover': newValue})}
                             />
                         </ToolsPanelItem>
 

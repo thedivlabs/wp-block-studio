@@ -1,19 +1,22 @@
 import {
     ColorIndicator, Dropdown,
 } from "@wordpress/components";
-import React, {useMemo, useState} from "react";
+import React, {useMemo} from "react";
 import {
     __experimentalColorGradientControl as ColorGradientControl,
-    useSetting
 } from "@wordpress/block-editor";
 
 export function ColorSelector({label, value, onColorChange}) {
 
 
     const {colors, gradients} = useMemo(() => {
-        const editorColors = useSetting('color.colors') || [];
-        const editorGradients = useSetting('color.gradients') || [];
 
+        const editorColors = wp.data.select('core/editor').getEditorSettings().colors || [];
+        const editorGradients = wp.data.select('core/editor').getEditorSettings().gradients || [];
+
+
+        console.log(editorColors);
+        console.log(editorGradients);
 
         return {
             colors: editorColors,
@@ -22,6 +25,7 @@ export function ColorSelector({label, value, onColorChange}) {
     }, []);
 
     return <Dropdown
+        style={{width: '100%'}}
         popoverProps={{placement: 'left-start'}}
         renderToggle={({isOpen, onToggle}) => (
             <div
@@ -43,7 +47,7 @@ export function ColorSelector({label, value, onColorChange}) {
             </div>
         )}
         renderContent={() => (
-            <div style={{padding: '12px', width: '260px'}}>
+            <div style={{padding: '12px', width: '100%'}}>
                 <ColorGradientControl
                     label={label}
                     colorValue={value}

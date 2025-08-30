@@ -56,6 +56,8 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'text-color-mobile',
+        'background-color-mobile',
         'border-radius-mobile',
         'border-mobile',
         'offset-height',
@@ -162,6 +164,7 @@ const LAYOUT_PROPS = {
         'translate',
         'outline',
         'mark-empty',
+        'text-decoration-color',
     ],
 
     mobile: [
@@ -204,17 +207,16 @@ const LAYOUT_PROPS = {
         'font-size-mobile',
         'line-height-mobile',
         'text-align-mobile',
-        'flex-wrap-mobile'
+        'flex-wrap-mobile',
+        'text-color-mobile',
+        'background-color-mobile'
     ],
 
-    colors: [
+    hover: [
         'text-color-hover',
         'background-color-hover',
         'border-color-hover',
-        'text-color-mobile',
-        'text-decoration-color',
         'text-decoration-color-hover',
-        'background-color-mobile',
     ],
 
 };
@@ -749,6 +751,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         ...Object.keys(LAYOUT_PROPS.mobile).reduce((o, key) => ({...o, [key]: undefined}), {})
     }), [attributes['wpbs-layout'], setAttributes, setSettings]);
 
+    const resetAll_hover = useCallback(() => updateProp({
+        ...attributes?.['wpbs-layout'] || {},
+        ...Object.keys(LAYOUT_PROPS.hover).reduce((o, key) => ({...o, [key]: undefined}), {})
+    }), [attributes['wpbs-layout'], setAttributes, setSettings]);
+
+
     const updateProp = useCallback((newValue) => {
 
         const result = {
@@ -776,9 +784,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
     }, [attributes['wpbs-layout'], setAttributes, setSettings]);
 
-    const shadows = useSetting('shadow.presets') || [];
-
-
     return <>
         <InspectorControls group="advanced">
             <Grid columns={1} columnGap={15} rowGap={20} style={{paddingTop: '20px'}}>
@@ -798,7 +803,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         </InspectorControls>
         <InspectorControls group="styles">
             <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
-
                 <Grid columns={1} className={'wpbs-layout-tools__grid'}>
                     <ToolsPanel label={'Style'} resetAll={resetAll_layout}>
 
@@ -2216,8 +2220,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                     </ToolsPanel>
 
                 </Grid>
-
-
             </PanelBody>
 
 

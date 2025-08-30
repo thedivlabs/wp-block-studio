@@ -114,7 +114,11 @@ const LAYOUT_PROPS = {
         'position-mobile',
         'container',
         'container-mobile',
-        'padding-mobile'
+        'padding-mobile',
+        'text-color-hover',
+        'background-color-hover',
+        'border-color-hover',
+        'text-decoration-color-hover',
     ],
     layout: [
         'offset-height',

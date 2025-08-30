@@ -17,3 +17,7 @@
 @import "./components/slider";
 @import "./components/reveal";
 @import "./components/forms";
+
+.odometer {
+  font-family: inherit !important;
+}

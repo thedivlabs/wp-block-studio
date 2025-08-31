@@ -461,6 +461,13 @@ registerBlockType(metadata.name, {
                     checked={!!settings?.['bold-label']}
                     onChange={(newValue) => updateSettings({'bold-label': newValue})}
                 />
+                {settings?.type === 'search' ? <ToggleControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Hide Button"
+                    checked={!!settings?.['hide-button']}
+                    onChange={(newValue) => updateSettings({'hide-button': newValue})}
+                /> : null}
             </Grid>
 
         </Grid>;

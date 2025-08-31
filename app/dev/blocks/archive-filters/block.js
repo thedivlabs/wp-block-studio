@@ -7,7 +7,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import {
     __experimentalGrid as Grid,
     __experimentalUnitControl as UnitControl, BorderBoxControl,
@@ -18,6 +18,8 @@ import {
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 import {BORDER_UNITS, DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
+import {select, subscribe, useSelect} from "@wordpress/data";
+import {store as coreStore} from "@wordpress/core-data";
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -213,6 +215,17 @@ registerBlockType(metadata.name, {
             return wp.data.select('core/editor').getEditorSettings().colors || [];
         }, []);
 
+        const taxonomies = useSelect(() => {
+            if (settings?.type !== 'terms') {
+                return [];
+            }
+            const core = select(coreStore);
+            
+            return (core.getTaxonomies() || []).filter(tax => !!tax?.hierarchical && !!tax?.visibility?.public && !!tax.name && !!tax.slug).map(tax => {
+                return {label: [tax.name, '-', tax.slug].join(' '), value: tax.slug};
+            });
+        }, [settings?.type]);
+
         const tabOptions = <Grid columnGap={15} columns={1} rowGap={20}>
 
             <SelectControl
@@ -228,6 +241,18 @@ registerBlockType(metadata.name, {
                 onChange={(newValue) => updateSettings({'type': newValue})}
                 __nextHasNoMarginBottom
             />
+
+            {settings?.type === 'terms' ? <SelectControl
+                __next40pxDefaultSize
+                label="Taxonomy"
+                value={settings?.taxonomy}
+                options={[
+                    {label: 'Select', value: ''},
+                    ...taxonomies
+                ]}
+                onChange={(newValue) => updateSettings({'taxonomy': newValue})}
+                __nextHasNoMarginBottom
+            /> : null}
 
             <TextControl
                 __nextHasNoMarginBottom

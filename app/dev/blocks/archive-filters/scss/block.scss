@@ -5,8 +5,8 @@
   max-width: 100%;
 
   &.--field-width .wpbs-archive-filters__input {
-    min-width: max(var(--field-width, fit-content), 12rem);
-    width: fit-content;
+    min-width: 12rem;
+    width: var(--field-width, fit-content);
     max-width: 100%;
   }
 

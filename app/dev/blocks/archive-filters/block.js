@@ -133,12 +133,12 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         value={defaultValue}
                         placeholder={settings?.placeholder ?? 'Search...'}
                     />
-                    <button
+                    {!!settings?.['hide-button'] ? null : <button
                         type="button"
                         className="wpbs-archive-filters__submit"
                     >
                         <span> {buttonText || 'Search'}</span>
-                    </button>
+                    </button>}
                 </div>
             </>;
 

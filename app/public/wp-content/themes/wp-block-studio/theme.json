@@ -103,7 +103,7 @@
         },
         {
           "slug": "primary-hover",
-          "color": "#1ebff2",
+          "color": "#0099CA",
           "name": "Primary Hover"
         },
         {
@@ -478,7 +478,26 @@
       "loader": {
         "color": "var:preset|color|primary-hover",
         "background": "transparent",
-        "opacity": "0"
+        "opacity": "1"
+      },
+      "slider": {
+        "bullet": {
+          "background": "transparent",
+          "gap": "5px",
+          "height": "11px",
+          "border": {
+            "color": "var:preset|color|primary",
+            "width": "1px",
+            "style": "solid"
+          },
+          "active": {
+            "background": "var:preset|color|primary"
+          }
+        },
+        "button": {
+          "next": "\"\\f054\"",
+          "prev": "\"\\f053\""
+        }
       }
     },
     "spacing": {
@@ -592,20 +611,23 @@
       },
       "h1": {
         "typography": {
-          "fontSize": "clamp(36px, 4rem, 6vw)",
-          "lineHeight": "1.4em"
+          "fontSize": "clamp(36px, 4rem, 5vw)",
+          "lineHeight": "1.4em",
+          "fontWeight": "600"
         }
       },
       "h2": {
         "typography": {
-          "fontSize": "clamp(30px, 3rem, 5vw)",
-          "lineHeight": "1.4em"
+          "fontSize": "clamp(30px, 3rem, 3.7vw)",
+          "lineHeight": "1.4em",
+          "fontWeight": "600"
         }
       },
       "h3": {
         "typography": {
           "fontSize": "clamp(20px, 1.8rem, 3vw)",
-          "lineHeight": "1.4em"
+          "lineHeight": "1.4em",
+          "fontWeight": "600"
         }
       },
       "h4": {
@@ -616,262 +638,63 @@
         }
       },
       "heading": {
-        "css": "& mark {font-family:var(--wp--preset--font-family--kepler,inherit); font-size:1.2em; line-height:inherit; font-weight:normal;}",
+        "css": "& strong {font-family:var(--wp--preset--font-family--kepler,inherit); font-size:1.3em; line-height:inherit; font-weight:300;}",
         "spacing": {
           "margin": {
             "top": "1.5rem",
             "bottom": "1rem"
           }
-        },
-        "typography": {
-          "fontWeight": "bold"
         }
       }
     },
     "typography": {
       "fontFamily": "var(--wp--preset--font-family--montserrat)",
-      "fontSize": "clamp(17px,4vw,18px)"
+      "fontSize": "clamp(16px,4vw,18px)"
     },
     "blocks": {
       "core/post-terms": {
         "css": "& {display:flex; justify-content:flex-start; align-items:baseline; flex-wrap:wrap;} & .wp-block-post-terms__separator {margin:0 5px;}"
       },
-      "core/query-pagination": {
-        "typography": {
-          "textAlign": "center",
-          "fontSize": "1rem"
-        },
-        "color": {
-          "text": "white"
-        }
+      "core/categories": {
+        "css": "& > .current-cat > a {font-weight:bold;}"
       },
-      "core/query-pagination-numbers": {
-        "css": "gap:5px;",
-        "color": {
-          "text": "white"
-        },
+      "core/query-pagination": {
         "spacing": {
           "margin": {
             "top": "1.8rem"
           }
+        }
+      },
+      "core/query-pagination-numbers": {
+        "css": "gap:20px; & .pagination-button {font-size:1.5rem; line-height:1; color:var(--wp--preset--color--primary, inherit) !important; aspect-ratio:auto !important;}",
+        "typography": {
+          "textAlign": "center",
+          "fontSize": "1rem",
+          "lineHeight": "1"
         },
         "elements": {
           "button": {
             "dimensions": {
-              "minHeight": "2em",
-              "aspectRatio": "1.2/1"
-            },
-            "typography": {
-              "lineHeight": "2em"
+              "minHeight": "2rem",
+              "aspectRatio": "1/1"
             },
             "color": {
-              "background": "var:preset|color|secondary-900"
-            },
-            "border": {
-              "radius": "5px"
+              "background": "var:preset|color|primary",
+              "text": "white"
             }
           },
           "link": {
             "color": {
-              "background": "var:preset|color|secondary-700"
-            },
-            "typography": {
-              "textDecoration": "none",
-              "lineHeight": "2em"
+              "background": "transparent",
+              "text": "black"
             },
             "dimensions": {
-              "minHeight": "2em",
-              "aspectRatio": "1.2/1"
-            },
-            "border": {
-              "radius": "5px",
-              "style": "solid",
-              "width": "1px",
-              "color": "var:preset|color|secondary-800"
+              "minHeight": "1.5rem",
+              "aspectRatio": ".7/1"
             },
             ":hover": {
               "color": {
-                "background": "var:preset|color|secondary-hover"
-              },
-              "border": {
-                "color": "var:preset|color|secondary-hover"
-              }
-            }
-          }
-        }
-      },
-      "wpbs/cta-button": {
-        "dimensions": {
-          "minHeight": "2.4rem"
-        },
-        "variations": {
-          "primary": {
-            "elements": {
-              "link": {
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "var:preset|color|primary-hover"
-                  }
-                }
-              },
-              "button": {
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "var:preset|color|primary-hover"
-                  }
-                }
-              }
-            }
-          },
-          "secondary": {
-            "elements": {
-              "link": {
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "var:preset|color|primary-hover"
-                  }
-                }
-              },
-              "button": {
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "var:preset|color|primary-hover"
-                  }
-                }
-              }
-            }
-          },
-          "outline": {
-            "elements": {
-              "link": {
-                "border": {
-                  "style": "solid",
-                  "width": "2px",
-                  "color": "var:preset|color|primary"
-                },
-                "color": {
-                  "text": "inherit",
-                  "background": "transparent"
-                },
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "var:preset|color|primary-hover"
-                  },
-                  "border": {
-                    "style": "solid",
-                    "width": "2px",
-                    "color": "var:preset|color|primary-hover"
-                  }
-                }
-              },
-              "button": {
-                "border": {
-                  "style": "solid",
-                  "width": "2px",
-                  "color": "var:preset|color|primary"
-                },
-                "color": {
-                  "text": "inherit",
-                  "background": "transparent"
-                },
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "var:preset|color|primary-hover"
-                  },
-                  "border": {
-                    "style": "solid",
-                    "width": "2px",
-                    "color": "var:preset|color|primary-hover"
-                  }
-                }
-              }
-            }
-          },
-          "reverse": {
-            "elements": {
-              "link": {
-                "color": {
-                  "background": "transparent",
-                  "text": "white"
-                },
-                "border": {
-                  "style": "solid",
-                  "width": "1px",
-                  "color": "white"
-                },
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "transparent"
-                  },
-                  "border": {
-                    "color": "var:preset|color|primary-hover"
-                  }
-                }
-              },
-              "button": {
-                "color": {
-                  "background": "transparent",
-                  "text": "white"
-                },
-                "border": {
-                  "style": "solid",
-                  "width": "1px",
-                  "color": "white"
-                },
-                ":hover": {
-                  "color": {
-                    "text": "white",
-                    "background": "rgba(255,255,255,.2)"
-                  },
-                  "border": {
-                    "color": "var:preset|color|primary-hover"
-                  }
-                }
-              }
-            }
-          },
-          "link": {
-            "typography": {
-              "fontSize": "inherit"
-            },
-            "css": "&:hover{gap:20px;}",
-            "dimensions": {
-              "minHeight": "1rem"
-            },
-            "spacing": {
-              "padding": {
-                "bottom": "0px",
-                "top": "0px",
-                "left": "0px",
-                "right": "0px"
-              }
-            },
-            "border": {
-              "style": "none",
-              "width": "",
-              "color": ""
-            },
-            "elements": {
-              "button": {
-                "color": {
-                  "text": "inherit",
-                  "background": "transparent"
-                },
-                ":hover": {
-                  "color": {
-                    "background": "transparent"
-                  },
-                  "border": {
-                    "color": ""
-                  }
-                }
+                "text": "var:preset|color|primary"
               }
             }
           }
@@ -888,6 +711,25 @@
                 "color": "var:preset|color|primary-hover"
               }
             }
+          }
+        }
+      },
+      "wpbs/cta-button": {
+        "variations": {
+          "primary": {
+            "css": "&:hover{background-color:var(--wp--preset--color--primary-hover) !important; color:white !important}"
+          },
+          "secondary": {
+            "css": "&:hover{background-color:var(--wp--preset--color--primary-hover) !important; color:white !important}"
+          },
+          "outline": {
+            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important; color:white !important; background-color:var(--wp--preset--color--primary-hover) !important;}"
+          },
+          "reverse": {
+            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important;  color:white !important}"
+          },
+          "link": {
+            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important;  color:white !important}"
           }
         }
       }

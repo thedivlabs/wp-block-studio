@@ -249,10 +249,12 @@ class WPBS_Loop {
 		] );
 
 		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
-			return str_replace( [ '<span', '</span>', 'current' ], [
+			return str_replace( [ '<span', '</span>', 'current', 'next page-numbers', 'prev page-numbers' ], [
 				'<button type="button" disabled',
 				'</button>',
 				'current wp-element-button ',
+				'next page-numbers pagination-button',
+				'prev page-numbers pagination-button',
 			], $link );
 		}, $pagination ?? [] );
 

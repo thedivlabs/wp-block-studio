@@ -1,8 +1,7 @@
-import './scss/block.scss'
 import {ElementTag, ELEMENT_TAG_ATTRIBUTES, ElementTagSettings} from 'Components/ElementTag'
 
 import {
-    InspectorControls, PanelColorSettings,
+    InspectorControls,
     useBlockProps,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
@@ -11,22 +10,15 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import React, {useCallback, useEffect, useMemo} from "react";
 import {
     __experimentalGrid as Grid, __experimentalNumberControl as NumberControl,
-    __experimentalUnitControl as UnitControl, BorderBoxControl,
     PanelBody,
-    SelectControl, TabPanel,
-    TextControl,
+    SelectControl,
     ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 import {
-    BORDER_UNITS,
-    DIMENSION_UNITS,
-    DIMENSION_UNITS_TEXT,
+
     ELEMENT_TAG_TEXT_OPTIONS,
-    RESOLUTION_OPTIONS
 } from "Includes/config";
-import {select, useSelect} from "@wordpress/data";
-import {store as coreStore} from "@wordpress/core-data";
 
 function blockClassnames(attributes = {}, editor = false) {
 

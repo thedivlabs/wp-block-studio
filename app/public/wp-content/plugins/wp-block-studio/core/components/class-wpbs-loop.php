@@ -263,7 +263,7 @@ class WPBS_Loop {
 
 			return implode( ' ', [
 				'<nav class="wp-block-query-pagination relative z-20" aria-label="Pagination">',
-				'<div class="wp-block-query-pagination-numbers inline-flex w-max">' . implode( '', $pagination_links ) . '</div>',
+				'<div class="wp-block-query-pagination-numbers inline-flex w-max items-center">' . implode( '', $pagination_links ) . '</div>',
 				'</nav>'
 			] );
 		} else {

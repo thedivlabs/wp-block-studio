@@ -16,7 +16,7 @@ $replace = [ $search_value, $sort_value, $current_term_id ];
 
 if ( $type == 'terms' ) {
 
-	$options = implode( "\r\n", array_values( array_filter( array_map( function ( $tax ) use ( $current_term_id ) {
+	$options = implode( "\r\n", array_values( array_filter( array_map( function ( $tax ) use ( $current_term_id, $current_taxonomies ) {
 
 		if ( empty( $tax->name ) ) {
 			return null;
@@ -31,7 +31,7 @@ if ( $type == 'terms' ) {
 			return null;
 		}
 
-		$result = '<optgroup label="' . esc_html( $tax->label ?? $tax->name ) . '">';
+		$result = count( $current_taxonomies ) > 1 ? '<optgroup label="' . esc_html( $tax->label ?? $tax->name ) . '">' : '';
 
 		foreach ( $terms as $term ) {
 
@@ -45,7 +45,12 @@ if ( $type == 'terms' ) {
 				'</option>'
 			] ) );
 		}
-		$result .= '</optgroup>';
+
+		if ( count( $current_taxonomies ) > 1 ) {
+
+			$result .= '</optgroup>';
+		}
+
 
 		return $result;
 

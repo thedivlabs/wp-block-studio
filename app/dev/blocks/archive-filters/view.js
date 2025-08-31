@@ -34,11 +34,7 @@ const {state} = store('wpbs/archive-filters', {
                 case 'search':
                     const searchInput = block.querySelector('input[type="text"]');
                     const searchButton = block.querySelector('button.wpbs-archive-filters__submit');
-                    const searchValue = params.get('s') || '';
-
-                    if (searchValue && searchInput) {
-                        searchInput.value = searchValue;
-                    }
+                
                     if (searchButton) {
 
 

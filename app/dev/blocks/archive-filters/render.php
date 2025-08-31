@@ -61,4 +61,10 @@ if ( $type == 'terms' ) {
 	$replace[] = implode( "\r\n", [ $options, '</select>' ] );
 }
 
+if ( $type == 'search' ) {
+
+	$search[]  = '<input';
+	$replace[] = '<input value="' . esc_attr( $search_value ) . '"';
+}
+
 echo str_replace( $search, $replace, $content ?? '' );

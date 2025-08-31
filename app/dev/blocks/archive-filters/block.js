@@ -85,6 +85,26 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                 </div>
 
             </>;
+        case 'terms':
+            return <>
+
+                <label htmlFor={fieldId} className={labelClass}
+                       dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
+                <div className={'wpbs-archive-filters__input --select'}>
+                    <select
+                        id={fieldId}
+                        value={defaultValue}>
+                        <option value="">{settings?.placeholder ?? 'Select'}</option>
+                    </select>
+                    <button
+                        type="button"
+                        className="wpbs-archive-filters__button"
+                    >
+                        {buttonText ? <span>{buttonText}</span> : null}
+                    </button>
+                </div>
+
+            </>;
 
         case 'search':
             return <>
@@ -189,6 +209,7 @@ registerBlockType(metadata.name, {
                 options={[
                     {label: 'Select', value: ''},
                     {label: 'Sort', value: 'sort'},
+                    {label: 'Terms', value: 'terms'},
                     {label: 'Search', value: 'search'}
                 ]}
                 onChange={(newValue) => updateSettings({'type': newValue})}
@@ -497,7 +518,6 @@ registerBlockType(metadata.name, {
             />
         </Grid>;
 
-
         const tabs = {
             options: tabOptions,
             active: tabActive,
@@ -544,7 +564,6 @@ registerBlockType(metadata.name, {
                        deps={['wpbs-archive-filters']} selector={'wpbs-archive-filters'}
                        props={cssProps}
                 />
-
 
                 <div {...blockProps}>
                     <FilterFields settings={settings} is_editor={true} uniqueId={uniqueId}/>

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/authors-list",
+  "title": "Authors List",
+  "description": "Display a list of authors",
+  "selectors": {
+    "root": ".wpbs-authors-list"
+  },
+  "supports": {
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "blockGap": [
+        "horizontal",
+        "vertical"
+      ],
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    },
+    "typography": {
+      "textAlign": true,
+      "lineHeight": true,
+      "fontSize": true,
+      "fontWeight": true,
+      "fontStyle": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "style": "file:./block.css",
+  "render": "file:./render.php",
+  "icon": "list-view"
+}
+
+

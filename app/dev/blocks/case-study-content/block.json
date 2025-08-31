@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/case-study-content",
   "title": "Case Study Content",
   "description": "Display case study content",

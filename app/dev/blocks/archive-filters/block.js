@@ -29,6 +29,7 @@ function blockClassnames(attributes = {}, editor = false) {
         !!settings?.prefix ? '--prefix' : null,
         !!settings?.['bold-label'] ? '--bold-label' : null,
         !!settings?.['field-width'] ? '--field-width' : null,
+        !!settings?.type ? ['--', settings.type].join('') : null,
         attributes?.uniqueId ?? null,
     ];
 
@@ -53,7 +54,19 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
 
     const showLabel = settings?.['label-position'] !== 'hidden' && !!settings?.label;
     const labelClass = showLabel ? 'wpbs-archive-filters__label' : 'screen-reader-text';
-    const defaultValue = is_editor ? '' : '#--' + settings.type.toUpperCase() + '--#';
+    const defaultValue = () => {
+
+        if (!!is_editor) {
+            return '';
+        }
+
+        switch (settings?.type) {
+            case 'terms':
+                return ''
+            default:
+                return '#--' + settings.type.toUpperCase() + '--#'
+        }
+    };
     const fieldId = [uniqueId, settings.type].filter(x => x).join('-');
     const buttonText = (settings?.['button-text'] ?? '').trim() || false;
     const labelText = (settings?.['label'] ?? '').trim() || false;
@@ -89,7 +102,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
             return <>
 
                 <label htmlFor={fieldId} className={labelClass}
-                       dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
+                       dangerouslySetInnerHTML={{__html: labelText || 'Categories'}}/>
                 <div className={'wpbs-archive-filters__input --select'}>
                     <select
                         id={fieldId}
@@ -574,17 +587,20 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
+        const {'wpbs-archive-filters': settings = {}} = props?.attributes ?? {};
+
         const blockProps = useBlockProps.save({
             className: blockClassnames(props.attributes),
             'data-wp-interactive': 'wpbs/archive-filters',
             'data-wp-init': 'actions.init',
             'aria-label': 'Archive Filters',
+            'data-type': settings?.type,
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return <div {...blockProps}>
+        return !!settings?.type ? <div {...blockProps}>
             <FilterFields settings={props.attributes?.['wpbs-archive-filters']} uniqueId={props.attributes?.uniqueId}/>
-        </div>;
+        </div> : null;
     }
 })
 

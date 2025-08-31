@@ -23,7 +23,7 @@ $replace = [ $search_value, $sort_value, $current_term_id ];
 
 if ( $type == 'terms' ) {
 
-	$options = join( '\r\n', array_values( array_filter( array_map( function ( $tax ) {
+	$options = implode( "\r\n", array_values( array_filter( array_map( function ( $tax ) use ( $current_term_id ) {
 
 		if ( empty( $tax->name ) ) {
 			return null;
@@ -38,19 +38,29 @@ if ( $type == 'terms' ) {
 			return null;
 		}
 
-		$result = '<option value="taxonomy-' . $tax->name . '" disabled>' . ( $tax->label ?? $tax->name ) . '</option>';
+		$result = '<optgroup label="' . esc_html( $tax->label ?? $tax->name ) . '">';
 
 		foreach ( $terms as $term ) {
-			$result .= '<option value="' . $term->term_id . '">' . ( $term->name ) . '</option>';
-		}
 
-		return trim( $result );
+			$selected = $current_term_id == $term->term_id ? 'selected' : null;
+			$result   .= implode( ' ', array_filter( [
+				'<option',
+				$selected,
+				'value="' . esc_url( get_term_link( $term->term_id ) ) . '"',
+				'>',
+				esc_html( $term->name ),
+				'</option>'
+			] ) );
+		}
+		$result .= '</optgroup>';
+
+		return $result;
 
 
 	}, $current_taxonomies ) ) ) );
 
 	$search[]  = '</select>';
-	$replace[] = join( '\r\n', [ $options, '</select>' ] );
+	$replace[] = implode( "\r\n", [ $options, '</select>' ] );
 }
 
 echo str_replace( $search, $replace, $content ?? '' );

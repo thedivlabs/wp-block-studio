@@ -215,16 +215,30 @@ registerBlockType(metadata.name, {
             return wp.data.select('core/editor').getEditorSettings().colors || [];
         }, []);
 
-        const taxonomies = useSelect(() => {
-            if (settings?.type !== 'terms') {
-                return [];
-            }
-            const core = select(coreStore);
-            
-            return (core.getTaxonomies() || []).filter(tax => !!tax?.hierarchical && !!tax?.visibility?.public && !!tax.name && !!tax.slug).map(tax => {
-                return {label: [tax.name, '-', tax.slug].join(' '), value: tax.slug};
-            });
-        }, [settings?.type]);
+        const taxQuery = useSelect(
+            (select) => {
+                if (settings?.type !== 'terms') return [];
+
+                const core = select(coreStore);
+                return core.getTaxonomies?.() || [];
+            },
+            [settings?.type]
+        );
+
+        const taxonomies = useMemo(() => {
+            return taxQuery
+                .filter((tax) =>
+                    tax?.hierarchical &&
+                    tax?.visibility?.public &&
+                    tax?.name &&
+                    tax?.slug
+                )
+                .map((tax) => ({
+                    label: `${tax.name} - ${tax.slug}`,
+                    value: tax.slug,
+                }));
+        }, [taxQuery]);
+
 
         const tabOptions = <Grid columnGap={15} columns={1} rowGap={20}>
 

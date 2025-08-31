@@ -23,12 +23,34 @@ $replace = [ $search_value, $sort_value, $current_term_id ];
 
 if ( $type == 'terms' ) {
 
-	$options = array_map( function ( $tax ) {
+	$options = join( '\r\n', array_values( array_filter( array_map( function ( $tax ) {
 
-	}, $current_taxonomies );
+		if ( empty( $tax->name ) ) {
+			return null;
+		}
+
+		$terms = get_terms( [
+			'taxonomy'   => $tax->name,
+			'hide_empty' => true,
+		] );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return null;
+		}
+
+		$result = '<option value="taxonomy-' . $tax->name . '" disabled>' . ( $tax->label ?? $tax->name ) . '</option>';
+
+		foreach ( $terms as $term ) {
+			$result .= '<option value="' . $term->term_id . '">' . ( $term->name ) . '</option>';
+		}
+
+		return trim( $result );
 
 
-	//$search[] = '</select>';
+	}, $current_taxonomies ) ) ) );
+
+	$search[]  = '</select>';
+	$replace[] = join( '\r\n', [ $options, '</select>' ] );
 }
 
 echo str_replace( $search, $replace, $content ?? '' );

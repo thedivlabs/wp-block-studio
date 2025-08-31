@@ -18,7 +18,7 @@ import {
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 import {BORDER_UNITS, DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
-import {select, subscribe, useSelect} from "@wordpress/data";
+import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 
 function blockClassnames(attributes = {}, editor = false) {
@@ -234,7 +234,7 @@ registerBlockType(metadata.name, {
                     tax?.slug
                 )
                 .map((tax) => ({
-                    label: `${tax.name} - ${tax.slug}`,
+                    label: `${tax.name}  (${tax.slug})`,
                     value: tax.slug,
                 }));
         }, [taxQuery]);

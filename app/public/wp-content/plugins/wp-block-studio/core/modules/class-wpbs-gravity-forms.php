@@ -9,7 +9,7 @@ class WPBS_Gravity_Forms {
 	private function __construct() {
 
 		add_filter( 'gform_confirmation_anchor', '__return_false' );
-		add_filter( 'gform_disable_css', '__return_true' );
+		//add_filter( 'gform_disable_css', '__return_true' );
 
 
 		add_filter( 'gform_next_button', [ $this, 'input_to_button' ], 10, 2 );

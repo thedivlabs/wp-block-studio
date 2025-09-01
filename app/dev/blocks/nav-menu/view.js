@@ -12,8 +12,8 @@ function initAccordion(element) {
 
         toggleItem.addEventListener('click', (e) => {
             e.preventDefault();
-
-            const parent = e.target.parentElement;
+            
+            const parent = e.target.closest('li.menu-item-has-children');
             const submenu = parent.querySelector(':scope > .sub-menu');
             parent.classList.toggle('active');
 

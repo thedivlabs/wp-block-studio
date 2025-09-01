@@ -109,18 +109,22 @@ class WPBS {
 
 	public function theme_assets(): void {
 
-		wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/bff7e13981.js', [], false, [
+		/*wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/bff7e13981.js', [], false, [
 			'strategy'  => 'async',
 			'in_footer' => false,
-		] );
+		] );*/
+
+		wp_register_style( 'wpbs-google-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', [], false );
 
 		/* Swiper */
 		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
-		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js' );
+		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
+			'strategy' => 'async'
+		] );
 
 		/* Masonry */
 		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
-			'strategy'  => 'defer',
+			'strategy'  => 'async',
 			'in_footer' => false,
 		] );
 
@@ -130,7 +134,7 @@ class WPBS {
 			'wp-dom-ready',
 			'jquery'
 		], false, [
-			'strategy'  => 'defer',
+			'strategy'  => 'async',
 			'in_footer' => false,
 		] );
 		wp_register_script( 'wpbs-admin-js', self::$uri . 'build/admin.js', [
@@ -160,27 +164,27 @@ class WPBS {
 
 		wp_enqueue_script( 'wpbs-masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_enqueue_script( 'wpbs-fontawesome' );
+		wp_enqueue_script( 'wpbs-google-icons' );
 
 	}
 
 	public function admin_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_script( 'wpbs-fontawesome' );
+		wp_enqueue_script( 'wpbs-google-icons' );
 	}
 
 	public function editor_assets(): void {
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_script( 'wpbs-fontawesome' );
+		wp_enqueue_script( 'wpbs-google-icons' );
 		wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
 	public function view_assets(): void {
-		wp_enqueue_script( 'wpbs-fontawesome' );
+		wp_enqueue_script( 'wpbs-google-icons' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 	}

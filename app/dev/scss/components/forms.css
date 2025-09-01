@@ -336,7 +336,7 @@
       grid-column: 1 / -1 !important;
     }
   }
-  
+
   @media screen and (min-width: 768px) {
     --wpbs-form-columns: 12;
   }
@@ -345,6 +345,9 @@
     display: grid;
     grid-template-columns: repeat(var(--wpbs-form-columns), 1fr) !important;
 
+    .gfield {
+      grid-column: 1 / -1;
+    }
 
     @media screen and (max-width: 768px) {
       .gfield.gfield--width-half {

@@ -109,7 +109,7 @@ class WPBS {
 
 	public function theme_assets(): void {
 
-		wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/2ac810357a.js', [], false, [
+		wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/bff7e13981.js', [], false, [
 			'strategy'  => 'async',
 			'in_footer' => false,
 		] );

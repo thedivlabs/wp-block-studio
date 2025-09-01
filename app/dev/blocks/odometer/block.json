@@ -39,7 +39,13 @@
   },
   "editorScript": "file:./block.js",
   "viewScriptModule": "file:./view.js",
-  "icon": "format-gallery"
+  "icon": "format-gallery",
+  "script": [
+    "wpbs-odometer-js"
+  ],
+  "style": [
+    "wpbs-odometer-css"
+  ]
 }
 
 

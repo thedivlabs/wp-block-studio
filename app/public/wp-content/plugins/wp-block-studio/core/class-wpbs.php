@@ -58,6 +58,25 @@ class WPBS {
 
 		add_filter( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 30 );
 
+		add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
+
+			if ( str_contains( $handle, 'wpbs' ) ) {
+				$href_no_query = wp_parse_url( $href, PHP_URL_PATH );
+
+				$path = ABSPATH . ltrim( $href_no_query, '/' );
+
+				if ( file_exists( $path ) ) {
+					$css = file_get_contents( $path );
+
+					return '<style id="' . esc_attr( $handle ) . '">' . $css . '</style>';
+				}
+			} else {
+				$html = str_replace( 'href=', 'data-href=', $html );
+			}
+
+			return $html;
+		}, 10, 3 );
+
 	}
 
 	public function remove_default_image_sizes( $sizes ): array {
@@ -114,6 +133,12 @@ class WPBS {
 			'in_footer' => false,
 		] );*/
 
+		/* Odometer */
+		wp_register_style( 'wpbs-odometer-css', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css', [], false );
+		wp_register_script( 'wpbs-odometer-js', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js', [], false, [
+			'strategy' => 'async'
+		] );
+
 		wp_register_style( 'wpbs-google-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', [], false );
 
 		/* Swiper */
@@ -121,6 +146,7 @@ class WPBS {
 		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
 			'strategy' => 'async'
 		] );
+
 
 		/* Masonry */
 		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [

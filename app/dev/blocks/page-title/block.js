@@ -11,7 +11,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import {
     __experimentalGrid as Grid, __experimentalNumberControl as NumberControl,
     PanelBody,
-    SelectControl,
+    SelectControl, TextControl,
     ToggleControl,
 } from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
@@ -105,6 +105,14 @@ registerBlockType(metadata.name, {
                                 />
 
                             </Grid>
+
+                            <TextControl
+                                __nextHasNoMarginBottom
+                                __next40pxDefaultSize
+                                label="Default"
+                                value={settings?.['default']}
+                                onChange={(newValue) => updateSettings({'default': newValue})}
+                            />
 
                             <Grid columnGap={15} columns={2} rowGap={20} style={{marginTop: '20px'}}>
                                 <ToggleControl

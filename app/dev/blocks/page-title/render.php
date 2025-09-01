@@ -2,12 +2,12 @@
 
 $settings = $block->attributes['wpbs-page-title'] ?? [];
 $type     = $settings['type'] ?? false;
-$title    = match ( $type ) {
+$title    = empty( $type ) ? null : match ( $type ) {
 	'single' => is_singular() ? get_the_title() : null,
 	'term' => is_category() || is_tag() || is_tax() ? get_queried_object()->name ?? null : null,
-	'archive' => is_home() ? get_the_title( get_option( 'page_for_posts' ) ) : ( is_post_type_archive() ? post_type_archive_title() : null ),
+	'archive' => is_home() || get_post_type() == 'post' ? get_the_title( get_option( 'page_for_posts' ) ) : get_post_type_object( get_post_type() )->labels->archives ?? null,
 	'taxonomy' => get_taxonomy( get_queried_object()->taxonomy )->label ?? null,
-	default => null
+	default => $settings['default'] ?? null,
 };
 
 // If on singular (posts, pages, CPTs)

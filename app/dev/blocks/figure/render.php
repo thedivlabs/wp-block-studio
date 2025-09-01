@@ -39,7 +39,6 @@ $srcset_attr = ! empty( $settings['eager'] ) ? 'srcset' : 'data-srcset';
 
 $featured_image_id = $is_featured_image ? get_post_thumbnail_id() : 0;
 
-
 $src_large      = wp_get_attachment_image_src( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? 'medium' )[0] ?? false;
 $src_large_webp = $src_large && ! str_contains( $src_large, '.svg' ) ? $src_large . '.webp' : false;
 
@@ -57,7 +56,7 @@ $rel    = ! $is_link ? false : $attributes['wpbs-figure']['linkPost']['linkRel']
 $title  = ! $is_link ? false : $attributes['wpbs-figure']['link']['title'] ?? $attributes['wpbs-figure']['linkPost']['title'] ?? 'Learn More';
 
 
-$container_tag_open  = implode( ' ', array_filter( [
+$container_tag_open = implode( ' ', array_filter( [
 	$is_link ? '<a' : '<div',
 	$is_link ? 'href="' . $url . '"' : null,
 	$is_link ? 'target="' . $target . '"' : null,
@@ -66,8 +65,13 @@ $container_tag_open  = implode( ' ', array_filter( [
 	'class="wpbs-figure__media">',
 	$is_link ? '<span class="screen-reader-text">' . $title . '</span>' : null,
 ] ) );
+
 $container_tag_close = $is_link ? '</a>' : '</div>';
 
+
+if ( empty( $src_large ) && empty( $src_mobile ) ) {
+	return;
+}
 ?>
 
 <div <?php echo $wrapper_attributes ?>>

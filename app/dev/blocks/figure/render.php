@@ -69,51 +69,51 @@ $container_tag_open = implode( ' ', array_filter( [
 $container_tag_close = $is_link ? '</a>' : '</div>';
 
 
-if ( empty( $src_large ) && empty( $src_mobile ) ) {
-	return;
-}
 ?>
 
 <div <?php echo $wrapper_attributes ?>>
 
 	<?= $container_tag_open; ?>
-    <picture class="w-full h-full">
-		<?php if ( ! empty( $src_large ) ) { ?>
+	<?php if ( ! empty( $src_large ) || ! empty( $src_mobile ) ) { ?>
+        <picture class="w-full h-full">
+			<?php if ( ! empty( $src_large ) ) { ?>
 
-			<?php if ( ! empty( $src_large_webp ) ) { ?>
-                <source type="image/webp"
+				<?php if ( ! empty( $src_large_webp ) ) { ?>
+                    <source type="image/webp"
+						<?php echo $mq_large ?>
+						<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
+                    />
+				<?php } ?>
+
+                <source type="image/jpeg"
 					<?php echo $mq_large ?>
-					<?php echo $srcset_attr . '="' . esc_attr( $src_large_webp ) . '"' ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
                 />
 			<?php } ?>
 
-            <source type="image/jpeg"
-				<?php echo $mq_large ?>
-				<?php echo $srcset_attr . '="' . esc_attr( $src_large ) . '"' ?>
-            />
-		<?php } ?>
 
+			<?php if ( ! empty( $src_mobile ) ) { ?>
 
-		<?php if ( ! empty( $src_mobile ) ) { ?>
+				<?php if ( ! empty( $src_mobile_webp ) ) { ?>
+                    <source type="image/webp"
+						<?php echo $mq_mobile ?>
+						<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
+                    />
+				<?php } ?>
 
-			<?php if ( ! empty( $src_mobile_webp ) ) { ?>
-                <source type="image/webp"
+                <source type="image/jpeg"
 					<?php echo $mq_mobile ?>
-					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile_webp ) . '"' ?>
+					<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
                 />
 			<?php } ?>
 
-            <source type="image/jpeg"
-				<?php echo $mq_mobile ?>
-				<?php echo $srcset_attr . '="' . esc_attr( $src_mobile ) . '"' ?>
-            />
-		<?php } ?>
+			<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
+				'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
+				'style'   => trim( $style )
+			] ) ?>
+        </picture>
 
-		<?php echo wp_get_attachment_image( $featured_image_id ?: $fallback_large_id, $settings['resolutionLarge'] ?? $settings['resolutionMobile'] ?? 'large', false, [
-			'loading' => ! empty( $settings['eager'] ) ? 'eager' : 'lazy',
-			'style'   => trim( $style )
-		] ) ?>
-    </picture>
+	<?php } ?>
 	<?= $container_tag_close; ?>
 
 </div>

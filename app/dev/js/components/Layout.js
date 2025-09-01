@@ -57,6 +57,8 @@ export const LAYOUT_ATTRIBUTES = {
 
 const LAYOUT_PROPS = {
     special: [
+        'hide-empty',
+        'required',
         'text-color-mobile',
         'background-color-mobile',
         'border-radius-mobile',

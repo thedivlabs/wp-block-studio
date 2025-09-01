@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/odometer",
   "title": "Odometer",
   "description": "Display an odometer animation",

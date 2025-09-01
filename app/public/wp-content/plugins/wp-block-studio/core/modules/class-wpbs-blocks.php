@@ -49,7 +49,7 @@ class WPBS_Blocks {
 					return '<style id="' . esc_attr( $handle ) . '">' . $css . '</style>';
 				}
 			} else {
-				//$html = str_replace( 'href=', 'data-href=', $html );
+				$html = str_replace( 'href=', 'data-href=', $html );
 			}
 
 			return $html;

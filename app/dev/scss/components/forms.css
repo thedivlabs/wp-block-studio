@@ -467,7 +467,7 @@
       textarea {
 
         &.small {
-
+          height: 7rem;
         }
       }
 

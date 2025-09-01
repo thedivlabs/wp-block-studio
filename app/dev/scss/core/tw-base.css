@@ -112,8 +112,7 @@ h1, h2, h3, h4, h5, h6 {
 
 [data-hide-empty].--empty,
 [data-hide-empty]:has([data-required]:empty),
-[data-hide-empty]:has([data-required].--empty),
-{
+[data-hide-empty]:has([data-required].--empty) {
   display: none !important;
 
   [data-required] {

@@ -135,7 +135,7 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <ElementTagName {...blockProps}>PAGE TITLE</ElementTagName>
+                <ElementTagName {...blockProps}>{settings?.default ?? 'Page Title'}</ElementTagName>
 
             </>
         )

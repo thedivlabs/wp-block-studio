@@ -803,13 +803,13 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Hide Empty"
-                    checked={!!attributes?.['wpbs-layout-element']?.['hide-empty']}
+                    checked={!!settings?.['hide-empty']}
                     onChange={(newValue) => updateProp({['hide-empty']: newValue})}
                 />
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Required"
-                    checked={!!attributes?.['wpbs-layout-element']?.['required']}
+                    checked={!!settings?.['required']}
                     onChange={(newValue) => updateProp({['required']: newValue})}
                 />
             </Grid>

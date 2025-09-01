@@ -48,7 +48,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'               => implode( ' ', array_filter( [
 		'wpbs-figure h-full',
 		! empty( $settings['contain'] ) ? '--contain' : null,
-		! empty( $src_large ) && ! empty( $src_mobile ) ? '--empty' : null,
+		empty( $src_large ) && empty( $src_mobile ) ? '--empty' : null,
 		$attributes['uniqueId'] ?? null
 	] ) ),
 	'data-wp-interactive' => 'wpbs',

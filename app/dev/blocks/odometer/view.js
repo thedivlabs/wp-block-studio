@@ -11,10 +11,13 @@ function waitForOdometer(cb) {
 const {state} = store('wpbs/odometer', {
     actions: {
         init: () => {
+
+            const {ref: element} = getElement();
+            const context = getContext();
+            const {start = 0, end = 100, duration = 1200, format = false} = context;
+
             waitForOdometer(() => {
-                const {ref: element} = getElement();
-                const context = getContext();
-                const {start = 0, end = 100, duration = 1200, format = false} = context;
+
 
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {

@@ -167,6 +167,7 @@ class WPBS {
 	public function admin_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
+		wp_enqueue_script( 'wpbs-fontawesome' );
 	}
 
 	public function editor_assets(): void {

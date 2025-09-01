@@ -75,7 +75,7 @@ class WPBS {
 			}
 
 			return $html;
-		}, 10, 3 );
+		}, 100, 3 );
 
 	}
 
@@ -134,8 +134,8 @@ class WPBS {
 		] );*/
 
 		/* Odometer */
-		wp_register_style( 'wpbs-odometer-css', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css', [], false );
-		wp_register_script( 'wpbs-odometer-js', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js', [], false, [
+		wp_register_style( 'odometer-css', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css', [], false );
+		wp_register_script( 'odometer-js', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js', [], false, [
 			'strategy' => 'async'
 		] );
 

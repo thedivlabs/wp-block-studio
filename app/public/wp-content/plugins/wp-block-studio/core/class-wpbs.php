@@ -158,14 +158,12 @@ class WPBS {
 		wp_register_style( 'wpbs-admin-css', self::$uri . 'build/admin.css' );
 		wp_register_script( 'wpbs-theme-js', self::$uri . 'build/theme.js', [
 			'wp-dom-ready',
-			'jquery'
 		], false, [
 			'strategy'  => 'async',
 			'in_footer' => false,
 		] );
 		wp_register_script( 'wpbs-admin-js', self::$uri . 'build/admin.js', [
 			'wp-dom-ready',
-			'jquery'
 		], false, [
 			'strategy'  => 'defer',
 			'in_footer' => true,

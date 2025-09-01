@@ -74,7 +74,7 @@
   &.--prefix .wpbs-archive-filters__input {
     input,
     select {
-      padding-left: 2em;
+      padding-left: var(--prefix-size, 2em);
     }
   }
 

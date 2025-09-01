@@ -78,8 +78,8 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
         case 'sort':
             return <>
 
-                <label htmlFor={fieldId} className={labelClass}
-                       dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
+                <span className={labelClass}
+                      dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
                 <div className={'wpbs-archive-filters__input --select'}>
                     <select
                         id={fieldId}
@@ -102,9 +102,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
             </>;
         case 'terms':
             return <>
-
-                <label htmlFor={fieldId} className={labelClass}
-                       dangerouslySetInnerHTML={{__html: labelText || 'Categories'}}/>
+                <span className={labelClass} dangerouslySetInnerHTML={{__html: labelText || 'Categories'}}/>
                 <div className={'wpbs-archive-filters__input --select'}>
                     <select
                         id={fieldId}
@@ -124,8 +122,8 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
         case 'search':
             return <>
 
-                <label htmlFor={fieldId} className={labelClass}
-                       dangerouslySetInnerHTML={{__html: labelText || 'Search'}}/>
+                <span className={labelClass}
+                      dangerouslySetInnerHTML={{__html: labelText || 'Search'}}/>
                 <div className={'wpbs-archive-filters__input --search'}>
                     <input
                         id={fieldId}
@@ -238,7 +236,6 @@ registerBlockType(metadata.name, {
                     value: tax.slug,
                 }));
         }, [taxQuery]);
-
 
         const tabOptions = <Grid columnGap={15} columns={1} rowGap={20}>
 
@@ -624,9 +621,9 @@ registerBlockType(metadata.name, {
                        props={cssProps}
                 />
 
-                <div {...blockProps}>
+                <label {...blockProps}>
                     <FilterFields settings={settings} is_editor={true} uniqueId={uniqueId}/>
-                </div>
+                </label>
 
             </>
         )
@@ -644,9 +641,9 @@ registerBlockType(metadata.name, {
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        return !!settings?.type ? <div {...blockProps}>
+        return !!settings?.type ? <label {...blockProps}>
             <FilterFields settings={props.attributes?.['wpbs-archive-filters']} uniqueId={props.attributes?.uniqueId}/>
-        </div> : null;
+        </label> : null;
     }
 })
 

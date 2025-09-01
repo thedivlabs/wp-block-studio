@@ -72,7 +72,9 @@ registerBlockType(metadata.name, {
         const imageProps = {
             className: 'wpbs-flyout-button__image',
             src: settings?.image?.url,
-            alt: settings?.image?.alt
+            alt: settings?.image?.alt,
+            width: settings?.image?.sizes?.full?.width,
+            height: settings?.image?.sizes?.full?.height,
         }
 
         return <>
@@ -177,8 +179,8 @@ registerBlockType(metadata.name, {
             className: 'wpbs-flyout-button__image',
             src: settings?.image?.url,
             alt: settings?.image?.alt,
-            width: settings?.image?.width,
-            height: settings?.image?.height,
+            width: settings?.image?.sizes?.full?.width,
+            height: settings?.image?.sizes?.full?.height,
         }
 
         return <button {...blockProps} type={'button'}>

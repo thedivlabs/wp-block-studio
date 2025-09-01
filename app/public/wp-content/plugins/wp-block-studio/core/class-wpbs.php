@@ -410,6 +410,17 @@ class WPBS {
 
 		global $wp_scripts;
 
+		$theme_fonts = array_values( array_unique( array_merge( [], ...wp_list_pluck( array_merge( [], ...( array_column( ( wp_get_global_settings()['typography']['fontFamilies']['theme'] ?? [] ), 'fontFace' ) ?: [] ) ), 'src' ) ) ) );
+		$theme_uri   = get_template_directory_uri();
+
+		foreach ( $theme_fonts as $src ) {
+			if ( str_starts_with( $src, 'file:' ) ) {
+				$relative_path = substr( $src, 5 );
+				$url           = $theme_uri . '/' . ltrim( $relative_path, '/' );
+				echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+			}
+		}
+
 		$preconnect_sources = apply_filters( 'wpbs_preconnect_sources', [] );
 		$preload_sources    = apply_filters( 'wpbs_preload_sources', [] );
 		$preload_images     = apply_filters( 'wpbs_preload_images', [] );
@@ -468,6 +479,7 @@ class WPBS {
 		}
 
 		$default_scripts = [
+			'jquery-core',
 			'jquery',
 			'jquery-migrate',
 		];

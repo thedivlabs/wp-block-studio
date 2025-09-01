@@ -149,10 +149,6 @@
       direction: ltr;
     }
 
-    select {
-      padding-right: var(--button-width, var(--button-size, 24px));
-    }
-
     &.--select {
       cursor: pointer;
 
@@ -195,10 +191,8 @@
   }
 
   .wpbs-archive-filters__button {
-    position: absolute;
-    top: 0;
-    right: 0;
     width: var(--button-width, auto);
+    padding: 0 .5rem;
 
     &:after {
       content: var(--button-icon, 'none');

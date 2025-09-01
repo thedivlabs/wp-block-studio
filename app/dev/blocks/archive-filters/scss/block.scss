@@ -74,7 +74,7 @@
   &.--prefix .wpbs-archive-filters__input {
     input,
     select {
-      padding-left: var(--prefix-size, 2em);
+      padding-left: 0;
     }
   }
 
@@ -131,18 +131,16 @@
       content: var(--prefix-icon, none);
       font-family: "Material Symbols Outlined", sans-serif;
       height: 100%;
-      width: 2em;
+      aspect-ratio: 1/1;
+      width: auto;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       pointer-events: none;
-      position: absolute;
-      top: 0;
-      left: 0;
       font-weight: normal;
       font-style: normal;
-      font-size: var(--prefix-size, inherit);
+      font-size: var(--prefix-size, 1rem);
       line-height: 1;
       text-transform: none;
       letter-spacing: normal;

@@ -142,8 +142,8 @@ class WPBS {
 		wp_register_style( 'wpbs-google-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', [], false );
 
 		/* Swiper */
-		wp_register_style( 'wpbs-swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
-		wp_register_script( 'wpbs-swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
+		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
+		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
 			'strategy' => 'async'
 		] );
 

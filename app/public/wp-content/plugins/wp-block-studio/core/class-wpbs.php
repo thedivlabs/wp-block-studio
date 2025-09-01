@@ -143,7 +143,7 @@ class WPBS {
 			'strategy' => 'async'
 		] );
 
-		wp_register_style( 'wpbs-google-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', [], false );
+		wp_register_style( 'google-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', [], false );
 
 		/* Swiper */
 		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
@@ -192,27 +192,27 @@ class WPBS {
 
 		wp_enqueue_script( 'wpbs-masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_enqueue_style( 'wpbs-google-icons' );
+		wp_enqueue_style( 'google-icons' );
 
 	}
 
 	public function admin_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_style( 'wpbs-google-icons' );
+		wp_enqueue_style( 'google-icons' );
 	}
 
 	public function editor_assets(): void {
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_style( 'wpbs-google-icons' );
+		wp_enqueue_style( 'google-icons' );
 		wp_enqueue_script( 'wpbs-swiper-js' );
 		wp_enqueue_style( 'wpbs-swiper-css' );
 	}
 
 	public function view_assets(): void {
-		wp_enqueue_style( 'wpbs-google-icons' );
+		wp_enqueue_style( 'google-icons' );
 		wp_enqueue_script( 'wpbs-masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 	}

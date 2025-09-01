@@ -41,10 +41,10 @@
   "viewScriptModule": "file:./view.js",
   "icon": "format-gallery",
   "script": [
-    "wpbs-odometer-js"
+    "odometer-js"
   ],
   "style": [
-    "wpbs-odometer-css"
+    "odometer-css"
   ]
 }
 

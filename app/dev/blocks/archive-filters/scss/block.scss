@@ -149,6 +149,10 @@
       direction: ltr;
     }
 
+    select {
+      padding-right: calc(var(--button-width, calc(var(--button-size, 22px) * 1.5)) + .5rem);
+    }
+
     &.--select {
       cursor: pointer;
 
@@ -173,7 +177,7 @@
     color: var(--color-button-text, inherit);
     cursor: pointer;
     gap: .5rem;
-    font-size: var(--button-size, 24px);
+    font-size: var(--button-size, 22px);
     line-height: 1;
     flex-shrink: 0;
     flex-grow: 0;
@@ -191,7 +195,10 @@
   }
 
   .wpbs-archive-filters__button {
-    width: var(--button-width, auto);
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--button-width, calc(var(--button-size, 22px) * 1.5));
     padding: 0 .5rem;
 
     &:after {

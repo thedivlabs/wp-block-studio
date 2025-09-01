@@ -79,7 +79,7 @@ if ( empty( $title ) ) {
 
 $link = ! empty( $settings['link'] ) ? match ( $type ) {
 	'single' => get_the_permalink(),
-	'archive' => get_post_type_archive_link( get_queried_object()->post_type ?? false ),
+	'archive' => is_home() || get_post_type() == 'post' ? get_the_permalink( get_option( 'page_for_posts' ) ) : get_post_type_archive_link( get_queried_object()->post_type ?? false ),
 	'term' => get_term_link( get_queried_object()->term_id ?? false ),
 	default => false,
 } : false;

@@ -16,17 +16,6 @@ if ( ! empty( $settings['contain'] ) ) {
 	$style .= 'object-fit:cover;';
 }
 
-$wrapper_attributes = get_block_wrapper_attributes( [
-	'class'               => implode( ' ', array_filter( [
-		'wpbs-figure h-full',
-		! empty( $settings['contain'] ) ? '--contain' : null,
-		$attributes['uniqueId'] ?? null
-	] ) ),
-	'data-wp-interactive' => 'wpbs',
-	'data-wp-init'        => 'callbacks.observe',
-	...( $attributes['wpbs-props'] ?? [] )
-] );
-
 $bp_key = ! empty( $attributes['wpbs-breakpoint']['large'] ) ? $attributes['wpbs-breakpoint']['large'] : 'normal';
 
 $breakpoint = ( wp_get_global_settings()['custom']['breakpoints'] ?? [] )[ $bp_key ] ?? false;
@@ -55,6 +44,17 @@ $target = ! $is_link ? false : ( ! empty( $attributes['wpbs-figure']['linkPost']
 $rel    = ! $is_link ? false : $attributes['wpbs-figure']['linkPost']['linkRel'] ?? false;
 $title  = ! $is_link ? false : $attributes['wpbs-figure']['link']['title'] ?? $attributes['wpbs-figure']['linkPost']['title'] ?? 'Learn More';
 
+$wrapper_attributes = get_block_wrapper_attributes( [
+	'class'               => implode( ' ', array_filter( [
+		'wpbs-figure h-full',
+		! empty( $settings['contain'] ) ? '--contain' : null,
+		! empty( $src_large ) && ! empty( $src_mobile ) ? '--empty' : null,
+		$attributes['uniqueId'] ?? null
+	] ) ),
+	'data-wp-interactive' => 'wpbs',
+	'data-wp-init'        => 'callbacks.observe',
+	...( $attributes['wpbs-props'] ?? [] )
+] );
 
 $container_tag_open = implode( ' ', array_filter( [
 	$is_link ? '<a' : '<div',
@@ -67,7 +67,6 @@ $container_tag_open = implode( ' ', array_filter( [
 ] ) );
 
 $container_tag_close = $is_link ? '</a>' : '</div>';
-
 
 ?>
 

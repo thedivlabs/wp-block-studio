@@ -176,7 +176,7 @@ registerBlockType(metadata.name, {
                     '--color-label': settings?.['color-label'] ?? null,
                     '--color-button': settings?.['color-button'] ?? null,
                     '--color-button-text': settings?.['color-button-text'] ?? null,
-                    '--prefix-icon': !!settings?.['prefix'] ? '\"\\' + settings?.['prefix'] + '\"' : null,
+                    '--prefix-icon': !!settings?.['prefix'] ? '\"' + settings?.['prefix'] + '\"' : null,
                     '--button-icon': !!settings?.['button-icon'] ? '\"\\' + settings?.['button-icon'] + '\"' : null,
                     '--radius': settings?.['radius'] ?? null,
                     '--active-color-label': settings?.['active-color-label'] ?? null,

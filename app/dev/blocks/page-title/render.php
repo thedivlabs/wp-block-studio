@@ -3,10 +3,10 @@
 $settings = $block->attributes['wpbs-page-title'] ?? [];
 $type     = $settings['type'] ?? false;
 $title    = empty( $type ) ? null : match ( $type ) {
-	'single' => is_singular() ? get_the_title() : null,
-	'term' => is_category() || is_tag() || is_tax() ? get_queried_object()->name ?? null : null,
-	'archive' => is_home() || get_post_type() == 'post' ? get_the_title( get_option( 'page_for_posts' ) ) : get_post_type_object( get_post_type() )->labels->archives ?? null,
-	'taxonomy' => get_taxonomy( get_queried_object()->taxonomy )->label ?? null,
+	'single' => is_singular() ? get_the_title() : $settings['default'] ?? null,
+	'term' => is_category() || is_tag() || is_tax() ? get_queried_object()->name ?? null : $settings['default'] ?? null,
+	'archive' => is_home() || get_post_type() == 'post' ? get_the_title( get_option( 'page_for_posts' ) ) : get_post_type_object( get_post_type() )->labels->archives ?? $settings['default'] ?? null,
+	'taxonomy' => get_taxonomy( get_queried_object()->taxonomy )->label ?? $settings['default'] ?? null,
 	default => $settings['default'] ?? null,
 };
 
@@ -64,7 +64,7 @@ if ( is_date() ) {
 }
 
 // Fallback: queried object title (should catch most cases)
-$title = empty( $title ) ? single_post_title( '', false ) : $title;
+$title = empty( $title ) ? $settings['default'] ?? single_post_title( '', false ) : $title;
 
 if ( ! $title ) {
 	$obj = get_queried_object();

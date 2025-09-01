@@ -1,3 +1,5 @@
+import './scss/block.scss';
+
 import {ElementTag, ELEMENT_TAG_ATTRIBUTES, ElementTagSettings} from 'Components/ElementTag'
 
 import {

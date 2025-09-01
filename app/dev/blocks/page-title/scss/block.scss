@@ -1,0 +1,12 @@
+.wpbs-page-title {
+
+  &.--line-clamp:not(:has(> a)),
+  &.--line-clamp > a {
+    line-clamp: var(--line-clamp, 3);
+    -webkit-line-clamp: var(--line-clamp, 3);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+}

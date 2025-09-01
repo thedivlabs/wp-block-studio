@@ -79,10 +79,17 @@ if ( empty( $title ) ) {
 
 $link = ! empty( $settings['link'] ) ? match ( $type ) {
 	'single' => get_the_permalink(),
-	'archive' => is_home() || get_post_type() == 'post' ? get_the_permalink( get_option( 'page_for_posts' ) ) : get_post_type_archive_link( get_queried_object()->post_type ?? false ),
-	'term' => get_term_link( get_queried_object()->term_id ?? false ),
+	'archive' => ( is_home() || is_post_type_archive( 'post' ) )
+		? get_permalink( get_option( 'page_for_posts' ) )
+		: ( isset( get_queried_object()->name )
+			? get_post_type_archive_link( get_queried_object()->name )
+			: false ),
+	'term' => ( is_tax() || is_category() || is_tag() )
+		? get_term_link( get_queried_object() )
+		: false,
 	default => false,
 } : false;
+
 
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [

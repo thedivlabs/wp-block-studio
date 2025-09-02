@@ -12,7 +12,7 @@ import {
 
 
 export function IconControl({value = {}, onChange, label = 'Icon'}) {
-    const {name = '', weight = 400, size = 24, style = 0} = value;
+    const {name = '', weight = 200, size = 24, style = 0} = value;
     const [isOpen, setIsOpen] = useState(false);
 
     const update = (key, val) => {
@@ -40,7 +40,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     return (
         <BaseControl label={label}>
             {/* Name input */}
-            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
                 <TextControl
                     value={name}
                     onChange={(val) => update('name', val)}

@@ -21,6 +21,7 @@ import {
     ICON_STYLES,
 } from "Includes/config";
 import {useUniqueId} from "Includes/helper";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 
 function classNames(attributes = {}) {
@@ -54,13 +55,13 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-accordion-group');
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
+
+        const {'wpbs-accordion-group': settings = {}} = attributes;
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-accordion-group'],
+                ...settings,
                 ...newValue
             };
 
@@ -68,7 +69,7 @@ registerBlockType(metadata.name, {
                 'wpbs-accordion-group': result,
             });
 
-        }, [setAttributes, attributes['wpbs-accordion-group']])
+        }, [setAttributes, settings])
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
@@ -85,46 +86,24 @@ registerBlockType(metadata.name, {
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={2} columnGap={15} rowGap={20}>
-                <TextControl
-                    label={'Icon Closed'}
-                    value={attributes['wpbs-accordion-group']?.['icon-closed']}
-                    onChange={(newValue) => updateSettings({'icon-closed': newValue})}
-                    __nextHasNoMarginBottom
-                />
-                <TextControl
-                    label={'Icon Open'}
-                    value={attributes['wpbs-accordion-group']?.['icon-open']}
-                    onChange={(newValue) => updateSettings({'icon-open': newValue})}
-                    __nextHasNoMarginBottom
-                />
-                <UnitControl
-                    label="Icon Size"
-                    value={attributes['wpbs-accordion-group']?.['icon-size'] ?? ''}
-                    onChange={(val) => updateSettings({'icon-size': val})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <SelectControl
-                    label="Icon Style"
-                    value={attributes['wpbs-accordion-group']?.['icon-style'] ?? ''}
-                    options={ICON_STYLES}
-                    onChange={(val) => updateSettings({'icon-style': val})}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+
+                <IconControl label={'Icon Closed'} value={settings?.['icon-closed']}
+                             onChange={(newValue) => updateSettings({'icon-closed': newValue})}/>
+
+                <IconControl label={'Icon Open'} value={settings?.['icon-open']}
+                             onChange={(newValue) => updateSettings({'icon-open': newValue})}/>
+
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ToggleControl
                     label={'Animate'}
-                    checked={attributes['wpbs-accordion-group']?.['animate'] ?? true}
+                    checked={settings?.['animate'] ?? true}
                     onChange={(newValue) => updateSettings({'animate': newValue})}
                     __nextHasNoMarginBottom
                 />
                 <ToggleControl
                     label={'Hide Icon'}
-                    checked={!!attributes['wpbs-accordion-group']?.['icon-hide']}
+                    checked={!!settings?.['icon-hide']}
                     onChange={(newValue) => updateSettings({'icon-hide': newValue})}
                     __nextHasNoMarginBottom
                 />
@@ -137,7 +116,7 @@ registerBlockType(metadata.name, {
                         {
                             slug: 'icon-color',
                             label: 'Icon Color',
-                            value: attributes['wpbs-accordion-group']?.['icon-color'],
+                            value: settings?.['icon-color'],
                             onChange: (newValue) => updateSettings({'icon-color': newValue}),
                             isShownByDefault: true
                         }
@@ -155,7 +134,7 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'icon-color-hover',
                         label: 'Icon Color',
-                        value: attributes['wpbs-accordion-group']?.['icon-color-hover'],
+                        value: settings?.['icon-color-hover'],
                         onChange: (newValue) => updateSettings({'icon-color-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -168,7 +147,7 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'header-color-hover',
                         label: 'Header Color',
-                        value: attributes['wpbs-accordion-group']?.['header-color-hover'],
+                        value: settings?.['header-color-hover'],
                         onChange: (newValue) => updateSettings({'header-color-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -181,7 +160,7 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'header-text-color-hover',
                         label: 'Header Text Color',
-                        value: attributes['wpbs-accordion-group']?.['header-text-color-hover'],
+                        value: settings?.['header-text-color-hover'],
                         onChange: (newValue) => updateSettings({'header-text-color-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -198,21 +177,21 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'icon-color-active',
                         label: 'Icon Color',
-                        value: attributes['wpbs-accordion-group']?.['icon-color-active'],
+                        value: settings?.['icon-color-active'],
                         onChange: (newValue) => updateSettings({'icon-color-active': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'header-color-active',
                         label: 'Header Color',
-                        value: attributes['wpbs-accordion-group']?.['header-color-active'],
+                        value: settings?.['header-color-active'],
                         onChange: (newValue) => updateSettings({'header-color-active': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'header-text-color-active',
                         label: 'Header Text Color',
-                        value: attributes['wpbs-accordion-group']?.['header-text-color-active'],
+                        value: settings?.['header-text-color-active'],
                         onChange: (newValue) => updateSettings({'header-text-color-active': newValue}),
                         isShownByDefault: true
                     }
@@ -226,33 +205,30 @@ registerBlockType(metadata.name, {
             active: tabActive
         }
 
-        const iconOpen = attributes['wpbs-accordion-group']?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-open'] : 'f078';
-        const iconClosed = attributes['wpbs-accordion-group']?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? attributes['wpbs-accordion-group']?.['icon-closed'] : 'f078';
-
-        const ElementTag = attributes['wpbs-accordion-group']?.['tag'] ?? 'div';
+        const ElementTag = settings?.['tag'] ?? 'div';
 
         const cssProps = useMemo(() => {
             return {
-                '--icon-open': `"\\${iconOpen}"`,
-                '--icon-closed': `"\\${iconClosed}"`,
-                '--icon-style': attributes['wpbs-accordion-group']?.['icon-style'],
-                '--icon-size': attributes['wpbs-accordion-group']?.['icon-size'],
-                '--icon-color': attributes['wpbs-accordion-group']?.['icon-color'],
-                '--icon-color-hover': attributes['wpbs-accordion-group']?.['icon-color-hover'],
-                '--header-color-hover': attributes['wpbs-accordion-group']?.['header-color-hover'],
-                '--header-text-color-hover': attributes['wpbs-accordion-group']?.['header-text-color-hover'],
-                '--icon-color-active': attributes['wpbs-accordion-group']?.['icon-color-active'],
-                '--header-color-active': attributes['wpbs-accordion-group']?.['header-color-active'],
-                '--header-text-color-active': attributes['wpbs-accordion-group']?.['header-text-color-active'],
+                '--icon-open': settings?.['icon-open']?.name ? '\"' + settings?.['icon-open'].name + '\"' : null,
+                '--icon-open-css': settings?.['icon-open']?.css,
+                '--icon-closed': settings?.['icon-closed']?.name ? '\"' + settings?.['icon-closed'].name + '\"' : null,
+                '--icon-closed-css': settings?.['icon-closed']?.css,
+                '--icon-color': settings?.['icon-color'],
+                '--icon-color-hover': settings?.['icon-color-hover'],
+                '--header-color-hover': settings?.['header-color-hover'],
+                '--header-text-color-hover': settings?.['header-text-color-hover'],
+                '--icon-color-active': settings?.['icon-color-active'],
+                '--header-color-active': settings?.['header-color-active'],
+                '--header-text-color-active': settings?.['header-text-color-active'],
             }
-        }, [attributes['wpbs-accordion-group'], iconOpen, iconClosed]);
+        }, [settings]);
 
         return <>
 
             <InspectorControls group="advanced">
                 <PanelBody style={{paddingTop: '20px'}}>
                     <SelectControl
-                        value={attributes['wpbs-accordion-group']?.['tag']}
+                        value={settings?.['tag']}
                         label={'HTML element'}
                         options={[
                             {label: 'Default (<div>)', value: 'div'},

@@ -42,22 +42,23 @@
     align-items: center;
     text-align: center;
     aspect-ratio: 1/1;
-    font-size: var(--icon-size, 20px);
     color: var(--icon-color, inherit);
-    font-weight: var(--icon-style, inherit);
-    font-family: 'Font Awesome 6 Pro', sans-serif;
     height: 1.2em;
-    line-height: normal;
+    line-height: 1;
     transition: transform .2s ease, color .3s linear;
 
     &:before {
-      content: var(--icon-closed, "\f078");
+      font-family: 'Material Symbols Outlined', sans-serif;
+      content: var(--icon-closed, none);
+      font-variation-settings: var(--icon-closed-css);
     }
   }
 
   .wpbs-accordion-group-item.--open .wpbs-accordion-group-header__toggle {
     &:before {
-      content: var(--icon-open, var(--icon-closed, "\f077"));
+      font-family: 'Material Symbols Outlined', sans-serif;
+      content: var(--icon-open, var(--icon-closed, none));
+      font-variation-settings: var(--icon-open-css, var(--icon-closed-css));
     }
   }
 

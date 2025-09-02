@@ -143,7 +143,7 @@ class WPBS {
 			'strategy' => 'async'
 		] );
 
-		wp_register_style( 'google-material-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined', [], false );
+		wp_register_style( 'google-material-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', [], false );
 
 		/* Swiper */
 		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );

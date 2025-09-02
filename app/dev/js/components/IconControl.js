@@ -28,66 +28,52 @@ function IconControl({value = {}, onChange, label = 'Icon'}) {
 
     return (
         <BaseControl label={label} style={{gridColumn: '1/-1'}}>
-            <Grid columns={1} columnGap={15} rowGap={20}>
-                <Grid columns={2} columnGap={15} rowGap={20}>
-                    <TextControl
-                        __nextHasNoMarginBottom
-                        __next40pxDefaultSize
-                        label="Name"
-                        value={name}
-                        onChange={(val) => update('name', val)}
-                        placeholder="e.g. home, search, star"
-                    />
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <TextControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Name"
+                    value={name}
+                    onChange={(val) => update('name', val)}
+                    placeholder="e.g. home, search, star"
+                />
 
-                    <div style={{
-                        fontSize: `${size}px`,
-                        fontVariationSettings: value.css,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        textAlign: 'center',
-                        fontFamily: 'Material Symbols Outlined',
-                    }}>
-                        {name || 'home'}
-                    </div>
+                <NumberControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Size"
+                    value={size}
+                    onChange={(val) => update('size', val)}
+                    min={20}
+                    max={48}
+                    step={1}
+                />
 
-                    <NumberControl
-                        __nextHasNoMarginBottom
-                        __next40pxDefaultSize
-                        label="Size"
-                        value={size}
-                        onChange={(val) => update('size', val)}
-                        min={20}
-                        max={48}
-                        step={1}
-                    />
+                <NumberControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Weight"
+                    value={size}
+                    onChange={(val) => update('weight', val)}
+                    min={100}
+                    max={700}
+                    step={100}
+                />
 
-                    <NumberControl
-                        __nextHasNoMarginBottom
-                        __next40pxDefaultSize
-                        label="Weight"
-                        value={size}
-                        onChange={(val) => update('weight', val)}
-                        min={100}
-                        max={700}
-                        step={100}
-                    />
-
-                    <SelectControl
-                        __nextHasNoMarginBottom
-                        __next40pxDefaultSize
-                        label="Style"
-                        value={style}
-                        options={[
-                            {value: '', label: 'Select'},
-                            {value: '1', label: 'Solid'},
-                            {value: '0', label: 'Outlined'},
-                        ]}
-                        onChange={(val) => update('style', val !== '' ? Number(val) : '')}
-                    />
+                <SelectControl
+                    __nextHasNoMarginBottom
+                    __next40pxDefaultSize
+                    label="Style"
+                    value={style}
+                    options={[
+                        {value: '', label: 'Select'},
+                        {value: '1', label: 'Solid'},
+                        {value: '0', label: 'Outlined'},
+                    ]}
+                    onChange={(val) => update('style', val !== '' ? Number(val) : '')}
+                />
 
 
-                </Grid>
             </Grid>
         </BaseControl>
     );

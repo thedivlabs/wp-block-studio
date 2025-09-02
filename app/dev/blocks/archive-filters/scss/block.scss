@@ -203,6 +203,7 @@
 
     &:after {
       content: var(--button-icon, 'none');
+      font-variation-settings: var(--button-icon-css);
     }
   }
 

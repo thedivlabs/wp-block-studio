@@ -24,6 +24,7 @@ import {useSetting} from '@wordpress/block-editor';
 import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT, TEXT_DECORATION_OPTIONS} from "Includes/config";
 import {useUniqueId} from "Includes/helper";
 import merge from "lodash.merge";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 
 function blockClassNames(attributes = {}) {
@@ -106,14 +107,15 @@ registerBlockType(metadata.name, {
                 '--color-text-decoration': settings?.['color-text-decoration'] ?? null,
                 '--decoration': settings?.['text-decoration'] ?? null,
                 '--columns': parseInt(settings?.['columns-mobile'] ?? settings?.['columns'] ?? 0) || null,
-                '--icon': !!settings?.['icon'] ? '"\\' + settings['icon'] + '"' : null,
-                '--icon-open': !!settings?.['icon-open'] ? '"\\' + settings['icon-open'] + '"' : null,
-                '--icon-size': settings?.['icon-size'] ?? null,
                 '--color-link-border-active': settings?.['color-link-border-active'] ?? null,
                 '--color-background': settings?.['color-background'] ?? null,
                 '--color-background-hover': settings?.['color-background-hover'] ?? null,
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
+                '--icon': settings?.['icon']?.name ? '"' + settings?.['icon'].name + '"' : null,
+                '--icon-css': settings?.['icon'].css ?? null,
+                '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open'].name + '"' : null,
+                '--icon-open-css': settings?.['icon-open']?.css ?? null,
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
                 '--link-border-width': Object.values(link_border).map(side => side.width || '0px').join(' '),
@@ -126,7 +128,6 @@ registerBlockType(metadata.name, {
                 '--submenu-rounded': settings?.['submenu-rounded'] ?? null,
                 '--submenu-padding': settings['submenu-padding'],
                 '--submenu-gap': settings?.['submenu-gap'] ?? null,
-                '--submenu-icon': !!settings?.['submenu-icon'] ? '"\\' + settings['submenu-icon'] + '"' : null,
                 '--submenu-icon-space': settings?.['submenu-icon-space'] ?? null,
                 '--color-submenu-background': settings?.['color-submenu-background'] ?? null,
                 '--color-submenu-background-hover': settings?.['color-submenu-background-hover'] ?? null,
@@ -142,8 +143,8 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
-                        '--divider-icon': !!settings?.['divider-icon'] ? '"\\' + settings['divider-icon'] + '"' : null,
-                        '--divider-icon-size': settings?.['divider-icon-size'] ?? null,
+                        '--divider-icon': !!settings?.['divider-icon']?.name ? '"\\' + settings['divider-icon'].name + '"' : null,
+                        '--divider-icon-css': settings?.['divider-icon'].css ?? null,
                         '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }
@@ -171,30 +172,12 @@ registerBlockType(metadata.name, {
                 ]}
                 onChange={(newValue) => updateSettings({menu: newValue})}
             />
+            <IconControl label={'Icon'} value={settings?.['icon']}
+                         onChange={(newValue) => updateSettings({'icon': newValue})}/>
+            <IconControl label={'Icon open'} value={settings?.['icon-open']}
+                         onChange={(newValue) => updateSettings({'icon-open': newValue})}/>
             <Grid columns={2} columnGap={15} rowGap={15}>
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Icon"
-                    value={settings?.['icon'] ?? ''}
-                    onChange={(newValue) => updateSettings({'icon': newValue})}
-                />
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Icon Open"
-                    value={settings?.['icon-open'] ?? ''}
-                    onChange={(newValue) => updateSettings({'icon-open': newValue})}
-                />
-                <UnitControl
-                    label="Icon Size"
-                    value={settings?.['icon-size'] ?? ''}
-                    onChange={(newValue) => updateSettings({'icon-size': newValue})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+
                 <SelectControl
                     label="Text Decoration"
                     value={settings?.['text-decoration']}
@@ -203,22 +186,9 @@ registerBlockType(metadata.name, {
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Divider Icon"
-                    value={settings?.['divider-icon'] ?? ''}
-                    onChange={(newValue) => updateSettings({'divider-icon': newValue})}
-                />
-                <UnitControl
-                    label="Divider Icon Size"
-                    value={settings?.['divider-icon-size'] ?? ''}
-                    onChange={(newValue) => updateSettings({'divider-icon-size': newValue})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+
+                <IconControl label={'Divider Icon'} value={settings?.['divider-icon']}
+                             onChange={(newValue) => updateSettings({'divider-icon': newValue})}/>
             </Grid>
             <Grid columns={2} columnGap={15} rowGap={15}
                   style={{display: !(attributes?.className ?? '').includes('is-style-columns') ? 'none' : 'grid'}}>
@@ -377,13 +347,7 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
 
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Icon"
-                    value={settings?.['submenu-icon'] ?? ''}
-                    onChange={(newValue) => updateSettings({'submenu-icon': newValue})}
-                />
+
                 <UnitControl
                     label="Icon Space"
                     value={settings?.['submenu-icon-space'] ?? ''}
@@ -395,6 +359,8 @@ registerBlockType(metadata.name, {
                 />
 
             </Grid>
+            <IconControl label={'Icon'} value={settings?.['submenu-icon']}
+                         onChange={(newValue) => updateSettings({'submenu-icon': newValue})}/>
             <BaseControl label={'Colors'}>
                 <PanelColorSettings
                     enableAlpha

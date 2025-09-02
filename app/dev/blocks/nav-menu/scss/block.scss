@@ -244,9 +244,14 @@
         @apply w-full block;
 
         &.menu-item-has-children > a {
+          padding-right: var(--icon-size, 1em);
 
           &:after {
-            height: 1em;
+            width: 1lh;
+            position: absolute;
+            right: 0;
+            max-height: 1em;
+            line-height: 1em;
             @apply w-auto;
           }
         }

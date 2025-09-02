@@ -15,9 +15,14 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     const {name = '', weight = 200, size = 24, style = 0} = value;
     const [isOpen, setIsOpen] = useState(false);
 
+    const generateCSS = (fill, weight, opsz) => {
+        return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${opsz}`;
+    };
+
     const update = (key, val) => {
         if (key === 'weight') val = Math.round(val / 100) * 100;
         const newVal = {...value, [key]: val};
+        newVal.css = generateCSS(newVal.style, newVal.weight, newVal.size);
         onChange(newVal);
     };
 

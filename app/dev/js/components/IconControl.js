@@ -115,12 +115,10 @@ export const MaterialIcon = ({name, weight, size, style = 0, className = ''}) =>
         verticalAlign: 'middle',
     };
 
-    return (
-        <span
-            className={`material-symbols-outlined ${className}`}
-            style={iconStyle}
-        >
+    return !name ? null : <span
+        className={`material-symbols-outlined ${className}`}
+        style={iconStyle}
+    >
             {name}
-        </span>
-    );
+        </span>;
 };

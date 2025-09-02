@@ -28,7 +28,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
 
     const previewStyle = {
         aspectRatio: '1/1',
-        width: 'auto',
+        height: 'auto',
         flexGrow: 0,
         fontVariationSettings: value.css,
         fontFamily: "'Material Symbols Outlined', sans-serif",
@@ -38,7 +38,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
         alignItems: 'center',
         lineHeight: 1,
         verticalAlign: 'middle',
-        height: '32px',
+        width: '32px',
         textAlign: 'center',
     };
 
@@ -74,7 +74,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
                                     value={size}
                                     onChange={(val) => update('size', val)}
                                     min={20}
-                                    max={48}
+                                    max={120}
                                     step={1}
                                 />
                                 <NumberControl

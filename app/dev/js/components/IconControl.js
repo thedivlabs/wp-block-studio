@@ -27,17 +27,17 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     };
 
     const previewStyle = {
-        fontVariationSettings: `'FILL' ${style}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`,
+        aspectRatio: '1/1',
+        width: 'auto',
+        flexGrow: 0,
+        fontVariationSettings: value.css,
         fontFamily: "'Material Symbols Outlined', sans-serif",
-        fontSize: `${size}px`,
+        fontSize: `${value.size}px`,
         display: 'inline-flex',
         justifyContent: 'center',
         alignItems: 'center',
-        aspectRatio: '1/1',
         lineHeight: 1,
         verticalAlign: 'middle',
-        width: 'auto',
-        flexGrow: 0,
         height: '32px',
         textAlign: 'center',
     };
@@ -104,28 +104,20 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     );
 }
 
-export const MaterialIcon = ({
-                                 name = 'home',
-                                 weight = 400,
-                                 size = 24,
-                                 style = 0,
-                                 className = '',
-                                 ...props
-                             }) => {
+export const MaterialIcon = ({ name, weight, size, style, className = '' }) => {
+    const css = `'FILL' ${Number(style)}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`;
     const iconStyle = {
-        fontVariationSettings: `'FILL' ${Number(style)}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`,
+        fontVariationSettings: css,
         fontSize: `${size}px`,
-        fontFamily: `'Material Symbols Outlined', sans-serif`,
+        fontFamily: "'Material Symbols Outlined', sans-serif",
         display: 'inline-block',
         lineHeight: 1,
         verticalAlign: 'middle',
     };
 
-    return <span
-        className={`material-symbols-outlined ${className}`}
-        style={iconStyle}
-        {...props}
-    >
-      {name}
-    </span>;
-}
+    return (
+        <span className={`material-symbols-outlined ${className}`}>
+            {name}
+        </span>
+    );
+};

@@ -221,7 +221,7 @@ registerBlockType(metadata.name, {
                 />
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
-                    <span>{title}</span>
+                    <span className={'wpbs-cta-button__title'}>{title}</span>
                     <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
                 </a>
             </>

@@ -129,6 +129,7 @@
 
     &:before {
       content: var(--prefix-icon, none);
+      font-variation-settings: var(--prefix-icon-css);
       font-family: "Material Symbols Outlined", sans-serif;
       height: 100%;
       aspect-ratio: 1/1;
@@ -140,7 +141,6 @@
       pointer-events: none;
       font-weight: normal;
       font-style: normal;
-      font-size: var(--prefix-size, 1rem);
       line-height: 1;
       text-transform: none;
       letter-spacing: normal;
@@ -201,25 +201,13 @@
     width: var(--button-width, calc(var(--button-size, 22px) * 1.5));
     padding: 0 .5rem;
 
-    &:after {
-      content: var(--button-icon, "none");
-      font-variation-settings: var(--button-icon-css);
-      font-family: 'Material Symbols Outlined', sans-serif;
-      display: inline-block;
-      font-size: 44px; /* match opsz */
-      line-height: 1;
-      vertical-align: middle;
-    }
+
   }
 
   .wpbs-archive-filters__submit {
     position: relative;
     padding: .2rem .6rem;
     width: var(--button-width, auto);
-
-    &:after {
-      content: var(--button-icon, none);
-    }
   }
 
 }

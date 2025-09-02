@@ -42,7 +42,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     };
 
     return (
-        <BaseControl label={label}>
+        <BaseControl label={label} style={{marginBottom: 0}}>
             {/* Name input */}
             <div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
                 <TextControl
@@ -103,7 +103,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     );
 }
 
-export const MaterialIcon = ({ name, weight, size, style = 0, className = '' }) => {
+export const MaterialIcon = ({name, weight, size, style = 0, className = ''}) => {
     const css = `'FILL' ${Number(style)}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`;
 
     const iconStyle = {

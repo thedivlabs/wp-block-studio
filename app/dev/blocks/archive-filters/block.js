@@ -20,7 +20,7 @@ import {useUniqueId} from "Includes/helper";
 import {BORDER_UNITS, DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {IconControl,MaterialIcon} from 'Components/IconControl';
+import {IconControl, MaterialIcon} from 'Components/IconControl';
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -116,6 +116,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         className="wpbs-archive-filters__button"
                     >
                         {buttonText ? <span>{buttonText}</span> : null}
+                        <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
                     </button>
                 </div>
 
@@ -138,6 +139,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         className="wpbs-archive-filters__submit"
                     >
                         <span> {buttonText || 'Search'}</span>
+                        <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
                     </button>}
                 </div>
             </>;
@@ -176,7 +178,8 @@ registerBlockType(metadata.name, {
                     '--color-label': settings?.['color-label'] ?? null,
                     '--color-button': settings?.['color-button'] ?? null,
                     '--color-button-text': settings?.['color-button-text'] ?? null,
-                    '--prefix-icon': !!settings?.['prefix'] ? '\"' + settings?.['prefix'] + '\"' : null,
+                    '--prefix-icon': !!settings?.['prefix']?.name ? '\"' + settings?.['prefix'].name + '\"' : null,
+                    '--prefix-icon-css': settings?.['prefix']?.css ?? null,
                     '--radius': settings?.['radius'] ?? null,
                     '--active-color-label': settings?.['active-color-label'] ?? null,
                     '--active-color-text': settings?.['active-color-text'] ?? null,
@@ -273,6 +276,7 @@ registerBlockType(metadata.name, {
                 value={settings?.label}
                 onChange={(newValue) => updateSettings({'label': newValue})}
             />
+
             <TextControl
                 __nextHasNoMarginBottom
                 __next40pxDefaultSize
@@ -280,7 +284,23 @@ registerBlockType(metadata.name, {
                 value={settings?.placeholder}
                 onChange={(newValue) => updateSettings({'placeholder': newValue})}
             />
-
+            <TextControl
+                __nextHasNoMarginBottom
+                __next40pxDefaultSize
+                label="Button Text"
+                value={settings?.['button-text']}
+                onChange={(newValue) => updateSettings({'button-text': newValue})}
+            />
+            <IconControl
+                label={'Button Icon'}
+                value={settings?.['button-icon']}
+                onChange={(newValue) => updateSettings({'button-icon': newValue})}
+            />
+            <IconControl
+                label={'Prefix Icon'}
+                value={settings?.['prefix']}
+                onChange={(newValue) => updateSettings({'prefix': newValue})}
+            />
 
             <PanelColorSettings
                 enableAlpha
@@ -385,13 +405,6 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
 
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Button Text"
-                    value={settings?.['button-text']}
-                    onChange={(newValue) => updateSettings({'button-text': newValue})}
-                />
 
                 <UnitControl
                     label="Button Size"
@@ -414,32 +427,8 @@ registerBlockType(metadata.name, {
                 />
 
 
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Prefix Icon"
-                    value={settings?.prefix}
-                    onChange={(newValue) => updateSettings({prefix: newValue})}
-                />
-
-                <UnitControl
-                    label="Prefix Size"
-                    value={settings?.['prefix-size']}
-                    onChange={(newValue) => updateSettings({'prefix-size': newValue})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-
-
             </Grid>
 
-            <IconControl
-                label={'Button Icon'}
-                value={settings?.['button-icon']}
-                onChange={(newValue) => updateSettings({'button-icon': newValue})}
-            />
             <Grid columnGap={15} columns={2} rowGap={20} style={{marginTop: '20px'}}>
                 <ToggleControl
                     __nextHasNoMarginBottom

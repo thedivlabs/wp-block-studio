@@ -1,80 +1,100 @@
-import React from "react";
+import React, {useState} from 'react';
 import {
     BaseControl,
     TextControl,
     RangeControl,
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
-    ToggleControl, SelectControl
+    ToggleControl, SelectControl,
+    Button,
+    Popover,
 } from '@wordpress/components';
 
+
 export function IconControl({value = {}, onChange, label = 'Icon'}) {
+    const {name = '', weight = 400, size = 24, style = 0} = value;
+    const [isOpen, setIsOpen] = useState(false);
 
-    const {name = '', weight = 400, size = 24, style = ''} = value;
-
-    // helper to generate CSS
-    const generateCSS = (fill, weight, opsz) =>
-        `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${opsz}`;
-
-
-    // unified updater
     const update = (key, val) => {
         if (key === 'weight') val = Math.round(val / 100) * 100;
         const newVal = {...value, [key]: val};
-        //newVal.css = generateCSS(newVal.style, newVal.weight, newVal.size);
         onChange(newVal);
     };
 
+    const previewStyle = {
+        fontVariationSettings: `'FILL' ${style}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`,
+        fontFamily: "'Material Symbols Outlined', sans-serif",
+        fontSize: `${size}px`,
+        display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        aspectRatio: '1/1',
+        lineHeight: 1,
+        verticalAlign: 'middle',
+        width: 'auto',
+        flexGrow: 0,
+        height: '32px',
+        textAlign: 'center',
+    };
 
     return (
-        <BaseControl label={label} style={{gridColumn: '1/-1'}}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
+        <BaseControl label={label}>
+            {/* Name input */}
+            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                 <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Name"
                     value={name}
                     onChange={(val) => update('name', val)}
-                    placeholder="e.g. home, search, star"
-                />
-
-                <NumberControl
+                    placeholder="Icon name"
+                    style={{flex: 1}}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
-                    label="Size"
-                    value={size}
-                    onChange={(val) => update('size', val)}
-                    min={20}
-                    max={48}
-                    step={1}
                 />
 
-                <NumberControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Weight"
-                    value={weight}
-                    onChange={(val) => update('weight', val)}
-                    min={100}
-                    max={700}
-                    step={100}
-                />
+                {/* Preview div */}
+                <div style={previewStyle}>{name || 'home'}</div>
 
-                <SelectControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Style"
-                    value={style}
-                    options={[
-                        {value: '', label: 'Select'},
-                        {value: '1', label: 'Solid'},
-                        {value: '0', label: 'Outlined'},
-                    ]}
-                    onChange={(val) => update('style', val !== '' ? Number(val) : '')}
-                />
+                {/* Settings button */}
+                <div>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setIsOpen(!isOpen)}
+                        icon="admin-generic"
+                    />
 
-
-            </Grid>
+                    {isOpen && (
+                        <Popover position="bottom right" onClose={() => setIsOpen(false)}>
+                            <Grid columns={1} rowGap={15} style={{padding: '10px', width: '200px'}}>
+                                <NumberControl
+                                    label="Size"
+                                    value={size}
+                                    onChange={(val) => update('size', val)}
+                                    min={20}
+                                    max={48}
+                                    step={1}
+                                />
+                                <NumberControl
+                                    label="Weight"
+                                    value={weight}
+                                    onChange={(val) => update('weight', val)}
+                                    min={100}
+                                    max={700}
+                                    step={100}
+                                />
+                                <SelectControl
+                                    label="Style"
+                                    value={style}
+                                    options={[
+                                        {value: '', label: 'Select'},
+                                        {value: 1, label: 'Solid'},
+                                        {value: 0, label: 'Outlined'},
+                                    ]}
+                                    onChange={(val) => update('style', val !== '' ? Number(val) : '')}
+                                />
+                            </Grid>
+                        </Popover>
+                    )}
+                </div>
+            </div>
         </BaseControl>
     );
 }

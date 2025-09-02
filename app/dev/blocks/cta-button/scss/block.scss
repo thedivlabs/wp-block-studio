@@ -8,18 +8,17 @@
     order: 1;
   }
 
-  &.--icon-only > span {
+  &.--icon-only > .wpbs-cta-button__title {
     display: none;
   }
 
-  &.--icon-first:after {
+  &.--icon-first > .wpbs-cta-button__icon {
     order: 0;
   }
 
-  &.--icon-hide:after {
-    content: none !important;
+  &.--icon-hide > .wpbs-cta-button__icon {
+    display: none;
   }
-
 
   &.--icon-bold:after {
     font-weight: bold;

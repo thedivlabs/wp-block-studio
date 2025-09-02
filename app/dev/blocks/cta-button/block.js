@@ -20,6 +20,7 @@ import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 function classNames(attributes = {}) {
 
@@ -108,26 +109,8 @@ registerBlockType(metadata.name, {
 
         const tabIcon = useMemo(() => (
             <Grid columns={1} columnGap={15} rowGap={20}>
-                <Grid columns={2} columnGap={15} rowGap={20}>
-                    <TextControl
-                        __nextHasNoMarginBottom
-                        __next40pxDefaultSize
-                        label="Icon"
-                        value={settings?.icon}
-                        onChange={(newValue) => updateSettings({icon: newValue})}
-                    />
-                    <UnitControl
-                        label="Icon Size"
-                        value={settings?.['icon-size']}
-                        onChange={(newValue) => updateSettings({'icon-size': newValue})}
-                        units={[
-                            {value: 'em', label: 'em', default: 0},
-                        ]}
-                        isResetValueOnUnitChange={true}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
-                </Grid>
+                <IconControl label={'Icon'} value={settings?.icon}
+                             onChange={(newValue) => updateSettings({'icon': newValue})}/>
 
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <ToggleControl
@@ -189,8 +172,6 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    '--icon': !!(settings?.['icon'] ?? null) ? '\"\\' + settings?.['icon'] + '\"' : null,
-                    '--icon-size': settings?.['icon-size'] ?? null,
                     '--icon-color': settings?.['icon-color'] || null,
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
@@ -241,6 +222,7 @@ registerBlockType(metadata.name, {
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
                     <span>{title}</span>
+                    <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
                 </a>
             </>
         )
@@ -270,7 +252,8 @@ registerBlockType(metadata.name, {
 
 
         return <a {...blockProps}>
-            <span>{title}</span>
+            <span className={'wpbs-cta-button__title'}>{title}</span>
+            <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
         </a>;
     }
 })

@@ -20,7 +20,7 @@ import {useUniqueId} from "Includes/helper";
 import {BORDER_UNITS, DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import IconControl from 'Components/IconControl';
+import {IconControl,MaterialIcon} from 'Components/IconControl';
 
 function blockClassnames(attributes = {}, editor = false) {
 
@@ -97,6 +97,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                         className="wpbs-archive-filters__button"
                     >
                         {buttonText ? <span>{buttonText}</span> : null}
+                        <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
                     </button>
                 </div>
 
@@ -176,8 +177,6 @@ registerBlockType(metadata.name, {
                     '--color-button': settings?.['color-button'] ?? null,
                     '--color-button-text': settings?.['color-button-text'] ?? null,
                     '--prefix-icon': !!settings?.['prefix'] ? '\"' + settings?.['prefix'] + '\"' : null,
-                    '--button-icon': !!settings?.['button-icon']?.name ? '\"' + settings?.['button-icon']?.name + '\"' : null,
-                    '--button-icon-css': settings?.['button-icon']?.css ?? null,
                     '--radius': settings?.['radius'] ?? null,
                     '--active-color-label': settings?.['active-color-label'] ?? null,
                     '--active-color-text': settings?.['active-color-text'] ?? null,

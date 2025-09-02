@@ -8,7 +8,7 @@ import {
     ToggleControl, SelectControl
 } from '@wordpress/components';
 
-function IconControl({value = {}, onChange, label = 'Icon'}) {
+export function IconControl({value = {}, onChange, label = 'Icon'}) {
 
     const {name = '', weight = 400, size = 24, style = ''} = value;
 
@@ -21,7 +21,7 @@ function IconControl({value = {}, onChange, label = 'Icon'}) {
     const update = (key, val) => {
         if (key === 'weight') val = Math.round(val / 100) * 100;
         const newVal = {...value, [key]: val};
-        newVal.css = generateCSS(newVal.style, newVal.weight, newVal.size);
+        //newVal.css = generateCSS(newVal.style, newVal.weight, newVal.size);
         onChange(newVal);
     };
 
@@ -79,4 +79,28 @@ function IconControl({value = {}, onChange, label = 'Icon'}) {
     );
 }
 
-export default IconControl;
+export const MaterialIcon = ({
+                                 name = 'home',
+                                 weight = 400,
+                                 size = 24,
+                                 style = 0,
+                                 className = '',
+                                 ...props
+                             }) => {
+    const iconStyle = {
+        fontVariationSettings: `'FILL' ${Number(style)}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`,
+        fontSize: `${size}px`,
+        fontFamily: `'Material Symbols Outlined', sans-serif`,
+        display: 'inline-block',
+        lineHeight: 1,
+        verticalAlign: 'middle',
+    };
+
+    return <span
+        className={`material-symbols-outlined ${className}`}
+        style={iconStyle}
+        {...props}
+    >
+      {name}
+    </span>;
+}

@@ -82,6 +82,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                 <span className={labelClass}
                       dangerouslySetInnerHTML={{__html: labelText || 'Sort By'}}/>
                 <div className={'wpbs-archive-filters__input --select'}>
+                    <MaterialIcon {...(settings?.['prefix'] ?? {})} className={'wpbs-archive-filters__prefix'}/>
                     <select
                         id={fieldId}
                         value={defaultValue}>
@@ -106,6 +107,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
             return <>
                 <span className={labelClass} dangerouslySetInnerHTML={{__html: labelText || 'Categories'}}/>
                 <div className={'wpbs-archive-filters__input --select'}>
+                    <MaterialIcon {...(settings?.['prefix'] ?? {})} className={'wpbs-archive-filters__prefix'}/>
                     <select
                         id={fieldId}
                         value={defaultValue}>
@@ -128,6 +130,7 @@ const FilterFields = ({settings, uniqueId, is_editor = false}) => {
                 <span className={labelClass}
                       dangerouslySetInnerHTML={{__html: labelText || 'Search'}}/>
                 <div className={'wpbs-archive-filters__input --search'}>
+                    <MaterialIcon {...(settings?.['prefix'] ?? {})} className={'wpbs-archive-filters__prefix'}/>
                     <input
                         id={fieldId}
                         type="text"
@@ -172,14 +175,11 @@ registerBlockType(metadata.name, {
                     '--button-width': settings?.['button-width'] ?? null,
                     '--button-size': settings?.['button-size'] ?? null,
                     '--label-size': settings?.['label-size'] ?? null,
-                    '--prefix-size': settings?.['prefix-size'] ?? null,
                     '--color-background': settings?.['color-background'] ?? null,
                     '--color-text': settings?.['color-text'] ?? null,
                     '--color-label': settings?.['color-label'] ?? null,
                     '--color-button': settings?.['color-button'] ?? null,
                     '--color-button-text': settings?.['color-button-text'] ?? null,
-                    '--prefix-icon': !!settings?.['prefix']?.name ? '\"' + settings?.['prefix'].name + '\"' : null,
-                    '--prefix-icon-css': settings?.['prefix']?.css ?? null,
                     '--radius': settings?.['radius'] ?? null,
                     '--active-color-label': settings?.['active-color-label'] ?? null,
                     '--active-color-text': settings?.['active-color-text'] ?? null,

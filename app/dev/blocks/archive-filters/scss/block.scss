@@ -78,6 +78,25 @@
     }
   }
 
+  .wpbs-archive-filters__prefix {
+    height: 100%;
+    aspect-ratio: 1/1;
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  }
+
   .wpbs-archive-filters__input {
     display: flex;
     align-items: center;
@@ -125,28 +144,6 @@
         outline: none;
         border: none;
       }
-    }
-
-    &:before {
-      content: var(--prefix-icon, none);
-      font-variation-settings: var(--prefix-icon-css);
-      font-family: "Material Symbols Outlined", sans-serif;
-      height: 100%;
-      aspect-ratio: 1/1;
-      width: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      pointer-events: none;
-      font-weight: normal;
-      font-style: normal;
-      line-height: 1;
-      text-transform: none;
-      letter-spacing: normal;
-      word-wrap: normal;
-      white-space: nowrap;
-      direction: ltr;
     }
 
     select {

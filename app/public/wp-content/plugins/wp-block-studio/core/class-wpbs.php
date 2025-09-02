@@ -143,7 +143,7 @@ class WPBS {
 			'strategy' => 'async'
 		] );
 
-		wp_register_style( 'google-material-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', [], false );
+		wp_register_style( 'google-material-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=access_alarm,accessibility,account_balance,account_box,account_circle,add,add_a_photo,add_alarm,add_alert,add_box,add_circle,add_circle_outline,add_comment,add_location,add_photo_alternate,add_shopping_cart,add_task,add_to_drive,add_to_home_screen,add_to_photos,addchart,adjust,admin_panel_settings,agriculture,air,airline_seat_flat,airline_seat_flat_angled,airline_seat_individual_suite,airline_seat_legroom_extra,airline_seat_legroom_normal,airline_seat_legroom_reduced,airline_seat_recline_extra,airline_seat_recline_normal,airplanemode_active,airplanemode_inactive,airplay,airport_shuttle,alarm,alarm_add,alarm_off,alarm_on,album,all_inbox,all_inclusive,all_out,alt_route,alternate_email,analytics,anchor,android,announcement,apartment,api,app_blocking,app_registration,app_settings_alt,app_shortcut,approval,apps,architecture,joystick,keyboard_arrow_down&display=block', [], false );
 
 		/* Swiper */
 		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );

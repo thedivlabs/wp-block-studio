@@ -22,9 +22,9 @@
     direction: ltr;
     transition: opacity .3s;
 
-    &:not(body.icons-loaded &) {
-      font-size: 0 !important;
-      opacity: 0 !important;
-    }
+    /*    &:not(body.icons-loaded &) {
+          font-size: 0 !important;
+          opacity: 0 !important;
+        }*/
   }
 }

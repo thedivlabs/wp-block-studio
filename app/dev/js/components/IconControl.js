@@ -104,10 +104,10 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     );
 }
 
-export const MaterialIcon = ({ name, weight, size, style, className = '' }) => {
+export const MaterialIcon = ({ name, weight, size, style = 0, className = '' }) => {
     const css = `'FILL' ${Number(style)}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`;
+
     const iconStyle = {
-        className:`material-symbols-outlined ${className}`,
         fontVariationSettings: css,
         fontSize: `${size}px`,
         fontFamily: "'Material Symbols Outlined', sans-serif",
@@ -117,7 +117,10 @@ export const MaterialIcon = ({ name, weight, size, style, className = '' }) => {
     };
 
     return (
-        <span {...iconStyle}>
+        <span
+            className={`material-symbols-outlined ${className}`}
+            style={iconStyle}
+        >
             {name}
         </span>
     );

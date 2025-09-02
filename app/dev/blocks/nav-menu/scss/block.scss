@@ -42,6 +42,7 @@
 
           &:after {
             content: var(--icon, none);
+            font-size: var(--icon-size, inherit);
             font-variation-settings: var(--icon-css);
             font-family: "Material Symbols Outlined", sans-serif;
             color: var(--color-icon, inherit);
@@ -60,6 +61,7 @@
 
             &:after {
               content: var(--icon-open, none);
+              font-size: var(--icon-open-size, inherit);
               font-variation-settings: var(--icon-open-css);
               font-family: "Material Symbols Outlined", sans-serif;
             }
@@ -245,7 +247,7 @@
 
           &:after {
             height: 1.2em;
-            @apply w-auto text-inherit;
+            @apply w-auto;
           }
         }
 

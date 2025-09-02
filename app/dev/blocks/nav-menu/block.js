@@ -113,8 +113,10 @@ registerBlockType(metadata.name, {
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
                 '--icon': settings?.['icon']?.name ? '"' + settings?.['icon'].name + '"' : null,
-                '--icon-css': settings?.['icon'].css ?? null,
+                '--icon-size': settings?.['icon'].size ?? null,
+                '--icon-css': settings?.['icon']?.css ?? null,
                 '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open'].name + '"' : null,
+                '--icon-open-size': settings?.['icon-open']?.size ? '"' + settings?.['icon-open'].size + '"' : null,
                 '--icon-open-css': settings?.['icon-open']?.css ?? null,
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
@@ -144,7 +146,7 @@ registerBlockType(metadata.name, {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
                         '--divider-icon': !!settings?.['divider-icon']?.name ? '"\\' + settings['divider-icon'].name + '"' : null,
-                        '--divider-icon-css': settings?.['divider-icon'].css ?? null,
+                        '--divider-icon-css': settings?.['divider-icon']?.css ?? null,
                         '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }

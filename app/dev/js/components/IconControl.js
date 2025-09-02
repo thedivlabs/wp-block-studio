@@ -53,7 +53,7 @@ function IconControl({value = {}, onChange, label = 'Icon'}) {
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
                     label="Weight"
-                    value={size}
+                    value={weight}
                     onChange={(val) => update('weight', val)}
                     min={100}
                     max={700}

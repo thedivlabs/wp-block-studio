@@ -4,7 +4,7 @@
   transition-duration: 300ms;
   transition-timing-function: linear;
 
-  & > span {
+  & > .wpbs-cta-button__title {
     order: 1;
   }
 
@@ -29,20 +29,10 @@
   }
 
 
-  &:after {
-    content: var(--icon, none);
-    font-family: "Font Awesome 6 Pro", sans-serif;
-    font-size: var(--icon-size, 1em);
+  .wpbs-cta-button__icon {
     color: var(--icon-color, inherit);
     order: 2;
-    height: 1.2em;
-    line-height: 1.2em;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    height: 1em;
     transition: color 0.3s ease;
-    font-weight: inherit;
   }
 }

@@ -316,6 +316,7 @@ class WPBS_Theme {
             [...document.querySelectorAll('link[data-href]')].forEach((link) => {
                 link.href = link.dataset.href;
             })
+
         })
 
 
@@ -323,6 +324,15 @@ class WPBS_Theme {
 
             this.popup.init();
         });
+
+        if (document.fonts) {
+            document.fonts.load('1em "Material Symbols Outlined"').then(() => {
+                document.body.classList.add('icons-loaded');
+            });
+        } else {
+            // fallback for older browsers
+            document.body.classList.add('icons-loaded');
+        }
 
 
     }

@@ -108,14 +108,8 @@ export const MaterialIcon = ({name, weight, size, style = 0, className = ''}) =>
 
     const iconStyle = {
         fontVariationSettings: css,
-        fontSize: `${size}px`,
-        fontFamily: "'Material Symbols Outlined', sans-serif",
         display: 'inline-flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        lineHeight: 1,
-        verticalAlign: 'middle',
+        fontSize: `${size}px`,
     };
 
     return !name ? null : <span

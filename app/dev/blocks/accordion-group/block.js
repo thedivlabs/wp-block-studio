@@ -50,6 +50,14 @@ registerBlockType(metadata.name, {
             default: {
                 'animate': true,
                 'tag': 'div',
+                'icon-closed': {
+                    name: 'keyboard_arrow_down',
+                    size: 26,
+                },
+                'icon-open': {
+                    name: 'keyboard_arrow_down',
+                    size: 26,
+                },
             }
         }
     },
@@ -87,7 +95,8 @@ registerBlockType(metadata.name, {
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
             <Grid columns={1} columnGap={15} rowGap={20}>
 
-                <IconControl label={'Icon Closed'} value={settings?.['icon-closed']} defaultValue={'keyboard_arrow_down'}
+                <IconControl label={'Icon Closed'} value={settings?.['icon-closed']}
+                             defaultValue={'keyboard_arrow_down'}
                              onChange={(newValue) => updateSettings({'icon-closed': newValue})}/>
 
                 <IconControl label={'Icon Open'} value={settings?.['icon-open']} defaultValue={'keyboard_arrow_down'}

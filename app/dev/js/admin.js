@@ -7,33 +7,39 @@ import {WPBS_Google_Places} from "Modules/google-places";
 
 WPBS_Google_Places.init();
 
-jQuery(() => {
 
-    const code_fields = document.querySelectorAll('.divlabs-script-field textarea');
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (!code_fields.length) {
-        return;
-    }
+    jQuery(() => {
 
-    const settings = wp.codeEditor.defaultSettings
-        ? _.clone(wp.codeEditor.defaultSettings)
-        : {};
+        const code_fields = document.querySelectorAll('.divlabs-script-field textarea');
 
-    settings.codemirror = Object.assign({}, settings.codemirror, {
-        mode: 'text/javascript',
-        lineNumbers: true,
-        indentUnit: 2,
-        tabSize: 2,
-    });
-
-    jQuery('body').on('focus', '.divlabs-script-field textarea', function () {
-        if (jQuery(this).siblings('.CodeMirror').length) {
+        if (!code_fields.length) {
             return;
         }
-        wp.codeEditor.initialize(jQuery(this).get(0), settings);
+
+        const settings = wp.codeEditor.defaultSettings
+            ? _.clone(wp.codeEditor.defaultSettings)
+            : {};
+
+        settings.codemirror = Object.assign({}, settings.codemirror, {
+            mode: 'text/javascript',
+            lineNumbers: true,
+            indentUnit: 2,
+            tabSize: 2,
+        });
+
+        jQuery('body').on('focus', '.divlabs-script-field textarea', function () {
+            if (jQuery(this).siblings('.CodeMirror').length) {
+                return;
+            }
+            wp.codeEditor.initialize(jQuery(this).get(0), settings);
+        });
+
     });
 
 });
+
 
 addFilter(
     'blocks.registerBlockType',

@@ -129,7 +129,7 @@
     content: var(--divider-icon, none);
     font-variation-settings: var(--divider-icon-css);
     font-family: "Material Symbols Outlined", sans-serif;
-
+    font-size: var(--divider-icon-size, 24px);
     position: absolute;
     top: 50%;
     right: 0;

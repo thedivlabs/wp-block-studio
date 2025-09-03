@@ -144,7 +144,8 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
-                        '--divider-icon': !!settings?.['divider-icon']?.name ? '"\\' + settings['divider-icon'].name + '"' : null,
+                        '--divider-icon': !!settings?.['divider-icon']?.name ? '"' + settings['divider-icon'].name + '"' : null,
+                        '--divider-size': !!settings?.['divider-icon']?.size ? settings['divider-icon'].size + 'px' : null,
                         '--divider-icon-css': settings?.['divider-icon']?.css ?? null,
                         '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,

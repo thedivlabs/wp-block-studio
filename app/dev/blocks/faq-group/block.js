@@ -30,6 +30,7 @@ import {
 } from "Includes/config";
 import {useUniqueId} from "Includes/helper";
 import {useSelect} from "@wordpress/data";
+import {IconControl} from "Components/IconControl";
 
 
 function classNames(attributes = {}) {
@@ -109,35 +110,11 @@ registerBlockType(metadata.name, {
             />
             <Grid columns={2} columnGap={15} rowGap={20}>
 
-                <TextControl
-                    label={'Icon Closed'}
-                    value={settings?.['icon-closed']}
-                    onChange={(newValue) => updateSettings({'icon-closed': newValue})}
-                    __nextHasNoMarginBottom
-                />
-                <TextControl
-                    label={'Icon Open'}
-                    value={settings?.['icon-open']}
-                    onChange={(newValue) => updateSettings({'icon-open': newValue})}
-                    __nextHasNoMarginBottom
-                />
-                <UnitControl
-                    label="Icon Size"
-                    value={settings?.['icon-size'] ?? ''}
-                    onChange={(val) => updateSettings({'icon-size': val})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <SelectControl
-                    label="Icon Style"
-                    value={settings?.['icon-style'] ?? ''}
-                    options={ICON_STYLES}
-                    onChange={(val) => updateSettings({'icon-style': val})}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <IconControl label={'Icon Closed'} value={settings?.['icon-closed']}
+                             onChange={(newValue) => updateSettings({'icon-closed': newValue})}/>
+                <IconControl label={'Icon Open'} value={settings?.['icon-open']}
+                             onChange={(newValue) => updateSettings({'icon-open': newValue})}/>
+
                 <UnitControl
                     label="Header Text"
                     value={settings?.['header-text'] ?? ''}
@@ -413,18 +390,19 @@ registerBlockType(metadata.name, {
             active: tabActive
         }
 
-        const iconOpen = settings?.['icon-open']?.match(/^[a-fA-F0-9]{2,6}$/) ? settings?.['icon-open'] : 'f078';
-        const iconClosed = settings?.['icon-closed']?.match(/^[a-fA-F0-9]{2,6}$/) ? settings?.['icon-closed'] : 'f078';
-
         const ElementTag = settings?.['tag'] ?? 'div';
 
         const cssProps = useMemo(() => {
             return {
                 '--divider': Object.values(settings?.['divider'] ?? []).join(' '),
-                '--icon-open': `"\\${iconOpen}"`,
-                '--icon-closed': `"\\${iconClosed}"`,
-                '--icon-style': settings?.['icon-style'],
-                '--icon-size': settings?.['icon-size'],
+                '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open']?.name + '"' : null,
+                '--icon-css': settings?.['icon-open']?.css ?? null,
+                '--icon-size': settings?.['icon-open']?.size ? settings?.['icon-open']?.size + 'px' : null,
+
+
+                '--icon-closed': settings?.['icon-closed']?.name ? '"' + settings?.['icon-closed']?.name + '"' : null,
+                '--icon-closed-css': settings?.['icon-closed']?.css ?? null,
+
                 '--icon-color': settings?.['icon-color'],
                 '--icon-color-hover': settings?.['icon-color-hover'],
                 '--header-color-hover': settings?.['header-color-hover'],
@@ -448,7 +426,7 @@ registerBlockType(metadata.name, {
                 '--header-line-height': settings?.['header-line-height'],
                 '--content-line-height': settings?.['content-line-height'],
             }
-        }, [settings, iconOpen, iconClosed]);
+        }, [settings]);
 
         return <>
 

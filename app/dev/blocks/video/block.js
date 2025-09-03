@@ -26,6 +26,7 @@ import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
+import {IconControl} from "Components/IconControl";
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -72,9 +73,10 @@ registerBlockType(metadata.name, {
 
         const cssProps = Object.fromEntries(Object.entries({
             '--overlay': settings?.overlay ?? 'none',
-            '--icon': !!settings?.['button-icon'] ? '"\\' + settings?.['button-icon'] + '"' : null,
+            '--icon': !!settings?.['button-icon']?.name ? '"' + settings?.['button-icon']?.name + '"' : null,
+            '--icon-css': settings?.['button-icon']?.css ?? null,
+            '--icon-size': !!settings?.['button-icon']?.size ? settings?.['button-icon']?.size + 'px' : null,
             '--icon-color': settings?.['icon-color'] ?? null,
-            '--icon-size': settings?.['icon-size'] ?? null,
             '--title-color': settings?.['title-color'] ?? null,
         }).filter(x => x));
 
@@ -124,22 +126,10 @@ registerBlockType(metadata.name, {
                         />
 
                         <Grid columns={2} columnGap={15} rowGap={20}>
-                            <TextControl
-                                __nextHasNoMarginBottom
-                                __next40pxDefaultSize
-                                label="Button Icon"
-                                value={settings?.['button-icon']}
-                                onChange={(newValue) => updateSettings({'button-icon': newValue})}
-                            />
-                            <UnitControl
-                                label="Icon Size"
-                                value={settings?.['icon-size'] ?? ''}
-                                onChange={(val) => updateSettings({'icon-size': val})}
-                                units={DIMENSION_UNITS_TEXT}
-                                isResetValueOnUnitChange={true}
-                                __next40pxDefaultSize
-                                __nextHasNoMarginBottom
-                            />
+
+                            <IconControl label={'Button Icon'} value={settings?.['button-icon']}
+                                         onChange={(newValue) => updateSettings({'button-icon': newValue})}/>
+
                         </Grid>
 
                         <PanelColorSettings

@@ -16,13 +16,13 @@
 
   .wpbs-video__button {
     transform: translate(-50%, -50%);
-    font-size: var(--icon-size, clamp(60px, 4.5rem, 6vw));
-    color: var(--icon-color, inherit);
 
     &:before {
       content: var(--icon, "\f144");
-      font-family: 'Font Awesome 6 Pro', sans-serif;
-      font-weight: 900;
+      font-family: 'Material Symbols Outlined', sans-serif;
+      font-variation-settings: var(--icon-css);
+      font-size: var(--icon-size, 48px);
+      color: var(--icon-color, inherit);
     }
   }
 }

@@ -42,7 +42,7 @@
 
           &:after {
             content: var(--icon, none);
-            font-size: var(--icon-size, inherit);
+            font-size: var(--icon-size, 24px);
             font-variation-settings: var(--icon-css);
             font-family: "Material Symbols Outlined", sans-serif;
             color: var(--color-icon, inherit);
@@ -144,7 +144,7 @@
     height: auto;
     vertical-align: middle;
     text-align: center;
-    font-family: 'Font Awesome 6 Pro', sans-serif;
+    font-family: 'Material Symbols Outlined', sans-serif;
     font-weight: 600;
     color: var(--divider-icon-color, inherit);
     border: none !important;
@@ -244,7 +244,7 @@
         @apply w-full block;
 
         &.menu-item-has-children > a {
-          padding-right: var(--icon-size, 1em);
+          padding-right: var(--icon-size, 24px);
 
           &:after {
             width: 1lh;

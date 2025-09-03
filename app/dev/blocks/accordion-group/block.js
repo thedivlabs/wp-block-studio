@@ -85,12 +85,12 @@ registerBlockType(metadata.name, {
         });
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
+            <Grid columns={1} columnGap={15} rowGap={20}>
 
-                <IconControl label={'Icon Closed'} value={settings?.['icon-closed']}
+                <IconControl label={'Icon Closed'} value={settings?.['icon-closed']} defaultValue={'keyboard_arrow_down'}
                              onChange={(newValue) => updateSettings({'icon-closed': newValue})}/>
 
-                <IconControl label={'Icon Open'} value={settings?.['icon-open']}
+                <IconControl label={'Icon Open'} value={settings?.['icon-open']} defaultValue={'keyboard_arrow_down'}
                              onChange={(newValue) => updateSettings({'icon-open': newValue})}/>
 
             </Grid>

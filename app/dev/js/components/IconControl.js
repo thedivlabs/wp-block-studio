@@ -26,8 +26,8 @@ export function iconProps(prop, key = '') {
 
 }
 
-export function IconControl({value = {}, onChange, label = 'Icon'}) {
-    const {name = '', weight = 200, size = 24, style = 0} = value;
+export function IconControl({value = {}, onChange, label = 'Icon', defaultValue = ''}) {
+    const {name = defaultValue, weight = 200, size = 24, style = 0} = value;
     const [isOpen, setIsOpen] = useState(false);
 
     const generateCSS = (fill, weight, opsz) => {

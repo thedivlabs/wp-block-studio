@@ -22,7 +22,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     const update = (key, val) => {
         if (key === 'weight') val = Math.round(val / 100) * 100;
         const newVal = {...value, [key]: val};
-        newVal.css = generateCSS(newVal.style, newVal.weight, newVal.size);
+        newVal.css = generateCSS(newVal?.style ?? 0, newVal?.weight ?? 300, newVal?.size ?? 24);
         onChange(newVal);
     };
 

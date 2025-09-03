@@ -2,7 +2,6 @@ import {addFilter} from '@wordpress/hooks';
 import {Fragment} from '@wordpress/element';
 import {InspectorControls} from '@wordpress/block-editor';
 import {__experimentalGrid as Grid, PanelBody, ToggleControl} from '@wordpress/components';
-import usePasteStyles from '@wordpress/block-editor/build-module/components/use-paste-styles';
 
 import {WPBS_Google_Places} from "Modules/google-places";
 

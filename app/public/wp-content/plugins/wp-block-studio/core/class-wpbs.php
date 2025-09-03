@@ -158,7 +158,7 @@ class WPBS {
 		] );
 
 		/* Masonry */
-		wp_register_script( 'wpbs-masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
+		wp_register_script( 'masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
 			'strategy'  => 'async',
 			'in_footer' => false,
 		] );
@@ -195,12 +195,10 @@ class WPBS {
 
 	public function block_assets(): void {
 
-		wp_enqueue_script( 'wpbs-masonry-js' );
+		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_style( 'google-material-icons' );
 		//wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_script( 'wpbs-swiper-js' );
-		wp_enqueue_style( 'wpbs-swiper-css' );
 
 	}
 
@@ -215,13 +213,13 @@ class WPBS {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
 		wp_enqueue_style( 'google-material-icons' );
-		wp_enqueue_script( 'wpbs-swiper-js' );
-		wp_enqueue_style( 'wpbs-swiper-css' );
+		wp_enqueue_script( 'swiper-js' );
+		wp_enqueue_style( 'swiper-css' );
 	}
 
 	public function view_assets(): void {
 		wp_enqueue_style( 'google-material-icons' );
-		wp_enqueue_script( 'wpbs-masonry-js' );
+		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 	}
 

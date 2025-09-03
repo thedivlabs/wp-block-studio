@@ -113,7 +113,7 @@ registerBlockType(metadata.name, {
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
                 ...iconProps(settings?.icon),
-                ...iconProps(settings?.['icon-open'],'open'),
+                ...iconProps(settings?.['icon-open'], 'open'),
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
                 '--link-border-width': Object.values(link_border).map(side => side.width || '0px').join(' '),
@@ -141,7 +141,7 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
-                        ...iconProps(settings?.['divider-icon'],'divider'),
+                        ...iconProps(settings?.['divider-icon'], 'divider'),
                         '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }
@@ -173,7 +173,23 @@ registerBlockType(metadata.name, {
                          onChange={(newValue) => updateSettings({'icon': newValue})}/>
             <IconControl label={'Icon open'} value={settings?.['icon-open']}
                          onChange={(newValue) => updateSettings({'icon-open': newValue})}/>
+            <IconControl label={'Divider Icon'} value={settings?.['divider-icon']}
+                         onChange={(newValue) => updateSettings({'divider-icon': newValue})}/>
             <Grid columns={2} columnGap={15} rowGap={15}>
+
+                <BorderControl
+                    __next40pxDefaultSize
+                    enableAlpha
+                    enableStyle
+                    value={settings?.['divider'] || {}}
+                    colors={themeColors}
+                    __experimentalIsRenderedInSidebar={true}
+                    label="Divider"
+                    onChange={(newValue) => {
+                        updateSettings({'divider': newValue})
+                    }}
+                    shouldSanitizeBorder
+                />
 
                 <SelectControl
                     label="Text Decoration"
@@ -184,9 +200,8 @@ registerBlockType(metadata.name, {
                     __nextHasNoMarginBottom
                 />
 
-                <IconControl label={'Divider Icon'} value={settings?.['divider-icon']}
-                             onChange={(newValue) => updateSettings({'divider-icon': newValue})}/>
             </Grid>
+
             <Grid columns={2} columnGap={15} rowGap={15}
                   style={{display: !(attributes?.className ?? '').includes('is-style-columns') ? 'none' : 'grid'}}>
                 <NumberControl
@@ -279,19 +294,7 @@ registerBlockType(metadata.name, {
                 isStyleSettable={true}
                 sides={['top', 'right', 'bottom', 'left']}
             />
-            <BorderControl
-                __next40pxDefaultSize
-                enableAlpha
-                enableStyle
-                value={settings?.['divider'] || {}}
-                colors={themeColors}
-                __experimentalIsRenderedInSidebar={true}
-                label="Divider"
-                onChange={(newValue) => {
-                    updateSettings({'divider': newValue})
-                }}
-                shouldSanitizeBorder
-            />
+
             <Grid columns={2} columnGap={15} rowGap={15}
                   style={{padding: '1rem 0'}}>
                 <ToggleControl

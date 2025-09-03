@@ -154,7 +154,7 @@ class WPBS {
 		/* Swiper */
 		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
 		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
-			'strategy' => 'async'
+			'strategy' => 'defer'
 		] );
 
 		/* Masonry */

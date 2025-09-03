@@ -36,6 +36,7 @@ function blockClassNames(attributes = {}) {
         !!settings?.['icon-below'] ? '--icon-below' : null,
         !!settings?.['submenu-fade'] ? '--fade' : null,
         !!settings?.['divider'] || !!settings?.['divider-icon'] ? '--divider' : null,
+        !!settings?.['divider-icon'] ? '--divider-icon' : null,
         !!settings?.['submenu-divider'] ? '--submenu-divider' : null,
         attributes?.uniqueId ?? null
     ].filter(x => x).join(' ');

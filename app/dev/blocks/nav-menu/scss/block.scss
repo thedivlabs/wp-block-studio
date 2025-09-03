@@ -138,6 +138,7 @@
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc((var(--column-gap, 1px) / 2) + 50%), -50%);
+    color: var(--icon-divider-color, inherit)
   }
 
   &.is-style-default.--divider.--icon-divider .wpbs-nav-menu-container > li:not(:last-of-type):after {
@@ -145,8 +146,7 @@
     vertical-align: middle;
     text-align: center;
     font-family: 'Material Symbols Outlined', sans-serif;
-    font-weight: 600;
-    color: var(--icon-divider-color, inherit);
+    font-weight: 600;;
     border: none !important;
   }
 

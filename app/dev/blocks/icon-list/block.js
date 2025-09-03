@@ -24,12 +24,13 @@ import {
     DIMENSION_UNITS_TEXT,
 } from "Includes/config"
 import {useUniqueId} from "Includes/helper";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 
 function blockClasses(attributes = {}) {
     return [
         'wpbs-icon-list',
-        attributes['wpbs-icon-list']?.divider ? 'wpbs-icon-list--divider' : null,
+        attributes?.['wpbs-icon-list']?.divider ? 'wpbs-icon-list--divider' : null,
         'w-fit max-w-full',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
@@ -59,38 +60,41 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-icon-list');
+        const {'wpbs-icon-list': settings = {}} = attributes;
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const breakpoint = WPBS.settings?.breakpoints[attributes['wpbs-icon-list']?.breakpoint ?? 'normal'];
+        const breakpoint = WPBS.settings?.breakpoints[settings?.breakpoint ?? 'normal'];
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-icon-list'],
+                ...settings,
                 ...newValue,
             };
 
             setAttributes({
                 'wpbs-icon-list': result,
             });
-        }, [attributes['wpbs-icon-list'], setAttributes]);
+        }, [settings, setAttributes]);
 
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
         });
 
-        const icon = attributes['wpbs-icon-list']?.icon?.match(/^[a-fA-F0-9]{4,6}$/) ? attributes['wpbs-icon-list'].icon : 'f00c';
+        const icon = settings?.icon?.match(/^[a-fA-F0-9]{4,6}$/) ? settings.icon : 'f00c';
 
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>
                     <Grid columns={1} columnGap={15} rowGap={20}>
 
+                        <IconControl value={settings?.icon} label={'Icon'}
+                                     onChange={(val) => updateSettings({icon: val})}/>
+
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             <NumberControl
                                 label="Columns Mobile"
-                                value={attributes['wpbs-icon-list']?.columnsMobile ?? 1}
+                                value={settings?.columnsMobile ?? 1}
                                 onChange={(val) => updateSettings({columnsMobile: val})}
                                 min={1}
                                 max={3}
@@ -100,7 +104,7 @@ registerBlockType(metadata.name, {
                             />
                             <NumberControl
                                 label="Columns Large"
-                                value={attributes['wpbs-icon-list']?.columnsLarge ?? 1}
+                                value={settings?.columnsLarge ?? 1}
                                 onChange={(val) => updateSettings({columnsLarge: val})}
                                 min={1}
                                 max={3}
@@ -110,45 +114,19 @@ registerBlockType(metadata.name, {
                             />
                         </Grid>
 
-                        <TextControl
-                            label="Icon"
-                            value={attributes['wpbs-icon-list'].icon ?? ''}
-                            onChange={(val) => updateSettings({icon: val})}
-                            __next40pxDefaultSize
-                            __nextHasNoMarginBottom
-                        />
-
 
                         <Grid columns={2} columnGap={15} rowGap={20}>
 
-                            <SelectControl
-                                label="Icon Style"
-                                value={attributes['wpbs-icon-list'].iconStyle ?? ''}
-                                options={ICON_STYLES}
-                                onChange={(val) => updateSettings({iconStyle: val})}
-                                __next40pxDefaultSize
-                                __nextHasNoMarginBottom
-                            />
-
-                            <UnitControl
-                                label="Icon Size"
-                                value={attributes['wpbs-icon-list'].iconSize ?? ''}
-                                onChange={(val) => updateSettings({iconSize: val})}
-                                units={DIMENSION_UNITS_TEXT}
-                                isResetValueOnUnitChange={true}
-                                __next40pxDefaultSize
-                                __nextHasNoMarginBottom
-                            />
                             <UnitControl
                                 label="Icon Space"
-                                value={attributes['wpbs-icon-list'].iconSpace ?? ''}
+                                value={settings.iconSpace ?? ''}
                                 onChange={(val) => updateSettings({iconSpace: val})}
                                 units={DIMENSION_UNITS_TEXT}
                                 isResetValueOnUnitChange={true}
                                 __next40pxDefaultSize
                                 __nextHasNoMarginBottom
                             />
-                            <Breakpoint defaultValue={attributes['wpbs-icon-list']?.breakpoint}
+                            <Breakpoint defaultValue={settings?.breakpoint}
                                         callback={(newValue) => updateSettings({breakpoint: newValue})}
                             />
                         </Grid>
@@ -159,7 +137,7 @@ registerBlockType(metadata.name, {
                                 {
                                     slug: 'iconColor',
                                     label: 'Icon Color',
-                                    value: attributes['wpbs-icon-list'].iconColor ?? undefined,
+                                    value: settings.iconColor ?? undefined,
                                     onChange: (newValue) => updateSettings({iconColor: newValue}),
                                     isShownByDefault: true,
                                 }
@@ -170,7 +148,7 @@ registerBlockType(metadata.name, {
                             enableAlpha
                             enableStyle
                             disableUnits
-                            value={attributes['wpbs-icon-list']?.divider || {}}
+                            value={settings?.divider || {}}
                             colors={WPBS?.settings?.colors ?? []}
                             __experimentalIsRenderedInSidebar={true}
                             label="Divider"
@@ -183,7 +161,7 @@ registerBlockType(metadata.name, {
                             <ToggleControl
                                 __nextHasNoMarginBottom
                                 label="Fit Column"
-                                checked={!!attributes['wpbs-icon-list'].fit ?? ''}
+                                checked={!!settings.fit ?? ''}
                                 onChange={(val) => updateSettings({fit: val})}
                             />
                         </Grid>
@@ -195,22 +173,22 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-icon-list']}
                    selector={'wpbs-icon-list'}
                    props={{
-                       '--list-fit': !!attributes['wpbs-icon-list']?.fit ? 'auto' : null,
+                       '--list-fit': !!settings?.fit ? 'auto' : null,
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',
-                       '--icon': `"\\${icon}"`,
-                       '--icon-color': attributes['wpbs-icon-list']?.iconColor,
-                       '--icon-size': attributes['wpbs-icon-list']?.iconSize,
-                       '--icon-space': attributes['wpbs-icon-list']?.iconSpace,
-                       '--icon-style': attributes['wpbs-icon-list']?.iconStyle,
-                       '--list-columns': attributes['wpbs-icon-list']?.columnsMobile ?? attributes['wpbs-icon-list']?.columnsLarge ?? 1,
-                       '--divider': attributes['wpbs-icon-list']?.divider ? [
-                           attributes['wpbs-icon-list']?.divider?.width ?? '1px',
-                           attributes['wpbs-icon-list']?.divider?.style ?? 'dashed',
-                           attributes['wpbs-icon-list']?.divider?.color ?? null,
+                       '--icon': settings?.icon?.name ? '\"' + settings?.icon.name + '\"' : null,
+                       '--icon-css': settings?.icon?.css ?? null,
+                       '--icon-color': settings?.iconColor,
+                       '--icon-size': settings?.icon?.size ? settings?.icon?.size + 'px' : null,
+                       '--icon-space': settings?.iconSpace,
+                       '--list-columns': settings?.columnsMobile ?? settings?.columnsLarge ?? 1,
+                       '--divider': settings?.divider ? [
+                           settings?.divider?.width ?? '1px',
+                           settings?.divider?.style ?? 'dashed',
+                           settings?.divider?.color ?? null,
                        ].join(' ') : null,
                        breakpoints: {
                            [breakpoint]: {
-                               '--list-columns': attributes['wpbs-icon-list']?.columnsLarge ?? attributes['wpbs-icon-list']?.columnsMobile ?? 1,
+                               '--list-columns': settings?.columnsLarge ?? settings?.columnsMobile ?? 1,
                            }
                        }
                    }}

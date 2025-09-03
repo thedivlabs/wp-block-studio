@@ -45,16 +45,16 @@
 
 /* List item icon before pseudo-element */
 .wpbs-icon-list__list > li::before {
-  content: var(--icon, "\f00c");
-  font-family: "Font Awesome 6 Pro", sans-serif;
-  font-weight: var(--icon-style, 300);
+  content: var(--icon, none);
+  font-family: "Material Symbols Outlined", sans-serif;
+  font-variation-settings: var(--icon-css);
   font-size: var(--icon-size, 1.2em);
   color: var(--icon-color, inherit);
   line-height: inherit;
   position: absolute;
   top: 0;
   left: 0;
-  height: var(--line-height, 1.5em);
+  height: 1lh;
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;

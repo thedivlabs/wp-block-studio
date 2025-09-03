@@ -46,8 +46,8 @@
             font-variation-settings: var(--icon-css);
             font-family: "Material Symbols Outlined", sans-serif;
             color: var(--color-icon, inherit);
-            @apply aspect-square transition-transform duration-300 flex text-center justify-center items-center pointer-events-none;
             transition-timing-function: ease-in-out;
+            @apply aspect-square transition-transform duration-300 flex text-center justify-center items-center pointer-events-none
           }
         }
 

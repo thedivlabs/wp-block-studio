@@ -43,9 +43,9 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
 
     const previewStyle = {
         flexGrow: 0,
-        fontVariationSettings: value.css,
+        fontVariationSettings: generateCSS(value?.style ?? 0, value?.weight ?? 300, 26),
         fontFamily: "'Material Symbols Outlined', sans-serif",
-        fontSize: `${value.size}px`,
+        fontSize: '26px',
         display: 'inline-flex',
         justifyContent: 'center',
         alignItems: 'center',

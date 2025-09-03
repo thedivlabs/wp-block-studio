@@ -199,6 +199,8 @@ class WPBS {
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_style( 'google-material-icons' );
 		//wp_enqueue_script( 'wpbs-admin-js' );
+		wp_enqueue_script( 'wpbs-swiper-js' );
+		wp_enqueue_style( 'wpbs-swiper-css' );
 
 	}
 

@@ -126,10 +126,10 @@
   }
 
   &.is-style-default.--divider .wpbs-nav-menu-container > li:not(:last-of-type):after {
-    content: var(--divider-icon, none);
-    font-variation-settings: var(--divider-icon-css);
+    content: var(--icon-divider, none);
+    font-variation-settings: var(--icon-divider-css);
     font-family: "Material Symbols Outlined", sans-serif;
-    font-size: var(--divider-icon-size, 24px);
+    font-size: var(--icon-divider-size, 24px);
     position: absolute;
     top: 50%;
     right: 0;

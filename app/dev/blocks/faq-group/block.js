@@ -30,7 +30,7 @@ import {
 } from "Includes/config";
 import {useUniqueId} from "Includes/helper";
 import {useSelect} from "@wordpress/data";
-import {IconControl} from "Components/IconControl";
+import {IconControl, iconProps} from "Components/IconControl";
 
 
 function classNames(attributes = {}) {
@@ -395,13 +395,9 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return {
                 '--divider': Object.values(settings?.['divider'] ?? []).join(' '),
-                '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open']?.name + '"' : null,
-                '--icon-css': settings?.['icon-open']?.css ?? null,
-                '--icon-size': settings?.['icon-open']?.size ? settings?.['icon-open']?.size + 'px' : null,
 
-
-                '--icon-closed': settings?.['icon-closed']?.name ? '"' + settings?.['icon-closed']?.name + '"' : null,
-                '--icon-closed-css': settings?.['icon-closed']?.css ?? null,
+                ...iconProps(settings?.['icon-closed']),
+                ...iconProps(settings?.['icon-open'], 'open'),
 
                 '--icon-color': settings?.['icon-color'],
                 '--icon-color-hover': settings?.['icon-color-hover'],

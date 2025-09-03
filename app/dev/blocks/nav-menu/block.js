@@ -24,7 +24,7 @@ import {useSetting} from '@wordpress/block-editor';
 import {DIMENSION_UNITS, DIMENSION_UNITS_TEXT, TEXT_DECORATION_OPTIONS} from "Includes/config";
 import {useUniqueId} from "Includes/helper";
 import merge from "lodash.merge";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, iconProps, MaterialIcon} from "Components/IconControl";
 
 
 function blockClassNames(attributes = {}) {
@@ -112,11 +112,8 @@ registerBlockType(metadata.name, {
                 '--color-background-hover': settings?.['color-background-hover'] ?? null,
                 '--color-background-active': settings?.['color-background-active'] ?? null,
                 '--color-text-active': settings?.['color-text-active'] ?? null,
-                '--icon': settings?.['icon']?.name ? '"' + settings?.['icon'].name + '"' : null,
-                '--icon-size': settings?.['icon'] ? settings?.['icon'].size + 'px' : null,
-                '--icon-css': settings?.['icon']?.css ?? null,
-                '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open'].name + '"' : null,
-                '--icon-open-css': settings?.['icon-open']?.css ?? null,
+                ...iconProps(settings?.icon),
+                ...iconProps(settings?.['icon-open'],'open'),
                 '--color-icon': settings?.['color-icon'] ?? null,
                 '--link-padding': !!settings?.['link-padding'] ? Object.values(settings['link-padding']).join(' ') : null,
                 '--link-border-width': Object.values(link_border).map(side => side.width || '0px').join(' '),
@@ -144,9 +141,7 @@ registerBlockType(metadata.name, {
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
-                        '--divider-icon': !!settings?.['divider-icon']?.name ? '"' + settings['divider-icon'].name + '"' : null,
-                        '--divider-size': !!settings?.['divider-icon']?.size ? settings['divider-icon'].size + 'px' : null,
-                        '--divider-icon-css': settings?.['divider-icon']?.css ?? null,
+                        ...iconProps(settings?.['divider-icon'],'divider'),
                         '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }

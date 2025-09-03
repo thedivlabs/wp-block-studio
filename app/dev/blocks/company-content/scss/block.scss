@@ -16,10 +16,10 @@
 
     &:before {
       content: var(--icon, none);
-      color: var(--icon-color, inherit);
+      font-variation-settings: var(--icon-css);
       font-family: 'Material Symbols Outlined', sans-serif;
       font-size: var(--icon-size, 24px);
-      font-variation-settings: var(--icon-css);
+      color: var(--icon-color, inherit);
       line-height: inherit;
       height: 1lh;
       width: auto;

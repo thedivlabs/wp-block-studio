@@ -210,6 +210,7 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return {
                 '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open'].name + '"' : null,
+                '--icon-size': settings?.['icon-open']?.size ? settings?.['icon-open'].size + 'px' : null,
                 '--icon-open-css': settings?.['icon-open']?.css,
                 '--icon-closed': settings?.['icon-closed']?.name ? '"' + settings?.['icon-closed'].name + '"' : null,
                 '--icon-closed-css': settings?.['icon-closed']?.css,

@@ -85,6 +85,7 @@ registerBlockType(metadata.name, {
             return Object.fromEntries(Object.entries({
                 '--icon': !!settings?.icon?.name ? '"' + settings?.icon?.name + '"' : null,
                 '--icon-size': !!settings?.icon?.size ? settings?.icon?.size + 'px' : null,
+                '--icon-css': !!settings?.icon?.css ?? null,
                 '--icon-color': settings?.['icon-color'] ?? null,
                 '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));

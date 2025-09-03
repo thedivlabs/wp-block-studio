@@ -209,9 +209,9 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-                '--icon-open': settings?.['icon-open']?.name ? '\"' + settings?.['icon-open'].name + '\"' : null,
+                '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open'].name + '"' : null,
                 '--icon-open-css': settings?.['icon-open']?.css,
-                '--icon-closed': settings?.['icon-closed']?.name ? '\"' + settings?.['icon-closed'].name + '\"' : null,
+                '--icon-closed': settings?.['icon-closed']?.name ? '"' + settings?.['icon-closed'].name + '"' : null,
                 '--icon-closed-css': settings?.['icon-closed']?.css,
                 '--icon-color': settings?.['icon-color'],
                 '--icon-color-hover': settings?.['icon-color-hover'],

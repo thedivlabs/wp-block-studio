@@ -83,9 +83,10 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--icon': !!settings?.icon ? '"\\' + settings?.icon + '"' : null,
+                '--icon': !!settings?.icon?.name ? '"' + settings?.icon?.name + '"' : null,
+                '--icon-size': !!settings?.icon?.size ? settings?.icon?.size + 'px' : null,
+                '--icon-css': settings?.icon?.css ?? null,
                 '--icon-color': settings?.['icon-color'] ?? null,
-                '--icon-size': settings?.['icon-size'] ?? null,
                 '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));
         }, [settings]);
@@ -114,7 +115,7 @@ registerBlockType(metadata.name, {
         }, [settings?.type]);
 
         const ElementTagName = ElementTag(attributes);
-        
+
         return (
             <>
 

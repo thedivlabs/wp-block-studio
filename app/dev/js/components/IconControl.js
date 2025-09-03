@@ -22,7 +22,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
     const update = (key, val) => {
         if (key === 'weight') val = Math.round(val / 100) * 100;
         const newVal = {...value, [key]: val};
-        newVal.css = generateCSS(newVal?.style ?? 0, newVal?.weight ?? 300, newVal?.size ?? 24);
+        newVal.css = generateCSS(newVal?.style ?? 0, newVal?.weight ?? 300, newVal?.size || 24);
         onChange(newVal);
     };
 
@@ -72,7 +72,7 @@ export function IconControl({value = {}, onChange, label = 'Icon'}) {
                                     label="Size"
                                     value={size}
                                     onChange={(val) => update('size', val)}
-                                    min={20}
+                                    min={6}
                                     max={120}
                                     step={1}
                                 />

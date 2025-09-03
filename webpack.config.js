@@ -18,6 +18,9 @@ function extendScriptConfig(config) {
     return {
         ...config,
         mode: 'production',
+        watchOptions: {
+            ignored: '/node_modules/',
+        },
         entry: {
             ...config.entry(),
             theme: './app/dev/js/theme.js',

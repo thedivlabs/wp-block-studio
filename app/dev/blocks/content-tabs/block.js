@@ -26,6 +26,7 @@ import {
 import React, {useCallback} from "react";
 import {useUniqueId} from "Includes/helper";
 import {DIMENSION_UNITS_TEXT} from "Includes/config";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 
 function classNames(attributes = {}, editor = false) {
@@ -63,9 +64,9 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs');
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
+
+        const {'wpbs-content-tabs': settings = {}} = attributes;
 
         const [tabActive, setTabActive] = useState(0);
         const [tabPanels, setTabPanels] = useState([]);
@@ -73,7 +74,7 @@ registerBlockType(metadata.name, {
 
         const updateSettings = useCallback((newValue) => {
             const result = {
-                ...attributes['wpbs-content-tabs'],
+                ...settings,
                 ...newValue
             };
 
@@ -81,7 +82,7 @@ registerBlockType(metadata.name, {
                 'wpbs-content-tabs': result
             });
 
-        }, [setAttributes, attributes['wpbs-content-tabs']])
+        }, [setAttributes, settings])
 
         useEffect(() => {
 
@@ -143,14 +144,14 @@ registerBlockType(metadata.name, {
         }, [tabPanels, tabActive]);
 
         useEffect(() => {
-            const buttonGrow = !!attributes['wpbs-content-tabs']?.['button-grow'];
+            const buttonGrow = !!settings?.['button-grow'];
             const result = {buttonGrow};
 
             if (!shallowEqual(tabOptions, result)) {
                 setTabOptions(result);
             }
 
-        }, [attributes['wpbs-content-tabs']]);
+        }, [settings]);
 
 
         const blockProps = useBlockProps({
@@ -170,25 +171,10 @@ registerBlockType(metadata.name, {
         });
 
         const buttonTabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
-            <Grid columns={2} columnGap={15} rowGap={20}>
-                <TextControl
-                    __nextHasNoMarginBottom
-                    __next40pxDefaultSize
-                    label="Icon"
-                    value={attributes['wpbs-content-tabs']?.['button-icon']}
-                    onChange={(newValue) => updateSettings({'button-icon': newValue})}
 
-                />
-                <UnitControl
-                    label="Icon Size"
-                    value={attributes['wpbs-content-tabs']?.['button-icon-size'] ?? ''}
-                    onChange={(val) => updateSettings({'button-icon-size': val})}
-                    units={DIMENSION_UNITS_TEXT}
-                    isResetValueOnUnitChange={true}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-            </Grid>
+            <IconControl label={'Icon'} value={settings?.['button-icon']}
+                         onChange={(newValue) => updateSettings({'button-icon': newValue})}/>
+
             <PanelColorSettings
                 enableAlpha
                 className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
@@ -196,21 +182,21 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'background-color',
                         label: 'Background Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-background'],
+                        value: settings?.['button-color-background'],
                         onChange: (newValue) => updateSettings({'button-color-background': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'text-color',
                         label: 'Text Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-text'],
+                        value: settings?.['button-color-text'],
                         onChange: (newValue) => updateSettings({'button-color-text': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'icon-color',
                         label: 'Icon Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-icon'],
+                        value: settings?.['button-color-icon'],
                         onChange: (newValue) => updateSettings({'button-color-icon': newValue}),
                         isShownByDefault: true
                     }
@@ -220,7 +206,7 @@ registerBlockType(metadata.name, {
                 __next40pxDefaultSize
                 enableAlpha
                 enableStyle
-                value={attributes['wpbs-content-tabs']?.['button-border']}
+                value={settings?.['button-border']}
                 colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}
                 label="Border"
@@ -231,7 +217,7 @@ registerBlockType(metadata.name, {
                 __next40pxDefaultSize
                 enableAlpha
                 enableStyle
-                value={attributes['wpbs-content-tabs']?.['button-divider']}
+                value={settings?.['button-divider']}
                 colors={WPBS?.settings?.colors ?? []}
                 __experimentalIsRenderedInSidebar={true}
                 label="Divider"
@@ -240,7 +226,7 @@ registerBlockType(metadata.name, {
             />
             <BoxControl
                 label={'Padding'}
-                values={attributes['wpbs-content-tabs']?.['button-padding']}
+                values={settings?.['button-padding']}
                 sides={['top', 'left', 'bottom', 'right']}
                 onChange={(newValue) => updateSettings({'button-padding': newValue})}
                 inputProps={{
@@ -255,7 +241,7 @@ registerBlockType(metadata.name, {
             <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '10px'}}>
                 <ToggleControl
                     label={'Grow'}
-                    checked={!!attributes['wpbs-content-tabs']?.['button-grow']}
+                    checked={!!settings?.['button-grow']}
                     onChange={(newValue) => updateSettings({'button-grow': newValue})}
                     className={'flex items-center'}
                     __nextHasNoMarginBottom
@@ -270,21 +256,21 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'background-color-hover',
                         label: 'Background Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-background-hover'],
+                        value: settings?.['button-color-background-hover'],
                         onChange: (newValue) => updateSettings({'button-color-background-hover': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'text-color-hover',
                         label: 'Text Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-text-hover'],
+                        value: settings?.['button-color-text-hover'],
                         onChange: (newValue) => updateSettings({'button-color-text-hover': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'border-color-hover',
                         label: 'Border Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-border-hover'],
+                        value: settings?.['button-color-border-hover'],
                         onChange: (newValue) => updateSettings({'button-color-border-hover': newValue}),
                         isShownByDefault: true
                     }
@@ -300,21 +286,21 @@ registerBlockType(metadata.name, {
                     {
                         slug: 'background-color-active',
                         label: 'Background Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-background-active'],
+                        value: settings?.['button-color-background-active'],
                         onChange: (newValue) => updateSettings({'button-color-background-active': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'text-color-active',
                         label: 'Text Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-text-active'],
+                        value: settings?.['button-color-text-active'],
                         onChange: (newValue) => updateSettings({'button-color-text-active': newValue}),
                         isShownByDefault: true
                     },
                     {
                         slug: 'border-color-active',
                         label: 'Border Color',
-                        value: attributes['wpbs-content-tabs']?.['button-color-border-active'],
+                        value: settings?.['button-color-border-active'],
                         onChange: (newValue) => updateSettings({'button-color-border-active': newValue}),
                         isShownByDefault: true
                     }
@@ -328,10 +314,10 @@ registerBlockType(metadata.name, {
             active: buttonTabActive
         }
 
-        const border = attributes['wpbs-content-tabs']?.['button-border'];
-        const divider = attributes['wpbs-content-tabs']?.['button-divider'];
-        const padding = attributes['wpbs-content-tabs']?.['button-padding'];
-        const duration = Number(attributes['wpbs-content-tabs']?.duration);
+        const border = settings?.['button-border'];
+        const divider = settings?.['button-divider'];
+        const padding = settings?.['button-padding'];
+        const duration = Number(settings?.duration);
         const collapse = !!attributes?.['wpbs-content-tabs']?.collapse;
 
         return <>
@@ -340,14 +326,14 @@ registerBlockType(metadata.name, {
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         <ToggleControl
                             label={'Hide'}
-                            checked={!!attributes['wpbs-content-tabs']?.['hide-inactive']}
+                            checked={!!settings?.['hide-inactive']}
                             onChange={(newValue) => updateSettings({'hide-inactive': newValue})}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom
                         />
                         <ToggleControl
                             label={'Collapse'}
-                            checked={!!attributes['wpbs-content-tabs']?.['collapse']}
+                            checked={!!settings?.['collapse']}
                             onChange={(newValue) => updateSettings({'collapse': newValue})}
                             className={'flex items-center'}
                             __nextHasNoMarginBottom
@@ -405,20 +391,21 @@ registerBlockType(metadata.name, {
                        '--panel-display': collapse ? 'flex' : 'none',
                        '--panel-opacity': collapse ? '1' : '0',
                        '--fade-duration': duration > 10 ? duration + 'ms' : null,
-                       '--button-background': attributes['wpbs-content-tabs']?.['button-color-background'],
-                       '--button-text': attributes['wpbs-content-tabs']?.['button-color-text'],
+                       '--button-background': settings?.['button-color-background'],
+                       '--button-text': settings?.['button-color-text'],
                        '--button-border': border?.style && border?.color ? `${border.width || '1px'} ${border.style} ${border.color}` : undefined,
                        '--button-divider': divider?.style && divider?.color ? `${divider.width || '1px'} ${divider.style} ${divider.color}` : undefined,
                        '--button-padding': padding ? `${padding.top || '0px'} ${padding.right || '0px'} ${padding.bottom || '0px'} ${padding.left || '0px'} ` : undefined,
-                       '--button-background-hover': attributes['wpbs-content-tabs']?.['button-color-background-hover'],
-                       '--button-text-hover': attributes['wpbs-content-tabs']?.['button-color-text-hover'],
-                       '--button-border-hover': attributes['wpbs-content-tabs']?.['button-color-border-hover'],
-                       '--button-background-active': attributes['wpbs-content-tabs']?.['button-color-background-active'],
-                       '--button-text-active': attributes['wpbs-content-tabs']?.['button-color-text-active'],
-                       '--button-border-active': attributes['wpbs-content-tabs']?.['button-color-border-active'],
-                       '--button-icon': !!attributes['wpbs-content-tabs']?.['button-icon'] ? '"\\' + attributes['wpbs-content-tabs']?.['button-icon'] + '"' : null,
-                       '--button-icon-color': attributes['wpbs-content-tabs']?.['button-color-icon'],
-                       '--button-icon-size': attributes['wpbs-content-tabs']?.['button-icon-size'],
+                       '--button-background-hover': settings?.['button-color-background-hover'],
+                       '--button-text-hover': settings?.['button-color-text-hover'],
+                       '--button-border-hover': settings?.['button-color-border-hover'],
+                       '--button-background-active': settings?.['button-color-background-active'],
+                       '--button-text-active': settings?.['button-color-text-active'],
+                       '--button-border-active': settings?.['button-color-border-active'],
+                       '--button-icon': !!settings?.['button-icon']?.name ? '"' + settings?.['button-icon']?.name + '"' : null,
+                       '--button-icon-css': settings?.['button-icon']?.css ?? null,
+                       '--button-icon-color': settings?.['button-color-icon'],
+                       '--button-icon-size': settings?.['button-icon-size'],
                        'breakpoints': {
                            [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                                '--panel-display': 'none',

@@ -60,7 +60,7 @@ class WPBS {
 
 		add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
 
-			if ( is_admin() ) {
+			if ( is_admin() || in_array( $GLOBALS['pagenow'] ?? false, [ 'wp-login.php', 'wp-register.php' ], true ) ) {
 				return $html;
 			}
 

@@ -81,8 +81,6 @@ registerBlockType(metadata.name, {
             className: blockClasses(attributes),
         });
 
-        const icon = settings?.icon?.match(/^[a-fA-F0-9]{4,6}$/) ? settings.icon : 'f00c';
-
         return <>
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true}>

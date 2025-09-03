@@ -140,13 +140,13 @@
     transform: translate(calc((var(--column-gap, 1px) / 2) + 50%), -50%);
   }
 
-  &.is-style-default.--divider.--divider-icon .wpbs-nav-menu-container > li:not(:last-of-type):after {
+  &.is-style-default.--divider.--icon-divider .wpbs-nav-menu-container > li:not(:last-of-type):after {
     height: auto;
     vertical-align: middle;
     text-align: center;
     font-family: 'Material Symbols Outlined', sans-serif;
     font-weight: 600;
-    color: var(--divider-icon-color, inherit);
+    color: var(--icon-divider-color, inherit);
     border: none !important;
   }
 

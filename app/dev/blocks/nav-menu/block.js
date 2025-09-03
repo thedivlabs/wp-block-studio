@@ -142,7 +142,7 @@ registerBlockType(metadata.name, {
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
                         ...iconProps(settings?.['divider-icon'], 'divider'),
-                        '--divider-icon-color': settings?.['color-divider-icon'] ?? null,
+                        '--icon-divider-color': settings?.['color-divider-icon'] ?? null,
                         '--columns': parseInt(settings?.['columns'] ?? settings?.['columns-mobile'] ?? 0) || null,
                     }
                 }

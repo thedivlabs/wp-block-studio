@@ -18,7 +18,7 @@ export function iconProps(prop, key = '') {
     ].filter(x => !!x).join('-');
 
     return {
-        [propName + '-name']: prop?.name ? '"' + prop.name + '"' : null,
+        [propName]: prop?.name ? '"' + prop.name + '"' : null,
         [propName + '-size']: prop?.size ? prop.size + 'px' : null,
         [propName + '-css']: prop?.css ?? null,
     }

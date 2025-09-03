@@ -18,6 +18,7 @@ import React, {useCallback} from "react";
 import {useUniqueId} from "Includes/helper";
 import {DIMENSION_UNITS_TEXT} from "Includes/config";
 import PreviewThumbnail from "Components/PreviewThumbnail";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 function classNames(attributes = {}) {
 
@@ -108,13 +109,8 @@ registerBlockType(metadata.name, {
                                 />
                             </MediaUploadCheck>
                         </BaseControl>
-                        <TextControl
-                            __nextHasNoMarginBottom
-                            __next40pxDefaultSize
-                            label="Icon"
-                            value={settings?.icon ?? ''}
-                            onChange={(newValue) => updateSettings({icon: newValue})}
-                        />
+                        <IconControl label={'Icon'} value={settings?.icon}
+                                     onChange={(newValue) => updateSettings({icon: newValue})}/>
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             <TextControl
                                 __nextHasNoMarginBottom
@@ -159,7 +155,7 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps} >
                 {!!settings?.image ? <img {...imageProps} /> :
-                    <span className={'wpbs-flyout-button__icon'} dangerouslySetInnerHTML={{__html: settings?.icon}}/>}
+                    <MaterialIcon className={'wpbs-flyout-button__icon'}  {...(settings?.icon ?? {})} />}
                 {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> : null}
             </div>
 
@@ -185,7 +181,7 @@ registerBlockType(metadata.name, {
 
         return <button {...blockProps} type={'button'}>
             {!!settings?.image ? <img {...imageProps} /> :
-                <span className={'wpbs-flyout-button__icon'} dangerouslySetInnerHTML={{__html: settings?.icon}}/>}
+                <MaterialIcon className={'wpbs-flyout-button__icon'}  {...(settings?.icon ?? {})} />}
             {!!settings?.label ? <span className={'wpbs-flyout-button__label'}>{settings?.label}</span> : null}
         </button>;
     }

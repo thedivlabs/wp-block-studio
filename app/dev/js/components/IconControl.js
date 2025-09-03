@@ -10,6 +10,21 @@ import {
     Popover,
 } from '@wordpress/components';
 
+export function iconProps(prop, key = '') {
+
+    const propName = '--' + [
+        'icon',
+        key,
+    ].filter(x => !!x).join('-');
+
+    return {
+        [propName + '-name']: prop?.name ? '"' + prop.name + '"' : null,
+        [propName + '-size']: prop?.size ? prop.size + 'px' : null,
+        [propName + '-css']: prop?.css ?? null,
+    }
+
+
+}
 
 export function IconControl({value = {}, onChange, label = 'Icon'}) {
     const {name = '', weight = 200, size = 24, style = 0} = value;

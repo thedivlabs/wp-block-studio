@@ -21,7 +21,7 @@ import {
     ICON_STYLES,
 } from "Includes/config";
 import {useUniqueId} from "Includes/helper";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
 
 function classNames(attributes = {}) {
@@ -209,11 +209,10 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-                '--icon-open': settings?.['icon-open']?.name ? '"' + settings?.['icon-open'].name + '"' : null,
-                '--icon-size': settings?.['icon-open']?.size ? settings?.['icon-open'].size + 'px' : null,
-                '--icon-open-css': settings?.['icon-open']?.css,
-                '--icon-closed': settings?.['icon-closed']?.name ? '"' + settings?.['icon-closed'].name + '"' : null,
-                '--icon-closed-css': settings?.['icon-closed']?.css,
+
+                ...iconProps(settings?.['icon-closed']),
+                ...iconProps(settings?.['icon-open'], 'open'),
+
                 '--icon-color': settings?.['icon-color'],
                 '--icon-color-hover': settings?.['icon-color-hover'],
                 '--header-color-hover': settings?.['header-color-hover'],

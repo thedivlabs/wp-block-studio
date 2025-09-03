@@ -24,7 +24,7 @@ import {
     DIMENSION_UNITS_TEXT,
 } from "Includes/config"
 import {useUniqueId} from "Includes/helper";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, MaterialIcon,iconProps} from "Components/IconControl";
 
 
 function blockClasses(attributes = {}) {
@@ -173,10 +173,8 @@ registerBlockType(metadata.name, {
                    props={{
                        '--list-fit': !!settings?.fit ? 'auto' : null,
                        '--line-height': attributes?.style?.typography?.lineHeight ?? '1.5em',
-                       '--icon': settings?.icon?.name ? '\"' + settings?.icon.name + '\"' : null,
-                       '--icon-css': settings?.icon?.css ?? null,
+                       ...iconProps(settings?.icon),
                        '--icon-color': settings?.iconColor,
-                       '--icon-size': settings?.icon?.size ? settings?.icon?.size + 'px' : null,
                        '--icon-space': settings?.iconSpace,
                        '--list-columns': settings?.columnsMobile ?? settings?.columnsLarge ?? 1,
                        '--divider': settings?.divider ? [

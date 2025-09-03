@@ -26,7 +26,7 @@ import {useInstanceId} from '@wordpress/compose';
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
-import {IconControl} from "Components/IconControl";
+import {IconControl, iconProps} from "Components/IconControl";
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -46,7 +46,6 @@ registerBlockType(metadata.name, {
                 title: undefined,
                 resolution: undefined,
                 'button-icon': undefined,
-                'icon-size': undefined,
                 'icon-color': undefined,
                 'title-color': undefined,
             }
@@ -73,9 +72,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = Object.fromEntries(Object.entries({
             '--overlay': settings?.overlay ?? 'none',
-            '--icon': !!settings?.['button-icon']?.name ? '"' + settings?.['button-icon']?.name + '"' : null,
-            '--icon-css': settings?.['button-icon']?.css ?? null,
-            '--icon-size': !!settings?.['button-icon']?.size ? settings?.['button-icon']?.size + 'px' : null,
+            ...iconProps(settings?.['button-icon']),
             '--icon-color': settings?.['icon-color'] ?? null,
             '--title-color': settings?.['title-color'] ?? null,
         }).filter(x => x));

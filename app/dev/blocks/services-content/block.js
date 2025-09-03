@@ -23,7 +23,7 @@ import {
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {LinkPost} from "Components/LinkPost";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, iconProps, MaterialIcon} from "Components/IconControl";
 
 function sectionClassNames(attributes = {}) {
 
@@ -91,10 +91,8 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--icon': !!settings?.icon?.name ? '"' + settings?.icon.name + '"' : null,
+                ...iconProps(settings?.icon),
                 '--icon-color': settings?.['icon-color'] ?? null,
-                '--icon-size': settings?.icon?.size ? settings?.icon?.size + 'px' : null,
-                '--icon-css': settings?.icon?.css ? settings?.icon?.css + 'px' : null,
                 '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));
         }, [settings]);

@@ -20,7 +20,7 @@ import {useUniqueId} from "Includes/helper";
 import {BORDER_UNITS, DIMENSION_UNITS, DIMENSION_UNITS_TEXT} from "Includes/config";
 import {select, useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {IconControl, MaterialIcon} from 'Components/IconControl';
+import {IconControl, MaterialIcon,iconProps} from 'Components/IconControl';
 
 function blockClassnames(attributes = {}, editor = false) {
 

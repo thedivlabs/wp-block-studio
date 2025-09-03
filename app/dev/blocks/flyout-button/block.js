@@ -18,7 +18,7 @@ import React, {useCallback} from "react";
 import {useUniqueId} from "Includes/helper";
 import {DIMENSION_UNITS_TEXT} from "Includes/config";
 import PreviewThumbnail from "Components/PreviewThumbnail";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, MaterialIcon,iconProps} from "Components/IconControl";
 
 function classNames(attributes = {}) {
 

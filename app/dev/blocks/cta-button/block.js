@@ -20,7 +20,7 @@ import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
-import {IconControl, MaterialIcon} from "Components/IconControl";
+import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
 function classNames(attributes = {}) {
 

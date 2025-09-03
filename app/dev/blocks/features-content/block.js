@@ -22,6 +22,7 @@ import {
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {LinkPost} from "Components/LinkPost";
+import {IconControl, iconProps} from "Components/IconControl";
 
 function sectionClassNames(attributes = {}) {
 
@@ -83,9 +84,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--icon': !!settings?.icon?.name ? '"' + settings?.icon?.name + '"' : null,
-                '--icon-size': !!settings?.icon?.size ? settings?.icon?.size + 'px' : null,
-                '--icon-css': settings?.icon?.css ?? null,
+                ...iconProps(settings?.icon),
                 '--icon-color': settings?.['icon-color'] ?? null,
                 '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));
@@ -168,22 +167,10 @@ registerBlockType(metadata.name, {
                                     onChange={(newValue) => updateSettings({resolution: newValue})}
                                 />
 
-                                <TextControl
-                                    __nextHasNoMarginBottom
-                                    __next40pxDefaultSize
-                                    label="Icon"
-                                    value={settings?.icon}
-                                    onChange={(newValue) => updateSettings({icon: newValue})}
-                                />
+                                <IconControl label={'Icon'} value={settings?.icon}
+                                             onChange={(newValue) => updateSettings({icon: newValue})} />
 
-                                <UnitControl
-                                    __nextHasNoMarginBottom
-                                    __next40pxDefaultSize
-                                    units={DIMENSION_UNITS_TEXT}
-                                    label="Icon Size"
-                                    value={settings?.['icon-size']}
-                                    onChange={(newValue) => updateSettings({'icon-size': newValue})}
-                                />
+
 
                             </Grid>
 

@@ -14,6 +14,7 @@ import {
     TextControl,
     __experimentalNumberControl as NumberControl, ToggleControl, SelectControl,
 } from "@wordpress/components";
+import {IconControl} from "Components/IconControl";
 
 function sectionClassNames(attributes = {}) {
 
@@ -96,13 +97,9 @@ registerBlockType(metadata.name, {
 
                                 />
 
-                                <TextControl
-                                    __nextHasNoMarginBottom
-                                    __next40pxDefaultSize
-                                    label="Icon"
-                                    value={settings?.icon}
-                                    onChange={(newValue) => updateSettings({icon: newValue})}
-                                />
+                                <IconControl label={'Icon'} value={settings?.icon} onChange={(newValue) => updateSettings({icon: newValue})}/>
+
+
 
 
                             </Grid>

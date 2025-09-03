@@ -22,7 +22,7 @@ import {
 import {useSelect} from "@wordpress/data";
 import {LinkPost} from "Components/LinkPost";
 import {ELEMENT_TAG_ATTRIBUTES, ElementTagSettings, ElementTag} from "Components/ElementTag";
-import {IconControl} from "Components/IconControl";
+import {IconControl, iconProps} from "Components/IconControl";
 
 function sectionClassNames(attributes = {}) {
 
@@ -70,8 +70,7 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return Object.fromEntries(Object.entries({
-                '--icon': !!settings?.icon?.name ? '"' + settings?.icon?.name + '"' : null,
-                '--icon-size': !!settings?.icon?.size ? settings?.icon?.size + 'px' : null,
+                ...iconProps(settings?.icon),
                 '--icon-color': settings?.['icon-color'] ?? null,
                 '--line-clamp': settings?.['line-clamp'] ?? null,
             }).filter(x => x));

@@ -18,7 +18,7 @@
     transform: translate(-50%, -50%);
 
     &:before {
-      content: var(--icon, "\f144");
+      content: var(--icon, "play_circle");
       font-family: 'Material Symbols Outlined', sans-serif;
       font-variation-settings: var(--icon-css);
       font-size: var(--icon-size, 48px);

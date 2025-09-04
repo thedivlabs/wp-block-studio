@@ -34,24 +34,8 @@
           grow
         }
 
-
-      }
-
-      &.menu-item-has-children {
-        & > a {
-
-          &:after {
-            content: var(--icon, none);
-            font-size: var(--icon-size, 24px);
-            font-variation-settings: var(--icon-css);
-            font-family: "Material Symbols Outlined", sans-serif;
-            color: var(--color-icon, inherit);
-            transition-timing-function: ease-in-out;
-            @apply aspect-square transition-transform duration-300 flex text-center justify-center items-center pointer-events-none
-          }
-        }
-
-        &.active {
+        &.active,
+        &:hover {
 
           & > a {
             text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
@@ -67,6 +51,25 @@
             }
           }
         }
+
+
+      }
+
+
+      &.menu-item-has-children {
+        & > a {
+
+          &:after {
+            content: var(--icon, none);
+            font-size: var(--icon-size, 24px);
+            font-variation-settings: var(--icon-css);
+            font-family: "Material Symbols Outlined", sans-serif;
+            color: var(--color-icon, inherit);
+            transition-timing-function: ease-in-out;
+            @apply aspect-square transition-transform duration-300 flex text-center justify-center items-center pointer-events-none
+          }
+        }
+
 
         &:hover > a:after,
         &.active > a:after {

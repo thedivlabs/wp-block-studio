@@ -63,25 +63,22 @@
         }
 
 
-        &:hover > a:after,
-        &.active > a:after {
-          color: inherit;
-        }
-      }
+        &.active,
+        &:hover {
 
-      &.active,
-      &:hover {
+          & > a {
 
-        & > a {
-
-          &:after {
-            content: var(--icon-open, none);
-            font-size: var(--icon-open-size, inherit);
-            font-variation-settings: var(--icon-open-css);
-            font-family: "Material Symbols Outlined", sans-serif;
+            &:after {
+              content: var(--icon-open, none);
+              font-size: var(--icon-open-size, inherit);
+              font-variation-settings: var(--icon-open-css);
+              font-family: "Material Symbols Outlined", sans-serif;
+              color: inherit;
+            }
           }
         }
       }
+
 
       & > .sub-menu {
         display: none;

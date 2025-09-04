@@ -149,7 +149,7 @@ class WPBS {
 		sort( $icon_names );
 		$icon_names = '&icon_names=' . implode( ',', $icon_names );
 
-		wp_register_style( 'google-material-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block' . $icon_names, [], false );
+		wp_register_style( 'google-material-icons', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap' . $icon_names, [], false );
 
 		/* Swiper */
 		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );

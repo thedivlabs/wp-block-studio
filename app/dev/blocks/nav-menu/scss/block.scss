@@ -44,13 +44,6 @@
           border-width: var(--link-border-width-active, 0);
           border-style: var(--link-border-style-active, none);
           border-color: var(--link-border-color-active, transparent);
-
-          &:after {
-            content: var(--icon-open, none);
-            font-size: var(--icon-open-size, inherit);
-            font-variation-settings: var(--icon-open-css);
-            font-family: "Material Symbols Outlined", sans-serif;
-          }
         }
       }
 
@@ -73,6 +66,20 @@
         &:hover > a:after,
         &.active > a:after {
           color: inherit;
+        }
+      }
+
+      &.active,
+      &:hover {
+
+        & > a {
+
+          &:after {
+            content: var(--icon-open, none);
+            font-size: var(--icon-open-size, inherit);
+            font-variation-settings: var(--icon-open-css);
+            font-family: "Material Symbols Outlined", sans-serif;
+          }
         }
       }
 

@@ -309,6 +309,24 @@ class WPBS_Theme {
 
     init() {
 
+        if (document.fonts && document.fonts.load) {
+            // Wait until the Material Symbols Outlined font is fully loaded
+            document.fonts.load('1em "Material Symbols Outlined"').then(() => {
+                // Add a class to the body to indicate the font is ready
+                setTimeout(function () {
+                    document.body.classList.add('icons-loaded');
+                }, 1000);
+
+
+            }).catch(() => {
+                // Fallback: in case of error, still add the class
+                //document.body.classList.add('material-icons-loaded');
+            });
+        } else {
+            // Fallback for older browsers that don't support the Font Loading API
+            //document.body.classList.add('material-icons-loaded');
+        }
+
         wp.domReady(() => {
 
             this.observeMedia();
@@ -323,6 +341,7 @@ class WPBS_Theme {
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
+
 
         });
 

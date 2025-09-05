@@ -313,9 +313,7 @@ class WPBS_Theme {
             // Wait until the Material Symbols Outlined font is fully loaded
             document.fonts.load('1em "Material Symbols Outlined"').then(() => {
                 // Add a class to the body to indicate the font is ready
-                setTimeout(function () {
-                    document.body.classList.add('icons-loaded');
-                }, 1000);
+                document.body.classList.add('icons-loaded');
 
 
             }).catch(() => {

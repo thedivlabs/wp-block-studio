@@ -31,7 +31,7 @@ export function IconControl({value = {}, onChange, label = 'Icon', defaultValue 
     const [isOpen, setIsOpen] = useState(false);
 
     const generateCSS = (fill, weight, opsz) => {
-        return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${opsz}`;
+        return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 200}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
     };
 
     const update = (key, val) => {

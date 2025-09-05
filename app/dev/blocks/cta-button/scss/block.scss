@@ -4,8 +4,20 @@
   transition-duration: 300ms;
   transition-timing-function: linear;
 
+  &:hover > .wpbs-cta-button__icon {
+    transform: translateX(6px);
+  }
+
   & > .wpbs-cta-button__title {
     order: 1;
+  }
+
+  &.is-style-link {
+    & > .wpbs-cta-button__title,
+    & > .wpbs-cta-button__icon
+    {
+      color:inherit;
+    }
   }
 
   &.--icon-only > .wpbs-cta-button__title {
@@ -27,7 +39,6 @@
   &:hover:after {
     color: inherit;
   }
-
 
   .wpbs-cta-button__icon {
     color: var(--icon-color, inherit);

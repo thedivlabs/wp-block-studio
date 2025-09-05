@@ -154,7 +154,7 @@ class WPBS {
 		/* Swiper */
 		wp_register_style( 'swiper-css', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css' );
 		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
-			'strategy' => 'defer'
+			'strategy' => 'async'
 		] );
 
 		/* Masonry */
@@ -166,9 +166,9 @@ class WPBS {
 		wp_register_style( 'wpbs-theme-css', self::$uri . 'build/theme.css', [], '1.5' );
 		wp_register_style( 'wpbs-admin-css', self::$uri . 'build/admin.css' );
 		wp_register_script( 'wpbs-theme-js', self::$uri . 'build/theme.js', [
-			'wp-dom-ready',
+			//'wp-dom-ready',
 		], false, [
-			'strategy'  => 'defer',
+			'strategy'  => 'async',
 			'in_footer' => false,
 		] );
 		wp_register_script( 'wpbs-admin-js', self::$uri . 'build/admin.js', [

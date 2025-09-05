@@ -91,6 +91,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const {'wpbs-slider-navigation': settings = {}} = attributes;
+
         const blockProps = useBlockProps({
             className: blockClasses(attributes),
             style: blockStyles(attributes)
@@ -103,22 +105,29 @@ registerBlockType(metadata.name, {
         const updateSettings = useCallback((newValue) => {
 
             const result = {
-                ...attributes['wpbs-slider-navigation'],
+                ...settings,
                 ...newValue,
                 slider: slider
             }
 
             setAttributes({'wpbs-slider-navigation': result});
 
-        }, [setAttributes, attributes['wpbs-slider-navigation'], slider]);
+        }, [setAttributes, settings, slider]);
 
         const customSettings = useSetting('custom');
 
         useEffect(() => {
-            updateSettings({
-                'icon-next': customSettings?.slider?.button?.next ?? 'chevron_right',
-                'icon-prev': customSettings?.slider?.button?.prev ?? 'chevron_left',
-            });
+
+            const next = customSettings?.slider?.button?.next ?? 'chevron_right'
+            const prev = customSettings?.slider?.button?.prev ?? 'chevron_left'
+
+            if (next !== settings?.['icon-next'] || prev !== settings?.['icon-prev']) {
+                updateSettings({
+                    'icon-next': next,
+                    'icon-prev': prev,
+                });
+            }
+
         }, []);
 
         return <>
@@ -134,14 +143,14 @@ registerBlockType(metadata.name, {
                                 {
                                     slug: 'pagination-color',
                                     label: 'Pagination',
-                                    value: attributes['wpbs-slider-navigation']?.['pagination-color'] ?? '',
+                                    value: settings?.['pagination-color'] ?? '',
                                     onChange: (newValue) => updateSettings({'pagination-color': newValue}),
                                     isShownByDefault: true
                                 },
                                 {
                                     slug: 'pagination-track-color',
                                     label: 'Pagination Track',
-                                    value: attributes['wpbs-slider-navigation']?.['pagination-track-color'] ?? '',
+                                    value: settings?.['pagination-track-color'] ?? '',
                                     onChange: (newValue) => updateSettings({'pagination-track-color': newValue}),
                                     isShownByDefault: true
                                 }

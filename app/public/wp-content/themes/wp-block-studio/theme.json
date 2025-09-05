@@ -103,7 +103,7 @@
         },
         {
           "slug": "primary-hover",
-          "color": "#0099CA",
+          "color": "#0081ac",
           "name": "Primary Hover"
         },
         {
@@ -168,12 +168,17 @@
         },
         {
           "slug": "light-400",
-          "color": "#CACACA",
+          "color": "#C4C4C4",
           "name": "Light 400"
         },
         {
           "slug": "light-500",
           "color": "#BFBFBF",
+          "name": "Light 500"
+        },
+        {
+          "slug": "light-600",
+          "color": "#939393",
           "name": "Light 500"
         }
       ],
@@ -208,7 +213,7 @@
     "typography": {
       "fontFamilies": [
         {
-          "fontFamily": "Montserrat",
+          "fontFamily": "Montserrat, sans-serif",
           "slug": "montserrat",
           "name": "Montserrat",
           "fontFace": [
@@ -224,35 +229,59 @@
             {
               "fontDisplay": "swap",
               "fontFamily": "Montserrat",
-              "fontWeight": "700",
+              "fontWeight": "500",
               "fontStyle": "normal",
               "src": [
-                "file:./assets/fonts/montserrat-v30-latin-700.woff2"
+                "file:./assets/fonts/montserrat-v30-latin-500.woff2"
               ]
             },
             {
               "fontDisplay": "swap",
               "fontFamily": "Montserrat",
-              "fontWeight": "800",
+              "fontWeight": "600",
               "fontStyle": "normal",
               "src": [
-                "file:./assets/fonts/montserrat-v30-latin-800.woff2"
+                "file:./assets/fonts/montserrat-v30-latin-600.woff2"
+              ]
+            },
+            {
+              "fontDisplay": "swap",
+              "fontFamily": "Montserrat",
+              "fontWeight": "700",
+              "fontStyle": "normal",
+              "src": [
+                "file:./assets/fonts/montserrat-v30-latin-700.woff2"
               ]
             }
           ]
         },
         {
-          "fontFamily": "Kepler",
-          "slug": "kepler",
-          "name": "Kepler",
+          "fontFamily": "Playfair Display, serif",
+          "slug": "playfair-display",
+          "name": "Playfair Display",
           "fontFace": [
             {
               "fontDisplay": "swap",
-              "fontFamily": "Kepler",
+              "fontFamily": "Playfair Display",
               "fontWeight": "400",
               "fontStyle": "normal",
               "src": [
-                "file:./assets/fonts/KeplerStdRegular.woff2"
+                "file:./assets/fonts/playfair-display-v39-latin-regular.woff2"
+              ]
+            }
+          ]
+        },
+        {
+          "fontFamily": "Material Symbols Outlined",
+          "slug": "material-symbols-outlined",
+          "name": "Material Symbols Outlined",
+          "fontFace": [
+            {
+              "fontDisplay": "swap",
+              "fontFamily": "Material Symbols Outlined",
+              "fontStyle": "normal",
+              "src": [
+                "file:./assets/fonts/material-symbols-outlined.woff2"
               ]
             }
           ]
@@ -368,11 +397,11 @@
           },
           "button": {
             "width": "auto",
-            "height": "3.5rem",
+            "height": "56px",
             "padding": ".2rem 1.5rem",
             "text-transform": "uppercase",
             "font-size": "inherit",
-            "icon": "\"\\f061\"",
+            "icon": "none",
             "color": {
               "background": "var:preset|color|primary",
               "text": "white",
@@ -495,8 +524,8 @@
           }
         },
         "button": {
-          "next": "\"\\f054\"",
-          "prev": "\"\\f053\""
+          "next": "chevron_right",
+          "prev": "chevron_left"
         }
       }
     },
@@ -610,20 +639,23 @@
         }
       },
       "h1": {
+        "css": "& strong {font-family:var(--wp--preset--font-family--playfair-display,inherit); font-size:1.3em; line-height:inherit; font-weight:300;}",
         "typography": {
           "fontSize": "clamp(36px, 4rem, 5vw)",
           "lineHeight": "1.4em",
-          "fontWeight": "600"
+          "fontWeight": "700"
         }
       },
       "h2": {
+        "css": "& strong {font-family:var(--wp--preset--font-family--playfair-display,inherit); font-size:1.3em; line-height:inherit; font-weight:300;}",
         "typography": {
-          "fontSize": "clamp(30px, 3rem, 3.7vw)",
+          "fontSize": "clamp(28px, 3rem, 3.7vw)",
           "lineHeight": "1.4em",
-          "fontWeight": "600"
+          "fontWeight": "700"
         }
       },
       "h3": {
+        "css": "& mark {display:inline-block; font-weight:300; font-size:clamp(18px,1.8rem, 20px); line-height:1.7em; text-transform:uppercase;}",
         "typography": {
           "fontSize": "clamp(20px, 1.8rem, 3vw)",
           "lineHeight": "1.4em",
@@ -638,7 +670,6 @@
         }
       },
       "heading": {
-        "css": "& strong {font-family:var(--wp--preset--font-family--kepler,inherit); font-size:1.3em; line-height:inherit; font-weight:300;}",
         "spacing": {
           "margin": {
             "top": "1.5rem",
@@ -656,7 +687,18 @@
         "css": "& {display:flex; justify-content:flex-start; align-items:baseline; flex-wrap:wrap;} & .wp-block-post-terms__separator {margin:0 5px;}"
       },
       "core/categories": {
-        "css": "& > .current-cat > a {font-weight:bold;}"
+        "elements": {
+          "link": {
+            "css": "&[aria-current] {font-weight:bold;}"
+          }
+        }
+      },
+      "wpbs/authors-list": {
+        "elements": {
+          "link": {
+            "css": "&[aria-current] {font-weight:bold;}"
+          }
+        }
       },
       "core/query-pagination": {
         "spacing": {
@@ -689,8 +731,13 @@
               "text": "black"
             },
             "dimensions": {
-              "minHeight": "1.5rem",
-              "aspectRatio": ".7/1"
+              "minHeight": "1.7rem"
+            },
+            "spacing": {
+              "padding": {
+                "left": "8px",
+                "right": "8px"
+              }
             },
             ":hover": {
               "color": {
@@ -717,19 +764,19 @@
       "wpbs/cta-button": {
         "variations": {
           "primary": {
-            "css": "&:hover{background-color:var(--wp--preset--color--primary-hover) !important; color:white !important}"
+            "css": "&:hover{background-color:transparent !important; color:var(--wp--preset--color--primary) !important; border-color:var(--wp--preset--color--primary) !important}"
           },
           "secondary": {
             "css": "&:hover{background-color:var(--wp--preset--color--primary-hover) !important; color:white !important}"
           },
           "outline": {
-            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important; color:white !important; background-color:var(--wp--preset--color--primary-hover) !important;}"
+            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important; color:white !important; background-color:var(--wp--preset--color--primary-hover) !important}"
           },
           "reverse": {
             "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important;  color:white !important}"
           },
           "link": {
-            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important;  color:white !important}"
+            "css": "&:hover{border-color:var(--wp--preset--color--primary-hover) !important;"
           }
         }
       }

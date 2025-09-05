@@ -114,14 +114,12 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, settings, slider]);
 
-        const customSettings = useSetting('custom');
-
-        console.log(customSettings);
+        const customSettings = useSetting('custom')?.slider ?? {};
 
         useEffect(() => {
 
-            const next = customSettings?.slider?.button?.next ?? 'chevron_right'
-            const prev = customSettings?.slider?.button?.prev ?? 'chevron_left'
+            const next = customSettings?.button?.next ?? 'chevron_right'
+            const prev = customSettings?.button?.prev ?? 'chevron_left'
 
             if (next !== settings?.['icon-next'] || prev !== settings?.['icon-prev']) {
                 updateSettings({
@@ -130,7 +128,7 @@ registerBlockType(metadata.name, {
                 });
             }
 
-        }, []);
+        }, [customSettings]);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

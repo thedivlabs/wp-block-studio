@@ -14,7 +14,7 @@ import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
-
+import {IconControl, MaterialIcon} from "Components/IconControl";
 
 function blockClasses(attributes = {}) {
 
@@ -53,10 +53,24 @@ function BlockContent({props, options = {}}) {
 
     return <div {...props}>
         <button type="button" className={prevClass}>
+            <MaterialIcon className={'wpbs-slider-nav__icon'}
+                          name={'chevron_left'}
+                          size={24}
+                          style={0}
+                          {...(slider?.['icon-prev'] ?? {})}
+
+            />
             <span className="screen-reader-text">Previous Slide</span>
         </button>
         {!!slider?.pagination ? <div className={paginationClass}></div> : null}
         <button type="button" className={nextClass}>
+            <MaterialIcon className={'wpbs-slider-nav__icon'}
+                          name={'chevron_right'}
+                          size={24}
+                          style={0}
+                          {...(slider?.['icon-next'] ?? {})}
+
+            />
             <span className="screen-reader-text">Next Slide</span>
         </button>
     </div>;

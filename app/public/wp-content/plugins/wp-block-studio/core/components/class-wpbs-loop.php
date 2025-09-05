@@ -242,13 +242,13 @@ class WPBS_Loop {
 			'current'   => $current_page,
 			'total'     => $query->max_num_pages,
 			'prev_next' => ! empty( $settings['icon_next'] ?? $this->icon_next ?? false ),
-			'mid_size'  => 2,
+			'mid_size'  => 4,
 			'end_size'  => 1,
 			'type'      => 'array',
 			'prev_text' => $settings['icon_prev'] ?? $this->icon_prev,
 			'next_text' => $settings['icon_next'] ?? $this->icon_next,
 		] );
-
+		
 		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
 			return str_replace( [ '<span', '</span>', 'current', 'next page-numbers', 'prev page-numbers' ], [
 				'<button type="button" disabled',

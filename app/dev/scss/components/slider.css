@@ -105,15 +105,7 @@
       shrink-0
       absolute
       cursor-pointer
-    }
-
-    .wpbs-slider-nav__btn:before {
-      font-family: 'Font Awesome 6 Pro', sans-serif;
-      font-size: inherit;
-      line-height: inherit;
-      color: inherit;
-      display: block;
-      font-weight: 300;
+      select-none
     }
 
     .wpbs-slider-nav__btn:active {
@@ -128,14 +120,6 @@
     .wpbs-slider-nav__btn--next {
       @apply
       right-2
-    }
-
-    .wpbs-slider-nav__btn--next:before {
-      content: var(--wp--custom--slider--button--next, "\f054");
-    }
-
-    .wpbs-slider-nav__btn--prev:before {
-      content: var(--wp--custom--slider--button--prev, "\f053");
     }
 
     .wpbs-slider-nav__pagination {

@@ -27,11 +27,11 @@ export function iconProps(prop, key = '') {
 }
 
 export function IconControl({value = {}, onChange, label = 'Icon', defaultValue = ''}) {
-    const {name = defaultValue, weight = 200, size = 24, style = 0} = value;
+    const {name = defaultValue, weight = 300, size = 24, style = 0} = value;
     const [isOpen, setIsOpen] = useState(false);
 
     const generateCSS = (fill, weight, opsz) => {
-        return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 200}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
+        return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
     };
 
     const update = (key, val) => {
@@ -119,7 +119,8 @@ export function IconControl({value = {}, onChange, label = 'Icon', defaultValue 
 }
 
 export const MaterialIcon = ({name, weight, size, style = 0, className = ''}) => {
-    const css = `'FILL' ${Number(style)}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size}`;
+
+    const css = `'FILL' ${Number(style || 0)}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${size || 24}`;
 
     const iconStyle = {
         fontVariationSettings: css,

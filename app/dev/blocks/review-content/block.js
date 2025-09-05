@@ -97,13 +97,13 @@ registerBlockType(metadata.name, {
 
                                 />
 
-                                <IconControl label={'Icon'} value={settings?.icon} onChange={(newValue) => updateSettings({icon: newValue})}/>
+
 
 
 
 
                             </Grid>
-
+                            <IconControl label={'Icon'} value={settings?.icon} onChange={(newValue) => updateSettings({icon: newValue})}/>
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 <ToggleControl
                                     __nextHasNoMarginBottom

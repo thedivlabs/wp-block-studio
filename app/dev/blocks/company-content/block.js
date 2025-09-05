@@ -162,10 +162,6 @@ registerBlockType(metadata.name, {
 
                                 />
 
-                                <IconControl value={settings?.icon} label={'Icon'}
-                                             onChange={(newValue) => updateSettings({icon: newValue})}/>
-
-
                                 <SelectControl
                                     label="Label Position"
                                     value={settings?.['label-position'] ?? ''}
@@ -189,6 +185,9 @@ registerBlockType(metadata.name, {
                                 value={settings?.label}
                                 onChange={(newValue) => updateSettings({label: newValue})}
                             />
+
+                            <IconControl value={settings?.icon} label={'Icon'}
+                                         onChange={(newValue) => updateSettings({icon: newValue})}/>
 
                             <BaseControl label={'Colors'}>
                                 <PanelColorSettings

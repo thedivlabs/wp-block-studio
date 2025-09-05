@@ -137,9 +137,6 @@ registerBlockType(metadata.name, {
                                     onChange={(newValue) => updateSettings({resolution: newValue})}
                                 />
 
-                                <IconControl label={'Icon'} value={settings?.icon}
-                                             onChange={(newValue) => updateSettings({'icon': newValue})}/>
-
                             </Grid>
 
                             <TextControl
@@ -149,6 +146,9 @@ registerBlockType(metadata.name, {
                                 value={settings?.label}
                                 onChange={(newValue) => updateSettings({label: newValue})}
                             />
+
+                            <IconControl label={'Icon'} value={settings?.icon}
+                                         onChange={(newValue) => updateSettings({'icon': newValue})}/>
 
                             <BaseControl label={'Colors'}>
                                 <PanelColorSettings

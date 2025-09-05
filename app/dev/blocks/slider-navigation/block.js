@@ -15,6 +15,7 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon} from "Components/IconControl";
+import {useSetting} from '@wordpress/block-editor';
 
 function blockClasses(attributes = {}) {
 
@@ -54,7 +55,7 @@ function BlockContent({props, options = {}}) {
     return <div {...props}>
         <button type="button" className={prevClass}>
             <MaterialIcon className={'wpbs-slider-nav__icon'}
-                          name={'chevron_left'}
+                          name={prevButtonIcon}
                           size={24}
                           style={0}
                           {...(slider?.['icon-prev'] ?? {})}
@@ -65,7 +66,7 @@ function BlockContent({props, options = {}}) {
         {!!slider?.pagination ? <div className={paginationClass}></div> : null}
         <button type="button" className={nextClass}>
             <MaterialIcon className={'wpbs-slider-nav__icon'}
-                          name={'chevron_right'}
+                          name={nextButtonIcon}
                           size={24}
                           style={0}
                           {...(slider?.['icon-next'] ?? {})}
@@ -111,9 +112,14 @@ registerBlockType(metadata.name, {
 
         }, [setAttributes, attributes['wpbs-slider-navigation'], slider]);
 
+        const customSettings = useSetting('custom');
+
         useEffect(() => {
-            updateSettings({});
-        }, [slider]);
+            updateSettings({
+                'icon-next': customSettings?.slider?.button?.next ?? 'chevron_right',
+                'icon-prev': customSettings?.slider?.button?.prev ?? 'chevron_left',
+            });
+        }, []);
 
         return <>
             <BlockEdit key="edit" {...blockProps} />

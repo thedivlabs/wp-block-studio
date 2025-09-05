@@ -55,7 +55,7 @@ function BlockContent({props, options = {}}) {
     return <div {...props}>
         <button type="button" className={prevClass}>
             <MaterialIcon className={'wpbs-slider-nav__icon'}
-                          name={prevButtonIcon}
+                          name={options?.['icon-prev'] ?? 'chevron_left'}
                           size={24}
                           style={0}
                           {...(slider?.['icon-prev'] ?? {})}
@@ -66,7 +66,7 @@ function BlockContent({props, options = {}}) {
         {!!slider?.pagination ? <div className={paginationClass}></div> : null}
         <button type="button" className={nextClass}>
             <MaterialIcon className={'wpbs-slider-nav__icon'}
-                          name={nextButtonIcon}
+                          name={options?.['icon-next'] ?? 'chevron_right'}
                           size={24}
                           style={0}
                           {...(slider?.['icon-next'] ?? {})}
@@ -115,6 +115,8 @@ registerBlockType(metadata.name, {
         }, [setAttributes, settings, slider]);
 
         const customSettings = useSetting('custom');
+
+        console.log(customSettings);
 
         useEffect(() => {
 

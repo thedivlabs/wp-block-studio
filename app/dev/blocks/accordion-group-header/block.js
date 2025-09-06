@@ -55,8 +55,9 @@ registerBlockType(metadata.name, {
 
             <div {...blockProps}>
                 <div {...innerBlocksProps}></div>
-                <button className={'wpbs-accordion-group-header__toggle'}><span
-                    className={'screen-reader-text'}>Toggle content</span></button>
+                <button className={'wpbs-accordion-group-header__toggle material-icon-before'}>
+                    <span className={'screen-reader-text'}>Toggle content</span>
+                </button>
             </div>
 
 

@@ -19,7 +19,7 @@ $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-company-content inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
-		! empty( $settings['icon'] ) ? '--icon' : null,
+		! empty( $settings['icon'] ) ? '--icon material-icon-before' : null,
 		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
 		$attributes['uniqueId'] ?? ''
 	] ) ),

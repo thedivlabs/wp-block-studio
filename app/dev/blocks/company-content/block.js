@@ -29,7 +29,7 @@ function sectionClassNames(attributes = {}) {
     return [
         'wpbs-company-content',
         'w-fit inline-block',
-        settings?.icon ? '--icon' : null,
+        settings?.icon ? '--icon material-icon-before' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }

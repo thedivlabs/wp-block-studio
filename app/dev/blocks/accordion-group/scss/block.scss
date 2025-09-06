@@ -48,7 +48,6 @@
     transition: transform .2s ease, color .3s linear;
 
     &:before {
-      font-family: 'Material Symbols Outlined', sans-serif;
       content: var(--icon, none);
       font-variation-settings: var(--icon-css);
       font-size: var(--icon-size, 24px);
@@ -57,7 +56,6 @@
 
   .wpbs-accordion-group-item.--open .wpbs-accordion-group-header__toggle {
     &:before {
-      font-family: 'Material Symbols Outlined', sans-serif;
       content: var(--icon-open, var(--icon, none));
       font-variation-settings: var(--icon-open-css, var(--icon-css));
     }

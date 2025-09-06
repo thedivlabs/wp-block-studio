@@ -12,7 +12,7 @@ import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 
 import {useState, useEffect} from '@wordpress/element';
-import {select, subscribe} from '@wordpress/data';
+import {select, subscribe, useSelect} from '@wordpress/data';
 import {store as blockEditorStore} from '@wordpress/block-editor';
 import {useInstanceId} from "@wordpress/compose";
 import {
@@ -23,7 +23,7 @@ import {
     __experimentalGrid as Grid,
     ToggleControl, __experimentalBoxControl as BoxControl, TextControl
 } from "@wordpress/components";
-import React, {useCallback} from "react";
+import React, {useCallback, useMemo} from "react";
 import {useUniqueId} from "Includes/helper";
 import {DIMENSION_UNITS_TEXT} from "Includes/config";
 import {IconControl, MaterialIcon} from "Components/IconControl";
@@ -39,16 +39,6 @@ function classNames(attributes = {}, editor = false) {
         !!attributes['wpbs-content-tabs']?.['hide-inactive'] ? '--hide-inactive' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
-}
-
-function shallowEqual(obj1, obj2) {
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-    if (keys1.length !== keys2.length) return false;
-    for (let key of keys1) {
-        if (obj1[key] !== obj2[key]) return false;
-    }
-    return true;
 }
 
 registerBlockType(metadata.name, {
@@ -68,10 +58,6 @@ registerBlockType(metadata.name, {
 
         const {'wpbs-content-tabs': settings = {}} = attributes;
 
-        const [tabActive, setTabActive] = useState(0);
-        const [tabPanels, setTabPanels] = useState([]);
-        const [tabOptions, setTabOptions] = useState({});
-
         const updateSettings = useCallback((newValue) => {
             const result = {
                 ...settings,
@@ -83,76 +69,6 @@ registerBlockType(metadata.name, {
             });
 
         }, [setAttributes, settings])
-
-        useEffect(() => {
-
-            let unsubscribed = false;
-
-            const {getBlock} = select(blockEditorStore);
-            const thisBlock = getBlock(clientId);
-
-            const update = () => {
-
-                if (!thisBlock) {
-                    return
-                }
-
-                const container = thisBlock.innerBlocks?.find(
-                    (child) => child.name === 'wpbs/content-tabs-container'
-                );
-
-                if (!container) {
-                    return
-                }
-
-                const nextPanels = container.innerBlocks
-                    .filter((block) => block.name === 'wpbs/content-tabs-panel')
-                    .map((panel, i) => ({
-                        title: panel.attributes?.title || `Tab ${i + 1}`,
-                        clientId: panel.clientId,
-                    }));
-
-                // Only update if different
-                setTabPanels((prev) => {
-                    const isEqual = prev.length === nextPanels.length &&
-                        prev.every((p, i) =>
-                            p.title === nextPanels[i].title &&
-                            p.clientId === nextPanels[i].clientId
-                        );
-                    return isEqual ? prev : nextPanels;
-                });
-            };
-
-            update();
-
-            const unsubscribe = subscribe(() => {
-                if (!unsubscribed) {
-                    update();
-                }
-            });
-
-            return () => {
-                unsubscribed = true;
-                unsubscribe();
-            };
-        }, [clientId]);
-
-        useEffect(() => {
-            if (!tabActive && tabPanels?.length > 0) {
-                //setTabActive(tabPanels[0].clientId);
-            }
-        }, [tabPanels, tabActive, tabPanels?.[0]?.clientId]);
-
-        useEffect(() => {
-            const buttonGrow = !!settings?.['button-grow'];
-            const result = {buttonGrow};
-
-            if (!shallowEqual(tabOptions, result)) {
-                //setTabOptions(result);
-            }
-
-        }, [settings]);
-
 
         const blockProps = useBlockProps({
             className: classNames(attributes, true),
@@ -320,6 +236,42 @@ registerBlockType(metadata.name, {
         const duration = Number(settings?.duration);
         const collapse = !!attributes?.['wpbs-content-tabs']?.collapse;
 
+        const cssProps = useMemo(() => {
+            return {
+                '--panel-display': collapse ? 'flex' : 'none',
+                '--panel-opacity': collapse ? '1' : '0',
+                '--fade-duration': duration > 10 ? duration + 'ms' : null,
+                '--button-background': settings?.['button-color-background'],
+                '--button-text': settings?.['button-color-text'],
+                '--button-border': border?.style && border?.color ? `${border.width || '1px'} ${border.style} ${border.color}` : undefined,
+                '--button-divider': divider?.style && divider?.color ? `${divider.width || '1px'} ${divider.style} ${divider.color}` : undefined,
+                '--button-padding': padding ? `${padding.top || '0px'} ${padding.right || '0px'} ${padding.bottom || '0px'} ${padding.left || '0px'} ` : undefined,
+                '--button-background-hover': settings?.['button-color-background-hover'],
+                '--button-text-hover': settings?.['button-color-text-hover'],
+                '--button-border-hover': settings?.['button-color-border-hover'],
+                '--button-background-active': settings?.['button-color-background-active'],
+                '--button-text-active': settings?.['button-color-text-active'],
+                '--button-border-active': settings?.['button-color-border-active'],
+                '--button-icon': !!settings?.['button-icon']?.name ? '"' + settings?.['button-icon']?.name + '"' : null,
+                '--button-icon-css': settings?.['button-icon']?.css ?? null,
+                '--button-icon-color': settings?.['button-color-icon'],
+                '--button-icon-size': settings?.['button-icon-size'],
+                'breakpoints': {
+                    [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
+                        '--panel-display': 'none',
+                        '--panel-opacity': '0',
+                    }
+                }
+            }
+        }, [settings]);
+
+        const innerBlocks = useSelect(
+            ( select ) => select( blockEditorStore ).getBlocks( clientId ),
+            [ clientId ]
+        );
+
+        console.log(innerBlocks);
+
         return <>
             <InspectorControls group="styles">
                 <PanelBody title="Options" initialOpen={true}>
@@ -387,40 +339,10 @@ registerBlockType(metadata.name, {
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs']} selector={'wpbs-content-tabs'}
-                   props={{
-                       '--panel-display': collapse ? 'flex' : 'none',
-                       '--panel-opacity': collapse ? '1' : '0',
-                       '--fade-duration': duration > 10 ? duration + 'ms' : null,
-                       '--button-background': settings?.['button-color-background'],
-                       '--button-text': settings?.['button-color-text'],
-                       '--button-border': border?.style && border?.color ? `${border.width || '1px'} ${border.style} ${border.color}` : undefined,
-                       '--button-divider': divider?.style && divider?.color ? `${divider.width || '1px'} ${divider.style} ${divider.color}` : undefined,
-                       '--button-padding': padding ? `${padding.top || '0px'} ${padding.right || '0px'} ${padding.bottom || '0px'} ${padding.left || '0px'} ` : undefined,
-                       '--button-background-hover': settings?.['button-color-background-hover'],
-                       '--button-text-hover': settings?.['button-color-text-hover'],
-                       '--button-border-hover': settings?.['button-color-border-hover'],
-                       '--button-background-active': settings?.['button-color-background-active'],
-                       '--button-text-active': settings?.['button-color-text-active'],
-                       '--button-border-active': settings?.['button-color-border-active'],
-                       '--button-icon': !!settings?.['button-icon']?.name ? '"' + settings?.['button-icon']?.name + '"' : null,
-                       '--button-icon-css': settings?.['button-icon']?.css ?? null,
-                       '--button-icon-color': settings?.['button-color-icon'],
-                       '--button-icon-size': settings?.['button-icon-size'],
-                       'breakpoints': {
-                           [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
-                               '--panel-display': 'none',
-                               '--panel-opacity': '0',
-                           }
-                       }
-                   }}
+                   props={cssProps}
             />
             <BlockContextProvider
-                value={{
-                    tabOptions,
-                    tabPanels,
-                    tabActive,
-                    setTabActive,
-                }}
+                value={}
             >
                 <div {...innerBlocksProps}></div>
             </BlockContextProvider>

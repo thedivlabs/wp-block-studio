@@ -243,7 +243,6 @@ registerBlockType(metadata.name, {
             active: buttonTabActive
         }
 
-
         const {'button-border': border, 'button-divider': divider, 'button-padding': padding} = settings;
 
         const duration = Number(settings?.duration);
@@ -283,7 +282,7 @@ registerBlockType(metadata.name, {
             [clientId]
         );
 
-        const {containerBlock, panelBlocks, panelTitles} = useMemo(() => {
+        const {panelBlocks} = useMemo(() => {
 
             const containerBlock = findInnerBlock(innerBlocks, {name: 'wpbs/content-tabs-container'});
 
@@ -293,10 +292,6 @@ registerBlockType(metadata.name, {
 
             return {containerBlock, panelBlocks, panelTitles};
         }, [innerBlocks]);
-
-        console.log(containerBlock);
-        console.log(panelBlocks);
-        console.log(panelTitles);
 
         return <>
             <InspectorControls group="styles">
@@ -368,7 +363,7 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
             <BlockContextProvider
-                value={{settings}}
+                value={{settings,panelBlocks}}
             >
                 <div {...innerBlocksProps}></div>
             </BlockContextProvider>

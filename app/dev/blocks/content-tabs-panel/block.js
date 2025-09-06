@@ -18,11 +18,10 @@ import {TextControl} from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 
 
-function classNames(attributes, isActive = false, editor = false) {
+function classNames(attributes, editor = false) {
     return [
         'wpbs-content-tabs-panel',
         attributes?.uniqueId ?? '',
-        !!isActive ? 'active' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -40,8 +39,6 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-panel');
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
@@ -49,8 +46,6 @@ registerBlockType(metadata.name, {
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps);
-
-        const isActive = false;
 
         return <>
             <InspectorControls group={'advanced'}>
@@ -66,7 +61,7 @@ registerBlockType(metadata.name, {
             <Style attributes={attributes} setAttributes={setAttributes} uniqueId={uniqueId}
                    deps={['wpbs-content-tabs-panel']} selector={'wpbs-content-tabs-panel'}
             />
-            <div {...innerBlocksProps} aria-selected={!!isActive} role={'tabpanel'}></div>
+            <div {...innerBlocksProps} role={'tabpanel'}></div>
 
         </>;
     },

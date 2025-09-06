@@ -286,7 +286,12 @@ registerBlockType(metadata.name, {
 
             const containerBlock = findInnerBlock(innerBlocks, {name: 'wpbs/content-tabs-container'});
 
-            const panelBlocks = [...containerBlock?.innerBlocks ?? []].filter(x => x.name === 'wpbs/content-tabs-panel');
+            const panelBlocks = [...containerBlock?.innerBlocks ?? []].filter(x => x.name === 'wpbs/content-tabs-panel').map(panel => {
+                return {
+                    title: panel?.attributes?.title,
+                    clientId: panel?.clientId,
+                }
+            });
 
             const panelTitles = panelBlocks.map(x => x.attributes?.title ?? '');
 

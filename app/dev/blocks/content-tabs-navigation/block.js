@@ -23,14 +23,13 @@ function classNames(attributes = {}) {
     ].filter(x => x).join(' ');
 }
 
-function buttonClassNames(isActive, attributes) {
+function buttonClassNames(attributes) {
 
     const {options = {}} = attributes['wpbs-content-tabs-navigation'];
 
     return [
         'wpbs-content-tabs-navigation__button h-auto',
-        options?.buttonGrow ? 'grow' : null,
-        !!isActive ? 'active' : null,
+        !!options?.['buttonGrow'] ? 'grow' : null,
     ].filter(x => x).join(' ');
 }
 
@@ -46,23 +45,21 @@ registerBlockType(metadata.name, {
             default: {
                 tabs: undefined,
             }
-        },
-        tabPanels: {
-            type: 'array',
-            default: []
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
-
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-content-tabs-navigation');
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
-        
-        const tabPanels = [];
+
+        const {panelBlocks = [], settings} = context;
+
+        useEffect(() => {
+            setAttributes({'wpbs-content-tabs-navigation': {panelBlocks, settings}});
+        }, [panelBlocks, settings]);
 
         return <>
 
@@ -71,14 +68,12 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-content-tabs-navigation']} selector={'wpbs-content-tabs-navigation'}
             />
             <nav {...blockProps} >
-                {tabPanels.map((panel) => {
-                    const isActive = panel.clientId === tabActive;
+                {panelBlocks.map((panel) => {
 
                     return (
                         <button
                             key={panel.clientId}
-                            onClick={() => handleClick(panel.clientId)}
-                            className={buttonClassNames(!!isActive, attributes)}
+                            className={buttonClassNames(attributes)}
                             type="button"
                         >
                             {panel.title}
@@ -90,22 +85,23 @@ registerBlockType(metadata.name, {
     },
     save: (props) => {
 
-        const {tabPanels} = props.attributes;
-
         const blockProps = useBlockProps.save({
             className: classNames(props.attributes),
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
+        const {panelBlocks, settings} = props.attributes?.['wpbs-content-tabs-navigation'] ?? {};
+
         return <nav {...blockProps} role={'tablist'}>
-            {tabPanels.map((panel, index) => {
+            {panelBlocks.map((panel) => {
 
                 return (
                     <button
                         key={panel.clientId}
-                        className={buttonClassNames(index === 0, props.attributes)}
-                        type="button"
+                        className={buttonClassNames(attributes)}
+                        type={"button"}
                         role={'tab'}
+
                     >
                         {panel.title}
                     </button>

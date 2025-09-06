@@ -41,6 +41,19 @@ function classNames(attributes = {}, editor = false) {
     ].filter(x => x).join(' ');
 }
 
+function findInnerBlock(blocks, {name, clientId}) {
+    for (const block of blocks) {
+        if ((name && block.name === name) || (clientId && block.clientId === clientId)) {
+            return block;
+        }
+        if (block.innerBlocks?.length) {
+            const found = findInnerBlock(block.innerBlocks, {name, clientId});
+            if (found) return found;
+        }
+    }
+    return null;
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -230,11 +243,11 @@ registerBlockType(metadata.name, {
             active: buttonTabActive
         }
 
-        const border = settings?.['button-border'];
-        const divider = settings?.['button-divider'];
-        const padding = settings?.['button-padding'];
+
+        const {'button-border': border, 'button-divider': divider, 'button-padding': padding} = settings;
+
         const duration = Number(settings?.duration);
-        const collapse = !!attributes?.['wpbs-content-tabs']?.collapse;
+        const collapse = !!settings?.collapse;
 
         const cssProps = useMemo(() => {
             return {
@@ -266,11 +279,24 @@ registerBlockType(metadata.name, {
         }, [settings]);
 
         const innerBlocks = useSelect(
-            ( select ) => select( blockEditorStore ).getBlocks( clientId ),
-            [ clientId ]
+            (select) => select(blockEditorStore).getBlocks(clientId),
+            [clientId]
         );
 
-        console.log(innerBlocks);
+        const {containerBlock, panelBlocks, panelTitles} = useMemo(() => {
+
+            const containerBlock = findInnerBlock(innerBlocks, {name: 'wpbs/content-tabs-container'});
+
+            const panelBlocks = [...containerBlock?.innerBlocks ?? []].filter(x => x.name === 'wpbs/content-tabs-panel');
+
+            const panelTitles = panelBlocks.map(x => x.attributes?.title ?? '');
+
+            return {containerBlock, panelBlocks, panelTitles};
+        }, [innerBlocks]);
+
+        console.log(containerBlock);
+        console.log(panelBlocks);
+        console.log(panelTitles);
 
         return <>
             <InspectorControls group="styles">
@@ -342,7 +368,7 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
             <BlockContextProvider
-                value={}
+                value={{settings}}
             >
                 <div {...innerBlocksProps}></div>
             </BlockContextProvider>

@@ -44,13 +44,13 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const isActive = context.tabActive === clientId;
-
         const blockProps = useBlockProps({
-            className: classNames(attributes, isActive, true),
+            className: classNames(attributes, true),
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps);
+
+        const isActive = false;
 
         return <>
             <InspectorControls group={'advanced'}>

@@ -58,41 +58,11 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const {tabPanels = [], tabActive = null, setTabActive} = context;
-
-        const {tabOptions} = context;
-
-        useEffect(() => {
-            if (
-                !attributes.tabPanels ||
-                Object.keys(tabPanels).some(
-                    (key) => tabPanels[key] !== attributes.tabPanels[key]
-                )
-            ) {
-                setAttributes({tabPanels});
-            }
-        }, [tabPanels]);
-
-        useEffect(() => {
-            let result = {
-                ...attributes['wpbs-content-tabs-navigation'],
-                'options': {
-                    ...attributes['wpbs-content-tabs-navigation']?.options,
-                    ...tabOptions
-                }
-            };
-
-            setAttributes({'wpbs-content-tabs-navigation': result});
-
-        }, [tabOptions, tabPanels])
-
-        const handleClick = useCallback((clientId) => {
-            setTabActive(clientId);
-        }, []);
-
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
+        
+        const tabPanels = [];
 
         return <>
 

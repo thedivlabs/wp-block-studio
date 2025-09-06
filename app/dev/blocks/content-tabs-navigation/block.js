@@ -56,15 +56,12 @@ registerBlockType(metadata.name, {
             className: classNames(attributes),
         });
 
-        const panels = useMemo(() => {
-            return JSON.parse(JSON.stringify(context?.panelBlocks ?? {}));
-        }, [context]);
+        const panels = JSON.parse(JSON.stringify(context?.panelBlocks ?? {}));
 
         useEffect(() => {
 
 
             if (panels && !isEqual(panels, settings?.panels)) {
-                console.log(panels);
                 setAttributes({'wpbs-content-tabs-navigation': {panels: panels}});
             }
 

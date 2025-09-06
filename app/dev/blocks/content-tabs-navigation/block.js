@@ -13,6 +13,8 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useCallback, useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 import {useUniqueId} from "Includes/helper";
+import {useMemo} from "react";
+import {isEqual} from "lodash";
 
 
 function classNames(attributes = {}) {
@@ -25,7 +27,7 @@ function classNames(attributes = {}) {
 
 function buttonClassNames(attributes) {
 
-    const {options = {}} = attributes['wpbs-content-tabs-navigation'];
+    const {options = {}} = attributes?.['wpbs-content-tabs-navigation'] ?? {};
 
     return [
         'wpbs-content-tabs-navigation__button h-auto',
@@ -41,25 +43,44 @@ registerBlockType(metadata.name, {
         ...LAYOUT_ATTRIBUTES,
         ...STYLE_ATTRIBUTES,
         'wpbs-content-tabs-navigation': {
-            type: 'object',
-            default: {
-                tabs: undefined,
-            }
+            type: 'object'
         }
     },
     edit: ({attributes, setAttributes, clientId, context}) => {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const {'wpbs-content-tabs-navigation': settings = {}} = attributes;
+
         const blockProps = useBlockProps({
             className: classNames(attributes),
         });
 
-        const {panelBlocks = [], settings} = context;
+        const panels = context?.panelBlocks;
 
         useEffect(() => {
-            setAttributes({'wpbs-content-tabs-navigation': {panelBlocks, settings}});
-        }, [panelBlocks, settings]);
+
+
+            if (panels && !isEqual(panels, settings?.panels)) {
+                setAttributes({'wpbs-content-tabs-navigation': {panels: panels}});
+            }
+
+        }, [panels]);
+
+        const Buttons = useMemo(() => {
+            return (settings?.panels ?? []).map((panel) => {
+
+                return (
+                    <button
+                        key={panel.clientId}
+                        className={buttonClassNames(attributes)}
+                        type="button"
+                    >
+                        {panel.title}
+                    </button>
+                );
+            });
+        }, [settings?.panels]);
 
         return <>
 
@@ -68,18 +89,7 @@ registerBlockType(metadata.name, {
                    deps={['wpbs-content-tabs-navigation']} selector={'wpbs-content-tabs-navigation'}
             />
             <nav {...blockProps} >
-                {panelBlocks.map((panel) => {
-
-                    return (
-                        <button
-                            key={panel.clientId}
-                            className={buttonClassNames(attributes)}
-                            type="button"
-                        >
-                            {panel.title}
-                        </button>
-                    );
-                })}
+                {Buttons}
             </nav>
         </>;
     },
@@ -90,15 +100,17 @@ registerBlockType(metadata.name, {
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
-        const {panelBlocks, settings} = props.attributes?.['wpbs-content-tabs-navigation'] ?? {};
+        const {'wpbs-content-tabs-navigation': settings = {}} = props?.attributes ?? {};
+
+        const {panels = []} = settings;
 
         return <nav {...blockProps} role={'tablist'}>
-            {panelBlocks.map((panel) => {
+            {(panels || []).map((panel) => {
 
                 return (
                     <button
                         key={panel.clientId}
-                        className={buttonClassNames(attributes)}
+                        className={buttonClassNames(props.attributes)}
                         type={"button"}
                         role={'tab'}
 

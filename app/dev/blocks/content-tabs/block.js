@@ -368,7 +368,7 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
             <BlockContextProvider
-                value={{settings,panelBlocks}}
+                value={{settings, panelBlocks}}
             >
                 <div {...innerBlocksProps}></div>
             </BlockContextProvider>

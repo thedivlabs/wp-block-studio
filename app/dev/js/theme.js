@@ -325,18 +325,20 @@ class WPBS_Theme {
             //document.body.classList.add('material-icons-loaded');
         }
 
-        wp.domReady(() => {
+        /*  wp.domReady(() => {
+  
+  
+  
+          })*/
+
+
+        document.addEventListener('DOMContentLoaded', () => {
 
             this.observeMedia();
 
             [...document.querySelectorAll('link[data-href]')].forEach((link) => {
                 link.href = link.dataset.href;
             })
-
-        })
-
-
-        document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
 

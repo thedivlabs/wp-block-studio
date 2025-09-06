@@ -58,6 +58,8 @@
     &:before {
       content: var(--icon-open, var(--icon, "keyboard_arrow_down"));
       font-variation-settings: var(--icon-open-css, var(--icon-css));
+      font-size: var(--icon-size-open, var(--icon-size, 24px));
+      color: var(--icon-color-open, inherit);
     }
   }
 

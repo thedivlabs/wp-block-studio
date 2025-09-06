@@ -139,16 +139,16 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             if (!tabActive && tabPanels?.length > 0) {
-                setTabActive(tabPanels[0].clientId);
+                //setTabActive(tabPanels[0].clientId);
             }
-        }, [tabPanels, tabActive]);
+        }, [tabPanels, tabActive, tabPanels?.[0]?.clientId]);
 
         useEffect(() => {
             const buttonGrow = !!settings?.['button-grow'];
             const result = {buttonGrow};
 
             if (!shallowEqual(tabOptions, result)) {
-                setTabOptions(result);
+                //setTabOptions(result);
             }
 
         }, [settings]);

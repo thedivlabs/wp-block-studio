@@ -10,6 +10,7 @@ import {useEffect} from '@wordpress/element';
 import {useInstanceId} from "@wordpress/compose";
 
 import React from "react";
+import {MaterialIcon} from "Components/IconControl";
 
 function classNames(attributes = {}) {
 
@@ -78,7 +79,7 @@ registerBlockType(metadata.name, {
 
         return <div {...blockProps}>
             <div {...innerBlocksProps}></div>
-            <button className={'wpbs-accordion-group-header__toggle'}><span
+            <button className={'wpbs-accordion-group-header__toggle material-icon-before'}><span
                 className={'screen-reader-text'}>Toggle content</span></button>
         </div>;
     }

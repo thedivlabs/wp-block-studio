@@ -10,6 +10,9 @@
   "attributes": {
     "uniqueId": {
       "type": "string"
+    },
+    "wpbs-settings": {
+      "type": "object"
     }
   },
   "styles": [
@@ -21,9 +24,6 @@
   "allowedBlocks": [
     "wpbs/accordion-group-item"
   ],
-  "providesContext": {
-    "wpbs/ElementTag": "ElementTag"
-  },
   "supports": {
     "interactivity": true,
     "html": false,

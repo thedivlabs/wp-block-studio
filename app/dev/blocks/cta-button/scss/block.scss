@@ -1,5 +1,11 @@
 .wpbs-cta-button {
-  @apply inline-flex relative select-none w-fit items-center justify-center;
+  display: inline-flex; /* inline-flex */
+  position: relative; /* relative */
+  user-select: none; /* select-none */
+  width: fit-content; /* w-fit */
+  align-items: center; /* items-center */
+  justify-content: center; /* justify-center */
+
   transition-property: opacity, color, background-color, border-color, gap;
   transition-duration: 300ms;
   transition-timing-function: linear;
@@ -14,9 +20,8 @@
 
   &.is-style-link {
     & > .wpbs-cta-button__title,
-    & > .wpbs-cta-button__icon
-    {
-      color:inherit;
+    & > .wpbs-cta-button__icon {
+      color: inherit;
     }
   }
 

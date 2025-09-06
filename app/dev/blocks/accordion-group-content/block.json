@@ -19,7 +19,7 @@
     "wpbs/accordion-group-item"
   ],
   "usesContext": [
-    "groupId"
+    "settings"
   ],
   "supports": {
     "html": false,

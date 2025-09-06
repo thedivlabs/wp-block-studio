@@ -1,10 +1,8 @@
 .wpbs-faq-group {
   box-shadow: none !important;
 
-  @apply
-  flex
-  flex-col
-  ;
+  display: flex; /* flex */
+  flex-direction: column; /* flex-col */
 
   .wpbs-faq-group__header {
     width: 100%;
@@ -117,5 +115,4 @@
   .wpbs-faq-group__item.has-child-selected .wpbs-faq-group__answer {
     display: block;
   }
-
 }

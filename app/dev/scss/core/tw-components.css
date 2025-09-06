@@ -5,7 +5,19 @@
     margin-right: auto;
   }
 
-
+  .material-icon-before {
+    &:before {
+      font-family: 'Material Symbols Outlined', sans-serif;
+      height: 1em;
+      width: 1em;
+      line-height: 1;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+  }
+  
   .material-symbols-outlined {
     font-family: "Material Symbols Outlined", sans-serif;
     justify-content: center;

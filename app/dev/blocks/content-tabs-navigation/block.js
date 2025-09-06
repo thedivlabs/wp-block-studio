@@ -84,7 +84,7 @@ registerBlockType(metadata.name, {
 
             setAttributes({'wpbs-content-tabs-navigation': result});
 
-        }, [tabOptions])
+        }, [tabOptions, tabPanels])
 
         const handleClick = useCallback((clientId) => {
             setTabActive(clientId);

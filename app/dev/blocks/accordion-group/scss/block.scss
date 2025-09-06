@@ -41,22 +41,22 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    aspect-ratio: 1/1;
-    color: var(--icon-color, inherit);
-    height: 1.2em;
+    height: 1em;
+    width: 1em;
     line-height: 1;
     transition: transform .2s ease, color .3s linear;
 
     &:before {
-      content: var(--icon, none);
+      content: var(--icon, "keyboard_arrow_down");
       font-variation-settings: var(--icon-css);
       font-size: var(--icon-size, 24px);
+      color: var(--icon-color, inherit);
     }
   }
 
   .wpbs-accordion-group-item.--open .wpbs-accordion-group-header__toggle {
     &:before {
-      content: var(--icon-open, var(--icon, none));
+      content: var(--icon-open, var(--icon, "keyboard_arrow_down"));
       font-variation-settings: var(--icon-open-css, var(--icon-css));
     }
   }

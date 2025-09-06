@@ -3,7 +3,7 @@
     display: flex;
 
     & > li {
-      @apply relative;
+      position: relative; /* relative */
 
       &:hover > a {
         background-color: var(--color-background-hover, transparent);
@@ -27,18 +27,22 @@
         border-width: var(--link-border-width, 0);
         border-style: var(--link-border-style, none);
         border-color: var(--link-border-color, transparent);
-        @apply whitespace-nowrap flex transition-colors duration-200 relative items-center;
+
+        white-space: nowrap; /* whitespace-nowrap */
+        display: flex; /* flex */
+        position: relative; /* relative */
+        align-items: center; /* items-center */
+        transition-property: color, background-color, border-color, text-decoration-color; /* transition-colors */
+        transition-duration: 200ms; /* duration-200 */
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
         & > span {
-          @apply
-          grow
+          flex-grow: 1; /* grow */
         }
-
       }
 
       &.active,
       &:hover {
-
         & > a {
           text-decoration-color: var(--color-text-decoration-active, var(--color-text-decoration, initial));
           border-width: var(--link-border-width-active, 0);
@@ -51,10 +55,8 @@
         }
       }
 
-
       &.menu-item-has-children {
         & > a {
-
           &:after {
             content: var(--icon, none);
             font-size: var(--icon-size, 24px);
@@ -62,24 +64,24 @@
             font-family: "Material Symbols Outlined", sans-serif;
             color: var(--color-icon, inherit);
             transition-timing-function: ease-in-out;
-            @apply aspect-square transition-transform duration-300 flex text-center justify-center items-center pointer-events-none
+
+            aspect-ratio: 1 / 1; /* aspect-square */
+            display: flex; /* flex */
+            text-align: center; /* text-center */
+            justify-content: center; /* justify-center */
+            align-items: center; /* items-center */
+            pointer-events: none; /* pointer-events-none */
+            transition-property: transform; /* transition-transform */
+            transition-duration: 300ms; /* duration-300 */
           }
         }
 
-
-        &.active {
-
-          & > a {
-
-            &:after {
-              content: var(--icon-open, none);
-              font-variation-settings: var(--icon-open-css);
-              font-family: "Material Symbols Outlined", sans-serif;
-            }
-          }
+        &.active > a:after {
+          content: var(--icon-open, none);
+          font-variation-settings: var(--icon-open-css);
+          font-family: "Material Symbols Outlined", sans-serif;
         }
       }
-
 
       & > .sub-menu {
         display: none;
@@ -88,7 +90,7 @@
         overflow: hidden;
 
         & > li {
-          @apply w-full;
+          width: 100%; /* w-full */
 
           &:last-of-type {
             border-bottom: none;
@@ -99,8 +101,12 @@
             padding: var(--submenu-link-padding, initial);
             color: var(--color-submenu-text, black);
             background-color: var(--color-submenu-background, white) !important;
-            @apply transition-colors flex w-full;
+
+            display: flex; /* flex */
+            width: 100%; /* w-full */
+            transition-property: color, background-color, border-color, text-decoration-color; /* transition-colors */
             transition-duration: 300ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
           }
 
           &:hover > a {
@@ -127,9 +133,8 @@
     }
   }
 
-
   &.--divider .wpbs-nav-menu-container > li:not(:last-of-type) {
-    @apply relative;
+    position: relative; /* relative */
   }
 
   &.is-style-default.--divider .wpbs-nav-menu-container > li:not(:last-of-type):after {
@@ -145,7 +150,7 @@
     width: auto;
     border-right: var(--divider, none);
     transform: translate(calc((var(--column-gap, 1px) / 2) + 50%), -50%);
-    color: var(--icon-divider-color, inherit)
+    color: var(--icon-divider-color, inherit);
   }
 
   &.is-style-default.--divider.--icon-divider .wpbs-nav-menu-container > li:not(:last-of-type):after {
@@ -153,15 +158,13 @@
     vertical-align: middle;
     text-align: center;
     font-family: 'Material Symbols Outlined', sans-serif;
-    font-weight: 600;;
+    font-weight: 600;
     border: none !important;
   }
 
   //
   // ============ Columns STYLE ============
   //
-
-
   &.is-style-columns {
     .wpbs-nav-menu-container {
       display: grid;
@@ -176,7 +179,6 @@
       }
     }
   }
-
 
   //
   // ============ DROPDOWN STYLE ============
@@ -194,7 +196,13 @@
         position: absolute;
         background-color: transparent;
         transition: opacity 0.3s;
-        @apply flex flex-col text-left opacity-0 pointer-events-none z-50;
+
+        display: flex; /* flex */
+        flex-direction: column; /* flex-col */
+        text-align: left; /* text-left */
+        opacity: 0; /* opacity-0 */
+        pointer-events: none; /* pointer-events-none */
+        z-index: 50; /* z-50 */
 
         &.offset-right {
           right: 0;
@@ -222,11 +230,12 @@
 
       & > li:hover > .sub-menu {
         max-width: min(20rem, 100vw);
-        @apply opacity-100 pointer-events-auto;
+        opacity: 1; /* opacity-100 */
+        pointer-events: auto; /* pointer-events-auto */
       }
 
       & > li.menu-item-has-children:hover > a:after {
-        @apply rotate-180;
+        transform: rotate(180deg); /* rotate-180 */
       }
     }
 
@@ -245,10 +254,13 @@
   //
   &.is-style-accordion {
     .wpbs-nav-menu-container {
-      @apply w-full flex flex-col;
+      width: 100%; /* w-full */
+      display: flex; /* flex */
+      flex-direction: column; /* flex-col */
 
       & > li {
-        @apply w-full block;
+        width: 100%; /* w-full */
+        display: block; /* block */
 
         &.menu-item-has-children > a {
           padding-right: var(--icon-size, 24px);
@@ -259,12 +271,11 @@
             right: 0;
             max-height: 1em;
             line-height: 1em;
-            @apply w-auto;
           }
         }
 
         & > a {
-          @apply w-full;
+          width: 100%; /* w-full */
           padding: var(--submenu-link-padding, initial);
         }
 
@@ -275,7 +286,10 @@
           overflow: hidden;
           padding: var(--submenu-padding, initial);
           margin-top: var(--submenu-space, 0px);
-          @apply w-full hidden flex-col;
+
+          width: 100%; /* w-full */
+          display: none; /* hidden */
+          flex-direction: column; /* flex-col */
 
           & > li:not(:last-of-type) {
             margin-bottom: var(--submenu-gap, 0px);

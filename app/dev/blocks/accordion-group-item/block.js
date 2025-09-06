@@ -42,9 +42,7 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
-        const {ElementTag: ParentElementTag = 'div'} = context || {};
-
-        const ElementTag = ['ul', 'ol'].includes(ParentElementTag) ? 'li' : 'div';
+        const ElementTag = ['ul', 'ol'].includes(context?.tag ?? '') ? 'li' : 'div';
 
         const ref = useRef(null);
 
@@ -75,7 +73,7 @@ registerBlockType(metadata.name, {
                 'wpbs/accordion-group-header',
                 'wpbs/accordion-group-content',
             ],
-            templateLock: 'all'
+            //templateLock: 'all'
         });
 
         const handleClick = (event) => {
@@ -93,8 +91,7 @@ registerBlockType(metadata.name, {
 
             }
         };
-
-
+        
         return <>
 
             <InspectorControls group="styles">

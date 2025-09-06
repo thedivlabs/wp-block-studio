@@ -1,7 +1,6 @@
 .wpbs-services-content {
-  @apply
-  flex
-  relative;
+  display: flex;
+  position: relative;
 
 
   &.--icon {

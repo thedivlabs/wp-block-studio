@@ -20,11 +20,8 @@
     "wpbs/accordion-group-text"
   ],
   "usesContext": [
-    "ElementTag"
+    "settings"
   ],
-  "providesContext": {
-    "wpbs/groupId": "groupId"
-  },
   "supports": {
     "html": false,
     "innerBlocks": true,

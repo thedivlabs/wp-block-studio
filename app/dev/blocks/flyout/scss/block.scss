@@ -6,13 +6,11 @@
   left: 0;
   transition: background-color var(--animation, 300ms) linear, backdrop-filter var(--animation, 300ms) linear;
   background-color: rgba(0, 0, 0, 0);
-  @apply
-  fixed
-  flex
-  overflow-hidden
-  justify-end
-  pointer-events-none
-  ;
+  position: fixed;
+  display: flex;
+  overflow: hidden;
+  justify-content: flex-end;
+  pointer-events: none;
 
   @media (prefers-reduced-transparency: reduce) {
     transition: background-color var(--animation, 300ms) linear;
@@ -25,9 +23,8 @@
   &.active {
     background-color: var(--overlay, rgba(0, 0, 0, .5));
     backdrop-filter: grayscale(var(--grayscale, 0)) blur(clamp(0px, var(--blur, 0px), 10px));
-    @apply
-    opacity-100
-    pointer-events-auto
+    opacity: 1;
+    pointer-events: auto;
   }
 
   &.active .wpbs-flyout__container {
@@ -52,7 +49,6 @@
     transform: none !important;
     opacity: 1 !important;
   }
-
 }
 
 .wpbs-flyout__container {
@@ -61,18 +57,15 @@
   right: 0;
   max-width: var(--container-width, 100%);
   transition: transform var(--animation, 300ms) ease-in-out, opacity var(--animation, 300ms) linear;
-  @apply
-  w-full
-  h-full
-  flex
-  flex-col
-  z-30
-  absolute
-  pointer-events-none
-  ;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  position: absolute;
+  pointer-events: none;
 
   & > * {
-    @apply
-    pointer-events-auto
+    pointer-events: auto;
   }
 }

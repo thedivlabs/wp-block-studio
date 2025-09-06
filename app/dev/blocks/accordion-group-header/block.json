@@ -23,7 +23,7 @@
     "core/paragraph"
   ],
   "usesContext": [
-    "groupId"
+    "settings"
   ],
   "supports": {
     "html": false,

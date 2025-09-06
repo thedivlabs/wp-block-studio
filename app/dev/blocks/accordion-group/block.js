@@ -218,7 +218,6 @@ registerBlockType(metadata.name, {
 
         const cssProps = useMemo(() => {
             return {
-
                 ...iconProps(settings?.['icon-closed']),
                 ...iconProps(settings?.['icon-open'], 'open'),
 
@@ -289,7 +288,7 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
 
-            <BlockContextProvider value={{ElementTag}}>
+            <BlockContextProvider value={{settings}}>
                 <ElementTag role="presentation" {...innerBlocksProps} />
             </BlockContextProvider>
 

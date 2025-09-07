@@ -16,6 +16,7 @@ import {LayoutControls, LAYOUT_ATTRIBUTES} from "Components/Layout"
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon} from "Components/IconControl";
 import {useSetting} from '@wordpress/block-editor';
+import {isEqual} from "lodash";
 
 function blockClasses(attributes = {}) {
 

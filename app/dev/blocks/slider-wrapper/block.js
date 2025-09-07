@@ -5,6 +5,7 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import React, {useEffect} from "react";
+import {isEqual} from "lodash";
 
 function blockClasses(attributes = {}) {
     return [
@@ -35,7 +36,10 @@ registerBlockType(metadata.name, {
         });
 
         useEffect(() => {
-            setAttributes({'wpbs-query': loopQuery});
+            if (!isEqual(loopQuery, attributes['wpbs-query'])) {
+                setAttributes({'wpbs-query': loopQuery});
+            }
+
         }, [loopQuery, setAttributes]);
 
         return <>

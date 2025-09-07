@@ -134,8 +134,8 @@ class WPBS {
 	public function theme_assets(): void {
 
 		/* Odometer */
-		wp_register_style( 'odometer-css', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css', [], false );
-		wp_register_script( 'odometer-js', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js', [], false, [
+		wp_register_style( 'odometer-css', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-default.min.css', [], false );
+		wp_register_script( 'odometer-js', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js', [], false, [
 			'strategy' => 'defer'
 		] );
 

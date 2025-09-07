@@ -36,7 +36,9 @@ registerBlockType(metadata.name, {
         });
 
         useEffect(() => {
-            if (!isEqual(loopQuery, attributes['wpbs-query'])) {
+            if (!isEqual(loopQuery, attributes?.['wpbs-query'] ?? {})) {
+                console.log(loopQuery);
+                console.log(attributes['wpbs-query']);
                 setAttributes({'wpbs-query': loopQuery});
             }
 

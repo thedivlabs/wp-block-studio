@@ -309,8 +309,8 @@ class WPBS_Theme {
 
     async loadFont() {
         // Point to your local font file (relative or absolute path)
-        const path = WPBS?.settings?.path?.theme + '/assets/fonts/material-symbols-outlined-full.woff2';
-        //const path = 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined';
+        //const path = WPBS?.settings?.path?.theme + '/assets/fonts/material-symbols-outlined-full.woff2';
+        const path = WPBS?.settings?.path?.theme + '/assets/fonts/material-symbols-outlined.woff2';
         const font = new FontFace("Material Symbols Outlined", "url(" + path + ")", {
             display:'swap'
         });

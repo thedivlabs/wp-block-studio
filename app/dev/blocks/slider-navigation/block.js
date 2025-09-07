@@ -103,6 +103,8 @@ registerBlockType(metadata.name, {
             return context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {};
         }, [context?.['wpbs/settings']?.slider ?? context?.['wpbs/settings'] ?? {}]);
 
+        const customSettings = useSetting('custom')?.slider ?? {};
+
         const updateSettings = useCallback((newValue) => {
 
             const result = {
@@ -113,9 +115,8 @@ registerBlockType(metadata.name, {
 
             setAttributes({'wpbs-slider-navigation': result});
 
-        }, [setAttributes, settings, slider]);
+        }, [setAttributes, settings, slider, customSettings]);
 
-        const customSettings = useSetting('custom')?.slider ?? {};
 
         useEffect(() => {
 
@@ -123,6 +124,7 @@ registerBlockType(metadata.name, {
             const prev = customSettings?.button?.prev ?? 'chevron_left'
 
             if (next !== settings?.['icon-next'] || prev !== settings?.['icon-prev']) {
+                console.log('next', next, 'prev', prev);
                 updateSettings({
                     'icon-next': next,
                     'icon-prev': prev,

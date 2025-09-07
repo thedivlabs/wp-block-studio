@@ -24,12 +24,7 @@
     height: 1em;
     width: 1em;
     display: inline-flex;
-
-    &:not(body.icons-loaded &) {
-      visibility: hidden !important;
-      height: 1em !important;
-      width: 1em !important;
-      overflow: hidden !important;
-    }
   }
 }
+
+

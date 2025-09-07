@@ -11,16 +11,12 @@ const {state} = store('wpbs/odometer', {
 
             let od;
 
+            window.odometerOptions = {
+                auto: false
+            }
+
             function waitForOdometer(cb) {
                 if (typeof Odometer !== 'undefined') {
-                    od = new Odometer({
-                        el: element,
-                        value: start,
-                        duration: duration,
-                        theme: 'default',
-                        format: format ? '(,ddd).dd' : '',
-                        framesPerSecond: 60,
-                    });
                     cb();
                 } else {
                     setTimeout(() => waitForOdometer(cb), 100);
@@ -33,9 +29,24 @@ const {state} = store('wpbs/odometer', {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            od.update(end);
+                            if (!od) {
+                                od = new Odometer({
+                                    el: element,
+                                    value: start,
+                                    duration: duration,
+                                    theme: 'default',
+                                    format: format ? '(,ddd).dd' : '',
+                                    framesPerSecond: 60,
+                                });
+                                od.update(end);
+                            } else {
+                                od.update(end);
+                            }
                         } else {
-                            od.update(start);
+                            if (!!od) {
+                                od.update(start);
+                            }
+
                         }
                     });
                 }, {threshold: 0.3});

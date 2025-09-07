@@ -161,6 +161,12 @@ class WPBS {
 		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
 			'strategy' => 'async'
 		] );
+		add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
+			$sources[] = 'https://cdn.jsdelivr.net';
+
+			return $sources;
+		} );
+
 
 		/* Masonry */
 		wp_register_script( 'masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [

@@ -34,7 +34,7 @@ function classNames(attributes = {}, editor = false) {
     return [
         'wpbs-content-tabs',
         'w-full relative',
-        !!editor ? 'editor' : null,
+        !!editor ? 'editor tabs-initialized' : null,
         !!attributes['wpbs-content-tabs']?.['collapse'] ? '--collapse' : null,
         !!attributes['wpbs-content-tabs']?.['hide-inactive'] ? '--hide-inactive' : null,
         attributes?.uniqueId ?? '',
@@ -282,21 +282,25 @@ registerBlockType(metadata.name, {
             [clientId]
         );
 
-        const {panelBlocks} = useMemo(() => {
+        const {panelTitles, panelBlocks} = useMemo(() => {
 
             const containerBlock = findInnerBlock(innerBlocks, {name: 'wpbs/content-tabs-container'});
 
             const panelBlocks = [...containerBlock?.innerBlocks ?? []].filter(x => x.name === 'wpbs/content-tabs-panel').map(panel => {
                 return {
                     title: panel?.attributes?.title,
-                    clientId: panel?.clientId,
+                    clientId: panel?.clientId
                 }
             });
 
-            const panelTitles = panelBlocks.map(x => x.attributes?.title ?? '');
+            const panelTitles = panelBlocks.map((x, i) => x.title ?? ('Tab-' + i));
 
             return {containerBlock, panelBlocks, panelTitles};
         }, [innerBlocks]);
+
+        const activeTab = [...innerBlocks].find(x => x.isSelected)?.clientId ?? panelBlocks[0]?.clientId ?? null;
+
+        console.log([...innerBlocks].find(x => x.isSelected));
 
         return <>
             <InspectorControls group="styles">
@@ -368,7 +372,7 @@ registerBlockType(metadata.name, {
                    props={cssProps}
             />
             <BlockContextProvider
-                value={{settings, panelBlocks}}
+                value={{settings, panelTitles, panelBlocks, activeTab}}
             >
                 <div {...innerBlocksProps}></div>
             </BlockContextProvider>

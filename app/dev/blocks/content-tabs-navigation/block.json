@@ -22,7 +22,8 @@
     "wpbs/content-tabs"
   ],
   "usesContext": [
-    "panelBlocks",
+    "panelTitles",
+    "activeTab",
     "settings"
   ],
   "supports": {

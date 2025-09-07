@@ -16,7 +16,7 @@
     }
   },
   "usesContext": [
-    "tabActive"
+    "activeTab"
   ],
   "parent": [
     "wpbs/content-tabs-container"

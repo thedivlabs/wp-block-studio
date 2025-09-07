@@ -1,6 +1,3 @@
-import './scss/block.scss'
-
-
 import {
     useBlockProps,
 } from "@wordpress/block-editor"
@@ -56,31 +53,30 @@ registerBlockType(metadata.name, {
             className: classNames(attributes),
         });
 
-        const panels = JSON.parse(JSON.stringify(context?.panelBlocks ?? {}));
+        const panels = context?.panelTitles ?? [];
 
         useEffect(() => {
 
-
             if (panels && !isEqual(panels, settings?.panels)) {
-                setAttributes({'wpbs-content-tabs-navigation': {panels: panels}});
+                console.log(panels);
+                setAttributes({'wpbs-content-tabs-navigation': {'panels': panels}});
             }
 
         }, [panels]);
 
         const Buttons = useMemo(() => {
-            return (settings?.panels ?? []).map((panel) => {
+            return (panels ?? []).map((title) => {
 
                 return (
                     <button
-                        key={panel.clientId}
                         className={buttonClassNames(attributes)}
                         type="button"
                     >
-                        {panel.title}
+                        {title}
                     </button>
                 );
             });
-        }, [settings?.panels]);
+        }, [panels]);
 
         return <>
 
@@ -105,17 +101,16 @@ registerBlockType(metadata.name, {
         const {panels = []} = settings;
 
         return <nav {...blockProps} role={'tablist'}>
-            {(panels || []).map((panel) => {
+            {(panels || []).map((title) => {
 
                 return (
                     <button
-                        key={panel.clientId}
                         className={buttonClassNames(props.attributes)}
                         type={"button"}
                         role={'tab'}
 
                     >
-                        {panel.title}
+                        {title}
                     </button>
                 );
             })}

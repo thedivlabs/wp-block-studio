@@ -18,9 +18,10 @@ import {TextControl} from "@wordpress/components";
 import {useUniqueId} from "Includes/helper";
 
 
-function classNames(attributes, editor = false) {
+function classNames(attributes, editor = false, isSelected = false) {
     return [
         'wpbs-content-tabs-panel',
+        !!isSelected ? 'active' : null,
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');
 }
@@ -41,8 +42,20 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const isSelected = useSelect(
+            (select) => select(blockEditorStore).isBlockSelected(clientId),
+            [clientId]
+        );
+
+        const hasChildSelected = useSelect(
+            (select) => select(blockEditorStore).hasSelectedInnerBlock(clientId, true),
+            [clientId]
+        );
+
+        const isActive = (context?.activeTab === clientId) || isSelected || hasChildSelected;
+
         const blockProps = useBlockProps({
-            className: classNames(attributes, true),
+            className: classNames(attributes, true, isActive),
         });
 
         const innerBlocksProps = useInnerBlocksProps(blockProps);

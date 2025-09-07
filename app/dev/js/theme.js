@@ -307,23 +307,26 @@ class WPBS_Theme {
         jQuery(element).slideDown(duration, callback);
     }
 
+    async loadFont() {
+        // Point to your local font file (relative or absolute path)
+        const path = WPBS?.settings?.path?.theme + '/assets/fonts/material-symbols-outlined.woff2';
+        const font = new FontFace("Material Symbols Outlined", "url(" + path + ")");
+
+        try {
+            // Load the font
+            await font.load();
+
+            // Add it to the document
+            document.fonts.add(font);
+
+        } catch (err) {
+            console.error("Font failed to load", err);
+        }
+    }
+
+
     init() {
 
-        if (document.fonts && document.fonts.load) {
-            // Wait until the Material Symbols Outlined font is fully loaded
-            document.fonts.load('1em "Material Symbols Outlined"').then(() => {
-                // Add a class to the body to indicate the font is ready
-                document.body.classList.add('icons-loaded');
-
-
-            }).catch(() => {
-                // Fallback: in case of error, still add the class
-                //document.body.classList.add('material-icons-loaded');
-            });
-        } else {
-            // Fallback for older browsers that don't support the Font Loading API
-            //document.body.classList.add('material-icons-loaded');
-        }
 
         /*  wp.domReady(() => {
   
@@ -333,6 +336,27 @@ class WPBS_Theme {
 
 
         document.addEventListener('DOMContentLoaded', () => {
+
+            this.loadFont().then(() => {
+                if (document.fonts && document.fonts.load) {
+                    // Wait until the Material Symbols Outlined font is fully loaded
+                    document.fonts.load('24px "Material Symbols Outlined"').then(() => {
+                        // Add a class to the body to indicate the font is ready
+
+                        setTimeout(() => {
+                            document.body.classList.add('icons-loaded');
+                        }, 400);
+
+
+                    }).catch(() => {
+                        // Fallback: in case of error, still add the class
+                        //document.body.classList.add('material-icons-loaded');
+                    });
+                } else {
+                    // Fallback for older browsers that don't support the Font Loading API
+                    //document.body.classList.add('material-icons-loaded');
+                }
+            });
 
             this.observeMedia();
 

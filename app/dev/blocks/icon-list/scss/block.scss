@@ -46,19 +46,14 @@
 /* List item icon before pseudo-element */
 .wpbs-icon-list__list > li::before {
   content: var(--icon, none);
-  font-family: "Material Symbols Outlined", sans-serif;
   font-variation-settings: var(--icon-css);
   font-size: var(--icon-size, 24px);
   color: var(--icon-color, inherit);
-  line-height: inherit;
   position: absolute;
   top: 0;
   left: 0;
   height: 1lh;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
+  width: 1lh;
   pointer-events: none;
   user-select: none;
 }

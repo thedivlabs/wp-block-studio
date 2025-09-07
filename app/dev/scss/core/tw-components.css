@@ -5,20 +5,9 @@
     margin-right: auto;
   }
 
-  .material-icon-before {
-    &:before {
-      font-family: 'Material Symbols Outlined', sans-serif;
-      height: 1em;
-      width: 1em;
-      line-height: 1;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-  }
-  
-  .material-symbols-outlined {
+
+  .material-symbols-outlined,
+  .material-icon-before:before {
     font-family: "Material Symbols Outlined", sans-serif;
     justify-content: center;
     align-items: center;
@@ -32,10 +21,12 @@
     word-wrap: normal;
     white-space: nowrap;
     direction: ltr;
-    transition: opacity .3s;
+    height: 1em;
+    width: 1em;
+    display: inline-flex;
 
     &:not(body.icons-loaded &) {
-      opacity: 0 !important;
+      visibility: hidden !important;
       height: 1em !important;
       width: 1em !important;
       overflow: hidden !important;

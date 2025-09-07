@@ -308,22 +308,26 @@ class WPBS_Theme {
     }
 
     async loadFont() {
-        // Point to your local font file (relative or absolute path)
-        //const path = WPBS?.settings?.path?.theme + '/assets/fonts/material-symbols-outlined-full.woff2';
-        const path = WPBS?.settings?.path?.theme + '/assets/fonts/material-symbols-outlined.woff2';
-        const font = new FontFace("Material Symbols Outlined", "url(" + path + ")", {
-            display:'swap'
-        });
+        // Define the weights you want
+        const weights = WPBS?.settings?.icons ?? [200, 300, 500];
 
-        try {
-            // Load the font
-            await font.load();
+        // Loop through each weight and load
+        for (const weight of weights) {
+            // Adjust your file naming convention as needed
+            const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-v276-latin-${weight}.woff2`;
 
-            // Add it to the document
-            document.fonts.add(font);
+            const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
+                weight: weight.toString(),
+                style: "normal",
+                display: "swap",
+            });
 
-        } catch (err) {
-            console.error("Font failed to load", err);
+            try {
+                const loadedFont = await font.load();
+                document.fonts.add(loadedFont);
+            } catch (err) {
+                console.error(`Font ${weight} failed to load`, err);
+            }
         }
     }
 

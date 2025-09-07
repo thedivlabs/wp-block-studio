@@ -173,6 +173,7 @@ registerBlockType(metadata.name, {
             return Object.fromEntries(
                 Object.entries({
                     '--icon-color': settings?.['icon-color'] || null,
+                    ...iconProps(settings?.['icon']),
                 }).filter(([key, value]) => value != null) // keep only entries with a value
             );
         }, [settings, style]);

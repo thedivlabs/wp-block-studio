@@ -133,11 +133,6 @@ class WPBS {
 
 	public function theme_assets(): void {
 
-		/*wp_register_script( 'wpbs-fontawesome', 'https://kit.fontawesome.com/bff7e13981.js', [], false, [
-			'strategy'  => 'async',
-			'in_footer' => false,
-		] );*/
-
 		/* Odometer */
 		wp_register_style( 'odometer-css', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css', [], false );
 		wp_register_script( 'odometer-js', 'https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js', [], false, [
@@ -197,6 +192,7 @@ class WPBS {
 			],
 			'nonce'       => self::$nonce,
 			'nonce_rest'  => self::$nonce_rest,
+			'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
 			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
 			'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
 		], false ) );

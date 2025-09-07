@@ -9,6 +9,7 @@ import {
     Button,
     Popover,
 } from '@wordpress/components';
+import {useSetting} from "@wordpress/block-editor";
 
 export function iconProps(prop, key = '') {
 
@@ -21,14 +22,18 @@ export function iconProps(prop, key = '') {
         [propName]: prop?.name ? '"' + prop.name + '"' : null,
         [propName + '-size']: prop?.size ? prop.size + 'px' : null,
         [propName + '-css']: prop?.css ?? null,
+        [propName + '-weight']: prop?.weight ?? null,
     }
 
 
 }
 
 export function IconControl({value = {}, onChange, label = 'Icon', defaultValue = ''}) {
+
     const {name = defaultValue, weight = 300, size = 24, style = 0} = value;
     const [isOpen, setIsOpen] = useState(false);
+
+    const themeWeights = useSetting('custom')?.icons ?? '';
 
     const generateCSS = (fill, weight, opsz) => {
         return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
@@ -55,6 +60,10 @@ export function IconControl({value = {}, onChange, label = 'Icon', defaultValue 
         height: '32px',
         textAlign: 'center',
     };
+
+    const weightOptions = themeWeights.replace(' ', '').split(',').map(weight => {
+        return {value: weight.toString(), label: weight.toString()};
+    })
 
     return (
         <BaseControl label={label} style={{marginBottom: 0}}>
@@ -91,13 +100,14 @@ export function IconControl({value = {}, onChange, label = 'Icon', defaultValue 
                                     max={120}
                                     step={1}
                                 />
-                                <NumberControl
-                                    label="Weight"
-                                    value={weight}
+                                <SelectControl
+                                    label="Style"
+                                    value={weight.toString()}
                                     onChange={(val) => update('weight', val)}
-                                    min={100}
-                                    max={700}
-                                    step={100}
+                                    options={[
+                                        {value: '', label: 'Select'},
+                                        ...weightOptions
+                                    ]}
                                 />
                                 <SelectControl
                                     label="Style"
@@ -126,6 +136,7 @@ export const MaterialIcon = ({name, weight, size, style = 0, className = ''}) =>
         fontVariationSettings: css,
         display: 'inline-flex',
         fontSize: `${size}px`,
+        fontWeight: `${weight}`,
     };
 
     return !name ? null : <span

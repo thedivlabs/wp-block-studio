@@ -115,13 +115,13 @@ registerBlockType(metadata.name, {
 
             setAttributes({'wpbs-slider-navigation': result});
 
-        }, [setAttributes, settings, slider, customSettings]);
+        }, [setAttributes, settings, slider]);
 
 
         useEffect(() => {
 
-            const next = customSettings?.button?.next ?? 'chevron_right'
-            const prev = customSettings?.button?.prev ?? 'chevron_left'
+            const next = settings?.['icon-next'] ?? customSettings?.button?.next ?? 'chevron_right'
+            const prev = settings?.['icon-prev'] ?? customSettings?.button?.prev ?? 'chevron_left'
 
             if (next !== settings?.['icon-next'] || prev !== settings?.['icon-prev']) {
                 console.log('next', next, 'prev', prev);

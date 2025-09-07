@@ -17,6 +17,7 @@ import React, {useEffect, useMemo, useRef} from "react";
 import {useInstanceId} from '@wordpress/compose';
 import {LoopControls, LOOP_ATTRIBUTES} from "Components/Loop.js";
 import {useUniqueId} from "Includes/helper";
+import {isEqual} from "lodash";
 
 
 function blockClasses(attributes = {}, editor = false) {
@@ -52,9 +53,13 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
 
-            setAttributes({
-                'wpbs-slider-settings': attributes?.['wpbs-slider'] ?? {}
-            });
+            if (!isEqual(attributes?.['wpbs-slider-settings'] ?? {}, attributes?.['wpbs-slider'] ?? {})) {
+                setAttributes({
+                    'wpbs-slider-settings': attributes?.['wpbs-slider'] ?? {}
+                });
+            }
+
+
         }, [attributes?.['wpbs-slider']])
 
         const cssProps = useMemo(() => {

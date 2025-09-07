@@ -77,19 +77,27 @@ export const SliderComponent = forwardRef(({
 
         } else {
 
-            const swiperConfig = {
+            const config = {
                 ...SWIPER_ARGS_DEFAULT,
                 ...swiperArgs,
                 ...SWIPER_ARGS_EDITOR
             };
 
-            if (element instanceof Element) {
+            if (!(element instanceof Element)) return;
 
-                const wrapper = element?.querySelector('.swiper-wrapper');
-                if (wrapper) {
-                    const swiper = new Swiper(element, swiperConfig);
-                }
+            const wrapper = element.querySelector('.swiper-wrapper');
+            if (!wrapper) return;
 
+            // Wait until Swiper is available
+            if (typeof window.Swiper === 'undefined') {
+                const interval = setInterval(() => {
+                    if (typeof window.Swiper !== 'undefined') {
+                        clearInterval(interval);
+                        new Swiper(element, config);
+                    }
+                }, 50);
+            } else {
+                new Swiper(element, config);
             }
 
 

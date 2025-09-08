@@ -334,7 +334,8 @@ class WPBS_Theme {
 
     init() {
 
-        requestIdleCallback(()=>{
+
+        window.addEventListener('load', () => {
             this.loadFont().then(() => {
                 if (document.fonts && document.fonts.load) {
                     // Wait until the Material Symbols Outlined font is fully loaded
@@ -354,10 +355,8 @@ class WPBS_Theme {
                 }
             });
 
-            [...document.querySelectorAll('link[data-href]')].forEach((link) => {
-                link.href = link.dataset.href;
-            });
-        })
+
+        });
 
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -366,7 +365,9 @@ class WPBS_Theme {
 
             this.popup.init();
 
-
+            [...document.querySelectorAll('link[data-href]')].forEach((link) => {
+                link.href = link.dataset.href;
+            });
         });
 
 

@@ -334,9 +334,7 @@ class WPBS_Theme {
 
     init() {
 
-
-        document.addEventListener('DOMContentLoaded', () => {
-
+        requestIdleCallback(()=>{
             this.loadFont().then(() => {
                 if (document.fonts && document.fonts.load) {
                     // Wait until the Material Symbols Outlined font is fully loaded
@@ -356,11 +354,15 @@ class WPBS_Theme {
                 }
             });
 
-            this.observeMedia();
-
             [...document.querySelectorAll('link[data-href]')].forEach((link) => {
                 link.href = link.dataset.href;
-            })
+            });
+        })
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            this.observeMedia();
 
             this.popup.init();
 

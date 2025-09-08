@@ -92,8 +92,6 @@ class WPBS {
 
 		$sizes = array_values( array_unique( $sizes ) );
 
-		WPBS::console_log( $sizes );
-
 		return $sizes;
 	}
 

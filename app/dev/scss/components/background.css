@@ -34,10 +34,10 @@
 }
 
 /* Image & pattern fallback styles when not lazy OR inside block editor */
-.wpbs-background:not(.lazy) .wpbs-background__media--image::before,
-.wpbs-background:not(.lazy) .wpbs-background__media--pattern::before,
-.block-editor-page .wpbs-background__media--image::before,
-.block-editor-page .wpbs-background__media--pattern::before {
+.wpbs-background:not(.lazy) .wpbs-background__media--image,
+.wpbs-background:not(.lazy) .wpbs-background__media--pattern,
+.block-editor-page .wpbs-background__media--image,
+.block-editor-page .wpbs-background__media--pattern {
   mask-image: var(--fade, none);
   background-color: inherit;
   opacity: var(--opacity, 1);
@@ -48,7 +48,6 @@
   background-attachment: var(--attachment, initial);
   background-position: var(--origin, center);
   max-height: var(--max-height, 100%);
-  content: '';
   @apply absolute top-0 left-0 w-full h-full z-0;
 }
 

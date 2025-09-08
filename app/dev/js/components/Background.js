@@ -1053,7 +1053,12 @@ export function BackgroundElement({attributes = {}, editor = false}) {
             </video>
         }
 
-        return <div className={mediaClass.filter(x => x).join(' ')}>
+        const mediaProps = Object.fromEntries(Object.entries({
+            className: mediaClass.filter(x => x).join(' '),
+            'fetchpriority': settings.eager ? 'high' : null,
+        }).filter(x => !!x));
+
+        return <div {...mediaProps}>
             {MediaElement}
         </div>;
     }

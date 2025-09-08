@@ -335,13 +335,6 @@ class WPBS_Theme {
     init() {
 
 
-        /*  wp.domReady(() => {
-
-
-
-          })*/
-
-
         document.addEventListener('DOMContentLoaded', () => {
 
             this.loadFont().then(() => {
@@ -350,9 +343,7 @@ class WPBS_Theme {
                     document.fonts.load('24px "Material Symbols Outlined"').then(() => {
                         // Add a class to the body to indicate the font is ready
 
-                        setTimeout(() => {
-                            document.body.classList.add('icons-loaded');
-                        }, 400);
+                        document.body.classList.add('icons-loaded');
 
 
                     }).catch(() => {

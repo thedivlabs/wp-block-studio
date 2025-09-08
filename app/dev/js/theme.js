@@ -378,7 +378,7 @@ class WPBS_Theme {
             });
         }, {
             root: null, // Defaults to the browser viewport
-            rootMargin: "300px 0px 300px 0px", // Shrinks the top and bottom of the viewport by 100px
+            rootMargin: "100vh 0px 100vh 0px", // Shrinks the top and bottom of the viewport by 100px
             threshold: 0 // Triggers when 50% of the target is visible within the *modified* root
         });
 

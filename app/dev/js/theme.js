@@ -356,9 +356,10 @@ class WPBS_Theme {
             }
         });
 
-        this.observeMedia();
 
         document.addEventListener('DOMContentLoaded', () => {
+
+            this.observeMedia();
 
             this.popup.init();
 

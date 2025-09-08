@@ -310,37 +310,40 @@ class WPBS_Theme {
     }
 
     async loadFont() {
-        // Define your font families and their settings
-        const fonts = [
-            {
-                name: "Material Symbols Outlined",
-                weights: WPBS?.settings?.icons ?? [200, 300, 500],
-                slug:'material-symbols-outlined-v276-latin',
-            },
-            {
-                name: "Material Symbols", // or "Filled", depends on your files
-                slug:'material-symbols-v3-latin',
-                weights: WPBS?.settings?.icons ?? [200, 300, 500],
+        // Define the weights you want
+        const weights = WPBS?.settings?.icons ?? [200, 300, 500];
+
+        // Loop through each weight and load
+        /*for (const weight of weights) {
+            // Adjust your file naming convention as needed
+            const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-v276-latin-${weight}.woff2`;
+
+            const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
+                weight: weight.toString(),
+                style: "normal",
+                display: "swap",
+            });
+
+            try {
+                const loadedFont = await font.load();
+                document.fonts.add(loadedFont);
+            } catch (err) {
+                console.error(`Font ${weight} failed to load`, err);
             }
-        ];
+        }*/
 
-        for (const fontConfig of fonts) {
-            for (const weight of fontConfig.weights) {
-                const path = `${WPBS?.settings?.path?.theme}/assets/fonts/${fontConfig.slug}-${weight}.woff2`;
+        const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-full.woff2`;
 
-                const font = new FontFace(fontConfig.name, `url(${path})`, {
-                    weight: weight.toString(),
-                    style: "normal",
-                    display: "swap",
-                });
+        const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
+            style: "normal",
+            display: "swap",
+        });
 
-                try {
-                    const loadedFont = await font.load();
-                    document.fonts.add(loadedFont);
-                } catch (err) {
-                    console.error(`Font ${fontConfig.name} ${weight} failed to load`, err);
-                }
-            }
+        try {
+            const loadedFont = await font.load();
+            document.fonts.add(loadedFont);
+        } catch (err) {
+            console.error(`Font failed to load`, err);
         }
     }
 

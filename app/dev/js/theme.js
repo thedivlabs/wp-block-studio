@@ -30,7 +30,7 @@ class WPBS_Theme {
         this.reveal = Reveal;
         this.team = Team;
 
-        this.settings = window.wpbsData ?? {};
+        this.settings = window?.WPBS?.settings ?? {};
         this.modals.init();
         this.loader.init();
         this.lightbox.init();
@@ -38,6 +38,8 @@ class WPBS_Theme {
         this.slider.init();
         this.reveal.init();
         this.team.init();
+
+        window.WPBS = this;
 
         this.init();
 
@@ -335,27 +337,23 @@ class WPBS_Theme {
     init() {
 
 
-        window.addEventListener('load', () => {
-            this.loadFont().then(() => {
-                if (document.fonts && document.fonts.load) {
-                    // Wait until the Material Symbols Outlined font is fully loaded
-                    document.fonts.load('1em "Material Symbols Outlined"').then(() => {
-                        // Add a class to the body to indicate the font is ready
+        this.loadFont().then(() => {
+            if (document.fonts && document.fonts.load) {
+                // Wait until the Material Symbols Outlined font is fully loaded
+                document.fonts.load('1em "Material Symbols Outlined"').then(() => {
+                    // Add a class to the body to indicate the font is ready
 
-                        document.body.classList.add('icons-loaded');
+                    document.body.classList.add('icons-loaded');
 
 
-                    }).catch(() => {
-                        // Fallback: in case of error, still add the class
-                        //document.body.classList.add('material-icons-loaded');
-                    });
-                } else {
-                    // Fallback for older browsers that don't support the Font Loading API
+                }).catch(() => {
+                    // Fallback: in case of error, still add the class
                     //document.body.classList.add('material-icons-loaded');
-                }
-            });
-
-
+                });
+            } else {
+                // Fallback for older browsers that don't support the Font Loading API
+                //document.body.classList.add('material-icons-loaded');
+            }
         });
 
 
@@ -374,7 +372,7 @@ class WPBS_Theme {
     }
 }
 
-window.WPBS = new WPBS_Theme();
+new WPBS_Theme();
 
 
 

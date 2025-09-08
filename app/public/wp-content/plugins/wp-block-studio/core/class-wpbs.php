@@ -201,7 +201,7 @@ class WPBS {
 		wp_register_script( 'wpbs-theme-js', self::$uri . 'build/theme.js', [
 			//'wp-dom-ready',
 		], false, [
-			'strategy'  => 'defer',
+			'strategy'  => 'async',
 			'in_footer' => false,
 		] );
 		wp_register_script( 'wpbs-admin-js', self::$uri . 'build/admin.js', [
@@ -212,17 +212,19 @@ class WPBS {
 		] );
 
 
-		wp_localize_script( 'wpbs-theme-js', 'wpbsData', apply_filters( 'wpbs_init_vars', [
-			'path'        => [
-				'site'  => home_url(),
-				'ajax'  => admin_url( 'admin-ajax.php' ),
-				'theme' => get_theme_file_uri()
-			],
-			'nonce'       => self::$nonce,
-			'nonce_rest'  => self::$nonce_rest,
-			'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
-			'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-			'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+		wp_localize_script( 'wpbs-theme-js', 'WPBS', apply_filters( 'wpbs_init_vars', [
+			'settings' => [
+				'path'        => [
+					'site'  => home_url(),
+					'ajax'  => admin_url( 'admin-ajax.php' ),
+					'theme' => get_theme_file_uri()
+				],
+				'nonce'       => self::$nonce,
+				'nonce_rest'  => self::$nonce_rest,
+				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
+				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
+				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+			]
 		], false ) );
 
 	}

@@ -449,7 +449,7 @@ class WPBS {
 			if ( str_starts_with( $src, 'file:' ) ) {
 				$relative_path = substr( $src, 5 );
 				$url           = $theme_uri . '/' . ltrim( $relative_path, '/' );
-				//echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+				echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 			}
 		}
 

@@ -744,6 +744,9 @@ function getProps(settings) {
     if (!!settings?.['required']) {
         result['data-required'] = 'all';
     }
+    if (settings?.['content-visibility'] === 'auto') {
+        result['data-visibility'] = 'auto';
+    }
 
     return result;
 

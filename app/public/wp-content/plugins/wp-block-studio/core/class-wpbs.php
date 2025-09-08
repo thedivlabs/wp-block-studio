@@ -480,8 +480,8 @@ class WPBS {
 			$url = parse_url( $src );
 
 			if ( ! empty( $url['host'] ) ) {
-				//echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
-				//echo '<link rel="preload" href="' . $src . '">';
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
+				echo '<link rel="preload" href="' . $src . '">';
 			}
 		}
 
@@ -498,27 +498,27 @@ class WPBS {
 			$webp         = ! str_contains( $path, '.svg' );
 			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
-			/*
-						echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
 
-						echo 'href="' . ( $src . ( $webp ? '.webp' : '' ) ) . '"';
+			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
 
-						if ( ! empty( $image_data['breakpoint'] ) ) {
-							echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';
-						}
+			echo 'href="' . ( $src . ( $webp ? '.webp' : '' ) ) . '"';
+
+			if ( ! empty( $image_data['breakpoint'] ) ) {
+				echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';
+			}
 
 
-						if ( $image_srcset ) {
-							echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [
-									'.jpg',
-									'.png',
-									'.jpeg'
-								], [ '.jpg.webp', '.png.webp', '.jpeg.webp' ], $image_srcset ) ) . '"';
-						}
+			if ( $image_srcset ) {
+				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [
+						'.jpg',
+						'.png',
+						'.jpeg'
+					], [ '.jpg.webp', '.png.webp', '.jpeg.webp' ], $image_srcset ) ) . '"';
+			}
 
-						echo 'type="image/webp"';
+			echo 'type="image/webp"';
 
-						echo '/>';*/
+			echo '/>';
 
 		}
 

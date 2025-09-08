@@ -64,8 +64,8 @@
             font-family: "Material Symbols Outlined", sans-serif;
             color: var(--color-icon, inherit);
             transition-timing-function: ease-in-out;
-
-            aspect-ratio: 1 / 1; /* aspect-square */
+            height: 1em;
+            width: 1em;
             display: flex; /* flex */
             text-align: center; /* text-center */
             justify-content: center; /* justify-center */
@@ -73,6 +73,11 @@
             pointer-events: none; /* pointer-events-none */
             transition-property: transform; /* transition-transform */
             transition-duration: 300ms; /* duration-300 */
+
+            body:not(.icons-loaded) & {
+              visibility: hidden !important;
+              overflow: hidden !important;
+            }
           }
         }
 
@@ -146,15 +151,19 @@
     top: 50%;
     right: 0;
     height: 1em;
+    width: 1em;
     line-height: 1;
-    width: auto;
     border-right: var(--divider, none);
     transform: translate(calc((var(--column-gap, 1px) / 2) + 50%), -50%);
     color: var(--icon-divider-color, inherit);
+
+    body:not(.icons-loaded) & {
+      visibility: hidden !important;
+      overflow: hidden !important;
+    }
   }
 
   &.is-style-default.--divider.--icon-divider .wpbs-nav-menu-container > li:not(:last-of-type):after {
-    height: auto;
     vertical-align: middle;
     text-align: center;
     font-family: 'Material Symbols Outlined', sans-serif;
@@ -266,11 +275,10 @@
           padding-right: var(--icon-size, 24px);
 
           &:after {
-            width: 1lh;
+            height: 1em;
+            width: 1em;
             position: absolute;
             right: 0;
-            max-height: 1em;
-            line-height: 1em;
           }
         }
 

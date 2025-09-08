@@ -170,6 +170,7 @@ const LAYOUT_PROPS = {
         'outline',
         'mark-empty',
         'text-decoration-color',
+        'content-visibility',
     ],
 
     mobile: [
@@ -1443,6 +1444,26 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                             </Grid>
 
 
+                        </ToolsPanelItem>
+
+
+                        <ToolsPanelItem
+                            style={{gridColumn: 'span 1'}}
+                            hasValue={() => !!settings?.['content-visibility']}
+                            label={'Content Visibility'}
+                            onDeselect={() => updateProp({['content-visibility']: ''})}
+                        >
+                            <MemoSelectControl
+                                label="Content Visibility"
+                                value={settings?.['content-visibility']}
+                                callback={(newValue) => updateProp({'content-visibility': newValue})}
+                                options={[
+                                    {label: 'Select', value: ''},
+                                    {label: 'Auto', value: 'auto'},
+                                    {label: 'Visible', value: 'visible'},
+                                    {label: 'Hidden', value: 'hidden'},
+                                ]}
+                            />
                         </ToolsPanelItem>
 
                         <ToolsPanelItem

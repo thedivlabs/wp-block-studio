@@ -47,9 +47,27 @@ const {state} = store('wpbs/media-gallery', {
             }
 
             if (!is_slider) {
-                WPBS.setMasonry(container);
+                let observerIntersection = new IntersectionObserver((entries, observer) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
 
-                WPBS.gridDividers(element, grid, settings?.uniqueId);
+                            observer.unobserve(entry.target);
+
+                            WPBS.setMasonry(container);
+
+                            WPBS.gridDividers(element, grid, settings?.uniqueId);
+
+                        }
+                    });
+
+                }, {
+                    root: null,
+                    rootMargin: "90px",
+                    threshold: 0,
+                });
+
+                observerIntersection.observe(element);
+
             }
 
             if (element.classList.contains('--last-page')) {

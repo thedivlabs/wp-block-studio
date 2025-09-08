@@ -34,9 +34,26 @@ const {state} = store('wpbs/layout-grid', {
 
             const {settings, uniqueId} = args;
 
-            WPBS.setMasonry(container);
+            let observerIntersection = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
 
-            WPBS.gridDividers(element, settings, args?.uniqueId ?? context?.uniqueId);
+                        observer.unobserve(entry.target);
+
+                        WPBS.setMasonry(container);
+
+                        WPBS.gridDividers(element, settings, args?.uniqueId ?? context?.uniqueId);
+
+                    }
+                });
+
+            }, {
+                root: null,
+                rootMargin: "90px",
+                threshold: 0,
+            });
+
+            observerIntersection.observe(element);
 
 
         },

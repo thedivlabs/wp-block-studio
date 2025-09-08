@@ -67,6 +67,9 @@
   "viewScriptModule": "file:./view.js",
   "style": "file:./block.css",
   "editorStyle": "file:./block.css",
+  "script": [
+    "wpbs-theme-js"
+  ],
   "icon": "grid-view"
 }
 

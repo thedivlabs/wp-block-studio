@@ -29,22 +29,37 @@ const {state} = store('wpbs/odometer', {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
+
+                            //observer.unobserve(element);
+
                             if (!od) {
-                                od = new Odometer({
-                                    el: element,
-                                    value: start,
-                                    duration: duration,
-                                    theme: 'default',
-                                    format: format ? '(,ddd).dd' : '',
-                                    framesPerSecond: 60,
-                                });
-                                od.update(end);
+                                console.log(od);
+                                requestAnimationFrame(() => {
+                                    od = (new Odometer({
+                                        el: element,
+                                        value: start,
+                                        duration: duration,
+                                        theme: 'default',
+                                        format: format ? '(,ddd).dd' : '',
+                                        framesPerSecond: 60,
+                                    }));
+                                    od.update(end);
+                                })
+
                             } else {
-                                od.update(end);
+                                console.log(od);
+                                requestAnimationFrame(() => {
+                                    od.update(end);
+                                })
+
                             }
                         } else {
-                            if (!!od) {
-                                od.update(start);
+                            if (!!od?.el) {
+                                console.log('Return');
+                                requestAnimationFrame(() => {
+                                    od.update(start);
+                                })
+
                             }
 
                         }

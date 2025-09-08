@@ -97,18 +97,6 @@ class WPBS {
 
 	public function image_sizes(): void {
 
-		/*
-		 * Recommended Sizes
-		 *
-		 * xlarge:      1800
-		 * large:       1500
-		 * medium:      1100
-		 * small:       520
-		 * mobile:      620x1200
-		 * thumbnail:   200
-		 *
-		 * */
-
 		add_image_size( 'mobile', 624, 1200 );
 		add_image_size( 'small', 640 );
 		add_image_size( 'medium', 1130 );

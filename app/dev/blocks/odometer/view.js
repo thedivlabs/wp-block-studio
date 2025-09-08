@@ -33,8 +33,7 @@ const {state} = store('wpbs/odometer', {
                             //observer.unobserve(element);
 
                             if (!od) {
-                                console.log(od);
-                                requestAnimationFrame(() => {
+                                window.requestAnimationFrame(() => {
                                     od = (new Odometer({
                                         el: element,
                                         value: start,
@@ -47,16 +46,14 @@ const {state} = store('wpbs/odometer', {
                                 })
 
                             } else {
-                                console.log(od);
-                                requestAnimationFrame(() => {
+                                window.requestAnimationFrame(() => {
                                     od.update(end);
                                 })
 
                             }
                         } else {
                             if (!!od?.el) {
-                                console.log('Return');
-                                requestAnimationFrame(() => {
+                                window.requestAnimationFrame(() => {
                                     od.update(start);
                                 })
 

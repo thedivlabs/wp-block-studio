@@ -57,6 +57,8 @@ class WPBS {
 		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
 
 		add_filter( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 30 );
+		$this->image_sizes();
+
 
 		add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
 
@@ -86,14 +88,34 @@ class WPBS {
 
 	public function remove_default_image_sizes( $sizes ): array {
 
-		foreach ( $sizes as $k => $size ) {
+		$sizes = array_intersect( $sizes, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] );
 
-			if ( ! in_array( $size, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] ) ) {
-				unset( $sizes[ $k ] );
-			}
-		}
+		$sizes = array_values( array_unique( $sizes ) );
+
+		WPBS::console_log( $sizes );
 
 		return $sizes;
+	}
+
+	public function image_sizes(): void {
+
+		/*
+		 * Recommended Sizes
+		 *
+		 * xlarge:      1800
+		 * large:       1500
+		 * medium:      1100
+		 * small:       520
+		 * mobile:      620x1200
+		 * thumbnail:   200
+		 *
+		 * */
+
+		add_image_size( 'mobile', 624, 1200 );
+		add_image_size( 'small', 640 );
+		add_image_size( 'medium', 1130 );
+		add_image_size( 'xlarge', 1800 );
+
 	}
 
 

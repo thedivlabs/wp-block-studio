@@ -6,9 +6,6 @@ class WPBS_WP {
 
 	private function __construct() {
 
-		$this->image_sizes();
-
-
 		add_filter( 'nav_menu_link_attributes', [ $this, 'menu_item_icon' ], 10, 4 );
 		add_filter( 'walker_nav_menu_start_el', [ $this, 'menu_item_span' ], 10, 4 );
 
@@ -20,7 +17,6 @@ class WPBS_WP {
 			'legal-menu'  => __( 'Legal Menu', 'divlabs' ),
 		) );
 
-		$this->shortcodes();
 		$this->theme_support();
 
 		add_action( 'pre_get_posts', [ $this, 'add_sort_query_string' ] );
@@ -50,7 +46,6 @@ class WPBS_WP {
 			}
 		}
 	}
-
 
 	public function menu_item_span( $item_output, $item, $depth, $args ): string {
 		return preg_replace(
@@ -107,39 +102,6 @@ class WPBS_WP {
 
 	}
 
-	public function shortcodes(): void {
-		add_shortcode( 'current-year', function ( $attributes ) {
-
-			$attributes = shortcode_atts( [
-				'format' => 'Y'
-			], $attributes );
-
-			return date( $attributes['format'] );
-		} );
-	}
-
-
-	public function image_sizes(): void {
-
-		/*
-		 * Recommended Sizes
-		 *
-		 * xlarge:      1800
-		 * large:       1500
-		 * medium:      1100
-		 * small:       520
-		 * mobile:      620x1200
-		 * thumbnail:   200
-		 *
-		 * */
-
-		add_image_size( 'xlarge', 1800 );
-		add_image_size( 'small', 640 );
-		add_image_size( 'medium', 1130 );
-		add_image_size( 'mobile', 624, 1200 );
-
-
-	}
 
 	public static function init(): WPBS_WP {
 		if ( empty( self::$instance ) ) {

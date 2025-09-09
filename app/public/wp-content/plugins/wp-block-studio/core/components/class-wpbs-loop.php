@@ -248,14 +248,14 @@ class WPBS_Loop {
 			'prev_text' => $settings['icon_prev'] ?? $this->icon_prev,
 			'next_text' => $settings['icon_next'] ?? $this->icon_next,
 		] );
-		
+
 		$pagination_links = array_map( function ( $link ) use ( $current_page ) {
 			return str_replace( [ '<span', '</span>', 'current', 'next page-numbers', 'prev page-numbers' ], [
 				'<button type="button" disabled',
 				'</button>',
 				'current wp-element-button ',
-				'next page-numbers pagination-button',
-				'prev page-numbers pagination-button',
+				'next wp-block-query-pagination-next material-symbols-outlined',
+				'prev wp-block-query-pagination-previous material-symbols-outlined',
 			], $link );
 		}, $pagination ?? [] );
 

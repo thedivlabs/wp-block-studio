@@ -10,8 +10,9 @@
 
 /* Pagination block full width */
 .wpbs-layout-grid .wp-block-query-pagination {
-  width: fit-content;
-  display: inline-block;
+  width: 100%;
+  display: block;
+  line-height: 1;
 }
 
 /* Pagination numbers grid */
@@ -29,8 +30,13 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: auto;
-  width: auto;
+  height: 1lh;
+}
+
+/* Individual page numbers */
+.wpbs-layout-grid .wp-block-query-pagination .wp-block-query-pagination-numbers .pagination-button {
+  height: 1lh;
+  width: 1lh;
 }
 
 /* Current page number disables pointer events */

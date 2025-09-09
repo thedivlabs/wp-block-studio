@@ -23,7 +23,7 @@ const classNames = (attributes = {}) => {
     const {'wpbs-layout-element': settings} = attributes;
 
     return [
-        selector + ' w-full block relative',
+        selector + ' w-full block relative empty:min-h-8',
         !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : (attributes?.['wpbs-layout']?.container ? 'wpbs-container' : null),
         !!settings?.['hide-empty'] ? '--hide-empty' : null,
         attributes?.uniqueId ?? '',
@@ -51,7 +51,7 @@ registerBlockType(metadata.name, {
         const {'wpbs-layout-element': settings = {}} = attributes;
 
         const blockProps = useBlockProps({
-            className: [classNames(attributes), 'empty:min-h-8'].join(' ')
+            className: classNames(attributes)
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']?.type || !!attributes['wpbs-layout-element']?.container

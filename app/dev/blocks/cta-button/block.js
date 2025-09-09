@@ -27,7 +27,8 @@ function classNames(attributes = {}) {
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
-        'wpbs-cta-button wp-element-button',
+        'wpbs-cta-button',
+        !settings?.['is-link'] ? 'wp-element-button' : null,
         !!settings?.['icon'] ? '--icon' : null,
         !!settings?.['icon-hide'] ? '--icon-hide' : null,
         !!settings?.['icon-bold'] ? '--icon-bold' : null,
@@ -102,6 +103,12 @@ registerBlockType(metadata.name, {
                         __nextHasNoMarginBottom
                         checked={!!settings?.loop}
                         onChange={(newValue) => updateSettings({loop: newValue})}
+                    />
+                    <ToggleControl
+                        label="Link"
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.['is-link']}
+                        onChange={(newValue) => updateSettings({['is-link']: newValue})}
                     />
                 </Grid>
             </Grid>

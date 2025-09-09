@@ -639,6 +639,8 @@ export function layoutCss(attributes, selector) {
 
     });
 
+
+    // Other
     if (Object.keys(desktop).length || container) {
         css += selector + '{';
         Object.entries(desktop).forEach(([prop, value]) => {
@@ -707,13 +709,19 @@ export function layoutCss(attributes, selector) {
     }
 
     if (Object.keys(hover).length) {
-        css += selector + ':hover {';
-        Object.entries(hover).forEach(([prop, value]) => {
 
+        Object.entries(hover).forEach(([prop, value]) => {
+            css += selector + ':hover {';
             css += [prop, value].join(':') + ' !important;';
+            css += '}';
+            if (prop === 'color') {
+                css += selector + ':hover a {';
+                css += [prop, value].join(':') + ' !important;';
+                css += '}';
+            }
         })
 
-        css += '}';
+
     }
 
     return css.trim();

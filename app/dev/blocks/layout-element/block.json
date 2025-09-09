@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/layout-element",
   "title": "Layout Element",
   "description": "Display a layout element",
@@ -11,7 +12,6 @@
     }
   },
   "supports": {
-    "layout": false,
     "interactivity": true,
     "innerBlocks": true,
     "color": {

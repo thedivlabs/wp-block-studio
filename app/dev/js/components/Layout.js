@@ -709,19 +709,18 @@ export function layoutCss(attributes, selector) {
     }
 
     if (Object.keys(hover).length) {
-
+        css += selector + ':hover {';
         Object.entries(hover).forEach(([prop, value]) => {
-            css += selector + ':hover {';
+
             css += [prop, value].join(':') + ' !important;';
-            css += '}';
-            if (prop === 'color') {
-                css += selector + ':hover a {';
-                css += [prop, value].join(':') + ' !important;';
-                css += '}';
-            }
         })
+        css += '}';
 
-
+        if ('color' in hover) {
+            css += selector + ':hover a {';
+            css += 'color:' + hover.color + ' !important;';
+            css += '}';
+        }
     }
 
     return css.trim();

@@ -17,7 +17,7 @@ import {
     TextControl,
     __experimentalUnitControl as UnitControl,
     __experimentalNumberControl as NumberControl,
-    SelectControl, BaseControl,
+    SelectControl, BaseControl, ToggleControl,
 } from "@wordpress/components";
 import {useSelect} from "@wordpress/data";
 import {IconControl, iconProps} from "Components/IconControl";
@@ -204,6 +204,17 @@ registerBlockType(metadata.name, {
                                     ]}
                                 />
                             </BaseControl>
+
+
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    label="Split Address"
+                                    checked={!!settings?.['split-address']}
+                                    onChange={(newValue) => updateSettings({['split-address']: newValue})}
+                                />
+                            </Grid>
+
                         </Grid>
                     </PanelBody>
                 </InspectorControls>

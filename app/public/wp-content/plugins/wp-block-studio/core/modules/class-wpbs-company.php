@@ -326,18 +326,23 @@ class WPBS_Place {
 
 		$address_number = ! empty( $this->address['number'] ) ? '<span class="whitespace-nowrap">' . $this->address['number'] . '</span>' : null;
 
+		$split_address = ! empty( $args['split-address'] );
+		$has_state     = ! empty( $this->address['state'] ) || ! empty( $this->address['zip'] );
+
 		$address = implode( $line_separator, array_filter( [
 			( '<span>' . implode( ', ', array_filter( [
 					$this->address['street'] ?? null,
-					empty( $args['split_address'] ) ? $address_number : null,
+					! $split_address ? $address_number : null,
 				] ) ) . '</span>' ),
-			! empty( $args['split_address'] ) ? $address_number : null,
+			$split_address ? $address_number : null,
 			( implode( ', ', array_filter( [
 				$this->address['city'] ?? null,
-				( implode( '&nbsp;', array_filter( [
+				( $has_state ? implode( ' ', array_filter( [
+					'<span class="whitespace-nowrap">',
 					$this->address['state'] ?? null,
-					$this->address['zip'] ?? null
-				] ) ) )
+					$this->address['zip'] ?? null,
+					'</span>'
+				] ) ) : null ),
 			] ) ) )
 		] ) );
 

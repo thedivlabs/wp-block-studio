@@ -491,14 +491,22 @@
         relative
         ;
 
+        body:not(.icons-loaded) &:after {
+          visibility: hidden !important;
+          overflow: hidden !important;
+        }
+
         &:after {
-          content: '\f078';
+          content: 'keyboard_arrow_down';
           top: 0;
           right: 0;
           bottom: 0;
-          font-family: 'Font Awesome 6 Pro', sans-serif;
-          font-size: var(--wp--preset--font-size--normal);
+          font-family: 'Material Symbols Outlined', sans-serif;
+          font-size: 24px;
+          font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
           width: 2rem;
+          color: currentColor;
+
           @apply
           absolute
           flex
@@ -627,16 +635,17 @@
         relative
         ;
 
-        &:after {
+        &:before {
+          content: '';
           top: 0;
-          font-size: 12px;
+          height: 10px;
+          width: 10px;
+          overflow: hidden;
           transform: translateY(-50%);
-          font-family: 'Font Awesome 6 Pro', sans-serif;
-          color: darkred;
+          background-color: darkred;
           right: .5rem;
-          font-weight: bold;
+          border-radius: 50%;
           @apply
-          content-['\f111']
           absolute
           pointer-events-none
         }
@@ -680,7 +689,7 @@
 
       label {
         font-size: inherit;
-        line-height: var(--wp--preset--line-height--normal);
+        line-height: normal;
         padding-left: 2rem;
         @apply
         relative
@@ -692,7 +701,7 @@
           content: '';
           height: 1.8em;
           border-style: solid;
-          font-family: 'Font Awesome 6 Pro', sans-serif;
+          font-family: 'Material Symbols Outlined', sans-serif;
           font-size: var(--wp--preset--font-size--extra-small);
           line-height: 1;
           top: 0;
@@ -711,7 +720,7 @@
       }
 
       input:checked ~ label:before {
-        font-family: 'Font Awesome 6 Pro', sans-serif;
+        font-family: 'Material Symbols Outlined', sans-serif;
         color: white;
       }
     }

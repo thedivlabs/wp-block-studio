@@ -28,11 +28,6 @@ if ( is_home() ) {
 
 }
 
-// Search results
-if ( is_search() ) {
-	$title = $title ?? sprintf( __( 'Search Results for "%s"', 'wpbs' ), get_search_query() );
-}
-
 // Author archive
 if ( is_author() ) {
 	$title = $title ?? sprintf( __( 'Articles by %s', 'wpbs' ), get_the_author_meta( 'display_name', get_query_var( 'author' ) ) );
@@ -61,6 +56,11 @@ if ( is_date() ) {
 	} elseif ( is_year() ) {
 		$title = $title ?? get_the_date( 'Y' );
 	}
+}
+
+// Search results
+if ( is_search() && ! empty( $settings['search'] ) ) {
+	$title = $title ?? sprintf( __( 'Search Results for "%s"', 'wpbs' ), get_search_query() );
 }
 
 // Fallback: queried object title (should catch most cases)

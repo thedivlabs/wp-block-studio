@@ -124,6 +124,13 @@ registerBlockType(metadata.name, {
                                     checked={!!settings?.link}
                                     onChange={(newValue) => updateSettings({link: newValue})}
                                 />
+                                <ToggleControl
+                                    __nextHasNoMarginBottom
+                                    __next40pxDefaultSize
+                                    label="Search"
+                                    checked={!!settings?.search}
+                                    onChange={(newValue) => updateSettings({search: newValue})}
+                                />
                             </Grid>
 
                         </Grid>

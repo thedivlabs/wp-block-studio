@@ -154,7 +154,7 @@ class WPBS {
 			sort( $icon_names );
 			$icon_names = '&icon_names=' . implode( ',', $icon_names );
 
-			wp_register_style( 'google-material-icons-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-50..200&display=swap' . $icon_names, [], false );
+			//wp_register_style( 'google-material-icons-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-50..200&display=swap' . $icon_names, [], false );
 			add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
 				$sources[] = 'https://fonts.googleapis.com';
 				$sources[] = 'https://fonts.gstatic.com';

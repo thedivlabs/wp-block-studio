@@ -213,6 +213,22 @@ class WPBS {
 			]
 		], false ) );
 
+
+		wp_localize_script( 'wpbs-theme-js', 'WPBS', [
+			'settings' => apply_filters( 'wpbs_init_vars', [
+				'path'        => [
+					'site'  => home_url(),
+					'ajax'  => admin_url( 'admin-ajax.php' ),
+					'theme' => get_theme_file_uri()
+				],
+				'nonce'       => self::$nonce,
+				'nonce_rest'  => self::$nonce_rest,
+				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
+				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
+				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+			], false )
+		] );
+
 	}
 
 	public function block_assets(): void {

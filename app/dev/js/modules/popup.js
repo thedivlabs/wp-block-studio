@@ -70,11 +70,13 @@ export default class Popup {
 
             document.body.addEventListener('click', (e) => {
 
-                const el = 'popup' in e.target.dataset ? e.target : e.target.closest('[data-popup]');
-
-                if(!el || !'popup' in el.dataset){
+                const el = e.target.closest('[data-popup]');
+                
+                if (!el || !'popup' in el.dataset) {
                     return false;
                 }
+
+                e.preventDefault();
 
                 WPBS.modals.toggle_modal('#wpbs-popup-' + popup.id, {
                     delay: 'delay' in cta_popups[0] ? cta_popups[0].delay || false : false

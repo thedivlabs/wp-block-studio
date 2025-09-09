@@ -372,7 +372,6 @@ class WPBS_Theme {
 
 
         document.addEventListener('DOMContentLoaded', () => {
-
             this.observeMedia();
 
             this.popup.init();

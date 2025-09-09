@@ -164,7 +164,6 @@ class WPBS_Popup {
 
 	public function output_vars( $vars ): array {
 
-
 		if ( ! empty( $this->current ) ) {
 			$vars['popups'] = $this->current;
 		}

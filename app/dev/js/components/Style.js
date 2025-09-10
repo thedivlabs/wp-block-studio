@@ -128,10 +128,10 @@ export function Style({
         }).filter(([k, v]) => !!v));
 
         const mobile = Object.fromEntries(Object.entries({
-            'row-gap': rowGapMobile + ' !important',
-            'column-gap': colGapMobile + ' !important',
-            '--row-gap': rowGapMobile + ' !important',
-            '--column-gap': colGapMobile + ' !important',
+            'row-gap': rowGapMobile,
+            'column-gap': colGapMobile,
+            '--row-gap': rowGapMobile,
+            '--column-gap': colGapMobile,
         }).filter(([k, v]) => !!v));
 
         desktopProps = cleanObject({
@@ -165,7 +165,7 @@ export function Style({
                 if (!value) {
                     return;
                 }
-                propsCss += [prop, value].join(':') + ';';
+                propsCss += [prop, value].join(':') + ' !important;';
             })
 
             propsCss += '}}';

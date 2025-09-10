@@ -55,7 +55,7 @@
 
 /* Loop card sizing */
 .loop-card {
-  max-width: calc((100% - (var(--grid-row-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
+  max-width: calc((100% - (var(--grid-col-gap, 0px) * (var(--columns, 2) - 1))) / var(--columns, 1));
 }
 
 /* Masonry layout */

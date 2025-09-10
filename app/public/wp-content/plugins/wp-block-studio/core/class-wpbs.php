@@ -238,6 +238,7 @@ class WPBS {
 		wp_enqueue_style( 'google-material-icons-outlined' );
 		//wp_enqueue_script( 'wpbs-admin-js' );
 		wp_enqueue_script( 'swiper-js' );
+		wp_enqueue_style( 'swiper-css' );
 	}
 
 	public function admin_assets(): void {

@@ -128,10 +128,10 @@ export function Style({
         }).filter(([k, v]) => !!v));
 
         const mobile = Object.fromEntries(Object.entries({
-            'row-gap': rowGapMobile,
-            'column-gap': colGapMobile,
-            '--row-gap': rowGapMobile,
-            '--column-gap': colGapMobile,
+            'row-gap': rowGapMobile + ' !important',
+            'column-gap': colGapMobile + ' !important',
+            '--row-gap': rowGapMobile + ' !important',
+            '--column-gap': colGapMobile + ' !important',
         }).filter(([k, v]) => !!v));
 
         desktopProps = cleanObject({

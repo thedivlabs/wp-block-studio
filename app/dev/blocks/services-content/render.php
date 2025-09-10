@@ -77,10 +77,15 @@ if ( $is_link ) {
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
-	case 'icon-image':
 		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'
+		] );
+		break;
+	case 'icon-image':
+		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
+			'loading' => $loading,
+			'class'   => 'w-auto h-full object-contain'
 		] );
 		break;
 	case 'cta-image':

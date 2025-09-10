@@ -716,8 +716,8 @@ export function layoutCss(attributes, selector) {
         })
         css += '}';
 
-        if ('color' in hover) {
-            css += selector + ':hover a {';
+        if (!!hover?.color) {
+            css += selector + ':hover a:not(.wp-element-button) {';
             css += 'color:' + hover.color + ' !important;';
             css += '}';
         }

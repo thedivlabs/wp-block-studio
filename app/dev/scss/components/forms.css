@@ -392,6 +392,14 @@
 
   }
 
+  .gfield--type-submit {
+    display: flex;
+    align-items: stretch;
+
+    button {
+      height: auto !important;
+    }
+  }
 
   .gform_fields:has(> .gfield--type-submit) {
     display: flex !important;

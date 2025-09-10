@@ -187,7 +187,7 @@ class WPBS {
 		wp_register_script( 'wpbs-theme-js', self::$uri . 'build/theme.js', [
 			//'wp-dom-ready',
 		], false, [
-			'strategy'  => 'async',
+			'strategy'  => 'defer',
 			'in_footer' => false,
 		] );
 		wp_register_script( 'wpbs-admin-js', self::$uri . 'build/admin.js', [

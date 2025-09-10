@@ -1,4 +1,5 @@
 {
+  "apiVersion": 3,
   "name": "wpbs/layout-grid-container",
   "title": "Grid Container",
   "description": "Display a grid container",
@@ -17,9 +18,6 @@
   },
   "parent": [
     "wpbs/layout-grid"
-  ],
-  "allowedBlocks": [
-    "wpbs/layout-grid-card"
   ],
   "usesContext": [
     "wpbs/settings",

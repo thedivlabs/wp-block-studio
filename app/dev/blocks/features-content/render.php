@@ -22,6 +22,7 @@ $dynamic_content = match ( $type ) {
 	'poster' => get_field( 'wpbs_media_featured_poster', $feature_id ),
 	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $feature_id ),
 	'icon' => get_field( 'wpbs_media_featured_icon', $feature_id ),
+	'icon-image' => get_field( 'wpbs_media_featured_icon_image', $feature_id ),
 	'faq-title' => get_field( 'wpbs_faq_content_title', $feature_id ),
 	'faq-text' => get_field( 'wpbs_faq_content_text', $feature_id ),
 	'related-title' => get_field( 'wpbs_related_content_title', $feature_id ),
@@ -68,6 +69,7 @@ if ( $is_link ) {
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
+	case 'icon-image':
 		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'

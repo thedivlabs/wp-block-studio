@@ -409,6 +409,32 @@
                                     "preview_size": "thumbnail"
                                 },
                                 {
+                                    "key": "field_68c194a49f935",
+                                    "label": "Icon Image",
+                                    "name": "icon_image",
+                                    "aria-label": "",
+                                    "type": "image",
+                                    "instructions": "",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "50",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "return_format": "id",
+                                    "library": "all",
+                                    "min_width": "",
+                                    "min_height": "",
+                                    "min_size": "",
+                                    "max_width": "",
+                                    "max_height": "",
+                                    "max_size": "",
+                                    "mime_types": "",
+                                    "allow_in_bindings": 0,
+                                    "preview_size": "thumbnail"
+                                },
+                                {
                                     "key": "field_689e08045e4b9",
                                     "label": "Icon",
                                     "name": "icon",
@@ -1036,5 +1062,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1755442276
+    "modified": 1757516975
 }

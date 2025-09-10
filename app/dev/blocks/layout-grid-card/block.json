@@ -30,9 +30,6 @@
       "show_in_rest": true
     }
   },
-  "parent": [
-    "wpbs/layout-grid-container"
-  ],
   "usesContext": [
     "wpbs/postId",
     "wpbs/termId",

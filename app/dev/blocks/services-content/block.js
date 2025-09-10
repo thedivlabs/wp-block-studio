@@ -49,6 +49,7 @@ const CONTENT_OPTIONS = [
     {label: 'Poster', value: 'poster'},
     {label: 'Thumbnail', value: 'thumbnail'},
     {label: 'Icon', value: 'icon'},
+    {label: 'Icon Image', value: 'icon-image'},
     {label: 'Related Title', value: 'related-title'},
     {label: 'Related Text', value: 'related-text'},
     {label: 'CTA Title', value: 'cta-title'},

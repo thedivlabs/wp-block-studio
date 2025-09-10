@@ -13,6 +13,7 @@ $is_image   = in_array( $type, [
 	'thumbnail',
 	'cta-image',
 	'featured-image',
+	'icon-image',
 ], true );
 
 if ( ! $type || ! $service_id ) {
@@ -29,6 +30,7 @@ $dynamic_content = match ( $type ) {
 	'poster' => get_field( 'wpbs_media_featured_poster', $service_id ),
 	'thumbnail' => get_field( 'wpbs_media_featured_thumbnail', $service_id ),
 	'icon' => get_field( 'wpbs_media_featured_icon', $service_id ),
+	'icon-image' => get_field( 'wpbs_media_featured_icon_image', $service_id ),
 	'faq-title' => get_field( 'wpbs_faq_content_title', $service_id ),
 	'faq-text' => get_field( 'wpbs_faq_content_text', $service_id ),
 	'related-title' => get_field( 'wpbs_related_content_title', $service_id ),
@@ -75,6 +77,7 @@ if ( $is_link ) {
 switch ( $type ) {
 	case 'poster':
 	case 'thumbnail':
+	case 'icon-image':
 		echo wp_get_attachment_image( $dynamic_content, ( $settings['resolution'] ?? 'large' ), false, [
 			'loading' => $loading,
 			'class'   => 'w-full h-full object-cover'

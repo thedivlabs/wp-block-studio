@@ -6,7 +6,7 @@ import Video from './modules/video'
 import Slider from './modules/slider'
 import Reveal from './modules/reveal'
 import Team from './modules/team'
-import googleMaterialSymbols from 'Includes/helper'
+import {googleMaterialSymbols} from 'Includes/helper'
 
 
 class WPBS_Theme {

@@ -2,13 +2,10 @@ import {addFilter} from '@wordpress/hooks';
 import {Fragment} from '@wordpress/element';
 import {InspectorControls} from '@wordpress/block-editor';
 import {__experimentalGrid as Grid, PanelBody, ToggleControl} from '@wordpress/components';
-import {googleMaterialSymbols} from 'Includes/helper'
 
 import {WPBS_Google_Places} from "Modules/google-places";
 
 WPBS_Google_Places.init();
-
-googleMaterialSymbols();
 
 addFilter(
     'blocks.registerBlockType',

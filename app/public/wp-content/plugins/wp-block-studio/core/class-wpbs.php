@@ -13,6 +13,7 @@ class WPBS {
 	public static string $nonce;
 	public static string $nonce_rest;
 	public static string $transient_base;
+	public static array $theme_vars;
 
 	private function __construct( $path ) {
 
@@ -197,37 +198,7 @@ class WPBS {
 			'in_footer' => true,
 		] );
 
-
-		wp_localize_script( 'wpbs-theme-js', 'WPBS', apply_filters( 'wpbs_init_vars', [
-			'settings' => [
-				'path'        => [
-					'site'  => home_url(),
-					'ajax'  => admin_url( 'admin-ajax.php' ),
-					'theme' => get_theme_file_uri()
-				],
-				'nonce'       => self::$nonce,
-				'nonce_rest'  => self::$nonce_rest,
-				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
-				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
-			]
-		], false ) );
-
-
-		wp_localize_script( 'wpbs-theme-js', 'WPBS', [
-			'settings' => apply_filters( 'wpbs_init_vars', [
-				'path'        => [
-					'site'  => home_url(),
-					'ajax'  => admin_url( 'admin-ajax.php' ),
-					'theme' => get_theme_file_uri()
-				],
-				'nonce'       => self::$nonce,
-				'nonce_rest'  => self::$nonce_rest,
-				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
-				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
-			], false )
-		] );
+		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
 
 	}
 
@@ -309,6 +280,21 @@ class WPBS {
 		self::init_classes( 'core/components' );
 
 		do_action( 'wpbs_init' );
+
+		self::$theme_vars = [
+			'settings' => apply_filters( 'wpbs_init_vars', [
+				'path'        => [
+					'site'  => home_url(),
+					'ajax'  => admin_url( 'admin-ajax.php' ),
+					'theme' => get_theme_file_uri()
+				],
+				'nonce'       => self::$nonce,
+				'nonce_rest'  => self::$nonce_rest,
+				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
+				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
+				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+			], false )
+		];
 	}
 
 	public function init_hook(): void {

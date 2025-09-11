@@ -6,25 +6,7 @@
   }
 
 
-  .material-symbols-outlined,
-  .material-icon-before:before {
-    font-family: "Material Symbols Outlined", sans-serif;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    vertical-align: middle;
-    font-weight: normal;
-    font-style: normal;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
-    white-space: nowrap;
-    direction: ltr;
-    height: 1em;
-    width: 1em;
-    display: inline-flex;
-  }
+
 }
 
 

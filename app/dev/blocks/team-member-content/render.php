@@ -47,8 +47,8 @@ if ( empty( $dynamic_content ) ) {
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class'   => implode( ' ', array_filter( [
 		'wpbs-team-member-content w-fit',
-		$is_image ? 'inline-flex overflow-hidden' : 'inline-block',
-		! empty( $settings['icon'] ) ? '--icon' : null,
+		$is_image ? 'inline-flex overflow-hidden' : null,
+		! empty( $settings['icon'] ) ? 'inline-flex --icon material-icon-before' : 'inline-block',
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		! empty( $settings['toggle'] ) ? 'team-profile-toggle' : null,
 		$attributes['uniqueId'] ?? ''

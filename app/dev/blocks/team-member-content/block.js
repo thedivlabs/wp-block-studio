@@ -30,7 +30,7 @@ function sectionClassNames(attributes = {}) {
 
     return [
         'wpbs-team-member-content',
-        settings?.icon ? 'inline-flex --icon material-icon-before' : 'inline-block',
+        settings?.icon ? 'inline-flex --icon material-icon-before items-center' : 'inline-block',
         'w-fit',
         attributes?.uniqueId ?? '',
     ].filter(x => x).join(' ');

@@ -68,3 +68,67 @@ export function useUniqueId(attributes, setAttributes, clientId, prefix = 'block
 
     return attributes.uniqueId;
 }
+
+
+export function googleMaterialSymbols(){
+
+    async function loadFont() {
+        // Define the weights you want
+        const weights = WPBS?.settings?.icons ?? [200, 300, 500];
+
+        // Loop through each weight and load
+        /*for (const weight of weights) {
+            // Adjust your file naming convention as needed
+            const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-v276-latin-${weight}.woff2`;
+
+            const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
+                weight: weight.toString(),
+                style: "normal",
+                display: "swap",
+            });
+
+            try {
+                const loadedFont = await font.load();
+                document.fonts.add(loadedFont);
+            } catch (err) {
+                console.error(`Font ${weight} failed to load`, err);
+            }
+        }*/
+
+        const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-full.woff2`;
+
+        const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
+            style: "normal",
+            display: "swap",
+        });
+
+        try {
+            const loadedFont = await font.load();
+            document.fonts.add(loadedFont);
+        } catch (err) {
+            console.error(`Font failed to load`, err);
+        }
+    }
+
+    loadFont().then(() => {
+        if (document.fonts && document.fonts.load) {
+            // Wait until the Material Symbols Outlined font is fully loaded
+            document.fonts.load('1em "Material Symbols Outlined"').then(() => {
+                // Add a class to the body to indicate the font is ready
+
+                document.body.classList.add('icons-loaded');
+
+
+            }).catch(() => {
+                // Fallback: in case of error, still add the class
+                //document.body.classList.add('material-icons-loaded');
+            });
+        } else {
+            // Fallback for older browsers that don't support the Font Loading API
+            //document.body.classList.add('material-icons-loaded');
+        }
+    });
+
+
+
+}

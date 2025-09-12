@@ -78,7 +78,7 @@ export default class Popup {
 
                 e.preventDefault();
 
-                const popupId = el.dataset.id;
+                const popupId = el.dataset.popup;
 
                 WPBS.modals.toggle_modal('#wpbs-popup-' + popupId, {
                     delay: 'delay' in popup ? popup.delay || false : false

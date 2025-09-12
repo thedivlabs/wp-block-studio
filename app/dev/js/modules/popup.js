@@ -66,32 +66,30 @@ export default class Popup {
     }
 
     static cta_popups = (cta_popups = []) => {
-        [...cta_popups].forEach((popup) => {
-            console.log(popup);
-            document.body.addEventListener('click', (e) => {
 
-                const el = e.target.closest('[data-popup]');
+        document.body.addEventListener('click', (e) => {
 
-                if (!el || !e.target?.dataset?.popup) {
-                    return false;
-                }
+            const el = e.target.closest('[data-popup]');
+            const popupId = el?.dataset?.popup;
 
-                e.preventDefault();
+            if (!el || !popupId || !e.target?.dataset?.popup) {
+                return;
+            }
 
-                const popupId = el.dataset.popup;
+            e.preventDefault();
 
-                if(!popupId){
-                    return false;
-                }
+            console.log(el);
+            console.log(e.target);
 
-                WPBS.modals.toggle_modal('#wpbs-popup-' + popupId, {
-                    delay: 'delay' in popup ? popup.delay || false : false
-                });
-
-                WPBS.observeMedia(document.querySelector('#wpbs-popup-' + popupId));
-
+            WPBS.modals.toggle_modal('#wpbs-popup-' + popupId, {
+                //delay: popup?.delay ?? false
             });
 
+            WPBS.observeMedia(document.querySelector('#wpbs-popup-' + popupId));
+
+        });
+
+        [...cta_popups].forEach((popup) => {
 
         })
     }

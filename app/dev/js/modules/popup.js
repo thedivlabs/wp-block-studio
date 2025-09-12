@@ -66,33 +66,29 @@ export default class Popup {
     }
 
     static cta_popups = (cta_popups = []) => {
-
+        // Only one listener
         document.body.addEventListener('click', (e) => {
-
             const el = e.target.closest('[data-popup]');
-            const popupId = el?.dataset?.popup;
+            if (!el) return;
 
-            if (!el || !popupId) {
-                return;
-            }
+            const popupId = el.dataset.popup;
+            if (!popupId) return;
 
             e.preventDefault();
 
-            console.log(el);
-            console.log(e.target);
+            // Find the popup config in your array, if needed
+            const popup = cta_popups.find(p => p.id === popupId);
+
+            console.log('Clicked element:', el);
+            console.log('Event target:', e.target);
 
             WPBS.modals.toggle_modal('#wpbs-popup-' + popupId, {
-                //delay: popup?.delay ?? false
+                delay: popup?.delay ?? false
             });
 
             WPBS.observeMedia(document.querySelector('#wpbs-popup-' + popupId));
-
         });
-
-        [...cta_popups].forEach((popup) => {
-
-        })
-    }
+    };
 
     static enter_popups = (enter_popups = []) => {
         if (enter_popups.length < 1) {

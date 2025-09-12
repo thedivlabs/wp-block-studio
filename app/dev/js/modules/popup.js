@@ -72,7 +72,7 @@ export default class Popup {
             const el = e.target.closest('[data-popup]');
             const popupId = el?.dataset?.popup;
 
-            if (!el || !popupId || !e.target?.dataset?.popup) {
+            if (!el || !popupId) {
                 return;
             }
 

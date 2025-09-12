@@ -66,7 +66,7 @@ class WPBS_Popup {
 			$blocks = do_blocks( $content );
 
 			add_action( 'wpbs_popup_content', function () use ( $blocks, $popup, $class, $id ) {
-				echo "<div id='$id' data-id='$popup->id' class='$class'>";
+				echo "<div id='$id' data-id='wpbs-popup-$popup->id' class='$class'>";
 
 				echo $blocks;
 

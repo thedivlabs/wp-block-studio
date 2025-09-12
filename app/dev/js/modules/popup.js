@@ -79,9 +79,6 @@ export default class Popup {
             // Find the popup config in your array, if needed
             const popup = cta_popups.find(p => p.id === popupId);
 
-            console.log('Clicked element:', el);
-            console.log('Event target:', e.target);
-
             WPBS.modals.toggle_modal('#wpbs-popup-' + popupId, {
                 delay: popup?.delay ?? false
             });

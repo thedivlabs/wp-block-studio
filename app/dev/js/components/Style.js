@@ -165,7 +165,7 @@ export function Style({
                 if (!value) {
                     return;
                 }
-                propsCss += [prop, value].join(':') + ' !important;';
+                propsCss += [prop, value].join(':') + ';';
             })
 
             propsCss += '}}';

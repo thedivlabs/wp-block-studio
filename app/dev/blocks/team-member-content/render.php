@@ -34,6 +34,7 @@ $dynamic_content = match ( $type ) {
 	'phone' => get_field( 'wpbs_contact_phone_number', $team_id ),
 	'extension' => get_field( 'wpbs_contact_ext', $team_id ),
 	'headshot' => get_field( 'wpbs_media_featured_headshot', $team_id ),
+	'social' => get_field( 'wpbs_social_platforms', $team_id ),
 	'featured-image' => get_post_thumbnail_id( $team_id ),
 	'signature' => get_field( 'wpbs_media_misc_signature', $team_id ),
 	'cv' => get_field( 'wpbs_media_misc_cv', $team_id ),

@@ -26,45 +26,20 @@
             "sub_fields": [
                 {
                     "key": "field_6493d0ae29808",
-                    "label": "Icon",
-                    "name": "icon",
+                    "label": "Platform",
+                    "name": "platform",
                     "aria-label": "",
-                    "type": "text",
+                    "type": "social_select",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "20",
+                        "width": "30",
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
-                    "maxlength": "",
+                    "allow_null": 0,
                     "allow_in_bindings": 0,
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "parent_repeater": "field_6493d0ae27993"
-                },
-                {
-                    "key": "field_6493d0ae2980c",
-                    "label": "Name",
-                    "name": "name",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "20",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
                     "parent_repeater": "field_6493d0ae27993"
                 },
                 {
@@ -77,12 +52,13 @@
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
-                        "width": "60",
+                        "width": "70",
                         "class": "",
                         "id": ""
                     },
                     "default_value": "",
                     "maxlength": "",
+                    "allow_in_bindings": 1,
                     "placeholder": "",
                     "prepend": "",
                     "append": "",
@@ -109,5 +85,5 @@
     "active": false,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1753708515
+    "modified": 1757787278
 }

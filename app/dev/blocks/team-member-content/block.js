@@ -50,6 +50,7 @@ const CONTENT_OPTIONS = [
     {label: 'Extension', value: 'extension'},
     {label: 'Headshot', value: 'headshot'},
     {label: 'Featured Image', value: 'featured-image'},
+    {label: 'Social', value: 'social'},
     {label: 'Signature', value: 'signature'},
     {label: 'CV', value: 'cv'},
 ];

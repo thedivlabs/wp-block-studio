@@ -680,7 +680,8 @@ export function layoutCss(attributes, selector) {
 
         css += selector + ' + * {';
         css += '--offset-height: ' + offsetHeight + ' !important;';
-        css += 'margin-top:' + height + ' !important;';
+        css += '--offset-push: ' + height + ';';
+        css += 'margin-top:var(--offset-push) !important;';
         css += '}';
 
     }
@@ -690,7 +691,7 @@ export function layoutCss(attributes, selector) {
         css += '@media screen and (max-width: ' + breakpoint + '){';
         css += selector + ' + * {';
         css += '--offset-height: ' + offsetHeightMobile + ' !important;';
-        css += 'margin-top:' + heightMobile + ' !important;';
+        css += '--offset-push: ' + heightMobile + ';';
         css += '}}';
 
     }

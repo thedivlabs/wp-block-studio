@@ -445,9 +445,7 @@ class WPBS_ACF_field_select_social extends \acf_field {
     public function render_field( $field ): void {
 
         $services = block_core_social_link_services();
-
-        WPBS::console_log( $services );
-
+        
         ?>
 
 

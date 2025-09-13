@@ -24,7 +24,7 @@ class WPBS_Social {
 
 	}
 
-	public function render( $name = false, $args = [] ): array|bool {
+	public function render( $args = [] ): array|bool {
 
 		if ( empty( $this->platforms ) ) {
 			return false;
@@ -35,11 +35,11 @@ class WPBS_Social {
 		foreach ( $this->platforms as $platform ) {
 
 			$slug   = $platform->slug ?? false;
-			$url    = $platform->url;
-			$name   = $services[ $slug ]['name'] ?? false;
+			$url    = esc_url( $platform->url );
+			$name   = esc_html( $services[ $slug ]['name'] ?? false );
 			$file   = get_attached_file( $platform->image );
 			$is_svg = strtolower( pathinfo( $file ?: '', PATHINFO_EXTENSION ) ) === 'svg';
-			$title  = 'Connect with us on ' . ( $name ?: 'social media' );
+			$title  = esc_attr( 'Connect with us on ' . ( $name ?: 'social media' ) );
 
 			echo implode( "\r\n", array_filter( [
 				'<a href="' . $url . '" title="' . $title . '" target="_blank">',

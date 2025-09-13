@@ -16,8 +16,9 @@ class WPBS_Social {
 		$this->platforms = array_map( function ( $platform ) {
 
 			return (object) [
-				'slug' => $platform['platform'] ?? false,
-				'url'  => $platform['url'] ?? false,
+				'slug'  => $platform['platform'] ?? false,
+				'url'   => $platform['url'] ?? false,
+				'image' => $platform['image'] ?? false,
 			];
 		}, $fields['platforms'] ?? $fields );
 
@@ -33,15 +34,19 @@ class WPBS_Social {
 
 		foreach ( $this->platforms as $platform ) {
 
-			$slug  = $platform->slug ?? false;
-			$url   = $platform->url;
-			$name  = $services[ $slug ]['name'] ?? false;
-			$icon  = $services[ $slug ]['icon'] ?? false;
-			$title = 'Connect with us on ' . ( $name ?: 'social media' );
+			$slug   = $platform->slug ?? false;
+			$url    = $platform->url;
+			$name   = $services[ $slug ]['name'] ?? false;
+			$file   = get_attached_file( $platform->image );
+			$is_svg = strtolower( pathinfo( $file ?: '', PATHINFO_EXTENSION ) ) === 'svg';
+			$title  = 'Connect with us on ' . ( $name ?: 'social media' );
 
 			echo implode( "\r\n", array_filter( [
 				'<a href="' . $url . '" title="' . $title . '" target="_blank">',
-				str_replace( [ 'width="24"', 'height="24"' ], '', $icon ),
+				$is_svg ? file_get_contents( $file ) : str_replace( [
+					'width="24"',
+					'height="24"'
+				], '', ( $services[ $slug ]['icon'] ?? '' ) ),
 				'<span class="screen-reader-text">' . $name . '</span>',
 				'</a>',
 			] ) );

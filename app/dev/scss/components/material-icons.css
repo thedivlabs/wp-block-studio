@@ -27,6 +27,8 @@ body:not(.icons-loaded) .material-icon-before:before {
 .wpbs-social-icons {
   display: flex;
   flex-wrap: wrap;
+  flex-shrink: 0;
+  max-width: 100%;
 
   svg {
     width: 1em;

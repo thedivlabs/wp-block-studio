@@ -18,6 +18,7 @@ $company = new WPBS_Place( $company_id );
 $wrapper_attributes = get_block_wrapper_attributes( [
 	'class' => implode( ' ', array_filter( [
 		'wpbs-company-content inline-block',
+		$type == 'social' ? 'wpbs-social-links' : null,
 		! empty( $settings['line-clamp'] ) ? '--line-clamp' : null,
 		! empty( $settings['icon'] ) ? '--icon material-icon-before' : null,
 		! empty( $settings['label-position'] ) ? '--label-' . $settings['label-position'] : null,
@@ -84,6 +85,9 @@ switch ( $type ) {
 		$company->get_hours( [
 			'inline' => $type == 'hours-inline'
 		] );
+		break;
+	case 'social':
+		( new WPBS_Social( $company->social ) )->render();
 		break;
 	default:
 		echo '';

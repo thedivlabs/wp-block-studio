@@ -17,7 +17,7 @@ class WPBS_Social {
 		$this->platforms = array_map( function ( $platform ) {
 
 			return (object) [
-				'slug'  => $platform['platform'][0] ?? $platform['platform'] ?? false,
+				'slug'  => is_array( $platform['platform'] ?? false ) ? $platform['platform'][0] : $platform['platform'] ?? false,
 				'url'   => $platform['url'] ?? false,
 				'image' => $platform['image'] ?? false,
 			];

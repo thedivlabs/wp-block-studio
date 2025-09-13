@@ -42,16 +42,20 @@ registerBlockType(metadata.name, {
 
         const {'wpbs-site-header': settings = {}} = attributes;
 
-        const theme = useSetting('custom');
+        const {breakpoints, header} = useSetting('custom');
 
-        let adminCss = ':root {';
-        adminCss += '--wpbs-header-height: ' + theme?.header?.height?.['xs'];
-        adminCss += '}';
+        const adminCss = useMemo(() => {
+            let result = ':root {';
+            result += '--wpbs-header-height: ' + header?.height?.['xs'];
+            result += '}';
 
-        Object.entries((theme?.header?.height ?? {})).forEach(([key, value]) => {
-            if (key === 'xs') return;
-            adminCss += '@media (min-width:' + (theme?.breakpoints?.[key]) + '){:root:{--wpbs-header-height: ' + value + '}}';
-        });
+            Object.entries((header?.height ?? {})).forEach(([key, value]) => {
+                if (key === 'xs') return;
+                result += '@media (min-width:' + (breakpoints?.[key]) + '){:root:{--wpbs-header-height: ' + value + '}}';
+            });
+
+            return result;
+        }, [breakpoints, header]);
 
 
         const cssProps = useMemo(() => {

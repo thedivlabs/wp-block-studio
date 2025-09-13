@@ -42,15 +42,16 @@ registerBlockType(metadata.name, {
 
         const {'wpbs-site-header': settings = {}} = attributes;
 
-        const {breakpoints, header} = useSetting('custom');
+        const {breakpoints = {}, header = {}} = useSetting('custom');
 
         const adminCss = useMemo(() => {
+
             let result = ':root {';
             result += '--wpbs-header-height: ' + header?.height?.['xs'];
             result += '}';
 
             Object.entries((header?.height ?? {})).forEach(([key, value]) => {
-                if (key === 'xs') return;
+                if (key === 'xs' || !value) return;
                 result += '@media (min-width:' + (breakpoints?.[key]) + '){:root:{--wpbs-header-height: ' + value + '}}';
             });
 

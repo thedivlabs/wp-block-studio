@@ -13,10 +13,11 @@ class WPBS_Social {
 			return;
 		}
 
+
 		$this->platforms = array_map( function ( $platform ) {
 
 			return (object) [
-				'slug'  => $platform['platform'] ?? false,
+				'slug'  => $platform['platform'][0] ?? $platform['platform'] ?? false,
 				'url'   => $platform['url'] ?? false,
 				'image' => $platform['image'] ?? false,
 			];
@@ -34,12 +35,13 @@ class WPBS_Social {
 
 		foreach ( $this->platforms as $platform ) {
 
-			$slug   = $platform->slug ?? false;
+			$slug   = $platform->slug ?? 0;
 			$url    = esc_url( $platform->url );
-			$name   = esc_html( $services[ $slug ]['name'] ?? false );
+			$name   = $services[ $platform->slug ]['name'] ?? '';
 			$file   = get_attached_file( $platform->image );
 			$is_svg = strtolower( pathinfo( $file ?: '', PATHINFO_EXTENSION ) ) === 'svg';
 			$title  = esc_attr( 'Connect with us on ' . ( $name ?: 'social media' ) );
+
 
 			echo implode( "\r\n", array_filter( [
 				'<a href="' . $url . '" title="' . $title . '" target="_blank">',

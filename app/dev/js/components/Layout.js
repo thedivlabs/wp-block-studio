@@ -334,11 +334,7 @@ const MemoRangeControl = React.memo(({label, callback, value, step, min, max}) =
     />
 ));
 
-const heightVal = (val, settings = {}) => {
-
-    if (!val) {
-        val = settings?.['height-custom'] || settings?.['min-height'] || settings?.['height'] || '100%';
-    }
+const heightVal = (val) => {
 
     let height = 'calc(' + val + ' + var(--offset-height, 0px))';
 
@@ -561,7 +557,8 @@ export function layoutCss(attributes, selector) {
     const breakpoint = '%__BREAKPOINT__' + bp_key + '__%';
     const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
 
-    const height = heightVal(false, settings);
+    const height = heightVal([settings?.['height-custom'], settings?.['min-height'], settings?.['height'], '100%']
+        .find(v => typeof v === 'string' && v.trim() !== ''));
     const offsetHeight = !!settings?.['offset-height']?.length ? settings?.['offset-height'] : '0px';
     const heightMobile = heightVal(!!settings?.['height-custom-mobile']?.length ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%');
     const offsetHeightMobile = !!settings?.['offset-height-mobile']?.length ? settings?.['offset-height-mobile'] : '0px';
@@ -690,12 +687,16 @@ export function layoutCss(attributes, selector) {
 
     }
 
-    if (settings?.['position-mobile'] === 'fixed-push') {
+    if (settings?.['position-mobile'] === 'fixed-push' || settings?.position === 'fixed-push') {
 
         css += '@media screen and (max-width: ' + breakpoint + '){';
         css += selector + ' + * {';
         css += '--offset-height: ' + offsetHeightMobile + ' !important;';
         css += '--offset-push: ' + heightMobile + ';';
+        if (settings?.['position-mobile'] !== 'fixed-push' && settings?.position === 'fixed-push') {
+            css += 'margin-top:' + (settings?.['margin-top']?.top ?? 'unset') + ' !important;';
+            css += 'top:unset !important;';
+        }
         css += '}}';
 
     }

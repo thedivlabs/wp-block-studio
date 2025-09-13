@@ -1,7 +1,7 @@
 import {
     InspectorControls,
     useBlockProps,
-    useInnerBlocksProps,
+    useInnerBlocksProps, useSetting,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
@@ -38,11 +38,21 @@ registerBlockType(metadata.name, {
     },
     edit: ({attributes, setAttributes, clientId}) => {
 
-        //const uniqueId = useInstanceId(registerBlockType, 'wpbs-site-header');
-
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-site-header': settings = {}} = attributes;
+
+        const theme = useSetting('custom');
+
+        let adminCss = ':root {';
+        adminCss += '--wpbs-header-height: ' + theme?.header?.height?.['xs'];
+        adminCss += '}';
+
+        Object.entries((theme?.header?.height ?? {})).forEach(([key, value]) => {
+            if (key === 'xs') return;
+            adminCss += '@media (min-width:' + (theme?.breakpoints?.[key]) + '){:root:{--wpbs-header-height: ' + value + '}}';
+        });
+
 
         const cssProps = useMemo(() => {
             return {};
@@ -101,6 +111,7 @@ registerBlockType(metadata.name, {
 
                 <ElementTagName {...blockProps} >
                     <div {...innerBlocksProps}/>
+                    <style>{adminCss}</style>
                 </ElementTagName>
 
             </>

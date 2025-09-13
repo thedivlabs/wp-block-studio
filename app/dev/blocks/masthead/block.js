@@ -46,12 +46,12 @@ registerBlockType(metadata.name, {
 
         const adminCss = useMemo(() => {
             let result = ':root {';
-            result += `--wpbs-header-height: ${header?.height?.['xs'] ?? '0px'}`;
+            result += `--wpbs-header-height: ${header?.height?.['xs'] ?? '0px'};`;
             result += '}';
 
             Object.entries(header?.height ?? {}).forEach(([key, value]) => {
                 if (key === 'xs' || !value) return;
-                result += `@media (min-width: ${breakpoints?.[key]}) { :root { --wpbs-header-height: ${value} }}`;
+                result += `@media (min-width: ${breakpoints?.[key]}) { :root { --wpbs-header-height: ${value};}}`;
             });
 
             return result;

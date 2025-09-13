@@ -23,3 +23,12 @@ body:not(.icons-loaded) .material-icon-before:before {
   width: 1em;
   display: inline-flex;
 }
+
+.wpbs-social-icons {
+
+  svg {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+  }
+}

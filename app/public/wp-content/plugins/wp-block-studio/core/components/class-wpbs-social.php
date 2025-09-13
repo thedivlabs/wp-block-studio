@@ -41,11 +41,7 @@ class WPBS_Social {
 
 			echo implode( "\r\n", array_filter( [
 				'<a href="' . $url . '" title="' . $title . '" target="_blank">',
-				str_replace( [ 'width="24"', 'height="24"', '>' ], [
-					'',
-					'',
-					'style="width:1em;height:1em;fill:currentColor;" >'
-				], $icon ),
+				str_replace( [ 'width="24"', 'height="24"' ], '', $icon ),
 				'<span class="screen-reader-text">' . $name . '</span>',
 				'</a>',
 			] ) );

@@ -79,6 +79,10 @@ if ( $is_cv ) {
 
 $element_tag = $attributes['wpbs-element-tag'] ?? 'div';
 
+if ( empty( $dynamic_content ) ) {
+	return;
+}
+
 ?>
 
 <?php

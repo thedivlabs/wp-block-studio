@@ -142,7 +142,7 @@ registerBlockType(metadata.name, {
                 '--submenu-border': !!settings?.['submenu-border'] ? Object.values(settings['submenu-border']).join(' ') : null,
                 '--submenu-divider': !!settings?.['submenu-divider'] ? Object.values(settings['submenu-divider']).join(' ') : null,
                 breakpoints: {
-                    [attributes?.['wpbs-breakpoint']?.mobile ?? 'xs']: {
+                    [attributes?.['wpbs-breakpoint']?.mobile ?? 'sm']: {
                         '--columns': parseInt(settings?.['columns-small']) || null,
                     },
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {

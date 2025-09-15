@@ -507,8 +507,8 @@ function parseSpecial(prop, attributes) {
         case 'translate':
             result = {
                 'transform': 'translate(' + [
+                    getCSSFromStyle(settings?.['translate']?.left || '0px'),
                     getCSSFromStyle(settings?.['translate']?.top || '0px'),
-                    getCSSFromStyle(settings?.['translate']?.left || '0px')
                 ].join(',') + ')'
             }
             break;
@@ -1971,24 +1971,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
                                 label="Offset Header"
                                 value={settings?.['offset-header-mobile']}
                                 callback={(newValue) => updateProp({'offset-header-mobile': newValue})}
-                            />
-                        </ToolsPanelItem>
-
-                        <ToolsPanelItem
-                            hasValue={() => !!settings?.['translate-mobile']}
-                            label={'Translate'}
-                            onDeselect={() => updateProp({['translate-mobile']: ''})}
-                        >
-                            <MemoBoxControl
-                                label={'Translate'}
-                                sides={['top', 'left']}
-                                value={settings?.['translate-mobile']}
-                                callback={(newValue) => updateProp({'translate-mobile': newValue})}
-                                inputProps={{
-                                    min: -300,
-                                    max: 300,
-                                    units: DIMENSION_UNITS
-                                }}
                             />
                         </ToolsPanelItem>
 

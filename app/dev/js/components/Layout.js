@@ -507,8 +507,8 @@ function parseSpecial(prop, attributes) {
         case 'translate':
             result = {
                 'transform': 'translate(' + [
-                    getCSSFromStyle(settings?.['translate']?.left || '0px'),
-                    getCSSFromStyle(settings?.['translate']?.top || '0px'),
+                    getCSSFromStyle(settings?.[prop]?.left || '0px'),
+                    getCSSFromStyle(settings?.[prop]?.top || '0px'),
                 ].join(',') + ')'
             }
             break;

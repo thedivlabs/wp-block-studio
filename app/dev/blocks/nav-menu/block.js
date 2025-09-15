@@ -8,7 +8,7 @@ import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {Style, STYLE_ATTRIBUTES} from "Components/Style"
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import {useSelect} from "@wordpress/data";
 import {
     __experimentalBorderControl as BorderControl, __experimentalBoxControl as BoxControl,
@@ -142,6 +142,9 @@ registerBlockType(metadata.name, {
                 '--submenu-border': !!settings?.['submenu-border'] ? Object.values(settings['submenu-border']).join(' ') : null,
                 '--submenu-divider': !!settings?.['submenu-divider'] ? Object.values(settings['submenu-divider']).join(' ') : null,
                 breakpoints: {
+                    [attributes?.['wpbs-breakpoint']?.mobile ?? 'xs']: {
+                        '--columns': parseInt(settings?.['columns-small']) || null,
+                    },
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
                         ...iconProps(settings?.['divider-icon'], 'divider'),
@@ -155,11 +158,6 @@ registerBlockType(metadata.name, {
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),
         });
-
-        const columnsSmallCSS = '@media and (min-width: ' + (breakpoints?.[attributes?.['wpbs-breakpoint']?.mobile ?? 'xs']) + ') and (max-width: ' + (breakpoints?.[attributes?.['wpbs-breakpoint']?.large ?? 'normal']) + '){--columns:' + (settings?.['columns-small'] ?? settings?.['columns-small'] ?? 1) + '}';
-
-        console.log(columnsSmallCSS);
-        console.log(attributes);
 
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={15}>
             <SelectControl
@@ -582,7 +580,8 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}
-                   selector={'wpbs-nav-menu'} deps={['wpbs-nav-menu']}/>
+                   selector={'wpbs-nav-menu'} deps={['wpbs-nav-menu']} css={[columnsSmallCSS]}
+            />
 
             <div {...blockProps}>
                 <ul className={'wpbs-nav-menu-container wpbs-layout-wrapper wpbs-container flex flex-wrap'}>

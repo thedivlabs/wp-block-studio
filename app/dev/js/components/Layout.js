@@ -46,7 +46,7 @@ export const LAYOUT_ATTRIBUTES = {
     'wpbs-breakpoint': {
         type: 'object',
         default: {
-            mobile: 'small',
+            mobile: 'sm',
             large: 'normal'
         }
     },

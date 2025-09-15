@@ -122,12 +122,8 @@ registerBlockType(metadata.name, {
 
                         />
 
-                        <Grid columns={2} columnGap={15} rowGap={20}>
-
-                            <IconControl label={'Button Icon'} value={settings?.['button-icon']}
-                                         onChange={(newValue) => updateSettings({'button-icon': newValue})}/>
-
-                        </Grid>
+                        <IconControl label={'Button Icon'} value={settings?.['button-icon']}
+                                     onChange={(newValue) => updateSettings({'button-icon': newValue})}/>
 
                         <PanelColorSettings
                             enableAlpha

@@ -56,6 +56,8 @@ registerBlockType(metadata.name, {
 
         const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
+        const breakpoints = useSetting('custom')?.breakpoints ?? {};
+
         const {'wpbs-nav-menu': settings = {}} = attributes;
         const themeColors = useSetting('color.palette');
         const menus = useSelect((select) => {
@@ -154,6 +156,11 @@ registerBlockType(metadata.name, {
             className: blockClassNames(attributes),
         });
 
+        const columnsSmallCSS = '@media and (min-width: ' + (breakpoints?.[attributes?.['wpbs-breakpoint']?.mobile ?? 'xs']) + ') and (max-width: ' + (breakpoints?.[attributes?.['wpbs-breakpoint']?.large ?? 'normal']) + '){--columns:' + (settings?.['columns-small'] ?? settings?.['columns-small'] ?? 1) + '}';
+
+        console.log(columnsSmallCSS);
+        console.log(attributes);
+
         const tabOptions = <Grid columns={1} columnGap={15} rowGap={15}>
             <SelectControl
                 label="Menu"
@@ -203,25 +210,36 @@ registerBlockType(metadata.name, {
 
             </Grid>
 
-            <Grid columns={2} columnGap={15} rowGap={15}
-                  style={{display: !(attributes?.className ?? '').includes('is-style-columns') ? 'none' : 'grid'}}>
-                <NumberControl
-                    label="Columns"
-                    value={settings?.['columns'] ?? undefined}
-                    min={1}
-                    onChange={(newValue) => updateSettings({'columns': newValue})}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-                <NumberControl
-                    label="Columns Mobile"
-                    value={settings?.['columns-mobile'] ?? undefined}
-                    min={1}
-                    onChange={(newValue) => updateSettings({'columns-mobile': newValue})}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-            </Grid>
+            <BaseControl label={'Columns'}>
+                <Grid columns={2} columnGap={15} rowGap={15}
+                      style={{display: !(attributes?.className ?? '').includes('is-style-columns') ? 'none' : 'grid'}}>
+                    <NumberControl
+                        label="Large"
+                        value={settings?.['columns'] ?? undefined}
+                        min={1}
+                        onChange={(newValue) => updateSettings({'columns': newValue})}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                    <NumberControl
+                        label="Small"
+                        value={settings?.['columns-small'] ?? undefined}
+                        min={1}
+                        onChange={(newValue) => updateSettings({'columns-small': newValue})}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                    <NumberControl
+                        label="Mobile"
+                        value={settings?.['columns-mobile'] ?? undefined}
+                        min={1}
+                        onChange={(newValue) => updateSettings({'columns-mobile': newValue})}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                </Grid>
+            </BaseControl>
+
             <BaseControl label={'Colors'}>
                 <PanelColorSettings
                     enableAlpha

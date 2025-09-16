@@ -143,7 +143,7 @@ registerBlockType(metadata.name, {
                 '--submenu-divider': !!settings?.['submenu-divider'] ? Object.values(settings['submenu-divider']).join(' ') : null,
                 breakpoints: {
                     [attributes?.['wpbs-breakpoint']?.mobile ?? 'xs']: {
-                        '--columns': parseInt(settings?.['columns-small']) || null,
+                        '--columns': parseInt(settings?.['columns-small'] ?? '') || null,
                     },
                     [attributes?.['wpbs-breakpoint']?.large ?? 'normal']: {
                         '--divider': !!settings?.['divider'] ? Object.values(settings['divider']).join(' ') : null,
@@ -580,7 +580,7 @@ registerBlockType(metadata.name, {
 
             <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
             <Style attributes={attributes} setAttributes={setAttributes} props={cssProps} uniqueId={uniqueId}
-                   selector={'wpbs-nav-menu'} deps={['wpbs-nav-menu']} css={[columnsSmallCSS]}
+                   selector={'wpbs-nav-menu'} deps={['wpbs-nav-menu']}
             />
 
             <div {...blockProps}>

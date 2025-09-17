@@ -445,7 +445,7 @@ class WPBS_ACF_field_select_social extends \acf_field {
     public function render_field( $field ): void {
 
         $services = block_core_social_link_services();
-        
+
         ?>
 
 
@@ -489,12 +489,7 @@ class WPBS_ACF {
 
     private function __construct() {
 
-        if (
-                is_admin() &&
-                class_exists( 'ACF' )
-        ) {
-            add_action( 'acf/init', [ $this, 'register_fields' ], 50 );
-        }
+        $this->register_fields();
 
         add_action( 'acf/save_post', [ $this, 'clear_transients' ], 100 );
         add_filter( 'acf/blocks/wrap_frontend_innerblocks', '__return_false', 10 );

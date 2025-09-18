@@ -23,7 +23,7 @@ const classNames = (attributes = {}, editor = false) => {
     const {'wpbs-layout-element': settings} = attributes;
 
     return [
-        selector + ' w-full block relative empty:min-h-8',
+        selector + ' w-full block relative',
         !!editor ? 'empty:min-h-8' : null,
         !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : (attributes?.['wpbs-layout']?.container ? 'wpbs-container' : null),
         !!settings?.['hide-empty'] ? '--hide-empty' : null,

@@ -100,6 +100,15 @@ class WPBS_WP {
 			'label' => 'Accordion',
 		] );
 
+		register_block_style(
+			'core/paragraph',
+			[
+				'name'       => 'subtitle',
+				'label'      => __( 'Subtitle', 'WPBS' ),
+				'is_default' => false,
+			]
+		);
+
 	}
 
 

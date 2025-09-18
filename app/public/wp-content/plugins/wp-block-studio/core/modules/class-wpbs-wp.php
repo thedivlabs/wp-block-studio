@@ -109,6 +109,15 @@ class WPBS_WP {
 			]
 		);
 
+		register_block_style(
+			'core/heading',
+			[
+				'name'       => 'small',
+				'label'      => __( 'Small', 'WPBS' ),
+				'is_default' => false,
+			]
+		);
+
 	}
 
 

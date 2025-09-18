@@ -128,7 +128,7 @@ export function IconControl({value = {}, onChange, label = 'Icon', defaultValue 
     );
 }
 
-export const MaterialIcon = ({name, weight, size, style = 0, className = ''}) => {
+export const MaterialIcon = ({name, weight = 300, size, style = 0, className = ''}) => {
 
     const css = `'FILL' ${Number(style || 0)}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${size || 24}`;
 

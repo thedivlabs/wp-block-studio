@@ -124,7 +124,6 @@ registerBlockType(metadata.name, {
             const prev = settings?.['icon-prev'] ?? customSettings?.button?.prev ?? 'chevron_left'
 
             if (next !== settings?.['icon-next'] || prev !== settings?.['icon-prev']) {
-                console.log('next', next, 'prev', prev);
                 updateSettings({
                     'icon-next': next,
                     'icon-prev': prev,

@@ -45,10 +45,6 @@ export const LAYOUT_ATTRIBUTES = {
         type: 'object',
         default: {}
     },
-    'wpbs-hover': {
-        type: 'object',
-        default: {}
-    },
     'wpbs-props': {
         type: 'object',
     }
@@ -2329,8 +2325,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
             </ToolsPanel>
 
-            <Button variant="primary" onClick={addLayoutItem} disabled={layoutKeys.length >= 3}>
-                Add Layout
+            <Button variant="primary" onClick={addLayoutItem} style={{borderRadius: '0'}}
+                    disabled={layoutKeys.length >= 3}>
+                Add Breakpoint
             </Button>
         </Grid>
     );

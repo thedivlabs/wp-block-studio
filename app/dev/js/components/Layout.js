@@ -2288,7 +2288,6 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
 }
 
-
 const LayoutFields = memo(function LayoutFields({settings, updateProp}) {
     return (
         <Grid columns={2} columnGap={20} rowGap={20}>
@@ -2322,21 +2321,19 @@ const LayoutFields = memo(function LayoutFields({settings, updateProp}) {
 });
 
 export function LayoutRepeater({attributes, setAttributes}) {
-
+    // Get theme JSON settings dynamically
     const themeBreakpoints = useSelect((select) => {
-
-        const coreStore = select('core/block-editor');
-
-        const settings = coreStore.getSettings();
-
-        // your theme.json breakpoints are typically under settings.breakpoints
-        return settings?.breakpoints || {};
+        const settings = select('core/block-editor')?.getSettings?.() || {};
+        return settings.breakpoints || {};
     }, []);
 
-    // Breakpoints array including 'layout' default
+    // Build breakpoints array for selects
     const breakpoints = useMemo(() => [
         {key: 'layout', label: 'Default'},
-        ...Object.entries(themeBreakpoints).map(([key, {label}]) => ({key, label})),
+        ...Object.entries(themeBreakpoints || {}).map(([key, {label}]) => ({
+            key,
+            label,
+        })),
     ], [themeBreakpoints]);
 
     const layoutObj = attributes['wpbs-layout'] || {};
@@ -2398,7 +2395,6 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 const bp = breakpoints.find((b) => b.key === bpKey);
                 const panelLabel = bp ? bp.label : (bpKey === 'layout' ? 'Default' : bpKey);
 
-                // Memoize the updateProp callback per item
                 const updateProp = useCallback(
                     (newProps) => updateLayoutItem(newProps, bpKey),
                     [updateLayoutItem, bpKey]

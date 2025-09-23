@@ -2268,14 +2268,18 @@ export function LayoutRepeater({attributes, setAttributes}) {
         if (!availableBps.length) return;
 
         const newKey = availableBps[0];
+
+        const updatedBreakpoints = {
+            ...layoutObj.breakpoints,
+            [newKey]: {...LAYOUT_DEFAULTS},
+        };
+
         setLayoutObj({
             ...layoutObj,
-            breakpoints: {
-                ...layoutObj.breakpoints,
-                [newKey]: {...LAYOUT_DEFAULTS},
-            },
+            breakpoints: sortBreakpointsBySize(updatedBreakpoints, WPBS.settings.breakpoints),
         });
     }, [layoutObj, breakpoints, setLayoutObj]);
+
 
     const removeLayoutItem = useCallback(
         (bpKey) => {
@@ -2332,7 +2336,11 @@ export function LayoutRepeater({attributes, setAttributes}) {
                                         const newBreakpoints = {...layoutObj.breakpoints};
                                         newBreakpoints[newBpKey] = newBreakpoints[bpKey];
                                         delete newBreakpoints[bpKey];
-                                        setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+
+                                        setLayoutObj({
+                                            ...layoutObj,
+                                            breakpoints: sortBreakpointsBySize(newBreakpoints, WPBS.settings.breakpoints),
+                                        });
                                     }}
                                 />
                             </ToolsPanelItem>

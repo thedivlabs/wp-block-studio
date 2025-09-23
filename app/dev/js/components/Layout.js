@@ -2279,7 +2279,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
     const layoutKeys = useMemo(() => Object.keys(layoutObj.breakpoints), [layoutObj]);
 
     return (
-        <Grid columns={1} columnGap={20} className="wpbs-layout-repeater">
+        <Grid columns={1} columnGap={0} className="wpbs-layout-repeater">
             <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
                 <LayoutFields
                     bpKey="layout"
@@ -2295,9 +2295,11 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
                 return (
                     <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => removeLayoutItem(bpKey)}>
+
                         <SelectControl
                             label="Breakpoint"
                             value={bpKey}
+                            style={{gridColumn: '1/-1'}}
                             options={breakpoints
                                 .map((b) => ({
                                     value: b.key,

@@ -2294,7 +2294,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
     return (
         <div className="wpbs-layout-repeater">
-            <ToolsPanel label="Default Layout" resetAll={() => clearLayoutItem('layout')}>
+            <ToolsPanel label="Default" resetAll={() => clearLayoutItem('layout')}>
                 <LayoutFields
                     bpKey="layout"
                     settings={layoutObj.layout || {}}
@@ -2303,7 +2303,8 @@ export function LayoutRepeater({attributes, setAttributes}) {
             </ToolsPanel>
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
-                const panelLabel = [bp ? bp.label : bpKey, bp?.size].filter(Boolean).join(': ');
+                const size = bp?.size ? `(${bp.size}px)` : '';
+                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(': ');
 
                 return (
                     <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => clearLayoutItem(bpKey)}>

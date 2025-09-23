@@ -2304,7 +2304,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
                 const size = bp?.size ? `(${bp.size}px)` : '';
-                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(': ');
+                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
                 return (
                     <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => clearLayoutItem(bpKey)}>
@@ -2326,14 +2326,6 @@ export function LayoutRepeater({attributes, setAttributes}) {
                             settings={layoutObj[bpKey] || {}}
                             updateLayoutItem={updateLayoutItem}
                         />
-
-                        <Button
-                            variant="secondary"
-                            onClick={() => removeLayoutItem(bpKey)}
-                            style={{width: 'fit-content', maxWidth: '100%'}}
-                        >
-                            <Icon icon="trash"/>
-                        </Button>
                     </ToolsPanel>
                 );
             })}

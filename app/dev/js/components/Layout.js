@@ -2314,7 +2314,7 @@ export function LayoutCss({settings, selector}) {
             if (!bp || !props || Object.keys(props).length === 0) return;
 
             const rules = propsToCss(props);
-            css += `@media (max-width: ${bp.size}) { ${baseSelector} { ${rules} } }`;
+            css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${rules} } }`;
         });
 
         return css;

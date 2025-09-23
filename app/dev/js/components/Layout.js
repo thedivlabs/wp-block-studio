@@ -2173,11 +2173,9 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
     );
 });
 
-
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(
         () => [
-            {key: 'layout', label: 'Default'},
             ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label, size}]) => ({
                 key,
                 label,
@@ -2187,68 +2185,73 @@ export function LayoutRepeater({attributes, setAttributes}) {
         [WPBS?.settings?.breakpoints]
     );
 
-    const layoutObj = attributes['wpbs-layout'] || {};
-    const hoverObj = attributes['wpbs-hover'] || {};
+    // Ensure the new shape exists
+    const layoutObj = {
+        layout: attributes['wpbs-layout']?.layout || {},
+        breakpoints: attributes['wpbs-layout']?.breakpoints || {},
+        hover: attributes['wpbs-layout']?.hover || {},
+    };
+
+    const setLayoutObj = useCallback(
+        (newObj) => {
+            setAttributes({...attributes, 'wpbs-layout': newObj});
+        },
+        [attributes, setAttributes]
+    );
 
     const updateLayoutItem = useCallback(
         (newProps, bpKey) => {
             const updated = {
                 ...layoutObj,
-                [bpKey]: {
-                    ...layoutObj[bpKey],
-                    ...newProps,
+                breakpoints: {
+                    ...layoutObj.breakpoints,
+                    [bpKey]: {
+                        ...layoutObj.breakpoints[bpKey],
+                        ...newProps,
+                    },
                 },
             };
 
             // Remove empty properties
-            const cleaned = Object.fromEntries(
-                Object.entries(updated)
-                    .map(([key, props]) => {
-                        const filteredProps = Object.fromEntries(
-                            Object.entries(props).filter(([_, value]) => value !== '')
-                        );
-                        return [key, filteredProps];
-                    })
+            const cleanedBreakpoints = Object.fromEntries(
+                Object.entries(updated.breakpoints)
+                    .map(([key, props]) => [
+                        key,
+                        Object.fromEntries(Object.entries(props).filter(([_, v]) => v !== '')),
+                    ])
                     .filter(([_, props]) => Object.keys(props).length > 0)
             );
 
-            setAttributes({
-                ...attributes,
-                'wpbs-layout': cleaned,
+            setLayoutObj({
+                ...updated,
+                breakpoints: cleanedBreakpoints,
             });
         },
-        [layoutObj, setAttributes]
+        [layoutObj, setLayoutObj]
+    );
+
+    const updateDefaultLayout = useCallback(
+        (newProps) => {
+            setLayoutObj({
+                ...layoutObj,
+                layout: {...layoutObj.layout, ...newProps},
+            });
+        },
+        [layoutObj, setLayoutObj]
     );
 
     const updateHoverItem = useCallback(
         (newProps) => {
-            setAttributes({
-                ...attributes,
-                'wpbs-hover': {...hoverObj, ...newProps},
-            });
-        },
-        [hoverObj, setAttributes]
-    );
-
-    const clearLayoutItem = useCallback(
-        (bpKey) => {
-
-
-            const updated = {
+            setLayoutObj({
                 ...layoutObj,
-                [bpKey]: {},
-            };
-
-            setAttributes({
-                ...attributes,
-                'wpbs-layout': updated,
+                hover: {...layoutObj.hover, ...newProps},
             });
         },
-        [layoutObj, setAttributes]
+        [layoutObj, setLayoutObj]
     );
 
     const addLayoutItem = useCallback(() => {
-        const keys = Object.keys(layoutObj);
+        const keys = Object.keys(layoutObj.breakpoints);
         if (keys.length >= 3) return;
 
         const availableBps = breakpoints
@@ -2257,85 +2260,82 @@ export function LayoutRepeater({attributes, setAttributes}) {
         if (!availableBps.length) return;
 
         const newKey = availableBps[0];
-        setAttributes({
-            ...attributes,
-            'wpbs-layout': {
-                ...layoutObj,
+        setLayoutObj({
+            ...layoutObj,
+            breakpoints: {
+                ...layoutObj.breakpoints,
                 [newKey]: {...LAYOUT_DEFAULTS},
             },
         });
-    }, [layoutObj, breakpoints, setAttributes]);
+    }, [layoutObj, breakpoints, setLayoutObj]);
 
     const removeLayoutItem = useCallback(
         (bpKey) => {
-            const {[bpKey]: removed, ...rest} = layoutObj;
-            setAttributes({
-                ...attributes,
-                'wpbs-layout': rest,
+            const {[bpKey]: removed, ...rest} = layoutObj.breakpoints;
+            setLayoutObj({
+                ...layoutObj,
+                breakpoints: rest,
             });
         },
-        [layoutObj, setAttributes]
+        [layoutObj, setLayoutObj]
     );
 
-    const handleBreakpointChange = useCallback(
-        (newBpKey, oldBpKey) => {
-            const newLayout = {...layoutObj};
-            newLayout[newBpKey] = {...layoutObj[oldBpKey]};
-            delete newLayout[oldBpKey];
-            setAttributes({...attributes, 'wpbs-layout': newLayout});
-        },
-        [layoutObj, setAttributes]
-    );
-
-    const layoutKeys = useMemo(
-        () => Object.keys(layoutObj).filter((key) => key !== 'layout'),
-        [layoutObj]
-    );
+    const layoutKeys = useMemo(() => Object.keys(layoutObj.breakpoints), [layoutObj]);
 
     return (
-        <div className="wpbs-layout-repeater">
-            <ToolsPanel label="Default" resetAll={() => clearLayoutItem('layout')}>
+        <Grid columns={1} columnGap={20} className="wpbs-layout-repeater">
+            <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
                 <LayoutFields
                     bpKey="layout"
-                    settings={layoutObj.layout || {}}
-                    updateLayoutItem={updateLayoutItem}
+                    settings={layoutObj.layout}
+                    updateLayoutItem={updateDefaultLayout}
                 />
             </ToolsPanel>
+
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
                 const size = bp?.size ? `(${bp.size}px)` : '';
                 const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
                 return (
-                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => clearLayoutItem(bpKey)}>
+                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => removeLayoutItem(bpKey)}>
                         <SelectControl
                             label="Breakpoint"
                             value={bpKey}
                             options={breakpoints
-                                .filter((b) => b.key !== 'layout') // exclude default from dropdown
                                 .map((b) => ({
                                     value: b.key,
                                     label: b.label,
                                     disabled: b.key !== bpKey && layoutKeys.includes(b.key),
                                 }))}
-                            onChange={(newBpKey) => handleBreakpointChange(newBpKey, bpKey)}
+                            onChange={(newBpKey) => {
+                                const newBreakpoints = {...layoutObj.breakpoints};
+                                newBreakpoints[newBpKey] = newBreakpoints[bpKey];
+                                delete newBreakpoints[bpKey];
+                                setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                            }}
                         />
 
                         <LayoutFields
                             bpKey={bpKey}
-                            settings={layoutObj[bpKey] || {}}
+                            settings={layoutObj.breakpoints[bpKey]}
                             updateLayoutItem={updateLayoutItem}
                         />
                     </ToolsPanel>
                 );
             })}
 
+            <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
+                <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+            </ToolsPanel>
+
             <Button variant="primary" onClick={addLayoutItem} disabled={layoutKeys.length >= 3}>
                 Add Layout
             </Button>
-        </div>
+        </Grid>
     );
 }
+
 
 export function LayoutCss({settings, selector}) {
     const cssString = useMemo(() => {

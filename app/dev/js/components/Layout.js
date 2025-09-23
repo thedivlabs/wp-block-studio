@@ -2329,9 +2329,10 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
     const breakpoints = useMemo(() => [
         {key: 'layout', label: 'Default'},
-        ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label}]) => ({
+        ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label, size}]) => ({
             key,
             label,
+            size,
         })),
     ], [WPBS?.settings?.breakpoints]);
 
@@ -2409,7 +2410,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
         <div className="wpbs-layout-repeater">
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
-                const panelLabel = bp ? bp.label : (bpKey === 'layout' ? 'Default' : bpKey);
+                const panelLabel = [bp ? bp.label : (bpKey === 'layout' ? 'Default' : bpKey), bp.size].join(': ');
 
                 return (
                     <ToolsPanel

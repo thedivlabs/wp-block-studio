@@ -2281,14 +2281,19 @@ export function LayoutRepeater({attributes, setAttributes}) {
     );
 
     const layoutKeys = useMemo(() => {
-        const keys = Object.keys(layoutObj.breakpoints || []);
+        const keys = Object.keys(layoutObj.breakpoints || {});
         return keys.sort((a, b) => {
-            const sizeA = breakpoints[a]?.size || 0;
-            const sizeB = breakpoints[b]?.size || 0;
+            const bpA = breakpoints.find((bp) => bp.key === a);
+            const bpB = breakpoints.find((bp) => bp.key === b);
+
+            const sizeA = bpA?.size || 0;
+            const sizeB = bpB?.size || 0;
+
             return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
-    
+
+
     return (
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
             <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>

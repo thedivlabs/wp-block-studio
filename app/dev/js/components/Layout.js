@@ -2283,11 +2283,11 @@ export function LayoutRepeater({attributes, setAttributes}) {
     const layoutKeys = useMemo(() => {
         const keys = Object.keys(layoutObj.breakpoints || []);
         return keys.sort((a, b) => {
-            const sizeA = WPBS.settings.breakpoints[a]?.size || 0;
-            const sizeB = WPBS.settings.breakpoints[b]?.size || 0;
+            const sizeA = breakpoints[a]?.size || 0;
+            const sizeB = breakpoints[b]?.size || 0;
             return sizeA - sizeB;
         });
-    }, [layoutObj]);
+    }, [layoutObj, breakpoints]);
 
     return (
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>

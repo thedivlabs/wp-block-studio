@@ -2327,19 +2327,20 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
 
 export function LayoutRepeater({attributes, setAttributes}) {
     // Get theme JSON settings dynamically
-    const themeBreakpoints = useSelect((select) => {
-        const settings = select('core/block-editor')?.getSettings?.() || {};
-        return settings?.custom?.breakpoints || {};
-    }, []);
+    const themeBreakpoints = WPBS?.settings ?? {};
+
 
     // Build breakpoints array for selects
     const breakpoints = useMemo(() => [
         {key: 'layout', label: 'Default'},
-        ...Object.entries(themeBreakpoints || {}).map(([key, {label}]) => ({
+        ...Object.entries(themeBreakpoints).map(([key, {label}]) => ({
             key,
             label,
         })),
     ], [themeBreakpoints]);
+
+
+    console.log(breakpoints);
 
     const layoutObj = attributes['wpbs-layout'] || {};
 

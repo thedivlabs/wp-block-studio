@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls, LayoutRepeater} from "Components/Layout"
 import {
     __experimentalGrid as Grid, __experimentalUnitControl as UnitControl,
     PanelBody,
@@ -14,13 +14,14 @@ import {
     TextControl,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
+
 
 function classNames(attributes = {}) {
 
@@ -185,12 +186,20 @@ registerBlockType(metadata.name, {
             );
         }, [settings, style]);
 
+        useEffect(() => {
+            console.log(attributes);
+        }, [settings]);
+
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />
                 <Link defaultValue={settings?.link}
                       callback={(newValue) => updateSettings({link: newValue})}/>
                 <InspectorControls group="styles">
+
+
+                    <LayoutRepeater setAttributes={setAttributes} attributes={attributes}/>
+
                     <PanelBody initialOpen={true}>
 
                         <TabPanel

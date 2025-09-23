@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from "react";
+import React, {memo, useCallback, useMemo, useState} from "react";
 
 import {
     InspectorControls, MediaUpload, MediaUploadCheck,
@@ -13,7 +13,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl, BaseControl, FormTokenField, PanelBody,
     RangeControl,
-    SelectControl, ToggleControl
+    SelectControl, ToggleControl, TextControl, Button
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -37,6 +37,7 @@ import {
 } from "Includes/config";
 import {ColorSelector} from "./ColorSelector";
 import {ShadowSelector} from "Components/ShadowSelector";
+import {__} from "@wordpress/i18n";
 
 export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
@@ -2284,4 +2285,126 @@ export function LayoutControls({attributes = {}, setAttributes}) {
         </InspectorControls>
     </>
 
+}
+
+
+const LayoutFields = memo(function LayoutFields({settings, updateProp}) {
+    return (
+        <Grid columns={2} columnGap={20} rowGap={20}>
+            <ToolsPanelItem
+                label="Display"
+                hasValue={() => !!settings.display}
+                onDeselect={() => updateProp({display: ''})}
+            >
+                <SelectControl
+                    label="Display"
+                    value={settings.display}
+                    options={DISPLAY_OPTIONS}
+                    onChange={(val) => updateProp({display: val})}
+                />
+            </ToolsPanelItem>
+
+            <ToolsPanelItem
+                label="Direction"
+                hasValue={() => !!settings['flex-direction']}
+                onDeselect={() => updateProp({'flex-direction': ''})}
+            >
+                <SelectControl
+                    label="Direction"
+                    value={settings['flex-direction']}
+                    options={DIRECTION_OPTIONS}
+                    onChange={(val) => updateProp({'flex-direction': val})}
+                />
+            </ToolsPanelItem>
+        </Grid>
+    );
+});
+
+export function LayoutRepeater({attributes, setAttributes}) {
+    const breakpoints = [
+        {key: 'layout', label: 'Default'},
+        {key: 'sm', label: 'Small'},
+        {key: 'md', label: 'Medium'},
+        {key: 'normal', label: 'Normal'},
+        {key: 'lg', label: 'Large'},
+        {key: 'xl', label: 'XL'},
+    ];
+
+    const layoutObj = attributes['wpbs-layout'] || {};
+
+    const updateLayoutItem = useCallback(
+        (newProps, itemKey) => {
+            setAttributes({
+                ...attributes,
+                'wpbs-layout': {
+                    ...layoutObj,
+                    [itemKey]: {
+                        ...layoutObj[itemKey],
+                        ...newProps,
+                    },
+                },
+            });
+        },
+        [attributes, layoutObj, setAttributes]
+    );
+
+    const addLayoutItem = () => {
+        const keys = Object.keys(layoutObj).filter((k) => k.startsWith('layout-'));
+        if (keys.length >= 3) return; // limit to 3 items
+
+        const newKey = `layout-${keys.length + 1}`;
+        setAttributes({
+            ...attributes,
+            'wpbs-layout': {
+                ...layoutObj,
+                [newKey]: {display: '', 'flex-direction': '', breakpoint: ''},
+            },
+        });
+    };
+
+    const removeLayoutItem = (itemKey) => {
+        const {[itemKey]: removed, ...rest} = layoutObj;
+        setAttributes({
+            ...attributes,
+            'wpbs-layout': rest,
+        });
+    };
+
+    const layoutKeys = Object.keys(layoutObj).filter((k) => k.startsWith('layout-'));
+
+    return (
+        <div className="wpbs-layout-repeater">
+            {layoutKeys.map((itemKey) => (
+                <ToolsPanel
+                    key={itemKey}
+                    label={`Layout ${itemKey.split('-')[1]}`}
+                    resetAll={() => updateLayoutItem({}, itemKey)}
+                >
+                    <SelectControl
+                        label="Breakpoint"
+                        value={layoutObj[itemKey].breakpoint || 'layout'}
+                        options={breakpoints.map((bp) => ({label: bp.label, value: bp.key}))}
+                        onChange={(newBpKey) => {
+                            updateLayoutItem({breakpoint: newBpKey}, itemKey);
+                        }}
+                    />
+
+                    <LayoutFields
+                        settings={layoutObj[itemKey]}
+                        updateProp={(newProps) => updateLayoutItem(newProps, itemKey)}
+                    />
+
+                    <Button variant="secondary" onClick={() => removeLayoutItem(itemKey)}>
+                        Remove
+                    </Button>
+                </ToolsPanel>
+            ))}
+
+            {layoutKeys.length < 3 && (
+                <Button variant="primary" onClick={addLayoutItem}>
+                    Add Layout
+                </Button>
+            )}
+        </div>
+    );
 }

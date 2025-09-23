@@ -2169,6 +2169,18 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
     );
 });
 
+function sortBreakpointsBySize(breakpointsObj, themeBreakpoints) {
+    if (!breakpointsObj || !themeBreakpoints) return breakpointsObj;
+
+    const sortedKeys = Object.keys(breakpointsObj).sort((a, b) => {
+        const sizeA = themeBreakpoints[a]?.size ?? Infinity;
+        const sizeB = themeBreakpoints[b]?.size ?? Infinity;
+        return sizeA - sizeB;
+    });
+
+    return Object.fromEntries(sortedKeys.map((key) => [key, breakpointsObj[key]]));
+}
+
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(
         () => [

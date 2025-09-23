@@ -2325,12 +2325,11 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     );
 });
 
-
 export function LayoutRepeater({attributes, setAttributes}) {
     // Get theme JSON settings dynamically
     const themeBreakpoints = useSelect((select) => {
         const settings = select('core/block-editor')?.getSettings?.() || {};
-        return settings.breakpoints || {};
+        return settings?.custom?.breakpoints || {};
     }, []);
 
     // Build breakpoints array for selects

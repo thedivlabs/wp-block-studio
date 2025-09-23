@@ -38,6 +38,7 @@ import {
 import {ColorSelector} from "./ColorSelector";
 import {ShadowSelector} from "Components/ShadowSelector";
 import {__} from "@wordpress/i18n";
+import {useSelect} from "@wordpress/data";
 
 export const LAYOUT_ATTRIBUTES = {
     'wpbs-layout': {
@@ -2321,23 +2322,22 @@ const LayoutFields = memo(function LayoutFields({settings, updateProp}) {
 });
 
 export function LayoutRepeater({attributes, setAttributes}) {
-    const themeBreakpoints = {
-        xs: {size: "640px", label: "Extra Small"},
-        sm: {size: "768px", label: "Small"},
-        md: {size: "1140px", label: "Medium"},
-        normal: {size: "1304px", label: "Normal"},
-        lg: {size: "1500px", label: "Large"},
-        xl: {size: "1800px", label: "Extra Large"},
-    };
 
-// Generate select array with default option
-    const breakpoints = [
+    const themeBreakpoints = useSelect((select) => {
+
+        const coreStore = select('core/block-editor');
+
+        const settings = coreStore.getSettings();
+
+        // your theme.json breakpoints are typically under settings.breakpoints
+        return settings?.breakpoints || {};
+    }, []);
+
+    // Breakpoints array including 'layout' default
+    const breakpoints = useMemo(() => [
         {key: 'layout', label: 'Default'},
-        ...Object.entries(themeBreakpoints).map(([key, {label}]) => ({
-            key,
-            label,
-        })),
-    ];
+        ...Object.entries(themeBreakpoints).map(([key, {label}]) => ({key, label})),
+    ], [themeBreakpoints]);
 
     const layoutObj = attributes['wpbs-layout'] || {};
 
@@ -2354,15 +2354,15 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 },
             });
         },
-        [layoutObj, setAttributes]
+        [layoutObj, attributes, setAttributes]
     );
 
-    const addLayoutItem = () => {
+    const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj);
         const availableBps = breakpoints.map((bp) => bp.key).filter((bp) => !keys.includes(bp));
         if (!availableBps.length) return;
 
-        const newKey = availableBps[0]; // pick the first available breakpoint
+        const newKey = availableBps[0];
         setAttributes({
             ...attributes,
             'wpbs-layout': {
@@ -2370,17 +2370,15 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 [newKey]: {display: '', 'flex-direction': ''},
             },
         });
-    };
+    }, [layoutObj, attributes, breakpoints, setAttributes]);
 
-    const removeLayoutItem = (bpKey) => {
+    const removeLayoutItem = useCallback((bpKey) => {
         const {[bpKey]: removed, ...rest} = layoutObj;
         setAttributes({
             ...attributes,
             'wpbs-layout': rest,
         });
-    };
-
-    const layoutKeys = Object.keys(layoutObj);
+    }, [layoutObj, attributes, setAttributes]);
 
     const handleBreakpointChange = useCallback(
         (newBpKey, oldBpKey) => {
@@ -2389,15 +2387,22 @@ export function LayoutRepeater({attributes, setAttributes}) {
             delete newLayout[oldBpKey];
             setAttributes({...attributes, 'wpbs-layout': newLayout});
         },
-        [layoutObj, setAttributes]
+        [layoutObj, attributes, setAttributes]
     );
 
+    const layoutKeys = useMemo(() => Object.keys(layoutObj), [layoutObj]);
 
     return (
         <div className="wpbs-layout-repeater">
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
                 const panelLabel = bp ? bp.label : (bpKey === 'layout' ? 'Default' : bpKey);
+
+                // Memoize the updateProp callback per item
+                const updateProp = useCallback(
+                    (newProps) => updateLayoutItem(newProps, bpKey),
+                    [updateLayoutItem, bpKey]
+                );
 
                 return (
                     <ToolsPanel
@@ -2417,16 +2422,20 @@ export function LayoutRepeater({attributes, setAttributes}) {
                         />
                         <LayoutFields
                             settings={layoutObj[bpKey]}
-                            updateProp={(newProps) => updateLayoutItem(newProps, bpKey)}
+                            updateProp={updateProp}
                         />
 
-                        <Button variant="secondary" onClick={() => removeLayoutItem(bpKey)}
-                                style={{width: 'fit-content', maxWidth: '100%'}}>
+                        <Button
+                            variant="secondary"
+                            onClick={() => removeLayoutItem(bpKey)}
+                            style={{width: 'fit-content', maxWidth: '100%'}}
+                        >
                             <Icon icon="trash"/>
                         </Button>
                     </ToolsPanel>
                 );
             })}
+
             {layoutKeys.length < 3 && (
                 <Button variant="primary" onClick={addLayoutItem}>
                     Add Layout

@@ -290,12 +290,30 @@
     },
     "custom": {
       "breakpoints": {
-        "xs": "640px",
-        "sm": "768px",
-        "md": "1040px",
-        "normal": "1404px",
-        "lg": "1500px",
-        "xl": "1800px"
+        "xs": {
+          "size": "640px",
+          "label": "Extra Small"
+        },
+        "sm": {
+          "size": "768px",
+          "label": "Small"
+        },
+        "md": {
+          "size": "1140px",
+          "label": "Medium"
+        },
+        "normal": {
+          "size": "1304px",
+          "label": "Normal"
+        },
+        "lg": {
+          "size": "1500px",
+          "label": "Large"
+        },
+        "xl": {
+          "size": "1800px",
+          "label": "Extra Large"
+        }
       },
       "container": {
         "xs": "768px",

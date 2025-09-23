@@ -2187,6 +2187,23 @@ export function LayoutRepeater({attributes, setAttributes}) {
         [layoutObj, setAttributes]
     );
 
+    const clearLayoutItem = useCallback(
+        (bpKey) => {
+
+
+            const updated = {
+                ...layoutObj,
+                [bpKey]: {},
+            };
+
+            setAttributes({
+                ...attributes,
+                'wpbs-layout': updated,
+            });
+        },
+        [layoutObj, setAttributes]
+    );
+
     const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj);
         if (keys.length >= 3) return;
@@ -2238,7 +2255,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     .join(': ');
 
                 return (
-                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => updateLayoutItem({}, bpKey)}>
+                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => clearLayoutItem(bpKey)}>
                         <SelectControl
                             label="Breakpoint"
                             value={bpKey}

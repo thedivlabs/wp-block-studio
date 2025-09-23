@@ -2279,7 +2279,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
     const layoutKeys = useMemo(() => Object.keys(layoutObj.breakpoints), [layoutObj]);
 
     return (
-        <Grid columns={1} columnGap={0} className="wpbs-layout-repeater">
+        <div className="wpbs-layout-repeater">
             <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
                 <LayoutFields
                     bpKey="layout"
@@ -2296,24 +2296,30 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 return (
                     <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => removeLayoutItem(bpKey)}>
 
-                        <SelectControl
+                        <ToolsPanelItem
+                            isShownByDefault={true}
                             label="Breakpoint"
-                            value={bpKey}
-                            style={{gridColumn: '1/-1'}}
-                            options={breakpoints
-                                .map((b) => ({
-                                    value: b.key,
-                                    label: b.label,
-                                    disabled: b.key !== bpKey && layoutKeys.includes(b.key),
-                                }))}
-                            onChange={(newBpKey) => {
-                                const newBreakpoints = {...layoutObj.breakpoints};
-                                newBreakpoints[newBpKey] = newBreakpoints[bpKey];
-                                delete newBreakpoints[bpKey];
-                                setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
-                            }}
-                        />
-
+                            hasValue={() => !!bpKey}
+                            onDeselect={() => null}
+                        >
+                            <SelectControl
+                                label="Breakpoint"
+                                value={bpKey}
+                                style={{gridColumn: 'span 2'}}
+                                options={breakpoints
+                                    .map((b) => ({
+                                        value: b.key,
+                                        label: b.label,
+                                        disabled: b.key !== bpKey && layoutKeys.includes(b.key),
+                                    }))}
+                                onChange={(newBpKey) => {
+                                    const newBreakpoints = {...layoutObj.breakpoints};
+                                    newBreakpoints[newBpKey] = newBreakpoints[bpKey];
+                                    delete newBreakpoints[bpKey];
+                                    setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                                }}
+                            />
+                        </ToolsPanelItem>
                         <LayoutFields
                             bpKey={bpKey}
                             settings={layoutObj.breakpoints[bpKey]}
@@ -2331,7 +2337,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     disabled={layoutKeys.length >= 3}>
                 Add Breakpoint
             </Button>
-        </Grid>
+        </div>
     );
 }
 

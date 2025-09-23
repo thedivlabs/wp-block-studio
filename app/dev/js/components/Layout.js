@@ -2287,7 +2287,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
             const sizeB = breakpoints[b]?.size || 0;
             return sizeA - sizeB;
         });
-    }, [layoutObj, breakpoints]);
+    }, [layoutObj?.breakpoints, breakpoints]);
+
+    console.log(layoutKeys);
 
     return (
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>

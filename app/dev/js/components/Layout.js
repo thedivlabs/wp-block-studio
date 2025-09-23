@@ -2279,66 +2279,68 @@ export function LayoutRepeater({attributes, setAttributes}) {
     const layoutKeys = useMemo(() => Object.keys(layoutObj.breakpoints), [layoutObj]);
 
     return (
-        <div className="wpbs-layout-repeater">
-            <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
-                <LayoutFields
-                    bpKey="layout"
-                    settings={layoutObj.layout}
-                    updateLayoutItem={updateDefaultLayout}
-                />
-            </ToolsPanel>
+        <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
+            <div className={'wpbs-layout-tools__grid'}>
+                <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
+                    <LayoutFields
+                        bpKey="layout"
+                        settings={layoutObj.layout}
+                        updateLayoutItem={updateDefaultLayout}
+                    />
+                </ToolsPanel>
 
-            <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
-                <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
-            </ToolsPanel>
+                <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
+                    <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+                </ToolsPanel>
 
-            {layoutKeys.map((bpKey) => {
-                const bp = breakpoints.find((b) => b.key === bpKey);
-                const size = bp?.size ? `(${bp.size}px)` : '';
-                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
+                {layoutKeys.map((bpKey) => {
+                    const bp = breakpoints.find((b) => b.key === bpKey);
+                    const size = bp?.size ? `(${bp.size}px)` : '';
+                    const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
-                return (
-                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => removeLayoutItem(bpKey)}>
+                    return (
+                        <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => removeLayoutItem(bpKey)}>
 
-                        <ToolsPanelItem
-                            isShownByDefault={true}
-                            label="Breakpoint"
-                            hasValue={() => !!bpKey}
-                            onDeselect={() => false}
-                        >
-                            <SelectControl
+                            <ToolsPanelItem
+                                isShownByDefault={true}
                                 label="Breakpoint"
-                                value={bpKey}
-                                style={{gridColumn: 'span 2'}}
-                                options={breakpoints
-                                    .map((b) => ({
-                                        value: b.key,
-                                        label: b.label,
-                                        disabled: b.key !== bpKey && layoutKeys.includes(b.key),
-                                    }))}
-                                onChange={(newBpKey) => {
-                                    const newBreakpoints = {...layoutObj.breakpoints};
-                                    newBreakpoints[newBpKey] = newBreakpoints[bpKey];
-                                    delete newBreakpoints[bpKey];
-                                    setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
-                                }}
+                                hasValue={() => !!bpKey}
+                                onDeselect={() => false}
+                            >
+                                <SelectControl
+                                    label="Breakpoint"
+                                    value={bpKey}
+                                    style={{gridColumn: 'span 2'}}
+                                    options={breakpoints
+                                        .map((b) => ({
+                                            value: b.key,
+                                            label: b.label,
+                                            disabled: b.key !== bpKey && layoutKeys.includes(b.key),
+                                        }))}
+                                    onChange={(newBpKey) => {
+                                        const newBreakpoints = {...layoutObj.breakpoints};
+                                        newBreakpoints[newBpKey] = newBreakpoints[bpKey];
+                                        delete newBreakpoints[bpKey];
+                                        setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                                    }}
+                                />
+                            </ToolsPanelItem>
+                            <LayoutFields
+                                bpKey={bpKey}
+                                settings={layoutObj.breakpoints[bpKey]}
+                                updateLayoutItem={updateLayoutItem}
                             />
-                        </ToolsPanelItem>
-                        <LayoutFields
-                            bpKey={bpKey}
-                            settings={layoutObj.breakpoints[bpKey]}
-                            updateLayoutItem={updateLayoutItem}
-                        />
-                    </ToolsPanel>
-                );
-            })}
-            
-            <Button variant="primary" onClick={addLayoutItem}
-                    style={{borderRadius: '0', width: '100%', gridColumn: 'span all'}}
-                    disabled={layoutKeys.length >= 3}>
-                Add Breakpoint
-            </Button>
-        </div>
+                        </ToolsPanel>
+                    );
+                })}
+
+                <Button variant="primary" onClick={addLayoutItem}
+                        style={{borderRadius: '0', width: '100%', gridColumn: 'span all'}}
+                        disabled={layoutKeys.length >= 3}>
+                    Add Breakpoint
+                </Button>
+            </div>
+        </PanelBody>
     );
 }
 

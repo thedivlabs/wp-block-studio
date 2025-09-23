@@ -2141,7 +2141,6 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     );
 });
 
-// --- LayoutRepeater Component ---
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(
         () => [

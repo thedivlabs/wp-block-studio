@@ -2106,6 +2106,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     return (
         <>
             <ToolsPanelItem
+                style={{gridColumn: 'span 1'}}
                 label="Display"
                 hasValue={() => !!settings.display}
                 onDeselect={() => updateProp({display: ''})}
@@ -2119,6 +2120,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
             </ToolsPanelItem>
 
             <ToolsPanelItem
+                style={{gridColumn: 'span 1'}}
                 label="Direction"
                 hasValue={() => !!settings['flex-direction']}
                 onDeselect={() => updateProp({'flex-direction': ''})}
@@ -2143,6 +2145,7 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
     return (
         <>
             <ToolsPanelItem
+                style={{gridColumn: 'span 1'}}
                 label="Background Color"
                 hasValue={() => !!hoverSettings.backgroundColor}
                 onDeselect={() => updateProp({backgroundColor: ''})}
@@ -2155,6 +2158,7 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
             </ToolsPanelItem>
 
             <ToolsPanelItem
+                style={{gridColumn: 'span 1'}}
                 label="Text Color"
                 hasValue={() => !!hoverSettings.color}
                 onDeselect={() => updateProp({color: ''})}
@@ -2168,18 +2172,6 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
         </>
     );
 });
-
-function sortBreakpointsBySize(breakpointsObj, themeBreakpoints) {
-    if (!breakpointsObj || !themeBreakpoints) return breakpointsObj;
-
-    const sortedKeys = Object.keys(breakpointsObj).sort((a, b) => {
-        const sizeA = themeBreakpoints[a]?.size ?? Infinity;
-        const sizeB = themeBreakpoints[b]?.size ?? Infinity;
-        return sizeA - sizeB;
-    });
-
-    return Object.fromEntries(sortedKeys.map((key) => [key, breakpointsObj[key]]));
-}
 
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(

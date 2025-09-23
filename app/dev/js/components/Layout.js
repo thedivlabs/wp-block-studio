@@ -13,7 +13,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl, BaseControl, FormTokenField, PanelBody,
     RangeControl,
-    SelectControl, ToggleControl, TextControl, Button, Icon
+    SelectControl, ToggleControl, TextControl, Button, Icon, IconButton
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -45,12 +45,9 @@ export const LAYOUT_ATTRIBUTES = {
         type: 'object',
         default: {}
     },
-    'wpbs-breakpoint': {
+    'wpbs-hover': {
         type: 'object',
-        default: {
-            mobile: 'sm',
-            large: 'normal'
-        }
+        default: {}
     },
     'wpbs-props': {
         type: 'object',
@@ -2141,6 +2138,42 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     );
 });
 
+const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) {
+    const updateProp = useCallback(
+        (newProps) => updateHoverItem(newProps),
+        [updateHoverItem]
+    );
+
+    return (
+        <Grid columns={2} columnGap={20} rowGap={20}>
+            <ToolsPanelItem
+                label="Background Color"
+                hasValue={() => !!hoverSettings.backgroundColor}
+                onDeselect={() => updateProp({backgroundColor: ''})}
+            >
+                <TextControl
+                    label="Background Color"
+                    value={hoverSettings.backgroundColor || ''}
+                    onChange={(val) => updateProp({backgroundColor: val})}
+                />
+            </ToolsPanelItem>
+
+            <ToolsPanelItem
+                label="Text Color"
+                hasValue={() => !!hoverSettings.color}
+                onDeselect={() => updateProp({color: ''})}
+            >
+                <TextControl
+                    label="Text Color"
+                    value={hoverSettings.color || ''}
+                    onChange={(val) => updateProp({color: val})}
+                />
+            </ToolsPanelItem>
+        </Grid>
+    );
+});
+
+
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(
         () => [
@@ -2155,6 +2188,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
     );
 
     const layoutObj = attributes['wpbs-layout'] || {};
+    const hoverObj = attributes['wpbs-hover'] || {};
 
     const updateLayoutItem = useCallback(
         (newProps, bpKey) => {
@@ -2184,6 +2218,16 @@ export function LayoutRepeater({attributes, setAttributes}) {
             });
         },
         [layoutObj, setAttributes]
+    );
+
+    const updateHoverItem = useCallback(
+        (newProps) => {
+            setAttributes({
+                ...attributes,
+                'wpbs-hover': {...hoverObj, ...newProps},
+            });
+        },
+        [hoverObj, setAttributes]
     );
 
     const clearLayoutItem = useCallback(
@@ -2243,31 +2287,44 @@ export function LayoutRepeater({attributes, setAttributes}) {
         [layoutObj, setAttributes]
     );
 
-    const layoutKeys = useMemo(() => Object.keys(layoutObj), [layoutObj]);
+    const layoutKeys = useMemo(
+        () => Object.keys(layoutObj).filter((key) => key !== 'layout'),
+        [layoutObj]
+    );
 
     return (
         <div className="wpbs-layout-repeater">
+            <ToolsPanel label="Default Layout" resetAll={() => clearLayoutItem('layout')}>
+                <LayoutFields
+                    bpKey="layout"
+                    settings={layoutObj.layout || {}}
+                    updateLayoutItem={updateLayoutItem}
+                />
+            </ToolsPanel>
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
-                const panelLabel = [bp ? bp.label : bpKey === 'layout' ? 'Default' : bpKey, bp?.size]
-                    .filter(Boolean)
-                    .join(': ');
+                const panelLabel = [bp ? bp.label : bpKey, bp?.size].filter(Boolean).join(': ');
 
                 return (
                     <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => clearLayoutItem(bpKey)}>
                         <SelectControl
                             label="Breakpoint"
                             value={bpKey}
-                            options={breakpoints.map((b) => ({
-                                value: b.key,
-                                label: b.label,
-                                disabled: b.key !== bpKey && layoutKeys.includes(b.key),
-                            }))}
+                            options={breakpoints
+                                .filter((b) => b.key !== 'layout') // exclude default from dropdown
+                                .map((b) => ({
+                                    value: b.key,
+                                    label: b.label,
+                                    disabled: b.key !== bpKey && layoutKeys.includes(b.key),
+                                }))}
                             onChange={(newBpKey) => handleBreakpointChange(newBpKey, bpKey)}
                         />
 
-                        <LayoutFields bpKey={bpKey} settings={layoutObj[bpKey] || {}}
-                                      updateLayoutItem={updateLayoutItem}/>
+                        <LayoutFields
+                            bpKey={bpKey}
+                            settings={layoutObj[bpKey] || {}}
+                            updateLayoutItem={updateLayoutItem}
+                        />
 
                         <Button
                             variant="secondary"

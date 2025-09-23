@@ -2268,18 +2268,14 @@ export function LayoutRepeater({attributes, setAttributes}) {
         if (!availableBps.length) return;
 
         const newKey = availableBps[0];
-
-        const updatedBreakpoints = {
-            ...layoutObj.breakpoints,
-            [newKey]: {...LAYOUT_DEFAULTS},
-        };
-
         setLayoutObj({
             ...layoutObj,
-            breakpoints: sortBreakpointsBySize(updatedBreakpoints, WPBS.settings.breakpoints),
+            breakpoints: {
+                ...layoutObj.breakpoints,
+                [newKey]: {...LAYOUT_DEFAULTS},
+            },
         });
     }, [layoutObj, breakpoints, setLayoutObj]);
-
 
     const removeLayoutItem = useCallback(
         (bpKey) => {
@@ -2292,7 +2288,14 @@ export function LayoutRepeater({attributes, setAttributes}) {
         [layoutObj, setLayoutObj]
     );
 
-    const layoutKeys = useMemo(() => Object.keys(layoutObj.breakpoints), [layoutObj]);
+    const layoutKeys = useMemo(() => {
+        const keys = Object.keys(layoutObj.breakpoints || []);
+        return keys.sort((a, b) => {
+            const sizeA = WPBS.settings.breakpoints[a]?.size || 0;
+            const sizeB = WPBS.settings.breakpoints[b]?.size || 0;
+            return sizeA - sizeB;
+        });
+    }, [layoutObj]);
 
     return (
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
@@ -2336,11 +2339,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                                         const newBreakpoints = {...layoutObj.breakpoints};
                                         newBreakpoints[newBpKey] = newBreakpoints[bpKey];
                                         delete newBreakpoints[bpKey];
-
-                                        setLayoutObj({
-                                            ...layoutObj,
-                                            breakpoints: sortBreakpointsBySize(newBreakpoints, WPBS.settings.breakpoints),
-                                        });
+                                        setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
                                     }}
                                 />
                             </ToolsPanelItem>

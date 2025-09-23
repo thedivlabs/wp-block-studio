@@ -2288,9 +2288,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
-
-    console.log(layoutKeys);
-
+    
     return (
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
             <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>

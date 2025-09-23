@@ -2288,7 +2288,12 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
 }
 
-const LayoutFields = memo(function LayoutFields({settings, updateProp}) {
+const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem}) {
+    const updateProp = useCallback(
+        (newProps) => updateLayoutItem(newProps, bpKey),
+        [updateLayoutItem, bpKey]
+    );
+
     return (
         <Grid columns={2} columnGap={20} rowGap={20}>
             <ToolsPanelItem
@@ -2319,6 +2324,7 @@ const LayoutFields = memo(function LayoutFields({settings, updateProp}) {
         </Grid>
     );
 });
+
 
 export function LayoutRepeater({attributes, setAttributes}) {
     // Get theme JSON settings dynamically
@@ -2395,11 +2401,6 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 const bp = breakpoints.find((b) => b.key === bpKey);
                 const panelLabel = bp ? bp.label : (bpKey === 'layout' ? 'Default' : bpKey);
 
-                const updateProp = useCallback(
-                    (newProps) => updateLayoutItem(newProps, bpKey),
-                    [updateLayoutItem, bpKey]
-                );
-
                 return (
                     <ToolsPanel
                         key={bpKey}
@@ -2417,8 +2418,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
                             onChange={(newBpKey) => handleBreakpointChange(newBpKey, bpKey)}
                         />
                         <LayoutFields
-                            settings={layoutObj[bpKey]}
-                            updateProp={updateProp}
+                            bpKey={bpKey} // pass the key
+                            settings={layoutObj[bpKey] || {display: '', 'flex-direction': ''}}
+                            updateLayoutItem={updateLayoutItem} // pass the stable function
                         />
 
                         <Button
@@ -2431,6 +2433,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     </ToolsPanel>
                 );
             })}
+
 
             {layoutKeys.length < 3 && (
                 <Button variant="primary" onClick={addLayoutItem}>

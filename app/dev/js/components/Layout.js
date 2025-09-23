@@ -2357,11 +2357,14 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 },
             });
         },
-        [layoutObj, attributes, setAttributes]
+        [layoutObj, setAttributes]
     );
 
     const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj);
+        if (keys.length >= 3) {
+            return;
+        }
         const availableBps = breakpoints.map((bp) => bp.key).filter((bp) => !keys.includes(bp));
         if (!availableBps.length) return;
 
@@ -2373,7 +2376,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 [newKey]: {display: '', 'flex-direction': ''},
             },
         });
-    }, [layoutObj, attributes, breakpoints, setAttributes]);
+    }, [layoutObj, breakpoints, setAttributes]);
 
     const removeLayoutItem = useCallback((bpKey) => {
         const {[bpKey]: removed, ...rest} = layoutObj;
@@ -2381,7 +2384,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             ...attributes,
             'wpbs-layout': rest,
         });
-    }, [layoutObj, attributes, setAttributes]);
+    }, [layoutObj, setAttributes]);
 
     const handleBreakpointChange = useCallback(
         (newBpKey, oldBpKey) => {
@@ -2390,7 +2393,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             delete newLayout[oldBpKey];
             setAttributes({...attributes, 'wpbs-layout': newLayout});
         },
-        [layoutObj, attributes, setAttributes]
+        [layoutObj, setAttributes]
     );
 
     const layoutKeys = useMemo(() => Object.keys(layoutObj), [layoutObj]);
@@ -2435,11 +2438,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
             })}
 
 
-            {layoutKeys.length < 3 && (
-                <Button variant="primary" onClick={addLayoutItem}>
-                    Add Layout
-                </Button>
-            )}
+            <Button variant="primary" onClick={addLayoutItem} disabled={layoutKeys.length >= 3}>
+                Add Layout
+            </Button>
         </div>
     );
 }

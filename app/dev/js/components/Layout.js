@@ -2300,7 +2300,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                             isShownByDefault={true}
                             label="Breakpoint"
                             hasValue={() => !!bpKey}
-                            onDeselect={() => null}
+                            onDeselect={() => false}
                         >
                             <SelectControl
                                 label="Breakpoint"
@@ -2333,7 +2333,8 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
             </ToolsPanel>
 
-            <Button variant="primary" onClick={addLayoutItem} style={{borderRadius: '0'}}
+            <Button variant="primary" onClick={addLayoutItem}
+                    style={{borderRadius: '0', width: '100%', gridColumn: 'span all'}}
                     disabled={layoutKeys.length >= 3}>
                 Add Breakpoint
             </Button>

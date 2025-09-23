@@ -2288,6 +2288,10 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 />
             </ToolsPanel>
 
+            <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
+                <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+            </ToolsPanel>
+
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
                 const size = bp?.size ? `(${bp.size}px)` : '';
@@ -2328,11 +2332,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     </ToolsPanel>
                 );
             })}
-
-            <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
-                <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
-            </ToolsPanel>
-
+            
             <Button variant="primary" onClick={addLayoutItem}
                     style={{borderRadius: '0', width: '100%', gridColumn: 'span all'}}
                     disabled={layoutKeys.length >= 3}>

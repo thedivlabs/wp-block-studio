@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls, LayoutRepeater} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls, LayoutRepeater, LayoutCss} from "Components/Layout"
 import {
     __experimentalGrid as Grid, __experimentalUnitControl as UnitControl,
     PanelBody,
@@ -230,12 +230,8 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
-                <Style attributes={attributes} setAttributes={setAttributes}
-                       uniqueId={uniqueId}
-                       selector={'wpbs-cta-button'}
-                       deps={['wpbs-cta']}
-                       props={cssProps}
-                />
+
+                <LayoutCss settings={attributes?.['wpbs-layout']} selector={uniqueId}/>
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
                     <span className={'wpbs-cta-button__title'}>{title}</span>

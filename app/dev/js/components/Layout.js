@@ -546,195 +546,6 @@ function parseSpecial(prop, attributes) {
 
 }
 
-export function layoutCss(attributes, selector) {
-
-    if (!Object.keys(attributes?.['wpbs-layout'] ?? {}).length || !attributes.uniqueId) {
-        return '';
-    }
-
-    const {'wpbs-layout': settings = {}} = attributes;
-
-    const bp_key = settings?.breakpoint ? settings?.breakpoint : 'normal';
-
-    const breakpoint = '%__BREAKPOINT__' + bp_key + '__%';
-    const container = settings?.container ? '%__CONTAINER__' + (settings?.container) + '__%' : false;
-
-    const height = heightVal([settings?.['height-custom'], settings?.['min-height'], settings?.['height'], '100%']
-        .find(v => typeof v === 'string' && v.trim() !== ''));
-    const offsetHeight = !!settings?.['offset-height']?.length ? settings?.['offset-height'] : '0px';
-    const heightMobile = heightVal(!!settings?.['height-custom-mobile']?.length ? settings?.['height-custom-mobile'] : settings?.['height-mobile'] ?? '100%');
-    const offsetHeightMobile = !!settings?.['offset-height-mobile']?.length ? settings?.['offset-height-mobile'] : '0px';
-
-    let css = '';
-    let desktop = {};
-    let mobile = {};
-    let hover = {};
-
-
-    // Not mobile
-    Object.entries(settings).filter(([k, value]) =>
-        !k.toLowerCase().includes('mobile') &&
-        !k.toLowerCase().includes('hover')
-    ).forEach(([prop, value]) => {
-
-        if (!value) {
-            return;
-        }
-
-        if (LAYOUT_PROPS.special.includes(prop)) {
-
-            desktop = {
-                ...desktop,
-                ...parseSpecial(prop, attributes)
-            };
-
-        } else {
-            desktop[prop] = value;
-        }
-
-    });
-
-    // Mobile
-    Object.entries(settings).filter(([k, value]) =>
-        k.toLowerCase().includes('mobile') &&
-        !k.toLowerCase().includes('hover')
-    ).forEach(([prop, value]) => {
-
-        if (!value) {
-            return;
-        }
-
-        if (LAYOUT_PROPS.special.includes(prop)) {
-
-            mobile = {
-                ...mobile,
-                ...parseSpecial(prop, attributes)
-            };
-
-        } else {
-            prop = prop.replace(/-mobile/g, '');
-            mobile[prop] = value;
-        }
-
-    });
-
-    // Hover
-    Object.entries(settings).filter(([k, value]) =>
-        String(k).toLowerCase().includes('hover')
-    ).forEach(([prop, value]) => {
-
-
-        if (!value) {
-            return;
-        }
-
-        if (LAYOUT_PROPS.special.includes(prop)) {
-
-            hover = {
-                ...hover,
-                ...parseSpecial(prop, attributes)
-            };
-
-        } else {
-            prop = prop.replace(/-hover/g, '');
-            hover[prop] = value;
-        }
-
-    });
-
-
-    // Other
-    if (Object.keys(desktop).length || container) {
-        css += selector + '{';
-        Object.entries(desktop).forEach(([prop, value]) => {
-
-            css += [prop, value].join(':') + ';';
-        })
-
-        if (container) {
-            css += '--container-width: ' + container + ';';
-        }
-
-        css += '--offset-height: ' + offsetHeight + ';';
-        css += '}';
-    }
-
-    if (!!settings?.reveal) {
-
-        const revealCss = selector + '[data-aos]:not(.aos-animate.aos-init){opacity: 0}';
-        const revealCssMobile = selector + '[data-aos]{opacity: 1}';
-
-        if (!!settings?.['reveal-mobile']) {
-            css += revealCss;
-        } else {
-            //css += revealCssMobile;
-            css += '@media screen and (min-width: ' + breakpoint + '){';
-            css += revealCss;
-            css += '}';
-        }
-
-        css += selector + '{';
-        css += '--aos-distance: ' + (settings?.['reveal-distance'] || 120) + 'px;';
-
-        css += '}';
-    }
-
-    if (settings?.position === 'fixed-push') {
-
-        css += selector + ' + * {';
-        css += '--offset-height: ' + offsetHeight + ' !important;';
-        css += '--offset-push: ' + height + ';';
-        css += 'margin-top:var(--offset-push) !important;';
-        css += '}';
-
-    }
-
-    if (settings?.['position-mobile'] === 'fixed-push' || settings?.position === 'fixed-push') {
-
-        css += '@media screen and (max-width: ' + breakpoint + '){';
-        css += selector + ' + * {';
-        css += '--offset-height: ' + offsetHeightMobile + ' !important;';
-        css += '--offset-push: ' + heightMobile + ';';
-        if (settings?.['position-mobile'] !== 'fixed-push' && settings?.position === 'fixed-push') {
-            css += 'margin-top:' + (settings?.['margin-top']?.top ?? 'unset') + ' !important;';
-            css += 'top:unset !important;';
-        }
-        css += '}}';
-
-    }
-
-    if (Object.keys(mobile).length) {
-
-        css += '@media screen and (max-width: ' + breakpoint + '){' + selector + '{';
-
-        Object.entries(mobile).forEach(([prop, value]) => {
-            css += [prop, value].join(':') + ' !important;';
-        })
-
-        css += '--offset-height: ' + offsetHeightMobile + ';';
-
-        css += '}}';
-    }
-
-    if (Object.keys(hover).length) {
-        css += selector + ':hover {';
-        Object.entries(hover).forEach(([prop, value]) => {
-
-            css += [prop, value].join(':') + ' !important;';
-        })
-        css += '}';
-
-        if (!!hover?.color) {
-            css += selector + ':hover a:not(.wp-element-button) {';
-            css += 'color:' + hover.color + ' !important;';
-            css += '}';
-        }
-    }
-
-    return css.trim();
-
-}
-
 function getProps(settings) {
 
     const result = {};
@@ -2288,6 +2099,11 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
 }
 
+export const LAYOUT_DEFAULTS = {
+    display: '',
+    'flex-direction': '',
+};
+
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem}) {
     const updateProp = useCallback(
         (newProps) => updateLayoutItem(newProps, bpKey),
@@ -2325,17 +2141,19 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     );
 });
 
+// --- LayoutRepeater Component ---
 export function LayoutRepeater({attributes, setAttributes}) {
-
-    const breakpoints = useMemo(() => [
-        {key: 'layout', label: 'Default'},
-        ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label, size}]) => ({
-            key,
-            label,
-            size,
-        })),
-    ], [WPBS?.settings?.breakpoints]);
-
+    const breakpoints = useMemo(
+        () => [
+            {key: 'layout', label: 'Default'},
+            ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label, size}]) => ({
+                key,
+                label,
+                size,
+            })),
+        ],
+        [WPBS?.settings?.breakpoints]
+    );
 
     const layoutObj = attributes['wpbs-layout'] || {};
 
@@ -2351,12 +2169,14 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
             // Remove empty properties
             const cleaned = Object.fromEntries(
-                Object.entries(updated).map(([key, props]) => {
-                    const filteredProps = Object.fromEntries(
-                        Object.entries(props).filter(([_, value]) => value !== '')
-                    );
-                    return [key, filteredProps];
-                }).filter(([_, props]) => Object.keys(props).length > 0) // remove empty bpKey objects
+                Object.entries(updated)
+                    .map(([key, props]) => {
+                        const filteredProps = Object.fromEntries(
+                            Object.entries(props).filter(([_, value]) => value !== '')
+                        );
+                        return [key, filteredProps];
+                    })
+                    .filter(([_, props]) => Object.keys(props).length > 0)
             );
 
             setAttributes({
@@ -2367,13 +2187,13 @@ export function LayoutRepeater({attributes, setAttributes}) {
         [layoutObj, setAttributes]
     );
 
-
     const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj);
-        if (keys.length >= 3) {
-            return;
-        }
-        const availableBps = breakpoints.map((bp) => bp.key).filter((bp) => !keys.includes(bp));
+        if (keys.length >= 3) return;
+
+        const availableBps = breakpoints
+            .map((bp) => bp.key)
+            .filter((bp) => !keys.includes(bp));
         if (!availableBps.length) return;
 
         const newKey = availableBps[0];
@@ -2381,18 +2201,21 @@ export function LayoutRepeater({attributes, setAttributes}) {
             ...attributes,
             'wpbs-layout': {
                 ...layoutObj,
-                [newKey]: {display: '', 'flex-direction': ''},
+                [newKey]: {...LAYOUT_DEFAULTS},
             },
         });
     }, [layoutObj, breakpoints, setAttributes]);
 
-    const removeLayoutItem = useCallback((bpKey) => {
-        const {[bpKey]: removed, ...rest} = layoutObj;
-        setAttributes({
-            ...attributes,
-            'wpbs-layout': rest,
-        });
-    }, [layoutObj, setAttributes]);
+    const removeLayoutItem = useCallback(
+        (bpKey) => {
+            const {[bpKey]: removed, ...rest} = layoutObj;
+            setAttributes({
+                ...attributes,
+                'wpbs-layout': rest,
+            });
+        },
+        [layoutObj, setAttributes]
+    );
 
     const handleBreakpointChange = useCallback(
         (newBpKey, oldBpKey) => {
@@ -2410,14 +2233,12 @@ export function LayoutRepeater({attributes, setAttributes}) {
         <div className="wpbs-layout-repeater">
             {layoutKeys.map((bpKey) => {
                 const bp = breakpoints.find((b) => b.key === bpKey);
-                const panelLabel = [bp ? bp.label : (bpKey === 'layout' ? 'Default' : bpKey), bp.size].join(': ');
+                const panelLabel = [bp ? bp.label : bpKey === 'layout' ? 'Default' : bpKey, bp?.size]
+                    .filter(Boolean)
+                    .join(': ');
 
                 return (
-                    <ToolsPanel
-                        key={bpKey}
-                        label={panelLabel}
-                        resetAll={() => updateLayoutItem({}, bpKey)}
-                    >
+                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => updateLayoutItem({}, bpKey)}>
                         <SelectControl
                             label="Breakpoint"
                             value={bpKey}
@@ -2428,11 +2249,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
                             }))}
                             onChange={(newBpKey) => handleBreakpointChange(newBpKey, bpKey)}
                         />
-                        <LayoutFields
-                            bpKey={bpKey} // pass the key
-                            settings={layoutObj[bpKey] || {display: '', 'flex-direction': ''}}
-                            updateLayoutItem={updateLayoutItem} // pass the stable function
-                        />
+
+                        <LayoutFields bpKey={bpKey} settings={layoutObj[bpKey] || {}}
+                                      updateLayoutItem={updateLayoutItem}/>
 
                         <Button
                             variant="secondary"
@@ -2445,10 +2264,46 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 );
             })}
 
-
             <Button variant="primary" onClick={addLayoutItem} disabled={layoutKeys.length >= 3}>
                 Add Layout
             </Button>
         </div>
     );
+}
+
+export function LayoutCss({settings, selector}) {
+    const cssString = useMemo(() => {
+        if (!settings || !selector) return '';
+
+        const baseSelector = `.${selector}`;
+
+        // Convert properties to CSS string
+        const propsToCss = (props) =>
+            Object.entries(props)
+                .map(([key, val]) => `${key}: ${val};`)
+                .join(' ');
+
+        let css = '';
+
+        // Default layout (no media query)
+        if (settings.layout) {
+            css += `${baseSelector} { ${propsToCss(settings.layout)} }`;
+        }
+
+        // Responsive layouts
+        Object.entries(settings).forEach(([bpKey, props]) => {
+            if (bpKey === 'layout') return; // skip default
+            const bp = WPBS?.settings?.breakpoints?.[bpKey];
+            if (!bp || !props || Object.keys(props).length === 0) return;
+
+            const rules = propsToCss(props);
+            css += `@media (max-width: ${bp.max}px) { ${baseSelector} { ${rules} } }`;
+        });
+
+        return css;
+    }, [settings, selector]);
+
+    // Inject <style> tag
+    if (!cssString) return null;
+    return <style>{cssString}</style>;
 }

@@ -2326,10 +2326,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
 });
 
 export function LayoutRepeater({attributes, setAttributes}) {
-    // Get theme JSON settings dynamically
 
-
-    // Build breakpoints array for selects
     const breakpoints = useMemo(() => [
         {key: 'layout', label: 'Default'},
         ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label}]) => ({
@@ -2338,24 +2335,37 @@ export function LayoutRepeater({attributes, setAttributes}) {
         })),
     ], [WPBS?.settings?.breakpoints]);
 
-    
+
     const layoutObj = attributes['wpbs-layout'] || {};
 
     const updateLayoutItem = useCallback(
         (newProps, bpKey) => {
+            const updated = {
+                ...layoutObj,
+                [bpKey]: {
+                    ...layoutObj[bpKey],
+                    ...newProps,
+                },
+            };
+
+            // Remove empty properties
+            const cleaned = Object.fromEntries(
+                Object.entries(updated).map(([key, props]) => {
+                    const filteredProps = Object.fromEntries(
+                        Object.entries(props).filter(([_, value]) => value !== '')
+                    );
+                    return [key, filteredProps];
+                }).filter(([_, props]) => Object.keys(props).length > 0) // remove empty bpKey objects
+            );
+
             setAttributes({
                 ...attributes,
-                'wpbs-layout': {
-                    ...layoutObj,
-                    [bpKey]: {
-                        ...layoutObj[bpKey],
-                        ...newProps,
-                    },
-                },
+                'wpbs-layout': cleaned,
             });
         },
         [layoutObj, setAttributes]
     );
+
 
     const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj);

@@ -13,7 +13,7 @@ import {
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl, BaseControl, FormTokenField, PanelBody,
     RangeControl,
-    SelectControl, ToggleControl, TextControl, Button
+    SelectControl, ToggleControl, TextControl, Button, Icon
 } from "@wordpress/components";
 
 import {getCSSFromStyle} from 'Components/Style';
@@ -2378,7 +2378,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             {layoutKeys.map((bpKey) => (
                 <ToolsPanel
                     key={bpKey}
-                    label={`Layout ${bpKey === 'layout' ? 'Default' : bpKey.toUpperCase()}`}
+                    label={`${bpKey === 'layout' ? 'Default' : breakpoints[bpKey]?.label}`}
                     resetAll={() => updateLayoutItem({}, bpKey)}
                 >
                     <SelectControl
@@ -2399,8 +2399,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
                         updateProp={(newProps) => updateLayoutItem(newProps, bpKey)}
                     />
 
-                    <Button variant="secondary" onClick={() => removeLayoutItem(bpKey)}>
-                        Remove
+                    <Button variant="secondary" onClick={() => removeLayoutItem(bpKey)}
+                            style={{width: 'fit-content', maxWidth: '100%'}}>
+                        <Icon icon="trash"/>
                     </Button>
                 </ToolsPanel>
             ))}

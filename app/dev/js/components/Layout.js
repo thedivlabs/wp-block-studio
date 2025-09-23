@@ -2104,7 +2104,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     );
 
     return (
-        <Grid columns={2} columnGap={20} rowGap={20}>
+        <>
             <ToolsPanelItem
                 label="Display"
                 hasValue={() => !!settings.display}
@@ -2130,7 +2130,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
                     onChange={(val) => updateProp({'flex-direction': val})}
                 />
             </ToolsPanelItem>
-        </Grid>
+        </>
     );
 });
 
@@ -2141,7 +2141,7 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
     );
 
     return (
-        <Grid columns={2} columnGap={20} rowGap={20}>
+        <>
             <ToolsPanelItem
                 label="Background Color"
                 hasValue={() => !!hoverSettings.backgroundColor}
@@ -2165,7 +2165,7 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) 
                     onChange={(val) => updateProp({color: val})}
                 />
             </ToolsPanelItem>
-        </Grid>
+        </>
     );
 });
 
@@ -2280,7 +2280,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
     return (
         <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
-            <div className={'wpbs-layout-tools__grid'}>
+            <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>
                 <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
                     <LayoutFields
                         bpKey="layout"
@@ -2299,13 +2299,12 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
                     return (
-                        <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => removeLayoutItem(bpKey)}>
+                        <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => updateLayoutItem({}, bpKey)}>
 
                             <ToolsPanelItem
                                 isShownByDefault={true}
                                 label="Breakpoint"
                                 hasValue={() => !!bpKey}
-                                onDeselect={() => false}
                             >
                                 <SelectControl
                                     label="Breakpoint"
@@ -2330,16 +2329,18 @@ export function LayoutRepeater({attributes, setAttributes}) {
                                 settings={layoutObj.breakpoints[bpKey]}
                                 updateLayoutItem={updateLayoutItem}
                             />
+                            <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'trash'}
+                                    style={{gridColumn: '1/-1'}}/>
                         </ToolsPanel>
                     );
                 })}
 
                 <Button variant="primary" onClick={addLayoutItem}
-                        style={{borderRadius: '0', width: '100%', gridColumn: 'span all'}}
+                        style={{borderRadius: '0', width: '100%', gridColumn: '1/-1'}}
                         disabled={layoutKeys.length >= 3}>
                     Add Breakpoint
                 </Button>
-            </div>
+            </Grid>
         </PanelBody>
     );
 }

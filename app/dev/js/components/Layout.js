@@ -2187,7 +2187,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
     // Ensure the new shape exists
     const layoutObj = {
-        layout: attributes['wpbs-layout']?.layout || {},
+        props: attributes['wpbs-layout']?.props || {},
         breakpoints: attributes['wpbs-layout']?.breakpoints || {},
         hover: attributes['wpbs-layout']?.hover || {},
     };
@@ -2234,7 +2234,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
         (newProps) => {
             setLayoutObj({
                 ...layoutObj,
-                layout: {...layoutObj.layout, ...newProps},
+                props: {...layoutObj.props, ...newProps},
             });
         },
         [layoutObj, setLayoutObj]
@@ -2289,7 +2289,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             const sizeA = bpA?.size || 0;
             const sizeB = bpB?.size || 0;
 
-            return sizeA - sizeB;
+            return sizeB - sizeA;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
 
@@ -2300,7 +2300,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                 <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
                     <LayoutFields
                         bpKey="layout"
-                        settings={layoutObj.layout}
+                        settings={layoutObj.props}
                         updateLayoutItem={updateDefaultLayout}
                     />
                 </ToolsPanel>
@@ -2377,8 +2377,8 @@ export function LayoutCss({settings, selector}) {
         let css = '';
 
         // Default layout (no media query)
-        if (settings.layout) {
-            css += `${baseSelector} { ${propsToCss(settings.layout)} }`;
+        if (settings.props) {
+            css += `${baseSelector} { ${propsToCss(settings.props)} }`;
         }
 
         // Responsive layouts

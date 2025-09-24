@@ -2098,18 +2098,8 @@ const RevealControl = ({ settings, callback }) => {
     );
 
     const revealFields = [
-        {
-            type: 'select',
-            slug: 'reveal',
-            label: 'Animation',
-            options: REVEAL_ANIMATION_OPTIONS, // <-- use the variable here
-        },
-        {
-            type: 'select',
-            slug: 'reveal-easing',
-            label: 'Easing',
-            options: REVEAL_EASING_OPTIONS, // <-- and here
-        },
+        { type: 'select', slug: 'reveal', label: 'Animation', options: REVEAL_ANIMATION_OPTIONS },
+        { type: 'select', slug: 'reveal-easing', label: 'Easing', options: REVEAL_EASING_OPTIONS },
         { type: 'number', slug: 'reveal-duration', label: 'Duration', step: 50, min: 0 },
         { type: 'number', slug: 'reveal-offset', label: 'Offset', step: 10, min: -900, max: 900 },
         { type: 'number', slug: 'reveal-distance', label: 'Distance', step: 10, min: 0 },
@@ -2118,15 +2108,22 @@ const RevealControl = ({ settings, callback }) => {
         { type: 'toggle', slug: 'reveal-mobile', label: 'Mobile' },
     ];
 
+    // Separate toggle fields from the rest
+    const mainFields = revealFields.filter(f => f.type !== 'toggle');
+    const toggleFields = revealFields.filter(f => f.type === 'toggle');
+
     return (
         <Grid columns={1} rowGap={20} columnGap={15}>
+            {/* Top grid for main fields */}
             <Grid columns={2} columnGap={15}>
-                {revealFields.slice(0, 4).map(field => (
+                {mainFields.map(field => (
                     <Field key={field.slug} field={field} settings={settings} callback={update} />
                 ))}
             </Grid>
+
+            {/* Bottom grid for toggle fields */}
             <Grid columns={2} columnGap={15}>
-                {revealFields.slice(4).map(field => (
+                {toggleFields.map(field => (
                     <Field key={field.slug} field={field} settings={settings} callback={update} />
                 ))}
             </Grid>

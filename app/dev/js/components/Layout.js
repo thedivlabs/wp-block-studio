@@ -2101,7 +2101,7 @@ const Field = ({field, settings, callback}) => {
     const {type, slug, label, options} = field;
 
     if (!type || !slug || !label) return null;
-    
+
     let control = null;
 
     switch (type) {
@@ -2143,7 +2143,6 @@ const Field = ({field, settings, callback}) => {
         </ToolsPanelItem>
     );
 };
-
 
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(
@@ -2198,6 +2197,49 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
+const SPECIAL_FIELDS = [
+    'padding',
+    'margin',
+    'border-radius',
+    'background-color',
+    'box-shadow',
+    'typography',
+    'transform',
+    'filter',
+];
+
+const processSpecialValue = (key, value) => {
+    switch (key) {
+        case 'padding':
+        case 'margin':
+            return {
+                [`${key}-top`]: value?.top || 0 + 'px',
+                [`${key}-right`]: value?.right || 0 + 'px',
+                [`${key}-bottom`]: value?.bottom || 0 + 'px',
+                [`${key}-left`]: value?.left || 0 + 'px',
+            };
+        case 'border-radius':
+            return {
+                'border-top-left-radius': value?.topLeft || 0 + 'px',
+                'border-top-right-radius': value?.topRight || 0 + 'px',
+                'border-bottom-right-radius': value?.bottomRight || 0 + 'px',
+                'border-bottom-left-radius': value?.bottomLeft || 0 + 'px',
+            };
+        case 'background-color':
+            return { 'background-color': value || '' };
+        case 'box-shadow':
+            return { 'box-shadow': value || '' };
+        case 'typography':
+            return { 'font': value || '' }; // can be expanded if needed
+        case 'transform':
+            return { 'transform': value || '' };
+        case 'filter':
+            return { 'filter': value || '' };
+        default:
+            return { [key]: value };
+    }
+};
+
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(
         () => [
@@ -2215,7 +2257,13 @@ export function LayoutRepeater({attributes, setAttributes}) {
         props: attributes['wpbs-layout']?.props || {},
         breakpoints: attributes['wpbs-layout']?.breakpoints || {},
         hover: attributes['wpbs-layout']?.hover || {},
+        special: attributes['wpbs-layout']?.special || {
+            props: {},
+            breakpoints: {},
+            hover: {},
+        },
     };
+
 
     const setLayoutObj = useCallback(
         (newObj) => {
@@ -2226,20 +2274,16 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
     const updateLayoutItem = useCallback(
         (newProps, bpKey) => {
-            const updated = {
-                ...layoutObj,
-                breakpoints: {
-                    ...layoutObj.breakpoints,
-                    [bpKey]: {
-                        ...layoutObj.breakpoints[bpKey],
-                        ...newProps,
-                    },
+            const updatedBreakpoints = {
+                ...layoutObj.breakpoints,
+                [bpKey]: {
+                    ...layoutObj.breakpoints[bpKey],
+                    ...newProps,
                 },
             };
 
-            // Remove empty properties
             const cleanedBreakpoints = Object.fromEntries(
-                Object.entries(updated.breakpoints)
+                Object.entries(updatedBreakpoints)
                     .map(([key, props]) => [
                         key,
                         Object.fromEntries(Object.entries(props).filter(([_, v]) => v !== '')),
@@ -2247,33 +2291,77 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     .filter(([_, props]) => Object.keys(props).length > 0)
             );
 
+            const specialForBp = { ...layoutObj.special?.breakpoints?.[bpKey] };
+
+            Object.entries(newProps).forEach(([key, value]) => {
+                if (SPECIAL_FIELDS.includes(key)) {
+                    Object.assign(specialForBp, processSpecialValue(key, value));
+                }
+            });
+
             setLayoutObj({
-                ...updated,
+                ...layoutObj,
                 breakpoints: cleanedBreakpoints,
+                special: {
+                    ...layoutObj.special,
+                    breakpoints: {
+                        ...layoutObj.special?.breakpoints,
+                        [bpKey]: specialForBp,
+                    },
+                },
             });
         },
         [layoutObj, setLayoutObj]
     );
+
+
 
     const updateDefaultLayout = useCallback(
         (newProps) => {
+            const specialProps = { ...layoutObj.special?.props };
+
+            Object.entries(newProps).forEach(([key, value]) => {
+                if (SPECIAL_FIELDS.includes(key)) {
+                    Object.assign(specialProps, processSpecialValue(key, value));
+                }
+            });
+
             setLayoutObj({
                 ...layoutObj,
-                props: {...layoutObj.props, ...newProps},
+                props: { ...layoutObj.props, ...newProps },
+                special: {
+                    ...layoutObj.special,
+                    props: specialProps,
+                },
             });
         },
         [layoutObj, setLayoutObj]
     );
 
+
     const updateHoverItem = useCallback(
         (newProps) => {
+            const specialHover = { ...layoutObj.special?.hover };
+
+            Object.entries(newProps).forEach(([key, value]) => {
+                if (SPECIAL_FIELDS.includes(key)) {
+                    Object.assign(specialHover, processSpecialValue(key, value));
+                }
+            });
+
             setLayoutObj({
                 ...layoutObj,
-                hover: {...layoutObj.hover, ...newProps},
+                hover: { ...layoutObj.hover, ...newProps },
+                special: {
+                    ...layoutObj.special,
+                    hover: specialHover,
+                },
             });
         },
         [layoutObj, setLayoutObj]
     );
+
+
 
     const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj.breakpoints);
@@ -2388,7 +2476,6 @@ export function LayoutRepeater({attributes, setAttributes}) {
         </PanelBody>
     );
 }
-
 
 export function LayoutCss({settings, selector}) {
     const cssString = useMemo(() => {

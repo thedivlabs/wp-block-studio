@@ -2098,42 +2098,52 @@ export const LAYOUT_DEFAULTS = {
 };
 
 const Field = ({field, settings, callback}) => {
-
     const {type, slug, label, options} = field;
 
-    if (!type || !slug || !label || !options) return null;
+    if (!type || !slug || !label) return null;
+    
+    let control = null;
 
-    return <ToolsPanelItem
-        style={{gridColumn: 'span 1'}}
-        label={label}
-        hasValue={() => !!settings?.[slug]}
-        onDeselect={() => callback({[slug]: ''})}
-    >
-        {() => {
-            switch (type) {
-                case 'select':
-                    return <SelectControl
-                        label={label}
-                        value={settings?.[slug]}
-                        options={options}
-                        onChange={(val) => callback({[slug]: val})}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
-                case 'text':
-                    return <TextControl
-                        label={label}
-                        value={settings?.[slug]}
-                        onChange={(val) => callback({[slug]: val})}
-                        __next40pxDefaultSize
-                        __nextHasNoMarginBottom
-                    />
-                default:
-                    return null;
-            }
-        }}
-    </ToolsPanelItem>
+    switch (type) {
+        case 'select':
+            control = (
+                <SelectControl
+                    label={label}
+                    value={settings?.[slug]}
+                    options={options}
+                    onChange={(val) => callback({[slug]: val})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+        case 'text':
+            control = (
+                <TextControl
+                    label={label}
+                    value={settings?.[slug]}
+                    onChange={(val) => callback({[slug]: val})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+        default:
+            control = null;
+    }
+
+    return (
+        <ToolsPanelItem
+            style={{gridColumn: 'span 1'}}
+            label={label}
+            hasValue={() => !!settings?.[slug]}
+            onDeselect={() => callback({[slug]: ''})}
+        >
+            {control}
+        </ToolsPanelItem>
+    );
 };
+
 
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(
@@ -2180,10 +2190,12 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
         },
     ];
 
-    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
-                                                                                          settings={hoverSettings}
-                                                                                          callback={updateProp}/>);
-    
+    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => {
+        return <Field field={field}
+                      settings={hoverSettings}
+                      callback={updateProp}/>;
+    });
+
 });
 
 export function LayoutRepeater({attributes, setAttributes}) {

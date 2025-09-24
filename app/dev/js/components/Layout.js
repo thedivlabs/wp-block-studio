@@ -2097,80 +2097,93 @@ export const LAYOUT_DEFAULTS = {
     'flex-direction': '',
 };
 
-const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem}) {
+const Field = ({field, settings, callback}) => {
+
+    const {type, slug, label, options} = field;
+
+    if (!type || !slug || !label || !options) return null;
+
+    return <ToolsPanelItem
+        style={{gridColumn: 'span 1'}}
+        label={label}
+        hasValue={() => !!settings?.[slug]}
+        onDeselect={() => callback({[slug]: ''})}
+    >
+        {() => {
+            switch (type) {
+                case 'select':
+                    return <SelectControl
+                        label={label}
+                        value={settings?.[slug]}
+                        options={options}
+                        onChange={(val) => callback({[slug]: val})}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                case 'text':
+                    return <TextControl
+                        label={label}
+                        value={settings?.[slug]}
+                        onChange={(val) => callback({[slug]: val})}
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                    />
+                default:
+                    return null;
+            }
+        }}
+    </ToolsPanelItem>
+};
+
+const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(
         (newProps) => updateLayoutItem(newProps, bpKey),
         [updateLayoutItem, bpKey]
     );
 
-    return (
-        <>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                label="Display"
-                hasValue={() => !!settings.display}
-                onDeselect={() => updateProp({display: ''})}
-            >
-                <SelectControl
-                    label="Display"
-                    value={settings.display}
-                    options={DISPLAY_OPTIONS}
-                    onChange={(val) => updateProp({display: val})}
-                />
-            </ToolsPanelItem>
+    const fields = [
+        {
+            type: 'select',
+            slug: 'display',
+            label: 'Display',
+            options: DISPLAY_OPTIONS
+        },
+        {
+            type: 'select',
+            slug: 'flex-direction',
+            label: 'Direction',
+            options: DIRECTION_OPTIONS
+        },
+    ];
 
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                label="Direction"
-                hasValue={() => !!settings['flex-direction']}
-                onDeselect={() => updateProp({'flex-direction': ''})}
-            >
-                <SelectControl
-                    label="Direction"
-                    value={settings['flex-direction']}
-                    options={DIRECTION_OPTIONS}
-                    onChange={(val) => updateProp({'flex-direction': val})}
-                />
-            </ToolsPanelItem>
-        </>
-    );
+    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
+                                                                                          settings={settings}
+                                                                                          callback={updateProp}/>);
 });
 
-const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem}) {
+const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
     const updateProp = useCallback(
         (newProps) => updateHoverItem(newProps),
         [updateHoverItem]
     );
 
-    return (
-        <>
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                label="Background Color"
-                hasValue={() => !!hoverSettings.backgroundColor}
-                onDeselect={() => updateProp({backgroundColor: ''})}
-            >
-                <TextControl
-                    label="Background Color"
-                    value={hoverSettings.backgroundColor || ''}
-                    onChange={(val) => updateProp({backgroundColor: val})}
-                />
-            </ToolsPanelItem>
+    const fields = [
+        {
+            type: 'text',
+            slug: 'backgroundColor',
+            label: 'Background Color'
+        },
+        {
+            type: 'text',
+            slug: 'textColor',
+            label: 'Text Color'
+        },
+    ];
 
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                label="Text Color"
-                hasValue={() => !!hoverSettings.color}
-                onDeselect={() => updateProp({color: ''})}
-            >
-                <TextControl
-                    label="Text Color"
-                    value={hoverSettings.color || ''}
-                    onChange={(val) => updateProp({color: val})}
-                />
-            </ToolsPanelItem>
-        </>
-    );
+    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
+                                                                                          settings={hoverSettings}
+                                                                                          callback={updateProp}/>);
+    
 });
 
 export function LayoutRepeater({attributes, setAttributes}) {
@@ -2302,6 +2315,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                         bpKey="layout"
                         settings={layoutObj.props}
                         updateLayoutItem={updateDefaultLayout}
+                        suppress={['padding', 'display']}
                     />
                 </ToolsPanel>
 
@@ -2338,6 +2352,8 @@ export function LayoutRepeater({attributes, setAttributes}) {
                                         delete newBreakpoints[bpKey];
                                         setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
                                     }}
+                                    __next40pxDefaultSize
+                                    __nextHasNoMarginBottom
                                 />
                             </ToolsPanelItem>
                             <LayoutFields

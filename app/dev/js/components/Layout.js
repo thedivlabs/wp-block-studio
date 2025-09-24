@@ -330,24 +330,20 @@ const MemoRangeControl = React.memo(({label, callback, value, step, min, max}) =
 ));
 
 const heightVal = (val) => {
+    if (!val) return 'auto'; // safe fallback
 
-    let height = 'calc(' + val + ' + var(--offset-height, 0px))';
+    let height = `calc(${val} + var(--offset-height, 0px))`;
 
     if (val === 'screen') {
-        height = 'calc((100svh - var(--wpbs-header-height, 0px)) + var(--offset-height, 0px))'
-    }
-
-    if (val === 'full-screen') {
-        height = 'calc(100svh + var(--offset-height, 0px))'
-    }
-
-    if (['auto', 'full', 'inherit'].includes(val)) {
+        height = 'calc((100svh - var(--wpbs-header-height, 0px)) + var(--offset-height, 0px))';
+    } else if (val === 'full-screen') {
+        height = 'calc(100svh + var(--offset-height, 0px))';
+    } else if (['auto', 'full', 'inherit'].includes(val)) {
         height = val;
     }
 
     return height;
-
-}
+};
 
 function parseSpecial(prop, attributes) {
 
@@ -2094,11 +2090,60 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
 export const LAYOUT_DEFAULTS = {
     display: '',
+    padding: '',
     'flex-direction': '',
 };
 
+const SPECIAL_FIELDS = [
+    'gap',
+    'margin',
+    'border',
+    'box-shadow',
+    'transform',
+    'filter',
+    'hide-empty',
+    'required',
+    'offset-height',
+    'align-header',
+    'outline',
+    'duration',
+    'reveal',
+    'reveal-easing',
+    'reveal-duration',
+    'reveal-offset',
+    'reveal-distance',
+    'reveal-repeat',
+    'reveal-mirror',
+    'transition',
+    'breakpoint',
+    'mask-image',
+    'mask-repeat',
+    'mask-size',
+    'mask-origin',
+    'basis',
+    'height',
+    'height-custom',
+    'min-height',
+    'min-height-custom',
+    'max-height',
+    'max-height-custom',
+    'width',
+    'width-custom',
+    'translate',
+    'offset-header',
+    'text-color',
+    'text-decoration-color',
+    'position',
+    'container',
+    'padding',
+    'shadow',
+    'border',
+    'border-radius',
+    'background-color',
+];
+
 const Field = memo(({field, settings, callback}) => {
-    const {type, slug, label, options} = field;
+    const {type, slug, label, options, large = false} = field;
 
     if (!type || !slug || !label) return null;
 
@@ -2133,13 +2178,25 @@ const Field = memo(({field, settings, callback}) => {
                 />
             );
             break;
+        case 'box':
+            control = (
+                <BoxControl
+                    label={label}
+                    values={settings?.[slug]}
+                    onChange={handleChange}
+                    {...options}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            )
+            break;
         default:
             control = null;
     }
 
     return (
         <ToolsPanelItem
-            style={{gridColumn: 'span 1'}}
+            style={{gridColumn: !!large ? '1/-1' : 'span 1'}}
             label={label}
             hasValue={() => !!settings?.[slug]}
             onDeselect={() => handleChange('')}
@@ -2148,7 +2205,6 @@ const Field = memo(({field, settings, callback}) => {
         </ToolsPanelItem>
     );
 });
-
 
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(
@@ -2168,6 +2224,18 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
             slug: 'flex-direction',
             label: 'Direction',
             options: DIRECTION_OPTIONS
+        },
+        {
+            type: 'box',
+            slug: 'padding',
+            label: 'Padding',
+            large: true,
+            options: {
+                sides: ['top', 'right', 'bottom', 'left'],
+                inputProps: {
+                    units: DIMENSION_UNITS
+                }
+            }
         },
     ];
 
@@ -2203,48 +2271,181 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-const SPECIAL_FIELDS = [
-    'padding',
-    'margin',
-    'border-radius',
-    'background-color',
-    'box-shadow',
-    'typography',
-    'transform',
-    'filter',
-];
+function processSpecialValue(key, value, attributes = {}) {
+    const settings = attributes['wpbs-layout'] || {};
+    let result = {};
 
-const processSpecialValue = (key, value) => {
     switch (key) {
         case 'padding':
         case 'margin':
-            return {
-                [`${key}-top`]: value?.top || 0 + 'px',
-                [`${key}-right`]: value?.right || 0 + 'px',
-                [`${key}-bottom`]: value?.bottom || 0 + 'px',
-                [`${key}-left`]: value?.left || 0 + 'px',
+            result = {
+                [`${key}-top`]: value?.top ?? '0px',
+                [`${key}-right`]: value?.right ?? '0px',
+                [`${key}-bottom`]: value?.bottom ?? '0px',
+                [`${key}-left`]: value?.left ?? '0px',
             };
+            break;
+
         case 'border-radius':
-            return {
-                'border-top-left-radius': value?.topLeft || 0 + 'px',
-                'border-top-right-radius': value?.topRight || 0 + 'px',
-                'border-bottom-right-radius': value?.bottomRight || 0 + 'px',
-                'border-bottom-left-radius': value?.bottomLeft || 0 + 'px',
+            result = {
+                'border-top-left-radius': value?.topLeft ?? '0px',
+                'border-top-right-radius': value?.topRight ?? '0px',
+                'border-bottom-right-radius': value?.bottomRight ?? '0px',
+                'border-bottom-left-radius': value?.bottomLeft ?? '0px',
             };
-        case 'background-color':
-            return {'background-color': value || ''};
+            break;
+
         case 'box-shadow':
-            return {'box-shadow': value || ''};
         case 'typography':
-            return {'font': value || ''}; // can be expanded if needed
         case 'transform':
-            return {'transform': value || ''};
         case 'filter':
-            return {'filter': value || ''};
+        case 'background-color':
+            const cssKeyMap = {
+                'box-shadow': 'box-shadow',
+                'typography': 'font',
+                'transform': 'transform',
+                'filter': 'filter',
+                'background-color': 'background-color',
+            };
+            result[cssKeyMap[key]] = value ?? '';
+            break;
+
+        case 'border':
+        case 'outline':
+            const sides = ['top', 'right', 'bottom', 'left'];
+            result = {};
+            if (value && typeof value === 'object' && Object.keys(value).some(k => sides.includes(k))) {
+                sides.forEach(side => {
+                    if (value[side]) {
+                        const vals = {style: 'solid', ...value[side]};
+                        result[`${key}-${side}`] = Object.values(vals).join(' ');
+                    }
+                });
+            } else {
+                const vals = {style: 'solid', ...(value ?? {})};
+                result[key] = Object.values(vals).join(' ');
+            }
+            break;
+
+        case 'mask-image':
+            const imageUrl = value?.sizes?.full?.url ?? '#';
+            result = {
+                'mask-image': `url(${imageUrl})`,
+                'mask-repeat': 'no-repeat',
+                'mask-size': (() => {
+                    switch (settings?.['mask-size']) {
+                        case 'cover':
+                            return 'cover';
+                        case 'horizontal':
+                            return '100% auto';
+                        case 'vertical':
+                            return 'auto 100%';
+                        default:
+                            return 'contain';
+                    }
+                })(),
+                'mask-position': settings?.['mask-origin'] ?? 'center center'
+            };
+            break;
+
+        case 'translate':
+            result = {
+                'transform': `translate(${value?.left || '0px'},${value?.top || '0px'})`
+            };
+            break;
+
+        case 'basis':
+            result = {'flex-basis': value + '%'};
+            break;
+
+        case 'text-color':
+            result = {'color': value};
+            break;
+
+        case 'text-decoration-color':
+            result = {
+                'text-decoration-color': value + ' !important',
+                'text-underline-offset': '.3em'
+            };
+            break;
+
+        case 'height':
+        case 'height-custom':
+        case 'min-height':
+        case 'min-height-custom':
+        case 'max-height':
+        case 'max-height-custom':
+            result = {[key.includes('height') ? key.replace('-custom', '') : key]: heightVal(value)};
+            if (key.includes('height')) result['--height'] = heightVal(value);
+            break;
+
+        case 'width':
+        case 'width-custom':
+            result = {'width': value ?? null};
+            break;
+
+        case 'offset-header':
+            result = {
+                'padding-top': `calc(${getCSSFromStyle(attributes?.style?.spacing?.padding?.top ?? '0px')} + var(--wpbs-header-height, 0px)) !important`
+            };
+            break;
+
+        case 'align-header':
+            result = {'top': 'var(--wpbs-header-height, auto)'};
+            break;
+
+        case 'position':
+            result = {'position': ['fixed', 'fixed-push'].includes(value) ? 'fixed' : value};
+            break;
+
+        case 'transition':
+            const transitions = [...value];
+            if (value.includes('color') && !value.includes('text-decoration-color')) transitions.push('text-decoration-color');
+            result = {'transition-property': transitions.join(', ')};
+            break;
+
+        case 'duration':
+            result = {'transition-duration': settings?.['duration'] ?? ''};
+            break;
+
+        case 'reveal':
+        case 'reveal-easing':
+        case 'reveal-duration':
+        case 'reveal-offset':
+        case 'reveal-distance':
+        case 'reveal-repeat':
+        case 'reveal-mirror':
+            result = {[key]: value ?? ''};
+            break;
+
+        case 'hide-empty':
+        case 'required':
+        case 'offset-height':
+        case 'align-header':
+        case 'outline':
+        case 'transition':
+        case 'breakpoint':
+        case 'container':
+            result = {[key]: value ?? ''};
+            break;
+
         default:
-            return {[key]: value};
+            result = {[key]: value};
+            break;
     }
-};
+
+    // Flatten nested objects into CSS strings if necessary
+    Object.entries(result).forEach(([k, v]) => {
+        if (v && typeof v === 'object' && !Array.isArray(v)) {
+            result[k] = Object.entries(v)
+                .filter(([_, val]) => val !== undefined && val !== null)
+                .map(([subK, val]) => `${subK}: ${val};`)
+                .join(' ');
+        }
+    });
+
+    return result;
+}
 
 export function LayoutRepeater({attributes, setAttributes}) {
     const breakpoints = useMemo(
@@ -2301,7 +2502,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
             Object.entries(newProps).forEach(([key, value]) => {
                 if (SPECIAL_FIELDS.includes(key)) {
-                    Object.assign(specialForBp, processSpecialValue(key, value));
+                    Object.assign(specialForBp, processSpecialValue(key, value, attributes));
                 }
             });
 
@@ -2327,7 +2528,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
             Object.entries(newProps).forEach(([key, value]) => {
                 if (SPECIAL_FIELDS.includes(key)) {
-                    Object.assign(specialProps, processSpecialValue(key, value));
+                    Object.assign(specialProps, processSpecialValue(key, value, attributes));
                 }
             });
 
@@ -2350,7 +2551,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
             Object.entries(newProps).forEach(([key, value]) => {
                 if (SPECIAL_FIELDS.includes(key)) {
-                    Object.assign(specialHover, processSpecialValue(key, value));
+                    Object.assign(specialHover, processSpecialValue(key, value, attributes));
                 }
             });
 
@@ -2419,7 +2620,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                         bpKey="layout"
                         settings={layoutObj.props}
                         updateLayoutItem={updateDefaultLayout}
-                        suppress={['padding', 'display']}
+                        suppress={['padding', 'margin', 'gap']}
                     />
                 </ToolsPanel>
 

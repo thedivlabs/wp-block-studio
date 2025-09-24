@@ -2097,10 +2097,15 @@ export const LAYOUT_DEFAULTS = {
     'flex-direction': '',
 };
 
-const Field = ({field, settings, callback}) => {
+const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, options} = field;
 
     if (!type || !slug || !label) return null;
+
+    const handleChange = useCallback(
+        (val) => callback({[slug]: val}),
+        [callback, slug]
+    );
 
     let control = null;
 
@@ -2111,7 +2116,7 @@ const Field = ({field, settings, callback}) => {
                     label={label}
                     value={settings?.[slug]}
                     options={options}
-                    onChange={(val) => callback({[slug]: val})}
+                    onChange={handleChange}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -2122,7 +2127,7 @@ const Field = ({field, settings, callback}) => {
                 <TextControl
                     label={label}
                     value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
+                    onChange={handleChange}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -2137,12 +2142,13 @@ const Field = ({field, settings, callback}) => {
             style={{gridColumn: 'span 1'}}
             label={label}
             hasValue={() => !!settings?.[slug]}
-            onDeselect={() => callback({[slug]: ''})}
+            onDeselect={() => handleChange('')}
         >
             {control}
         </ToolsPanelItem>
     );
-};
+});
+
 
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(

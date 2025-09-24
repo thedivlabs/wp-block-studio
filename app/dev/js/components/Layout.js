@@ -2179,12 +2179,12 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
     const fields = [
         {
             type: 'text',
-            slug: 'backgroundColor',
+            slug: 'background-color',
             label: 'Background Color'
         },
         {
             type: 'text',
-            slug: 'textColor',
+            slug: 'text-color',
             label: 'Text Color'
         },
     ];
@@ -2226,17 +2226,17 @@ const processSpecialValue = (key, value) => {
                 'border-bottom-left-radius': value?.bottomLeft || 0 + 'px',
             };
         case 'background-color':
-            return { 'background-color': value || '' };
+            return {'background-color': value || ''};
         case 'box-shadow':
-            return { 'box-shadow': value || '' };
+            return {'box-shadow': value || ''};
         case 'typography':
-            return { 'font': value || '' }; // can be expanded if needed
+            return {'font': value || ''}; // can be expanded if needed
         case 'transform':
-            return { 'transform': value || '' };
+            return {'transform': value || ''};
         case 'filter':
-            return { 'filter': value || '' };
+            return {'filter': value || ''};
         default:
-            return { [key]: value };
+            return {[key]: value};
     }
 };
 
@@ -2291,7 +2291,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
                     .filter(([_, props]) => Object.keys(props).length > 0)
             );
 
-            const specialForBp = { ...layoutObj.special?.breakpoints?.[bpKey] };
+            const specialForBp = {...layoutObj.special?.breakpoints?.[bpKey]};
 
             Object.entries(newProps).forEach(([key, value]) => {
                 if (SPECIAL_FIELDS.includes(key)) {
@@ -2315,10 +2315,9 @@ export function LayoutRepeater({attributes, setAttributes}) {
     );
 
 
-
     const updateDefaultLayout = useCallback(
         (newProps) => {
-            const specialProps = { ...layoutObj.special?.props };
+            const specialProps = {...layoutObj.special?.props};
 
             Object.entries(newProps).forEach(([key, value]) => {
                 if (SPECIAL_FIELDS.includes(key)) {
@@ -2328,7 +2327,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
             setLayoutObj({
                 ...layoutObj,
-                props: { ...layoutObj.props, ...newProps },
+                props: {...layoutObj.props, ...newProps},
                 special: {
                     ...layoutObj.special,
                     props: specialProps,
@@ -2341,7 +2340,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
     const updateHoverItem = useCallback(
         (newProps) => {
-            const specialHover = { ...layoutObj.special?.hover };
+            const specialHover = {...layoutObj.special?.hover};
 
             Object.entries(newProps).forEach(([key, value]) => {
                 if (SPECIAL_FIELDS.includes(key)) {
@@ -2351,7 +2350,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
 
             setLayoutObj({
                 ...layoutObj,
-                hover: { ...layoutObj.hover, ...newProps },
+                hover: {...layoutObj.hover, ...newProps},
                 special: {
                     ...layoutObj.special,
                     hover: specialHover,
@@ -2360,7 +2359,6 @@ export function LayoutRepeater({attributes, setAttributes}) {
         },
         [layoutObj, setLayoutObj]
     );
-
 
 
     const addLayoutItem = useCallback(() => {
@@ -2483,33 +2481,53 @@ export function LayoutCss({settings, selector}) {
 
         const baseSelector = `.${selector}`;
 
-        // Convert properties to CSS string
+        // Helper to convert object to CSS string
         const propsToCss = (props) =>
-            Object.entries(props)
+            Object.entries(props || {})
                 .map(([key, val]) => `${key}: ${val};`)
                 .join(' ');
 
         let css = '';
 
-        // Default layout (no media query)
-        if (settings.props) {
-            css += `${baseSelector} { ${propsToCss(settings.props)} }`;
+        // 1. Default layout
+        const defaultProps = {
+            ...settings.props,
+            ...settings.special?.props,
+        };
+        if (Object.keys(defaultProps).length) {
+            css += `${baseSelector} { ${propsToCss(defaultProps)} }`;
         }
 
-        // Responsive layouts
-        Object.entries(settings).forEach(([bpKey, props]) => {
-            if (bpKey === 'layout') return; // skip default
-            const bp = WPBS?.settings?.breakpoints?.[bpKey];
-            if (!bp || !props || Object.keys(props).length === 0) return;
+        // 2. Breakpoints
+        if (settings.breakpoints) {
+            Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
+                const bp = WPBS?.settings?.breakpoints?.[bpKey];
+                if (!bp || !bpProps || Object.keys(bpProps).length === 0) return;
 
-            const rules = propsToCss(props);
-            css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${rules} } }`;
-        });
+                const combinedProps = {
+                    ...bpProps,
+                    ...settings.special?.breakpoints?.[bpKey],
+                };
+
+                if (Object.keys(combinedProps).length) {
+                    css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${propsToCss(combinedProps)} } }`;
+                }
+            });
+        }
+
+        // 3. Hover
+        const hoverProps = {
+            ...settings.hover,
+            ...settings.special?.hover,
+        };
+        if (Object.keys(hoverProps).length) {
+            css += `${baseSelector}:hover { ${propsToCss(hoverProps)} }`;
+        }
 
         return css;
     }, [settings, selector]);
 
-    // Inject <style> tag
     if (!cssString) return null;
     return <style>{cssString}</style>;
 }
+

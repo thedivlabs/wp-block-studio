@@ -2686,15 +2686,17 @@ export function LayoutCss({settings, selector}) {
     const cssString = useMemo(() => {
         if (!settings || !selector) return '';
 
+        let css = ''; // ✅ initialize css
         const baseSelector = `.${selector}`;
 
-        // Helper to convert object to CSS string
-        const propsToCss = (props) =>
-            Object.entries(props || {})
+        // ✅ Helper to safely stringify CSS props
+        const propsToCss = (props = {}) =>
+            Object.entries(props)
+                .filter(([_, val]) =>
+                    val !== undefined && val !== null && typeof val !== 'object'
+                )
                 .map(([key, val]) => `${key}: ${val};`)
                 .join(' ');
-
-        let css = '';
 
         // 1. Default layout
         const defaultProps = {
@@ -2737,4 +2739,5 @@ export function LayoutCss({settings, selector}) {
     if (!cssString) return null;
     return <style>{cssString}</style>;
 }
+
 

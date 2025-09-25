@@ -34,8 +34,6 @@ import {
     IMAGE_SIZE_OPTIONS,
     DIMENSION_UNITS,
     BORDER_UNITS,
-    REVEAL_ANIMATION_OPTIONS,
-    REVEAL_EASING_OPTIONS
 } from "Includes/config";
 import {ColorSelector} from "./ColorSelector";
 import {ShadowSelector} from "Components/ShadowSelector";
@@ -2090,87 +2088,7 @@ export function LayoutControls({attributes = {}, setAttributes}) {
 
 }
 
-
-const RevealControl = ({settings, callback}) => {
-    const revealSettings = settings?.reveal || {};
-
-    const update = useCallback(
-        (val) => callback({reveal: {...revealSettings, ...val}}),
-        [callback, revealSettings]
-    );
-
-    return (
-        <Grid columns={2} columnGap={15} rowGap={15}>
-            {/* Animation */}
-            <SelectControl
-                label="Animation"
-                value={revealSettings.animation || ''}
-                options={REVEAL_ANIMATION_OPTIONS}
-                onChange={(val) => update({animation: val})}
-            />
-
-            {/* Easing */}
-            <SelectControl
-                label="Easing"
-                value={revealSettings.easing || ''}
-                options={REVEAL_EASING_OPTIONS}
-                onChange={(val) => update({easing: val})}
-            />
-
-            {/* Duration */}
-            <NumberControl
-                label="Duration"
-                value={revealSettings.duration || 0}
-                min={0}
-                step={50}
-                onChange={(val) => update({duration: val})}
-            />
-
-            {/* Offset */}
-            <NumberControl
-                label="Offset"
-                value={revealSettings.offset || 0}
-                min={-900}
-                max={900}
-                step={10}
-                onChange={(val) => update({offset: val})}
-            />
-
-            {/* Distance */}
-            <NumberControl
-                label="Distance"
-                value={revealSettings.distance || 0}
-                min={0}
-                step={10}
-                onChange={(val) => update({distance: val})}
-            />
-
-            {/* Repeat */}
-            <ToggleControl
-                label="Repeat"
-                checked={!!revealSettings.repeat}
-                onChange={(val) => update({repeat: val})}
-            />
-
-            {/* Mirror */}
-            <ToggleControl
-                label="Mirror"
-                checked={!!revealSettings.mirror}
-                onChange={(val) => update({mirror: val})}
-            />
-
-            {/* Mobile */}
-            <ToggleControl
-                label="Mobile"
-                checked={!!revealSettings.mobile}
-                onChange={(val) => update({mobile: val})}
-            />
-        </Grid>
-    );
-};
-
-
-const LAYOUT_DEFAULTS = {
+export const LAYOUT_DEFAULTS = {
     display: '',
     padding: '',
     'flex-direction': '',
@@ -2224,36 +2142,15 @@ const SPECIAL_FIELDS = [
     'background-color',
 ];
 
-const Field = ({field, settings, callback}) => {
-    const {
-        type,
-        slug,
-        label,
-        options,
-        large = false,
-        min,
-        max,
-        step,
-        units,
-        sides,
-        suggestions,
-    } = field;
+const Field = memo(({field, settings, callback}) => {
+    const {type, slug, label, options, large = false} = field;
 
     if (!type || !slug || !label) return null;
 
-    const handleChange = (val) => callback({[slug]: val});
-
-    const hasValue = () => {
-        if (!settings) return false;
-        switch (type) {
-            case 'box':
-                return sides?.some((side) => !!settings?.[slug]?.[side]);
-            case 'tokenfield':
-                return Array.isArray(settings?.[slug]) && settings[slug].length > 0;
-            default:
-                return !!settings?.[slug];
-        }
-    };
+    const handleChange = useCallback(
+        (val) => callback({[slug]: val}),
+        [callback, slug]
+    );
 
     let control = null;
 
@@ -2265,84 +2162,49 @@ const Field = ({field, settings, callback}) => {
                     value={settings?.[slug]}
                     options={options}
                     onChange={handleChange}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             );
             break;
-
         case 'text':
             control = (
                 <TextControl
                     label={label}
                     value={settings?.[slug]}
                     onChange={handleChange}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             );
             break;
-
-        case 'number':
-        case 'range':
-        case 'unit':
-            control = (
-                <NumberControl
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={handleChange}
-                    min={min}
-                    max={max}
-                    step={step || 1}
-                />
-            );
-            break;
-
-        case 'toggle':
-            control = (
-                <ToggleControl
-                    label={label}
-                    checked={!!settings?.[slug]}
-                    onChange={handleChange}
-                />
-            );
-            break;
-
-        case 'tokenfield':
-            control = (
-                <FormTokenField
-                    label={label}
-                    value={settings?.[slug]}
-                    suggestions={suggestions}
-                    onChange={handleChange}
-                    tokenizeOnSpace
-                />
-            );
-            break;
-
         case 'box':
             control = (
                 <BoxControl
                     label={label}
                     values={settings?.[slug]}
                     onChange={handleChange}
-                    sides={sides}
-                    units={units}
+                    {...options}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
-            );
+            )
             break;
-
         default:
             control = null;
     }
 
     return (
         <ToolsPanelItem
-            style={{gridColumn: large ? '1/-1' : 'span 1'}}
+            style={{gridColumn: !!large ? '1/-1' : 'span 1'}}
             label={label}
-            hasValue={hasValue}
-            onDeselect={() => handleChange(type === 'box' ? {} : '')}
+            hasValue={() => !!settings?.[slug]}
+            onDeselect={() => handleChange('')}
         >
             {control}
         </ToolsPanelItem>
     );
-};
+});
 
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(
@@ -2350,90 +2212,32 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
         [updateLayoutItem, bpKey]
     );
 
-    const editorColors = useMemo(() => {
-        return wp.data.select('core/editor').getEditorSettings().colors || [];
-    }, []);
-
     const fields = [
-        {slug: 'display', label: 'Display', control: 'select', options: DISPLAY_OPTIONS, gridColumn: 1},
-        {slug: 'flex-direction', label: 'Direction', control: 'select', options: DIRECTION_OPTIONS, gridColumn: 1},
-        {slug: 'container', label: 'Container', control: 'select', options: CONTAINER_OPTIONS, gridColumn: 1},
-        /* {slug: 'align-items', label: 'Align', control: 'select', options: ALIGN_OPTIONS, gridColumn: 1},
-         {slug: 'justify-content', label: 'Justify', control: 'select', options: JUSTIFY_OPTIONS, gridColumn: 1},
-         {slug: 'opacity', label: 'Opacity', control: 'range', min: 0, max: 1, step: 0.1, gridColumn: 2},
-         {slug: 'basis', label: 'Basis', control: 'range', min: 0, max: 100, step: 1, gridColumn: 2},
-         {slug: 'width', label: 'Width', control: 'select', options: WIDTH_OPTIONS, gridColumn: 1},
-         {slug: 'width-custom', label: 'Width Custom', control: 'unit', units: DIMENSION_UNITS, gridColumn: 1},
-         {slug: 'max-width', label: 'Max-Width', control: 'unit', units: DIMENSION_UNITS, gridColumn: 1},
-         {slug: 'height', label: 'Height', control: 'select', options: HEIGHT_OPTIONS, gridColumn: 1},
-         {slug: 'height-custom', label: 'Height Custom', control: 'unit', units: DIMENSION_UNITS, gridColumn: 1},
-         {
-             slug: 'offset-height',
-             label: 'Offset Height',
-             control: 'unit',
-             units: DIMENSION_UNITS,
-             min: -1000,
-             max: 1000,
-             gridColumn: 1
-         },
-         {slug: 'min-height', label: 'Min-Height', control: 'select', options: HEIGHT_OPTIONS, gridColumn: 1},
-         {slug: 'min-height-custom', label: 'Min-Height Custom', control: 'unit', units: DIMENSION_UNITS, gridColumn: 1},
-         {slug: 'max-height', label: 'Max-Height', control: 'select', options: HEIGHT_OPTIONS, gridColumn: 1},
-         {slug: 'max-height-custom', label: 'Max-Height Custom', control: 'unit', units: DIMENSION_UNITS, gridColumn: 1},
-         {slug: 'flex-wrap', label: 'Flex Wrap', control: 'select', options: WRAP_OPTIONS, gridColumn: 1},
-         {slug: 'flex-grow', label: 'Grow', control: 'number', min: 0, gridColumn: 1},
-         {slug: 'flex-shrink', label: 'Shrink', control: 'number', min: 0, gridColumn: 1},
-         {slug: 'position', label: 'Position', control: 'select', options: POSITION_OPTIONS, gridColumn: 1},
-         {slug: 'z-index', label: 'Z-Index', control: 'number', min: -100, gridColumn: 1},
-         {slug: 'top', label: 'Top', control: 'unit', units: DIMENSION_UNITS},
-         {slug: 'right', label: 'Right', control: 'unit', units: DIMENSION_UNITS},
-         {slug: 'bottom', label: 'Bottom', control: 'unit', units: DIMENSION_UNITS},
-         {slug: 'left', label: 'Left', control: 'unit', units: DIMENSION_UNITS},
-         {slug: 'align-header', label: 'Align with Header', control: 'toggle'},
-         {slug: 'overflow', label: 'Overflow', control: 'select', options: OVERFLOW_OPTIONS, gridColumn: 1},
-         {slug: 'aspect-ratio', label: 'Shape', control: 'select', options: SHAPE_OPTIONS, gridColumn: 1},
-         {slug: 'order', label: 'Order', control: 'number', gridColumn: 1},
-         {slug: 'outline-offset', label: 'Outline Offset', control: 'unit', units: BORDER_UNITS, gridColumn: 1},
-         {slug: 'offset-header', label: 'Offset Header', control: 'number', gridColumn: 1},
-         {slug: 'translate', label: 'Translate', control: 'box', sides: ['top', 'left'], units: DIMENSION_UNITS},
-         {slug: 'outline', label: 'Outline', control: 'border', colors: editorColors},
-         {
-             slug: 'transition',
-             label: 'Transition',
-             control: 'tokenfield',
-             gridColumn: 2,
-             suggestions: ['opacity', 'transform', 'background-color', 'color', 'box-shadow', 'border-color', 'all']
-         },
-         {
-             slug: 'reveal',
-             label: 'Reveal',
-             control: 'composite',
-             fields: [
-                 {slug: 'reveal-animation', label: 'Animation', control: 'select', options: REVEAL_ANIMATION_OPTIONS},
-                 {slug: 'reveal-easing', label: 'Easing', control: 'select', options: REVEAL_EASING_OPTIONS},
-                 {slug: 'reveal-duration', label: 'Duration', control: 'number', step: 50, min: 0},
-                 {slug: 'reveal-offset', label: 'Offset', control: 'number', step: 10, min: -900, max: 900},
-                 {slug: 'reveal-distance', label: 'Distance', control: 'number', step: 10, min: 0},
-                 {slug: 'reveal-repeat', label: 'Repeat', control: 'toggle'},
-                 {slug: 'reveal-mirror', label: 'Mirror', control: 'toggle'},
-                 {slug: 'reveal-mobile', label: 'Mobile', control: 'toggle'},
-             ],
-             gridColumn: 2
-         },
-         {
-             slug: 'content-visibility', label: 'Content Visibility', control: 'select', options: [
-                 {label: 'Select', value: ''},
-                 {label: 'Auto', value: 'auto'},
-                 {label: 'Visible', value: 'visible'},
-                 {label: 'Hidden', value: 'hidden'}
-             ]
-         },
-         {slug: 'mask-image', label: 'Mask Image', control: 'media'},
-         {slug: 'mask-origin', label: 'Origin', control: 'select', options: ORIGIN_OPTIONS},
-         {slug: 'mask-size', label: 'Size', control: 'select', options: IMAGE_SIZE_OPTIONS},
-         {slug: 'text-decoration-color', label: 'Text Decoration', control: 'color'}*/
+        {
+            type: 'select',
+            slug: 'display',
+            label: 'Display',
+            options: DISPLAY_OPTIONS
+        },
+        {
+            type: 'select',
+            slug: 'flex-direction',
+            label: 'Direction',
+            options: DIRECTION_OPTIONS
+        },
+        {
+            type: 'box',
+            slug: 'padding',
+            label: 'Padding',
+            large: true,
+            options: {
+                sides: ['top', 'right', 'bottom', 'left'],
+                inputProps: {
+                    units: DIMENSION_UNITS
+                }
+            }
+        },
     ];
-
 
     return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
                                                                                           settings={settings}
@@ -2803,7 +2607,7 @@ export function LayoutRepeater({attributes, setAttributes}) {
             const sizeA = bpA?.size || 0;
             const sizeB = bpB?.size || 0;
 
-            return sizeB - sizeA;
+            return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
 

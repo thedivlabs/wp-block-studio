@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls, LayoutRepeater, LayoutCss} from "Components/Layout"
+import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {
     __experimentalGrid as Grid, __experimentalUnitControl as UnitControl,
     PanelBody,
@@ -18,7 +18,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style, STYLE_ATTRIBUTES} from "Components/Style.js";
+import {Style, STYLE_ATTRIBUTES, styleClassnames} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
@@ -36,6 +36,7 @@ function classNames(attributes = {}) {
         !!settings?.['icon-only'] ? '--icon-only' : false,
         !!settings?.['icon-first'] ? '--icon-first' : false,
         attributes?.uniqueId ?? '',
+        styleClassnames(attributes),
     ].filter(x => x).join(' ');
 }
 
@@ -198,7 +199,7 @@ registerBlockType(metadata.name, {
                 <InspectorControls group="styles">
 
 
-                    <LayoutRepeater setAttributes={setAttributes} attributes={attributes}/>
+                    <LayoutControls setAttributes={setAttributes} attributes={attributes}/>
 
                     <PanelBody initialOpen={true}>
 
@@ -229,9 +230,11 @@ registerBlockType(metadata.name, {
                     </PanelBody>
                 </InspectorControls>
 
-                <LayoutControls attributes={attributes} setAttributes={setAttributes}/>
+                <Style attributes={attributes}
+                       uniqueId={uniqueId}
+                       props={[]}
+                />
 
-                <LayoutCss settings={attributes?.['wpbs-layout']} selector={uniqueId}/>
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
                     <span className={'wpbs-cta-button__title'}>{title}</span>

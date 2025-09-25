@@ -58,206 +58,90 @@ function getPreloadMedia(preloads) {
 
 }
 
-export const styleClasses = (selector) => {
+export const styleClassnames = (attributes = {}) => {
 
-    return selector;
-}
+    const result = Object.entries(attributes)
+        .filter(([key]) => key.startsWith('wpbs'))
+        .flatMap(([_, value]) => value?.classNames ?? []);
+
+    return result.filter(Boolean).join(' ').trim();
+};
 
 export function Style({
                           selector,
                           uniqueId,
                           attributes,
-                          setAttributes,
-                          css = [],
                           props = {},
                           deps = [],
                           preload = []
                       }) {
 
-    if (!attributes) {
+    if (!attributes || !uniqueId) {
         return <></>;
     }
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background'], attributes?.className];
+    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
 
-    const {resultCss, preloadMedia} = useMemo(() => {
+    const cssString = useMemo(() => {
 
-        if (!uniqueId) {
+        const {'wpbs-layout': settings = {}} = attributes;
+
+        if (!settings) {
             return '';
         }
 
-        const {containers, breakpoints} = WPBS?.settings ?? {};
+        let css = ''; // ✅ initialize css
+        const baseSelector = `.${uniqueId}`;
 
-        const cssSelector = selector ? '.' + selector + '.' + uniqueId : '.' + uniqueId;
+        // ✅ Helper to safely stringify CSS props
+        const propsToCss = (props = {}) =>
+            Object.entries(props)
+                .filter(([_, val]) =>
+                    val !== undefined && val !== null && typeof val !== 'object'
+                )
+                .map(([key, val]) => `${key}: ${val};`)
+                .join(' ');
 
-        const breakpoint = '%__BREAKPOINT__' + (attributes?.['wpbs-breakpoint']?.large ?? 'normal') + '__%';
-
-        const cssLayout = layoutCss(attributes, cssSelector);
-        const cssBackground = backgroundCss(attributes, cssSelector);
-
-        let desktopProps = {};
-        let mobileProps = {};
-
-        let propsCss = '';
-
-        const rowGap = (() => {
-            const val = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.top ?? null);
-            return val === 0 || val === '0' ? '0px' : val;
-        })();
-
-        const colGap = (() => {
-            const val = getCSSFromStyle(attributes?.style?.spacing?.blockGap?.left ?? null);
-            return val === 0 || val === '0' ? '0px' : val;
-        })();
-
-        const rowGapMobile = (() => {
-            const val = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.top ?? null);
-            return val === 0 || val === '0' ? '0px' : val;
-        })();
-
-        const colGapMobile = (() => {
-            const val = getCSSFromStyle(attributes?.['wpbs-layout']?.['gap-mobile']?.left ?? null);
-            return val === 0 || val === '0' ? '0px' : val;
-        })();
-
-        const desktop = Object.fromEntries(Object.entries({
-            'row-gap': rowGap,
-            'column-gap': colGap,
-            '--row-gap': rowGap,
-            '--column-gap': colGap,
-        }).filter(([k, v]) => !!v));
-
-        const mobile = Object.fromEntries(Object.entries({
-            'row-gap': rowGapMobile,
-            'column-gap': colGapMobile,
-            '--row-gap': rowGapMobile,
-            '--column-gap': colGapMobile,
-        }).filter(([k, v]) => !!v));
-
-        desktopProps = cleanObject({
-            ...desktopProps,
-            ...desktop
-        });
-
-        mobileProps = cleanObject({
-            ...mobileProps,
-            ...mobile
-        });
-
-        if (Object.keys(desktopProps).length) {
-            propsCss += cssSelector + '{';
-            Object.entries(desktopProps).forEach(([prop, value]) => {
-
-                if (!value) {
-                    return;
-                }
-                propsCss += [prop, value].join(':') + ';';
-            })
-
-            propsCss += '}';
-        }
-
-        if (Object.keys(mobileProps).length) {
-            propsCss += '@media(width < ' + breakpoint + '){' + cssSelector + '{';
-
-            Object.entries(mobileProps).forEach(([prop, value]) => {
-
-                if (!value) {
-                    return;
-                }
-                propsCss += [prop, value].join(':') + ';';
-            })
-
-            propsCss += '}}';
-        }
-
-        if (Object.keys(cleanObject(props)).length) {
-
-            propsCss += cssSelector + '{';
-            Object.entries(props).forEach(([prop, value]) => {
-
-                if (!value || prop === 'breakpoints') {
-                    return;
-                }
-                value = getCSSFromStyle(value);
-
-                propsCss += [prop, value].join(':') + ';';
-            })
-
-            propsCss += '}';
-
-            if (Object.keys(props?.breakpoints ?? {}).length) {
-                Object.entries(cleanObject(props.breakpoints)).forEach(([bp, rules]) => {
-
-                    if (typeof rules !== 'object') {
-                        return;
-                    }
-
-                    propsCss += '@media(min-width: %__BREAKPOINT__' + bp + '__%){' + cssSelector + '{';
-
-                    Object.entries(rules).forEach(([prop, value]) => {
-
-                        if (!value) {
-                            return;
-                        }
-
-                        value = getCSSFromStyle(value);
-
-                        propsCss += [prop, value].join(':') + ';';
-                    })
-
-                    propsCss += '}}';
-                })
-            }
-        }
-
-        const mergedCss = [cssLayout, cssBackground, propsCss, ...(Array.isArray(css) ? css : [css || ''])].join(' ').trim();
-
-        const preloadMedia = getPreloadMedia([...preload, ...backgroundPreload(attributes)]);
-
-        return {
-            resultCss: mergedCss.replace(/%__(BREAKPOINT|CONTAINER)__(.*?)__%/g, (match, type, key) => {
-                switch (type) {
-                    case 'BREAKPOINT':
-                        return breakpoints[key] ?? match;
-                    case 'CONTAINER':
-                        return containers[key] ?? match;
-                    default:
-                        return match; // fallback for unknown types
-                }
-            }),
-            preloadMedia: preloadMedia
+        // 1. Default layout
+        const defaultProps = {
+            ...settings.props,
+            ...settings.special?.props,
         };
-
-    }, dependencyValues);
-
-    useEffect(() => {
-
-        const {'wpbs-css': currentCss = ''} = attributes;
-
-        const result = {};
-
-        if (attributes?.uniqueId !== uniqueId) {
-            result.uniqueId = uniqueId;
+        if (Object.keys(defaultProps).length) {
+            css += `${baseSelector} { ${propsToCss(defaultProps)} }`;
         }
 
-        if (!isEqual(currentCss, resultCss)) {
-            result['wpbs-css'] = resultCss;
+        // 2. Breakpoints
+        if (settings.breakpoints) {
+            Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
+                const bp = WPBS?.settings?.breakpoints?.[bpKey];
+                if (!bp || !bpProps || Object.keys(bpProps).length === 0) return;
+
+                const combinedProps = {
+                    ...bpProps,
+                    ...settings.special?.breakpoints?.[bpKey],
+                };
+
+                if (Object.keys(combinedProps).length) {
+                    css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${propsToCss(combinedProps)} } }`;
+                }
+            });
         }
 
-        if (!isEqual(attributes?.['wpbs-preload'], preloadMedia)) {
-            result['wpbs-preload'] = preloadMedia
+        // 3. Hover
+        const hoverProps = {
+            ...settings.hover,
+            ...settings.special?.hover,
+        };
+        if (Object.keys(hoverProps).length) {
+            css += `${baseSelector}:hover { ${propsToCss(hoverProps)} }`;
         }
 
-        if (Object.keys(result).length > 0) {
-            setAttributes(result);
-        }
+        return css;
+    }, [dependencyValues]);
 
+    if (!cssString) return null;
 
-    }, [resultCss, preloadMedia, uniqueId]);
+    return <style>{cssString}</style>;
 
-
-    return <style
-        className='wpbs-styles'>{(resultCss || '').replace(/%__BREAKPOINT__(\d+px)__%/, "$1").replace(/position:\s*fixed/g, "position:absolute")}</style>;
 }
-

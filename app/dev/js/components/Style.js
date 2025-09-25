@@ -5,9 +5,6 @@ import {isEqual} from "lodash";
 import {cleanObject} from "Includes/helper";
 
 export const STYLE_ATTRIBUTES = {
-    'wpbs-css': {
-        type: 'string'
-    },
     'wpbs-preload': {
         type: 'object',
         default: {}
@@ -77,7 +74,7 @@ export function Style({
                       }) {
 
     if (!attributes || !uniqueId) {
-        return <></>;
+        return null;
     }
 
     const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];

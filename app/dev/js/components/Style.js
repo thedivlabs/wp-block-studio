@@ -202,16 +202,6 @@ function processSpecialValue(key, value, attributes = {}) {
     return result;
 }
 
-function getAllBlocks(blocks) {
-    return blocks.reduce((all, block) => {
-        all.push(block);
-        if (block.innerBlocks.length) {
-            all.push(...getAllBlocks(block.innerBlocks));
-        }
-        return all;
-    }, []);
-}
-
 export function updateStyle(
     setAttributes,
     attributes,

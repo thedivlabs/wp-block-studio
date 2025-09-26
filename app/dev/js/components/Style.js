@@ -9,7 +9,7 @@ import {ToolsPanel} from "@wordpress/components/src/tools-panel";
 import {InspectorControls} from "@wordpress/block-editor";
 import {select} from "@wordpress/data";
 import {useInstanceId} from "@wordpress/compose";
-
+import _ from 'lodash';
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
@@ -73,14 +73,6 @@ function getPreloadMedia(preloads) {
 
 }
 
-import _ from 'lodash';
-
-const SPECIAL_FIELDS = [
-    'gap', 'margin', 'padding', 'border', 'border-radius', 'box-shadow',
-    'transform', 'filter', 'height', 'width', 'min-height', 'max-height',
-    'translate', 'position', 'text-color', 'background-color',
-    // add any other fields you consider "special"
-];
 
 /**
  * Flattens special field values into CSS-ready props.

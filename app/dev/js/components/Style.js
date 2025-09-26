@@ -50,30 +50,6 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
     return raw;
 }
 
-
-function getPreloadMedia(preloads) {
-
-    let result = {};
-
-    preloads.forEach((preloadItem) => {
-
-        const {media, resolution = 'large', breakpoint = 'normal', mobile} = preloadItem;
-
-        if (media.id) {
-            result[media.id] = {
-                id: media?.id,
-                resolution: resolution,
-                breakpoint: breakpoint,
-                mobile: !!mobile
-            }
-        }
-    })
-
-    return result;
-
-}
-
-
 /**
  * Flattens special field values into CSS-ready props.
  */
@@ -135,48 +111,54 @@ export function parseLayoutForCSS(attributes = {}) {
     return cssObj;
 }
 
-/**
- * Style component generates CSS <style> from flattened layout object.
- */
-export const Style = ({attributes, selector, uniqueId}) => {
-    if (!attributes || !uniqueId) return null;
 
-    const cssData = parseLayoutForCSS(attributes);
+export const Style = ({attributes, css = {}}) => {
+    if (!attributes?.uniqueId) return null;
+
+    const uniqueId = attributes.uniqueId;
+    const selector = `.${uniqueId}`;
 
     const cssString = useMemo(() => {
-        if (!cssData) return '';
+        if (!attributes['wpbs-layout'] && _.isEmpty(css)) return '';
 
-        const baseSelector = [selector ? `.${selector}` : null, `.${uniqueId}`].filter(Boolean).join(' ');
+        const parsedCss = parseLayoutForCSS(attributes['wpbs-layout'] || {});
+
+        // Merge additional css if provided
+        const combinedCss = {
+            props: {...parsedCss.props, ...css.props},
+            breakpoints: {...parsedCss.breakpoints, ...css.breakpoints},
+            hover: {...parsedCss.hover, ...css.hover},
+        };
 
         const propsToCss = (props = {}) =>
             Object.entries(props)
                 .map(([k, v]) => `${k}: ${v};`)
                 .join(' ');
 
-        let css = '';
+        let result = '';
 
         // 1. Default
-        if (!_.isEmpty(cssData.props)) {
-            css += `${baseSelector} { ${propsToCss(cssData.props)} }`;
+        if (!_.isEmpty(combinedCss.props)) {
+            result += `${selector} { ${propsToCss(combinedCss.props)} }`;
         }
 
         // 2. Breakpoints
-        if (cssData.breakpoints) {
-            Object.entries(cssData.breakpoints).forEach(([bpKey, bpProps]) => {
+        if (combinedCss.breakpoints) {
+            Object.entries(combinedCss.breakpoints).forEach(([bpKey, bpProps]) => {
                 const bp = WPBS?.settings?.breakpoints?.[bpKey];
                 if (!bp || _.isEmpty(bpProps)) return;
 
-                css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${propsToCss(bpProps)} } }`;
+                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps)} } }`;
             });
         }
 
         // 3. Hover
-        if (!_.isEmpty(cssData.hover)) {
-            css += `${baseSelector}:hover { ${propsToCss(cssData.hover)} }`;
+        if (!_.isEmpty(combinedCss.hover)) {
+            result += `${selector}:hover { ${propsToCss(combinedCss.hover)} }`;
         }
 
-        return css;
-    }, [cssData, selector, uniqueId]);
+        return result;
+    }, [attributes, css, selector]);
 
     if (!cssString) return null;
 

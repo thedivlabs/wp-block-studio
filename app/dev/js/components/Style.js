@@ -1,36 +1,56 @@
 import React, {memo, useCallback, useEffect, useMemo} from "react";
-import {backgroundCss, backgroundPreload} from "Components/Background.js";
 import {isEqual} from "lodash";
-import {cleanObject} from "Includes/helper";
+import {cleanObject, useUniqueId} from "Includes/helper";
 import {
+    __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
     __experimentalToolsPanelItem as ToolsPanelItem, Button, PanelBody, SelectControl, TextControl
 } from "@wordpress/components";
 import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/config";
 import {ToolsPanel} from "@wordpress/components/src/tools-panel";
+import {InspectorControls} from "@wordpress/block-editor";
+import {select} from "@wordpress/data";
 
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
+    if (raw == null) return '';
+
+    // Handle objects (padding, margin, etc.)
+    if (typeof raw === 'object' && !Array.isArray(raw)) {
+        return Object.entries(raw)
+            .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
+            .join(' ');
+    }
+
+    // Handle arrays (e.g., font-family, fallbacks)
+    if (Array.isArray(raw)) {
+        return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
+    }
 
     if (typeof raw !== 'string') return raw;
 
+    // Handle custom variable format
     if (raw.startsWith('var:')) {
         const [source, type, name] = raw.slice(4).split('|');
         if (source && type && name) {
             return `var(--wp--${source}--${type}--${name})`;
         }
+        return raw; // fallback if malformed
     }
 
+    // Handle CSS variable directly
     if (raw.startsWith('--wp--')) {
         return `var(${raw})`;
     }
 
-    if (presetKeyword === 'color') {
+    // Handle presets (color, font-size, spacing, etc.)
+    if (presetKeyword) {
         return `var(--wp--preset--${presetKeyword}--${raw})`;
     }
 
     return raw;
 }
+
 
 function getPreloadMedia(preloads) {
 
@@ -63,19 +83,19 @@ export const styleClassnames = (attributes = {}) => {
     return result.filter(Boolean).join(' ').trim();
 };
 
-export function Style({
+export const Style = ({
                           selector,
                           uniqueId,
                           attributes,
                           props = {},
                           deps = [],
-                      }) {
+                      }) => {
 
     if (!attributes || !uniqueId) {
         return null;
     }
 
-    const dependencyValues = [...deps.map((key) => attributes[key]), attributes?.style, uniqueId, attributes?.['wpbs-layout'], attributes?.['wpbs-background']];
+    const dependencyValues = [...[...deps, ...['wpbs-layout']].map((key) => attributes[key]), attributes?.style, uniqueId];
 
     const cssString = useMemo(() => {
 
@@ -181,6 +201,15 @@ function processSpecialValue(key, value, attributes = {}) {
     return result;
 }
 
+function getAllBlocks(blocks) {
+    return blocks.reduce((all, block) => {
+        all.push(block);
+        if (block.innerBlocks.length) {
+            all.push(...getAllBlocks(block.innerBlocks));
+        }
+        return all;
+    }, []);
+}
 
 export function updateStyle(
     setAttributes,
@@ -245,7 +274,22 @@ export function updateStyle(
     setAttributes({'wpbs-css': next});
 }
 
-export function Layout({attributes, setAttributes}) {
+
+function generateUniqueId(clientId, attributes, prefix = 'wpbs-block') {
+    const allBlocks = select('core/block-editor')
+        .getBlocks()
+        .flatMap(block => getAllBlocks([block])); // flatten nested blocks
+
+    let id;
+    do {
+        id = `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+    } while (allBlocks.some(block => block.attributes?.uniqueId === id && block.clientId !== clientId));
+
+    return id;
+}
+
+export function Layout({attributes, setAttributes, clientId}) {
+
     const breakpoints = useMemo(
         () => [
             ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label, size}]) => ({
@@ -268,7 +312,10 @@ export function Layout({attributes, setAttributes}) {
 
     const setLayoutObj = useCallback(
         (newObj) => {
-            setAttributes({...attributes, 'wpbs-layout': newObj});
+
+            const uniqueId = attributes.uniqueId || generateUniqueId(clientId, attributes);
+
+            setAttributes({...attributes, uniqueId: uniqueId, 'wpbs-layout': newObj});
         },
         [attributes, setAttributes]
     );
@@ -282,6 +329,7 @@ export function Layout({attributes, setAttributes}) {
                     ...newProps,
                 },
             };
+
 
             const cleanedBreakpoints = Object.fromEntries(
                 Object.entries(updatedBreakpoints)

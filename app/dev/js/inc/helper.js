@@ -37,34 +37,4 @@ export function cleanObject(obj) {
 }
 
 
-function getAllBlocks(blocks) {
-    return blocks.reduce((all, block) => {
-        all.push(block);
-        if (block.innerBlocks.length) {
-            all.push(...getAllBlocks(block.innerBlocks));
-        }
-        return all;
-    }, []);
-}
 
-
-export function useUniqueId(attributes, setAttributes, clientId, prefix = 'block') {
-    useEffect(() => {
-        const hasId = !!attributes.uniqueId;
-
-        const allTopBlocks = select('core/block-editor').getBlocks();
-        const allBlocks = getAllBlocks(allTopBlocks);
-
-        const isDuplicate = allBlocks.some((block) => {
-
-            return block.clientId !== clientId && block.attributes?.uniqueId === attributes.uniqueId;
-        });
-
-        if (!hasId || isDuplicate) {
-            const newId = `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
-            setAttributes({uniqueId: newId});
-        }
-    }, [attributes.uniqueId, setAttributes, clientId, prefix]);
-
-    return attributes.uniqueId;
-}

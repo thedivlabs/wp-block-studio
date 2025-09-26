@@ -17,7 +17,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style, styleClassnames} from "Components/Style.js";
+import {Style, styleClassnames, Layout} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
@@ -53,7 +53,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId} = props;
 
-        const uniqueId = useUniqueId(attributes, setAttributes, clientId);
 
         const {'wpbs-cta': settings = {}, style} = attributes;
 
@@ -223,10 +222,14 @@ registerBlockType(metadata.name, {
                             }
                         </TabPanel>
                     </PanelBody>
+
+                    <Layout attributes={attributes}
+                            clientId={clientId}
+                            props={cssProps}
+                    />
                 </InspectorControls>
 
                 <Style attributes={attributes}
-                       uniqueId={uniqueId}
                        props={cssProps}
                 />
 

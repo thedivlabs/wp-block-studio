@@ -6,7 +6,6 @@ import {
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
-import {LAYOUT_ATTRIBUTES, LayoutControls} from "Components/Layout"
 import {
     __experimentalGrid as Grid, __experimentalUnitControl as UnitControl,
     PanelBody,
@@ -18,7 +17,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style, STYLE_ATTRIBUTES, styleClassnames} from "Components/Style.js";
+import {Style, styleClassnames} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
@@ -45,8 +44,6 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...LAYOUT_ATTRIBUTES,
-        ...STYLE_ATTRIBUTES,
         'wpbs-cta': {
             type: 'object',
             default: {}
@@ -183,7 +180,7 @@ registerBlockType(metadata.name, {
                 Object.entries({
                     '--icon-color': settings?.['icon-color'] || null,
                     ...iconProps(settings?.['icon']),
-                }).filter(([key, value]) => value != null) // keep only entries with a value
+                }).filter(Boolean)
             );
         }, [settings, style]);
 
@@ -198,8 +195,6 @@ registerBlockType(metadata.name, {
                       callback={(newValue) => updateSettings({link: newValue})}/>
                 <InspectorControls group="styles">
 
-
-                    <LayoutControls setAttributes={setAttributes} attributes={attributes}/>
 
                     <PanelBody initialOpen={true}>
 
@@ -232,7 +227,7 @@ registerBlockType(metadata.name, {
 
                 <Style attributes={attributes}
                        uniqueId={uniqueId}
-                       props={[]}
+                       props={cssProps}
                 />
 
 

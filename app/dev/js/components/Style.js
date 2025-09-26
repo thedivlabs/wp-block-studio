@@ -10,6 +10,7 @@ import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/conf
 import {ToolsPanel} from "@wordpress/components/src/tools-panel";
 import {InspectorControls} from "@wordpress/block-editor";
 import {select} from "@wordpress/data";
+import {useInstanceId} from "@wordpress/compose";
 
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
@@ -275,20 +276,17 @@ export function updateStyle(
 }
 
 
-function generateUniqueId(clientId, attributes, prefix = 'wpbs-block') {
-    const allBlocks = select('core/block-editor')
-        .getBlocks()
-        .flatMap(block => getAllBlocks([block])); // flatten nested blocks
-
-    let id;
-    do {
-        id = `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
-    } while (allBlocks.some(block => block.attributes?.uniqueId === id && block.clientId !== clientId));
-
-    return id;
-}
-
 export function Layout({attributes, setAttributes, clientId}) {
+
+    const uniqueId = useInstanceId('wpbs');
+
+    // Ensure uniqueId is stored in attributes on first render
+    useEffect(() => {
+        if (!attributes.uniqueId) {
+            setAttributes({...attributes, uniqueId});
+        }
+    }, []); // empty deps = run once
+
 
     const breakpoints = useMemo(
         () => [
@@ -306,16 +304,14 @@ export function Layout({attributes, setAttributes, clientId}) {
         props: attributes['wpbs-layout']?.props || {},
         breakpoints: attributes['wpbs-layout']?.breakpoints || {},
         hover: attributes['wpbs-layout']?.hover || {},
-        classNames: getClassnames(attributes),
+        classNames: styleClassnames(attributes),
     };
 
 
     const setLayoutObj = useCallback(
         (newObj) => {
 
-            const uniqueId = attributes.uniqueId || generateUniqueId(clientId, attributes);
-
-            setAttributes({...attributes, uniqueId: uniqueId, 'wpbs-layout': newObj});
+            setAttributes({...attributes, 'wpbs-layout': newObj});
         },
         [attributes, setAttributes]
     );

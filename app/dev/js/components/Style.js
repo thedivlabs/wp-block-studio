@@ -1,6 +1,4 @@
-import React, {memo, useCallback, useEffect, useMemo} from "react";
-import {isEqual} from "lodash";
-import {cleanObject, useUniqueId} from "Includes/helper";
+import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
@@ -75,198 +73,126 @@ function getPreloadMedia(preloads) {
 
 }
 
-export const styleClassnames = (attributes = {}) => {
+import _ from 'lodash';
 
-    const result = Object.entries(attributes)
-        .filter(([key]) => key.startsWith('wpbs'))
-        .flatMap(([_, value]) => value?.classNames ?? []);
+const SPECIAL_FIELDS = [
+    'gap', 'margin', 'padding', 'border', 'border-radius', 'box-shadow',
+    'transform', 'filter', 'height', 'width', 'min-height', 'max-height',
+    'translate', 'position', 'text-color', 'background-color',
+    // add any other fields you consider "special"
+];
 
-    return result.filter(Boolean).join(' ').trim();
-};
+/**
+ * Flattens special field values into CSS-ready props.
+ */
+function parseSpecialProps(props = {}) {
+    const result = {};
 
-export const Style = ({
-                          selector,
-                          uniqueId,
-                          attributes,
-                          props = {},
-                          deps = [],
-                      }) => {
+    Object.entries(props).forEach(([key, val]) => {
+        if (val == null) return;
 
-    if (!attributes || !uniqueId) {
-        return null;
-    }
-
-    const dependencyValues = [...[...deps, ...['wpbs-layout']].map((key) => attributes[key]), attributes?.style, uniqueId];
-
-    const cssString = useMemo(() => {
-
-        const {'wpbs-css': settings = {}} = attributes;
-
-        if (!settings) {
-            return '';
-        }
-
-        selector = selector ? `.${selector}` : null;
-
-        let css = ''; // ✅ initialize css
-
-        const baseSelector = [selector, `.${uniqueId}`].filter(Boolean).join(' ');
-
-        // ✅ Helper to safely stringify CSS props
-        const propsToCss = (props = {}) =>
-            Object.entries(props)
-                .filter(([_, val]) =>
-                    val !== undefined && val !== null && typeof val !== 'object'
-                )
-                .map(([key, val]) => `${key}: ${val};`)
-                .join(' ');
-
-        // 1. Default layout
-        const defaultProps = {
-            ...settings.props,
-            ...settings.special?.props,
-        };
-        if (Object.keys(defaultProps).length) {
-            css += `${baseSelector} { ${propsToCss(defaultProps)} }`;
-        }
-
-        // 2. Breakpoints
-        if (settings.breakpoints) {
-            Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
-                const bp = WPBS?.settings?.breakpoints?.[bpKey];
-                if (!bp || !bpProps || Object.keys(bpProps).length === 0) return;
-
-                const combinedProps = {
-                    ...bpProps,
-                    ...settings.special?.breakpoints?.[bpKey],
-                };
-
-                if (Object.keys(combinedProps).length) {
-                    css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${propsToCss(combinedProps)} } }`;
-                }
-            });
-        }
-
-        // 3. Hover
-        const hoverProps = {
-            ...settings.hover,
-            ...settings.special?.hover,
-        };
-        if (Object.keys(hoverProps).length) {
-            css += `${baseSelector}:hover { ${propsToCss(hoverProps)} }`;
-        }
-
-        return css;
-    }, [dependencyValues]);
-
-    if (!cssString) return null;
-
-    return <style>{cssString}</style>;
-
-}
-
-function processSpecialValue(key, value, attributes = {}) {
-    const settings = attributes['wpbs-layout'] || {};
-    let result = {};
-
-    switch (key) {
-        case 'gap':
-        case 'padding':
-        case 'margin':
-            result = {
-                [`${key}-top`]: value?.top ?? '0px',
-                [`${key}-right`]: value?.right ?? '0px',
-                [`${key}-bottom`]: value?.bottom ?? '0px',
-                [`${key}-left`]: value?.left ?? '0px',
-            };
-            break;
-
-
-        default:
-            result = {[key]: value};
-            break;
-    }
-
-    Object.assign(result, props);
-
-    // Flatten nested objects into CSS strings if necessary
-    Object.entries(result).forEach(([k, v]) => {
-        if (v && typeof v === 'object' && !Array.isArray(v)) {
-            result[k] = Object.entries(v)
-                .filter(([_, val]) => val !== undefined && val !== null)
-                .map(([subK, val]) => `${subK}: ${val};`)
-                .join(' ');
+        if (SPECIAL_FIELDS.includes(key)) {
+            switch (key) {
+                case 'margin':
+                case 'padding':
+                case 'gap':
+                    result[`${key}-top`] = val.top ?? '0px';
+                    result[`${key}-right`] = val.right ?? '0px';
+                    result[`${key}-bottom`] = val.bottom ?? '0px';
+                    result[`${key}-left`] = val.left ?? '0px';
+                    break;
+                default:
+                    result[key] = val;
+            }
+        } else {
+            result[key] = val;
         }
     });
 
     return result;
 }
 
-export function updateStyle(
-    setAttributes,
-    attributes,
-    props = {},
-    breakpoints = {},
-    hover = {}
-) {
+/**
+ * Parses the layout object and returns the flattened wpbs-css object.
+ */
+export function parseLayoutForCSS(attributes = {}) {
+    const layout = attributes['wpbs-layout'] || {};
+    const cssObj = {
+        props: {},
+        breakpoints: {},
+        hover: {},
+    };
 
-    const current = attributes['wpbs-css'] || {};
-    const next = structuredClone(current);
-
-    // Merge props
-    next.props = {...(current.props || {})};
-    for (const key in props) {
-        const value = props[key];
-        if (value === null) {
-            delete next.props[key];
-            delete next.special?.[key];
-        } else {
-            next.props[key] = value;
-
-            // Update special if needed
-            const specialValue = processSpecialValue(key, value, attributes);
-            next.special = {...(next.special || {}), ...specialValue};
-        }
+    // Default props
+    if (layout.props) {
+        cssObj.props = parseSpecialProps(layout.props);
     }
 
-    // Merge breakpoints
-    next.breakpoints = {...(current.breakpoints || {})};
-    for (const bp in breakpoints) {
-        next.breakpoints[bp] = {...(next.breakpoints[bp] || {})};
-        for (const key in breakpoints[bp]) {
-            const value = breakpoints[bp][key];
-            if (value === null) {
-                delete next.breakpoints[bp][key];
-            } else {
-                next.breakpoints[bp][key] = value;
-
-                // Update special for breakpoint as well
-                const specialValue = processSpecialValue(key, value, attributes);
-                next.special = {...(next.special || {}), ...specialValue};
-            }
-        }
+    // Breakpoints
+    if (layout.breakpoints) {
+        Object.entries(layout.breakpoints).forEach(([bpKey, bpProps]) => {
+            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+        });
     }
 
-    // Merge hover
-    next.hover = {...(current.hover || {})};
-    for (const key in hover) {
-        const value = hover[key];
-        if (value === null) {
-            delete next.hover[key];
-        } else {
-            next.hover[key] = value;
-
-            // Update special for hover if needed
-            const specialValue = processSpecialValue(key, value, attributes);
-            next.special = {...(next.special || {}), ...specialValue};
-        }
+    // Hover
+    if (layout.hover) {
+        cssObj.hover = parseSpecialProps(layout.hover);
     }
 
-    setAttributes({'wpbs-css': next});
+    return cssObj;
 }
 
+/**
+ * Style component generates CSS <style> from flattened layout object.
+ */
+export const Style = ({attributes, selector, uniqueId}) => {
+    if (!attributes || !uniqueId) return null;
 
-export function Layout({attributes, setAttributes, clientId}) {
+    const cssData = parseLayoutForCSS(attributes);
+
+    const cssString = useMemo(() => {
+        if (!cssData) return '';
+
+        const baseSelector = [selector ? `.${selector}` : null, `.${uniqueId}`].filter(Boolean).join(' ');
+
+        const propsToCss = (props = {}) =>
+            Object.entries(props)
+                .map(([k, v]) => `${k}: ${v};`)
+                .join(' ');
+
+        let css = '';
+
+        // 1. Default
+        if (!_.isEmpty(cssData.props)) {
+            css += `${baseSelector} { ${propsToCss(cssData.props)} }`;
+        }
+
+        // 2. Breakpoints
+        if (cssData.breakpoints) {
+            Object.entries(cssData.breakpoints).forEach(([bpKey, bpProps]) => {
+                const bp = WPBS?.settings?.breakpoints?.[bpKey];
+                if (!bp || _.isEmpty(bpProps)) return;
+
+                css += `@media (max-width: ${bp.size - 1}px) { ${baseSelector} { ${propsToCss(bpProps)} } }`;
+            });
+        }
+
+        // 3. Hover
+        if (!_.isEmpty(cssData.hover)) {
+            css += `${baseSelector}:hover { ${propsToCss(cssData.hover)} }`;
+        }
+
+        return css;
+    }, [cssData, selector, uniqueId]);
+
+    if (!cssString) return null;
+
+    return <style>{cssString}</style>;
+};
+
+
+function Layout({attributes, setAttributes}) {
 
     const uniqueId = useInstanceId('wpbs');
 
@@ -289,15 +215,21 @@ export function Layout({attributes, setAttributes, clientId}) {
         [WPBS?.settings?.breakpoints]
     );
 
+
     // Ensure the new shape exists
     const layoutAttrs = attributes['wpbs-layout'] || {};
-    const classNames = useMemo(() => styleClassnames(attributes), [attributes]);
+    const classNames = useMemo(() => {
+        const result = Object.entries(attributes)
+            .filter(([key]) => key.startsWith('wpbs'))
+            .flatMap(([_, value]) => value?.classNames ?? []);
+
+        return result.filter(Boolean).join(' ').trim();
+    }, [layoutAttrs]);
 
     const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
         breakpoints: layoutAttrs.breakpoints || {},
         hover: layoutAttrs.hover || {},
-        special: layoutAttrs.special || {},
         classNames,
     }), [layoutAttrs, classNames]);
 
@@ -320,34 +252,9 @@ export function Layout({attributes, setAttributes, clientId}) {
                 },
             };
 
-
-            const cleanedBreakpoints = Object.fromEntries(
-                Object.entries(updatedBreakpoints)
-                    .map(([key, props]) => [
-                        key,
-                        Object.fromEntries(Object.entries(props).filter(([_, v]) => v !== '')),
-                    ])
-                    .filter(([_, props]) => Object.keys(props).length > 0)
-            );
-
-            const specialForBp = {...layoutObj.special?.breakpoints?.[bpKey]};
-
-            Object.entries(newProps).forEach(([key, value]) => {
-                if (SPECIAL_FIELDS.includes(key)) {
-                    Object.assign(specialForBp, processSpecialValue(key, value, attributes));
-                }
-            });
-
             setLayoutObj({
                 ...layoutObj,
-                breakpoints: cleanedBreakpoints,
-                special: {
-                    ...layoutObj.special,
-                    breakpoints: {
-                        ...layoutObj.special?.breakpoints,
-                        [bpKey]: specialForBp,
-                    },
-                },
+                breakpoints: updatedBreakpoints,
             });
         },
         [layoutObj, setLayoutObj]
@@ -356,13 +263,6 @@ export function Layout({attributes, setAttributes, clientId}) {
 
     const updateDefaultLayout = useCallback(
         (newProps) => {
-            const specialProps = {...layoutObj.special?.props};
-
-            Object.entries(newProps).forEach(([key, value]) => {
-                if (SPECIAL_FIELDS.includes(key)) {
-                    Object.assign(specialProps, processSpecialValue(key, value, attributes));
-                }
-            });
 
             setLayoutObj({
                 ...layoutObj,
@@ -375,21 +275,9 @@ export function Layout({attributes, setAttributes, clientId}) {
 
     const updateHoverItem = useCallback(
         (newProps) => {
-            const specialHover = {...layoutObj.special?.hover};
-
-            Object.entries(newProps).forEach(([key, value]) => {
-                if (SPECIAL_FIELDS.includes(key)) {
-                    Object.assign(specialHover, processSpecialValue(key, value, attributes));
-                }
-            });
-
             setLayoutObj({
                 ...layoutObj,
                 hover: {...layoutObj.hover, ...newProps},
-                special: {
-                    ...layoutObj.special,
-                    hover: specialHover,
-                },
             });
         },
         [layoutObj, setLayoutObj]
@@ -440,74 +328,72 @@ export function Layout({attributes, setAttributes, clientId}) {
     }, [layoutObj?.breakpoints, breakpoints]);
 
 
-    return (
-        <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
-            <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>
-                <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
-                    <LayoutFields
-                        bpKey="layout"
-                        settings={layoutObj.props}
-                        updateLayoutItem={updateDefaultLayout}
-                        suppress={['padding', 'margin', 'gap']}
-                    />
-                </ToolsPanel>
+    return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
+        <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>
+            <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
+                <LayoutFields
+                    bpKey="layout"
+                    settings={layoutObj.props}
+                    updateLayoutItem={updateDefaultLayout}
+                    suppress={['padding', 'margin', 'gap']}
+                />
+            </ToolsPanel>
 
-                <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
-                    <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
-                </ToolsPanel>
+            <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
+                <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+            </ToolsPanel>
 
-                {layoutKeys.map((bpKey) => {
-                    const bp = breakpoints.find((b) => b.key === bpKey);
-                    const size = bp?.size ? `(${bp.size}px)` : '';
-                    const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
+            {layoutKeys.map((bpKey) => {
+                const bp = breakpoints.find((b) => b.key === bpKey);
+                const size = bp?.size ? `(${bp.size}px)` : '';
+                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
-                    return (
-                        <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => updateLayoutItem({}, bpKey)}>
+                return (
+                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => updateLayoutItem({}, bpKey)}>
 
-                            <ToolsPanelItem
-                                isShownByDefault={true}
+                        <ToolsPanelItem
+                            isShownByDefault={true}
+                            label="Breakpoint"
+                            hasValue={() => !!bpKey}
+                        >
+                            <SelectControl
                                 label="Breakpoint"
-                                hasValue={() => !!bpKey}
-                            >
-                                <SelectControl
-                                    label="Breakpoint"
-                                    value={bpKey}
-                                    style={{gridColumn: 'span 2'}}
-                                    options={breakpoints
-                                        .map((b) => ({
-                                            value: b.key,
-                                            label: b.label,
-                                            disabled: b.key !== bpKey && layoutKeys.includes(b.key),
-                                        }))}
-                                    onChange={(newBpKey) => {
-                                        const newBreakpoints = {...layoutObj.breakpoints};
-                                        newBreakpoints[newBpKey] = newBreakpoints[bpKey];
-                                        delete newBreakpoints[bpKey];
-                                        setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
-                                    }}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                            </ToolsPanelItem>
-                            <LayoutFields
-                                bpKey={bpKey}
-                                settings={layoutObj.breakpoints[bpKey]}
-                                updateLayoutItem={updateLayoutItem}
+                                value={bpKey}
+                                style={{gridColumn: 'span 2'}}
+                                options={breakpoints
+                                    .map((b) => ({
+                                        value: b.key,
+                                        label: b.label,
+                                        disabled: b.key !== bpKey && layoutKeys.includes(b.key),
+                                    }))}
+                                onChange={(newBpKey) => {
+                                    const newBreakpoints = {...layoutObj.breakpoints};
+                                    newBreakpoints[newBpKey] = newBreakpoints[bpKey];
+                                    delete newBreakpoints[bpKey];
+                                    setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                                }}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
                             />
-                            <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'trash'}
-                                    style={{gridColumn: '1/-1'}}/>
-                        </ToolsPanel>
-                    );
-                })}
+                        </ToolsPanelItem>
+                        <LayoutFields
+                            bpKey={bpKey}
+                            settings={layoutObj.breakpoints[bpKey]}
+                            updateLayoutItem={updateLayoutItem}
+                        />
+                        <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'trash'}
+                                style={{gridColumn: '1/-1'}}/>
+                    </ToolsPanel>
+                );
+            })}
 
-                <Button variant="primary" onClick={addLayoutItem}
-                        style={{borderRadius: '0', width: '100%', gridColumn: '1/-1'}}
-                        disabled={layoutKeys.length >= 3}>
-                    Add Breakpoint
-                </Button>
-            </Grid>
-        </PanelBody>
-    );
+            <Button variant="primary" onClick={addLayoutItem}
+                    style={{borderRadius: '0', width: '100%', gridColumn: '1/-1'}}
+                    disabled={layoutKeys.length >= 3}>
+                Add Breakpoint
+            </Button>
+        </Grid>
+    </PanelBody>;
 }
 
 const SPECIAL_FIELDS = [
@@ -686,3 +572,21 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
     });
 
 });
+
+export function withStyle(EditComponent) {
+    return (props) => {
+
+        const [css, setCss] = useState({});
+
+
+        return (
+            <>
+                <EditComponent {...props} setCss={setCss}/>
+                <InspectorControls group={'styles'}>
+                    <Layout {...props}/>
+                </InspectorControls>
+                <Style {...props} css={css}/>
+            </>
+        );
+    };
+}

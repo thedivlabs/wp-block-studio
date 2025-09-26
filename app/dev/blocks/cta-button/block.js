@@ -17,7 +17,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style, styleClassnames, Layout} from "Components/Style.js";
+import {Style, styleClassnames, Layout, withStyle} from "Components/Style.js";
 import {useUniqueId} from "Includes/helper";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
@@ -49,9 +49,9 @@ registerBlockType(metadata.name, {
             default: {}
         }
     },
-    edit: (props) => {
+    edit: withStyle((props) => {
 
-        const {attributes, setAttributes, clientId} = props;
+        const {attributes, setAttributes, clientId, setCss} = props;
 
 
         const {'wpbs-cta': settings = {}, style} = attributes;
@@ -174,14 +174,20 @@ registerBlockType(metadata.name, {
             ...anchorProps,
         });
 
+
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
                     '--icon-color': settings?.['icon-color'] || null,
                     ...iconProps(settings?.['icon']),
-                }).filter(Boolean)
+                }).filter(([_, v]) => v != null)
             );
         }, [settings, style]);
+
+        useEffect(() => {
+            setCss(cssProps);
+        }, [cssProps, setCss]);
+
 
         useEffect(() => {
             console.log(attributes);
@@ -229,10 +235,6 @@ registerBlockType(metadata.name, {
                     />
                 </InspectorControls>
 
-                <Style attributes={attributes}
-                       props={cssProps}
-                />
-
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
                     <span className={'wpbs-cta-button__title'}>{title}</span>
@@ -240,7 +242,7 @@ registerBlockType(metadata.name, {
                 </a>
             </>
         )
-    },
+    }),
     save: (props) => {
 
         const {'wpbs-cta': settings = {}} = props?.attributes ?? {};

@@ -290,12 +290,16 @@ export function Layout({attributes, setAttributes, clientId}) {
     );
 
     // Ensure the new shape exists
-    const layoutObj = {
-        props: attributes['wpbs-layout']?.props || {},
-        breakpoints: attributes['wpbs-layout']?.breakpoints || {},
-        hover: attributes['wpbs-layout']?.hover || {},
-        classNames: styleClassnames(attributes),
-    };
+    const layoutAttrs = attributes['wpbs-layout'] || {};
+    const classNames = useMemo(() => styleClassnames(attributes), [attributes]);
+
+    const layoutObj = useMemo(() => ({
+        props: layoutAttrs.props || {},
+        breakpoints: layoutAttrs.breakpoints || {},
+        hover: layoutAttrs.hover || {},
+        special: layoutAttrs.special || {},
+        classNames,
+    }), [layoutAttrs, classNames]);
 
 
     const setLayoutObj = useCallback(

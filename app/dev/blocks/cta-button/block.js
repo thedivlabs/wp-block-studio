@@ -51,7 +51,6 @@ registerBlockType(metadata.name, {
 
         const {attributes, setAttributes, clientId, setCss} = props;
 
-
         const {'wpbs-cta': settings = {}, style} = attributes;
 
         const updateSettings = useCallback((newValue) => {
@@ -188,8 +187,8 @@ registerBlockType(metadata.name, {
 
 
         useEffect(() => {
-            console.log(attributes);
-        }, [settings]);
+            console.log(props);
+        }, [props]);
 
         return (
             <>
@@ -197,7 +196,6 @@ registerBlockType(metadata.name, {
                 <Link defaultValue={settings?.link}
                       callback={(newValue) => updateSettings({link: newValue})}/>
                 <InspectorControls group="styles">
-
 
                     <PanelBody initialOpen={true}>
 
@@ -227,9 +225,7 @@ registerBlockType(metadata.name, {
                         </TabPanel>
                     </PanelBody>
 
-                 
                 </InspectorControls>
-
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
                     <span className={'wpbs-cta-button__title'}>{title}</span>

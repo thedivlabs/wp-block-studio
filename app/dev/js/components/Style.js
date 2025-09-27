@@ -14,40 +14,46 @@ import {useInstanceId} from "@wordpress/compose";
 import _ from "lodash";
 import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/config";
 
-
-const cssCache = new WeakMap();
-
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
 
-    if (typeof raw !== 'object') {
-        if (typeof raw === 'string') {
-            if (raw.startsWith('var:')) {
-                const [source, type, name] = raw.slice(4).split('|');
-                return source && type && name
-                    ? `var(--wp--${source}--${type}--${name})`
-                    : raw;
-            }
-            if (raw.startsWith('--wp--')) return `var(${raw})`;
-            return presetKeyword ? `var(--wp--preset--${presetKeyword}--${raw})` : raw;
-        }
-        return String(raw);
-    }
-
-    if (cssCache.has(raw)) return cssCache.get(raw);
-
-    let result;
-    if (Array.isArray(raw)) {
-        result = raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
-    } else {
-        result = Object.entries(raw)
+    // Handle objects (padding, margin, etc.)
+    if (typeof raw === 'object' && !Array.isArray(raw)) {
+        return Object.entries(raw)
             .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
             .join(' ');
     }
 
-    cssCache.set(raw, result);
-    return result;
+    // Handle arrays (e.g., font-family fallbacks)
+    if (Array.isArray(raw)) {
+        return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
+    }
+
+    // Handle primitives
+    if (typeof raw !== 'string') return String(raw);
+
+    // Custom variable format
+    if (raw.startsWith('var:')) {
+        const [source, type, name] = raw.slice(4).split('|');
+        if (source && type && name) {
+            return `var(--wp--${source}--${type}--${name})`;
+        }
+        return raw;
+    }
+
+    // CSS variable
+    if (raw.startsWith('--wp--')) {
+        return `var(${raw})`;
+    }
+
+    // Preset keyword
+    if (presetKeyword) {
+        return `var(--wp--preset--${presetKeyword}--${raw})`;
+    }
+
+    return raw;
 }
+
 
 // Flatten special props like padding/margin/gap
 function parseSpecialProps(props = {}) {

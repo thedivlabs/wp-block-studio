@@ -17,8 +17,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {Style, styleClassnames, Layout, withStyle} from "Components/Style.js";
-import {useUniqueId} from "Includes/helper";
+import {withStyle} from "Components/Style.js";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
 
@@ -35,7 +34,6 @@ function classNames(attributes = {}) {
         !!settings?.['icon-only'] ? '--icon-only' : false,
         !!settings?.['icon-first'] ? '--icon-first' : false,
         attributes?.uniqueId ?? '',
-        styleClassnames(attributes),
     ].filter(x => x).join(' ');
 }
 
@@ -229,10 +227,7 @@ registerBlockType(metadata.name, {
                         </TabPanel>
                     </PanelBody>
 
-                    <Layout attributes={attributes}
-                            clientId={clientId}
-                            props={cssProps}
-                    />
+                 
                 </InspectorControls>
 
 

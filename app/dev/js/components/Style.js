@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
+import {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
@@ -15,48 +15,6 @@ import _ from "lodash";
 import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/config";
 
 
-const cssCache = new WeakMap();
-
-export function getCSSFromStyle(raw, presetKeyword = '') {
-    if (raw == null) return '';
-
-    // Primitive strings/numbers are safe as-is
-    if (typeof raw !== 'object') {
-        if (typeof raw === 'string') {
-            if (raw.startsWith('var:')) {
-                const [source, type, name] = raw.slice(4).split('|');
-                return source && type && name
-                    ? `var(--wp--${source}--${type}--${name})`
-                    : raw;
-            }
-            if (raw.startsWith('--wp--')) return `var(${raw})`;
-            return presetKeyword ? `var(--wp--preset--${presetKeyword}--${raw})` : raw;
-        }
-        return String(raw);
-    }
-
-    // Return cached result if available
-    if (cssCache.has(raw)) return cssCache.get(raw);
-
-    let result;
-
-    if (Array.isArray(raw)) {
-        result = raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
-    } else {
-        result = Object.entries(raw)
-            .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
-            .join(' ');
-    }
-
-    cssCache.set(raw, result);
-    return result;
-}
-
-
-import React, {useMemo} from "react";
-import _ from "lodash";
-
-// Memoized getCSSFromStyle
 const cssCache = new WeakMap();
 
 export function getCSSFromStyle(raw, presetKeyword = '') {

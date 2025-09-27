@@ -1,4 +1,4 @@
-import {memo, useCallback, useEffect, useMemo, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
@@ -7,55 +7,48 @@ import {
     Button,
     PanelBody,
     SelectControl,
-    TextControl
+    TextControl,
 } from "@wordpress/components";
 import {InspectorControls} from "@wordpress/block-editor";
 import {useInstanceId} from "@wordpress/compose";
-import _ from "lodash";
 import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/config";
 
-export function getCSSFromStyle(raw, presetKeyword = '') {
-    if (raw == null) return '';
+// ------------------ UTILS ------------------
 
-    // Handle objects (padding, margin, etc.)
-    if (typeof raw === 'object' && !Array.isArray(raw)) {
+export function getCSSFromStyle(raw, presetKeyword = "") {
+    if (raw == null) return "";
+
+    if (Array.isArray(raw)) {
+        return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(", ");
+    }
+
+    if (typeof raw === "object") {
         return Object.entries(raw)
             .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
-            .join(' ');
+            .join(" ");
     }
 
-    // Handle arrays (e.g., font-family fallbacks)
-    if (Array.isArray(raw)) {
-        return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
-    }
+    if (typeof raw !== "string") return String(raw);
 
-    // Handle primitives
-    if (typeof raw !== 'string') return String(raw);
-
-    // Custom variable format
-    if (raw.startsWith('var:')) {
-        const [source, type, name] = raw.slice(4).split('|');
-        if (source && type && name) {
-            return `var(--wp--${source}--${type}--${name})`;
-        }
+    if (raw.startsWith("var:")) {
+        const [source, type, name] = raw.slice(4).split("|");
+        if (source && type && name) return `var(--wp--${source}--${type}--${name})`;
         return raw;
     }
 
-    // CSS variable
-    if (raw.startsWith('--wp--')) {
-        return `var(${raw})`;
-    }
-
-    // Preset keyword
-    if (presetKeyword) {
-        return `var(--wp--preset--${presetKeyword}--${raw})`;
-    }
+    if (raw.startsWith("--wp--")) return `var(${raw})`;
+    if (presetKeyword) return `var(--wp--preset--${presetKeyword}--${raw})`;
 
     return raw;
 }
 
+const SPECIAL_FIELDS = [
+    "gap", "margin", "padding", "border", "box-shadow", "flex", "display",
+    "width", "height", "min-height", "max-height", "min-width", "max-width",
+    "font-size", "line-height", "color", "background-color", "border-radius",
+    "position", "top", "right", "bottom", "left"
+];
 
-// Flatten special props like padding/margin/gap
 function parseSpecialProps(props = {}) {
     const result = {};
     Object.entries(props).forEach(([key, val]) => {
@@ -63,13 +56,13 @@ function parseSpecialProps(props = {}) {
 
         if (SPECIAL_FIELDS.includes(key)) {
             switch (key) {
-                case 'margin':
-                case 'padding':
-                case 'gap':
-                    result[`${key}-top`] = val.top ?? '0px';
-                    result[`${key}-right`] = val.right ?? '0px';
-                    result[`${key}-bottom`] = val.bottom ?? '0px';
-                    result[`${key}-left`] = val.left ?? '0px';
+                case "margin":
+                case "padding":
+                case "gap":
+                    result[`${key}-top`] = val.top ?? "0px";
+                    result[`${key}-right`] = val.right ?? "0px";
+                    result[`${key}-bottom`] = val.bottom ?? "0px";
+                    result[`${key}-left`] = val.left ?? "0px";
                     break;
                 default:
                     result[key] = val;
@@ -81,7 +74,6 @@ function parseSpecialProps(props = {}) {
     return result;
 }
 
-// Parse wpbs-layout into a flattened CSS-ready object
 export function parseLayoutForCSS(layout = {}) {
     return {
         props: layout.props ? parseSpecialProps(layout.props) : {},
@@ -94,76 +86,59 @@ export function parseLayoutForCSS(layout = {}) {
     };
 }
 
-/**
- * Production-ready Style component
- * Only re-renders when wpbs-layout changes
- */
-export const Style = React.memo(({wpbsLayout, uniqueId}) => {
-    if (!uniqueId || !wpbsLayout) return null;
+// ------------------ STYLE COMPONENT ------------------
 
-    const selector = `.${uniqueId}`;
+export const Style = memo(({layout}) => {
+    if (!layout?.uniqueId) return null;
+    const selector = `.${layout.uniqueId}`;
 
     const cssString = useMemo(() => {
-        if (_.isEmpty(wpbsLayout)) return '';
+        if (!layout) return "";
 
-        const parsedCss = parseLayoutForCSS(wpbsLayout);
+        const parsed = parseLayoutForCSS(layout);
 
-        const propsToCss = (props = {}) =>
+        const toCss = (props = {}) =>
             Object.entries(props)
                 .map(([k, v]) => `${k}: ${getCSSFromStyle(v)};`)
-                .join(' ');
+                .join(" ");
 
-        let result = '';
+        let result = "";
 
         // Default
-        if (!_.isEmpty(parsedCss.props)) {
-            result += `${selector} { ${propsToCss(parsedCss.props)} }`;
-        }
+        if (Object.keys(parsed.props).length) result += `${selector} { ${toCss(parsed.props)} }`;
 
         // Breakpoints
-        if (parsedCss.breakpoints) {
-            Object.entries(parsedCss.breakpoints).forEach(([bpKey, bpProps]) => {
+        if (parsed.breakpoints) {
+            Object.entries(parsed.breakpoints).forEach(([bpKey, bpProps]) => {
                 const bp = WPBS?.settings?.breakpoints?.[bpKey];
-                if (!bp || _.isEmpty(bpProps)) return;
-
-                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps)} } }`;
+                if (!bp || !Object.keys(bpProps).length) return;
+                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${toCss(bpProps)} } }`;
             });
         }
 
         // Hover
-        if (!_.isEmpty(parsedCss.hover)) {
-            result += `${selector}:hover { ${propsToCss(parsedCss.hover)} }`;
-        }
+        if (Object.keys(parsed.hover).length) result += `${selector}:hover { ${toCss(parsed.hover)} }`;
 
         return result;
-    }, [wpbsLayout, selector]);
+    }, [layout]);
 
     if (!cssString) return null;
     return <style>{cssString}</style>;
-}, (prev, next) => prev.wpbsLayout === next.wpbsLayout && prev.uniqueId === next.uniqueId);
+}, (prev, next) => prev.layout === next.layout);
 
-// Constants
-const SPECIAL_FIELDS = [
-    'gap', 'margin', 'padding', 'border', 'box-shadow', 'flex', 'display', 'width', 'height',
-    'min-height', 'max-height', 'min-width', 'max-width', 'font-size', 'line-height', 'color',
-    'background-color', 'border-radius', 'position', 'top', 'right', 'bottom', 'left',
-];
-
-// ------------------ LAYOUT ------------------
+// ------------------ LAYOUT INSPECTOR ------------------
 
 const Layout = memo(({layout, setLayout}) => {
     const uniqueId = useInstanceId("wpbs");
 
     useEffect(() => {
-        if (!layout?.uniqueId) setLayout({...layout, uniqueId});
-    }, [layout, setLayout, uniqueId]);
+        if (!layout?.uniqueId) setLayout(l => ({...l, uniqueId}));
+    }, [uniqueId, setLayout]);
 
     const breakpoints = useMemo(
         () =>
             Object.entries(WPBS?.settings?.breakpoints || {}).map(([key, {label, size}]) => ({
-                key,
-                label,
-                size
+                key, label, size
             })),
         []
     );
@@ -176,40 +151,29 @@ const Layout = memo(({layout, setLayout}) => {
 
     const setLayoutItem = useCallback(
         (newProps, bpKey = "props") => {
-            if (bpKey === "hover") {
-                setLayout({...layout, hover: {...layout.hover, ...newProps}});
-            } else if (bpKey === "props") {
-                setLayout({...layout, props: {...layout.props, ...newProps}});
-            } else {
-                setLayout({
-                    ...layout,
-                    breakpoints: {
-                        ...layout.breakpoints,
-                        [bpKey]: {...layout.breakpoints[bpKey], ...newProps}
-                    }
-                });
-            }
+            if (bpKey === "hover") setLayout(l => ({...l, hover: {...l.hover, ...newProps}}));
+            else if (bpKey === "props") setLayout(l => ({...l, props: {...l.props, ...newProps}}));
+            else setLayout(l => ({
+                    ...l,
+                    breakpoints: {...l.breakpoints, [bpKey]: {...l.breakpoints[bpKey], ...newProps}}
+                }));
         },
-        [layout, setLayout]
+        [setLayout]
     );
 
     const addBreakpoint = useCallback(() => {
         const existing = Object.keys(layout.breakpoints || {});
         const available = breakpoints.map(bp => bp.key).filter(bp => !existing.includes(bp));
         if (!available.length) return;
-        setLayout({
-            ...layout,
-            breakpoints: {...layout.breakpoints, [available[0]]: {}}
-        });
-    }, [layout, breakpoints, setLayout]);
+        setLayout(l => ({...l, breakpoints: {...l.breakpoints, [available[0]]: {}}}));
+    }, [breakpoints, setLayout]);
 
-    const removeBreakpoint = useCallback(
-        (bpKey) => {
-            const {[bpKey]: _, ...rest} = layout.breakpoints;
-            setLayout({...layout, breakpoints: rest});
-        },
-        [layout, setLayout]
-    );
+    const removeBreakpoint = useCallback(bpKey => {
+        setLayout(l => {
+            const {[bpKey]: _, ...rest} = l.breakpoints;
+            return {...l, breakpoints: rest};
+        });
+    }, [setLayout]);
 
     return (
         <PanelBody title="Layout" initialOpen={false} className="wpbs-layout-tools">
@@ -218,11 +182,9 @@ const Layout = memo(({layout, setLayout}) => {
                     <LayoutFields bpKey="props" settings={layout.props} updateLayoutItem={setLayoutItem}
                                   suppress={['padding', 'margin', 'gap']}/>
                 </ToolsPanel>
-
                 <ToolsPanel label="Hover" resetAll={() => setLayoutItem({}, "hover")}>
                     <HoverFields hoverSettings={layout.hover} updateHoverItem={(p) => setLayoutItem(p, "hover")}/>
                 </ToolsPanel>
-
                 {layoutKeys.map(bpKey => {
                     const bp = breakpoints.find(b => b.key === bpKey);
                     const label = bp ? `${bp.label} (${bp.size}px)` : bpKey;
@@ -235,7 +197,6 @@ const Layout = memo(({layout, setLayout}) => {
                         </ToolsPanel>
                     );
                 })}
-
                 <Button variant="primary" onClick={addBreakpoint} style={{width: "100%", gridColumn: "1/-1"}}
                         disabled={layoutKeys.length >= 3}>
                     Add Breakpoint
@@ -245,12 +206,11 @@ const Layout = memo(({layout, setLayout}) => {
     );
 });
 
-// ------------------ FIELD ------------------
+// ------------------ FIELDS ------------------
 
 const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, options, large = false} = field;
     if (!type || !slug || !label) return null;
-
     const handleChange = useCallback(val => callback({[slug]: val}), [callback, slug]);
 
     let control = null;
@@ -278,7 +238,7 @@ const Field = memo(({field, settings, callback}) => {
 });
 
 const LayoutFields = memo(({bpKey, settings, updateLayoutItem, suppress = []}) => {
-    const updateProp = useCallback((p) => updateLayoutItem(p, bpKey), [updateLayoutItem, bpKey]);
+    const updateProp = useCallback(p => updateLayoutItem(p, bpKey), [updateLayoutItem, bpKey]);
     const fields = [
         {type: "select", slug: "display", label: "Display", options: DISPLAY_OPTIONS},
         {type: "select", slug: "flex-direction", label: "Direction", options: DIRECTION_OPTIONS},
@@ -288,7 +248,7 @@ const LayoutFields = memo(({bpKey, settings, updateLayoutItem, suppress = []}) =
             label: "Padding",
             large: true,
             options: {sides: ["top", "right", "bottom", "left"], inputProps: {units: DIMENSION_UNITS}}
-        }
+        },
     ];
     return fields.filter(f => !suppress.includes(f.slug)).map(f => <Field key={f.slug} field={f} settings={settings}
                                                                           callback={updateProp}/>);
@@ -314,11 +274,11 @@ export function withStyle(EditComponent) {
 
         return (
             <>
-                <EditComponent {...props} setCss={setCss} layout={layout} setLayout={setLayout}/>
+                <EditComponent {...props} layout={layout} setLayout={setLayout} setCss={setCss}/>
                 <InspectorControls group="styles">
                     <Layout layout={layout} setLayout={setLayout}/>
                 </InspectorControls>
-                <Style layout={layout} css={css}/>
+                <Style layout={layout}/>
             </>
         );
     });

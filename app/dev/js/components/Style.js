@@ -14,111 +14,178 @@ import {useInstanceId} from "@wordpress/compose";
 import _ from "lodash";
 import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/config";
 
-// ------------------ UTILITIES ------------------
 
-export function getCSSFromStyle(raw, presetKeyword = "") {
-    if (raw == null) return "";
+const cssCache = new WeakMap();
 
-    if (typeof raw === "object" && !Array.isArray(raw)) {
-        return Object.entries(raw)
-            .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
-            .join(" ");
+export function getCSSFromStyle(raw, presetKeyword = '') {
+    if (raw == null) return '';
+
+    // Primitive strings/numbers are safe as-is
+    if (typeof raw !== 'object') {
+        if (typeof raw === 'string') {
+            if (raw.startsWith('var:')) {
+                const [source, type, name] = raw.slice(4).split('|');
+                return source && type && name
+                    ? `var(--wp--${source}--${type}--${name})`
+                    : raw;
+            }
+            if (raw.startsWith('--wp--')) return `var(${raw})`;
+            return presetKeyword ? `var(--wp--preset--${presetKeyword}--${raw})` : raw;
+        }
+        return String(raw);
     }
+
+    // Return cached result if available
+    if (cssCache.has(raw)) return cssCache.get(raw);
+
+    let result;
 
     if (Array.isArray(raw)) {
-        return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(", ");
+        result = raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
+    } else {
+        result = Object.entries(raw)
+            .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
+            .join(' ');
     }
 
-    if (typeof raw !== "string") return raw;
-
-    if (raw.startsWith("var:")) {
-        const [source, type, name] = raw.slice(4).split("|");
-        if (source && type && name) return `var(--wp--${source}--${type}--${name})`;
-        return raw;
-    }
-
-    if (raw.startsWith("--wp--")) return `var(${raw})`;
-
-    if (presetKeyword) return `var(--wp--preset--${presetKeyword}--${raw})`;
-
-    return raw;
+    cssCache.set(raw, result);
+    return result;
 }
 
-const SPECIAL_FIELDS = [
-    "gap", "margin", "padding", "border", "border-radius", "box-shadow",
-    "background-color", "text-color", "text-decoration-color", "display",
-    "flex-direction", "position", "width", "height", "min-height", "max-height"
-];
 
+import React, {useMemo} from "react";
+import _ from "lodash";
+
+// Memoized getCSSFromStyle
+const cssCache = new WeakMap();
+
+export function getCSSFromStyle(raw, presetKeyword = '') {
+    if (raw == null) return '';
+
+    if (typeof raw !== 'object') {
+        if (typeof raw === 'string') {
+            if (raw.startsWith('var:')) {
+                const [source, type, name] = raw.slice(4).split('|');
+                return source && type && name
+                    ? `var(--wp--${source}--${type}--${name})`
+                    : raw;
+            }
+            if (raw.startsWith('--wp--')) return `var(${raw})`;
+            return presetKeyword ? `var(--wp--preset--${presetKeyword}--${raw})` : raw;
+        }
+        return String(raw);
+    }
+
+    if (cssCache.has(raw)) return cssCache.get(raw);
+
+    let result;
+    if (Array.isArray(raw)) {
+        result = raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
+    } else {
+        result = Object.entries(raw)
+            .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
+            .join(' ');
+    }
+
+    cssCache.set(raw, result);
+    return result;
+}
+
+// Flatten special props like padding/margin/gap
 function parseSpecialProps(props = {}) {
     const result = {};
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
+
         if (SPECIAL_FIELDS.includes(key)) {
-            if (["margin", "padding", "gap"].includes(key)) {
-                result[`${key}-top`] = val.top ?? "0px";
-                result[`${key}-right`] = val.right ?? "0px";
-                result[`${key}-bottom`] = val.bottom ?? "0px";
-                result[`${key}-left`] = val.left ?? "0px";
-            } else result[key] = val;
-        } else result[key] = val;
+            switch (key) {
+                case 'margin':
+                case 'padding':
+                case 'gap':
+                    result[`${key}-top`] = val.top ?? '0px';
+                    result[`${key}-right`] = val.right ?? '0px';
+                    result[`${key}-bottom`] = val.bottom ?? '0px';
+                    result[`${key}-left`] = val.left ?? '0px';
+                    break;
+                default:
+                    result[key] = val;
+            }
+        } else {
+            result[key] = val;
+        }
     });
     return result;
 }
 
-export function parseLayoutForCSS(attributes = {}) {
-    const layout = attributes["wpbs-layout"] || {};
+// Parse wpbs-layout into a flattened CSS-ready object
+export function parseLayoutForCSS(layout = {}) {
     return {
-        props: parseSpecialProps(layout.props),
-        breakpoints: Object.fromEntries(
-            Object.entries(layout.breakpoints || {}).map(([k, v]) => [k, parseSpecialProps(v)])
-        ),
-        hover: parseSpecialProps(layout.hover)
+        props: layout.props ? parseSpecialProps(layout.props) : {},
+        breakpoints: layout.breakpoints
+            ? Object.fromEntries(
+                Object.entries(layout.breakpoints).map(([k, v]) => [k, parseSpecialProps(v)])
+            )
+            : {},
+        hover: layout.hover ? parseSpecialProps(layout.hover) : {},
     };
 }
 
-// ------------------ STYLE COMPONENT ------------------
+/**
+ * Production-ready Style component
+ * Only re-renders when wpbs-layout changes
+ */
+export const Style = React.memo(({wpbsLayout, uniqueId}) => {
+    if (!uniqueId || !wpbsLayout) return null;
 
-const Style = memo(({layout, css = {}}) => {
-    if (!layout?.uniqueId) return null;
-    const selector = `.${layout.uniqueId}`;
+    const selector = `.${uniqueId}`;
 
     const cssString = useMemo(() => {
-        if (!layout) return "";
+        if (_.isEmpty(wpbsLayout)) return '';
 
-        const parsedCss = parseLayoutForCSS({"wpbs-layout": layout});
-
-        const combinedCss = {
-            props: {...parsedCss.props, ...css.props},
-            breakpoints: {...parsedCss.breakpoints, ...css.breakpoints},
-            hover: {...parsedCss.hover, ...css.hover}
-        };
+        const parsedCss = parseLayoutForCSS(wpbsLayout);
 
         const propsToCss = (props = {}) =>
             Object.entries(props)
                 .map(([k, v]) => `${k}: ${getCSSFromStyle(v)};`)
-                .join(" ");
+                .join(' ');
 
-        let result = "";
+        let result = '';
 
-        if (!_.isEmpty(combinedCss.props)) result += `${selector} { ${propsToCss(combinedCss.props)} }`;
+        // Default
+        if (!_.isEmpty(parsedCss.props)) {
+            result += `${selector} { ${propsToCss(parsedCss.props)} }`;
+        }
 
-        Object.entries(combinedCss.breakpoints).forEach(([bpKey, bpProps]) => {
-            const bp = WPBS?.settings?.breakpoints?.[bpKey];
-            if (!bp || _.isEmpty(bpProps)) return;
-            result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps)} } }`;
-        });
+        // Breakpoints
+        if (parsedCss.breakpoints) {
+            Object.entries(parsedCss.breakpoints).forEach(([bpKey, bpProps]) => {
+                const bp = WPBS?.settings?.breakpoints?.[bpKey];
+                if (!bp || _.isEmpty(bpProps)) return;
 
-        if (!_.isEmpty(combinedCss.hover)) result += `${selector}:hover { ${propsToCss(combinedCss.hover)} }`;
+                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps)} } }`;
+            });
+        }
+
+        // Hover
+        if (!_.isEmpty(parsedCss.hover)) {
+            result += `${selector}:hover { ${propsToCss(parsedCss.hover)} }`;
+        }
 
         return result;
-    }, [layout, css, selector]);
+    }, [wpbsLayout, selector]);
 
     if (!cssString) return null;
     return <style>{cssString}</style>;
-});
+}, (prev, next) => prev.wpbsLayout === next.wpbsLayout && prev.uniqueId === next.uniqueId);
 
-// ------------------ LAYOUT COMPONENT ------------------
+// Constants
+const SPECIAL_FIELDS = [
+    'gap', 'margin', 'padding', 'border', 'box-shadow', 'flex', 'display', 'width', 'height',
+    'min-height', 'max-height', 'min-width', 'max-width', 'font-size', 'line-height', 'color',
+    'background-color', 'border-radius', 'position', 'top', 'right', 'bottom', 'left',
+];
+
+// ------------------ LAYOUT ------------------
 
 const Layout = memo(({layout, setLayout}) => {
     const uniqueId = useInstanceId("wpbs");
@@ -214,7 +281,7 @@ const Layout = memo(({layout, setLayout}) => {
     );
 });
 
-// ------------------ FIELD COMPONENTS ------------------
+// ------------------ FIELD ------------------
 
 const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, options, large = false} = field;

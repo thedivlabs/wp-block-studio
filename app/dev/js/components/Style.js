@@ -153,7 +153,7 @@ export const Style = ({attributes}) => {
     const selector = `.${uniqueId}`;
 
     const cssString = useMemo(() => {
-        if (!attributes['wpbs-css'] && _.isEmpty(css)) return '';
+        if (!attributes['wpbs-css']) return '';
 
         const {'wpbs-css': parsedCss = {}} = attributes;
 

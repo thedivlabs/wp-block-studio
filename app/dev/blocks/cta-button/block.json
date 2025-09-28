@@ -3,11 +3,6 @@
   "name": "wpbs/cta-button",
   "title": "CTA Button",
   "description": "Display a CTA button",
-  "attributes": {
-    "uniqueId": {
-      "type": "string"
-    }
-  },
   "selectors": {
     "root": ".wpbs-cta-button"
   },

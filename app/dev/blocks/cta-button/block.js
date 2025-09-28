@@ -17,7 +17,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {withStyle} from "Components/Style.js";
+import {withStyle, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
 
@@ -42,6 +42,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...STYLE_ATTRIBUTES,
         'wpbs-cta': {
             type: 'object',
             default: {}
@@ -188,7 +189,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             console.log(props);
-        }, [props]);
+        }, [attributes]);
 
         return (
             <>

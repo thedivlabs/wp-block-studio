@@ -11,6 +11,42 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
 
+
+export const STYLE_ATTRIBUTES = {
+    'uniqueId': {
+        type: 'string'
+    },
+    'wpbs-layout': {
+        type: 'object',
+        default: {},
+    },
+    'wpbs-css': {
+        type: 'object',
+        default: {},
+    },
+    'wpbs-preload': {
+        type: 'array',
+    }
+}
+
+export function useUniqueId({name, attributes, setAttributes}) {
+    const {uniqueId} = attributes;
+    const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
+    const instanceId = useInstanceId(useUniqueId, prefix);
+
+    useEffect(() => {
+        if (!uniqueId) {
+            setAttributes((prevAttrs) => ({
+                ...prevAttrs,
+                uniqueId: instanceId,
+            }));
+        }
+    }, [uniqueId, setAttributes, instanceId]);
+
+    return uniqueId || instanceId;
+}
+
+
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
 
@@ -164,14 +200,7 @@ export const Style = ({attributes, css = {}}) => {
     return <style>{cssString}</style>;
 };
 
-function Layout({attributes, setAttributes, uniqueId}) {
-
-    // Ensure uniqueId is stored in attributes on first render
-    useEffect(() => {
-        if (!attributes.uniqueId) {
-            setAttributes({...attributes, uniqueId});
-        }
-    }, []); // empty deps = run once
+function Layout({attributes, setAttributes}) {
 
 
     const breakpoints = useMemo(
@@ -206,10 +235,10 @@ function Layout({attributes, setAttributes, uniqueId}) {
 
     const setLayoutObj = useCallback(
         (newObj) => {
-
-            setAttributes({...attributes, 'wpbs-layout': newObj});
+            console.log(newObj);
+            setAttributes({'wpbs-layout': newObj});
         },
-        [attributes, setAttributes]
+        [setAttributes]
     );
 
     const updateLayoutItem = useCallback(
@@ -548,18 +577,15 @@ export function withStyle(EditComponent) {
 
         const [css, setCss] = useState({});
 
-        const uniqueId = useInstanceId(EditComponent, 'wpbs-block');
-
-        console.log(uniqueId);
-
+        const uniqueId = useUniqueId(props);
 
         return (
             <>
                 <EditComponent {...props} setCss={setCss}/>
                 <InspectorControls group={'styles'}>
-                    <Layout {...props} uniqueId={uniqueId}/>
+                    <Layout {...props} uniqueId={uniqueId} css={css}/>
                 </InspectorControls>
-                <Style {...props} css={css}/>
+                <Style {...props} />
             </>
         );
     };

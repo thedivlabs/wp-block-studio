@@ -11,29 +11,6 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		add_filter( 'block_type_metadata', function ( $metadata ) {
-
-			if ( ! str_starts_with( ( $metadata['name'] ?? '' ), 'wpbs' ) ) {
-				return $metadata;
-			}
-
-			$metadata['attributes']['wpbs-preload'] = [
-				'type'    => 'array',
-				'default' => [],
-			];
-
-			$metadata['attributes']['wpbs-css'] = [
-				'type'    => 'object',
-				'default' => [],
-			];
-
-			$metadata['attributes']['wpbs-layout'] = [
-				'type'    => 'object',
-				'default' => [],
-			];
-
-			return $metadata;
-		}, 10 );
 
 		add_filter( 'render_block_data', function ( $parsed_block ) {
 			if (

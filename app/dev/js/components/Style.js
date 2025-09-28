@@ -119,8 +119,7 @@ function parseSpecialProps(props = {}) {
 /**
  * Parses the layout object and returns the flattened wpbs-css object.
  */
-export function parseLayoutForCSS(attributes = {}) {
-    const layout = attributes['wpbs-layout'] || {};
+export function parseLayoutForCSS(settings = {}) {
     const cssObj = {
         props: {},
         breakpoints: {},
@@ -128,42 +127,35 @@ export function parseLayoutForCSS(attributes = {}) {
     };
 
     // Default props
-    if (layout.props) {
-        cssObj.props = parseSpecialProps(layout.props);
+    if (settings.props) {
+        cssObj.props = parseSpecialProps(settings.props);
     }
 
     // Breakpoints
-    if (layout.breakpoints) {
-        Object.entries(layout.breakpoints).forEach(([bpKey, bpProps]) => {
+    if (settings.breakpoints) {
+        Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
             cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
         });
     }
 
     // Hover
-    if (layout.hover) {
-        cssObj.hover = parseSpecialProps(layout.hover);
+    if (settings.hover) {
+        cssObj.hover = parseSpecialProps(settings.hover);
     }
 
     return cssObj;
 }
 
-export const Style = ({attributes, css = {}}) => {
+export const Style = ({attributes}) => {
     if (!attributes?.uniqueId) return null;
 
     const uniqueId = attributes.uniqueId;
     const selector = `.${uniqueId}`;
 
     const cssString = useMemo(() => {
-        if (!attributes['wpbs-layout'] && _.isEmpty(css)) return '';
+        if (!attributes['wpbs-css'] && _.isEmpty(css)) return '';
 
-        const parsedCss = parseLayoutForCSS(attributes['wpbs-layout'] || {});
-
-        // Merge additional css if provided
-        const combinedCss = {
-            props: {...parsedCss.props, ...css.props},
-            breakpoints: {...parsedCss.breakpoints, ...css.breakpoints},
-            hover: {...parsedCss.hover, ...css.hover},
-        };
+        const {'wpbs-css': parsedCss = {}} = attributes;
 
         const propsToCss = (props = {}) =>
             Object.entries(props)
@@ -173,13 +165,13 @@ export const Style = ({attributes, css = {}}) => {
         let result = '';
 
         // 1. Default
-        if (!_.isEmpty(combinedCss.props)) {
-            result += `${selector} { ${propsToCss(combinedCss.props)} }`;
+        if (!_.isEmpty(parsedCss.props)) {
+            result += `${selector} { ${propsToCss(parsedCss.props)} }`;
         }
 
         // 2. Breakpoints
-        if (combinedCss.breakpoints) {
-            Object.entries(combinedCss.breakpoints).forEach(([bpKey, bpProps]) => {
+        if (parsedCss.breakpoints) {
+            Object.entries(parsedCss.breakpoints).forEach(([bpKey, bpProps]) => {
                 const bp = WPBS?.settings?.breakpoints?.[bpKey];
                 if (!bp || _.isEmpty(bpProps)) return;
 
@@ -188,42 +180,37 @@ export const Style = ({attributes, css = {}}) => {
         }
 
         // 3. Hover
-        if (!_.isEmpty(combinedCss.hover)) {
-            result += `${selector}:hover { ${propsToCss(combinedCss.hover)} }`;
+        if (!_.isEmpty(parsedCss.hover)) {
+            result += `${selector}:hover { ${propsToCss(parsedCss.hover)} }`;
         }
 
         return result;
-    }, [attributes, css, selector]);
+    }, [attributes['wpbs-css'], selector]);
 
     if (!cssString) return null;
 
     return <style>{cssString}</style>;
 };
 
-function Layout({attributes, setAttributes}) {
+function Layout({attributes, setAttributes, css = {}}) {
 
 
-    const breakpoints = useMemo(
-        () => [
-            ...Object.entries(WPBS?.settings?.breakpoints ?? {}).map(([key, {label, size}]) => ({
-                key,
-                label,
-                size,
-            })),
-        ],
-        [WPBS?.settings?.breakpoints]
-    );
+    const breakpoints = useMemo(() => {
+        const bps = WPBS?.settings?.breakpoints ?? {};
+        return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
+    }, []); // empty deps if breakpoints config is static
 
 
-    // Ensure the new shape exists
-    const layoutAttrs = attributes['wpbs-layout'] || {};
+    const layoutAttrs = attributes?.['wpbs-layout'] ?? {};
+
     const classNames = useMemo(() => {
-        const result = Object.entries(attributes)
+        return Object.entries(attributes)
             .filter(([key]) => key.startsWith('wpbs'))
-            .flatMap(([_, value]) => value?.classNames ?? []);
-
-        return result.filter(Boolean).join(' ').trim();
-    }, [layoutAttrs]);
+            .flatMap(([_, value]) => value?.classNames ?? [])
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+    }, [attributes]);
 
     const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
@@ -325,6 +312,24 @@ function Layout({attributes, setAttributes}) {
             return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
+
+    useEffect(() => {
+        if (!Object.keys(layoutAttrs).length) return;
+
+        const parsedCss = parseLayoutForCSS(layoutAttrs);
+        const mergedCss = _.pickBy(_.merge({}, parsedCss, css), _.identity);
+
+        const currentCss = attributes?.['wpbs-css'] ?? {};
+
+        if (!_.isEqual(mergedCss, currentCss)) {
+            setAttributes({'wpbs-css': mergedCss});
+        }
+    }, [
+        JSON.stringify(layoutAttrs),
+        JSON.stringify(css),
+        attributes?.['wpbs-css'],
+        setAttributes
+    ]);
 
 
     return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>

@@ -33,7 +33,7 @@ export default class Video {
         }
 
         const classNames = [
-            'divlabs-video-player',
+            'wpbs-video-player',
             !!isLightbox ? 'h-auto overflow-hidden w-[min(140vh,100vw,100%)] max-w-full aspect-video m-auto relative' : 'w-full h-full',
         ].filter(x => x).join(' ');
 

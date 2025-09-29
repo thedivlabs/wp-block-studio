@@ -331,7 +331,11 @@ function Layout({attributes, setAttributes, css = {}}) {
         if (!Object.keys(layoutAttrs).length) return;
 
         const parsedCss = parseLayoutForCSS(layoutAttrs);
-        const mergedCss = _.pickBy(_.merge({}, parsedCss, memoCss), _.identity);
+        const mergedCss = {
+            props: {...parsedCss.props, ...memoCss.props},
+            breakpoints: {...parsedCss.breakpoints, ...memoCss.breakpoints},
+            hover: {...parsedCss.hover, ...memoCss.hover},
+        };
 
         const currentCss = attributes?.['wpbs-css'] ?? {};
 

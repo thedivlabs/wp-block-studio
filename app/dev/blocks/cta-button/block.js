@@ -176,6 +176,7 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
+                    '--testing': "30px",
                     '--icon-color': settings?.['icon-color'] || null,
                     ...iconProps(settings?.['icon']),
                 }).filter(([_, v]) => v != null)
@@ -189,7 +190,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             console.log(props);
-        }, [attributes]);
+        }, [attributes?.['wpbs-css']]);
 
         return (
             <>

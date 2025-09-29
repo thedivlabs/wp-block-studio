@@ -13,7 +13,7 @@ class WPBS_Background {
 
 	public function parse_block_css( $css, $attributes ): string {
 
-
+		return '';
 		if ( ( $attributes['wpbs-background']['type'] ?? false ) == 'featured-image' ) {
 
 			if ( is_tax() ) {

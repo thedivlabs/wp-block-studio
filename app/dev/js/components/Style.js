@@ -201,7 +201,22 @@ function Layout({attributes, setAttributes, css = {}}) {
     }, []); // empty deps if breakpoints config is static
 
 
-    const layoutAttrs = attributes?.['wpbs-layout'] ?? {};
+    const layoutAttrs = useMemo(() => attributes?.['wpbs-layout'] ?? {}, [attributes?.['wpbs-layout']]) || {};
+    const memoCss = useMemo(() => {
+        if (!css || typeof css !== 'object') return {props: {}, breakpoints: {}, hover: {}};
+
+        const {breakpoints = {}, hover = {}, ...rest} = css;
+
+        // All other keys are assumed to belong in "props"
+        const props = {...rest};
+
+        return {
+            props,
+            breakpoints,
+            hover,
+        };
+    }, [css]);
+
 
     const classNames = useMemo(() => {
         return Object.entries(attributes)
@@ -222,7 +237,6 @@ function Layout({attributes, setAttributes, css = {}}) {
 
     const setLayoutObj = useCallback(
         (newObj) => {
-            console.log(newObj);
             setAttributes({'wpbs-layout': newObj});
         },
         [setAttributes]
@@ -317,7 +331,7 @@ function Layout({attributes, setAttributes, css = {}}) {
         if (!Object.keys(layoutAttrs).length) return;
 
         const parsedCss = parseLayoutForCSS(layoutAttrs);
-        const mergedCss = _.pickBy(_.merge({}, parsedCss, css), _.identity);
+        const mergedCss = _.pickBy(_.merge({}, parsedCss, memoCss), _.identity);
 
         const currentCss = attributes?.['wpbs-css'] ?? {};
 
@@ -325,8 +339,8 @@ function Layout({attributes, setAttributes, css = {}}) {
             setAttributes({'wpbs-css': mergedCss});
         }
     }, [
-        JSON.stringify(layoutAttrs),
-        JSON.stringify(css),
+        layoutAttrs,
+        memoCss,
         attributes?.['wpbs-css'],
         setAttributes
     ]);

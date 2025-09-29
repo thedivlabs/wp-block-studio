@@ -44,7 +44,7 @@ class WPBS_Blocks {
 
 		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
-		$css         = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
+		/*$css         = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
 			[ $full, $type, $key ] = $matches;
 
 			return match ( $type ) {
@@ -52,8 +52,8 @@ class WPBS_Blocks {
 				'CONTAINER' => $key === 'none' ? '100%' : $containers[ $key ] ?? $full,
 				default => $full,
 			};
-		}, ( $attributes['wpbs-css'] ?? '' ) );
-		$custom_css  = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
+		}, ( $attributes['wpbs-css'] ?? '' ) );*/
+		$custom_css = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
 			[ $full, $type, $key ] = $matches;
 
 			if ( $key === 'none' ) {
@@ -67,7 +67,7 @@ class WPBS_Blocks {
 			};
 		}, $custom_css );
 
-		$css = apply_filters( 'wpbs_block_css', $css, $attributes );
+		$css = apply_filters( 'wpbs_block_css', $css ?? [], $attributes );
 
 		add_filter( 'wpbs_preload_images', function ( $images ) use ( $attributes ) {
 

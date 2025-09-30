@@ -529,9 +529,10 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
         },
     ];
 
-    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
-                                                                                          settings={settings}
-                                                                                          callback={updateProp}/>);
+    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field
+        key={field.slug}
+        settings={settings}
+        callback={updateProp}/>);
 });
 
 const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
@@ -554,9 +555,11 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
     ];
 
     return fields.filter((field) => !suppress.includes(field.slug)).map((field) => {
-        return <Field field={field}
-                      settings={hoverSettings}
-                      callback={updateProp}/>;
+        return <Field
+            key={field.slug}
+            field={field}
+            settings={hoverSettings}
+            callback={updateProp}/>;
     });
 
 });

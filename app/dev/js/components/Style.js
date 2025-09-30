@@ -194,7 +194,6 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
     }, []); // empty deps if breakpoints config is static
 
     const layoutAttrs = useMemo(() => attributes?.['wpbs-layout'] ?? {}, [attributes?.['wpbs-layout']]) || {};
-    const memoCss = useMemo(() => css, [css]) || {};
 
     const classNames = useMemo(() => {
         return Object.entries(attributes)
@@ -315,23 +314,6 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
             return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
-
-    // 1. Parse layoutAttrs only when they change
-    const parsedCss = useMemo(() => {
-        if (!Object.keys(layoutAttrs).length) {
-            return {};
-        }
-        return parseLayoutForCSS(layoutAttrs);
-    }, [layoutAttrs]);
-
-// 2. Merge parsedCss + memoCss only when either changes
-    const mergedCss = useMemo(() => {
-        return _.merge(
-            {},
-            parsedCss,
-            memoCss
-        );
-    }, [parsedCss, memoCss]) || {};
 
 
     return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>

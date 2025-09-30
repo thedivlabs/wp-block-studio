@@ -448,6 +448,7 @@ const Field = memo(({field, settings, callback}) => {
         case 'select':
             control = (
                 <SelectControl
+                    key={slug}
                     label={label}
                     value={settings?.[slug]}
                     options={options}
@@ -460,6 +461,7 @@ const Field = memo(({field, settings, callback}) => {
         case 'text':
             control = (
                 <TextControl
+                    key={slug}
                     label={label}
                     value={settings?.[slug]}
                     onChange={handleChange}
@@ -471,6 +473,7 @@ const Field = memo(({field, settings, callback}) => {
         case 'box':
             control = (
                 <BoxControl
+                    key={slug}
                     label={label}
                     values={settings?.[slug]}
                     onChange={handleChange}
@@ -530,7 +533,6 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     ];
 
     return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field
-        key={field.slug}
         settings={settings}
         callback={updateProp}/>);
 });
@@ -556,7 +558,6 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
     return fields.filter((field) => !suppress.includes(field.slug)).map((field) => {
         return <Field
-            key={field.slug}
             field={field}
             settings={hoverSettings}
             callback={updateProp}/>;

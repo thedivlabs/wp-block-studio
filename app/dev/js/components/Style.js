@@ -146,8 +146,6 @@ export const Style = ({attributes, name}) => {
     const uniqueId = attributes.uniqueId;
     const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId}`;
 
-    console.log(selector);
-
     const cssString = useMemo(() => {
         if (!attributes['wpbs-css']) return '';
 

@@ -195,11 +195,6 @@ registerBlockType(metadata.name, {
         }, [cssProps, setCss]);
 
 
-        useEffect(() => {
-            console.log('attrs updated');
-            console.log(attributes);
-        }, [attributes]);
-
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />

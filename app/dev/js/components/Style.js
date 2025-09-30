@@ -327,27 +327,28 @@ function Layout({attributes, setAttributes, css = {}}) {
         });
     }, [layoutObj?.breakpoints, breakpoints]);
 
+    // 1. Parse layoutAttrs only when they change
+    const parsedCss = useMemo(() => {
+        if (!Object.keys(layoutAttrs).length) {
+            return {props: {}, breakpoints: {}, hover: {}};
+        }
+        return parseLayoutForCSS(layoutAttrs);
+    }, [layoutAttrs]);
+
+// 2. Merge parsedCss + memoCss only when either changes
+    const mergedCss = useMemo(() => ({
+        props: {...parsedCss.props, ...memoCss.props},
+        breakpoints: {...parsedCss.breakpoints, ...memoCss.breakpoints},
+        hover: {...parsedCss.hover, ...memoCss.hover},
+    }), [parsedCss, memoCss]);
+
+// 3. Sync wpbs-css only when mergedCss changes
     useEffect(() => {
-        if (!Object.keys(layoutAttrs).length) return;
-
-        const parsedCss = parseLayoutForCSS(layoutAttrs);
-        const mergedCss = {
-            props: {...parsedCss.props, ...memoCss.props},
-            breakpoints: {...parsedCss.breakpoints, ...memoCss.breakpoints},
-            hover: {...parsedCss.hover, ...memoCss.hover},
-        };
-
         const currentCss = attributes?.['wpbs-css'] ?? {};
-
         if (!_.isEqual(mergedCss, currentCss)) {
             setAttributes({'wpbs-css': mergedCss});
         }
-    }, [
-        layoutAttrs,
-        memoCss,
-        attributes?.['wpbs-css'],
-        setAttributes
-    ]);
+    }, [mergedCss, attributes?.['wpbs-css'], setAttributes]);
 
 
     return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>

@@ -179,6 +179,11 @@ registerBlockType(metadata.name, {
                     '--testing': "30px",
                     '--icon-color': settings?.['icon-color'] || null,
                     ...iconProps(settings?.['icon']),
+                    breakpoints: {
+                        xs: {
+                            '--testing': '20px',
+                        }
+                    }
                 }).filter(([_, v]) => v != null)
             );
         }, [settings, style]);

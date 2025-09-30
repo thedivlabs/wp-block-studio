@@ -200,21 +200,7 @@ function Layout({attributes, setAttributes, css = {}}) {
     }, []); // empty deps if breakpoints config is static
 
     const layoutAttrs = useMemo(() => attributes?.['wpbs-layout'] ?? {}, [attributes?.['wpbs-layout']]) || {};
-
-    const memoCss = useMemo(() => {
-        if (!css || typeof css !== 'object') return {props: {}, breakpoints: {}, hover: {}};
-
-        const {breakpoints = {}, hover = {}, ...rest} = css;
-
-        // All other keys are assumed to belong in "props"
-        const props = {...rest};
-
-        return {
-            props,
-            breakpoints,
-            hover,
-        };
-    }, [css]);
+    const memoCss = useMemo(() => css, [css]) || {};
 
     const classNames = useMemo(() => {
         return Object.entries(attributes)
@@ -330,11 +316,13 @@ function Layout({attributes, setAttributes, css = {}}) {
     }, [layoutAttrs]);
 
 // 2. Merge parsedCss + memoCss only when either changes
-    const mergedCss = useMemo(() => ({
-        props: {...parsedCss.props, ...memoCss.props},
-        breakpoints: {...parsedCss.breakpoints, ...memoCss.breakpoints},
-        hover: {...parsedCss.hover, ...memoCss.hover},
-    }), [parsedCss, memoCss]);
+    const mergedCss = useMemo(() => {
+        return _.merge(
+            {},
+            parsedCss,
+            memoCss
+        );
+    }, [parsedCss, memoCss]);
 
 // 3. Sync wpbs-css only when mergedCss changes
     useEffect(() => {
@@ -344,8 +332,6 @@ function Layout({attributes, setAttributes, css = {}}) {
         }
 
         const currentCss = attributes?.['wpbs-css'] ?? {};
-
-        console.log(mergedCss);
 
         if (Object.keys(mergedCss).length && !_.isEqual(mergedCss, currentCss)) {
             console.log('updating css');

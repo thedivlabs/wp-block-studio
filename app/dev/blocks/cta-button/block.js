@@ -176,11 +176,9 @@ registerBlockType(metadata.name, {
         const cssProps = useMemo(() => {
             return Object.fromEntries(
                 Object.entries({
-                    props: {
-                        '--testing': "30px",
-                        '--icon-color': settings?.['icon-color'] || null,
-                        ...iconProps(settings?.['icon']),
-                    },
+                    '--testing': "30px",
+                    '--icon-color': settings?.['icon-color'] || null,
+                    ...iconProps(settings?.['icon']),
                     breakpoints: {
                         xs: {
                             '--testing': '20px',

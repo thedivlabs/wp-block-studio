@@ -18,7 +18,7 @@ class WPBS_Blocks {
 				str_starts_with( $parsed_block['blockName'], 'wpbs/' ) &&
 				! empty( $parsed_block['attrs']['wpbs-css'] )
 			) {
-				self::render_block_styles( $parsed_block['attrs'] );
+				self::render_block_styles( $parsed_block['attrs'], $parsed_block['blockName'] );
 			}
 
 			return $parsed_block;
@@ -40,35 +40,79 @@ class WPBS_Blocks {
 
 	}
 
-	public static function render_block_styles( array $attributes, string $custom_css = '', bool $is_rest = false ): string|bool {
+	public static function render_block_styles( array $attributes, string $blockName = '', bool $is_rest = false ): string|bool {
 
-		// Apply a filter to allow modifying CSS before output
-		$css = apply_filters( 'wpbs_block_css', $attributes['wpbs-css'] ?? '', $attributes );
+		if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
+			return $is_rest ? true : '';
+		}
 
-		// Push to critical CSS filter
-		add_filter( 'wpbs_critical_css', function ( array $css_array ) use ( $attributes, $css ): array {
+		$unique_id = $attributes['uniqueId'];
+		$selector  = '.wp-block-' . str_replace( '/', '-', $blockName ) . '.' . $unique_id;
 
-			if ( empty( $attributes['uniqueId'] ) || empty( $css ) ) {
-				return $css_array;
+		$block_css = $attributes['wpbs-css'];
+
+		// Helper to convert array of props to CSS string
+		$props_to_css = function ( array $props ): string {
+			$lines = [];
+			foreach ( $props as $key => $val ) {
+				if ( $val === null || $val === '' ) {
+					continue;
+				}
+				$lines[] = "{$key}: {$val};";
 			}
 
-			$css_array[ $attributes['uniqueId'] ] = $css;
+			return implode( ' ', $lines );
+		};
 
-			return $css_array;
-		} );
+		$css = '';
 
-		// REST output wraps in <style>
+		// 1. Default props
+		if ( ! empty( $block_css['props'] ) ) {
+			$css .= "{$selector} { " . $props_to_css( $block_css['props'] ) . " } ";
+		}
+
+		// 2. Breakpoints
+		$breakpoints_config = wp_get_global_settings()['custom']['breakpoints'] ?? [];
+
+		if ( ! empty( $block_css['breakpoints'] ) ) {
+			foreach ( $block_css['breakpoints'] as $bp_key => $bp_props ) {
+				if ( empty( $bp_props ) || empty( $breakpoints_config[ $bp_key ] ) ) {
+					continue;
+				}
+				$bp_size = $breakpoints_config[ $bp_key ]['size'] ?? 0;
+				$css     .= "@media (max-width: " . ( (int) $bp_size - 1 ) . "px) { ";
+				$css     .= "{$selector} { " . $props_to_css( $bp_props ) . " } ";
+				$css     .= "} ";
+			}
+		}
+
+		// 3. Hover
+		if ( ! empty( $block_css['hover'] ) ) {
+			$css .= "{$selector}:hover { " . $props_to_css( $block_css['hover'] ) . " } ";
+		}
+
+		// REST output echoes the style tag
 		if ( $is_rest ) {
-			echo '<style>' . implode( ' ', array_filter( [ $css, $custom_css ] ) ) . '</style>';
+			echo '<style>' . $css . '</style>';
 
 			return true;
 		}
 
-		// Normal output returns string
-		return implode( ' ', array_filter( [ $css, $custom_css ] ) );
+		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $css, $unique_id ) {
+
+			if ( empty( $css ) || empty( $unique_id ) ) {
+				return $css_array;
+			}
+
+			$css_array[ $unique_id ] = $css;
+
+			return $css_array;
+		} );
+
+		return $css;
 	}
 
-	public function render_block( $attributes, $content ): string {
+	public function render_block( $attributes, $content, $block ): string {
 
 		self::render_block_styles( $attributes );
 

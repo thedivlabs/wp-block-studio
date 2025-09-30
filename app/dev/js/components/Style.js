@@ -139,12 +139,14 @@ export function parseLayoutForCSS(settings = {}) {
     return cssObj;
 }
 
-export const Style = ({attributes}) => {
+export const Style = ({attributes, name}) => {
 
     if (!attributes?.uniqueId) return null;
 
     const uniqueId = attributes.uniqueId;
-    const selector = `.${uniqueId}`;
+    const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId}`;
+
+    console.log(selector);
 
     const cssString = useMemo(() => {
         if (!attributes['wpbs-css']) return '';
@@ -314,7 +316,6 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
             return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
-
 
     return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
         <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>

@@ -345,7 +345,10 @@ function Layout({attributes, setAttributes, css = {}}) {
 
         const currentCss = attributes?.['wpbs-css'] ?? {};
 
+        console.log(mergedCss);
+
         if (Object.keys(mergedCss).length && !_.isEqual(mergedCss, currentCss)) {
+            console.log('updating css');
             setAttributes({'wpbs-css': mergedCss});
         }
     }, [mergedCss, attributes?.['wpbs-css'], setAttributes]);

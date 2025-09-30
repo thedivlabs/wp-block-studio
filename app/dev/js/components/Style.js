@@ -29,18 +29,12 @@ export const STYLE_ATTRIBUTES = {
     }
 }
 
-export function useUniqueId({name, attributes, setAttributes}) {
+export function useUniqueId({name, attributes}) {
 
 
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     const instanceId = useInstanceId(useUniqueId, prefix);
-
-    useEffect(() => {
-        if (!uniqueId) {
-            setAttributes({uniqueId: instanceId});
-        }
-    }, [uniqueId, setAttributes, instanceId]);
 
     return uniqueId || instanceId;
 }
@@ -192,7 +186,7 @@ export const Style = ({attributes}) => {
     return <style>{cssString}</style>;
 };
 
-function Layout({attributes, setAttributes, css = {}}) {
+function Layout({attributes, setAttributes, css = {}, uniqueId}) {
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
@@ -219,10 +213,28 @@ function Layout({attributes, setAttributes, css = {}}) {
     }), [layoutAttrs, classNames]);
 
     const setLayoutObj = useCallback(
-        (newObj) => {
-            setAttributes({'wpbs-layout': newObj});
+        (newLayoutObj) => {
+            // Set the layout
+            const update = {'wpbs-layout': newLayoutObj};
+
+            // Compute the merged CSS (or you could compute it here too)
+            if (Object.keys(layoutAttrs).length) {
+                const currentCss = attributes?.['wpbs-css'] ?? {};
+                const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), memoCss);
+
+                if (!_.isEqual(mergedCss, currentCss)) {
+                    update['wpbs-css'] = mergedCss;
+                }
+            }
+
+            // Ensure uniqueId is set once
+            if (!attributes?.uniqueId && uniqueId) {
+                update.uniqueId = uniqueId;
+            }
+
+            setAttributes(update);
         },
-        [setAttributes]
+        [attributes, memoCss, layoutAttrs, setAttributes, uniqueId]
     );
 
     const updateLayoutItem = useCallback(
@@ -322,22 +334,7 @@ function Layout({attributes, setAttributes, css = {}}) {
             parsedCss,
             memoCss
         );
-    }, [parsedCss, memoCss]);
-
-// 3. Sync wpbs-css only when mergedCss changes
-    useEffect(() => {
-
-        if (!Object.keys(layoutAttrs).length) {
-            return;
-        }
-
-        const currentCss = attributes?.['wpbs-css'] ?? {};
-
-        if (Object.keys(mergedCss).length && !_.isEqual(mergedCss, currentCss)) {
-            console.log('updating css');
-            setAttributes({'wpbs-css': mergedCss});
-        }
-    }, [mergedCss, attributes?.['wpbs-css'], setAttributes]);
+    }, [parsedCss, memoCss]) || {};
 
 
     return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>

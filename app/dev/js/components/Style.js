@@ -31,7 +31,6 @@ export const STYLE_ATTRIBUTES = {
 
 export function useUniqueId({name, attributes, setAttributes}) {
 
-
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     const instanceId = useInstanceId(useUniqueId, prefix);
@@ -236,7 +235,6 @@ function Layout({attributes, setAttributes, css = {}}) {
         classNames,
     }), [layoutAttrs, classNames]);
 
-
     const setLayoutObj = useCallback(
         (newObj) => {
             setAttributes({'wpbs-layout': newObj});
@@ -346,6 +344,9 @@ function Layout({attributes, setAttributes, css = {}}) {
 
 // 3. Sync wpbs-css only when mergedCss changes
     useEffect(() => {
+        if (Object.keys(layoutAttrs).length < 1) {
+            return;
+        }
         const currentCss = attributes?.['wpbs-css'] ?? {};
         if (!_.isEqual(mergedCss, currentCss)) {
             setAttributes({'wpbs-css': mergedCss});

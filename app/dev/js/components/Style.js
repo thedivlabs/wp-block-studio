@@ -31,16 +31,14 @@ export const STYLE_ATTRIBUTES = {
 
 export function useUniqueId({name, attributes, setAttributes}) {
 
+
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     const instanceId = useInstanceId(useUniqueId, prefix);
 
     useEffect(() => {
         if (!uniqueId) {
-            setAttributes((prevAttrs) => ({
-                ...prevAttrs,
-                uniqueId: instanceId,
-            }));
+            setAttributes({uniqueId: instanceId});
         }
     }, [uniqueId, setAttributes, instanceId]);
 
@@ -148,6 +146,7 @@ export function parseLayoutForCSS(settings = {}) {
 }
 
 export const Style = ({attributes}) => {
+
     if (!attributes?.uniqueId) return null;
 
     const uniqueId = attributes.uniqueId;
@@ -195,14 +194,13 @@ export const Style = ({attributes}) => {
 
 function Layout({attributes, setAttributes, css = {}}) {
 
-
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
         return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
     }, []); // empty deps if breakpoints config is static
 
-
     const layoutAttrs = useMemo(() => attributes?.['wpbs-layout'] ?? {}, [attributes?.['wpbs-layout']]) || {};
+
     const memoCss = useMemo(() => {
         if (!css || typeof css !== 'object') return {props: {}, breakpoints: {}, hover: {}};
 
@@ -217,7 +215,6 @@ function Layout({attributes, setAttributes, css = {}}) {
             hover,
         };
     }, [css]);
-
 
     const classNames = useMemo(() => {
         return Object.entries(attributes)
@@ -260,7 +257,6 @@ function Layout({attributes, setAttributes, css = {}}) {
         [layoutObj, setLayoutObj]
     );
 
-
     const updateDefaultLayout = useCallback(
         (newProps) => {
 
@@ -272,7 +268,6 @@ function Layout({attributes, setAttributes, css = {}}) {
         [layoutObj, setLayoutObj]
     );
 
-
     const updateHoverItem = useCallback(
         (newProps) => {
             setLayoutObj({
@@ -282,7 +277,6 @@ function Layout({attributes, setAttributes, css = {}}) {
         },
         [layoutObj, setLayoutObj]
     );
-
 
     const addLayoutItem = useCallback(() => {
         const keys = Object.keys(layoutObj.breakpoints);
@@ -330,7 +324,7 @@ function Layout({attributes, setAttributes, css = {}}) {
     // 1. Parse layoutAttrs only when they change
     const parsedCss = useMemo(() => {
         if (!Object.keys(layoutAttrs).length) {
-            return {props: {}, breakpoints: {}, hover: {}};
+            return {};
         }
         return parseLayoutForCSS(layoutAttrs);
     }, [layoutAttrs]);
@@ -344,11 +338,14 @@ function Layout({attributes, setAttributes, css = {}}) {
 
 // 3. Sync wpbs-css only when mergedCss changes
     useEffect(() => {
-        if (Object.keys(layoutAttrs).length < 1) {
+
+        if (!Object.keys(layoutAttrs).length) {
             return;
         }
+
         const currentCss = attributes?.['wpbs-css'] ?? {};
-        if (!_.isEqual(mergedCss, currentCss)) {
+
+        if (Object.keys(mergedCss).length && !_.isEqual(mergedCss, currentCss)) {
             setAttributes({'wpbs-css': mergedCss});
         }
     }, [mergedCss, attributes?.['wpbs-css'], setAttributes]);

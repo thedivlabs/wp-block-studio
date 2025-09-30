@@ -192,11 +192,6 @@ registerBlockType(metadata.name, {
             setCss(cssProps);
         }, [cssProps, setCss]);
 
-
-        useEffect(() => {
-            console.log(props);
-        }, [attributes?.['wpbs-css']]);
-
         return (
             <>
                 <BlockEdit key="edit" {...blockProps} />

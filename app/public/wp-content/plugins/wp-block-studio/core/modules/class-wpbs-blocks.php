@@ -40,63 +40,32 @@ class WPBS_Blocks {
 
 	}
 
-	public static function render_block_styles( $attributes, $custom_css = '', $is_rest = false ): string|bool {
+	public static function render_block_styles( array $attributes, string $custom_css = '', bool $is_rest = false ): string|bool {
 
-		$breakpoints = wp_get_global_settings()['custom']['breakpoints'] ?? [];
-		$containers  = wp_get_global_settings()['custom']['container'] ?? [];
-		/*$css         = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
-			[ $full, $type, $key ] = $matches;
+		// Apply a filter to allow modifying CSS before output
+		$css = apply_filters( 'wpbs_block_css', $attributes['wpbs-css'] ?? '', $attributes );
 
-			return match ( $type ) {
-				'BREAKPOINT' => $breakpoints[ $key ] ?? $breakpoints['normal'],
-				'CONTAINER' => $key === 'none' ? '100%' : $containers[ $key ] ?? $full,
-				default => $full,
-			};
-		}, ( $attributes['wpbs-css'] ?? '' ) );*/
-		$custom_css = preg_replace_callback( '/%__(BREAKPOINT|CONTAINER)__(.*?)__%/', function ( $matches ) use ( $breakpoints, $containers ) {
-			[ $full, $type, $key ] = $matches;
+		// Push to critical CSS filter
+		add_filter( 'wpbs_critical_css', function ( array $css_array ) use ( $attributes, $css ): array {
 
-			if ( $key === 'none' ) {
-				return null;
-			}
-
-			return match ( $type ) {
-				'BREAKPOINT' => $breakpoints[ $key ] ?? $breakpoints['normal'],
-				'CONTAINER' => $containers[ $key ] ?? $full,
-				default => $full,
-			};
-		}, $custom_css );
-
-		$css = apply_filters( 'wpbs_block_css', $css ?? [], $attributes );
-
-		add_filter( 'wpbs_preload_images', function ( $images ) use ( $attributes ) {
-
-			return array_replace( [], $images, $attributes['wpbs-preload'] ?? [] );
-
-		} );
-
-		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $attributes, $custom_css, $css ) {
-
-			if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
+			if ( empty( $attributes['uniqueId'] ) || empty( $css ) ) {
 				return $css_array;
 			}
 
 			$css_array[ $attributes['uniqueId'] ] = $css;
 
-			if ( ! empty( $custom_css ) ) {
-				$css_array[ $attributes['uniqueId'] . '-custom' ] = $custom_css;
-			}
-
 			return $css_array;
 		} );
 
+		// REST output wraps in <style>
 		if ( $is_rest ) {
-			echo '<style>' . join( ' ', array_filter( [ $css, $custom_css ] ) ) . '</style>';
+			echo '<style>' . implode( ' ', array_filter( [ $css, $custom_css ] ) ) . '</style>';
 
 			return true;
-		} else {
-			return join( ' ', array_filter( [ $css, $custom_css ] ) );
 		}
+
+		// Normal output returns string
+		return implode( ' ', array_filter( [ $css, $custom_css ] ) );
 	}
 
 	public function render_block( $attributes, $content ): string {

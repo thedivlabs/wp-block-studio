@@ -214,17 +214,14 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
 
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
-            // Set the layout
+            // Compute merged CSS directly
+            const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), css);
+
             const update = {'wpbs-layout': newLayoutObj};
 
-            // Compute the merged CSS (or you could compute it here too)
-            if (Object.keys(layoutAttrs).length) {
-                const currentCss = attributes?.['wpbs-css'] ?? {};
-                const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), memoCss);
-
-                if (!_.isEqual(mergedCss, currentCss)) {
-                    update['wpbs-css'] = mergedCss;
-                }
+            // Only update if CSS changed
+            if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {
+                update['wpbs-css'] = mergedCss;
             }
 
             // Ensure uniqueId is set once
@@ -234,7 +231,7 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
 
             setAttributes(update);
         },
-        [attributes, memoCss, layoutAttrs, setAttributes, uniqueId]
+        [attributes, setAttributes, uniqueId, css] // `css` is the current memoCss
     );
 
     const updateLayoutItem = useCallback(

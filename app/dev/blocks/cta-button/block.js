@@ -194,7 +194,7 @@ registerBlockType(metadata.name, {
 
 
         useEffect(() => {
-            console.log(props);
+            //console.log(props);
         }, [attributes?.['wpbs-css']]);
 
         return (

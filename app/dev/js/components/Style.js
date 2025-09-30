@@ -30,6 +30,8 @@ export const STYLE_ATTRIBUTES = {
 }
 
 export function useUniqueId({name, attributes, setAttributes}) {
+
+
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     const instanceId = useInstanceId(useUniqueId, prefix);

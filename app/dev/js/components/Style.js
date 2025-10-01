@@ -77,6 +77,9 @@ const BACKGROUND_SPECIAL_PROPS = [
     'fadeMobile',
 ];
 
+const BACKGROUND_IMAGE_SLUGS = ['image-large', 'image-mobile', 'mask-image', 'mask-image-mobile'];
+const BACKGROUND_VIDEO_SLUGS = ['video-large', 'video-mobile'];
+
 export function useUniqueId({name, attributes}) {
 
 
@@ -785,17 +788,53 @@ function parseBackgroundCss(settings) {
     return css;
 }
 
+function normalizeBackgroundMedia(type, media, resolution = 'large') {
+    if (!media) return {};
+
+    switch (type) {
+        case 'video':
+            return {
+                id: media.id ?? null,
+                url: media.url ?? '',
+            };
+
+        case 'image':
+            return {
+                id: media.id ?? null,
+                url: media.sizes?.[resolution]?.url ?? media.url ?? '',
+                alt: media.alt ?? '',
+                width: media.sizes?.[resolution]?.width ?? media.width ?? null,
+                height: media.sizes?.[resolution]?.height ?? media.height ?? null,
+            };
+
+        default:
+            return {};
+    }
+}
 
 const BackgroundFields = ({attributes, setAttributes}) => {
 
     const {settings = {}} = attributes?.['wpbs-background'] ?? {};
 
+
     const updateProp = useCallback(
-        (newProps) => {
+        (slug, value) => {
             setAttributes((prevAttrs) => {
+                const prevSettings = prevAttrs['wpbs-background']?.settings || {};
+
+                let newValue;
+
+                if (BACKGROUND_IMAGE_SLUGS.includes(slug)) {
+                    newValue = normalizeBackgroundMedia('image', value);
+                } else if (BACKGROUND_VIDEO_SLUGS.includes(slug)) {
+                    newValue = normalizeBackgroundMedia('video', value);
+                } else {
+                    newValue = value;
+                }
+
                 const settings = {
-                    ...prevAttrs['wpbs-background']?.settings,
-                    ...newProps
+                    ...prevSettings,
+                    [slug]: newValue,
                 };
 
                 const css = parseBackgroundCss(settings);
@@ -803,8 +842,8 @@ const BackgroundFields = ({attributes, setAttributes}) => {
                 return {
                     'wpbs-background': {
                         settings,
-                        css
-                    }
+                        css,
+                    },
                 };
             });
         },
@@ -1245,34 +1284,12 @@ const Background = ({attributes}) => {
 
     const {settings = {}} = attributes?.['wpbs-background'] ?? {};
 
-    const bgAttr = {
-        settings: {
-            type: settings.type,
-            'image-large': settings['image-large'],
-            'image-mobile': settings['image-mobile'],
-            mask: settings.mask,
-            // add other control props here
-        },
-        css: {
-            '--image-large': settings['image-large'] || undefined,
-            '--image-mobile': settings['image-mobile'] || undefined,
-            '--mask': settings.mask ? `url(${settings.mask})` : undefined,
-            // only include things you want in style
-        }
-    };
-
     const bgClassnames = [
         'wpbs-background',
         !!settings?.video ? '--video' : null,
     ].filter(Boolean).join(' ');
 
-    const bgStyle = Object.fromEntries(
-        Object.entries({
-            '--image-large': settings?.['image-large'] ?? null,
-        }).filter(([_, value]) => value != null) // filters out null or undefined
-    );
-
-    return <div className={bgClassnames} style={bgStyle}></div>;
+    return <div className={bgClassnames}></div>;
 
 }
 

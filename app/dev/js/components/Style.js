@@ -78,6 +78,17 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
     return raw;
 }
 
+function cleanLayout(layoutObj) {
+    return {
+        props: _.omitBy(layoutObj.props || {}, (v) => v === null || v === undefined || v === ''),
+        breakpoints: _.mapValues(layoutObj.breakpoints || {}, (bpProps) =>
+            _.omitBy(bpProps, (v) => v === null || v === undefined || v === '')
+        ),
+        hover: _.omitBy(layoutObj.hover || {}, (v) => v === null || v === undefined || v === ''),
+        classNames: layoutObj.classNames || '',
+    };
+}
+
 /**
  * Flattens special field values into CSS-ready props.
  */
@@ -203,18 +214,7 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
             .trim();
     }, [attributes]);
 
-    function cleanLayout(layoutObj) {
-        return {
-            props: _.omitBy(layoutObj.props || {}, (v) => v === null || v === undefined || v === ''),
-            breakpoints: _.mapValues(layoutObj.breakpoints || {}, (bpProps) =>
-                _.omitBy(bpProps, (v) => v === null || v === undefined || v === '')
-            ),
-            hover: _.omitBy(layoutObj.hover || {}, (v) => v === null || v === undefined || v === ''),
-            classNames: layoutObj.classNames || '',
-        };
-    }
-
-    const layoutObj = useMemo(() => ({
+    const layoutObj = useMemo(() => cleanLayout({
         props: layoutAttrs.props || {},
         breakpoints: layoutAttrs.breakpoints || {},
         hover: layoutAttrs.hover || {},
@@ -224,9 +224,9 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
             // Compute merged CSS directly
-            const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), css);
+            const mergedCss = cleanLayout(_.merge({}, parseLayoutForCSS(newLayoutObj), css));
 
-            const update = {'wpbs-layout': cleanLayout(newLayoutObj)};
+            const update = {'wpbs-layout': newLayoutObj};
 
             // Only update if CSS changed
             if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {

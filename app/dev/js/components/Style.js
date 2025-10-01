@@ -483,7 +483,7 @@ const SPECIAL_FIELDS = [
     'background-color',
 ];
 
-const Field = memo(({field, settings, callback}) => {
+const Field = memo(({field, settings, callback, toolspanel = true}) => {
     const {type, slug, label, options, large = false} = field;
 
     if (!type || !slug || !label) return null;
@@ -535,16 +535,14 @@ const Field = memo(({field, settings, callback}) => {
             control = null;
     }
 
-    return (
-        <ToolsPanelItem
-            style={{gridColumn: !!large ? '1/-1' : 'span 1'}}
-            label={label}
-            hasValue={() => !!settings?.[slug]}
-            onDeselect={() => handleChange('')}
-        >
-            {control}
-        </ToolsPanelItem>
-    );
+    return (!!toolspanel ? <ToolsPanelItem
+        style={{gridColumn: !!large ? '1/-1' : 'span 1'}}
+        label={label}
+        hasValue={() => !!settings?.[slug]}
+        onDeselect={() => handleChange('')}
+    >
+        {control}
+    </ToolsPanelItem> : control);
 });
 
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
@@ -612,286 +610,367 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-function BackgroundFields({attributes}) {
+const BackgroundFields = ({attributes, setAttributes}) => {
 
-    const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            <Field field={{
+    const {'wpbs-background': settings = {}} = attributes || {};
+
+    const updateProp = useCallback(
+        (newProps) => {
+            setAttributes((prevAttrs) => ({
+                'wpbs-background': {
+                    ...prevAttrs['wpbs-background'], // always use latest
+                    ...newProps
+                }
+            }));
+        },
+        [setAttributes] // don't include settings
+    );
+
+    const sharedFields = {
+        image: [
+            {
+                type: 'image',
+                slug: 'image-mobile',
+                label: 'Mobile Image',
+            },
+            {
+                type: 'image',
+                slug: 'image-large',
+                label: 'Large Image',
+            }
+        ],
+        video: [
+            {
+                type: 'video',
+                slug: 'video-mobile',
+                label: 'Mobile Video',
+            },
+            {
+                type: 'video',
+                slug: 'video-large',
+                label: 'Large Video',
+            }
+        ],
+        settings: [
+            {
+                type: 'toggle',
+                slug: 'eager',
+                label: 'Eager',
+            },
+            {
+                type: 'toggle',
+                slug: 'force',
+                label: 'Force',
+            },
+            {
+                type: 'toggle',
+                slug: 'fixed',
+                label: 'Fixed',
+            }
+        ]
+    }
+
+    const desktopFields = {
+        image: [
+            {
                 type: 'select',
                 label: 'Resolution',
                 slug: 'resolution',
                 options: RESOLUTION_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Size',
                 slug: 'size',
                 options: IMAGE_SIZE_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Blend',
                 slug: 'blend',
                 options: BLEND_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Position',
                 slug: 'position',
                 options: OBJECT_POSITION_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Origin',
                 slug: 'origin',
                 options: ORIGIN_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'unit',
                 label: 'Max Height',
                 slug: 'max-height',
                 units: [
                     {value: 'vh', label: 'vh', default: 0},
                 ]
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Repeat',
                 slug: 'repeat',
                 options: REPEAT_OPTIONS
-            }}/>
-
-
-        </Grid>
-
-        <Grid columns={1} columnGap={15} rowGap={20}>
-
-            <Field field={{
+            },
+        ],
+        element: [
+            {
                 type: 'color',
                 label: 'Color',
                 slug: 'color',
-            }}/>
-
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Scale',
                 slug: 'scale',
                 min: 0,
                 max: 200,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Opacity',
                 slug: 'opacity',
                 min: 0,
                 max: 100,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Width',
                 slug: 'width',
                 min: 0,
                 max: 100,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Height',
                 slug: 'height',
                 min: 0,
                 max: 100,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Fade',
                 slug: 'fade',
                 min: 0,
                 max: 100,
-            }}/>
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20}
-              style={{padding: '1rem 0'}}>
-            <Field field={{
-                type: 'toggle',
-                label: 'Mask',
-                slug: 'mask'
-            }}/>
-        </Grid>
-
-        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-            <Field field={{
+            }
+        ],
+        mask: [
+            {
                 type: 'image',
                 label: 'Mask Image',
                 slug: 'mask-image',
-            }}/>
+                large: true
+            },
+            {
+                type: 'select',
+                label: 'Mask Origin',
+                slug: 'mask-origin',
+                options: ORIGIN_OPTIONS,
+            },
+            {
+                type: 'select',
+                label: 'Mask Size',
+                slug: 'mask-size',
+                options: IMAGE_SIZE_OPTIONS,
+            },
+            {
+                type: 'gradient',
+                label: 'Overlay',
+                slug: 'overlay',
+                large: true,
+            }
+        ]
+    };
 
-            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-                <Field field={{
-                    type: 'select',
-                    label: 'Mask Origin',
-                    slug: 'mask-origin',
-                    options: ORIGIN_OPTIONS,
-                }}/>
-
-                <Field field={{
-                    type: 'select',
-                    label: 'Mask Size',
-                    slug: 'mask-size',
-                    options: IMAGE_SIZE_OPTIONS,
-                }}/>
-
-            </Grid>
-        </Grid>
-
-        <Field field={{
-            type: 'gradient',
-            label: 'Overlay',
-            slug: 'overlay',
-        }}/>
-
-    </Grid>;
-
-    const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            <Field field={{
+    const mobileFields = {
+        image: [
+            {
                 type: 'select',
                 label: 'Resolution',
-                slug: 'resolution-mobile',
+                slug: 'resolution',
                 options: RESOLUTION_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Size',
-                slug: 'size-mobile',
+                slug: 'size',
                 options: IMAGE_SIZE_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Blend',
-                slug: 'blend-mobile',
+                slug: 'blend',
                 options: BLEND_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Position',
-                slug: 'position-mobile',
+                slug: 'position',
                 options: OBJECT_POSITION_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Origin',
-                slug: 'origin-mobile',
+                slug: 'origin',
                 options: ORIGIN_OPTIONS
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'unit',
                 label: 'Max Height',
-                slug: 'max-height-mobile',
+                slug: 'max-height',
                 units: [
                     {value: 'vh', label: 'vh', default: 0},
                 ]
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'select',
                 label: 'Repeat',
-                slug: 'repeat-mobile',
+                slug: 'repeat',
                 options: REPEAT_OPTIONS
-            }}/>
-
-
-        </Grid>
-
-        <Grid columns={1} columnGap={15} rowGap={20}>
-
-            <Field field={{
+            },
+        ],
+        element: [
+            {
                 type: 'color',
                 label: 'Color',
                 slug: 'color-mobile',
-            }}/>
-
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Scale',
                 slug: 'scale-mobile',
                 min: 0,
                 max: 200,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Opacity',
                 slug: 'opacity-mobile',
                 min: 0,
                 max: 100,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Width',
                 slug: 'width-mobile',
                 min: 0,
                 max: 100,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Height',
                 slug: 'height-mobile',
                 min: 0,
                 max: 100,
-            }}/>
-            <Field field={{
+            },
+            {
                 type: 'range',
                 label: 'Fade',
                 slug: 'fade-mobile',
                 min: 0,
                 max: 100,
-            }}/>
+            }
+        ],
+        mask: [
+            {
+                type: 'image',
+                label: 'Mask Image',
+                slug: 'mask-image-mobile',
+                large: true
+            },
+            {
+                type: 'select',
+                label: 'Mask Origin',
+                slug: 'mask-origin-mobile',
+                options: ORIGIN_OPTIONS,
+            },
+            {
+                type: 'select',
+                label: 'Mask Size',
+                slug: 'mask-size-mobile',
+                options: IMAGE_SIZE_OPTIONS,
+            },
+            {
+                type: 'gradient',
+                label: 'Overlay',
+                slug: 'overlay-mobile',
+                large: true,
+            }
+        ]
+    };
+
+    const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            {desktopFields.image.map((field) => <Field toolspanel={false} field={field}
+                                                       settings={settings}
+                                                       callback={updateProp}/>)}
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20}>
+            {desktopFields.element.map((field) => <Field toolspanel={false} field={field}
+                                                         settings={settings}
+                                                         callback={updateProp}/>)}
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20}
               style={{padding: '1rem 0'}}>
-            <Field field={{
-                type: 'toggle',
-                label: 'Mask',
-                slug: 'mask-mobile'
-            }}/>
+            <Field
+                toolspanel={false}
+                field={{
+                    type: 'toggle',
+                    label: 'Mask',
+                    slug: 'mask'
+                }}
+                settings={settings}
+                callback={updateProp}
+            />
         </Grid>
 
-        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-            <Field field={{
-                type: 'image',
-                label: 'Mask Image',
-                slug: 'mask-image-mobile',
-            }}/>
-
-            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-                <Field field={{
-                    type: 'select',
-                    label: 'Mask Origin',
-                    slug: 'mask-origin-mobile',
-                    options: ORIGIN_OPTIONS,
-                }}/>
-
-                <Field field={{
-                    type: 'select',
-                    label: 'Mask Size',
-                    slug: 'mask-size-mobile',
-                    options: IMAGE_SIZE_OPTIONS,
-                }}/>
-
-            </Grid>
+        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+            {desktopFields.mask.map((field) => <Field toolspanel={false} field={field}
+                                                      settings={settings}
+                                                      callback={updateProp}/>)}
         </Grid>
-
-        <Field field={{
-            type: 'gradient',
-            label: 'Overlay',
-            slug: 'overlay-mobile',
-        }}/>
-
     </Grid>;
 
+    const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            {mobileFields.image.map((field) => <Field toolspanel={false} field={field}
+                                                      settings={settings}
+                                                      callback={updateProp}/>)}
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20}>
+            {mobileFields.element.map((field) => <Field toolspanel={false} field={field}
+                                                        settings={settings}
+                                                        callback={updateProp}/>)}
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}
+              style={{padding: '1rem 0'}}>
+            <Field
+                toolspanel={false}
+                field={{
+                    type: 'toggle',
+                    label: 'Mask',
+                    slug: 'mask'
+                }}
+                settings={settings}
+                callback={updateProp}
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+            {mobileFields.mask.map((field) => <Field toolspanel={false} field={field}
+                                                     settings={settings}
+                                                     callback={updateProp}/>)}
+        </Grid>
+    </Grid>;
 
     const tabs = {
         mobile: tabMobile,
@@ -900,68 +979,44 @@ function BackgroundFields({attributes}) {
 
     return <PanelBody title={'Background'} initialOpen={!!settings.type}>
         <Grid columns={1} columnGap={15} rowGap={20}>
-            <Field field={{
-                type: 'select',
-                slug: 'type',
-                label: 'Type',
-                options: [
-                    {label: 'Select', value: ''},
-                    {label: 'Image', value: 'image'},
-                    {label: 'Featured Image', value: 'featured-image'},
-                    {label: 'Video', value: 'video'},
-                ]
-            }}/>
+            <Field
+                toolspanel={false}
+                field={{
+                    type: 'select',
+                    slug: 'type',
+                    label: 'Type',
+                    options: [
+                        {label: 'Select', value: ''},
+                        {label: 'Image', value: 'image'},
+                        {label: 'Featured Image', value: 'featured-image'},
+                        {label: 'Video', value: 'video'},
+                    ]
+                }}
+                settings={settings}
+                callback={updateProp}
+            />
             <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
 
                 <Grid columns={2} columnGap={15} rowGap={20}
                       style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
-
-                    <Field field={{
-                        type: 'image',
-                        slug: 'mobileImage',
-                        label: 'Mobile Image',
-                    }}/>
-                    <Field field={{
-                        type: 'image',
-                        slug: 'largeImage',
-                        label: 'Large Image',
-                    }}/>
-
+                    {sharedFields.image.map((field) => <Field toolspanel={false} field={field}
+                                                              settings={settings}
+                                                              callback={updateProp}/>)}
                 </Grid>
+
                 <Grid columns={2} columnGap={15} rowGap={20}
                       style={{display: settings.type !== 'video' ? 'none' : null}}>
-
-                    <Field field={{
-                        type: 'video',
-                        slug: 'mobileVideo',
-                        label: 'Mobile Video',
-                    }}/>
-                    <Field field={{
-                        type: 'video',
-                        slug: 'largeVideo',
-                        label: 'Large Video',
-                    }}/>
-
+                    {sharedFields.video.map((field) => <Field toolspanel={false} field={field}
+                                                              settings={settings}
+                                                              callback={updateProp}/>)}
                 </Grid>
 
                 <Grid columns={2} columnGap={15} rowGap={20}
                       style={{padding: '1rem 0'}}>
 
-                    <Field field={{
-                        type: 'toggle',
-                        slug: 'eager',
-                        label: 'Eager',
-                    }}/>
-                    <Field field={{
-                        type: 'toggle',
-                        slug: 'force',
-                        label: 'Force',
-                    }}/>
-                    <Field field={{
-                        type: 'toggle',
-                        slug: 'fixed',
-                        label: 'Fixed',
-                    }}/>
+                    {sharedFields.settings.map((field) => <Field toolspanel={false} field={field}
+                                                                 settings={settings}
+                                                                 callback={updateProp}/>)}
 
                 </Grid>
 

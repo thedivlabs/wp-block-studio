@@ -741,20 +741,74 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
+function parseBackgroundCss(settings) {
+    const css = {};
+
+    // Images
+    if (settings['image-large']) {
+        css['--image-large'] = `url(${settings['image-large']})`;
+    }
+    if (settings['image-mobile']) {
+        css['--image-mobile'] = `url(${settings['image-mobile']})`;
+    }
+
+    // Videos
+    if (settings['video-large']) {
+        css['--video-large'] = `url(${settings['video-large']})`;
+    }
+    if (settings['video-mobile']) {
+        css['--video-mobile'] = `url(${settings['video-mobile']})`;
+    }
+
+    // Color / overlay
+    if (settings.color) {
+        css['--bg-color'] = settings.color;
+    }
+    if (settings.overlay) {
+        css['--bg-overlay'] = settings.overlay;
+    }
+
+    // Scale / opacity / width / height / fade
+    if (settings.scale !== undefined) css['--bg-scale'] = settings.scale;
+    if (settings.opacity !== undefined) css['--bg-opacity'] = settings.opacity;
+    if (settings.width !== undefined) css['--bg-width'] = settings.width;
+    if (settings.height !== undefined) css['--bg-height'] = settings.height;
+    if (settings.fade !== undefined) css['--bg-fade'] = settings.fade;
+
+    // Mask
+    if (settings.mask) {
+        if (settings['mask-image']) css['--mask-image'] = `url(${settings['mask-image']})`;
+        if (settings['mask-origin']) css['--mask-origin'] = settings['mask-origin'];
+        if (settings['mask-size']) css['--mask-size'] = settings['mask-size'];
+    }
+
+    return css;
+}
+
+
 const BackgroundFields = ({attributes, setAttributes}) => {
 
-    const {'wpbs-background': settings = {}} = attributes || {};
+    const {settings = {}} = attributes?.['wpbs-background'] ?? {};
 
     const updateProp = useCallback(
         (newProps) => {
-            setAttributes((prevAttrs) => ({
-                'wpbs-background': {
-                    ...prevAttrs['wpbs-background'], // always use latest
+            setAttributes((prevAttrs) => {
+                const settings = {
+                    ...prevAttrs['wpbs-background']?.settings,
                     ...newProps
-                }
-            }));
+                };
+
+                const css = parseBackgroundCss(settings);
+
+                return {
+                    'wpbs-background': {
+                        settings,
+                        css
+                    }
+                };
+            });
         },
-        [setAttributes] // don't include settings
+        [setAttributes]
     );
 
     const sharedFields = {
@@ -1189,14 +1243,37 @@ const BackgroundFields = ({attributes, setAttributes}) => {
 
 const Background = ({attributes}) => {
 
-    const {'wpbs-background': settings = {}} = attributes || {};
+    const {settings = {}} = attributes?.['wpbs-background'] ?? {};
+
+    const bgAttr = {
+        settings: {
+            type: settings.type,
+            'image-large': settings['image-large'],
+            'image-mobile': settings['image-mobile'],
+            mask: settings.mask,
+            // add other control props here
+        },
+        css: {
+            '--image-large': settings['image-large'] || undefined,
+            '--image-mobile': settings['image-mobile'] || undefined,
+            '--mask': settings.mask ? `url(${settings.mask})` : undefined,
+            // only include things you want in style
+        }
+    };
 
     const bgClassnames = [
         'wpbs-background',
         !!settings?.video ? '--video' : null,
     ].filter(Boolean).join(' ');
 
-    return <div className={bgClassnames}></div>;
+    const bgStyle = Object.fromEntries(
+        Object.entries({
+            '--image-large': settings?.['image-large'] ?? null,
+        }).filter(([_, value]) => value != null) // filters out null or undefined
+    );
+
+    return <div className={bgClassnames} style={bgStyle}></div>;
+
 }
 
 const StyleElements = ({attributes, options = {}}) => {

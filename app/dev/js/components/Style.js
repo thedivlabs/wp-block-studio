@@ -24,6 +24,7 @@ import {
 } from "Includes/config";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
+import PreviewThumbnail from "Components/PreviewThumbnail.js";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -79,6 +80,54 @@ const BACKGROUND_SPECIAL_PROPS = [
 
 const BACKGROUND_IMAGE_SLUGS = ['image-large', 'image-mobile', 'mask-image', 'mask-image-mobile'];
 const BACKGROUND_VIDEO_SLUGS = ['video-large', 'video-mobile'];
+
+const SPECIAL_FIELDS = [
+    'gap',
+    'margin',
+    'border',
+    'box-shadow',
+    'transform',
+    'filter',
+    'hide-empty',
+    'required',
+    'offset-height',
+    'align-header',
+    'outline',
+    'duration',
+    'reveal',
+    'reveal-easing',
+    'reveal-duration',
+    'reveal-offset',
+    'reveal-distance',
+    'reveal-repeat',
+    'reveal-mirror',
+    'transition',
+    'breakpoint',
+    'mask-image',
+    'mask-repeat',
+    'mask-size',
+    'mask-origin',
+    'basis',
+    'height',
+    'height-custom',
+    'min-height',
+    'min-height-custom',
+    'max-height',
+    'max-height-custom',
+    'width',
+    'width-custom',
+    'translate',
+    'offset-header',
+    'text-color',
+    'text-decoration-color',
+    'position',
+    'container',
+    'padding',
+    'shadow',
+    'border',
+    'border-radius',
+    'background-color',
+];
 
 export function useUniqueId({name, attributes}) {
 
@@ -444,54 +493,6 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
     </PanelBody>;
 }
 
-const SPECIAL_FIELDS = [
-    'gap',
-    'margin',
-    'border',
-    'box-shadow',
-    'transform',
-    'filter',
-    'hide-empty',
-    'required',
-    'offset-height',
-    'align-header',
-    'outline',
-    'duration',
-    'reveal',
-    'reveal-easing',
-    'reveal-duration',
-    'reveal-offset',
-    'reveal-distance',
-    'reveal-repeat',
-    'reveal-mirror',
-    'transition',
-    'breakpoint',
-    'mask-image',
-    'mask-repeat',
-    'mask-size',
-    'mask-origin',
-    'basis',
-    'height',
-    'height-custom',
-    'min-height',
-    'min-height-custom',
-    'max-height',
-    'max-height-custom',
-    'width',
-    'width-custom',
-    'translate',
-    'offset-header',
-    'text-color',
-    'text-decoration-color',
-    'position',
-    'container',
-    'padding',
-    'shadow',
-    'border',
-    'border-radius',
-    'background-color',
-];
-
 const Field = memo(({field, settings, callback, toolspanel = true}) => {
     const {type, slug, label, large = false, ...controlProps} = field;
 
@@ -744,15 +745,31 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
+function imageSet(media, resolution) {
+    const size = media?.sizes?.[resolution || 'large'];
+    const url = size?.url ?? media?.url ?? false;
+    if (!url) return '';
+    const ext = url.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const webp = `url("${url}.webp") type("image/webp")`;
+    const fallback = `url("${url}") type("${ext}")`;
+    return `image-set(${webp}, ${fallback})`;
+}
+
 function parseBackgroundCss(settings) {
     const css = {};
 
+    const isFeatured = settings.type === 'featured-image';
+
     // Images
     if (settings['image-large']) {
-        css['--image-large'] = `url(${settings['image-large']})`;
+        css['--image-large'] = !isFeatured
+            ? imageSet(settings['image-large'], settings.resolution ?? 'large')
+            : '%POST_IMG_URL_LARGE%';
     }
     if (settings['image-mobile']) {
-        css['--image-mobile'] = `url(${settings['image-mobile']})`;
+        css['--image-mobile'] = !isFeatured
+            ? imageSet(settings['image-mobile'], settings.resolutionMobile ?? settings.resolution ?? 'large')
+            : '%POST_IMG_URL_MOBILE%';
     }
 
     // Videos
@@ -764,23 +781,59 @@ function parseBackgroundCss(settings) {
     }
 
     // Color / overlay
-    if (settings.color) {
-        css['--bg-color'] = settings.color;
-    }
-    if (settings.overlay) {
-        css['--bg-overlay'] = settings.overlay;
+    if (settings.color) css['--bg-color'] = settings.color;
+    if (settings.overlay) css['--bg-overlay'] = settings.overlay;
+
+    // Scale / size
+    if (settings.scale !== undefined || settings.size !== undefined) {
+        css['--size'] = settings.scale ? `${parseFloat(settings.scale)}%` : settings.size ?? null;
     }
 
-    // Scale / opacity / width / height / fade
-    if (settings.scale !== undefined) css['--bg-scale'] = settings.scale;
-    if (settings.opacity !== undefined) css['--bg-opacity'] = settings.opacity;
-    if (settings.width !== undefined) css['--bg-width'] = settings.width;
-    if (settings.height !== undefined) css['--bg-height'] = settings.height;
-    if (settings.fade !== undefined) css['--bg-fade'] = settings.fade;
+    // Width / height
+    if (settings.width !== undefined) css['--width'] = `${settings.width}%`;
+    if (settings.height !== undefined) css['--height'] = `${settings.height}%`;
+
+    // Opacity
+    if (settings.opacity !== undefined) css['--opacity'] = parseFloat(settings.opacity) / 100;
+
+    // Fade
+    if (settings.fade !== undefined) {
+        css['--fade'] = `linear-gradient(to bottom, #000000ff ${settings.fade}%, #00000000 100%)`;
+    }
+
+    // Position
+    if (settings.position) {
+        switch (settings.position) {
+            case 'top-left':
+                Object.assign(css, {'--top': '0px', '--left': '0px', '--bottom': 'auto', '--right': 'auto'});
+                break;
+            case 'top-right':
+                Object.assign(css, {'--top': '0px', '--right': '0px', '--bottom': 'auto', '--left': 'auto'});
+                break;
+            case 'bottom-right':
+                Object.assign(css, {'--bottom': '0px', '--right': '0px', '--top': 'auto', '--left': 'auto'});
+                break;
+            case 'bottom-left':
+                Object.assign(css, {'--bottom': '0px', '--left': '0px', '--top': 'unset', '--right': 'unset'});
+                break;
+            case 'center':
+                Object.assign(css, {
+                    '--top': '50%',
+                    '--left': '50%',
+                    '--bottom': 'unset',
+                    '--right': 'unset',
+                    '--transform': 'translate(-50%,-50%)',
+                });
+                break;
+        }
+    }
+
+    // Fixed
+    if (settings.fixed) css['--attachment'] = 'fixed';
 
     // Mask
     if (settings.mask) {
-        if (settings['mask-image']) css['--mask-image'] = `url(${settings['mask-image']})`;
+        if (settings['mask-image']) css['--mask-image'] = `url(${settings['mask-image']?.url ?? settings['mask-image']})`;
         if (settings['mask-origin']) css['--mask-origin'] = settings['mask-origin'];
         if (settings['mask-size']) css['--mask-size'] = settings['mask-size'];
     }
@@ -1308,7 +1361,7 @@ export function withStyle(EditComponent) {
     return (props) => {
 
         const [css, setCss] = useState({});
-        const [styleOptions, setStyleOptions] = useState([]);
+        const [styleOptions, setStyleOptions] = useState({});
 
         const uniqueId = useUniqueId(props);
 

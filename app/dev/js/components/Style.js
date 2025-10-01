@@ -1056,7 +1056,7 @@ const Background = ({attributes}) => {
         !!settings?.video ? '--video' : null,
     ].filter(Boolean).join(' ');
 
-    return <div className={bgClassnames}></div>;
+    return <span className={bgClassnames}></span>;
 }
 
 const StyleElements = ({attributes, options = {}}) => {

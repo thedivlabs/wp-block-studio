@@ -214,7 +214,7 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
             .trim();
     }, [attributes]);
 
-    const layoutObj = useMemo(() => cleanLayout({
+    const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
         breakpoints: layoutAttrs.breakpoints || {},
         hover: layoutAttrs.hover || {},

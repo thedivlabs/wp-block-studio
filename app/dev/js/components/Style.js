@@ -39,6 +39,23 @@ export function useUniqueId({name, attributes}) {
     return uniqueId || instanceId;
 }
 
+function cleanDeep(obj) {
+    if (_.isArray(obj)) {
+        return _(obj)
+            .map(cleanDeep)
+            .reject((v) => _.isNil(v) || v === '' || (_.isObject(v) && _.isEmpty(v)))
+            .value();
+    }
+
+    if (_.isPlainObject(obj)) {
+        return _(obj)
+            .mapValues(cleanDeep)
+            .omitBy((v) => _.isNil(v) || v === '' || (_.isObject(v) && _.isEmpty(v)))
+            .value();
+    }
+
+    return obj;
+}
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
@@ -216,7 +233,7 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
             // Compute merged CSS directly
             const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), css);
 
-            const update = {'wpbs-layout': newLayoutObj};
+            const update = {'wpbs-layout': cleanDeep(newLayoutObj)};
 
             // Only update if CSS changed
             if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {

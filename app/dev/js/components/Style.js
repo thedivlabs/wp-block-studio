@@ -192,7 +192,7 @@ function cleanLayout(layoutObj) {
 /**
  * Flattens special field values into CSS-ready props.
  */
-function parseSpecialProps(props = {}) {
+function parseLayoutSpecial(props = {}) {
     const result = {};
 
     Object.entries(props).forEach(([key, val]) => {
@@ -219,10 +219,7 @@ function parseSpecialProps(props = {}) {
     return result;
 }
 
-/**
- * Parses the layout object and returns the flattened wpbs-css object.
- */
-export function parseLayoutForCSS(settings = {}) {
+export function parseLayoutCSS(settings = {}) {
     const cssObj = {
         props: {},
         breakpoints: {},
@@ -231,22 +228,22 @@ export function parseLayoutForCSS(settings = {}) {
 
     // Default props
     if (settings.props) {
-        cssObj.props = parseSpecialProps(settings.props);
+        cssObj.props = parseLayoutSpecial(settings.props);
     }
 
     // Breakpoints
     if (settings.breakpoints) {
         Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
-            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+            cssObj.breakpoints[bpKey] = parseLayoutSpecial(bpProps);
         });
     }
 
     // Hover
     if (settings.hover) {
-        cssObj.hover = parseSpecialProps(settings.hover);
+        cssObj.hover = parseLayoutSpecial(settings.hover);
     }
 
-    return cssObj;
+    return cleanLayout(cssObj);
 }
 
 export const Style = ({attributes, name}) => {
@@ -296,7 +293,7 @@ export const Style = ({attributes, name}) => {
     return <style>{cssString}</style>;
 };
 
-function Layout({attributes, setAttributes, css = {}, uniqueId}) {
+function Layout({attributes, setAttributes, uniqueId}) {
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
@@ -305,29 +302,20 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
 
     const layoutAttrs = useMemo(() => attributes?.['wpbs-layout'] ?? {}, [attributes?.['wpbs-layout']]) || {};
 
-    const classNames = useMemo(() => {
-        return Object.entries(attributes)
-            .filter(([key]) => key.startsWith('wpbs'))
-            .flatMap(([_, value]) => value?.classNames ?? [])
-            .filter(Boolean)
-            .join(' ')
-            .trim();
-    }, [attributes]);
-
     const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
         breakpoints: layoutAttrs.breakpoints || {},
         hover: layoutAttrs.hover || {},
-        classNames,
-    }), [layoutAttrs, classNames]);
+    }), [layoutAttrs]);
 
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
-            // Compute merged CSS directly
 
-            setAttributes(newLayoutObj);
+            const update = {'wpbs-layout': parseLayoutCSS(newLayoutObj)};
+
+            setAttributes(update);
         },
-        [attributes, setAttributes] // `css` is the current memoCss
+        [attributes, setAttributes, uniqueId] // `css` is the current memoCss
     );
 
     const updateLayoutItem = useCallback(
@@ -1397,6 +1385,10 @@ export function withStyle(EditComponent) {
 
         const uniqueId = useUniqueId(props);
 
+        if (!attributes?.uniqueId) {
+            setAttributes({uniqueId: uniqueId})
+        }
+
         useEffect(() => {
             const mergedCss = _.merge({}, attributes['wpbs-layout']?.css ?? {}, attributes['wpbs-background']?.css ?? {});
 
@@ -1424,10 +1416,10 @@ export function withStyle(EditComponent) {
                     StyleElements={StyleElements}
                 />
                 <InspectorControls group={'styles'}>
-                    <Layout {...props} uniqueId={uniqueId} css={css}/>
+                    <Layout {...props} uniqueId={uniqueId}/>
                     {!!background ? <BackgroundFields {...props}/> : null}
                 </InspectorControls>
-                <Style {...props} />
+                <Style {...props} css={css}/>
             </>
         );
     };

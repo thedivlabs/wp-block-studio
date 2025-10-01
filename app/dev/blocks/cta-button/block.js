@@ -50,9 +50,9 @@ registerBlockType(metadata.name, {
     },
     edit: withStyle((props) => {
 
-        const {attributes, setAttributes, clientId, setCss, setStyleOptions} = props;
+        const {attributes, setAttributes, setStyle} = props;
 
-        const {'wpbs-cta': settings = {}, style} = attributes;
+        const {'wpbs-cta': settings = {}} = attributes;
 
         const updateSettings = useCallback((newValue) => {
 
@@ -188,12 +188,14 @@ registerBlockType(metadata.name, {
                     }
                 }).filter(([_, v]) => v != null)
             );
-        }, [settings, style]);
+        }, [settings]);
 
         useEffect(() => {
-            setCss(cssProps);
-            setStyleOptions({background: true});
-        }, [cssProps, setCss]);
+            setStyle({
+                background: true,
+                css: cssProps,
+            });
+        }, [cssProps, setStyle]);
 
         useEffect(() => {
             console.log(attributes);

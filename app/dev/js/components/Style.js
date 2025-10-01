@@ -1374,8 +1374,9 @@ const StyleElements = ({attributes, options = {}}) => {
 export function withStyle(EditComponent) {
     return (props) => {
 
-        const [css, setCss] = useState({});
-        const [styleOptions, setStyleOptions] = useState({});
+        const [style, setStyle] = useState({});
+
+        const {css = {}, background = false} = style;
 
         const uniqueId = useUniqueId(props);
 
@@ -1383,14 +1384,12 @@ export function withStyle(EditComponent) {
             <>
                 <EditComponent
                     {...props}
-                    setCss={setCss}
-                    styleOptions={styleOptions}
-                    setStyleOptions={setStyleOptions}
+                    setStyle={setStyle}
                     StyleElements={StyleElements}
                 />
                 <InspectorControls group={'styles'}>
                     <Layout {...props} uniqueId={uniqueId} css={css}/>
-                    {!!styleOptions?.background ? <BackgroundFields {...props}/> : null}
+                    {!!background ? <BackgroundFields {...props}/> : null}
                 </InspectorControls>
                 <Style {...props} />
             </>

@@ -224,9 +224,9 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
             // Compute merged CSS directly
-            const mergedCss = _.merge({}, cleanLayout(newLayoutObj), css);
+            const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), css);
 
-            const update = {'wpbs-layout': cleanDeep(newLayoutObj)};
+            const update = {'wpbs-layout': cleanLayout(newLayoutObj)};
 
             // Only update if CSS changed
             if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {

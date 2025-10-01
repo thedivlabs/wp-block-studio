@@ -1385,10 +1385,6 @@ export function withStyle(EditComponent) {
 
         const uniqueId = useUniqueId(props);
 
-        if (!attributes?.uniqueId) {
-            setAttributes({uniqueId: uniqueId})
-        }
-
         useEffect(() => {
             const mergedCss = _.merge({}, attributes['wpbs-layout']?.css ?? {}, attributes['wpbs-background']?.css ?? {});
 

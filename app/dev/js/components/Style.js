@@ -26,6 +26,9 @@ export const STYLE_ATTRIBUTES = {
     },
     'wpbs-preload': {
         type: 'array',
+    },
+    'wpbs-background': {
+        type: 'object',
     }
 }
 
@@ -570,16 +573,40 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
+const Background = ({attributes}) => {
+
+    const {'wpbs-background': settings = {}} = attributes || {};
+
+    const bgClassnames = [
+        'wpbs-background',
+        !!settings?.video ? '--video' : null,
+    ].filter(Boolean).join(' ');
+
+    return <div className={bgClassnames}></div>;
+}
+
+const StyleElements = ({attributes, options = {}}) => {
+
+    const result = [];
+
+    if (!!options?.background) {
+        result.push(<Background attributes={attributes}/>);
+    }
+
+    return <>{result}</>;
+}
+
 export function withStyle(EditComponent) {
     return (props) => {
 
         const [css, setCss] = useState({});
+        const [preloads, setPreloads] = useState([]);
 
         const uniqueId = useUniqueId(props);
 
         return (
             <>
-                <EditComponent {...props} setCss={setCss}/>
+                <EditComponent {...props} setCss={setCss} setPreloads={setPreloads} StyleElements={StyleElements}/>
                 <InspectorControls group={'styles'}>
                     <Layout {...props} uniqueId={uniqueId} css={css}/>
                 </InspectorControls>

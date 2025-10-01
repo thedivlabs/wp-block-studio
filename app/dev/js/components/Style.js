@@ -761,7 +761,7 @@ function parseBackgroundCss(settings) {
         breakpoints: {},
     };
 
-    const bp = settings.breakpoint || 'normal';
+    const bp = settings?.breakpoint ?? 'normal';
     const mobileProps = {};
 
     const isFeatured = settings.type === 'featured-image';

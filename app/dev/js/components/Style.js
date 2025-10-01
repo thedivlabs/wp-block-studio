@@ -869,6 +869,10 @@ const BackgroundFields = ({attributes, setAttributes}) => {
 
     const {settings = {}} = attributes?.['wpbs-background'] ?? {};
 
+    const breakpoints = useMemo(() => {
+        const bps = WPBS?.settings?.breakpoints ?? {};
+        return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
+    }, []); // empty deps if breakpoints config is static
 
     const updateProp = useCallback(
         (slug, value) => {
@@ -943,6 +947,16 @@ const BackgroundFields = ({attributes, setAttributes}) => {
                 type: 'toggle',
                 slug: 'fixed',
                 label: 'Fixed',
+            },
+            {
+                type: 'select',
+                label: 'Breakpoint',
+                slug: 'breakpoint',
+                options: breakpoints
+                    .map((b) => ({
+                        value: b.key,
+                        label: b.label,
+                    }))
             }
         ]
     }

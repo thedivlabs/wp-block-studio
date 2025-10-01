@@ -4,9 +4,17 @@ import {
     __experimentalBoxControl as BoxControl,
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
-    Button, PanelBody, SelectControl, TextControl
+    Button, PanelBody, SelectControl, TextControl, TabPanel
 } from "@wordpress/components";
-import {DIMENSION_UNITS, DIRECTION_OPTIONS, DISPLAY_OPTIONS} from "Includes/config";
+import {
+    BLEND_OPTIONS,
+    DIMENSION_UNITS,
+    DIRECTION_OPTIONS,
+    DISPLAY_OPTIONS,
+    IMAGE_SIZE_OPTIONS, ORIGIN_OPTIONS,
+    RESOLUTION_OPTIONS,
+    OBJECT_POSITION_OPTIONS, REPEAT_OPTIONS
+} from "Includes/config";
 import {InspectorControls} from "@wordpress/block-editor";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
@@ -31,6 +39,37 @@ export const STYLE_ATTRIBUTES = {
         type: 'object',
     }
 }
+
+const BACKGROUND_SPECIAL_PROPS = [
+    'type',
+    'mobileImage',
+    'largeImage',
+    'mobileVideo',
+    'largeVideo',
+    'maskImageMobile',
+    'maskImageLarge',
+    'resolution',
+    'position',
+    'positionMobile',
+    'eager',
+    'force',
+    'mask',
+    'fixed',
+    'size',
+    'sizeMobile',
+    'opacity',
+    'width',
+    'height',
+    'resolutionMobile',
+    'maskMobile',
+    'scale',
+    'scaleMobile',
+    'opacityMobile',
+    'widthMobile',
+    'heightMobile',
+    'fade',
+    'fadeMobile',
+];
 
 export function useUniqueId({name, attributes}) {
 
@@ -573,6 +612,386 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
+function BackgroundFields({attributes}) {
+
+    const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <Field field={{
+                type: 'select',
+                label: 'Resolution',
+                slug: 'resolution',
+                options: RESOLUTION_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Size',
+                slug: 'size',
+                options: IMAGE_SIZE_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Blend',
+                slug: 'blend',
+                options: BLEND_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Position',
+                slug: 'position',
+                options: OBJECT_POSITION_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Origin',
+                slug: 'origin',
+                options: ORIGIN_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'unit',
+                label: 'Max Height',
+                slug: 'max-height',
+                units: [
+                    {value: 'vh', label: 'vh', default: 0},
+                ]
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Repeat',
+                slug: 'repeat',
+                options: REPEAT_OPTIONS
+            }}/>
+
+
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20}>
+
+            <Field field={{
+                type: 'color',
+                label: 'Color',
+                slug: 'color',
+            }}/>
+
+            <Field field={{
+                type: 'range',
+                label: 'Scale',
+                slug: 'scale',
+                min: 0,
+                max: 200,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Opacity',
+                slug: 'opacity',
+                min: 0,
+                max: 100,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Width',
+                slug: 'width',
+                min: 0,
+                max: 100,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Height',
+                slug: 'height',
+                min: 0,
+                max: 100,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Fade',
+                slug: 'fade',
+                min: 0,
+                max: 100,
+            }}/>
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}
+              style={{padding: '1rem 0'}}>
+            <Field field={{
+                type: 'toggle',
+                label: 'Mask',
+                slug: 'mask'
+            }}/>
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+            <Field field={{
+                type: 'image',
+                label: 'Mask Image',
+                slug: 'mask-image',
+            }}/>
+
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+                <Field field={{
+                    type: 'select',
+                    label: 'Mask Origin',
+                    slug: 'mask-origin',
+                    options: ORIGIN_OPTIONS,
+                }}/>
+
+                <Field field={{
+                    type: 'select',
+                    label: 'Mask Size',
+                    slug: 'mask-size',
+                    options: IMAGE_SIZE_OPTIONS,
+                }}/>
+
+            </Grid>
+        </Grid>
+
+        <Field field={{
+            type: 'gradient',
+            label: 'Overlay',
+            slug: 'overlay',
+        }}/>
+
+    </Grid>;
+
+    const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <Field field={{
+                type: 'select',
+                label: 'Resolution',
+                slug: 'resolution-mobile',
+                options: RESOLUTION_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Size',
+                slug: 'size-mobile',
+                options: IMAGE_SIZE_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Blend',
+                slug: 'blend-mobile',
+                options: BLEND_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Position',
+                slug: 'position-mobile',
+                options: OBJECT_POSITION_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Origin',
+                slug: 'origin-mobile',
+                options: ORIGIN_OPTIONS
+            }}/>
+            <Field field={{
+                type: 'unit',
+                label: 'Max Height',
+                slug: 'max-height-mobile',
+                units: [
+                    {value: 'vh', label: 'vh', default: 0},
+                ]
+            }}/>
+            <Field field={{
+                type: 'select',
+                label: 'Repeat',
+                slug: 'repeat-mobile',
+                options: REPEAT_OPTIONS
+            }}/>
+
+
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20}>
+
+            <Field field={{
+                type: 'color',
+                label: 'Color',
+                slug: 'color-mobile',
+            }}/>
+
+            <Field field={{
+                type: 'range',
+                label: 'Scale',
+                slug: 'scale-mobile',
+                min: 0,
+                max: 200,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Opacity',
+                slug: 'opacity-mobile',
+                min: 0,
+                max: 100,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Width',
+                slug: 'width-mobile',
+                min: 0,
+                max: 100,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Height',
+                slug: 'height-mobile',
+                min: 0,
+                max: 100,
+            }}/>
+            <Field field={{
+                type: 'range',
+                label: 'Fade',
+                slug: 'fade-mobile',
+                min: 0,
+                max: 100,
+            }}/>
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}
+              style={{padding: '1rem 0'}}>
+            <Field field={{
+                type: 'toggle',
+                label: 'Mask',
+                slug: 'mask-mobile'
+            }}/>
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+            <Field field={{
+                type: 'image',
+                label: 'Mask Image',
+                slug: 'mask-image-mobile',
+            }}/>
+
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+                <Field field={{
+                    type: 'select',
+                    label: 'Mask Origin',
+                    slug: 'mask-origin-mobile',
+                    options: ORIGIN_OPTIONS,
+                }}/>
+
+                <Field field={{
+                    type: 'select',
+                    label: 'Mask Size',
+                    slug: 'mask-size-mobile',
+                    options: IMAGE_SIZE_OPTIONS,
+                }}/>
+
+            </Grid>
+        </Grid>
+
+        <Field field={{
+            type: 'gradient',
+            label: 'Overlay',
+            slug: 'overlay-mobile',
+        }}/>
+
+    </Grid>;
+
+
+    const tabs = {
+        mobile: tabMobile,
+        desktop: tabDesktop,
+    }
+
+    return <PanelBody title={'Background'} initialOpen={!!settings.type}>
+        <Grid columns={1} columnGap={15} rowGap={20}>
+            <Field field={{
+                type: 'select',
+                slug: 'type',
+                label: 'Type',
+                options: [
+                    {label: 'Select', value: ''},
+                    {label: 'Image', value: 'image'},
+                    {label: 'Featured Image', value: 'featured-image'},
+                    {label: 'Video', value: 'video'},
+                ]
+            }}/>
+            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
+
+                <Grid columns={2} columnGap={15} rowGap={20}
+                      style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
+
+                    <Field field={{
+                        type: 'image',
+                        slug: 'mobileImage',
+                        label: 'Mobile Image',
+                    }}/>
+                    <Field field={{
+                        type: 'image',
+                        slug: 'largeImage',
+                        label: 'Large Image',
+                    }}/>
+
+                </Grid>
+                <Grid columns={2} columnGap={15} rowGap={20}
+                      style={{display: settings.type !== 'video' ? 'none' : null}}>
+
+                    <Field field={{
+                        type: 'video',
+                        slug: 'mobileVideo',
+                        label: 'Mobile Video',
+                    }}/>
+                    <Field field={{
+                        type: 'video',
+                        slug: 'largeVideo',
+                        label: 'Large Video',
+                    }}/>
+
+                </Grid>
+
+                <Grid columns={2} columnGap={15} rowGap={20}
+                      style={{padding: '1rem 0'}}>
+
+                    <Field field={{
+                        type: 'toggle',
+                        slug: 'eager',
+                        label: 'Eager',
+                    }}/>
+                    <Field field={{
+                        type: 'toggle',
+                        slug: 'force',
+                        label: 'Force',
+                    }}/>
+                    <Field field={{
+                        type: 'toggle',
+                        slug: 'fixed',
+                        label: 'Fixed',
+                    }}/>
+
+                </Grid>
+
+                <TabPanel
+                    className="wpbs-editor-tabs"
+                    activeClass="active"
+                    orientation="horizontal"
+                    initialTabName="desktop"
+                    tabs={[
+                        {
+                            name: 'desktop',
+                            title: 'Desktop',
+                            className: 'tab-desktop',
+                        },
+                        {
+                            name: 'mobile',
+                            title: 'Mobile',
+                            className: 'tab-mobile',
+                        },
+                    ]}>
+                    {
+                        (tab) => (<>{tabs[tab.name]}</>)
+                    }
+                </TabPanel>
+            </Grid>
+        </Grid>
+
+    </PanelBody>;
+}
+
 const Background = ({attributes}) => {
 
     const {'wpbs-background': settings = {}} = attributes || {};
@@ -600,15 +1019,17 @@ export function withStyle(EditComponent) {
     return (props) => {
 
         const [css, setCss] = useState({});
-        const [preloads, setPreloads] = useState([]);
+        const [styleOptions, setStyleOptions] = useState([]);
 
         const uniqueId = useUniqueId(props);
 
         return (
             <>
-                <EditComponent {...props} setCss={setCss} setPreloads={setPreloads} StyleElements={StyleElements}/>
+                <EditComponent {...props} setCss={setCss} setStyleOptions={setStyleOptions}
+                               StyleElements={StyleElements}/>
                 <InspectorControls group={'styles'}>
                     <Layout {...props} uniqueId={uniqueId} css={css}/>
+                    {!!styleOptions?.background ? <BackgroundFields {...props}/> : null}
                 </InspectorControls>
                 <Style {...props} />
             </>

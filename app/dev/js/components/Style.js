@@ -1,11 +1,18 @@
-import {memo, useCallback, useEffect, useMemo, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
-    Button, PanelBody, SelectControl, TextControl, TabPanel
+    Button, PanelBody, SelectControl, TextControl, TabPanel,
+    __experimentalUnitControl as UnitControl, BaseControl, GradientPicker,
+    RangeControl,
+    ToggleControl
 } from "@wordpress/components";
+import {
+    InspectorControls, MediaUpload, MediaUploadCheck,
+    PanelColorSettings,
+} from "@wordpress/block-editor";
 import {
     BLEND_OPTIONS,
     DIMENSION_UNITS,
@@ -15,7 +22,6 @@ import {
     RESOLUTION_OPTIONS,
     OBJECT_POSITION_OPTIONS, REPEAT_OPTIONS
 } from "Includes/config";
-import {InspectorControls} from "@wordpress/block-editor";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
 
@@ -484,7 +490,7 @@ const SPECIAL_FIELDS = [
 ];
 
 const Field = memo(({field, settings, callback, toolspanel = true}) => {
-    const {type, slug, label, options, large = false} = field;
+    const {type, slug, label, large = false, ...controlProps} = field;
 
     if (!type || !slug || !label) return null;
 
@@ -493,7 +499,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         [callback, slug]
     );
 
-    let control = null;
+    let control;
 
     switch (type) {
         case 'select':
@@ -501,39 +507,164 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                 <SelectControl
                     label={label}
                     value={settings?.[slug]}
-                    options={options}
-                    onChange={handleChange}
+                    onChange={callback}
+                    {...controlProps}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
             );
             break;
+
         case 'text':
             control = (
                 <TextControl
                     label={label}
                     value={settings?.[slug]}
-                    onChange={handleChange}
+                    onChange={callback}
+                    {...controlProps}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
             );
             break;
+
+        case 'toggle':
+            control = (
+                <ToggleControl
+                    label={label}
+                    checked={!!settings?.[slug]}
+                    onChange={callback}
+                    {...controlProps}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+
+        case 'range':
+            control = (
+                <RangeControl
+                    label={label}
+                    value={settings?.[slug]}
+                    onChange={callback}
+                    {...controlProps}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+
+            );
+            break;
+
+        case 'color':
+            control = (
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: slug,
+                            label: label,
+                            value: settings?.[slug],
+                            onChange: callback,
+                            isShownByDefault: true
+                        }
+                    ]}
+                />
+            );
+            break;
+
+        case 'gradient':
+            control = (
+                <BaseControl label={label} __nextHasNoMarginBottom={true}>
+                    <GradientPicker
+                        gradients={[
+                            {
+                                name: 'Transparent',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                slug: 'transparent',
+                            },
+                            {
+                                name: 'Light',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                slug: 'light',
+                            },
+                            {
+                                name: 'Strong',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                slug: 'Strong',
+                            }
+                        ]}
+                        clearable={true}
+                        value={settings?.[slug]}
+                        onChange={callback}
+                        {...controlProps}
+                    />
+                </BaseControl>
+            );
+            break;
+
         case 'box':
             control = (
                 <BoxControl
                     label={label}
                     values={settings?.[slug]}
-                    onChange={handleChange}
-                    {...options}
+                    onChange={callback}
+                    {...controlProps}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
-            )
+            );
             break;
+
+        case 'unit':
+            control = (
+                <UnitControl
+                    label={label}
+                    value={settings?.[slug]}
+                    onChange={callback}
+                    {...controlProps}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+
+        case 'image':
+        case 'video': {
+            const allowedTypes = type === 'image' ? ['image'] : ['video'];
+            const value = settings?.[slug];
+            const clear = () => callback('');
+
+            control = (
+                <BaseControl label={label} __nextHasNoMarginBottom>
+                    <MediaUploadCheck>
+                        <MediaUpload
+                            title={label}
+                            onSelect={callback}
+                            allowedTypes={allowedTypes}
+                            value={value}
+                            render={({open}) => (
+                                <PreviewThumbnail
+                                    image={value}
+                                    callback={clear}
+                                    style={{objectFit: 'contain'}}
+                                    onClick={open}
+                                />
+                            )}
+                        />
+                    </MediaUploadCheck>
+                </BaseControl>
+            );
+            break;
+        }
+
         default:
             control = null;
     }
+
 
     return (!!toolspanel ? <ToolsPanelItem
         style={{gridColumn: !!large ? '1/-1' : 'span 1'}}
@@ -706,9 +837,14 @@ const BackgroundFields = ({attributes, setAttributes}) => {
                 type: 'unit',
                 label: 'Max Height',
                 slug: 'max-height',
-                units: [
-                    {value: 'vh', label: 'vh', default: 0},
-                ]
+                options: {
+                    inputProps: {
+                        units: [
+                            {value: 'vh', label: 'vh', default: 0},
+                        ]
+                    }
+                }
+
             },
             {
                 type: 'select',
@@ -823,9 +959,13 @@ const BackgroundFields = ({attributes, setAttributes}) => {
                 type: 'unit',
                 label: 'Max Height',
                 slug: 'max-height',
-                units: [
-                    {value: 'vh', label: 'vh', default: 0},
-                ]
+                options: {
+                    inputProps: {
+                        units: [
+                            {value: 'vh', label: 'vh', default: 0},
+                        ]
+                    }
+                }
             },
             {
                 type: 'select',
@@ -1056,7 +1196,7 @@ const Background = ({attributes}) => {
         !!settings?.video ? '--video' : null,
     ].filter(Boolean).join(' ');
 
-    return <span className={bgClassnames}></span>;
+    return <div className={bgClassnames}></div>;
 }
 
 const StyleElements = ({attributes, options = {}}) => {
@@ -1080,8 +1220,13 @@ export function withStyle(EditComponent) {
 
         return (
             <>
-                <EditComponent {...props} setCss={setCss} setStyleOptions={setStyleOptions}
-                               StyleElements={StyleElements}/>
+                <EditComponent
+                    {...props}
+                    setCss={setCss}
+                    styleOptions={styleOptions}
+                    setStyleOptions={setStyleOptions}
+                    StyleElements={StyleElements}
+                />
                 <InspectorControls group={'styles'}>
                     <Layout {...props} uniqueId={uniqueId} css={css}/>
                     {!!styleOptions?.background ? <BackgroundFields {...props}/> : null}

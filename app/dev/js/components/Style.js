@@ -756,68 +756,33 @@ function imageSet(media, resolution) {
 }
 
 function parseBackgroundCss(settings) {
-    const css = {};
+    const css = {
+        props: {},
+        breakpoints: {},
+    };
+
+    const bp = settings.breakpoint || 'normal';
+    const mobileProps = {};
 
     const isFeatured = settings.type === 'featured-image';
 
-    // Images
-    if (settings['image-large']) {
-        css['--image-large'] = !isFeatured
-            ? imageSet(settings['image-large'], settings.resolution ?? 'large')
-            : '%POST_IMG_URL_LARGE%';
-    }
-    if (settings['image-mobile']) {
-        css['--image-mobile'] = !isFeatured
-            ? imageSet(settings['image-mobile'], settings.resolutionMobile ?? settings.resolution ?? 'large')
-            : '%POST_IMG_URL_MOBILE%';
-    }
-
-    // Videos
-    if (settings['video-large']) {
-        css['--video-large'] = `url(${settings['video-large']})`;
-    }
-    if (settings['video-mobile']) {
-        css['--video-mobile'] = `url(${settings['video-mobile']})`;
-    }
-
-    // Color / overlay
-    if (settings.color) css['--bg-color'] = settings.color;
-    if (settings.overlay) css['--bg-overlay'] = settings.overlay;
-
-    // Scale / size
-    if (settings.scale !== undefined || settings.size !== undefined) {
-        css['--size'] = settings.scale ? `${parseFloat(settings.scale)}%` : settings.size ?? null;
-    }
-
-    // Width / height
-    if (settings.width !== undefined) css['--width'] = `${settings.width}%`;
-    if (settings.height !== undefined) css['--height'] = `${settings.height}%`;
-
-    // Opacity
-    if (settings.opacity !== undefined) css['--opacity'] = parseFloat(settings.opacity) / 100;
-
-    // Fade
-    if (settings.fade !== undefined) {
-        css['--fade'] = `linear-gradient(to bottom, #000000ff ${settings.fade}%, #00000000 100%)`;
-    }
-
-    // Position
-    if (settings.position) {
-        switch (settings.position) {
+    // Helper to assign position
+    const assignPosition = (target, pos) => {
+        switch (pos) {
             case 'top-left':
-                Object.assign(css, {'--top': '0px', '--left': '0px', '--bottom': 'auto', '--right': 'auto'});
+                Object.assign(target, {'--top': '0px', '--left': '0px', '--bottom': 'auto', '--right': 'auto'});
                 break;
             case 'top-right':
-                Object.assign(css, {'--top': '0px', '--right': '0px', '--bottom': 'auto', '--left': 'auto'});
+                Object.assign(target, {'--top': '0px', '--right': '0px', '--bottom': 'auto', '--left': 'auto'});
                 break;
             case 'bottom-right':
-                Object.assign(css, {'--bottom': '0px', '--right': '0px', '--top': 'auto', '--left': 'auto'});
+                Object.assign(target, {'--bottom': '0px', '--right': '0px', '--top': 'auto', '--left': 'auto'});
                 break;
             case 'bottom-left':
-                Object.assign(css, {'--bottom': '0px', '--left': '0px', '--top': 'unset', '--right': 'unset'});
+                Object.assign(target, {'--bottom': '0px', '--left': '0px', '--top': 'unset', '--right': 'unset'});
                 break;
             case 'center':
-                Object.assign(css, {
+                Object.assign(target, {
                     '--top': '50%',
                     '--left': '50%',
                     '--bottom': 'unset',
@@ -826,16 +791,79 @@ function parseBackgroundCss(settings) {
                 });
                 break;
         }
+    };
+
+    // Loop through all settings
+    for (const [key, value] of Object.entries(settings)) {
+        if (value == null) continue;
+
+        const isMobile = key.endsWith('-mobile');
+        const target = isMobile ? mobileProps : css.props;
+        const propKey = `--${key.replace('-mobile', '')}`;
+
+        switch (key) {
+            case 'image-large':
+                target[propKey] = !isFeatured ? imageSet(value, settings.resolution ?? 'large') : '%POST_IMG_URL_LARGE%';
+                break;
+            case 'image-mobile':
+                target[propKey] = !isFeatured ? imageSet(value, settings.resolutionMobile ?? settings.resolution ?? 'large') : '%POST_IMG_URL_MOBILE%';
+                break;
+            case 'video-large':
+                target[propKey] = `url(${value})`;
+                break;
+            case 'video-mobile':
+                target[propKey] = `url(${value})`;
+                break;
+            case 'color':
+                target[propKey] = value;
+                break;
+            case 'overlay':
+                target[propKey] = value;
+                break;
+            case 'scale':
+                target['--size'] = value ? `${parseFloat(value)}%` : settings.size ?? null;
+                break;
+            case 'size':
+                if (!settings.scale) target['--size'] = value;
+                break;
+            case 'width':
+                target[propKey] = `${value}%`;
+                break;
+            case 'height':
+                target[propKey] = `${value}%`;
+                break;
+            case 'opacity':
+                target[propKey] = parseFloat(value) / 100;
+                break;
+            case 'fade':
+                target[propKey] = `linear-gradient(to bottom, #000000ff ${value}%, #00000000 100%)`;
+                break;
+            case 'position':
+                assignPosition(target, value);
+                break;
+            case 'fixed':
+                target[propKey] = 'fixed';
+                break;
+            case 'mask-image':
+            case 'mask-image-mobile':
+                target[propKey] = `url(${value?.url ?? value})`;
+                break;
+            case 'mask-origin':
+            case 'mask-origin-mobile':
+                target[propKey] = value;
+                break;
+            case 'mask-size':
+            case 'mask-size-mobile':
+                target[propKey] = value;
+                break;
+            default:
+                break;
+        }
     }
 
-    // Fixed
-    if (settings.fixed) css['--attachment'] = 'fixed';
-
-    // Mask
-    if (settings.mask) {
-        if (settings['mask-image']) css['--mask-image'] = `url(${settings['mask-image']?.url ?? settings['mask-image']})`;
-        if (settings['mask-origin']) css['--mask-origin'] = settings['mask-origin'];
-        if (settings['mask-size']) css['--mask-size'] = settings['mask-size'];
+    // Add mobile props under the selected breakpoint
+    if (Object.keys(mobileProps).length) {
+        css.breakpoints[bp] = mobileProps;
     }
 
     return css;

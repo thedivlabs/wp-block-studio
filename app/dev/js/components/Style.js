@@ -39,24 +39,6 @@ export function useUniqueId({name, attributes}) {
     return uniqueId || instanceId;
 }
 
-function cleanDeep(obj) {
-    if (_.isArray(obj)) {
-        return _(obj)
-            .map(cleanDeep)
-            .reject((v) => _.isNil(v) || v === '' || (_.isObject(v) && _.isEmpty(v)))
-            .value();
-    }
-
-    if (_.isPlainObject(obj)) {
-        return _(obj)
-            .mapValues(cleanDeep)
-            .omitBy((v) => _.isNil(v) || v === '' || (_.isObject(v) && _.isEmpty(v)))
-            .value();
-    }
-
-    return obj;
-}
-
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
 
@@ -221,6 +203,17 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
             .trim();
     }, [attributes]);
 
+    function cleanLayout(layoutObj) {
+        return {
+            props: _.omitBy(layoutObj.props || {}, (v) => v === null || v === undefined || v === ''),
+            breakpoints: _.mapValues(layoutObj.breakpoints || {}, (bpProps) =>
+                _.omitBy(bpProps, (v) => v === null || v === undefined || v === '')
+            ),
+            hover: _.omitBy(layoutObj.hover || {}, (v) => v === null || v === undefined || v === ''),
+            classNames: layoutObj.classNames || '',
+        };
+    }
+
     const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
         breakpoints: layoutAttrs.breakpoints || {},
@@ -231,7 +224,7 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
             // Compute merged CSS directly
-            const mergedCss = _.merge({}, parseLayoutForCSS(newLayoutObj), css);
+            const mergedCss = _.merge({}, cleanLayout(newLayoutObj), css);
 
             const update = {'wpbs-layout': cleanDeep(newLayoutObj)};
 

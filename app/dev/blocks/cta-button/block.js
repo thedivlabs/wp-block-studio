@@ -50,7 +50,7 @@ registerBlockType(metadata.name, {
     },
     edit: withStyle((props) => {
 
-        const {attributes, setAttributes, clientId, setCss} = props;
+        const {attributes, setAttributes, clientId, setCss, setStyleOptions} = props;
 
         const {'wpbs-cta': settings = {}, style} = attributes;
 
@@ -192,6 +192,7 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setCss(cssProps);
+            setStyleOptions({background: true});
         }, [cssProps, setCss]);
 
         useEffect(() => {

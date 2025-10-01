@@ -324,23 +324,10 @@ function Layout({attributes, setAttributes, css = {}, uniqueId}) {
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
             // Compute merged CSS directly
-            const mergedCss = cleanLayout(_.merge({}, parseLayoutForCSS(newLayoutObj), css));
 
-            const update = {'wpbs-layout': newLayoutObj};
-
-            // Only update if CSS changed
-            if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {
-                update['wpbs-css'] = mergedCss;
-            }
-
-            // Ensure uniqueId is set once
-            if (!attributes?.uniqueId && uniqueId) {
-                update.uniqueId = uniqueId;
-            }
-
-            setAttributes(update);
+            setAttributes(newLayoutObj);
         },
-        [attributes, setAttributes, uniqueId, css] // `css` is the current memoCss
+        [attributes, setAttributes] // `css` is the current memoCss
     );
 
     const updateLayoutItem = useCallback(
@@ -1411,10 +1398,10 @@ export function withStyle(EditComponent) {
         const uniqueId = useUniqueId(props);
 
         useEffect(() => {
-            const layoutCss = parseLayoutForCSS(attributes['wpbs-layout'] ?? {});
-            const mergedCss = cleanLayout(_.merge({}, layoutCss, css));
+            const mergedCss = _.merge({}, attributes['wpbs-layout']?.css ?? {}, attributes['wpbs-background']?.css ?? {});
 
             const update = {};
+
             if (!_.isEqual(mergedCss, attributes['wpbs-css'])) {
                 update['wpbs-css'] = mergedCss;
             }
@@ -1426,7 +1413,8 @@ export function withStyle(EditComponent) {
             if (Object.keys(update).length) {
                 setAttributes(update);
             }
-        }, [attributes['wpbs-layout'], attributes['wpbs-background'], css, uniqueId, setAttributes]);
+        }, [attributes['wpbs-layout']?.css, attributes['wpbs-background']?.css, uniqueId, setAttributes]);
+
 
         return (
             <>

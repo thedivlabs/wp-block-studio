@@ -1402,11 +1402,31 @@ const StyleElements = ({attributes, options = {}}) => {
 export function withStyle(EditComponent) {
     return (props) => {
 
+        const {attributes, setAttributes} = props;
+
         const [style, setStyle] = useState({});
 
         const {css = {}, background = false} = style;
 
         const uniqueId = useUniqueId(props);
+
+        useEffect(() => {
+            const layoutCss = parseLayoutForCSS(attributes['wpbs-layout'] ?? {});
+            const mergedCss = cleanLayout(_.merge({}, layoutCss, css));
+
+            const update = {};
+            if (!_.isEqual(mergedCss, attributes['wpbs-css'])) {
+                update['wpbs-css'] = mergedCss;
+            }
+
+            if (!attributes.uniqueId && uniqueId) {
+                update.uniqueId = uniqueId;
+            }
+
+            if (Object.keys(update).length) {
+                setAttributes(update);
+            }
+        }, [attributes['wpbs-layout'], attributes['wpbs-background'], css, uniqueId, setAttributes]);
 
         return (
             <>

@@ -921,6 +921,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             type: 'color',
             label: 'Color',
             slug: 'color',
+            large: true,
         },
         {
             type: 'range',
@@ -928,6 +929,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             slug: 'scale',
             min: 0,
             max: 200,
+            large: true,
         },
         {
             type: 'range',
@@ -935,6 +937,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             slug: 'opacity',
             min: 0,
             max: 100,
+            large: true,
         },
         {
             type: 'range',
@@ -942,6 +945,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             slug: 'width',
             min: 0,
             max: 100,
+            large: true,
         },
         {
             type: 'range',
@@ -949,6 +953,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             slug: 'height',
             min: 0,
             max: 100,
+            large: true,
         },
         {
             type: 'range',
@@ -956,6 +961,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             slug: 'fade',
             min: 0,
             max: 100,
+            large: true,
         },
         {
             type: 'image',
@@ -1064,10 +1070,12 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                         return (
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 {tabFields.map((field) => {
-
+                                    console.log(field);
                                     const slug = tab.name === 'mobile' && !field.slug.endsWith('-mobile')
                                         ? `${field.slug}-mobile`
                                         : field.slug;
+
+                                    field.slug = slug;
 
                                     return <Field
                                         key={slug}

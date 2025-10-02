@@ -196,11 +196,7 @@ registerBlockType(metadata.name, {
                 css: cssProps,
             });
         }, [cssProps, setStyle]);
-
-        useEffect(() => {
-            console.log(attributes);
-        }, [attributes]);
-
+        
 
         return (
             <>

@@ -100,6 +100,19 @@ const SPECIAL_FIELDS = [
     'background-color',
 ];
 
+function cleanObject(obj) {
+    return _.transform(obj, (result, value, key) => {
+        if (_.isPlainObject(value)) {
+            const cleaned = cleanObject(value);
+            if (!_.isEmpty(cleaned)) {
+                result[key] = cleaned;
+            }
+        } else if (!_.isNil(value) && value !== '') {
+            result[key] = value;
+        }
+    }, {});
+}
+
 export function useUniqueId({name, attributes}) {
 
 
@@ -705,129 +718,104 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-function imageSet(media, resolution) {
-    const size = media?.sizes?.[resolution || 'large'];
-    const url = size?.url ?? media?.url ?? false;
-    if (!url) return '';
-    const ext = url.endsWith('.png') ? 'image/png' : 'image/jpeg';
-    const webp = `url("${url}.webp") type("image/webp")`;
-    const fallback = `url("${url}") type("${ext}")`;
-    return `image-set(${webp}, ${fallback})`;
-}
 
-function parseBackgroundCss(settings) {
-    const css = {
-        props: {},
-        breakpoints: {},
-    };
+function parseBackgroundCSS(settings = {}) {
+    if (_.isEmpty(settings)) return {};
 
-    const bp = settings?.breakpoint ?? 'normal';
-    const mobileProps = {};
+    const css = {};
 
-    const isFeatured = settings.type === 'featured-image';
-
-    // Helper to assign position
-    const assignPosition = (target, pos) => {
-        switch (pos) {
-            case 'top-left':
-                Object.assign(target, {'--top': '0px', '--left': '0px', '--bottom': 'auto', '--right': 'auto'});
-                break;
-            case 'top-right':
-                Object.assign(target, {'--top': '0px', '--right': '0px', '--bottom': 'auto', '--left': 'auto'});
-                break;
-            case 'bottom-right':
-                Object.assign(target, {'--bottom': '0px', '--right': '0px', '--top': 'auto', '--left': 'auto'});
-                break;
-            case 'bottom-left':
-                Object.assign(target, {'--bottom': '0px', '--left': '0px', '--top': 'unset', '--right': 'unset'});
-                break;
-            case 'center':
-                Object.assign(target, {
-                    '--top': '50%',
-                    '--left': '50%',
-                    '--bottom': 'unset',
-                    '--right': 'unset',
-                    '--transform': 'translate(-50%,-50%)',
-                });
-                break;
-        }
-    };
-
-    // Loop through all settings
-    for (const [key, value] of Object.entries(settings)) {
-        if (value == null) continue;
-
-        const isMobile = key.endsWith('-mobile');
-        const target = isMobile ? mobileProps : css.props;
-        const propKey = `--${key.replace('-mobile', '')}`;
-
-        switch (key) {
-            case 'image-large':
-                target[propKey] = !isFeatured ? imageSet(value, settings.resolution ?? 'large') : '%POST_IMG_URL_LARGE%';
-                break;
-            case 'image-mobile':
-                target[propKey] = !isFeatured ? imageSet(value, settings.resolutionMobile ?? settings.resolution ?? 'large') : '%POST_IMG_URL_MOBILE%';
-                break;
-            case 'video-large':
-                target[propKey] = `url(${value})`;
-                break;
-            case 'video-mobile':
-                target[propKey] = `url(${value})`;
-                break;
-            case 'color':
-                target[propKey] = value;
-                break;
-            case 'overlay':
-                target[propKey] = value;
-                break;
-            case 'scale':
-                target['--size'] = value ? `${parseFloat(value)}%` : settings.size ?? null;
-                break;
-            case 'size':
-                if (!settings.scale) target['--size'] = value;
-                break;
-            case 'width':
-                target[propKey] = `${value}%`;
-                break;
-            case 'height':
-                target[propKey] = `${value}%`;
-                break;
-            case 'opacity':
-                target[propKey] = parseFloat(value) / 100;
-                break;
-            case 'fade':
-                target[propKey] = `linear-gradient(to bottom, #000000ff ${value}%, #00000000 100%)`;
-                break;
-            case 'position':
-                assignPosition(target, value);
-                break;
-            case 'fixed':
-                target[propKey] = 'fixed';
-                break;
-            case 'mask-image':
-            case 'mask-image-mobile':
-                target[propKey] = `url(${value?.url ?? value})`;
-                break;
-            case 'mask-origin':
-            case 'mask-origin-mobile':
-                target[propKey] = value;
-                break;
-            case 'mask-size':
-            case 'mask-size-mobile':
-                target[propKey] = value;
-                break;
-            default:
-                break;
-        }
+    // Background type
+    if (settings['bg-type']) {
+        css['--bg-type'] = settings['bg-type'];
     }
 
-    // Add mobile props under the selected breakpoint
-    if (Object.keys(mobileProps).length) {
-        css.breakpoints[bp] = mobileProps;
+    // Image URLs
+    if (settings['bg-large-image']?.url) {
+        css['--bg-image-large'] = `url(${settings['bg-large-image'].url})`;
+    }
+    if (settings['bg-mobile-image']?.url) {
+        css['--bg-image-mobile'] = `url(${settings['bg-mobile-image'].url})`;
+    }
+
+    // Video URLs
+    if (settings['bg-large-video']?.url) {
+        css['--bg-video-large'] = settings['bg-large-video'].url;
+    }
+    if (settings['bg-mobile-video']?.url) {
+        css['--bg-video-mobile'] = settings['bg-mobile-video'].url;
+    }
+
+    // Masks
+    if (settings['bg-mask-image-large']?.url) {
+        css['--bg-mask-large'] = `url(${settings['bg-mask-image-large'].url})`;
+    }
+    if (settings['bg-mask-image-mobile']?.url) {
+        css['--bg-mask-mobile'] = `url(${settings['bg-mask-image-mobile'].url})`;
+    }
+
+    // Positioning
+    if (settings['bg-position']) {
+        css['--bg-position'] = settings['bg-position'];
+    }
+    if (settings['bg-position-mobile']) {
+        css['--bg-position-mobile'] = settings['bg-position-mobile'];
+    }
+
+    // Size
+    if (settings['bg-size']) {
+        css['--bg-size'] = settings['bg-size'];
+    }
+    if (settings['bg-size-mobile']) {
+        css['--bg-size-mobile'] = settings['bg-size-mobile'];
+    }
+
+    // Dimensions
+    if (settings['bg-width']) {
+        css['--bg-width'] = settings['bg-width'];
+    }
+    if (settings['bg-height']) {
+        css['--bg-height'] = settings['bg-height'];
+    }
+    if (settings['bg-width-mobile']) {
+        css['--bg-width-mobile'] = settings['bg-width-mobile'];
+    }
+    if (settings['bg-height-mobile']) {
+        css['--bg-height-mobile'] = settings['bg-height-mobile'];
+    }
+
+    // Scale
+    if (settings['bg-scale']) {
+        css['--bg-scale'] = settings['bg-scale'];
+    }
+    if (settings['bg-scale-mobile']) {
+        css['--bg-scale-mobile'] = settings['bg-scale-mobile'];
+    }
+
+    // Opacity
+    if (settings['bg-opacity']) {
+        css['--bg-opacity'] = settings['bg-opacity'];
+    }
+    if (settings['bg-opacity-mobile']) {
+        css['--bg-opacity-mobile'] = settings['bg-opacity-mobile'];
+    }
+
+    // Extra flags
+    if (settings['bg-fixed']) {
+        css['--bg-fixed'] = 'true';
+    }
+    if (settings['bg-mask']) {
+        css['--bg-mask'] = settings['bg-mask'];
+    }
+    if (settings['bg-fade']) {
+        css['--bg-fade'] = settings['bg-fade'];
+    }
+    if (settings['bg-fade-mobile']) {
+        css['--bg-fade-mobile'] = settings['bg-fade-mobile'];
     }
 
     return css;
 }
+
 
 function normalizeBackgroundMedia(type, media, resolution = 'large') {
     if (!media) return {};
@@ -1372,24 +1360,39 @@ export function withStyle(EditComponent) {
         useEffect(() => {
 
 
-            console.log(layoutSettings);
-            console.log(backgroundSettings);
+            const layoutCss = parseLayoutCSS(layoutSettings);
+            const backgroundCss = parseBackgroundCSS(backgroundSettings);
 
-            /*   const mergedCss = _.merge({}, attributes['wpbs-layout']?.css ?? {}, attributes['wpbs-background']?.css ?? {});
+            const mergedCss = _.merge({}, backgroundCss, layoutCss, css);
 
-               const update = {};
+            let result = {
+                'wpbs-style': {},
+                'wpbs-css': {},
+            };
 
-               if (!_.isEqual(mergedCss, attributes['wpbs-css'])) {
-                   update['wpbs-css'] = mergedCss;
-               }
+            if (!_.isEqual(layoutSettings, settings?.layout)) {
+                result['wpbs-style'].layout = layoutSettings;
+            }
 
-               if (!attributes.uniqueId && uniqueId) {
-                   update.uniqueId = uniqueId;
-               }
+            if (!_.isEqual(backgroundSettings, settings?.background)) {
+                result['wpbs-style'].background = backgroundSettings;
+            }
 
-               if (Object.keys(update).length) {
-                   setAttributes(update);
-               }*/
+            if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {
+                result['wpbs-css'] = mergedCss;
+            }
+
+            result = cleanObject(result);
+
+            if (!_.isEmpty(result)) {
+
+                if (!attributes?.uniqueId) {
+                    result.uniqueId = uniqueId;
+                }
+
+                setAttributes(result);
+            }
+
         }, [layoutSettings, backgroundSettings, uniqueId, setAttributes]);
 
 
@@ -1405,7 +1408,7 @@ export function withStyle(EditComponent) {
                     {!!background ? <BackgroundFields {...props} backgroundSettings={backgroundSettings}
                                                       setBackgroundSettings={setBackgroundSettings}/> : null}
                 </InspectorControls>
-                <Style {...props} css={css}/>
+                <Style {...props}/>
             </>
         );
     };

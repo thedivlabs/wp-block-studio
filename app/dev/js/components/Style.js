@@ -501,6 +501,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     value={settings?.[slug]}
                     onChange={callback}
                     {...controlProps}
+                    className={classNames}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -514,6 +515,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     checked={!!settings?.[slug]}
                     onChange={callback}
                     {...controlProps}
+                    className={classNames}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -527,6 +529,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     value={settings?.[slug]}
                     onChange={callback}
                     {...controlProps}
+                    className={classNames}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -538,7 +541,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             control = (
                 <PanelColorSettings
                     enableAlpha
-                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0 ' + classNames}
                     colorSettings={[
                         {
                             slug: slug,
@@ -554,7 +557,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
 
         case 'gradient':
             control = (
-                <BaseControl label={label} __nextHasNoMarginBottom={true}>
+                <BaseControl label={label} __nextHasNoMarginBottom={true} className={classNames}>
                     <GradientPicker
                         gradients={[
                             {
@@ -592,6 +595,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     values={settings?.[slug]}
                     onChange={callback}
                     {...controlProps}
+                    className={classNames}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -605,6 +609,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     value={settings?.[slug]}
                     onChange={callback}
                     {...controlProps}
+                    className={classNames}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -866,7 +871,6 @@ function normalizeBackgroundMedia(type, media, resolution = 'large') {
             return {};
     }
 }
-
 
 const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings}) => {
 

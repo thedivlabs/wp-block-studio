@@ -1134,7 +1134,7 @@ export function withStyle(EditComponent) {
                 if (!attributes?.uniqueId) {
                     result.uniqueId = uniqueId;
                 }
-                console.log('updating style attributes', result);
+                
                 setAttributes(result);
             }
 

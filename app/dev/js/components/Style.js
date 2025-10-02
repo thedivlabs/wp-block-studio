@@ -475,6 +475,10 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
 
     let control;
 
+    const classNames = [
+        !!large ? 'col-span-full' : null,
+    ].filter(Boolean).join(' ');
+
     switch (type) {
         case 'select':
             control = (
@@ -483,6 +487,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     value={settings?.[slug]}
                     onChange={callback}
                     {...controlProps}
+                    className={classNames}
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                 />
@@ -613,7 +618,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             const clear = () => callback('');
 
             control = (
-                <BaseControl label={label} __nextHasNoMarginBottom>
+                <BaseControl label={label} __nextHasNoMarginBottom className={classNames}>
                     <MediaUploadCheck>
                         <MediaUpload
                             title={label}
@@ -639,9 +644,8 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             control = null;
     }
 
-
     return (!!toolspanel ? <ToolsPanelItem
-        style={{gridColumn: !!large ? '1/-1' : 'span 1'}}
+        className={classNames}
         label={label}
         hasValue={() => !!settings?.[slug]}
         onDeselect={() => handleChange('')}

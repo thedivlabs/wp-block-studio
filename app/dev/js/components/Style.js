@@ -863,6 +863,7 @@ function normalizeBackgroundMedia(type, media, resolution = 'large') {
     }
 }
 
+
 const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings}) => {
 
     const settings = useMemo(() => backgroundSettings, [backgroundSettings]) || {};
@@ -1078,37 +1079,37 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             {
                 type: 'select',
                 label: 'Resolution',
-                slug: 'resolution',
+                slug: 'resolution-mobile',
                 options: RESOLUTION_OPTIONS
             },
             {
                 type: 'select',
                 label: 'Size',
-                slug: 'size',
+                slug: 'size-mobile',
                 options: IMAGE_SIZE_OPTIONS
             },
             {
                 type: 'select',
                 label: 'Blend',
-                slug: 'blend',
+                slug: 'blend-mobile',
                 options: BLEND_OPTIONS
             },
             {
                 type: 'select',
                 label: 'Position',
-                slug: 'position',
+                slug: 'position-mobile',
                 options: OBJECT_POSITION_OPTIONS
             },
             {
                 type: 'select',
                 label: 'Origin',
-                slug: 'origin',
+                slug: 'origin-mobile',
                 options: ORIGIN_OPTIONS
             },
             {
                 type: 'unit',
                 label: 'Max Height',
-                slug: 'max-height',
+                slug: 'max-height-mobile',
                 options: {
                     inputProps: {
                         units: [
@@ -1120,7 +1121,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             {
                 type: 'select',
                 label: 'Repeat',
-                slug: 'repeat',
+                slug: 'repeat-mobile',
                 options: REPEAT_OPTIONS
             },
         ],
@@ -1198,13 +1199,13 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
         <Grid columns={2} columnGap={15} rowGap={20}>
             {desktopFields.image.map((field) => <Field toolspanel={false} field={field}
                                                        settings={settings}
-                                                       callback={updateProp}/>)}
+                                                       callback={(newValue) => updateProp(field.slug, newValue)}/>)}
         </Grid>
 
         <Grid columns={1} columnGap={15} rowGap={20}>
             {desktopFields.element.map((field) => <Field toolspanel={false} field={field}
                                                          settings={settings}
-                                                         callback={updateProp}/>)}
+                                                         callback={(newValue) => updateProp(field.slug, newValue)}/>)}
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20}
@@ -1217,14 +1218,14 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                     slug: 'mask'
                 }}
                 settings={settings}
-                callback={updateProp}
+                callback={(newValue) => updateProp('mask', newValue)}
             />
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
             {desktopFields.mask.map((field) => <Field toolspanel={false} field={field}
                                                       settings={settings}
-                                                      callback={updateProp}/>)}
+                                                      callback={(newValue) => updateProp(field.slug, newValue)}/>)}
         </Grid>
     </Grid>;
 
@@ -1232,13 +1233,13 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
         <Grid columns={2} columnGap={15} rowGap={20}>
             {mobileFields.image.map((field) => <Field toolspanel={false} field={field}
                                                       settings={settings}
-                                                      callback={updateProp}/>)}
+                                                      callback={(newValue) => updateProp(field.slug, newValue)}/>)}
         </Grid>
 
         <Grid columns={1} columnGap={15} rowGap={20}>
             {mobileFields.element.map((field) => <Field toolspanel={false} field={field}
                                                         settings={settings}
-                                                        callback={updateProp}/>)}
+                                                        callback={(newValue) => updateProp(field.slug, newValue)}/>)}
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20}
@@ -1248,17 +1249,17 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                 field={{
                     type: 'toggle',
                     label: 'Mask',
-                    slug: 'mask'
+                    slug: 'mask-mobile'
                 }}
                 settings={settings}
-                callback={updateProp}
+                callback={(newValue) => updateProp('mask-mobile', newValue)}
             />
         </Grid>
 
         <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
             {mobileFields.mask.map((field) => <Field toolspanel={false} field={field}
                                                      settings={settings}
-                                                     callback={updateProp}/>)}
+                                                     callback={(newValue) => updateProp(field.slug, newValue)}/>)}
         </Grid>
     </Grid>;
 
@@ -1291,14 +1292,14 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                       style={{display: settings.type === 'video' ? 'none' : null}}>
                     {sharedFields.image.map((field) => <Field toolspanel={false} field={field}
                                                               settings={settings}
-                                                              callback={updateProp}/>)}
+                                                              callback={(newValue) => updateProp(field.slug, newValue)}/>)}
                 </Grid>
 
                 <Grid columns={2} columnGap={15} rowGap={20}
                       style={{display: settings.type !== 'video' ? 'none' : null}}>
                     {sharedFields.video.map((field) => <Field toolspanel={false} field={field}
                                                               settings={settings}
-                                                              callback={updateProp}/>)}
+                                                              callback={(newValue) => updateProp(field.slug, newValue)}/>)}
                 </Grid>
 
                 <Grid columns={2} columnGap={15} rowGap={20}
@@ -1306,7 +1307,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
 
                     {sharedFields.settings.map((field) => <Field toolspanel={false} field={field}
                                                                  settings={settings}
-                                                                 callback={updateProp}/>)}
+                                                                 callback={(newValue) => updateProp(field.slug, newValue)}/>)}
 
                 </Grid>
 

@@ -1,26 +1,31 @@
 import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {
-    __experimentalGrid as Grid,
     __experimentalBoxControl as BoxControl,
+    __experimentalGrid as Grid,
     __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
-    Button, PanelBody, SelectControl, TextControl, TabPanel,
-    __experimentalUnitControl as UnitControl, BaseControl, GradientPicker,
+    __experimentalUnitControl as UnitControl,
+    BaseControl,
+    Button,
+    GradientPicker,
+    PanelBody,
     RangeControl,
+    SelectControl,
+    TabPanel,
+    TextControl,
     ToggleControl
 } from "@wordpress/components";
-import {
-    InspectorControls, MediaUpload, MediaUploadCheck,
-    PanelColorSettings,
-} from "@wordpress/block-editor";
+import {InspectorControls, MediaUpload, MediaUploadCheck, PanelColorSettings,} from "@wordpress/block-editor";
 import {
     BLEND_OPTIONS,
     DIMENSION_UNITS,
     DIRECTION_OPTIONS,
     DISPLAY_OPTIONS,
-    IMAGE_SIZE_OPTIONS, ORIGIN_OPTIONS,
-    RESOLUTION_OPTIONS,
-    OBJECT_POSITION_OPTIONS, REPEAT_OPTIONS
+    IMAGE_SIZE_OPTIONS,
+    OBJECT_POSITION_OPTIONS,
+    ORIGIN_OPTIONS,
+    REPEAT_OPTIONS,
+    RESOLUTION_OPTIONS
 } from "Includes/config";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
@@ -31,10 +36,6 @@ export const STYLE_ATTRIBUTES = {
     'uniqueId': {
         type: 'string'
     },
-    'wpbs-layout': {
-        type: 'object',
-        default: {},
-    },
     'wpbs-css': {
         type: 'object',
         default: {},
@@ -42,41 +43,11 @@ export const STYLE_ATTRIBUTES = {
     'wpbs-preload': {
         type: 'array',
     },
-    'wpbs-background': {
+    'wpbs-style': {
         type: 'object',
+        default: {},
     }
 }
-
-const BACKGROUND_SPECIAL_PROPS = [
-    'type',
-    'mobileImage',
-    'largeImage',
-    'mobileVideo',
-    'largeVideo',
-    'maskImageMobile',
-    'maskImageLarge',
-    'resolution',
-    'position',
-    'positionMobile',
-    'eager',
-    'force',
-    'mask',
-    'fixed',
-    'size',
-    'sizeMobile',
-    'opacity',
-    'width',
-    'height',
-    'resolutionMobile',
-    'maskMobile',
-    'scale',
-    'scaleMobile',
-    'opacityMobile',
-    'widthMobile',
-    'heightMobile',
-    'fade',
-    'fadeMobile',
-];
 
 const BACKGROUND_IMAGE_SLUGS = ['image-large', 'image-mobile', 'mask-image', 'mask-image-mobile'];
 const BACKGROUND_VIDEO_SLUGS = ['video-large', 'video-mobile'];
@@ -127,6 +98,34 @@ const SPECIAL_FIELDS = [
     'border',
     'border-radius',
     'background-color',
+    'bg-type',
+    'bg-mobile-image',
+    'bg-large-image',
+    'bg-mobile-video',
+    'bg-large-video',
+    'bg-mask-image-large',
+    'bg-resolution',
+    'bg-position',
+    'bg-eager',
+    'bg-force',
+    'bg-mask',
+    'bg-fixed',
+    'bg-size',
+    'bg-opacity',
+    'bg-width',
+    'bg-height',
+    'bg-scale',
+    'bg-fade',
+    'bg-mask-image-mobile',
+    'bg-position-mobile',
+    'bg-size-mobile',
+    'bg-resolution-mobile',
+    'bg-mask-mobile',
+    'bg-scale-mobile',
+    'bg-opacity-mobile',
+    'bg-width-mobile',
+    'bg-height-mobile',
+    'bg-fade-mobile',
 ];
 
 export function useUniqueId({name, attributes}) {
@@ -189,10 +188,7 @@ function cleanLayout(layoutObj) {
     };
 }
 
-/**
- * Flattens special field values into CSS-ready props.
- */
-function parseLayoutSpecial(props = {}) {
+function parseSpecialProps(props = {}) {
     const result = {};
 
     Object.entries(props).forEach(([key, val]) => {
@@ -228,19 +224,19 @@ export function parseLayoutCSS(settings = {}) {
 
     // Default props
     if (settings.props) {
-        cssObj.props = parseLayoutSpecial(settings.props);
+        cssObj.props = parseSpecialProps(settings.props);
     }
 
     // Breakpoints
     if (settings.breakpoints) {
         Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
-            cssObj.breakpoints[bpKey] = parseLayoutSpecial(bpProps);
+            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
         });
     }
 
     // Hover
     if (settings.hover) {
-        cssObj.hover = parseLayoutSpecial(settings.hover);
+        cssObj.hover = parseSpecialProps(settings.hover);
     }
 
     return cleanLayout(cssObj);
@@ -293,14 +289,14 @@ export const Style = ({attributes, name}) => {
     return <style>{cssString}</style>;
 };
 
-function Layout({attributes, setAttributes, uniqueId}) {
+function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
         return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
     }, []); // empty deps if breakpoints config is static
 
-    const layoutAttrs = useMemo(() => attributes?.['wpbs-layout'] ?? {}, [attributes?.['wpbs-layout']]) || {};
+    const layoutAttrs = useMemo(() => layoutSettings, [layoutSettings]) || {};
 
     const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
@@ -311,11 +307,10 @@ function Layout({attributes, setAttributes, uniqueId}) {
     const setLayoutObj = useCallback(
         (newLayoutObj) => {
 
-            const update = {'wpbs-layout': parseLayoutCSS(newLayoutObj)};
+            setLayoutSettings(newLayoutObj);
 
-            setAttributes(update);
         },
-        [attributes, setAttributes, uniqueId] // `css` is the current memoCss
+        [attributes, setLayoutSettings]
     );
 
     const updateLayoutItem = useCallback(
@@ -868,9 +863,9 @@ function normalizeBackgroundMedia(type, media, resolution = 'large') {
     }
 }
 
-const BackgroundFields = ({attributes, setAttributes}) => {
+const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings}) => {
 
-    const {settings = {}} = attributes?.['wpbs-background'] ?? {};
+    const settings = useMemo(() => backgroundSettings, [backgroundSettings]) || {};
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
@@ -879,8 +874,8 @@ const BackgroundFields = ({attributes, setAttributes}) => {
 
     const updateProp = useCallback(
         (slug, value) => {
-            setAttributes((prevAttrs) => {
-                const prevSettings = prevAttrs['wpbs-background']?.settings || {};
+
+            setBackgroundSettings((prevAttrs) => {
 
                 let newValue;
 
@@ -892,22 +887,14 @@ const BackgroundFields = ({attributes, setAttributes}) => {
                     newValue = value;
                 }
 
-                const settings = {
-                    ...prevSettings,
+                return {
+                    ...prevAttrs,
                     [slug]: newValue,
                 };
-
-                const css = parseBackgroundCss(settings);
-
-                return {
-                    'wpbs-background': {
-                        settings,
-                        css,
-                    },
-                };
             });
+
         },
-        [setAttributes]
+        [setBackgroundSettings]
     );
 
     const sharedFields = {
@@ -1296,12 +1283,12 @@ const BackgroundFields = ({attributes, setAttributes}) => {
                     ]
                 }}
                 settings={settings}
-                callback={updateProp}
+                callback={(newValue) => updateProp('type', newValue)}
             />
             <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
 
                 <Grid columns={2} columnGap={15} rowGap={20}
-                      style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
+                      style={{display: settings.type === 'video' ? 'none' : null}}>
                     {sharedFields.image.map((field) => <Field toolspanel={false} field={field}
                                                               settings={settings}
                                                               callback={updateProp}/>)}
@@ -1377,31 +1364,41 @@ const StyleElements = ({attributes, options = {}}) => {
 export function withStyle(EditComponent) {
     return (props) => {
 
-        const {attributes, setAttributes} = props;
-
+        // Settings passed in from the block
         const [style, setStyle] = useState({});
-
         const {css = {}, background = false} = style;
+
+        // Local settings
+        const {attributes, setAttributes} = props;
+        const {'wpbs-style': settings = {}} = attributes || {};
+
+        const [layoutSettings, setLayoutSettings] = useState(settings?.layout ?? {});
+        const [backgroundSettings, setBackgroundSettings] = useState(settings?.background ?? {});
 
         const uniqueId = useUniqueId(props);
 
         useEffect(() => {
-            const mergedCss = _.merge({}, attributes['wpbs-layout']?.css ?? {}, attributes['wpbs-background']?.css ?? {});
 
-            const update = {};
 
-            if (!_.isEqual(mergedCss, attributes['wpbs-css'])) {
-                update['wpbs-css'] = mergedCss;
-            }
+            console.log(layoutSettings);
+            console.log(backgroundSettings);
 
-            if (!attributes.uniqueId && uniqueId) {
-                update.uniqueId = uniqueId;
-            }
+            /*   const mergedCss = _.merge({}, attributes['wpbs-layout']?.css ?? {}, attributes['wpbs-background']?.css ?? {});
 
-            if (Object.keys(update).length) {
-                setAttributes(update);
-            }
-        }, [attributes['wpbs-layout']?.css, attributes['wpbs-background']?.css, uniqueId, setAttributes]);
+               const update = {};
+
+               if (!_.isEqual(mergedCss, attributes['wpbs-css'])) {
+                   update['wpbs-css'] = mergedCss;
+               }
+
+               if (!attributes.uniqueId && uniqueId) {
+                   update.uniqueId = uniqueId;
+               }
+
+               if (Object.keys(update).length) {
+                   setAttributes(update);
+               }*/
+        }, [layoutSettings, backgroundSettings, uniqueId, setAttributes]);
 
 
         return (
@@ -1412,8 +1409,9 @@ export function withStyle(EditComponent) {
                     StyleElements={StyleElements}
                 />
                 <InspectorControls group={'styles'}>
-                    <Layout {...props} uniqueId={uniqueId}/>
-                    {!!background ? <BackgroundFields {...props}/> : null}
+                    <Layout {...props} layoutSettings={layoutSettings} setLayoutSettings={setLayoutSettings}/>
+                    {!!background ? <BackgroundFields {...props} backgroundSettings={backgroundSettings}
+                                                      setBackgroundSettings={setBackgroundSettings}/> : null}
                 </InspectorControls>
                 <Style {...props} css={css}/>
             </>

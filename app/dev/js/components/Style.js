@@ -333,7 +333,6 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
     const updateDefaultLayout = useCallback(
         (newProps) => {
-
             setLayoutObj({
                 ...layoutObj,
                 props: {...layoutObj.props, ...newProps}
@@ -476,7 +475,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
     let control;
 
     const classNames = [
-        !!large ? 'col-span-full' : null,
+        !!large ? 'col-span-full' : '!col-span-1',
     ].filter(Boolean).join(' ');
 
     switch (type) {
@@ -694,7 +693,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
 
     return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
                                                                                           settings={settings}
-                                                                                          callback={updateProp}/>);
+                                                                                          callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
 });
 
 const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
@@ -719,7 +718,8 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
     return fields.filter((field) => !suppress.includes(field.slug)).map((field) => {
         return <Field field={field}
                       settings={hoverSettings}
-                      callback={updateProp}/>;
+                      callback={(newValue) => updateProp({[field.slug]: newValue})}
+        />;
     });
 
 });

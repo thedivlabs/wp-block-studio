@@ -5,6 +5,7 @@ module.exports = {
         './app/public/wp-content/plugins/wp-block-studio/*.{php,html}',
         './app/public/wp-content/plugins/wp-block-studio/core/**/*.{js,jsx,ts,tsx,css,scss,php,html}',
     ],
+    safelist: ['col-span-1'],
     theme: {
         extend: {
             animation: {

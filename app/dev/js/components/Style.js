@@ -98,34 +98,6 @@ const SPECIAL_FIELDS = [
     'border',
     'border-radius',
     'background-color',
-    'bg-type',
-    'bg-mobile-image',
-    'bg-large-image',
-    'bg-mobile-video',
-    'bg-large-video',
-    'bg-mask-image-large',
-    'bg-resolution',
-    'bg-position',
-    'bg-eager',
-    'bg-force',
-    'bg-mask',
-    'bg-fixed',
-    'bg-size',
-    'bg-opacity',
-    'bg-width',
-    'bg-height',
-    'bg-scale',
-    'bg-fade',
-    'bg-mask-image-mobile',
-    'bg-position-mobile',
-    'bg-size-mobile',
-    'bg-resolution-mobile',
-    'bg-mask-mobile',
-    'bg-scale-mobile',
-    'bg-opacity-mobile',
-    'bg-width-mobile',
-    'bg-height-mobile',
-    'bg-fade-mobile',
 ];
 
 export function useUniqueId({name, attributes}) {
@@ -482,6 +454,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'select':
             control = (
                 <SelectControl
+                    key={slug}
                     label={label}
                     value={settings?.[slug]}
                     onChange={callback}
@@ -496,6 +469,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'text':
             control = (
                 <TextControl
+                    key={slug}
                     label={label}
                     value={settings?.[slug]}
                     onChange={callback}
@@ -510,6 +484,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'toggle':
             control = (
                 <ToggleControl
+                    key={slug}
                     label={label}
                     checked={!!settings?.[slug]}
                     onChange={callback}
@@ -524,6 +499,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'range':
             control = (
                 <RangeControl
+                    key={slug}
                     label={label}
                     value={settings?.[slug]}
                     onChange={callback}
@@ -539,6 +515,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'color':
             control = (
                 <PanelColorSettings
+                    key={slug}
                     enableAlpha
                     className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0 ' + classNames}
                     colorSettings={[
@@ -558,6 +535,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             control = (
                 <BaseControl label={label} __nextHasNoMarginBottom={true} className={classNames}>
                     <GradientPicker
+                        key={slug}
                         gradients={[
                             {
                                 name: 'Transparent',
@@ -590,6 +568,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'box':
             control = (
                 <BoxControl
+                    key={slug}
                     label={label}
                     values={settings?.[slug]}
                     onChange={callback}
@@ -604,6 +583,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'unit':
             control = (
                 <UnitControl
+                    key={slug}
                     label={label}
                     value={settings?.[slug]}
                     onChange={callback}
@@ -625,6 +605,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                 <BaseControl label={label} __nextHasNoMarginBottom className={classNames}>
                     <MediaUploadCheck>
                         <MediaUpload
+                            key={slug}
                             title={label}
                             onSelect={callback}
                             allowedTypes={allowedTypes}
@@ -1271,11 +1252,6 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
         </Grid>
     </Grid>;
 
-    const tabs = {
-        mobile: tabMobile,
-        desktop: tabDesktop,
-    }
-
     return <PanelBody title={'Background'} initialOpen={!!settings.type}>
         <Grid columns={1} columnGap={15} rowGap={20}>
             <Field
@@ -1336,9 +1312,11 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                             className: 'tab-mobile',
                         },
                     ]}>
-                    {
-                        (tab) => (<>{tabs[tab.name]}</>)
-                    }
+                    {(tab) => {
+                        if (tab.name === 'desktop') return tabDesktop;
+                        if (tab.name === 'mobile') return tabMobile;
+                        return null;
+                    }}
                 </TabPanel>
             </Grid>
         </Grid>

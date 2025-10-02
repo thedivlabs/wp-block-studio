@@ -1108,7 +1108,7 @@ export function withStyle(EditComponent) {
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
 
-            const mergedCss = _.merge({}, backgroundCss, layoutCss, css);
+            const mergedCss = cleanObject(_.merge({}, backgroundCss, layoutCss, css));
 
             let result = {
                 'wpbs-style': {},
@@ -1123,7 +1123,7 @@ export function withStyle(EditComponent) {
                 result['wpbs-style'].background = backgroundSettings;
             }
 
-            if (!_.isEqual(mergedCss, attributes?.['wpbs-css'])) {
+            if (!_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css']))) {
                 result['wpbs-css'] = mergedCss;
             }
 
@@ -1134,7 +1134,7 @@ export function withStyle(EditComponent) {
                 if (!attributes?.uniqueId) {
                     result.uniqueId = uniqueId;
                 }
-
+                console.log('updating style attributes', result);
                 setAttributes(result);
             }
 

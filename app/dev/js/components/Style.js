@@ -744,6 +744,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['scale-mobile']) bpProps['--bg-scale'] = settings['scale-mobile'];
     if (settings['opacity-mobile']) bpProps['--bg-opacity'] = settings['opacity-mobile'];
     if (settings['fade-mobile']) bpProps['--bg-fade'] = settings['fade-mobile'];
+    if (settings['resolution-mobile']) bpProps['--bg-resolution'] = settings['resolution-mobile'];
 
     if (!_.isEmpty(bpProps)) breakpoints[bpKey] = bpProps;
 
@@ -773,21 +774,6 @@ function normalizeBackgroundMedia(type, media, resolution = 'large') {
             return {};
     }
 }
-
-
-const BACKGROUND_TABS = [
-    {
-        name: 'desktop',
-        label: 'Desktop',
-        fields: ['image', 'element', 'mask'], // keys in desktopFields
-    },
-    {
-        name: 'mobile',
-        label: 'Mobile',
-        fields: ['image', 'element', 'mask'], // keys in mobileFields
-    },
-];
-
 
 const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings}) => {
 

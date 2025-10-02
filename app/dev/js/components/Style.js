@@ -928,16 +928,6 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                 slug: 'fixed',
                 label: 'Fixed',
             },
-            {
-                type: 'select',
-                label: 'Breakpoint',
-                slug: 'breakpoint',
-                options: breakpoints
-                    .map((b) => ({
-                        value: b.key,
-                        label: b.label,
-                    }))
-            }
         ]
     }
 
@@ -1245,7 +1235,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
             />
         </Grid>
 
-        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings?.['mask-mobile'] ? 'none' : null}}>
             {mobileFields.mask.map((field) => <Field toolspanel={false} field={field}
                                                      settings={settings}
                                                      callback={(newValue) => updateProp(field.slug, newValue)}/>)}
@@ -1294,6 +1284,21 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                                                                  callback={(newValue) => updateProp(field.slug, newValue)}/>)}
 
                 </Grid>
+
+                <Field
+                    toolspanel={false}
+                    field={{
+                        type: 'select',
+                        slug: 'breakpoint',
+                        label: 'Breakpoint',
+                        options: breakpoints.map((b) => ({
+                            value: b.key,
+                            label: b.label,
+                        }))
+                    }}
+                    settings={settings}
+                    callback={(newValue) => updateProp('breakpoint', newValue)}
+                />
 
                 <TabPanel
                     className="wpbs-editor-tabs"

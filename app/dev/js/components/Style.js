@@ -1070,7 +1070,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                         return (
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 {tabFields.map((field) => {
-                                    
+
                                     const slug = tab.name === 'mobile' && !field.slug.endsWith('-mobile')
                                         ? `${field.slug}-mobile`
                                         : field.slug;
@@ -1078,7 +1078,6 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                                     field.slug = slug;
 
                                     return <Field
-                                        key={slug}
                                         toolspanel={false}
                                         field={field}
                                         settings={settings}

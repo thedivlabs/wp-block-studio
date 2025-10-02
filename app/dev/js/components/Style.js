@@ -49,8 +49,7 @@ export const STYLE_ATTRIBUTES = {
     }
 }
 
-const BACKGROUND_IMAGE_SLUGS = ['image-large', 'image-mobile', 'mask-image', 'mask-image-mobile'];
-const BACKGROUND_VIDEO_SLUGS = ['video-large', 'video-mobile'];
+const BACKGROUND_MEDIA_SLUGS = ['image-large', 'image-mobile', 'mask-image', 'mask-image-mobile', 'video-large', 'video-mobile'];
 
 const SPECIAL_FIELDS = [
     'gap',
@@ -751,31 +750,15 @@ function parseBackgroundCSS(settings = {}) {
     return {props, breakpoints};
 }
 
-function normalizeBackgroundMedia(type, media, resolution = 'large') {
+function normalizeBackgroundMedia(media) {
     if (!media) return {};
 
-    switch (type) {
-        case 'video':
-            return {
-                id: media.id ?? null,
-                url: media.url ?? '',
-            };
-
-        case 'image':
-            return {
-                id: media.id ?? null,
-                url: media.sizes?.[resolution]?.url ?? media.url ?? '',
-                alt: media.alt ?? '',
-                width: media.sizes?.[resolution]?.width ?? media.width ?? null,
-                height: media.sizes?.[resolution]?.height ?? media.height ?? null,
-            };
-
-        default:
-            return {};
-    }
+    return Object.fromEntries(Object.entries({
+        id: media.id ?? null,
+    }).filter(([key, value]) => !!value));
 }
 
-const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings}) => {
+const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
 
     const settings = backgroundSettings;
 
@@ -791,10 +774,8 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
 
                 let newValue;
 
-                if (BACKGROUND_IMAGE_SLUGS.includes(slug)) {
-                    newValue = normalizeBackgroundMedia('image', value);
-                } else if (BACKGROUND_VIDEO_SLUGS.includes(slug)) {
-                    newValue = normalizeBackgroundMedia('video', value);
+                if (BACKGROUND_MEDIA_SLUGS.includes(slug)) {
+                    newValue = normalizeBackgroundMedia(value);
                 } else {
                     newValue = value;
                 }

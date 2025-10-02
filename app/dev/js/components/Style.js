@@ -55,7 +55,6 @@ const BACKGROUND_VIDEO_SLUGS = ['video-large', 'video-mobile'];
 const SPECIAL_FIELDS = [
     'gap',
     'margin',
-    'border',
     'box-shadow',
     'transform',
     'filter',
@@ -162,17 +161,6 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
     return raw;
 }
 
-function cleanLayout(layoutObj) {
-    return {
-        props: _.omitBy(layoutObj.props || {}, (v) => v === null || v === undefined || v === ''),
-        breakpoints: _.mapValues(layoutObj.breakpoints || {}, (bpProps) =>
-            _.omitBy(bpProps, (v) => v === null || v === undefined || v === '')
-        ),
-        hover: _.omitBy(layoutObj.hover || {}, (v) => v === null || v === undefined || v === ''),
-        classNames: layoutObj.classNames || '',
-    };
-}
-
 function parseSpecialProps(props = {}) {
     const result = {};
 
@@ -224,7 +212,7 @@ export function parseLayoutCSS(settings = {}) {
         cssObj.hover = parseSpecialProps(settings.hover);
     }
 
-    return cleanLayout(cssObj);
+    return cssObj;
 }
 
 export const Style = ({attributes, name}) => {
@@ -718,104 +706,49 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-
 function parseBackgroundCSS(settings = {}) {
-    if (_.isEmpty(settings)) return {};
+    if (_.isEmpty(settings)) return {props: {}, breakpoints: {}};
 
-    const css = {};
+    const props = {};
+    const breakpoints = {};
 
-    // Background type
-    if (settings['type']) {
-        css['--bg-type'] = settings['type'];
-    }
+    const bpKey = settings.breakpoint || 'normal';
 
-    // Image URLs
-    if (settings['large-image']?.url) {
-        css['--bg-image-large'] = `url(${settings['large-image'].url})`;
-    }
-    if (settings['mobile-image']?.url) {
-        css['--bg-image-mobile'] = `url(${settings['mobile-image'].url})`;
-    }
+    // Desktop / default props
+    if (settings['type']) props['--bg-type'] = settings['type'];
+    if (settings['large-image']?.id) props['--bg-image-large'] = settings['large-image'].id;
+    if (settings['large-video']?.id) props['--bg-video-large'] = settings['large-video'].id;
+    if (settings['mask-image-large']?.id) props['--bg-mask-large'] = settings['mask-image-large'].id;
 
-    // Video URLs
-    if (settings['large-video']?.url) {
-        css['--bg-video-large'] = settings['large-video'].url;
-    }
-    if (settings['mobile-video']?.url) {
-        css['--bg-video-mobile'] = settings['mobile-video'].url;
-    }
+    if (settings['position']) props['--bg-position'] = settings['position'];
+    if (settings['size']) props['--bg-size'] = settings['size'];
+    if (settings['width']) props['--bg-width'] = settings['width'];
+    if (settings['height']) props['--bg-height'] = settings['height'];
+    if (settings['scale']) props['--bg-scale'] = settings['scale'];
+    if (settings['opacity']) props['--bg-opacity'] = settings['opacity'];
+    if (settings['fixed']) props['--bg-fixed'] = 'true';
+    if (settings['mask']) props['--bg-mask'] = settings['mask'];
+    if (settings['fade']) props['--bg-fade'] = settings['fade'];
 
-    // Masks
-    if (settings['mask-image-large']?.url) {
-        css['--bg-mask-large'] = `url(${settings['mask-image-large'].url})`;
-    }
-    if (settings['mask-image-mobile']?.url) {
-        css['--bg-mask-mobile'] = `url(${settings['mask-image-mobile'].url})`;
-    }
+    // Mobile / breakpoint props
+    const bpProps = {};
 
-    // Positioning
-    if (settings['position']) {
-        css['--bg-position'] = settings['position'];
-    }
-    if (settings['position-mobile']) {
-        css['--bg-position-mobile'] = settings['position-mobile'];
-    }
+    if (settings['mobile-image']?.id) bpProps['--bg-image-mobile'] = settings['mobile-image'].id;
+    if (settings['mobile-video']?.id) bpProps['--bg-video-mobile'] = settings['mobile-video'].id;
+    if (settings['mask-image-mobile']?.id) bpProps['--bg-mask-mobile'] = settings['mask-image-mobile'].id;
 
-    // Size
-    if (settings['size']) {
-        css['--bg-size'] = settings['size'];
-    }
-    if (settings['size-mobile']) {
-        css['--bg-size-mobile'] = settings['size-mobile'];
-    }
+    if (settings['position-mobile']) bpProps['--bg-position'] = settings['position-mobile'];
+    if (settings['size-mobile']) bpProps['--bg-size'] = settings['size-mobile'];
+    if (settings['width-mobile']) bpProps['--bg-width'] = settings['width-mobile'];
+    if (settings['height-mobile']) bpProps['--bg-height'] = settings['height-mobile'];
+    if (settings['scale-mobile']) bpProps['--bg-scale'] = settings['scale-mobile'];
+    if (settings['opacity-mobile']) bpProps['--bg-opacity'] = settings['opacity-mobile'];
+    if (settings['fade-mobile']) bpProps['--bg-fade'] = settings['fade-mobile'];
 
-    // Dimensions
-    if (settings['width']) {
-        css['--bg-width'] = settings['width'];
-    }
-    if (settings['height']) {
-        css['--bg-height'] = settings['height'];
-    }
-    if (settings['width-mobile']) {
-        css['--bg-width-mobile'] = settings['width-mobile'];
-    }
-    if (settings['height-mobile']) {
-        css['--bg-height-mobile'] = settings['height-mobile'];
-    }
+    if (!_.isEmpty(bpProps)) breakpoints[bpKey] = bpProps;
 
-    // Scale
-    if (settings['scale']) {
-        css['--bg-scale'] = settings['scale'];
-    }
-    if (settings['scale-mobile']) {
-        css['--bg-scale-mobile'] = settings['scale-mobile'];
-    }
-
-    // Opacity
-    if (settings['opacity']) {
-        css['--bg-opacity'] = settings['opacity'];
-    }
-    if (settings['opacity-mobile']) {
-        css['--bg-opacity-mobile'] = settings['opacity-mobile'];
-    }
-
-    // Extra flags
-    if (settings['fixed']) {
-        css['--bg-fixed'] = 'true';
-    }
-    if (settings['mask']) {
-        css['--bg-mask'] = settings['mask'];
-    }
-    if (settings['fade']) {
-        css['--bg-fade'] = settings['fade'];
-    }
-    if (settings['fade-mobile']) {
-        css['--bg-fade-mobile'] = settings['fade-mobile'];
-    }
-
-    return css;
+    return {props, breakpoints};
 }
-
 
 function normalizeBackgroundMedia(type, media, resolution = 'large') {
     if (!media) return {};
@@ -841,9 +774,24 @@ function normalizeBackgroundMedia(type, media, resolution = 'large') {
     }
 }
 
+
+const BACKGROUND_TABS = [
+    {
+        name: 'desktop',
+        label: 'Desktop',
+        fields: ['image', 'element', 'mask'], // keys in desktopFields
+    },
+    {
+        name: 'mobile',
+        label: 'Mobile',
+        fields: ['image', 'element', 'mask'], // keys in mobileFields
+    },
+];
+
+
 const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings}) => {
 
-    const settings = useMemo(() => backgroundSettings, [backgroundSettings]) || {};
+    const settings = backgroundSettings;
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
@@ -919,316 +867,121 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
         ]
     }
 
-    const desktopFields = {
-        image: [
-            {
-                type: 'select',
-                label: 'Resolution',
-                slug: 'resolution',
-                options: RESOLUTION_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Size',
-                slug: 'size',
-                options: IMAGE_SIZE_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Blend',
-                slug: 'blend',
-                options: BLEND_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Position',
-                slug: 'position',
-                options: OBJECT_POSITION_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Origin',
-                slug: 'origin',
-                options: ORIGIN_OPTIONS
-            },
-            {
-                type: 'unit',
-                label: 'Max Height',
-                slug: 'max-height',
-                options: {
-                    inputProps: {
-                        units: [
-                            {value: 'vh', label: 'vh', default: 0},
-                        ]
-                    }
+    const tabFields = [
+        {
+            type: 'select',
+            label: 'Resolution',
+            slug: 'resolution',
+            options: RESOLUTION_OPTIONS
+        },
+        {
+            type: 'select',
+            label: 'Size',
+            slug: 'size',
+            options: IMAGE_SIZE_OPTIONS
+        },
+        {
+            type: 'select',
+            label: 'Blend',
+            slug: 'blend',
+            options: BLEND_OPTIONS
+        },
+        {
+            type: 'select',
+            label: 'Position',
+            slug: 'position',
+            options: OBJECT_POSITION_OPTIONS
+        },
+        {
+            type: 'select',
+            label: 'Origin',
+            slug: 'origin',
+            options: ORIGIN_OPTIONS
+        },
+        {
+            type: 'unit',
+            label: 'Max Height',
+            slug: 'max-height',
+            options: {
+                inputProps: {
+                    units: [
+                        {value: 'vh', label: 'vh', default: 0},
+                    ]
                 }
-
-            },
-            {
-                type: 'select',
-                label: 'Repeat',
-                slug: 'repeat',
-                options: REPEAT_OPTIONS
-            },
-        ],
-        element: [
-            {
-                type: 'color',
-                label: 'Color',
-                slug: 'color',
-            },
-            {
-                type: 'range',
-                label: 'Scale',
-                slug: 'scale',
-                min: 0,
-                max: 200,
-            },
-            {
-                type: 'range',
-                label: 'Opacity',
-                slug: 'opacity',
-                min: 0,
-                max: 100,
-            },
-            {
-                type: 'range',
-                label: 'Width',
-                slug: 'width',
-                min: 0,
-                max: 100,
-            },
-            {
-                type: 'range',
-                label: 'Height',
-                slug: 'height',
-                min: 0,
-                max: 100,
-            },
-            {
-                type: 'range',
-                label: 'Fade',
-                slug: 'fade',
-                min: 0,
-                max: 100,
             }
-        ],
-        mask: [
-            {
-                type: 'image',
-                label: 'Mask Image',
-                slug: 'mask-image',
-                large: true
-            },
-            {
-                type: 'select',
-                label: 'Mask Origin',
-                slug: 'mask-origin',
-                options: ORIGIN_OPTIONS,
-            },
-            {
-                type: 'select',
-                label: 'Mask Size',
-                slug: 'mask-size',
-                options: IMAGE_SIZE_OPTIONS,
-            },
-            {
-                type: 'gradient',
-                label: 'Overlay',
-                slug: 'overlay',
-                large: true,
-            }
-        ]
-    };
 
-    const mobileFields = {
-        image: [
-            {
-                type: 'select',
-                label: 'Resolution',
-                slug: 'resolution-mobile',
-                options: RESOLUTION_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Size',
-                slug: 'size-mobile',
-                options: IMAGE_SIZE_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Blend',
-                slug: 'blend-mobile',
-                options: BLEND_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Position',
-                slug: 'position-mobile',
-                options: OBJECT_POSITION_OPTIONS
-            },
-            {
-                type: 'select',
-                label: 'Origin',
-                slug: 'origin-mobile',
-                options: ORIGIN_OPTIONS
-            },
-            {
-                type: 'unit',
-                label: 'Max Height',
-                slug: 'max-height-mobile',
-                options: {
-                    inputProps: {
-                        units: [
-                            {value: 'vh', label: 'vh', default: 0},
-                        ]
-                    }
-                }
-            },
-            {
-                type: 'select',
-                label: 'Repeat',
-                slug: 'repeat-mobile',
-                options: REPEAT_OPTIONS
-            },
-        ],
-        element: [
-            {
-                type: 'color',
-                label: 'Color',
-                slug: 'color-mobile',
-            },
-            {
-                type: 'range',
-                label: 'Scale',
-                slug: 'scale-mobile',
-                min: 0,
-                max: 200,
-            },
-            {
-                type: 'range',
-                label: 'Opacity',
-                slug: 'opacity-mobile',
-                min: 0,
-                max: 100,
-            },
-            {
-                type: 'range',
-                label: 'Width',
-                slug: 'width-mobile',
-                min: 0,
-                max: 100,
-            },
-            {
-                type: 'range',
-                label: 'Height',
-                slug: 'height-mobile',
-                min: 0,
-                max: 100,
-            },
-            {
-                type: 'range',
-                label: 'Fade',
-                slug: 'fade-mobile',
-                min: 0,
-                max: 100,
-            }
-        ],
-        mask: [
-            {
-                type: 'image',
-                label: 'Mask Image',
-                slug: 'mask-image-mobile',
-                large: true
-            },
-            {
-                type: 'select',
-                label: 'Mask Origin',
-                slug: 'mask-origin-mobile',
-                options: ORIGIN_OPTIONS,
-            },
-            {
-                type: 'select',
-                label: 'Mask Size',
-                slug: 'mask-size-mobile',
-                options: IMAGE_SIZE_OPTIONS,
-            },
-            {
-                type: 'gradient',
-                label: 'Overlay',
-                slug: 'overlay-mobile',
-                large: true,
-            }
-        ]
-    };
-
-    const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            {desktopFields.image.map((field) => <Field toolspanel={false} field={field}
-                                                       settings={settings}
-                                                       callback={(newValue) => updateProp(field.slug, newValue)}/>)}
-        </Grid>
-
-        <Grid columns={1} columnGap={15} rowGap={20}>
-            {desktopFields.element.map((field) => <Field toolspanel={false} field={field}
-                                                         settings={settings}
-                                                         callback={(newValue) => updateProp(field.slug, newValue)}/>)}
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20}
-              style={{padding: '1rem 0'}}>
-            <Field
-                toolspanel={false}
-                field={{
-                    type: 'toggle',
-                    label: 'Mask',
-                    slug: 'mask'
-                }}
-                settings={settings}
-                callback={(newValue) => updateProp('mask', newValue)}
-            />
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-            {desktopFields.mask.map((field) => <Field toolspanel={false} field={field}
-                                                      settings={settings}
-                                                      callback={(newValue) => updateProp(field.slug, newValue)}/>)}
-        </Grid>
-    </Grid>;
-
-    const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            {mobileFields.image.map((field) => <Field toolspanel={false} field={field}
-                                                      settings={settings}
-                                                      callback={(newValue) => updateProp(field.slug, newValue)}/>)}
-        </Grid>
-
-        <Grid columns={1} columnGap={15} rowGap={20}>
-            {mobileFields.element.map((field) => <Field toolspanel={false} field={field}
-                                                        settings={settings}
-                                                        callback={(newValue) => updateProp(field.slug, newValue)}/>)}
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20}
-              style={{padding: '1rem 0'}}>
-            <Field
-                toolspanel={false}
-                field={{
-                    type: 'toggle',
-                    label: 'Mask',
-                    slug: 'mask-mobile'
-                }}
-                settings={settings}
-                callback={(newValue) => updateProp('mask-mobile', newValue)}
-            />
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings?.['mask-mobile'] ? 'none' : null}}>
-            {mobileFields.mask.map((field) => <Field toolspanel={false} field={field}
-                                                     settings={settings}
-                                                     callback={(newValue) => updateProp(field.slug, newValue)}/>)}
-        </Grid>
-    </Grid>;
+        },
+        {
+            type: 'select',
+            label: 'Repeat',
+            slug: 'repeat',
+            options: REPEAT_OPTIONS
+        },
+        {
+            type: 'color',
+            label: 'Color',
+            slug: 'color',
+        },
+        {
+            type: 'range',
+            label: 'Scale',
+            slug: 'scale',
+            min: 0,
+            max: 200,
+        },
+        {
+            type: 'range',
+            label: 'Opacity',
+            slug: 'opacity',
+            min: 0,
+            max: 100,
+        },
+        {
+            type: 'range',
+            label: 'Width',
+            slug: 'width',
+            min: 0,
+            max: 100,
+        },
+        {
+            type: 'range',
+            label: 'Height',
+            slug: 'height',
+            min: 0,
+            max: 100,
+        },
+        {
+            type: 'range',
+            label: 'Fade',
+            slug: 'fade',
+            min: 0,
+            max: 100,
+        },
+        {
+            type: 'image',
+            label: 'Mask Image',
+            slug: 'mask-image',
+            large: true
+        },
+        {
+            type: 'select',
+            label: 'Mask Origin',
+            slug: 'mask-origin',
+            options: ORIGIN_OPTIONS,
+        },
+        {
+            type: 'select',
+            label: 'Mask Size',
+            slug: 'mask-size',
+            options: IMAGE_SIZE_OPTIONS,
+        },
+        {
+            type: 'gradient',
+            label: 'Overlay',
+            slug: 'overlay',
+            large: true,
+        }
+    ];
 
     return <PanelBody title={'Background'} initialOpen={!!settings.type}>
         <Grid columns={1} columnGap={15} rowGap={20}>
@@ -1306,9 +1059,27 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                         },
                     ]}>
                     {(tab) => {
-                        if (tab.name === 'desktop') return tabDesktop;
-                        if (tab.name === 'mobile') return tabMobile;
-                        return null;
+
+
+                        return (
+                            <Grid columns={2} columnGap={15} rowGap={20}>
+                                {tabFields.map((field) => {
+
+                                    const slug = tab.name === 'mobile' && !field.slug.endsWith('-mobile')
+                                        ? `${field.slug}-mobile`
+                                        : field.slug;
+
+                                    return <Field
+                                        key={slug}
+                                        toolspanel={false}
+                                        field={field}
+                                        settings={settings}
+                                        callback={(value) => updateProp(slug, value)}
+                                    />;
+
+                                })}
+                            </Grid>
+                        );
                     }}
                 </TabPanel>
             </Grid>

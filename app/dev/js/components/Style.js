@@ -1070,7 +1070,7 @@ const BackgroundFields = ({attributes, backgroundSettings, setBackgroundSettings
                         return (
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 {tabFields.map((field) => {
-                                    console.log(field);
+                                    
                                     const slug = tab.name === 'mobile' && !field.slug.endsWith('-mobile')
                                         ? `${field.slug}-mobile`
                                         : field.slug;

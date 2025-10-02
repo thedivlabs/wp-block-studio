@@ -725,92 +725,92 @@ function parseBackgroundCSS(settings = {}) {
     const css = {};
 
     // Background type
-    if (settings['bg-type']) {
-        css['--bg-type'] = settings['bg-type'];
+    if (settings['type']) {
+        css['--bg-type'] = settings['type'];
     }
 
     // Image URLs
-    if (settings['bg-large-image']?.url) {
-        css['--bg-image-large'] = `url(${settings['bg-large-image'].url})`;
+    if (settings['large-image']?.url) {
+        css['--bg-image-large'] = `url(${settings['large-image'].url})`;
     }
-    if (settings['bg-mobile-image']?.url) {
-        css['--bg-image-mobile'] = `url(${settings['bg-mobile-image'].url})`;
+    if (settings['mobile-image']?.url) {
+        css['--bg-image-mobile'] = `url(${settings['mobile-image'].url})`;
     }
 
     // Video URLs
-    if (settings['bg-large-video']?.url) {
-        css['--bg-video-large'] = settings['bg-large-video'].url;
+    if (settings['large-video']?.url) {
+        css['--bg-video-large'] = settings['large-video'].url;
     }
-    if (settings['bg-mobile-video']?.url) {
-        css['--bg-video-mobile'] = settings['bg-mobile-video'].url;
+    if (settings['mobile-video']?.url) {
+        css['--bg-video-mobile'] = settings['mobile-video'].url;
     }
 
     // Masks
-    if (settings['bg-mask-image-large']?.url) {
-        css['--bg-mask-large'] = `url(${settings['bg-mask-image-large'].url})`;
+    if (settings['mask-image-large']?.url) {
+        css['--bg-mask-large'] = `url(${settings['mask-image-large'].url})`;
     }
-    if (settings['bg-mask-image-mobile']?.url) {
-        css['--bg-mask-mobile'] = `url(${settings['bg-mask-image-mobile'].url})`;
+    if (settings['mask-image-mobile']?.url) {
+        css['--bg-mask-mobile'] = `url(${settings['mask-image-mobile'].url})`;
     }
 
     // Positioning
-    if (settings['bg-position']) {
-        css['--bg-position'] = settings['bg-position'];
+    if (settings['position']) {
+        css['--bg-position'] = settings['position'];
     }
-    if (settings['bg-position-mobile']) {
-        css['--bg-position-mobile'] = settings['bg-position-mobile'];
+    if (settings['position-mobile']) {
+        css['--bg-position-mobile'] = settings['position-mobile'];
     }
 
     // Size
-    if (settings['bg-size']) {
-        css['--bg-size'] = settings['bg-size'];
+    if (settings['size']) {
+        css['--bg-size'] = settings['size'];
     }
-    if (settings['bg-size-mobile']) {
-        css['--bg-size-mobile'] = settings['bg-size-mobile'];
+    if (settings['size-mobile']) {
+        css['--bg-size-mobile'] = settings['size-mobile'];
     }
 
     // Dimensions
-    if (settings['bg-width']) {
-        css['--bg-width'] = settings['bg-width'];
+    if (settings['width']) {
+        css['--bg-width'] = settings['width'];
     }
-    if (settings['bg-height']) {
-        css['--bg-height'] = settings['bg-height'];
+    if (settings['height']) {
+        css['--bg-height'] = settings['height'];
     }
-    if (settings['bg-width-mobile']) {
-        css['--bg-width-mobile'] = settings['bg-width-mobile'];
+    if (settings['width-mobile']) {
+        css['--bg-width-mobile'] = settings['width-mobile'];
     }
-    if (settings['bg-height-mobile']) {
-        css['--bg-height-mobile'] = settings['bg-height-mobile'];
+    if (settings['height-mobile']) {
+        css['--bg-height-mobile'] = settings['height-mobile'];
     }
 
     // Scale
-    if (settings['bg-scale']) {
-        css['--bg-scale'] = settings['bg-scale'];
+    if (settings['scale']) {
+        css['--bg-scale'] = settings['scale'];
     }
-    if (settings['bg-scale-mobile']) {
-        css['--bg-scale-mobile'] = settings['bg-scale-mobile'];
+    if (settings['scale-mobile']) {
+        css['--bg-scale-mobile'] = settings['scale-mobile'];
     }
 
     // Opacity
-    if (settings['bg-opacity']) {
-        css['--bg-opacity'] = settings['bg-opacity'];
+    if (settings['opacity']) {
+        css['--bg-opacity'] = settings['opacity'];
     }
-    if (settings['bg-opacity-mobile']) {
-        css['--bg-opacity-mobile'] = settings['bg-opacity-mobile'];
+    if (settings['opacity-mobile']) {
+        css['--bg-opacity-mobile'] = settings['opacity-mobile'];
     }
 
     // Extra flags
-    if (settings['bg-fixed']) {
+    if (settings['fixed']) {
         css['--bg-fixed'] = 'true';
     }
-    if (settings['bg-mask']) {
-        css['--bg-mask'] = settings['bg-mask'];
+    if (settings['mask']) {
+        css['--bg-mask'] = settings['mask'];
     }
-    if (settings['bg-fade']) {
-        css['--bg-fade'] = settings['bg-fade'];
+    if (settings['fade']) {
+        css['--bg-fade'] = settings['fade'];
     }
-    if (settings['bg-fade-mobile']) {
-        css['--bg-fade-mobile'] = settings['bg-fade-mobile'];
+    if (settings['fade-mobile']) {
+        css['--bg-fade-mobile'] = settings['fade-mobile'];
     }
 
     return css;

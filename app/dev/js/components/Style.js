@@ -219,10 +219,11 @@ export const Style = ({attributes, name}) => {
     if (!attributes?.uniqueId) return null;
 
     const uniqueId = attributes.uniqueId;
-    const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId}`;
 
     const cssString = useMemo(() => {
-        if (!attributes['wpbs-css']) return '';
+        if (!attributes['wpbs-css']?.props && !attributes['wpbs-css']?.breakpoints) return '';
+
+        const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId}`;
 
         const {'wpbs-css': parsedCss = {}} = attributes;
 
@@ -254,11 +255,48 @@ export const Style = ({attributes, name}) => {
         }
 
         return result;
-    }, [attributes['wpbs-css'], selector]);
+    }, [attributes['wpbs-css'], name]);
 
-    if (!cssString) return null;
+    const cssBackgroundString = useMemo(() => {
+        if (!attributes['wpbs-css']?.background) return '';
 
-    return <style>{cssString}</style>;
+        const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId} > .wpbs-background`;
+
+        const {background: parsedCss = {}} = attributes?.['wpbs-css'] ?? {};
+
+        const propsToCss = (props = {}) =>
+            Object.entries(props)
+                .map(([k, v]) => `${k}: ${v};`)
+                .join(' ');
+
+        let result = '';
+
+        // 1. Default
+        if (!_.isEmpty(parsedCss.props)) {
+            result += `${selector} { ${propsToCss(parsedCss.props)} }`;
+        }
+
+        // 2. Breakpoints
+        if (parsedCss.breakpoints) {
+            Object.entries(parsedCss.breakpoints).forEach(([bpKey, bpProps]) => {
+                const bp = WPBS?.settings?.breakpoints?.[bpKey];
+                if (!bp || _.isEmpty(bpProps)) return;
+
+                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps)} } }`;
+            });
+        }
+
+        // 3. Hover
+        if (!_.isEmpty(parsedCss.hover)) {
+            result += `${selector}:hover { ${propsToCss(parsedCss.hover)} }`;
+        }
+
+        return result;
+    }, [attributes['wpbs-css'], name]);
+
+    if (!cssString && !cssBackgroundString) return null;
+
+    return <style>{[cssString, cssBackgroundString].join(' ').trim()}</style>;
 };
 
 function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
@@ -714,40 +752,48 @@ function parseBackgroundCSS(settings = {}) {
     const bpKey = settings.breakpoint || 'normal';
 
     // Desktop / default props
-    if (settings['type']) props['--bg-type'] = settings['type'];
-    if (settings['large-image']?.id) props['--bg-image-large'] = settings['large-image'].id;
-    if (settings['large-video']?.id) props['--bg-video-large'] = settings['large-video'].id;
-    if (settings['mask-image-large']?.id) props['--bg-mask-large'] = settings['mask-image-large'].id;
 
-    if (settings['position']) props['--bg-position'] = settings['position'];
-    if (settings['size']) props['--bg-size'] = settings['size'];
-    if (settings['width']) props['--bg-width'] = settings['width'];
-    if (settings['height']) props['--bg-height'] = settings['height'];
-    if (settings['scale']) props['--bg-scale'] = settings['scale'];
-    if (settings['opacity']) props['--bg-opacity'] = settings['opacity'];
-    if (settings['fixed']) props['--bg-fixed'] = 'true';
-    if (settings['mask']) props['--bg-mask'] = settings['mask'];
-    if (settings['fade']) props['--bg-fade'] = settings['fade'];
+    if (settings['size']) props['--size'] = settings['size'];
+    if (settings['blend']) props['--blend'] = settings['blend'];
+    if (settings['position']) props['--position'] = settings['position'];
+    if (settings['origin']) props['--origin'] = settings['origin'];
+    if (settings['max-height']) props['--max-height'] = settings['max-height'];
+    if (settings['repeat']) props['--repeat'] = settings['repeat'];
+    if (settings['scale']) props['--scale'] = settings['scale'];
+    if (settings['opacity']) props['--opacity'] = settings['opacity'];
+    if (settings['width']) props['--width'] = settings['width'];
+    if (settings['height']) props['--height'] = settings['height'];
+    if (settings['fade']) props['--fade'] = settings['fade'];
+    if (settings['fixed']) props['--fixed'] = 'fixed';
+    if (settings['color']) props['--color'] = settings['color'];
+    if (settings['mask-origin']) props['--mask-origin'] = settings['mask-origin'];
+    if (settings['mask-size']) props['--mask-size'] = settings['mask-size'];
+    if (settings['overlay']) props['--overlay'] = settings['overlay'];
+
 
     // Mobile / breakpoint props
     const bpProps = {};
 
-    if (settings['mobile-image']?.id) bpProps['--bg-image-mobile'] = settings['mobile-image'].id;
-    if (settings['mobile-video']?.id) bpProps['--bg-video-mobile'] = settings['mobile-video'].id;
-    if (settings['mask-image-mobile']?.id) bpProps['--bg-mask-mobile'] = settings['mask-image-mobile'].id;
-
-    if (settings['position-mobile']) bpProps['--bg-position'] = settings['position-mobile'];
-    if (settings['size-mobile']) bpProps['--bg-size'] = settings['size-mobile'];
-    if (settings['width-mobile']) bpProps['--bg-width'] = settings['width-mobile'];
-    if (settings['height-mobile']) bpProps['--bg-height'] = settings['height-mobile'];
-    if (settings['scale-mobile']) bpProps['--bg-scale'] = settings['scale-mobile'];
-    if (settings['opacity-mobile']) bpProps['--bg-opacity'] = settings['opacity-mobile'];
-    if (settings['fade-mobile']) bpProps['--bg-fade'] = settings['fade-mobile'];
-    if (settings['resolution-mobile']) bpProps['--bg-resolution'] = settings['resolution-mobile'];
+    if (settings['size-mobile']) bpProps['--size'] = settings['size-mobile'];
+    if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
+    if (settings['position-mobile']) bpProps['--position'] = settings['position-mobile'];
+    if (settings['origin-mobile']) bpProps['--origin'] = settings['origin-mobile'];
+    if (settings['max-height-mobile']) bpProps['--max-height'] = settings['max-height-mobile'];
+    if (settings['repeat-mobile']) bpProps['--repeat'] = settings['repeat-mobile'];
+    if (settings['scale-mobile']) bpProps['--scale'] = settings['scale-mobile'];
+    if (settings['opacity-mobile']) bpProps['--opacity'] = settings['opacity-mobile'];
+    if (settings['width-mobile']) bpProps['--width'] = settings['width-mobile'];
+    if (settings['height-mobile']) bpProps['--height'] = settings['height-mobile'];
+    if (settings['fade-mobile']) bpProps['--fade'] = settings['fade-mobile'];
+    if (settings['fixed-mobile']) bpProps['--fixed'] = 'fixed';
+    if (settings['color-mobile']) bpProps['--color'] = settings['color-mobile'];
+    if (settings['mask-origin-mobile']) bpProps['--mask-origin'] = settings['mask-origin-mobile'];
+    if (settings['mask-size-mobile']) bpProps['--mask-size'] = settings['mask-size-mobile'];
+    if (settings['overlay-mobile']) bpProps['--overlay'] = settings['overlay-mobile'];
 
     if (!_.isEmpty(bpProps)) breakpoints[bpKey] = bpProps;
 
-    return {props, breakpoints};
+    return cleanObject({props, breakpoints})
 }
 
 function normalizeBackgroundMedia(media) {
@@ -1104,11 +1150,9 @@ export function withStyle(EditComponent) {
 
         useEffect(() => {
 
-
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
-
-            const mergedCss = cleanObject(_.merge({}, backgroundCss, layoutCss, css));
+            const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
 
             let result = {
                 'wpbs-style': {},
@@ -1134,7 +1178,7 @@ export function withStyle(EditComponent) {
                 if (!attributes?.uniqueId) {
                     result.uniqueId = uniqueId;
                 }
-                
+
                 setAttributes(result);
             }
 

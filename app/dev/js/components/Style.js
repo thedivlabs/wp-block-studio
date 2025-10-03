@@ -807,6 +807,8 @@ function parseBackgroundCSS(settings = {}) {
 
     const imageLarge = !!settings?.force ? settings['image-large'] : settings['image-large'] || settings['image-mobile'];
     const imageMobile = !!settings?.force ? settings['image-mobile'] : settings['image-mobile'] || settings['image-large'];
+    const maskImageLarge = settings['mask-image']?.sizes?.full?.url ? `url(${settings['mask-image']?.sizes?.full?.url})` : 'none';
+    const maskImageMobile = settings['mask-image-mobile']?.sizes?.full?.url ? `url(${settings['mask-image-mobile']?.sizes?.full?.url})` : 'none';
 
     // Desktop / default props
     if (imageLarge) props['--image'] = imageSet(imageLarge, settings?.['resolution']);
@@ -823,7 +825,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['fade']) props['--fade'] = `linear-gradient(to bottom, rgba(0, 0, 0, 1) ${settings['fade']}%,rgba(0, 0, 0, 0) 100%)`;
     if (settings['fixed']) props['--fixed'] = 'fixed';
     if (settings['color']) props['--color'] = settings['color'];
-    if (settings['mask-image']) props['--mask-image'] = settings['mask-image'];
+    if (settings['mask-image']) props['--mask-image'] = maskImageLarge;
     if (settings['mask-origin']) props['--mask-origin'] = settings['mask-origin'];
     if (settings['mask-size']) props['--mask-size'] = settings['mask-size'];
     if (settings['overlay']) props['--overlay'] = settings['overlay'];
@@ -846,7 +848,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['fade-mobile']) bpProps['--fade'] = `linear-gradient(to bottom, rgba(0, 0, 0, 1) ${settings['fade-mobile']}%,rgba(0, 0, 0, 0) 100%)`;
     if (settings['fixed-mobile']) bpProps['--fixed'] = 'fixed';
     if (settings['color-mobile']) bpProps['--color'] = settings['color-mobile'];
-    if (settings['mask-image-mobile']) bpProps['--mask-image'] = settings['mask-image-mobile'];
+    if (settings['mask-image-mobile']) bpProps['--mask-image'] = maskImageMobile;
     if (settings['mask-origin-mobile']) bpProps['--mask-origin'] = settings['mask-origin-mobile'];
     if (settings['mask-size-mobile']) bpProps['--mask-size'] = settings['mask-size-mobile'];
     if (settings['overlay-mobile']) bpProps['--overlay'] = settings['overlay-mobile'];

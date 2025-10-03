@@ -41,8 +41,10 @@
 }
 
 /* Image & pattern fallback styles when not lazy OR inside block editor */
-.wpbs-background:not(.--lazy):before.--image,
-.wpbs-background:not(.--lazy):before.--pattern {
+.wpbs-background.--image:not(.--lazy):before,
+.wpbs-background.--pattern:not(.--lazy):before,
+.block-editor-page .wpbs-background.--image::before,
+.block-editor-page .wpbs-background.--pattern::before {
   mask-image: var(--fade, none);
   background-color: inherit;
   opacity: var(--opacity, 1);

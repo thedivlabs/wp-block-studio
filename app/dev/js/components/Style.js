@@ -1134,7 +1134,7 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
 
 const Background = ({attributes}) => {
 
-    const breakpoint = WPBS?.settings?.breakpoints[settings?.breakpoint ?? 'normal']?.size;
+    const breakpoint = (WPBS?.settings?.breakpoints[(settings?.breakpoint ?? 'normal')]?.size ?? 1304) + 'px';
 
     const {settings = {}} = attributes?.['wpbs-background'] ?? {};
 
@@ -1168,7 +1168,7 @@ const StyleElements = ({attributes, options = {}}) => {
     const {'wpbs-style': settings = {}} = attributes || {};
 
     const result = [];
-    console.log(settings);
+
     if (!!settings?.background?.type) {
         result.push(<Background attributes={attributes}/>);
     }

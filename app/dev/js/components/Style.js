@@ -1132,24 +1132,31 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
 
 const Background = ({attributes}) => {
 
+    const breakpoint = WPBS?.settings?.breakpoints[settings?.breakpoint ?? 'normal']?.size;
+
     const {settings = {}} = attributes?.['wpbs-background'] ?? {};
 
     const bgClassnames = [
         'wpbs-background',
-        !!settings?.video ? '--video' : null,
+        `--${settings.type}`,
         !settings?.eager ? '--lazy' : null,
     ].filter(Boolean).join(' ');
 
-    const bgProps = {
-        style: {}
-    };
 
-    if (!!settings?.eager) {
-        Object.assign(bgProps.style, {backgroundImage: 'url(var(--image))'});
-    }
-
-
-    return <div className={bgClassnames} {...cleanObject(bgProps)}></div>;
+    return <div className={bgClassnames}>
+        {settings?.type === 'video' ? <video muted loop autoPlay={true}>
+            <source {...{
+                [srcAttr]: largeVideo.url ? largeVideo.url : '#',
+                type: 'video/mp4',
+                'data-media': '(min-width:' + breakpoint + ')'
+            }}/>
+            <source {...{
+                [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
+                type: 'video/mp4',
+                'data-media': '(width < ' + breakpoint + ')'
+            }}/>
+        </video> : null}
+    </div>;
 
 }
 

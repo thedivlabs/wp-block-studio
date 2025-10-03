@@ -8,7 +8,6 @@ import Reveal from './modules/reveal'
 import Team from './modules/team'
 
 
-
 class WPBS_Theme {
 
     static modals;
@@ -225,7 +224,7 @@ class WPBS_Theme {
 
     responsiveBackgroundSrc(element) {
 
-        element.classList.remove('lazy');
+        element.classList.remove('--lazy');
     }
 
     responsiveVideoSrc(video) {
@@ -288,7 +287,7 @@ class WPBS_Theme {
             threshold: 0,
         });
 
-        [...(refElement || document).querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background')].forEach((el) => observerIntersection.observe(el));
+        [...(refElement || document).querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background.--lazy')].forEach((el) => observerIntersection.observe(el));
 
 
     }
@@ -309,7 +308,6 @@ class WPBS_Theme {
     slideDown(element, duration, callback) {
         jQuery(element).slideDown(duration, callback);
     }
-
 
 
     init() {

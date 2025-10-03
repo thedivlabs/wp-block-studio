@@ -771,18 +771,52 @@ function parseBackgroundCSS(settings = {}) {
 
     const bpKey = settings.breakpoint || 'normal';
 
+    const positionsMap = {
+        'top-left': {
+            '--top': '0px',
+            '--left': '0px',
+            '--bottom': 'auto',
+            '--right': 'auto',
+        },
+        'top-right': {
+            '--top': '0px',
+            '--right': '0px',
+            '--bottom': 'auto',
+            '--left': 'auto',
+        },
+        'bottom-right': {
+            '--bottom': '0px',
+            '--right': '0px',
+            '--top': 'auto',
+            '--left': 'auto',
+        },
+        'bottom-left': {
+            '--bottom': '0px',
+            '--left': '0px',
+            '--top': 'unset',
+            '--right': 'unset',
+        },
+        'center': {
+            '--top': '50%',
+            '--left': '50%',
+            '--bottom': 'unset',
+            '--right': 'unset',
+            '--transform': 'translate(-50%,-50%)',
+        },
+    };
+
     // Desktop / default props
     if (settings['image-large']) props['--image'] = imageSet(settings['image-large'], settings?.['resolution']);
     if (settings['size']) props['--size'] = settings['size'];
     if (settings['blend']) props['--blend'] = settings['blend'];
-    if (settings['position']) props['--position'] = settings['position'];
+    if (settings['position']) Object.assign(props, positionsMap[settings?.position]);
     if (settings['origin']) props['--origin'] = settings['origin'];
     if (settings['max-height']) props['--max-height'] = settings['max-height'] + 'px';
     if (settings['repeat']) props['--repeat'] = settings['repeat'];
     if (settings['scale']) props['--scale'] = parseInt(settings['opacity']) / 100;
     if (settings['opacity']) props['--opacity'] = parseInt(settings['opacity']) / 100;
-    if (settings['width']) props['--width'] = settings['width'] + 'px';
-    if (settings['height']) props['--height'] = settings['height'] + 'px';
+    if (settings['width']) props['--width'] = settings['width'] + '%';
+    if (settings['height']) props['--height'] = settings['height'] + '%';
     if (settings['fade']) props['--fade'] = settings['fade'] + '%';
     if (settings['fixed']) props['--fixed'] = 'fixed';
     if (settings['color']) props['--color'] = settings['color'];
@@ -798,14 +832,14 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['image-mobile']) bpProps['--image'] = imageSet(settings['image-mobile'], settings?.['resolution-mobile']);
     if (settings['size-mobile']) bpProps['--size'] = settings['size-mobile'];
     if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
-    if (settings['position-mobile']) bpProps['--position'] = settings['position-mobile'];
+    if (settings['position-mobile']) Object.assign(bpProps, positionsMap[settings?.['position-mobile']]);
     if (settings['origin-mobile']) bpProps['--origin'] = settings['origin-mobile'];
     if (settings['max-height-mobile']) bpProps['--max-height'] = settings['max-height-mobile'] + 'px';
     if (settings['repeat-mobile']) bpProps['--repeat'] = settings['repeat-mobile'];
     if (settings['scale-mobile']) bpProps['--scale'] = parseInt(settings['opacity-mobile']) / 100;
     if (settings['opacity-mobile']) bpProps['--opacity'] = parseInt(settings['opacity-mobile']) / 100;
-    if (settings['width-mobile']) bpProps['--width'] = settings['width-mobile'] + 'px';
-    if (settings['height-mobile']) bpProps['--height'] = settings['height-mobile'] + 'px';
+    if (settings['width-mobile']) bpProps['--width'] = settings['width-mobile'] + '%';
+    if (settings['height-mobile']) bpProps['--height'] = settings['height-mobile'] + '%';
     if (settings['fade-mobile']) bpProps['--fade'] = settings['fade-mobile'] + '%';
     if (settings['fixed-mobile']) bpProps['--fixed'] = 'fixed';
     if (settings['color-mobile']) bpProps['--color'] = settings['color-mobile'];

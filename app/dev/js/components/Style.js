@@ -772,6 +772,7 @@ function parseBackgroundCSS(settings = {}) {
     const bpKey = settings.breakpoint || 'normal';
 
     // Desktop / default props
+    if (settings['image-large']) props['--image'] = imageSet(settings['image-large'], settings?.['resolution']);
     if (settings['size']) props['--size'] = settings['size'];
     if (settings['blend']) props['--blend'] = settings['blend'];
     if (settings['position']) props['--position'] = settings['position'];
@@ -793,6 +794,7 @@ function parseBackgroundCSS(settings = {}) {
     // Mobile / breakpoint props
     const bpProps = {};
 
+    if (settings['image-mobile']) bpProps['--image'] = imageSet(settings['image-mobile'], settings?.['resolution-mobile']);
     if (settings['size-mobile']) bpProps['--size'] = settings['size-mobile'];
     if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
     if (settings['position-mobile']) bpProps['--position'] = settings['position-mobile'];

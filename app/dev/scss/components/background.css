@@ -4,6 +4,11 @@
   overflow: hidden;
 }
 
+.wpbs-background:before {
+  content: '';
+  display: flex;
+}
+
 /* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
 .wpbs-background.--mask:before,
 .wpbs-background.--mask > video {
@@ -14,7 +19,8 @@
 }
 
 /* Main background media element */
-.wpbs-background__media {
+.wpbs-background:before,
+.wpbs-background > video {
   background-color: var(--color, inherit);
   top: var(--top, 0);
   left: var(--left, 0);
@@ -28,17 +34,15 @@
 }
 
 /* Overlay after pseudo */
-.wpbs-background__media::after {
+.wpbs-background::after {
   background: var(--overlay, transparent);
   content: '';
   @apply block absolute top-0 left-0 w-full h-full z-10;
 }
 
 /* Image & pattern fallback styles when not lazy OR inside block editor */
-.wpbs-background:not(.lazy) .wpbs-background__media--image,
-.wpbs-background:not(.lazy) .wpbs-background__media--pattern,
-.block-editor-page .wpbs-background__media--image,
-.block-editor-page .wpbs-background__media--pattern {
+.wpbs-background:not(.--lazy):before.--image,
+.wpbs-background:not(.--lazy):before.--pattern {
   mask-image: var(--fade, none);
   background-color: inherit;
   opacity: var(--opacity, 1);
@@ -53,7 +57,7 @@
 }
 
 /* Video-specific styling */
-.wpbs-background__media--video video {
+.wpbs-background > video {
   max-height: var(--max-height, 100%);
   mask-image: var(--fade, none);
   mix-blend-mode: var(--blend, none);

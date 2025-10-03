@@ -1136,6 +1136,10 @@ const Background = ({attributes}) => {
 
     const {settings = {}} = attributes?.['wpbs-style']?.background ?? {};
 
+    if (!settings.type) {
+        return null;
+    }
+
     const breakpoint = (WPBS?.settings?.breakpoints?.[settings?.breakpoint ?? 'normal']?.size ?? 1304) + 'px';
 
     const bgClassnames = [

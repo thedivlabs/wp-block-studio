@@ -814,7 +814,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['blend']) props['--blend'] = settings['blend'];
     if (settings['position']) Object.assign(props, positionsMap[settings?.position]);
     if (settings['origin']) props['--origin'] = settings['origin'];
-    if (settings['max-height']) props['--max-height'] = settings['max-height'] + 'px';
+    if (settings['max-height']) props['--max-height'] = settings['max-height'];
     if (settings['repeat']) props['--repeat'] = settings['repeat'];
     if (settings['scale']) props['--scale'] = parseInt(settings['opacity']) / 100;
     if (settings['opacity']) props['--opacity'] = parseInt(settings['opacity']) / 100;

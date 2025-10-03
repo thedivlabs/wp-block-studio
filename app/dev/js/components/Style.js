@@ -805,8 +805,11 @@ function parseBackgroundCSS(settings = {}) {
         },
     };
 
+    const imageLarge = !!settings?.force ? settings['image-large'] : settings['image-large'] || settings['image-mobile'];
+    const imageMobile = !!settings?.force ? settings['image-mobile'] : settings['image-mobile'] || settings['image-large'];
+
     // Desktop / default props
-    if (settings['image-large']) props['--image'] = imageSet(settings['image-large'], settings?.['resolution']);
+    if (imageLarge) props['--image'] = imageSet(imageLarge, settings?.['resolution']);
     if (settings['size']) props['--size'] = settings['size'];
     if (settings['blend']) props['--blend'] = settings['blend'];
     if (settings['position']) Object.assign(props, positionsMap[settings?.position]);
@@ -829,7 +832,7 @@ function parseBackgroundCSS(settings = {}) {
     // Mobile / breakpoint props
     const bpProps = {};
 
-    if (settings['image-mobile']) bpProps['--image'] = imageSet(settings['image-mobile'], settings?.['resolution-mobile']);
+    if (imageMobile) bpProps['--image'] = imageSet(imageMobile, settings?.['resolution-mobile']);
     if (settings['size-mobile']) bpProps['--size'] = settings['size-mobile'];
     if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
     if (settings['position-mobile']) Object.assign(bpProps, positionsMap[settings?.['position-mobile']]);

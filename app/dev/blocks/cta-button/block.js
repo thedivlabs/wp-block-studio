@@ -240,9 +240,9 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
-                    <StyleElements attributes={attributes}/>
-                    <span className={'wpbs-cta-button__title'}>{title}</span>
+                    <span className={'wpbs-cta-button__title relative'}>{title}</span>
                     <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
+                    <StyleElements attributes={attributes}/>
                 </a>
             </>
         )

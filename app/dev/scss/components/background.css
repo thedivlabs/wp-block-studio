@@ -1,20 +1,19 @@
 .wpbs-background {
-  background-color: inherit;
   border-radius: inherit;
   overflow: hidden;
+  mask-image: var(--fade, none);
+  background-color: var(--color, inherit);
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 
 .wpbs-background:before {
   content: '';
   display: flex;
-  mask-image: var(--fade, none);
-  opacity: var(--opacity, 1);
-  background-repeat: var(--repeat, no-repeat);
-  background-size: var(--scale, var(--size, cover));
-  background-blend-mode: var(--blend, none);
-  background-attachment: var(--attachment, initial);
-  background-position: var(--origin, center);
-  max-height: var(--max-height, 100%);
 }
 
 /* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
@@ -29,16 +28,21 @@
 /* Main background media element */
 .wpbs-background:before,
 .wpbs-background > video {
-  background-color: var(--color, inherit);
+  position: absolute;
   top: var(--top, 0);
   left: var(--left, 0);
   right: var(--right, auto);
   bottom: var(--bottom, auto);
-
   width: var(--width, 100%);
   height: var(--height, 100%);
   transform: var(--transform, none);
-  position: absolute;
+  opacity: var(--opacity, 1);
+  background-repeat: var(--repeat, no-repeat);
+  background-size: var(--scale, var(--size, cover));
+  background-blend-mode: var(--blend, none);
+  background-attachment: var(--attachment, initial);
+  background-position: var(--origin, center);
+  max-height: var(--max-height, 100%);
 }
 
 /* Overlay after pseudo */

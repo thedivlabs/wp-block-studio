@@ -1142,11 +1142,14 @@ const Background = ({attributes}) => {
 
     const breakpoint = (WPBS?.settings?.breakpoints?.[settings?.breakpoint ?? 'normal']?.size ?? 1304) + 'px';
 
+    const hasMask = !!settings?.['mask-image'] || !!settings?.['mask-image-mobile'];
+    const isLazy = !settings?.eager;
+
     const bgClassnames = [
         'wpbs-background',
         `--${settings.type}`,
-        !settings?.eager ? '--lazy' : null,
-        settings?.['mask-image'] || settings?.['mask-image-mobile'] ? '--mask' : null,
+        isLazy ? '--lazy' : null,
+        hasMask ? '--mask' : null,
     ].filter(Boolean).join(' ');
 
 

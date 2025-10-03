@@ -772,8 +772,6 @@ function parseBackgroundCSS(settings = {}) {
     const bpKey = settings.breakpoint || 'normal';
 
     // Desktop / default props
-    console.log(settings);
-    if (settings['image-large']) props['--image-large'] = imageSet(settings['image-large'], settings['resolution']);
     if (settings['size']) props['--size'] = settings['size'];
     if (settings['blend']) props['--blend'] = settings['blend'];
     if (settings['position']) props['--position'] = settings['position'];
@@ -795,7 +793,6 @@ function parseBackgroundCSS(settings = {}) {
     // Mobile / breakpoint props
     const bpProps = {};
 
-    if (settings['image-mobile']) props['--image-mobile'] = imageSet(settings['image-mobile'], settings['resolution-mobile']);
     if (settings['size-mobile']) bpProps['--size'] = settings['size-mobile'];
     if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
     if (settings['position-mobile']) bpProps['--position'] = settings['position-mobile'];
@@ -1138,9 +1135,19 @@ const Background = ({attributes}) => {
     const bgClassnames = [
         'wpbs-background',
         !!settings?.video ? '--video' : null,
+        !settings?.eager ? '--lazy' : null,
     ].filter(Boolean).join(' ');
 
-    return <div className={bgClassnames}></div>;
+    const bgProps = {
+        style: {}
+    };
+
+    if (!!settings?.eager) {
+        Object.assign(bgProps.style, {backgroundImage: 'url(var(--image))'});
+    }
+
+
+    return <div className={bgClassnames} {...cleanObject(bgProps)}></div>;
 
 }
 

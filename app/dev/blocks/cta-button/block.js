@@ -26,7 +26,7 @@ function classNames(attributes = {}) {
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
-        'wpbs-cta-button',
+        'wpbs-cta-button relative',
         !settings?.['is-link'] ? 'wp-element-button' : null,
         !!settings?.['icon'] ? '--icon' : null,
         !!settings?.['icon-hide'] ? '--icon-hide' : null,
@@ -240,7 +240,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
-                    <StyleElements/>
+                    <StyleElements attributes={attributes}/>
                     <span className={'wpbs-cta-button__title'}>{title}</span>
                     <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
                 </a>

@@ -1165,9 +1165,11 @@ const Background = ({attributes}) => {
 
 const StyleElements = ({attributes, options = {}}) => {
 
-    const result = [];
+    const {'wpbs-style': settings = {}} = attributes || {};
 
-    if (!!options?.background) {
+    const result = [];
+    console.log(settings);
+    if (!!settings?.background?.type) {
         result.push(<Background attributes={attributes}/>);
     }
 

@@ -1134,7 +1134,7 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
 
 const Background = ({attributes}) => {
 
-    const {settings = {}} = attributes?.['wpbs-style']?.background ?? {};
+    const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
 
     if (!settings.type) {
         return null;

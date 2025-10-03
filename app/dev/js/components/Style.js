@@ -1146,7 +1146,7 @@ const Background = ({attributes}) => {
         'wpbs-background',
         `--${settings.type}`,
         !settings?.eager ? '--lazy' : null,
-        !settings?.['mask-image'] || settings?.['mask-image-mobile'] ? '--mask' : null,
+        settings?.['mask-image'] || settings?.['mask-image-mobile'] ? '--mask' : null,
     ].filter(Boolean).join(' ');
 
 

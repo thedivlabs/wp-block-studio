@@ -29,6 +29,7 @@
 .wpbs-background:before,
 .wpbs-background > video {
   position: absolute;
+  background-color: var(--color, inherit);
   top: var(--top, 0);
   left: var(--left, 0);
   right: var(--right, auto);

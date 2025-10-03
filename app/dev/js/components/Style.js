@@ -30,6 +30,7 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
+import {useSelect} from "@wordpress/data";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -743,6 +744,25 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
+function imageSet(media, resolution) {
+
+    const size = media?.sizes?.[resolution || 'large'];
+
+    const url = size?.url ?? false;
+
+    if (!url) {
+        return '';
+    }
+
+    const ext = url.endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+    const webp = 'url("' + [url, '.webp'].join('') + '") type("image/webp")';
+    const fallback = 'url("' + url + '") type("' + ext + '")';
+
+    return 'image-set(' + [webp, fallback].join(', ') + ')';
+
+}
+
 function parseBackgroundCSS(settings = {}) {
     if (_.isEmpty(settings)) return {props: {}, breakpoints: {}};
 
@@ -752,7 +772,8 @@ function parseBackgroundCSS(settings = {}) {
     const bpKey = settings.breakpoint || 'normal';
 
     // Desktop / default props
-
+    console.log(settings);
+    if (settings['image-large']) props['--image-large'] = imageSet(settings['image-large'], settings['resolution']);
     if (settings['size']) props['--size'] = settings['size'];
     if (settings['blend']) props['--blend'] = settings['blend'];
     if (settings['position']) props['--position'] = settings['position'];
@@ -774,6 +795,7 @@ function parseBackgroundCSS(settings = {}) {
     // Mobile / breakpoint props
     const bpProps = {};
 
+    if (settings['image-mobile']) props['--image-mobile'] = imageSet(settings['image-mobile'], settings['resolution-mobile']);
     if (settings['size-mobile']) bpProps['--size'] = settings['size-mobile'];
     if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
     if (settings['position-mobile']) bpProps['--position'] = settings['position-mobile'];
@@ -801,6 +823,7 @@ function normalizeBackgroundMedia(media) {
 
     return Object.fromEntries(Object.entries({
         id: media.id ?? null,
+        sizes: media.sizes ?? null,
     }).filter(([key, value]) => !!value));
 }
 

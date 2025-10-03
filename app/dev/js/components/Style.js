@@ -1169,7 +1169,7 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
     </PanelBody>;
 }
 
-const Background = ({attributes}) => {
+export const Background = ({attributes}) => {
 
     const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
 
@@ -1205,19 +1205,6 @@ const Background = ({attributes}) => {
         </video> : null}
     </div>;
 
-}
-
-const StyleElements = ({attributes, options = {}}) => {
-
-    const {'wpbs-style': settings = {}} = attributes || {};
-
-    const result = [];
-
-    if (!!settings?.background?.type) {
-        result.push(<Background attributes={attributes}/>);
-    }
-
-    return <>{result}</>;
 }
 
 export function withStyle(EditComponent) {
@@ -1278,7 +1265,6 @@ export function withStyle(EditComponent) {
                 <EditComponent
                     {...props}
                     setStyle={setStyle}
-                    StyleElements={StyleElements}
                 />
                 <InspectorControls group={'styles'}>
                     <Layout {...props} layoutSettings={layoutSettings} setLayoutSettings={setLayoutSettings}/>

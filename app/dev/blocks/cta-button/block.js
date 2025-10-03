@@ -50,7 +50,7 @@ registerBlockType(metadata.name, {
     },
     edit: withStyle((props) => {
 
-        const {attributes, setAttributes, setStyle} = props;
+        const {attributes, setAttributes, setStyle, StyleElements} = props;
 
         const {'wpbs-cta': settings = {}} = attributes;
 
@@ -240,6 +240,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
+                    <StyleElements/>
                     <span className={'wpbs-cta-button__title'}>{title}</span>
                     <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
                 </a>

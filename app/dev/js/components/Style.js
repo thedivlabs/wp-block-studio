@@ -837,7 +837,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['blend-mobile']) bpProps['--blend'] = settings['blend-mobile'];
     if (settings['position-mobile']) Object.assign(bpProps, positionsMap[settings?.['position-mobile']]);
     if (settings['origin-mobile']) bpProps['--origin'] = settings['origin-mobile'];
-    if (settings['max-height-mobile']) bpProps['--max-height'] = settings['max-height-mobile'] + 'px';
+    if (settings['max-height-mobile']) bpProps['--max-height'] = settings['max-height-mobile'];
     if (settings['repeat-mobile']) bpProps['--repeat'] = settings['repeat-mobile'];
     if (settings['scale-mobile']) bpProps['--scale'] = parseInt(settings['opacity-mobile']) / 100;
     if (settings['opacity-mobile']) bpProps['--opacity'] = parseInt(settings['opacity-mobile']) / 100;

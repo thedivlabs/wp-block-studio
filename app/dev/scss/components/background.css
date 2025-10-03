@@ -46,7 +46,6 @@
 .block-editor-page .wpbs-background.--image::before,
 .block-editor-page .wpbs-background.--pattern::before {
   mask-image: var(--fade, none);
-  background-color: inherit;
   opacity: var(--opacity, 1);
   background-image: var(--image, none);
   background-repeat: var(--repeat, no-repeat);

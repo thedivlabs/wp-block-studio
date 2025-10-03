@@ -5,7 +5,8 @@
 }
 
 /* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
-.wpbs-background--mask .wpbs-background__media {
+.wpbs-background.--mask:before,
+.wpbs-background.--mask > video {
   mask-image: var(--mask-image, none);
   mask-repeat: no-repeat;
   mask-size: var(--mask-size, contain);

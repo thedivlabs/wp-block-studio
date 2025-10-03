@@ -786,6 +786,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['fade']) props['--fade'] = settings['fade'];
     if (settings['fixed']) props['--fixed'] = 'fixed';
     if (settings['color']) props['--color'] = settings['color'];
+    if (settings['mask-image']) props['--mask-image'] = settings['mask-image'];
     if (settings['mask-origin']) props['--mask-origin'] = settings['mask-origin'];
     if (settings['mask-size']) props['--mask-size'] = settings['mask-size'];
     if (settings['overlay']) props['--overlay'] = settings['overlay'];
@@ -808,6 +809,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['fade-mobile']) bpProps['--fade'] = settings['fade-mobile'];
     if (settings['fixed-mobile']) bpProps['--fixed'] = 'fixed';
     if (settings['color-mobile']) bpProps['--color'] = settings['color-mobile'];
+    if (settings['mask-image-mobile']) bpProps['--mask-image'] = settings['mask-image-mobile'];
     if (settings['mask-origin-mobile']) bpProps['--mask-origin'] = settings['mask-origin-mobile'];
     if (settings['mask-size-mobile']) bpProps['--mask-size'] = settings['mask-size-mobile'];
     if (settings['overlay-mobile']) bpProps['--overlay'] = settings['overlay-mobile'];
@@ -1140,6 +1142,7 @@ const Background = ({attributes}) => {
         'wpbs-background',
         `--${settings.type}`,
         !settings?.eager ? '--lazy' : null,
+        !settings?.['mask-image'] || settings?.['mask-image-mobile'] ? '--mask' : null,
     ].filter(Boolean).join(' ');
 
 

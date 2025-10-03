@@ -3,7 +3,7 @@
   overflow: hidden;
   z-index: 0;
   position: absolute;
-  mask-image: var(--fade, none);
+  mask-image: var(--fade, 0%);
   background-color: var(--color, inherit);
   top: var(--top, 0);
   left: var(--left, 0);

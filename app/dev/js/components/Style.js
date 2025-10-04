@@ -30,7 +30,6 @@ import {
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
 import PreviewThumbnail from "Components/PreviewThumbnail.js";
-import {useSelect} from "@wordpress/data";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -864,6 +863,7 @@ function normalizeBackgroundMedia(media) {
     return Object.fromEntries(Object.entries({
         id: media.id ?? null,
         sizes: media.sizes ?? null,
+        url: media.url ?? null,
     }).filter(([key, value]) => !!value));
 }
 
@@ -1171,6 +1171,46 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
     </PanelBody>;
 }
 
+const MediaElement = (settings, editor = true) => {
+    if (settings?.type === 'video') {
+
+        const breakpoint = (WPBS?.settings?.breakpoints?.[settings?.breakpoint ?? 'normal']?.size ?? 1304) + 'px';
+
+        let {'video-mobile': mobileVideo, 'video-large': largeVideo} = settings;
+
+        if (!largeVideo && !mobileVideo) {
+            return false;
+        }
+
+        if (!settings.force) {
+            mobileVideo = mobileVideo || largeVideo || false;
+            largeVideo = largeVideo || mobileVideo || false;
+        } else {
+            mobileVideo = mobileVideo || {};
+            largeVideo = largeVideo || {};
+        }
+
+        let srcAttr;
+
+        srcAttr = !!editor || !!settings?.eager ? 'src' : 'data-src';
+
+        return <video muted loop autoPlay={true}>
+            <source {...{
+                [srcAttr]: largeVideo.url ? largeVideo.url : '#',
+                type: 'video/mp4',
+                'data-media': '(min-width:' + breakpoint + ')'
+            }}/>
+            <source {...{
+                [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
+                type: 'video/mp4',
+                'data-media': '(width < ' + breakpoint + ')'
+            }}/>
+        </video>
+    } else {
+        return null;
+    }
+};
+
 export const Background = ({attributes}) => {
 
     const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
@@ -1178,8 +1218,6 @@ export const Background = ({attributes}) => {
     if (!settings.type) {
         return null;
     }
-
-    const breakpoint = (WPBS?.settings?.breakpoints?.[settings?.breakpoint ?? 'normal']?.size ?? 1304) + 'px';
 
     const hasMask = !!settings?.['mask-image'] || !!settings?.['mask-image-mobile'];
     const isLazy = !settings?.eager;
@@ -1193,18 +1231,7 @@ export const Background = ({attributes}) => {
 
 
     return <div className={bgClassnames}>
-        {settings?.type === 'video' ? <video muted loop autoPlay={true}>
-            <source {...{
-                [srcAttr]: largeVideo.url ? largeVideo.url : '#',
-                type: 'video/mp4',
-                'data-media': '(min-width:' + breakpoint + ')'
-            }}/>
-            <source {...{
-                [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
-                type: 'video/mp4',
-                'data-media': '(width < ' + breakpoint + ')'
-            }}/>
-        </video> : null}
+        <MediaElement settings={settings}/>
     </div>;
 
 }

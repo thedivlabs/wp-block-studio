@@ -50,7 +50,7 @@ registerBlockType(metadata.name, {
     },
     edit: withStyle((props) => {
 
-        const {attributes, setAttributes, setStyle, StyleElements} = props;
+        const {attributes, setAttributes, setStyle} = props;
 
         const {'wpbs-cta': settings = {}} = attributes;
 
@@ -79,7 +79,7 @@ registerBlockType(metadata.name, {
                 {label: 'Select', value: ''},
                 ...popups.map((popup) => ({
                     label: popup.title?.raw || '(Untitled)',
-                    value: popup.id,
+                    value: popup?.id,
                 })),
             ];
         }, [popups]);

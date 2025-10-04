@@ -40,76 +40,114 @@ class WPBS_Blocks {
 
 	}
 
-	public static function render_block_styles( array $attributes, string $blockName = '', bool $is_rest = false ): string|bool {
+	public static function render_block_styles( array $attributes, string $name = '', bool $is_rest = false ): string|bool {
 
-		if ( empty( $attributes['uniqueId'] ) || empty( $attributes['wpbs-css'] ) ) {
-			return $is_rest ? true : '';
+		if ( empty( $attributes['uniqueId'] ) ) {
+			return '';
 		}
 
-		$unique_id = $attributes['uniqueId'];
-		$selector  = '.wp-block-' . str_replace( '/', '-', $blockName ) . '.' . $unique_id;
-
-		$block_css = $attributes['wpbs-css'];
-
-		// Helper to convert array of props to CSS string
-		$props_to_css = function ( array $props ): string {
-			$lines = [];
-			foreach ( $props as $key => $val ) {
-				if ( $val === null || $val === '' ) {
-					continue;
-				}
-				$lines[] = "{$key}: {$val};";
-			}
-
-			return implode( ' ', $lines );
-		};
-
-		$css = '';
-
-		// 1. Default props
-		if ( ! empty( $block_css['props'] ) ) {
-			$css .= "{$selector} { " . $props_to_css( $block_css['props'] ) . " } ";
-		}
-
-		// 2. Breakpoints
 		$breakpoints_config = wp_get_global_settings()['custom']['breakpoints'] ?? [];
 
-		if ( ! empty( $block_css['breakpoints'] ) ) {
-			foreach ( $block_css['breakpoints'] as $bp_key => $bp_props ) {
-				if ( empty( $bp_props ) || empty( $breakpoints_config[ $bp_key ] ) ) {
+		$unique_id = $attributes['uniqueId'];
+		$selector  = '.wp-block-' . str_replace( '/', '-', $name ) . '.' . $unique_id;
+
+		$css            = '';
+		$background_css = '';
+
+		// Helper: convert array of props to CSS string
+		$props_to_css = function ( $props = array() ) {
+			$result = '';
+			foreach ( $props as $k => $v ) {
+				if ( $v !== null && $v !== '' ) {
+					$result .= $k . ': ' . $v . '; ';
+				}
+			}
+
+			return trim( $result );
+		};
+
+		$parsed_css = $attributes['wpbs-css'] ?? array();
+
+		// -------- Main block props --------
+		if ( ! empty( $parsed_css['props'] ) && is_array( $parsed_css['props'] ) ) {
+			$css .= $selector . ' { ' . $props_to_css( $parsed_css['props'] ) . ' } ';
+		}
+
+		// Breakpoints
+		if ( ! empty( $parsed_css['breakpoints'] ) && is_array( $parsed_css['breakpoints'] ) ) {
+			foreach ( $parsed_css['breakpoints'] as $bp_key => $bp_props ) {
+				if ( empty( $bp_props ) || ! is_array( $bp_props ) ) {
 					continue;
 				}
-				$bp_size = $breakpoints_config[ $bp_key ]['size'] ?? 0;
-				$css     .= "@media (max-width: " . ( (int) $bp_size - 1 ) . "px) { ";
-				$css     .= "{$selector} { " . $props_to_css( $bp_props ) . " } ";
-				$css     .= "} ";
+
+				// You need to define WPBS_BREAKPOINTS in PHP
+				$bp = $breakpoints_config[ $bp_key ] ?? null;
+				if ( ! $bp || empty( $bp['size'] ) ) {
+					continue;
+				}
+
+				$css .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$selector} { " . $props_to_css( $bp_props ) . " } } ";
 			}
 		}
 
-		// 3. Hover
-		if ( ! empty( $block_css['hover'] ) ) {
-			$css .= "{$selector}:hover { " . $props_to_css( $block_css['hover'] ) . " } ";
+		// Hover
+		if ( ! empty( $parsed_css['hover'] ) && is_array( $parsed_css['hover'] ) ) {
+			$css .= $selector . ':hover { ' . $props_to_css( $parsed_css['hover'] ) . ' } ';
+		}
+
+		// -------- Background props --------
+		if ( ! empty( $parsed_css['background'] ) && is_array( $parsed_css['background'] ) ) {
+			$bg_selector = $selector . ' > .wpbs-background';
+			$bg          = $parsed_css['background'];
+
+			if ( ! empty( $bg['props'] ) && is_array( $bg['props'] ) ) {
+				$background_css .= $bg_selector . ' { ' . $props_to_css( $bg['props'] ) . ' } ';
+			}
+
+			if ( ! empty( $bg['breakpoints'] ) && is_array( $bg['breakpoints'] ) ) {
+				foreach ( $bg['breakpoints'] as $bp_key => $bp_props ) {
+					if ( empty( $bp_props ) || ! is_array( $bp_props ) ) {
+						continue;
+					}
+
+					$bp = $breakpoints_config[ $bp_key ] ?? null;
+					if ( ! $bp || empty( $bp['size'] ) ) {
+						continue;
+					}
+
+					$background_css .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$bg_selector} { " . $props_to_css( $bp_props ) . " } } ";
+				}
+			}
+
+			if ( ! empty( $bg['hover'] ) && is_array( $bg['hover'] ) ) {
+				$background_css .= $bg_selector . ':hover { ' . $props_to_css( $bg['hover'] ) . ' } ';
+			}
+		}
+
+		$final_css = trim( $css . ' ' . $background_css );
+		if ( empty( $final_css ) ) {
+			return '';
 		}
 
 		// REST output echoes the style tag
 		if ( $is_rest ) {
-			echo '<style>' . $css . '</style>';
+			echo '<style>' . $final_css . '</style>';
 
 			return true;
 		}
 
-		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $css, $unique_id ) {
+		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $final_css, $unique_id ) {
 
-			if ( empty( $css ) || empty( $unique_id ) ) {
+			if ( empty( $final_css ) || empty( $unique_id ) ) {
 				return $css_array;
 			}
 
-			$css_array[ $unique_id ] = $css;
+			$css_array[ $unique_id ] = $final_css;
 
 			return $css_array;
 		} );
 
-		return $css;
+		return $final_css;
 	}
 
 	public function render_block( $attributes, $content, $block ): string {

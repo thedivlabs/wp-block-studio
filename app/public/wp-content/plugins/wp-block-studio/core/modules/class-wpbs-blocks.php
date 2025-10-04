@@ -66,8 +66,9 @@ class WPBS_Blocks {
 		};
 
 		// Helper: build CSS from parsed object + selector
-		$build_css = function ( array $css_obj, string $sel ) use ( $props_to_css, $breakpoints_config ) {
-			$result = '';
+		$build_css = function ( $css_obj, string $sel ) use ( $props_to_css, $breakpoints_config ) {
+			$css_obj = (array) $css_obj; // <-- force array
+			$result  = '';
 
 			// default props
 			if ( ! empty( $css_obj['props'] ) && is_array( $css_obj['props'] ) ) {

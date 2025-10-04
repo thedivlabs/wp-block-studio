@@ -23,9 +23,9 @@
 }
 
 /* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
-.wpbs-background.--mask:before,
-.wpbs-background.--mask > video {
-  mask-image: var(--fade, 0%);
+.wpbs-background:before,
+.wpbs-background > video {
+  mask-image: var(--fade, none);
 }
 
 /* Main background media element */

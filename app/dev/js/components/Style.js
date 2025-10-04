@@ -1257,25 +1257,44 @@ export function withStyle(EditComponent) {
         const uniqueId = useUniqueId(props);
 
         useEffect(() => {
+
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
             const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
 
-            const result = {
+            let result = cleanObject({
                 'wpbs-style': {
                     ...settings,
-                    ...(!_.isEqual(layoutSettings, settings?.layout) ? {layout: layoutSettings} : {}),
-                    ...(!_.isEqual(backgroundSettings, settings?.background) ? {background: backgroundSettings} : {}),
                 },
-                'wpbs-css': !_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css'])) ? mergedCss : {},
-                ...(attributes?.uniqueId ? {} : {uniqueId}),
-            };
+                'wpbs-css': {},
+            });
 
-            const cleaned = cleanObject(result);
-
-            if (!_.isEmpty(cleaned)) {
-                setAttributes(cleaned);
+            if (!_.isEqual(layoutSettings, settings?.layout)) {
+                result['wpbs-style'].layout = layoutSettings;
             }
+
+            if (!_.isEqual(backgroundSettings, settings?.background)) {
+                result['wpbs-style'].background = backgroundSettings;
+            }
+
+            if (!_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css']))) {
+                result['wpbs-css'] = mergedCss;
+            }
+
+            result = cleanObject(result);
+
+            if (!_.isEmpty(result)) {
+
+                if (!attributes?.uniqueId) {
+                    result.uniqueId = uniqueId;
+                }
+
+                if (!_.isEqual(result?.['wpbs-style'], settings)) {
+                    setAttributes(result);
+                }
+
+            }
+
         }, [layoutSettings, backgroundSettings, uniqueId, setAttributes]);
 
 

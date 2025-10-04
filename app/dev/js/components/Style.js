@@ -1171,7 +1171,8 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
     </PanelBody>;
 }
 
-const MediaElement = (settings, editor = true) => {
+const MediaElement = ({settings, editor = true}) => {
+
     if (settings?.type === 'video') {
 
         const breakpoint = (WPBS?.settings?.breakpoints?.[settings?.breakpoint ?? 'normal']?.size ?? 1304) + 'px';

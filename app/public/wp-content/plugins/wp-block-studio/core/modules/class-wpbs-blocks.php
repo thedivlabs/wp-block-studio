@@ -51,8 +51,7 @@ class WPBS_Blocks {
 		$unique_id = $attributes['uniqueId'];
 		$selector  = '.wp-block-' . str_replace( '/', '-', $name ) . '.' . $unique_id;
 
-		$css            = '';
-		$background_css = '';
+		$parsed_css = $attributes['wpbs-css'] ?? [];
 
 		// Helper: convert array of props to CSS string
 		$props_to_css = function ( $props = array() ) {
@@ -66,46 +65,18 @@ class WPBS_Blocks {
 			return trim( $result );
 		};
 
-		$parsed_css = $attributes['wpbs-css'] ?? array();
+		// Helper: build CSS from parsed object + selector
+		$build_css = function ( array $css_obj, string $sel ) use ( $props_to_css, $breakpoints_config ) {
+			$result = '';
 
-		// -------- Main block props --------
-		if ( ! empty( $parsed_css['props'] ) && is_array( $parsed_css['props'] ) ) {
-			$css .= $selector . ' { ' . $props_to_css( $parsed_css['props'] ) . ' } ';
-		}
-
-		// Breakpoints
-		if ( ! empty( $parsed_css['breakpoints'] ) && is_array( $parsed_css['breakpoints'] ) ) {
-			foreach ( $parsed_css['breakpoints'] as $bp_key => $bp_props ) {
-				if ( empty( $bp_props ) || ! is_array( $bp_props ) ) {
-					continue;
-				}
-
-				// You need to define WPBS_BREAKPOINTS in PHP
-				$bp = $breakpoints_config[ $bp_key ] ?? null;
-				if ( ! $bp || empty( $bp['size'] ) ) {
-					continue;
-				}
-
-				$css .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$selector} { " . $props_to_css( $bp_props ) . " } } ";
-			}
-		}
-
-		// Hover
-		if ( ! empty( $parsed_css['hover'] ) && is_array( $parsed_css['hover'] ) ) {
-			$css .= $selector . ':hover { ' . $props_to_css( $parsed_css['hover'] ) . ' } ';
-		}
-
-		// -------- Background props --------
-		if ( ! empty( $parsed_css['background'] ) && is_array( $parsed_css['background'] ) ) {
-			$bg_selector = $selector . ' > .wpbs-background';
-			$bg          = $parsed_css['background'];
-
-			if ( ! empty( $bg['props'] ) && is_array( $bg['props'] ) ) {
-				$background_css .= $bg_selector . ' { ' . $props_to_css( $bg['props'] ) . ' } ';
+			// default props
+			if ( ! empty( $css_obj['props'] ) && is_array( $css_obj['props'] ) ) {
+				$result .= $sel . ' { ' . $props_to_css( $css_obj['props'] ) . ' } ';
 			}
 
-			if ( ! empty( $bg['breakpoints'] ) && is_array( $bg['breakpoints'] ) ) {
-				foreach ( $bg['breakpoints'] as $bp_key => $bp_props ) {
+			// breakpoints
+			if ( ! empty( $css_obj['breakpoints'] ) && is_array( $css_obj['breakpoints'] ) ) {
+				foreach ( $css_obj['breakpoints'] as $bp_key => $bp_props ) {
 					if ( empty( $bp_props ) || ! is_array( $bp_props ) ) {
 						continue;
 					}
@@ -115,13 +86,26 @@ class WPBS_Blocks {
 						continue;
 					}
 
-					$background_css .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$bg_selector} { " . $props_to_css( $bp_props ) . " } } ";
+					$result .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$sel} { " . $props_to_css( $bp_props ) . " } } ";
 				}
 			}
 
-			if ( ! empty( $bg['hover'] ) && is_array( $bg['hover'] ) ) {
-				$background_css .= $bg_selector . ':hover { ' . $props_to_css( $bg['hover'] ) . ' } ';
+			// hover
+			if ( ! empty( $css_obj['hover'] ) && is_array( $css_obj['hover'] ) ) {
+				$result .= $sel . ':hover { ' . $props_to_css( $css_obj['hover'] ) . ' } ';
 			}
+
+			return $result;
+		};
+
+		// Main block CSS
+		$css = $build_css( $parsed_css, $selector );
+
+		// Background CSS
+		$background_css = '';
+		if ( ! empty( $parsed_css['background'] ) && is_array( $parsed_css['background'] ) ) {
+			$bg_selector    = $selector . ' > .wpbs-background';
+			$background_css = $build_css( $parsed_css['background'], $bg_selector );
 		}
 
 		$final_css = trim( $css . ' ' . $background_css );
@@ -129,7 +113,6 @@ class WPBS_Blocks {
 			return '';
 		}
 
-		// REST output echoes the style tag
 		if ( $is_rest ) {
 			echo '<style>' . $final_css . '</style>';
 
@@ -137,11 +120,9 @@ class WPBS_Blocks {
 		}
 
 		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $final_css, $unique_id ) {
-
 			if ( empty( $final_css ) || empty( $unique_id ) ) {
 				return $css_array;
 			}
-
 			$css_array[ $unique_id ] = $final_css;
 
 			return $css_array;

@@ -650,7 +650,10 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                             value={value}
                             render={({open}) => (
                                 <PreviewThumbnail
-                                    image={value}
+                                    image={{
+                                        ...value,
+                                        type: settings?.type,
+                                    }}
                                     callback={clear}
                                     style={{objectFit: 'contain'}}
                                     onClick={open}

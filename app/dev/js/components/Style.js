@@ -595,7 +595,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                             }
                         ]}
                         clearable={true}
-                        value={settings?.[slug] || field?.default}
+                        value={settings?.[slug] || field?.default || ''}
                         onChange={callback}
                         {...controlProps}
                     />

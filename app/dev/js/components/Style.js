@@ -595,7 +595,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                             }
                         ]}
                         clearable={true}
-                        value={settings?.[slug]}
+                        value={settings?.[slug] || field?.default}
                         onChange={callback}
                         {...controlProps}
                     />
@@ -1041,8 +1041,8 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
             large: true,
             disableCustomGradients: false,
             gradients: [],
-            value: settings?.fade ?? 'linear-gradient(0deg,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 100%)',
-            clearable: false,
+            default: 'linear-gradient(180deg,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 100%)',
+            clearable: true,
             allowCustomColors: false,
         },
         {
@@ -1068,7 +1068,7 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
             label: 'Overlay',
             slug: 'overlay',
             large: true,
-            value: settings?.overlay ?? 'linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.6) 100%)',
+            default: 'linear-gradient(180deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.6) 100%)',
         }
     ];
 

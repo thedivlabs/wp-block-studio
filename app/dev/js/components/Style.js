@@ -111,6 +111,13 @@ function cleanObject(obj) {
     }, {});
 }
 
+function propsToCss(props = {}) {
+    return Object.entries(props)
+        .map(([k, v]) => `${k}: ${v};`)
+        .join(' ');
+}
+
+
 export function useUniqueId({name, attributes}) {
 
 
@@ -227,11 +234,6 @@ export const Style = ({attributes, name}) => {
 
         const {'wpbs-css': parsedCss = {}} = attributes;
 
-        const propsToCss = (props = {}) =>
-            Object.entries(props)
-                .map(([k, v]) => `${k}: ${v};`)
-                .join(' ');
-
         let result = '';
 
         // 1. Default
@@ -263,11 +265,6 @@ export const Style = ({attributes, name}) => {
         const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId} > .wpbs-background`;
 
         const {background: parsedCss = {}} = attributes?.['wpbs-css'] ?? {};
-
-        const propsToCss = (props = {}) =>
-            Object.entries(props)
-                .map(([k, v]) => `${k}: ${v};`)
-                .join(' ');
 
         let result = '';
 
@@ -1266,7 +1263,9 @@ export function withStyle(EditComponent) {
             const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
 
             let result = {
-                'wpbs-style': {},
+                'wpbs-style': {
+                    ...settings,
+                },
                 'wpbs-css': {},
             };
 

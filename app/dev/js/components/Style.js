@@ -824,7 +824,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['opacity']) props['--opacity'] = parseInt(settings['opacity']) / 100;
     if (settings['width']) props['--width'] = settings['width'] + '%';
     if (settings['height']) props['--height'] = settings['height'] + '%';
-    if (settings['fade']) props['--fade'] = `linear-gradient(to bottom, rgba(0, 0, 0, 1) ${settings['fade']}%,rgba(0, 0, 0, 0) 100%)`;
+    if (settings['fade']) props['--fade'] = settings['fade'];
     if (settings['fixed']) props['--fixed'] = 'fixed';
     if (settings['color']) props['--color'] = settings['color'];
     if (settings['mask-image']) props['--mask-image'] = maskImageLarge;
@@ -847,7 +847,7 @@ function parseBackgroundCSS(settings = {}) {
     if (settings['opacity-mobile']) bpProps['--opacity'] = parseInt(settings['opacity-mobile']) / 100;
     if (settings['width-mobile']) bpProps['--width'] = settings['width-mobile'] + '%';
     if (settings['height-mobile']) bpProps['--height'] = settings['height-mobile'] + '%';
-    if (settings['fade-mobile']) bpProps['--fade'] = `linear-gradient(to bottom, rgba(0, 0, 0, 1) ${settings['fade-mobile']}%,rgba(0, 0, 0, 0) 100%)`;
+    if (settings['fade-mobile']) bpProps['--fade'] = settings['fade-mobile'];
     if (settings['fixed-mobile']) bpProps['--fixed'] = 'fixed';
     if (settings['color-mobile']) bpProps['--color'] = settings['color-mobile'];
     if (settings['mask-image-mobile']) bpProps['--mask-image'] = maskImageMobile;
@@ -1035,12 +1035,15 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
             large: true,
         },
         {
-            type: 'range',
+            type: 'gradient',
             label: 'Fade',
             slug: 'fade',
-            min: 0,
-            max: 100,
             large: true,
+            disableCustomGradients: false,
+            gradients: [],
+            value: settings?.fade ?? 'linear-gradient(0deg,rgba(0,0,0,1) 0%,rgba(0,0,0,0) 100%)',
+            clearable: false,
+            allowCustomColors: false,
         },
         {
             type: 'image',
@@ -1065,6 +1068,7 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
             label: 'Overlay',
             slug: 'overlay',
             large: true,
+            value: settings?.overlay ?? 'linear-gradient(0deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.6) 100%)',
         }
     ];
 

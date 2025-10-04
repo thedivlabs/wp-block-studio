@@ -573,30 +573,32 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             control = (
                 <BaseControl label={label} __nextHasNoMarginBottom={true} className={classNames}>
                     <GradientPicker
-                        key={slug}
-                        gradients={[
-                            {
-                                name: 'Transparent',
-                                gradient:
-                                    'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                slug: 'transparent',
-                            },
-                            {
-                                name: 'Light',
-                                gradient:
-                                    'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                slug: 'light',
-                            },
-                            {
-                                name: 'Strong',
-                                gradient:
-                                    'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                slug: 'Strong',
-                            }
-                        ]}
-                        clearable={true}
-                        value={settings?.[slug] || field?.default || ''}
-                        onChange={callback}
+                        {...{
+                            key: slug,
+                            gradients: [
+                                {
+                                    name: 'Transparent',
+                                    gradient:
+                                        'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                    slug: 'transparent',
+                                },
+                                {
+                                    name: 'Light',
+                                    gradient:
+                                        'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                    slug: 'light',
+                                },
+                                {
+                                    name: 'Strong',
+                                    gradient:
+                                        'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                    slug: 'strong',
+                                }
+                            ],
+                            clearable: true,
+                            value: settings?.[slug] || field?.default || '',
+                            onChange: callback,
+                        }}
                         {...controlProps}
                     />
                 </BaseControl>
@@ -1153,20 +1155,17 @@ const BackgroundFields = ({backgroundSettings, setBackgroundSettings}) => {
                         return (
                             <Grid columns={2} columnGap={15} rowGap={20}>
                                 {tabFields.map((field) => {
-
                                     const slug = tab.name === 'mobile' && !field.slug.endsWith('-mobile')
                                         ? `${field.slug}-mobile`
                                         : field.slug;
 
-                                    field.slug = slug;
-
                                     return <Field
+                                        key={slug} // key MUST be stable across renders
                                         toolspanel={false}
-                                        field={field}
+                                        field={{...field, slug}} // create new object instead of mutating
                                         settings={settings}
                                         callback={(value) => updateProp(slug, value)}
                                     />;
-
                                 })}
                             </Grid>
                         );

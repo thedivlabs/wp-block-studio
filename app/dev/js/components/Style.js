@@ -3,6 +3,7 @@ import {
     __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
     __experimentalToolsPanel as ToolsPanel,
+    __experimentalNumberControl as NumberControl,
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl,
     BaseControl,
@@ -43,7 +44,8 @@ import {
 } from "Includes/config";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
-import PreviewThumbnail from "Components/PreviewThumbnail.js";
+import PreviewThumbnail from "Components/PreviewThumbnail";
+import {ShadowSelector} from "Components/ShadowSelector";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -559,6 +561,35 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                 />
             );
             break;
+        case 'shadow':
+            control = (
+                <ShadowSelector
+                    key={slug}
+                    label={label}
+                    value={settings?.[slug]}
+                    onChange={callback}
+                    {...controlProps}
+                    className={classNames}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+
+        case 'number':
+            control = (
+                <NumberControl
+                    key={slug}
+                    label={label}
+                    value={settings?.[slug]}
+                    onChange={callback}
+                    {...controlProps}
+                    className={classNames}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
 
         case 'toggle':
             control = (
@@ -785,7 +816,12 @@ const layoutFieldsMap = [
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
     {type: 'unit', slug: 'aspect-ratio', label: 'Aspect Ratio'},
     {type: 'unit', slug: 'order', label: 'Order'},
-    {type: 'text', slug: 'translate', label: 'Translate'},
+    {
+        type: 'box',
+        slug: 'translate',
+        label: 'Translate',
+        options: {sides: ['top', 'left'], inputProps: {units: DIMENSION_UNITS}}
+    },
 
     // Misc toggles
     {type: 'toggle', slug: 'outline', label: 'Outline'},
@@ -1391,7 +1427,7 @@ export function withStyle(EditComponent) {
 
         useEffect(() => {
             // Parse CSS from local state
-            
+
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
             const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));

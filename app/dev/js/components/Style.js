@@ -196,7 +196,7 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
     return raw;
 }
 
-function parseSpecialProps(props = {}) {
+function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
 
     Object.entries(props).forEach(([key, val]) => {
@@ -212,6 +212,112 @@ function parseSpecialProps(props = {}) {
                     result[`${key}-bottom`] = val.bottom ?? '0px';
                     result[`${key}-left`] = val.left ?? '0px';
                     break;
+
+                case 'height':
+                case 'height-custom':
+                    result['height'] = heightVal(props?.['height-custom'] ?? props?.['height'] ?? val);
+                    result['--height'] = heightVal(props?.['height-custom'] ?? props?.['height'] ?? val);
+                    break;
+
+                case 'min-height':
+                case 'min-height-custom':
+                    result['min-height'] = heightVal(props?.['min-height-custom'] ?? props?.['min-height'] ?? val);
+                    break;
+
+                case 'max-height':
+                case 'max-height-custom':
+                    result['max-height'] = heightVal(props?.['max-height-custom'] ?? props?.['max-height'] ?? val);
+                    break;
+
+                case 'width':
+                case 'width-custom':
+                    result['width'] = props?.['width-custom'] ?? props?.['width'] ?? val;
+                    break;
+
+                case 'shadow':
+                    if (val?.shadow) {
+                        result['box-shadow'] = val.shadow;
+                    }
+                    break;
+
+                case 'border-radius':
+                    result['border-radius'] = Object.values(val).join(' ');
+                    break;
+
+                case 'mask-image': {
+                    const imageUrl = val?.sizes?.full?.url || '#';
+                    result['mask-image'] = `url(${imageUrl})`;
+                    result['mask-repeat'] = 'no-repeat';
+                    result['mask-size'] = (() => {
+                        switch (props?.['mask-size']) {
+                            case 'cover':
+                                return 'cover';
+                            case 'horizontal':
+                                return '100% auto';
+                            case 'vertical':
+                                return 'auto 100%';
+                            default:
+                                return 'contain';
+                        }
+                    })();
+                    result['mask-position'] = props?.['mask-origin'] || 'center center';
+                    break;
+                }
+
+                case 'border':
+                    result['border'] = Object.values({style: 'solid', ...(val ?? {})}).join(' ');
+                    break;
+
+                case 'outline':
+                    result['outline'] = Object.values({style: 'solid', ...(val ?? {})}).join(' ');
+                    break;
+
+                case 'basis':
+                    result['flex-basis'] = val + '%';
+                    break;
+
+                case 'transition': {
+                    const transitions = [...val];
+                    if (val.includes('color') && !val.includes('text-decoration-color')) {
+                        transitions.push('text-decoration-color');
+                    }
+                    result['transition-property'] = transitions.join(', ');
+                    break;
+                }
+
+                case 'duration':
+                    result['transition-duration'] = val;
+                    break;
+
+                case 'text-color':
+                    result['color'] = val;
+                    break;
+
+                case 'text-decoration-color':
+                    result['text-decoration-color'] = `${val} !important`;
+                    result['text-underline-offset'] = '.3em';
+                    break;
+
+                case 'translate':
+                    result['transform'] = `translate(${
+                        getCSSFromStyle(val?.left || '0px')
+                    }, ${
+                        getCSSFromStyle(val?.top || '0px')
+                    })`;
+                    break;
+
+                case 'offset-header':
+                    result['padding-top'] = `calc(${getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px')} + var(--wpbs-header-height, 0px)) !important`;
+                    break;
+
+                case 'align-header':
+                    result['top'] = 'var(--wpbs-header-height, auto)';
+                    break;
+
+                case 'position':
+                    result['position'] = (val === 'fixed' || val === 'fixed-push') ? 'fixed' : val;
+                    break;
+
                 default:
                     result[key] = val;
             }
@@ -222,6 +328,7 @@ function parseSpecialProps(props = {}) {
 
     return result;
 }
+
 
 export function parseLayoutCSS(settings = {}) {
     const cssObj = {

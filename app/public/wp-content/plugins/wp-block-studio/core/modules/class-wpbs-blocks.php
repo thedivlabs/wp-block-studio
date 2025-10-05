@@ -56,8 +56,13 @@ class WPBS_Blocks {
 		// Helper: convert array of props to CSS string
 		$props_to_css = function ( $props = array(), $important = false ) {
 			$result = '';
-			$i      = $important ? ' !important' : '';
 			foreach ( $props as $k => $v ) {
+				$i = $important && match ( true ) {
+					str_contains( $k, 'gap' ),
+					str_contains( $k, 'padding' ),
+					str_contains( $k, 'margin' ) => true,
+					default => false,
+				} ? ' !important' : '';
 				if ( $v !== null && $v !== '' ) {
 					$result .= $k . ': ' . $v . $i . '; ';
 				}

@@ -111,10 +111,23 @@ function cleanObject(obj) {
     }, {});
 }
 
-function propsToCss(props = {}, important = false) {
-    const i = important ? ' !important' : '';
+function propsToCss(props = {}, important = false, importantKeysCustom = []) {
+    const importantProps = [
+        'padding', 'margin', 'gap',
+        'width', 'min-width', 'max-width', 'height', 'min-height', 'max-height',
+        'color', 'background-color', 'border-color',
+        'font-size', 'line-height', 'letter-spacing',
+        'border-width', 'border-radius',
+        'opacity', 'box-shadow', 'filter',
+        ...importantKeysCustom
+    ];
+
     return Object.entries(props)
-        .map(([k, v]) => `${k}: ${v}${i};`)
+        .filter(([_, v]) => v !== null && v !== '') // move filter before map
+        .map(([k, v]) => {
+            const needsImportant = important && importantProps.some(sub => k.includes(sub));
+            return `${k}: ${v}${needsImportant ? ' !important' : ''};`;
+        })
         .join(' ');
 }
 

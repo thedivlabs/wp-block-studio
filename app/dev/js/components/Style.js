@@ -1271,44 +1271,48 @@ export function withStyle(EditComponent) {
         const uniqueId = useUniqueId(props);
 
         useEffect(() => {
-
+            // Parse CSS from local state
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
             const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
 
-            let result = cleanObject({
-                'wpbs-style': {
-                    ...settings,
-                },
+            // Start with a raw result object — do not clean yet
+            let result = {
+                'wpbs-style': {...settings}, // safe spread
                 'wpbs-css': {},
-            });
+            };
 
+            // Defensive: ensure nested objects exist
+            result['wpbs-style'] = result['wpbs-style'] || {};
+
+            // Only assign layout/background if they differ
             if (!_.isEqual(layoutSettings, settings?.layout)) {
                 result['wpbs-style'].layout = layoutSettings;
             }
-
             if (!_.isEqual(backgroundSettings, settings?.background)) {
                 result['wpbs-style'].background = backgroundSettings;
             }
 
+            // Only assign merged CSS if it differs from existing attributes
             if (!_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css']))) {
                 result['wpbs-css'] = mergedCss;
             }
 
+            // Clean the final object
             result = cleanObject(result);
 
+            // Only set attributes if result is not empty
             if (!_.isEmpty(result)) {
-
+                // Ensure uniqueId is set
                 if (!attributes?.uniqueId) {
                     result.uniqueId = uniqueId;
                 }
 
+                // Only update attributes if wpbs-style actually changed
                 if (!_.isEqual(result?.['wpbs-style'], settings)) {
                     setAttributes(result);
                 }
-
             }
-
         }, [layoutSettings, backgroundSettings, uniqueId, setAttributes]);
 
 

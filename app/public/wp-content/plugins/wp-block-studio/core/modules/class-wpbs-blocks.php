@@ -54,22 +54,51 @@ class WPBS_Blocks {
 		$parsed_css = $attributes['wpbs-css'] ?? [];
 
 		// Helper: convert array of props to CSS string
-		$props_to_css = function ( $props = array(), $important = false ) {
+		$props_to_css = function ( $props = [], $important = false, $importantKeysCustom = [] ) {
+			// Default important keys
+			$importantProps = array_merge( [
+				'padding',
+				'margin',
+				'gap',
+				'width',
+				'min-width',
+				'max-width',
+				'height',
+				'min-height',
+				'max-height',
+				'color',
+				'background-color',
+				'border-color',
+				'font-size',
+				'line-height',
+				'letter-spacing',
+				'border-width',
+				'border-radius',
+				'opacity',
+				'box-shadow',
+				'filter',
+			], $importantKeysCustom );
+
 			$result = '';
+
 			foreach ( $props as $k => $v ) {
-				$i = $important && match ( true ) {
-					str_contains( $k, 'gap' ),
-					str_contains( $k, 'padding' ),
-					str_contains( $k, 'margin' ) => true,
-					default => false,
-				} ? ' !important' : '';
-				if ( $v !== null && $v !== '' ) {
-					$result .= $k . ': ' . $v . $i . '; ';
+				if ( $v === null || $v === '' ) {
+					continue;
 				}
+
+				// Check if property should get !important
+				$needsImportant = $important && array_reduce(
+						$importantProps,
+						fn( $carry, $sub ) => $carry || str_contains( $k, $sub ),
+						false
+					);
+
+				$result .= $k . ': ' . $v . ( $needsImportant ? ' !important' : '' ) . '; ';
 			}
 
 			return trim( $result );
 		};
+
 
 		// Helper: build CSS from parsed object + selector
 		$build_css = function ( $css_obj, string $sel ) use ( $props_to_css, $breakpoints_config ) {

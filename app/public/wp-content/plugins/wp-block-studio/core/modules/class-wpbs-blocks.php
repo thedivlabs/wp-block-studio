@@ -54,11 +54,12 @@ class WPBS_Blocks {
 		$parsed_css = $attributes['wpbs-css'] ?? [];
 
 		// Helper: convert array of props to CSS string
-		$props_to_css = function ( $props = array() ) {
+		$props_to_css = function ( $props = array(), $important = false ) {
 			$result = '';
+			$i      = $important ? ' !important' : '';
 			foreach ( $props as $k => $v ) {
 				if ( $v !== null && $v !== '' ) {
-					$result .= $k . ': ' . $v . '; ';
+					$result .= $k . ': ' . $v . $i . '; ';
 				}
 			}
 
@@ -87,7 +88,7 @@ class WPBS_Blocks {
 						continue;
 					}
 
-					$result .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$sel} { " . $props_to_css( $bp_props ) . " } } ";
+					$result .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$sel} { " . $props_to_css( $bp_props, true ) . " } } ";
 				}
 			}
 

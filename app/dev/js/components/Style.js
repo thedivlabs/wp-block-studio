@@ -111,9 +111,10 @@ function cleanObject(obj) {
     }, {});
 }
 
-function propsToCss(props = {}) {
+function propsToCss(props = {}, important = false) {
+    const i = important ? ' !important' : '';
     return Object.entries(props)
-        .map(([k, v]) => `${k}: ${v};`)
+        .map(([k, v]) => `${k}: ${v}${i};`)
         .join(' ');
 }
 
@@ -247,7 +248,7 @@ export const Style = ({attributes, name}) => {
                 const bp = WPBS?.settings?.breakpoints?.[bpKey];
                 if (!bp || _.isEmpty(bpProps)) return;
 
-                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps)} } }`;
+                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
             });
         }
 

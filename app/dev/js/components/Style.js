@@ -36,6 +36,10 @@ import {
     OVERFLOW_OPTIONS,
     SHAPE_OPTIONS,
     BORDER_UNITS,
+    CONTENT_VISIBILITY_OPTIONS,
+    REVEAL_ANIMATION_OPTIONS,
+    REVEAL_EASING_OPTIONS,
+    TEXT_ALIGN_OPTIONS,
 } from "Includes/config";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
@@ -702,30 +706,101 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
     </ToolsPanelItem> : control);
 });
 
-const LayoutFieldsMap = [
+const layoutFieldsMap = [
+
+    {type: 'select', slug: 'container', label: 'Container', options: CONTAINER_OPTIONS},
+
+    // Reveal / animation
+    {type: 'select', slug: 'reveal', label: 'Reveal', options: REVEAL_ANIMATION_OPTIONS},
+    {type: 'select', slug: 'reveal-easing', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
+    {type: 'number', slug: 'reveal-duration', label: 'Reveal Duration'},
+    {type: 'unit', slug: 'reveal-offset', label: 'Reveal Offset'},
+    {type: 'unit', slug: 'reveal-distance', label: 'Reveal Distance'},
+    {type: 'toggle', slug: 'reveal-repeat', label: 'Reveal Repeat'},
+    {type: 'toggle', slug: 'reveal-mirror', label: 'Reveal Mirror'},
+
+    // Header alignment
+    {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
+    {type: 'toggle', slug: 'align-header', label: 'Align Header'},
+
+    // Display / flex
+    {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
+    {type: 'select', slug: 'flex-direction', label: 'Flex Direction', options: DIRECTION_OPTIONS},
+    {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
+    {type: 'select', slug: 'align-items', label: 'Align Items', options: ALIGN_OPTIONS},
+    {type: 'select', slug: 'justify-content', label: 'Justify Content', options: JUSTIFY_OPTIONS},
+
+    // Sizing
+    {type: 'select', slug: 'aspect-ratio', label: 'Aspect Ratio', options: SHAPE_OPTIONS},
+    {type: 'unit', slug: 'opacity', label: 'Opacity'},
+    {type: 'unit', slug: 'basis', label: 'Flex Basis'},
+    {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
+    {type: 'unit', slug: 'width-custom', label: 'Custom Width'},
+    {type: 'unit', slug: 'max-width', label: 'Max Width'},
+    {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
+    {type: 'unit', slug: 'height-custom', label: 'Custom Height'},
+    {type: 'unit', slug: 'min-height', label: 'Min Height'},
+    {type: 'unit', slug: 'min-height-custom', label: 'Custom Min Height'},
+    {type: 'unit', slug: 'max-height', label: 'Max Height'},
+    {type: 'unit', slug: 'max-height-custom', label: 'Custom Max Height'},
+    {type: 'unit', slug: 'offset-height', label: 'Offset Height'},
+
+    {type: 'unit', slug: 'flex-grow', label: 'Flex Grow'},
+    {type: 'unit', slug: 'flex-shrink', label: 'Flex Shrink'},
+
+    // Positioning
+    {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
+    {type: 'number', slug: 'z-index', label: 'Z Index'},
+    {type: 'unit', slug: 'top', label: 'Top'},
+    {type: 'unit', slug: 'right', label: 'Right'},
+    {type: 'unit', slug: 'bottom', label: 'Bottom'},
+    {type: 'unit', slug: 'left', label: 'Left'},
+
+    // Overflow
+    {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
+    {type: 'unit', slug: 'aspect-ratio', label: 'Aspect Ratio'},
+    {type: 'unit', slug: 'order', label: 'Order'},
+    {type: 'text', slug: 'translate', label: 'Translate'},
+
+    // Misc toggles
+    {type: 'toggle', slug: 'outline', label: 'Outline'},
+    {type: 'toggle', slug: 'mark-empty', label: 'Mark Empty'},
+
+    // Colors / visibility
+    {type: 'color', slug: 'text-decoration-color', label: 'Text Decoration Color'},
+    {type: 'select', slug: 'content-visibility', label: 'Content Visibility', options: CONTENT_VISIBILITY_OPTIONS},
+
     {
-        type: 'select',
-        slug: 'display',
-        label: 'Display',
-        options: DISPLAY_OPTIONS
+        type: 'box', slug: 'padding', label: 'Padding', large: true,
+        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}}
     },
     {
-        type: 'select',
-        slug: 'flex-direction',
-        label: 'Direction',
-        options: DIRECTION_OPTIONS
+        type: 'box', slug: 'margin', label: 'Margin', large: true,
+        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}}
+    },
+
+    {type: 'unit', slug: 'gap', label: 'Gap'},
+    {type: 'unit', slug: 'border-radius', label: 'Border Radius'},
+    {type: 'unit', slug: 'font-size', label: 'Font Size'},
+    {type: 'unit', slug: 'line-height', label: 'Line Height'},
+    {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
+
+    {type: 'color', slug: 'text-color', label: 'Text Color'},
+    {type: 'color', slug: 'background-color', label: 'Background Color'},
+    {type: 'text', slug: 'box-shadow', label: 'Shadow'},
+];
+
+
+const hoverFieldsMap = [
+    {
+        type: 'text',
+        slug: 'background-color',
+        label: 'Background Color'
     },
     {
-        type: 'box',
-        slug: 'padding',
-        label: 'Padding',
-        large: true,
-        options: {
-            sides: ['top', 'right', 'bottom', 'left'],
-            inputProps: {
-                units: DIMENSION_UNITS
-            }
-        }
+        type: 'text',
+        slug: 'text-color',
+        label: 'Text Color'
     },
 ];
 
@@ -736,7 +811,7 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
     );
 
 
-    return LayoutFieldsMap.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
+    return layoutFieldsMap.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
                                                                                                    settings={settings}
                                                                                                    callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
 });
@@ -747,20 +822,8 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
         [updateHoverItem]
     );
 
-    const fields = [
-        {
-            type: 'text',
-            slug: 'background-color',
-            label: 'Background Color'
-        },
-        {
-            type: 'text',
-            slug: 'text-color',
-            label: 'Text Color'
-        },
-    ];
 
-    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => {
+    return hoverFieldsMap.filter((field) => !suppress.includes(field.slug)).map((field) => {
         return <Field field={field}
                       settings={hoverSettings}
                       callback={(newValue) => updateProp({[field.slug]: newValue})}
@@ -1268,9 +1331,20 @@ export const styleClassnames = (attributes) => {
 
     const {'wpbs-style': settings = {}} = attributes ?? {};
 
+    const {layout, background, hover} = settings;
+
     return [
         attributes?.uniqueId,
-        settings?.props?.['offset-height'] ? '--offset-height' : null,
+        layout?.['offset-height'] ? '--offset-height' : null,
+        layout?.['hide-empty'] ? '--hide-empty' : null,
+        layout?.['box-shadow'] ? '--shadow' : null,
+        layout?.['required'] ? '--required' : null,
+        layout?.['offset-header'] ? '--offset-header' : null,
+        layout?.['container'] ? '--container' : null,
+        layout?.['reveal'] ? '--reveal' : null,
+        layout?.['transition'] ? '--transition' : null,
+        layout?.['content-visibility'] ? '--content-visibility' : null,
+        layout?.['mask-image'] ? '--mask' : null,
     ].filter(Boolean).join(' ');
 };
 

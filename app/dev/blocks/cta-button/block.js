@@ -7,10 +7,9 @@ import {
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
 import {
-    __experimentalGrid as Grid, __experimentalUnitControl as UnitControl,
+    __experimentalGrid as Grid,
     PanelBody,
     SelectControl, TabPanel,
-    TextControl,
     ToggleControl
 } from "@wordpress/components";
 import React, {useCallback, useEffect, useMemo} from "react";

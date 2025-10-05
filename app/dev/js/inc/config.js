@@ -140,6 +140,13 @@ export const DIMENSION_UNITS = [
     {value: 'ch', label: 'ch', default: 0},
 ];
 
+export const CONTENT_VISIBILITY_OPTIONS = [
+    {label: 'Select', value: ''},
+    {label: 'Auto', value: 'auto'},
+    {label: 'Visible', value: 'visible'},
+    {label: 'Hidden', value: 'hidden'},
+];
+
 export const BORDER_UNITS = [
     {value: 'px', label: 'px', default: 0},
     {value: '%', label: '%', default: 0},
@@ -155,6 +162,14 @@ export const REL_OPTIONS = [
     {label: 'nofollow', value: 'nofollow'},
     {label: 'noopener noreferrer', value: 'noopener noreferrer'},
     {label: 'nofollow noopener', value: 'nofollow noopener'},
+];
+
+export const TEXT_ALIGN_OPTIONS = [
+    {label: 'Select', value: ''},
+    {label: 'Left', value: 'left'},
+    {label: 'Center', value: 'center'},
+    {label: 'Right', value: 'right'},
+    {label: 'Inherit', value: 'inherit'},
 ];
 
 export const TEXT_DECORATION_OPTIONS = [

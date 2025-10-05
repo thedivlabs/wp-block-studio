@@ -17,7 +17,7 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {withStyle, STYLE_ATTRIBUTES, Background} from "Components/Style.js";
+import {withStyle, STYLE_ATTRIBUTES, Background, styleClassnames} from "Components/Style.js";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
 
@@ -33,7 +33,7 @@ function classNames(attributes = {}) {
         !!settings?.['icon-bold'] ? '--icon-bold' : null,
         !!settings?.['icon-only'] ? '--icon-only' : false,
         !!settings?.['icon-first'] ? '--icon-first' : false,
-        attributes?.uniqueId ?? '',
+        styleClassnames(attributes),
     ].filter(x => x).join(' ');
 }
 
@@ -196,10 +196,6 @@ registerBlockType(metadata.name, {
                 css: cssProps,
             });
         }, [cssProps, setStyle]);
-
-        useEffect(() => {
-            console.log(attributes);
-        }, [attributes]);
 
 
         return (

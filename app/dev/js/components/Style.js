@@ -25,7 +25,17 @@ import {
     OBJECT_POSITION_OPTIONS,
     ORIGIN_OPTIONS,
     REPEAT_OPTIONS,
-    RESOLUTION_OPTIONS
+    RESOLUTION_OPTIONS,
+    CONTAINER_OPTIONS,
+    ALIGN_OPTIONS,
+    JUSTIFY_OPTIONS,
+    WIDTH_OPTIONS,
+    HEIGHT_OPTIONS,
+    WRAP_OPTIONS,
+    POSITION_OPTIONS,
+    OVERFLOW_OPTIONS,
+    SHAPE_OPTIONS,
+    BORDER_UNITS,
 } from "Includes/config";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
@@ -130,7 +140,6 @@ function propsToCss(props = {}, important = false, importantKeysCustom = []) {
         })
         .join(' ');
 }
-
 
 export function useUniqueId({name, attributes}) {
 
@@ -693,42 +702,43 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
     </ToolsPanelItem> : control);
 });
 
+const LayoutFieldsMap = [
+    {
+        type: 'select',
+        slug: 'display',
+        label: 'Display',
+        options: DISPLAY_OPTIONS
+    },
+    {
+        type: 'select',
+        slug: 'flex-direction',
+        label: 'Direction',
+        options: DIRECTION_OPTIONS
+    },
+    {
+        type: 'box',
+        slug: 'padding',
+        label: 'Padding',
+        large: true,
+        options: {
+            sides: ['top', 'right', 'bottom', 'left'],
+            inputProps: {
+                units: DIMENSION_UNITS
+            }
+        }
+    },
+];
+
 const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
     const updateProp = useCallback(
         (newProps) => updateLayoutItem(newProps, bpKey),
         [updateLayoutItem, bpKey]
     );
 
-    const fields = [
-        {
-            type: 'select',
-            slug: 'display',
-            label: 'Display',
-            options: DISPLAY_OPTIONS
-        },
-        {
-            type: 'select',
-            slug: 'flex-direction',
-            label: 'Direction',
-            options: DIRECTION_OPTIONS
-        },
-        {
-            type: 'box',
-            slug: 'padding',
-            label: 'Padding',
-            large: true,
-            options: {
-                sides: ['top', 'right', 'bottom', 'left'],
-                inputProps: {
-                    units: DIMENSION_UNITS
-                }
-            }
-        },
-    ];
 
-    return fields.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
-                                                                                          settings={settings}
-                                                                                          callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
+    return LayoutFieldsMap.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
+                                                                                                   settings={settings}
+                                                                                                   callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
 });
 
 const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
@@ -1253,6 +1263,16 @@ export const Background = ({attributes}) => {
     </div>;
 
 }
+
+export const styleClassnames = (attributes) => {
+
+    const {'wpbs-style': settings = {}} = attributes ?? {};
+
+    return [
+        attributes?.uniqueId,
+        settings?.props?.['offset-height'] ? '--offset-height' : null,
+    ].filter(Boolean).join(' ');
+};
 
 export function withStyle(EditComponent) {
     return (props) => {

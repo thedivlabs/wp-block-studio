@@ -124,8 +124,9 @@ export const ORIGIN_OPTIONS = [
 ];
 
 export const IMAGE_SIZE_OPTIONS = [
-    {label: 'Default', value: 'contain'},
+    {label: 'Default', value: ''},
     {label: 'Cover', value: 'cover'},
+    {label: 'Contain', value: 'contain'},
     {label: 'Vertical', value: 'auto 100%'},
     {label: 'Horizontal', value: '100% auto'},
 ];

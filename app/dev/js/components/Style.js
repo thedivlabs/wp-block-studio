@@ -1364,8 +1364,12 @@ export function withStyle(EditComponent) {
 
         const uniqueId = useUniqueId(props);
 
+
         const throttledParseAndSet = useMemo(() =>
                 _.throttle((layoutSettings, backgroundSettings, uniqueId) => {
+
+                    console.log(settings);
+
                     // --- same parsing code you already have ---
                     const layoutCss = parseLayoutCSS(layoutSettings);
                     const backgroundCss = parseBackgroundCSS(backgroundSettings);
@@ -1400,7 +1404,7 @@ export function withStyle(EditComponent) {
                             setAttributes(result);
                         }
                     }
-                }, 100, {trailing: true}), // run at most every 100ms, ensure last run fires
+                }, 300, {leading: true, trailing: true}), // run at most every 100ms, ensure last run fires
             [attributes, css, setAttributes, settings]);
 
         useEffect(() => {

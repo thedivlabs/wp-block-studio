@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
@@ -527,6 +527,23 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                 />
             );
             break;
+        case 'composite':
+            control = (
+                <Grid columns={2} columnGap={15} rowGap={20} className={classNames}>
+                    {field.fields.map((sub) => (
+                        <Field
+                            key={sub.slug}
+                            field={sub}
+                            settings={settings}
+                            callback={(newValue) =>
+                                handleChange({...settings, [sub.slug]: newValue})
+                            }
+                            toolspanel={false} // prevent nesting ToolsPanelItems
+                        />
+                    ))}
+                </Grid>
+            );
+            break;
 
         case 'text':
             control = (
@@ -751,10 +768,18 @@ const layoutFieldsMap = [
     // Positioning
     {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
     {type: 'number', slug: 'z-index', label: 'Z Index'},
-    {type: 'unit', slug: 'top', label: 'Top'},
-    {type: 'unit', slug: 'right', label: 'Right'},
-    {type: 'unit', slug: 'bottom', label: 'Bottom'},
-    {type: 'unit', slug: 'left', label: 'Left'},
+    {
+        type: 'composite',
+        slug: 'box-position',
+        label: 'Box Position',
+        fields: [
+            {type: 'unit', slug: 'top', label: 'Top'},
+            {type: 'unit', slug: 'right', label: 'Right'},
+            {type: 'unit', slug: 'bottom', label: 'Bottom'},
+            {type: 'unit', slug: 'left', label: 'Left'},
+        ],
+        large: true
+    },
 
     // Overflow
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
@@ -789,7 +814,6 @@ const layoutFieldsMap = [
     {type: 'color', slug: 'background-color', label: 'Background Color'},
     {type: 'text', slug: 'box-shadow', label: 'Shadow'},
 ];
-
 
 const hoverFieldsMap = [
     {
@@ -1365,51 +1389,51 @@ export function withStyle(EditComponent) {
         const uniqueId = useUniqueId(props);
 
 
-        const throttledParseAndSet = useMemo(() =>
-                _.throttle((layoutSettings, backgroundSettings, uniqueId) => {
+        const latestRef = useRef();
+        useEffect(() => {
+            latestRef.current = {
+                layoutSettings, backgroundSettings, uniqueId, settings, css, attributes, setAttributes
+            };
+        }, [layoutSettings, backgroundSettings, uniqueId, settings, css, attributes, setAttributes]);
 
-                    console.log(settings);
+        const throttledRef = useRef();
+        if (!throttledRef.current) {
+            throttledRef.current = _.throttle(() => {
+                const {
+                    layoutSettings,
+                    backgroundSettings,
+                    uniqueId,
+                    settings,
+                    css,
+                    attributes,
+                    setAttributes
+                } = latestRef.current;
 
-                    // --- same parsing code you already have ---
-                    const layoutCss = parseLayoutCSS(layoutSettings);
-                    const backgroundCss = parseBackgroundCSS(backgroundSettings);
-                    const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
+                console.log(settings);
 
-                    let result = {
-                        'wpbs-style': {...settings},
-                        'wpbs-css': {},
-                    };
+                const layoutCss = parseLayoutCSS(layoutSettings);
+                const backgroundCss = parseBackgroundCSS(backgroundSettings);
+                const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
 
-                    result['wpbs-style'] = result['wpbs-style'] || {};
+                let result = {'wpbs-style': {...settings}, 'wpbs-css': {}};
+                result['wpbs-style'] = result['wpbs-style'] || {};
 
-                    if (!_.isEqual(layoutSettings, settings?.layout)) {
-                        result['wpbs-style'].layout = layoutSettings;
-                    }
-                    if (!_.isEqual(backgroundSettings, settings?.background)) {
-                        result['wpbs-style'].background = backgroundSettings;
-                    }
+                if (!_.isEqual(layoutSettings, settings?.layout)) result['wpbs-style'].layout = layoutSettings;
+                if (!_.isEqual(backgroundSettings, settings?.background)) result['wpbs-style'].background = backgroundSettings;
+                if (!_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css']))) result['wpbs-css'] = mergedCss;
 
-                    if (!_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css']))) {
-                        result['wpbs-css'] = mergedCss;
-                    }
-
-                    result = cleanObject(result);
-
-                    if (!_.isEmpty(result)) {
-                        if (!attributes?.uniqueId) {
-                            result.uniqueId = uniqueId;
-                        }
-
-                        if (!_.isEqual(result?.['wpbs-style'], settings)) {
-                            setAttributes(result);
-                        }
-                    }
-                }, 300, {leading: true, trailing: true}), // run at most every 100ms, ensure last run fires
-            [attributes, css, setAttributes, settings]);
+                result = cleanObject(result);
+                if (!_.isEmpty(result)) {
+                    if (!attributes?.uniqueId) result.uniqueId = uniqueId;
+                    if (!_.isEqual(result?.['wpbs-style'], settings)) setAttributes(result);
+                }
+            }, 300, {leading: false, trailing: true});
+        }
 
         useEffect(() => {
-            throttledParseAndSet(layoutSettings, backgroundSettings, uniqueId);
-        }, [layoutSettings, backgroundSettings, uniqueId, throttledParseAndSet]);
+            throttledRef.current();              // schedule exactly one call after 300ms
+            return () => throttledRef.current.cancel(); // cancel pending on unmount (helps with StrictMode)
+        }, [layoutSettings, backgroundSettings, uniqueId]);
 
 
         return (

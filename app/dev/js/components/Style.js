@@ -207,26 +207,30 @@ function parseSpecialProps(props = {}, attributes = {}) {
                 case 'margin':
                 case 'padding':
                 case 'gap':
-                    result[`${key}-top`] = val.top ?? '0px';
-                    result[`${key}-right`] = val.right ?? '0px';
-                    result[`${key}-bottom`] = val.bottom ?? '0px';
-                    result[`${key}-left`] = val.left ?? '0px';
+                    if (typeof val === 'object') {
+                        if (val.top) result[`${key}-top`] = val.top;
+                        if (val.right) result[`${key}-right`] = val.right;
+                        if (val.bottom) result[`${key}-bottom`] = val.bottom;
+                        if (val.left) result[`${key}-left`] = val.left;
+                    }
                     break;
 
                 case 'height':
-                case 'height-custom':
-                    result['height'] = heightVal(props?.['height-custom'] ?? props?.['height'] ?? val);
-                    result['--height'] = heightVal(props?.['height-custom'] ?? props?.['height'] ?? val);
+                case 'height-custom': {
+                    const chosen = props?.['height-custom'] ?? props?.['height'] ?? val;
+                    result['height'] = chosen;
+                    result['--height'] = chosen;
                     break;
+                }
 
                 case 'min-height':
                 case 'min-height-custom':
-                    result['min-height'] = heightVal(props?.['min-height-custom'] ?? props?.['min-height'] ?? val);
+                    result['min-height'] = props?.['min-height-custom'] ?? props?.['min-height'] ?? val;
                     break;
 
                 case 'max-height':
                 case 'max-height-custom':
-                    result['max-height'] = heightVal(props?.['max-height-custom'] ?? props?.['max-height'] ?? val);
+                    result['max-height'] = props?.['max-height-custom'] ?? props?.['max-height'] ?? val;
                     break;
 
                 case 'width':
@@ -234,19 +238,9 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     result['width'] = props?.['width-custom'] ?? props?.['width'] ?? val;
                     break;
 
-                case 'shadow':
-                    if (val?.shadow) {
-                        result['box-shadow'] = val.shadow;
-                    }
-                    break;
-
-                case 'border-radius':
-                    result['border-radius'] = Object.values(val).join(' ');
-                    break;
-
                 case 'mask-image': {
-                    const imageUrl = val?.sizes?.full?.url || '#';
-                    result['mask-image'] = `url(${imageUrl})`;
+                    const imageUrl = val?.sizes?.full?.url;
+                    result['mask-image'] = imageUrl ? `url(${imageUrl})` : 'none';
                     result['mask-repeat'] = 'no-repeat';
                     result['mask-size'] = (() => {
                         switch (props?.['mask-size']) {
@@ -264,21 +258,56 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     break;
                 }
 
-                case 'border':
-                    result['border'] = Object.values({style: 'solid', ...(val ?? {})}).join(' ');
+                case 'border': {
+                    if (typeof val === 'object') {
+                        if (val.top) {
+                            result['border-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        }
+                        if (val.right) {
+                            result['border-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        }
+                        if (val.bottom) {
+                            result['border-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        }
+                        if (val.left) {
+                            result['border-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
+                        }
+                    }
                     break;
+                }
 
-                case 'outline':
-                    result['outline'] = Object.values({style: 'solid', ...(val ?? {})}).join(' ');
+                case 'border-radius': {
+                    if (typeof val === 'object') {
+                        if (val.topLeft) result['border-top-left-radius'] = val.topLeft;
+                        if (val.topRight) result['border-top-right-radius'] = val.topRight;
+                        if (val.bottomRight) result['border-bottom-right-radius'] = val.bottomRight;
+                        if (val.bottomLeft) result['border-bottom-left-radius'] = val.bottomLeft;
+                    }
                     break;
+                }
 
-                case 'basis':
-                    result['flex-basis'] = val + '%';
+
+                case 'outline': {
+                    if (typeof val === 'object') {
+                        if (val.top) {
+                            result['outline-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        }
+                        if (val.right) {
+                            result['outline-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        }
+                        if (val.bottom) {
+                            result['outline-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        }
+                        if (val.left) {
+                            result['outline-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
+                        }
+                    }
                     break;
+                }
 
                 case 'transition': {
-                    const transitions = [...val];
-                    if (val.includes('color') && !val.includes('text-decoration-color')) {
+                    const transitions = Array.isArray(val) ? [...val] : [val];
+                    if (transitions.includes('color') && !transitions.includes('text-decoration-color')) {
                         transitions.push('text-decoration-color');
                     }
                     result['transition-property'] = transitions.join(', ');
@@ -312,10 +341,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'align-header':
                     result['top'] = 'var(--wpbs-header-height, auto)';
-                    break;
-
-                case 'position':
-                    result['position'] = (val === 'fixed' || val === 'fixed-push') ? 'fixed' : val;
                     break;
 
                 default:

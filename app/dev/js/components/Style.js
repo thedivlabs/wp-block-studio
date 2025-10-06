@@ -386,7 +386,7 @@ export function parseLayoutCSS(settings = {}) {
 export const Style = ({attributes, name, uniqueId}) => {
 
     if (!uniqueId) return null;
-    
+
     const cssString = useMemo(() => {
         if (!attributes['wpbs-css']?.props && !attributes['wpbs-css']?.breakpoints) return '';
 
@@ -1588,16 +1588,14 @@ export function withStyle(EditComponent) {
             // Clean the final object
             result = cleanObject(result);
 
-            if (!attributes?.uniqueId || !_.isEqual(attributes?.uniqueId, uniqueId)) {
-                result.uniqueId = uniqueId;
-            }
+            result.uniqueId = uniqueId;
 
             // Only set attributes if result is not empty
             if (!_.isEmpty(result)) {
                 // Ensure uniqueId is set
 
                 // Only update attributes if wpbs-style actually changed
-                if (!_.isEqual(result?.['wpbs-style'], settings) || !_.isEqual(attributes?.uniqueId, uniqueId)) {
+                if (!_.isEqual(result?.['wpbs-style'], settings) || !attributes?.uniqueId) {
                     setAttributes(result);
                 }
             }

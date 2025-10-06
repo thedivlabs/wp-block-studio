@@ -655,15 +655,10 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
 
     if (!type || !slug || !label) return null;
 
-    const handleChange = useCallback(
-        (val) => callback({[slug]: val}),
-        [callback, slug]
-    );
-
     let control;
 
     const classNames = [
-        !!large ? 'col-span-full' : '!col-span-1',
+        field?.large ? 'col-span-full' : '!col-span-1',
     ].filter(Boolean).join(' ');
 
     switch (type) {
@@ -673,7 +668,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     value={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -683,19 +678,17 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             break;
         case 'composite':
             control = (
-                <Grid columns={2} columnGap={15} rowGap={20} className={classNames}>
-                    {field.fields.map((sub) => (
-                        <Field
-                            key={sub.slug}
+                <BaseControl key={slug} label={label} __nextHasNoMarginBottom={true}>
+                    <Grid columns={2} columnGap={15} rowGap={20} className={classNames}
+                          style={{padding: '12px', backgroundColor: '#ededed'}}>
+                        {field.fields.map((sub) => (<Field
                             field={sub}
                             settings={settings}
-                            callback={(newValue) =>
-                                handleChange({...settings, [sub.slug]: newValue})
-                            }
+                            callback={callback}
                             toolspanel={false} // prevent nesting ToolsPanelItems
-                        />
-                    ))}
-                </Grid>
+                        />))}
+                    </Grid>
+                </BaseControl>
             );
             break;
 
@@ -705,7 +698,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     value={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -719,7 +712,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     value={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -734,7 +727,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     value={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -749,7 +742,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     checked={!!settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -764,7 +757,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     value={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -785,7 +778,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                             slug: slug,
                             label: label,
                             value: settings?.[slug],
-                            onChange: callback,
+                            onChange: (val) => callback({[slug]: val}),
                             isShownByDefault: true
                         }
                     ]}
@@ -821,7 +814,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                             ],
                             clearable: true,
                             value: settings?.[slug] || field?.default || '',
-                            onChange: callback,
+                            onChange: (val) => callback({[slug]: val}),
                         }}
                         {...controlProps}
                     />
@@ -835,7 +828,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     values={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -850,7 +843,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                     key={slug}
                     label={label}
                     value={settings?.[slug]}
-                    onChange={callback}
+                    onChange={(val) => callback({[slug]: val})}
                     {...controlProps}
                     className={classNames}
                     __next40pxDefaultSize
@@ -871,7 +864,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
                         <MediaUpload
                             key={slug}
                             title={label}
-                            onSelect={callback}
+                            onSelect={(val) => callback({[slug]: val})}
                             allowedTypes={allowedTypes}
                             value={value}
                             render={({open}) => (
@@ -900,7 +893,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         className={classNames}
         label={label}
         hasValue={() => !!settings?.[slug]}
-        onDeselect={() => handleChange('')}
+        onDeselect={() => callback({[slug]: undefined})}
     >
         {control}
     </ToolsPanelItem> : control);
@@ -910,14 +903,24 @@ const layoutFieldsMap = [
 
     {type: 'select', slug: 'container', label: 'Container', options: CONTAINER_OPTIONS},
 
+
     // Reveal / animation
-    {type: 'select', slug: 'reveal', label: 'Reveal', options: REVEAL_ANIMATION_OPTIONS},
-    {type: 'select', slug: 'reveal-easing', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
-    {type: 'number', slug: 'reveal-duration', label: 'Reveal Duration'},
-    {type: 'unit', slug: 'reveal-offset', label: 'Reveal Offset'},
-    {type: 'unit', slug: 'reveal-distance', label: 'Reveal Distance'},
-    {type: 'toggle', slug: 'reveal-repeat', label: 'Reveal Repeat'},
-    {type: 'toggle', slug: 'reveal-mirror', label: 'Reveal Mirror'},
+    {
+        type: 'composite',
+        slug: 'reveal-group',
+        label: 'Reveal',
+        fields: [
+            {type: 'select', slug: 'reveal-anim', label: 'Animation', large: true, options: REVEAL_ANIMATION_OPTIONS},
+            {type: 'select', slug: 'reveal-easing', label: 'Easing', options: REVEAL_EASING_OPTIONS},
+            {type: 'number', slug: 'reveal-duration', label: 'Duration'},
+            {type: 'unit', slug: 'reveal-offset', label: 'Offset'},
+            {type: 'unit', slug: 'reveal-distance', label: 'Distance'},
+            {type: 'toggle', slug: 'reveal-repeat', label: 'Repeat'},
+            {type: 'toggle', slug: 'reveal-mirror', label: 'Mirror'},
+        ],
+        large: true
+    },
+
 
     // Header alignment
     {type: 'unit', slug: 'offset-header', label: 'Offset Header'},

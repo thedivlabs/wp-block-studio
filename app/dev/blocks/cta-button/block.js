@@ -264,8 +264,7 @@ registerBlockType(metadata.name, {
             ...anchorProps,
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
-
-
+        
         return <a {...blockProps}>
             <span className={'wpbs-cta-button__title'}>{title}</span>
             <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />

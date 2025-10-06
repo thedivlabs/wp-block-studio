@@ -154,7 +154,8 @@ export function useUniqueId({name, attributes}) {
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     const instanceId = useInstanceId(useUniqueId, prefix);
 
-    return uniqueId || instanceId;
+    //return uniqueId || instanceId;
+    return instanceId;
 }
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
@@ -382,12 +383,10 @@ export function parseLayoutCSS(settings = {}) {
     return cssObj;
 }
 
-export const Style = ({attributes, name}) => {
+export const Style = ({attributes, name, uniqueId}) => {
 
-    if (!attributes?.uniqueId) return null;
-
-    const uniqueId = attributes.uniqueId;
-
+    if (!uniqueId) return null;
+    
     const cssString = useMemo(() => {
         if (!attributes['wpbs-css']?.props && !attributes['wpbs-css']?.breakpoints) return '';
 
@@ -418,7 +417,7 @@ export const Style = ({attributes, name}) => {
         }
 
         return result;
-    }, [attributes['wpbs-css'], name]);
+    }, [attributes['wpbs-css'], name, uniqueId]);
 
     const cssBackgroundString = useMemo(() => {
         if (!attributes['wpbs-css']?.background) return '';
@@ -1556,9 +1555,9 @@ export function withStyle(EditComponent) {
 
         const uniqueId = useUniqueId(props);
 
-
         useEffect(() => {
-            // Parse CSS from local state
+
+            console.log(uniqueId);
 
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
@@ -1589,15 +1588,16 @@ export function withStyle(EditComponent) {
             // Clean the final object
             result = cleanObject(result);
 
+            if (!attributes?.uniqueId || !_.isEqual(attributes?.uniqueId, uniqueId)) {
+                result.uniqueId = uniqueId;
+            }
+
             // Only set attributes if result is not empty
             if (!_.isEmpty(result)) {
                 // Ensure uniqueId is set
-                if (!attributes?.uniqueId) {
-                    result.uniqueId = uniqueId;
-                }
 
                 // Only update attributes if wpbs-style actually changed
-                if (!_.isEqual(result?.['wpbs-style'], settings)) {
+                if (!_.isEqual(result?.['wpbs-style'], settings) || !_.isEqual(attributes?.uniqueId, uniqueId)) {
                     setAttributes(result);
                 }
             }
@@ -1615,7 +1615,7 @@ export function withStyle(EditComponent) {
                     {!!background ? <BackgroundFields {...props} backgroundSettings={backgroundSettings}
                                                       setBackgroundSettings={setBackgroundSettings}/> : null}
                 </InspectorControls>
-                <Style {...props}/>
+                <Style {...props} uniqueId={uniqueId}/>
             </>
         );
     };

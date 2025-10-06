@@ -197,6 +197,26 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
     return raw;
 }
 
+const heightVal = (val) => {
+
+    let height = val;
+
+    if (val === 'screen') {
+        height = 'calc(100svh - var(--wpbs-header-height, 0px))'
+    }
+
+    if (val === 'full-screen') {
+        height = '100svh'
+    }
+
+    if (['auto', 'full', 'inherit'].includes(val)) {
+        height = val;
+    }
+
+    return height;
+
+}
+
 function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
 
@@ -218,20 +238,22 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'height':
                 case 'height-custom': {
-                    const chosen = props?.['height-custom'] ?? props?.['height'] ?? val;
-                    result['height'] = chosen;
-                    result['--height'] = chosen;
+                    result['height'] = props?.['height-custom'] ?? props?.['height'] ?? val;
+                    switch (result['height']) {
+                        case 'screen':
+                            result['height'] = '100svh';
+                    }
                     break;
                 }
 
                 case 'min-height':
                 case 'min-height-custom':
-                    result['min-height'] = props?.['min-height-custom'] ?? props?.['min-height'] ?? val;
+                    result['min-height'] = heightVal(props?.['min-height-custom'] ?? props?.['min-height'] ?? val);
                     break;
 
                 case 'max-height':
                 case 'max-height-custom':
-                    result['max-height'] = props?.['max-height-custom'] ?? props?.['max-height'] ?? val;
+                    result['max-height'] = heightVal(props?.['max-height-custom'] ?? props?.['max-height'] ?? val);
                     break;
 
                 case 'width':
@@ -354,7 +376,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
     return result;
 }
-
 
 export function parseLayoutCSS(settings = {}) {
     const cssObj = {

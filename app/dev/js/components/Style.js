@@ -1595,7 +1595,7 @@ export function withStyle(EditComponent) {
                 // Ensure uniqueId is set
 
                 // Only update attributes if wpbs-style actually changed
-                if (!_.isEqual(result?.['wpbs-style'], settings) || !attributes?.uniqueId) {
+                if (!_.isEqual(cleanObject(result?.['wpbs-style']), cleanObject(settings)) || !attributes?.uniqueId) {
                     setAttributes(result);
                 }
             }

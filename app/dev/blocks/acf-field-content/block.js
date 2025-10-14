@@ -50,7 +50,6 @@ function flattenACF(obj, prefix = '') {
     return result;
 }
 
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {

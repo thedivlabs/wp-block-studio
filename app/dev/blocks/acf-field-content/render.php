@@ -8,29 +8,22 @@ if ( ! $field_key ) {
 	return '';
 }
 
-// Pull all fields once
-$all_fields = get_field( 'wpbs', get_the_ID() );
-$value      = $all_fields;
+// convert dot.notation to underscore_notation
+$field_name = str_replace( '.', '_', $field_key );
 
-// Walk the dot.notation path
-foreach ( explode( '.', $field_key ) as $part ) {
-	if ( is_array( $value ) && array_key_exists( $part, $value ) ) {
-		$value = $value[ $part ];
-	} else {
-		$value = null;
-		break;
-	}
-}
+// fetch value directly from ACF
+$value = get_field( 'wpbs_' . $field_name, get_the_ID() );
 
 if ( empty( $value ) || ! is_string( $value ) ) {
 	return '';
 }
 
-// Handle date formatting if requested
+// handle date formatting if requested
 if ( $date_format && strtotime( $value ) !== false ) {
 	$value = date_i18n( $date_format, strtotime( $value ) );
 }
 
-$result = str_replace( "__FIELD_CONTENT__", $value, ( $content ?? '' ) );
+// replace placeholder with value
+$result = str_replace( "__FIELD_CONTENT__", esc_html( $value ), ( $content ?? '' ) );
 
 echo $result;

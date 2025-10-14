@@ -102,7 +102,7 @@
                                     },
                                     "default_value": "",
                                     "maxlength": "",
-                                    "allow_in_bindings": 0,
+                                    "allow_in_bindings": 1,
                                     "placeholder": "",
                                     "prepend": "",
                                     "append": ""
@@ -124,8 +124,8 @@
                                     "display_format": "d\/m\/Y",
                                     "return_format": "Ymd",
                                     "first_day": 1,
-                                    "allow_in_bindings": 0,
-                                    "default_to_current_date": 0
+                                    "default_to_current_date": 0,
+                                    "allow_in_bindings": 1
                                 },
                                 {
                                     "key": "field_68a3c9da18fed",
@@ -143,7 +143,7 @@
                                     },
                                     "default_value": "",
                                     "maxlength": "",
-                                    "allow_in_bindings": 0,
+                                    "allow_in_bindings": 1,
                                     "placeholder": "",
                                     "prepend": "",
                                     "append": ""
@@ -1045,6 +1045,7 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "show_in_rest": 0,
-    "modified": 1755615590
+    "show_in_rest": 1,
+    "display_title": "",
+    "modified": 1760463137
 }

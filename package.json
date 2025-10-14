@@ -16,13 +16,14 @@
   "scripts": {
     "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --minify",
     "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --minify",
-    "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/plugins/wp-block-studio/build/ --experimental-modules",
+    "wp": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/plugins/wp-block-studio/build/ --experimental-modules --watch",
     "start": "npm-run-all --parallel wp tailwind-theme"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.0.6",
     "@tailwindcss/postcss": "^4.1.11",
     "@wordpress/api-fetch": "^7.28.0",
+    "@wordpress/date": "^5.32.0",
     "@wordpress/server-side-render": "^6.3.0",
     "autoprefixer": "^10.4.21",
     "lodash": "^4.17.21",

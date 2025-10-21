@@ -147,7 +147,7 @@ function propsToCss(props = {}, important = false, importantKeysCustom = []) {
 }
 
 export function useUniqueId({name, attributes}) {
-    
+
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     //return uniqueId || instanceId;
@@ -1573,11 +1573,11 @@ export function withStyle(EditComponent) {
 
         const uniqueId = useUniqueId({name, attributes});
 
-        // Local UI state (decoupled from attributes)
+        // Local UI state
         const [layoutSettings, setLayoutSettings] = useState(settings?.layout ?? {});
         const [backgroundSettings, setBackgroundSettings] = useState(settings?.background ?? {});
 
-        // Rehydrate local state from attributes if external changes
+        // Rehydrate from attributes
         useEffect(() => {
             if (!_.isEqual(settings?.layout, layoutSettings)) {
                 setLayoutSettings(settings?.layout ?? {});
@@ -1590,14 +1590,14 @@ export function withStyle(EditComponent) {
             }
         }, [settings?.background]);
 
-        // Generate final CSS object (memoized)
+        // Generate CSS once
         const mergedCss = useMemo(() => {
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
             return cleanObject(_.merge({}, layoutCss, {background: backgroundCss}));
         }, [layoutSettings, backgroundSettings]);
 
-        // Sync with block attributes only when something changes
+        // Update block attributes only if needed
         useEffect(() => {
             const newStyle = cleanObject({
                 layout: layoutSettings,
@@ -1626,15 +1626,28 @@ export function withStyle(EditComponent) {
             setAttributes,
         ]);
 
-        // Optional local style helper
+        // Optional style state
         const [style, setStyle] = useState({});
         const {background = false} = style;
 
-        // Merge passed + dynamic classNames
+        // Clone props and inject className
+        const clonedProps = useMemo(() => {
+            const newClassName = [
+                props?.className,
+                uniqueId,
+            ].filter(Boolean).join(' ');
+
+            return {
+                ...props,
+                className: newClassName,
+            };
+        }, [props, uniqueId]);
+
+        // Helper to merge additional styleClassNames (used inside EditComponent)
         const mergeClassNames = (localClassName) => {
             return [
                 localClassName,
-                styleClassNames(props), // global/injected
+                styleClassNames(props),
             ]
                 .filter(Boolean)
                 .join(' ');
@@ -1643,31 +1656,30 @@ export function withStyle(EditComponent) {
         return (
             <>
                 <EditComponent
-                    {...props}
+                    {...clonedProps}
                     setStyle={setStyle}
                     style={style}
                     styleClassNames={mergeClassNames}
                 />
                 <InspectorControls group="styles">
                     <Layout
-                        {...props}
+                        {...clonedProps}
                         layoutSettings={layoutSettings}
                         setLayoutSettings={setLayoutSettings}
                     />
                     {background && (
                         <BackgroundFields
-                            {...props}
+                            {...clonedProps}
                             backgroundSettings={backgroundSettings}
                             setBackgroundSettings={setBackgroundSettings}
                         />
                     )}
                 </InspectorControls>
-                <Style {...props} uniqueId={uniqueId}/>
+                <Style {...clonedProps} uniqueId={uniqueId}/>
             </>
         );
     };
 }
-
 
 export function withStyleSave(SaveElement) {
     return (props) => {

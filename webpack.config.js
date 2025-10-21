@@ -1,19 +1,6 @@
 const wordpressConfig = require('@wordpress/scripts/config/webpack.config');
 const path = require('path');
 
-// Remove SCSS rule (only from non-block JS like theme/admin)
-function extendSharedConfig(config) {
-    return {
-        ...config,
-        module: {
-            ...config.module,
-            rules: config.module.rules.filter(
-                (rule) => !(rule.test && rule.test.toString() === '/\\.scss$/')
-            ),
-        },
-    };
-}
-
 function extendScriptConfig(config) {
     return {
         ...config,
@@ -28,7 +15,7 @@ function extendScriptConfig(config) {
         },
         output: {
             filename: '[name].js',
-            path: path.resolve(__dirname, 'build'),
+            path: path.resolve(__dirname, 'app/public/wp-content/plugins/wp-block-studio/build'),
         },
         resolve: {
             alias: {
@@ -46,14 +33,8 @@ function extendScriptConfig(config) {
 module.exports = (() => {
     if (Array.isArray(wordpressConfig)) {
         const [scriptConfig, moduleConfig] = wordpressConfig;
-
-        // Remove SCSS only from theme/admin config
-        const extendedScriptConfig = extendSharedConfig(extendScriptConfig(scriptConfig));
-
-        // Keep block config untouched
-        return [extendedScriptConfig, moduleConfig];
+        return [extendScriptConfig(scriptConfig), moduleConfig];
     } else {
-        // Single config — remove SCSS and add theme/admin if this is only used for that
-        return extendSharedConfig(extendScriptConfig(wordpressConfig));
+        return extendScriptConfig(wordpressConfig);
     }
 })();

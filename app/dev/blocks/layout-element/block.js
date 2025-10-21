@@ -10,7 +10,7 @@ import {
     __experimentalGrid as Grid, ToggleControl,
 } from "@wordpress/components";
 import React, {useCallback, useEffect} from "react";
-import {withStyle, STYLE_ATTRIBUTES, Background, styleClassnames} from "Components/Style.js";
+import {withStyle, STYLE_ATTRIBUTES, Background} from "Components/Style.js";
 
 const selector = 'wpbs-layout-element';
 
@@ -22,7 +22,6 @@ const classNames = (attributes = {}, editor = false) => {
         selector + ' w-full block relative',
         !!editor ? 'empty:min-h-8' : null,
         !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : (attributes?.['wpbs-layout']?.container ? 'wpbs-container' : null),
-        styleClassnames(attributes)
     ].filter(x => x).join(' ');
 }
 

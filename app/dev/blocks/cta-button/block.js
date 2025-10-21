@@ -20,7 +20,7 @@ import {withStyle, STYLE_ATTRIBUTES, Background} from "Components/Style.js";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
 
-function classNames(attributes = {}) {
+function classNames(attributes = {}, styleClassNames = '') {
 
     const {'wpbs-cta': settings = {}} = attributes;
 
@@ -32,6 +32,7 @@ function classNames(attributes = {}) {
         !!settings?.['icon-bold'] ? '--icon-bold' : null,
         !!settings?.['icon-only'] ? '--icon-only' : false,
         !!settings?.['icon-first'] ? '--icon-first' : false,
+        styleClassNames
     ].filter(x => x).join(' ');
 }
 
@@ -48,7 +49,7 @@ registerBlockType(metadata.name, {
     },
     edit: withStyle((props) => {
 
-        const {attributes, setAttributes, setStyle} = props;
+        const {attributes, setAttributes, setStyle, styleClassNames} = props;
 
         const {'wpbs-cta': settings = {}} = attributes;
 
@@ -165,7 +166,7 @@ registerBlockType(metadata.name, {
         };
 
         const blockProps = useBlockProps({
-            className: classNames(attributes),
+            className: classNames(attributes, styleClassNames),
             'data-popup': settings?.popup ?? null,
             ...anchorProps,
         });
@@ -190,11 +191,12 @@ registerBlockType(metadata.name, {
 
         useEffect(() => {
             setStyle({
-                background: true,
                 css: cssProps,
             });
         }, [cssProps, setStyle]);
 
+
+        console.log(props);
 
         return (
             <>

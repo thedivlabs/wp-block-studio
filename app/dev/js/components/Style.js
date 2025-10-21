@@ -1539,15 +1539,11 @@ export const Background = ({attributes}) => {
 }
 
 const styleClassNames = (props) => {
-
     const {attributes} = props;
-
     const {'wpbs-style': settings = {}} = attributes ?? {};
-
     const {layout, background, hover} = settings;
 
     return [
-        props?.className,
         attributes?.uniqueId,
         layout?.['offset-height'] ? '--offset-height' : null,
         layout?.['hide-empty'] ? '--hide-empty' : null,
@@ -1564,7 +1560,7 @@ const styleClassNames = (props) => {
 
 export function withStyle(EditComponent) {
     return (props) => {
-        const {attributes, setAttributes, name} = props;
+        const {attributes, setAttributes, name, isSelected} = props;
         const {
             'wpbs-style': settings = {},
             'wpbs-css': existingCss = {},
@@ -1628,58 +1624,36 @@ export function withStyle(EditComponent) {
 
         // Optional style state
         const [style, setStyle] = useState({});
-        const {background = false} = style;
-
-        // Clone props and inject className
-        const clonedProps = useMemo(() => {
-            const newClassName = [
-                props?.className,
-                uniqueId,
-            ].filter(Boolean).join(' ');
-
-            return {
-                ...props,
-                className: newClassName,
-            };
-        }, [props, uniqueId]);
-
-        // Helper to merge additional styleClassNames (used inside EditComponent)
-        const mergeClassNames = (localClassName) => {
-            return [
-                localClassName,
-                styleClassNames(props),
-            ]
-                .filter(Boolean)
-                .join(' ');
-        };
+        const {background = true} = style;
 
         return (
             <>
                 <EditComponent
-                    {...clonedProps}
+                    {...props}
                     setStyle={setStyle}
                     style={style}
-                    styleClassNames={mergeClassNames}
+                    styleClassNames={styleClassNames(props)}
                 />
-                <InspectorControls group="styles">
+                {isSelected && <InspectorControls group="styles">
                     <Layout
-                        {...clonedProps}
+                        {...props}
                         layoutSettings={layoutSettings}
                         setLayoutSettings={setLayoutSettings}
                     />
                     {background && (
                         <BackgroundFields
-                            {...clonedProps}
+                            {...props}
                             backgroundSettings={backgroundSettings}
                             setBackgroundSettings={setBackgroundSettings}
                         />
                     )}
-                </InspectorControls>
-                <Style {...clonedProps} uniqueId={uniqueId}/>
+                </InspectorControls>}
+                <Style {...props} uniqueId={uniqueId}/>
             </>
         );
     };
 }
+
 
 export function withStyleSave(SaveElement) {
     return (props) => {

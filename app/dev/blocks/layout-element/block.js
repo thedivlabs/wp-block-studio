@@ -9,12 +9,12 @@ import {ElementTagSettings, ElementTag, ELEMENT_TAG_ATTRIBUTES} from "Components
 import {
     __experimentalGrid as Grid, ToggleControl,
 } from "@wordpress/components";
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback} from "react";
 import {withStyle, STYLE_ATTRIBUTES, Background} from "Components/Style.js";
 
 const selector = 'wpbs-layout-element';
 
-const classNames = (attributes = {}, editor = false) => {
+const classNames = (attributes = {}, editor = false, styleClassNames = '') => {
 
     const {'wpbs-layout-element': settings} = attributes;
 
@@ -22,6 +22,7 @@ const classNames = (attributes = {}, editor = false) => {
         selector + ' w-full block relative',
         !!editor ? 'empty:min-h-8' : null,
         !!settings?.container || !!attributes?.['wpbs-background']?.type ? 'wpbs-has-container' : (attributes?.['wpbs-layout']?.container ? 'wpbs-container' : null),
+        styleClassNames
     ].filter(x => x).join(' ');
 }
 
@@ -35,12 +36,15 @@ registerBlockType(metadata.name, {
             type: 'object'
         }
     },
-    edit: withStyle(({attributes, setAttributes, clientId, setStyle}) => {
+    edit: withStyle(({attributes, setAttributes, styleClassNames, setStyle, isSelected}) => {
+
+
+        console.log(isSelected);
 
         const {'wpbs-layout-element': settings = {}} = attributes;
 
         const blockProps = useBlockProps({
-            className: classNames(attributes, true)
+            className: classNames(attributes, true, styleClassNames)
         });
 
         const innerBlocksProps = !!attributes['wpbs-background']?.type || !!attributes['wpbs-layout-element']?.container
@@ -56,17 +60,11 @@ registerBlockType(metadata.name, {
 
             setAttributes({'wpbs-layout-element': result});
 
-        }, [attributes, setAttributes])
+        }, [attributes?.['wpbs-layout-element'], setAttributes])
 
         const hasContainer = !!settings?.container || !!attributes?.['wpbs-background']?.type;
 
         const ElementTagName = ElementTag(attributes);
-
-        useEffect(() => {
-            setStyle({
-                background: true,
-            });
-        }, [setStyle]);
 
         return <>
 

@@ -187,6 +187,10 @@ class WPBS_Blocks {
 			}
 
 			$extra_attributes = [
+				'uniqueId'     => [
+					'type'         => 'string',
+					'show_in_rest' => true,
+				],
 				'wpbs-css'     => [
 					'type'         => 'string',
 					'show_in_rest' => true,

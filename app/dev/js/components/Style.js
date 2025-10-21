@@ -2,8 +2,8 @@ import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
 import {
     __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
-    __experimentalToolsPanel as ToolsPanel,
     __experimentalNumberControl as NumberControl,
+    __experimentalToolsPanel as ToolsPanel,
     __experimentalToolsPanelItem as ToolsPanelItem,
     __experimentalUnitControl as UnitControl,
     BaseControl,
@@ -18,29 +18,28 @@ import {
 } from "@wordpress/components";
 import {InspectorControls, MediaUpload, MediaUploadCheck, PanelColorSettings,} from "@wordpress/block-editor";
 import {
+    ALIGN_OPTIONS,
     BLEND_OPTIONS,
+    CONTAINER_OPTIONS,
+    CONTENT_VISIBILITY_OPTIONS,
     DIMENSION_UNITS,
     DIRECTION_OPTIONS,
     DISPLAY_OPTIONS,
+    HEIGHT_OPTIONS,
     IMAGE_SIZE_OPTIONS,
+    JUSTIFY_OPTIONS,
     OBJECT_POSITION_OPTIONS,
     ORIGIN_OPTIONS,
+    OVERFLOW_OPTIONS,
+    POSITION_OPTIONS,
     REPEAT_OPTIONS,
     RESOLUTION_OPTIONS,
-    CONTAINER_OPTIONS,
-    ALIGN_OPTIONS,
-    JUSTIFY_OPTIONS,
-    WIDTH_OPTIONS,
-    HEIGHT_OPTIONS,
-    WRAP_OPTIONS,
-    POSITION_OPTIONS,
-    OVERFLOW_OPTIONS,
-    SHAPE_OPTIONS,
-    BORDER_UNITS,
-    CONTENT_VISIBILITY_OPTIONS,
     REVEAL_ANIMATION_OPTIONS,
     REVEAL_EASING_OPTIONS,
+    SHAPE_OPTIONS,
     TEXT_ALIGN_OPTIONS,
+    WIDTH_OPTIONS,
+    WRAP_OPTIONS,
 } from "Includes/config";
 import {useInstanceId} from "@wordpress/compose";
 import _ from 'lodash';
@@ -148,14 +147,11 @@ function propsToCss(props = {}, important = false, importantKeysCustom = []) {
 }
 
 export function useUniqueId({name, attributes}) {
-
-
+    
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
-    const instanceId = useInstanceId(useUniqueId, prefix);
-
     //return uniqueId || instanceId;
-    return instanceId;
+    return useInstanceId(useUniqueId, prefix);
 }
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
@@ -1568,69 +1564,80 @@ const styleClassNames = (props) => {
 
 export function withStyle(EditComponent) {
     return (props) => {
+        const {attributes, setAttributes, name} = props;
+        const {
+            'wpbs-style': settings = {},
+            'wpbs-css': existingCss = {},
+            uniqueId: attrId,
+        } = attributes;
 
-        // Settings passed in from the block
-        const [style, setStyle] = useState({});
-        const {css = {}, background = false} = style;
+        const uniqueId = useUniqueId({name, attributes});
 
-        // Local settings
-        const {attributes, setAttributes} = props;
-        const {'wpbs-style': settings = {}} = attributes || {};
-
+        // Local UI state (decoupled from attributes)
         const [layoutSettings, setLayoutSettings] = useState(settings?.layout ?? {});
         const [backgroundSettings, setBackgroundSettings] = useState(settings?.background ?? {});
 
-        const uniqueId = useUniqueId(props);
+        // Rehydrate local state from attributes if external changes
+        useEffect(() => {
+            if (!_.isEqual(settings?.layout, layoutSettings)) {
+                setLayoutSettings(settings?.layout ?? {});
+            }
+        }, [settings?.layout]);
 
         useEffect(() => {
+            if (!_.isEqual(settings?.background, backgroundSettings)) {
+                setBackgroundSettings(settings?.background ?? {});
+            }
+        }, [settings?.background]);
 
+        // Generate final CSS object (memoized)
+        const mergedCss = useMemo(() => {
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
-            const mergedCss = cleanObject(_.merge({}, layoutCss, css, {background: backgroundCss}));
+            return cleanObject(_.merge({}, layoutCss, {background: backgroundCss}));
+        }, [layoutSettings, backgroundSettings]);
 
-            // Start with a raw result object — do not clean yet
-            let result = {
-                'wpbs-style': {...settings}, // safe spread
-                'wpbs-css': {},
-            };
+        // Sync with block attributes only when something changes
+        useEffect(() => {
+            const newStyle = cleanObject({
+                layout: layoutSettings,
+                background: backgroundSettings,
+            });
 
-            // Defensive: ensure nested objects exist
-            result['wpbs-style'] = result['wpbs-style'] || {};
+            const needsStyleUpdate = !_.isEqual(settings, newStyle);
+            const needsCssUpdate = !_.isEqual(existingCss, mergedCss);
+            const needsIdUpdate = !attrId;
 
-            // Only assign layout/background if they differ
-            if (!_.isEqual(layoutSettings, settings?.layout)) {
-                result['wpbs-style'].layout = layoutSettings;
+            if (needsStyleUpdate || needsCssUpdate || needsIdUpdate) {
+                setAttributes({
+                    ...(needsStyleUpdate ? {'wpbs-style': newStyle} : {}),
+                    ...(needsCssUpdate ? {'wpbs-css': mergedCss} : {}),
+                    ...(needsIdUpdate ? {uniqueId} : {}),
+                });
             }
-            if (!_.isEqual(backgroundSettings, settings?.background)) {
-                result['wpbs-style'].background = backgroundSettings;
-            }
+        }, [
+            layoutSettings,
+            backgroundSettings,
+            mergedCss,
+            uniqueId,
+            attrId,
+            settings,
+            existingCss,
+            setAttributes,
+        ]);
 
-            // Only assign merged CSS if it differs from existing attributes
-            if (!_.isEqual(mergedCss, cleanObject(attributes?.['wpbs-css']))) {
-                result['wpbs-css'] = mergedCss;
-            }
+        // Optional local style helper
+        const [style, setStyle] = useState({});
+        const {background = false} = style;
 
-            // Clean the final object
-            result = cleanObject(result);
-
-            result.uniqueId = uniqueId;
-
-            // Only set attributes if result is not empty
-            if (!_.isEmpty(result)) {
-                // Ensure uniqueId is set
-
-                // Only update attributes if wpbs-style actually changed
-                if (!_.isEqual(cleanObject(result?.['wpbs-style']), cleanObject(settings)) || !attributes?.uniqueId) {
-                    setAttributes(result);
-                }
-            }
-        }, [layoutSettings, backgroundSettings, uniqueId, setAttributes]);
-
+        // Merge passed + dynamic classNames
         const mergeClassNames = (localClassName) => {
             return [
                 localClassName,
-                styleClassNames(props), // global/injected classes
-            ].filter(Boolean).join(' ');
+                styleClassNames(props), // global/injected
+            ]
+                .filter(Boolean)
+                .join(' ');
         };
 
         return (
@@ -1638,18 +1645,29 @@ export function withStyle(EditComponent) {
                 <EditComponent
                     {...props}
                     setStyle={setStyle}
+                    style={style}
                     styleClassNames={mergeClassNames}
                 />
-                <InspectorControls group={'styles'}>
-                    <Layout {...props} layoutSettings={layoutSettings} setLayoutSettings={setLayoutSettings}/>
-                    {!!background ? <BackgroundFields {...props} backgroundSettings={backgroundSettings}
-                                                      setBackgroundSettings={setBackgroundSettings}/> : null}
+                <InspectorControls group="styles">
+                    <Layout
+                        {...props}
+                        layoutSettings={layoutSettings}
+                        setLayoutSettings={setLayoutSettings}
+                    />
+                    {background && (
+                        <BackgroundFields
+                            {...props}
+                            backgroundSettings={backgroundSettings}
+                            setBackgroundSettings={setBackgroundSettings}
+                        />
+                    )}
                 </InspectorControls>
                 <Style {...props} uniqueId={uniqueId}/>
             </>
         );
     };
 }
+
 
 export function withStyleSave(SaveElement) {
     return (props) => {

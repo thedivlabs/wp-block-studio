@@ -1542,13 +1542,16 @@ export const Background = ({attributes}) => {
 
 }
 
-export const styleClassnames = (attributes) => {
+const styleClassNames = (props) => {
+
+    const {attributes} = props;
 
     const {'wpbs-style': settings = {}} = attributes ?? {};
 
     const {layout, background, hover} = settings;
 
     return [
+        props?.className,
         attributes?.uniqueId,
         layout?.['offset-height'] ? '--offset-height' : null,
         layout?.['hide-empty'] ? '--hide-empty' : null,
@@ -1580,8 +1583,6 @@ export function withStyle(EditComponent) {
         const uniqueId = useUniqueId(props);
 
         useEffect(() => {
-
-            console.log(uniqueId);
 
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
@@ -1625,12 +1626,19 @@ export function withStyle(EditComponent) {
             }
         }, [layoutSettings, backgroundSettings, uniqueId, setAttributes]);
 
+        const mergeClassNames = (localClassName) => {
+            return [
+                localClassName,
+                styleClassNames(props), // global/injected classes
+            ].filter(Boolean).join(' ');
+        };
 
         return (
             <>
                 <EditComponent
                     {...props}
                     setStyle={setStyle}
+                    styleClassNames={mergeClassNames}
                 />
                 <InspectorControls group={'styles'}>
                     <Layout {...props} layoutSettings={layoutSettings} setLayoutSettings={setLayoutSettings}/>
@@ -1641,4 +1649,18 @@ export function withStyle(EditComponent) {
             </>
         );
     };
+}
+
+export function withStyleSave(SaveElement) {
+    return (props) => {
+
+        const mergeClassNames = (localClassName) => {
+            return [
+                localClassName,
+                styleClassNames(props), // global/injected classes
+            ].filter(Boolean).join(' ');
+        };
+
+        return <SaveElement {...props} styleClassNames={mergeClassNames}/>;
+    }
 }

@@ -9,7 +9,7 @@ import {
     __experimentalGrid as Grid,
     PanelBody, ComboboxControl, SelectControl,
 } from "@wordpress/components";
-import {withStyle, STYLE_ATTRIBUTES} from "Components/Style.js";
+import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from "Components/Style.js";
 import {useState, useEffect, useMemo, useCallback} from '@wordpress/element';
 import {useSelect} from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
@@ -60,7 +60,7 @@ registerBlockType(metadata.name, {
             type: 'object'
         }
     },
-    edit: withStyle(({attributes, setAttributes, clientId, setStyle}) => {
+    edit: withStyle(({attributes, setAttributes, clientId, setStyle, styleClassNames}) => {
 
         const {'wpbs-acf-field-content': settings = {}} = attributes;
 
@@ -120,7 +120,7 @@ registerBlockType(metadata.name, {
         );
 
         const blockProps = useBlockProps({
-            className: classNames(attributes, true)
+            className: styleClassNames(classNames(attributes, true))
         });
 
         const ElementTagName = ElementTag(attributes);
@@ -167,21 +167,20 @@ registerBlockType(metadata.name, {
 
         </>
     }),
-    save: (props) => {
-
-        const {attributes} = props;
+    save: withStyleSave((props) => {
+        const {attributes, styleClassNames} = props;
 
         const {'wpbs-acf-field-content': settings = {}} = attributes;
 
         const blockProps = useBlockProps.save({
-            className: classNames(attributes),
+            className: styleClassNames(classNames(attributes)),
             ...(props.attributes?.['wpbs-props'] ?? {})
         });
 
         const ElementTagName = ElementTag(attributes);
 
         return <ElementTagName {...blockProps} >{'__FIELD_CONTENT__'}</ElementTagName>
-    }
+    })
 })
 
 

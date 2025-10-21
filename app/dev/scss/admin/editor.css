@@ -2,6 +2,10 @@
   content: none !important;
 }
 
+.components-base-control:has(> .components-base-control__field > .col-span-full) {
+  grid-column: 1 / -1;
+}
+
 .wp-site-blocks.is-root-container {
   min-height: 100vh !important;
   display: flex;

@@ -20,7 +20,7 @@
     "tailwind-admin-dev": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --watch",
     "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --minify",
     "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --minify",
-    "start": "npm-run-all --parallel wp-dev tailwind-theme-dev",
+    "start": "npm-run-all --parallel wp-dev tailwind-theme-dev tailwind-admin-dev",
     "build": "npm-run-all --parallel wp-build tailwind-theme tailwind-admin"
   },
   "dependencies": {

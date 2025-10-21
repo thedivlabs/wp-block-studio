@@ -82,7 +82,7 @@ class WPBS_Blocks {
 			$result = '';
 
 			foreach ( $props as $k => $v ) {
-				if ( $v === null || $v === '' ) {
+				if ( $v === null || $v === '' || ! is_string( $v ) ) {
 					continue;
 				}
 

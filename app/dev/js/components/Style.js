@@ -679,7 +679,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
         case 'composite':
             control = (
                 <BaseControl key={slug} label={label} __nextHasNoMarginBottom={true}>
-                    <Grid columns={2} columnGap={15} rowGap={20} className={classNames}
+                    <Grid columns={2} columnGap={15} rowGap={20}
                           style={{padding: '12px', backgroundColor: '#ededed'}}>
                         {field.fields.map((sub) => (<Field
                             field={sub}

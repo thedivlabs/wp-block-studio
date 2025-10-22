@@ -474,38 +474,60 @@ export const Style = ({attributes, name, uniqueId}) => {
     return <style>{[cssString, cssBackgroundString].join(' ').trim()}</style>;
 };
 
-const DynamicFieldList = ({currentSettings, addField}) => {
-    const available = useMemo(() => {
-        return layoutFieldsMap.filter(
-            (f) => currentSettings?.[f.slug] === undefined
-        );
+const DynamicFieldPopover = ({ title = 'Add', currentSettings, onAdd }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const toggle = () => setIsOpen(!isOpen);
+    const close = () => setIsOpen(false);
+
+    const availableFields = useMemo(() => {
+        return layoutFieldsMap.filter((f) => currentSettings?.[f.slug] === undefined);
     }, [currentSettings]);
 
-    if (!available.length) {
-        return (
-            <ul className="wpbs-layout-tools__popover-list">
-                <li className="wpbs-layout-tools__empty">All fields added</li>
-            </ul>
-        );
-    }
-
     return (
-        <ul className="wpbs-layout-tools__popover-list">
-            {available.map((f) => (
-                <li key={f.slug}>
-                    <Button
-                        variant="link"
-                        onClick={() => addField(f.slug)}
-                        className="wpbs-layout-tools__popover-item"
-                    >
-                        {f.label}
-                    </Button>
-                </li>
-            ))}
-        </ul>
+        <div className="wpbs-layout-tools__popover-wrapper">
+            <Button
+                variant="secondary"
+                icon="plus"
+                onClick={toggle}
+                aria-expanded={isOpen}
+                className="wpbs-layout-tools__popover-trigger"
+            >
+                {title}
+            </Button>
+
+            {isOpen && (
+                <Popover
+                    placement="bottom-start"
+                    onFocusOutside={close}
+                    className="wpbs-layout-tools__popover"
+                >
+                    <ul className="wpbs-layout-tools__popover-list">
+                        {availableFields.length > 0 ? (
+                            availableFields.map((f) => (
+                                <li key={f.slug}>
+                                    <Button
+                                        variant="link"
+                                        onClick={() => {
+                                            onAdd(f.slug);
+                                            close();
+                                        }}
+                                        className="wpbs-layout-tools__popover-item"
+                                    >
+                                        {f.label}
+                                    </Button>
+                                </li>
+                            ))
+                        ) : (
+                            <li className="wpbs-layout-tools__empty">
+                                All fields added
+                            </li>
+                        )}
+                    </ul>
+                </Popover>
+            )}
+        </div>
     );
 };
-
 function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
     const [activePopover, setActivePopover] = useState(null);
@@ -624,33 +646,12 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                 {/* Default */}
                 <section className={'wpbs-layout-tools__panel active'}>
-                    <div className={'wpbs-layout-tools__header'}>
+                    <div className="wpbs-layout-tools__header">
                         <strong>Default</strong>
-                        <div className="wpbs-layout-tools__actions">
-                            <Button variant="secondary" onClick={() => updateDefaultLayout({})}>Reset</Button>
-                            <Button
-                                variant="secondary"
-                                icon="plus"
-                                aria-expanded={activePopover === 'default'}
-                                onClick={() => togglePopover('default')}
-                            >
-                                {activePopover === 'default' && (
-                                    <Popover
-                                        placement="bottom-start"
-                                        onFocusOutside={closePopover}
-                                        className="wpbs-layout-tools__popover"
-                                    >
-                                        <DynamicFieldList
-                                            currentSettings={layoutObj.props}
-                                            addField={(slug) => {
-                                                updateDefaultLayout({[slug]: ''});
-                                                closePopover();
-                                            }}
-                                        />
-                                    </Popover>
-                                )}
-                            </Button>
-                        </div>
+                        <DynamicFieldPopover
+                            currentSettings={layoutObj.props}
+                            onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
+                        />
                     </div>
                     <div className={'wpbs-layout-tools__grid'}>
                         <LayoutFields
@@ -664,9 +665,12 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                 {/* Hover */}
                 <section className={'wpbs-layout-tools__panel active'}>
-                    <div className={'wpbs-layout-tools__header'}>
+                    <div className="wpbs-layout-tools__header">
                         <strong>Hover</strong>
-                        <Button variant="secondary" onClick={() => updateHoverItem({})}>Reset</Button>
+                        <DynamicFieldPopover
+                            currentSettings={layoutObj.props}
+                            onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
+                        />
                     </div>
                     <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
                 </section>
@@ -679,8 +683,13 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                     return (
                         <section key={bpKey} className={'wpbs-layout-tools__panel active'}>
-                            <div className={'wpbs-layout-tools__header'}>
+
+                            <div className="wpbs-layout-tools__header">
                                 <strong>{panelLabel}</strong>
+                                <DynamicFieldPopover
+                                    currentSettings={layoutObj.props}
+                                    onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
+                                />
                                 <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'no-alt'}/>
                             </div>
 

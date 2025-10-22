@@ -715,8 +715,6 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                             <div className="wpbs-layout-tools__header">
                                 <strong>{panelLabel}</strong>
-                                <Button size={'small'} iconSize={15} onClick={() => removeLayoutItem(bpKey)}
-                                        icon={'no-alt'}/>
                                 <DynamicFieldPopover
                                     currentSettings={layoutObj.breakpoints[bpKey]}
                                     fieldsMap={layoutFieldsMap}
@@ -730,7 +728,9 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                             </div>
                             <div className={'wpbs-layout-tools__grid'}>
-                                <label className={'wpbs-layout-tools__field'}>
+                                <label className={'wpbs-layout-tools__field --full'}>
+                                    <Button size={'compact'} iconSize={20} onClick={() => removeLayoutItem(bpKey)}
+                                            icon={'no-alt'}/>
                                     <strong>Breakpoint</strong>
                                     <div className={'wpbs-layout-tools__control'}>
                                         <select

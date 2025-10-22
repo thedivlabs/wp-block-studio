@@ -99,6 +99,9 @@
     display: flex;
     position: relative;
     width: 100%;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-between;
   }
 }
 

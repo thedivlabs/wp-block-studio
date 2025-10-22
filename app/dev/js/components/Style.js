@@ -688,21 +688,20 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                 <section className={'wpbs-layout-tools__panel active'}>
                     <div className="wpbs-layout-tools__header">
                         <strong>Hover</strong>
-                        <div className={'wpbs-layout-tools__grid'}>
-                            <DynamicFieldPopover
-                                currentSettings={layoutObj.hover}
-                                fieldsMap={hoverFieldsMap}
-                                onAdd={(slug) => updateHoverItem({[slug]: ''})}
-                                onClear={(slug) => {
-                                    const next = {...layoutObj.hover};
-                                    delete next[slug];
-                                    updateHoverItem(next);
-                                }}
-                            />
-
-                        </div>
+                        <DynamicFieldPopover
+                            currentSettings={layoutObj.hover}
+                            fieldsMap={hoverFieldsMap}
+                            onAdd={(slug) => updateHoverItem({[slug]: ''})}
+                            onClear={(slug) => {
+                                const next = {...layoutObj.hover};
+                                delete next[slug];
+                                updateHoverItem(next);
+                            }}
+                        />
                     </div>
-                    <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+                    <div className={'wpbs-layout-tools__grid'}>
+                        <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+                    </div>
                 </section>
 
                 {/* Breakpoints */}

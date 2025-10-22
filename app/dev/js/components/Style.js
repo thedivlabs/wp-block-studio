@@ -474,14 +474,23 @@ export const Style = ({attributes, name, uniqueId}) => {
     return <style>{[cssString, cssBackgroundString].join(' ').trim()}</style>;
 };
 
-const DynamicFieldPopover = ({ title = 'Add', currentSettings, onAdd }) => {
+const DynamicFieldPopover = ({
+                                 title = 'Add',
+                                 currentSettings,
+                                 fieldsMap = layoutFieldsMap,
+                                 onAdd,
+                                 onClear,
+                             }) => {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
     const close = () => setIsOpen(false);
 
-    const availableFields = useMemo(() => {
-        return layoutFieldsMap.filter((f) => currentSettings?.[f.slug] === undefined);
-    }, [currentSettings]);
+    const list = useMemo(() => {
+        return fieldsMap.map((f) => {
+            const isActive = currentSettings?.[f.slug] !== undefined && currentSettings?.[f.slug] !== null;
+            return {...f, isActive};
+        });
+    }, [fieldsMap, currentSettings]);
 
     return (
         <div className="wpbs-layout-tools__popover-wrapper">
@@ -491,7 +500,9 @@ const DynamicFieldPopover = ({ title = 'Add', currentSettings, onAdd }) => {
                 onClick={toggle}
                 aria-expanded={isOpen}
                 className="wpbs-layout-tools__popover-trigger"
-            />
+            >
+                {title}
+            </Button>
 
             {isOpen && (
                 <Popover
@@ -500,32 +511,37 @@ const DynamicFieldPopover = ({ title = 'Add', currentSettings, onAdd }) => {
                     className="wpbs-layout-tools__popover"
                 >
                     <ul className="wpbs-layout-tools__popover-list">
-                        {availableFields.length > 0 ? (
-                            availableFields.map((f) => (
-                                <li key={f.slug}>
-                                    <Button
-                                        variant="link"
-                                        onClick={() => {
+                        {list.map((f) => (
+                            <li
+                                key={f.slug}
+                                className={`wpbs-layout-tools__popover-item ${f.isActive ? 'active' : ''}`}
+                            >
+                                <Button
+                                    variant="link"
+                                    onClick={() => {
+                                        if (f.isActive) {
+                                            // Clear the field
+                                            onClear
+                                                ? onClear(f.slug)
+                                                : onAdd(f.slug, true); // fallback clears too
+                                        } else {
                                             onAdd(f.slug);
-                                            close();
-                                        }}
-                                        className="wpbs-layout-tools__popover-item"
-                                    >
-                                        {f.label}
-                                    </Button>
-                                </li>
-                            ))
-                        ) : (
-                            <li className="wpbs-layout-tools__empty">
-                                All fields added
+                                        }
+                                        close();
+                                    }}
+                                >
+                                    <span>{f.label}</span>
+                                </Button>
                             </li>
-                        )}
+                        ))}
                     </ul>
                 </Popover>
             )}
         </div>
     );
 };
+
+
 function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
     const [activePopover, setActivePopover] = useState(null);
@@ -648,8 +664,16 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                         <strong>Default</strong>
                         <DynamicFieldPopover
                             currentSettings={layoutObj.props}
+                            fieldsMap={layoutFieldsMap}
                             onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
+                            onClear={(slug) => {
+                                const next = {...layoutObj.props};
+                                delete next[slug];
+                                updateDefaultLayout(next);
+                            }}
                         />
+
+
                     </div>
                     <div className={'wpbs-layout-tools__grid'}>
                         <LayoutFields
@@ -667,8 +691,16 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                         <strong>Hover</strong>
                         <DynamicFieldPopover
                             currentSettings={layoutObj.hover}
-                            onAdd={(slug) => updateHoverItem({ [slug]: '' })}
+                            fieldsMap={hoverFieldsMap}
+                            onAdd={(slug) => updateHoverItem({[slug]: ''})}
+                            onClear={(slug) => {
+                                const next = {...layoutObj.hover};
+                                delete next[slug];
+                                updateHoverItem(next);
+                            }}
                         />
+
+
                     </div>
                     <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
                 </section>
@@ -684,11 +716,18 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                             <div className="wpbs-layout-tools__header">
                                 <strong>{panelLabel}</strong>
+                                <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'no-alt'}/>
                                 <DynamicFieldPopover
                                     currentSettings={layoutObj.breakpoints[bpKey]}
-                                    onAdd={(slug) => updateLayoutItem({ [slug]: '' }, bpKey)}
+                                    fieldsMap={layoutFieldsMap}
+                                    onAdd={(slug) => updateLayoutItem({[slug]: ''}, bpKey)}
+                                    onClear={(slug) => {
+                                        const next = {...layoutObj.breakpoints[bpKey]};
+                                        delete next[slug];
+                                        updateLayoutItem(next, bpKey);
+                                    }}
                                 />
-                                <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'no-alt'}/>
+
                             </div>
 
                             <label style={{display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center'}}>

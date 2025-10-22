@@ -491,9 +491,7 @@ const DynamicFieldPopover = ({ title = 'Add', currentSettings, onAdd }) => {
                 onClick={toggle}
                 aria-expanded={isOpen}
                 className="wpbs-layout-tools__popover-trigger"
-            >
-                {title}
-            </Button>
+            />
 
             {isOpen && (
                 <Popover

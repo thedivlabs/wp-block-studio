@@ -1569,31 +1569,24 @@ export function withStyle(EditComponent) {
 
         const uniqueId = useUniqueId({name, attributes});
 
-        // Local UI state
+        // --- Local UI State ---
         const [layoutSettings, setLayoutSettings] = useState(settings?.layout ?? {});
         const [backgroundSettings, setBackgroundSettings] = useState(settings?.background ?? {});
 
-        // Rehydrate from attributes
+        // --- Initialize state once from attributes (not on every change) ---
         useEffect(() => {
-            if (!_.isEqual(settings?.layout, layoutSettings)) {
-                setLayoutSettings(settings?.layout ?? {});
-            }
-        }, [settings?.layout]);
+            setLayoutSettings(settings?.layout ?? {});
+            setBackgroundSettings(settings?.background ?? {});
+        }, []); // run once on mount
 
-        useEffect(() => {
-            if (!_.isEqual(settings?.background, backgroundSettings)) {
-                setBackgroundSettings(settings?.background ?? {});
-            }
-        }, [settings?.background]);
-
-        // Generate CSS once
+        // --- Compute merged CSS object ---
         const mergedCss = useMemo(() => {
             const layoutCss = parseLayoutCSS(layoutSettings);
             const backgroundCss = parseBackgroundCSS(backgroundSettings);
             return cleanObject(_.merge({}, layoutCss, {background: backgroundCss}));
         }, [layoutSettings, backgroundSettings]);
 
-        // Update block attributes only if needed
+        // --- Push updates to block attributes when local state changes ---
         useEffect(() => {
             const newStyle = cleanObject({
                 layout: layoutSettings,
@@ -1622,7 +1615,7 @@ export function withStyle(EditComponent) {
             setAttributes,
         ]);
 
-        // Optional style state
+        // --- Optional runtime style flags ---
         const [style, setStyle] = useState({});
         const {background = true} = style;
 
@@ -1634,37 +1627,52 @@ export function withStyle(EditComponent) {
                     style={style}
                     styleClassNames={styleClassNames(props)}
                 />
-                {isSelected && <InspectorControls group="styles">
-                    <Layout
-                        {...props}
-                        layoutSettings={layoutSettings}
-                        setLayoutSettings={setLayoutSettings}
-                    />
-                    {background && (
-                        <BackgroundFields
+
+                {isSelected && (
+                    <InspectorControls group="styles">
+                        <Layout
                             {...props}
-                            backgroundSettings={backgroundSettings}
-                            setBackgroundSettings={setBackgroundSettings}
+                            layoutSettings={layoutSettings}
+                            setLayoutSettings={setLayoutSettings}
                         />
-                    )}
-                </InspectorControls>}
+                        {background && (
+                            <BackgroundFields
+                                {...props}
+                                backgroundSettings={backgroundSettings}
+                                setBackgroundSettings={setBackgroundSettings}
+                            />
+                        )}
+                    </InspectorControls>
+                )}
+
                 <Style {...props} uniqueId={uniqueId}/>
             </>
         );
     };
 }
 
-
 export function withStyleSave(SaveElement) {
     return (props) => {
+        const {attributes} = props;
+        const {uniqueId} = attributes ?? {};
 
-        const mergeClassNames = (localClassName) => {
-            return [
-                localClassName,
-                styleClassNames(props), // global/injected classes
-            ].filter(Boolean).join(' ');
+        // Defensive default for classnames
+        const baseClasses = [uniqueId, styleClassNames(props)]
+            .filter(Boolean)
+            .join(' ');
+
+        // Merge helper for blocks that supply their own className
+        const mergeClassNames = (localClassName = '') => {
+            return [localClassName, baseClasses].filter(Boolean).join(' ');
         };
 
-        return <SaveElement {...props} styleClassNames={mergeClassNames}/>;
-    }
+        // Render the wrapped save element with merged classes
+        return (
+            <SaveElement
+                {...props}
+                styleClassNames={mergeClassNames}
+            />
+        );
+    };
 }
+

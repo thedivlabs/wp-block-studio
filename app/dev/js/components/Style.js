@@ -715,7 +715,8 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                             <div className="wpbs-layout-tools__header">
                                 <strong>{panelLabel}</strong>
-                                <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'no-alt'}/>
+                                <Button size={'small'} iconSize={15} onClick={() => removeLayoutItem(bpKey)}
+                                        icon={'no-alt'}/>
                                 <DynamicFieldPopover
                                     currentSettings={layoutObj.breakpoints[bpKey]}
                                     fieldsMap={layoutFieldsMap}

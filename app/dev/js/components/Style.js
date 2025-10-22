@@ -768,7 +768,7 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                 })}
 
                 <Button variant="primary" onClick={addLayoutItem}
-                        style={{borderRadius: '0', width: '100%', gridColumn: '1/-1'}}
+                        style={{borderRadius: '4px', width: '100%', textAlign: 'center', gridColumn: '1/-1'}}
                         disabled={layoutKeys.length >= 3}>
                     Add Breakpoint
                 </Button>

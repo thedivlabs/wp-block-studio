@@ -14,7 +14,8 @@ import {
     SelectControl,
     TabPanel,
     TextControl,
-    ToggleControl
+    ToggleControl,
+    Popover
 } from "@wordpress/components";
 import {InspectorControls, MediaUpload, MediaUploadCheck, PanelColorSettings,} from "@wordpress/block-editor";
 import {
@@ -578,305 +579,335 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
         });
     }, [layoutObj?.breakpoints, breakpoints]);
 
-    return <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
-        <Grid columns={1} columnGap={5} className={'wpbs-layout-tools__grid'}>
-            <ToolsPanel label="Default" resetAll={() => updateDefaultLayout({})}>
-                <LayoutFields
-                    bpKey="layout"
-                    settings={layoutObj.props}
-                    updateLayoutItem={updateDefaultLayout}
-                    suppress={['padding', 'margin', 'gap']}
-                />
-            </ToolsPanel>
+    console.log(layoutKeys);
 
-            <ToolsPanel label="Hover" resetAll={() => updateHoverItem({})}>
-                <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
-            </ToolsPanel>
 
-            {layoutKeys.map((bpKey) => {
-                const bp = breakpoints.find((b) => b.key === bpKey);
-                const size = bp?.size ? `(${bp.size}px)` : '';
-                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
+    return (
+        <PanelBody title={'Layout'} initialOpen={false} className={'wpbs-layout-tools'}>
+            <div className={'wpbs-layout-tools__container'}>
 
-                return (
-                    <ToolsPanel key={bpKey} label={panelLabel} resetAll={() => updateLayoutItem({}, bpKey)}>
-
-                        <ToolsPanelItem
-                            isShownByDefault={true}
-                            label="Breakpoint"
-                            hasValue={() => !!bpKey}
-                        >
-                            <SelectControl
-                                label="Breakpoint"
-                                value={bpKey}
-                                style={{gridColumn: 'span 2'}}
-                                options={breakpoints
-                                    .map((b) => ({
-                                        value: b.key,
-                                        label: b.label,
-                                        disabled: b.key !== bpKey && layoutKeys.includes(b.key),
-                                    }))}
-                                onChange={(newBpKey) => {
-                                    const newBreakpoints = {...layoutObj.breakpoints};
-                                    newBreakpoints[newBpKey] = newBreakpoints[bpKey];
-                                    delete newBreakpoints[bpKey];
-                                    setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
-                                }}
-                                __next40pxDefaultSize
-                                __nextHasNoMarginBottom
-                            />
-                        </ToolsPanelItem>
+                {/* Default */}
+                <section className={'wpbs-layout-tools__panel active'}>
+                    <div className={'wpbs-layout-tools__header'}>
+                        <strong>Default</strong>
+                        <Button variant="secondary" onClick={() => updateDefaultLayout({})}>Reset</Button>
+                    </div>
+                    <div className={'wpbs-layout-tools__grid'}>
                         <LayoutFields
-                            bpKey={bpKey}
-                            settings={layoutObj.breakpoints[bpKey]}
-                            updateLayoutItem={updateLayoutItem}
+                            bpKey="layout"
+                            settings={layoutObj.props}
+                            updateLayoutItem={updateDefaultLayout}
+                            suppress={['padding', 'margin', 'gap']}
                         />
-                        <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'trash'}
-                                style={{gridColumn: '1/-1'}}/>
-                    </ToolsPanel>
-                );
-            })}
+                    </div>
+                </section>
 
-            <Button variant="primary" onClick={addLayoutItem}
-                    style={{borderRadius: '0', width: '100%', gridColumn: '1/-1'}}
-                    disabled={layoutKeys.length >= 3}>
-                Add Breakpoint
-            </Button>
-        </Grid>
-    </PanelBody>;
+                {/* Hover */}
+                <section className={'wpbs-layout-tools__panel active'}>
+                    <div className={'wpbs-layout-tools__header'}>
+                        <strong>Hover</strong>
+                        <Button variant="secondary" onClick={() => updateHoverItem({})}>Reset</Button>
+                    </div>
+                    <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+                </section>
+
+                {/* Breakpoints */}
+                {layoutKeys.map((bpKey) => {
+                    const bp = breakpoints.find((b) => b.key === bpKey);
+                    const size = bp?.size ? `(${bp.size}px)` : '';
+                    const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
+
+                    return (
+                        <section key={bpKey} className={'wpbs-layout-tools__panel active'}>
+                            <div className={'wpbs-layout-tools__header'}>
+                                <strong>{panelLabel}</strong>
+                                <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'no-alt'}/>
+                            </div>
+
+                            <label style={{display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center'}}>
+                                <span>Breakpoint</span>
+                                <select
+                                    value={bpKey}
+                                    onChange={(e) => {
+                                        const newBpKey = e.target.value;
+                                        const newBreakpoints = {...layoutObj.breakpoints};
+                                        newBreakpoints[newBpKey] = newBreakpoints[bpKey];
+                                        delete newBreakpoints[bpKey];
+                                        setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                                    }}
+                                >
+                                    {breakpoints.map((b) => (
+                                        <option
+                                            key={b.key}
+                                            value={b.key}
+                                            disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
+                                        >
+                                            {b.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <div className={'wpbs-layout-tools__grid'}>
+                                <LayoutFields
+                                    bpKey={bpKey}
+                                    settings={layoutObj.breakpoints[bpKey]}
+                                    updateLayoutItem={updateLayoutItem}
+                                />
+                            </div>
+                        </section>
+                    );
+                })}
+
+                <Button variant="primary" onClick={addLayoutItem}
+                        style={{borderRadius: '0', width: '100%', gridColumn: '1/-1'}}
+                        disabled={layoutKeys.length >= 3}>
+                    Add Breakpoint
+                </Button>
+            </div>
+        </PanelBody>
+    );
+
 }
 
-const Field = memo(({field, settings, callback, toolspanel = true}) => {
+const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, large = false, ...controlProps} = field;
-
     if (!type || !slug || !label) return null;
 
-    let control;
+    const classNames = [large ? '--full' : null].filter(Boolean).join(' ');
+    const value = settings?.[slug];
+    const inputId = `wpbs-${slug}`;
 
-    const classNames = [
-        field?.large ? 'col-span-full' : '!col-span-1',
-    ].filter(Boolean).join(' ');
+    const change = (next) => callback({[slug]: next});
+    const onInput = (e) => change(e.target.value);
+
+    let control = null;
 
     switch (type) {
-        case 'select':
+        // ————— simple, native controls —————
+        case 'select': {
+            const opts = controlProps?.options || [];
             control = (
-                <SelectControl
-                    key={slug}
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --select">
+                        <select value={value ?? ''} onChange={onInput} id={inputId}>
+                            {opts.map((o) => (
+                                <option key={o.value} value={o.value} disabled={o.disabled}>
+                                    {o.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </label>
             );
             break;
-        case 'composite':
-            control = (
-                <BaseControl key={slug} label={label} __nextHasNoMarginBottom={true}>
-                    <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{padding: '12px', backgroundColor: '#ededed'}}>
-                        {field.fields.map((sub) => (<Field
-                            field={sub}
-                            settings={settings}
-                            callback={callback}
-                            toolspanel={false} // prevent nesting ToolsPanelItems
-                        />))}
-                    </Grid>
-                </BaseControl>
-            );
-            break;
+        }
 
         case 'text':
             control = (
-                <TextControl
-                    key={slug}
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-            );
-            break;
-        case 'shadow':
-            control = (
-                <ShadowSelector
-                    key={slug}
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --text">
+                        <input
+                            type="text"
+                            value={value ?? ''}
+                            onChange={onInput}
+                        />
+                    </div>
+                </label>
             );
             break;
 
         case 'number':
             control = (
-                <NumberControl
-                    key={slug}
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --number">
+                        <input
+                            type="number"
+                            value={value ?? ''}
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                change(v === '' ? '' : Number.isNaN(Number(v)) ? '' : Number(v));
+                            }}
+                            {...controlProps}
+                        />
+                    </div>
+                </label>
             );
             break;
 
         case 'toggle':
             control = (
-                <ToggleControl
-                    key={slug}
-                    label={label}
-                    checked={!!settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <label className={`wpbs-layout-tools__field --toggle ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --toggle">
+                        <input
+                            type="checkbox"
+                            checked={!!value}
+                            onChange={(e) => change(e.target.checked)}
+                        />
+                    </div>
+                </label>
             );
             break;
 
         case 'range':
             control = (
-                <RangeControl
-                    key={slug}
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
-
-            );
-            break;
-
-        case 'color':
-            control = (
-                <PanelColorSettings
-                    key={slug}
-                    enableAlpha
-                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0 ' + classNames}
-                    colorSettings={[
-                        {
-                            slug: slug,
-                            label: label,
-                            value: settings?.[slug],
-                            onChange: (val) => callback({[slug]: val}),
-                            isShownByDefault: true
-                        }
-                    ]}
-                />
-            );
-            break;
-
-        case 'gradient':
-            control = (
-                <BaseControl label={label} __nextHasNoMarginBottom={true} className={classNames}>
-                    <GradientPicker
-                        {...{
-                            key: slug,
-                            gradients: [
-                                {
-                                    name: 'Transparent',
-                                    gradient:
-                                        'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                    slug: 'transparent',
-                                },
-                                {
-                                    name: 'Light',
-                                    gradient:
-                                        'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                    slug: 'light',
-                                },
-                                {
-                                    name: 'Strong',
-                                    gradient:
-                                        'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                    slug: 'strong',
-                                }
-                            ],
-                            clearable: true,
-                            value: settings?.[slug] || field?.default || '',
-                            onChange: (val) => callback({[slug]: val}),
-                        }}
-                        {...controlProps}
-                    />
-                </BaseControl>
-            );
-            break;
-
-        case 'box':
-            control = (
-                <BoxControl
-                    key={slug}
-                    label={label}
-                    values={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --range">
+                        <input
+                            type="range"
+                            value={
+                                typeof value === 'number'
+                                    ? value
+                                    : controlProps.min ?? 0
+                            }
+                            min={controlProps.min ?? 0}
+                            max={controlProps.max ?? 100}
+                            step={controlProps.step ?? 1}
+                            onChange={(e) => change(Number(e.target.value))}
+                        />
+                    </div>
+                </label>
             );
             break;
 
         case 'unit':
             control = (
-                <UnitControl
-                    key={slug}
-                    label={label}
-                    value={settings?.[slug]}
-                    onChange={(val) => callback({[slug]: val})}
-                    {...controlProps}
-                    className={classNames}
-                    __next40pxDefaultSize
-                    __nextHasNoMarginBottom
-                />
+                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --unit">
+                        <input
+                            type="text"
+                            value={value ?? ''}
+                            onChange={onInput}
+                            placeholder="e.g. 12px, 2rem, 50%"
+                        />
+                    </div>
+                </label>
+            );
+            break;
+
+        // ————— composite (recursive) —————
+        case 'composite':
+            control = (
+                <div className={`wpbs-layout-tools__field --composite ${classNames}`}>
+                    <div className="wpbs-layout-tools__label">{label}</div>
+                    <div className="wpbs-layout-tools__group">
+                        {field.fields.map((sub) => (
+                            <Field
+                                key={sub.slug}
+                                field={sub}
+                                settings={settings}
+                                callback={callback}
+                            />
+                        ))}
+                    </div>
+                </div>
+            );
+            break;
+
+        // ————— keep heavyweight WP bits for now —————
+        case 'shadow':
+            control = (
+                <div className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --shadow">
+                        <ShadowSelector
+                            label={label}
+                            value={value}
+                            onChange={(val) => change(val)}
+                        />
+                    </div>
+                </div>
+            );
+            break;
+
+        case 'color':
+            control = (
+                <div className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --color">
+                        <PanelColorSettings
+                            enableAlpha
+                            colorSettings={[
+                                {
+                                    slug,
+                                    label,
+                                    value,
+                                    onChange: (val) => change(val),
+                                    isShownByDefault: true,
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
+            );
+            break;
+
+        case 'gradient':
+            control = (
+                <div className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --gradient">
+                        <GradientPicker
+                            {...{
+                                key: slug,
+                                gradients: controlProps.gradients || [],
+                                clearable: true,
+                                value: value ?? field?.default ?? '',
+                                onChange: (val) => change(val),
+                            }}
+                        />
+                    </div>
+                </div>
+            );
+            break;
+
+        case 'box':
+            control = (
+                <div className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --box">
+                        <BoxControl
+                            label={label}
+                            values={value}
+                            onChange={(val) => change(val)}
+                            {...controlProps}
+                        />
+                    </div>
+                </div>
             );
             break;
 
         case 'image':
         case 'video': {
             const allowedTypes = type === 'image' ? ['image'] : ['video'];
-            const value = settings?.[slug];
-            const clear = () => callback('');
-
+            const clear = () => change('');
             control = (
-                <BaseControl label={label} __nextHasNoMarginBottom className={classNames}>
-                    <MediaUploadCheck>
-                        <MediaUpload
-                            key={slug}
-                            title={label}
-                            onSelect={(val) => callback({[slug]: val})}
-                            allowedTypes={allowedTypes}
-                            value={value}
-                            render={({open}) => (
-                                <PreviewThumbnail
-                                    image={{
-                                        ...value,
-                                        type: settings?.type,
-                                    }}
-                                    callback={clear}
-                                    style={{objectFit: 'contain'}}
-                                    onClick={open}
-                                />
-                            )}
-                        />
-                    </MediaUploadCheck>
-                </BaseControl>
+                <div className={`wpbs-layout-tools__field ${classNames}`}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --media">
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={label}
+                                onSelect={(val) => change(val)}
+                                allowedTypes={allowedTypes}
+                                value={value}
+                                render={({open}) => (
+                                    <PreviewThumbnail
+                                        image={{...value, type: settings?.type}}
+                                        callback={clear}
+                                        style={{objectFit: 'contain'}}
+                                        onClick={open}
+                                    />
+                                )}
+                            />
+                        </MediaUploadCheck>
+                    </div>
+                </div>
             );
             break;
         }
@@ -885,14 +916,7 @@ const Field = memo(({field, settings, callback, toolspanel = true}) => {
             control = null;
     }
 
-    return (!!toolspanel ? <ToolsPanelItem
-        className={classNames}
-        label={label}
-        hasValue={() => !!settings?.[slug]}
-        onDeselect={() => callback({[slug]: undefined})}
-    >
-        {control}
-    </ToolsPanelItem> : control);
+    return control;
 });
 
 const layoutFieldsMap = [
@@ -1021,10 +1045,19 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
         [updateLayoutItem, bpKey]
     );
 
+    const activeFields = useMemo(() => {
+        return layoutFieldsMap.filter(
+            (field) =>
+                !suppress.includes(field.slug) &&
+                settings?.[field.slug] !== undefined &&
+                settings?.[field.slug] !== null &&
+                settings?.[field.slug] !== ''
+        );
+    }, [settings, suppress]);
 
-    return layoutFieldsMap.filter((field) => !suppress.includes(field.slug)).map((field) => <Field field={field}
-                                                                                                   settings={settings}
-                                                                                                   callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
+    return activeFields.map((field) => <Field field={field}
+                                              settings={settings}
+                                              callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
 });
 
 const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
@@ -1617,7 +1650,7 @@ export function withStyle(EditComponent) {
 
         // --- Optional runtime style flags ---
         const [style, setStyle] = useState({});
-        const {background = true} = style;
+        const {background = false} = style;
 
         return (
             <>

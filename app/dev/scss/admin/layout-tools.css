@@ -1,38 +1,102 @@
 .wpbs-layout-tools {
   padding: 0 !important;
 
+  select,
+  input[type="number"],
+  input[type="text"] {
+    min-height: 40px;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+  }
+
   .components-panel__body-title {
     background: white;
     margin: 0 !important;
   }
 
-  .components-tools-panel {
+  .wpbs-layout-tools__panel {
     background: white;
     border: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 4px;
   }
 
-  .wpbs-layout-tools__grid {
+  .wpbs-layout-tools__container {
     padding: 9px 8px;
     background: var(--color-gray-400, #cdcdcd);
     gap: 5px;
+    display: flex;
+    flex-direction: column;
   }
 
-  .components-tools-panel-header {
-
-    h2 {
-      color: var(--color-gray-400);
-    }
-  }
-
-  .components-tools-panel-header:not(:only-child) {
-    padding: 0 16px 14px;
-    margin: 0 -16px;
+  .wpbs-layout-tools__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 8px 8px 8px 12px;
     border-bottom: 1px solid #dedede;
-    width: auto;
 
-    h2 {
+    strong {
       color: var(--wp-admin-theme-color, black);
     }
+
+  }
+
+  .wpbs-layout-tools__grid,
+  .wpbs-layout-tools__group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 5px;
+    row-gap: 12px;
+    width: 100%;
+  }
+
+  .wpbs-layout-tools__grid {
+    padding: 16px 12px;
+  }
+
+  .wpbs-layout-tools__group {
+    padding: 12px;
+    background-color: #eaeaea;
+    border-radius: 4px;
+  }
+
+  .wpbs-layout-tools__header:not(.active) {
+
+    strong {
+      color: var(--color-gray-400);
+    }
+
+  }
+
+  .wpbs-layout-tools__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: auto;
+
+    &.--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .wpbs-layout-tools__label {
+    display: block;
+    width: 100%;
+    font-weight: bold;
+  }
+
+  .wpbs-layout-tools__control {
+    display: flex;
+    position: relative;
+    width: 100%;
   }
 
 }

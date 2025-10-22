@@ -474,7 +474,7 @@ export const Style = ({attributes, name, uniqueId}) => {
     return <style>{[cssString, cssBackgroundString].join(' ').trim()}</style>;
 };
 
-const DynamicFieldList = ({ currentSettings, addField }) => {
+const DynamicFieldList = ({currentSettings, addField}) => {
     const available = useMemo(() => {
         return layoutFieldsMap.filter(
             (f) => currentSettings?.[f.slug] === undefined
@@ -624,29 +624,33 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                 {/* Default */}
                 <section className={'wpbs-layout-tools__panel active'}>
-                    <div className="wpbs-layout-tools__actions">
-                        <Button variant="secondary" onClick={() => updateDefaultLayout({})}>Reset</Button>
-                        <Button
-                            variant="secondary"
-                            icon="plus"
-                            aria-expanded={activePopover === 'default'}
-                            onClick={() => togglePopover('default')}
-                        />
-                        {activePopover === 'default' && (
-                            <Popover
-                                placement="bottom-start"
-                                onFocusOutside={closePopover}
-                                className="wpbs-layout-tools__popover"
+                    <div className={'wpbs-layout-tools__header'}>
+                        <strong>Default</strong>
+                        <div className="wpbs-layout-tools__actions">
+                            <Button variant="secondary" onClick={() => updateDefaultLayout({})}>Reset</Button>
+                            <Button
+                                variant="secondary"
+                                icon="plus"
+                                aria-expanded={activePopover === 'default'}
+                                onClick={() => togglePopover('default')}
                             >
-                                <DynamicFieldList
-                                    currentSettings={layoutObj.props}
-                                    addField={(slug) => {
-                                        updateDefaultLayout({ [slug]: '' });
-                                        closePopover();
-                                    }}
-                                />
-                            </Popover>
-                        )}
+                                {activePopover === 'default' && (
+                                    <Popover
+                                        placement="bottom-start"
+                                        onFocusOutside={closePopover}
+                                        className="wpbs-layout-tools__popover"
+                                    >
+                                        <DynamicFieldList
+                                            currentSettings={layoutObj.props}
+                                            addField={(slug) => {
+                                                updateDefaultLayout({[slug]: ''});
+                                                closePopover();
+                                            }}
+                                        />
+                                    </Popover>
+                                )}
+                            </Button>
+                        </div>
                     </div>
                     <div className={'wpbs-layout-tools__grid'}>
                         <LayoutFields

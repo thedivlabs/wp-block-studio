@@ -474,7 +474,43 @@ export const Style = ({attributes, name, uniqueId}) => {
     return <style>{[cssString, cssBackgroundString].join(' ').trim()}</style>;
 };
 
+const DynamicFieldList = ({ currentSettings, addField }) => {
+    const available = useMemo(() => {
+        return layoutFieldsMap.filter(
+            (f) => currentSettings?.[f.slug] === undefined
+        );
+    }, [currentSettings]);
+
+    if (!available.length) {
+        return (
+            <ul className="wpbs-layout-tools__popover-list">
+                <li className="wpbs-layout-tools__empty">All fields added</li>
+            </ul>
+        );
+    }
+
+    return (
+        <ul className="wpbs-layout-tools__popover-list">
+            {available.map((f) => (
+                <li key={f.slug}>
+                    <Button
+                        variant="link"
+                        onClick={() => addField(f.slug)}
+                        className="wpbs-layout-tools__popover-item"
+                    >
+                        {f.label}
+                    </Button>
+                </li>
+            ))}
+        </ul>
+    );
+};
+
 function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
+
+    const [activePopover, setActivePopover] = useState(null);
+    const togglePopover = (key) => setActivePopover(activePopover === key ? null : key);
+    const closePopover = () => setActivePopover(null);
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
@@ -588,9 +624,29 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
 
                 {/* Default */}
                 <section className={'wpbs-layout-tools__panel active'}>
-                    <div className={'wpbs-layout-tools__header'}>
-                        <strong>Default</strong>
+                    <div className="wpbs-layout-tools__actions">
                         <Button variant="secondary" onClick={() => updateDefaultLayout({})}>Reset</Button>
+                        <Button
+                            variant="secondary"
+                            icon="plus"
+                            aria-expanded={activePopover === 'default'}
+                            onClick={() => togglePopover('default')}
+                        />
+                        {activePopover === 'default' && (
+                            <Popover
+                                placement="bottom-start"
+                                onFocusOutside={closePopover}
+                                className="wpbs-layout-tools__popover"
+                            >
+                                <DynamicFieldList
+                                    currentSettings={layoutObj.props}
+                                    addField={(slug) => {
+                                        updateDefaultLayout({ [slug]: '' });
+                                        closePopover();
+                                    }}
+                                />
+                            </Popover>
+                        )}
                     </div>
                     <div className={'wpbs-layout-tools__grid'}>
                         <LayoutFields

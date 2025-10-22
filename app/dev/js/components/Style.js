@@ -495,14 +495,13 @@ const DynamicFieldPopover = ({
     return (
         <div className="wpbs-layout-tools__popover-wrapper">
             <Button
-                variant="secondary"
-                icon="plus"
+                size="small"
+                icon="plus-alt2"
+                iconSize={15}
                 onClick={toggle}
                 aria-expanded={isOpen}
-                className="wpbs-layout-tools__popover-trigger"
-            >
-                {title}
-            </Button>
+                className="wpbs-layout-tools__toggle"
+            />
 
             {isOpen && (
                 <Popover
@@ -689,18 +688,19 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                 <section className={'wpbs-layout-tools__panel active'}>
                     <div className="wpbs-layout-tools__header">
                         <strong>Hover</strong>
-                        <DynamicFieldPopover
-                            currentSettings={layoutObj.hover}
-                            fieldsMap={hoverFieldsMap}
-                            onAdd={(slug) => updateHoverItem({[slug]: ''})}
-                            onClear={(slug) => {
-                                const next = {...layoutObj.hover};
-                                delete next[slug];
-                                updateHoverItem(next);
-                            }}
-                        />
+                        <div className={'wpbs-layout-tools__grid'}>
+                            <DynamicFieldPopover
+                                currentSettings={layoutObj.hover}
+                                fieldsMap={hoverFieldsMap}
+                                onAdd={(slug) => updateHoverItem({[slug]: ''})}
+                                onClear={(slug) => {
+                                    const next = {...layoutObj.hover};
+                                    delete next[slug];
+                                    updateHoverItem(next);
+                                }}
+                            />
 
-
+                        </div>
                     </div>
                     <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
                 </section>
@@ -729,31 +729,33 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                                 />
 
                             </div>
-
-                            <label style={{display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center'}}>
-                                <span>Breakpoint</span>
-                                <select
-                                    value={bpKey}
-                                    onChange={(e) => {
-                                        const newBpKey = e.target.value;
-                                        const newBreakpoints = {...layoutObj.breakpoints};
-                                        newBreakpoints[newBpKey] = newBreakpoints[bpKey];
-                                        delete newBreakpoints[bpKey];
-                                        setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
-                                    }}
-                                >
-                                    {breakpoints.map((b) => (
-                                        <option
-                                            key={b.key}
-                                            value={b.key}
-                                            disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
-                                        >
-                                            {b.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
                             <div className={'wpbs-layout-tools__grid'}>
+                                <label className={'wpbs-layout-tools__field'}>
+                                    <strong>Breakpoint</strong>
+                                    <div className={'wpbs-layout-tools__control'}>
+                                        <select
+                                            value={bpKey}
+                                            onChange={(e) => {
+                                                const newBpKey = e.target.value;
+                                                const newBreakpoints = {...layoutObj.breakpoints};
+                                                newBreakpoints[newBpKey] = newBreakpoints[bpKey];
+                                                delete newBreakpoints[bpKey];
+                                                setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                                            }}
+                                        >
+                                            {breakpoints.map((b) => (
+                                                <option
+                                                    key={b.key}
+                                                    value={b.key}
+                                                    disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
+                                                >
+                                                    {b.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </label>
+
                                 <LayoutFields
                                     bpKey={bpKey}
                                     settings={layoutObj.breakpoints[bpKey]}

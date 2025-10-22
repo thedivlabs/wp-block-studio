@@ -136,6 +136,7 @@
     width: 100%;
     text-align: left;
     text-decoration: none;
+    color: #5a5a5a;
 
     &:focus {
       outline: none;
@@ -156,7 +157,7 @@
   .wpbs-layout-tools__popover-item.active button {
     font-weight: 600;
     opacity: 0.75;
-
+    color: var(--wp-admin-theme-color, #3858e9);
   }
 
   .wpbs-layout-tools__popover-item button::before {

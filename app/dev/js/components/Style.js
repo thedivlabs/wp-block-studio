@@ -668,8 +668,8 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                     <div className="wpbs-layout-tools__header">
                         <strong>Hover</strong>
                         <DynamicFieldPopover
-                            currentSettings={layoutObj.props}
-                            onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
+                            currentSettings={layoutObj.hover}
+                            onAdd={(slug) => updateHoverItem({ [slug]: '' })}
                         />
                     </div>
                     <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
@@ -687,8 +687,8 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
                             <div className="wpbs-layout-tools__header">
                                 <strong>{panelLabel}</strong>
                                 <DynamicFieldPopover
-                                    currentSettings={layoutObj.props}
-                                    onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
+                                    currentSettings={layoutObj.breakpoints[bpKey]}
+                                    onAdd={(slug) => updateLayoutItem({ [slug]: '' }, bpKey)}
                                 />
                                 <Button variant={'secondary'} onClick={() => removeLayoutItem(bpKey)} icon={'no-alt'}/>
                             </div>

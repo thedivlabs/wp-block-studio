@@ -12,6 +12,7 @@ function extendScriptConfig(config) {
             ...config.entry(),
             theme: './app/dev/js/theme.js',
             admin: './app/dev/js/admin.js',
+            editor: './app/dev/js/editor.js',
         },
         output: {
             filename: '[name].js',

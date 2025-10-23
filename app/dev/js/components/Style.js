@@ -48,39 +48,43 @@ import PreviewThumbnail from "Components/PreviewThumbnail";
 import {ShadowSelector} from "Components/ShadowSelector";
 
 export const StyleControls = ({attributes, setAttributes, clientId}) => {
+    const [isOpen, setIsOpen] = useState(false);
     const mountRef = useRef(null);
+
+    // When panel is open and the mount node exists → open the editor
+    useEffect(() => {
+        if (
+            isOpen &&
+            mountRef.current &&
+            window.WPBSFramework?.openStyleEditorInline
+        ) {
+            window.WPBSFramework.openStyleEditorInline({
+                mountNode: mountRef.current,
+                clientId,
+                attributes,
+                setAttributes,
+            });
+        }
+    }, [isOpen, attributes, setAttributes, clientId]);
 
     return (
         <PanelBody
             title="Layout"
             initialOpen={false}
             className="wpbs-layout-tools"
-            onToggle={(nextOpen) => {
-                if (
-                    nextOpen &&
-                    window.WPBSFramework?.openStyleEditorInline &&
-                    mountRef.current
-                ) {
-                    window.WPBSFramework.openStyleEditorInline({
-                        mountNode: mountRef.current,
-                        clientId,
-                        attributes,
-                        setAttributes,
-                    });
-                }
-            }}
+            onToggle={(nextOpen) => setIsOpen(nextOpen)}
         >
             <div
                 ref={mountRef}
                 className="wpbs-style-placeholder"
                 data-client-id={clientId}
                 style={{padding: '4px 0'}}
-            >TESTING
+            >
+                TESTING
             </div>
         </PanelBody>
     );
 };
-
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
         type: 'string'

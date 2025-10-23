@@ -47,7 +47,7 @@ import _ from 'lodash';
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {ShadowSelector} from "Components/ShadowSelector";
 
-export const StyleControls = ({ attributes, setAttributes, clientId }) => {
+export const StyleControls = ({attributes, setAttributes, clientId}) => {
     const mountRef = useRef(null);
 
     return (
@@ -74,8 +74,9 @@ export const StyleControls = ({ attributes, setAttributes, clientId }) => {
                 ref={mountRef}
                 className="wpbs-style-placeholder"
                 data-client-id={clientId}
-                style={{ padding: '4px 0' }}
-            ></div>
+                style={{padding: '4px 0'}}
+            >TESTING
+            </div>
         </PanelBody>
     );
 };
@@ -1734,7 +1735,7 @@ const styleClassNames = (props) => {
 
 export function withStyle(EditComponent) {
     return (props) => {
-        const {attributes, setAttributes, name, isSelected} = props;
+        const {attributes, setAttributes, name, isSelected, clientId} = props;
         const {
             'wpbs-style': settings = {},
             'wpbs-css': existingCss = {},
@@ -1804,7 +1805,7 @@ export function withStyle(EditComponent) {
 
                 {isSelected && (
                     <InspectorControls group="styles">
-                        <StyleControls clientId={props.clientId} attributes={attributes} setAttributes={setAttributes} />
+                        <StyleControls clientId={clientId} attributes={attributes} setAttributes={setAttributes}/>
                         {/*<Layout
                             {...props}
                             layoutSettings={layoutSettings}

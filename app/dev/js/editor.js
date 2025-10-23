@@ -1,15 +1,15 @@
 /**
  * Shared style editor for all blocks (loaded once in the editor).
  */
-import { createRoot, useState, useEffect } from '@wordpress/element';
-import { PanelBody, Button } from '@wordpress/components';
-import { subscribe, select } from '@wordpress/data';
+import {createRoot, useState, useEffect, useRef} from '@wordpress/element';
+import {PanelBody, Button} from '@wordpress/components';
+import {subscribe, select} from '@wordpress/data';
 
 /**
  * The actual style editor UI.
  * You can replace this with your full @wordpress/components controls later.
  */
-function StyleEditorUI({ clientId, attributes, setAttributes, onClose }) {
+function StyleEditorUI({clientId, attributes, setAttributes, onClose}) {
     const [local, setLocal] = useState(attributes['wpbs-style'] || {});
 
     // keep local state in sync if the block’s attributes change externally
@@ -19,28 +19,28 @@ function StyleEditorUI({ clientId, attributes, setAttributes, onClose }) {
 
     const handleChange = (newSettings) => {
         setLocal(newSettings);
-        setAttributes({ 'wpbs-style': newSettings });
+        setAttributes({'wpbs-style': newSettings});
     };
 
     return (
         <PanelBody title="Style Editor" initialOpen>
-            <div style={{ padding: '8px 12px' }}>
+            <div style={{padding: '8px 12px'}}>
                 <label>Background Color</label>
                 <input
                     type="color"
                     value={local.backgroundColor || '#ffffff'}
                     onChange={(e) =>
-                        handleChange({ ...local, backgroundColor: e.target.value })
+                        handleChange({...local, backgroundColor: e.target.value})
                     }
                 />
             </div>
 
-            <div style={{ padding: '8px 12px' }}>
+            <div style={{padding: '8px 12px'}}>
                 <label>Padding</label>
                 <input
                     type="text"
                     value={local.padding || ''}
-                    onChange={(e) => handleChange({ ...local, padding: e.target.value })}
+                    onChange={(e) => handleChange({...local, padding: e.target.value})}
                 />
             </div>
 
@@ -63,6 +63,9 @@ window.WPBSFramework.openStyleEditorInline = ({
                                                   attributes,
                                                   setAttributes,
                                               }) => {
+
+    console.log(clientId, attributes, setAttributes, mountNode);
+
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Close any existing editor

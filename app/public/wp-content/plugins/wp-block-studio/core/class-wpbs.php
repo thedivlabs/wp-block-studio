@@ -150,9 +150,9 @@ class WPBS {
 
 		wp_register_script(
 			'wpbs-style-framework',
-			plugins_url('build/editor.js', __FILE__),
+			self::$uri . 'build/editor.js',
 			[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
-			filemtime(plugin_dir_path(__FILE__) . 'build/editor.js'),
+			filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
 			true
 		);
 

@@ -15,7 +15,7 @@ function StyleEditorUI({ clientId, attributes, setAttributes, onClose }) {
     // keep local state in sync if the block’s attributes change externally
     useEffect(() => {
         setLocal(attributes['wpbs-style'] || {});
-    }, [attributes, clientId]);
+    }, [attributes['wpbs-style'], clientId]);
 
     const handleChange = (newSettings) => {
         setLocal(newSettings);
@@ -58,63 +58,52 @@ window.WPBSFramework = window.WPBSFramework || {};
 const activeRoots = new Map();
 
 window.WPBSFramework.openStyleEditorInline = ({
-                                                  mountSelector,
+                                                  mountNode,
                                                   clientId,
                                                   attributes,
                                                   setAttributes,
                                               }) => {
-    const mountNode = document.querySelector(mountSelector);
-    if (!mountNode) return;
+    if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Close any existing editor
-    if (activeRoots.has(mountNode)) {
-        activeRoots.get(mountNode).unmount();
-        activeRoots.delete(mountNode);
+    if (window.WPBSFramework.activeRoot) {
+        window.WPBSFramework.activeRoot.unmount();
+        window.WPBSFramework.activeRoot = null;
     }
 
-    const root = createRoot(mountNode);
+    const root = wp.element.createRoot(mountNode);
 
     const close = () => {
-        // Unmount React root
-        if (activeRoots.has(mountNode)) {
+        if (window.WPBSFramework.activeRoot) {
             root.unmount();
-            activeRoots.delete(mountNode);
+            window.WPBSFramework.activeRoot = null;
         }
-        // Restore the launcher button
-        mountNode.innerHTML = `
-			<button type="button"
-				class="components-button is-secondary wpbs-style-launcher">
-				Edit Styles
-			</button>
-		`;
+        // Restore placeholder
+        mountNode.innerHTML = '';
         unsubscribeSelection();
         document.removeEventListener('keydown', escListener);
     };
 
-    // Mount the editor UI
+    // Mount your editor
     root.render(
-        <StyleEditorUI
-            clientId={clientId}
-            attributes={attributes}
-            setAttributes={setAttributes}
-            onClose={close}
-        />
+        wp.element.createElement(StyleEditorUI, {
+            clientId,
+            attributes,
+            setAttributes,
+            onClose: close,
+        })
     );
 
-    activeRoots.set(mountNode, root);
+    window.WPBSFramework.activeRoot = root;
 
     // --- Auto-close when block deselected or deleted ---
-    const unsubscribeSelection = subscribe(() => {
-        const selectedId = select('core/block-editor').getSelectedBlockClientId();
-        const block = select('core/block-editor').getBlock(clientId);
-        if (selectedId !== clientId || !block) {
-            close();
-        }
+    const unsubscribeSelection = wp.data.subscribe(() => {
+        const selectedId = wp.data.select('core/block-editor').getSelectedBlockClientId();
+        const block = wp.data.select('core/block-editor').getBlock(clientId);
+        if (selectedId !== clientId || !block) close();
     });
 
-    // --- Allow manual close with Escape key ---
-    const escListener = (e) => {
-        if (e.key === 'Escape') close();
-    };
+    // --- Close on Escape key ---
+    const escListener = (e) => e.key === 'Escape' && close();
     document.addEventListener('keydown', escListener);
 };

@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from "react";
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {
     __experimentalBoxControl as BoxControl,
     __experimentalGrid as Grid,
@@ -47,6 +47,38 @@ import _ from 'lodash';
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {ShadowSelector} from "Components/ShadowSelector";
 
+export const StyleControls = ({ attributes, setAttributes, clientId }) => {
+    const mountRef = useRef(null);
+
+    return (
+        <PanelBody
+            title="Layout"
+            initialOpen={false}
+            className="wpbs-layout-tools"
+            onToggle={(nextOpen) => {
+                if (
+                    nextOpen &&
+                    window.WPBSFramework?.openStyleEditorInline &&
+                    mountRef.current
+                ) {
+                    window.WPBSFramework.openStyleEditorInline({
+                        mountNode: mountRef.current,
+                        clientId,
+                        attributes,
+                        setAttributes,
+                    });
+                }
+            }}
+        >
+            <div
+                ref={mountRef}
+                className="wpbs-style-placeholder"
+                data-client-id={clientId}
+                style={{ padding: '4px 0' }}
+            ></div>
+        </PanelBody>
+    );
+};
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -1772,11 +1804,12 @@ export function withStyle(EditComponent) {
 
                 {isSelected && (
                     <InspectorControls group="styles">
-                        <Layout
+                        <StyleControls clientId={props.clientId} attributes={attributes} setAttributes={setAttributes} />
+                        {/*<Layout
                             {...props}
                             layoutSettings={layoutSettings}
                             setLayoutSettings={setLayoutSettings}
-                        />
+                        />*/}
                         {background && (
                             <BackgroundFields
                                 {...props}

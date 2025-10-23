@@ -20,8 +20,8 @@ package-lock.json
 !app/public/wp-content/plugins/
 !app/public/wp-content/themes/
 
-!app/public/wp-content/themes/wp-block-studio/
-!app/public/wp-content/themes/wp-block-studio/theme.json
+!app/public/wp-content/themes/that-agency/
+!app/public/wp-content/themes/that-agency/theme.json
 !app/public/wp-content/plugins/wp-block-studio/
 !app/public/wp-content/plugins/wp-block-studio/**
 app/public/wp-content/plugins/wp-block-studio/build

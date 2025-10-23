@@ -118,6 +118,15 @@ class WPBS_WP {
 			]
 		);
 
+		register_block_style(
+			'core/heading',
+			[
+				'name'       => 'medium',
+				'label'      => __( 'Medium', 'WPBS' ),
+				'is_default' => false,
+			]
+		);
+
 	}
 
 

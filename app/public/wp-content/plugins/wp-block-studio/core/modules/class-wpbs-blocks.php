@@ -11,21 +11,6 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		add_filter( 'block_type_metadata', function ( $metadata ) {
-			
-			if ( ! str_starts_with( $metadata['name'], 'wpbs' ) ) {
-				return $metadata;
-			}
-
-			// Add a new attribute to all blocks
-			$metadata['attributes']['wpbs-preload'] = [
-				'type'    => 'array',
-				'default' => [],
-			];
-
-			return $metadata;
-		}, 10 );
-
 		add_filter( 'render_block_data', function ( $parsed_block ) {
 			if (
 				isset( $parsed_block['blockName'] ) &&

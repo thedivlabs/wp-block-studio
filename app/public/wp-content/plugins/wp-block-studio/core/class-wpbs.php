@@ -233,7 +233,7 @@ class WPBS {
 		wp_enqueue_style( 'google-material-icons-outlined' );
 		wp_enqueue_script( 'swiper-js' );
 		wp_enqueue_style( 'swiper-css' );
-		wp_enqueue_style( 'wpbs-style-framework' );
+		wp_enqueue_script( 'wpbs-style-framework' );
 
 	}
 

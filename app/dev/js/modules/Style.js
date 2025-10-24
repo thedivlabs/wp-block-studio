@@ -89,9 +89,9 @@ const withStyleSave = (SaveComponent, config = {}) => {
 export default class WPBS_Style {
     constructor() {
 
-        if (window.WPBS?.Style) {
+        if (window.WPBS_Style) {
             console.warn('WPBS.Style already defined, skipping reinit.');
-            return window.WPBS.Style;
+            return window.WPBS_Style;
         }
 
         this.init();
@@ -100,19 +100,19 @@ export default class WPBS_Style {
     init() {
 
         // Ensure WPBS namespace exists
-        if (!window.WPBS) {
-            window.WPBS = {};
+        if (!window.WPBS_Style) {
+            window.WPBS_Style = {};
         }
 
         // Attach this module
-        window.WPBS.Style = {
+        window.WPBS_Style = {
             withStyle: withStyle,
             withStyleSave: withStyleSave,
             StyleEditorUI: StyleEditorUI,
         };
 
-        console.log(window.WPBS.Style);
+        console.log(WPBS_Style);
 
-        return window.WPBS.Style;
+        return window.WPBS_Style;
     }
 }

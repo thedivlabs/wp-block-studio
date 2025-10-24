@@ -11,7 +11,7 @@ export const StyleControls = ({attributes, setAttributes, clientId}) => {
             mountRef.current &&
             openStyleEditorInline
         ) {
-            window.WPBS.Style.openStyleEditorInline({
+            window.WPBS_Style.openStyleEditorInline({
                 mountNode: mountRef.current,
                 clientId,
                 attributes,
@@ -102,17 +102,17 @@ export const openStyleEditorInline = ({
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Close any existing editor
-    if (window.WPBS.activeRoot) {
-        window.WPBS.activeRoot.unmount();
-        window.WPBS.activeRoot = null;
+    if (window.WPBS_Style.activeRoot) {
+        window.WPBS_Style.activeRoot.unmount();
+        window.WPBS_Style.activeRoot = null;
     }
 
     const root = wp.element.createRoot(mountNode);
 
     const close = () => {
-        if (window.WPBS.activeRoot) {
+        if (window.WPBS_Style.activeRoot) {
             root.unmount();
-            window.WPBS.activeRoot = null;
+            window.WPBS_Style.activeRoot = null;
         }
         // Restore placeholder
         mountNode.innerHTML = '';
@@ -130,7 +130,7 @@ export const openStyleEditorInline = ({
         })
     );
 
-    window.WPBS.activeRoot = root;
+    window.WPBS_Style.activeRoot = root;
 
     // --- Auto-close when block deselected or deleted ---
     const unsubscribeSelection = wp.data.subscribe(() => {

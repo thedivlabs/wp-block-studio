@@ -10,8 +10,9 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 
-console.log('WPBS.Style available:', !!WPBS?.Style);
-const {withStyle, withStyleSave} = WPBS?.Style ?? {};
+const {withStyle, withStyleSave} = window.WPBS_Style ?? {};
+
+console.log('WPBS_Style available:', !!WPBS_Style);
 
 
 const selector = "wpbs-layout-element";

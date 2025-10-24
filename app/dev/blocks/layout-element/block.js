@@ -10,7 +10,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 
-const {withStyle, withStyleSave} = WPBS.Style;
+const {withStyle, withStyleSave} = WPBS?.Style ?? {};
 
 const selector = "wpbs-layout-element";
 
@@ -47,15 +47,14 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle(
-        ({attributes, setAttributes, useStyleProps}) => {
+        ({attributes, setAttributes, useStyleProps, styleData}) => {
             const {"wpbs-layout-element": settings = {}} = attributes;
 
-            const blockProps = useBlockProps({
-                className: classNames(attributes, true, styleClassNames),
+            const blockProps = useStyleProps({
+                className: classNames(attributes, true),
             });
 
-            const hasContainer =
-                !!settings?.container || !!attributes?.["wpbs-background"]?.type;
+            const {hasContainer = false} = styleData;
 
             const innerBlocksProps = hasContainer
                 ? useInnerBlocksProps(

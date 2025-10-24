@@ -16,11 +16,12 @@ import React, {useCallback, useEffect, useMemo} from "react";
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
-import {withStyle, STYLE_ATTRIBUTES, Background} from "Components/Style.js";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
+const {withStyle, withStyleSave} = WPBS?.Style ?? {};
 
-function classNames(attributes = {}, styleClassNames = '') {
+
+function classNames(attributes = {}) {
 
     const {'wpbs-cta': settings = {}} = attributes;
 
@@ -32,7 +33,6 @@ function classNames(attributes = {}, styleClassNames = '') {
         !!settings?.['icon-bold'] ? '--icon-bold' : null,
         !!settings?.['icon-only'] ? '--icon-only' : false,
         !!settings?.['icon-first'] ? '--icon-first' : false,
-        styleClassNames
     ].filter(x => x).join(' ');
 }
 
@@ -41,7 +41,6 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
-        ...STYLE_ATTRIBUTES,
         'wpbs-cta': {
             type: 'object',
             default: {}
@@ -166,7 +165,7 @@ registerBlockType(metadata.name, {
         };
 
         const blockProps = useBlockProps({
-            className: classNames(attributes, styleClassNames),
+            className: classNames(attributes),
             'data-popup': settings?.popup ?? null,
             ...anchorProps,
         });
@@ -189,14 +188,6 @@ registerBlockType(metadata.name, {
             );
         }, [settings]);
 
-        useEffect(() => {
-            setStyle({
-                css: cssProps,
-            });
-        }, [cssProps, setStyle]);
-
-
-        console.log(props);
 
         return (
             <>
@@ -238,7 +229,6 @@ registerBlockType(metadata.name, {
                 <a {...blockProps} onClick={(e) => e.preventDefault()}>
                     <span className={'wpbs-cta-button__title relative'}>{title}</span>
                     <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
-                    <Background attributes={attributes}/>
                 </a>
             </>
         )
@@ -269,7 +259,6 @@ registerBlockType(metadata.name, {
         return <a {...blockProps}>
             <span className={'wpbs-cta-button__title'}>{title}</span>
             <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
-            <Background attributes={props.attributes}/>
         </a>;
     }
 })

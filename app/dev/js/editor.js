@@ -4,6 +4,11 @@
 import {createRoot, useState, useEffect, useRef} from '@wordpress/element';
 import {PanelBody, Button} from '@wordpress/components';
 import {subscribe, select} from '@wordpress/data';
+import WPBS_Style from 'Components/Style';
+
+
+new WPBS_Style().init();
+
 
 /**
  * The actual style editor UI.
@@ -54,32 +59,33 @@ function StyleEditorUI({clientId, attributes, setAttributes, onClose}) {
 // -----------------------------------------------------------------------------
 // Global helper: opens the editor inline in the block’s Inspector placeholder.
 // -----------------------------------------------------------------------------
-window.WPBSFramework = window.WPBSFramework || {};
+window.WPBS = window.WPBS || {};
 const activeRoots = new Map();
 
-window.WPBSFramework.openStyleEditorInline = ({
-                                                  mountNode,
-                                                  clientId,
-                                                  attributes,
-                                                  setAttributes,
-                                              }) => {
+
+window.WPBS.openStyleEditorInline = ({
+                                         mountNode,
+                                         clientId,
+                                         attributes,
+                                         setAttributes,
+                                     }) => {
 
     console.log(clientId, attributes, setAttributes, mountNode);
 
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Close any existing editor
-    if (window.WPBSFramework.activeRoot) {
-        window.WPBSFramework.activeRoot.unmount();
-        window.WPBSFramework.activeRoot = null;
+    if (window.WPBS.activeRoot) {
+        window.WPBS.activeRoot.unmount();
+        window.WPBS.activeRoot = null;
     }
 
     const root = wp.element.createRoot(mountNode);
 
     const close = () => {
-        if (window.WPBSFramework.activeRoot) {
+        if (window.WPBS.activeRoot) {
             root.unmount();
-            window.WPBSFramework.activeRoot = null;
+            window.WPBS.activeRoot = null;
         }
         // Restore placeholder
         mountNode.innerHTML = '';
@@ -97,7 +103,7 @@ window.WPBSFramework.openStyleEditorInline = ({
         })
     );
 
-    window.WPBSFramework.activeRoot = root;
+    window.WPBS.activeRoot = root;
 
     // --- Auto-close when block deselected or deleted ---
     const unsubscribeSelection = wp.data.subscribe(() => {

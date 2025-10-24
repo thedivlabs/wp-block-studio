@@ -1,7 +1,7 @@
 import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
 import {InspectorControls, useBlockProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
-import {StyleControls, StyleEditorUI} from 'Components/StyleControls'
+import {StyleControls, StyleEditorUI, openStyleEditor} from 'Components/StyleControls'
 
 const getComponentProps = (props) => {
     const {attributes} = props;
@@ -108,7 +108,7 @@ export default class WPBS_Style {
         window.WPBS_Style = {
             withStyle: withStyle,
             withStyleSave: withStyleSave,
-            StyleEditorUI: StyleEditorUI,
+            openStyleEditor: openStyleEditor,
         };
 
         console.log(WPBS_Style);

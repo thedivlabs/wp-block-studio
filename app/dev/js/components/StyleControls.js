@@ -9,9 +9,9 @@ export const StyleControls = ({attributes, setAttributes, clientId}) => {
         if (
             isOpen &&
             mountRef.current &&
-            openStyleEditorInline
+            openStyleEditor
         ) {
-            window.WPBS_Style.openStyleEditorInline({
+            window.WPBS_Style.openStyleEditor({
                 mountNode: mountRef.current,
                 clientId,
                 attributes,
@@ -90,12 +90,12 @@ export const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) =>
 // -----------------------------------------------------------------------------
 
 const activeRoots = new Map();
-export const openStyleEditorInline = ({
-                                          mountNode,
-                                          clientId,
-                                          attributes,
-                                          setAttributes,
-                                      }) => {
+export const openStyleEditor = ({
+                                    mountNode,
+                                    clientId,
+                                    attributes,
+                                    setAttributes,
+                                }) => {
 
     console.log(clientId, attributes, setAttributes, mountNode);
 

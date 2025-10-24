@@ -25,19 +25,6 @@ class WPBS_Blocks {
 		}, 10 );
 
 
-		if (
-			function_exists( 'acf_add_options_page' )
-		) {
-			acf_add_options_page( array(
-				'page_title' => 'Theme Settings',
-				'menu_title' => 'Theme Settings',
-				'menu_slug'  => 'theme-settings',
-				'capability' => 'edit_posts',
-				'redirect'   => false,
-			) );
-		}
-
-
 	}
 
 	public static function render_block_styles( array $attributes, string $name = '', bool $is_rest = false ): string|bool {
@@ -214,7 +201,16 @@ class WPBS_Blocks {
 				$block_object['render_callback'] = [ $this, 'render_block' ];
 			}
 
+			if ( empty( $block_object['editorScript'] ) ) {
+				$block_object['editorScript'] = 'wpbs-style-framework';
+			} else {
+				$existing                     = (array) $block_object['editorScript'];
+				$block_object['editorScript'] = array_merge( [ 'wpbs-style-framework' ], $existing );
+			}
+
 			$block = register_block_type( $block_dir, $block_object );
+
+			WPBS::console_log( $block );
 
 		}
 	}

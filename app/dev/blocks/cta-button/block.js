@@ -12,7 +12,7 @@ import {
     SelectControl, TabPanel,
     ToggleControl
 } from "@wordpress/components";
-import React, {useCallback, useEffect, useMemo} from "react";
+import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";

@@ -1,35 +1,35 @@
+import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
 import {
     InspectorControls,
     useInnerBlocksProps,
 } from "@wordpress/block-editor";
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
-import React, {useCallback} from "react";
 import {
     __experimentalGrid as Grid,
     ToggleControl,
 } from "@wordpress/components";
 
+console.log('WPBS.Style available:', !!WPBS?.Style);
 const {withStyle, withStyleSave} = WPBS?.Style ?? {};
+
 
 const selector = "wpbs-layout-element";
 
-const classNames = (attributes = {}, editor = false) => {
+const classNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-element": settings} = attributes;
 
-    const hasContainer =
-        !!settings?.container || !!attributes?.["wpbs-background"]?.type;
+    const {hasContainer = false} = styleData;
 
     return [
         selector,
         "w-full",
         "block",
         "relative",
-        editor ? "empty:min-h-8" : null,
         hasContainer ? "wpbs-has-container" : null,
     ]
         .filter(Boolean)
-        .join(" ");
+        .join(' ');
 };
 
 // -----------------------------------------------------
@@ -47,22 +47,25 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle(
-        ({attributes, setAttributes, useStyleProps, styleData}) => {
+        ({attributes, setAttributes, styleBlockProps, styleData, ElementTagName, Background, isSelected}) => {
             const {"wpbs-layout-element": settings = {}} = attributes;
-
-            const blockProps = useStyleProps({
-                className: classNames(attributes, true),
-            });
 
             const {hasContainer = false} = styleData;
 
+            const blockProps = styleBlockProps({
+                className: classNames(attributes, styleData),
+            });
+
+            const containerProps = {
+                className: [
+                    selector + "__container",
+                    'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
+                ].filter(Boolean).join(' '),
+            }
+
             const innerBlocksProps = hasContainer
                 ? useInnerBlocksProps(
-                    {
-                        className:
-                            selector +
-                            "__container wpbs-layout-wrapper wpbs-container w-full h-full relative z-20",
-                    },
+                    containerProps,
                     {}
                 )
                 : useInnerBlocksProps(blockProps, {});
@@ -77,19 +80,11 @@ registerBlockType(metadata.name, {
                 },
                 [attributes?.["wpbs-layout-element"], setAttributes]
             );
-
-            const ElementTagName = ElementTag(attributes);
-
+            console.log('qqqqqq');
             return (
                 <>
-                    {/* Tag settings panel (e.g., div, section, header) */}
-                    <ElementTagSettings
-                        attributes={attributes}
-                        setAttributes={setAttributes}
-                    />
 
-                    {/* Layout controls */}
-                    <InspectorControls group="advanced">
+                    {isSelected && <InspectorControls group="advanced">
                         <Grid
                             columns={1}
                             columnGap={15}
@@ -105,30 +100,26 @@ registerBlockType(metadata.name, {
                                 }
                             />
                         </Grid>
-                    </InspectorControls>
+                    </InspectorControls>}
 
-                    {/* Block content */}
                     <ElementTagName {...blockProps}>
                         {hasContainer ? (
                             <div {...innerBlocksProps} />
                         ) : (
                             innerBlocksProps.children
                         )}
-                        <Background attributes={attributes}/>
+                        <Background/>
                     </ElementTagName>
                 </>
             );
-        }, {background: true}),
+        }, {background: true, tagName: true}),
 
-    save: withStyleSave((props) => {
-        const {attributes, saveStyleProps} = props;
-        const {"wpbs-layout-element": settings = {}} = attributes;
+    save: withStyleSave(({attributes, styleBlockProps, styleData, ElementTagName, Background}) => {
 
-        const hasContainer =
-            !!settings?.container || !!attributes?.["wpbs-background"]?.type;
+        const {hasContainer} = styleData;
 
-        const blockProps = saveStyleProps({
-            className: classNames(attributes, false),
+        const blockProps = styleBlockProps({
+            className: classNames(attributes, styleData),
         });
 
         const innerBlocksProps = hasContainer
@@ -139,8 +130,6 @@ registerBlockType(metadata.name, {
             })
             : useInnerBlocksProps.save(blockProps);
 
-        const ElementTagName = ElementTag(attributes);
-
         return (
             <ElementTagName {...blockProps}>
                 {hasContainer ? (
@@ -148,7 +137,7 @@ registerBlockType(metadata.name, {
                 ) : (
                     innerBlocksProps.children
                 )}
-                <Background attributes={attributes}/>
+                <Background/>
             </ElementTagName>
         );
     }, {background: true}),

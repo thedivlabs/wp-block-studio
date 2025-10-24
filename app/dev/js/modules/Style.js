@@ -1,35 +1,69 @@
-import { useBlockProps } from '@wordpress/block-editor';
+import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
+import {InspectorControls, useBlockProps} from '@wordpress/block-editor';
+import {Background} from "Components/Background.js";
+import {StyleControls, StyleEditorUI} from 'Components/StyleControls'
 
-const getSettingsData = (props) => {
-    const { attributes } = props;
+const getComponentProps = (props) => {
+    const {attributes} = props;
     const style = attributes['wpbs-style'] || {};
     const background = style.background || {};
     const layout = style.layout || {};
 
-    return {
+    const data = Object.fromEntries(Object.entries({
         hasBackground: !!background.type,
         hasContainer: !!layout.container || !!background.type,
         background,
         layout,
-    };
-};
+    }).filter(Boolean));
 
 
-const styleClassNames = (props)=>{
+    return {
+        ...props,
+        styleData: data,
+        Background: data?.hasBackground ? Background : Fragment,
+        ElementTagName: 'div'
+    }
+}
+
+const getClassNames = (props, userProps) => {
 
     const {attributes} = props;
 
     const {uniqueId} = attributes;
 
-    return [uniqueId].filter(Boolean).join(' ');
+
+    return [
+        uniqueId,
+        userProps.className
+    ].filter(Boolean).join(' ');
 
 }
 
 const withStyle = (EditComponent, config = {}) => {
     return (props) => {
-        console.log('withStyle called', config, props);
-        // eventually: add useStyleProps, InspectorControls, etc.
-        return <EditComponent {...props} styleData={getSettingsData(props)} />;
+        const {clientId, isSelected, attributes, setAttributes} = props;
+
+        const editStyleProps = (userProps = {}) => {
+
+            return useBlockProps({
+                ...userProps,
+                className: getClassNames(props, userProps),
+            });
+        };
+
+        return (
+            <>
+                <EditComponent styleBlockProps={editStyleProps} {...getComponentProps(props)} />
+                <InspectorControls group="styles">
+                    <StyleControls
+                        clientId={clientId}
+                        attributes={attributes}
+                        setAttributes={setAttributes}
+                    />
+                </InspectorControls>
+
+            </>
+        );
     };
 };
 
@@ -38,40 +72,32 @@ const withStyleSave = (SaveComponent, config = {}) => {
     return (props) => {
         console.log('withStyleSave called', config, props);
 
-        const {attributes} = props;
-
-        const {uniqueId} = attributes;
-
         const saveStyleProps = (userProps = {}) => {
-            const mergedClassName = [styleClassNames(props), userProps.className]
-                .filter(Boolean)
-                .join(' ');
 
             return useBlockProps.save({
                 ...userProps,
-                className: mergedClassName,
-                'data-style-id': uniqueId,
+                className: getClassNames(props, userProps),
             });
         };
 
         // eventually: merge classes, styles, etc.
-        return <SaveComponent {...props} saveStyleProps={saveStyleProps} />;
+        return <SaveComponent styleBlockProps={saveStyleProps} {...getComponentProps(props)} />;
     };
 };
 
 
 export default class WPBS_Style {
     constructor() {
-        this.withStyle = withStyle;
-        this.withStyleSave = withStyleSave;
-    }
-
-    init() {
 
         if (window.WPBS?.Style) {
             console.warn('WPBS.Style already defined, skipping reinit.');
             return window.WPBS.Style;
         }
+
+        this.init();
+    }
+
+    init() {
 
         // Ensure WPBS namespace exists
         if (!window.WPBS) {
@@ -80,9 +106,12 @@ export default class WPBS_Style {
 
         // Attach this module
         window.WPBS.Style = {
-            withStyle: this.withStyle,
-            withStyleSave: this.withStyleSave,
+            withStyle: withStyle,
+            withStyleSave: withStyleSave,
+            StyleEditorUI: StyleEditorUI,
         };
+
+        console.log(window.WPBS.Style);
 
         return window.WPBS.Style;
     }

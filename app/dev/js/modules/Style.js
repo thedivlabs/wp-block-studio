@@ -98,19 +98,15 @@ export default class WPBS_Style {
 
     init() {
 
-        // Ensure WPBS namespace exists
         if (!window.WPBS_Style) {
             window.WPBS_Style = {};
         }
 
-        // Attach this module
         window.WPBS_Style = {
             withStyle: withStyle,
             withStyleSave: withStyleSave,
             openStyleEditor: openStyleEditor,
         };
-
-        console.log(WPBS_Style);
 
         return window.WPBS_Style;
     }

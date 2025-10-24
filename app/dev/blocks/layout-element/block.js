@@ -30,10 +30,6 @@ const classNames = (attributes = {}, styleData) => {
         .join(' ');
 };
 
-// -----------------------------------------------------
-// Block Registration
-// -----------------------------------------------------
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -78,7 +74,7 @@ registerBlockType(metadata.name, {
                 },
                 [attributes?.["wpbs-layout-element"], setAttributes]
             );
-
+            
             return (
                 <>
 

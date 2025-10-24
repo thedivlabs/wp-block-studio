@@ -209,9 +209,7 @@ class WPBS_Blocks {
 			}
 
 			$block = register_block_type( $block_dir, $block_object );
-
-			WPBS::console_log( $block );
-
+			
 		}
 	}
 

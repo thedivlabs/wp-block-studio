@@ -160,7 +160,7 @@ class WPBS {
 		] );
 
 		wp_register_script(
-			'wpbs-style-framework',
+			'wpbs-editor',
 			self::$uri . 'build/editor.js',
 			[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
 			filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
@@ -230,7 +230,6 @@ class WPBS {
 		//wp_enqueue_script( 'swiper-js' );
 		//wp_enqueue_style( 'swiper-css' );
 		wp_enqueue_style( 'wpbs-theme-css' );
-		wp_enqueue_script( 'wpbs-style-framework' );
 	}
 
 	public function admin_assets(): void {
@@ -246,7 +245,7 @@ class WPBS {
 		wp_enqueue_style( 'google-material-icons-outlined' );
 		wp_enqueue_script( 'swiper-js' );
 		wp_enqueue_style( 'swiper-css' );
-		wp_enqueue_script( 'wpbs-style-framework' );
+		wp_enqueue_script( 'wpbs-editor' );
 
 	}
 

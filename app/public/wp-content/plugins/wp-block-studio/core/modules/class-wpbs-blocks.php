@@ -202,10 +202,10 @@ class WPBS_Blocks {
 			}
 
 			if ( empty( $block_object['editorScript'] ) ) {
-				$block_object['editorScript'] = 'wpbs-style-framework';
+				$block_object['editorScript'] = 'wpbs-editor';
 			} else {
 				$existing                     = (array) $block_object['editorScript'];
-				$block_object['editorScript'] = array_merge( [ 'wpbs-style-framework' ], $existing );
+				$block_object['editorScript'] = array_merge( [ 'wpbs-editor' ], $existing );
 			}
 
 			$block = register_block_type( $block_dir, $block_object );

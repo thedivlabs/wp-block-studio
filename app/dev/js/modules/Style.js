@@ -70,7 +70,6 @@ const withStyle = (EditComponent, config = {}) => {
 const withStyleSave = (SaveComponent, config = {}) => {
 
     return (props) => {
-        console.log('withStyleSave called', config, props);
 
         const saveStyleProps = (userProps = {}) => {
 

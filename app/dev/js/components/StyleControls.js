@@ -85,19 +85,13 @@ export const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) =>
     );
 }
 
-// -----------------------------------------------------------------------------
-// Global helper: opens the editor inline in the block’s Inspector placeholder.
-// -----------------------------------------------------------------------------
 
-const activeRoots = new Map();
 export const openStyleEditor = ({
                                     mountNode,
                                     clientId,
                                     attributes,
                                     setAttributes,
                                 }) => {
-
-    console.log(clientId, attributes, setAttributes, mountNode);
 
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 

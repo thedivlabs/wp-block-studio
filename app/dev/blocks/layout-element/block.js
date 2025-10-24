@@ -12,9 +12,6 @@ import {
 
 const {withStyle, withStyleSave} = window.WPBS_Style ?? {};
 
-console.log('WPBS_Style available:', !!WPBS_Style);
-
-
 const selector = "wpbs-layout-element";
 
 const classNames = (attributes = {}, styleData) => {
@@ -81,7 +78,7 @@ registerBlockType(metadata.name, {
                 },
                 [attributes?.["wpbs-layout-element"], setAttributes]
             );
-            console.log('qqqqqq');
+
             return (
                 <>
 

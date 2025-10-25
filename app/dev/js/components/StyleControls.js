@@ -46,7 +46,6 @@ export const StyleControls = ({attributes, setAttributes, clientId}) => {
 export const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) => {
     const [local, setLocal] = useState(attributes['wpbs-style'] || {});
 
-    // keep local state in sync if the block’s attributes change externally
     useEffect(() => {
         setLocal(attributes['wpbs-style'] || {});
     }, [attributes['wpbs-style'], clientId]);
@@ -84,56 +83,3 @@ export const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) =>
         </PanelBody>
     );
 }
-
-
-export const openStyleEditor = ({
-                                    mountNode,
-                                    clientId,
-                                    attributes,
-                                    setAttributes,
-                                }) => {
-
-    if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
-
-    // Close any existing editor
-    if (window.WPBS_Style.activeRoot) {
-        window.WPBS_Style.activeRoot.unmount();
-        window.WPBS_Style.activeRoot = null;
-    }
-
-    const root = wp.element.createRoot(mountNode);
-
-    const close = () => {
-        if (window.WPBS_Style.activeRoot) {
-            root.unmount();
-            window.WPBS_Style.activeRoot = null;
-        }
-        // Restore placeholder
-        mountNode.innerHTML = '';
-        unsubscribeSelection();
-        document.removeEventListener('keydown', escListener);
-    };
-
-    // Mount your editor
-    root.render(
-        wp.element.createElement(StyleEditorUI, {
-            clientId,
-            attributes,
-            setAttributes,
-            onClose: close,
-        })
-    );
-
-    window.WPBS_Style.activeRoot = root;
-
-    // --- Auto-close when block deselected or deleted ---
-    const unsubscribeSelection = wp.data.subscribe(() => {
-        const selectedId = wp.data.select('core/block-editor').getSelectedBlockClientId();
-        const block = wp.data.select('core/block-editor').getBlock(clientId);
-        if (selectedId !== clientId || !block) close();
-    });
-
-    // --- Close on Escape key ---
-    const escListener = (e) => e.key === 'Escape' && close();
-    document.addEventListener('keydown', escListener);
-};

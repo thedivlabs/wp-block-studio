@@ -74,7 +74,7 @@ registerBlockType(metadata.name, {
                 },
                 [attributes?.["wpbs-layout-element"], setAttributes]
             );
-            
+
             return (
                 <>
 

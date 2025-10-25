@@ -100,7 +100,7 @@ export const withStyle = (EditComponent, config = {}) => {
             }
         }, [clientId, attributes, parseBlockStyles]);
 
-        const editStyleProps = (userProps = {}) => {
+        const styleBlockProps = (userProps = {}) => {
 
             return useBlockProps({
                 ...userProps,
@@ -110,7 +110,7 @@ export const withStyle = (EditComponent, config = {}) => {
 
         return (
             <>
-                <EditComponent styleBlockProps={editStyleProps} {...getComponentProps(props)} />
+                <EditComponent styleBlockProps={styleBlockProps} {...getComponentProps(props)} />
 
 
                 {isSelected && <InspectorControls group="styles">
@@ -132,7 +132,7 @@ export const withStyleSave = (SaveComponent, config = {}) => {
 
     return (props) => {
 
-        const saveStyleProps = (userProps = {}) => {
+        const styleBlockProps = (userProps = {}) => {
 
             return useBlockProps.save({
                 ...userProps,
@@ -140,7 +140,7 @@ export const withStyleSave = (SaveComponent, config = {}) => {
             });
         };
 
-        return <SaveComponent styleBlockProps={saveStyleProps} {...getComponentProps(props)} />;
+        return <SaveComponent styleBlockProps={styleBlockProps} {...getComponentProps(props)} />;
     };
 };
 

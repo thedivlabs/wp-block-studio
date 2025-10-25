@@ -1,7 +1,9 @@
 import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
 import {InspectorControls, useBlockProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
-import {Button, PanelBody} from "@wordpress/components";
+import {PanelBody} from "@wordpress/components";
+import _ from 'lodash';
+
 
 const getComponentProps = (props) => {
     const {attributes} = props;
@@ -80,6 +82,23 @@ const StylePanel = ({attributes, setAttributes, clientId}) => {
 export const withStyle = (EditComponent, config = {}) => {
     return (props) => {
         const {clientId, isSelected, attributes, setAttributes} = props;
+        const styleRef = useRef(null);
+        const {parseBlockStyles} = window?.WPBS_StyleControls ?? {};
+        const prevAttributes = useRef(null);
+
+        const {'wpbs-style': settings = {}} = attributes;
+
+
+        useEffect(() => {
+            // Deep compare with previous attributes to avoid redundant parsing
+            if (
+                typeof parseBlockStyles === 'function' &&
+                !_.isEqual(prevAttributes.current, attributes['wpbs-style'])
+            ) {
+                parseBlockStyles({clientId, attributes, styleRef});
+                prevAttributes.current = _.cloneDeep(attributes['wpbs-style']);
+            }
+        }, [clientId, attributes, parseBlockStyles]);
 
         const editStyleProps = (userProps = {}) => {
 
@@ -101,6 +120,8 @@ export const withStyle = (EditComponent, config = {}) => {
                         setAttributes={setAttributes}
                     />
                 </InspectorControls>}
+
+                <style ref={styleRef} data-wpbs-style={clientId}></style>
 
             </>
         );

@@ -1,4 +1,4 @@
-import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
+import {createRoot} from '@wordpress/element';
 import {Button, PanelBody} from '@wordpress/components';
 
 const openStyleEditor = ({
@@ -7,7 +7,6 @@ const openStyleEditor = ({
                              attributes,
                              setAttributes,
                          }) => {
-
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Close any existing editor
@@ -16,20 +15,18 @@ const openStyleEditor = ({
         window.WPBS_StyleControls.activeRoot = null;
     }
 
-    const root = wp.element.createRoot(mountNode);
+    const root = createRoot(mountNode);
 
     const close = () => {
         if (window.WPBS_StyleControls.activeRoot) {
             root.unmount();
             window.WPBS_StyleControls.activeRoot = null;
         }
-        // Restore placeholder
         mountNode.innerHTML = '';
         unsubscribeSelection();
         document.removeEventListener('keydown', escListener);
     };
 
-    // Mount your editor
     root.render(
         wp.element.createElement(StyleEditorUI, {
             clientId,
@@ -41,22 +38,20 @@ const openStyleEditor = ({
 
     window.WPBS_StyleControls.activeRoot = root;
 
-    // --- Auto-close when block deselected or deleted ---
     const unsubscribeSelection = wp.data.subscribe(() => {
         const selectedId = wp.data.select('core/block-editor').getSelectedBlockClientId();
         const block = wp.data.select('core/block-editor').getBlock(clientId);
         if (selectedId !== clientId || !block) close();
     });
 
-    // --- Close on Escape key ---
     const escListener = (e) => e.key === 'Escape' && close();
     document.addEventListener('keydown', escListener);
 };
 
 const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) => {
-    const [local, setLocal] = useState(attributes['wpbs-style'] || {});
+    const [local, setLocal] = wp.element.useState(attributes['wpbs-style'] || {});
 
-    useEffect(() => {
+    wp.element.useEffect(() => {
         setLocal(attributes['wpbs-style'] || {});
     }, [attributes['wpbs-style'], clientId]);
 
@@ -92,15 +87,35 @@ const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) => {
             </Button>
         </PanelBody>
     );
-}
+};
+
+/**
+ * This method is called by the HOC whenever block attributes change.
+ * It receives a <style> element ref and writes the parsed CSS directly into it.
+ */
+const parseBlockStyles = ({clientId, attributes, styleRef}) => {
+    if (!styleRef?.current) return;
+
+    const {'wpbs-style': style = {}} = attributes;
+    const {backgroundColor, padding} = style;
+
+    // Basic parser example — replace with your full CSS parser later
+    let css = '';
+    const selector = `[data-block="${clientId}"]`;
+
+    if (backgroundColor) css += `${selector} { background-color: ${backgroundColor}; }`;
+    if (padding) css += `${selector} { padding: ${padding}; }`;
+
+    styleRef.current.textContent = css.trim();
+};
 
 export default class WPBS_StyleControls {
     constructor() {
-
         this.openStyleEditor = openStyleEditor;
+        this.parseBlockStyles = parseBlockStyles;
 
         if (window.WPBS_StyleControls) {
-            console.warn('WPBS.Style already defined, skipping reinit.');
+            console.warn('WPBS.StyleControls already defined, skipping reinit.');
             return window.WPBS_StyleControls;
         }
 
@@ -108,13 +123,11 @@ export default class WPBS_StyleControls {
     }
 
     init() {
-
         if (!window.WPBS_StyleControls) {
             window.WPBS_StyleControls = {};
         }
 
         window.WPBS_StyleControls = this;
-
         return window.WPBS_StyleControls;
     }
 }

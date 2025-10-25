@@ -18,7 +18,7 @@ import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 
-const {withStyle, withStyleSave} = window.WPBS_Style ?? {};
+import {withStyle, withStyleSave} from 'Components/Style';
 
 
 function classNames(attributes = {}) {

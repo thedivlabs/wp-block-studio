@@ -1,6 +1,6 @@
-import WPBS_Style from 'Modules/Style';
+import WPBS_StyleControls from 'Modules/StyleControls';
 
 
-new WPBS_Style();
+new WPBS_StyleControls();
 
 

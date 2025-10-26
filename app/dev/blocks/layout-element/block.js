@@ -10,7 +10,7 @@ import {
     ToggleControl,
 } from "@wordpress/components";
 
-import {withStyle, withStyleSave} from 'Components/Style';
+import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/Style';
 
 
 const selector = "wpbs-layout-element";
@@ -35,6 +35,7 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...STYLE_ATTRIBUTES,
         "wpbs-layout-element": {
             type: "object",
             default: {},
@@ -42,28 +43,11 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle(
-        ({attributes, setAttributes, styleBlockProps, styleData, ElementTagName, Background, isSelected}) => {
+        (props) => {
+
+            const {attributes, setAttributes, BlockWrapper, styleData, isSelected} = props;
+
             const {"wpbs-layout-element": settings = {}} = attributes;
-
-            const {hasContainer = false} = styleData;
-
-            const blockProps = styleBlockProps({
-                className: classNames(attributes, styleData),
-            });
-
-            const containerProps = {
-                className: [
-                    selector + "__container",
-                    'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
-                ].filter(Boolean).join(' '),
-            }
-
-            const innerBlocksProps = hasContainer
-                ? useInnerBlocksProps(
-                    containerProps,
-                    {}
-                )
-                : useInnerBlocksProps(blockProps, {});
 
             const updateSettings = useCallback(
                 (newValue) => {
@@ -97,17 +81,16 @@ registerBlockType(metadata.name, {
                         </Grid>
                     </InspectorControls>}
 
-                    <ElementTagName {...blockProps}>
-                        {hasContainer ? (
-                            <div {...innerBlocksProps} />
-                        ) : (
-                            innerBlocksProps.children
-                        )}
-                        <Background/>
-                    </ElementTagName>
+                    <BlockWrapper
+                        props={props}
+                        hasContainer={!!settings?.container}
+                        className={classNames(attributes, styleData)}
+                        id={attributes.uniqueId}
+                    />
+
                 </>
             );
-        }, {background: true, tagName: true}),
+        }),
 
     save: withStyleSave(({attributes, styleBlockProps, styleData, ElementTagName, Background}) => {
 
@@ -135,5 +118,5 @@ registerBlockType(metadata.name, {
                 <Background/>
             </ElementTagName>
         );
-    }, {background: true}),
+    }),
 });

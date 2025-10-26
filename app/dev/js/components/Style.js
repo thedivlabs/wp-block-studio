@@ -211,10 +211,6 @@ export const withStyle = (EditComponent, config = {}) => {
             }
         }, []); // once on mount
 
-
-        console.log(attributes);
-        console.log(uniqueId);
-
         useEffect(() => {
             if (typeof parseBlockStyles === 'function' && !_.isEqual(prevAttributes.current, settings)) {
                 try {
@@ -266,18 +262,39 @@ export const withStyle = (EditComponent, config = {}) => {
 };
 
 export const withStyleSave = (SaveComponent, config = {}) => {
-
     return (props) => {
+        const {attributes, name} = props;
+        const {'wpbs-style': style = {}} = attributes;
+        const uniqueId = attributes?.uniqueId || `${name}-${Math.random().toString(36).slice(2, 8)}`;
 
+        // Construct blockProps for save render
         const styleBlockProps = (userProps = {}) => {
-
             return useBlockProps.save({
                 ...userProps,
-                className: getClassNames(props, userProps),
+                className: getClassNames(props, userProps, uniqueId),
             });
         };
 
-        return <SaveComponent styleBlockProps={styleBlockProps} {...getComponentProps(props)} />;
+        // Bound version of BlockWrapper for static output
+        const BoundBlockWrapper = (wrapperProps) => (
+            <BlockWrapper
+                {...wrapperProps}
+                uniqueId={uniqueId}
+                attributes={attributes}
+                hasContainer={config.container}
+                hasBackground={config.background}
+            />
+        );
+
+        return (
+            <>
+                <SaveComponent
+                    {...getComponentProps(props)}
+                    styleBlockProps={styleBlockProps}
+                    BlockWrapper={BoundBlockWrapper}
+                />
+            </>
+        );
     };
 };
 

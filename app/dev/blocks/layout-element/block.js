@@ -67,7 +67,6 @@ registerBlockType(metadata.name, {
 
                     <BlockWrapper
                         props={props}
-                        hasContainer={!!settings?.container}
                         className={classNames}
                         id={attributes.uniqueId}
                     />
@@ -84,7 +83,6 @@ registerBlockType(metadata.name, {
         return (
             <BlockWrapper
                 props={props}
-                hasContainer={!!settings?.container}
                 className={classNames}
                 id={attributes.uniqueId}
             />

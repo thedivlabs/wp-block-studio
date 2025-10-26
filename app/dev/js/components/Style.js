@@ -131,7 +131,6 @@ export const BlockWrapper = ({
                                  className,
                                  children,
                                  hasTag = true,
-                                 hasContainer,
                                  hasBackground,
                                  isSave = false, // <— key difference
                                  ...userProps
@@ -140,6 +139,7 @@ export const BlockWrapper = ({
     const {'wpbs-style': settings = {}} = attributes;
     const uniqueId = attributes?.uniqueId;
     const Tag = hasTag ? settings?.tagName ?? 'div' : Fragment;
+    const hasContainer = settings?.layout?.container || settings?.background?.type;
 
     const containerClass = [
         uniqueId ? `${uniqueId}__container` : null,

@@ -1,5 +1,5 @@
 import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
-import {InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
+import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
 import _ from 'lodash';
@@ -126,35 +126,58 @@ const StylePanel = ({attributes, setAttributes, clientId}) => {
     );
 };
 
-const BlockWrapper = ({
-                          props,
-                          className,
-                          children,
-                          hasTag = true,
-                          hasContainer,
-                          hasBackground,
-                          ...userProps
-                      }) => {
-
+export const BlockWrapper = ({
+                                 props,
+                                 className,
+                                 children,
+                                 hasTag = true,
+                                 hasContainer,
+                                 hasBackground,
+                                 isSave = false, // <— key difference
+                                 ...userProps
+                             }) => {
     const {attributes} = props;
-    const {'wpbs-style': settings, uniqueId} = attributes;
-
-    const Tag = settings?.tagName ?? 'div';
+    const {'wpbs-style': settings = {}} = attributes;
+    const uniqueId = attributes?.uniqueId;
+    const Tag = hasTag ? settings?.tagName ?? 'div' : Fragment;
 
     const containerClass = [
-        attributes?.uniqueId ? `${attributes.uniqueId}__container` : null,
+        uniqueId ? `${uniqueId}__container` : null,
         'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
     ]
         .filter(Boolean)
         .join(' ');
 
+    // For save vs editor environments:
+    const blockProps = isSave
+        ? useBlockProps.save({
+            ...userProps,
+            className: getClassNames(props, userProps, uniqueId),
+        })
+        : useBlockProps({
+            ...userProps,
+            className: getClassNames(props, userProps, uniqueId),
+        });
+
+    // Editor uses hooks; save uses static <InnerBlocks.Content />
+    if (isSave) {
+        return (
+            <Tag {...blockProps} className={[blockProps.className, className].filter(Boolean).join(' ')}>
+                {hasContainer ? (
+                    <div className={containerClass}>
+                        <InnerBlocks.Content/>
+                    </div>
+                ) : (
+                    <InnerBlocks.Content/>
+                )}
+                {hasBackground && <Background/>}
+                {children}
+            </Tag>
+        );
+    }
+
+    // Editor version (live hooks)
     const containerProps = {className: containerClass};
-
-    const blockProps = useBlockProps({
-        ...userProps,
-        className: getClassNames(props, userProps, uniqueId),
-    })
-
     const innerBlocksProps = hasContainer
         ? useInnerBlocksProps(containerProps, {})
         : useInnerBlocksProps(blockProps, {});
@@ -167,6 +190,7 @@ const BlockWrapper = ({
         </Tag>
     );
 };
+
 
 export const withStyle = (EditComponent, config = {}) => {
     return (props) => {
@@ -185,9 +209,9 @@ export const withStyle = (EditComponent, config = {}) => {
             (wrapperProps) => (
                 <BlockWrapper
                     {...wrapperProps}
+                    props={props}
                     clientId={clientId}
                     uniqueId={uniqueId}
-                    attributes={attributes}
                     hasContainer={config.container}
                     hasBackground={config.background}
                 />
@@ -264,39 +288,29 @@ export const withStyle = (EditComponent, config = {}) => {
 export const withStyleSave = (SaveComponent, config = {}) => {
     return (props) => {
         const {attributes, name} = props;
-        const {'wpbs-style': style = {}} = attributes;
-        const uniqueId = attributes?.uniqueId || `${name}-${Math.random().toString(36).slice(2, 8)}`;
+        const {'wpbs-style': styleData = {}} = attributes;
 
-        // Construct blockProps for save render
-        const styleBlockProps = (userProps = {}) => {
-            return useBlockProps.save({
-                ...userProps,
-                className: getClassNames(props, userProps, uniqueId),
-            });
-        };
-
-        // Bound version of BlockWrapper for static output
         const BoundBlockWrapper = (wrapperProps) => (
             <BlockWrapper
                 {...wrapperProps}
-                uniqueId={uniqueId}
-                attributes={attributes}
+                props={props}
+                uniqueId={attributes?.uniqueId}
                 hasContainer={config.container}
                 hasBackground={config.background}
+                isSave={true}
             />
         );
 
         return (
-            <>
-                <SaveComponent
-                    {...getComponentProps(props)}
-                    styleBlockProps={styleBlockProps}
-                    BlockWrapper={BoundBlockWrapper}
-                />
-            </>
+            <SaveComponent
+                {...getComponentProps(props)}
+                BlockWrapper={BoundBlockWrapper}
+                styleData={styleData}
+            />
         );
     };
 };
+
 
 
 

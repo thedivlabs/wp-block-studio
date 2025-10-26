@@ -1,4 +1,4 @@
-import {createRoot, useState, useCallback, useMemo} from '@wordpress/element';
+import {memo, createRoot, useState, useCallback, useMemo} from '@wordpress/element';
 import {
     __experimentalBoxControl as BoxControl,
     Button,

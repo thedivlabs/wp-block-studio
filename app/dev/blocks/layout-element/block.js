@@ -94,31 +94,18 @@ registerBlockType(metadata.name, {
             );
         }),
 
-    save: withStyleSave(({attributes, styleBlockProps, styleData, ElementTagName, Background}) => {
-
-        const {hasContainer} = styleData;
-
-        const blockProps = styleBlockProps({
-            className: getClassNames(attributes, styleData),
-        });
-
-        const innerBlocksProps = hasContainer
-            ? useInnerBlocksProps.save({
-                className:
-                    selector +
-                    "__container wpbs-layout-wrapper wpbs-container w-full h-full relative z-20",
-            })
-            : useInnerBlocksProps.save(blockProps);
+    save: withStyleSave((props) => {
+        const {attributes, BlockWrapper, styleData} = props;
+        const {"wpbs-layout-element": settings = {}} = attributes;
+        const classNames = getClassNames(attributes, styleData);
 
         return (
-            <ElementTagName {...blockProps}>
-                {hasContainer ? (
-                    <div {...innerBlocksProps} />
-                ) : (
-                    innerBlocksProps.children
-                )}
-                <Background/>
-            </ElementTagName>
+            <BlockWrapper
+                props={props}
+                hasContainer={!!settings?.container}
+                className={classNames}
+                id={attributes.uniqueId}
+            />
         );
     }),
 });

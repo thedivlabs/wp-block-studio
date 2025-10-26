@@ -65,24 +65,6 @@ registerBlockType(metadata.name, {
             return (
                 <>
 
-                    {isSelected && <InspectorControls group="advanced">
-                        <Grid
-                            columns={1}
-                            columnGap={15}
-                            rowGap={20}
-                            style={{paddingTop: "20px"}}
-                        >
-                            <ToggleControl
-                                __nextHasNoMarginBottom
-                                label="Container"
-                                checked={!!settings?.container}
-                                onChange={(newValue) =>
-                                    updateSettings({container: newValue})
-                                }
-                            />
-                        </Grid>
-                    </InspectorControls>}
-
                     <BlockWrapper
                         props={props}
                         hasContainer={!!settings?.container}

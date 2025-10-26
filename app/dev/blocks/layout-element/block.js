@@ -15,7 +15,7 @@ import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/Style';
 
 const selector = "wpbs-layout-element";
 
-const classNames = (attributes = {}, styleData) => {
+const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-element": settings} = attributes;
 
     const {hasContainer = false} = styleData;
@@ -60,6 +60,8 @@ registerBlockType(metadata.name, {
                 [attributes?.["wpbs-layout-element"], setAttributes]
             );
 
+            const classNames = getClassNames(attributes, styleData);
+
             return (
                 <>
 
@@ -84,7 +86,7 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         hasContainer={!!settings?.container}
-                        className={classNames(attributes, styleData)}
+                        className={classNames}
                         id={attributes.uniqueId}
                     />
 
@@ -97,7 +99,7 @@ registerBlockType(metadata.name, {
         const {hasContainer} = styleData;
 
         const blockProps = styleBlockProps({
-            className: classNames(attributes, styleData),
+            className: getClassNames(attributes, styleData),
         });
 
         const innerBlocksProps = hasContainer

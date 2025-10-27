@@ -846,7 +846,7 @@ const StyleEditorUI = ({props, styleRef}) => {
 
     useEffect(() => {
         getStyleString(props, styleRef);
-    }, [localLayout]);
+    }, [attributes['wpbs-css']]);
 
     // Commit local state → clean + save to attributes
     const commit = useCallback(

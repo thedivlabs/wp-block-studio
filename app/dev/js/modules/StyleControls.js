@@ -747,13 +747,13 @@ const openStyleEditor = (mountNode, props, styleRef) => {
 
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
-    // Reuse an existing root if possible
-    if (!window.WPBS_StyleControls?.activeRoot) {
-        window.WPBS_StyleControls.activeRoot = createRoot(mountNode);
+    if (window.WPBS_StyleControls.activeRoot) {
+        window.WPBS_StyleControls.activeRoot.unmount();
     }
 
-    window.WPBS_StyleControls.activeRoot.render(<StyleEditorUI props={props} styleRef={styleRef}/>);
-    ;
+    window.WPBS_StyleControls.activeRoot = createRoot(mountNode);
+    window.WPBS_StyleControls.activeRoot.render(<StyleEditorUI props={props} styleRef={styleRef} uniqueId={uniqueId}/>);
+
 };
 
 function saveStyle(newStyle = {}, props, styleRef) {

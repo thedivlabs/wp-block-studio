@@ -743,7 +743,7 @@ const openStyleEditor = (mountNode, props, styleRef) => {
 
     const {attributes} = props;
 
-    const {uniqueId, 'wpbs-css': cssObj} = attributes;
+    const {'wpbs-css': cssObj} = attributes;
 
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
@@ -752,9 +752,8 @@ const openStyleEditor = (mountNode, props, styleRef) => {
         window.WPBS_StyleControls.activeRoot = createRoot(mountNode);
     }
 
-    window.WPBS_StyleControls.activeRoot.render(
-        wp.element.createElement(StyleEditorUI, {props, styleRef})
-    );
+    window.WPBS_StyleControls.activeRoot.render(<StyleEditorUI props={props} styleRef={styleRef}/>);
+    ;
 };
 
 function saveStyle(newStyle = {}, props, styleRef) {
@@ -787,13 +786,10 @@ function saveStyle(newStyle = {}, props, styleRef) {
         'wpbs-style': cleanedStyle,
         'wpbs-css': cleanObject(cssObj),
     });
-
-    updateStyleString(props, cssObj, styleRef);
 }
 
-function updateStyleString(props, cssObj, styleRef) {
+function updateStyleString(props, cssObj, styleRef, uniqueId) {
     const {attributes, name} = props;
-    const {uniqueId} = attributes;
 
     if (styleRef?.current && uniqueId) {
         const blockClass = name ? `.${name.replace('/', '-')}` : '';
@@ -843,10 +839,6 @@ const StyleEditorUI = ({props, styleRef}) => {
     useEffect(() => {
         setLocalLayout(initialLayout);
     }, [initialLayout]);
-
-    useEffect(() => {
-        updateStyleString(props, attributes?.['wpbs-css'], styleRef);
-    }, [attributes?.['wpbs-css']]);
 
     // Commit local state → clean + save to attributes
     const commit = useCallback(
@@ -1066,6 +1058,7 @@ const StyleEditorUI = ({props, styleRef}) => {
 export default class WPBS_StyleControls {
     constructor() {
         this.openStyleEditor = openStyleEditor;
+        this.updateStyleString = updateStyleString;
 
         if (window.WPBS_StyleControls) {
             console.warn('WPBS.StyleControls already defined, skipping reinit.');

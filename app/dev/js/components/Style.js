@@ -88,7 +88,7 @@ const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
     };
 };
 
-const StylePanel = ({props, styleRef}) => {
+const StylePanel = ({props, styleRef, uniqueId}) => {
     const {clientId} = props;
     const mountRef = useRef(null);
     const {openStyleEditor} = window?.WPBS_StyleControls ?? {};
@@ -96,9 +96,9 @@ const StylePanel = ({props, styleRef}) => {
 
     useEffect(() => {
         if (isOpen && mountRef.current && openStyleEditor) {
-            openStyleEditor(mountRef.current, props, styleRef);
+            openStyleEditor(mountRef.current, props, styleRef, uniqueId);
         }
-    }, [isOpen, openStyleEditor, props, styleRef]);
+    }, [isOpen, openStyleEditor, props, styleRef, uniqueId]);
 
     return (
         <PanelBody
@@ -201,6 +201,25 @@ export const withStyle = (EditComponent) => {
             [clientId, uniqueId, attributes]
         );
 
+        const guardFailed =
+            !window?.WPBS_StyleControls ||
+            typeof window.WPBS_StyleControls.updateStyleString !== 'function' ||
+            typeof window.WPBS_StyleControls.openStyleEditor !== 'function' ||
+            !uniqueId;
+
+        if (guardFailed) {
+            console.warn(
+                `[WPBS] Block "${name}" disabled: missing style environment.`,
+                {uniqueId, hasStyleControls: !!window?.WPBS_StyleControls}
+            );
+
+            // Option 1: Return null (block visually disappears)
+            return null;
+
+            // Option 2 (optional): Return placeholder
+            // return <div className="wpbs-block-error">WPBS Style system unavailable.</div>;
+        }
+
         useEffect(() => {
             const {uniqueId: currentId} = attributes;
             if (!currentId) return;
@@ -217,13 +236,17 @@ export const withStyle = (EditComponent) => {
             }
         }, []); // once on mount
 
+        useEffect(() => {
+            window.WPBS_StyleControls.updateStyleString(props, attributes?.['wpbs-css'], styleRef, uniqueId);
+        }, [attributes?.['wpbs-css'], uniqueId]);
+
         return (
             <>
                 <EditComponent BlockWrapper={BoundBlockWrapper} {...getComponentProps(props)} />
 
 
                 <InspectorControls group="styles">
-                    <StylePanel props={props} styleRef={styleRef}/>
+                    <StylePanel props={props} styleRef={styleRef} uniqueId={uniqueId}/>
                 </InspectorControls>
 
                 <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

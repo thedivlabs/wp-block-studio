@@ -752,7 +752,7 @@ const openStyleEditor = (mountNode, props, styleRef) => {
     }
 
     window.WPBS_StyleControls.activeRoot = createRoot(mountNode);
-    window.WPBS_StyleControls.activeRoot.render(<StyleEditorUI props={props} styleRef={styleRef} uniqueId={uniqueId}/>);
+    window.WPBS_StyleControls.activeRoot.render(<StyleEditorUI props={props} styleRef={styleRef}/>);
 
 };
 

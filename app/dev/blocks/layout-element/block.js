@@ -18,14 +18,11 @@ const selector = "wpbs-layout-element";
 const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-element": settings} = attributes;
 
-    const {hasContainer = false} = styleData;
-
     return [
         selector,
         "w-full",
         "block",
         "relative",
-        hasContainer ? "wpbs-has-container" : null,
     ]
         .filter(Boolean)
         .join(' ');
@@ -45,20 +42,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, setAttributes, BlockWrapper, styleData} = props;
-
-            const {"wpbs-layout-element": settings = {}} = attributes;
-
-            const updateSettings = useCallback(
-                (newValue) => {
-                    const result = {
-                        ...(attributes?.["wpbs-layout-element"] ?? {}),
-                        ...newValue,
-                    };
-                    setAttributes({"wpbs-layout-element": result});
-                },
-                [attributes?.["wpbs-layout-element"], setAttributes]
-            );
+            const {attributes, BlockWrapper, styleData} = props;
 
             const classNames = getClassNames(attributes, styleData);
 
@@ -68,7 +52,6 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
-                        id={attributes.uniqueId}
                     />
 
                 </>
@@ -77,14 +60,12 @@ registerBlockType(metadata.name, {
 
     save: withStyleSave((props) => {
         const {attributes, BlockWrapper, styleData} = props;
-        const {"wpbs-layout-element": settings = {}} = attributes;
         const classNames = getClassNames(attributes, styleData);
 
         return (
             <BlockWrapper
                 props={props}
                 className={classNames}
-                id={attributes.uniqueId}
             />
         );
     }),

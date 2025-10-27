@@ -1,4 +1,5 @@
 import _ from "lodash";
+import {useCallback} from "@wordpress/element";
 
 export function cleanObject(obj) {
     return _.transform(obj, (result, value, key) => {
@@ -70,4 +71,23 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
     }
 
     return raw;
+}
+
+export function updateSettings(newValue = {}, attributes, setAttributes) {
+    if (!newValue || typeof newValue !== 'object') return;
+
+    const updates = {};
+
+    for (const [attrName, val] of Object.entries(newValue)) {
+        const prev = attributes?.[attrName] ?? {};
+        const next = {...prev, ...val};
+
+        if (!_.isEqual(prev, next)) {
+            updates[attrName] = next;
+        }
+    }
+
+    if (Object.keys(updates).length > 0) {
+        setAttributes(updates);
+    }
 }

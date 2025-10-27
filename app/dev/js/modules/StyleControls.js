@@ -18,7 +18,7 @@ import {
     REVEAL_EASING_OPTIONS, SHAPE_OPTIONS, TEXT_ALIGN_OPTIONS, WIDTH_OPTIONS, WRAP_OPTIONS
 } from "Includes/config";
 
-import {propsToCss, getCSSFromStyle} from 'Includes/helper';
+import {propsToCss, getCSSFromStyle, cleanObject, updateSettings} from 'Includes/helper';
 
 const SPECIAL_FIELDS = [
     'gap',
@@ -314,18 +314,14 @@ const DynamicFieldPopover = ({
 };
 
 
-function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
-
-    const [activePopover, setActivePopover] = useState(null);
-    const togglePopover = (key) => setActivePopover(activePopover === key ? null : key);
-    const closePopover = () => setActivePopover(null);
+function Layout({attributes = {}, setAttributes = {}}) {
 
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
         return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
     }, []); // empty deps if breakpoints config is static
 
-    const layoutAttrs = useMemo(() => layoutSettings, [layoutSettings]) || {};
+    const {'wpbs-style': layoutAttrs} = attributes;
 
     const layoutObj = useMemo(() => ({
         props: layoutAttrs.props || {},
@@ -334,12 +330,8 @@ function Layout({attributes = {}, layoutSettings = {}, setLayoutSettings}) {
     }), [layoutAttrs]);
 
     const setLayoutObj = useCallback(
-        (newLayoutObj) => {
-
-            setLayoutSettings(newLayoutObj);
-
-        },
-        [attributes, setLayoutSettings]
+        (newLayoutObj) => updateSettings(newLayoutObj, attributes, setAttributes),
+        [attributes, setAttributes]
     );
 
     const updateLayoutItem = useCallback(
@@ -1001,24 +993,15 @@ const openStyleEditor = ({
     document.addEventListener('keydown', escListener);
 };
 
-const StyleEditorUI = ({clientId, attributes, onChange}) => {
-    const [local, setLocal] = wp.element.useState(attributes['wpbs-style'] || {});
-
-    // Whenever local layout changes, notify parent
-    wp.element.useEffect(() => {
-        if (typeof onChange === 'function') {
-            onChange(local);
-        }
-    }, [local]);
-
+const StyleEditorUI = ({clientId, attributes, setAttributes}) => {
     return (
         <Layout
             attributes={attributes}
-            layoutSettings={local}
-            setLayoutSettings={setLocal}
+            setAttributes={setAttributes}
         />
     );
 };
+
 
 const parseBlockStyles = ({uniqueId, props, styleRef}) => {
     if (!styleRef?.current || !uniqueId) return;
@@ -1092,7 +1075,6 @@ const parseBlockStyles = ({uniqueId, props, styleRef}) => {
 export default class WPBS_StyleControls {
     constructor() {
         this.openStyleEditor = openStyleEditor;
-        this.parseBlockStyles = parseBlockStyles;
 
         if (window.WPBS_StyleControls) {
             console.warn('WPBS.StyleControls already defined, skipping reinit.');

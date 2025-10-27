@@ -88,18 +88,14 @@ const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
     };
 };
 
-const StylePanel = ({attributes, setAttributes, clientId}) => {
+const StylePanel = ({props, styleRef}) => {
+    const {clientId, attributes, setAttributes} = props;
     const mountRef = useRef(null);
     const {openStyleEditor} = window?.WPBS_StyleControls ?? {};
 
     useEffect(() => {
         if (mountRef.current && openStyleEditor) {
-            openStyleEditor({
-                mountNode: mountRef.current,
-                clientId,
-                attributes,
-                setAttributes
-            });
+            openStyleEditor(mountRef.current, props, styleRef);
         }
     }, [openStyleEditor, clientId, attributes, setAttributes]);
 
@@ -225,11 +221,7 @@ export const withStyle = (EditComponent) => {
 
 
                 <InspectorControls group="styles">
-                    <StylePanel
-                        clientId={clientId}
-                        attributes={attributes}
-                        setAttributes={setAttributes}
-                    />
+                    <StylePanel props={props}/>
                 </InspectorControls>
 
                 <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

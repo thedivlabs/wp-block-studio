@@ -312,8 +312,11 @@ const DynamicFieldPopover = ({
     );
 };
 
-function saveStyle(newStyle = {}, attributes, setAttributes) {
+function saveStyle(newStyle = {}, props, styleRef) {
+    const {attributes, name, setAttributes} = props;
+    const uniqueId = attributes.uniqueId;
     const prev = attributes['wpbs-style'] || {};
+
     if (_.isEqual(prev, newStyle)) return;
 
     // Normalize into CSS object
@@ -324,20 +327,47 @@ function saveStyle(newStyle = {}, attributes, setAttributes) {
     };
 
     if (newStyle.breakpoints) {
-        Object.entries(newStyle.breakpoints).forEach(([bpKey, bpProps]) => {
+        for (const [bpKey, bpProps] of Object.entries(newStyle.breakpoints)) {
             cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
-        });
+        }
     }
 
     if (newStyle.hover) {
         cssObj.hover = parseSpecialProps(newStyle.hover);
     }
 
+    // Save attributes
     setAttributes({
         'wpbs-style': newStyle,
         'wpbs-css': cssObj,
     });
+
+    // Live CSS injection
+    if (styleRef?.current && uniqueId) {
+        const blockClass = name ? `.${name.replace('/', '-')}` : '';
+        const selector = `${blockClass}.${uniqueId}`.trim();
+
+        let cssString = '';
+
+        if (!_.isEmpty(cssObj.props)) {
+            cssString += `${selector} { ${propsToCss(cssObj.props)} }`;
+        }
+
+        for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints)) {
+            const bp = WPBS?.settings?.breakpoints?.[bpKey];
+            if (bp && !_.isEmpty(bpProps)) {
+                cssString += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
+            }
+        }
+
+        if (!_.isEmpty(cssObj.hover)) {
+            cssString += `${selector}:hover { ${propsToCss(cssObj.hover)} }`;
+        }
+
+        styleRef.current.textContent = cssString.trim();
+    }
 }
+
 
 const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, large = false, ...controlProps} = field;
@@ -745,12 +775,10 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-const openStyleEditor = ({
-                             mountNode,
-                             clientId,
-                             attributes,
-                             onChange, // <— NEW: callback to withStyle
-                         }) => {
+const openStyleEditor = (mountNode, props, styleRef) => {
+
+    const {clientId, attributes, setAttributes} = props;
+
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     if (window.WPBS_StyleControls?.activeRoot) {
@@ -772,9 +800,8 @@ const openStyleEditor = ({
 
     root.render(
         wp.element.createElement(StyleEditorUI, {
-            clientId,
-            attributes,
-            onChange,   // <— pass through
+            props,
+            styleRef,
             onClose: close,
         })
     );
@@ -791,7 +818,8 @@ const openStyleEditor = ({
     document.addEventListener('keydown', escListener);
 };
 
-const StyleEditorUI = ({clientId, attributes, setAttributes}) => {
+const StyleEditorUI = ({props, styleRef, onClose}) => {
+    const {clientId, attributes, setAttributes} = props;
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
         return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
@@ -806,8 +834,8 @@ const StyleEditorUI = ({clientId, attributes, setAttributes}) => {
     }), [layoutAttrs]);
 
     const save = useCallback(
-        (newLayoutObj) => saveStyle(newLayoutObj, attributes, setAttributes),
-        [attributes, setAttributes]
+        (newLayoutObj) => saveStyle(newLayoutObj, props, styleRef),
+        [attributes, setAttributes, styleRef]
     );
 
     const updateDefaultLayout = useCallback(
@@ -1013,76 +1041,6 @@ const StyleEditorUI = ({clientId, attributes, setAttributes}) => {
     );
 
 };
-
-
-const parseBlockStyles = ({uniqueId, props, styleRef}) => {
-    if (!styleRef?.current || !uniqueId) return;
-
-    const {attributes, name} = props;
-    const {'wpbs-style': settings = {}} = attributes;
-    const {'wpbs-css': parsedCss = {}} = attributes;
-
-    // Normalize block name for CSS selectors
-    const blockClass = name ? `.${name.replace('/', '-')}` : '';
-    const idClass = attributes.uniqueId || uniqueId;
-    const selector = `${blockClass}.${idClass}`.trim();
-
-
-    const cssObj = {
-        props: {},
-        breakpoints: {},
-        hover: {},
-    };
-
-    // Default props
-    if (settings.props) {
-        cssObj.props = parseSpecialProps(settings.props);
-    }
-
-    // Breakpoints
-    if (settings.breakpoints) {
-        Object.entries(settings.breakpoints).forEach(([bpKey, bpProps]) => {
-            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
-        });
-    }
-
-    // Hover
-    if (settings.hover) {
-        cssObj.hover = parseSpecialProps(settings.hover);
-    }
-
-    const cssString = useMemo(() => {
-
-
-        let result = '';
-
-        // 1. Default
-        if (!_.isEmpty(parsedCss.props)) {
-            result += `${selector} { ${propsToCss(parsedCss.props)} }`;
-        }
-
-        // 2. Breakpoints
-        if (parsedCss.breakpoints) {
-            Object.entries(parsedCss.breakpoints).forEach(([bpKey, bpProps]) => {
-                const bp = WPBS?.settings?.breakpoints?.[bpKey];
-                if (!bp || _.isEmpty(bpProps)) return;
-
-                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
-            });
-        }
-
-        // 3. Hover
-        if (!_.isEmpty(parsedCss.hover)) {
-            result += `${selector}:hover { ${propsToCss(parsedCss.hover)} }`;
-        }
-
-        return result;
-    }, [settings]);
-
-
-    styleRef.current.textContent = cssString.trim();
-};
-
 
 export default class WPBS_StyleControls {
     constructor() {

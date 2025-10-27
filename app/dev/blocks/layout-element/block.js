@@ -45,7 +45,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, setAttributes, BlockWrapper, styleData, isSelected} = props;
+            const {attributes, setAttributes, BlockWrapper, styleData} = props;
 
             const {"wpbs-layout-element": settings = {}} = attributes;
 

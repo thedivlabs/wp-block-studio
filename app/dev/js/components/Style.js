@@ -1,10 +1,9 @@
-import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
+import {useState, useEffect, useRef, Fragment, useCallback} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
 import _ from 'lodash';
 import {useInstanceId} from "@wordpress/compose";
-import {useSelect} from "@wordpress/data";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -22,6 +21,7 @@ export const STYLE_ATTRIBUTES = {
         default: {},
     }
 }
+import {cleanObject} from 'Includes/helper';
 
 const useUniqueId = ({name, attributes}) => {
 
@@ -29,19 +29,6 @@ const useUniqueId = ({name, attributes}) => {
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     //return uniqueId || instanceId;
     return useInstanceId(useUniqueId, prefix);
-}
-
-function cleanObject(obj) {
-    return _.transform(obj, (result, value, key) => {
-        if (_.isPlainObject(value)) {
-            const cleaned = cleanObject(value);
-            if (!_.isEmpty(cleaned)) {
-                result[key] = cleaned;
-            }
-        } else if (!_.isNil(value) && value !== '') {
-            result[key] = value;
-        }
-    }, {});
 }
 
 const getComponentProps = (props) => {
@@ -57,36 +44,41 @@ const getComponentProps = (props) => {
         background,
     }).filter(Boolean));
 
-
     return {
         ...props,
         styleData: data,
     }
 }
 
-const getClassNames = (props, userProps, uniqueId) => {
+const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
+    const {attributes = {}, name} = props;
+    const {className: userClass, ...restUserProps} = userProps;
+    const {'wpbs-style': settings = {}} = attributes;
+    const {layout = {}, background = {}, hover = {}} = settings;
 
-    const {attributes} = props;
-    const {'wpbs-style': settings = {}} = attributes ?? {};
-    const {layout, background, hover} = settings;
-
-    return [
-        props?.name ? props.name.replace('/', '-') : null,
-        uniqueId || (attributes?.uniqueId ?? null), // Save function does not pass uniqueId
-        userProps.className,
-        layout?.['offset-height'] ? '--offset-height' : null,
-        layout?.['hide-empty'] ? '--hide-empty' : null,
-        layout?.['box-shadow'] ? '--shadow' : null,
-        layout?.['required'] ? '--required' : null,
-        layout?.['offset-header'] ? '--offset-header' : null,
-        layout?.['container'] ? '--container' : null,
-        layout?.['reveal'] ? '--reveal' : null,
-        layout?.['transition'] ? '--transition' : null,
-        layout?.['content-visibility'] ? '--content-visibility' : null,
-        layout?.['mask-image'] ? '--mask' : null,
+    // Construct class list
+    const classList = [
+        name ? name.replace('/', '-') : null,
+        uniqueId || attributes?.uniqueId || null,
+        userClass,
+        layout['offset-height'] && '--offset-height',
+        layout['hide-empty'] && '--hide-empty',
+        layout['box-shadow'] && '--shadow',
+        layout['required'] && '--required',
+        layout['offset-header'] && '--offset-header',
+        layout['container'] && '--container',
+        layout['reveal'] && '--reveal',
+        layout['transition'] && '--transition',
+        layout['content-visibility'] && '--content-visibility',
+        layout['mask-image'] && '--mask',
     ].filter(Boolean).join(' ');
 
-}
+    // Return an extendable HTML prop object
+    return {
+        className: classList,
+        ...restUserProps,
+    };
+};
 
 const StylePanel = ({attributes, setAttributes, clientId}) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -104,8 +96,11 @@ const StylePanel = ({attributes, setAttributes, clientId}) => {
                 mountNode: mountRef.current,
                 clientId,
                 attributes,
-                setAttributes,
+                onChange: (newStyle) => {
+                    setAttributes({'wpbs-style': newStyle});
+                },
             });
+
         }
     }, [isOpen, attributes, setAttributes, clientId]);
 
@@ -152,17 +147,17 @@ export const BlockWrapper = ({
     const blockProps = isSave
         ? useBlockProps.save({
             ...userProps,
-            className: getClassNames(props, userProps, uniqueId),
+            ...getBlockProps(props, userProps, uniqueId),
         })
         : useBlockProps({
             ...userProps,
-            className: getClassNames(props, userProps, uniqueId),
+            ...getBlockProps(props, userProps, uniqueId),
         });
 
     // Editor uses hooks; save uses static <InnerBlocks.Content />
     if (isSave) {
         return (
-            <Tag {...blockProps} className={[blockProps.className, className].filter(Boolean).join(' ')}>
+            <Tag {...blockProps} >
                 {hasContainer ? (
                     <div className={containerClass}>
                         <InnerBlocks.Content/>
@@ -183,7 +178,7 @@ export const BlockWrapper = ({
         : useInnerBlocksProps(blockProps, {});
 
     return (
-        <Tag {...blockProps} className={[blockProps.className, className].filter(Boolean).join(' ')}>
+        <Tag {...blockProps} >
             {hasContainer || hasBackground ? <div {...innerBlocksProps} /> : innerBlocksProps.children}
             {hasBackground && <Background/>}
             {children}

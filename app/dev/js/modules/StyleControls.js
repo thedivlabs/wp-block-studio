@@ -3,7 +3,6 @@ import {
     __experimentalBoxControl as BoxControl,
     Button,
     GradientPicker,
-    PanelBody,
     Popover
 } from '@wordpress/components';
 import _ from "lodash";
@@ -19,7 +18,7 @@ import {
     REVEAL_EASING_OPTIONS, SHAPE_OPTIONS, TEXT_ALIGN_OPTIONS, WIDTH_OPTIONS, WRAP_OPTIONS
 } from "Includes/config";
 
-import {cleanObject, propsToCss, getCSSFromStyle} from 'Includes/helper';
+import {propsToCss, getCSSFromStyle} from 'Includes/helper';
 
 const SPECIAL_FIELDS = [
     'gap',
@@ -247,47 +246,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
     return result;
 }
-
-export const Style = ({attributes, name, uniqueId}) => {
-
-    if (!uniqueId) return null;
-
-    const cssString = useMemo(() => {
-        if (!attributes['wpbs-css']?.props && !attributes['wpbs-css']?.breakpoints) return '';
-
-        const selector = `.wp-block-${name.replace('/', '-')}` + `.${uniqueId}`;
-
-        const {'wpbs-css': parsedCss = {}} = attributes;
-
-        let result = '';
-
-        // 1. Default
-        if (!_.isEmpty(parsedCss.props)) {
-            result += `${selector} { ${propsToCss(parsedCss.props)} }`;
-        }
-
-        // 2. Breakpoints
-        if (parsedCss.breakpoints) {
-            Object.entries(parsedCss.breakpoints).forEach(([bpKey, bpProps]) => {
-                const bp = WPBS?.settings?.breakpoints?.[bpKey];
-                if (!bp || _.isEmpty(bpProps)) return;
-
-                result += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
-            });
-        }
-
-        // 3. Hover
-        if (!_.isEmpty(parsedCss.hover)) {
-            result += `${selector}:hover { ${propsToCss(parsedCss.hover)} }`;
-        }
-
-        return result;
-    }, [attributes['wpbs-css'], name, uniqueId]);
-
-    if (!cssString) return null;
-
-    return [cssString, cssBackgroundString].join(' ').trim();
-};
 
 const DynamicFieldPopover = ({
                                  title = 'Add',
@@ -1001,11 +959,10 @@ const openStyleEditor = ({
                              mountNode,
                              clientId,
                              attributes,
-                             setAttributes,
+                             onChange, // <— NEW: callback to withStyle
                          }) => {
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
-    // Close any existing editor
     if (window.WPBS_StyleControls?.activeRoot) {
         window.WPBS_StyleControls.activeRoot.unmount();
         window.WPBS_StyleControls.activeRoot = null;
@@ -1027,7 +984,7 @@ const openStyleEditor = ({
         wp.element.createElement(StyleEditorUI, {
             clientId,
             attributes,
-            setAttributes,
+            onChange,   // <— pass through
             onClose: close,
         })
     );
@@ -1044,15 +1001,22 @@ const openStyleEditor = ({
     document.addEventListener('keydown', escListener);
 };
 
-const StyleEditorUI = ({clientId, attributes, setAttributes, onClose}) => {
+const StyleEditorUI = ({clientId, attributes, onChange}) => {
     const [local, setLocal] = wp.element.useState(attributes['wpbs-style'] || {});
 
+    // Whenever local layout changes, notify parent
     wp.element.useEffect(() => {
-        setLocal(attributes['wpbs-style'] || {});
-    }, [attributes['wpbs-style'], clientId]);
+        if (typeof onChange === 'function') {
+            onChange(local);
+        }
+    }, [local]);
 
     return (
-        <Layout attributes={attributes} layoutSettings={local} setLayoutSettings={setLocal}/>
+        <Layout
+            attributes={attributes}
+            layoutSettings={local}
+            setLayoutSettings={setLocal}
+        />
     );
 };
 
@@ -1147,3 +1111,6 @@ export default class WPBS_StyleControls {
         return window.WPBS_StyleControls;
     }
 }
+
+
+

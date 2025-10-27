@@ -332,39 +332,6 @@ const DynamicFieldPopover = ({
     );
 };
 
-function saveStyle(newStyle = {}, props, styleRef) {
-    const {attributes, name, setAttributes} = props;
-    const prev = attributes['wpbs-style'] || {};
-
-    const cleanedStyle = cleanObject(newStyle);
-
-    if (_.isEqual(cleanObject(prev), cleanedStyle)) return;
-
-    // Normalize into CSS object
-    const cssObj = {
-        props: parseSpecialProps(cleanedStyle.props || {}),
-        breakpoints: {},
-        hover: {},
-    };
-
-    if (newStyle.breakpoints) {
-        for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
-            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
-        }
-    }
-
-    if (newStyle.hover) {
-        cssObj.hover = parseSpecialProps(cleanedStyle.hover);
-    }
-
-    // Save attributes
-    setAttributes({
-        'wpbs-style': cleanedStyle,
-        'wpbs-css': cleanObject(cssObj),
-    });
-}
-
-
 const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, large = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
@@ -790,10 +757,43 @@ const openStyleEditor = (mountNode, props, styleRef) => {
     );
 };
 
-function getStyleString(props, styleRef) {
+function saveStyle(newStyle = {}, props, styleRef) {
+    const {attributes, name, setAttributes} = props;
+    const prev = attributes['wpbs-style'] || {};
 
+    const cleanedStyle = cleanObject(newStyle);
+
+    if (_.isEqual(cleanObject(prev), cleanedStyle)) return;
+
+    // Normalize into CSS object
+    const cssObj = {
+        props: parseSpecialProps(cleanedStyle.props || {}),
+        breakpoints: {},
+        hover: {},
+    };
+
+    if (newStyle.breakpoints) {
+        for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
+            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+        }
+    }
+
+    if (newStyle.hover) {
+        cssObj.hover = parseSpecialProps(cleanedStyle.hover);
+    }
+
+    // Save attributes
+    setAttributes({
+        'wpbs-style': cleanedStyle,
+        'wpbs-css': cleanObject(cssObj),
+    });
+
+    updateStyleString(props, cssObj, styleRef);
+}
+
+function updateStyleString(props, cssObj, styleRef) {
     const {attributes, name} = props;
-    const {uniqueId, 'wpbs-css': cssObj} = attributes;
+    const {uniqueId} = attributes;
 
     if (styleRef?.current && uniqueId) {
         const blockClass = name ? `.${name.replace('/', '-')}` : '';
@@ -845,8 +845,8 @@ const StyleEditorUI = ({props, styleRef}) => {
     }, [initialLayout]);
 
     useEffect(() => {
-        getStyleString(props, styleRef);
-    }, [attributes['wpbs-css']]);
+        updateStyleString(props, attributes?.['wpbs-css'], styleRef);
+    }, [attributes?.['wpbs-css']]);
 
     // Commit local state → clean + save to attributes
     const commit = useCallback(

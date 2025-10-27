@@ -334,7 +334,6 @@ const DynamicFieldPopover = ({
 
 function saveStyle(newStyle = {}, props, styleRef) {
     const {attributes, name, setAttributes} = props;
-    const uniqueId = attributes.uniqueId;
     const prev = attributes['wpbs-style'] || {};
 
     const cleanedStyle = cleanObject(newStyle);
@@ -363,31 +362,6 @@ function saveStyle(newStyle = {}, props, styleRef) {
         'wpbs-style': cleanedStyle,
         'wpbs-css': cleanObject(cssObj),
     });
-
-    // Live CSS injection
-    if (styleRef?.current && uniqueId) {
-        const blockClass = name ? `.${name.replace('/', '-')}` : '';
-        const selector = `${blockClass}.${uniqueId}`.trim();
-
-        let cssString = '';
-
-        if (!_.isEmpty(cssObj.props)) {
-            cssString += `${selector} { ${propsToCss(cssObj.props)} }`;
-        }
-
-        for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints)) {
-            const bp = WPBS?.settings?.breakpoints?.[bpKey];
-            if (bp && !_.isEmpty(bpProps)) {
-                cssString += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
-            }
-        }
-
-        if (!_.isEmpty(cssObj.hover)) {
-            cssString += `${selector}:hover { ${propsToCss(cssObj.hover)} }`;
-        }
-
-        styleRef.current.textContent = cssString.trim();
-    }
 }
 
 
@@ -799,6 +773,11 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 });
 
 const openStyleEditor = (mountNode, props, styleRef) => {
+
+    const {attributes} = props;
+
+    const {uniqueId, 'wpbs-css': cssObj} = attributes;
+
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Reuse an existing root if possible
@@ -811,9 +790,39 @@ const openStyleEditor = (mountNode, props, styleRef) => {
     );
 };
 
+function getStyleString(props, styleRef) {
+
+    const {attributes, name} = props;
+    const {uniqueId, 'wpbs-css': cssObj} = attributes;
+
+    if (styleRef?.current && uniqueId) {
+        const blockClass = name ? `.${name.replace('/', '-')}` : '';
+        const selector = `${blockClass}.${uniqueId}`.trim();
+
+        let cssString = '';
+
+        if (!_.isEmpty(cssObj.props)) {
+            cssString += `${selector} { ${propsToCss(cssObj.props)} }`;
+        }
+
+        for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints)) {
+            const bp = WPBS?.settings?.breakpoints?.[bpKey];
+            if (bp && !_.isEmpty(bpProps)) {
+                cssString += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
+            }
+        }
+
+        if (!_.isEmpty(cssObj.hover)) {
+            cssString += `${selector}:hover { ${propsToCss(cssObj.hover)} }`;
+        }
+
+        styleRef.current.textContent = cssString.trim();
+    }
+}
 
 const StyleEditorUI = ({props, styleRef}) => {
-    const {attributes, setAttributes} = props;
+
+    const {attributes} = props;
 
     // Breakpoints config
     const breakpoints = useMemo(() => {
@@ -834,6 +843,10 @@ const StyleEditorUI = ({props, styleRef}) => {
     useEffect(() => {
         setLocalLayout(initialLayout);
     }, [initialLayout]);
+
+    useEffect(() => {
+        getStyleString(props, styleRef);
+    }, [localLayout]);
 
     // Commit local state → clean + save to attributes
     const commit = useCallback(

@@ -213,11 +213,8 @@ export const withStyle = (EditComponent) => {
                 {uniqueId, hasStyleControls: !!window?.WPBS_StyleControls}
             );
 
-            // Option 1: Return null (block visually disappears)
             return null;
-
-            // Option 2 (optional): Return placeholder
-            // return <div className="wpbs-block-error">WPBS Style system unavailable.</div>;
+            
         }
 
         useEffect(() => {

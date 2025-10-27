@@ -89,31 +89,23 @@ const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
 };
 
 const StylePanel = ({props, styleRef}) => {
-    const {clientId, attributes, setAttributes} = props;
+    const {clientId} = props;
     const mountRef = useRef(null);
     const {openStyleEditor} = window?.WPBS_StyleControls ?? {};
     const [isOpen, setIsOpen] = useState(false);
 
-
     useEffect(() => {
-        console.log(styleRef);
-        console.log(mountRef);
-        if (mountRef.current && openStyleEditor) {
+        if (isOpen && mountRef.current && openStyleEditor) {
             openStyleEditor(mountRef.current, props, styleRef);
         }
-    }, []);
+    }, [isOpen, openStyleEditor, props, styleRef]);
 
     return (
         <PanelBody
             title="Layout"
             initialOpen={false}
             className="wpbs-layout-tools"
-            onToggle={(open) => {
-                setIsOpen(open);
-                if (open && mountRef.current && openStyleEditor) {
-                    openStyleEditor(mountRef.current, props, styleRef);
-                }
-            }}
+            onToggle={setIsOpen}
         >
             <div
                 ref={mountRef}

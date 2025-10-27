@@ -791,8 +791,7 @@ const openStyleEditor = (mountNode, props, styleRef) => {
     root.render(
         wp.element.createElement(StyleEditorUI, {
             props,
-            styleRef,
-            onClose: close,
+            styleRef
         })
     );
 

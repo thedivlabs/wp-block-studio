@@ -92,18 +92,28 @@ const StylePanel = ({props, styleRef}) => {
     const {clientId, attributes, setAttributes} = props;
     const mountRef = useRef(null);
     const {openStyleEditor} = window?.WPBS_StyleControls ?? {};
+    const [isOpen, setIsOpen] = useState(false);
+
 
     useEffect(() => {
+        console.log(styleRef);
+        console.log(mountRef);
         if (mountRef.current && openStyleEditor) {
             openStyleEditor(mountRef.current, props, styleRef);
         }
-    }, [openStyleEditor, clientId, attributes, setAttributes]);
+    }, []);
 
     return (
         <PanelBody
             title="Layout"
             initialOpen={false}
             className="wpbs-layout-tools"
+            onToggle={(open) => {
+                setIsOpen(open);
+                if (open && mountRef.current && openStyleEditor) {
+                    openStyleEditor(mountRef.current, props, styleRef);
+                }
+            }}
         >
             <div
                 ref={mountRef}
@@ -221,7 +231,7 @@ export const withStyle = (EditComponent) => {
 
 
                 <InspectorControls group="styles">
-                    <StylePanel props={props}/>
+                    <StylePanel props={props} styleRef={styleRef}/>
                 </InspectorControls>
 
                 <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

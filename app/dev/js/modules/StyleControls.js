@@ -788,16 +788,6 @@ const openStyleEditor = (mountNode, props, styleRef) => {
 
     const root = createRoot(mountNode);
 
-    const close = () => {
-        if (window.WPBS_StyleControls.activeRoot) {
-            root.unmount();
-            window.WPBS_StyleControls.activeRoot = null;
-        }
-        mountNode.innerHTML = '';
-        unsubscribeSelection();
-        document.removeEventListener('keydown', escListener);
-    };
-
     root.render(
         wp.element.createElement(StyleEditorUI, {
             props,
@@ -807,18 +797,9 @@ const openStyleEditor = (mountNode, props, styleRef) => {
     );
 
     window.WPBS_StyleControls.activeRoot = root;
-
-    const unsubscribeSelection = wp.data.subscribe(() => {
-        const selectedId = wp.data.select('core/block-editor').getSelectedBlockClientId();
-        const block = wp.data.select('core/block-editor').getBlock(clientId);
-        if (selectedId !== clientId || !block) close();
-    });
-
-    const escListener = (e) => e.key === 'Escape' && close();
-    document.addEventListener('keydown', escListener);
 };
 
-const StyleEditorUI = ({props, styleRef, onClose}) => {
+const StyleEditorUI = ({props, styleRef}) => {
     const {clientId, attributes, setAttributes} = props;
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};

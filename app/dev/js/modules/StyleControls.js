@@ -313,6 +313,32 @@ const DynamicFieldPopover = ({
     );
 };
 
+function saveStyle(newStyle = {}, attributes, setAttributes) {
+    const prev = attributes['wpbs-style'] || {};
+    if (_.isEqual(prev, newStyle)) return;
+
+    // Normalize into CSS object
+    const cssObj = {
+        props: parseSpecialProps(newStyle.props || {}),
+        breakpoints: {},
+        hover: {},
+    };
+
+    if (newStyle.breakpoints) {
+        Object.entries(newStyle.breakpoints).forEach(([bpKey, bpProps]) => {
+            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+        });
+    }
+
+    if (newStyle.hover) {
+        cssObj.hover = parseSpecialProps(newStyle.hover);
+    }
+
+    setAttributes({
+        'wpbs-style': newStyle,
+        'wpbs-css': cssObj,
+    });
+}
 
 function Layout({attributes = {}, setAttributes = {}}) {
 
@@ -329,9 +355,29 @@ function Layout({attributes = {}, setAttributes = {}}) {
         hover: layoutAttrs.hover || {},
     }), [layoutAttrs]);
 
-    const setLayoutObj = useCallback(
-        (newLayoutObj) => updateSettings(newLayoutObj, attributes, setAttributes),
+    const save = useCallback(
+        (newLayoutObj) => saveStyle(newLayoutObj, attributes, setAttributes),
         [attributes, setAttributes]
+    );
+
+    const updateDefaultLayout = useCallback(
+        (newProps) => {
+            save({
+                ...layoutObj,
+                props: {...layoutObj.props, ...newProps},
+            });
+        },
+        [layoutObj, save]
+    );
+
+    const updateHoverItem = useCallback(
+        (newProps) => {
+            save({
+                ...layoutObj,
+                hover: {...layoutObj.hover, ...newProps},
+            });
+        },
+        [layoutObj, save]
     );
 
     const updateLayoutItem = useCallback(
@@ -343,33 +389,9 @@ function Layout({attributes = {}, setAttributes = {}}) {
                     ...newProps,
                 },
             };
-
-            setLayoutObj({
-                ...layoutObj,
-                breakpoints: updatedBreakpoints,
-            });
+            save({...layoutObj, breakpoints: updatedBreakpoints});
         },
-        [layoutObj, setLayoutObj]
-    );
-
-    const updateDefaultLayout = useCallback(
-        (newProps) => {
-            setLayoutObj({
-                ...layoutObj,
-                props: {...layoutObj.props, ...newProps}
-            });
-        },
-        [layoutObj, setLayoutObj]
-    );
-
-    const updateHoverItem = useCallback(
-        (newProps) => {
-            setLayoutObj({
-                ...layoutObj,
-                hover: {...layoutObj.hover, ...newProps},
-            });
-        },
-        [layoutObj, setLayoutObj]
+        [layoutObj, save]
     );
 
     const addLayoutItem = useCallback(() => {
@@ -382,25 +404,27 @@ function Layout({attributes = {}, setAttributes = {}}) {
         if (!availableBps.length) return;
 
         const newKey = availableBps[0];
-        setLayoutObj({
+        save({
             ...layoutObj,
             breakpoints: {
                 ...layoutObj.breakpoints,
                 [newKey]: {},
             },
         });
-    }, [layoutObj, breakpoints, setLayoutObj]);
+    }, [layoutObj, breakpoints, save]);
+
 
     const removeLayoutItem = useCallback(
         (bpKey) => {
             const {[bpKey]: removed, ...rest} = layoutObj.breakpoints;
-            setLayoutObj({
+            save({
                 ...layoutObj,
                 breakpoints: rest,
             });
         },
-        [layoutObj, setLayoutObj]
+        [layoutObj, save]
     );
+
 
     const layoutKeys = useMemo(() => {
         const keys = Object.keys(layoutObj.breakpoints || {});
@@ -414,9 +438,6 @@ function Layout({attributes = {}, setAttributes = {}}) {
             return sizeA - sizeB;
         });
     }, [layoutObj?.breakpoints, breakpoints]);
-
-    console.log(layoutKeys);
-
 
     return (
         <div className={'wpbs-layout-tools__container'}>
@@ -505,7 +526,10 @@ function Layout({attributes = {}, setAttributes = {}}) {
                                             const newBreakpoints = {...layoutObj.breakpoints};
                                             newBreakpoints[newBpKey] = newBreakpoints[bpKey];
                                             delete newBreakpoints[bpKey];
-                                            setLayoutObj({...layoutObj, breakpoints: newBreakpoints});
+                                            save({
+                                                ...layoutObj,
+                                                breakpoints: newBreakpoints,
+                                            });
                                         }}
                                     >
                                         {breakpoints.map((b) => (

@@ -1,4 +1,4 @@
-import {memo, createRoot, useState, useCallback, useMemo} from '@wordpress/element';
+import {memo, createRoot, useState, useCallback, useMemo, useEffect} from '@wordpress/element';
 import {
     __experimentalBoxControl as BoxControl,
     Button,
@@ -18,7 +18,27 @@ import {
     REVEAL_EASING_OPTIONS, SHAPE_OPTIONS, TEXT_ALIGN_OPTIONS, WIDTH_OPTIONS, WRAP_OPTIONS
 } from "Includes/config";
 
-import {propsToCss, getCSSFromStyle, cleanObject, updateSettings} from 'Includes/helper';
+import {getCSSFromStyle, cleanObject, updateSettings} from 'Includes/helper';
+
+function propsToCss(props = {}, important = false, importantKeysCustom = []) {
+    const importantProps = [
+        'padding', 'margin', 'gap',
+        'width', 'min-width', 'max-width', 'height', 'min-height', 'max-height',
+        'color', 'background-color', 'border-color',
+        'font-size', 'line-height', 'letter-spacing',
+        'border-width', 'border-radius',
+        'opacity', 'box-shadow', 'filter',
+        ...importantKeysCustom
+    ];
+
+    return Object.entries(props)
+        .filter(([_, v]) => v !== null && v !== '') // move filter before map
+        .map(([k, v]) => {
+            const needsImportant = important && importantProps.some(sub => k.includes(sub));
+            return `${k}: ${v}${needsImportant ? ' !important' : ''};`;
+        })
+        .join(' ');
+}
 
 const SPECIAL_FIELDS = [
     'gap',
@@ -317,29 +337,31 @@ function saveStyle(newStyle = {}, props, styleRef) {
     const uniqueId = attributes.uniqueId;
     const prev = attributes['wpbs-style'] || {};
 
-    if (_.isEqual(prev, newStyle)) return;
+    const cleanedStyle = cleanObject(newStyle);
+
+    if (_.isEqual(cleanObject(prev), cleanedStyle)) return;
 
     // Normalize into CSS object
     const cssObj = {
-        props: parseSpecialProps(newStyle.props || {}),
+        props: parseSpecialProps(cleanedStyle.props || {}),
         breakpoints: {},
         hover: {},
     };
 
     if (newStyle.breakpoints) {
-        for (const [bpKey, bpProps] of Object.entries(newStyle.breakpoints)) {
+        for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
             cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
         }
     }
 
     if (newStyle.hover) {
-        cssObj.hover = parseSpecialProps(newStyle.hover);
+        cssObj.hover = parseSpecialProps(cleanedStyle.hover);
     }
 
     // Save attributes
     setAttributes({
-        'wpbs-style': newStyle,
-        'wpbs-css': cssObj,
+        'wpbs-style': cleanedStyle,
+        'wpbs-css': cleanObject(cssObj),
     });
 
     // Live CSS injection
@@ -377,7 +399,7 @@ const Field = memo(({field, settings, callback}) => {
     const value = settings?.[slug];
     const inputId = `wpbs-${slug}`;
 
-    const change = (next) => callback({[slug]: next});
+    const change = (next) => callback(next);
     const onInput = (e) => change(e.target.value);
 
     let control = null;
@@ -756,7 +778,8 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
 
     return activeFields.map((field) => <Field field={field}
                                               settings={settings}
-                                              callback={(newValue) => updateProp({[field.slug]: newValue})}/>);
+                                              callback={(newValue) => updateProp({[field.slug]: newValue})}
+    />);
 });
 
 const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
@@ -776,84 +799,90 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 });
 
 const openStyleEditor = (mountNode, props, styleRef) => {
-
-    const {clientId, attributes, setAttributes} = props;
-
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
-    if (window.WPBS_StyleControls?.activeRoot) {
-        window.WPBS_StyleControls.activeRoot.unmount();
-        window.WPBS_StyleControls.activeRoot = null;
+    // Reuse an existing root if possible
+    if (!window.WPBS_StyleControls?.activeRoot) {
+        window.WPBS_StyleControls.activeRoot = createRoot(mountNode);
     }
 
-    const root = createRoot(mountNode);
-
-    root.render(
-        wp.element.createElement(StyleEditorUI, {
-            props,
-            styleRef
-        })
+    window.WPBS_StyleControls.activeRoot.render(
+        wp.element.createElement(StyleEditorUI, {props, styleRef})
     );
-
-    window.WPBS_StyleControls.activeRoot = root;
 };
 
+
 const StyleEditorUI = ({props, styleRef}) => {
-    const {clientId, attributes, setAttributes} = props;
+    const {attributes, setAttributes} = props;
+
+    // Breakpoints config
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
         return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
-    }, []); // empty deps if breakpoints config is static
+    }, []);
 
-    const {'wpbs-style': layoutAttrs} = attributes;
+    const initialLayout = attributes['wpbs-style'] || {
+        props: {},
+        breakpoints: {},
+        hover: {},
+    };
 
-    const layoutObj = useMemo(() => ({
-        props: layoutAttrs.props || {},
-        breakpoints: layoutAttrs.breakpoints || {},
-        hover: layoutAttrs.hover || {},
-    }), [layoutAttrs]);
+    // Local editing state (keeps empty values visible until committed)
+    const [localLayout, setLocalLayout] = useState(initialLayout);
 
-    const save = useCallback(
-        (newLayoutObj) => saveStyle(newLayoutObj, props, styleRef),
-        [attributes, setAttributes, styleRef]
+    // Sync local state if attributes change from outside
+    useEffect(() => {
+        setLocalLayout(initialLayout);
+    }, [initialLayout]);
+
+    // Commit local state → clean + save to attributes
+    const commit = useCallback(
+        (next) => {
+            setLocalLayout(next);
+            saveStyle(next, props, styleRef); // scrub + persist
+        },
+        [props, styleRef]
     );
 
+    // Update helpers
     const updateDefaultLayout = useCallback(
         (newProps) => {
-            save({
-                ...layoutObj,
-                props: {...layoutObj.props, ...newProps},
+            commit({
+                ...localLayout,
+                props: {...localLayout.props, ...newProps},
             });
         },
-        [layoutObj, save]
+        [localLayout, commit]
     );
 
     const updateHoverItem = useCallback(
         (newProps) => {
-            save({
-                ...layoutObj,
-                hover: {...layoutObj.hover, ...newProps},
+            commit({
+                ...localLayout,
+                hover: {...localLayout.hover, ...newProps},
             });
         },
-        [layoutObj, save]
+        [localLayout, commit]
     );
 
     const updateLayoutItem = useCallback(
         (newProps, bpKey) => {
-            const updatedBreakpoints = {
-                ...layoutObj.breakpoints,
-                [bpKey]: {
-                    ...layoutObj.breakpoints[bpKey],
-                    ...newProps,
+            commit({
+                ...localLayout,
+                breakpoints: {
+                    ...localLayout.breakpoints,
+                    [bpKey]: {
+                        ...localLayout.breakpoints[bpKey],
+                        ...newProps,
+                    },
                 },
-            };
-            save({...layoutObj, breakpoints: updatedBreakpoints});
+            });
         },
-        [layoutObj, save]
+        [localLayout, commit]
     );
 
     const addLayoutItem = useCallback(() => {
-        const keys = Object.keys(layoutObj.breakpoints);
+        const keys = Object.keys(localLayout.breakpoints);
         if (keys.length >= 3) return;
 
         const availableBps = breakpoints
@@ -862,64 +891,54 @@ const StyleEditorUI = ({props, styleRef}) => {
         if (!availableBps.length) return;
 
         const newKey = availableBps[0];
-        save({
-            ...layoutObj,
+        commit({
+            ...localLayout,
             breakpoints: {
-                ...layoutObj.breakpoints,
+                ...localLayout.breakpoints,
                 [newKey]: {},
             },
         });
-    }, [layoutObj, breakpoints, save]);
+    }, [localLayout, breakpoints, commit]);
 
     const removeLayoutItem = useCallback(
         (bpKey) => {
-            const {[bpKey]: removed, ...rest} = layoutObj.breakpoints;
-            save({
-                ...layoutObj,
-                breakpoints: rest,
-            });
+            const {[bpKey]: removed, ...rest} = localLayout.breakpoints;
+            commit({...localLayout, breakpoints: rest});
         },
-        [layoutObj, save]
+        [localLayout, commit]
     );
 
-
+    // Sorted list of breakpoints
     const layoutKeys = useMemo(() => {
-        const keys = Object.keys(layoutObj.breakpoints || {});
+        const keys = Object.keys(localLayout.breakpoints || {});
         return keys.sort((a, b) => {
             const bpA = breakpoints.find((bp) => bp.key === a);
             const bpB = breakpoints.find((bp) => bp.key === b);
-
-            const sizeA = bpA?.size || 0;
-            const sizeB = bpB?.size || 0;
-
-            return sizeA - sizeB;
+            return (bpA?.size || 0) - (bpB?.size || 0);
         });
-    }, [layoutObj?.breakpoints, breakpoints]);
+    }, [localLayout.breakpoints, breakpoints]);
 
     return (
-        <div className={'wpbs-layout-tools__container'}>
-
+        <div className="wpbs-layout-tools__container">
             {/* Default */}
-            <section className={'wpbs-layout-tools__panel active'}>
+            <section className="wpbs-layout-tools__panel active">
                 <div className="wpbs-layout-tools__header">
                     <strong>Default</strong>
                     <DynamicFieldPopover
-                        currentSettings={layoutObj.props}
+                        currentSettings={localLayout.props}
                         fieldsMap={layoutFieldsMap}
                         onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
                         onClear={(slug) => {
-                            const next = {...layoutObj.props};
+                            const next = {...localLayout.props};
                             delete next[slug];
                             updateDefaultLayout(next);
                         }}
                     />
-
-
                 </div>
-                <div className={'wpbs-layout-tools__grid'}>
+                <div className="wpbs-layout-tools__grid">
                     <LayoutFields
                         bpKey="layout"
-                        settings={layoutObj.props}
+                        settings={localLayout.props}
                         updateLayoutItem={updateDefaultLayout}
                         suppress={['padding', 'margin', 'gap']}
                     />
@@ -927,22 +946,25 @@ const StyleEditorUI = ({props, styleRef}) => {
             </section>
 
             {/* Hover */}
-            <section className={'wpbs-layout-tools__panel active'}>
+            <section className="wpbs-layout-tools__panel active">
                 <div className="wpbs-layout-tools__header">
                     <strong>Hover</strong>
                     <DynamicFieldPopover
-                        currentSettings={layoutObj.hover}
+                        currentSettings={localLayout.hover}
                         fieldsMap={hoverFieldsMap}
                         onAdd={(slug) => updateHoverItem({[slug]: ''})}
                         onClear={(slug) => {
-                            const next = {...layoutObj.hover};
+                            const next = {...localLayout.hover};
                             delete next[slug];
                             updateHoverItem(next);
                         }}
                     />
                 </div>
-                <div className={'wpbs-layout-tools__grid'}>
-                    <HoverFields hoverSettings={layoutObj.hover} updateHoverItem={updateHoverItem}/>
+                <div className="wpbs-layout-tools__grid">
+                    <HoverFields
+                        hoverSettings={localLayout.hover}
+                        updateHoverItem={updateHoverItem}
+                    />
                 </div>
             </section>
 
@@ -953,40 +975,39 @@ const StyleEditorUI = ({props, styleRef}) => {
                 const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
                 return (
-                    <section key={bpKey} className={'wpbs-layout-tools__panel active'}>
-
+                    <section key={bpKey} className="wpbs-layout-tools__panel active">
                         <div className="wpbs-layout-tools__header">
-                            <Button isSmall={true} size={'small'} iconSize={20}
-                                    onClick={() => removeLayoutItem(bpKey)}
-                                    icon={'no-alt'}/>
+                            <Button
+                                isSmall
+                                size="small"
+                                iconSize={20}
+                                onClick={() => removeLayoutItem(bpKey)}
+                                icon="no-alt"
+                            />
                             <strong>{panelLabel}</strong>
                             <DynamicFieldPopover
-                                currentSettings={layoutObj.breakpoints[bpKey]}
+                                currentSettings={localLayout.breakpoints[bpKey]}
                                 fieldsMap={layoutFieldsMap}
                                 onAdd={(slug) => updateLayoutItem({[slug]: ''}, bpKey)}
                                 onClear={(slug) => {
-                                    const next = {...layoutObj.breakpoints[bpKey]};
+                                    const next = {...localLayout.breakpoints[bpKey]};
                                     delete next[slug];
                                     updateLayoutItem(next, bpKey);
                                 }}
                             />
-
                         </div>
-                        <div className={'wpbs-layout-tools__grid'}>
-                            <label className={'wpbs-layout-tools__field --full'}>
+                        <div className="wpbs-layout-tools__grid">
+                            <label className="wpbs-layout-tools__field --full">
                                 <strong>Breakpoint</strong>
-                                <div className={'wpbs-layout-tools__control'}>
+                                <div className="wpbs-layout-tools__control">
                                     <select
                                         value={bpKey}
                                         onChange={(e) => {
                                             const newBpKey = e.target.value;
-                                            const newBreakpoints = {...layoutObj.breakpoints};
+                                            const newBreakpoints = {...localLayout.breakpoints};
                                             newBreakpoints[newBpKey] = newBreakpoints[bpKey];
                                             delete newBreakpoints[bpKey];
-                                            save({
-                                                ...layoutObj,
-                                                breakpoints: newBreakpoints,
-                                            });
+                                            commit({...localLayout, breakpoints: newBreakpoints});
                                         }}
                                     >
                                         {breakpoints.map((b) => (
@@ -1004,22 +1025,29 @@ const StyleEditorUI = ({props, styleRef}) => {
 
                             <LayoutFields
                                 bpKey={bpKey}
-                                settings={layoutObj.breakpoints[bpKey]}
-                                updateLayoutItem={updateLayoutItem}
+                                settings={localLayout.breakpoints[bpKey]}
+                                updateLayoutItem={(newProps) => updateLayoutItem(newProps, bpKey)}
                             />
                         </div>
                     </section>
                 );
             })}
 
-            <Button variant="primary" onClick={addLayoutItem}
-                    style={{borderRadius: '4px', width: '100%', textAlign: 'center', gridColumn: '1/-1'}}
-                    disabled={layoutKeys.length >= 3}>
+            <Button
+                variant="primary"
+                onClick={addLayoutItem}
+                style={{
+                    borderRadius: '4px',
+                    width: '100%',
+                    textAlign: 'center',
+                    gridColumn: '1/-1',
+                }}
+                disabled={layoutKeys.length >= 3}
+            >
                 Add Breakpoint
             </Button>
         </div>
     );
-
 };
 
 export default class WPBS_StyleControls {

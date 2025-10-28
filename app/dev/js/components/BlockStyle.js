@@ -4,6 +4,7 @@ import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import {useSelect} from "@wordpress/data";
+import _ from "lodash";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -204,8 +205,24 @@ export const withStyle = (Component) => (props) => {
     }, [uniqueId, duplicateIds]);
 
     useEffect(() => {
-        window.WPBS_StyleControls.updateStyleString(props, styleRef);
-    }, [attributes?.['wpbs-css'], uniqueId]);
+        const base = attributes['wpbs-css'] || {};
+        const merged = _.merge({}, base, cssProps || {});
+
+        // Only update attributes if the merged object is actually different
+        if (!_.isEqual(base, merged)) {
+            console.log('Merged CSS updating:', merged);
+            setAttributes({'wpbs-css': merged});
+        }
+
+        // Always update the live <style> tag with the merged data
+        if (window?.WPBS_StyleControls?.updateStyleString) {
+            window.WPBS_StyleControls.updateStyleString(
+                {...props, mergedStyle: merged},
+                styleRef
+            );
+        }
+    }, [cssProps, attributes?.['wpbs-css'], uniqueId]);
+
 
     // Guard still applies, but only controls rendering
     const guardFailed =

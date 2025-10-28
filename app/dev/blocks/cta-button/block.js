@@ -178,7 +178,7 @@ registerBlockType(metadata.name, {
                         }
                     }).filter(([_, v]) => v != null)
                 );
-
+                console.log(cssProps);
                 setCssProps(cssProps);
             }, [settings]);
 

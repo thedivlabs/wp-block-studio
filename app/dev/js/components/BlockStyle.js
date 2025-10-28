@@ -185,6 +185,17 @@ export const withStyle = (Component) => (props) => {
     const uniqueId = useUniqueId({name, attributes});
     const cssPropsRef = useRef({});
 
+
+    const setCssProps = useCallback((newProps) => {
+        cssPropsRef.current = newProps;
+
+        // optional: immediately use it for something
+        window.WPBS_StyleControls.updateStyleString(
+            { ...props, mergedStyle: newProps },
+            styleRef
+        );
+    }, [props]);
+
     const mergedCss = useMemo(
         () => _.merge({}, attributes['wpbs-css'] || {}, cssPropsRef.current || {}),
         [attributes['wpbs-css'], cssPropsRef.current]
@@ -242,7 +253,7 @@ export const withStyle = (Component) => (props) => {
                 BlockWrapper={(wrapperProps) => (
                     <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
                 )}
-                cssPropsRef={cssPropsRef}
+                setCssProps={setCssProps}
             />
 
             <InspectorControls group="styles">

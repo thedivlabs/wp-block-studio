@@ -47,7 +47,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData, setAttributes, cssPropsRef} = props;
+            const {attributes, BlockWrapper, styleData, setAttributes, setCssProps} = props;
 
             const {'wpbs-cta': settings = {}} = attributes;
 
@@ -180,7 +180,7 @@ registerBlockType(metadata.name, {
             );
 
             useEffect(() => {
-                cssPropsRef.current = cssProps; // update the ref, not state
+                setCssProps(cssProps)
             }, [cssProps]);
 
             return (

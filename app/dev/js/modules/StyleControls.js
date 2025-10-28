@@ -13,7 +13,7 @@ import {
     REVEAL_EASING_OPTIONS, SHAPE_OPTIONS, TEXT_ALIGN_OPTIONS, WIDTH_OPTIONS, WRAP_OPTIONS
 } from "Includes/config";
 
-import {updateStyleString, saveStyle, Field} from 'Includes/blockStyle';
+import {updateStyleString, saveStyle, Field} from 'Includes/block-style';
 
 
 const DynamicFieldPopover = ({

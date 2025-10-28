@@ -1,17 +1,7 @@
-import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
-import {
-    InspectorControls,
-    useInnerBlocksProps,
-} from "@wordpress/block-editor";
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
-import {
-    __experimentalGrid as Grid,
-    ToggleControl,
-} from "@wordpress/components";
 
-import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/Style';
-
+import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/BlockStyles';
 
 const selector = "wpbs-layout-element";
 

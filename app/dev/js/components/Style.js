@@ -1,9 +1,10 @@
-import {useState, useEffect, useRef, Fragment, useCallback} from '@wordpress/element';
+import {useState, useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
 import _ from 'lodash';
 import {useInstanceId} from "@wordpress/compose";
+import {useSelect} from "@wordpress/data";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -54,7 +55,7 @@ const getBlockProps = (props = {}, userProps = {}) => {
     const {className: userClass = '', ...restUserProps} = userProps;
     const {'wpbs-style': settings = {}, uniqueId} = attributes;
     const {layout = {}, background = {}, hover = {}} = settings;
-
+    console.log('css class:', uniqueId)
     // Compute base block name class
     const blockNameClass = name ? name.replace('/', '-') : '';
 
@@ -117,7 +118,6 @@ const StylePanel = ({props, styleRef}) => {
         </PanelBody>
     );
 };
-
 
 export const BlockWrapper = ({
                                  props,
@@ -196,7 +196,7 @@ export const withStyle = (EditComponent) => {
                     clientId={clientId}
                 />
             ),
-            [clientId, uniqueId, attributes['wpbs-style']]
+            [clientId, attributes?.uniqueId, attributes['wpbs-style']]
         );
 
         const guardFailed =
@@ -215,24 +215,23 @@ export const withStyle = (EditComponent) => {
 
         }
 
-        useEffect(() => {
-            const {uniqueId: currentId} = attributes;
-            if (!currentId) {
-                setAttributes({uniqueId: uniqueId});
-                return
-            }
-
-            const {getBlocks} = wp.data.select('core/block-editor');
+        const duplicateIds = useSelect((select) => {
+            const {getBlocks} = select('core/block-editor');
             const blocks = getBlocks();
-            const duplicates = blocks.filter(
+            const currentId = attributes.uniqueId;
+            return blocks.filter(
                 b => b.attributes?.uniqueId === currentId && b.clientId !== clientId
             );
+        }, [clientId]);
 
-            if (duplicates.length > 0) {
-                const newId = `${currentId}-${clientId.slice(0, 5)}`;
-                setAttributes({uniqueId: newId});
+        useEffect(() => {
+            const {uniqueId: currentId} = attributes;
+
+            if (!currentId || duplicateIds.length > 0) {
+                console.log(duplicateIds);
+                setAttributes({uniqueId: uniqueId});
             }
-        }, []); // once on mount
+        }, [clientId, duplicateIds]);
 
         useEffect(() => {
             window.WPBS_StyleControls.updateStyleString(props, styleRef);

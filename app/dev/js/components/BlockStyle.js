@@ -153,8 +153,8 @@ export const BlockWrapper = ({
                 ) : (
                     <InnerBlocks.Content/>
                 )}
-                {isBackgroundActive && <Background/>}
                 {children}
+                {isBackgroundActive && <Background/>}
             </Tag>
         );
     }
@@ -167,12 +167,12 @@ export const BlockWrapper = ({
 
     return (
         <Tag {...blockProps}>
-            {hasContainer || hasBackground ? (
+            {hasContainer || isBackgroundActive ? (
                 <div {...innerBlocksProps} />
             ) : (
                 innerBlocksProps.children
             )}
-            {hasBackground && <Background/>}
+            {isBackgroundActive && <Background/>}
             {children}
         </Tag>
     );

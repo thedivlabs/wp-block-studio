@@ -181,12 +181,11 @@ export const BlockWrapper = ({
 };
 
 
-export const withStyle = (EditComponent) => {
+export const withStyle = (Component, isSave = false) => {
     return (props) => {
-        const {clientId, isSelected, attributes, setAttributes, name} = props;
+        const { clientId, isSelected, attributes, setAttributes, name } = props;
         const styleRef = useRef(null);
-
-        const uniqueId = useUniqueId({name, attributes});
+        const uniqueId = useUniqueId({ name, attributes });
 
         const BoundBlockWrapper = useCallback(
             (wrapperProps) => (
@@ -194,10 +193,22 @@ export const withStyle = (EditComponent) => {
                     {...wrapperProps}
                     props={props}
                     clientId={clientId}
+                    isSave={isSave}
                 />
             ),
             [clientId, attributes?.uniqueId, attributes['wpbs-style']]
         );
+
+        if (isSave) {
+            const { 'wpbs-style': styleData = {} } = attributes;
+            return (
+                <Component
+                    {...getComponentProps(props)}
+                    BlockWrapper={BoundBlockWrapper}
+                    styleData={styleData}
+                />
+            );
+        }
 
         const guardFailed =
             !window?.WPBS_StyleControls ||
@@ -206,18 +217,16 @@ export const withStyle = (EditComponent) => {
             !uniqueId;
 
         if (guardFailed) {
-            console.warn(
-                `[WPBS] Block "${name}" disabled: missing style environment.`,
-                {uniqueId, hasStyleControls: !!window?.WPBS_StyleControls}
-            );
-
+            console.warn(`[WPBS] Block "${name}" disabled: missing style environment.`, {
+                uniqueId,
+                hasStyleControls: !!window?.WPBS_StyleControls,
+            });
             return null;
-
         }
 
         const duplicateIds = useSelect(
             (select) => {
-                const {getBlocks} = select('core/block-editor');
+                const { getBlocks } = select('core/block-editor');
                 const blocks = getBlocks();
                 const currentId = attributes.uniqueId;
                 return blocks.filter(
@@ -228,12 +237,11 @@ export const withStyle = (EditComponent) => {
         );
 
         useEffect(() => {
-            const {uniqueId: currentId} = attributes;
+            const { uniqueId: currentId } = attributes;
             if (!currentId || duplicateIds.length > 0) {
-                setAttributes({uniqueId});
+                setAttributes({ uniqueId });
             }
         }, [uniqueId, duplicateIds]);
-
 
         useEffect(() => {
             window.WPBS_StyleControls.updateStyleString(props, styleRef);
@@ -241,40 +249,14 @@ export const withStyle = (EditComponent) => {
 
         return (
             <>
-                <EditComponent BlockWrapper={BoundBlockWrapper} {...getComponentProps(props)} />
-
+                <Component BlockWrapper={BoundBlockWrapper} {...getComponentProps(props)} />
 
                 <InspectorControls group="styles">
-                    <StylePanel props={props} styleRef={styleRef}/>
+                    <StylePanel props={props} styleRef={styleRef} />
                 </InspectorControls>
 
                 <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
-
             </>
-        );
-    };
-};
-
-export const withStyleSave = (SaveComponent) => {
-    return (props) => {
-        const {attributes, name} = props;
-        const {'wpbs-style': styleData = {}} = attributes;
-
-        const BoundBlockWrapper = (wrapperProps) => (
-            <BlockWrapper
-                {...wrapperProps}
-                props={props}
-                uniqueId={attributes?.uniqueId}
-                isSave={true}
-            />
-        );
-
-        return (
-            <SaveComponent
-                {...getComponentProps(props)}
-                BlockWrapper={BoundBlockWrapper}
-                styleData={styleData}
-            />
         );
     };
 };

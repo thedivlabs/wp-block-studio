@@ -1,7 +1,7 @@
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/BlockStyle';
+import {withStyle, STYLE_ATTRIBUTES} from 'Components/BlockStyle';
 
 const selector = "wpbs-layout-element";
 
@@ -48,7 +48,7 @@ registerBlockType(metadata.name, {
             );
         }),
 
-    save: withStyleSave((props) => {
+    save: withStyle((props) => {
         const {attributes, BlockWrapper, styleData} = props;
         const classNames = getClassNames(attributes, styleData);
 
@@ -58,5 +58,5 @@ registerBlockType(metadata.name, {
                 className={classNames}
             />
         );
-    }),
+    }, true),
 });

@@ -26,7 +26,6 @@ const useUniqueId = ({name, attributes}) => {
 
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
-    //return uniqueId || instanceId;
     return useInstanceId(useUniqueId, prefix);
 }
 
@@ -178,86 +177,85 @@ export const BlockWrapper = ({
 };
 
 
-export const withStyle = (Component, isSave = false) => {
-    return (props) => {
-        const {clientId, isSelected, attributes, setAttributes, name} = props;
-        const styleRef = useRef(null);
-        const uniqueId = useUniqueId({name, attributes});
-        const [cssProps, setCssProps] = useState({});
+export const withStyle = (Component) => (props) => {
+    const {clientId, attributes, setAttributes, name} = props;
+    const styleRef = useRef(null);
+    const uniqueId = useUniqueId({name, attributes});
+    const [cssProps, setCssProps] = useState({});
 
-        const BoundBlockWrapper = useCallback(
-            (wrapperProps) => (
-                <BlockWrapper
-                    {...wrapperProps}
-                    props={props}
-                    clientId={clientId}
-                    isSave={isSave}
-                />
-            ),
-            [clientId, attributes?.uniqueId, attributes['wpbs-style']]
-        );
-
-        if (isSave) {
-            const {'wpbs-style': styleData = {}} = attributes;
-            return (
-                <Component
-                    {...getComponentProps(props)}
-                    BlockWrapper={BoundBlockWrapper}
-                    styleData={styleData}
-                />
+    // All editor-only hooks
+    const duplicateIds = useSelect(
+        (select) => {
+            const {getBlocks} = select('core/block-editor');
+            const blocks = getBlocks();
+            const currentId = attributes.uniqueId;
+            return blocks.filter(
+                (b) => b.attributes?.uniqueId === currentId && b.clientId !== clientId
             );
+        },
+        [attributes.uniqueId, clientId]
+    );
+
+    useEffect(() => {
+        const {uniqueId: currentId} = attributes;
+        if (!currentId || duplicateIds.length > 0) {
+            setAttributes({uniqueId});
         }
+    }, [uniqueId, duplicateIds]);
 
-        const guardFailed =
-            !window?.WPBS_StyleControls ||
-            typeof window.WPBS_StyleControls.updateStyleString !== 'function' ||
-            typeof window.WPBS_StyleControls.openStyleEditor !== 'function' ||
-            !uniqueId;
+    useEffect(() => {
+        window.WPBS_StyleControls.updateStyleString(props, styleRef);
+    }, [attributes?.['wpbs-css'], uniqueId]);
 
-        if (guardFailed) {
-            console.warn(`[WPBS] Block "${name}" disabled: missing style environment.`, {
-                uniqueId,
-                hasStyleControls: !!window?.WPBS_StyleControls,
-            });
-            return null;
-        }
+    // Guard still applies, but only controls rendering
+    const guardFailed =
+        !window?.WPBS_StyleControls ||
+        typeof window.WPBS_StyleControls.updateStyleString !== 'function' ||
+        typeof window.WPBS_StyleControls.openStyleEditor !== 'function' ||
+        !uniqueId;
 
-        const duplicateIds = useSelect(
-            (select) => {
-                const {getBlocks} = select('core/block-editor');
-                const blocks = getBlocks();
-                const currentId = attributes.uniqueId;
-                return blocks.filter(
-                    (b) => b.attributes?.uniqueId === currentId && b.clientId !== clientId
-                );
-            },
-            [attributes.uniqueId, clientId]
-        );
+    if (guardFailed) {
+        console.warn(`[WPBS] "${name}" disabled: missing style environment.`, {
+            uniqueId,
+            hasStyleControls: !!window?.WPBS_StyleControls,
+        });
+        return null;
+    }
 
-        useEffect(() => {
-            const {uniqueId: currentId} = attributes;
-            if (!currentId || duplicateIds.length > 0) {
-                setAttributes({uniqueId});
-            }
-        }, [uniqueId, duplicateIds]);
+    return (
+        <>
+            <Component
+                {...getComponentProps(props)}
+                BlockWrapper={(wrapperProps) => (
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+                )}
+                setCssProps={setCssProps}
+            />
 
-        useEffect(() => {
-            window.WPBS_StyleControls.updateStyleString(props, styleRef);
-        }, [attributes?.['wpbs-css'], uniqueId]);
+            <InspectorControls group="styles">
+                <StylePanel props={props} styleRef={styleRef} cssProps={cssProps}/>
+            </InspectorControls>
 
-        return (
-            <>
-                <Component BlockWrapper={BoundBlockWrapper} setCssProps={setCssProps} {...getComponentProps(props)} />
-
-                <InspectorControls group="styles">
-                    <StylePanel props={props} styleRef={styleRef} cssProps={cssProps}/>
-                </InspectorControls>
-
-                <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
-            </>
-        );
-    };
+            <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
+        </>
+    );
 };
+
+export const withStyleSave = (Component) => (props) => {
+    const {attributes, clientId} = props;
+    const {'wpbs-style': styleData = {}} = attributes;
+
+    return (
+        <Component
+            {...getComponentProps(props)}
+            BlockWrapper={(wrapperProps) => (
+                <BlockWrapper {...wrapperProps} props={props} clientId={clientId} isSave/>
+            )}
+            styleData={styleData}
+        />
+    );
+};
+
 
 
 

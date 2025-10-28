@@ -16,7 +16,7 @@ import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
-import {withStyle, STYLE_ATTRIBUTES} from 'Components/BlockStyle';
+import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/BlockStyle';
 
 function classNames(attributes = {}) {
 
@@ -232,7 +232,7 @@ registerBlockType(metadata.name, {
             );
         }),
 
-    save: withStyle((props) => {
+    save: withStyleSave((props) => {
         const {attributes, BlockWrapper, styleData} = props;
 
         const {'wpbs-cta': settings = {}} = attributes ?? {};

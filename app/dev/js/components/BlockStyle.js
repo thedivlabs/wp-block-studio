@@ -246,7 +246,7 @@ export const withStyle = (Component, isSave = false) => {
 
         useEffect(() => {
             window.WPBS_StyleControls.updateStyleString(props, styleRef);
-        }, [attributes?.['wpbs-css'], uniqueId, cssProps]);
+        }, [attributes?.['wpbs-css'], uniqueId]);
 
         return (
             <>

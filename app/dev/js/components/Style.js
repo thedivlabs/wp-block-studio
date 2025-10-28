@@ -215,23 +215,25 @@ export const withStyle = (EditComponent) => {
 
         }
 
-        const duplicateIds = useSelect((select) => {
-            const {getBlocks} = select('core/block-editor');
-            const blocks = getBlocks();
-            const currentId = attributes.uniqueId;
-            return blocks.filter(
-                b => b.attributes?.uniqueId === currentId && b.clientId !== clientId
-            );
-        }, []);
+        const duplicateIds = useSelect(
+            (select) => {
+                const {getBlocks} = select('core/block-editor');
+                const blocks = getBlocks();
+                const currentId = attributes.uniqueId;
+                return blocks.filter(
+                    (b) => b.attributes?.uniqueId === currentId && b.clientId !== clientId
+                );
+            },
+            [attributes.uniqueId, clientId]
+        );
 
         useEffect(() => {
             const {uniqueId: currentId} = attributes;
-
             if (!currentId || duplicateIds.length > 0) {
-                console.log(duplicateIds);
-                setAttributes({uniqueId: uniqueId});
+                setAttributes({uniqueId});
             }
-        }, [duplicateIds]);
+        }, [uniqueId, duplicateIds]);
+
 
         useEffect(() => {
             window.WPBS_StyleControls.updateStyleString(props, styleRef);

@@ -55,7 +55,7 @@ const getBlockProps = (props = {}, userProps = {}) => {
     const {className: userClass = '', ...restUserProps} = userProps;
     const {'wpbs-style': settings = {}, uniqueId} = attributes;
     const {layout = {}, background = {}, hover = {}} = settings;
-    console.log('css class:', uniqueId)
+
     // Compute base block name class
     const blockNameClass = name ? name.replace('/', '-') : '';
 
@@ -222,7 +222,7 @@ export const withStyle = (EditComponent) => {
             return blocks.filter(
                 b => b.attributes?.uniqueId === currentId && b.clientId !== clientId
             );
-        }, [clientId]);
+        }, []);
 
         useEffect(() => {
             const {uniqueId: currentId} = attributes;
@@ -231,7 +231,7 @@ export const withStyle = (EditComponent) => {
                 console.log(duplicateIds);
                 setAttributes({uniqueId: uniqueId});
             }
-        }, [clientId, duplicateIds]);
+        }, [duplicateIds]);
 
         useEffect(() => {
             window.WPBS_StyleControls.updateStyleString(props, styleRef);

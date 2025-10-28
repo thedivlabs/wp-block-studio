@@ -41,6 +41,7 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         props={props}
                         className={classNames}
+                        hasBackground={true}
                     />
                 </>
             );
@@ -54,7 +55,8 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 props={props}
                 className={classNames}
+                hasBackground={true}
             />
         );
-    }, true),
+    }),
 });

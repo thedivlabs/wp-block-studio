@@ -128,7 +128,8 @@ export const BlockWrapper = ({
     const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
     const Tag = settings?.tagName ?? tagName;
-    const hasContainer = settings?.layout?.container || settings?.background?.type;
+    const isBackgroundActive = hasBackground && settings?.background?.type;
+    const hasContainer = settings?.layout?.container || isBackgroundActive;
 
     const containerClass = [
         uniqueId ? `${uniqueId}__container` : null,
@@ -152,7 +153,7 @@ export const BlockWrapper = ({
                 ) : (
                     <InnerBlocks.Content/>
                 )}
-                {hasBackground && <Background/>}
+                {isBackgroundActive && <Background/>}
                 {children}
             </Tag>
         );

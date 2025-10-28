@@ -81,9 +81,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     // Return normalized HTML props object
     return {
         className: classList,
-        // helpful data attributes for debugging or styling
-        'data-block': blockNameClass || undefined,
-        'data-uid': uniqueId || undefined,
         ...restWrapperProps,
     };
 };

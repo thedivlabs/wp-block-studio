@@ -1,7 +1,7 @@
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/BlockStyles';
+import {withStyle, withStyleSave, STYLE_ATTRIBUTES} from 'Components/BlockStyle';
 
 const selector = "wpbs-layout-element";
 

@@ -740,23 +740,24 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 });
 
 const openStyleEditor = (mountNode, props, styleRef) => {
-
-    const {attributes} = props;
-
-    const {'wpbs-css': cssObj} = attributes;
-
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
-    if (window.WPBS_StyleControls.activeRoot) {
-        window.WPBS_StyleControls.activeRoot.unmount();
+    // Ensure WPBS_StyleControls exists
+    window.WPBS_StyleControls.roots = window.WPBS_StyleControls.roots || new Map();
+
+    // Retrieve or create a root for this mount node
+    let root = window.WPBS_StyleControls.roots.get(mountNode);
+    if (!root) {
+        root = createRoot(mountNode);
+        window.WPBS_StyleControls.roots.set(mountNode, root);
     }
 
-    window.WPBS_StyleControls.activeRoot = createRoot(mountNode);
-    window.WPBS_StyleControls.activeRoot.render(<StyleEditorUI props={props} styleRef={styleRef}/>);
-
+    // Just render (no unmount)
+    root.render(<StyleEditorUI props={props} styleRef={styleRef}/>);
 };
 
-function saveStyle(newStyle = {}, props, styleRef) {
+
+function saveStyle(newStyle = {}, props) {
     const {attributes, name, setAttributes} = props;
     const prev = attributes['wpbs-style'] || {};
 
@@ -771,7 +772,7 @@ function saveStyle(newStyle = {}, props, styleRef) {
         hover: {},
     };
 
-    if (newStyle.breakpoints) {
+    if (cleanedStyle.breakpoints) {
         for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
             cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
         }
@@ -788,8 +789,11 @@ function saveStyle(newStyle = {}, props, styleRef) {
     });
 }
 
-function updateStyleString(props, cssObj, styleRef, uniqueId) {
+function updateStyleString(props, styleRef) {
     const {attributes, name} = props;
+
+    const {'wpbs-css': cssObj, uniqueId} = attributes;
+
 
     if (styleRef?.current && uniqueId) {
         const blockClass = name ? `.${name.replace('/', '-')}` : '';
@@ -801,16 +805,20 @@ function updateStyleString(props, cssObj, styleRef, uniqueId) {
             cssString += `${selector} { ${propsToCss(cssObj.props)} }`;
         }
 
-        for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints)) {
+        for (const [bpKey, bpProps] of Object.entries(cssObj?.breakpoints || {})) {
             const bp = WPBS?.settings?.breakpoints?.[bpKey];
             if (bp && !_.isEmpty(bpProps)) {
                 cssString += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
             }
         }
 
+
         if (!_.isEmpty(cssObj.hover)) {
             cssString += `${selector}:hover { ${propsToCss(cssObj.hover)} }`;
         }
+
+        console.log(cssString);
+        console.log(styleRef);
 
         styleRef.current.textContent = cssString.trim();
     }
@@ -837,14 +845,17 @@ const StyleEditorUI = ({props, styleRef}) => {
 
     // Sync local state if attributes change from outside
     useEffect(() => {
-        setLocalLayout(initialLayout);
+        // Prevent unnecessary resets when same data structure is re-passed
+        if (!_.isEqual(localLayout, initialLayout)) {
+            setLocalLayout(initialLayout);
+        }
     }, [initialLayout]);
 
     // Commit local state → clean + save to attributes
     const commit = useCallback(
         (next) => {
             setLocalLayout(next);
-            saveStyle(next, props, styleRef); // scrub + persist
+            saveStyle(next, props); // scrub + persist
         },
         [props, styleRef]
     );
@@ -887,7 +898,7 @@ const StyleEditorUI = ({props, styleRef}) => {
     );
 
     const addLayoutItem = useCallback(() => {
-        const keys = Object.keys(localLayout.breakpoints);
+        const keys = Object.keys(localLayout.breakpoints || {});
         if (keys.length >= 3) return;
 
         const availableBps = breakpoints
@@ -915,13 +926,14 @@ const StyleEditorUI = ({props, styleRef}) => {
 
     // Sorted list of breakpoints
     const layoutKeys = useMemo(() => {
-        const keys = Object.keys(localLayout.breakpoints || {});
+        const keys = Object.keys(localLayout?.breakpoints || {});
         return keys.sort((a, b) => {
             const bpA = breakpoints.find((bp) => bp.key === a);
             const bpB = breakpoints.find((bp) => bp.key === b);
             return (bpA?.size || 0) - (bpB?.size || 0);
         });
-    }, [localLayout.breakpoints, breakpoints]);
+    }, [localLayout?.breakpoints, breakpoints]);
+
 
     return (
         <div className="wpbs-layout-tools__container">

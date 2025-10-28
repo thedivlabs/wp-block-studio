@@ -49,10 +49,10 @@ const getComponentProps = (props) => {
     }
 }
 
-const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
+const getBlockProps = (props = {}, userProps = {}) => {
     const {attributes = {}, name} = props;
     const {className: userClass = '', ...restUserProps} = userProps;
-    const {'wpbs-style': settings = {}} = attributes;
+    const {'wpbs-style': settings = {}, uniqueId} = attributes;
     const {layout = {}, background = {}, hover = {}} = settings;
 
     // Compute base block name class
@@ -61,7 +61,7 @@ const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
     // Construct class list with clean filtering
     const classList = [
         blockNameClass,
-        uniqueId || attributes?.uniqueId || null,
+        uniqueId,
         userClass || null,
         layout['offset-height'] && '--offset-height',
         layout['hide-empty'] && '--hide-empty',
@@ -83,22 +83,23 @@ const getBlockProps = (props = {}, userProps = {}, uniqueId) => {
         className: classList,
         // helpful data attributes for debugging or styling
         'data-block': blockNameClass || undefined,
-        'data-uid': uniqueId || attributes?.uniqueId || undefined,
+        'data-uid': uniqueId || undefined,
         ...restUserProps,
     };
 };
 
-const StylePanel = ({props, styleRef, uniqueId}) => {
-    const {clientId} = props;
+const StylePanel = ({props, styleRef}) => {
+    const {clientId, attributes} = props;
+    const {uniqueId} = attributes;
     const mountRef = useRef(null);
     const {openStyleEditor} = window?.WPBS_StyleControls ?? {};
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         if (isOpen && mountRef.current && openStyleEditor) {
-            openStyleEditor(mountRef.current, props, styleRef, uniqueId);
+            openStyleEditor(mountRef.current, props, styleRef);
         }
-    }, [isOpen, openStyleEditor, props, styleRef, uniqueId]);
+    }, [isOpen]);
 
     return (
         <PanelBody
@@ -127,8 +128,8 @@ export const BlockWrapper = ({
                                  ...userProps
                              }) => {
     const {attributes} = props;
+    const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
-    const uniqueId = attributes?.uniqueId;
     const Tag = settings?.tagName ?? 'div';
     const hasContainer = settings?.layout?.container || settings?.background?.type;
 
@@ -139,8 +140,8 @@ export const BlockWrapper = ({
 
     // Merge all HTML/block props in one place
     const blockProps = isSave
-        ? useBlockProps.save(getBlockProps(props, userProps, uniqueId))
-        : useBlockProps(getBlockProps(props, userProps, uniqueId));
+        ? useBlockProps.save(getBlockProps(props, userProps))
+        : useBlockProps(getBlockProps(props, userProps));
 
     // Save version
     if (isSave) {
@@ -185,8 +186,6 @@ export const withStyle = (EditComponent) => {
         const {clientId, isSelected, attributes, setAttributes, name} = props;
         const styleRef = useRef(null);
 
-        const {settings = {}} = attributes;
-
         const uniqueId = useUniqueId({name, attributes});
 
         const BoundBlockWrapper = useCallback(
@@ -195,10 +194,9 @@ export const withStyle = (EditComponent) => {
                     {...wrapperProps}
                     props={props}
                     clientId={clientId}
-                    uniqueId={uniqueId}
                 />
             ),
-            [clientId, uniqueId, attributes]
+            [clientId, uniqueId, attributes['wpbs-style']]
         );
 
         const guardFailed =
@@ -214,12 +212,15 @@ export const withStyle = (EditComponent) => {
             );
 
             return null;
-            
+
         }
 
         useEffect(() => {
             const {uniqueId: currentId} = attributes;
-            if (!currentId) return;
+            if (!currentId) {
+                setAttributes({uniqueId: uniqueId});
+                return
+            }
 
             const {getBlocks} = wp.data.select('core/block-editor');
             const blocks = getBlocks();
@@ -234,7 +235,7 @@ export const withStyle = (EditComponent) => {
         }, []); // once on mount
 
         useEffect(() => {
-            window.WPBS_StyleControls.updateStyleString(props, attributes?.['wpbs-css'], styleRef, uniqueId);
+            window.WPBS_StyleControls.updateStyleString(props, styleRef);
         }, [attributes?.['wpbs-css'], uniqueId]);
 
         return (
@@ -243,7 +244,7 @@ export const withStyle = (EditComponent) => {
 
 
                 <InspectorControls group="styles">
-                    <StylePanel props={props} styleRef={styleRef} uniqueId={uniqueId}/>
+                    <StylePanel props={props} styleRef={styleRef}/>
                 </InspectorControls>
 
                 <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

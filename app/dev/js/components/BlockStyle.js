@@ -1,8 +1,7 @@
-import {useState, useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
+import {useState, useEffect, useRef, Fragment, useCallback} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
-import _ from 'lodash';
 import {useInstanceId} from "@wordpress/compose";
 import {useSelect} from "@wordpress/data";
 
@@ -50,9 +49,9 @@ const getComponentProps = (props) => {
     }
 }
 
-const getBlockProps = (props = {}, userProps = {}) => {
+const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
-    const {className: userClass = '', ...restUserProps} = userProps;
+    const {className: userClass = '', ...restWrapperProps} = wrapperProps;
     const {'wpbs-style': settings = {}, uniqueId} = attributes;
     const {layout = {}, background = {}, hover = {}} = settings;
 
@@ -85,11 +84,11 @@ const getBlockProps = (props = {}, userProps = {}) => {
         // helpful data attributes for debugging or styling
         'data-block': blockNameClass || undefined,
         'data-uid': uniqueId || undefined,
-        ...restUserProps,
+        ...restWrapperProps,
     };
 };
 
-const StylePanel = ({props, styleRef}) => {
+const StylePanel = ({props, styleRef, cssProps}) => {
     const {clientId, attributes} = props;
     const {uniqueId} = attributes;
     const mountRef = useRef(null);
@@ -98,9 +97,9 @@ const StylePanel = ({props, styleRef}) => {
 
     useEffect(() => {
         if (isOpen && mountRef.current && openStyleEditor) {
-            openStyleEditor(mountRef.current, props, styleRef);
+            openStyleEditor(mountRef.current, props, styleRef, cssProps);
         }
-    }, [isOpen]);
+    }, [isOpen, cssProps, openStyleEditor]);
 
     return (
         <PanelBody
@@ -122,15 +121,16 @@ const StylePanel = ({props, styleRef}) => {
 export const BlockWrapper = ({
                                  props,
                                  className,
+                                 tagName = 'div',
                                  children,
                                  hasBackground = false,
                                  isSave = false,
-                                 ...userProps
+                                 ...wrapperProps
                              }) => {
     const {attributes} = props;
     const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
-    const Tag = settings?.tagName ?? 'div';
+    const Tag = settings?.tagName ?? tagName;
     const hasContainer = settings?.layout?.container || settings?.background?.type;
 
     const containerClass = [
@@ -140,8 +140,8 @@ export const BlockWrapper = ({
 
     // Merge all HTML/block props in one place
     const blockProps = isSave
-        ? useBlockProps.save(getBlockProps(props, userProps))
-        : useBlockProps(getBlockProps(props, userProps));
+        ? useBlockProps.save(getBlockProps(props, wrapperProps))
+        : useBlockProps(getBlockProps(props, wrapperProps));
 
     // Save version
     if (isSave) {
@@ -183,9 +183,10 @@ export const BlockWrapper = ({
 
 export const withStyle = (Component, isSave = false) => {
     return (props) => {
-        const { clientId, isSelected, attributes, setAttributes, name } = props;
+        const {clientId, isSelected, attributes, setAttributes, name} = props;
         const styleRef = useRef(null);
-        const uniqueId = useUniqueId({ name, attributes });
+        const uniqueId = useUniqueId({name, attributes});
+        const [cssProps, setCssProps] = useState({});
 
         const BoundBlockWrapper = useCallback(
             (wrapperProps) => (
@@ -200,7 +201,7 @@ export const withStyle = (Component, isSave = false) => {
         );
 
         if (isSave) {
-            const { 'wpbs-style': styleData = {} } = attributes;
+            const {'wpbs-style': styleData = {}} = attributes;
             return (
                 <Component
                     {...getComponentProps(props)}
@@ -226,7 +227,7 @@ export const withStyle = (Component, isSave = false) => {
 
         const duplicateIds = useSelect(
             (select) => {
-                const { getBlocks } = select('core/block-editor');
+                const {getBlocks} = select('core/block-editor');
                 const blocks = getBlocks();
                 const currentId = attributes.uniqueId;
                 return blocks.filter(
@@ -237,22 +238,22 @@ export const withStyle = (Component, isSave = false) => {
         );
 
         useEffect(() => {
-            const { uniqueId: currentId } = attributes;
+            const {uniqueId: currentId} = attributes;
             if (!currentId || duplicateIds.length > 0) {
-                setAttributes({ uniqueId });
+                setAttributes({uniqueId});
             }
         }, [uniqueId, duplicateIds]);
 
         useEffect(() => {
             window.WPBS_StyleControls.updateStyleString(props, styleRef);
-        }, [attributes?.['wpbs-css'], uniqueId]);
+        }, [attributes?.['wpbs-css'], uniqueId, cssProps]);
 
         return (
             <>
-                <Component BlockWrapper={BoundBlockWrapper} {...getComponentProps(props)} />
+                <Component BlockWrapper={BoundBlockWrapper} setCssProps={setCssProps} {...getComponentProps(props)} />
 
                 <InspectorControls group="styles">
-                    <StylePanel props={props} styleRef={styleRef} />
+                    <StylePanel props={props} styleRef={styleRef} cssProps={cssProps}/>
                 </InspectorControls>
 
                 <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

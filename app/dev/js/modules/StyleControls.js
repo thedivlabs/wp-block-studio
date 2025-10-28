@@ -13,7 +13,7 @@ import {
     REVEAL_EASING_OPTIONS, SHAPE_OPTIONS, TEXT_ALIGN_OPTIONS, WIDTH_OPTIONS, WRAP_OPTIONS
 } from "Includes/config";
 
-import {updateStyleString, saveStyle, Field} from 'Includes/block-style';
+import {updateStyleString, saveStyle, Field} from 'Includes/style';
 
 
 const DynamicFieldPopover = ({
@@ -239,7 +239,7 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-const openStyleEditor = (mountNode, props, styleRef) => {
+const openStyleEditor = (mountNode, props, styleRef, cssProps) => {
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
     // Ensure WPBS_StyleControls exists
@@ -253,10 +253,10 @@ const openStyleEditor = (mountNode, props, styleRef) => {
     }
 
     // Just render (no unmount)
-    root.render(<StyleEditorUI props={props} styleRef={styleRef}/>);
+    root.render(<StyleEditorUI props={props} styleRef={styleRef} cssProps={cssProps}/>);
 };
 
-const StyleEditorUI = ({props, styleRef}) => {
+const StyleEditorUI = ({props, styleRef, cssProps}) => {
 
     const {attributes} = props;
 
@@ -284,10 +284,11 @@ const StyleEditorUI = ({props, styleRef}) => {
 
     const commit = useCallback(
         (next) => {
+            const merged = _.merge({}, next, cssProps || {});
             setLocalLayout(next);
-            saveStyle(next, props); // scrub + persist
+            saveStyle(merged, props);
         },
-        [props, styleRef]
+        [props, styleRef, cssProps]
     );
 
     // Update helpers

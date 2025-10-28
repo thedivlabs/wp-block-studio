@@ -1,8 +1,7 @@
 import './scss/block.scss'
 
 import {
-    useBlockProps,
-    InspectorControls, PanelColorSettings, BlockEdit,
+    InspectorControls, PanelColorSettings,
 } from "@wordpress/block-editor"
 import {registerBlockType} from "@wordpress/blocks"
 import metadata from "./block.json"
@@ -12,21 +11,19 @@ import {
     SelectControl, TabPanel,
     ToggleControl
 } from "@wordpress/components";
-import {useState, useEffect, useMemo, useRef, Fragment, useCallback} from '@wordpress/element';
+import {useMemo, useCallback} from '@wordpress/element';
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
 import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
-
-import {withStyle, withStyleSave} from 'Components/Style';
-
+import {withStyle, STYLE_ATTRIBUTES} from 'Components/BlockStyle';
 
 function classNames(attributes = {}) {
 
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
-        'wpbs-cta-button relative',
+        'relative',
         !settings?.['is-link'] ? 'wp-element-button' : null,
         !!settings?.['icon'] ? '--icon' : null,
         !!settings?.['icon-hide'] ? '--icon-hide' : null,
@@ -41,13 +38,16 @@ registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
         ...metadata.attributes,
+        ...STYLE_ATTRIBUTES,
         'wpbs-cta': {
             type: 'object',
             default: {}
         }
     },
     edit: withStyle(
-        ({attributes, setAttributes, styleBlockProps, styleData, ElementTagName, Background, isSelected}) => {
+        (props) => {
+
+            const {attributes, BlockWrapper, styleData, setAttributes} = props;
 
             const {'wpbs-cta': settings = {}} = attributes;
 
@@ -163,14 +163,6 @@ registerBlockType(metadata.name, {
                 ...(settings?.popup && {role: 'button'}),
             };
 
-
-            const blockProps = styleBlockProps({
-                className: classNames(attributes),
-                'data-popup': settings?.popup ?? null,
-                ...anchorProps,
-            });
-
-
             const cssProps = useMemo(() => {
                 return Object.fromEntries(
                     Object.entries({
@@ -188,10 +180,8 @@ registerBlockType(metadata.name, {
                 );
             }, [settings]);
 
-
             return (
                 <>
-                    <BlockEdit key="edit" {...blockProps} />
                     <Link defaultValue={settings?.link}
                           callback={(newValue) => updateSettings({link: newValue})}/>
                     <InspectorControls group="styles">
@@ -226,16 +216,24 @@ registerBlockType(metadata.name, {
 
                     </InspectorControls>
 
-                    <a {...blockProps} onClick={(e) => e.preventDefault()}>
+                    <BlockWrapper
+                        tagName={'a'}
+                        props={props}
+                        className={classNames}
+                        {...anchorProps}
+                    >
                         <span className={'wpbs-cta-button__title relative'}>{title}</span>
                         <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
-                    </a>
-                </>
-            )
-        }),
-    save: (props) => {
+                    </BlockWrapper>
 
-        const {'wpbs-cta': settings = {}} = props?.attributes ?? {};
+                </>
+            );
+        }),
+
+    save: withStyle((props) => {
+        const {attributes, BlockWrapper, styleData} = props;
+
+        const {'wpbs-cta': settings = {}} = attributes ?? {};
 
         const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
@@ -247,19 +245,20 @@ registerBlockType(metadata.name, {
             ...(settings?.popup && {
                 onClick: (e) => e.preventDefault()
             }),
+            'data-popup': settings?.popup ?? null
         };
 
-        const blockProps = useBlockProps.save({
-            className: classNames(props.attributes),
-            'data-popup': settings?.popup ?? null,
-            ...anchorProps,
-            ...(props.attributes?.['wpbs-props'] ?? {})
-        });
-
-        return <a {...blockProps}>
-            <span className={'wpbs-cta-button__title'}>{title}</span>
-            <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
-        </a>;
-    }
+        return (
+            <BlockWrapper
+                props={props}
+                className={classNames(attributes)}
+                tagName={'a'}
+                {...anchorProps}
+            >
+                <span className={'wpbs-cta-button__title'}>{title}</span>
+                <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
+            </BlockWrapper>
+        );
+    }, true),
 })
 

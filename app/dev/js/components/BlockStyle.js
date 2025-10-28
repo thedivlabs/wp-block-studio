@@ -186,8 +186,8 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
 
     const mergedCss = useMemo(
-        () => _.merge({}, attributes['wpbs-css'] || {}, cssProps || {}),
-        [attributes['wpbs-css'], cssProps]
+        () => _.merge({}, attributes['wpbs-css'] || {}, cssPropsRef.current || {}),
+        [attributes['wpbs-css'], cssPropsRef.current]
     );
 
     useEffect(() => {
@@ -240,9 +240,9 @@ export const withStyle = (Component) => (props) => {
             <Component
                 {...getComponentProps(props)}
                 BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId} cssPropsRef={cssPropsRef}/>
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
                 )}
-                setCssProps={setCssProps}
+                cssPropsRef={cssPropsRef}
             />
 
             <InspectorControls group="styles">

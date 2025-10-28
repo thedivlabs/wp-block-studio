@@ -817,9 +817,6 @@ function updateStyleString(props, styleRef) {
             cssString += `${selector}:hover { ${propsToCss(cssObj.hover)} }`;
         }
 
-        console.log(cssString);
-        console.log(styleRef);
-
         styleRef.current.textContent = cssString.trim();
     }
 }

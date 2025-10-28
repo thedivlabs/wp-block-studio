@@ -167,7 +167,7 @@ registerBlockType(metadata.name, {
             const cssProps = Object.fromEntries(
                 Object.entries({
                     props: {
-                        '--testing': "40px",
+                        '--testing': "50px",
                         '--icon-color': settings?.['icon-color'] || null,
                         ...iconProps(settings?.['icon']),
                     },

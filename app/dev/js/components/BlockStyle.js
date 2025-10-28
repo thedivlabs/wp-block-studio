@@ -183,7 +183,7 @@ export const withStyle = (Component) => (props) => {
     const {clientId, attributes, setAttributes, name} = props;
     const styleRef = useRef(null);
     const uniqueId = useUniqueId({name, attributes});
-    const [cssProps, setCssProps] = useState({});
+    const cssPropsRef = useRef({});
 
     const mergedCss = useMemo(
         () => _.merge({}, attributes['wpbs-css'] || {}, cssProps || {}),
@@ -240,13 +240,13 @@ export const withStyle = (Component) => (props) => {
             <Component
                 {...getComponentProps(props)}
                 BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId} cssPropsRef={cssPropsRef}/>
                 )}
                 setCssProps={setCssProps}
             />
 
             <InspectorControls group="styles">
-                <StylePanel props={props} styleRef={styleRef} cssProps={cssProps}/>
+                <StylePanel props={props} styleRef={styleRef}/>
             </InspectorControls>
 
             <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

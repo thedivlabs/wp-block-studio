@@ -47,7 +47,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData, setAttributes, setCssProps} = props;
+            const {attributes, BlockWrapper, styleData, setAttributes, cssPropsRef} = props;
 
             const {'wpbs-cta': settings = {}} = attributes;
 
@@ -164,23 +164,24 @@ registerBlockType(metadata.name, {
                 onClick: (e) => e.preventDefault()
             };
 
-            useEffect(() => {
-                const cssProps = Object.fromEntries(
-                    Object.entries({
-                        props: {
-                            '--testing': "40px",
-                            '--icon-color': settings?.['icon-color'] || null,
-                            ...iconProps(settings?.['icon']),
-                        },
-                        breakpoints: {
-                            xs: {
-                                '--testing': '20px',
-                            }
+            const cssProps = Object.fromEntries(
+                Object.entries({
+                    props: {
+                        '--testing': "40px",
+                        '--icon-color': settings?.['icon-color'] || null,
+                        ...iconProps(settings?.['icon']),
+                    },
+                    breakpoints: {
+                        xs: {
+                            '--testing': '20px',
                         }
-                    }).filter(([_, v]) => v != null)
-                );
-                setCssProps(cssProps);
-            }, [settings]);
+                    }
+                }).filter(([_, v]) => v != null)
+            );
+
+            useEffect(() => {
+                cssPropsRef.current = cssProps; // update the ref, not state
+            }, [cssProps]);
 
             return (
                 <>

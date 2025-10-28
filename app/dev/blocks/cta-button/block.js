@@ -161,13 +161,14 @@ registerBlockType(metadata.name, {
                 href: settings?.popup ? '#' : '%%URL%%',
                 target: openInNewTab ? '_blank' : '_self',
                 ...(settings?.popup && {role: 'button'}),
+                onClick: (e) => e.preventDefault()
             };
 
             useEffect(() => {
                 const cssProps = Object.fromEntries(
                     Object.entries({
                         props: {
-                            '--testing': "30px",
+                            '--testing': "40px",
                             '--icon-color': settings?.['icon-color'] || null,
                             ...iconProps(settings?.['icon']),
                         },
@@ -178,7 +179,6 @@ registerBlockType(metadata.name, {
                         }
                     }).filter(([_, v]) => v != null)
                 );
-                console.log(cssProps);
                 setCssProps(cssProps);
             }, [settings]);
 

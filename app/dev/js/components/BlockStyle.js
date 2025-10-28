@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef, Fragment, useCallback} from '@wordpress/element';
+import {useState, useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
@@ -184,6 +184,17 @@ export const withStyle = (Component) => (props) => {
     const uniqueId = useUniqueId({name, attributes});
     const [cssProps, setCssProps] = useState({});
 
+    const mergedCss = useMemo(
+        () => _.merge({}, attributes['wpbs-css'] || {}, cssProps || {}),
+        [attributes['wpbs-css'], cssProps]
+    );
+
+    useEffect(() => {
+        if (!_.isEqual(attributes['wpbs-css'], mergedCss) && Object.keys(mergedCss).length > 0) {
+            setAttributes({'wpbs-css': mergedCss});
+        }
+    }, [mergedCss]);
+
     // All editor-only hooks
     const duplicateIds = useSelect(
         (select) => {
@@ -205,24 +216,8 @@ export const withStyle = (Component) => (props) => {
     }, [uniqueId, duplicateIds]);
 
     useEffect(() => {
-        const base = attributes['wpbs-css'] || {};
-        const merged = _.merge({}, base, cssProps || {});
-
-        // Only update attributes if the merged object is actually different
-        if (!_.isEqual(base, merged)) {
-            console.log('Merged CSS updating:', merged);
-            setAttributes({'wpbs-css': merged});
-        }
-
-        // Always update the live <style> tag with the merged data
-        if (window?.WPBS_StyleControls?.updateStyleString) {
-            window.WPBS_StyleControls.updateStyleString(
-                {...props, mergedStyle: merged},
-                styleRef
-            );
-        }
-    }, [cssProps, attributes?.['wpbs-css'], uniqueId]);
-
+        window.WPBS_StyleControls.updateStyleString(props, styleRef);
+    }, [attributes?.['wpbs-css'], uniqueId]);
 
     // Guard still applies, but only controls rendering
     const guardFailed =

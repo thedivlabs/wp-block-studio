@@ -11,7 +11,7 @@ import {
     SelectControl, TabPanel,
     ToggleControl
 } from "@wordpress/components";
-import {useMemo, useCallback} from '@wordpress/element';
+import {useMemo, useCallback, useEffect} from '@wordpress/element';
 import Link from "Components/Link.js";
 import {useSelect} from "@wordpress/data";
 import {store as coreStore} from "@wordpress/core-data";
@@ -47,7 +47,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData, setAttributes} = props;
+            const {attributes, BlockWrapper, styleData, setAttributes, setCssProps} = props;
 
             const {'wpbs-cta': settings = {}} = attributes;
 
@@ -163,8 +163,8 @@ registerBlockType(metadata.name, {
                 ...(settings?.popup && {role: 'button'}),
             };
 
-            const cssProps = useMemo(() => {
-                return Object.fromEntries(
+            useEffect(() => {
+                const cssProps = Object.fromEntries(
                     Object.entries({
                         props: {
                             '--testing': "30px",
@@ -178,6 +178,8 @@ registerBlockType(metadata.name, {
                         }
                     }).filter(([_, v]) => v != null)
                 );
+
+                setCssProps(cssProps);
             }, [settings]);
 
             return (

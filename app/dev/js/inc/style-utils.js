@@ -119,8 +119,8 @@ const heightVal = (val) => {
 
 }
 
-export function saveStyle(newStyle = {}, props) {
-    const {attributes, setAttributes} = props;
+export function saveStyle(newStyle = {}, props, updateStyleSettings) {
+    const {attributes} = props;
     const prev = attributes['wpbs-style'] || {};
 
     const cleanedStyle = cleanObject(newStyle);
@@ -144,11 +144,11 @@ export function saveStyle(newStyle = {}, props) {
         cssObj.hover = parseSpecialProps(cleanedStyle.hover);
     }
 
-    // Save attributes
-    setAttributes({
+    return {
         'wpbs-style': cleanedStyle,
         'wpbs-css': cleanObject(cssObj),
-    });
+    };
+
 }
 
 export function propsToCss(props = {}, important = false, importantKeysCustom = []) {

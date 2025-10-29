@@ -4,7 +4,7 @@ import {Background} from "Components/Background.js";
 import {PanelBody} from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
 import {useSelect} from "@wordpress/data";
-import _ from "lodash";
+import {isEqual, cloneDeep, merge} from 'lodash';
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -85,18 +85,18 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     };
 };
 
-const StylePanel = ({props, styleRef, cssProps}) => {
+const StylePanel = ({props, styleRef, updateStyleSettings}) => {
     const {clientId, attributes} = props;
     const {uniqueId} = attributes;
     const mountRef = useRef(null);
-    const {openStyleEditor} = window?.WPBS_StyleControls ?? {};
+    const {openStyleEditor} = window?.WPBS_StyleEditor ?? {};
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         if (isOpen && mountRef.current && openStyleEditor) {
-            openStyleEditor(mountRef.current, props, styleRef, cssProps);
+            openStyleEditor(mountRef.current, props, styleRef, updateStyleSettings);
         }
-    }, [isOpen, cssProps, openStyleEditor]);
+    }, [isOpen, openStyleEditor]);
 
     return (
         <PanelBody
@@ -178,36 +178,42 @@ export const BlockWrapper = ({
     );
 };
 
-
 export const withStyle = (Component) => (props) => {
     const {clientId, attributes, setAttributes, name} = props;
     const styleRef = useRef(null);
     const uniqueId = useUniqueId({name, attributes});
     const cssPropsRef = useRef({});
 
-
-    const setCssProps = useCallback((newProps) => {
+    const setCss = useCallback((newProps) => {
         cssPropsRef.current = newProps;
-
-        // optional: immediately use it for something
-        window.WPBS_StyleControls.updateStyleString(
-            { ...props, mergedStyle: newProps },
-            styleRef
-        );
     }, [props]);
 
-    const mergedCss = useMemo(
-        () => _.merge({}, attributes['wpbs-css'] || {}, cssPropsRef.current || {}),
-        [attributes['wpbs-css'], cssPropsRef.current]
+    const updateStyleSettings = useCallback(
+        (newProps) => {
+            const currentStyle = attributes['wpbs-style'] || {};
+            const currentCss = attributes['wpbs-css'] || {};
+
+            const nextStyle = newProps['wpbs-style'] || {};
+            const nextCss = newProps['wpbs-css'] || {};
+
+            // merge CSS from controls with CSS from block
+            const mergedCss = merge({}, cssPropsRef.current, nextCss);
+
+            // equality check before committing updates
+            const isSameStyle = isEqual(currentStyle, nextStyle);
+            const isSameCss = isEqual(currentCss, mergedCss);
+
+            if (isSameStyle && isSameCss) return;
+
+            // commit updated attributes
+            setAttributes({
+                'wpbs-style': cloneDeep(nextStyle),
+                'wpbs-css': cloneDeep(nextCss),
+            });
+        },
+        [attributes, setAttributes]
     );
 
-    useEffect(() => {
-        if (!_.isEqual(attributes['wpbs-css'], mergedCss) && Object.keys(mergedCss).length > 0) {
-            setAttributes({'wpbs-css': mergedCss});
-        }
-    }, [mergedCss]);
-
-    // All editor-only hooks
     const duplicateIds = useSelect(
         (select) => {
             const {getBlocks} = select('core/block-editor');
@@ -228,23 +234,8 @@ export const withStyle = (Component) => (props) => {
     }, [uniqueId, duplicateIds]);
 
     useEffect(() => {
-        window.WPBS_StyleControls.updateStyleString(props, styleRef);
+        window.WPBS_StyleEditor.updateStyleString(props, styleRef);
     }, [attributes?.['wpbs-css'], uniqueId]);
-
-    // Guard still applies, but only controls rendering
-    const guardFailed =
-        !window?.WPBS_StyleControls ||
-        typeof window.WPBS_StyleControls.updateStyleString !== 'function' ||
-        typeof window.WPBS_StyleControls.openStyleEditor !== 'function' ||
-        !uniqueId;
-
-    if (guardFailed) {
-        console.warn(`[WPBS] "${name}" disabled: missing style environment.`, {
-            uniqueId,
-            hasStyleControls: !!window?.WPBS_StyleControls,
-        });
-        return null;
-    }
 
     return (
         <>
@@ -253,11 +244,11 @@ export const withStyle = (Component) => (props) => {
                 BlockWrapper={(wrapperProps) => (
                     <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
                 )}
-                setCssProps={setCssProps}
+                setCss={setCss}
             />
 
             <InspectorControls group="styles">
-                <StylePanel props={props} styleRef={styleRef}/>
+                <StylePanel props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>
             </InspectorControls>
 
             <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

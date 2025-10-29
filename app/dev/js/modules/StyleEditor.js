@@ -15,6 +15,28 @@ import {
 
 import {updateStyleString, saveStyle, Field} from 'Includes/style';
 
+export default class WPBS_StyleEditor {
+    constructor() {
+        this.openStyleEditor = openStyleEditor;
+        this.updateStyleString = updateStyleString;
+
+        if (window.WPBS_StyleEditor) {
+            console.warn('WPBS.StyleControls already defined, skipping reinit.');
+            return window.WPBS_StyleEditor;
+        }
+
+        this.init();
+    }
+
+    init() {
+        if (!window.WPBS_StyleEditor) {
+            window.WPBS_StyleEditor = {};
+        }
+
+        window.WPBS_StyleEditor = this;
+        return window.WPBS_StyleEditor;
+    }
+}
 
 const DynamicFieldPopover = ({
                                  currentSettings,
@@ -80,7 +102,6 @@ const DynamicFieldPopover = ({
         </div>
     );
 };
-
 
 const layoutFieldsMap = [
 
@@ -239,24 +260,24 @@ const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, s
 
 });
 
-const openStyleEditor = (mountNode, props, styleRef, cssProps) => {
+const openStyleEditor = (mountNode, props, styleRef, updateStyleSettings) => {
     if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
 
-    // Ensure WPBS_StyleControls exists
-    window.WPBS_StyleControls.roots = window.WPBS_StyleControls.roots || new Map();
+    // Ensure WPBS_StyleEditor exists
+    window.WPBS_StyleEditor.roots = window.WPBS_StyleEditor.roots || new Map();
 
     // Retrieve or create a root for this mount node
-    let root = window.WPBS_StyleControls.roots.get(mountNode);
+    let root = window.WPBS_StyleEditor.roots.get(mountNode);
     if (!root) {
         root = createRoot(mountNode);
-        window.WPBS_StyleControls.roots.set(mountNode, root);
+        window.WPBS_StyleEditor.roots.set(mountNode, root);
     }
 
     // Just render (no unmount)
-    root.render(<StyleEditorUI props={props} styleRef={styleRef} cssProps={cssProps}/>);
+    root.render(<StyleEditorUI props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>);
 };
 
-const StyleEditorUI = ({props, styleRef, cssProps}) => {
+const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
 
     const {attributes} = props;
 
@@ -284,11 +305,10 @@ const StyleEditorUI = ({props, styleRef, cssProps}) => {
 
     const commit = useCallback(
         (next) => {
-            const merged = _.merge({}, next, cssProps || {});
             setLocalLayout(next);
-            saveStyle(merged, props);
+            updateStyleSettings(saveStyle(next, props));
         },
-        [props, styleRef, cssProps]
+        [props, styleRef]
     );
 
     // Update helpers
@@ -497,29 +517,6 @@ const StyleEditorUI = ({props, styleRef, cssProps}) => {
         </div>
     );
 };
-
-export default class WPBS_StyleControls {
-    constructor() {
-        this.openStyleEditor = openStyleEditor;
-        this.updateStyleString = updateStyleString;
-
-        if (window.WPBS_StyleControls) {
-            console.warn('WPBS.StyleControls already defined, skipping reinit.');
-            return window.WPBS_StyleControls;
-        }
-
-        this.init();
-    }
-
-    init() {
-        if (!window.WPBS_StyleControls) {
-            window.WPBS_StyleControls = {};
-        }
-
-        window.WPBS_StyleControls = this;
-        return window.WPBS_StyleControls;
-    }
-}
 
 
 

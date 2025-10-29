@@ -125,8 +125,9 @@ export function saveStyle(newStyle = {}, props, updateStyleSettings) {
 
     const cleanedStyle = cleanObject(newStyle);
 
-    if (_.isEqual(cleanObject(prev), cleanedStyle)) return;
-
+    if (_.isEqual(cleanObject(prev), cleanedStyle)) {
+        return {'wpbs-style': prev, 'wpbs-css': attributes['wpbs-css'] || {}};
+    }
     // Normalize into CSS object
     const cssObj = {
         props: parseSpecialProps(cleanedStyle.props || {}),

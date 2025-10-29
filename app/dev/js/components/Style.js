@@ -211,11 +211,13 @@ export const withStyle = (Component) => (props) => {
                 'wpbs-css': cloneDeep(mergedCss),
             });
         },
-        [attributes, setAttributes]
+        [setAttributes, clientId]
     );
 
     useEffect(() => {
-        window.WPBS_StyleEditor.updateStyleString(props, styleRef);
+        if (styleRef.current) {
+            window.WPBS_StyleEditor.updateStyleString(props, styleRef);
+        }
     }, [attributes?.['wpbs-css'], uniqueId]);
 
     const duplicateIds = useSelect(

@@ -40,14 +40,26 @@ export default class WPBS_StyleEditor {
     watchBlockIds() {
         const {select, dispatch, subscribe} = window.wp.data;
         const store = 'core/block-editor';
+        let lastSignature = '';
 
-        // Debounced handler – runs at most once every 300ms
+        // Debounced handler – runs at most once every 400 ms
         const handleBlockChange = _.debounce(() => {
             const blocks = select(store)
                 .getBlocks()
                 .filter((b) => b.name?.startsWith('wpbs/'));
 
             if (!blocks.length) return;
+
+            // Build a quick signature string from clientIds + uniqueIds
+            const signature = blocks
+                .slice()
+                .sort((a, b) => a.clientId.localeCompare(b.clientId)) // stable order
+                .map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
+                .join('|');
+
+            // Skip if nothing relevant changed
+            if (signature === lastSignature) return;
+            lastSignature = signature;
 
             const seen = new Set();
 
@@ -56,10 +68,8 @@ export default class WPBS_StyleEditor {
                 const {uniqueId} = attributes || {};
                 const base = name.split('/').pop() || 'block';
 
-                // Skip if the block doesn't have a uniqueId attribute
                 if (uniqueId === undefined) continue;
 
-                // If we've already seen this ID, it's a duplicate
                 if (seen.has(uniqueId)) {
                     const newId = `${base}-${Math.random().toString(36).slice(2, 8)}`;
                     dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
@@ -67,12 +77,10 @@ export default class WPBS_StyleEditor {
                     seen.add(uniqueId);
                 }
             }
-        }, 300, {leading: false, trailing: true});
+        }, 400, {leading: false, trailing: true});
 
-        // Subscribe once to the block editor store
-        subscribe(() => {
-            handleBlockChange();
-        });
+        // Subscribe once
+        subscribe(handleBlockChange);
     }
 
 

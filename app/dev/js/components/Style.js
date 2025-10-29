@@ -37,13 +37,12 @@ export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
     useEffect(() => {
         if (!currentId && clientId) {
             const newId = `${base}-${clientId.slice(0, 6)}`;
-            setAttributes({uniqueId: newId});
+            //setAttributes({uniqueId: newId});
         }
     }, [clientId, currentId]);
 
-    return currentId || `${base}-${clientId.slice(0, 6)}`;
+    return attributes?.uniqueId || `${base}-${clientId.slice(0, 6)}`;
 };
-
 
 const getComponentProps = (props) => {
     const {attributes} = props;
@@ -101,6 +100,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
 };
 
 const StylePanel = ({props, styleRef, updateStyleSettings}) => {
+
     const {clientId, attributes} = props;
     const {uniqueId} = attributes;
     const mountRef = useRef(null);
@@ -175,18 +175,28 @@ export const BlockWrapper = ({
     }
 
     // Editor version (live inner blocks)
-    const containerProps = {className: containerClass};
-    const innerBlocksProps = hasContainer
-        ? useInnerBlocksProps(containerProps, {})
-        : useInnerBlocksProps(blockProps, {});
+    const baseBlockProps = useBlockProps(getBlockProps(props, wrapperProps));
 
+    if (hasContainer || isBackgroundActive) {
+        // Inner blocks live in the container div
+        const containerProps = useInnerBlocksProps(
+            {className: containerClass},
+            {}
+        );
+
+        return (
+            <Tag {...baseBlockProps}>
+                <div {...containerProps} />
+                {isBackgroundActive && <Background/>}
+                {children}
+            </Tag>
+        );
+    }
+
+    // No container: inner blocks live on the Tag itself
+    const tagInnerProps = useInnerBlocksProps(baseBlockProps, {});
     return (
-        <Tag {...blockProps}>
-            {hasContainer || isBackgroundActive ? (
-                <div {...innerBlocksProps} />
-            ) : (
-                innerBlocksProps.children
-            )}
+        <Tag {...tagInnerProps}>
             {isBackgroundActive && <Background/>}
             {children}
         </Tag>
@@ -201,11 +211,11 @@ export const withStyle = (Component) => (props) => {
     const {clientId, attributes, setAttributes, name} = props;
     const uniqueId = useUniqueId(props);
 
-    console.log(uniqueId);
 
     const blockCss = useCallback((newProps) => {
         cssPropsRef.current = newProps;
-    }, [props]);
+    }, []);
+
 
     const updateStyleSettings = useCallback(
         (newProps) => {
@@ -229,14 +239,18 @@ export const withStyle = (Component) => (props) => {
                 'wpbs-css': cloneDeep(mergedCss),
             });
         },
-        [setAttributes, clientId, cssPropsRef.current]
+        [setAttributes]
     );
+
+    useEffect(() => {
+        console.log('Block render', {clientId, uniqueId});
+    }, [uniqueId]);
 
     useEffect(() => {
         if (styleRef.current) {
             window.WPBS_StyleEditor.updateStyleString(props, styleRef);
         }
-    }, [attributes?.['wpbs-css'], uniqueId]);
+    }, [attributes?.['wpbs-css']]);
 
 
     return (

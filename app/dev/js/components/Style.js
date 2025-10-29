@@ -206,20 +206,23 @@ export const withStyle = (Component) => (props) => {
 
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
+    const initializedRef = useRef(false);
 
     const {clientId, attributes, setAttributes, name} = props;
 
     const {uniqueId} = attributes;
 
     useEffect(() => {
-        if (!uniqueId) {
-            const id = `${name.split('/').pop()}-${clientId.slice(0, 6)}`;
-            setAttributes({uniqueId: id});
-        }
-    }, [uniqueId, name, clientId]);
+        if (initializedRef.current || uniqueId) return;
+        initializedRef.current = true;
+
+        const id = `${name.split('/').pop()}-${clientId.slice(0, 6)}`;
+        setAttributes({uniqueId: id});
+    }, [uniqueId]);
 
 
     const blockCss = useCallback((newProps) => {
+        console.log('blockCss');
         cssPropsRef.current = newProps;
     }, []);
 
@@ -240,6 +243,8 @@ export const withStyle = (Component) => (props) => {
             const isSameCss = isEqual(currentCss, mergedCss);
             if (isSameStyle && isSameCss) return;
 
+            console.log('updateStyleSettings');
+
             // update both attributes
             setAttributes({
                 'wpbs-style': cloneDeep(nextStyle),
@@ -253,23 +258,28 @@ export const withStyle = (Component) => (props) => {
         if (styleRef.current) {
             window.WPBS_StyleEditor.updateStyleString(props, styleRef);
         }
-    }, [attributes?.['wpbs-css'], uniqueId]);
+    }, [attributes['wpbs-css'], uniqueId]);
 
+    const memoizedComponent = useMemo(() => (
+        <Component
+            {...getComponentProps(props)}
+            BlockWrapper={(wrapperProps) => (
+                <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+            )}
+            blockCss={blockCss}
+        />
+    ), [clientId, blockCss, attributes['wpbs-style']]);
+
+    const MemoStylePanel = useMemo(() => (
+        <StylePanel props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>
+    ), [styleRef, updateStyleSettings, attributes['wpbs-style']]);
 
     return (
         <>
-            <Component
-                {...getComponentProps(props)}
-                BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
-                )}
-                blockCss={blockCss}
-            />
-
+            {memoizedComponent}
             <InspectorControls group="styles">
-                <StylePanel props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>
+                {MemoStylePanel}
             </InspectorControls>
-
             <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
         </>
     );

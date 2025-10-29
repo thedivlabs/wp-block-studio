@@ -25,65 +25,80 @@ export default class WPBS_StyleEditor {
             return window.WPBS_StyleEditor;
         }
 
+        this.blocks = new Map(); // clientId -> uniqueId
+        this.duplicates = new Set(); // currently duplicated uniqueIds
+
         this.init();
-        this.watchBlockIds();
+        this.watchBlocks();
     }
 
     init() {
-        if (!window.WPBS_StyleEditor) {
-            window.WPBS_StyleEditor = {};
-        }
         window.WPBS_StyleEditor = this;
-        return window.WPBS_StyleEditor;
+        return this;
     }
 
-    watchBlockIds() {
-        const {select, dispatch, subscribe} = window.wp.data;
+    /**
+     * Public method for blocks to query duplication.
+     * @param {string} uniqueId - The block’s uniqueId attribute.
+     * @returns {boolean} True if another block already uses the same uniqueId.
+     */
+    hasDuplicate(uniqueId) {
+        if (!uniqueId) return false;
+        return this.duplicates.has(uniqueId);
+    }
+
+    /**
+     * Internal: monitors wp.data for changes in block state and
+     * maintains a map of all wpbs blocks and their uniqueIds.
+     */
+    watchBlocks() {
+        const {select, subscribe} = window.wp.data;
         const store = 'core/block-editor';
         let lastSignature = '';
 
-        // Debounced handler – runs at most once every 400 ms
         const handleBlockChange = _.debounce(() => {
-            const blocks = select(store)
+            const allBlocks = select(store)
                 .getBlocks()
                 .filter((b) => b.name?.startsWith('wpbs/'));
 
-            if (!blocks.length) return;
+            if (!allBlocks.length) {
+                this.blocks.clear();
+                this.duplicates.clear();
+                return;
+            }
 
-            // Build a quick signature string from clientIds + uniqueIds
-            const signature = blocks
+            // Stable signature prevents redundant updates
+            const signature = allBlocks
                 .slice()
-                .sort((a, b) => a.clientId.localeCompare(b.clientId)) // stable order
-                .map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
+                .sort((a, b) => a.clientId.localeCompare(b.clientId))
+                .map((b) => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
                 .join('|');
 
-            // Skip if nothing relevant changed
             if (signature === lastSignature) return;
             lastSignature = signature;
 
-            const seen = new Set();
+            const seen = new Map(); // uniqueId -> count
+            this.blocks.clear();
+            this.duplicates.clear();
 
-            for (const block of blocks) {
-                const {clientId, name, attributes} = block;
+            for (const block of allBlocks) {
+                const {clientId, attributes} = block;
                 const {uniqueId} = attributes || {};
-                const base = name.split('/').pop() || 'block';
+                if (!uniqueId) continue;
 
-                if (uniqueId === undefined) continue;
-
-                if (seen.has(uniqueId)) {
-                    const newId = `${base}-${Math.random().toString(36).slice(2, 8)}`;
-                    dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
-                } else {
-                    seen.add(uniqueId);
-                }
+                this.blocks.set(clientId, uniqueId);
+                const count = seen.get(uniqueId) || 0;
+                seen.set(uniqueId, count + 1);
             }
-        }, 400, {leading: false, trailing: true});
 
-        // Subscribe once
+            // Populate duplicates set
+            for (const [id, count] of seen.entries()) {
+                if (count > 1) this.duplicates.add(id);
+            }
+        }, 300, {leading: false, trailing: true});
+
         subscribe(handleBlockChange);
     }
-
-
 }
 
 

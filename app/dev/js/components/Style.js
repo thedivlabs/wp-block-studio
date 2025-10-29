@@ -23,14 +23,30 @@ export const STYLE_ATTRIBUTES = {
     }
 }
 
-/*const useUniqueId = ({name, attributes}) => {
-
-    const {uniqueId} = attributes;
+export const useUniqueId = ({name, attributes, setAttributes}) => {
+    const {uniqueId: currentId} = attributes || {};
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
-    return useInstanceId(useUniqueId, prefix);
-}*/
 
-export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
+    // Generate a short random ID once per mount
+    const newId = useMemo(() => {
+        return `${prefix}-${attributes?.clientId?.slice(0, 6) || Math.random().toString(36).slice(2, 8)}`;
+    }, [prefix, attributes?.clientId]);
+
+
+    useEffect(() => {
+        const manager = window.WPBS_StyleEditor;
+        const hasDuplicate = manager?.hasDuplicate?.bind(manager);
+
+        if (!currentId || (hasDuplicate && hasDuplicate(currentId))) {
+            setAttributes({uniqueId: newId});
+        }
+    }, [currentId, newId, setAttributes]);
+
+    return attributes?.uniqueId;
+};
+
+
+/*export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
     const base = name?.split('/')?.pop() || 'block';
     const currentId = attributes?.uniqueId;
 
@@ -42,7 +58,7 @@ export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
     }, [clientId, currentId]);
 
     return attributes?.uniqueId || `${base}-${clientId.slice(0, 6)}`;
-};
+};*/
 
 const getComponentProps = (props) => {
     const {attributes} = props;
@@ -216,6 +232,9 @@ export const withStyle = (Component) => (props) => {
     const {clientId, attributes, setAttributes, name} = props;
     const uniqueId = useUniqueId(props);
 
+    useEffect(() => {
+        console.log(uniqueId);
+    }, [uniqueId]);
 
     const blockCss = useCallback((newProps) => {
         cssPropsRef.current = newProps;

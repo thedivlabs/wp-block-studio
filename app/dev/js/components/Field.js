@@ -1,9 +1,13 @@
 import {memo} from '@wordpress/element';
 import {
     PanelColorSettings,
+
     MediaUpload,
+
     MediaUploadCheck,
+
     __experimentalBoxControl as BoxControl,
+
     GradientPicker
 } from '@wordpress/components';
 import {ShadowSelector} from 'Components/ShadowSelector';
@@ -14,30 +18,47 @@ export const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, large = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
+    // WP components (feature-detect experiments vs stable)
+    const {
+        TextControl,
+        SelectControl,
+        ToggleControl,
+        RangeControl,
+        __experimentalUnitControl,
+        UnitControl: StableUnitControl,
+        __experimentalNumberControl,
+        NumberControl: StableNumberControl,
+    } = wp.components || {};
+
+    const UnitCtrl = StableUnitControl || __experimentalUnitControl; // fallback to experimental
+    const NumberCtrl = StableNumberControl || __experimentalNumberControl;
+
     const classNames = [large ? '--full' : null].filter(Boolean).join(' ');
     const value = settings?.[slug];
     const inputId = `wpbs-${slug}`;
 
     const change = (next) => callback(next);
-    const onInput = (e) => change(e.target.value);
 
     let control = null;
 
     switch (type) {
-        // ————— simple, native controls —————
+        // ————— WP controls —————
         case 'select': {
             const opts = controlProps?.options || [];
             control = (
-                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                <label className={`wpbs-layout-tools__field ${classNames}`} htmlFor={inputId}>
                     <strong className="wpbs-layout-tools__label">{label}</strong>
                     <div className="wpbs-layout-tools__control --select">
-                        <select value={value ?? ''} onChange={onInput} id={inputId}>
-                            {opts.map((o) => (
-                                <option key={o.value} value={o.value} disabled={o.disabled}>
-                                    {o.label}
-                                </option>
-                            ))}
-                        </select>
+                        <SelectControl
+                            id={inputId}
+                            value={value ?? ''}
+                            options={opts}
+                            // keep our visual label above; use aria-label for a11y inside control
+                            label={undefined}
+                            aria-label={label}
+                            onChange={(val) => change(val)}
+                            __nextHasNoMarginBottom
+                        />
                     </div>
                 </label>
             );
@@ -46,13 +67,17 @@ export const Field = memo(({field, settings, callback}) => {
 
         case 'text':
             control = (
-                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                <label className={`wpbs-layout-tools__field ${classNames}`} htmlFor={inputId}>
                     <strong className="wpbs-layout-tools__label">{label}</strong>
                     <div className="wpbs-layout-tools__control --text">
-                        <input
-                            type="text"
+                        <TextControl
+                            id={inputId}
                             value={value ?? ''}
-                            onChange={onInput}
+                            label={undefined}
+                            aria-label={label}
+                            onChange={(val) => change(val)}
+                            __nextHasNoMarginBottom
+                            {...controlProps}
                         />
                     </div>
                 </label>
@@ -61,16 +86,19 @@ export const Field = memo(({field, settings, callback}) => {
 
         case 'number':
             control = (
-                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                <label className={`wpbs-layout-tools__field ${classNames}`} htmlFor={inputId}>
                     <strong className="wpbs-layout-tools__label">{label}</strong>
                     <div className="wpbs-layout-tools__control --number">
-                        <input
-                            type="number"
+                        <NumberCtrl
+                            id={inputId}
                             value={value ?? ''}
-                            onChange={(e) => {
-                                const v = e.target.value;
-                                change(v === '' ? '' : Number.isNaN(Number(v)) ? '' : Number(v));
+                            label={undefined}
+                            aria-label={label}
+                            onChange={(val) => {
+                                // NumberControl returns string or ''
+                                change(val === '' ? '' : Number(val));
                             }}
+                            __nextHasNoMarginBottom
                             {...controlProps}
                         />
                     </div>
@@ -83,10 +111,14 @@ export const Field = memo(({field, settings, callback}) => {
                 <label className={`wpbs-layout-tools__field --toggle ${classNames}`}>
                     <strong className="wpbs-layout-tools__label">{label}</strong>
                     <div className="wpbs-layout-tools__control --toggle">
-                        <input
-                            type="checkbox"
+                        <ToggleControl
+                            // ToggleControl renders its own label; keep ours visually separate
+                            label={undefined}
+                            aria-label={label}
                             checked={!!value}
-                            onChange={(e) => change(e.target.checked)}
+                            onChange={(checked) => change(!!checked)}
+                            __nextHasNoMarginBottom
+                            {...controlProps}
                         />
                     </div>
                 </label>
@@ -95,11 +127,10 @@ export const Field = memo(({field, settings, callback}) => {
 
         case 'range':
             control = (
-                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                <label className={`wpbs-layout-tools__field ${classNames}`} htmlFor={inputId}>
                     <strong className="wpbs-layout-tools__label">{label}</strong>
                     <div className="wpbs-layout-tools__control --range">
-                        <input
-                            type="range"
+                        <RangeControl
                             value={
                                 typeof value === 'number'
                                     ? value
@@ -108,28 +139,46 @@ export const Field = memo(({field, settings, callback}) => {
                             min={controlProps.min ?? 0}
                             max={controlProps.max ?? 100}
                             step={controlProps.step ?? 1}
-                            onChange={(e) => change(Number(e.target.value))}
+                            label={undefined}
+                            aria-label={label}
+                            onChange={(val) => change(Number(val))}
+                            __nextHasNoMarginBottom
+                            {...controlProps}
                         />
                     </div>
                 </label>
             );
             break;
 
-        case 'unit':
+        case 'unit': {
+            const units =
+                controlProps.units ||
+                [
+                    {value: 'px', label: 'px'},
+                    {value: 'em', label: 'em'},
+                    {value: 'rem', label: 'rem'},
+                    {value: '%', label: '%'},
+                ];
             control = (
-                <label className={`wpbs-layout-tools__field ${classNames}`}>
+                <label className={`wpbs-layout-tools__field ${classNames}`} htmlFor={inputId}>
                     <strong className="wpbs-layout-tools__label">{label}</strong>
                     <div className="wpbs-layout-tools__control --unit">
-                        <input
-                            type="text"
+                        <UnitCtrl
+                            id={inputId}
+                            // UnitControl expects a string like "12px"
                             value={value ?? ''}
-                            onChange={onInput}
-                            placeholder="e.g. 12px, 2rem, 50%"
+                            units={units}
+                            label={undefined}
+                            aria-label={label}
+                            onChange={(val) => change(val)}
+                            __nextHasNoMarginBottom
+                            {...controlProps}
                         />
                     </div>
                 </label>
             );
             break;
+        }
 
         // ————— composite (recursive) —————
         case 'composite':

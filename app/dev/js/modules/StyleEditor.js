@@ -182,7 +182,7 @@ const layoutFieldsMap = [
 
     // Sizing
     {type: 'select', slug: 'aspect-ratio', label: 'Aspect Ratio', options: SHAPE_OPTIONS},
-    {type: 'unit', slug: 'opacity', label: 'Opacity'},
+    {type: 'number', slug: 'opacity', label: 'Opacity'},
     {type: 'unit', slug: 'basis', label: 'Flex Basis'},
     {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
     {type: 'unit', slug: 'width-custom', label: 'Custom Width'},

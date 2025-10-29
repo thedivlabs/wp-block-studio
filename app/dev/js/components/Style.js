@@ -23,28 +23,6 @@ export const STYLE_ATTRIBUTES = {
     }
 }
 
-export const useUniqueId = ({name, attributes, setAttributes}) => {
-    const {uniqueId: currentId} = attributes || {};
-    const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
-
-    // Generate a short random ID once per mount
-    const newId = useMemo(() => {
-        return `${prefix}-${attributes?.clientId?.slice(0, 6) || Math.random().toString(36).slice(2, 8)}`;
-    }, [prefix, attributes?.clientId]);
-
-
-    useEffect(() => {
-        const manager = window.WPBS_StyleEditor;
-        const hasDuplicate = manager?.hasDuplicate?.bind(manager);
-
-        if (!currentId || (hasDuplicate && hasDuplicate(currentId))) {
-            setAttributes({uniqueId: newId});
-        }
-    }, [currentId, newId, setAttributes]);
-
-    return attributes?.uniqueId;
-};
-
 
 /*export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
     const base = name?.split('/')?.pop() || 'block';
@@ -230,11 +208,50 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
 
     const {clientId, attributes, setAttributes, name} = props;
-    const uniqueId = useUniqueId(props);
+
+    const instanceId = useInstanceId(Component, name?.replace(/\//g, '-') || 'wpbs-block');
+    const {uniqueId: currentId} = attributes || {};
+
+    // Recursively walk through blocks to collect all nested wpbs blocks
+    const allBlocks = useSelect(
+        (select) => {
+            const {getBlocks} = select('core/block-editor');
+
+            const flattenBlocks = (blocks) => {
+                let result = [];
+                for (const b of blocks) {
+                    if (b.name?.startsWith('wpbs/')) {
+                        result.push(b);
+                    }
+                    if (b.innerBlocks?.length) {
+                        result = result.concat(flattenBlocks(b.innerBlocks));
+                    }
+                }
+                return result;
+            };
+
+            return flattenBlocks(getBlocks());
+        },
+        []
+    );
+
 
     useEffect(() => {
-        console.log(uniqueId);
-    }, [uniqueId]);
+        if (!clientId) return;
+
+        // Detect duplicates across all nested wpbs blocks
+        const hasDuplicate =
+            currentId &&
+            allBlocks.some(
+                (b) => b.clientId !== clientId && b.attributes?.uniqueId === currentId
+            );
+
+        if (hasDuplicate || !currentId) {
+            console.log('newId', clientId, instanceId);
+            setAttributes({uniqueId: instanceId});
+        }
+    }, [clientId, currentId, instanceId, allBlocks, name, setAttributes]);
+
 
     const blockCss = useCallback((newProps) => {
         cssPropsRef.current = newProps;

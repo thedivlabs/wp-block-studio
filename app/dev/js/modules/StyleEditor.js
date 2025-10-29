@@ -25,11 +25,7 @@ export default class WPBS_StyleEditor {
             return window.WPBS_StyleEditor;
         }
 
-        this.blocks = new Map(); // clientId -> uniqueId
-        this.duplicates = new Set(); // currently duplicated uniqueIds
-
         this.init();
-        this.watchBlocks();
     }
 
     init() {
@@ -37,68 +33,6 @@ export default class WPBS_StyleEditor {
         return this;
     }
 
-    /**
-     * Public method for blocks to query duplication.
-     * @param {string} uniqueId - The block’s uniqueId attribute.
-     * @returns {boolean} True if another block already uses the same uniqueId.
-     */
-    hasDuplicate(uniqueId) {
-        if (!uniqueId) return false;
-        return this.duplicates.has(uniqueId);
-    }
-
-    /**
-     * Internal: monitors wp.data for changes in block state and
-     * maintains a map of all wpbs blocks and their uniqueIds.
-     */
-    watchBlocks() {
-        const {select, subscribe} = window.wp.data;
-        const store = 'core/block-editor';
-        let lastSignature = '';
-
-        const handleBlockChange = _.debounce(() => {
-            const allBlocks = select(store)
-                .getBlocks()
-                .filter((b) => b.name?.startsWith('wpbs/'));
-
-            if (!allBlocks.length) {
-                this.blocks.clear();
-                this.duplicates.clear();
-                return;
-            }
-
-            // Stable signature prevents redundant updates
-            const signature = allBlocks
-                .slice()
-                .sort((a, b) => a.clientId.localeCompare(b.clientId))
-                .map((b) => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
-                .join('|');
-
-            if (signature === lastSignature) return;
-            lastSignature = signature;
-
-            const seen = new Map(); // uniqueId -> count
-            this.blocks.clear();
-            this.duplicates.clear();
-
-            for (const block of allBlocks) {
-                const {clientId, attributes} = block;
-                const {uniqueId} = attributes || {};
-                if (!uniqueId) continue;
-
-                this.blocks.set(clientId, uniqueId);
-                const count = seen.get(uniqueId) || 0;
-                seen.set(uniqueId, count + 1);
-            }
-
-            // Populate duplicates set
-            for (const [id, count] of seen.entries()) {
-                if (count > 1) this.duplicates.add(id);
-            }
-        }, 300, {leading: false, trailing: true});
-
-        subscribe(handleBlockChange);
-    }
 }
 
 

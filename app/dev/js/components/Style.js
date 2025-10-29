@@ -37,7 +37,7 @@ export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
     useEffect(() => {
         if (!currentId && clientId) {
             const newId = `${base}-${clientId.slice(0, 6)}`;
-            //setAttributes({uniqueId: newId});
+            setAttributes({uniqueId: newId});
         }
     }, [clientId, currentId]);
 
@@ -246,10 +246,6 @@ export const withStyle = (Component) => (props) => {
         },
         [setAttributes]
     );
-
-    useEffect(() => {
-        console.log('Block render', {clientId, uniqueId});
-    }, [uniqueId]);
 
     useEffect(() => {
         if (styleRef.current) {

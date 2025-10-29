@@ -212,45 +212,12 @@ export const withStyle = (Component) => (props) => {
     const instanceId = useInstanceId(Component, name?.replace(/\//g, '-') || 'wpbs-block');
     const {uniqueId: currentId} = attributes || {};
 
-    // Recursively walk through blocks to collect all nested wpbs blocks
-    const allBlocks = useSelect(
-        (select) => {
-            const {getBlocks} = select('core/block-editor');
-
-            const flattenBlocks = (blocks) => {
-                let result = [];
-                for (const b of blocks) {
-                    if (b.name?.startsWith('wpbs/')) {
-                        result.push(b);
-                    }
-                    if (b.innerBlocks?.length) {
-                        result = result.concat(flattenBlocks(b.innerBlocks));
-                    }
-                }
-                return result;
-            };
-
-            return flattenBlocks(getBlocks());
-        },
-        []
-    );
-
-
     useEffect(() => {
-        if (!clientId) return;
-
-        // Detect duplicates across all nested wpbs blocks
-        const hasDuplicate =
-            currentId &&
-            allBlocks.some(
-                (b) => b.clientId !== clientId && b.attributes?.uniqueId === currentId
-            );
-
-        if (hasDuplicate || !currentId) {
-            console.log('newId', clientId, instanceId);
-            setAttributes({uniqueId: instanceId});
+        if (!attributes.uniqueId) {
+            const id = `${name.split('/').pop()}-${clientId.slice(0, 6)}`;
+            setAttributes({uniqueId: id});
         }
-    }, [clientId, currentId, instanceId, allBlocks, name, setAttributes]);
+    }, [attributes.uniqueId, name, clientId]);
 
 
     const blockCss = useCallback((newProps) => {

@@ -164,24 +164,22 @@ registerBlockType(metadata.name, {
                 onClick: (e) => e.preventDefault()
             };
 
-            const cssProps = Object.fromEntries(
-                Object.entries({
-                    props: {
-                        '--testing': "50px",
-                        '--icon-color': settings?.['icon-color'] || null,
-                        ...iconProps(settings?.['icon']),
-                    },
-                    breakpoints: {
-                        xs: {
-                            '--testing': '20px',
-                        }
-                    }
-                }).filter(([_, v]) => v != null)
-            );
 
             useEffect(() => {
-                setCss(cssProps)
-            }, [cssProps]);
+                setCss(Object.fromEntries(
+                    Object.entries({
+                        props: {
+                            '--testing': "60px",
+                            '--icon-color': settings?.['icon-color'] || null,
+                            ...iconProps(settings?.['icon']),
+                        },
+                        breakpoints: {
+                            xs: {
+                                '--testing': '20px',
+                            }
+                        }
+                    }).filter(([_, v]) => v != null)))
+            }, [settings]);
 
             return (
                 <>

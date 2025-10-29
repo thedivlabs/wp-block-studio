@@ -188,7 +188,6 @@ export const withStyle = (Component) => (props) => {
         cssPropsRef.current = newProps;
     }, [props]);
 
-
     const updateStyleSettings = useCallback(
         (newProps) => {
             const currentStyle = attributes['wpbs-style'] || {};
@@ -211,7 +210,7 @@ export const withStyle = (Component) => (props) => {
                 'wpbs-css': cloneDeep(mergedCss),
             });
         },
-        [setAttributes, clientId]
+        [setAttributes, clientId, cssPropsRef.current]
     );
 
     useEffect(() => {

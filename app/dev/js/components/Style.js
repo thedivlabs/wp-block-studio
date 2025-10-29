@@ -209,9 +209,6 @@ export const withStyle = (Component) => (props) => {
 
     const {clientId, attributes, setAttributes, name} = props;
 
-    const instanceId = useInstanceId(Component, name?.replace(/\//g, '-') || 'wpbs-block');
-    const {uniqueId: currentId} = attributes || {};
-
     useEffect(() => {
         if (!attributes.uniqueId) {
             const id = `${name.split('/').pop()}-${clientId.slice(0, 6)}`;

@@ -17,7 +17,14 @@ import {updateStyleString, saveStyle, Field} from 'Includes/style';
 
 export default class WPBS_StyleEditor {
     constructor() {
-        if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
+        this.openStyleEditor = openStyleEditor;
+        this.updateStyleString = updateStyleString;
+
+        if (window.WPBS_StyleEditor) {
+            console.warn('WPBS.StyleControls already defined, skipping reinit.');
+            return window.WPBS_StyleEditor;
+        }
+
         this.init();
         this.watchDuplicates();
     }
@@ -32,7 +39,7 @@ export default class WPBS_StyleEditor {
         const store = 'core/block-editor';
         let lastSig = '';
 
-        const scan = _.debounce(() => {
+        const checkBlocks = _.debounce(() => {
             const flatten = (blocks, acc = []) => {
                 for (const b of blocks) {
                     if (b.name?.startsWith('wpbs/')) acc.push(b);
@@ -41,15 +48,19 @@ export default class WPBS_StyleEditor {
                 return acc;
             };
 
-            const all = flatten(select(store).getBlocks());
-            if (!all.length) return;
+            const blocks = flatten(select(store).getBlocks());
+            if (!blocks.length) return;
 
-            const sig = all.map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`).join('|');
+            const sig = blocks
+                .map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
+                .join('|');
+
             if (sig === lastSig) return;
             lastSig = sig;
 
-            const seen = new Set();
-            for (const b of all) {
+            const seen = new Map();
+
+            for (const b of blocks) {
                 const {clientId, name, attributes} = b;
                 const {uniqueId} = attributes || {};
                 if (!uniqueId) continue;
@@ -57,15 +68,15 @@ export default class WPBS_StyleEditor {
                 if (seen.has(uniqueId)) {
                     const base = name.split('/').pop();
                     const newId = `${base}-${Math.random().toString(36).slice(2, 6)}`;
-                    console.log(newId);
+                    console.log('updating ID', newId);
                     dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
                 } else {
-                    seen.add(uniqueId);
+                    seen.set(uniqueId, true);
                 }
             }
         }, 300);
 
-        subscribe(scan);
+        subscribe(checkBlocks);
     }
 }
 

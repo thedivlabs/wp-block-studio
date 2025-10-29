@@ -188,6 +188,7 @@ export const withStyle = (Component) => (props) => {
         cssPropsRef.current = newProps;
     }, [props]);
 
+
     const updateStyleSettings = useCallback(
         (newProps) => {
             const currentStyle = attributes['wpbs-style'] || {};
@@ -196,23 +197,26 @@ export const withStyle = (Component) => (props) => {
             const nextStyle = newProps['wpbs-style'] || {};
             const nextCss = newProps['wpbs-css'] || {};
 
-            // merge CSS from controls with CSS from block
+            // merge in block-level css
             const mergedCss = merge({}, cssPropsRef.current, nextCss);
 
-            // equality check before committing updates
+            // avoid redundant updates
             const isSameStyle = isEqual(currentStyle, nextStyle);
             const isSameCss = isEqual(currentCss, mergedCss);
-
             if (isSameStyle && isSameCss) return;
 
-            // commit updated attributes
+            // update both attributes
             setAttributes({
                 'wpbs-style': cloneDeep(nextStyle),
-                'wpbs-css': cloneDeep(nextCss),
+                'wpbs-css': cloneDeep(mergedCss),
             });
         },
         [attributes, setAttributes]
     );
+
+    useEffect(() => {
+        window.WPBS_StyleEditor.updateStyleString(props, styleRef);
+    }, [attributes?.['wpbs-css'], uniqueId]);
 
     const duplicateIds = useSelect(
         (select) => {
@@ -233,9 +237,6 @@ export const withStyle = (Component) => (props) => {
         }
     }, [uniqueId, duplicateIds]);
 
-    useEffect(() => {
-        window.WPBS_StyleEditor.updateStyleString(props, styleRef);
-    }, [attributes?.['wpbs-css'], uniqueId]);
 
     return (
         <>

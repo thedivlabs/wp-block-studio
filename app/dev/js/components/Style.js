@@ -142,6 +142,7 @@ export const BlockWrapper = ({
     const {attributes} = props;
     const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
+
     const Tag = settings?.tagName ?? tagName;
     const isBackgroundActive = hasBackground && settings?.background?.type;
     const hasContainer = settings?.layout?.container || isBackgroundActive;
@@ -149,18 +150,16 @@ export const BlockWrapper = ({
     const containerClass = [
         uniqueId ? `${uniqueId}__container` : null,
         'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
-    ].filter(Boolean).join(' ');
+    ]
+        .filter(Boolean)
+        .join(' ');
 
-    // Merge all HTML/block props in one place
-    const blockProps = isSave
-        ? useBlockProps.save(getBlockProps(props, wrapperProps))
-        : useBlockProps(getBlockProps(props, wrapperProps));
-
-    // Save version
+    // --- Save (frontend) version ---
     if (isSave) {
+        const saveProps = useBlockProps.save(getBlockProps(props, wrapperProps));
 
         return (
-            <Tag {...blockProps}>
+            <Tag {...saveProps}>
                 {hasContainer ? (
                     <div className={containerClass}>
                         <InnerBlocks.Content/>
@@ -168,17 +167,18 @@ export const BlockWrapper = ({
                 ) : (
                     <InnerBlocks.Content/>
                 )}
+
                 {children}
                 {isBackgroundActive && <Background/>}
             </Tag>
         );
     }
 
-    // Editor version (live inner blocks)
+    // --- Editor (backend) version ---
     const baseBlockProps = useBlockProps(getBlockProps(props, wrapperProps));
 
     if (hasContainer || isBackgroundActive) {
-        // Inner blocks live in the container div
+        // Inner blocks live inside a container div
         const containerProps = useInnerBlocksProps(
             {className: containerClass},
             {}
@@ -186,17 +186,22 @@ export const BlockWrapper = ({
 
         return (
             <Tag {...baseBlockProps}>
-                <div {...containerProps} />
+                <div {...containerProps}>
+                    {containerProps.children}
+                </div>
+
                 {isBackgroundActive && <Background/>}
                 {children}
             </Tag>
         );
     }
 
-    // No container: inner blocks live on the Tag itself
-    const tagInnerProps = useInnerBlocksProps(baseBlockProps, {});
+    // No container: inner blocks live directly on Tag
+    const innerProps = useInnerBlocksProps(baseBlockProps, {});
+
     return (
-        <Tag {...tagInnerProps}>
+        <Tag {...innerProps}>
+            {innerProps.children}
             {isBackgroundActive && <Background/>}
             {children}
         </Tag>

@@ -23,12 +23,27 @@ export const STYLE_ATTRIBUTES = {
     }
 }
 
-const useUniqueId = ({name, attributes}) => {
+/*const useUniqueId = ({name, attributes}) => {
 
     const {uniqueId} = attributes;
     const prefix = (name ?? 'wpbs-block').replace(/[^a-z0-9]/gi, '-');
     return useInstanceId(useUniqueId, prefix);
-}
+}*/
+
+export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
+    const base = name?.split('/')?.pop() || 'block';
+    const currentId = attributes?.uniqueId;
+
+    useEffect(() => {
+        if (!currentId && clientId) {
+            const newId = `${base}-${clientId.slice(0, 6)}`;
+            setAttributes({uniqueId: newId});
+        }
+    }, [clientId, currentId]);
+
+    return currentId || `${base}-${clientId.slice(0, 6)}`;
+};
+
 
 const getComponentProps = (props) => {
     const {attributes} = props;
@@ -179,12 +194,16 @@ export const BlockWrapper = ({
 };
 
 export const withStyle = (Component) => (props) => {
-    const {clientId, attributes, setAttributes, name} = props;
+
     const styleRef = useRef(null);
-    const uniqueId = useUniqueId({name, attributes});
     const cssPropsRef = useRef({});
 
-    const setCss = useCallback((newProps) => {
+    const {clientId, attributes, setAttributes, name} = props;
+    const uniqueId = useUniqueId(props);
+
+    console.log(uniqueId);
+
+    const blockCss = useCallback((newProps) => {
         cssPropsRef.current = newProps;
     }, [props]);
 
@@ -219,25 +238,6 @@ export const withStyle = (Component) => (props) => {
         }
     }, [attributes?.['wpbs-css'], uniqueId]);
 
-    const duplicateIds = useSelect(
-        (select) => {
-            const {getBlocks} = select('core/block-editor');
-            const blocks = getBlocks();
-            const currentId = attributes.uniqueId;
-            return blocks.filter(
-                (b) => b.attributes?.uniqueId === currentId && b.clientId !== clientId
-            );
-        },
-        [attributes.uniqueId, clientId]
-    );
-
-    useEffect(() => {
-        const {uniqueId: currentId} = attributes;
-        if (!currentId || duplicateIds.length > 0) {
-            setAttributes({uniqueId});
-        }
-    }, [uniqueId, duplicateIds]);
-
 
     return (
         <>
@@ -246,7 +246,7 @@ export const withStyle = (Component) => (props) => {
                 BlockWrapper={(wrapperProps) => (
                     <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
                 )}
-                setCss={setCss}
+                blockCss={blockCss}
             />
 
             <InspectorControls group="styles">

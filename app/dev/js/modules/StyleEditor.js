@@ -26,17 +26,58 @@ export default class WPBS_StyleEditor {
         }
 
         this.init();
+        this.watchBlockIds();
     }
 
     init() {
         if (!window.WPBS_StyleEditor) {
             window.WPBS_StyleEditor = {};
         }
-
         window.WPBS_StyleEditor = this;
         return window.WPBS_StyleEditor;
     }
+
+    watchBlockIds() {
+        const {select, dispatch, subscribe} = window.wp.data;
+        const store = 'core/block-editor';
+
+        // Debounced handler – runs at most once every 300ms
+        const handleBlockChange = _.debounce(() => {
+            const blocks = select(store)
+                .getBlocks()
+                .filter((b) => b.name?.startsWith('wpbs/'));
+
+            if (!blocks.length) return;
+
+            const seen = new Set();
+
+            for (const block of blocks) {
+                const {clientId, name, attributes} = block;
+                const {uniqueId} = attributes || {};
+                const base = name.split('/').pop() || 'block';
+
+                // Skip if the block doesn't have a uniqueId attribute
+                if (uniqueId === undefined) continue;
+
+                // If we've already seen this ID, it's a duplicate
+                if (seen.has(uniqueId)) {
+                    const newId = `${base}-${Math.random().toString(36).slice(2, 8)}`;
+                    dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
+                } else {
+                    seen.add(uniqueId);
+                }
+            }
+        }, 300, {leading: false, trailing: true});
+
+        // Subscribe once to the block editor store
+        subscribe(() => {
+            handleBlockChange();
+        });
+    }
+
+
 }
+
 
 const DynamicFieldPopover = ({
                                  currentSettings,

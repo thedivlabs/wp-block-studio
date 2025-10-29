@@ -47,7 +47,7 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData, setAttributes, setCss} = props;
+            const {attributes, BlockWrapper, styleData, setAttributes, blockCss} = props;
 
             const {'wpbs-cta': settings = {}} = attributes;
 
@@ -166,7 +166,7 @@ registerBlockType(metadata.name, {
 
 
             useEffect(() => {
-                setCss(Object.fromEntries(
+                blockCss(Object.fromEntries(
                     Object.entries({
                         props: {
                             '--testing': "60px",

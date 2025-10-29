@@ -209,12 +209,14 @@ export const withStyle = (Component) => (props) => {
 
     const {clientId, attributes, setAttributes, name} = props;
 
+    const {uniqueId} = attributes;
+
     useEffect(() => {
-        if (!attributes.uniqueId) {
+        if (!uniqueId) {
             const id = `${name.split('/').pop()}-${clientId.slice(0, 6)}`;
             setAttributes({uniqueId: id});
         }
-    }, [attributes.uniqueId, name, clientId]);
+    }, [uniqueId, name, clientId]);
 
 
     const blockCss = useCallback((newProps) => {
@@ -251,7 +253,7 @@ export const withStyle = (Component) => (props) => {
         if (styleRef.current) {
             window.WPBS_StyleEditor.updateStyleString(props, styleRef);
         }
-    }, [attributes?.['wpbs-css']]);
+    }, [attributes?.['wpbs-css'], uniqueId]);
 
 
     return (

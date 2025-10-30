@@ -84,6 +84,9 @@ export const Field = memo(({field, settings, callback}) => {
 
     let control = null;
 
+    controlProps.__next40pxDefaultSize = true;
+    controlProps.__nextHasNoMarginBottom = true;
+
     switch (type) {
         case 'text':
             control = (
@@ -96,7 +99,6 @@ export const Field = memo(({field, settings, callback}) => {
                             aria-label={label}
                             onChange={(v) => changeDebounced(v)}
                             onBlur={handleBlur}
-                            __nextHasNoMarginBottom
                             onKeyDown={handleKeyDown}
                             {...controlProps}
                         />
@@ -116,7 +118,6 @@ export const Field = memo(({field, settings, callback}) => {
                             aria-label={label}
                             onChange={(v) => changeDebounced(v === '' ? '' : v)}
                             onBlur={handleBlur}
-                            __nextHasNoMarginBottom
                             onKeyDown={handleKeyDown}
                             {...controlProps}
                         />
@@ -154,7 +155,6 @@ export const Field = memo(({field, settings, callback}) => {
                             checked={!!value}
                             onChange={(checked) => commitNow(!!checked)}
                             onKeyDown={handleKeyDown}
-                            __nextHasNoMarginBottom
                             {...controlProps}
                         />
                     </div>
@@ -182,7 +182,6 @@ export const Field = memo(({field, settings, callback}) => {
                             onChange={(v) => changeDebounced(v)}
                             onBlur={handleBlur}
                             aria-label={label}
-                            __nextHasNoMarginBottom
                             onKeyDown={handleKeyDown}
                             {...controlProps}
                         />

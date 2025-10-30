@@ -17,8 +17,8 @@ import {updateStyleString, saveStyle, Field} from 'Includes/style';
 
 export default class WPBS_StyleEditor {
     constructor() {
-        this.openStyleEditor = openStyleEditor;
         this.updateStyleString = updateStyleString;
+        this.StyleEditorUI = StyleEditorUI;
 
         if (window.WPBS_StyleEditor) {
             console.warn('WPBS.StyleControls already defined, skipping reinit.');

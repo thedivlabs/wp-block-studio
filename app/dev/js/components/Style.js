@@ -97,15 +97,14 @@ const StylePanel = ({props, styleRef, updateStyleSettings}) => {
 
     const {clientId, attributes} = props;
     const {uniqueId} = attributes;
-    const mountRef = useRef(null);
-    const {openStyleEditor} = window?.WPBS_StyleEditor ?? {};
     const [isOpen, setIsOpen] = useState(false);
+    const {StyleEditorUI} = window?.WPBS_StyleEditor || {};
 
-    useEffect(() => {
-        if (isOpen && mountRef.current && openStyleEditor) {
-            openStyleEditor(mountRef.current, props, styleRef, updateStyleSettings);
-        }
-    }, [isOpen, openStyleEditor]);
+    const editorComponent = useMemo(() => {
+        return StyleEditorUI
+            ? <StyleEditorUI props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>
+            : <div>Loading style editor…</div>;
+    }, [StyleEditorUI, props]);
 
     return (
         <PanelBody
@@ -114,12 +113,13 @@ const StylePanel = ({props, styleRef, updateStyleSettings}) => {
             className="wpbs-layout-tools"
             onToggle={setIsOpen}
         >
-            <div
+            {editorComponent}
+            {/*<div
                 ref={mountRef}
                 className="wpbs-style-placeholder"
                 data-client-id={clientId}
                 style={{padding: '4px 0'}}
-            />
+            />*/}
         </PanelBody>
     );
 };

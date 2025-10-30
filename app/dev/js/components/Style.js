@@ -1,9 +1,6 @@
 import {useState, useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
-import {PanelBody} from "@wordpress/components";
-import {useInstanceId} from "@wordpress/compose";
-import {useSelect} from "@wordpress/data";
 import {isEqual, cloneDeep, merge} from 'lodash';
 
 export const STYLE_ATTRIBUTES = {
@@ -22,21 +19,6 @@ export const STYLE_ATTRIBUTES = {
         default: {},
     }
 }
-
-
-/*export const useUniqueId = ({clientId, name, attributes, setAttributes}) => {
-    const base = name?.split('/')?.pop() || 'block';
-    const currentId = attributes?.uniqueId;
-
-    useEffect(() => {
-        if (!currentId && clientId) {
-            const newId = `${base}-${clientId.slice(0, 6)}`;
-            setAttributes({uniqueId: newId});
-        }
-    }, [clientId, currentId]);
-
-    return attributes?.uniqueId || `${base}-${clientId.slice(0, 6)}`;
-};*/
 
 const getComponentProps = (props) => {
     const {attributes} = props;
@@ -91,37 +73,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         className: classList,
         ...restWrapperProps,
     };
-};
-
-const StylePanel = ({props, styleRef, updateStyleSettings}) => {
-
-    const {clientId, attributes} = props;
-    const {uniqueId} = attributes;
-    const [isOpen, setIsOpen] = useState(false);
-    const {StyleEditorUI} = window?.WPBS_StyleEditor || {};
-
-    const editorComponent = useMemo(() => {
-        return StyleEditorUI
-            ? <StyleEditorUI props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>
-            : <div>Loading style editor…</div>;
-    }, [StyleEditorUI, props]);
-
-    return (
-        <PanelBody
-            title="Layout"
-            initialOpen={false}
-            className="wpbs-layout-tools"
-            onToggle={setIsOpen}
-        >
-            {editorComponent}
-            {/*<div
-                ref={mountRef}
-                className="wpbs-style-placeholder"
-                data-client-id={clientId}
-                style={{padding: '4px 0'}}
-            />*/}
-        </PanelBody>
-    );
 };
 
 export const BlockWrapper = ({
@@ -207,6 +158,7 @@ export const withStyle = (Component) => (props) => {
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
     const initializedRef = useRef(false);
+    const {StyleEditorUI} = window.WPBS_StyleEditor;
 
     const {clientId, attributes, setAttributes, name} = props;
 
@@ -270,15 +222,15 @@ export const withStyle = (Component) => (props) => {
         />
     ), [clientId, blockCss, attributes['wpbs-style']]);
 
-    const MemoStylePanel = useMemo(() => (
-        <StylePanel props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>
-    ), [styleRef, updateStyleSettings, attributes['wpbs-style']]);
-
     return (
         <>
             {memoizedComponent}
             <InspectorControls group="styles">
-                {MemoStylePanel}
+                <StyleEditorUI
+                    props={props}
+                    styleRef={styleRef}
+                    updateStyleSettings={updateStyleSettings}
+                />
             </InspectorControls>
             <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
         </>

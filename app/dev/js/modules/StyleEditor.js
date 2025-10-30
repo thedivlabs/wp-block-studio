@@ -60,6 +60,3 @@ export function initStyleEditor() {
 
     return api;
 }
-
-// Initialize immediately when script loads
-initStyleEditor();

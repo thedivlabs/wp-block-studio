@@ -28,6 +28,7 @@
     "@tailwindcss/postcss": "^4.1.11",
     "@wordpress/api-fetch": "^7.28.0",
     "@wordpress/date": "^5.32.0",
+    "@wordpress/i18n": "^6.7.0",
     "@wordpress/server-side-render": "^6.3.0",
     "autoprefixer": "^10.4.21",
     "lodash": "^4.17.21",

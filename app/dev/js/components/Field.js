@@ -136,7 +136,7 @@ export const Field = memo(({field, settings, callback}) => {
                             value={value ?? ''}
                             options={controlProps.options || []}
                             aria-label={label}
-                            onChange={(v) => commitNow(v === '' ? null : v)}
+                            onChange={(v) => commitNow(v === '' ? undefined : v)}
                             onKeyDown={handleKeyDown}
                             __nextHasNoMarginBottom
                         />
@@ -179,11 +179,12 @@ export const Field = memo(({field, settings, callback}) => {
                                     {value: '%', label: '%'},
                                 ]
                             }
+                            onUnitChange={() => changeDebounced('')}
                             onChange={(v) => changeDebounced(v)}
                             onBlur={handleBlur}
                             aria-label={label}
                             onKeyDown={handleKeyDown}
-                            isResetValueOnUnitChange
+                            isResetValueOnUnitChange={true}
                             {...controlProps}
                         />
                     </div>

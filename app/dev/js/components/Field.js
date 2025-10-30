@@ -39,7 +39,7 @@ export const Field = memo(({field, settings, callback}) => {
 
     // debounced commit for live typing
     const debouncedChange = useMemo(
-        () => debounce((next) => safeCallback(next), 1200),
+        () => debounce((next) => safeCallback(next), 900),
         [safeCallback]
     );
 
@@ -48,7 +48,7 @@ export const Field = memo(({field, settings, callback}) => {
         clearTimeout(cancelRef.current);
         cancelRef.current = setTimeout(() => {
             debouncedChange.cancel(); // cancel pending commits
-        }, 1200); // 2s of inactivity cancels the debounce entirely
+        }, 900);
     }, [debouncedChange]);
 
     const changeDebounced = useCallback(
@@ -136,7 +136,7 @@ export const Field = memo(({field, settings, callback}) => {
                             value={value ?? ''}
                             options={controlProps.options || []}
                             aria-label={label}
-                            onChange={(v) => commitNow(v)}
+                            onChange={(v) => commitNow(v === '' ? null : v)}
                             onKeyDown={handleKeyDown}
                             __nextHasNoMarginBottom
                         />

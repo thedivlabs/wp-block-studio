@@ -30,7 +30,7 @@ export const ELEMENT_TAG_TEXT_OPTIONS = [
 ];
 
 export const DISPLAY_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Flex', value: 'flex'},
     {label: 'Block', value: 'block'},
     {label: 'Inline Flex', value: 'inline-flex'},
@@ -39,7 +39,7 @@ export const DISPLAY_OPTIONS = [
 ];
 
 export const DIRECTION_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Row', value: 'row'},
     {label: 'Column', value: 'column'},
     {label: 'Row Reverse', value: 'row-reverse'},
@@ -47,7 +47,7 @@ export const DIRECTION_OPTIONS = [
 ];
 
 export const CONTAINER_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'None', value: 'none'},
     {label: 'Extra Small', value: 'xs'},
     {label: 'Small', value: 'sm'},
@@ -58,7 +58,7 @@ export const CONTAINER_OPTIONS = [
 ];
 
 export const ALIGN_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Start', value: 'start'},
     {label: 'Center', value: 'center'},
     {label: 'End', value: 'end'},
@@ -66,7 +66,7 @@ export const ALIGN_OPTIONS = [
 ];
 
 export const JUSTIFY_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Start', value: 'flex-start'},
     {label: 'Center', value: 'center'},
     {label: 'End', value: 'flex-end'},
@@ -74,14 +74,14 @@ export const JUSTIFY_OPTIONS = [
 ];
 
 export const WIDTH_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Auto', value: 'auto'},
     {label: 'Fit', value: 'fit-content'},
     {label: 'Full', value: '100%'},
 ];
 
 export const HEIGHT_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Screen', value: 'screen'},
     {label: 'Full Screen', value: 'full-screen'},
     {label: 'Full', value: '100%'},
@@ -90,13 +90,13 @@ export const HEIGHT_OPTIONS = [
 ];
 
 export const WRAP_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Wrap', value: 'wrap'},
     {label: 'No Wrap', value: 'no-wrap'},
 ];
 
 export const POSITION_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Relative', value: 'relative'},
     {label: 'Absolute', value: 'absolute'},
     {label: 'Sticky', value: 'sticky'},
@@ -106,14 +106,14 @@ export const POSITION_OPTIONS = [
 ];
 
 export const OVERFLOW_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Hidden', value: 'hidden'},
     {label: 'Visible', value: 'visible'},
     {label: 'Scroll', value: 'scroll'},
 ];
 
 export const SHAPE_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Square', value: '1/1'},
     {label: 'Video', value: '16/9'},
     {label: 'Photo', value: '10/8'},
@@ -154,7 +154,7 @@ export const DIMENSION_UNITS = [
 ];
 
 export const CONTENT_VISIBILITY_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Auto', value: 'auto'},
     {label: 'Visible', value: 'visible'},
     {label: 'Hidden', value: 'hidden'},
@@ -178,7 +178,7 @@ export const REL_OPTIONS = [
 ];
 
 export const TEXT_ALIGN_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Left', value: 'left'},
     {label: 'Center', value: 'center'},
     {label: 'Right', value: 'right'},
@@ -199,7 +199,7 @@ export const DIMENSION_UNITS_TEXT = [
 ];
 
 export const ICON_STYLES = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Solid', value: '900'},
     {label: 'Regular', value: '400'},
     {label: 'Light', value: '300'},
@@ -229,7 +229,7 @@ export const RESOLUTION_OPTIONS = [
 ];
 
 export const REVEAL_ANIMATION_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Fade', value: 'fade'},
     {label: 'Fade Up', value: 'fade-up'},
     {label: 'Fade Down', value: 'fade-down'},
@@ -260,7 +260,7 @@ export const REVEAL_ANIMATION_OPTIONS = [
 ];
 
 export const REVEAL_EASING_OPTIONS = [
-    {label: 'Select', value: ''},
+    {label: 'Select', value: null},
     {label: 'Linear', value: 'linear'},
     {label: 'Ease In', value: 'ease-in'},
     {label: 'Ease Out', value: 'ease-out'},

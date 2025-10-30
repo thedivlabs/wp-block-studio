@@ -439,11 +439,7 @@ const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                         currentSettings={localLayout.props}
                         fieldsMap={layoutFieldsMap}
                         onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
-                        onClear={(slug) => {
-                            const next = {...localLayout.props};
-                            delete next[slug];
-                            updateDefaultLayout(next);
-                        }}
+                        onClear={(slug) => updateDefaultLayout({[slug]: null})}
                     />
                 </div>
                 <div className="wpbs-layout-tools__grid">
@@ -464,11 +460,7 @@ const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                         currentSettings={localLayout.hover}
                         fieldsMap={hoverFieldsMap}
                         onAdd={(slug) => updateHoverItem({[slug]: ''})}
-                        onClear={(slug) => {
-                            const next = {...localLayout.hover};
-                            delete next[slug];
-                            updateHoverItem(next);
-                        }}
+                        onClear={(slug) => updateHoverItem({[slug]: null})}
                     />
                 </div>
                 <div className="wpbs-layout-tools__grid">
@@ -500,11 +492,7 @@ const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                                 currentSettings={localLayout.breakpoints[bpKey]}
                                 fieldsMap={layoutFieldsMap}
                                 onAdd={(slug) => updateLayoutItem({[slug]: ''}, bpKey)}
-                                onClear={(slug) => {
-                                    const next = {...localLayout.breakpoints[bpKey]};
-                                    delete next[slug];
-                                    updateLayoutItem(next, bpKey);
-                                }}
+                                onClear={(slug) => updateLayoutItem({[slug]: null}, bpKey)}
                             />
                         </div>
                         <div className="wpbs-layout-tools__grid">

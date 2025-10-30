@@ -183,6 +183,7 @@ export const Field = memo(({field, settings, callback}) => {
                             onBlur={handleBlur}
                             aria-label={label}
                             onKeyDown={handleKeyDown}
+                            isResetValueOnUnitChange
                             {...controlProps}
                         />
                     </div>

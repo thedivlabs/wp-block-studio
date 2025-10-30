@@ -7,10 +7,15 @@ export const Field = memo(({field, settings, callback}) => {
     if (!type || !slug || !label) return null;
 
     const {
+        MediaUploadCheck,
+        MediaUpload,
         TextControl,
         SelectControl,
         ToggleControl,
         RangeControl,
+        GradientPicker,
+        PanelColorSettings,
+        __experimentalBoxControl: BoxControl,
         __experimentalUnitControl: UnitControl,
         __experimentalNumberControl: NumberControl,
     } = wp.components || {};
@@ -64,6 +69,16 @@ export const Field = memo(({field, settings, callback}) => {
         [debouncedChange, safeCallback]
     );
 
+    const handleKeyDown = useCallback(
+        (e) => {
+            if (e.key === 'Enter' || e.key === 'Tab') {
+                e.preventDefault(); // prevent accidental form submit
+                commitNow();
+            }
+        },
+        [commitNow]
+    );
+
     // Commit on blur (focus out)
     const handleBlur = useCallback(() => commitNow(), [commitNow]);
 
@@ -82,6 +97,7 @@ export const Field = memo(({field, settings, callback}) => {
                             onChange={(v) => changeDebounced(v)}
                             onBlur={handleBlur}
                             __nextHasNoMarginBottom
+                            onKeyDown={handleKeyDown}
                             {...controlProps}
                         />
                     </div>
@@ -101,6 +117,7 @@ export const Field = memo(({field, settings, callback}) => {
                             onChange={(v) => changeDebounced(v === '' ? '' : v)}
                             onBlur={handleBlur}
                             __nextHasNoMarginBottom
+                            onKeyDown={handleKeyDown}
                             {...controlProps}
                         />
                     </div>
@@ -119,6 +136,7 @@ export const Field = memo(({field, settings, callback}) => {
                             options={controlProps.options || []}
                             aria-label={label}
                             onChange={(v) => commitNow(v)}
+                            onKeyDown={handleKeyDown}
                             __nextHasNoMarginBottom
                         />
                     </div>
@@ -135,6 +153,7 @@ export const Field = memo(({field, settings, callback}) => {
                             aria-label={label}
                             checked={!!value}
                             onChange={(checked) => commitNow(!!checked)}
+                            onKeyDown={handleKeyDown}
                             __nextHasNoMarginBottom
                             {...controlProps}
                         />
@@ -142,6 +161,148 @@ export const Field = memo(({field, settings, callback}) => {
                 </label>
             );
             break;
+
+        // ——— unit ———
+        case 'unit':
+            control = (
+                <label className={className} htmlFor={inputId}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --unit">
+                        <UnitControl
+                            id={inputId}
+                            value={value ?? ''}
+                            units={
+                                controlProps.units || [
+                                    {value: 'px', label: 'px'},
+                                    {value: 'em', label: 'em'},
+                                    {value: 'rem', label: 'rem'},
+                                    {value: '%', label: '%'},
+                                ]
+                            }
+                            onChange={(v) => changeDebounced(v)}
+                            onBlur={handleBlur}
+                            aria-label={label}
+                            __nextHasNoMarginBottom
+                            onKeyDown={handleKeyDown}
+                            {...controlProps}
+                        />
+                    </div>
+                </label>
+            );
+            break;
+
+// ——— color ———
+        case 'color':
+            control = (
+                <div className={className}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --color">
+                        <PanelColorSettings
+                            enableAlpha
+                            colorSettings={[
+                                {
+                                    slug,
+                                    label,
+                                    value,
+                                    onChange: (v) => changeDebounced(v),
+                                    isShownByDefault: true,
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
+            );
+            break;
+
+// ——— gradient ———
+        case 'gradient':
+            control = (
+                <div className={className}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --gradient">
+                        <GradientPicker
+                            key={slug}
+                            gradients={controlProps.gradients || []}
+                            clearable
+                            value={value ?? field?.default ?? ''}
+                            onChange={(v) => changeDebounced(v)}
+                        />
+                    </div>
+                </div>
+            );
+            break;
+
+// ——— box ———
+        case 'box':
+            control = (
+                <div className={className}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --box">
+                        <BoxControl
+                            label={label}
+                            values={value}
+                            onChange={(v) => changeDebounced(v)}
+                            onBlur={handleBlur}
+                            onKeyDown={handleKeyDown}
+                            {...controlProps}
+                        />
+                    </div>
+                </div>
+            );
+            break;
+
+// ——— composite ———
+        case 'composite':
+            control = (
+                <div className={`${className} --composite`}>
+                    <div className="wpbs-layout-tools__label">{label}</div>
+                    <div className="wpbs-layout-tools__group">
+                        {field.fields.map((sub) => (
+                            <Field
+                                key={sub.slug}
+                                field={sub}
+                                settings={settings}
+                                callback={callback}
+                            />
+                        ))}
+                    </div>
+                </div>
+            );
+            break;
+
+// ——— image / video ———
+        case 'image':
+        case 'video': {
+            const allowedTypes = type === 'image' ? ['image'] : ['video'];
+            const clear = () => commitNow('');
+            control = (
+                <div className={className}>
+                    <strong className="wpbs-layout-tools__label">{label}</strong>
+                    <div className="wpbs-layout-tools__control --media">
+                        <MediaUploadCheck>
+                            <MediaUpload
+                                title={label}
+                                onSelect={(media) => commitNow(media)}
+                                allowedTypes={allowedTypes}
+                                value={value}
+                                render={({open}) => (
+                                    <button type="button" className="components-button" onClick={open}>
+                                        {value ? 'Replace' : 'Select'} {type}
+                                    </button>
+                                )}
+                            />
+                            {value ? (
+                                <button type="button" className="components-button is-secondary" onClick={clear}>
+                                    Clear
+                                </button>
+                            ) : null}
+                        </MediaUploadCheck>
+                    </div>
+                </div>
+            );
+            break;
+        }
+
 
         default:
             control = null;

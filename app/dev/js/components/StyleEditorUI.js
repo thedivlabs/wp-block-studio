@@ -15,21 +15,10 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
         [updateLayoutItem, bpKey]
     );
 
-    /*const activeFields = useMemo(() => {
-        return layoutFieldsMap.filter(
-            (field) =>
-                !suppress.includes(field.slug) &&
-                settings?.[field.slug] !== undefined &&
-                settings?.[field.slug] !== null
-        );
-    }, [settings, suppress]);*/
-
-
     const layoutFieldsMap = useMemo(
         () => window?.WPBS_StyleEditor?.layoutFieldsMap ?? [],
         []
     );
-    console.log(layoutFieldsMap);
 
     return layoutFieldsMap.map((field) => <Field field={field}
                                                  settings={settings}

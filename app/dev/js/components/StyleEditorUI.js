@@ -144,18 +144,18 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
         [updateLayoutItem, bpKey]
     );
 
-    const activeFields = useMemo(() => {
+    /*const activeFields = useMemo(() => {
         return layoutFieldsMap.filter(
             (field) =>
                 !suppress.includes(field.slug) &&
                 settings?.[field.slug] !== undefined &&
                 settings?.[field.slug] !== null
         );
-    }, [settings, suppress]);
+    }, [settings, suppress]);*/
 
-    return activeFields.map((field) => <Field field={field}
-                                              settings={settings}
-                                              callback={(newValue) => updateProp({[field.slug]: newValue})}
+    return layoutFieldsMap.map((field) => <Field field={field}
+                                                 settings={settings}
+                                                 callback={(newValue) => updateProp({[field.slug]: newValue})}
     />);
 });
 
@@ -312,14 +312,18 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
 
                 return (
                     <section key={bpKey} className="wpbs-layout-tools__panel active">
-                        <div className="wpbs-layout-tools__grid">
-                            <ToolsPanel label={__('Layout')} resetAll={() => updateLayoutItem({}, bpKey)}>
-                                <LayoutFields
-                                    bpKey={bpKey}
-                                    settings={localLayout.breakpoints[bpKey]}
-                                    updateLayoutItem={(newProps) => updateLayoutItem(newProps, bpKey)}
-                                />
-                            </ToolsPanel>
+                        <div className="wpbs-layout-tools__header">
+                            <Button
+                                isSmall
+                                size="small"
+                                iconSize={20}
+                                onClick={() => removeLayoutItem(bpKey)}
+                                icon="no-alt"
+                            />
+                            <strong>{panelLabel}</strong>
+                        </div>
+                        <ToolsPanel label={__('Layout')} resetAll={() => updateLayoutItem({}, bpKey)}
+                                    className={'wpbs-layout-tools__grid'}>
                             <label className="wpbs-layout-tools__field --full">
                                 <strong>Breakpoint</strong>
                                 <div className="wpbs-layout-tools__control">
@@ -345,7 +349,12 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                                     </select>
                                 </div>
                             </label>
-                        </div>
+                            <LayoutFields
+                                bpKey={bpKey}
+                                settings={localLayout.breakpoints[bpKey]}
+                                updateLayoutItem={(newProps) => updateLayoutItem(newProps, bpKey)}
+                            />
+                        </ToolsPanel>
                     </section>
                 );
             })}

@@ -3,7 +3,7 @@ import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
 
 export const Field = memo(({field, settings, callback}) => {
-    const {type, slug, label, large = false, ...controlProps} = field;
+    const {type, child = false, slug, label, large = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -252,30 +252,41 @@ export const Field = memo(({field, settings, callback}) => {
     }
 
     if (field.fields) {
-        return (<ToolsPanelItem
-            hasValue={() => value !== undefined && value !== ''}
-            label={label}
-            onDeselect={() => commitNow(undefined)}
-        >
-            <div className={`${className} --composite`}>
-                <div className="wpbs-layout-tools__group">
-                    {field.fields.map((sub) => (
-                        <Field
-                            key={sub.slug}
-                            field={sub}
-                            settings={settings}
-                            callback={callback}
-                        />
-                    ))}
+        return (
+            <ToolsPanelItem
+                hasValue={() => false}
+                label={label}
+                isShownByDefault
+                onDeselect={() => {
+                }}
+            >
+                <div className={`${className} --composite`}>
+                    <div className="wpbs-layout-tools__group">
+                        {field.fields.map((sub) => (
+                            <Field
+                                key={sub.slug}
+                                field={sub}
+                                settings={settings}
+                                callback={callback}
+                                child={true}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
-        </ToolsPanelItem>);
+            </ToolsPanelItem>
+        );
     } else {
-        return control ? (<ToolsPanelItem
-            hasValue={() => value !== undefined && value !== ''}
-            label={label}
-            onDeselect={() => commitNow(undefined)}
-        >control</ToolsPanelItem>) : control;
+        return control && !child ? (
+            <ToolsPanelItem
+                hasValue={() => value !== undefined && value !== ''}
+                label={label}
+                onDeselect={() => commitNow(undefined)}
+            >
+                {control}
+            </ToolsPanelItem>
+        ) : (
+            control
+        );
     }
 
 

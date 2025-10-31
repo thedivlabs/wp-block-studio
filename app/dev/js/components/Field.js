@@ -231,7 +231,12 @@ export const Field = memo(({field, settings, callback}) => {
             <ToolsPanelItem
                 hasValue={() => value !== undefined && value !== ''}
                 label={label}
-                onDeselect={() => commit(undefined)}
+                onDeselect={() => {
+                    const next = {...settings};
+                    delete next[slug];
+                    commit(next);
+                }}
+                
             >
                 {control}
             </ToolsPanelItem>

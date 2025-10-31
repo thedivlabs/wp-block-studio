@@ -8,11 +8,12 @@ export function cleanObject(obj) {
             if (!_.isEmpty(cleaned)) {
                 result[key] = cleaned;
             }
-        } else if (!_.isNil(value) && value !== '') {
+        } else if (value !== undefined && value !== null) {
             result[key] = value;
         }
     }, {});
 }
+
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';

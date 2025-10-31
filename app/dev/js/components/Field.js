@@ -8,12 +8,12 @@ export const Field = memo(({field, settings, callback}) => {
     const {
         MediaUploadCheck,
         MediaUpload,
-        TextControl,
         SelectControl,
         ToggleControl,
         RangeControl,
         GradientPicker,
         PanelColorSettings,
+        TextControl,
         __experimentalToolsPanelItem: ToolsPanelItem,
         __experimentalBoxControl: BoxControl,
         __experimentalUnitControl: UnitControl,
@@ -53,9 +53,8 @@ export const Field = memo(({field, settings, callback}) => {
                     id={inputId}
                     value={value ?? ''}
                     aria-label={label}
-                    onChange={(v) => change(v)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
+                    onChange={(v) => change(v === '' ? '' : v)}
+                    type={'text'}
                     {...controlProps}
                 />
             );

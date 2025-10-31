@@ -7,7 +7,7 @@ import {
     CONTENT_VISIBILITY_OPTIONS, TEXT_ALIGN_OPTIONS, DIMENSION_UNITS
 } from "Includes/config";
 import {StyleEditorUI} from "Components/StyleEditorUI";
-import {updateStyleString, saveStyle, Field} from "Includes/style";
+import {updateStyleString, Field} from "Includes/style";
 import _, {debounce} from "lodash";
 
 const layoutFieldsMap = [
@@ -176,7 +176,6 @@ export function initStyleEditor() {
 
     const api = {
         updateStyleString,
-        saveStyle,
         StyleEditorUI,
         layoutFieldsMap,   // NEW
         hoverFieldsMap,    // NEW

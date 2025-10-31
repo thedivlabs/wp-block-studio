@@ -19,10 +19,16 @@ const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutIt
         []
     );
 
-    return layoutFieldsMap.map((field) => <Field field={field}
-                                                 settings={settings}
-                                                 callback={(newValue) => updateProp({[field.slug]: newValue})}
-    />);
+    return layoutFieldsMap
+        .filter((field) => !suppress.includes(field.slug))
+        .map((field) => (
+            <Field
+                key={field.slug}
+                field={field}
+                settings={settings}
+                callback={(newValue) => updateProp({[field.slug]: newValue})}
+            />
+        ));
 });
 
 const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
@@ -80,22 +86,16 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
     );
 
 
-    // Update helpers
     const updateDefaultLayout = useCallback(
         (newProps) => {
             commit({
                 ...localLayout,
-                props: {...localLayout.props, ...newProps},
-            });
-        },
-        [localLayout, commit]
-    );
-
-    const updateHoverItem = useCallback(
-        (newProps) => {
-            commit({
-                ...localLayout,
-                hover: {...localLayout.hover, ...newProps},
+                props: {
+                    ...localLayout.props,
+                    ...Object.fromEntries(
+                        Object.entries(newProps).map(([k, v]) => [k, v])
+                    ),
+                },
             });
         },
         [localLayout, commit]
@@ -103,15 +103,30 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
 
     const updateLayoutItem = useCallback(
         (newProps, bpKey) => {
+            const currentBp = localLayout.breakpoints?.[bpKey] || {};
+            const nextBp = {
+                ...currentBp,
+                ...Object.fromEntries(
+                    Object.entries(newProps).map(([k, v]) => [k, v])
+                ),
+            };
             commit({
                 ...localLayout,
                 breakpoints: {
                     ...localLayout.breakpoints,
-                    [bpKey]: {
-                        ...localLayout.breakpoints[bpKey],
-                        ...newProps,
-                    },
+                    [bpKey]: nextBp,
                 },
+            });
+        },
+        [localLayout, commit]
+    );
+
+
+    const updateHoverItem = useCallback(
+        (newProps) => {
+            commit({
+                ...localLayout,
+                hover: {...localLayout.hover, ...newProps},
             });
         },
         [localLayout, commit]
@@ -143,6 +158,8 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
         },
         [localLayout, commit]
     );
+
+    console.log(initialLayout);
 
     // Sorted list of breakpoints
     const layoutKeys = useMemo(() => {

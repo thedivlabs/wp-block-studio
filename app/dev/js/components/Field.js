@@ -232,11 +232,9 @@ export const Field = memo(({field, settings, callback}) => {
                 hasValue={() => value !== undefined && value !== ''}
                 label={label}
                 onDeselect={() => {
-                    const next = {...settings};
-                    delete next[slug];
-                    commit(next);
+                    commit({[slug]: undefined});
                 }}
-                
+
             >
                 {control}
             </ToolsPanelItem>

@@ -123,8 +123,20 @@ export function saveStyle(newStyle = {}, props, updateStyleSettings) {
     const {attributes} = props;
     const prev = attributes['wpbs-style'] || {};
 
+    // Preserve empty breakpoint objects before cleaning
+    const preservedBreakpoints = newStyle.breakpoints || {};
+
     const cleanedStyle = cleanObject(newStyle);
 
+    // Reattach any empty breakpoint keys that got stripped out
+    if (preservedBreakpoints) {
+        for (const [key, val] of Object.entries(preservedBreakpoints)) {
+            if (_.isEmpty(val) && !cleanedStyle.breakpoints?.[key]) {
+                cleanedStyle.breakpoints = cleanedStyle.breakpoints || {};
+                cleanedStyle.breakpoints[key] = {};
+            }
+        }
+    }
     if (_.isEqual(cleanObject(prev), cleanedStyle)) {
         return {'wpbs-style': prev, 'wpbs-css': attributes['wpbs-css'] || {}};
     }

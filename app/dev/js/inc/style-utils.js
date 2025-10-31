@@ -1,4 +1,5 @@
-import _ from "lodash";
+import {useMemo, useCallback, useRef} from '@wordpress/element';
+import _, {debounce, isEqual} from "lodash";
 
 export function cleanObject(obj) {
     return _.transform(obj, (result, value, key) => {
@@ -380,4 +381,48 @@ export function updateStyleString(props, styleRef) {
 
         styleRef.current.textContent = cssString.trim();
     }
+}
+
+export function useDebouncedCommit(value, callback, delay = 1100) {
+    const latestRef = useRef(value);
+    const cancelRef = useRef(null);
+
+    const safeCallback = useCallback(
+        (next) => {
+            if (!isEqual(next, value)) callback(next);
+        },
+        [callback, value]
+    );
+
+    const debounced = useMemo(
+        () => debounce((next) => safeCallback(next), delay),
+        [safeCallback, delay]
+    );
+
+    const scheduleCancel = useCallback(() => {
+        clearTimeout(cancelRef.current);
+        cancelRef.current = setTimeout(() => {
+            debounced.cancel();
+        }, delay);
+    }, [debounced, delay]);
+
+    const change = useCallback(
+        (next) => {
+            latestRef.current = next;
+            debounced(next);
+            scheduleCancel();
+        },
+        [debounced, scheduleCancel]
+    );
+
+    const commit = useCallback(
+        (next = latestRef.current) => {
+            clearTimeout(cancelRef.current);
+            debounced.flush();
+            safeCallback(next);
+        },
+        [debounced, safeCallback]
+    );
+
+    return {change, commit};
 }

@@ -1,6 +1,5 @@
-import {memo, useMemo, useCallback, useRef} from '@wordpress/element';
-import debounce from 'lodash/debounce';
-import isEqual from 'lodash/isEqual';
+import {memo, useCallback} from '@wordpress/element';
+import {useDebouncedCommit} from 'Includes/style-utils';
 
 export const Field = memo(({field, settings, callback}) => {
     const {type, child = false, slug, label, large = false, ...controlProps} = field;
@@ -27,61 +26,20 @@ export const Field = memo(({field, settings, callback}) => {
         .join(' ');
     const value = settings?.[slug];
 
-    const latestRef = useRef(value);
-    const cancelRef = useRef(null);
-
-    // safe equality check before committing
-    const safeCallback = useCallback(
-        (next) => {
-            if (!isEqual(next, value)) callback(next);
-        },
-        [callback, value]
-    );
-
-    // debounced commit for live typing
-    const debouncedChange = useMemo(
-        () => debounce((next) => safeCallback(next), 900),
-        [safeCallback]
-    );
-
-    // cancel timeout if user pauses too long
-    const scheduleCancel = useCallback(() => {
-        clearTimeout(cancelRef.current);
-        cancelRef.current = setTimeout(() => {
-            debouncedChange.cancel(); // cancel pending commits
-        }, 900);
-    }, [debouncedChange]);
-
-    const changeDebounced = useCallback(
-        (next) => {
-            latestRef.current = next;
-            debouncedChange(next);
-            scheduleCancel(); // restart cancel timer each keystroke
-        },
-        [debouncedChange, scheduleCancel]
-    );
-
-    const commitNow = useCallback(
-        (next = latestRef.current) => {
-            clearTimeout(cancelRef.current);
-            debouncedChange.flush(); // force any pending commit
-            safeCallback(next);
-        },
-        [debouncedChange, safeCallback]
-    );
+    // Use shared debounce/commit hook
+    const {change, commit} = useDebouncedCommit(value, callback);
 
     const handleKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter' || e.key === 'Tab') {
                 e.preventDefault(); // prevent accidental form submit
-                commitNow();
+                commit();
             }
         },
-        [commitNow]
+        [commit]
     );
 
-    // Commit on blur (focus out)
-    const handleBlur = useCallback(() => commitNow(), [commitNow]);
+    const handleBlur = useCallback(() => commit(), [commit]);
 
     let control = null;
 
@@ -95,7 +53,7 @@ export const Field = memo(({field, settings, callback}) => {
                     id={inputId}
                     value={value ?? ''}
                     aria-label={label}
-                    onChange={(v) => changeDebounced(v)}
+                    onChange={(v) => change(v)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
@@ -109,7 +67,7 @@ export const Field = memo(({field, settings, callback}) => {
                     id={inputId}
                     value={value ?? ''}
                     aria-label={label}
-                    onChange={(v) => changeDebounced(v === '' ? '' : v)}
+                    onChange={(v) => change(v === '' ? '' : v)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
@@ -124,7 +82,7 @@ export const Field = memo(({field, settings, callback}) => {
                     value={value ?? ''}
                     options={controlProps.options || []}
                     aria-label={label}
-                    onChange={(v) => commitNow(v === '' ? undefined : v)}
+                    onChange={(v) => commit(v === '' ? undefined : v)}
                     onKeyDown={handleKeyDown}
                     __nextHasNoMarginBottom
                     {...controlProps}
@@ -132,20 +90,18 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-
         case 'toggle':
             control = (
                 <ToggleControl
                     aria-label={label}
                     checked={!!value}
-                    onChange={(checked) => commitNow(!!checked)}
+                    onChange={(checked) => commit(!!checked)}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
                 />
             );
             break;
 
-        // ——— unit ———
         case 'unit':
             control = (
                 <UnitControl
@@ -159,8 +115,8 @@ export const Field = memo(({field, settings, callback}) => {
                             {value: '%', label: '%'},
                         ]
                     }
-                    onUnitChange={() => changeDebounced('')}
-                    onChange={(v) => changeDebounced(v)}
+                    onUnitChange={() => change('')}
+                    onChange={(v) => change(v)}
                     onBlur={handleBlur}
                     aria-label={label}
                     onKeyDown={handleKeyDown}
@@ -170,7 +126,6 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-// ——— color ———
         case 'color':
             control = (
                 <PanelColorSettings
@@ -180,7 +135,7 @@ export const Field = memo(({field, settings, callback}) => {
                             slug,
                             label,
                             value,
-                            onChange: (v) => changeDebounced(v),
+                            onChange: (v) => change(v),
                             isShownByDefault: true,
                         },
                     ]}
@@ -189,7 +144,6 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-// ——— gradient ———
         case 'gradient':
             control = (
                 <GradientPicker
@@ -197,19 +151,18 @@ export const Field = memo(({field, settings, callback}) => {
                     gradients={controlProps.gradients || []}
                     clearable
                     value={value ?? field?.default ?? ''}
-                    onChange={(v) => changeDebounced(v)}
+                    onChange={(v) => change(v)}
                     __nextHasNoMarginBottom
                 />
             );
             break;
 
-// ——— box ———
         case 'box':
             control = (
                 <BoxControl
                     label={label}
                     values={value}
-                    onChange={(v) => changeDebounced(v)}
+                    onChange={(v) => change(v)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
@@ -217,16 +170,15 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-// ——— image / video ———
         case 'image':
         case 'video': {
             const allowedTypes = type === 'image' ? ['image'] : ['video'];
-            const clear = () => commitNow('');
+            const clear = () => commit('');
             control = (
                 <MediaUploadCheck>
                     <MediaUpload
                         title={label}
-                        onSelect={(media) => commitNow(media)}
+                        onSelect={(media) => commit(media)}
                         allowedTypes={allowedTypes}
                         value={value}
                         render={({open}) => (
@@ -245,7 +197,6 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
         }
-
 
         default:
             control = null;
@@ -280,7 +231,7 @@ export const Field = memo(({field, settings, callback}) => {
             <ToolsPanelItem
                 hasValue={() => value !== undefined && value !== ''}
                 label={label}
-                onDeselect={() => commitNow(undefined)}
+                onDeselect={() => commit(undefined)}
             >
                 {control}
             </ToolsPanelItem>
@@ -288,6 +239,4 @@ export const Field = memo(({field, settings, callback}) => {
             control
         );
     }
-
-
 });

@@ -17,35 +17,30 @@ export function cleanObject(obj) {
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
 
-    // Handle objects (padding, margin, etc.)
     if (typeof raw === 'object' && !Array.isArray(raw)) {
         return Object.entries(raw)
             .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
             .join(' ');
     }
 
-    // Handle arrays (e.g., font-family, fallbacks)
     if (Array.isArray(raw)) {
         return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
     }
 
     if (typeof raw !== 'string') return raw;
 
-    // Handle custom variable format
     if (raw.startsWith('var:')) {
         const [source, type, name] = raw.slice(4).split('|');
         if (source && type && name) {
             return `var(--wp--${source}--${type}--${name})`;
         }
-        return raw; // fallback if malformed
+        return raw;
     }
 
-    // Handle CSS variable directly
     if (raw.startsWith('--wp--')) {
         return `var(${raw})`;
     }
 
-    // Handle presets (color, font-size, spacing, etc.)
     if (presetKeyword) {
         return `var(--wp--preset--${presetKeyword}--${raw})`;
     }
@@ -54,81 +49,30 @@ export function getCSSFromStyle(raw, presetKeyword = '') {
 }
 
 const SPECIAL_FIELDS = [
-    'gap',
-    'margin',
-    'box-shadow',
-    'transform',
-    'filter',
-    'hide-empty',
-    'required',
-    'offset-height',
-    'align-header',
-    'outline',
-    'duration',
-    'reveal',
-    'reveal-easing',
-    'reveal-duration',
-    'reveal-offset',
-    'reveal-distance',
-    'reveal-repeat',
-    'reveal-mirror',
-    'transition',
-    'breakpoint',
-    'mask-image',
-    'mask-repeat',
-    'mask-size',
-    'mask-origin',
-    'basis',
-    'height',
-    'height-custom',
-    'min-height',
-    'min-height-custom',
-    'max-height',
-    'max-height-custom',
-    'width',
-    'width-custom',
-    'translate',
-    'offset-header',
-    'text-color',
-    'text-decoration-color',
-    'position',
-    'container',
-    'padding',
-    'shadow',
-    'border',
-    'border-radius',
-    'background-color',
+    'gap', 'margin', 'box-shadow', 'transform', 'filter', 'hide-empty', 'required',
+    'offset-height', 'align-header', 'outline', 'duration', 'reveal', 'reveal-easing',
+    'reveal-duration', 'reveal-offset', 'reveal-distance', 'reveal-repeat', 'reveal-mirror',
+    'transition', 'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
+    'basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
+    'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
+    'text-decoration-color', 'position', 'container', 'padding', 'shadow', 'border',
+    'border-radius', 'background-color',
 ];
 
 const heightVal = (val) => {
-
     let height = val;
-
-    if (val === 'screen') {
-        height = 'calc(100svh - var(--wpbs-header-height, 0px))'
-    }
-
-    if (val === 'full-screen') {
-        height = '100svh'
-    }
-
-    if (['auto', 'full', 'inherit'].includes(val)) {
-        height = val;
-    }
-
+    if (val === 'screen') height = 'calc(100svh - var(--wpbs-header-height, 0px))';
+    if (val === 'full-screen') height = '100svh';
+    if (['auto', 'full', 'inherit'].includes(val)) height = val;
     return height;
-
-}
+};
 
 export function propsToCss(props = {}, important = false, importantKeysCustom = []) {
     const importantProps = [
-        'padding', 'margin', 'gap',
-        'width', 'min-width', 'max-width', 'height', 'min-height', 'max-height',
-        'color', 'background-color', 'border-color',
-        'font-size', 'line-height', 'letter-spacing',
-        'border-width', 'border-radius',
-        'opacity', 'box-shadow', 'filter',
-        ...importantKeysCustom
+        'padding', 'margin', 'gap', 'width', 'min-width', 'max-width', 'height',
+        'min-height', 'max-height', 'color', 'background-color', 'border-color',
+        'font-size', 'line-height', 'letter-spacing', 'border-width', 'border-radius',
+        'opacity', 'box-shadow', 'filter', ...importantKeysCustom
     ];
 
     return Object.entries(props)
@@ -142,7 +86,6 @@ export function propsToCss(props = {}, important = false, importantKeysCustom = 
 
 export function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
-
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
 
@@ -162,10 +105,7 @@ export function parseSpecialProps(props = {}, attributes = {}) {
                 case 'height':
                 case 'height-custom': {
                     result['height'] = props?.['height-custom'] ?? props?.['height'] ?? val;
-                    switch (result['height']) {
-                        case 'screen':
-                            result['height'] = '100svh';
-                    }
+                    if (result['height'] === 'screen') result['height'] = '100svh';
                     break;
                 }
 
@@ -206,18 +146,10 @@ export function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'border': {
                     if (typeof val === 'object') {
-                        if (val.top) {
-                            result['border-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
-                        }
-                        if (val.right) {
-                            result['border-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
-                        }
-                        if (val.bottom) {
-                            result['border-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
-                        }
-                        if (val.left) {
-                            result['border-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
-                        }
+                        if (val.top) result['border-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        if (val.right) result['border-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        if (val.bottom) result['border-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        if (val.left) result['border-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
                     }
                     break;
                 }
@@ -232,21 +164,12 @@ export function parseSpecialProps(props = {}, attributes = {}) {
                     break;
                 }
 
-
                 case 'outline': {
                     if (typeof val === 'object') {
-                        if (val.top) {
-                            result['outline-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
-                        }
-                        if (val.right) {
-                            result['outline-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
-                        }
-                        if (val.bottom) {
-                            result['outline-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
-                        }
-                        if (val.left) {
-                            result['outline-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
-                        }
+                        if (val.top) result['outline-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        if (val.right) result['outline-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        if (val.bottom) result['outline-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        if (val.left) result['outline-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
                     }
                     break;
                 }
@@ -274,11 +197,7 @@ export function parseSpecialProps(props = {}, attributes = {}) {
                     break;
 
                 case 'translate':
-                    result['transform'] = `translate(${
-                        getCSSFromStyle(val?.left || '0px')
-                    }, ${
-                        getCSSFromStyle(val?.top || '0px')
-                    })`;
+                    result['transform'] = `translate(${getCSSFromStyle(val?.left || '0px')}, ${getCSSFromStyle(val?.top || '0px')})`;
                     break;
 
                 case 'offset-header':
@@ -296,39 +215,48 @@ export function parseSpecialProps(props = {}, attributes = {}) {
             result[key] = val;
         }
     });
-
     return result;
 }
 
+// ✅ New consolidated CSS builder
+export function styleToCss(cssObj, name, uniqueId) {
+    if (!cssObj || !uniqueId) return '';
+
+    const selector = [
+        name ? `.${name.replace('/', '-')}` : '',
+        `.${uniqueId}`
+    ].join('').trim();
+
+    const buildRules = (props, important = false) =>
+        Object.entries(props || {})
+            .filter(([_, v]) => v != null && v !== '')
+            .map(([k, v]) => `${k}: ${v}${important ? ' !important' : ''};`)
+            .join(' ');
+
+    let css = '';
+
+    if (!_.isEmpty(cssObj.props)) css += `${selector} { ${buildRules(cssObj.props)} }`;
+
+    for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints || {})) {
+        const bp = WPBS?.settings?.breakpoints?.[bpKey];
+        if (bp && !_.isEmpty(bpProps)) {
+            css += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${buildRules(bpProps, true)} } }`;
+        }
+    }
+
+    if (!_.isEmpty(cssObj.hover)) {
+        css += `${selector}:hover { ${buildRules(cssObj.hover)} }`;
+    }
+
+    return css.trim();
+}
+
+// ✅ Streamlined writer
 export function updateStyleString(props, styleRef) {
     const {attributes, name} = props;
-
     const {'wpbs-css': cssObj, uniqueId} = attributes;
-
-
-    if (styleRef?.current && uniqueId) {
-        const blockClass = name ? `.${name.replace('/', '-')}` : '';
-        const selector = `${blockClass}.${uniqueId}`.trim();
-
-        let cssString = '';
-
-        if (!_.isEmpty(cssObj.props)) {
-            cssString += `${selector} { ${propsToCss(cssObj.props)} }`;
-        }
-
-        for (const [bpKey, bpProps] of Object.entries(cssObj?.breakpoints || {})) {
-            const bp = WPBS?.settings?.breakpoints?.[bpKey];
-            if (bp && !_.isEmpty(bpProps)) {
-                cssString += `@media (max-width: ${bp.size - 1}px) { ${selector} { ${propsToCss(bpProps, true)} } }`;
-            }
-        }
-
-        if (!_.isEmpty(cssObj.hover)) {
-            cssString += `${selector}:hover { ${propsToCss(cssObj.hover)} }`;
-        }
-
-        styleRef.current.textContent = cssString.trim();
-    }
+    if (!styleRef?.current || !uniqueId) return;
+    styleRef.current.textContent = styleToCss(cssObj, name, uniqueId);
 }
 
 export function useDebouncedCommit(value, callback, delay = 1100) {

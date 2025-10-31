@@ -1,7 +1,6 @@
 import {memo, useCallback, useEffect, useMemo, useState} from "@wordpress/element";
 import {Field} from "Components/Field";
 import _ from "lodash";
-import {saveStyle} from "Includes/style-utils";
 import {
     Button,
     __experimentalToolsPanel as ToolsPanel,
@@ -75,10 +74,11 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
     const commit = useCallback(
         (next) => {
             setLocalLayout(next);
-            updateStyleSettings(saveStyle(next, props));
+            updateStyleSettings(next);
         },
-        [props, styleRef]
+        [updateStyleSettings]
     );
+
 
     // Update helpers
     const updateDefaultLayout = useCallback(

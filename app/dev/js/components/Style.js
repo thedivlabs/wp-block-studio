@@ -1,7 +1,9 @@
-import {useState, useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
+import {useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {isEqual, cloneDeep, merge} from 'lodash';
+import {cleanObject, parseSpecialProps} from 'Includes/style-utils'; // at top
+
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -180,26 +182,35 @@ export const withStyle = (Component) => (props) => {
 
 
     const updateStyleSettings = useCallback(
-        (newProps) => {
+        (newStyle) => {
             const currentStyle = attributes['wpbs-style'] || {};
             const currentCss = attributes['wpbs-css'] || {};
 
-            const nextStyle = newProps['wpbs-style'] || {};
-            const nextCss = newProps['wpbs-css'] || {};
+            // Normalize layout to CSS object
+            const cleanedStyle = cleanObject(newStyle);
+            const cssObj = {
+                props: parseSpecialProps(cleanedStyle.props || {}),
+                breakpoints: {},
+                hover: {},
+            };
 
-            // merge in block-level css
-            const mergedCss = merge({}, cssPropsRef.current, nextCss);
+            if (cleanedStyle.breakpoints) {
+                for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
+                    cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+                }
+            }
+            if (cleanedStyle.hover) {
+                cssObj.hover = parseSpecialProps(cleanedStyle.hover);
+            }
 
-            // avoid redundant updates
-            const isSameStyle = isEqual(currentStyle, nextStyle);
-            const isSameCss = isEqual(currentCss, mergedCss);
-            if (isSameStyle && isSameCss) return;
+            // Merge in block-level css from cssPropsRef
+            const mergedCss = merge({}, cssPropsRef.current, cleanObject(cssObj));
 
-            console.log('updateStyleSettings');
+            // Skip redundant updates
+            if (isEqual(currentStyle, cleanedStyle) && isEqual(currentCss, mergedCss)) return;
 
-            // update both attributes
             setAttributes({
-                'wpbs-style': cloneDeep(nextStyle),
+                'wpbs-style': cloneDeep(cleanedStyle),
                 'wpbs-css': cloneDeep(mergedCss),
             });
         },

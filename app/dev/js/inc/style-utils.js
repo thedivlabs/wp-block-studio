@@ -120,58 +120,6 @@ const heightVal = (val) => {
 
 }
 
-export function saveStyle(newStyle = {}, props, updateStyleSettings) {
-    const {attributes} = props;
-    const prev = attributes['wpbs-style'] || {};
-    const prevBps = prev.breakpoints || {};
-    const nextBps = newStyle.breakpoints || {};
-
-    // Clean as usual
-    const cleanedStyle = cleanObject(newStyle);
-
-    // Re-attach empty breakpoints only if they are newly added
-    for (const [key, val] of Object.entries(nextBps)) {
-        const existedBefore = Object.prototype.hasOwnProperty.call(prevBps, key);
-        const cleanedHas = cleanedStyle.breakpoints?.[key];
-
-        // Keep freshly added empty breakpoints; let deleted ones vanish
-        if (!existedBefore && _.isEmpty(val) && !cleanedHas) {
-            cleanedStyle.breakpoints = cleanedStyle.breakpoints || {};
-            cleanedStyle.breakpoints[key] = {};
-        }
-    }
-
-    // Bail if nothing actually changed
-    if (_.isEqual(cleanObject(prev), cleanedStyle)) {
-        return {
-            'wpbs-style': prev,
-            'wpbs-css': attributes['wpbs-css'] || {},
-        };
-    }
-
-    // Normalize into CSS object
-    const cssObj = {
-        props: parseSpecialProps(cleanedStyle.props || {}),
-        breakpoints: {},
-        hover: {},
-    };
-
-    if (cleanedStyle.breakpoints) {
-        for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
-            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
-        }
-    }
-
-    if (newStyle.hover) {
-        cssObj.hover = parseSpecialProps(cleanedStyle.hover);
-    }
-
-    return {
-        'wpbs-style': cleanedStyle,
-        'wpbs-css': cleanObject(cssObj),
-    };
-}
-
 export function propsToCss(props = {}, important = false, importantKeysCustom = []) {
     const importantProps = [
         'padding', 'margin', 'gap',

@@ -182,7 +182,13 @@ export const withStyle = (Component) => (props) => {
 
 
     const updateStyleSettings = useCallback(
-        (newStyle) => {
+        (incoming) => {
+            // Support both direct layout objects and wrapped { 'wpbs-style': layout } calls
+            const newStyle =
+                incoming && incoming['wpbs-style']
+                    ? incoming['wpbs-style']
+                    : incoming || {};
+
             const currentStyle = attributes['wpbs-style'] || {};
             const currentCss = attributes['wpbs-css'] || {};
 
@@ -199,6 +205,7 @@ export const withStyle = (Component) => (props) => {
                     cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
                 }
             }
+
             if (cleanedStyle.hover) {
                 cssObj.hover = parseSpecialProps(cleanedStyle.hover);
             }
@@ -214,7 +221,7 @@ export const withStyle = (Component) => (props) => {
                 'wpbs-css': cloneDeep(mergedCss),
             });
         },
-        [setAttributes]
+        [attributes, setAttributes]
     );
 
     useEffect(() => {

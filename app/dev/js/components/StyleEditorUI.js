@@ -180,44 +180,43 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
             {layoutKeys.map((bpKey) => {
 
                 return (
-                    <Grid columns={2} columnGap={15} rowGap={20} className={'wpbs-layout-tools__panel'}>
-                        <div className="wpbs-layout-tools__header">
-                            <label className="wpbs-layout-tools__field --full">
-                                <Button
-                                    isSmall
-                                    size="small"
-                                    iconSize={20}
-                                    onClick={() => removeLayoutItem(bpKey)}
-                                    icon="no-alt"
-                                />
-                                <div className="wpbs-layout-tools__control">
-                                    <select
-                                        value={bpKey}
-                                        onChange={(e) => {
-                                            const newKey = e.target.value;
-                                            const nextBreakpoints = {...localLayout.breakpoints};
-                                            nextBreakpoints[newKey] = nextBreakpoints[bpKey];
-                                            delete nextBreakpoints[bpKey];
-                                            const next = {...localLayout, breakpoints: nextBreakpoints};
-                                            setLocalLayout(next);
-                                            commitDebounced(next);
-                                        }}
-                                    >
-                                        {breakpoints.map((b) => {
-                                            const size = b?.size ? `(${b.size}px)` : '';
-                                            const label = [b ? b.label : bpKey, size].filter(Boolean).join(' ');
-                                            return <option
-                                                key={b.key}
-                                                value={b.key}
-                                                disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
-                                            >
-                                                {label}
-                                            </option>
-                                        })}
-                                    </select>
-                                </div>
-                            </label>
-                        </div>
+                    <div className={'wpbs-layout-tools__panel'}>
+                        <label className="wpbs-layout-tools__header">
+                            <Button
+                                isSmall
+                                size="small"
+                                iconSize={20}
+                                onClick={() => removeLayoutItem(bpKey)}
+                                icon="no-alt"
+                            />
+                            <div className="wpbs-layout-tools__breakpoint">
+                                <select
+                                    id={bpKey}
+                                    value={bpKey}
+                                    onChange={(e) => {
+                                        const newKey = e.target.value;
+                                        const nextBreakpoints = {...localLayout.breakpoints};
+                                        nextBreakpoints[newKey] = nextBreakpoints[bpKey];
+                                        delete nextBreakpoints[bpKey];
+                                        const next = {...localLayout, breakpoints: nextBreakpoints};
+                                        setLocalLayout(next);
+                                        commitDebounced(next);
+                                    }}
+                                >
+                                    {breakpoints.map((b) => {
+                                        const size = b?.size ? `(${b.size}px)` : '';
+                                        const label = [b ? b.label : bpKey, size].filter(Boolean).join(' ');
+                                        return <option
+                                            key={b.key}
+                                            value={b.key}
+                                            disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
+                                        >
+                                            {label}
+                                        </option>
+                                    })}
+                                </select>
+                            </div>
+                        </label>
                         <ToolsPanel
                             label={__('Layout')}
                             resetAll={() =>
@@ -236,7 +235,7 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                                 updateLayoutItem={updateLayoutItem}
                             />
                         </ToolsPanel>
-                    </Grid>
+                    </div>
                 );
             })}
 

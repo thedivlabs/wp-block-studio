@@ -50,7 +50,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     // Compute base block name class
     const blockNameClass = name ? name.replace('/', '-') : '';
 
-    // Construct class list with clean filtering
     const classList = [
         blockNameClass,
         uniqueId,
@@ -182,47 +181,40 @@ export const withStyle = (Component) => (props) => {
 
 
     const updateStyleSettings = useCallback(
-        (incoming) => {
-            // Support both direct layout objects and wrapped { 'wpbs-style': layout } calls
-            const newStyle =
-                incoming && incoming['wpbs-style']
-                    ? incoming['wpbs-style']
-                    : incoming || {};
+        (layoutState) => {
+            const cleanedStyle = cleanObject(layoutState);
 
-            const currentStyle = attributes['wpbs-style'] || {};
-            const currentCss = attributes['wpbs-css'] || {};
-
-            // Normalize layout to CSS object
-            const cleanedStyle = cleanObject(newStyle);
             const cssObj = {
                 props: parseSpecialProps(cleanedStyle.props || {}),
                 breakpoints: {},
                 hover: {},
             };
 
-            if (cleanedStyle.breakpoints) {
-                for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints)) {
-                    cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
-                }
+            for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints || {})) {
+                cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
             }
 
             if (cleanedStyle.hover) {
                 cssObj.hover = parseSpecialProps(cleanedStyle.hover);
             }
 
-            // Merge in block-level css from cssPropsRef
-            const mergedCss = merge({}, cssPropsRef.current, cleanObject(cssObj));
+            const cleanedCss = cleanObject(cssObj);
 
-            // Skip redundant updates
-            if (isEqual(currentStyle, cleanedStyle) && isEqual(currentCss, mergedCss)) return;
+            if (
+                isEqual(cleanObject(attributes['wpbs-style']), cleanedStyle) &&
+                isEqual(cleanObject(attributes['wpbs-css']), cleanedCss)
+            ) {
+                return;
+            }
 
             setAttributes({
-                'wpbs-style': cloneDeep(cleanedStyle),
-                'wpbs-css': cloneDeep(mergedCss),
+                'wpbs-style': cleanedStyle,
+                'wpbs-css': cleanedCss,
             });
         },
         [attributes, setAttributes]
     );
+
 
     useEffect(() => {
         if (styleRef.current) {

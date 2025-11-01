@@ -11,11 +11,59 @@ import {updateStyleString, Field} from "Includes/style";
 import _, {debounce} from "lodash";
 
 const layoutFieldsMap = [
-
+    {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
+    {type: 'select', slug: 'aspect-ratio', label: 'Shape', options: SHAPE_OPTIONS},
+    {type: 'unit', slug: 'basis', label: 'Basis'},
+    {type: 'color', slug: 'background-color', label: 'Background'},
+    {type: 'shadow', slug: 'shadow', label: 'Shadow'},
+    {
+        type: 'composite',
+        slug: 'box-position',
+        label: 'Box',
+        fields: [
+            {type: 'unit', slug: 'top', label: 'Top'},
+            {type: 'unit', slug: 'right', label: 'Right'},
+            {type: 'unit', slug: 'bottom', label: 'Bottom'},
+            {type: 'unit', slug: 'left', label: 'Left'},
+        ],
+        large: true,
+    },
     {type: 'select', slug: 'container', label: 'Container', options: CONTAINER_OPTIONS},
-
-
-    // Reveal / animation
+    {type: 'select', slug: 'content-visibility', label: 'Content Visibility', options: CONTENT_VISIBILITY_OPTIONS},
+    {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
+    {type: 'unit', slug: 'flex-grow', label: 'Grow'},
+    {type: 'select', slug: 'flex-direction', label: 'Direction', options: DIRECTION_OPTIONS},
+    {type: 'unit', slug: 'flex-shrink', label: 'Shrink'},
+    {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
+    {type: 'unit', slug: 'font-size', label: 'Font Size'},
+    {type: 'unit', slug: 'gap', label: 'Gap'},
+    {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
+    {type: 'unit', slug: 'height-custom', label: 'Height'},
+    {type: 'select', slug: 'justify-content', label: 'Justify', options: JUSTIFY_OPTIONS},
+    {type: 'unit', slug: 'line-height', label: 'Line Height'},
+    {
+        type: 'box',
+        slug: 'margin',
+        label: 'Margin',
+        large: true,
+        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}},
+    },
+    {type: 'unit', slug: 'max-height', label: 'Max Height'},
+    {type: 'unit', slug: 'max-height-custom', label: 'Max-Height'},
+    {type: 'unit', slug: 'max-width', label: 'Max Width'},
+    {type: 'number', slug: 'opacity', label: 'Opacity'},
+    {type: 'unit', slug: 'order', label: 'Order'},
+    {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
+    {
+        type: 'box',
+        slug: 'padding',
+        label: 'Padding',
+        large: true,
+        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}},
+    },
+    {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
+    {type: 'toggle', slug: 'outline', label: 'Outline'},
+    {type: 'unit', slug: 'border-radius', label: 'Radius'},
     {
         type: 'composite',
         slug: 'reveal-group',
@@ -29,90 +77,23 @@ const layoutFieldsMap = [
             {type: 'toggle', slug: 'reveal-repeat', label: 'Repeat'},
             {type: 'toggle', slug: 'reveal-mirror', label: 'Mirror'},
         ],
-        large: true
+        large: true,
     },
-
-
-    // Header alignment
-    {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
-
-    // Display / flex
-    {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
-    {type: 'select', slug: 'flex-direction', label: 'Direction', options: DIRECTION_OPTIONS},
-    {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
-    {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
-    {type: 'select', slug: 'justify-content', label: 'Justify', options: JUSTIFY_OPTIONS},
-
-    // Sizing
-    {type: 'select', slug: 'aspect-ratio', label: 'Shape', options: SHAPE_OPTIONS},
-    {type: 'number', slug: 'opacity', label: 'Opacity'},
-    {type: 'unit', slug: 'basis', label: 'Basis'},
-    {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
-    {type: 'unit', slug: 'width-custom', label: 'Width'},
-    {type: 'unit', slug: 'max-width', label: 'Max Width'},
-    {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
-    {type: 'unit', slug: 'height-custom', label: 'Height'},
     {type: 'unit', slug: 'min-height', label: 'Min Height'},
     {type: 'unit', slug: 'min-height-custom', label: 'Min-Height'},
-    {type: 'unit', slug: 'max-height', label: 'Max Height'},
-    {type: 'unit', slug: 'max-height-custom', label: 'Max-Height'},
-
-    {type: 'unit', slug: 'flex-grow', label: 'Grow'},
-    {type: 'unit', slug: 'flex-shrink', label: 'Shrink'},
-
-    // Positioning
-    {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
-    {type: 'number', slug: 'z-index', label: 'Z Index'},
-    {
-        type: 'composite',
-        slug: 'box-position',
-        label: 'Box',
-        fields: [
-            {type: 'unit', slug: 'top', label: 'Top'},
-            {type: 'unit', slug: 'right', label: 'Right'},
-            {type: 'unit', slug: 'bottom', label: 'Bottom'},
-            {type: 'unit', slug: 'left', label: 'Left'},
-        ],
-        large: true
-    },
-
-    // Overflow
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
-    {type: 'unit', slug: 'aspect-ratio', label: 'Shape'},
-    {type: 'unit', slug: 'order', label: 'Order'},
+    {type: 'color', slug: 'text-color', label: 'Text Color'},
+    {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
+    {type: 'color', slug: 'text-decoration-color', label: 'Decoration'},
     {
         type: 'box',
         slug: 'translate',
         label: 'Translate',
-        options: {sides: ['top', 'left'], inputProps: {units: DIMENSION_UNITS}}
+        options: {sides: ['top', 'left'], inputProps: {units: DIMENSION_UNITS}},
     },
-
-    // Misc toggles
-    {type: 'toggle', slug: 'outline', label: 'Outline'},
-    //{type: 'toggle', slug: 'mark-empty', label: 'Mark Empty'},
-
-    // Colors / visibility
-    {type: 'color', slug: 'text-decoration-color', label: 'Decoration'},
-    {type: 'select', slug: 'content-visibility', label: 'Content', options: CONTENT_VISIBILITY_OPTIONS},
-
-    {
-        type: 'box', slug: 'padding', label: 'Padding', large: true,
-        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}}
-    },
-    {
-        type: 'box', slug: 'margin', label: 'Margin', large: true,
-        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}}
-    },
-
-    {type: 'unit', slug: 'gap', label: 'Gap'},
-    {type: 'unit', slug: 'border-radius', label: 'Radius'},
-    {type: 'unit', slug: 'font-size', label: 'Font Size'},
-    {type: 'unit', slug: 'line-height', label: 'Line Height'},
-    {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
-
-    {type: 'color', slug: 'text-color', label: 'Text Color'},
-    {type: 'color', slug: 'background-color', label: 'Background'},
-    {type: 'text', slug: 'box-shadow', label: 'Shadow'},
+    {type: 'number', slug: 'z-index', label: 'Z Index'},
+    {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
+    {type: 'unit', slug: 'width-custom', label: 'Width'},
 ];
 
 const hoverFieldsMap = [

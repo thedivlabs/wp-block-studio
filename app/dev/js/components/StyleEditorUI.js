@@ -158,7 +158,7 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                         <LayoutFields
                             bpKey="layout"
                             settings={localLayout.props}
-                            suppress={['padding', 'margin', 'gap']}
+                            suppress={['padding', 'margin', 'gap', 'outline']}
                         />
                     </Grid>
                 </ToolsPanel>

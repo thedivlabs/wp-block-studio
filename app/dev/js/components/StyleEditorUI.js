@@ -181,7 +181,7 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
 
                 return (
                     <div className={'wpbs-layout-tools__panel'}>
-                        <label className="wpbs-layout-tools__header">
+                        <div className="wpbs-layout-tools__header">
                             <Button
                                 isSmall
                                 size="small"
@@ -189,7 +189,7 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                                 onClick={() => removeLayoutItem(bpKey)}
                                 icon="no-alt"
                             />
-                            <div className="wpbs-layout-tools__breakpoint">
+                            <label className="wpbs-layout-tools__breakpoint">
                                 <select
                                     id={bpKey}
                                     value={bpKey}
@@ -215,8 +215,8 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                                         </option>
                                     })}
                                 </select>
-                            </div>
-                        </label>
+                            </label>
+                        </div>
                         <ToolsPanel
                             label={__('Layout')}
                             resetAll={() =>

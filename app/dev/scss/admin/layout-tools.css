@@ -9,11 +9,6 @@
     width: 100%;
   }
 
-  .components-panel__body-title {
-    background: white;
-    margin: 0 !important;
-  }
-
   .wpbs-layout-tools__panel {
     background: white;
     border: 0;
@@ -49,11 +44,6 @@
         background-color: #efefef;
         color: black !important;
       }
-    }
-
-    strong {
-      color: var(--wp-admin-theme-color, black);
-      margin-right: auto;
     }
 
   }

@@ -1,5 +1,9 @@
 .wpbs-layout-tools {
-  padding: 0 !important;
+  padding: 9px 8px;
+  background: var(--color-gray-400, #cdcdcd);
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
 
   select,
   input[type="number"],
@@ -22,18 +26,9 @@
   .wpbs-layout-tools__panel {
     background: white;
     border: 0;
-    display: flex;
-    flex-direction: column;
+    grid-column: 1/-1;
     width: 100%;
     border-radius: 4px;
-  }
-
-  .wpbs-layout-tools__container {
-    padding: 9px 8px;
-    background: var(--color-gray-400, #cdcdcd);
-    gap: 5px;
-    display: flex;
-    flex-direction: column;
   }
 
   .wpbs-layout-tools__header {
@@ -44,6 +39,7 @@
     padding: 8px 8px 8px 12px;
     border-bottom: 1px solid #dedede;
     gap: 5px;
+    grid-column: 1/-1;
 
     strong {
       color: var(--wp-admin-theme-color, black);
@@ -52,23 +48,22 @@
 
   }
 
-  .wpbs-layout-tools__grid,
+  .wpbs-layout-tools__grid {
+    grid-column: 1/-1;
+    width: 100%;
+    padding: 0 !important;
+  }
+
   .wpbs-layout-tools__group {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     column-gap: 5px;
     row-gap: 12px;
     width: 100%;
-  }
-
-  .wpbs-layout-tools__grid {
-    padding: 12px 12px 16px;
-  }
-
-  .wpbs-layout-tools__group {
     padding: 12px;
     background-color: #eaeaea;
     border-radius: 4px;
+    grid-column: 1/-1;
   }
 
   .wpbs-layout-tools__header:not(.active) {

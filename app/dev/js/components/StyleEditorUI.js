@@ -149,46 +149,74 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
 
     // --- Render
     return (
-        <div>
-            {/* Default section */}
-            <ToolsPanel label={__('Layout')} resetAll={() => commitNow({...localLayout, props: {}})}>
-                <Grid columns={2} columnGap={15} rowGap={20} style={{gridColumn: '1/-1'}}>
-                    <LayoutFields
-                        bpKey="layout"
-                        settings={localLayout.props}
-                        suppress={['padding', 'margin', 'gap']}
-                    />
-                </Grid>
-            </ToolsPanel>
+        <div className={'wpbs-layout-tools'}>
 
+            {/* Default section */}
+            <div className={'wpbs-layout-tools__panel'}>
+                <ToolsPanel label={__('Layout')} resetAll={() => commitNow({...localLayout, props: {}})}>
+                    <Grid columns={2} columnGap={15} rowGap={20} className={'wpbs-layout-tools__grid'}>
+                        <LayoutFields
+                            bpKey="layout"
+                            settings={localLayout.props}
+                            suppress={['padding', 'margin', 'gap']}
+                        />
+                    </Grid>
+                </ToolsPanel>
+            </div>
             {/* Hover section */}
-            <ToolsPanel label={__('Hover')} resetAll={() => commitNow({...localLayout, hover: {}})}>
-                <Grid columns={2} columnGap={15} rowGap={20} style={{gridColumn: '1/-1'}}>
-                    <HoverFields
-                        bpKey="hover"
-                        settings={localLayout.hover}
-                        suppress={['padding', 'margin', 'gap']}
-                    />
-                </Grid>
-            </ToolsPanel>
+            <div className={'wpbs-layout-tools__panel'}>
+                <ToolsPanel label={__('Hover')} resetAll={() => commitNow({...localLayout, hover: {}})}>
+                    <Grid columns={2} columnGap={15} rowGap={20} className={'wpbs-layout-tools__panel'}>
+                        <HoverFields
+                            bpKey="hover"
+                            settings={localLayout.hover}
+                            suppress={['padding', 'margin', 'gap']}
+                        />
+                    </Grid>
+                </ToolsPanel>
+            </div>
 
             {/* Breakpoints */}
             {layoutKeys.map((bpKey) => {
-                const bp = breakpoints.find((b) => b.key === bpKey);
-                const size = bp?.size ? `(${bp.size}px)` : '';
-                const label = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
 
                 return (
-                    <Grid columns={1} columnGap={15} rowGap={20}>
+                    <Grid columns={2} columnGap={15} rowGap={20} className={'wpbs-layout-tools__panel'}>
                         <div className="wpbs-layout-tools__header">
-                            <Button
-                                isSmall
-                                size="small"
-                                iconSize={20}
-                                onClick={() => removeLayoutItem(bpKey)}
-                                icon="no-alt"
-                            />
-                            <strong>{label}</strong>
+                            <label className="wpbs-layout-tools__field --full">
+                                <Button
+                                    isSmall
+                                    size="small"
+                                    iconSize={20}
+                                    onClick={() => removeLayoutItem(bpKey)}
+                                    icon="no-alt"
+                                />
+                                <div className="wpbs-layout-tools__control">
+                                    <select
+                                        value={bpKey}
+                                        onChange={(e) => {
+                                            const newKey = e.target.value;
+                                            const nextBreakpoints = {...localLayout.breakpoints};
+                                            nextBreakpoints[newKey] = nextBreakpoints[bpKey];
+                                            delete nextBreakpoints[bpKey];
+                                            const next = {...localLayout, breakpoints: nextBreakpoints};
+                                            setLocalLayout(next);
+                                            commitDebounced(next);
+                                        }}
+                                    >
+                                        {breakpoints.map((b) => {
+                                            const size = b?.size ? `(${b.size}px)` : '';
+                                            const label = [b ? b.label : bpKey, size].filter(Boolean).join(' ');
+                                            return <option
+                                                key={b.key}
+                                                value={b.key}
+                                                disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
+                                            >
+                                                {label}
+                                            </option>
+                                        })}
+                                    </select>
+                                </div>
+                            </label>
                         </div>
                         <ToolsPanel
                             label={__('Layout')}
@@ -201,43 +229,12 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
                                     },
                                 })
                             }
-                            className="wpbs-layout-tools__grid"
                         >
-                            <Grid columns={2} columnGap={15} rowGap={20} style={{gridColumn: '1/-1'}}>
-                                <label className="wpbs-layout-tools__field --full" style={{gridColumn: '1/-1'}}>
-                                    <strong>Breakpoint</strong>
-                                    <div className="wpbs-layout-tools__control">
-                                        <select
-                                            value={bpKey}
-                                            onChange={(e) => {
-                                                const newKey = e.target.value;
-                                                const nextBreakpoints = {...localLayout.breakpoints};
-                                                nextBreakpoints[newKey] = nextBreakpoints[bpKey];
-                                                delete nextBreakpoints[bpKey];
-                                                const next = {...localLayout, breakpoints: nextBreakpoints};
-                                                setLocalLayout(next);
-                                                commitDebounced(next);
-                                            }}
-                                        >
-                                            {breakpoints.map((b) => (
-                                                <option
-                                                    key={b.key}
-                                                    value={b.key}
-                                                    disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
-                                                >
-                                                    {b.label}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </label>
-
-                                <LayoutFields
-                                    bpKey={bpKey}
-                                    settings={localLayout.breakpoints[bpKey]}
-                                    updateLayoutItem={updateLayoutItem}
-                                />
-                            </Grid>
+                            <LayoutFields
+                                bpKey={bpKey}
+                                settings={localLayout.breakpoints[bpKey]}
+                                updateLayoutItem={updateLayoutItem}
+                            />
                         </ToolsPanel>
                     </Grid>
                 );
@@ -256,6 +253,7 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
             >
                 Add Breakpoint
             </Button>
+
         </div>
     );
 };

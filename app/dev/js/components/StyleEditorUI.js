@@ -28,9 +28,6 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
         if (!_.isEqual(localLayout, attrLayout)) setLocalLayout(attrLayout);
     }, [attributes["wpbs-style"]]);
 
-    // --- Convenience wrapper for state updates
-    const setLayoutNow = useCallback((next) => setLocalLayout(next), []);
-
     // --- Update helpers
     const updateLayoutItem = useCallback((newProps) => {
         setLocalLayout((prev) => ({
@@ -133,7 +130,6 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                                  localLayout,
                                  breakpoints,
                                  breakpointKeys,
-                                 setLayoutNow,
                                  updateBreakpointItem,
                                  removeBreakpointPanel,
                              }) => (
@@ -181,7 +177,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
             <ToolsPanel
                 label={__("Layout")}
                 resetAll={() =>
-                    setLayoutNow({
+                    updateLayoutItem({
                         ...localLayout,
                         breakpoints: {...localLayout.breakpoints, [bpKey]: {}},
                     })
@@ -203,7 +199,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
             <div className="wpbs-layout-tools__panel">
                 <ToolsPanel
                     label={__("Layout")}
-                    resetAll={() => setLayoutNow({...localLayout, props: {}})}
+                    resetAll={() => updateLayoutItem({...localLayout, props: {}})}
                 >
                     <Grid
                         columns={2}
@@ -224,7 +220,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
             <div className="wpbs-layout-tools__panel">
                 <ToolsPanel
                     label={__("Hover")}
-                    resetAll={() => setLayoutNow({...localLayout, hover: {}})}
+                    resetAll={() => updateLayoutItem({...localLayout, hover: {}})}
                 >
                     <Grid
                         columns={1}
@@ -248,7 +244,6 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                     localLayout={localLayout}
                     breakpoints={breakpoints}
                     breakpointKeys={breakpointKeys}
-                    setLayoutNow={setLayoutNow}
                     updateBreakpointItem={updateBreakpointItem}
                     removeBreakpointPanel={removeBreakpointPanel}
                 />

@@ -202,9 +202,12 @@ export function parseSpecialProps(props = {}, attributes = {}) {
     return result;
 }
 
-// ✅ New consolidated CSS builder
-export function styleToCss(cssObj, name, uniqueId) {
-    if (!cssObj || !uniqueId) return '';
+export function updateStyleString(props, styleRef) {
+    const {attributes, name} = props;
+    const cssObj = attributes['wpbs-css'];
+    const uniqueId = attributes?.uniqueId;
+
+    if (!styleRef?.current || !uniqueId || !cssObj) return;
 
     const selector = [
         name ? `.${name.replace('/', '-')}` : '',
@@ -219,8 +222,12 @@ export function styleToCss(cssObj, name, uniqueId) {
 
     let css = '';
 
-    if (!_.isEmpty(cssObj.props)) css += `${selector} { ${buildRules(cssObj.props)} }`;
+    // Base props
+    if (!_.isEmpty(cssObj.props)) {
+        css += `${selector} { ${buildRules(cssObj.props)} }`;
+    }
 
+    // Breakpoints
     for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints || {})) {
         const bp = WPBS?.settings?.breakpoints?.[bpKey];
         if (bp && !_.isEmpty(bpProps)) {
@@ -228,20 +235,17 @@ export function styleToCss(cssObj, name, uniqueId) {
         }
     }
 
+    // Hover
     if (!_.isEmpty(cssObj.hover)) {
         css += `${selector}:hover { ${buildRules(cssObj.hover)} }`;
     }
 
-    return css.trim();
+    const newCSS = css.trim();
+    if (styleRef.current.textContent !== newCSS) {
+        styleRef.current.textContent = newCSS;
+    }
 }
 
-// ✅ Streamlined writer
-export function updateStyleString(props, styleRef) {
-    const {attributes, name} = props;
-    const {'wpbs-css': cssObj, uniqueId} = attributes;
-    if (!styleRef?.current || !uniqueId) return;
-    styleRef.current.textContent = styleToCss(cssObj, name, uniqueId);
-}
 
 export function useDebouncedCommit(value, callback, delay = 1100) {
     const latestRef = useRef(value);

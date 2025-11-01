@@ -228,6 +228,7 @@ export const Field = memo(({field, settings, callback}) => {
     } else {
         return control && !child ? (
             <ToolsPanelItem
+                style={{gridColumn: 'span 1'}}
                 hasValue={() => value !== undefined && value !== ''}
                 label={label}
                 onDeselect={() => {

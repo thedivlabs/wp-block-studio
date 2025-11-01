@@ -21,11 +21,10 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
     const [localLayout, setLocalLayout] = useState(
         attributes["wpbs-style"] || {props: {}, breakpoints: {}, hover: {}}
     );
-    console.log(localLayout);
+
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
         if (!_.isEqual(localLayout, attributes["wpbs-style"])) {
-            console.log(localLayout);
             updateStyleSettings(localLayout);
         }
     }, [localLayout]);

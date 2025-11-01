@@ -166,7 +166,7 @@ export const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
             {/* Hover section */}
             <div className={'wpbs-layout-tools__panel'}>
                 <ToolsPanel label={__('Hover')} resetAll={() => commitNow({...localLayout, hover: {}})}>
-                    <Grid columns={2} columnGap={15} rowGap={20} className={'wpbs-layout-tools__panel'}>
+                    <Grid columns={1} columnGap={15} rowGap={20} className={'wpbs-layout-tools__panel'}>
                         <HoverFields
                             bpKey="hover"
                             settings={localLayout.hover}

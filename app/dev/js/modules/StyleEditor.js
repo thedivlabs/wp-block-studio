@@ -35,32 +35,30 @@ const layoutFieldsMap = [
 
     // Header alignment
     {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
-    {type: 'toggle', slug: 'align-header', label: 'Align Header'},
 
     // Display / flex
     {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
-    {type: 'select', slug: 'flex-direction', label: 'Flex Direction', options: DIRECTION_OPTIONS},
+    {type: 'select', slug: 'flex-direction', label: 'Direction', options: DIRECTION_OPTIONS},
     {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
-    {type: 'select', slug: 'align-items', label: 'Align Items', options: ALIGN_OPTIONS},
-    {type: 'select', slug: 'justify-content', label: 'Justify Content', options: JUSTIFY_OPTIONS},
+    {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
+    {type: 'select', slug: 'justify-content', label: 'Justify', options: JUSTIFY_OPTIONS},
 
     // Sizing
-    {type: 'select', slug: 'aspect-ratio', label: 'Aspect Ratio', options: SHAPE_OPTIONS},
+    {type: 'select', slug: 'aspect-ratio', label: 'Shape', options: SHAPE_OPTIONS},
     {type: 'number', slug: 'opacity', label: 'Opacity'},
-    {type: 'unit', slug: 'basis', label: 'Flex Basis'},
+    {type: 'unit', slug: 'basis', label: 'Basis'},
     {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
-    {type: 'unit', slug: 'width-custom', label: 'Custom Width'},
+    {type: 'unit', slug: 'width-custom', label: 'Width'},
     {type: 'unit', slug: 'max-width', label: 'Max Width'},
     {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
-    {type: 'unit', slug: 'height-custom', label: 'Custom Height'},
+    {type: 'unit', slug: 'height-custom', label: 'Height'},
     {type: 'unit', slug: 'min-height', label: 'Min Height'},
-    {type: 'unit', slug: 'min-height-custom', label: 'Custom Min Height'},
+    {type: 'unit', slug: 'min-height-custom', label: 'Min-Height'},
     {type: 'unit', slug: 'max-height', label: 'Max Height'},
-    {type: 'unit', slug: 'max-height-custom', label: 'Custom Max Height'},
-    {type: 'unit', slug: 'offset-height', label: 'Offset Height'},
+    {type: 'unit', slug: 'max-height-custom', label: 'Max-Height'},
 
-    {type: 'unit', slug: 'flex-grow', label: 'Flex Grow'},
-    {type: 'unit', slug: 'flex-shrink', label: 'Flex Shrink'},
+    {type: 'unit', slug: 'flex-grow', label: 'Grow'},
+    {type: 'unit', slug: 'flex-shrink', label: 'Shrink'},
 
     // Positioning
     {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
@@ -68,7 +66,7 @@ const layoutFieldsMap = [
     {
         type: 'composite',
         slug: 'box-position',
-        label: 'Box Position',
+        label: 'Box',
         fields: [
             {type: 'unit', slug: 'top', label: 'Top'},
             {type: 'unit', slug: 'right', label: 'Right'},
@@ -80,7 +78,7 @@ const layoutFieldsMap = [
 
     // Overflow
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
-    {type: 'unit', slug: 'aspect-ratio', label: 'Aspect Ratio'},
+    {type: 'unit', slug: 'aspect-ratio', label: 'Shape'},
     {type: 'unit', slug: 'order', label: 'Order'},
     {
         type: 'box',
@@ -91,11 +89,11 @@ const layoutFieldsMap = [
 
     // Misc toggles
     {type: 'toggle', slug: 'outline', label: 'Outline'},
-    {type: 'toggle', slug: 'mark-empty', label: 'Mark Empty'},
+    //{type: 'toggle', slug: 'mark-empty', label: 'Mark Empty'},
 
     // Colors / visibility
-    {type: 'color', slug: 'text-decoration-color', label: 'Text Decoration Color'},
-    {type: 'select', slug: 'content-visibility', label: 'Content Visibility', options: CONTENT_VISIBILITY_OPTIONS},
+    {type: 'color', slug: 'text-decoration-color', label: 'Decoration'},
+    {type: 'select', slug: 'content-visibility', label: 'Content', options: CONTENT_VISIBILITY_OPTIONS},
 
     {
         type: 'box', slug: 'padding', label: 'Padding', large: true,
@@ -107,13 +105,13 @@ const layoutFieldsMap = [
     },
 
     {type: 'unit', slug: 'gap', label: 'Gap'},
-    {type: 'unit', slug: 'border-radius', label: 'Border Radius'},
+    {type: 'unit', slug: 'border-radius', label: 'Radius'},
     {type: 'unit', slug: 'font-size', label: 'Font Size'},
     {type: 'unit', slug: 'line-height', label: 'Line Height'},
     {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
 
     {type: 'color', slug: 'text-color', label: 'Text Color'},
-    {type: 'color', slug: 'background-color', label: 'Background Color'},
+    {type: 'color', slug: 'background-color', label: 'Background'},
     {type: 'text', slug: 'box-shadow', label: 'Shadow'},
 ];
 

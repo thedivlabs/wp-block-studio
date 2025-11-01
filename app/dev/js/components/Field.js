@@ -45,6 +45,7 @@ export const Field = memo(({field, settings, callback}) => {
 
     controlProps.__next40pxDefaultSize = true;
     controlProps.__nextHasNoMarginBottom = true;
+    controlProps.label = label;
 
     switch (type) {
         case 'text':

@@ -28,12 +28,6 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
         if (!_.isEqual(localLayout, attrLayout)) setLocalLayout(attrLayout);
     }, [attributes["wpbs-style"]]);
 
-    // --- Debounced persistence to attributes (prevents flooding)
-    useEffect(() => {
-        const timeout = setTimeout(() => updateStyleSettings(localLayout), 300);
-        return () => clearTimeout(timeout);
-    }, [localLayout]);
-
     // --- Convenience wrapper for state updates
     const setLayoutNow = useCallback((next) => setLocalLayout(next), []);
 
@@ -52,7 +46,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
         }));
     }, []);
 
-    const updateBreakpointPanel = useCallback((newProps, bpKey) => {
+    const updateBreakpointItem = useCallback((newProps, bpKey) => {
         setLocalLayout((prev) => ({
             ...prev,
             breakpoints: {
@@ -140,7 +134,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                                  breakpoints,
                                  breakpointKeys,
                                  setLayoutNow,
-                                 updateBreakpointPanel,
+                                 updateBreakpointItem,
                                  removeBreakpointPanel,
                              }) => (
         <div className="wpbs-layout-tools__panel">
@@ -196,7 +190,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                 <LayoutFields
                     bpKey={bpKey}
                     settings={localLayout.breakpoints[bpKey]}
-                    updateFn={updateBreakpointPanel}
+                    updateFn={updateBreakpointItem}
                 />
             </ToolsPanel>
         </div>
@@ -255,7 +249,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                     breakpoints={breakpoints}
                     breakpointKeys={breakpointKeys}
                     setLayoutNow={setLayoutNow}
-                    updateBreakpointPanel={updateBreakpointPanel}
+                    updateBreakpointItem={updateBreakpointItem}
                     removeBreakpointPanel={removeBreakpointPanel}
                 />
             ))}

@@ -21,37 +21,49 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
     const [localLayout, setLocalLayout] = useState(
         attributes["wpbs-style"] || {props: {}, breakpoints: {}, hover: {}}
     );
-
-    // --- Keep local state in sync with external attribute updates
+    console.log(localLayout);
+    // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
-        const attrLayout = attributes["wpbs-style"] || {props: {}, breakpoints: {}, hover: {}};
-        if (!_.isEqual(localLayout, attrLayout)) setLocalLayout(attrLayout);
-    }, [attributes["wpbs-style"]]);
+        if (!_.isEqual(localLayout, attributes["wpbs-style"])) {
+            console.log(localLayout);
+            updateStyleSettings(localLayout);
+        }
+    }, [localLayout]);
 
     // --- Update helpers
     const updateLayoutItem = useCallback((newProps) => {
         setLocalLayout((prev) => ({
             ...prev,
-            props: {...prev.props, ...newProps},
+            props: {
+                ...prev.props,
+                ...newProps,
+            },
         }));
-    }, []);
+    }, [setLocalLayout]);
 
     const updateHoverItem = useCallback((newProps) => {
         setLocalLayout((prev) => ({
             ...prev,
-            hover: {...prev.hover, ...newProps},
+            hover: {
+                ...prev.hover,
+                ...newProps,
+            },
         }));
-    }, []);
+    }, [setLocalLayout]);
 
     const updateBreakpointItem = useCallback((newProps, bpKey) => {
         setLocalLayout((prev) => ({
             ...prev,
             breakpoints: {
                 ...prev.breakpoints,
-                [bpKey]: {...prev.breakpoints[bpKey], ...newProps},
+                [bpKey]: {
+                    ...prev.breakpoints[bpKey],
+                    ...newProps,
+                },
             },
         }));
-    }, []);
+    }, [setLocalLayout]);
+
 
     // --- Breakpoint management
     const addBreakpointPanel = useCallback(() => {
@@ -68,7 +80,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                 breakpoints: {...prev.breakpoints, [newKey]: {}},
             };
         });
-    }, [breakpoints]);
+    }, [breakpoints, setLocalLayout]);
 
     const removeBreakpointPanel = useCallback((bpKey) => {
         setLocalLayout((prev) => {
@@ -86,7 +98,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
         });
     }, [localLayout?.breakpoints, breakpoints]);
 
-    // --- Layout fields (works for both default + breakpoint panels)
+    // --- Layout fields (now properly scoped by bpKey)
     const LayoutFields = useMemo(() => {
         const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
         return ({bpKey, settings, suppress = [], updateFn}) =>
@@ -106,7 +118,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                         />
                     );
                 });
-    }, [updateLayoutItem]);
+    }, [updateLayoutItem, updateBreakpointItem]);
 
     // --- Hover fields
     const HoverFields = useMemo(() => {

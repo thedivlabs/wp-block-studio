@@ -48,26 +48,7 @@ export const Field = memo(({field, settings, callback}) => {
     controlProps.label = label;
 
     switch (type) {
-        case 'heading':
-            control = (
-                <div
-                    className="wpbs-tools-heading"
-                    aria-disabled="true"
-                    style={{
-                        pointerEvents: 'none',
-                        fontWeight: 600,
-                        fontSize: '12px',
-                        textTransform: 'uppercase',
-                        opacity: 0.7,
-                        borderTop: '1px solid rgba(0,0,0,0.05)',
-                        paddingTop: '6px',
-                        margin: '8px 0',
-                    }}
-                >
-                    {label}
-                </div>
-            );
-            break;
+        
         case 'text':
             control = (
                 <TextControl
@@ -222,12 +203,7 @@ export const Field = memo(({field, settings, callback}) => {
             control = null;
     }
 
-    if (!control) return null;
-
-// Skip wrapping headings in a ToolsPanelItem
-    if (type === 'heading') return control;
-
-    return (
+    return control ? (
         <ToolsPanelItem
             style={{gridColumn: 'span 1'}}
             hasValue={() => value !== undefined && value !== ''}
@@ -236,6 +212,5 @@ export const Field = memo(({field, settings, callback}) => {
         >
             {control}
         </ToolsPanelItem>
-    );
-
+    ) : null;
 });

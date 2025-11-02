@@ -79,11 +79,16 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
             .map(([key, value]) => [key, getCSSFromStyle(value)])
     );
 
-    return {
+    const result = cleanObject({
         className: classList,
         style: {...blockStyle, ...styleList},
         ...restWrapperProps,
-    };
+    }, true);
+
+    console.log(attributes);
+    console.log(result);
+
+    return result;
 };
 
 
@@ -111,16 +116,7 @@ export const BlockWrapper = ({
         .filter(Boolean)
         .join(' ');
 
-    const baseBlockProps = useMemo(
-        () => getBlockProps(props, wrapperProps),
-        [
-            attributes.uniqueId,
-            attributes['wpbs-style'],
-            attributes.style?.spacing?.blockGap,
-            wrapperProps.className,
-            wrapperProps.style,
-        ]
-    );
+    const baseBlockProps = getBlockProps(props, wrapperProps);
 
     // --- Save (frontend) version ---
     if (isSave) {
@@ -179,7 +175,6 @@ export const withStyle = (Component) => (props) => {
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
     const initializedRef = useRef(false);
-    const {StyleEditorUI} = window.WPBS_StyleEditor;
 
     const {clientId, attributes, setAttributes, name} = props;
 
@@ -252,11 +247,29 @@ export const withStyle = (Component) => (props) => {
         />
     ), [clientId, blockCss, attributes['wpbs-style']]);
 
+
+    const SafeStyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
+        const {StyleEditorUI} = window.WPBS_StyleEditor || {};
+
+        if (!StyleEditorUI) {
+            // still not loaded, render inert placeholder
+            return <div className="wpbs-style-editor-loading">Loading style editor…</div>;
+        }
+
+        return (
+            <StyleEditorUI
+                props={props}
+                styleRef={styleRef}
+                updateStyleSettings={updateStyleSettings}
+            />
+        );
+    };
+
     return (
         <>
             {memoizedComponent}
             <InspectorControls group="styles">
-                <StyleEditorUI
+                <SafeStyleEditorUI
                     props={props}
                     styleRef={styleRef}
                     updateStyleSettings={updateStyleSettings}

@@ -1,14 +1,26 @@
 import {useMemo, useCallback, useRef} from '@wordpress/element';
 import _, {debounce, isEqual} from "lodash";
 
-export function cleanObject(obj) {
+export function cleanObject(obj, strict = false) {
     return _.transform(obj, (result, value, key) => {
         if (_.isPlainObject(value)) {
-            const cleaned = cleanObject(value);
+            const cleaned = cleanObject(value, strict);
             if (!_.isEmpty(cleaned)) {
                 result[key] = cleaned;
             }
+        } else if (Array.isArray(value)) {
+            const cleanedArray = value
+                .map((v) => (_.isPlainObject(v) ? cleanObject(v, strict) : v))
+                .filter((v) => v !== undefined && v !== null && (!strict || (v !== '' && !(typeof v === 'string' && v.trim() === ''))));
+
+            if (cleanedArray.length > 0) {
+                result[key] = cleanedArray;
+            }
         } else if (value !== undefined && value !== null) {
+            if (strict && typeof value === 'string' && value.trim() === '') {
+                // skip empty strings in strict mode
+                return;
+            }
             result[key] = value;
         }
     }, {});

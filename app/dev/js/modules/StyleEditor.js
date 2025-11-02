@@ -11,9 +11,9 @@ import {updateStyleString, Field} from "Includes/style";
 import _, {debounce} from "lodash";
 
 const layoutFieldsMap = [
+    {type: 'heading', label: 'Flex Settings FPO'},
     {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
     {type: 'unit', slug: 'basis', label: 'Basis'},
-    {type: 'color', slug: 'background-color', label: 'Background'},
     {type: 'unit', slug: 'border-radius', label: 'Radius'},
     {
         type: 'box',
@@ -26,8 +26,7 @@ const layoutFieldsMap = [
         },
     },
     {type: 'select', slug: 'container', label: 'Container', options: CONTAINER_OPTIONS},
-    {type: 'select', slug: 'content-visibility', label: 'Content Visibility', options: CONTENT_VISIBILITY_OPTIONS},
-    {type: 'color', slug: 'text-decoration-color', label: 'Decoration'},
+    {type: 'select', slug: 'content-visibility', label: 'Visibility', options: CONTENT_VISIBILITY_OPTIONS},
     {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
     {type: 'select', slug: 'flex-direction', label: 'Direction', options: DIRECTION_OPTIONS},
     {type: 'number', slug: 'flex-grow', label: 'Grow'},
@@ -71,7 +70,6 @@ const layoutFieldsMap = [
     {type: 'unit', slug: 'font-size', label: 'Font Size'},
     {type: 'unit', slug: 'flex-shrink', label: 'Shrink'},
     {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
-    {type: 'color', slug: 'text-color', label: 'Text Color'},
     {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
     {
         type: 'box',

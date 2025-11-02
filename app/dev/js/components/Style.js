@@ -111,9 +111,20 @@ export const BlockWrapper = ({
         .filter(Boolean)
         .join(' ');
 
+    const baseBlockProps = useMemo(
+        () => getBlockProps(props, wrapperProps),
+        [
+            attributes.uniqueId,
+            attributes['wpbs-style'],
+            attributes.style?.spacing?.blockGap,
+            wrapperProps.className,
+            wrapperProps.style,
+        ]
+    );
+
     // --- Save (frontend) version ---
     if (isSave) {
-        const saveProps = useBlockProps.save(getBlockProps(props, wrapperProps));
+        const saveProps = useBlockProps.save(baseBlockProps);
 
         return (
             <Tag {...saveProps}>
@@ -131,7 +142,7 @@ export const BlockWrapper = ({
         );
     }
 
-    const baseBlockProps = useBlockProps(getBlockProps(props, wrapperProps));
+    const blockProps = useBlockProps(baseBlockProps);
 
     if (hasContainer || isBackgroundActive) {
         // Inner blocks live inside a container div
@@ -141,7 +152,7 @@ export const BlockWrapper = ({
         );
 
         return (
-            <Tag {...baseBlockProps}>
+            <Tag {...blockProps}>
                 <div {...containerProps}>
                     {containerProps.children}
                 </div>
@@ -152,7 +163,7 @@ export const BlockWrapper = ({
         );
     }
 
-    const innerProps = useInnerBlocksProps(baseBlockProps, {});
+    const innerProps = useInnerBlocksProps(blockProps, {});
 
     return (
         <Tag {...innerProps}>

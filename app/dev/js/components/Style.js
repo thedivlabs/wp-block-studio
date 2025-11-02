@@ -1,8 +1,8 @@
-import {useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
-import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
+import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
+import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {isEqual} from 'lodash';
-import {cleanObject, parseSpecialProps, getCSSFromStyle} from 'Includes/style-utils'; // at top
+import {cleanObject, getCSSFromStyle, parseSpecialProps} from 'Includes/style-utils'; // at top
 
 
 export const STYLE_ATTRIBUTES = {
@@ -79,16 +79,11 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
             .map(([key, value]) => [key, getCSSFromStyle(value)])
     );
 
-    const result = cleanObject({
+    return cleanObject({
         className: classList,
         style: {...blockStyle, ...styleList},
         ...restWrapperProps,
     }, true);
-
-    console.log(attributes);
-    console.log(result);
-
-    return result;
 };
 
 

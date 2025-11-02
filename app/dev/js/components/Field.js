@@ -2,7 +2,7 @@ import {memo, useCallback} from '@wordpress/element';
 import {useDebouncedCommit} from 'Includes/style-utils';
 
 export const Field = memo(({field, settings, callback}) => {
-    const {type, child = false, slug, label, large = false, ...controlProps} = field;
+    const {type, slug, label, large = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {

@@ -1,8 +1,8 @@
 import {useEffect, useRef, Fragment, useCallback, useMemo} from '@wordpress/element';
 import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
-import {isEqual, cloneDeep, merge} from 'lodash';
-import {cleanObject, parseSpecialProps} from 'Includes/style-utils'; // at top
+import {isEqual} from 'lodash';
+import {cleanObject, parseSpecialProps, getCSSFromStyle} from 'Includes/style-utils'; // at top
 
 
 export const STYLE_ATTRIBUTES = {
@@ -43,11 +43,10 @@ const getComponentProps = (props) => {
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
-    const {className: userClass = '', ...restWrapperProps} = wrapperProps;
-    const {'wpbs-style': settings = {}, uniqueId} = attributes;
-    const {layout = {}, background = {}, hover = {}} = settings;
+    const {className: userClass = '', style: blockStyle = {}, ...restWrapperProps} = wrapperProps;
+    const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
+    const {props: layout = {}, background = {}, hover = {}} = settings;
 
-    // Compute base block name class
     const blockNameClass = name ? name.replace('/', '-') : '';
 
     const classList = [
@@ -69,12 +68,24 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         .join(' ')
         .trim();
 
-    // Return normalized HTML props object
+    const blockGap = attributes?.style?.spacing?.blockGap ?? {};
+
+    const styleList = Object.fromEntries(
+        Object.entries({
+            rowGap: blockGap?.top ?? blockGap,
+            columnGap: blockGap?.left ?? blockGap,
+        })
+            .filter(([_, v]) => v !== undefined && v !== null && v !== '')
+            .map(([key, value]) => [key, getCSSFromStyle(value)])
+    );
+
     return {
         className: classList,
+        style: {...blockStyle, ...styleList},
         ...restWrapperProps,
     };
 };
+
 
 export const BlockWrapper = ({
                                  props,
@@ -120,7 +131,6 @@ export const BlockWrapper = ({
         );
     }
 
-    // --- Editor (backend) version ---
     const baseBlockProps = useBlockProps(getBlockProps(props, wrapperProps));
 
     if (hasContainer || isBackgroundActive) {
@@ -142,7 +152,6 @@ export const BlockWrapper = ({
         );
     }
 
-    // No container: inner blocks live directly on Tag
     const innerProps = useInnerBlocksProps(baseBlockProps, {});
 
     return (

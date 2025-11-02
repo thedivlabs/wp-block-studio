@@ -202,45 +202,14 @@ export const Field = memo(({field, settings, callback}) => {
             control = null;
     }
 
-    if (field.fields) {
-        return (
-            <ToolsPanelItem
-                hasValue={() => false}
-                label={label}
-                isShownByDefault
-                onDeselect={() => {
-                }}
-            >
-                <div className={`${className} --composite`}>
-                    <div className="wpbs-layout-tools__group">
-                        {field.fields.map((sub) => (
-                            <Field
-                                key={sub.slug}
-                                field={sub}
-                                settings={settings}
-                                callback={callback}
-                                child={true}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </ToolsPanelItem>
-        );
-    } else {
-        return control && !child ? (
-            <ToolsPanelItem
-                style={{gridColumn: 'span 1'}}
-                hasValue={() => value !== undefined && value !== ''}
-                label={label}
-                onDeselect={() => {
-                    commit({[slug]: undefined});
-                }}
-
-            >
-                {control}
-            </ToolsPanelItem>
-        ) : (
-            control
-        );
-    }
+    return control ? (
+        <ToolsPanelItem
+            style={{ gridColumn: 'span 1' }}
+            hasValue={() => value !== undefined && value !== ''}
+            label={label}
+            onDeselect={() => commit(undefined)}
+        >
+            {control}
+        </ToolsPanelItem>
+    ) : null;
 });

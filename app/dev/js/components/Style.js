@@ -1,8 +1,11 @@
 import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
 import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
+import {ElementTagControl, ElementTag} from "Components/ElementTag.js";
 import {isEqual} from 'lodash';
-import {cleanObject, getCSSFromStyle, parseSpecialProps} from 'Includes/style-utils'; // at top
+import {cleanObject, getCSSFromStyle, parseSpecialProps} from 'Includes/style-utils';
+import {Grid} from "@wordpress/components/src/grid";
+import {ToggleControl} from "@wordpress/components"; // at top
 
 
 export const STYLE_ATTRIBUTES = {
@@ -86,7 +89,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     }, true);
 };
 
-
 export const BlockWrapper = ({
                                  props,
                                  className,
@@ -100,9 +102,10 @@ export const BlockWrapper = ({
     const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
 
-    const Tag = settings?.tagName ?? tagName;
+    const Tag = settings?.advanced?.tagName ?? tagName;
     const isBackgroundActive = hasBackground && settings?.background?.type;
-    const hasContainer = settings?.layout?.container || isBackgroundActive;
+    const isContainer = settings?.advanced?.container;
+    const hasContainer = isContainer || isBackgroundActive;
 
     const containerClass = [
         uniqueId ? `${uniqueId}__container` : null,
@@ -173,7 +176,10 @@ export const withStyle = (Component) => (props) => {
 
     const {clientId, attributes, setAttributes, name} = props;
 
-    const {uniqueId} = attributes;
+    const {uniqueId, 'wpbs-style': settings} = attributes;
+
+    const {advanced = {}} = settings || {};
+
 
     useEffect(() => {
         if (initializedRef.current || uniqueId) return;
@@ -188,7 +194,6 @@ export const withStyle = (Component) => (props) => {
         console.log('blockCss');
         cssPropsRef.current = newProps;
     }, []);
-
 
     const updateStyleSettings = useCallback(
         (layoutState) => {
@@ -223,6 +228,27 @@ export const withStyle = (Component) => (props) => {
             });
         },
         [attributes, setAttributes]
+    );
+
+    const updateAdvancedSetting = useCallback(
+        (updates) => {
+            setAttributes((prev) => {
+                const prevStyle = prev['wpbs-style'] || {};
+                const prevAdvanced = prevStyle.advanced || {};
+
+                return {
+                    ...prev,
+                    'wpbs-style': {
+                        ...prevStyle,
+                        advanced: {
+                            ...prevAdvanced,
+                            ...updates, // merge new values in
+                        },
+                    },
+                };
+            });
+        },
+        [setAttributes]
     );
 
 
@@ -270,6 +296,48 @@ export const withStyle = (Component) => (props) => {
                     updateStyleSettings={updateStyleSettings}
                 />
             </InspectorControls>
+            <InspectorControls group="advanced">
+                <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <ElementTagControl
+                            value={advanced?.tagName ?? 'div'}
+                            label="HTML Tag"
+                            onChange={(tag) => updateAdvancedSetting({tagName: tag})}
+                        />
+                    </Grid>
+
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <ToggleControl
+                            __nextHasNoMarginBottom
+                            label="Hide if Empty"
+                            checked={!!advanced?.['hide-empty']}
+                            onChange={(checked) => updateAdvancedSetting({'hide-empty': checked})}
+                        />
+                        <ToggleControl
+                            __nextHasNoMarginBottom
+                            label="Required"
+                            checked={!!advanced?.required}
+                            onChange={(checked) => updateAdvancedSetting({required: checked})}
+                        />
+                    </Grid>
+
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <ToggleControl
+                            __nextHasNoMarginBottom
+                            label="Offset Header"
+                            checked={!!advanced?.['offset-header']}
+                            onChange={(checked) => updateAdvancedSetting({'offset-header': checked})}
+                        />
+                        <ToggleControl
+                            __nextHasNoMarginBottom
+                            label="Container"
+                            checked={!!advanced?.container}
+                            onChange={(checked) => updateAdvancedSetting({container: checked})}
+                        />
+                    </Grid>
+                </Grid>
+            </InspectorControls>
+
             <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
         </>
     );

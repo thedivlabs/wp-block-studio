@@ -175,21 +175,12 @@ export const withStyle = (Component) => (props) => {
 
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
-    const initializedRef = useRef(false);
 
     const {clientId, attributes, setAttributes, tagName, name} = props;
 
     const {uniqueId, 'wpbs-style': settings} = attributes;
 
     const {advanced = {}} = settings || {};
-
-    useEffect(() => {
-        if (initializedRef.current || uniqueId) return;
-        initializedRef.current = true;
-
-        const id = `${name.replace('/', '-')}-${clientId.slice(0, 6)}`;
-        setAttributes({uniqueId: id});
-    }, [uniqueId, name, clientId]);
 
     const blockCss = useCallback((newProps) => {
         console.log('blockCss');

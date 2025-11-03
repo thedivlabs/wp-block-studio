@@ -1,8 +1,7 @@
 import {memo, useCallback} from '@wordpress/element';
-import {useDebouncedCommit} from 'Includes/style-utils';
 
 export const Field = memo(({field, settings, callback}) => {
-    const {type, slug, label, large = false, ...controlProps} = field;
+    const {type, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -21,25 +20,24 @@ export const Field = memo(({field, settings, callback}) => {
     } = wp.components || {};
 
     const inputId = `wpbs-${slug}`;
-    const className = ['wpbs-layout-tools__field', large ? '--full' : null]
+
+    const fieldClassNames = ['wpbs-layout-tools__field', full ? '--full' : null]
         .filter(Boolean)
         .join(' ');
-    const value = settings?.[slug];
 
-    // Use shared debounce/commit hook
-    const {change, commit} = useDebouncedCommit(value, callback);
+    const value = settings?.[slug] ?? '';
 
     const handleKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter' || e.key === 'Tab') {
                 e.preventDefault(); // prevent accidental form submit
-                commit();
+                callback();
             }
         },
-        [commit]
+        [callback]
     );
 
-    const handleBlur = useCallback(() => commit(), [commit]);
+    const handleBlur = useCallback(() => callback(), [callback]);
 
     let control = null;
 
@@ -47,15 +45,17 @@ export const Field = memo(({field, settings, callback}) => {
     controlProps.__nextHasNoMarginBottom = true;
     controlProps.label = label;
 
+    console.log(value);
+
     switch (type) {
-        
+
         case 'text':
             control = (
                 <TextControl
                     id={inputId}
                     value={value ?? ''}
                     aria-label={label}
-                    onChange={(v) => change(v === '' ? '' : v)}
+                    onChange={(v) => callback(v === '' ? '' : v)}
                     type={'text'}
                     {...controlProps}
                 />
@@ -68,7 +68,7 @@ export const Field = memo(({field, settings, callback}) => {
                     id={inputId}
                     value={value ?? ''}
                     aria-label={label}
-                    onChange={(v) => change(v === '' ? '' : v)}
+                    onChange={(v) => callback(v === '' ? '' : v)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
@@ -83,7 +83,7 @@ export const Field = memo(({field, settings, callback}) => {
                     value={value ?? ''}
                     options={controlProps.options || []}
                     aria-label={label}
-                    onChange={(v) => commit(v === '' ? undefined : v)}
+                    onChange={(v) => callback(v === '' ? '' : v)}
                     onKeyDown={handleKeyDown}
                     __nextHasNoMarginBottom
                     {...controlProps}
@@ -96,7 +96,7 @@ export const Field = memo(({field, settings, callback}) => {
                 <ToggleControl
                     aria-label={label}
                     checked={!!value}
-                    onChange={(checked) => commit(!!checked)}
+                    onChange={(checked) => callback(!!checked)}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
                 />
@@ -116,8 +116,8 @@ export const Field = memo(({field, settings, callback}) => {
                             {value: '%', label: '%'},
                         ]
                     }
-                    onUnitChange={() => change('')}
-                    onChange={(v) => change(v)}
+                    onUnitChange={() => callback('')}
+                    onChange={(v) => callback(v === '' ? '' : v)}
                     onBlur={handleBlur}
                     aria-label={label}
                     onKeyDown={handleKeyDown}
@@ -136,7 +136,7 @@ export const Field = memo(({field, settings, callback}) => {
                             slug,
                             label,
                             value,
-                            onChange: (v) => change(v),
+                            onChange: (v) => callback(v),
                             isShownByDefault: true,
                         },
                     ]}
@@ -152,7 +152,7 @@ export const Field = memo(({field, settings, callback}) => {
                     gradients={controlProps.gradients || []}
                     clearable
                     value={value ?? field?.default ?? ''}
-                    onChange={(v) => change(v)}
+                    onChange={(v) => callback(v === '' ? '' : v)}
                     __nextHasNoMarginBottom
                 />
             );
@@ -163,7 +163,7 @@ export const Field = memo(({field, settings, callback}) => {
                 <BoxControl
                     label={label}
                     values={value}
-                    onChange={(v) => change(v)}
+                    onChange={(v) => callback(v === '' ? '' : v)}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
                     {...controlProps}
@@ -174,12 +174,12 @@ export const Field = memo(({field, settings, callback}) => {
         case 'image':
         case 'video': {
             const allowedTypes = type === 'image' ? ['image'] : ['video'];
-            const clear = () => commit('');
+            const clear = () => callback(undefined);
             control = (
                 <MediaUploadCheck>
                     <MediaUpload
                         title={label}
-                        onSelect={(media) => commit(media)}
+                        onSelect={(media) => callback(media)}
                         allowedTypes={allowedTypes}
                         value={value}
                         render={({open}) => (
@@ -205,10 +205,10 @@ export const Field = memo(({field, settings, callback}) => {
 
     return control ? (
         <ToolsPanelItem
-            style={{gridColumn: 'span 1'}}
-            hasValue={() => value !== undefined && value !== ''}
+            hasValue={() => value !== undefined}
             label={label}
-            onDeselect={() => commit(undefined)}
+            onDeselect={() => callback(undefined)}
+            className={fieldClassNames}
         >
             {control}
         </ToolsPanelItem>

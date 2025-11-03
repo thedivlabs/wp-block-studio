@@ -245,6 +245,7 @@ export const withStyle = (Component) => (props) => {
 
 
     useEffect(() => {
+        console.log(attributes);
         if (styleRef.current) {
             window.WPBS_StyleEditor.updateStyleString(props, styleRef);
         }

@@ -8,7 +8,7 @@ import {
 } from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 
-export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
+export const StyleEditorUI = ({props, updateStyleSettings}) => {
     const {attributes} = props;
 
     // --- Load breakpoint definitions
@@ -110,7 +110,7 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
                             : updateLayoutItem({[field.slug]: v});
                     return (
                         <Field
-                            key={field.slug}
+                            key={`${bpKey || 'base'}-${field.slug}`}
                             field={field}
                             settings={settings}
                             callback={callback}
@@ -210,8 +210,10 @@ export const StyleEditorUI = ({props, updateStyleSettings, styleRef}) => {
             <div className="wpbs-layout-tools__panel">
                 <ToolsPanel
                     label={__("Layout")}
-                    resetAll={() => updateLayoutItem({...localLayout, props: {}})}
-                >
+                    resetAll={() => setLocalLayout(prev => ({
+                        ...prev,
+                        props: {},
+                    }))}>
                     <Grid
                         columns={2}
                         columnGap={15}

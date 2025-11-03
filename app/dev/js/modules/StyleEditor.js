@@ -14,12 +14,12 @@ const layoutFieldsMap = [
     {type: 'heading', label: 'Flex Settings FPO'},
     {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
     {type: 'unit', slug: 'basis', label: 'Basis'},
-    {type: 'unit', slug: 'border-radius', label: 'Radius'},
+    {type: 'box', slug: 'border-radius', label: 'Radius', full: true},
     {
         type: 'box',
         slug: 'box-position',
         label: 'Box Position',
-        large: true,
+        full: true,
         options: {
             sides: ['top', 'right', 'bottom', 'left'],
             inputProps: {units: DIMENSION_UNITS},
@@ -32,24 +32,24 @@ const layoutFieldsMap = [
     {type: 'number', slug: 'flex-grow', label: 'Grow'},
     {type: 'box', slug: 'gap', label: 'Gap', options: {sides: ['top', 'left']}},
     {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
-    {type: 'unit', slug: 'height-custom', label: 'Height'},
+    {type: 'unit', slug: 'height-custom', label: 'Height Custom'},
     {type: 'select', slug: 'justify-content', label: 'Justify', options: JUSTIFY_OPTIONS},
     {type: 'unit', slug: 'line-height', label: 'Line Height'},
     {
         type: 'box',
         slug: 'margin',
         label: 'Margin',
-        large: true,
+        full: true,
         options: {
             sides: ['top', 'right', 'bottom', 'left'],
             inputProps: {units: DIMENSION_UNITS},
         },
     },
     {type: 'unit', slug: 'max-height', label: 'Max Height'},
-    {type: 'unit', slug: 'max-height-custom', label: 'Max-Height'},
+    {type: 'unit', slug: 'max-height-custom', label: 'Max-Height Custom'},
     {type: 'unit', slug: 'max-width', label: 'Max Width'},
     {type: 'unit', slug: 'min-height', label: 'Min Height'},
-    {type: 'unit', slug: 'min-height-custom', label: 'Min-Height'},
+    {type: 'unit', slug: 'min-height-custom', label: 'Min-Height Custom'},
     {type: 'number', slug: 'opacity', label: 'Opacity'},
     {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
     {type: 'unit', slug: 'order', label: 'Order'},
@@ -57,7 +57,7 @@ const layoutFieldsMap = [
         type: 'box',
         slug: 'padding',
         label: 'Padding',
-        large: true,
+        full: true,
         options: {
             sides: ['top', 'right', 'bottom', 'left'],
             inputProps: {units: DIMENSION_UNITS},
@@ -90,7 +90,7 @@ const layoutFieldsMap = [
     {type: 'select', slug: 'reveal-anim', label: 'Reveal Animation', options: REVEAL_ANIMATION_OPTIONS},
     {type: 'number', slug: 'z-index', label: 'Z Index'},
     {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
-    {type: 'unit', slug: 'width-custom', label: 'Width'},
+    {type: 'unit', slug: 'width-custom', label: 'Width Custom'},
 ];
 
 const hoverFieldsMap = [

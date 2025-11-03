@@ -1,29 +1,21 @@
 import {useMemo, useCallback, useRef} from '@wordpress/element';
 import _, {debounce, isEqual} from "lodash";
 
-export function cleanObject(obj, strict = false) {
-    return _.transform(obj, (result, value, key) => {
-        if (_.isPlainObject(value)) {
-            const cleaned = cleanObject(value, strict);
-            if (!_.isEmpty(cleaned)) {
-                result[key] = cleaned;
-            }
-        } else if (Array.isArray(value)) {
-            const cleanedArray = value
-                .map((v) => (_.isPlainObject(v) ? cleanObject(v, strict) : v))
-                .filter((v) => v !== undefined && v !== null && (!strict || (v !== '' && !(typeof v === 'string' && v.trim() === ''))));
+export function cleanObject(obj = {}, deep = true) {
+    const result = {};
 
-            if (cleanedArray.length > 0) {
-                result[key] = cleanedArray;
-            }
-        } else if (value !== undefined && value !== null) {
-            if (strict && typeof value === 'string' && value.trim() === '') {
-                // skip empty strings in strict mode
-                return;
-            }
+    for (const [key, value] of Object.entries(obj)) {
+        if (value === null || value === undefined) continue; // leave '', 0, false intact
+
+        if (deep && typeof value === 'object' && !Array.isArray(value)) {
+            const nested = cleanObject(value, true);
+            if (Object.keys(nested).length > 0) result[key] = nested;
+        } else {
             result[key] = value;
         }
-    }, {});
+    }
+
+    return result;
 }
 
 
@@ -256,48 +248,4 @@ export function updateStyleString(props, styleRef) {
     if (styleRef.current.textContent !== newCSS) {
         styleRef.current.textContent = newCSS;
     }
-}
-
-export function useDebouncedCommit(value, callback, delay = 1100) {
-    const latestRef = useRef(value);
-    const cancelRef = useRef(null);
-
-    const safeCallback = useCallback(
-        (next) => {
-            if (!isEqual(next, value)) callback(next);
-        },
-        [callback, value]
-    );
-
-    const debounced = useMemo(
-        () => debounce((next) => safeCallback(next), delay),
-        [safeCallback, delay]
-    );
-
-    const scheduleCancel = useCallback(() => {
-        clearTimeout(cancelRef.current);
-        cancelRef.current = setTimeout(() => {
-            debounced.cancel();
-        }, delay);
-    }, [debounced, delay]);
-
-    const change = useCallback(
-        (next) => {
-            latestRef.current = next;
-            debounced(next);
-            scheduleCancel();
-        },
-        [debounced, scheduleCancel]
-    );
-
-    const commit = useCallback(
-        (next = latestRef.current) => {
-            clearTimeout(cancelRef.current);
-            debounced.flush();
-            safeCallback(next);
-        },
-        [debounced, safeCallback]
-    );
-
-    return {change, commit};
 }

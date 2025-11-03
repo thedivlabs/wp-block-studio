@@ -205,14 +205,16 @@ export const withStyle = (Component) => (props) => {
                 cssObj.hover = parseSpecialProps(cleanedStyle.hover);
             }
 
-            const cleanedCss = cleanObject(cssObj);
+            const cleanedCss = cleanObject(cssObj, true);
 
             if (
                 isEqual(cleanObject(attributes['wpbs-style']), cleanedStyle) &&
-                isEqual(cleanObject(attributes['wpbs-css']), cleanedCss)
+                isEqual(cleanObject(attributes['wpbs-css'], true), cleanedCss)
             ) {
                 return;
             }
+
+            console.log(cleanedStyle);
 
             setAttributes({
                 'wpbs-style': cleanedStyle,
@@ -245,7 +247,6 @@ export const withStyle = (Component) => (props) => {
 
 
     useEffect(() => {
-        console.log(attributes);
         if (styleRef.current) {
             window.WPBS_StyleEditor.updateStyleString(props, styleRef);
         }

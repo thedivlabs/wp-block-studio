@@ -24,10 +24,17 @@ export const StyleEditorUI = ({props, updateStyleSettings}) => {
 
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
-        if (!_.isEqual(localLayout, attributes["wpbs-style"])) {
-            updateStyleSettings(localLayout);
-        }
-    }, [localLayout]);
+        const debouncedCommit = _.debounce((nextLayout) => {
+            if (!_.isEqual(nextLayout, attributes["wpbs-style"])) {
+                updateStyleSettings(nextLayout);
+            }
+        }, 900); // adjust delay as needed
+
+        debouncedCommit(localLayout);
+
+        return () => debouncedCommit.cancel();
+    }, [localLayout, attributes["wpbs-style"]]);
+
 
     // --- Update helpers
     const updateLayoutItem = useCallback((newProps) => {

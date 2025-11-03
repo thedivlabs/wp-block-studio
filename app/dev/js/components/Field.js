@@ -1,4 +1,4 @@
-import {memo, useCallback} from '@wordpress/element';
+import {memo, useCallback, useEffect, useState} from '@wordpress/element';
 
 export const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -25,19 +25,14 @@ export const Field = memo(({field, settings, callback}) => {
         .filter(Boolean)
         .join(' ');
 
-    const value = settings?.[slug];
 
-    const handleKeyDown = useCallback(
-        (e) => {
-            if (e.key === 'Enter' || e.key === 'Tab') {
-                e.preventDefault(); // prevent accidental form submit
-                callback();
-            }
-        },
-        [callback]
-    );
+    const [localValue, setLocalValue] = useState(settings?.[slug]);
 
-    const handleBlur = useCallback(() => callback(), [callback]);
+    useEffect(() => {
+        if (localValue === settings?.[slug] || localValue === '') return;
+        callback(localValue);
+    }, [localValue]);
+
 
     let control = null;
 
@@ -45,17 +40,15 @@ export const Field = memo(({field, settings, callback}) => {
     controlProps.__nextHasNoMarginBottom = true;
     controlProps.label = label;
 
-    console.log(value);
-
     switch (type) {
 
         case 'text':
             control = (
                 <TextControl
                     id={inputId}
-                    value={value ?? ''}
+                    value={localValue}
                     aria-label={label}
-                    onChange={(v) => callback(v === '' ? '' : v)}
+                    onChange={(v) => setLocalValue(v)}
                     type={'text'}
                     {...controlProps}
                 />
@@ -66,11 +59,11 @@ export const Field = memo(({field, settings, callback}) => {
             control = (
                 <NumberControl
                     id={inputId}
-                    value={value ?? ''}
+                    value={localValue}
                     aria-label={label}
-                    onChange={(v) => callback(v === '' ? '' : v)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
+                    onChange={(v) => setLocalValue(v)}
+                    onBlur={() => callback(localValue)}
+
                     {...controlProps}
                 />
             );
@@ -80,11 +73,11 @@ export const Field = memo(({field, settings, callback}) => {
             control = (
                 <SelectControl
                     id={inputId}
-                    value={value ?? ''}
+                    value={localValue}
                     options={controlProps.options || []}
                     aria-label={label}
-                    onChange={(v) => callback(v === '' ? '' : v)}
-                    onKeyDown={handleKeyDown}
+                    onChange={(v) => setLocalValue(v)}
+
                     __nextHasNoMarginBottom
                     {...controlProps}
                 />
@@ -95,9 +88,9 @@ export const Field = memo(({field, settings, callback}) => {
             control = (
                 <ToggleControl
                     aria-label={label}
-                    checked={!!value}
+                    checked={!!localValue}
                     onChange={(checked) => callback(!!checked)}
-                    onKeyDown={handleKeyDown}
+
                     {...controlProps}
                 />
             );
@@ -107,7 +100,7 @@ export const Field = memo(({field, settings, callback}) => {
             control = (
                 <UnitControl
                     id={inputId}
-                    value={value ?? ''}
+                    value={localValue}
                     units={
                         controlProps.units || [
                             {value: 'px', label: 'px'},
@@ -117,10 +110,10 @@ export const Field = memo(({field, settings, callback}) => {
                         ]
                     }
                     onUnitChange={() => callback('')}
-                    onChange={(v) => callback(v === '' ? '' : v)}
-                    onBlur={handleBlur}
+                    onChange={(v) => setLocalValue(v)}
+                    onBlur={() => callback(localValue)}
                     aria-label={label}
-                    onKeyDown={handleKeyDown}
+
                     isResetValueOnUnitChange={true}
                     {...controlProps}
                 />
@@ -135,7 +128,7 @@ export const Field = memo(({field, settings, callback}) => {
                         {
                             slug,
                             label,
-                            value,
+                            localValue,
                             onChange: (v) => callback(v),
                             isShownByDefault: true,
                         },
@@ -151,8 +144,8 @@ export const Field = memo(({field, settings, callback}) => {
                     key={slug}
                     gradients={controlProps.gradients || []}
                     clearable
-                    value={value ?? field?.default ?? ''}
-                    onChange={(v) => callback(v === '' ? '' : v)}
+                    value={localValue ?? field?.default ?? ''}
+                    onChange={(v) => setLocalValue(v)}
                     __nextHasNoMarginBottom
                 />
             );
@@ -162,10 +155,10 @@ export const Field = memo(({field, settings, callback}) => {
             control = (
                 <BoxControl
                     label={label}
-                    values={value}
-                    onChange={(v) => callback(v === '' ? '' : v)}
-                    onBlur={handleBlur}
-                    onKeyDown={handleKeyDown}
+                    values={localValue}
+                    onChange={(v) => setLocalValue(v)}
+                    onBlur={() => callback(localValue)}
+
                     {...controlProps}
                 />
             );
@@ -181,15 +174,15 @@ export const Field = memo(({field, settings, callback}) => {
                         title={label}
                         onSelect={(media) => callback(media)}
                         allowedTypes={allowedTypes}
-                        value={value}
+                        value={localValue}
                         render={({open}) => (
                             <button type="button" className="components-button" onClick={open}>
-                                {value ? 'Replace' : 'Select'} {type}
+                                {localValue ? 'Replace' : 'Select'} {type}
                             </button>
                         )}
                         __nextHasNoMarginBottom={true}
                     />
-                    {value ? (
+                    {localValue ? (
                         <button type="button" className="components-button is-secondary" onClick={clear}>
                             Clear
                         </button>
@@ -205,10 +198,10 @@ export const Field = memo(({field, settings, callback}) => {
 
     return control ? (
         <ToolsPanelItem
-            hasValue={() => value !== undefined}
+            hasValue={() => localValue !== undefined && localValue !== null}
             label={label}
             onDeselect={() => callback(undefined)}
-            onSelect={() => callback('')} // <— initialize with an empty string
+            onSelect={() => setLocalValue('')} // <— initialize with an empty string
             className={fieldClassNames}
             isShownByDefault={false}
         >

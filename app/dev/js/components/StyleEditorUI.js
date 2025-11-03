@@ -214,18 +214,11 @@ export const StyleEditorUI = ({props, updateStyleSettings}) => {
                         ...prev,
                         props: {},
                     }))}>
-                    <Grid
-                        columns={2}
-                        columnGap={15}
-                        rowGap={20}
-                        className="wpbs-layout-tools__grid"
-                    >
-                        <LayoutFields
-                            bpKey="layout"
-                            settings={localLayout.props}
-                            suppress={["padding", "margin", "gap", "outline"]}
-                        />
-                    </Grid>
+                    <LayoutFields
+                        bpKey="layout"
+                        settings={localLayout.props}
+                        suppress={["padding", "margin", "gap", "outline"]}
+                    />
                 </ToolsPanel>
             </div>
 

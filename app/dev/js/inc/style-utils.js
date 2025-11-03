@@ -1,21 +1,29 @@
 import {useMemo, useCallback, useRef} from '@wordpress/element';
 import _, {debounce, isEqual} from "lodash";
 
-export function cleanObject(obj = {}, deep = true) {
-    const result = {};
+export function cleanObject(obj, strict = false) {
+    return _.transform(obj, (result, value, key) => {
+        if (_.isPlainObject(value)) {
+            const cleaned = cleanObject(value, strict);
+            if (!_.isEmpty(cleaned)) {
+                result[key] = cleaned;
+            }
+        } else if (Array.isArray(value)) {
+            const cleanedArray = value
+                .map((v) => (_.isPlainObject(v) ? cleanObject(v, strict) : v))
+                .filter((v) => v !== undefined && v !== null && (!strict || (v !== '' && !(typeof v === 'string' && v.trim() === ''))));
 
-    for (const [key, value] of Object.entries(obj)) {
-        if (value === null || value === undefined) continue; // leave '', 0, false intact
-
-        if (deep && typeof value === 'object' && !Array.isArray(value)) {
-            const nested = cleanObject(value, true);
-            if (Object.keys(nested).length > 0) result[key] = nested;
-        } else {
+            if (cleanedArray.length > 0) {
+                result[key] = cleanedArray;
+            }
+        } else if (value !== undefined && value !== null) {
+            if (strict && typeof value === 'string' && value.trim() === '') {
+                // skip empty strings in strict mode
+                return;
+            }
             result[key] = value;
         }
-    }
-
-    return result;
+    }, {});
 }
 
 

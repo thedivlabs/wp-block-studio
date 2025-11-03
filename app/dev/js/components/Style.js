@@ -27,7 +27,7 @@ export const STYLE_ATTRIBUTES = {
     }
 }
 
-const getComponentProps = (props) => {
+const getDataProps = (props) => {
     const {attributes} = props;
     const style = attributes['wpbs-style'] || {};
     const background = style.background || {};
@@ -262,7 +262,7 @@ export const withStyle = (Component) => (props) => {
 
     const memoizedComponent = useMemo(() => (
         <Component
-            {...getComponentProps(props)}
+            {...getDataProps(props)}
             BlockWrapper={(wrapperProps) => (
                 <BlockWrapper {...wrapperProps} props={props} clientId={clientId} tagName={tagName}/>
             )}
@@ -351,7 +351,7 @@ export const withStyleSave = (Component) => (props) => {
 
     return (
         <Component
-            {...getComponentProps(props)}
+            {...getDataProps(props)}
             BlockWrapper={(wrapperProps) => (
                 <BlockWrapper {...wrapperProps} props={props} clientId={clientId} isSave/>
             )}

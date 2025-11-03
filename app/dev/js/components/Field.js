@@ -25,7 +25,7 @@ export const Field = memo(({field, settings, callback}) => {
         .filter(Boolean)
         .join(' ');
 
-    const value = settings?.[slug] ?? '';
+    const value = settings?.[slug];
 
     const handleKeyDown = useCallback(
         (e) => {
@@ -208,9 +208,12 @@ export const Field = memo(({field, settings, callback}) => {
             hasValue={() => value !== undefined}
             label={label}
             onDeselect={() => callback(undefined)}
+            onSelect={() => callback('')} // <— initialize with an empty string
             className={fieldClassNames}
+            isShownByDefault={false}
         >
             {control}
         </ToolsPanelItem>
+
     ) : null;
 });

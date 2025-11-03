@@ -191,10 +191,6 @@ export const withStyle = (Component) => (props) => {
         setAttributes({uniqueId: id});
     }, [uniqueId, name, clientId]);
 
-    useEffect(() => {
-        console.log(attributes);
-    }, [attributes]);
-
     const blockCss = useCallback((newProps) => {
         console.log('blockCss');
         cssPropsRef.current = newProps;

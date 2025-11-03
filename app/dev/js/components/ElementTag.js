@@ -1,9 +1,9 @@
-import {__experimentalGrid as Grid, SelectControl} from "@wordpress/components";
+import {SelectControl} from "@wordpress/components";
 import {useState} from '@wordpress/element';
 import {ELEMENT_TAG_OPTIONS} from "Includes/config";
 
-export function ElementTag(value) {
-    return value || 'div';
+export function getElementTag(value, defaultTag = 'div') {
+    return value || defaultTag;
 }
 
 export function ElementTagControl({value = "div", onChange, options = [], label, ...restProps}) {

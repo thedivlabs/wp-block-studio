@@ -260,6 +260,6 @@ registerBlockType(metadata.name, {
                 <MaterialIcon className={'wpbs-cta-button__icon'} {...(settings?.icon ?? {})} />
             </BlockWrapper>
         );
-    }, true),
+    }),
 })
 

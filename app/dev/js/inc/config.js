@@ -11,7 +11,7 @@ export const IMAGE_BUTTON_STYLE = {
 
 
 export const ELEMENT_TAG_OPTIONS = [
-    {label: 'Default (<div>)', value: 'div'},
+    {label: '<div>', value: ''},
     {label: '<header>', value: 'header'},
     {label: '<main>', value: 'main'},
     {label: '<section>', value: 'section'},
@@ -21,7 +21,7 @@ export const ELEMENT_TAG_OPTIONS = [
 ];
 
 export const ELEMENT_TAG_TEXT_OPTIONS = [
-    {label: 'Default (<div>)', value: 'div'},
+    {label: '<div>', value: ''},
     {label: '<h1>', value: 'h1'},
     {label: '<h2>', value: 'h2'},
     {label: '<h3>', value: 'h3'},

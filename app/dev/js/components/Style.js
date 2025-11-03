@@ -1,11 +1,13 @@
 import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
 import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
-import {ElementTagControl, ElementTag} from "Components/ElementTag.js";
+import {ElementTagControl, getElementTag} from "Components/ElementTag.js";
 import {isEqual} from 'lodash';
 import {cleanObject, getCSSFromStyle, parseSpecialProps} from 'Includes/style-utils';
-import {Grid} from "@wordpress/components/src/grid";
-import {ToggleControl} from "@wordpress/components"; // at top
+import {
+    ToggleControl,
+    __experimentalGrid as Grid,
+} from "@wordpress/components";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -75,11 +77,11 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
 
     const styleList = Object.fromEntries(
         Object.entries({
-            rowGap: blockGap?.top ?? blockGap,
-            columnGap: blockGap?.left ?? blockGap,
+            rowGap: blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined),
+            columnGap: blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined),
         })
-            .filter(([_, v]) => v !== undefined && v !== null && v !== '')
             .map(([key, value]) => [key, getCSSFromStyle(value)])
+            .filter(([_, v]) => v !== undefined && v !== null && v !== '')
     );
 
     return cleanObject({
@@ -101,8 +103,9 @@ export const BlockWrapper = ({
     const {attributes} = props;
     const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
+    const {advanced} = settings;
 
-    const Tag = settings?.advanced?.tagName ?? tagName;
+    const Tag = getElementTag(advanced?.tagName, tagName);
     const isBackgroundActive = hasBackground && settings?.background?.type;
     const isContainer = settings?.advanced?.container;
     const hasContainer = isContainer || isBackgroundActive;
@@ -174,12 +177,11 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const initializedRef = useRef(false);
 
-    const {clientId, attributes, setAttributes, name} = props;
+    const {clientId, attributes, setAttributes, tagName} = props;
 
     const {uniqueId, 'wpbs-style': settings} = attributes;
 
     const {advanced = {}} = settings || {};
-
 
     useEffect(() => {
         if (initializedRef.current || uniqueId) return;
@@ -262,7 +264,7 @@ export const withStyle = (Component) => (props) => {
         <Component
             {...getComponentProps(props)}
             BlockWrapper={(wrapperProps) => (
-                <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+                <BlockWrapper {...wrapperProps} props={props} clientId={clientId} tagName={tagName}/>
             )}
             blockCss={blockCss}
         />

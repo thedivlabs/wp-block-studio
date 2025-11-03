@@ -26,12 +26,15 @@ export const Field = memo(({field, settings, callback}) => {
         .join(' ');
 
 
-    const [localValue, setLocalValue] = useState(settings?.[slug]);
+    const [localValue, setLocalValue] = useState(settings?.[slug] ?? null);
 
-    useEffect(() => {
-        if (localValue === settings?.[slug] || localValue === '') return;
-        callback(localValue);
-    }, [localValue]);
+    const commit = useCallback((newValue) => {
+        if (newValue !== settings?.[slug]) {
+            console.log('updating', newValue);
+            callback(newValue);
+            setLocalValue(newValue);
+        }
+    }, [setLocalValue, callback]);
 
 
     let control = null;
@@ -48,7 +51,7 @@ export const Field = memo(({field, settings, callback}) => {
                     id={inputId}
                     value={localValue}
                     aria-label={label}
-                    onChange={(v) => setLocalValue(v)}
+                    onChange={(v) => commit(v)}
                     type={'text'}
                     {...controlProps}
                 />
@@ -61,8 +64,8 @@ export const Field = memo(({field, settings, callback}) => {
                     id={inputId}
                     value={localValue}
                     aria-label={label}
-                    onChange={(v) => setLocalValue(v)}
-                    onBlur={() => callback(localValue)}
+                    onChange={(v) => commit(v)}
+                    //onBlur={() => commit(localValue)}
 
                     {...controlProps}
                 />
@@ -76,7 +79,7 @@ export const Field = memo(({field, settings, callback}) => {
                     value={localValue}
                     options={controlProps.options || []}
                     aria-label={label}
-                    onChange={(v) => setLocalValue(v)}
+                    onChange={(v) => commit(v)}
 
                     __nextHasNoMarginBottom
                     {...controlProps}
@@ -89,7 +92,7 @@ export const Field = memo(({field, settings, callback}) => {
                 <ToggleControl
                     aria-label={label}
                     checked={!!localValue}
-                    onChange={(checked) => callback(!!checked)}
+                    onChange={(checked) => commit(!!checked)}
 
                     {...controlProps}
                 />
@@ -109,9 +112,9 @@ export const Field = memo(({field, settings, callback}) => {
                             {value: '%', label: '%'},
                         ]
                     }
-                    onUnitChange={() => callback('')}
-                    onChange={(v) => setLocalValue(v)}
-                    onBlur={() => callback(localValue)}
+                    //onUnitChange={() => commit('')}
+                    onChange={(v) => commit(v)}
+                    //onBlur={() => commit(localValue)}
                     aria-label={label}
 
                     isResetValueOnUnitChange={true}
@@ -129,7 +132,7 @@ export const Field = memo(({field, settings, callback}) => {
                             slug,
                             label,
                             localValue,
-                            onChange: (v) => callback(v),
+                            onChange: (v) => commit(v),
                             isShownByDefault: true,
                         },
                     ]}
@@ -145,7 +148,7 @@ export const Field = memo(({field, settings, callback}) => {
                     gradients={controlProps.gradients || []}
                     clearable
                     value={localValue ?? field?.default ?? ''}
-                    onChange={(v) => setLocalValue(v)}
+                    onChange={(v) => commit(v)}
                     __nextHasNoMarginBottom
                 />
             );
@@ -156,8 +159,8 @@ export const Field = memo(({field, settings, callback}) => {
                 <BoxControl
                     label={label}
                     values={localValue}
-                    onChange={(v) => setLocalValue(v)}
-                    onBlur={() => callback(localValue)}
+                    onChange={(v) => commit(v)}
+                    //onBlur={() => commit(localValue)}
 
                     {...controlProps}
                 />
@@ -167,12 +170,12 @@ export const Field = memo(({field, settings, callback}) => {
         case 'image':
         case 'video': {
             const allowedTypes = type === 'image' ? ['image'] : ['video'];
-            const clear = () => callback(undefined);
+            const clear = () => commit(undefined);
             control = (
                 <MediaUploadCheck>
                     <MediaUpload
                         title={label}
-                        onSelect={(media) => callback(media)}
+                        onSelect={(media) => commit(media)}
                         allowedTypes={allowedTypes}
                         value={localValue}
                         render={({open}) => (
@@ -198,10 +201,10 @@ export const Field = memo(({field, settings, callback}) => {
 
     return control ? (
         <ToolsPanelItem
-            hasValue={() => localValue !== undefined && localValue !== null}
+            hasValue={() => settings?.[slug] !== undefined && settings?.[slug] !== null}
             label={label}
-            onDeselect={() => callback(undefined)}
-            onSelect={() => setLocalValue('')} // <— initialize with an empty string
+            onDeselect={() => commit(undefined)}
+            onSelect={() => commit('')} // <— initialize with an empty string
             className={fieldClassNames}
             isShownByDefault={false}
         >

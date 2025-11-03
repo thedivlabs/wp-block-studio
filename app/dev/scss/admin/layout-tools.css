@@ -115,6 +115,10 @@
     &.--full {
       grid-column: 1 / -1;
     }
+
+    & > .components-grid {
+      width: 100%;
+    }
   }
 
   .wpbs-layout-tools__label {

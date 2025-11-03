@@ -258,7 +258,6 @@ export function updateStyleString(props, styleRef) {
     }
 }
 
-
 export function useDebouncedCommit(value, callback, delay = 1100) {
     const latestRef = useRef(value);
     const cancelRef = useRef(null);

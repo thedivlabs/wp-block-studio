@@ -177,7 +177,7 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const initializedRef = useRef(false);
 
-    const {clientId, attributes, setAttributes, tagName} = props;
+    const {clientId, attributes, setAttributes, tagName, name} = props;
 
     const {uniqueId, 'wpbs-style': settings} = attributes;
 
@@ -187,10 +187,13 @@ export const withStyle = (Component) => (props) => {
         if (initializedRef.current || uniqueId) return;
         initializedRef.current = true;
 
-        const id = `${name.split('/').pop()}-${clientId.slice(0, 6)}`;
+        const id = `${name.replace('/', '-')}-${clientId.slice(0, 6)}`;
         setAttributes({uniqueId: id});
-    }, [uniqueId]);
+    }, [uniqueId, name, clientId]);
 
+    useEffect(() => {
+        console.log(attributes);
+    }, [attributes]);
 
     const blockCss = useCallback((newProps) => {
         console.log('blockCss');

@@ -135,7 +135,7 @@ function watchDuplicateIds() {
             const {uniqueId} = attributes || {};
             if (!uniqueId) continue;
             if (seen.has(uniqueId)) {
-                const base = name.split("/").pop();
+                const base = name.replace('/', '-') + '-' + clientId.slice(0, 6);
                 const newId = `${base}-${Math.random().toString(36).slice(2, 6)}`;
                 dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
             } else {

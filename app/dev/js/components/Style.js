@@ -223,7 +223,7 @@ export const withStyle = (Component) => (props) => {
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
 
-    const {clientId, attributes, setAttributes, tagName} = props;
+    const {clientId, attributes, setAttributes, tagName, name} = props;
 
     const {uniqueId, 'wpbs-style': settings = {props: {}, breakpoints: {}, advanced: {}, hover: {}}} = attributes;
 

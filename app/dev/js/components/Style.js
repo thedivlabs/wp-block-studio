@@ -96,34 +96,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     }, true);
 };
 
-function useUniqueId(props) {
-
-    const {clientId, attributes = {}, setAttributes, name} = props;
-
-    const {uniqueId} = attributes;
-
-    const baseName = name.replace('/', '-');
-
-    const instanceId = useInstanceId(withStyle, baseName);
-
-    useEffect(() => {
-
-        if (typeof hasDuplicateId !== 'function') return;
-
-        const needsUpdate =
-            !uniqueId ||
-            hasDuplicateId(uniqueId, clientId) ||
-            !uniqueId.startsWith(baseName);
-
-        if (needsUpdate) {
-            console.log('Updating uniqueId:', instanceId);
-            setAttributes({uniqueId: instanceId});
-        }
-    }, [clientId, instanceId, uniqueId])
-
-    return instanceId;
-}
-
 const BlockWrapper = ({
                           props,
                           className,
@@ -248,8 +220,6 @@ const AdvancedControls = ({settings, callback}) => {
 
 export const withStyle = (Component) => (props) => {
 
-    const instanceId = useUniqueId(props);
-
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
 
@@ -260,6 +230,25 @@ export const withStyle = (Component) => (props) => {
     const {advanced = {}} = settings || {};
 
     const [localSettings, setLocalSettings] = useState(settings);
+
+    const baseName = name.replace('/', '-');
+
+    const instanceId = useInstanceId(withStyle, baseName);
+
+    useEffect(() => {
+
+        if (typeof hasDuplicateId !== 'function') return;
+
+        const needsUpdate =
+            !uniqueId ||
+            hasDuplicateId(uniqueId, clientId) ||
+            !uniqueId.startsWith(baseName);
+
+        if (needsUpdate) {
+            console.log('Updating uniqueId:', instanceId);
+            setAttributes({uniqueId: instanceId});
+        }
+    }, [clientId, instanceId])
 
     const blockCss = useCallback((newProps) => {
         console.log('blockCss');

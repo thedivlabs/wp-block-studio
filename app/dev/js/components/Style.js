@@ -248,7 +248,7 @@ export const withStyle = (Component) => (props) => {
             console.log('Updating uniqueId:', instanceId);
             setAttributes({uniqueId: instanceId});
         }
-    }, [clientId, instanceId])
+    }, [clientId, instanceId]);
 
     const blockCss = useCallback((newProps) => {
         console.log('blockCss');

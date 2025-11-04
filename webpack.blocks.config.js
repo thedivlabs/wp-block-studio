@@ -1,7 +1,8 @@
-const wordpressConfig = require('@wordpress/scripts/config/webpack.config');
+// webpack.blocks.config.js
 const path = require('path');
+const wordpressConfig = require('@wordpress/scripts/config/webpack.config');
 
-function extendScriptConfig(config) {
+function extendBlocksConfig(config) {
     return {
         ...config,
         cache: {
@@ -17,9 +18,8 @@ function extendScriptConfig(config) {
         },
         entry: {
             ...config.entry(),
-            theme: './app/dev/js/theme.js',
-            admin: './app/dev/js/admin.js',
-            editor: './app/dev/js/editor.js',
+            // Only build block JS from your Gutenberg blocks folder
+            index: './app/dev/blocks/index.js',
         },
         output: {
             filename: '[name].js',
@@ -38,11 +38,4 @@ function extendScriptConfig(config) {
     };
 }
 
-module.exports = (() => {
-    if (Array.isArray(wordpressConfig)) {
-        const [scriptConfig, moduleConfig] = wordpressConfig;
-        return [extendScriptConfig(scriptConfig), moduleConfig];
-    } else {
-        return extendScriptConfig(wordpressConfig);
-    }
-})();
+module.exports = extendBlocksConfig(wordpressConfig);

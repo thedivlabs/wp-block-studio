@@ -2,13 +2,14 @@ import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/elem
 import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {ElementTagControl, getElementTag} from "Components/ElementTag";
-import {StyleEditorUI} from "Components/StyleEditorUI";
+import {StyleEditorUI} from "Includes/style";
 import {isEqual} from 'lodash';
 import {
     ToggleControl,
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
+import {useState} from "react";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -120,18 +121,18 @@ function useUniqueId(props) {
         }
     }, [clientId, instanceId, uniqueId])
 
-
+    return instanceId;
 }
 
-export const BlockWrapper = ({
-                                 props,
-                                 className,
-                                 tagName = 'div',
-                                 children,
-                                 hasBackground = false,
-                                 isSave = false,
-                                 ...wrapperProps
-                             }) => {
+const BlockWrapper = ({
+                          props,
+                          className,
+                          tagName = 'div',
+                          children,
+                          hasBackground = false,
+                          isSave = false,
+                          ...wrapperProps
+                      }) => {
     const {attributes} = props;
     const {uniqueId} = attributes;
     const {'wpbs-style': settings = {}} = attributes;
@@ -203,7 +204,7 @@ export const BlockWrapper = ({
     );
 };
 
-const AdvancedControls = (settings, callback) => {
+const AdvancedControls = ({settings, callback}) => {
     return <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
         <Grid columns={2} columnGap={15} rowGap={20}>
             <ElementTagControl
@@ -247,16 +248,18 @@ const AdvancedControls = (settings, callback) => {
 
 export const withStyle = (Component) => (props) => {
 
-    useUniqueId(props);
+    const instanceId = useUniqueId(props);
 
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
 
-    const {clientId, attributes, setAttributes, tagName, name} = props;
+    const {clientId, attributes, setAttributes, tagName} = props;
 
-    const {uniqueId, 'wpbs-style': settings} = attributes;
+    const {uniqueId, 'wpbs-style': settings = {props: {}, breakpoints: {}, advanced: {}, hover: {}}} = attributes;
 
     const {advanced = {}} = settings || {};
+
+    const [localSettings, setLocalSettings] = useState(settings);
 
     const blockCss = useCallback((newProps) => {
         console.log('blockCss');
@@ -284,7 +287,7 @@ export const withStyle = (Component) => (props) => {
             const cleanedCss = cleanObject(cssObj, true);
 
             if (
-                isEqual(cleanObject(attributes['wpbs-style']), cleanedStyle) &&
+                isEqual(cleanObject(localSettings), cleanedStyle) &&
                 isEqual(cleanObject(attributes['wpbs-css'], true), cleanedCss)
             ) {
                 return;
@@ -297,7 +300,7 @@ export const withStyle = (Component) => (props) => {
                 'wpbs-css': cleanedCss,
             });
         },
-        [attributes, setAttributes]
+        [localSettings, setAttributes]
     );
 
     const updateAdvancedSetting = useCallback(
@@ -335,21 +338,20 @@ export const withStyle = (Component) => (props) => {
             )}
             blockCss={blockCss}
         />
-    ), [clientId, blockCss, attributes['wpbs-style']]);
+    ), [clientId, blockCss, localSettings]);
 
     const memoizedStyleEditor = useMemo(() => (
         <StyleEditorUI
-            settings={attributes['wpbs-style']}
+            settings={localSettings}
             updateStyleSettings={updateStyleSettings}
         />
-    ), [attributes['wpbs-style']]);
+    ), [localSettings]);
 
     return (
         <>
             {memoizedComponent}
             <InspectorControls group="styles">
                 {memoizedStyleEditor}
-
             </InspectorControls>
             <InspectorControls group="advanced">
                 <AdvancedControls settings={advanced} callback={updateAdvancedSetting}/>

@@ -23,7 +23,10 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
-        const debouncedCommit = _.debounce((nextLayout) => {
+
+        updateStyleSettings(localLayout);
+
+        /*const debouncedCommit = _.debounce((nextLayout) => {
             if (!_.isEqual(nextLayout, settings)) {
                 updateStyleSettings(nextLayout);
             }
@@ -31,7 +34,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
         debouncedCommit(localLayout);
 
-        return () => debouncedCommit.cancel();
+        return () => debouncedCommit.cancel();*/
     }, [localLayout, settings]);
 
 

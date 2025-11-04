@@ -22,7 +22,9 @@
     "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --minify",
     "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --minify",
     "start": "npm-run-all --parallel wp-dev tailwind-theme-dev tailwind-admin-dev",
-    "build": "npm-run-all --parallel wp-build tailwind-theme tailwind-admin"
+    "build": "npm-run-all --parallel wp-build tailwind-theme tailwind-admin",
+    "start-blocks": "npm-run-all --parallel blocks-dev tailwind-theme-dev",
+    "blocks-dev": "webpack serve --config webpack.blocks.config.js --watch"
   },
   "dependencies": {
     "@wordpress/api-fetch": "^7.28.0",

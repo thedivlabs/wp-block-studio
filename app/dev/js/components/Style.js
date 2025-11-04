@@ -1,16 +1,14 @@
 import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
 import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
-import {ElementTagControl, getElementTag} from "Components/ElementTag.js";
+import {ElementTagControl, getElementTag} from "Components/ElementTag";
+import {StyleEditorUI} from "Components/StyleEditorUI";
 import {isEqual} from 'lodash';
-import {cleanObject, getCSSFromStyle, parseSpecialProps} from 'Includes/style-utils';
 import {
     ToggleControl,
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {hasDuplicateId} from "Modules/StyleEditor";
-
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -28,6 +26,10 @@ export const STYLE_ATTRIBUTES = {
         default: {},
     }
 }
+
+const API = window?.WPBS_StyleEditor ?? {};
+const {getCSSFromStyle, cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
+
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -92,6 +94,34 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         ...restWrapperProps,
     }, true);
 };
+
+function useUniqueId(props) {
+
+    const {clientId, attributes = {}, setAttributes, name} = props;
+
+    const {uniqueId} = attributes;
+
+    const baseName = name.replace('/', '-');
+
+    const instanceId = useInstanceId(withStyle, baseName);
+
+    useEffect(() => {
+
+        if (typeof hasDuplicateId !== 'function') return;
+
+        const needsUpdate =
+            !uniqueId ||
+            hasDuplicateId(uniqueId, clientId) ||
+            !uniqueId.startsWith(baseName);
+
+        if (needsUpdate) {
+            console.log('Updating uniqueId:', instanceId);
+            setAttributes({uniqueId: instanceId});
+        }
+    }, [clientId, instanceId, uniqueId])
+
+
+}
 
 export const BlockWrapper = ({
                                  props,
@@ -173,35 +203,58 @@ export const BlockWrapper = ({
     );
 };
 
+const AdvancedControls = (settings, callback) => {
+    return <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <ElementTagControl
+                value={settings?.tagName ?? 'div'}
+                label="HTML Tag"
+                onChange={(tag) => callback({tagName: tag})}
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <ToggleControl
+                __nextHasNoMarginBottom
+                label="Hide if Empty"
+                checked={!!settings?.['hide-empty']}
+                onChange={(checked) => callback({'hide-empty': checked})}
+            />
+            <ToggleControl
+                __nextHasNoMarginBottom
+                label="Required"
+                checked={!!settings?.required}
+                onChange={(checked) => callback({required: checked})}
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <ToggleControl
+                __nextHasNoMarginBottom
+                label="Offset Header"
+                checked={!!settings?.['offset-header']}
+                onChange={(checked) => callback({'offset-header': checked})}
+            />
+            <ToggleControl
+                __nextHasNoMarginBottom
+                label="Container"
+                checked={!!settings?.container}
+                onChange={(checked) => callback({container: checked})}
+            />
+        </Grid>
+    </Grid>
+}
+
 export const withStyle = (Component) => (props) => {
+
+    useUniqueId(props);
 
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
-    const {hasDuplicateId} = window?.WPBS_StyleEditor ?? {};
-
 
     const {clientId, attributes, setAttributes, tagName, name} = props;
 
     const {uniqueId, 'wpbs-style': settings} = attributes;
-
-    const baseName = name.replace('/', '-');
-
-    const instanceId = useInstanceId(withStyle, baseName);
-
-    useEffect(() => {
-
-        if (typeof hasDuplicateId !== 'function') return;
-
-        const needsUpdate =
-            !uniqueId ||
-            hasDuplicateId(uniqueId, clientId) ||
-            !uniqueId.startsWith(baseName);
-
-        if (needsUpdate) {
-            console.log('Updating uniqueId:', instanceId);
-            setAttributes({uniqueId: instanceId});
-        }
-    }, [clientId, instanceId, uniqueId])
 
     const {advanced = {}} = settings || {};
 
@@ -268,10 +321,9 @@ export const withStyle = (Component) => (props) => {
         [setAttributes]
     );
 
-
     useEffect(() => {
         if (styleRef.current) {
-            window.WPBS_StyleEditor.updateStyleString(props, styleRef);
+            updateStyleString(props, styleRef);
         }
     }, [attributes['wpbs-css'], uniqueId]);
 
@@ -285,74 +337,22 @@ export const withStyle = (Component) => (props) => {
         />
     ), [clientId, blockCss, attributes['wpbs-style']]);
 
-
-    const SafeStyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
-        const {StyleEditorUI} = window.WPBS_StyleEditor || {};
-
-        if (!StyleEditorUI) {
-            // still not loaded, render inert placeholder
-            return <div className="wpbs-style-editor-loading">Loading style editor…</div>;
-        }
-
-        return (
-            <StyleEditorUI
-                props={props}
-                styleRef={styleRef}
-                updateStyleSettings={updateStyleSettings}
-            />
-        );
-    };
+    const memoizedStyleEditor = useMemo(() => (
+        <StyleEditorUI
+            settings={attributes['wpbs-style']}
+            updateStyleSettings={updateStyleSettings}
+        />
+    ), [attributes['wpbs-style']]);
 
     return (
         <>
             {memoizedComponent}
             <InspectorControls group="styles">
-                <SafeStyleEditorUI
-                    props={props}
-                    styleRef={styleRef}
-                    updateStyleSettings={updateStyleSettings}
-                />
+                {memoizedStyleEditor}
+
             </InspectorControls>
             <InspectorControls group="advanced">
-                <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <ElementTagControl
-                            value={advanced?.tagName ?? 'div'}
-                            label="HTML Tag"
-                            onChange={(tag) => updateAdvancedSetting({tagName: tag})}
-                        />
-                    </Grid>
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <ToggleControl
-                            __nextHasNoMarginBottom
-                            label="Hide if Empty"
-                            checked={!!advanced?.['hide-empty']}
-                            onChange={(checked) => updateAdvancedSetting({'hide-empty': checked})}
-                        />
-                        <ToggleControl
-                            __nextHasNoMarginBottom
-                            label="Required"
-                            checked={!!advanced?.required}
-                            onChange={(checked) => updateAdvancedSetting({required: checked})}
-                        />
-                    </Grid>
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <ToggleControl
-                            __nextHasNoMarginBottom
-                            label="Offset Header"
-                            checked={!!advanced?.['offset-header']}
-                            onChange={(checked) => updateAdvancedSetting({'offset-header': checked})}
-                        />
-                        <ToggleControl
-                            __nextHasNoMarginBottom
-                            label="Container"
-                            checked={!!advanced?.container}
-                            onChange={(checked) => updateAdvancedSetting({container: checked})}
-                        />
-                    </Grid>
-                </Grid>
+                <AdvancedControls settings={advanced} callback={updateAdvancedSetting}/>
             </InspectorControls>
 
             <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>

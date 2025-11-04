@@ -8,8 +8,7 @@ import {
 } from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 
-export const StyleEditorUI = ({props, updateStyleSettings}) => {
-    const {attributes} = props;
+export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     // --- Load breakpoint definitions
     const breakpoints = useMemo(() => {
@@ -19,13 +18,13 @@ export const StyleEditorUI = ({props, updateStyleSettings}) => {
 
     // --- Initialize local style state
     const [localLayout, setLocalLayout] = useState(
-        attributes["wpbs-style"] || {props: {}, breakpoints: {}, hover: {}}
+        settings || {props: {}, breakpoints: {}, hover: {}}
     );
 
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
         const debouncedCommit = _.debounce((nextLayout) => {
-            if (!_.isEqual(nextLayout, attributes["wpbs-style"])) {
+            if (!_.isEqual(nextLayout, settings)) {
                 updateStyleSettings(nextLayout);
             }
         }, 900); // adjust delay as needed
@@ -33,7 +32,7 @@ export const StyleEditorUI = ({props, updateStyleSettings}) => {
         debouncedCommit(localLayout);
 
         return () => debouncedCommit.cancel();
-    }, [localLayout, attributes["wpbs-style"]]);
+    }, [localLayout, settings]);
 
 
     // --- Update helpers
@@ -69,7 +68,6 @@ export const StyleEditorUI = ({props, updateStyleSettings}) => {
             },
         }));
     }, [setLocalLayout]);
-
 
     // --- Breakpoint management
     const addBreakpointPanel = useCallback(() => {

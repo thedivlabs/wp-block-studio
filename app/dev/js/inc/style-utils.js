@@ -26,7 +26,6 @@ export function cleanObject(obj, strict = false) {
     }, {});
 }
 
-
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
 

@@ -8,6 +8,8 @@ import {
     ToggleControl,
     __experimentalGrid as Grid,
 } from "@wordpress/components";
+import {useInstanceId} from "@wordpress/compose";
+import {hasDuplicateId} from "Modules/StyleEditor";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -175,10 +177,31 @@ export const withStyle = (Component) => (props) => {
 
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
+    const {hasDuplicateId} = window?.WPBS_StyleEditor ?? {};
+
 
     const {clientId, attributes, setAttributes, tagName, name} = props;
 
     const {uniqueId, 'wpbs-style': settings} = attributes;
+
+    const baseName = name.replace('/', '-');
+
+    const instanceId = useInstanceId(withStyle, baseName);
+
+    useEffect(() => {
+
+        if (typeof hasDuplicateId !== 'function') return;
+
+        const needsUpdate =
+            !uniqueId ||
+            hasDuplicateId(uniqueId, clientId) ||
+            !uniqueId.startsWith(baseName);
+
+        if (needsUpdate) {
+            console.log('Updating uniqueId:', instanceId);
+            setAttributes({uniqueId: instanceId});
+        }
+    }, [clientId, instanceId, uniqueId])
 
     const {advanced = {}} = settings || {};
 

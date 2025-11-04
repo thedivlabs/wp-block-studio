@@ -1,5 +1,3 @@
-// StyleEditor.js (external shared script)
-
 import {
     CONTAINER_OPTIONS, REVEAL_ANIMATION_OPTIONS, REVEAL_EASING_OPTIONS,
     DISPLAY_OPTIONS, DIRECTION_OPTIONS, WRAP_OPTIONS, ALIGN_OPTIONS, JUSTIFY_OPTIONS,
@@ -7,8 +5,7 @@ import {
     CONTENT_VISIBILITY_OPTIONS, TEXT_ALIGN_OPTIONS, DIMENSION_UNITS
 } from "Includes/config";
 import {StyleEditorUI} from "Components/StyleEditorUI";
-import {updateStyleString, Field} from "Includes/style";
-import _, {debounce} from "lodash";
+import {updateStyleString} from "Includes/style";
 
 const layoutFieldsMap = [
     {type: 'heading', label: 'Flex Settings FPO'},
@@ -107,58 +104,55 @@ const hoverFieldsMap = [
     },
 ];
 
-function watchDuplicateIds() {
-    const {select, dispatch, subscribe} = window.wp.data;
-    const store = "core/block-editor";
-    let lastSig = "";
+export function hasDuplicateId(uniqueId, clientId) {
+    if (!uniqueId) return false;
 
-    const checkBlocks = debounce(() => {
-        const flatten = (blocks, acc = []) => {
-            for (const b of blocks) {
+    const {select} = window.wp.data;
+    const store = "core/block-editor";
+
+    try {
+        const blocks = select(store).getBlocks();
+
+        const flatten = (arr, acc = []) => {
+            for (const b of arr) {
                 if (b.name?.startsWith("wpbs/")) acc.push(b);
                 if (b.innerBlocks?.length) flatten(b.innerBlocks, acc);
             }
             return acc;
         };
 
-        const blocks = flatten(select(store).getBlocks());
-        if (!blocks.length) return;
+        const wpbsBlocks = flatten(blocks);
+        let count = 0;
 
-        const sig = blocks
-            .map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ""}`)
-            .join("|");
-        if (sig === lastSig) return;
-        lastSig = sig;
-
-        const seen = new Map();
-        for (const b of blocks) {
-            const {clientId, name, attributes} = b;
-            const {uniqueId} = attributes || {};
-            if (!uniqueId) continue;
-            if (seen.has(uniqueId)) {
-                const base = name.replace('/', '-') + '-' + clientId.slice(0, 6);
-                const newId = `${base}-${Math.random().toString(36).slice(2, 6)}`;
-                dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
-            } else {
-                seen.set(uniqueId, true);
+        for (const block of wpbsBlocks) {
+            if (block.attributes?.uniqueId === uniqueId && block.clientId !== clientId) {
+                count++;
+                if (count > 0) return true; // bail early
             }
         }
-    }, 300);
 
-    subscribe(checkBlocks);
+        return false;
+    } catch (err) {
+        console.warn("WPBS: hasDuplicateId failed", err);
+        return false;
+    }
 }
 
+/**
+ * Initializes the Style Editor API, connecting to the WP data store.
+ * No persistent subscription is kept — it's all on-demand.
+ */
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 
     const api = {
         updateStyleString,
+        hasDuplicateId,
         StyleEditorUI,
-        layoutFieldsMap,   // NEW
-        hoverFieldsMap,    // NEW
+        layoutFieldsMap,
+        hoverFieldsMap,
     };
 
     window.WPBS_StyleEditor = api;
-    watchDuplicateIds();
     return api;
 }

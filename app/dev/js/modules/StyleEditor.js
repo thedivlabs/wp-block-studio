@@ -127,7 +127,7 @@ export function hasDuplicateId(uniqueId, clientId) {
         for (const block of wpbsBlocks) {
             if (block.attributes?.uniqueId === uniqueId && block.clientId !== clientId) {
                 count++;
-                if (count > 0) return true; // bail early
+                if (count > 0) return true;
             }
         }
 
@@ -138,10 +138,7 @@ export function hasDuplicateId(uniqueId, clientId) {
     }
 }
 
-/**
- * Initializes the Style Editor API, connecting to the WP data store.
- * No persistent subscription is kept — it's all on-demand.
- */
+
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 

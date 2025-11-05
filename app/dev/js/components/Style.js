@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
+import {Fragment, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
 import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
 import {Background} from "Components/Background.js";
 import {ElementTagControl, getElementTag} from "Components/ElementTag";
@@ -9,7 +9,6 @@ import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
-import {useState} from "react";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -259,10 +258,14 @@ export const withStyle = (Component) => (props) => {
         const cleanedLocal = cleanObject(localSettings, true);
 
         if (
-            isEqual(cleanedLocal, cleanObject(attributes['wpbs-style'] || {}, true))
+            isEqual(cleanedLocal, cleanObject(settings, true))
         ) {
             return;
         }
+
+        console.log('cleanedLocal', cleanedLocal);
+        console.log('settings', settings);
+        console.log(isEqual(cleanedLocal, cleanObject(settings, true)));
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
@@ -279,9 +282,6 @@ export const withStyle = (Component) => (props) => {
         }
 
         const cleanedCss = cleanObject(cssObj, true);
-
-
-        console.log(localSettings);
 
         setAttributes({
             'wpbs-style': localSettings,

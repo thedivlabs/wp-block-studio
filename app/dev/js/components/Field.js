@@ -24,17 +24,15 @@ export const Field = memo(({field, settings, callback}) => {
     const fieldClassNames = ['wpbs-layout-tools__field', full ? '--full' : null]
         .filter(Boolean)
         .join(' ');
-
-
-    const [localValue, setLocalValue] = useState(settings?.[slug] ?? null);
+    
+    const localValue = settings?.[slug] ?? null;
 
     const commit = useCallback((newValue) => {
         if (newValue !== settings?.[slug]) {
             console.log('updating', newValue);
             callback(newValue);
-            setLocalValue(newValue);
         }
-    }, [setLocalValue, callback]);
+    }, [callback]);
 
 
     let control = null;

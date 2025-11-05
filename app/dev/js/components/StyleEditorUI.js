@@ -8,6 +8,9 @@ import {
 } from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 
+const API = window?.WPBS_StyleEditor ?? {};
+const {getCSSFromStyle, cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
+
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     // --- Load breakpoint definitions
@@ -21,20 +24,21 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         settings || {props: {}, breakpoints: {}, hover: {}}
     );
 
+    const [localBp, setLocalBp] = useState(localLayout.breakpoints)
+
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
 
-        updateStyleSettings(localLayout);
-
-        /*const debouncedCommit = _.debounce((nextLayout) => {
-            if (!_.isEqual(nextLayout, settings)) {
-                updateStyleSettings(nextLayout);
+        const debouncedCommit = _.debounce((nextLayout) => {
+            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) {
+                return
             }
+            updateStyleSettings(nextLayout);
         }, 900); // adjust delay as needed
 
         debouncedCommit(localLayout);
 
-        return () => debouncedCommit.cancel();*/
+        return () => debouncedCommit.cancel();
     }, [localLayout, settings]);
 
 
@@ -96,14 +100,14 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         });
     }, []);
 
-    const breakpointKeys = useMemo(() => {
+    const breakpointKeys = () => {
         const keys = Object.keys(localLayout?.breakpoints || {});
         return keys.sort((a, b) => {
             const bpA = breakpoints.find((bp) => bp.key === a);
             const bpB = breakpoints.find((bp) => bp.key === b);
             return (bpA?.size || 0) - (bpB?.size || 0);
         });
-    }, [localLayout?.breakpoints, breakpoints]);
+    };
 
     // --- Layout fields (now properly scoped by bpKey)
     const LayoutFields = useMemo(() => {
@@ -144,14 +148,14 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, [updateHoverItem]);
 
     // --- Breakpoint panel
-    const BreakpointPanel = ({
-                                 bpKey,
-                                 localLayout,
-                                 breakpoints,
-                                 breakpointKeys,
-                                 updateBreakpointItem,
-                                 removeBreakpointPanel,
-                             }) => (
+    const BreakpointPanel = useMemo(() => ({
+                                               bpKey,
+                                               localLayout,
+                                               breakpoints,
+                                               breakpointKeys,
+                                               updateBreakpointItem,
+                                               removeBreakpointPanel,
+                                           }) => (
         <div className="wpbs-layout-tools__panel">
             <div className="wpbs-layout-tools__header">
                 <Button
@@ -209,7 +213,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 />
             </ToolsPanel>
         </div>
-    );
+    ), []);
 
     // --- Render
     return (

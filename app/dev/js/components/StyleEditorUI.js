@@ -155,6 +155,22 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 ));
     }, [updateHoverItem]);
 
+    // --- Background fields
+    const BackgroundFields = useMemo(() => {
+        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+        return ({settings, suppress = []}) =>
+            map
+                .filter((f) => !suppress.includes(f.slug))
+                .map((field) => (
+                    <Field
+                        key={`background-${field.slug}`}
+                        field={field}
+                        settings={settings}
+                        callback={(v) => updateBackgroundItem({[field.slug]: v})}
+                    />
+                ));
+    }, []);
+
     // --- Breakpoint panel
     const BreakpointPanel = useMemo(() => ({
                                                bpKey,
@@ -240,21 +256,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             </ToolsPanel>
         </div>
     ), []);
-
-    const BackgroundFields = useMemo(() => {
-        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-        return ({settings, suppress = []}) =>
-            map
-                .filter((f) => !suppress.includes(f.slug))
-                .map((field) => (
-                    <Field
-                        key={`background-${field.slug}`}
-                        field={field}
-                        settings={settings}
-                        callback={(v) => updateBackgroundItem({[field.slug]: v})}
-                    />
-                ));
-    }, [updateBackgroundItem]);
 
     // --- Render
     return (

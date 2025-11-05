@@ -490,6 +490,7 @@ export function initStyleEditor() {
         hasDuplicateId,
         layoutFieldsMap,
         hoverFieldsMap,
+        backgroundFieldsMap,
         cleanObject,
         getCSSFromStyle,
         parseSpecialProps

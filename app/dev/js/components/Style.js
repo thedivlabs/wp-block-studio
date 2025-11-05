@@ -18,9 +18,7 @@ import {
     SelectControl,
     ToggleControl,
 } from "@wordpress/components";
-import {useInstanceId} from "@wordpress/compose";
-import {select, subscribe} from "@wordpress/data";
-import React from "react";
+
 import {BLEND_OPTIONS, IMAGE_SIZE_OPTIONS, ORIGIN_OPTIONS, POSITION_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
 
 export const STYLE_ATTRIBUTES = {

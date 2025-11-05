@@ -158,7 +158,7 @@ class WPBS {
 		/* Theme Bundle */
 		wp_register_style(
 			'wpbs-bundle-css',
-			plugin_dir_url(__FILE__) . 'build/bundle.css',
+			WP_PLUGIN_DIR . '/wp-block-studio/build/bundle.css',
 		);
 
 		/* Odometer */

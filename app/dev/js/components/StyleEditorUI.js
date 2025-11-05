@@ -501,20 +501,8 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, [updateHoverItem]);
 
     // --- Background fields
-    const BackgroundFields = useMemo(() => {
-        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-        return ({settings, suppress = []}) =>
-            map
-                .filter((f) => !suppress.includes(f.slug))
-                .map((field) => (
-                    <Field
-                        key={`background-${field.slug}`}
-                        field={field}
-                        settings={settings}
-                        callback={(v) => updateBackgroundItem({[field.slug]: v})}
-                    />
-                ));
-    }, []);
+    const BackgroundFields = useMemo(() => (
+        <BackgroundControls settings={localLayout.background} callback={updateBackgroundItem}/>), []);
 
     // --- Breakpoint panel
     const BreakpointPanel = useMemo(() => ({
@@ -588,10 +576,10 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     updateBreakpointItem({background: {}}, bpKey)
                 }
             >
-                <BackgroundFields
+                <BackgroundControls
                     bpKey={bpKey}
                     settings={localLayout.breakpoints[bpKey]?.background || {}}
-                    updateFn={(newProps) =>
+                    callback={(newProps) =>
                         updateBreakpointItem(
                             {background: {...(localLayout.breakpoints[bpKey]?.background || {}), ...newProps}},
                             bpKey

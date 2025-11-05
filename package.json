@@ -17,12 +17,14 @@
   "scripts": {
     "wp-build": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/plugins/wp-block-studio/build/ --experimental-modules",
     "wp-dev": "wp-scripts start --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/plugins/wp-block-studio/build/ --experimental-modules",
+    "tailwind-bundle-dev": "npx @tailwindcss/cli -i ./app/dev/scss/bundle.css -o ./app/public/wp-content/plugins/wp-block-studio/build/bundle.css --watch",
+    "tailwind-bundle": "npx @tailwindcss/cli -i ./app/dev/scss/bundle.css -o ./app/public/wp-content/plugins/wp-block-studio/build/bundle.css --minify",
     "tailwind-theme-dev": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --watch",
     "tailwind-admin-dev": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --watch",
     "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --minify",
     "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --minify",
-    "start": "npm-run-all --parallel wp-dev tailwind-theme-dev tailwind-admin-dev",
-    "build": "npm-run-all --parallel wp-build tailwind-theme tailwind-admin",
+    "start": "npm-run-all --parallel wp-dev tailwind-theme-dev tailwind-admin-dev tailwind-bundle-dev",
+    "build": "npm-run-all --parallel wp-build tailwind-theme tailwind-admin tailwind-bundle",
     "start-blocks": "npm-run-all --parallel blocks-dev tailwind-theme-dev",
     "blocks-dev": "webpack serve --config webpack.blocks.config.js --watch"
   },

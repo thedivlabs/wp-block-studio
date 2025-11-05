@@ -3,21 +3,17 @@
 @import "./core/tw-base";
 @import "./core/tw-components";
 @import "./core/tw-utilities";
+
+/* Core and structural */
 @import "./core/layout";
+
+/* Always-visible components */
 @import "./components/background";
 @import "./components/container";
-@import "./components/modal";
 @import "./components/site-header";
-@import "./components/loader";
-@import "./components/lightbox";
-@import "./components/slider";
-@import "./components/reveal";
-@import "./components/forms";
 @import "./components/material-icons";
 
+/* Small overrides */
 .odometer {
   font-family: inherit !important;
 }
-
-
-

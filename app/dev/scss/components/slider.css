@@ -49,8 +49,6 @@
 /* Initialized slider with active slide pointer-events */
 .wpbs-slider.swiper-initialized .swiper-slide {
   /* pointer-events: none; */
-  /* commented out as in original */
-
 }
 
 .wpbs-slider.swiper-initialized .swiper-slide.swiper-slide-active {
@@ -68,44 +66,37 @@
   pointer-events: none !important;
 }
 
-
 .wpbs-slider.swiper {
-
-
   .wpbs-slider-nav {
     --btn-scale: 1;
-    @apply
-    absolute
-    top-0
-    left-0
-    w-full
-    h-full
-    pointer-events-none
-    z-50
-    flex
-    items-center
-    justify-center
-    gap-4
-    ;
-
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 
     .wpbs-slider-nav__btn {
       transition: opacity 0.3s;
       transform-origin: center;
       transform: translateY(-50%) scale(var(--btn-scale, 1));
-      @apply
-      top-1/2
-      pointer-events-auto
-      h-[1.2em]
-      aspect-square
-      flex
-      items-center
-      justify-center
-      text-center
-      shrink-0
-      absolute
-      cursor-pointer
-      select-none
+      position: absolute;
+      top: 50%;
+      pointer-events: auto;
+      height: 1.2em;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
     }
 
     .wpbs-slider-nav__btn:active {
@@ -113,23 +104,31 @@
     }
 
     .wpbs-slider-nav__btn--prev {
-      @apply
-      left-2
+      left: 0.5rem;
     }
 
     .wpbs-slider-nav__btn--next {
-      @apply
-      right-2
+      right: 0.5rem;
     }
 
     .wpbs-slider-nav__pagination {
+      position: absolute;
+      top: auto;
+      right: auto;
+      left: 50%;
+      bottom: 0.5rem;
       transform: translateX(-50%);
       height: 4px;
       width: 5rem;
       flex-shrink: 0;
-      @apply
-      absolute top-auto right-auto left-1/2 bottom-2
-      inline-flex items-center justify-center gap-1 leading-none empty:hidden
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      line-height: 1;
+      &:empty {
+        display: none;
+      }
     }
 
     .wpbs-slider-nav__pagination.swiper-pagination-bullets {
@@ -138,13 +137,13 @@
       max-width: 100%;
       display: block;
 
-      & > .swiper-pagination-bullet {
+      > .swiper-pagination-bullet {
         transform: scale(1);
-        opacity: .6;
+        opacity: 0.6;
         pointer-events: auto;
         height: var(--wp--custom--slider--bullet--height, 10px);
+        aspect-ratio: 1 / 1;
         width: auto;
-        aspect-ratio: 1/1;
         margin: 0 var(--wp--custom--slider--bullet--gap, 5px);
         background-color: var(--wp--custom--slider--bullet--background, var(--wp--preset--color--primary, currentColor));
         border-color: var(--wp--custom--slider--bullet--border--color, var(--wp--preset--color--primary, currentColor));
@@ -160,8 +159,6 @@
         }
       }
     }
-
-
   }
 
   .wpbs-slider-nav.is-style-group {
@@ -170,12 +167,10 @@
     left: unset;
     right: unset;
     bottom: unset;
-    @apply
-    relative
-    w-fit
-    inline-flex
-    h-auto
-    ;
+    position: relative;
+    width: fit-content;
+    display: inline-flex;
+    height: auto;
 
     .wpbs-slider-nav__btn,
     .wpbs-slider-nav__pagination {
@@ -185,15 +180,10 @@
       right: unset;
       bottom: unset;
       position: relative;
-      @apply
-      relative
     }
 
     .wpbs-slider-nav__btn {
       transform: scale(var(--btn-scale, 1));
     }
-
-
   }
-
 }

@@ -155,6 +155,12 @@ class WPBS {
 
 	public function theme_assets(): void {
 
+		/* Theme Bundle */
+		wp_register_style(
+			'wpbs-bundle-css',
+			plugin_dir_url(__FILE__) . 'dist/bundle.css',
+		);
+
 		/* Odometer */
 		wp_register_style( 'odometer-css', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-default.min.css', [], false );
 		wp_register_script( 'odometer-js', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js', [], false, [
@@ -223,39 +229,24 @@ class WPBS {
 
 	}
 
-	public function block_assets(): void {
-
-
-		//wp_enqueue_script( 'wpbs-theme-js' );
-		wp_enqueue_style( 'google-material-icons-outlined' );
-		//wp_enqueue_script( 'wpbs-admin-js' );
-		//wp_enqueue_script( 'swiper-js' );
-		//wp_enqueue_style( 'swiper-css' );
-		wp_enqueue_script( 'swiper-js' );
-		wp_enqueue_style( 'swiper-css' );
-
-	}
-
 	public function admin_assets(): void {
-		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_style( 'wpbs-bundle-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
 		wp_enqueue_style( 'google-material-icons-outlined' );
 	}
 
 	public function editor_assets(): void {
-		//wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_style( 'wpbs-bundle-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
-		//wp_enqueue_script( 'wpbs-admin-js' );
 		wp_enqueue_script( 'wpbs-editor' );
 		wp_localize_script( 'wpbs-editor', 'WPBS', self::$theme_vars );
-
 	}
 
 	public function view_assets(): void {
+		wp_enqueue_style( 'wpbs-bundle-css' );
 		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
 	}
 

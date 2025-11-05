@@ -24,8 +24,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         settings || {props: {}, breakpoints: {}, hover: {}}
     );
 
-    const [localBp, setLocalBp] = useState(localLayout.breakpoints)
-
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
     useEffect(() => {
 
@@ -34,7 +32,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 return
             }
             updateStyleSettings(nextLayout);
-        }, 900); // adjust delay as needed
+        }, 700); // adjust delay as needed
 
         debouncedCommit(localLayout);
 

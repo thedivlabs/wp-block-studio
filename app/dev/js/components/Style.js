@@ -1,6 +1,5 @@
 import {Fragment, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
 import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from '@wordpress/block-editor';
-import {Background} from "Components/Background.js";
 import {ElementTagControl, getElementTag} from "Components/ElementTag";
 import {StyleEditorUI} from "Includes/style";
 import {isEqual} from 'lodash';
@@ -29,7 +28,6 @@ export const STYLE_ATTRIBUTES = {
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {getCSSFromStyle, cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
-
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -224,7 +222,10 @@ export const withStyle = (Component) => (props) => {
 
     const {clientId, attributes, setAttributes, tagName, name} = props;
 
-    const {uniqueId, 'wpbs-style': settings = {props: {}, breakpoints: {}, advanced: {}, hover: {}}} = attributes;
+    const {
+        uniqueId,
+        'wpbs-style': settings = {props: {}, breakpoints: {}, advanced: {}, hover: {}, background: {}}
+    } = attributes;
 
     const {advanced = {}} = settings || {};
 

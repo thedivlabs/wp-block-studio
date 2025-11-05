@@ -21,7 +21,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     // --- Initialize local style state
     const [localLayout, setLocalLayout] = useState(
-        settings || {props: {}, breakpoints: {}, hover: {}}
+        settings || {props: {}, breakpoints: {}, hover: {}, background: {}}
     );
 
     // --- Push local layout back up to attributes (replaces old setLayoutNow)
@@ -73,6 +73,16 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             },
         }));
     }, [setLocalLayout]);
+
+    const updateBackgroundItem = useCallback((newProps) => {
+        setLocalLayout((prev) => ({
+            ...prev,
+            background: {
+                ...prev.background,
+                ...newProps,
+            },
+        }));
+    }, []);
 
     // --- Breakpoint management
     const addBreakpointPanel = useCallback(() => {
@@ -210,8 +220,41 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     updateFn={updateBreakpointItem}
                 />
             </ToolsPanel>
+            {/* Background Section */}
+            <ToolsPanel
+                label={__("Background")}
+                resetAll={() =>
+                    updateBreakpointItem({background: {}}, bpKey)
+                }
+            >
+                <BackgroundFields
+                    bpKey={bpKey}
+                    settings={localLayout.breakpoints[bpKey]?.background || {}}
+                    updateFn={(newProps) =>
+                        updateBreakpointItem(
+                            {background: {...(localLayout.breakpoints[bpKey]?.background || {}), ...newProps}},
+                            bpKey
+                        )
+                    }
+                />
+            </ToolsPanel>
         </div>
     ), []);
+
+    const BackgroundFields = useMemo(() => {
+        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+        return ({settings, suppress = []}) =>
+            map
+                .filter((f) => !suppress.includes(f.slug))
+                .map((field) => (
+                    <Field
+                        key={`background-${field.slug}`}
+                        field={field}
+                        settings={settings}
+                        callback={(v) => updateBackgroundItem({[field.slug]: v})}
+                    />
+                ));
+    }, [updateBackgroundItem]);
 
     // --- Render
     return (
@@ -252,6 +295,18 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     </Grid>
                 </ToolsPanel>
             </div>
+
+            <div className="wpbs-layout-tools__panel">
+                <ToolsPanel
+                    label={__("Background")}
+                    resetAll={() => setLocalLayout(prev => ({...prev, background: {}}))}
+                >
+                    <Grid columns={1} columnGap={15} rowGap={20}>
+                        <BackgroundFields settings={localLayout.background}/>
+                    </Grid>
+                </ToolsPanel>
+            </div>
+
 
             {/* Breakpoints */}
             {breakpointKeys.map((bpKey) => (

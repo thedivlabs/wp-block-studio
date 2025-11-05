@@ -229,6 +229,8 @@ export const withStyle = (Component) => (props) => {
 
     const {advanced = {}} = settings || {};
 
+    const {style: styleAttrs = {}} = attributes;
+
     const [localSettings = {}, setLocalSettings] = useState(settings);
 
     const baseName = name.replace('/', '-');
@@ -333,7 +335,7 @@ export const withStyle = (Component) => (props) => {
             )}
             blockCss={blockCss}
         />
-    ), [clientId, blockCss, localSettings]);
+    ), [clientId, blockCss, localSettings, styleAttrs]);
 
     const memoizedStyleEditor = useMemo(() => (
         <StyleEditorUI

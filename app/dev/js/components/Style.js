@@ -229,7 +229,7 @@ export const withStyle = (Component) => (props) => {
 
     const {advanced = {}} = settings || {};
 
-    const [localSettings, setLocalSettings] = useState(settings);
+    const [localSettings = {}, setLocalSettings] = useState(settings);
 
     const baseName = name.replace('/', '-');
 
@@ -255,39 +255,48 @@ export const withStyle = (Component) => (props) => {
         cssPropsRef.current = newProps;
     }, []);
 
+    useEffect(() => {
+        const cleanedLocal = cleanObject(localSettings, true);
+
+        if (
+            isEqual(cleanedLocal, cleanObject(attributes['wpbs-style'] || {}, true))
+        ) {
+            return;
+        }
+
+        const cssObj = {
+            props: parseSpecialProps(cleanedLocal.props || {}),
+            breakpoints: {},
+            hover: {},
+        };
+
+        for (const [bpKey, bpProps] of Object.entries(cleanedLocal.breakpoints || {})) {
+            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+        }
+
+        if (cleanedLocal.hover) {
+            cssObj.hover = parseSpecialProps(cleanedLocal.hover);
+        }
+
+        const cleanedCss = cleanObject(cssObj, true);
+
+
+        console.log(localSettings);
+
+        setAttributes({
+            'wpbs-style': localSettings,
+            'wpbs-css': cleanedCss,
+        });
+    }, [localSettings]);
+
     const updateStyleSettings = useCallback(
         (layoutState) => {
-            const cleanedStyle = cleanObject(layoutState);
-
-            const cssObj = {
-                props: parseSpecialProps(cleanedStyle.props || {}),
-                breakpoints: {},
-                hover: {},
-            };
-
-            for (const [bpKey, bpProps] of Object.entries(cleanedStyle.breakpoints || {})) {
-                cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+            if (isEqual(localSettings, layoutState)) {
+                return
             }
 
-            if (cleanedStyle.hover) {
-                cssObj.hover = parseSpecialProps(cleanedStyle.hover);
-            }
+            setLocalSettings(layoutState);
 
-            const cleanedCss = cleanObject(cssObj, true);
-
-            if (
-                isEqual(cleanObject(localSettings), cleanedStyle) &&
-                isEqual(cleanObject(attributes['wpbs-css'], true), cleanedCss)
-            ) {
-                return;
-            }
-
-            console.log(cleanedStyle);
-
-            setAttributes({
-                'wpbs-style': cleanedStyle,
-                'wpbs-css': cleanedCss,
-            });
         },
         [localSettings, setAttributes]
     );

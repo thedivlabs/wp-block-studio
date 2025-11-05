@@ -231,11 +231,6 @@ export const withStyle = (Component) => (props) => {
 
     const [localSettings = {}, setLocalSettings] = useState(settings);
 
-    const baseName = name.replace('/', '-');
-
-    const instanceId = useInstanceId(withStyle, baseName);
-
-
     const blockCss = useCallback((newProps) => {
         //console.log('blockCss');
         cssPropsRef.current = newProps;

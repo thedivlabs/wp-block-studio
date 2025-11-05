@@ -244,13 +244,13 @@ export const withStyle = (Component) => (props) => {
             !uniqueId.startsWith(baseName);
 
         if (needsUpdate) {
-            console.log('Updating uniqueId:', instanceId);
+            //console.log('Updating uniqueId:', instanceId);
             setAttributes({uniqueId: instanceId});
         }
     }, [clientId, instanceId]);
 
     const blockCss = useCallback((newProps) => {
-        console.log('blockCss');
+        //console.log('blockCss');
         cssPropsRef.current = newProps;
     }, []);
 
@@ -262,10 +262,6 @@ export const withStyle = (Component) => (props) => {
         ) {
             return;
         }
-
-        console.log('cleanedLocal', cleanedLocal);
-        console.log('settings', settings);
-        console.log(isEqual(cleanedLocal, cleanObject(settings, true)));
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),

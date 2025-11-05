@@ -34,7 +34,7 @@ class WPBS {
 		add_action( 'init', [ $this, 'theme_assets' ], 20 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'block_assets' ] );
-		add_action( 'admin_init', [ $this, 'admin_assets' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 		add_action( 'wp_print_styles', [ $this, 'critical_css' ], 1 );
@@ -216,20 +216,22 @@ class WPBS {
 			'in_footer' => true,
 		] );
 
-		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
+
 
 
 	}
 
 	public function block_assets(): void {
 
-		wp_enqueue_script( 'masonry-js' );
-		wp_enqueue_script( 'wpbs-theme-js' );
+
+		//wp_enqueue_script( 'wpbs-theme-js' );
 		wp_enqueue_style( 'google-material-icons-outlined' );
 		//wp_enqueue_script( 'wpbs-admin-js' );
 		//wp_enqueue_script( 'swiper-js' );
 		//wp_enqueue_style( 'swiper-css' );
-		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_enqueue_script( 'swiper-js' );
+		wp_enqueue_style( 'swiper-css' );
+
 	}
 
 	public function admin_assets(): void {
@@ -239,20 +241,19 @@ class WPBS {
 	}
 
 	public function editor_assets(): void {
-		wp_enqueue_style( 'wpbs-theme-css' );
+		//wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
-		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_style( 'google-material-icons-outlined' );
-		wp_enqueue_script( 'swiper-js' );
-		wp_enqueue_style( 'swiper-css' );
+		//wp_enqueue_script( 'wpbs-admin-js' );
 		wp_enqueue_script( 'wpbs-editor' );
+		wp_localize_script( 'wpbs-editor', 'WPBS', self::$theme_vars );
 
 	}
 
 	public function view_assets(): void {
-		wp_enqueue_style( 'google-material-icons-outlined' );
 		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_enqueue_style( 'wpbs-theme-css' );
+		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
 	}
 
 	public function init_theme(): void {

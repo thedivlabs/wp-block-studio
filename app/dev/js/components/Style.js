@@ -25,52 +25,7 @@ export const STYLE_ATTRIBUTES = {
 }
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {getCSSFromStyle, cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
-
-function useDuplicateWatcher(clientId, baseName, setAttributes, instanceId) {
-    const pendingRef = useRef(false);
-    const store = 'core/block-editor';
-
-    useEffect(() => {
-        let lastSig = '';
-
-        const unsubscribe = subscribe(() => {
-            const blocks = select(store).getBlocks();
-            if (!blocks.length) return;
-
-            // very cheap signature: only clientId + uniqueId list
-            const sig = blocks.map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`).join('|');
-            if (sig === lastSig) return;
-            lastSig = sig;
-
-            // check this block only
-            const current = blocks.find(b => b.clientId === clientId);
-            if (!current) return;
-
-            const { uniqueId } = current.attributes || {};
-            if (!uniqueId || !uniqueId.startsWith(baseName)) {
-                pendingRef.current = true;
-            } else {
-                // check if duplicate exists
-                pendingRef.current = blocks.some(
-                    b => b.clientId !== clientId && b.attributes?.uniqueId === uniqueId
-                );
-            }
-        });
-
-        return () => unsubscribe();
-    }, [clientId, baseName]);
-
-    // lightweight effect that applies the fix only when flagged
-    useEffect(() => {
-        if (!pendingRef.current) return;
-
-        pendingRef.current = false;
-        setTimeout(() => {
-            setAttributes({ uniqueId: `${baseName}-${instanceId}` });
-        }, 50);
-    });
-}
+const {getCSSFromStyle, cleanObject, updateStyleString, parseSpecialProps} = API;
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -280,13 +235,6 @@ export const withStyle = (Component) => (props) => {
 
     const instanceId = useInstanceId(withStyle, baseName);
 
-    useDuplicateWatcher(clientId, baseName, setAttributes, instanceId);
-
-
-
-
-
-
 
     const blockCss = useCallback((newProps) => {
         //console.log('blockCss');
@@ -318,7 +266,7 @@ export const withStyle = (Component) => (props) => {
             isEqual(cleanedLocal, cleanObject(settings, true)) &&
             isEqual(cleanedCss, cleanObject(cssObj, true))
         ) {
-           // return;
+           return;
         }
 
         setAttributes({

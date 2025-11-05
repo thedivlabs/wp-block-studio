@@ -450,46 +450,11 @@ function updateStyleString(props, styleRef) {
     return newCSS;
 }
 
-function hasDuplicateId(uniqueId, clientId) {
-    if (!uniqueId) return false;
-
-    const {select} = window.wp.data;
-    const store = "core/block-editor";
-
-    try {
-        const blocks = select(store).getBlocks();
-
-        const flatten = (arr, acc = []) => {
-            for (const b of arr) {
-                if (b.name?.startsWith("wpbs/")) acc.push(b);
-                if (b.innerBlocks?.length) flatten(b.innerBlocks, acc);
-            }
-            return acc;
-        };
-
-        const wpbsBlocks = flatten(blocks);
-        let count = 0;
-
-        for (const block of wpbsBlocks) {
-            if (block.attributes?.uniqueId === uniqueId && block.clientId !== clientId) {
-                count++;
-                if (count > 0) return true;
-            }
-        }
-
-        return false;
-    } catch (err) {
-        console.warn("WPBS: hasDuplicateId failed", err);
-        return false;
-    }
-}
-
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 
     const api = {
         updateStyleString,
-        hasDuplicateId,
         layoutFieldsMap,
         hoverFieldsMap,
         backgroundFieldsMap,
@@ -497,6 +462,57 @@ export function initStyleEditor() {
         getCSSFromStyle,
         parseSpecialProps
     };
+
+    function startDuplicateWatcher() {
+        const { subscribe, select, dispatch } = wp.data;
+        const store = 'core/block-editor';
+        let lastSig = '';
+
+        // Recursive flatten of all wpbs/ blocks
+        const flattenWPBSBlocks = (arr, acc = []) => {
+            for (const b of arr) {
+                if (b.name?.startsWith('wpbs/')) {
+                    acc.push(b);
+                }
+                if (b.innerBlocks?.length) flattenWPBSBlocks(b.innerBlocks, acc);
+            }
+            return acc;
+        };
+
+        subscribe(() => {
+            try {
+                const rootBlocks = select(store).getBlocks();
+                if (!rootBlocks.length) return;
+
+                // flatten all nested wpbs/ blocks
+                const wpbsBlocks = flattenWPBSBlocks(rootBlocks);
+
+                // build a signature to avoid redundant passes
+                const sig = wpbsBlocks.map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`).join('|');
+                if (sig === lastSig) return;
+                lastSig = sig;
+
+                const seen = new Set();
+
+                for (const b of wpbsBlocks) {
+                    const { attributes = {}, name, clientId } = b;
+                    const baseName = name.replace('/', '-');
+                    const uid = attributes.uniqueId;
+
+                    // missing, invalid, or duplicate ID → regenerate
+                    if (!uid || !uid.startsWith(baseName) || seen.has(uid)) {
+                        const newId = `${baseName}-${Math.random().toString(36).slice(2, 8)}`;
+                        dispatch(store).updateBlockAttributes(clientId, { uniqueId: newId });
+                    } else {
+                        seen.add(uid);
+                    }
+                }
+            } catch (err) {
+                console.warn('WPBS: duplicate watcher error', err);
+            }
+        });
+    }
+    startDuplicateWatcher();
 
     window.WPBS_StyleEditor = api;
     return api;

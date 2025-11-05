@@ -499,7 +499,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     />
                 ));
     }, [updateHoverItem]);
-    
+
 
     // --- Breakpoint panel
     const BreakpointPanel = useMemo(() => ({
@@ -567,23 +567,16 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 />
             </ToolsPanel>
             {/* Background Section */}
-            <ToolsPanel
-                label={__("Background")}
-                resetAll={() =>
-                    updateBreakpointItem({background: {}}, bpKey)
+            <BackgroundControls
+                bpKey={bpKey}
+                settings={localLayout.breakpoints[bpKey]?.background || {}}
+                callback={(newProps) =>
+                    updateBreakpointItem(
+                        {background: {...(localLayout.breakpoints[bpKey]?.background || {}), ...newProps}},
+                        bpKey
+                    )
                 }
-            >
-                <BackgroundControls
-                    bpKey={bpKey}
-                    settings={localLayout.breakpoints[bpKey]?.background || {}}
-                    callback={(newProps) =>
-                        updateBreakpointItem(
-                            {background: {...(localLayout.breakpoints[bpKey]?.background || {}), ...newProps}},
-                            bpKey
-                        )
-                    }
-                />
-            </ToolsPanel>
+            />
         </div>
     ), []);
 

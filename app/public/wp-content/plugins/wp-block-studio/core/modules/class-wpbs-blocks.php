@@ -11,23 +11,53 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-
-		add_filter( 'render_block_data', function ( $parsed_block ) {
-			if (
-				isset( $parsed_block['blockName'] ) &&
-				str_starts_with( $parsed_block['blockName'], 'wpbs/' ) &&
-				! empty( $parsed_block['attrs']['wpbs-css'] )
-			) {
-				self::render_block_styles( $parsed_block['attrs'], $parsed_block['blockName'] );
+		add_action('wp_head', function () {
+			$css = get_post_meta(get_the_ID(), '_wpbs_combined_css', true);
+			if (!empty($css)) {
+				echo '<style id="wpbs-style">' . $css . '</style>';
 			}
+		});
 
-			return $parsed_block;
-		}, 10 );
+		add_action('save_post', function ($post_id, $post) {
+			if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+			if (wp_is_post_revision($post_id)) return;
+
+			// Only process posts that use WPBS blocks
+			if (!has_blocks($post)) return;
+
+			$blocks = parse_blocks($post->post_content);
+			if (empty($blocks)) return;
+
+			$css = self::collect_block_styles($blocks);
+
+			update_post_meta($post_id, '_wpbs_combined_css', $css);
+		}, 20, 2);
 
 
 	}
 
-	public static function render_block_styles( array $attributes, string $name = '', bool $is_rest = false ): string|bool {
+	private function collect_block_styles(array $blocks): string {
+		$css = '';
+
+		foreach ($blocks as $block) {
+			if (!is_array($block)) continue;
+
+			$name       = $block['blockName'] ?? '';
+			$attributes = $block['attrs'] ?? [];
+
+			if (str_starts_with($name, 'wpbs/')) {
+				$css .= self::parse_block_styles($attributes, $name);
+			}
+
+			if (!empty($block['innerBlocks'])) {
+				$css .= self::collect_block_styles($block['innerBlocks']);
+			}
+		}
+
+		return trim($css);
+	}
+
+	public static function parse_block_styles( array $attributes, string $name = '' ): string {
 
 		if ( empty( $attributes['uniqueId'] ) ) {
 			return '';
@@ -136,27 +166,10 @@ class WPBS_Blocks {
 			return '';
 		}
 
-		if ( $is_rest ) {
-			echo '<style>' . $final_css . '</style>';
-
-			return true;
-		}
-
-		add_filter( 'wpbs_critical_css', function ( $css_array ) use ( $final_css, $unique_id ) {
-			if ( empty( $final_css ) || empty( $unique_id ) ) {
-				return $css_array;
-			}
-			$css_array[ $unique_id ] = $final_css;
-
-			return $css_array;
-		} );
-
 		return $final_css;
 	}
 
 	public function render_block( $attributes, $content, $block ): string {
-
-		self::render_block_styles( $attributes );
 
 		return $content;
 	}
@@ -209,7 +222,7 @@ class WPBS_Blocks {
 			}
 
 			$block = register_block_type( $block_dir, $block_object );
-			
+
 		}
 	}
 

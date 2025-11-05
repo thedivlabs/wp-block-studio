@@ -446,6 +446,8 @@ function updateStyleString(props, styleRef) {
     if (styleRef.current.textContent !== newCSS) {
         styleRef.current.textContent = newCSS;
     }
+
+    return newCSS;
 }
 
 function hasDuplicateId(uniqueId, clientId) {

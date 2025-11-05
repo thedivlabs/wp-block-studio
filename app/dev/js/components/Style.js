@@ -3,11 +3,9 @@ import {InnerBlocks, InspectorControls, useBlockProps, useInnerBlocksProps} from
 import {ElementTagControl, getElementTag} from "Components/ElementTag";
 import {StyleEditorUI} from "Includes/style";
 import {isEqual} from 'lodash';
-import {
-    ToggleControl,
-    __experimentalGrid as Grid,
-} from "@wordpress/components";
+import {__experimentalGrid as Grid, ToggleControl,} from "@wordpress/components";
 import {useInstanceId} from "@wordpress/compose";
+import {select, subscribe} from "@wordpress/data";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -28,6 +26,51 @@ export const STYLE_ATTRIBUTES = {
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {getCSSFromStyle, cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
+
+function useDuplicateWatcher(clientId, baseName, setAttributes, instanceId) {
+    const pendingRef = useRef(false);
+    const store = 'core/block-editor';
+
+    useEffect(() => {
+        let lastSig = '';
+
+        const unsubscribe = subscribe(() => {
+            const blocks = select(store).getBlocks();
+            if (!blocks.length) return;
+
+            // very cheap signature: only clientId + uniqueId list
+            const sig = blocks.map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`).join('|');
+            if (sig === lastSig) return;
+            lastSig = sig;
+
+            // check this block only
+            const current = blocks.find(b => b.clientId === clientId);
+            if (!current) return;
+
+            const { uniqueId } = current.attributes || {};
+            if (!uniqueId || !uniqueId.startsWith(baseName)) {
+                pendingRef.current = true;
+            } else {
+                // check if duplicate exists
+                pendingRef.current = blocks.some(
+                    b => b.clientId !== clientId && b.attributes?.uniqueId === uniqueId
+                );
+            }
+        });
+
+        return () => unsubscribe();
+    }, [clientId, baseName]);
+
+    // lightweight effect that applies the fix only when flagged
+    useEffect(() => {
+        if (!pendingRef.current) return;
+
+        pendingRef.current = false;
+        setTimeout(() => {
+            setAttributes({ uniqueId: `${baseName}-${instanceId}` });
+        }, 50);
+    });
+}
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -237,20 +280,13 @@ export const withStyle = (Component) => (props) => {
 
     const instanceId = useInstanceId(withStyle, baseName);
 
-    useEffect(() => {
+    useDuplicateWatcher(clientId, baseName, setAttributes, instanceId);
 
-        if (typeof hasDuplicateId !== 'function') return;
 
-        const needsUpdate =
-            !uniqueId ||
-            hasDuplicateId(uniqueId, clientId) ||
-            !uniqueId.startsWith(baseName);
 
-        if (needsUpdate) {
-            //console.log('Updating uniqueId:', instanceId);
-            setAttributes({uniqueId: instanceId});
-        }
-    }, [clientId, instanceId]);
+
+
+
 
     const blockCss = useCallback((newProps) => {
         //console.log('blockCss');
@@ -259,12 +295,6 @@ export const withStyle = (Component) => (props) => {
 
     useEffect(() => {
         const cleanedLocal = cleanObject(localSettings, true);
-
-        if (
-            isEqual(cleanedLocal, cleanObject(settings, true))
-        ) {
-            return;
-        }
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
@@ -282,11 +312,20 @@ export const withStyle = (Component) => (props) => {
 
         const cleanedCss = cleanObject(cssObj, true);
 
+        console.log(cleanedCss);
+
+        if (
+            isEqual(cleanedLocal, cleanObject(settings, true)) &&
+            isEqual(cleanedCss, cleanObject(cssObj, true))
+        ) {
+           // return;
+        }
+
         setAttributes({
             'wpbs-style': localSettings,
             'wpbs-css': cleanedCss,
         });
-    }, [localSettings]);
+    }, [localSettings, uniqueId]);
 
     const updateStyleSettings = useCallback(
         (layoutState) => {
@@ -323,7 +362,8 @@ export const withStyle = (Component) => (props) => {
 
     useEffect(() => {
         if (styleRef.current) {
-            updateStyleString(props, styleRef);
+            const css = updateStyleString(props, styleRef);
+            console.log(css);
         }
     }, [attributes['wpbs-css'], uniqueId]);
 
@@ -335,7 +375,7 @@ export const withStyle = (Component) => (props) => {
             )}
             blockCss={blockCss}
         />
-    ), [clientId, blockCss, localSettings, styleAttrs]);
+    ), [clientId, blockCss, localSettings, styleAttrs, uniqueId]);
 
     const memoizedStyleEditor = useMemo(() => (
         <StyleEditorUI

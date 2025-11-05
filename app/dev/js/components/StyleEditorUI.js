@@ -100,14 +100,14 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         });
     }, []);
 
-    const breakpointKeys = () => {
+    const breakpointKeys = useMemo(() => {
         const keys = Object.keys(localLayout?.breakpoints || {});
         return keys.sort((a, b) => {
             const bpA = breakpoints.find((bp) => bp.key === a);
             const bpB = breakpoints.find((bp) => bp.key === b);
             return (bpA?.size || 0) - (bpB?.size || 0);
         });
-    };
+    }, [localLayout?.breakpoints]);
 
     // --- Layout fields (now properly scoped by bpKey)
     const LayoutFields = useMemo(() => {

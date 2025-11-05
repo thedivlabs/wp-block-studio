@@ -260,8 +260,6 @@ export const withStyle = (Component) => (props) => {
 
         const cleanedCss = cleanObject(cssObj, true);
 
-        console.log(cleanedCss);
-
         if (
             isEqual(cleanedLocal, cleanObject(settings, true)) &&
             isEqual(cleanedCss, cleanObject(cssObj, true))
@@ -311,7 +309,6 @@ export const withStyle = (Component) => (props) => {
     useEffect(() => {
         if (styleRef.current) {
             const css = updateStyleString(props, styleRef);
-            console.log(css);
         }
     }, [attributes['wpbs-css'], uniqueId]);
 

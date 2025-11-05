@@ -238,7 +238,8 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             <div className="wpbs-layout-tools__panel">
                 <ToolsPanel
                     label={__("Hover")}
-                    resetAll={() => updateLayoutItem({...localLayout, hover: {}})}
+                    resetAll={() => setLocalLayout(prev => ({...prev, hover: {}}))}
+
                 >
                     <Grid
                         columns={1}

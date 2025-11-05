@@ -499,10 +499,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     />
                 ));
     }, [updateHoverItem]);
-
-    // --- Background fields
-    const BackgroundFields = useMemo(() => (
-        <BackgroundControls settings={localLayout.background} callback={updateBackgroundItem}/>), []);
+    
 
     // --- Breakpoint panel
     const BreakpointPanel = useMemo(() => ({

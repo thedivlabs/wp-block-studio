@@ -140,15 +140,12 @@ class WPBS {
 		$wp_styles->remove( 'wpbs-theme-css' );
 
 		$css = apply_filters( 'wpbs_critical_css', [] );
-		self::console_log($css);
 		$css = array_unique( $css );
 
 		static $base_css = null;
 		if ( $base_css === null && file_exists( $theme_css_path ) ) {
 			$base_css = file_get_contents( $theme_css_path );
 		}
-
-		self::console_log([$base_css]);
 
 		echo '<style class="wpbs-critical-css">';
 		echo join( ' ', array_values( $css ) );

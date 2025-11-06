@@ -35,7 +35,6 @@ const SPECIAL_FIELDS = [
     'bgImage',
     'bgVideo',
     'bgEager',
-    'bgForce',
     'bgFixed',
     'bgResolution',
     'bgMaxHeight',

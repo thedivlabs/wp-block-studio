@@ -232,8 +232,9 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, []);
 
     const BackgroundControls = ({settings = {}, callback}) => {
+        const isPanelOpen = Object.keys(settings).length;
         return (
-            <PanelBody title="Background" initialOpen={!!settings.bgType}>
+            <PanelBody title="Background" initialOpen={isPanelOpen}>
                 <Grid columns={1} columnGap={15} rowGap={25}>
                     <SelectControl
                         __next40pxDefaultSize

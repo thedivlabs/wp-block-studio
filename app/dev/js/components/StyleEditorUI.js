@@ -17,39 +17,38 @@ import {
     REPEAT_OPTIONS,
     RESOLUTION_OPTIONS
 } from "Includes/config";
-import React from "react";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
+const {cleanObject} = API;
+
+const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
+    <BaseControl
+        label={label}
+        __nextHasNoMarginBottom={true}
+    >
+        <MediaUploadCheck>
+            <MediaUpload
+                title={label}
+                onSelect={callback}
+                allowedTypes={allowedTypes || ['image']}
+                value={value}
+                render={({open}) => {
+                    return <PreviewThumbnail
+                        image={value}
+                        callback={clear}
+                        style={{
+                            objectFit: 'contain'
+                        }}
+                        onClick={open}
+                    />;
+                }}
+            />
+        </MediaUploadCheck>
+    </BaseControl>
+));
 
 const BackgroundControls = ({settings = {}, callback}) => {
-
-    const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
-        <BaseControl
-            label={label}
-            __nextHasNoMarginBottom={true}
-        >
-            <MediaUploadCheck>
-                <MediaUpload
-                    title={label}
-                    onSelect={callback}
-                    allowedTypes={allowedTypes || ['image']}
-                    value={value}
-                    render={({open}) => {
-                        return <PreviewThumbnail
-                            image={value}
-                            callback={clear}
-                            style={{
-                                objectFit: 'contain'
-                            }}
-                            onClick={open}
-                        />;
-                    }}
-                />
-            </MediaUploadCheck>
-        </BaseControl>
-    ));
 
     return <PanelBody title={'Background'} initialOpen={!!settings.type}>
         <Grid columns={1} columnGap={15} rowGap={20}>
@@ -57,7 +56,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 __next40pxDefaultSize
                 label="Type"
                 value={settings?.['type']}
-                callback={(newValue) => callback({'type': newValue})}
+                onChange={(newValue) => callback({'type': newValue})}
                 options={[
                     {label: 'Select', value: ''},
                     {label: 'Image', value: 'image'},
@@ -92,18 +91,18 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <ToggleControl
                         label="Eager"
-                        value={!!settings?.['eager']}
-                        callback={(newValue) => callback({'eager': newValue})}
+                        checked={!!settings?.['eager']}
+                        onChange={(newValue) => callback({'eager': newValue})}
                     />
                     <ToggleControl
                         label="Force"
-                        value={!!settings?.['force']}
-                        callback={(newValue) => callback({'force': newValue})}
+                        checked={!!settings?.['force']}
+                        onChange={(newValue) => callback({'force': newValue})}
                     />
                     <ToggleControl
                         label="Fixed"
-                        value={!!settings?.['fixed']}
-                        callback={(newValue) => callback({'fixed': newValue})}
+                        checked={!!settings?.['fixed']}
+                        onChange={(newValue) => callback({'fixed': newValue})}
                     />
                 </Grid>
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
@@ -111,7 +110,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Resolution"
                         value={settings?.['resolution']}
-                        callback={(newValue) => callback({'resolution': newValue})}
+                        onChange={(newValue) => callback({'resolution': newValue})}
                         options={RESOLUTION_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -119,7 +118,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Size"
                         value={settings?.['size']}
-                        callback={(newValue) => callback({'size': newValue})}
+                        onChange={(newValue) => callback({'size': newValue})}
                         options={IMAGE_SIZE_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -127,7 +126,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Blend"
                         value={settings?.['blend']}
-                        callback={(newValue) => callback({'blend': newValue})}
+                        onChange={(newValue) => callback({'blend': newValue})}
                         options={BLEND_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -135,7 +134,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Position"
                         value={settings?.['position']}
-                        callback={(newValue) => callback({'position': newValue})}
+                        onChange={(newValue) => callback({'position': newValue})}
                         options={POSITION_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -143,14 +142,14 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Origin"
                         value={settings?.['origin']}
-                        callback={(newValue) => callback({'origin': newValue})}
+                        onChange={(newValue) => callback({'origin': newValue})}
                         options={ORIGIN_OPTIONS}
                         __nextHasNoMarginBottom
                     />
                     <UnitControl
                         label={'Max Height'}
                         value={settings?.['maxHeight']}
-                        callback={(newValue) => callback({'maxHeight': newValue})}
+                        onChange={(newValue) => callback({'maxHeight': newValue})}
                         units={[
                             {value: 'vh', label: 'vh', default: 0},
                         ]}
@@ -161,7 +160,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Repeat"
                         value={settings?.['repeat']}
-                        callback={(newValue) => callback({'repeat': newValue})}
+                        onChange={(newValue) => callback({'repeat': newValue})}
                         options={REPEAT_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -185,35 +184,35 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 <RangeControl
                     label="Scale"
                     value={settings?.['scale']}
-                    callback={(newValue) => callback({'scale': newValue})}
+                    onChange={(newValue) => callback({'scale': newValue})}
                     min={0}
                     max={200}
                 />
                 <RangeControl
                     label="Opacity"
                     value={settings?.['opacity']}
-                    callback={(newValue) => callback({'opacity': newValue})}
+                    onChange={(newValue) => callback({'opacity': newValue})}
                     min={0}
                     max={100}
                 />
                 <RangeControl
                     label="Width"
                     value={settings?.['width']}
-                    callback={(newValue) => callback({'width': newValue})}
+                    onChange={(newValue) => callback({'width': newValue})}
                     min={0}
                     max={100}
                 />
                 <RangeControl
                     label="Height"
                     value={settings?.['height']}
-                    callback={(newValue) => callback({'height': newValue})}
+                    onChange={(newValue) => callback({'height': newValue})}
                     min={0}
                     max={100}
                 />
                 <RangeControl
                     label="Fade"
                     value={settings?.['fade']}
-                    callback={(newValue) => callback({'fade': newValue})}
+                    onChange={(newValue) => callback({'fade': newValue})}
                     min={0}
                     max={100}
                 />
@@ -244,7 +243,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Mask Origin"
                         value={settings?.['maskOrigin']}
-                        callback={(newValue) => callback({'maskOrigin': newValue})}
+                        onChange={(newValue) => callback({'maskOrigin': newValue})}
                         options={ORIGIN_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -253,7 +252,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         __next40pxDefaultSize
                         label="Mask Size"
                         value={settings?.['maskSize']}
-                        callback={(newValue) => callback({'maskSize': newValue})}
+                        onChange={(newValue) => callback({'maskSize': newValue})}
                         options={IMAGE_SIZE_OPTIONS}
                         __nextHasNoMarginBottom
                     />

@@ -250,15 +250,13 @@ export const withStyle = (Component) => (props) => {
 
     const {style: styleAttrs = {}} = attributes;
 
-    const [localSettings = {}, setLocalSettings] = useState(settings);
-
     const blockCss = useCallback((newProps) => {
         //console.log('blockCss');
         cssPropsRef.current = newProps;
     }, []);
 
     useEffect(() => {
-        const cleanedLocal = cleanObject(localSettings, true);
+        const cleanedLocal = cleanObject(settings, true);
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
@@ -285,22 +283,21 @@ export const withStyle = (Component) => (props) => {
         }
 
         setAttributes({
-            'wpbs-style': localSettings,
+            'wpbs-style': settings,
             'wpbs-css': cleanedCss,
         });
-    }, [localSettings, uniqueId]);
+    }, [settings, uniqueId]);
 
-    const updateStyleSettings = useCallback(
-        (layoutState) => {
-            if (isEqual(localSettings, layoutState)) {
-                return
-            }
+    const updateStyleSettings = useCallback((nextLayout) => {
+        // Prevent useless update loops
+        if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) {
+            return;
+        }
 
-            setLocalSettings(layoutState);
-
-        },
-        [localSettings, setAttributes]
-    );
+        setAttributes({
+            'wpbs-style': nextLayout,
+        });
+    }, [setAttributes, settings]);
 
     const updateAdvancedSetting = useCallback(
         (updates) => {
@@ -337,14 +334,14 @@ export const withStyle = (Component) => (props) => {
             )}
             blockCss={blockCss}
         />
-    ), [clientId, blockCss, localSettings, styleAttrs, uniqueId]);
+    ), [clientId, blockCss, settings, styleAttrs, uniqueId]);
 
     const memoizedStyleEditor = useMemo(() => (
         <StyleEditorUI
-            settings={localSettings}
+            settings={settings}
             updateStyleSettings={updateStyleSettings}
         />
-    ), [localSettings]);
+    ), [settings]);
 
     return (
         <>

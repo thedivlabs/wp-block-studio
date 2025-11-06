@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "@wordpress/element";
+import {memo, useCallback, useEffect, useMemo, useState} from "@wordpress/element";
 import {Field} from "Components/Field";
 import _ from "lodash";
 import {
@@ -17,18 +17,47 @@ import {
     REPEAT_OPTIONS,
     RESOLUTION_OPTIONS
 } from "Includes/config";
+import React from "react";
+import PreviewThumbnail from "Components/PreviewThumbnail";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {getCSSFromStyle, cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
+const {cleanObject, hasDuplicateId, updateStyleString, parseSpecialProps} = API;
 
 const BackgroundControls = ({settings = {}, callback}) => {
-    return <PanelBody title="Background" initialOpen={!!settings.type}>
+
+    const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
+        <BaseControl
+            label={label}
+            __nextHasNoMarginBottom={true}
+        >
+            <MediaUploadCheck>
+                <MediaUpload
+                    title={label}
+                    onSelect={callback}
+                    allowedTypes={allowedTypes || ['image']}
+                    value={value}
+                    render={({open}) => {
+                        return <PreviewThumbnail
+                            image={value}
+                            callback={clear}
+                            style={{
+                                objectFit: 'contain'
+                            }}
+                            onClick={open}
+                        />;
+                    }}
+                />
+            </MediaUploadCheck>
+        </BaseControl>
+    ));
+
+    return <PanelBody title={'Background'} initialOpen={!!settings.type}>
         <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 __next40pxDefaultSize
                 label="Type"
-                value={settings?.type}
-                onChange={(newValue) => callback({type: newValue})}
+                value={settings?.['type']}
+                callback={(newValue) => callback({'type': newValue})}
                 options={[
                     {label: 'Select', value: ''},
                     {label: 'Image', value: 'image'},
@@ -37,321 +66,266 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 ]}
                 __nextHasNoMarginBottom
             />
+            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
 
-            {/* Only show once a type is selected */}
-            {settings.type && (
+                <Grid columns={2} columnGap={15} rowGap={20}
+                      style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
+
+                    <MediaControl
+                        label={'Mobile Image'}
+                        value={settings?.['mobileImage']}
+                        callback={(newValue) => callback({'mobileImage': newValue})}
+                        clear={() => callback({'mobileImage': {}})}
+                        allowedTypes={['image']}
+                    />
+                    <MediaControl
+                        label={'Large Image'}
+                        value={settings?.['largeImage']}
+                        callback={(newValue) => callback({'largeImage': newValue})}
+                        clear={() => callback({'largeImage': {}})}
+                        allowedTypes={['image']}
+                    />
+
+                </Grid>
+                <Grid columns={2} columnGap={15} rowGap={20}
+                      style={{display: settings.type !== 'video' ? 'none' : null}}>
+
+                    <MediaControl
+                        label={'Mobile Video'}
+                        value={settings?.['mobileVideo']}
+                        callback={(newValue) => callback({'mobileVideo': newValue})}
+                        clear={() => callback({'mobileVideo': {}})}
+                        allowedTypes={['video']}
+                    />
+
+                    <MediaControl
+                        label={'Large Video'}
+                        value={settings?.['largeVideo']}
+                        callback={(newValue) => callback({'largeVideo': newValue})}
+                        clear={() => callback({'largeVideo': {}})}
+                        allowedTypes={['video']}
+                    />
+
+                </Grid>
+
+                <Grid columns={2} columnGap={15} rowGap={20}
+                      style={{padding: '1rem 0'}}>
+
+                    <ToggleControl
+                        label="Eager"
+                        value={!!settings?.['eager']}
+                        callback={(newValue) => callback({'eager': newValue})}
+                    />
+                    <ToggleControl
+                        label="Force"
+                        value={!!settings?.['force']}
+                        callback={(newValue) => callback({'force': newValue})}
+                    />
+                    <ToggleControl
+                        label="Fixed"
+                        value={!!settings?.['fixed']}
+                        callback={(newValue) => callback({'fixed': newValue})}
+                    />
+
+                </Grid>
+
                 <Grid columns={1} columnGap={15} rowGap={20}>
-                    {/* IMAGE / FEATURED IMAGE */}
-                    {(settings.type === 'image' || settings.type === 'featured-image') && (
-                        <Grid columns={2} columnGap={15} rowGap={20}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    onSelect={(newValue) =>
-                                        callback({
-                                            mobileImage: newValue,
-                                        })
-                                    }
-                                    onClose={() => {
-                                    }}
-                                    allowedTypes={['image']}
-                                    render={({open}) => (
-                                        <Button
-                                            onClick={open}
-                                            variant="secondary"
-                                            className="!w-full"
-                                        >
-                                            {settings.mobileImage?.url
-                                                ? 'Change Mobile Image'
-                                                : 'Select Mobile Image'}
-                                        </Button>
-                                    )}
-                                />
-                            </MediaUploadCheck>
-
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    onSelect={(newValue) =>
-                                        callback({
-                                            largeImage: newValue,
-                                        })
-                                    }
-                                    allowedTypes={['image']}
-                                    render={({open}) => (
-                                        <Button
-                                            onClick={open}
-                                            variant="secondary"
-                                            className="!w-full"
-                                        >
-                                            {settings.largeImage?.url
-                                                ? 'Change Large Image'
-                                                : 'Select Large Image'}
-                                        </Button>
-                                    )}
-                                />
-                            </MediaUploadCheck>
-                        </Grid>
-                    )}
-
-                    {/* VIDEO */}
-                    {settings.type === 'video' && (
-                        <Grid columns={2} columnGap={15} rowGap={20}>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    onSelect={(newValue) =>
-                                        callback({
-                                            mobileVideo: newValue,
-                                        })
-                                    }
-                                    allowedTypes={['video']}
-                                    render={({open}) => (
-                                        <Button
-                                            onClick={open}
-                                            variant="secondary"
-                                            className="!w-full"
-                                        >
-                                            {settings.mobileVideo?.url
-                                                ? 'Change Mobile Video'
-                                                : 'Select Mobile Video'}
-                                        </Button>
-                                    )}
-                                />
-                            </MediaUploadCheck>
-
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    onSelect={(newValue) =>
-                                        callback({
-                                            largeVideo: newValue,
-                                        })
-                                    }
-                                    allowedTypes={['video']}
-                                    render={({open}) => (
-                                        <Button
-                                            onClick={open}
-                                            variant="secondary"
-                                            className="!w-full"
-                                        >
-                                            {settings.largeVideo?.url
-                                                ? 'Change Large Video'
-                                                : 'Select Large Video'}
-                                        </Button>
-                                    )}
-                                />
-                            </MediaUploadCheck>
-                        </Grid>
-                    )}
-
-                    {/* TOGGLES */}
-                    <Grid columns={3} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                        <ToggleControl
-                            label="Eager"
-                            checked={!!settings?.eager}
-                            onChange={(newValue) => callback({eager: newValue})}
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Resolution"
+                            value={settings?.['resolution']}
+                            callback={(newValue) => callback({'resolution': newValue})}
+                            options={RESOLUTION_OPTIONS}
+                            __nextHasNoMarginBottom
                         />
-                        <ToggleControl
-                            label="Force"
-                            checked={!!settings?.force}
-                            onChange={(newValue) => callback({force: newValue})}
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Size"
+                            value={settings?.['size']}
+                            callback={(newValue) => callback({'size': newValue})}
+                            options={IMAGE_SIZE_OPTIONS}
+                            __nextHasNoMarginBottom
                         />
-                        <ToggleControl
-                            label="Fixed"
-                            checked={!!settings?.fixed}
-                            onChange={(newValue) => callback({fixed: newValue})}
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Blend"
+                            value={settings?.['blend']}
+                            callback={(newValue) => callback({'blend': newValue})}
+                            options={BLEND_OPTIONS}
+                            __nextHasNoMarginBottom
                         />
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Position"
+                            value={settings?.['position']}
+                            callback={(newValue) => callback({'position': newValue})}
+                            options={POSITION_OPTIONS}
+                            __nextHasNoMarginBottom
+                        />
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Origin"
+                            value={settings?.['origin']}
+                            callback={(newValue) => callback({'origin': newValue})}
+                            options={ORIGIN_OPTIONS}
+                            __nextHasNoMarginBottom
+                        />
+                        <UnitControl
+                            label={'Max Height'}
+                            value={settings?.['maxHeight']}
+                            callback={(newValue) => callback({'maxHeight': newValue})}
+                            units={[
+                                {value: 'vh', label: 'vh', default: 0},
+                            ]}
+                        />
+                        <SelectControl
+                            __next40pxDefaultSize
+                            label="Repeat"
+                            value={settings?.['repeat']}
+                            callback={(newValue) => callback({'repeat': newValue})}
+                            options={REPEAT_OPTIONS}
+                            __nextHasNoMarginBottom
+                        />
+
                     </Grid>
 
                     <Grid columns={1} columnGap={15} rowGap={20}>
-                        <Grid columns={2} columnGap={15} rowGap={20}>
+                        <PanelColorSettings
+                            enableAlpha
+                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                            colorSettings={[
+                                {
+                                    slug: 'color',
+                                    label: 'Color',
+                                    value: settings?.['color'] ?? '',
+                                    onChange: (newValue) => callback({color: newValue}),
+                                    isShownByDefault: true
+                                }
+                            ]}
+                        />
+                        <RangeControl
+                            label="Scale"
+                            value={settings?.['scale']}
+                            callback={(newValue) => callback({'scale': newValue})}
+                            min={0}
+                            max={200}
+                        />
+                        <RangeControl
+                            label="Opacity"
+                            value={settings?.['opacity']}
+                            callback={(newValue) => callback({'opacity': newValue})}
+                            min={0}
+                            max={100}
+                        />
+                        <RangeControl
+                            label="Width"
+                            value={settings?.['width']}
+                            callback={(newValue) => callback({'width': newValue})}
+                            min={0}
+                            max={100}
+                        />
+                        <RangeControl
+                            label="Height"
+                            value={settings?.['height']}
+                            callback={(newValue) => callback({'height': newValue})}
+                            min={0}
+                            max={100}
+                        />
+                        <RangeControl
+                            label="Fade"
+                            value={settings?.['fade']}
+                            callback={(newValue) => callback({'fade': newValue})}
+                            min={0}
+                            max={100}
+                        />
+                    </Grid>
+
+                    <Grid columns={2} columnGap={15} rowGap={20}
+                          style={{padding: '1rem 0'}}>
+                        <ToggleControl
+                            label="Mask"
+                            value={!!settings?.['mask']}
+                            callback={(newValue) => callback({'mask': newValue})}
+                        />
+                    </Grid>
+
+                    <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+
+                        <MediaControl
+                            label={'Mask Image'}
+                            prop={'maskImageLarge'}
+                            allowedTypes={['image']}
+                            value={settings?.['maskImageLarge']}
+                            callback={(newValue) => callback({
+                                maskImageLarge: {
+                                    type: newValue.type,
+                                    id: newValue.id,
+                                    url: newValue.url,
+                                    alt: newValue?.alt,
+                                    sizes: newValue?.sizes,
+                                }
+                            })}
+                            clear={() => callback({
+                                maskImageLarge: {}
+                            })}
+                        />
+
+                        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
                             <SelectControl
                                 __next40pxDefaultSize
-                                label="Resolution"
-                                value={settings?.resolution}
-                                onChange={(newValue) => callback({resolution: newValue})}
-                                options={RESOLUTION_OPTIONS}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Size"
-                                value={settings?.size}
-                                onChange={(newValue) => callback({size: newValue})}
-                                options={IMAGE_SIZE_OPTIONS}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Blend"
-                                value={settings?.blend}
-                                onChange={(newValue) => callback({blend: newValue})}
-                                options={BLEND_OPTIONS}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Position"
-                                value={settings?.position}
-                                onChange={(newValue) => callback({position: newValue})}
-                                options={POSITION_OPTIONS}
-                                __nextHasNoMarginBottom
-                            />
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Origin"
-                                value={settings?.origin}
-                                onChange={(newValue) => callback({origin: newValue})}
+                                label="Mask Origin"
+                                value={settings?.['maskOrigin']}
+                                callback={(newValue) => callback({'maskOrigin': newValue})}
                                 options={ORIGIN_OPTIONS}
                                 __nextHasNoMarginBottom
                             />
-                            <UnitControl
-                                label="Max Height"
-                                value={settings?.maxHeight}
-                                onChange={(newValue) => callback({maxHeight: newValue})}
-                                units={[{value: 'vh', label: 'vh', default: 0}]}
-                            />
+
                             <SelectControl
                                 __next40pxDefaultSize
-                                label="Repeat"
-                                value={settings?.repeat}
-                                onChange={(newValue) => callback({repeat: newValue})}
-                                options={REPEAT_OPTIONS}
+                                label="Mask Size"
+                                value={settings?.['maskSize']}
+                                callback={(newValue) => callback({'maskSize': newValue})}
+                                options={IMAGE_SIZE_OPTIONS}
                                 __nextHasNoMarginBottom
                             />
+
                         </Grid>
-
-                        <Grid columns={1} columnGap={15} rowGap={20}>
-                            <PanelColorSettings
-                                enableAlpha
-                                className="!p-0 !border-0 [&_.components-tools-panel-item]:!m-0"
-                                colorSettings={[
-                                    {
-                                        slug: 'color',
-                                        label: 'Color',
-                                        value: settings?.color ?? '',
-                                        onChange: (newValue) => callback({color: newValue}),
-                                        isShownByDefault: true,
-                                    },
-                                ]}
-                            />
-                            <RangeControl
-                                label="Scale"
-                                value={settings?.scale}
-                                onChange={(newValue) => callback({scale: newValue})}
-                                min={0}
-                                max={200}
-                            />
-                            <RangeControl
-                                label="Opacity"
-                                value={settings?.opacity}
-                                onChange={(newValue) => callback({opacity: newValue})}
-                                min={0}
-                                max={100}
-                            />
-                            <RangeControl
-                                label="Width"
-                                value={settings?.width}
-                                onChange={(newValue) => callback({width: newValue})}
-                                min={0}
-                                max={100}
-                            />
-                            <RangeControl
-                                label="Height"
-                                value={settings?.height}
-                                onChange={(newValue) => callback({height: newValue})}
-                                min={0}
-                                max={100}
-                            />
-                            <RangeControl
-                                label="Fade"
-                                value={settings?.fade}
-                                onChange={(newValue) => callback({fade: newValue})}
-                                min={0}
-                                max={100}
-                            />
-                        </Grid>
-
-                        <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                            <ToggleControl
-                                label="Mask"
-                                checked={!!settings?.mask}
-                                onChange={(newValue) => callback({mask: newValue})}
-                            />
-                        </Grid>
-
-                        {settings.mask && (
-                            <Grid columns={1} columnGap={15} rowGap={20}>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        onSelect={(newValue) =>
-                                            callback({
-                                                maskImageLarge: {
-                                                    type: newValue.type,
-                                                    id: newValue.id,
-                                                    url: newValue.url,
-                                                    alt: newValue.alt,
-                                                    sizes: newValue.sizes,
-                                                },
-                                            })
-                                        }
-                                        allowedTypes={['image']}
-                                        render={({open}) => (
-                                            <Button onClick={open} variant="secondary">
-                                                {settings.maskImageLarge?.url
-                                                    ? 'Change Mask Image'
-                                                    : 'Select Mask Image'}
-                                            </Button>
-                                        )}
-                                    />
-                                </MediaUploadCheck>
-
-                                <Grid columns={2} columnGap={15} rowGap={20}>
-                                    <SelectControl
-                                        __next40pxDefaultSize
-                                        label="Mask Origin"
-                                        value={settings?.maskOrigin}
-                                        onChange={(newValue) => callback({maskOrigin: newValue})}
-                                        options={ORIGIN_OPTIONS}
-                                        __nextHasNoMarginBottom
-                                    />
-                                    <SelectControl
-                                        __next40pxDefaultSize
-                                        label="Mask Size"
-                                        value={settings?.maskSize}
-                                        onChange={(newValue) => callback({maskSize: newValue})}
-                                        options={IMAGE_SIZE_OPTIONS}
-                                        __nextHasNoMarginBottom
-                                    />
-                                </Grid>
-                            </Grid>
-                        )}
-
-                        <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
-                            <GradientPicker
-                                gradients={[
-                                    {
-                                        name: 'Transparent',
-                                        gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                        slug: 'transparent',
-                                    },
-                                    {
-                                        name: 'Light',
-                                        gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                        slug: 'light',
-                                    },
-                                    {
-                                        name: 'Strong',
-                                        gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                        slug: 'strong',
-                                    },
-                                ]}
-                                clearable
-                                value={settings?.overlay ?? undefined}
-                                onChange={(newValue) => callback({overlay: newValue})}
-                            />
-                        </BaseControl>
                     </Grid>
+
+                    <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
+                        <GradientPicker
+                            gradients={[
+                                {
+                                    name: 'Transparent',
+                                    gradient:
+                                        'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                    slug: 'transparent',
+                                },
+                                {
+                                    name: 'Light',
+                                    gradient:
+                                        'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                    slug: 'light',
+                                },
+                                {
+                                    name: 'Strong',
+                                    gradient:
+                                        'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                    slug: 'Strong',
+                                }
+                            ]}
+                            clearable={true}
+                            value={settings?.['overlay'] ?? undefined}
+                            onChange={(newValue) => callback({'overlay': newValue})}
+                        />
+                    </BaseControl>
                 </Grid>
-            )}
+            </Grid>
         </Grid>
+
     </PanelBody>
 }
 

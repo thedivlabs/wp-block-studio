@@ -6,7 +6,7 @@ import {
 } from "@wordpress/block-editor";
 import {
     __experimentalGrid as Grid,
-    __experimentalUnitControl as UnitControl, BaseControl, Button, GradientPicker, PanelBody,
+    __experimentalUnitControl as UnitControl, BaseControl, GradientPicker, PanelBody,
     RangeControl,
     SelectControl, TabPanel, ToggleControl
 } from "@wordpress/components";
@@ -120,6 +120,33 @@ const DIMENSION_UNITS = [
     {value: 'vw', label: 'vw', default: 0},
     {value: 'ch', label: 'ch', default: 0},
 ]
+
+
+const MemoMediaControl = React.memo(({label, allowedTypes, value, callback, clear}) => (
+    <BaseControl
+        label={label}
+        __nextHasNoMarginBottom={true}
+    >
+        <MediaUploadCheck>
+            <MediaUpload
+                title={label}
+                onSelect={callback}
+                allowedTypes={allowedTypes || ['image']}
+                value={value}
+                render={({open}) => {
+                    return <PreviewThumbnail
+                        image={value}
+                        callback={clear}
+                        style={{
+                            objectFit: 'contain'
+                        }}
+                        onClick={open}
+                    />;
+                }}
+            />
+        </MediaUploadCheck>
+    </BaseControl>
+));
 
 function parseProp(prop) {
 
@@ -361,18 +388,442 @@ export function backgroundCss(attributes, selector) {
 
 }
 
-export function BackgroundControls({attributes = {}, callback}) {
+export function BackgroundControls({attributes = {}, setAttributes}) {
+
+    //const [settings, setSettings] = useState(attributes['wpbs-background']);
+
     const {'wpbs-background': settings = {}} = attributes;
 
-    const updateSettings = (newValue = {}) => {
-        const result = {
-            ...settings,
-            ...newValue,
-        };
-        //setAttributes({'wpbs-background': result});
-    };
+    const updateSettings = useCallback((newValue = {}) => {
 
-  
+        if ('resolution' in newValue) {
+            if (attributes['wpbs-background']?.largeImage?.sizes) {
+                newValue.largeImage = {
+                    ...attributes['wpbs-background'].largeImage,
+                    url: attributes['wpbs-background'].largeImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                };
+            }
+
+            if (attributes['wpbs-background']?.mobileImage?.sizes) {
+                newValue.mobileImage = {
+                    ...attributes['wpbs-background'].mobileImage,
+                    url: attributes['wpbs-background'].mobileImage.sizes?.[newValue.resolution || 'large']?.url ?? '#'
+                };
+            }
+        }
+
+        const result = {
+            ...attributes['wpbs-background'],
+            ...newValue
+        }
+
+        setAttributes({
+            'wpbs-background': result,
+        });
+
+        //setSettings(result);
+
+
+    }, [attributes['wpbs-background'], setAttributes]);
+
+    const tabDesktop = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Resolution"
+                value={settings?.['resolution']}
+                callback={(newValue) => updateSettings({'resolution': newValue})}
+                options={RESOLUTION_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Size"
+                value={settings?.['size']}
+                callback={(newValue) => updateSettings({'size': newValue})}
+                options={SIZE_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Blend"
+                value={settings?.['blend']}
+                callback={(newValue) => updateSettings({'blend': newValue})}
+                options={BLEND_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Position"
+                value={settings?.['position']}
+                callback={(newValue) => updateSettings({'position': newValue})}
+                options={POSITION_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Origin"
+                value={settings?.['origin']}
+                callback={(newValue) => updateSettings({'origin': newValue})}
+                options={ORIGIN_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoUnitControl
+                label={'Max Height'}
+                value={settings?.['maxHeight']}
+                callback={(newValue) => updateSettings({'maxHeight': newValue})}
+                units={[
+                    {value: 'vh', label: 'vh', default: 0},
+                ]}
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Repeat"
+                value={settings?.['repeat']}
+                callback={(newValue) => updateSettings({'repeat': newValue})}
+                options={REPEAT_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20}>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'color',
+                        label: 'Color',
+                        value: settings?.['color'] ?? '',
+                        onChange: (newValue) => updateSettings({color: newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
+            <MemoRangeControl
+                label="Scale"
+                value={settings?.['scale']}
+                callback={(newValue) => updateSettings({'scale': newValue})}
+                min={0}
+                max={200}
+            />
+            <MemoRangeControl
+                label="Opacity"
+                value={settings?.['opacity']}
+                callback={(newValue) => updateSettings({'opacity': newValue})}
+                min={0}
+                max={100}
+            />
+            <MemoRangeControl
+                label="Width"
+                value={settings?.['width']}
+                callback={(newValue) => updateSettings({'width': newValue})}
+                min={0}
+                max={100}
+            />
+            <MemoRangeControl
+                label="Height"
+                value={settings?.['height']}
+                callback={(newValue) => updateSettings({'height': newValue})}
+                min={0}
+                max={100}
+            />
+            <MemoRangeControl
+                label="Fade"
+                value={settings?.['fade']}
+                callback={(newValue) => updateSettings({'fade': newValue})}
+                min={0}
+                max={100}
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}
+              style={{padding: '1rem 0'}}>
+            <MemoToggleControl
+                label="Mask"
+                value={!!settings?.['mask']}
+                callback={(newValue) => updateSettings({'mask': newValue})}
+            />
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+
+            <MemoMediaControl
+                label={'Mask Image'}
+                prop={'maskImageLarge'}
+                allowedTypes={['image']}
+                value={settings?.['maskImageLarge']}
+                callback={(newValue) => updateSettings({
+                    maskImageLarge: {
+                        type: newValue.type,
+                        id: newValue.id,
+                        url: newValue.url,
+                        alt: newValue?.alt,
+                        sizes: newValue?.sizes,
+                    }
+                })}
+                clear={(newValue) => updateSettings({
+                    maskImageLarge: {}
+                })}
+            />
+
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+                <MemoSelectControl
+                    __next40pxDefaultSize
+                    label="Mask Origin"
+                    value={settings?.['maskOrigin']}
+                    callback={(newValue) => updateSettings({'maskOrigin': newValue})}
+                    options={ORIGIN_OPTIONS}
+                    __nextHasNoMarginBottom
+                />
+
+                <MemoSelectControl
+                    __next40pxDefaultSize
+                    label="Mask Size"
+                    value={settings?.['maskSize']}
+                    callback={(newValue) => updateSettings({'maskSize': newValue})}
+                    options={SIZE_OPTIONS}
+                    __nextHasNoMarginBottom
+                />
+
+            </Grid>
+        </Grid>
+
+        <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
+            <GradientPicker
+                gradients={[
+                    {
+                        name: 'Transparent',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                        slug: 'transparent',
+                    },
+                    {
+                        name: 'Light',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                        slug: 'light',
+                    },
+                    {
+                        name: 'Strong',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                        slug: 'Strong',
+                    }
+                ]}
+                clearable={true}
+                value={settings?.['overlay'] ?? undefined}
+                onChange={(newValue) => updateSettings({'overlay': newValue})}
+            />
+        </BaseControl>
+    </Grid>
+
+    const tabMobile = <Grid columns={1} columnGap={15} rowGap={20}>
+        <Grid columns={2} columnGap={15} rowGap={20}>
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Resolution"
+                value={settings?.['resolutionMobile']}
+                callback={(newValue) => updateSettings({'resolutionMobile': newValue})}
+                options={RESOLUTION_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Size"
+                value={settings?.['sizeMobile']}
+                callback={(newValue) => updateSettings({'sizeMobile': newValue})}
+                options={SIZE_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Blend"
+                value={settings?.['blendMobile']}
+                callback={(newValue) => updateSettings({'blendMobile': newValue})}
+                options={BLEND_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Position"
+                value={settings?.['positionMobile']}
+                callback={(newValue) => updateSettings({'positionMobile': newValue})}
+                options={POSITION_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Origin"
+                value={settings?.['originMobile']}
+                callback={(newValue) => updateSettings({'originMobile': newValue})}
+                options={ORIGIN_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+            <MemoUnitControl
+                label={'Max Height'}
+                value={settings?.['maxHeightMobile']}
+                callback={(newValue) => updateSettings({'maxHeightMobile': newValue})}
+                units={[
+                    {value: 'vh', label: 'vh', default: 0},
+                ]}
+            />
+            <MemoSelectControl
+                __next40pxDefaultSize
+                label="Repeat"
+                value={settings?.['repeatMobile']}
+                callback={(newValue) => updateSettings({'repeatMobile': newValue})}
+                options={REPEAT_OPTIONS}
+                __nextHasNoMarginBottom
+            />
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20}>
+            <PanelColorSettings
+                enableAlpha
+                className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                colorSettings={[
+                    {
+                        slug: 'colorMobile',
+                        label: 'Color',
+                        value: settings?.['colorMobile'] ?? '',
+                        onChange: (newValue) => updateSettings({colorMobile: newValue}),
+                        isShownByDefault: true
+                    }
+                ]}
+            />
+            <MemoRangeControl
+                label="Scale"
+                value={settings?.['scaleMobile']}
+                callback={(newValue) => updateSettings({'scaleMobile': newValue})}
+                min={0}
+                max={200}
+            />
+            <MemoRangeControl
+                label="Opacity"
+                value={settings?.['opacityMobile']}
+                callback={(newValue) => updateSettings({'opacityMobile': newValue})}
+                min={0}
+                max={100}
+            />
+            <MemoRangeControl
+                label="Width"
+                value={settings?.['widthMobile']}
+                callback={(newValue) => updateSettings({'widthMobile': newValue})}
+                min={0}
+                max={100}
+            />
+            <MemoRangeControl
+                label="Height"
+                value={settings?.['heightMobile']}
+                callback={(newValue) => updateSettings({'heightMobile': newValue})}
+                min={0}
+                max={100}
+            />
+            <MemoRangeControl
+                label="Fade"
+                value={settings?.['fadeMobile']}
+                callback={(newValue) => updateSettings({'fadeMobile': newValue})}
+                min={0}
+                max={100}
+            />
+        </Grid>
+
+        <Grid columns={2} columnGap={15} rowGap={20}
+              style={{padding: '1rem 0'}}>
+            <MemoToggleControl
+                label="Mask"
+                value={!!settings?.['maskMobile']}
+                callback={(newValue) => updateSettings({'maskMobile': newValue})}
+            />
+        </Grid>
+
+        <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+
+            <MemoMediaControl
+                label={'Mask Image'}
+                allowedTypes={['image']}
+                value={settings?.['maskImageMobile']}
+                callback={(newValue) => updateSettings({
+                    maskImageLargeMobile: {
+                        type: newValue.type,
+                        id: newValue.id,
+                        url: newValue.url,
+                        alt: newValue?.alt,
+                        sizes: newValue?.sizes,
+                    }
+                })}
+                clear={(newValue) => updateSettings({
+                    maskImageMobile: {}
+                })}
+            />
+
+            <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+                <MemoSelectControl
+                    __next40pxDefaultSize
+                    label="Mask Origin"
+                    value={settings?.['maskOriginMobile']}
+                    callback={(newValue) => updateSettings({'maskOriginMobile': newValue})}
+                    options={ORIGIN_OPTIONS}
+                    __nextHasNoMarginBottom
+                />
+
+                <MemoSelectControl
+                    __next40pxDefaultSize
+                    label="Mask Size"
+                    value={settings?.['maskSizeMobile']}
+                    callback={(newValue) => updateSettings({'maskSizeMobile': newValue})}
+                    options={SIZE_OPTIONS}
+                    __nextHasNoMarginBottom
+                />
+
+            </Grid>
+        </Grid>
+
+        <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
+            <GradientPicker
+                gradients={[
+                    {
+                        name: 'Transparent',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                        slug: 'transparent',
+                    },
+                    {
+                        name: 'Light',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                        slug: 'light',
+                    },
+                    {
+                        name: 'Strong',
+                        gradient:
+                            'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                        slug: 'Strong',
+                    }
+                ]}
+                clearable={true}
+                value={settings?.['overlayMobile'] ?? undefined}
+                onChange={(newValue) => updateSettings({'overlayMobile': newValue})}
+            />
+        </BaseControl>
+    </Grid>
+
+    const tabs = {
+        mobile: tabMobile,
+        desktop: tabDesktop,
+    }
+
+    return (
+        <InspectorControls group="styles">
+            
+        </InspectorControls>
+    )
 }
 
 export function BackgroundElement({attributes = {}, editor = false}) {

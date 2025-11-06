@@ -66,51 +66,30 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 ]}
                 __nextHasNoMarginBottom
             />
-            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
+            <div style={{display: !settings.type ? 'none' : null}}>
 
-                <Grid columns={2} columnGap={15} rowGap={20}
-                      style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
-
+                <div style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
                     <MediaControl
-                        label={'Mobile Image'}
-                        value={settings?.['mobileImage']}
-                        callback={(newValue) => callback({'mobileImage': newValue})}
-                        clear={() => callback({'mobileImage': {}})}
-                        allowedTypes={['image']}
-                    />
-                    <MediaControl
-                        label={'Large Image'}
-                        value={settings?.['largeImage']}
-                        callback={(newValue) => callback({'largeImage': newValue})}
-                        clear={() => callback({'largeImage': {}})}
+                        label={'Image'}
+                        value={settings?.['image']}
+                        callback={(newValue) => callback({'image': newValue})}
+                        clear={() => callback({'image': {}})}
                         allowedTypes={['image']}
                     />
 
-                </Grid>
-                <Grid columns={2} columnGap={15} rowGap={20}
-                      style={{display: settings.type !== 'video' ? 'none' : null}}>
-
+                </div>
+                <div style={{display: settings.type !== 'video' ? 'none' : null}}>
                     <MediaControl
-                        label={'Mobile Video'}
-                        value={settings?.['mobileVideo']}
-                        callback={(newValue) => callback({'mobileVideo': newValue})}
-                        clear={() => callback({'mobileVideo': {}})}
+                        label={'Video'}
+                        value={settings?.['video']}
+                        callback={(newValue) => callback({'video': newValue})}
+                        clear={() => callback({'video': {}})}
                         allowedTypes={['video']}
                     />
 
-                    <MediaControl
-                        label={'Large Video'}
-                        value={settings?.['largeVideo']}
-                        callback={(newValue) => callback({'largeVideo': newValue})}
-                        clear={() => callback({'largeVideo': {}})}
-                        allowedTypes={['video']}
-                    />
+                </div>
 
-                </Grid>
-
-                <Grid columns={2} columnGap={15} rowGap={20}
-                      style={{padding: '1rem 0'}}>
-
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <ToggleControl
                         label="Eager"
                         value={!!settings?.['eager']}
@@ -126,204 +105,189 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         value={!!settings?.['fixed']}
                         callback={(newValue) => callback({'fixed': newValue})}
                     />
+                </Grid>
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Resolution"
+                        value={settings?.['resolution']}
+                        callback={(newValue) => callback({'resolution': newValue})}
+                        options={RESOLUTION_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Size"
+                        value={settings?.['size']}
+                        callback={(newValue) => callback({'size': newValue})}
+                        options={IMAGE_SIZE_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Blend"
+                        value={settings?.['blend']}
+                        callback={(newValue) => callback({'blend': newValue})}
+                        options={BLEND_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Position"
+                        value={settings?.['position']}
+                        callback={(newValue) => callback({'position': newValue})}
+                        options={POSITION_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Origin"
+                        value={settings?.['origin']}
+                        callback={(newValue) => callback({'origin': newValue})}
+                        options={ORIGIN_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+                    <UnitControl
+                        label={'Max Height'}
+                        value={settings?.['maxHeight']}
+                        callback={(newValue) => callback({'maxHeight': newValue})}
+                        units={[
+                            {value: 'vh', label: 'vh', default: 0},
+                        ]}
+                    />
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Repeat"
+                        value={settings?.['repeat']}
+                        callback={(newValue) => callback({'repeat': newValue})}
+                        options={REPEAT_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+
+
+                </Grid>
+                
+                <PanelColorSettings
+                    enableAlpha
+                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
+                    colorSettings={[
+                        {
+                            slug: 'color',
+                            label: 'Color',
+                            value: settings?.['color'] ?? '',
+                            onChange: (newValue) => callback({color: newValue}),
+                            isShownByDefault: true
+                        }
+                    ]}
+                />
+                <RangeControl
+                    label="Scale"
+                    value={settings?.['scale']}
+                    callback={(newValue) => callback({'scale': newValue})}
+                    min={0}
+                    max={200}
+                />
+                <RangeControl
+                    label="Opacity"
+                    value={settings?.['opacity']}
+                    callback={(newValue) => callback({'opacity': newValue})}
+                    min={0}
+                    max={100}
+                />
+                <RangeControl
+                    label="Width"
+                    value={settings?.['width']}
+                    callback={(newValue) => callback({'width': newValue})}
+                    min={0}
+                    max={100}
+                />
+                <RangeControl
+                    label="Height"
+                    value={settings?.['height']}
+                    callback={(newValue) => callback({'height': newValue})}
+                    min={0}
+                    max={100}
+                />
+                <RangeControl
+                    label="Fade"
+                    value={settings?.['fade']}
+                    callback={(newValue) => callback({'fade': newValue})}
+                    min={0}
+                    max={100}
+                />
+
+
+                <MediaControl
+                    label={'Mask Image'}
+                    prop={'maskImageLarge'}
+                    allowedTypes={['image']}
+                    value={settings?.['maskImageLarge']}
+                    callback={(newValue) => callback({
+                        maskImageLarge: {
+                            type: newValue.type,
+                            id: newValue.id,
+                            url: newValue.url,
+                            alt: newValue?.alt,
+                            sizes: newValue?.sizes,
+                        }
+                    })}
+                    clear={() => callback({
+                        maskImageLarge: {}
+                    })}
+                />
+
+                <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
+
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Mask Origin"
+                        value={settings?.['maskOrigin']}
+                        callback={(newValue) => callback({'maskOrigin': newValue})}
+                        options={ORIGIN_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
+
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Mask Size"
+                        value={settings?.['maskSize']}
+                        callback={(newValue) => callback({'maskSize': newValue})}
+                        options={IMAGE_SIZE_OPTIONS}
+                        __nextHasNoMarginBottom
+                    />
 
                 </Grid>
 
-                <Grid columns={1} columnGap={15} rowGap={20}>
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label="Resolution"
-                            value={settings?.['resolution']}
-                            callback={(newValue) => callback({'resolution': newValue})}
-                            options={RESOLUTION_OPTIONS}
-                            __nextHasNoMarginBottom
-                        />
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label="Size"
-                            value={settings?.['size']}
-                            callback={(newValue) => callback({'size': newValue})}
-                            options={IMAGE_SIZE_OPTIONS}
-                            __nextHasNoMarginBottom
-                        />
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label="Blend"
-                            value={settings?.['blend']}
-                            callback={(newValue) => callback({'blend': newValue})}
-                            options={BLEND_OPTIONS}
-                            __nextHasNoMarginBottom
-                        />
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label="Position"
-                            value={settings?.['position']}
-                            callback={(newValue) => callback({'position': newValue})}
-                            options={POSITION_OPTIONS}
-                            __nextHasNoMarginBottom
-                        />
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label="Origin"
-                            value={settings?.['origin']}
-                            callback={(newValue) => callback({'origin': newValue})}
-                            options={ORIGIN_OPTIONS}
-                            __nextHasNoMarginBottom
-                        />
-                        <UnitControl
-                            label={'Max Height'}
-                            value={settings?.['maxHeight']}
-                            callback={(newValue) => callback({'maxHeight': newValue})}
-                            units={[
-                                {value: 'vh', label: 'vh', default: 0},
-                            ]}
-                        />
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label="Repeat"
-                            value={settings?.['repeat']}
-                            callback={(newValue) => callback({'repeat': newValue})}
-                            options={REPEAT_OPTIONS}
-                            __nextHasNoMarginBottom
-                        />
 
-                    </Grid>
+                <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
+                    <GradientPicker
+                        gradients={[
+                            {
+                                name: 'Transparent',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                slug: 'transparent',
+                            },
+                            {
+                                name: 'Light',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                slug: 'light',
+                            },
+                            {
+                                name: 'Strong',
+                                gradient:
+                                    'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                slug: 'Strong',
+                            }
+                        ]}
+                        clearable={true}
+                        value={settings?.['overlay'] ?? undefined}
+                        onChange={(newValue) => callback({'overlay': newValue})}
+                    />
+                </BaseControl>
 
-                    <Grid columns={1} columnGap={15} rowGap={20}>
-                        <PanelColorSettings
-                            enableAlpha
-                            className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                            colorSettings={[
-                                {
-                                    slug: 'color',
-                                    label: 'Color',
-                                    value: settings?.['color'] ?? '',
-                                    onChange: (newValue) => callback({color: newValue}),
-                                    isShownByDefault: true
-                                }
-                            ]}
-                        />
-                        <RangeControl
-                            label="Scale"
-                            value={settings?.['scale']}
-                            callback={(newValue) => callback({'scale': newValue})}
-                            min={0}
-                            max={200}
-                        />
-                        <RangeControl
-                            label="Opacity"
-                            value={settings?.['opacity']}
-                            callback={(newValue) => callback({'opacity': newValue})}
-                            min={0}
-                            max={100}
-                        />
-                        <RangeControl
-                            label="Width"
-                            value={settings?.['width']}
-                            callback={(newValue) => callback({'width': newValue})}
-                            min={0}
-                            max={100}
-                        />
-                        <RangeControl
-                            label="Height"
-                            value={settings?.['height']}
-                            callback={(newValue) => callback({'height': newValue})}
-                            min={0}
-                            max={100}
-                        />
-                        <RangeControl
-                            label="Fade"
-                            value={settings?.['fade']}
-                            callback={(newValue) => callback({'fade': newValue})}
-                            min={0}
-                            max={100}
-                        />
-                    </Grid>
-
-                    <Grid columns={2} columnGap={15} rowGap={20}
-                          style={{padding: '1rem 0'}}>
-                        <ToggleControl
-                            label="Mask"
-                            value={!!settings?.['mask']}
-                            callback={(newValue) => callback({'mask': newValue})}
-                        />
-                    </Grid>
-
-                    <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-
-                        <MediaControl
-                            label={'Mask Image'}
-                            prop={'maskImageLarge'}
-                            allowedTypes={['image']}
-                            value={settings?.['maskImageLarge']}
-                            callback={(newValue) => callback({
-                                maskImageLarge: {
-                                    type: newValue.type,
-                                    id: newValue.id,
-                                    url: newValue.url,
-                                    alt: newValue?.alt,
-                                    sizes: newValue?.sizes,
-                                }
-                            })}
-                            clear={() => callback({
-                                maskImageLarge: {}
-                            })}
-                        />
-
-                        <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Mask Origin"
-                                value={settings?.['maskOrigin']}
-                                callback={(newValue) => callback({'maskOrigin': newValue})}
-                                options={ORIGIN_OPTIONS}
-                                __nextHasNoMarginBottom
-                            />
-
-                            <SelectControl
-                                __next40pxDefaultSize
-                                label="Mask Size"
-                                value={settings?.['maskSize']}
-                                callback={(newValue) => callback({'maskSize': newValue})}
-                                options={IMAGE_SIZE_OPTIONS}
-                                __nextHasNoMarginBottom
-                            />
-
-                        </Grid>
-                    </Grid>
-
-                    <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
-                        <GradientPicker
-                            gradients={[
-                                {
-                                    name: 'Transparent',
-                                    gradient:
-                                        'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                    slug: 'transparent',
-                                },
-                                {
-                                    name: 'Light',
-                                    gradient:
-                                        'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                    slug: 'light',
-                                },
-                                {
-                                    name: 'Strong',
-                                    gradient:
-                                        'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                    slug: 'Strong',
-                                }
-                            ]}
-                            clearable={true}
-                            value={settings?.['overlay'] ?? undefined}
-                            onChange={(newValue) => callback({'overlay': newValue})}
-                        />
-                    </BaseControl>
-                </Grid>
-            </Grid>
+            </div>
         </Grid>
 
     </PanelBody>

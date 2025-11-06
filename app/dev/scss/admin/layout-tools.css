@@ -110,19 +110,19 @@
       flex-grow: 1;
       border: 0;
       outline: 0;
-      padding-left: 0;
+      padding-left: 0 !important;
       height: auto;
       min-height: 1em;
       line-height: 1;
-
       width: 100%;
       display: block;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-
-      background-position: right !important;
+      background-position: right 1px center !important;
       margin: 0 !important;
+      max-width: 100%;
+      background-size: 16px;
     }
   }
 

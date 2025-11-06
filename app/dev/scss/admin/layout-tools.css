@@ -40,9 +40,11 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 12px;
     gap: 8px;
     grid-column: 1/-1;
+    line-height: 1 !important;
+    padding: 4px 12px !important;
+    min-height: 42px !important;
 
     .components-button {
       background-color: #e0e0e0;

@@ -5,7 +5,14 @@
   display: flex;
   flex-direction: column;
 
+
   .wpbs-layout-tools__panel {
+    background: white;
+    border: 0;
+    grid-column: 1/-1;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
 
     & > .components-panel__body {
       border: 0 !important;
@@ -45,15 +52,6 @@
     }
   }
 
-
-  .wpbs-layout-tools__panel {
-    background: white;
-    border: 0;
-    grid-column: 1/-1;
-    width: 100%;
-    border-radius: 4px;
-  }
-
   .wpbs-layout-tools__header {
     display: flex;
     justify-content: space-between;
@@ -64,9 +62,10 @@
     line-height: 1 !important;
     padding: 14px !important;
     min-height: 46px !important;
+    background-color: #efefef;
 
     .components-button {
-      background-color: #e0e0e0;
+      background-color: transparent;
       border-radius: 4px;
       min-width: auto !important;
       height: 16px !important;
@@ -88,9 +87,13 @@
       }
 
       &:hover {
-        background-color: #efefef;
-        color: black !important;
+        background-color: black;
+        color: white !important;
       }
+    }
+
+    select {
+      background-color: transparent;
     }
 
   }
@@ -119,10 +122,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
-      background-position: right 1px center !important;
+      background-image: none !important;
       margin: 0 !important;
       max-width: 100%;
-      background-size: 16px;
     }
   }
 

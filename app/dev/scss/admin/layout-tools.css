@@ -12,13 +12,12 @@
     }
 
     & > .components-tools-panel,
-    .components-panel__body-toggle
-    {
+    .components-panel__body-toggle {
       width: 100%;
       border: 0 !important;
       line-height: 1 !important;
-      padding: 4px 12px !important;
-      min-height: 42px !important;
+      padding: 12px !important;
+      min-height: 44px !important;
     }
 
     .components-base-control {

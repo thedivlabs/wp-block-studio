@@ -105,12 +105,12 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     // --- Ensure breakpoint structure always has { props, background }
     const updateBreakpointItem = useCallback((updates, bpKey) => {
         setLocalLayout(prev => {
-            const current = prev.breakpoints?.[bpKey] || { props: {}, background: {} };
+            const current = prev.breakpoints?.[bpKey] || {props: {}, background: {}};
 
             // Normalize structure
             const next = {
-                props: { ...current.props },
-                background: { ...current.background },
+                props: {...current.props},
+                background: {...current.background},
             };
 
             // If updates already have props/background, merge them
@@ -216,10 +216,10 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, [updateHoverItem]);
 
     const BackgroundFields = useMemo(() => {
-        const { backgroundFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
-        return ({ settings, updateFn }) =>
+        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+        return ({settings, updateFn}) =>
             map.map((field) => {
-                const callback = (v) => updateFn({ [field.slug]: v });
+                const callback = (v) => updateFn({[field.slug]: v});
                 return (
                     <Field
                         key={field.slug}
@@ -231,77 +231,75 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             });
     }, []);
 
-    const BackgroundControls = ({ settings = {}, callback }) => {
+    const BackgroundControls = ({settings = {}, callback}) => {
         return (
             <PanelBody title="Background" initialOpen={!!settings.bgType}>
-                <Grid columns={1} columnGap={15} rowGap={20}>
-                    {/* --- Type selector --- */}
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Type"
-                        value={settings?.['bgType']}
-                        onChange={(newValue) => callback({ bgType: newValue })}
-                        options={[
-                            { label: 'Select', value: '' },
-                            { label: 'Image', value: 'image' },
-                            { label: 'Featured Image', value: 'featured-image' },
-                            { label: 'Video', value: 'video' },
-                        ]}
-                        __nextHasNoMarginBottom
-                    />
-
-                    {/* --- Eager toggles --- */}
+                <SelectControl
+                    __next40pxDefaultSize
+                    label="Type"
+                    value={settings?.['bgType']}
+                    onChange={(newValue) => callback({bgType: newValue})}
+                    options={[
+                        {label: 'Select', value: ''},
+                        {label: 'Image', value: 'image'},
+                        {label: 'Featured Image', value: 'featured-image'},
+                        {label: 'Video', value: 'video'},
+                    ]}
+                />
+                <div style={{display: !settings?.bgType ? 'none' : null}}>
                     <Grid columns={2} columnGap={15} rowGap={20}>
+
                         <ToggleControl
                             label="Eager"
                             checked={!!settings?.['bgEager']}
-                            onChange={(v) => callback({ bgEager: v })}
+                            onChange={(v) => callback({bgEager: v})}
                         />
                         <ToggleControl
                             label="Force"
                             checked={!!settings?.['bgForce']}
-                            onChange={(v) => callback({ bgForce: v })}
+                            onChange={(v) => callback({bgForce: v})}
                         />
                         <ToggleControl
                             label="Fixed"
                             checked={!!settings?.['bgFixed']}
-                            onChange={(v) => callback({ bgFixed: v })}
+                            onChange={(v) => callback({bgFixed: v})}
                         />
+
+                        <BaseControl label="Overlay" __nextHasNoMarginBottom={true} style={{gridColumn: '1/-1'}}>
+                            <GradientPicker
+                                gradients={[
+                                    {
+                                        name: 'Transparent',
+                                        gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                        slug: 'transparent',
+                                    },
+                                    {
+                                        name: 'Light',
+                                        gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                        slug: 'light',
+                                    },
+                                    {
+                                        name: 'Strong',
+                                        gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                        slug: 'strong',
+                                    },
+                                ]}
+                                clearable={false}
+                                value={settings?.['bgOverlay'] ?? undefined}
+                                onChange={(newValue) => callback({bgOverlay: newValue})}
+                            />
+                        </BaseControl>
                     </Grid>
-                    <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
-                        <GradientPicker
-                            gradients={[
-                                {
-                                    name: 'Transparent',
-                                    gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                    slug: 'transparent',
-                                },
-                                {
-                                    name: 'Light',
-                                    gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                    slug: 'light',
-                                },
-                                {
-                                    name: 'Strong',
-                                    gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                    slug: 'strong',
-                                },
-                            ]}
-                            clearable={false}
-                            value={settings?.['bgOverlay'] ?? undefined}
-                            onChange={(newValue) => callback({ bgOverlay: newValue })}
+                    <ToolsPanel
+                        label="Advanced Background"
+                        resetAll={() => callback({})}
+                    >
+                        <BackgroundFields
+                            settings={settings}
+                            updateFn={(newProps) => callback(newProps)}
                         />
-                    </BaseControl>
-                </Grid>
-                <ToolsPanel
-                    label="Advanced Background"
-                    resetAll={() => callback({})}
-                >
-                    <BackgroundFields
-                        settings={settings}
-                        updateFn={(newProps) => callback(newProps)}
-                    />
-                </ToolsPanel>
+                    </ToolsPanel>
+                </div>
             </PanelBody>
         );
     };
@@ -368,7 +366,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 <LayoutFields
                     bpKey={bpKey}
                     settings={localLayout.breakpoints[bpKey]?.props || {}}
-                    updateFn={(newProps) => updateBreakpointItem({ props: newProps }, bpKey)}
+                    updateFn={(newProps) => updateBreakpointItem({props: newProps}, bpKey)}
                 />
             </ToolsPanel>
             {/* Background Section */}
@@ -376,7 +374,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 bpKey={bpKey}
                 settings={localLayout.breakpoints[bpKey]?.background || {}}
                 callback={(newProps) =>
-                    updateBreakpointItem({ background: newProps }, bpKey)
+                    updateBreakpointItem({background: newProps}, bpKey)
                 }
             />
         </div>

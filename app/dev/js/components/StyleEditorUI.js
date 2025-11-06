@@ -268,18 +268,17 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             onChange={(v) => callback({ bgFixed: v })}
                         />
                     </Grid>
-
-                    {/* --- Advanced background section --- */}
-                    <ToolsPanel
-                        label="Advanced Background"
-                        resetAll={() => callback({})}
-                    >
-                        <BackgroundFields
-                            settings={settings}
-                            updateFn={(newProps) => callback(newProps)}
-                        />
-                    </ToolsPanel>
                 </Grid>
+                {/* --- Advanced background section --- */}
+                <ToolsPanel
+                    label="Advanced Background"
+                    resetAll={() => callback({})}
+                >
+                    <BackgroundFields
+                        settings={settings}
+                        updateFn={(newProps) => callback(newProps)}
+                    />
+                </ToolsPanel>
             </PanelBody>
         );
     };

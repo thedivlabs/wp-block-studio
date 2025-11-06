@@ -348,23 +348,24 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         }));
     }, [setLocalLayout]);
 
-    const updateBreakpointItem = useCallback((newProps, bpKey) => {
+    // --- Ensure breakpoint structure always has { props, background }
+    const updateBreakpointItem = useCallback((updates, bpKey) => {
         setLocalLayout(prev => {
             const current = prev.breakpoints?.[bpKey] || { props: {}, background: {} };
 
-            // Separate props and background keys if they’re flattened
+            // Normalize structure
             const next = {
                 props: { ...current.props },
                 background: { ...current.background },
             };
 
-            // Merge cleanly if newProps has nested keys
-            if (newProps.props) Object.assign(next.props, newProps.props);
-            if (newProps.background) Object.assign(next.background, newProps.background);
+            // If updates already have props/background, merge them
+            if (updates.props) Object.assign(next.props, updates.props);
+            if (updates.background) Object.assign(next.background, updates.background);
 
-            // Backward compatibility: if it’s flat (e.g., padding directly)
-            for (const [key, value] of Object.entries(newProps)) {
-                if (key !== 'props' && key !== 'background') {
+            // Fallback: treat flat updates as props
+            for (const [key, value] of Object.entries(updates)) {
+                if (key !== "props" && key !== "background") {
                     next.props[key] = value;
                 }
             }
@@ -523,9 +524,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 <LayoutFields
                     bpKey={bpKey}
                     settings={localLayout.breakpoints[bpKey]?.props || {}}
-                    updateFn={(newProps, bpKey) =>
-                        updateBreakpointItem({ props: newProps }, bpKey)
-                    }
+                    updateFn={(newProps) => updateBreakpointItem({ props: newProps }, bpKey)}
                 />
             </ToolsPanel>
             {/* Background Section */}

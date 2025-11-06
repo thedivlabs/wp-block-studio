@@ -258,6 +258,12 @@ export const withStyle = (Component) => (props) => {
     useEffect(() => {
         const cleanedLocal = cleanObject(settings, true);
 
+        const currentAttrStyle = cleanObject(attributes?.['wpbs-style'] ?? {}, true);
+
+        if (isEqual(cleanedLocal, currentAttrStyle)) {
+            return;
+        }
+
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
             background: parseSpecialProps(cleanedLocal.background || {}),
@@ -278,10 +284,7 @@ export const withStyle = (Component) => (props) => {
 
         const cleanedCss = cleanObject(cssObj, true);
 
-        if (
-            isEqual(cleanedLocal, cleanObject(settings, true)) &&
-            isEqual(cleanedCss, cleanObject(cssObj, true))
-        ) {
+        if (isEqual(cleanedCss, cleanObject(cssObj, true))) {
             return;
         }
 

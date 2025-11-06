@@ -268,7 +268,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                         />
                     </Grid>
                     <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
-                        <div style={{padding: '12px', backgroundColor: '#efe', borderRadius: '6px'}}>
+                        <div style={{padding: '12px', backgroundColor: '#efefef', borderRadius: '6px'}}>
                             <GradientPicker
                                 gradients={[
                                     {

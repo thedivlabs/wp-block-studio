@@ -8,7 +8,7 @@ import {
 } from '@wordpress/block-editor';
 import {ElementTagControl, getElementTag} from "Components/ElementTag";
 import {StyleEditorUI} from "Includes/style";
-import {isEqual} from 'lodash';
+import _, {isEqual} from 'lodash';
 import {
     __experimentalUnitControl as UnitControl,
     __experimentalGrid as Grid,
@@ -266,7 +266,10 @@ export const withStyle = (Component) => (props) => {
         };
 
         for (const [bpKey, bpProps] of Object.entries(cleanedLocal.breakpoints || {})) {
-            cssObj.breakpoints[bpKey] = parseSpecialProps(bpProps);
+            cssObj.breakpoints[bpKey] = {
+                props: parseSpecialProps(bpProps.props || {}),
+                background: parseSpecialProps(bpProps.background || {}),
+            };
         }
 
         if (cleanedLocal.hover) {

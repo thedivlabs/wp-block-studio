@@ -232,7 +232,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, []);
 
     const BackgroundControls = ({settings = {}, callback}) => {
-        const isPanelOpen = Object.keys(settings).length;
+        const isPanelOpen = Object.keys(settings).length > 0;
         return (
             <PanelBody title="Background" initialOpen={isPanelOpen}>
                 <Grid columns={1} columnGap={15} rowGap={25}>

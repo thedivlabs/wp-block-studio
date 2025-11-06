@@ -234,7 +234,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     const BackgroundControls = ({settings = {}, callback}) => {
         return (
             <PanelBody title="Background" initialOpen={!!settings.bgType}>
-                <Grid columns={1} columnGap={15} rowGap={30}>
+                <Grid columns={1} columnGap={15} rowGap={25}>
                     <SelectControl
                         __next40pxDefaultSize
                         __nextHasNoMarginBottom
@@ -268,28 +268,30 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                         />
                     </Grid>
                     <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
-                        <GradientPicker
-                            gradients={[
-                                {
-                                    name: 'Transparent',
-                                    gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                    slug: 'transparent',
-                                },
-                                {
-                                    name: 'Light',
-                                    gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                    slug: 'light',
-                                },
-                                {
-                                    name: 'Strong',
-                                    gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                    slug: 'strong',
-                                },
-                            ]}
-                            clearable={false}
-                            value={settings?.['bgOverlay'] ?? undefined}
-                            onChange={(newValue) => callback({bgOverlay: newValue})}
-                        />
+                        <div style={{padding: '12px', backgroundColor: '#efe', borderRadius: '6px'}}>
+                            <GradientPicker
+                                gradients={[
+                                    {
+                                        name: 'Transparent',
+                                        gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                        slug: 'transparent',
+                                    },
+                                    {
+                                        name: 'Light',
+                                        gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                        slug: 'light',
+                                    },
+                                    {
+                                        name: 'Strong',
+                                        gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                        slug: 'strong',
+                                    },
+                                ]}
+                                clearable={false}
+                                value={settings?.['bgOverlay'] ?? undefined}
+                                onChange={(newValue) => callback({bgOverlay: newValue})}
+                            />
+                        </div>
                     </BaseControl>
                     <div style={{display: !settings?.bgType ? 'none' : null}}>
 

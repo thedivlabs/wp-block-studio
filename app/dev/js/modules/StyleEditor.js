@@ -1,8 +1,23 @@
 import {
-    CONTAINER_OPTIONS, REVEAL_ANIMATION_OPTIONS, REVEAL_EASING_OPTIONS,
-    DISPLAY_OPTIONS, DIRECTION_OPTIONS, WRAP_OPTIONS, ALIGN_OPTIONS, JUSTIFY_OPTIONS,
-    SHAPE_OPTIONS, WIDTH_OPTIONS, HEIGHT_OPTIONS, POSITION_OPTIONS, OVERFLOW_OPTIONS,
-    CONTENT_VISIBILITY_OPTIONS, TEXT_ALIGN_OPTIONS, DIMENSION_UNITS, ORIGIN_OPTIONS, IMAGE_SIZE_OPTIONS
+    CONTAINER_OPTIONS,
+    REVEAL_ANIMATION_OPTIONS,
+    REVEAL_EASING_OPTIONS,
+    DISPLAY_OPTIONS,
+    DIRECTION_OPTIONS,
+    WRAP_OPTIONS,
+    ALIGN_OPTIONS,
+    JUSTIFY_OPTIONS,
+    SHAPE_OPTIONS,
+    WIDTH_OPTIONS,
+    HEIGHT_OPTIONS,
+    POSITION_OPTIONS,
+    OVERFLOW_OPTIONS,
+    CONTENT_VISIBILITY_OPTIONS,
+    TEXT_ALIGN_OPTIONS,
+    DIMENSION_UNITS,
+    ORIGIN_OPTIONS,
+    IMAGE_SIZE_OPTIONS,
+    RESOLUTION_OPTIONS, BLEND_OPTIONS, REPEAT_OPTIONS
 } from "Includes/config";
 import _ from "lodash";
 
@@ -396,11 +411,58 @@ const hoverFieldsMap = [
 ];
 
 const backgroundFieldsMap = [
+    // Base
     {
         type: 'color',
         slug: 'background-color',
         label: 'Color',
     },
+
+    // --- Core background CSS props ---
+    {
+        type: 'select',
+        slug: 'bgResolution',
+        label: 'Resolution',
+        options: RESOLUTION_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'background-size',
+        label: 'Size',
+        options: IMAGE_SIZE_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'background-blend-mode',
+        label: 'Blend Mode',
+        options: BLEND_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'background-position',
+        label: 'Position',
+        options: POSITION_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'background-origin',
+        label: 'Origin',
+        options: ORIGIN_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'background-repeat',
+        label: 'Repeat',
+        options: REPEAT_OPTIONS,
+    },
+    {
+        type: 'unit',
+        slug: 'bgMaxHeight',
+        label: 'Max Height',
+        units: [{ value: 'vh', label: 'vh', default: 0 }],
+    },
+
+    // --- Advanced / visual modifiers ---
     {
         type: 'range',
         slug: 'bgScale',
@@ -436,6 +498,8 @@ const backgroundFieldsMap = [
         min: 0,
         max: 100,
     },
+
+    // --- Mask and overlay ---
     {
         type: 'image',
         slug: 'bgMaskImage',
@@ -458,9 +522,9 @@ const backgroundFieldsMap = [
         slug: 'bgOverlay',
         label: 'Overlay',
         gradients: [
-            {name: 'Transparent', gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))', slug: 'transparent'},
-            {name: 'Light', gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))', slug: 'light'},
-            {name: 'Strong', gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))', slug: 'strong'},
+            { name: 'Transparent', gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))', slug: 'transparent' },
+            { name: 'Light', gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))', slug: 'light' },
+            { name: 'Strong', gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))', slug: 'strong' },
         ],
     },
 ];

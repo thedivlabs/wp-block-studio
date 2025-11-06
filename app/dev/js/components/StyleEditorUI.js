@@ -48,253 +48,6 @@ const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
     </BaseControl>
 ));
 
-
-const BackgroundControls = ({settings = {}, callback}) => {
-
-    return <PanelBody title={'Background'} initialOpen={!!settings.bgType}>
-        <Grid columns={1} columnGap={15} rowGap={20}>
-            <SelectControl
-                __next40pxDefaultSize
-                label="Type"
-                value={settings?.['bgType']}
-                onChange={(newValue) => callback({'bgType': newValue})}
-                options={[
-                    {label: 'Select', value: ''},
-                    {label: 'Image', value: 'image'},
-                    {label: 'Featured Image', value: 'featured-image'},
-                    {label: 'Video', value: 'video'},
-                ]}
-                __nextHasNoMarginBottom
-            />
-            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.bgType ? 'none' : null}}>
-
-                <div style={{display: settings.bgType !== 'image' && settings.bgType !== 'featured-image' ? 'none' : null}}>
-                    <MediaControl
-                        label={'Image'}
-                        value={settings?.['bgImage']}
-                        callback={(newValue) => callback({'bgImage': newValue})}
-                        clear={() => callback({'bgImage': {}})}
-                        allowedTypes={['image']}
-                    />
-
-                </div>
-                <div style={{display: settings.bgType !== 'video' ? 'none' : null}}>
-                    <MediaControl
-                        label={'Video'}
-                        value={settings?.['bgVideo']}
-                        callback={(newValue) => callback({'bgVideo': newValue})}
-                        clear={() => callback({'bgVideo': {}})}
-                        allowedTypes={['video']}
-                    />
-
-                </div>
-
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                    <ToggleControl
-                        label="Eager"
-                        checked={!!settings?.['bgEager']}
-                        onChange={(newValue) => callback({'bgEager': newValue})}
-                    />
-                    <ToggleControl
-                        label="Force"
-                        checked={!!settings?.['bgForce']}
-                        onChange={(newValue) => callback({'bgForce': newValue})}
-                    />
-                    <ToggleControl
-                        label="Fixed"
-                        checked={!!settings?.['bgFixed']}
-                        onChange={(newValue) => callback({'bgFixed': newValue})}
-                    />
-                </Grid>
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Resolution"
-                        value={settings?.['bgResolution']}
-                        onChange={(newValue) => callback({'bgResolution': newValue})}
-                        options={RESOLUTION_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Size"
-                        value={settings?.['background-size']}
-                        onChange={(newValue) => callback({'background-size': newValue})}
-                        options={IMAGE_SIZE_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Blend"
-                        value={settings?.['background-blend-mode']}
-                        onChange={(newValue) => callback({'background-blend-mode': newValue})}
-                        options={BLEND_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Position"
-                        value={settings?.['background-position']}
-                        onChange={(newValue) => callback({'background-position': newValue})}
-                        options={POSITION_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Origin"
-                        value={settings?.['background-origin']}
-                        onChange={(newValue) => callback({'background-origin': newValue})}
-                        options={ORIGIN_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-                    <UnitControl
-                        label={'Max Height'}
-                        value={settings?.['bgMaxHeight']}
-                        onChange={(newValue) => callback({'bgMaxHeight': newValue})}
-                        units={[
-                            {value: 'vh', label: 'vh', default: 0},
-                        ]}
-                        __nextHasNoMarginBottom
-                        __next40pxDefaultSize
-                    />
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Repeat"
-                        value={settings?.['background-repeat']}
-                        onChange={(newValue) => callback({'background-repeat': newValue})}
-                        options={REPEAT_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-
-
-                </Grid>
-
-                <PanelColorSettings
-                    enableAlpha
-                    className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
-                    colorSettings={[
-                        {
-                            slug: 'color',
-                            label: 'Color',
-                            value: settings?.['background-color'] ?? '',
-                            onChange: (newValue) => callback({'background-color': newValue}),
-                            isShownByDefault: true
-                        }
-                    ]}
-                />
-                <RangeControl
-                    label="Scale"
-                    value={settings?.['bgScale']}
-                    onChange={(newValue) => callback({'bgScale': newValue})}
-                    min={0}
-                    max={200}
-                />
-                <RangeControl
-                    label="Opacity"
-                    value={settings?.['bgOpacity']}
-                    onChange={(newValue) => callback({'bgOpacity': newValue})}
-                    min={0}
-                    max={100}
-                />
-                <RangeControl
-                    label="Width"
-                    value={settings?.['bgWidth']}
-                    onChange={(newValue) => callback({'bgWidth': newValue})}
-                    min={0}
-                    max={100}
-                />
-                <RangeControl
-                    label="Height"
-                    value={settings?.['bgHeight']}
-                    onChange={(newValue) => callback({'bgHeight': newValue})}
-                    min={0}
-                    max={100}
-                />
-                <RangeControl
-                    label="Fade"
-                    value={settings?.['bgFade']}
-                    onChange={(newValue) => callback({'bgFade': newValue})}
-                    min={0}
-                    max={100}
-                />
-
-
-                <MediaControl
-                    label={'Mask Image'}
-                    prop={'bgMaskImage'}
-                    allowedTypes={['image']}
-                    value={settings?.['bgMaskImage']}
-                    callback={(newValue) => callback({
-                        bgMaskImage: {
-                            type: newValue.type,
-                            id: newValue.id,
-                            url: newValue.url,
-                            alt: newValue?.alt,
-                            sizes: newValue?.sizes,
-                        }
-                    })}
-                    clear={() => callback({
-                        bgMaskImage: {}
-                    })}
-                />
-
-                <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings.mask ? 'none' : null}}>
-
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Mask Origin"
-                        value={settings?.['bgMaskOrigin']}
-                        onChange={(newValue) => callback({'bgMaskOrigin': newValue})}
-                        options={ORIGIN_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-
-                    <SelectControl
-                        __next40pxDefaultSize
-                        label="Mask Size"
-                        value={settings?.['bgMaskSize']}
-                        onChange={(newValue) => callback({'bgMaskSize': newValue})}
-                        options={IMAGE_SIZE_OPTIONS}
-                        __nextHasNoMarginBottom
-                    />
-
-                </Grid>
-
-
-                <BaseControl label={'Overlay'} __nextHasNoMarginBottom={true}>
-                    <GradientPicker
-                        gradients={[
-                            {
-                                name: 'Transparent',
-                                gradient:
-                                    'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                slug: 'transparent',
-                            },
-                            {
-                                name: 'Light',
-                                gradient:
-                                    'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                slug: 'light',
-                            },
-                            {
-                                name: 'Strong',
-                                gradient:
-                                    'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                slug: 'Strong',
-                            }
-                        ]}
-                        clearable={true}
-                        value={settings?.['bgOverlay'] ?? undefined}
-                        onChange={(newValue) => callback({'bgOverlay': newValue})}
-                    />
-                </BaseControl>
-
-            </Grid>
-        </Grid>
-
-    </PanelBody>
-}
-
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     // --- Load breakpoint definitions
@@ -462,6 +215,74 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 ));
     }, [updateHoverItem]);
 
+    const BackgroundFields = useMemo(() => {
+        const { backgroundFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
+        return ({ settings, updateFn }) =>
+            map.map((field) => {
+                const callback = (v) => updateFn({ [field.slug]: v });
+                return (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        settings={settings}
+                        callback={callback}
+                    />
+                );
+            });
+    }, []);
+
+    const BackgroundControls = ({ settings = {}, callback }) => {
+        return (
+            <PanelBody title="Background" initialOpen={!!settings.bgType}>
+                <Grid columns={1} columnGap={15} rowGap={20}>
+                    {/* --- Type selector --- */}
+                    <SelectControl
+                        __next40pxDefaultSize
+                        label="Type"
+                        value={settings?.['bgType']}
+                        onChange={(newValue) => callback({ bgType: newValue })}
+                        options={[
+                            { label: 'Select', value: '' },
+                            { label: 'Image', value: 'image' },
+                            { label: 'Featured Image', value: 'featured-image' },
+                            { label: 'Video', value: 'video' },
+                        ]}
+                        __nextHasNoMarginBottom
+                    />
+
+                    {/* --- Eager toggles --- */}
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        <ToggleControl
+                            label="Eager"
+                            checked={!!settings?.['bgEager']}
+                            onChange={(v) => callback({ bgEager: v })}
+                        />
+                        <ToggleControl
+                            label="Force"
+                            checked={!!settings?.['bgForce']}
+                            onChange={(v) => callback({ bgForce: v })}
+                        />
+                        <ToggleControl
+                            label="Fixed"
+                            checked={!!settings?.['bgFixed']}
+                            onChange={(v) => callback({ bgFixed: v })}
+                        />
+                    </Grid>
+
+                    {/* --- Advanced background section --- */}
+                    <ToolsPanel
+                        label="Advanced Background"
+                        resetAll={() => callback({})}
+                    >
+                        <BackgroundFields
+                            settings={settings}
+                            updateFn={(newProps) => callback(newProps)}
+                        />
+                    </ToolsPanel>
+                </Grid>
+            </PanelBody>
+        );
+    };
 
     // --- Breakpoint panel
     const BreakpointPanel = useMemo(() => ({

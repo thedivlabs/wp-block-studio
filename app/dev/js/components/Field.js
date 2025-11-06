@@ -24,7 +24,7 @@ export const Field = memo(({field, settings, callback}) => {
     const fieldClassNames = ['wpbs-layout-tools__field', full ? '--full' : null]
         .filter(Boolean)
         .join(' ');
-    
+
     const localValue = settings?.[slug] ?? null;
 
     const commit = useCallback((newValue) => {
@@ -42,7 +42,19 @@ export const Field = memo(({field, settings, callback}) => {
     controlProps.label = label;
 
     switch (type) {
-
+        case 'range':
+            control = (
+                <RangeControl
+                    id={inputId}
+                    label={label}
+                    value={localValue}
+                    onChange={(v) => commit(v)}
+                    min={controlProps.min ?? 0}
+                    max={controlProps.max ?? 100}
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
         case 'text':
             control = (
                 <TextControl

@@ -2,7 +2,7 @@ import {
     CONTAINER_OPTIONS, REVEAL_ANIMATION_OPTIONS, REVEAL_EASING_OPTIONS,
     DISPLAY_OPTIONS, DIRECTION_OPTIONS, WRAP_OPTIONS, ALIGN_OPTIONS, JUSTIFY_OPTIONS,
     SHAPE_OPTIONS, WIDTH_OPTIONS, HEIGHT_OPTIONS, POSITION_OPTIONS, OVERFLOW_OPTIONS,
-    CONTENT_VISIBILITY_OPTIONS, TEXT_ALIGN_OPTIONS, DIMENSION_UNITS
+    CONTENT_VISIBILITY_OPTIONS, TEXT_ALIGN_OPTIONS, DIMENSION_UNITS, ORIGIN_OPTIONS, IMAGE_SIZE_OPTIONS
 } from "Includes/config";
 import _ from "lodash";
 
@@ -395,6 +395,76 @@ const hoverFieldsMap = [
     },
 ];
 
+const backgroundFieldsMap = [
+    {
+        type: 'color',
+        slug: 'background-color',
+        label: 'Color',
+    },
+    {
+        type: 'range',
+        slug: 'bgScale',
+        label: 'Scale',
+        min: 0,
+        max: 200,
+    },
+    {
+        type: 'range',
+        slug: 'bgOpacity',
+        label: 'Opacity',
+        min: 0,
+        max: 100,
+    },
+    {
+        type: 'range',
+        slug: 'bgWidth',
+        label: 'Width',
+        min: 0,
+        max: 100,
+    },
+    {
+        type: 'range',
+        slug: 'bgHeight',
+        label: 'Height',
+        min: 0,
+        max: 100,
+    },
+    {
+        type: 'range',
+        slug: 'bgFade',
+        label: 'Fade',
+        min: 0,
+        max: 100,
+    },
+    {
+        type: 'image',
+        slug: 'bgMaskImage',
+        label: 'Mask Image',
+    },
+    {
+        type: 'select',
+        slug: 'bgMaskOrigin',
+        label: 'Mask Origin',
+        options: ORIGIN_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'bgMaskSize',
+        label: 'Mask Size',
+        options: IMAGE_SIZE_OPTIONS,
+    },
+    {
+        type: 'gradient',
+        slug: 'bgOverlay',
+        label: 'Overlay',
+        gradients: [
+            {name: 'Transparent', gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))', slug: 'transparent'},
+            {name: 'Light', gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))', slug: 'light'},
+            {name: 'Strong', gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))', slug: 'strong'},
+        ],
+    },
+];
+
 function updateStyleString(props, styleRef) {
     const {attributes, name} = props;
     const cssObj = attributes['wpbs-css'];
@@ -448,6 +518,7 @@ export function initStyleEditor() {
         updateStyleString,
         layoutFieldsMap,
         hoverFieldsMap,
+        backgroundFieldsMap,
         cleanObject,
         getCSSFromStyle,
         parseSpecialProps

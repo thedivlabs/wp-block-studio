@@ -37,7 +37,7 @@
       border: 0 !important;
       line-height: 1 !important;
       padding: 12px !important;
-      min-height: 44px !important;
+      min-height: 46px !important;
     }
 
     .components-base-control {
@@ -62,8 +62,8 @@
     gap: 8px;
     grid-column: 1/-1;
     line-height: 1 !important;
-    padding: 4px 12px !important;
-    min-height: 42px !important;
+    padding: 14px !important;
+    min-height: 46px !important;
 
     .components-button {
       background-color: #e0e0e0;
@@ -120,6 +120,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+
+      background-position: right !important;
+      margin: 0 !important;
     }
   }
 

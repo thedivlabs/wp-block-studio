@@ -295,7 +295,6 @@ const BackgroundControls = ({settings = {}, callback}) => {
     </PanelBody>
 }
 
-
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     // --- Load breakpoint definitions
@@ -309,20 +308,24 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         settings || {props: {}, breakpoints: {}, hover: {}, background: {}}
     );
 
-    // --- Push local layout back up to attributes (replaces old setLayoutNow)
+    // --- Push local layout back up to attributes (optimized debounce)
+    const debouncedCommit = useMemo(() =>
+            _.debounce((nextLayout, currentSettings) => {
+                if (_.isEqual(cleanObject(nextLayout, true), cleanObject(currentSettings, true))) {
+                    return;
+                }
+                console.log(nextLayout);
+                updateStyleSettings(nextLayout);
+            }, 700)
+        , [updateStyleSettings]); // only re-create if the updater changes
+
     useEffect(() => {
+        // Call the *stable* debounced function
+        debouncedCommit(localLayout, settings);
 
-        const debouncedCommit = _.debounce((nextLayout) => {
-            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) {
-                return
-            }
-            updateStyleSettings(nextLayout);
-        }, 700); // adjust delay as needed
-
-        debouncedCommit(localLayout);
-
+        // Cleanup cancels only the active timer
         return () => debouncedCommit.cancel();
-    }, [localLayout, settings]);
+    }, [localLayout, settings, debouncedCommit]);
 
 
     // --- Update helpers

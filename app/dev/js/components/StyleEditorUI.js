@@ -287,7 +287,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                                     slug: 'strong',
                                 },
                             ]}
-                            clearable={true}
+                            clearable={false}
                             value={settings?.['bgOverlay'] ?? undefined}
                             onChange={(newValue) => callback({ bgOverlay: newValue })}
                         />

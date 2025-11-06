@@ -151,19 +151,6 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-        case 'gradient':
-            control = (
-                <GradientPicker
-                    key={slug}
-                    gradients={controlProps.gradients || []}
-                    clearable
-                    value={localValue ?? field?.default ?? ''}
-                    onChange={(v) => commit(v)}
-                    __nextHasNoMarginBottom
-                />
-            );
-            break;
-
         case 'box':
             control = (
                 <BoxControl

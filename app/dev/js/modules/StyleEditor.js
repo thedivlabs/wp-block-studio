@@ -469,6 +469,7 @@ const backgroundFieldsMap = [
         label: 'Scale',
         min: 0,
         max: 200,
+        full:true,
     },
     {
         type: 'range',
@@ -476,6 +477,7 @@ const backgroundFieldsMap = [
         label: 'Opacity',
         min: 0,
         max: 100,
+        full:true,
     },
     {
         type: 'range',
@@ -483,6 +485,7 @@ const backgroundFieldsMap = [
         label: 'Width',
         min: 0,
         max: 100,
+        full:true,
     },
     {
         type: 'range',
@@ -490,6 +493,7 @@ const backgroundFieldsMap = [
         label: 'Height',
         min: 0,
         max: 100,
+        full:true,
     },
     {
         type: 'range',
@@ -497,6 +501,7 @@ const backgroundFieldsMap = [
         label: 'Fade',
         min: 0,
         max: 100,
+        full:true,
     },
 
     // --- Mask and overlay ---
@@ -504,6 +509,7 @@ const backgroundFieldsMap = [
         type: 'image',
         slug: 'bgMaskImage',
         label: 'Mask Image',
+        full:true,
     },
     {
         type: 'select',
@@ -516,17 +522,7 @@ const backgroundFieldsMap = [
         slug: 'bgMaskSize',
         label: 'Mask Size',
         options: IMAGE_SIZE_OPTIONS,
-    },
-    {
-        type: 'gradient',
-        slug: 'bgOverlay',
-        label: 'Overlay',
-        gradients: [
-            { name: 'Transparent', gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))', slug: 'transparent' },
-            { name: 'Light', gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))', slug: 'light' },
-            { name: 'Strong', gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))', slug: 'strong' },
-        ],
-    },
+    }
 ];
 
 function updateStyleString(props, styleRef) {

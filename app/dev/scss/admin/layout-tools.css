@@ -50,6 +50,16 @@
     .components-base-control {
       width: 100%;
     }
+
+    .components-range-control {
+      .components-range-control__number {
+        width: auto;
+      }
+
+      .components-range-control__wrapper {
+        flex-basis: 100%;
+      }
+    }
   }
 
   .wpbs-layout-tools__header {

@@ -66,7 +66,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 ]}
                 __nextHasNoMarginBottom
             />
-            <div style={{display: !settings.type ? 'none' : null}}>
+            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
 
                 <div style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
                     <MediaControl
@@ -166,7 +166,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
 
 
                 </Grid>
-                
+
                 <PanelColorSettings
                     enableAlpha
                     className={'!p-0 !border-0 [&_.components-tools-panel-item]:!m-0'}
@@ -287,7 +287,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                     />
                 </BaseControl>
 
-            </div>
+            </Grid>
         </Grid>
 
     </PanelBody>

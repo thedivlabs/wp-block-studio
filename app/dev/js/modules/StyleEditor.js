@@ -102,6 +102,26 @@ const heightVal = (val) => {
     return height;
 };
 
+function imageSet(media, resolution = 'large') {
+    if (!media) return '';
+
+    // Try to get the URL for the specified resolution
+    const size = media?.sizes?.[resolution];
+    const url = size?.url ?? media?.url ?? null;
+
+    if (!url) return '';
+
+    // Detect image type for the fallback
+    const isPng = url.toLowerCase().endsWith('.png');
+    const ext = isPng ? 'image/png' : 'image/jpeg';
+
+    // Construct the image-set() syntax
+    const webp = `url("${url}.webp") type("image/webp")`;
+    const fallback = `url("${url}") type("${ext}")`;
+
+    return `image-set(${webp}, ${fallback})`;
+}
+
 function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
     Object.entries(props).forEach(([key, val]) => {
@@ -224,6 +244,48 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'align-header':
                     result['top'] = 'var(--wpbs-header-height, auto)';
+                    break;
+
+
+
+                    /* Background props */
+
+                case 'bgImage':
+                    result['--bg-image'] = imageSet(val, props.bgResolution || 'large');
+                    break;
+                case 'bgVideo':
+                    // handled in markup, skip CSS
+                    break;
+                case 'bgFixed':
+                    result['--bg-attachment'] = 'fixed';
+                    break;
+                case 'bgScale':
+                    result['--bg-size'] = `${parseFloat(val)}%`;
+                    break;
+                case 'bgOpacity':
+                    result['--bg-opacity'] = parseFloat(val) / 100;
+                    break;
+                case 'bgWidth':
+                case 'bgHeight':
+                    result[`--${key}`] = `${val}%`;
+                    break;
+                case 'bgFade':
+                    result['--bg-fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
+                    break;
+                case 'bgMaskImage':
+                    result['mask-image'] = `url(${val?.url ?? '#'})`;
+                    result['mask-repeat'] = 'no-repeat';
+                    result['mask-size'] = props.bgMaskSize || 'contain';
+                    result['mask-position'] = props.bgMaskOrigin || 'center center';
+                    break;
+                case 'bgMaskOrigin':
+                    result['mask-position'] = val;
+                    break;
+                case 'bgMaskSize':
+                    result['mask-size'] = val;
+                    break;
+                case 'bgOverlay':
+                    result['--bg-overlay'] = val;
                     break;
 
                 default:

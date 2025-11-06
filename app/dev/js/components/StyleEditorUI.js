@@ -225,7 +225,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                     allowedTypes={['image']}
                     value={settings?.['bgMaskImage']}
                     callback={(newValue) => callback({
-                        maskImageLarge: {
+                        bgMaskImage: {
                             type: newValue.type,
                             id: newValue.id,
                             url: newValue.url,
@@ -234,7 +234,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         }
                     })}
                     clear={() => callback({
-                        maskImageLarge: {}
+                        bgMaskImage: {}
                     })}
                 />
 

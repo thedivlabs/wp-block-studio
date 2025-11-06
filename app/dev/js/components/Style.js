@@ -284,7 +284,9 @@ export const withStyle = (Component) => (props) => {
 
         const cleanedCss = cleanObject(cssObj, true);
 
-        if (isEqual(cleanedCss, cleanObject(cssObj, true))) {
+        const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
+
+        if (isEqual(cleanedCss, prevCss)) {
             return;
         }
 

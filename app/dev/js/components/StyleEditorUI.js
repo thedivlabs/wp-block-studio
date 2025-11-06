@@ -234,20 +234,22 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     const BackgroundControls = ({settings = {}, callback}) => {
         return (
             <PanelBody title="Background" initialOpen={!!settings.bgType}>
-                <SelectControl
-                    __next40pxDefaultSize
-                    label="Type"
-                    value={settings?.['bgType']}
-                    onChange={(newValue) => callback({bgType: newValue})}
-                    options={[
-                        {label: 'Select', value: ''},
-                        {label: 'Image', value: 'image'},
-                        {label: 'Featured Image', value: 'featured-image'},
-                        {label: 'Video', value: 'video'},
-                    ]}
-                />
-                <div style={{display: !settings?.bgType ? 'none' : null}}>
-                    <Grid columns={2} columnGap={15} rowGap={20}>
+                <Grid columns={1} columnGap={15} rowGap={30}>
+                    <SelectControl
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
+                        label="Type"
+                        value={settings?.['bgType']}
+                        onChange={(newValue) => callback({bgType: newValue})}
+                        options={[
+                            {label: 'Select', value: ''},
+                            {label: 'Image', value: 'image'},
+                            {label: 'Featured Image', value: 'featured-image'},
+                            {label: 'Video', value: 'video'},
+                        ]}
+                    />
+                    <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings?.bgType ? 'none' : null}}>
+
 
                         <ToggleControl
                             label="Eager"
@@ -264,42 +266,44 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             checked={!!settings?.['bgFixed']}
                             onChange={(v) => callback({bgFixed: v})}
                         />
-
-                        <BaseControl label="Overlay" __nextHasNoMarginBottom={true} style={{gridColumn: '1/-1'}}>
-                            <GradientPicker
-                                gradients={[
-                                    {
-                                        name: 'Transparent',
-                                        gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
-                                        slug: 'transparent',
-                                    },
-                                    {
-                                        name: 'Light',
-                                        gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
-                                        slug: 'light',
-                                    },
-                                    {
-                                        name: 'Strong',
-                                        gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
-                                        slug: 'strong',
-                                    },
-                                ]}
-                                clearable={false}
-                                value={settings?.['bgOverlay'] ?? undefined}
-                                onChange={(newValue) => callback({bgOverlay: newValue})}
-                            />
-                        </BaseControl>
                     </Grid>
-                    <ToolsPanel
-                        label="Advanced Background"
-                        resetAll={() => callback({})}
-                    >
-                        <BackgroundFields
-                            settings={settings}
-                            updateFn={(newProps) => callback(newProps)}
+                    <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
+                        <GradientPicker
+                            gradients={[
+                                {
+                                    name: 'Transparent',
+                                    gradient: 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))',
+                                    slug: 'transparent',
+                                },
+                                {
+                                    name: 'Light',
+                                    gradient: 'linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))',
+                                    slug: 'light',
+                                },
+                                {
+                                    name: 'Strong',
+                                    gradient: 'linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))',
+                                    slug: 'strong',
+                                },
+                            ]}
+                            clearable={false}
+                            value={settings?.['bgOverlay'] ?? undefined}
+                            onChange={(newValue) => callback({bgOverlay: newValue})}
                         />
-                    </ToolsPanel>
-                </div>
+                    </BaseControl>
+                    <div style={{display: !settings?.bgType ? 'none' : null}}>
+
+                        <ToolsPanel
+                            label="Advanced Background"
+                            resetAll={() => callback({})}
+                        >
+                            <BackgroundFields
+                                settings={settings}
+                                updateFn={(newProps) => callback(newProps)}
+                            />
+                        </ToolsPanel>
+                    </div>
+                </Grid>
             </PanelBody>
         );
     };

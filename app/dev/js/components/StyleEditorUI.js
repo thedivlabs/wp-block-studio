@@ -248,9 +248,78 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             {label: 'Video', value: 'video'},
                         ]}
                     />
+
+                    <div style={{display: !settings?.bgType ? 'none' : null}}>
+                        {/* --- Media pickers under Type --- */}
+                        {(settings.bgType === 'image' || settings.bgType === 'featured-image') && (
+                            <BaseControl label="Image" __nextHasNoMarginBottom>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title="Select Image"
+                                        allowedTypes={['image']}
+                                        value={settings?.bgImage?.id}
+                                        onSelect={(media) =>
+                                            callback({
+                                                bgImage: {
+                                                    id: media.id,
+                                                    url: media.url,
+                                                    alt: media?.alt,
+                                                    type: media?.type,
+                                                    sizes: media?.sizes,
+                                                },
+                                            })
+                                        }
+                                        render={({ open }) => (
+                                            <PreviewThumbnail
+                                                image={settings?.bgImage}
+                                                onClick={open}
+                                                callback={() => callback({ bgImage: {} })}
+                                                style={{
+                                                    objectFit: 'contain',
+                                                    borderRadius: '6px',
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </MediaUploadCheck>
+                            </BaseControl>
+                        )}
+
+                        {settings.bgType === 'video' && (
+                            <BaseControl label="Video" __nextHasNoMarginBottom>
+                                <MediaUploadCheck>
+                                    <MediaUpload
+                                        title="Select Video"
+                                        allowedTypes={['video']}
+                                        value={settings?.bgVideo?.id}
+                                        onSelect={(media) =>
+                                            callback({
+                                                bgVideo: {
+                                                    id: media.id,
+                                                    url: media.url,
+                                                    type: media?.type,
+                                                    mime: media?.mime,
+                                                },
+                                            })
+                                        }
+                                        render={({ open }) => (
+                                            <PreviewThumbnail
+                                                image={settings?.bgVideo}
+                                                onClick={open}
+                                                callback={() => callback({ bgVideo: {} })}
+                                                style={{
+                                                    objectFit: 'contain',
+                                                    borderRadius: '6px',
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </MediaUploadCheck>
+                            </BaseControl>
+                        )}
+                    </div>
+
                     <Grid columns={2} columnGap={15} rowGap={20} style={{display: !settings?.bgType ? 'none' : null}}>
-
-
                         <ToggleControl
                             label="Eager"
                             checked={!!settings?.['bgEager']}

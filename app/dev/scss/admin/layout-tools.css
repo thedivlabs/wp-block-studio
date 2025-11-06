@@ -11,6 +11,26 @@
       border: 0 !important;
     }
 
+    .components-panel__body-toggle > span {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 24px;
+      width: auto;
+      aspect-ratio: 1 / 1;
+      order: 2;
+      margin-left: auto;
+      transform: none;
+
+      & > svg {
+        transform: none;
+        right: auto;
+        top: auto;
+        position: relative;
+      }
+    }
+
     & > .components-tools-panel,
     .components-panel__body-toggle {
       width: 100%;

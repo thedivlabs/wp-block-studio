@@ -262,8 +262,9 @@ export const withStyle = (Component) => (props) => {
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
-            breakpoints: {},
+            background: parseSpecialProps(cleanedLocal.background || {}),
             hover: {},
+            breakpoints: {},
         };
 
         for (const [bpKey, bpProps] of Object.entries(cleanedLocal.breakpoints || {})) {

@@ -549,17 +549,10 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     resetAll={() => setLocalLayout(prev => ({...prev, hover: {}}))}
 
                 >
-                    <Grid
-                        columns={1}
-                        columnGap={15}
-                        rowGap={20}
-                        className="wpbs-layout-tools__panel"
-                    >
-                        <HoverFields
-                            settings={localLayout.hover}
-                            suppress={["padding", "margin", "gap"]}
-                        />
-                    </Grid>
+                    <HoverFields
+                        settings={localLayout.hover}
+                        suppress={["padding", "margin", "gap"]}
+                    />
                 </ToolsPanel>
             </div>
 

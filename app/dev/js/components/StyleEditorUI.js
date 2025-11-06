@@ -326,11 +326,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             onChange={(v) => callback({bgEager: v})}
                         />
                         <ToggleControl
-                            label="Force"
-                            checked={!!settings?.['bgForce']}
-                            onChange={(v) => callback({bgForce: v})}
-                        />
-                        <ToggleControl
                             label="Fixed"
                             checked={!!settings?.['bgFixed']}
                             onChange={(v) => callback({bgFixed: v})}

@@ -48,6 +48,7 @@ const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
     </BaseControl>
 ));
 
+
 const BackgroundControls = ({settings = {}, callback}) => {
 
     return <PanelBody title={'Background'} initialOpen={!!settings.type}>
@@ -55,8 +56,8 @@ const BackgroundControls = ({settings = {}, callback}) => {
             <SelectControl
                 __next40pxDefaultSize
                 label="Type"
-                value={settings?.['type']}
-                onChange={(newValue) => callback({'type': newValue})}
+                value={settings?.['bgType']}
+                onChange={(newValue) => callback({'bgType': newValue})}
                 options={[
                     {label: 'Select', value: ''},
                     {label: 'Image', value: 'image'},
@@ -70,9 +71,9 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 <div style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
                     <MediaControl
                         label={'Image'}
-                        value={settings?.['image']}
-                        callback={(newValue) => callback({'image': newValue})}
-                        clear={() => callback({'image': {}})}
+                        value={settings?.['bgImage']}
+                        callback={(newValue) => callback({'bgImage': newValue})}
+                        clear={() => callback({'bgImage': {}})}
                         allowedTypes={['image']}
                     />
 
@@ -80,9 +81,9 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 <div style={{display: settings.type !== 'video' ? 'none' : null}}>
                     <MediaControl
                         label={'Video'}
-                        value={settings?.['video']}
-                        callback={(newValue) => callback({'video': newValue})}
-                        clear={() => callback({'video': {}})}
+                        value={settings?.['bgVideo']}
+                        callback={(newValue) => callback({'bgVideo': newValue})}
+                        clear={() => callback({'bgVideo': {}})}
                         allowedTypes={['video']}
                     />
 
@@ -91,65 +92,65 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <ToggleControl
                         label="Eager"
-                        checked={!!settings?.['eager']}
-                        onChange={(newValue) => callback({'eager': newValue})}
+                        checked={!!settings?.['bgEager']}
+                        onChange={(newValue) => callback({'bgEager': newValue})}
                     />
                     <ToggleControl
                         label="Force"
-                        checked={!!settings?.['force']}
-                        onChange={(newValue) => callback({'force': newValue})}
+                        checked={!!settings?.['bgForce']}
+                        onChange={(newValue) => callback({'bgForce': newValue})}
                     />
                     <ToggleControl
                         label="Fixed"
-                        checked={!!settings?.['fixed']}
-                        onChange={(newValue) => callback({'fixed': newValue})}
+                        checked={!!settings?.['bgFixed']}
+                        onChange={(newValue) => callback({'bgFixed': newValue})}
                     />
                 </Grid>
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <SelectControl
                         __next40pxDefaultSize
                         label="Resolution"
-                        value={settings?.['resolution']}
-                        onChange={(newValue) => callback({'resolution': newValue})}
+                        value={settings?.['bgResolution']}
+                        onChange={(newValue) => callback({'bgResolution': newValue})}
                         options={RESOLUTION_OPTIONS}
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
                         __next40pxDefaultSize
                         label="Size"
-                        value={settings?.['size']}
-                        onChange={(newValue) => callback({'size': newValue})}
+                        value={settings?.['background-size']}
+                        onChange={(newValue) => callback({'background-size': newValue})}
                         options={IMAGE_SIZE_OPTIONS}
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
                         __next40pxDefaultSize
                         label="Blend"
-                        value={settings?.['blend']}
-                        onChange={(newValue) => callback({'blend': newValue})}
+                        value={settings?.['background-blend-mode']}
+                        onChange={(newValue) => callback({'background-blend-mode': newValue})}
                         options={BLEND_OPTIONS}
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
                         __next40pxDefaultSize
                         label="Position"
-                        value={settings?.['position']}
-                        onChange={(newValue) => callback({'position': newValue})}
+                        value={settings?.['background-position']}
+                        onChange={(newValue) => callback({'background-position': newValue})}
                         options={POSITION_OPTIONS}
                         __nextHasNoMarginBottom
                     />
                     <SelectControl
                         __next40pxDefaultSize
                         label="Origin"
-                        value={settings?.['origin']}
-                        onChange={(newValue) => callback({'origin': newValue})}
+                        value={settings?.['background-origin']}
+                        onChange={(newValue) => callback({'background-origin': newValue})}
                         options={ORIGIN_OPTIONS}
                         __nextHasNoMarginBottom
                     />
                     <UnitControl
                         label={'Max Height'}
-                        value={settings?.['maxHeight']}
-                        onChange={(newValue) => callback({'maxHeight': newValue})}
+                        value={settings?.['bgMaxHeight']}
+                        onChange={(newValue) => callback({'bgMaxHeight': newValue})}
                         units={[
                             {value: 'vh', label: 'vh', default: 0},
                         ]}
@@ -159,8 +160,8 @@ const BackgroundControls = ({settings = {}, callback}) => {
                     <SelectControl
                         __next40pxDefaultSize
                         label="Repeat"
-                        value={settings?.['repeat']}
-                        onChange={(newValue) => callback({'repeat': newValue})}
+                        value={settings?.['background-repeat']}
+                        onChange={(newValue) => callback({'background-repeat': newValue})}
                         options={REPEAT_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -175,44 +176,44 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         {
                             slug: 'color',
                             label: 'Color',
-                            value: settings?.['color'] ?? '',
-                            onChange: (newValue) => callback({color: newValue}),
+                            value: settings?.['background-color'] ?? '',
+                            onChange: (newValue) => callback({'background-color': newValue}),
                             isShownByDefault: true
                         }
                     ]}
                 />
                 <RangeControl
                     label="Scale"
-                    value={settings?.['scale']}
-                    onChange={(newValue) => callback({'scale': newValue})}
+                    value={settings?.['bgScale']}
+                    onChange={(newValue) => callback({'bgScale': newValue})}
                     min={0}
                     max={200}
                 />
                 <RangeControl
                     label="Opacity"
-                    value={settings?.['opacity']}
-                    onChange={(newValue) => callback({'opacity': newValue})}
+                    value={settings?.['bgOpacity']}
+                    onChange={(newValue) => callback({'bgOpacity': newValue})}
                     min={0}
                     max={100}
                 />
                 <RangeControl
                     label="Width"
-                    value={settings?.['width']}
-                    onChange={(newValue) => callback({'width': newValue})}
+                    value={settings?.['bgWidth']}
+                    onChange={(newValue) => callback({'bgWidth': newValue})}
                     min={0}
                     max={100}
                 />
                 <RangeControl
                     label="Height"
-                    value={settings?.['height']}
-                    onChange={(newValue) => callback({'height': newValue})}
+                    value={settings?.['bgHeight']}
+                    onChange={(newValue) => callback({'bgHeight': newValue})}
                     min={0}
                     max={100}
                 />
                 <RangeControl
                     label="Fade"
-                    value={settings?.['fade']}
-                    onChange={(newValue) => callback({'fade': newValue})}
+                    value={settings?.['bgFade']}
+                    onChange={(newValue) => callback({'bgFade': newValue})}
                     min={0}
                     max={100}
                 />
@@ -220,9 +221,9 @@ const BackgroundControls = ({settings = {}, callback}) => {
 
                 <MediaControl
                     label={'Mask Image'}
-                    prop={'maskImageLarge'}
+                    prop={'bgMaskImage'}
                     allowedTypes={['image']}
-                    value={settings?.['maskImageLarge']}
+                    value={settings?.['bgMaskImage']}
                     callback={(newValue) => callback({
                         maskImageLarge: {
                             type: newValue.type,
@@ -242,8 +243,8 @@ const BackgroundControls = ({settings = {}, callback}) => {
                     <SelectControl
                         __next40pxDefaultSize
                         label="Mask Origin"
-                        value={settings?.['maskOrigin']}
-                        onChange={(newValue) => callback({'maskOrigin': newValue})}
+                        value={settings?.['bgMaskOrigin']}
+                        onChange={(newValue) => callback({'bgMaskOrigin': newValue})}
                         options={ORIGIN_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -251,8 +252,8 @@ const BackgroundControls = ({settings = {}, callback}) => {
                     <SelectControl
                         __next40pxDefaultSize
                         label="Mask Size"
-                        value={settings?.['maskSize']}
-                        onChange={(newValue) => callback({'maskSize': newValue})}
+                        value={settings?.['bgMaskSize']}
+                        onChange={(newValue) => callback({'bgMaskSize': newValue})}
                         options={IMAGE_SIZE_OPTIONS}
                         __nextHasNoMarginBottom
                     />
@@ -283,8 +284,8 @@ const BackgroundControls = ({settings = {}, callback}) => {
                             }
                         ]}
                         clearable={true}
-                        value={settings?.['overlay'] ?? undefined}
-                        onChange={(newValue) => callback({'overlay': newValue})}
+                        value={settings?.['bgOverlay'] ?? undefined}
+                        onChange={(newValue) => callback({'bgOverlay': newValue})}
                     />
                 </BaseControl>
 

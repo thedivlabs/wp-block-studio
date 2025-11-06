@@ -15,6 +15,24 @@ const SPECIAL_FIELDS = [
     'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
     'text-decoration-color', 'position', 'container', 'padding', 'shadow', 'border',
     'border-radius', 'background-color',
+
+    'bgType',
+    'bgImage',
+    'bgVideo',
+    'bgEager',
+    'bgForce',
+    'bgFixed',
+    'bgResolution',
+    'bgMaxHeight',
+    'bgScale',
+    'bgOpacity',
+    'bgWidth',
+    'bgHeight',
+    'bgFade',
+    'bgMaskImage',
+    'bgMaskOrigin',
+    'bgMaskSize',
+    'bgOverlay'
 ];
 
 function cleanObject(obj, strict = false) {
@@ -315,95 +333,6 @@ const hoverFieldsMap = [
     },
 ];
 
-const backgroundFieldsMap = [
-    {
-        slug: 'type',
-        label: 'Type',
-        type: 'select',
-        options: [
-            {label: 'Select', value: ''},
-            {label: 'Image', value: 'image'},
-            {label: 'Featured Image', value: 'featured-image'},
-            {label: 'Video', value: 'video'},
-        ],
-    },
-    {
-        slug: 'resolution',
-        label: 'Resolution',
-        type: 'select',
-        options: [
-            {label: 'Default', value: ''},
-            {label: 'Thumbnail', value: 'thumbnail'},
-            {label: 'Small', value: 'small'},
-            {label: 'Medium', value: 'medium'},
-            {label: 'Large', value: 'large'},
-            {label: 'Extra Large', value: 'xlarge'},
-            {label: 'Full', value: 'full'},
-        ],
-    },
-    {
-        slug: 'size',
-        label: 'Size',
-        type: 'select',
-        options: [
-            {label: 'Contain', value: 'contain'},
-            {label: 'Cover', value: 'cover'},
-            {label: 'Vertical', value: 'auto 100%'},
-            {label: 'Horizontal', value: '100% auto'},
-        ],
-    },
-    {
-        slug: 'blend',
-        label: 'Blend Mode',
-        type: 'select',
-        options: [
-            {label: 'Default', value: ''},
-            {label: 'Multiply', value: 'multiply'},
-            {label: 'Luminosity', value: 'luminosity'},
-            {label: 'Screen', value: 'screen'},
-            {label: 'Overlay', value: 'overlay'},
-        ],
-    },
-    {
-        slug: 'color',
-        label: 'Color',
-        type: 'color',
-    },
-    {
-        slug: 'overlay',
-        label: 'Overlay',
-        type: 'gradient',
-    },
-    {
-        slug: 'opacity',
-        label: 'Opacity',
-        type: 'range',
-        min: 0,
-        max: 100,
-    },
-    {
-        slug: 'mask',
-        label: 'Mask',
-        type: 'toggle',
-    },
-    {
-        slug: 'maskImage',
-        label: 'Mask Image',
-        type: 'media',
-        mediaType: 'image',
-    },
-    {
-        slug: 'eager',
-        label: 'Eager Load',
-        type: 'toggle',
-    },
-    {
-        slug: 'fixed',
-        label: 'Fixed Background',
-        type: 'toggle',
-    },
-];
-
 function updateStyleString(props, styleRef) {
     const {attributes, name} = props;
     const cssObj = attributes['wpbs-css'];
@@ -457,7 +386,6 @@ export function initStyleEditor() {
         updateStyleString,
         layoutFieldsMap,
         hoverFieldsMap,
-        backgroundFieldsMap,
         cleanObject,
         getCSSFromStyle,
         parseSpecialProps

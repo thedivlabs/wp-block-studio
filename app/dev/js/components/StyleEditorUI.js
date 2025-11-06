@@ -51,7 +51,7 @@ const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
 
 const BackgroundControls = ({settings = {}, callback}) => {
 
-    return <PanelBody title={'Background'} initialOpen={!!settings.type}>
+    return <PanelBody title={'Background'} initialOpen={!!settings.bgType}>
         <Grid columns={1} columnGap={15} rowGap={20}>
             <SelectControl
                 __next40pxDefaultSize
@@ -66,9 +66,9 @@ const BackgroundControls = ({settings = {}, callback}) => {
                 ]}
                 __nextHasNoMarginBottom
             />
-            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.type ? 'none' : null}}>
+            <Grid columns={1} columnGap={15} rowGap={20} style={{display: !settings.bgType ? 'none' : null}}>
 
-                <div style={{display: settings.type !== 'image' && settings.type !== 'featured-image' ? 'none' : null}}>
+                <div style={{display: settings.bgType !== 'image' && settings.bgType !== 'featured-image' ? 'none' : null}}>
                     <MediaControl
                         label={'Image'}
                         value={settings?.['bgImage']}
@@ -78,7 +78,7 @@ const BackgroundControls = ({settings = {}, callback}) => {
                     />
 
                 </div>
-                <div style={{display: settings.type !== 'video' ? 'none' : null}}>
+                <div style={{display: settings.bgType !== 'video' ? 'none' : null}}>
                     <MediaControl
                         label={'Video'}
                         value={settings?.['bgVideo']}

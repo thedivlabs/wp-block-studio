@@ -154,6 +154,8 @@ const BackgroundControls = ({settings = {}, callback}) => {
                         units={[
                             {value: 'vh', label: 'vh', default: 0},
                         ]}
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
                     />
                     <SelectControl
                         __next40pxDefaultSize

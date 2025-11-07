@@ -270,11 +270,11 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                                                 },
                                             })
                                         }
-                                        render={({ open }) => (
+                                        render={({open}) => (
                                             <PreviewThumbnail
                                                 image={settings?.bgImage}
                                                 onClick={open}
-                                                callback={() => callback({ bgImage: {} })}
+                                                callback={() => callback({bgImage: {}})}
                                                 style={{
                                                     objectFit: 'contain',
                                                     borderRadius: '6px',
@@ -303,11 +303,11 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                                                 },
                                             })
                                         }
-                                        render={({ open }) => (
+                                        render={({open}) => (
                                             <PreviewThumbnail
                                                 image={settings?.bgVideo}
                                                 onClick={open}
-                                                callback={() => callback({ bgVideo: {} })}
+                                                callback={() => callback({bgVideo: {}})}
                                                 style={{
                                                     objectFit: 'contain',
                                                     borderRadius: '6px',
@@ -332,7 +332,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             onChange={(v) => callback({bgFixed: v})}
                         />
                     </Grid>
-                    <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
+                    {/*     <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
                         <div style={{padding: '12px', backgroundColor: '#efefef', borderRadius: '6px'}}>
                             <GradientPicker
                                 gradients={[
@@ -357,7 +357,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                                 onChange={(newValue) => callback({bgOverlay: newValue})}
                             />
                         </div>
-                    </BaseControl>
+                    </BaseControl>*/}
                     <div style={{display: !settings?.bgType ? 'none' : null}}>
 
                         <ToolsPanel

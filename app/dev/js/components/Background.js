@@ -39,8 +39,6 @@ const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
 ));
 
 
-export const Background = () => <div className="background"></div>;
-
 const BackgroundFields = memo(({settings, updateFn}) => {
     const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
@@ -202,9 +200,7 @@ export const BackgroundControls = ({settings = {}, callback}) => {
     );
 };
 
-export function BackgroundElement({attributes = {}, editor = false}) {
-
-    const {['wpbs-background']: settings = {}} = attributes;
+export function BackgroundElement({settings = {}, editor = false}) {
 
     if (!settings.type) {
         return false;
@@ -230,11 +226,10 @@ export function BackgroundElement({attributes = {}, editor = false}) {
         'wpbs-background__media absolute z-0 overflow-hidden w-full h-full',
     ];
 
-    function Media({attributes}) {
+    function Media({settings}) {
 
         let MediaElement;
 
-        const {['wpbs-background']: settings = {}} = attributes;
         //const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
 
         const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';

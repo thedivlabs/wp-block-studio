@@ -7,6 +7,7 @@ import {
 } from '@wordpress/block-editor';
 import {ElementTagControl, getElementTag} from "Components/ElementTag";
 import {StyleEditorUI} from "Includes/style";
+import {BackgroundElement} from "Components/Background";
 import _, {isEqual} from 'lodash';
 import {
     __experimentalGrid as Grid,
@@ -168,10 +169,13 @@ const BlockWrapper = ({
 
     const innerProps = useInnerBlocksProps(blockProps, {});
 
+    const Background = useMemo(() => (<BackgroundElement {...props} />), []);
+
     return (
         <Tag {...innerProps}>
             {innerProps.children}
             {children}
+            {Background}
         </Tag>
     );
 };

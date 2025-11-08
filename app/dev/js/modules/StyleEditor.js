@@ -138,6 +138,7 @@ function imageSet(media, resolution = 'large') {
 
 function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
+
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
 
@@ -260,48 +261,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     result['top'] = 'var(--wpbs-header-height, auto)';
                     break;
 
-
-
-                    /* Background props */
-
-                case 'bgImage':
-                    result['--bg-image'] = imageSet(val, props.bgResolution || 'large');
-                    break;
-                case 'bgVideo':
-                    // handled in markup, skip CSS
-                    break;
-                case 'bgFixed':
-                    result['--bg-attachment'] = 'fixed';
-                    break;
-                case 'bgScale':
-                    result['--bg-size'] = `${parseFloat(val)}%`;
-                    break;
-                case 'bgOpacity':
-                    result['--bg-opacity'] = parseFloat(val) / 100;
-                    break;
-                case 'bgWidth':
-                case 'bgHeight':
-                    result[`--${key}`] = `${val}%`;
-                    break;
-                case 'bgFade':
-                    result['--bg-fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
-                    break;
-                case 'bgMaskImage':
-                    result['mask-image'] = `url(${val?.url ?? '#'})`;
-                    result['mask-repeat'] = 'no-repeat';
-                    result['mask-size'] = props.bgMaskSize || 'contain';
-                    result['mask-position'] = props.bgMaskOrigin || 'center center';
-                    break;
-                case 'bgMaskOrigin':
-                    result['mask-position'] = val;
-                    break;
-                case 'bgMaskSize':
-                    result['mask-size'] = val;
-                    break;
-                case 'bgOverlay':
-                    result['--bg-overlay'] = val;
-                    break;
-
                 default:
                     result[key] = val;
             }
@@ -309,6 +268,67 @@ function parseSpecialProps(props = {}, attributes = {}) {
             result[key] = val;
         }
     });
+
+    return result;
+}
+
+
+function parseBackgroundProps(props = {}) {
+    const result = {};
+
+    Object.entries(props).forEach(([key, val]) => {
+        if (val == null) return;
+
+        switch (key) {
+            // --- Base background div ---
+            case 'image':
+                result['--bg-image'] = imageSet(val, props.resolution || 'large');
+                break;
+            case 'video':
+                if (val?.url) {
+                    result['--bg-video'] = `url(${val.url})`;
+                }
+                break;
+            case 'fixed':
+                result['--bg-attachment'] = 'fixed';
+                break;
+            case 'scale':
+                result['--bg-size'] = `${parseFloat(val)}%`;
+                break;
+            case 'opacity':
+                result['--bg-opacity'] = parseFloat(val) / 100;
+                break;
+            case 'width':
+            case 'height':
+                result[`--${key}`] = `${val}%`;
+                break;
+            case 'fade':
+                // Fade affects the main background div (gradient overlay)
+                result['--bg-fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
+                break;
+            case 'overlay':
+                result['--bg-overlay'] = val;
+                break;
+
+            // --- Pseudo-element mask layer ---
+            case 'maskImage':
+                result['--bg-mask-image'] = `url(${val?.url ?? '#'})`;
+                result['--bg-mask-repeat'] = 'no-repeat';
+                result['--bg-mask-size'] = props.maskSize || 'contain';
+                result['--bg-mask-position'] = props.maskOrigin || 'center center';
+                break;
+            case 'maskOrigin':
+                result['--bg-mask-position'] = val;
+                break;
+            case 'maskSize':
+                result['--bg-mask-size'] = val;
+                break;
+
+            default:
+                break;
+        }
+    });
+
     return result;
 }
 
@@ -458,7 +478,7 @@ const backgroundFieldsMap = [
         type: 'unit',
         slug: 'bgMaxHeight',
         label: 'Max Height',
-        units: [{ value: 'vh', label: 'vh', default: 0 }],
+        units: [{value: 'vh', label: 'vh', default: 0}],
     },
 
     // --- Advanced / visual modifiers ---
@@ -468,7 +488,7 @@ const backgroundFieldsMap = [
         label: 'Scale',
         min: 0,
         max: 200,
-        full:true,
+        full: true,
     },
     {
         type: 'range',
@@ -476,7 +496,7 @@ const backgroundFieldsMap = [
         label: 'Opacity',
         min: 0,
         max: 100,
-        full:true,
+        full: true,
     },
     {
         type: 'range',
@@ -484,7 +504,7 @@ const backgroundFieldsMap = [
         label: 'Width',
         min: 0,
         max: 100,
-        full:true,
+        full: true,
     },
     {
         type: 'range',
@@ -492,7 +512,7 @@ const backgroundFieldsMap = [
         label: 'Height',
         min: 0,
         max: 100,
-        full:true,
+        full: true,
     },
     {
         type: 'range',
@@ -500,7 +520,7 @@ const backgroundFieldsMap = [
         label: 'Fade',
         min: 0,
         max: 100,
-        full:true,
+        full: true,
     },
 
     // --- Mask and overlay ---
@@ -508,7 +528,7 @@ const backgroundFieldsMap = [
         type: 'image',
         slug: 'bgMaskImage',
         label: 'Mask Image',
-        full:true,
+        full: true,
     },
     {
         type: 'select',
@@ -584,7 +604,7 @@ export function initStyleEditor() {
     };
 
     function startDuplicateWatcher() {
-        const { subscribe, select, dispatch } = wp.data;
+        const {subscribe, select, dispatch} = wp.data;
         const store = 'core/block-editor';
         let lastSig = '';
 
@@ -615,14 +635,14 @@ export function initStyleEditor() {
                 const seen = new Set();
 
                 for (const b of wpbsBlocks) {
-                    const { attributes = {}, name, clientId } = b;
+                    const {attributes = {}, name, clientId} = b;
                     const baseName = name.replace('/', '-');
                     const uid = attributes.uniqueId;
 
                     // missing, invalid, or duplicate ID → regenerate
                     if (!uid || !uid.startsWith(baseName) || seen.has(uid)) {
                         const newId = `${baseName}-${Math.random().toString(36).slice(2, 8)}`;
-                        dispatch(store).updateBlockAttributes(clientId, { uniqueId: newId });
+                        dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
                     } else {
                         seen.add(uid);
                     }
@@ -632,6 +652,7 @@ export function initStyleEditor() {
             }
         });
     }
+
     startDuplicateWatcher();
 
     window.WPBS_StyleEditor = api;

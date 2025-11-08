@@ -1,8 +1,7 @@
-import {Fragment, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
+import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
 import {
     InnerBlocks,
-    InspectorControls, MediaUpload,
-    MediaUploadCheck, PanelColorSettings,
+    InspectorControls,
     useBlockProps,
     useInnerBlocksProps
 } from '@wordpress/block-editor';
@@ -10,23 +9,9 @@ import {ElementTagControl, getElementTag} from "Components/ElementTag";
 import {StyleEditorUI} from "Includes/style";
 import _, {isEqual} from 'lodash';
 import {
-    __experimentalUnitControl as UnitControl,
     __experimentalGrid as Grid,
-    BaseControl,
-    Button, GradientPicker,
-    PanelBody, RangeControl,
-    SelectControl,
     ToggleControl,
 } from "@wordpress/components";
-
-import {
-    BLEND_OPTIONS,
-    IMAGE_SIZE_OPTIONS,
-    ORIGIN_OPTIONS,
-    POSITION_OPTIONS,
-    REPEAT_OPTIONS,
-    RESOLUTION_OPTIONS
-} from "Includes/config";
 
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {
@@ -46,7 +31,7 @@ export const STYLE_ATTRIBUTES = {
 }
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {getCSSFromStyle, cleanObject, updateStyleString, parseSpecialProps} = API;
+const {getCSSFromStyle, cleanObject, updateStyleString, parseSpecialProps, parseBackgroundProps} = API;
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -266,7 +251,7 @@ export const withStyle = (Component) => (props) => {
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
-            background: parseSpecialProps(cleanedLocal.background || {}),
+            background: parseBackgroundProps(cleanedLocal.background || {}),
             hover: {},
             breakpoints: {},
         };

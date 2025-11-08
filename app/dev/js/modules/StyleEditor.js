@@ -272,7 +272,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
     return result;
 }
 
-
 function parseBackgroundProps(props = {}) {
     const result = {};
 
@@ -600,7 +599,8 @@ export function initStyleEditor() {
         backgroundFieldsMap,
         cleanObject,
         getCSSFromStyle,
-        parseSpecialProps
+        parseSpecialProps,
+        parseBackgroundProps,
     };
 
     function startDuplicateWatcher() {

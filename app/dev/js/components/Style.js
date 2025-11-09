@@ -228,7 +228,7 @@ export const withStyle = (Component) => (props) => {
     const styleRef = useRef(null);
     const cssPropsRef = useRef({});
 
-    const {clientId, attributes, setAttributes, tagName, name} = props;
+    const {clientId, attributes, setAttributes, tagName, isSelected} = props;
 
     const {
         uniqueId,
@@ -278,6 +278,8 @@ export const withStyle = (Component) => (props) => {
         if (isEqual(cleanedCss, prevCss)) {
             return;
         }
+
+        console.log(cleanedCss);
 
         setAttributes({
             'wpbs-style': settings,
@@ -344,7 +346,7 @@ export const withStyle = (Component) => (props) => {
         <>
             {memoizedComponent}
             <InspectorControls group="styles">
-                {memoizedStyleEditor}
+                {isSelected && memoizedStyleEditor}
             </InspectorControls>
             <InspectorControls group="advanced">
                 <AdvancedControls settings={advanced} callback={updateAdvancedSetting}/>

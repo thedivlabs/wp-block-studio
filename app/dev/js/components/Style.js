@@ -263,7 +263,7 @@ export const withStyle = (Component) => (props) => {
         for (const [bpKey, bpProps] of Object.entries(cleanedLocal.breakpoints || {})) {
             cssObj.breakpoints[bpKey] = {
                 props: parseSpecialProps(bpProps.props || {}),
-                background: parseSpecialProps(bpProps.background || {}),
+                background: parseBackgroundProps(bpProps.background || {}),
             };
         }
 

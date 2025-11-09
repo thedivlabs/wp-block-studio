@@ -58,6 +58,10 @@ const BackgroundFields = memo(({settings, updateFn}) => {
 
 export const BackgroundControls = ({settings = {}, callback}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
+    if (!isPanelOpen) {
+        return null;
+    }
+    console.log(isPanelOpen);
     return (
         <PanelBody title="Background" initialOpen={isPanelOpen}>
             <Grid columns={1} columnGap={15} rowGap={25}>

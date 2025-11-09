@@ -589,6 +589,43 @@ function updateStyleString(props, styleRef) {
     return newCSS;
 }
 
+function buildBackgroundVideo(layout = {}) {
+    if (!layout || typeof layout !== 'object') return null;
+
+    const bpDefs = WPBS?.settings?.breakpoints ?? {};
+    const entries = [];
+
+    // 1. base-level background video
+    if (layout.background?.video?.url) {
+        entries.push({size: Infinity, video: layout.background.video});
+    }
+
+    // 2. breakpoints
+    Object.entries(layout.breakpoints || {}).forEach(([bpKey, bpData]) => {
+        const video = bpData?.background?.video;
+        const size = bpDefs[bpKey]?.size ?? 0;
+        if (video?.url) entries.push({size, video});
+    });
+
+    entries.sort((a, b) => b.size - a.size);
+
+    if (!entries.length) return null;
+
+    return (
+        <video muted loop autoPlay playsInline>
+            {entries.map(({size, video}, i) => (
+                <source
+                    key={i}
+                    data-src={video.url}
+                    data-media={Number.isFinite(size) && size !== Infinity ? `(max-width: ${size - 1}px)` : null}
+                    //data-type={video.mime || 'video/mp4'}
+                />
+            ))}
+        </video>
+    );
+}
+
+
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 

@@ -18,8 +18,6 @@ import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Background, BackgroundControls} from "Components/Background";
 
-const API = window?.WPBS_StyleEditor ?? {};
-const {cleanObject} = API;
 
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 

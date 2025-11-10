@@ -223,9 +223,10 @@ export const withStyle = (Component) => (props) => {
 
     // --- Sync settings -> attributes + wpbs-css
     useEffect(() => {
-        const cleanedLocal = cleanObject(settings, true);
+        const cleanedLocal = cleanObject(settings, true); // only for comparison + CSS building
         const currentAttrStyle = cleanObject(attributes?.['wpbs-style'] ?? {}, true);
 
+        // Only compare the cleaned versions
         if (isEqual(cleanedLocal, currentAttrStyle)) return;
 
         const cssObj = {
@@ -252,18 +253,16 @@ export const withStyle = (Component) => (props) => {
 
         if (isEqual(cleanedCss, prevCss)) return;
 
+        // Persist both settings and cleaned CSS
         setAttributes({
             'wpbs-style': settings,
             'wpbs-css': cleanedCss,
         });
     }, [settings, setAttributes]);
 
-    const updateStyleSettings = useCallback(
-        (nextLayout) => {
-            setSettings(nextLayout);
-        },
-        []
-    );
+    const updateStyleSettings = useCallback((nextLayout) => {
+        setSettings(nextLayout);
+    }, [settings]);
 
     const memoizedComponent = useMemo(
         () => (

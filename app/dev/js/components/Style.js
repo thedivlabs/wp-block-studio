@@ -321,7 +321,7 @@ export const withStyle = (Component) => (props) => {
 
     useEffect(() => {
         if (styleRef.current) {
-            const css = updateStyleString(props, styleRef);
+            updateStyleString(props, styleRef);
         }
     }, [attributes['wpbs-css'], uniqueId]);
 

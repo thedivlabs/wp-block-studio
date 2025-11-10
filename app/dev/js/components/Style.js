@@ -223,12 +223,14 @@ export const withStyle = (Component) => (props) => {
 
     // --- Sync settings -> attributes + wpbs-css
     useEffect(() => {
-        const cleanedLocal = cleanObject(settings, true); // only for comparison + CSS building
+        // Cleaned versions for comparison only
+        const cleanedLocal = cleanObject(settings, true);
         const currentAttrStyle = cleanObject(attributes?.['wpbs-style'] ?? {}, true);
 
-        // Only compare the cleaned versions
+        // If cleaned versions are identical, bail out early
         if (isEqual(cleanedLocal, currentAttrStyle)) return;
 
+        // --- Build CSS from the cleaned version ---
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
             background: parseBackgroundProps(cleanedLocal.background || {}),
@@ -251,13 +253,16 @@ export const withStyle = (Component) => (props) => {
         const cleanedCss = cleanObject(cssObj, true);
         const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
 
-        if (isEqual(cleanedCss, prevCss)) return;
+        // Only rebuild CSS if the cleaned version actually changed
+        const cssDifferent = !isEqual(cleanedCss, prevCss);
 
-        // Persist both settings and cleaned CSS
-        setAttributes({
-            'wpbs-style': settings,
-            'wpbs-css': cleanedCss,
-        });
+        // --- Persist raw settings (including blanks) + cleaned CSS ---
+        if (cssDifferent || !isEqual(cleanedLocal, currentAttrStyle)) {
+            setAttributes({
+                'wpbs-style': settings,   // raw state (includes "")
+                'wpbs-css': cleanedCss,   // cleaned css only
+            });
+        }
     }, [settings, setAttributes]);
 
     const updateStyleSettings = useCallback((nextLayout) => {

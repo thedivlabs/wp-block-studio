@@ -122,7 +122,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             breakpoints: {...settings.breakpoints, [newKey]: {}},
         };
         updateStyleSettings(nextLayout);
-    }, [breakpoints, settings, debouncedUpdate]);
+    }, [breakpoints, settings]);
 
     const removeBreakpointPanel = useCallback(
         (bpKey) => {
@@ -130,7 +130,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             const nextLayout = {...settings, breakpoints: rest};
             updateStyleSettings(nextLayout);
         },
-        [settings, debouncedUpdate]
+        [settings]
     );
 
     const breakpointKeys = useMemo(() => {

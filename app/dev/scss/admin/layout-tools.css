@@ -60,6 +60,11 @@
         flex-basis: 100%;
       }
     }
+
+    .wpbs-advanced-background {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
   }
 
   .wpbs-layout-tools__header {

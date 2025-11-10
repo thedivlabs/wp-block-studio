@@ -625,7 +625,6 @@ function buildBackgroundVideo(layout = {}) {
     );
 }
 
-
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 
@@ -690,7 +689,126 @@ export function initStyleEditor() {
         });
     }
 
+    function startCssManager() {
+        const { subscribe, select } = wp.data;
+        const store = 'core/block-editor';
+        const blockCssMap = new Map();
+        let prevIds = new Set();
+        let flushTimer = null;
+
+        // ensure <style> exists
+        let styleEl = document.getElementById('wpbs-styles');
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = 'wpbs-styles';
+            document.head.appendChild(styleEl);
+        }
+
+        const flattenWPBSBlocks = (arr, acc = []) => {
+            for (const b of arr) {
+                if (b.name?.startsWith('wpbs/')) acc.push(b);
+                if (b.innerBlocks?.length) flattenWPBSBlocks(b.innerBlocks, acc);
+            }
+            return acc;
+        };
+
+        const scheduleFlush = () => {
+            clearTimeout(flushTimer);
+            flushTimer = setTimeout(flush, 120);
+        };
+
+        const flush = () => {
+            const css = Array.from(blockCssMap.entries())
+                .map(([uid, cssText]) => `/* ${uid} */\n${cssText}`)
+                .join('\n');
+            if (styleEl.textContent !== css) {
+                styleEl.textContent = css;
+            }
+        };
+
+        const buildRules = (obj = {}, important = false) =>
+            Object.entries(obj)
+                .filter(([_, v]) => v != null && v !== '')
+                .map(([k, v]) => `${k}:${v}${important ? ' !important' : ''};`)
+                .join(' ');
+
+        const computeCssForBlock = (block) => {
+            const cssObj = block.attributes?.['wpbs-css'];
+            const uid = block.attributes?.uniqueId;
+            const name = block.name;
+            if (!cssObj || !uid) return '';
+
+            console.log(uid);
+
+            const selector = `.${name.replace('/', '-')}.${uid}`;
+            let css = '';
+
+            // --- Base props (merged with custom) ---
+            const merged = { ...(cssObj.props || {}), ...(cssObj.custom || {}) };
+            if (!_.isEmpty(merged)) {
+                css += `${selector}{${buildRules(merged)}}`;
+            }
+
+            // --- Background ---
+            if (!_.isEmpty(cssObj.background)) {
+                css += `${selector}{${buildRules(cssObj.background)}}`;
+            }
+
+            // --- Hover ---
+            if (!_.isEmpty(cssObj.hover)) {
+                css += `${selector}:hover{${buildRules(cssObj.hover)}}`;
+            }
+
+            // --- Breakpoints ---
+            const bps = WPBS?.settings?.breakpoints || {};
+            for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints || {})) {
+                const bp = bps[bpKey];
+                if (bp && !_.isEmpty(bpProps)) {
+                    const mergedBp = { ...(bpProps.props || {}), ...(bpProps.custom || {}) };
+                    css += `@media (max-width:${bp.size - 1}px){${selector}{${buildRules(mergedBp, true)}}}`;
+                }
+            }
+
+            return css;
+        };
+
+        subscribe(() => {
+            try {
+                const rootBlocks = select(store).getBlocks();
+                if (!rootBlocks.length) return;
+
+                const blocks = flattenWPBSBlocks(rootBlocks);
+                const currentIds = new Set();
+
+                for (const b of blocks) {
+                    const uid = b.attributes?.uniqueId;
+                    if (!uid) continue;
+                    currentIds.add(uid);
+
+                    const cssText = computeCssForBlock(b);
+                    if (cssText && blockCssMap.get(uid) !== cssText) {
+                        blockCssMap.set(uid, cssText);
+                        scheduleFlush();
+                    }
+                }
+
+                // Deletions
+                for (const oldId of prevIds) {
+                    if (!currentIds.has(oldId) && blockCssMap.has(oldId)) {
+                        blockCssMap.delete(oldId);
+                        scheduleFlush();
+                    }
+                }
+
+                prevIds = currentIds;
+            } catch (err) {
+                console.warn('WPBS: CSS manager error', err);
+            }
+        });
+    }
+
     startDuplicateWatcher();
+    startCssManager();
 
     window.WPBS_StyleEditor = api;
     return api;

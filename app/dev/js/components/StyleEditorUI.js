@@ -248,13 +248,13 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 />
             </ToolsPanel>
             {/* Background Section */}
-            <BackgroundControls
+           {/* <BackgroundControls
                 bpKey={bpKey}
                 settings={localLayout.breakpoints[bpKey]?.background || {}}
                 callback={(newProps) =>
                     updateBreakpointItem({background: newProps}, bpKey)
                 }
-            />
+            />*/}
         </div>
     ), []);
 
@@ -292,7 +292,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             </div>
 
             <div className="wpbs-layout-tools__panel">
-                <BackgroundControls settings={localLayout.background} callback={updateBackgroundItem}/>
+                {/*<BackgroundControls settings={localLayout.background} callback={updateBackgroundItem}/>*/}
             </div>
 
 

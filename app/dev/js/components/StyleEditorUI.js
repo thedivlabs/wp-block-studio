@@ -11,14 +11,11 @@ const API = window?.WPBS_StyleEditor ?? {};
 const { cleanObject } = API;
 
 export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
-    // --- Local editable state (keeps raw values, including "")
     const [localLayout, setLocalLayout] = useState(settings);
 
-    // --- Debounced state updater: debounce goes -> state, NOT directly to HOC
-    const debouncedSetLocalLayout = useCallback(() => {
-        const debounced = _.debounce((nextLayout) => {
-            setLocalLayout(nextLayout);
-        }, 600);
+    // Debounced state updater that accepts commit flag
+    const updateLocalLayout = useCallback(() => {
+        const debounced = _.debounce((next) => setLocalLayout(next), 600);
 
         return (nextLayout, commit = false) => {
             if (commit) {
@@ -30,18 +27,17 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
         };
     }, [setLocalLayout])();
 
-    // --- Effect: watch localLayout and push meaningful changes to HOC
+    // Watch raw localLayout and only push meaningful changes to HOC
     useEffect(() => {
         const cleanedLocal = cleanObject(localLayout ?? {}, true);
         const cleanedSettings = cleanObject(settings ?? {}, true);
 
-        // Only call HOC if something meaningful changed
+        // Only trigger update when cleaned versions differ
         if (!_.isEqual(cleanedLocal, cleanedSettings)) {
             updateStyleSettings(localLayout);
         }
-    }, [localLayout, updateStyleSettings]);
+    }, [localLayout, settings, updateStyleSettings]);
 
-    // --- Load breakpoint definitions
     const breakpoints = useMemo(() => {
         const bps = WPBS?.settings?.breakpoints ?? {};
         return Object.entries(bps).map(([key, { label, size }]) => ({
@@ -59,9 +55,9 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                 ...localLayout,
                 props: { ...localLayout.props, ...newProps },
             };
-            debouncedSetLocalLayout(next);
+            updateLocalLayout(next);
         },
-        [localLayout, debouncedSetLocalLayout]
+        [localLayout, updateLocalLayout]
     );
 
     const updateHoverItem = useCallback(
@@ -70,20 +66,9 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                 ...localLayout,
                 hover: { ...localLayout.hover, ...newProps },
             };
-            debouncedSetLocalLayout(next);
+            updateLocalLayout(next);
         },
-        [localLayout, debouncedSetLocalLayout]
-    );
-
-    const updateBackgroundItem = useCallback(
-        (newProps) => {
-            const next = {
-                ...localLayout,
-                background: { ...localLayout.background, ...newProps },
-            };
-            debouncedSetLocalLayout(next);
-        },
-        [localLayout, debouncedSetLocalLayout]
+        [localLayout, updateLocalLayout]
     );
 
     const updateBreakpointItem = useCallback(
@@ -100,9 +85,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
             if (updates.background) Object.assign(nextBP.background, updates.background);
 
             for (const [key, value] of Object.entries(updates)) {
-                if (key !== "props" && key !== "background") {
-                    nextBP.props[key] = value;
-                }
+                if (key !== "props" && key !== "background") nextBP.props[key] = value;
             }
 
             const next = {
@@ -112,10 +95,9 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                     [bpKey]: nextBP,
                 },
             };
-
-            debouncedSetLocalLayout(next);
+            updateLocalLayout(next);
         },
-        [localLayout, debouncedSetLocalLayout]
+        [localLayout, updateLocalLayout]
     );
 
     // --- Breakpoint management -----------------------------------------------
@@ -135,19 +117,17 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
             breakpoints: { ...localLayout.breakpoints, [newKey]: {} },
         };
 
-        // Structural change: bypass debounce
-        debouncedSetLocalLayout(next, true);
-    }, [breakpoints, localLayout, debouncedSetLocalLayout]);
+        // structural change → bypass debounce
+        updateLocalLayout(next, true);
+    }, [breakpoints, localLayout, updateLocalLayout]);
 
     const removeBreakpointPanel = useCallback(
         (bpKey) => {
             const { [bpKey]: _, ...rest } = localLayout.breakpoints;
             const next = { ...localLayout, breakpoints: rest };
-
-            // Structural change: bypass debounce
-            debouncedSetLocalLayout(next, true);
+            updateLocalLayout(next, true);
         },
-        [localLayout, debouncedSetLocalLayout]
+        [localLayout, updateLocalLayout]
     );
 
     const breakpointKeys = useMemo(() => {
@@ -159,7 +139,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
         });
     }, [localLayout?.breakpoints, breakpoints]);
 
-    // --- Field groups --------------------------------------------------------
+    // --- Field maps -----------------------------------------------------------
 
     const LayoutFields = useMemo(() => {
         const { layoutFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
@@ -231,9 +211,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                                         ...localLayout,
                                         breakpoints: nextBreakpoints,
                                     };
-
-                                    // Structural change: bypass debounce
-                                    debouncedSetLocalLayout(next, true);
+                                    updateLocalLayout(next, true);
                                 }}
                             >
                                 {breakpoints.map((b) => {
@@ -266,9 +244,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                                     [bpKey]: {},
                                 },
                             };
-
-                            // Structural clear: bypass debounce
-                            debouncedSetLocalLayout(next, true);
+                            updateLocalLayout(next, true);
                         }}
                     >
                         <LayoutFields
@@ -281,10 +257,10 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                     </ToolsPanel>
                 </div>
             ),
-        [localLayout, debouncedSetLocalLayout, breakpoints, updateBreakpointItem]
+        [localLayout, updateLocalLayout, breakpoints, updateBreakpointItem]
     );
 
-    // --- Render --------------------------------------------------------------
+    // --- Render ---------------------------------------------------------------
 
     return (
         <div className="wpbs-layout-tools">
@@ -293,7 +269,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                     label={__("Layout")}
                     resetAll={() => {
                         const next = { ...localLayout, props: {} };
-                        debouncedSetLocalLayout(next, true);
+                        updateLocalLayout(next, true);
                     }}
                 >
                     <LayoutFields
@@ -309,7 +285,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                     label={__("Hover")}
                     resetAll={() => {
                         const next = { ...localLayout, hover: {} };
-                        debouncedSetLocalLayout(next, true);
+                        updateLocalLayout(next, true);
                     }}
                 >
                     <HoverFields
@@ -317,10 +293,6 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                         suppress={["padding", "margin", "gap"]}
                     />
                 </ToolsPanel>
-            </div>
-
-            <div className="wpbs-layout-tools__panel">
-                {/* <BackgroundControls settings={localLayout.background} callback={updateBackgroundItem}/> */}
             </div>
 
             {breakpointKeys.map((bpKey) => (

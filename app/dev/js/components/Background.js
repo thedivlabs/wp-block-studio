@@ -10,33 +10,7 @@ import {
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
-
-const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
-    <BaseControl
-        label={label}
-        __nextHasNoMarginBottom={true}
-    >
-        <MediaUploadCheck>
-            <MediaUpload
-                title={label}
-                onSelect={callback}
-                allowedTypes={allowedTypes || ['image']}
-                value={value}
-                render={({open}) => {
-                    return <PreviewThumbnail
-                        image={value}
-                        callback={clear}
-                        style={{
-                            objectFit: 'contain'
-                        }}
-                        onClick={open}
-                    />;
-                }}
-            />
-        </MediaUploadCheck>
-    </BaseControl>
-));
-
+import React from "react";
 
 const BackgroundFields = memo(({settings, updateFn}) => {
     const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
@@ -258,6 +232,66 @@ const VideoElement = ({settings}) => {
         {MediaElement}
     </div>;
 }
+
+function Media({attributes}) {
+
+    let MediaElement;
+
+    const {['wpbs-background']: settings = {}} = attributes;
+    //const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+
+    const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
+
+    if (settings.type === 'image' || settings.type === 'featured-image') {
+        mediaClass.push(imageClass);
+    }
+
+    if (settings.type === 'video') {
+
+        mediaClass.push(videoClass);
+
+        let {mobileVideo = {}, largeVideo = {}} = settings;
+
+        if (!largeVideo && !mobileVideo) {
+            return false;
+        }
+
+        if (!settings.force) {
+            mobileVideo = mobileVideo || largeVideo || false;
+            largeVideo = largeVideo || mobileVideo || false;
+        } else {
+            mobileVideo = mobileVideo || {};
+            largeVideo = largeVideo || {};
+        }
+
+        let srcAttr;
+
+        srcAttr = !!editor ? 'src' : 'data-src';
+
+        MediaElement = <video muted loop autoPlay={true}>
+            <source {...{
+                [srcAttr]: largeVideo.url ? largeVideo.url : '#',
+                type: 'video/mp4',
+                'data-media': '(min-width:' + breakpoint + ')'
+            }}/>
+            <source {...{
+                [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
+                type: 'video/mp4',
+                'data-media': '(width < ' + breakpoint + ')'
+            }}/>
+        </video>
+    }
+
+    const mediaProps = Object.fromEntries(Object.entries({
+        className: mediaClass.filter(x => x).join(' '),
+        'fetchpriority': settings.eager ? 'high' : null,
+    }).filter(x => !!x));
+
+    return <div {...mediaProps}>
+        {MediaElement}
+    </div>;
+}
+
 
 export function BackgroundElement({settings = {}, editor = false}) {
 

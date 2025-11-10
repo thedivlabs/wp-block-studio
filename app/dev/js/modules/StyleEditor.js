@@ -31,8 +31,8 @@ const SPECIAL_FIELDS = [
     'text-decoration-color', 'position', 'container', 'padding', 'shadow', 'border',
     'border-radius', 'background-color',
 
-    'bgType',
-    'bgImage',
+    'type',
+    'image',
     'bgVideo',
     'bgEager',
     'bgFixed',
@@ -429,17 +429,17 @@ const hoverFieldsMap = [
 ];
 
 const backgroundFieldsMap = [
-    // Base
+    // --- Base color ---
     {
         type: 'color',
         slug: 'background-color',
         label: 'Color',
     },
 
-    // --- Core background CSS props ---
+    // --- Core CSS background properties ---
     {
         type: 'select',
-        slug: 'bgResolution',
+        slug: 'resolution', // non-CSS; used internally for imageSet()
         label: 'Resolution',
         options: RESOLUTION_OPTIONS,
     },
@@ -475,15 +475,15 @@ const backgroundFieldsMap = [
     },
     {
         type: 'unit',
-        slug: 'bgMaxHeight',
+        slug: 'max-height', // not background-related CSS; applies to wrapper
         label: 'Max Height',
         units: [{value: 'vh', label: 'vh', default: 0}],
     },
 
-    // --- Advanced / visual modifiers ---
+    // --- Visual modifiers (non-standard CSS, custom implementation) ---
     {
         type: 'range',
-        slug: 'bgScale',
+        slug: 'scale', // handled via transform/scale()
         label: 'Scale',
         min: 0,
         max: 200,
@@ -491,7 +491,7 @@ const backgroundFieldsMap = [
     },
     {
         type: 'range',
-        slug: 'bgOpacity',
+        slug: 'opacity', // maps to CSS opacity
         label: 'Opacity',
         min: 0,
         max: 100,
@@ -499,7 +499,7 @@ const backgroundFieldsMap = [
     },
     {
         type: 'range',
-        slug: 'bgWidth',
+        slug: 'width', // applied to media container, not CSS background-width
         label: 'Width',
         min: 0,
         max: 100,
@@ -507,40 +507,38 @@ const backgroundFieldsMap = [
     },
     {
         type: 'range',
-        slug: 'bgHeight',
+        slug: 'height', // same as above
         label: 'Height',
         min: 0,
         max: 100,
         full: true,
     },
     {
-        type: 'range',
-        slug: 'bgFade',
+        type: 'gradient',
+        slug: 'fade', // handled via pseudo-element overlay gradient
         label: 'Fade',
-        min: 0,
-        max: 100,
         full: true,
     },
 
     // --- Mask and overlay ---
     {
         type: 'image',
-        slug: 'bgMaskImage',
+        slug: 'mask-image', // maps to CSS mask-image
         label: 'Mask Image',
         full: true,
     },
     {
         type: 'select',
-        slug: 'bgMaskOrigin',
+        slug: 'mask-origin', // CSS mask-origin
         label: 'Mask Origin',
         options: ORIGIN_OPTIONS,
     },
     {
         type: 'select',
-        slug: 'bgMaskSize',
+        slug: 'mask-size', // CSS mask-size
         label: 'Mask Size',
         options: IMAGE_SIZE_OPTIONS,
-    }
+    },
 ];
 
 function updateStyleString(props, styleRef) {
@@ -689,7 +687,7 @@ export function initStyleEditor() {
     }
 
     function startCssManager() {
-        const { subscribe, select } = wp.data;
+        const {subscribe, select} = wp.data;
         const store = 'core/block-editor';
         const blockCssMap = new Map();
         let prevIds = new Set();
@@ -741,7 +739,7 @@ export function initStyleEditor() {
             let css = '';
 
             // --- Base props (merged with custom) ---
-            const merged = { ...(cssObj.props || {}), ...(cssObj.custom || {}) };
+            const merged = {...(cssObj.props || {}), ...(cssObj.custom || {})};
             if (!_.isEmpty(merged)) {
                 css += `${selector}{${buildRules(merged)}}`;
             }
@@ -761,7 +759,7 @@ export function initStyleEditor() {
             for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints || {})) {
                 const bp = bps[bpKey];
                 if (bp && !_.isEmpty(bpProps)) {
-                    const mergedBp = { ...(bpProps.props || {}), ...(bpProps.custom || {}) };
+                    const mergedBp = {...(bpProps.props || {}), ...(bpProps.custom || {})};
                     css += `@media (max-width:${bp.size - 1}px){${selector}{${buildRules(mergedBp, true)}}}`;
                 }
             }

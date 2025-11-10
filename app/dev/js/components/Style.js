@@ -220,6 +220,8 @@ export const withStyle = (Component) => (props) => {
         cssPropsRef.current = newProps || {};
     }, []);
 
+    console.log(settings);
+
     // --- Reactive version of updateStyleSettings
     const updateStyleSettings = useCallback(
         (nextLayout) => {
@@ -261,7 +263,7 @@ export const withStyle = (Component) => (props) => {
                 });
             }
         },
-        [attributes, settings, setAttributes]
+        [settings, setAttributes]
     );
 
     const memoizedComponent = useMemo(

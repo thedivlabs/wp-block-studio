@@ -1,7 +1,7 @@
-import { memo, useCallback } from "@wordpress/element";
+import {memo, useCallback} from "@wordpress/element";
 
-export const Field = memo(({ field, settings, callback }) => {
-    const { type, slug, label, full = false, ...controlProps } = field;
+export const Field = memo(({field, settings, callback}) => {
+    const {type, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -52,6 +52,17 @@ export const Field = memo(({ field, settings, callback }) => {
                     onChange={commit}
                     min={controlProps.min ?? 0}
                     max={controlProps.max ?? 100}
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+        case "gradient":
+            control = (
+                <GradientPicker
+                    id={inputId}
+                    label={label}
+                    value={value ?? ""}
+                    onChange={commit}
                     __nextHasNoMarginBottom
                 />
             );
@@ -114,10 +125,10 @@ export const Field = memo(({ field, settings, callback }) => {
                     value={value ?? ""}
                     units={
                         controlProps.units || [
-                            { value: "px", label: "px" },
-                            { value: "em", label: "em" },
-                            { value: "rem", label: "rem" },
-                            { value: "%", label: "%" },
+                            {value: "px", label: "px"},
+                            {value: "em", label: "em"},
+                            {value: "rem", label: "rem"},
+                            {value: "%", label: "%"},
                         ]
                     }
                     onChange={commit}
@@ -168,7 +179,7 @@ export const Field = memo(({ field, settings, callback }) => {
                         onSelect={commit}
                         allowedTypes={allowedTypes}
                         value={value}
-                        render={({ open }) => (
+                        render={({open}) => (
                             <button
                                 type="button"
                                 className="components-button"

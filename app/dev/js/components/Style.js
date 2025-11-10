@@ -207,6 +207,18 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
     const {uniqueId} = attributes;
+    const rawBlockGap = attributes?.style?.spacing?.blockGap ?? null;
+
+    const blockGapKey = useMemo(() => {
+        if (typeof rawBlockGap === 'string') {
+            return rawBlockGap;
+        }
+        if (rawBlockGap && typeof rawBlockGap === 'object') {
+            const {top = '', left = ''} = rawBlockGap;
+            return `${top}|${left}`; // stable string representation
+        }
+        return ''; // fallback for null/undefined
+    }, [rawBlockGap?.top, rawBlockGap?.left, typeof rawBlockGap]);
 
     const settings = attributes?.['wpbs-style'] ?? {
         props: {},
@@ -219,8 +231,6 @@ export const withStyle = (Component) => (props) => {
     const blockCss = useCallback((newProps = {}) => {
         cssPropsRef.current = newProps || {};
     }, []);
-
-    console.log(settings);
 
     // --- Reactive version of updateStyleSettings
     const updateStyleSettings = useCallback(
@@ -275,7 +285,7 @@ export const withStyle = (Component) => (props) => {
                 )}
             />
         ),
-        [clientId, settings, uniqueId, attributes?.style]
+        [clientId, settings, uniqueId, blockGapKey]
     );
 
     const memoizedStyleEditor = useMemo(

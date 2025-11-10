@@ -64,7 +64,7 @@ const BreakpointPanel = memo(
     ({
          bpKey,
          data,
-         localLayout,
+         localLayout = {breakpoints: {}},
          breakpoints,
          breakpointKeys,
          updateLocalLayout,
@@ -73,12 +73,16 @@ const BreakpointPanel = memo(
      }) => {
         const handleChangeKey = useCallback(
             (newKey) => {
-                // Skip if selecting the same key or a duplicate
-                if (!newKey || newKey === bpKey || breakpointKeys.includes(newKey)) return;
+                if (!newKey || newKey === bpKey) return;
 
-                const nextBreakpoints = {...localLayout.breakpoints};
+                // Ensure we always have a breakpoints object
+                const currentBreakpoints = localLayout.breakpoints || {};
 
-                // Move current data under new key
+                // Prevent renaming to an existing key
+                if (breakpointKeys.includes(newKey)) return;
+
+                // Clone and move data
+                const nextBreakpoints = {...currentBreakpoints};
                 nextBreakpoints[newKey] = nextBreakpoints[bpKey];
                 delete nextBreakpoints[bpKey];
 
@@ -87,7 +91,7 @@ const BreakpointPanel = memo(
                     breakpoints: nextBreakpoints,
                 };
 
-                // Structural change: bypass debounce
+                // Commit immediately (structural change)
                 updateLocalLayout(next, true);
             },
             [bpKey, localLayout, breakpointKeys, updateLocalLayout]

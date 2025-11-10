@@ -1,7 +1,7 @@
-import {memo, useCallback, useEffect, useState} from '@wordpress/element';
+import { memo, useCallback } from "@wordpress/element";
 
-export const Field = memo(({field, settings, callback}) => {
-    const {type, slug, label, full = false, ...controlProps} = field;
+export const Field = memo(({ field, settings, callback }) => {
+    const { type, slug, label, full = false, ...controlProps } = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -20,20 +20,21 @@ export const Field = memo(({field, settings, callback}) => {
     } = wp.components || {};
 
     const inputId = `wpbs-${slug}`;
-
-    const fieldClassNames = ['wpbs-layout-tools__field', full ? '--full' : null]
+    const fieldClassNames = ["wpbs-layout-tools__field", full ? "--full" : null]
         .filter(Boolean)
-        .join(' ');
+        .join(" ");
 
-    const localValue = settings?.[slug] ?? null;
+    // Controlled input: value always comes from settings
+    const value = settings?.[slug];
 
-    const commit = useCallback((newValue) => {
-        if (newValue !== settings?.[slug]) {
-            console.log('updating', newValue);
-            callback(newValue);
-        }
-    }, [callback]);
-
+    const commit = useCallback(
+        (newValue) => {
+            if (newValue !== value) {
+                callback(newValue);
+            }
+        },
+        [callback, value]
+    );
 
     let control = null;
 
@@ -42,98 +43,92 @@ export const Field = memo(({field, settings, callback}) => {
     controlProps.label = label;
 
     switch (type) {
-        case 'range':
+        case "range":
             control = (
                 <RangeControl
                     id={inputId}
                     label={label}
-                    value={localValue}
-                    onChange={(v) => commit(v)}
+                    value={value ?? ""}
+                    onChange={commit}
                     min={controlProps.min ?? 0}
                     max={controlProps.max ?? 100}
                     __nextHasNoMarginBottom
                 />
             );
             break;
-        case 'text':
+
+        case "text":
             control = (
                 <TextControl
                     id={inputId}
-                    value={localValue}
+                    value={value ?? ""}
                     aria-label={label}
-                    onChange={(v) => commit(v)}
-                    type={'text'}
+                    onChange={commit}
+                    type="text"
                     {...controlProps}
                 />
             );
             break;
 
-        case 'number':
+        case "number":
             control = (
                 <NumberControl
                     id={inputId}
-                    value={localValue}
+                    value={value ?? ""}
                     aria-label={label}
-                    onChange={(v) => commit(v)}
-                    //onBlur={() => commit(localValue)}
-
+                    onChange={commit}
                     {...controlProps}
                 />
             );
             break;
 
-        case 'select':
+        case "select":
             control = (
                 <SelectControl
                     id={inputId}
-                    value={localValue}
+                    value={value ?? ""}
                     options={controlProps.options || []}
                     aria-label={label}
-                    onChange={(v) => commit(v)}
-
+                    onChange={commit}
                     __nextHasNoMarginBottom
                     {...controlProps}
                 />
             );
             break;
 
-        case 'toggle':
+        case "toggle":
             control = (
                 <ToggleControl
                     aria-label={label}
-                    checked={!!localValue}
+                    checked={!!value}
                     onChange={(checked) => commit(!!checked)}
-
                     {...controlProps}
                 />
             );
             break;
 
-        case 'unit':
+        case "unit":
             control = (
                 <UnitControl
                     id={inputId}
-                    value={localValue}
+                    value={value ?? ""}
                     units={
                         controlProps.units || [
-                            {value: 'px', label: 'px'},
-                            {value: 'em', label: 'em'},
-                            {value: 'rem', label: 'rem'},
-                            {value: '%', label: '%'},
+                            { value: "px", label: "px" },
+                            { value: "em", label: "em" },
+                            { value: "rem", label: "rem" },
+                            { value: "%", label: "%" },
                         ]
                     }
-                    //onUnitChange={() => commit('')}
-                    onChange={(v) => commit(v)}
-                    //onBlur={() => commit(localValue)}
+                    onChange={commit}
                     aria-label={label}
-
-                    isResetValueOnUnitChange={true}
+                    isResetValueOnUnitChange
                     {...controlProps}
                 />
             );
             break;
 
-        case 'color':
+        case "color":
             control = (
                 <PanelColorSettings
                     enableAlpha
@@ -141,8 +136,8 @@ export const Field = memo(({field, settings, callback}) => {
                         {
                             slug,
                             label,
-                            localValue,
-                            onChange: (v) => commit(v),
+                            value,
+                            onChange: commit,
                             isShownByDefault: true,
                         },
                     ]}
@@ -151,39 +146,45 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-        case 'box':
+        case "box":
             control = (
                 <BoxControl
                     label={label}
-                    values={localValue}
-                    onChange={(v) => commit(v)}
-                    //onBlur={() => commit(localValue)}
-
+                    values={value}
+                    onChange={commit}
                     {...controlProps}
                 />
             );
             break;
 
-        case 'image':
-        case 'video': {
-            const allowedTypes = type === 'image' ? ['image'] : ['video'];
+        case "image":
+        case "video": {
+            const allowedTypes = type === "image" ? ["image"] : ["video"];
             const clear = () => commit(undefined);
             control = (
                 <MediaUploadCheck>
                     <MediaUpload
                         title={label}
-                        onSelect={(media) => commit(media)}
+                        onSelect={commit}
                         allowedTypes={allowedTypes}
-                        value={localValue}
-                        render={({open}) => (
-                            <button type="button" className="components-button" onClick={open}>
-                                {localValue ? 'Replace' : 'Select'} {type}
+                        value={value}
+                        render={({ open }) => (
+                            <button
+                                type="button"
+                                className="components-button"
+                                onClick={open}
+                            >
+                                {value ? "Replace" : "Select"} {type}
                             </button>
                         )}
-                        __nextHasNoMarginBottom={true}
+                        __nextHasNoMarginBottom
                     />
-                    {localValue ? (
-                        <button type="button" className="components-button is-secondary" onClick={clear}>
+                    {value ? (
+                        <button
+                            type="button"
+                            className="components-button is-secondary"
+                            onClick={clear}
+                        >
                             Clear
                         </button>
                     ) : null}
@@ -198,15 +199,14 @@ export const Field = memo(({field, settings, callback}) => {
 
     return control ? (
         <ToolsPanelItem
-            hasValue={() => settings?.[slug] !== undefined && settings?.[slug] !== null}
+            hasValue={() => value !== undefined && value !== null}
             label={label}
             onDeselect={() => commit(undefined)}
-            onSelect={() => commit('')} // <— initialize with an empty string
+            onSelect={() => commit("")} // initialize with an empty string
             className={fieldClassNames}
             isShownByDefault={false}
         >
             {control}
         </ToolsPanelItem>
-
     ) : null;
 });

@@ -254,6 +254,7 @@ export const withStyle = (Component) => (props) => {
 
             // Only update attributes if CSS or style changed
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
+                console.log('setting attributes');
                 setAttributes({
                     'wpbs-style': nextLayout, // raw (so "" persists)
                     'wpbs-css': cleanedCss,   // cleaned CSS only

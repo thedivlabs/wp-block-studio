@@ -1,5 +1,4 @@
 import {memo, useCallback} from "@wordpress/element";
-import {GradientPicker} from '@wordpress/components';
 
 export const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -9,6 +8,7 @@ export const Field = memo(({field, settings, callback}) => {
         MediaUploadCheck,
         MediaUpload,
         SelectControl,
+        GradientPicker,
         ToggleControl,
         RangeControl,
         PanelColorSettings,

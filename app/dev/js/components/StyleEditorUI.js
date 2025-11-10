@@ -11,7 +11,15 @@ const API = window?.WPBS_StyleEditor ?? {};
 const { cleanObject } = API;
 
 export const BreakpointPanel = memo(
-    ({ bpKey, data, breakpoints, breakpointKeys, updateBreakpointItem, removeBreakpointPanel }) => {
+    ({
+         bpKey,
+         data,
+         breakpoints,
+         breakpointKeys,
+         updateBreakpointItem,
+         removeBreakpointPanel,
+         LayoutFields, // 👈 receive it
+     }) => {
         return (
             <div className="wpbs-layout-tools__panel">
                 <div className="wpbs-layout-tools__header">
@@ -41,7 +49,9 @@ export const BreakpointPanel = memo(
                     <LayoutFields
                         bpKey={bpKey}
                         settings={data?.props || {}}
-                        updateFn={(newProps) => updateBreakpointItem({ props: newProps }, bpKey)}
+                        updateFn={(newProps) =>
+                            updateBreakpointItem({ props: newProps }, bpKey)
+                        }
                     />
                 </ToolsPanel>
             </div>
@@ -265,6 +275,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                     breakpointKeys={breakpointKeys}
                     updateBreakpointItem={updateBreakpointItem}
                     removeBreakpointPanel={removeBreakpointPanel}
+                    LayoutFields={LayoutFields}   // 👈 add this
                 />
             ))}
 

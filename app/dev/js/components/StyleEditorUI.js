@@ -121,14 +121,14 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             ...settings,
             breakpoints: {...settings.breakpoints, [newKey]: {}},
         };
-        debouncedUpdate(nextLayout);
+        updateStyleSettings(nextLayout);
     }, [breakpoints, settings, debouncedUpdate]);
 
     const removeBreakpointPanel = useCallback(
         (bpKey) => {
             const {[bpKey]: _, ...rest} = settings.breakpoints;
             const nextLayout = {...settings, breakpoints: rest};
-            debouncedUpdate(nextLayout);
+            updateStyleSettings(nextLayout);
         },
         [settings, debouncedUpdate]
     );

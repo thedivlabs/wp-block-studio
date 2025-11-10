@@ -12,6 +12,8 @@ import {
 import {__} from "@wordpress/i18n";
 import _ from "lodash";
 import {Field} from "Components/Field";
+import {BackgroundControls} from "./Background";
+
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {cleanObject} = API;
@@ -148,6 +150,13 @@ const BreakpointPanel = memo(
                             updateBreakpointItem({props: newProps}, bpKey)
                         }
                     />
+
+                    <BackgroundControls
+                        settings={data?.background || {}}
+                        callback={(newProps) =>
+                            updateBreakpointItem({background: newProps}, bpKey)
+                        }
+                    />
                 </ToolsPanel>
             </div>
         );
@@ -233,6 +242,18 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         [localLayout, updateLocalLayout]
     );
 
+    const updateBackgroundItem = useCallback(
+        (newProps) => {
+            const next = {
+                ...localLayout,
+                background: {...localLayout.background, ...newProps},
+            };
+            updateLocalLayout(next);
+        },
+        [localLayout, updateLocalLayout]
+    );
+
+
     const updateBreakpointItem = useCallback(
         (updates, bpKey) => {
             const current =
@@ -311,6 +332,12 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                         updateFn={(p) => updateLayoutItem(p)}
                     />
                 </ToolsPanel>
+
+                <BackgroundControls
+                    settings={localLayout.background}
+                    callback={(newProps) => updateBackgroundItem(newProps)}
+                />
+
             </div>
 
             {/* Hover */}

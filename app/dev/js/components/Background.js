@@ -10,7 +10,6 @@ import {
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
-import React from "react";
 
 const MediaControl = memo(({label, allowedTypes, value, callback, clear}) => (
     <BaseControl

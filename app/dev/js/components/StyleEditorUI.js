@@ -32,7 +32,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     // --- Debounced update handler
     const debouncedUpdate = useMemo(
         () => _.debounce((nextLayout) => {
-            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) return;
             updateStyleSettings(nextLayout);
         }, 700),
         [updateStyleSettings, settings]

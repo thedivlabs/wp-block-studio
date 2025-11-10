@@ -1,4 +1,5 @@
 import {memo, useCallback} from "@wordpress/element";
+import {GradientPicker} from '@wordpress/components';
 
 export const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -10,7 +11,6 @@ export const Field = memo(({field, settings, callback}) => {
         SelectControl,
         ToggleControl,
         RangeControl,
-        GradientPicker,
         PanelColorSettings,
         TextControl,
         __experimentalToolsPanelItem: ToolsPanelItem,
@@ -61,7 +61,8 @@ export const Field = memo(({field, settings, callback}) => {
                 <GradientPicker
                     id={inputId}
                     label={label}
-                    value={value ?? ""}
+                    value={value || 'linear-gradient(90deg,#000 0%,#fff 100%)'}
+                    gradients={[]}
                     onChange={commit}
                     __nextHasNoMarginBottom
                 />

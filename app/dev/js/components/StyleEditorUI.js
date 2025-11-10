@@ -336,12 +336,15 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     key={bpKey}
                     bpKey={bpKey}
                     data={localLayout.breakpoints[bpKey] || {props: {}, background: {}}}
+                    localLayout={localLayout}  // ✅ make sure this is passed
                     breakpoints={breakpoints}
                     breakpointKeys={breakpointKeys}
+                    updateLocalLayout={updateLocalLayout}
                     updateBreakpointItem={updateBreakpointItem}
                     removeBreakpointPanel={removeBreakpointPanel}
                 />
             ))}
+
 
             {/* Add Breakpoint */}
             <Button

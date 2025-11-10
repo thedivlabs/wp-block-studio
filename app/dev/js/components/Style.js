@@ -15,14 +15,14 @@ import {
 } from "@wordpress/components";
 
 export const STYLE_ATTRIBUTES = {
-    'uniqueId': { type: 'string' },
-    'wpbs-css': { type: 'object', default: {} },
-    'wpbs-preload': { type: 'array' },
-    'wpbs-style': { type: 'object', default: {} },
+    'uniqueId': {type: 'string'},
+    'wpbs-css': {type: 'object', default: {}},
+    'wpbs-preload': {type: 'array'},
+    'wpbs-style': {type: 'object', default: {}},
 };
 
 const API = window?.WPBS_StyleEditor ?? {};
-const { getCSSFromStyle, cleanObject, parseSpecialProps, parseBackgroundProps } = API;
+const {getCSSFromStyle, cleanObject, parseSpecialProps, parseBackgroundProps} = API;
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -37,7 +37,7 @@ const getDataProps = (props) => {
         background,
     }).filter(Boolean));
 
-    return { ...props, styleData: data };
+    return {...props, styleData: data};
 };
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
@@ -80,7 +80,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
 
     return cleanObject({
         className: classList,
-        style: { ...blockStyle, ...styleList },
+        style: {...blockStyle, ...styleList},
         ...restWrapperProps,
     }, true);
 };
@@ -135,7 +135,7 @@ const BlockWrapper = ({
 
     if (hasContainer || isBackgroundActive) {
         const containerProps = useInnerBlocksProps(
-            { className: containerClass },
+            {className: containerClass},
             {}
         );
 
@@ -167,7 +167,7 @@ const AdvancedControls = ({settings, callback}) => (
             <ElementTagControl
                 value={settings?.tagName ?? 'div'}
                 label="HTML Tag"
-                onChange={(tag) => callback({ ...settings, tagName: tag })}
+                onChange={(tag) => callback({...settings, tagName: tag})}
             />
         </Grid>
 
@@ -176,13 +176,13 @@ const AdvancedControls = ({settings, callback}) => (
                 __nextHasNoMarginBottom
                 label="Hide if Empty"
                 checked={!!settings?.['hide-empty']}
-                onChange={(checked) => callback({ ...settings, 'hide-empty': checked })}
+                onChange={(checked) => callback({...settings, 'hide-empty': checked})}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Required"
                 checked={!!settings?.required}
-                onChange={(checked) => callback({ ...settings, required: checked })}
+                onChange={(checked) => callback({...settings, required: checked})}
             />
         </Grid>
 
@@ -191,13 +191,13 @@ const AdvancedControls = ({settings, callback}) => (
                 __nextHasNoMarginBottom
                 label="Offset Header"
                 checked={!!settings?.['offset-header']}
-                onChange={(checked) => callback({ ...settings, 'offset-header': checked })}
+                onChange={(checked) => callback({...settings, 'offset-header': checked})}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Container"
                 checked={!!settings?.container}
-                onChange={(checked) => callback({ ...settings, container: checked })}
+                onChange={(checked) => callback({...settings, container: checked})}
             />
         </Grid>
     </Grid>
@@ -205,8 +205,8 @@ const AdvancedControls = ({settings, callback}) => (
 
 export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
-    const { clientId, attributes, setAttributes, tagName, isSelected } = props;
-    const { uniqueId } = attributes;
+    const {clientId, attributes, setAttributes, tagName, isSelected} = props;
+    const {uniqueId} = attributes;
 
     const settings = attributes?.['wpbs-style'] ?? {
         props: {},
@@ -269,11 +269,11 @@ export const withStyle = (Component) => (props) => {
             <Component
                 {...getDataProps(props)}
                 BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId} />
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
                 )}
             />
         ),
-        [clientId, settings, uniqueId]
+        [clientId, settings, uniqueId, attributes?.style]
     );
 
     const memoizedStyleEditor = useMemo(
@@ -307,7 +307,7 @@ export const withStyle = (Component) => (props) => {
     );
 };
 export const withStyleSave = (Component) => (props) => {
-    const { attributes, clientId } = props;
+    const {attributes, clientId} = props;
     const {'wpbs-style': styleData = {}} = attributes;
 
     return (

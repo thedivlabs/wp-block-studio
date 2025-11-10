@@ -258,13 +258,11 @@ export const withStyle = (Component) => (props) => {
         });
     }, [settings, setAttributes]);
 
-    // --- UI sends full object -> update local settings
     const updateStyleSettings = useCallback(
         (nextLayout) => {
-            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) return;
             setSettings(nextLayout);
         },
-        [settings]
+        []
     );
 
     const memoizedComponent = useMemo(

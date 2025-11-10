@@ -158,7 +158,7 @@ export const BackgroundControls = ({settings = {}, callback}) => {
                     <div>
                         <ToolsPanel
                             label="Advanced Background"
-                            resetAll={() => callback({})}
+                            resetAll={() => callback({}, true)}
                             className={'wpbs-advanced-background'}
                         >
                             <BackgroundFields

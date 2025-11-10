@@ -244,12 +244,14 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     );
 
     const updateBackgroundItem = useCallback(
-        (newProps) => {
+        (newProps, reset = false) => {
             const next = {
                 ...localLayout,
-                background: {...localLayout.background, ...newProps},
+                background: reset
+                    ? {} // reset wipes everything
+                    : {...localLayout.background, ...newProps},
             };
-            updateLocalLayout(next);
+            updateLocalLayout(next, reset);
         },
         [localLayout, updateLocalLayout]
     );

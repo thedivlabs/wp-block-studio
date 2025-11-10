@@ -738,8 +738,6 @@ export function initStyleEditor() {
             const name = block.name;
             if (!cssObj || !uid) return '';
 
-            console.log(uid);
-
             const selector = `.${name.replace('/', '-')}.${uid}`;
             let css = '';
 

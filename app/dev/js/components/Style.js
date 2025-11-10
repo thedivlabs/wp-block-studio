@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useMemo, useRef} from '@wordpress/element';
+import {Fragment, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
 import {
     InnerBlocks,
     InspectorControls,
@@ -15,24 +15,14 @@ import {
 } from "@wordpress/components";
 
 export const STYLE_ATTRIBUTES = {
-    'uniqueId': {
-        type: 'string'
-    },
-    'wpbs-css': {
-        type: 'object',
-        default: {},
-    },
-    'wpbs-preload': {
-        type: 'array',
-    },
-    'wpbs-style': {
-        type: 'object',
-        default: {},
-    }
-}
+    'uniqueId': { type: 'string' },
+    'wpbs-css': { type: 'object', default: {} },
+    'wpbs-preload': { type: 'array' },
+    'wpbs-style': { type: 'object', default: {} },
+};
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {getCSSFromStyle, cleanObject, updateStyleString, parseSpecialProps, parseBackgroundProps} = API;
+const { getCSSFromStyle, cleanObject, parseSpecialProps, parseBackgroundProps } = API;
 
 const getDataProps = (props) => {
     const {attributes} = props;
@@ -47,11 +37,8 @@ const getDataProps = (props) => {
         background,
     }).filter(Boolean));
 
-    return {
-        ...props,
-        styleData: data,
-    }
-}
+    return { ...props, styleData: data };
+};
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
@@ -93,7 +80,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
 
     return cleanObject({
         className: classList,
-        style: {...blockStyle, ...styleList},
+        style: { ...blockStyle, ...styleList },
         ...restWrapperProps,
     }, true);
 };
@@ -139,9 +126,7 @@ const BlockWrapper = ({
                 ) : (
                     <InnerBlocks.Content/>
                 )}
-
                 {children}
-
             </Tag>
         );
     }
@@ -149,9 +134,8 @@ const BlockWrapper = ({
     const blockProps = useBlockProps(baseBlockProps);
 
     if (hasContainer || isBackgroundActive) {
-        // Inner blocks live inside a container div
         const containerProps = useInnerBlocksProps(
-            {className: containerClass},
+            { className: containerClass },
             {}
         );
 
@@ -160,15 +144,12 @@ const BlockWrapper = ({
                 <div {...containerProps}>
                     {containerProps.children}
                 </div>
-
-
                 {children}
             </Tag>
         );
     }
 
     const innerProps = useInnerBlocksProps(blockProps, {});
-
     const Background = useMemo(() => (<BackgroundElement {...props} />), []);
 
     return (
@@ -180,13 +161,13 @@ const BlockWrapper = ({
     );
 };
 
-const AdvancedControls = ({settings, callback}) => {
-    return <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
+const AdvancedControls = ({settings, callback}) => (
+    <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
         <Grid columns={2} columnGap={15} rowGap={20}>
             <ElementTagControl
                 value={settings?.tagName ?? 'div'}
                 label="HTML Tag"
-                onChange={(tag) => callback({tagName: tag})}
+                onChange={(tag) => callback({ ...settings, tagName: tag })}
             />
         </Grid>
 
@@ -195,13 +176,13 @@ const AdvancedControls = ({settings, callback}) => {
                 __nextHasNoMarginBottom
                 label="Hide if Empty"
                 checked={!!settings?.['hide-empty']}
-                onChange={(checked) => callback({'hide-empty': checked})}
+                onChange={(checked) => callback({ ...settings, 'hide-empty': checked })}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Required"
                 checked={!!settings?.required}
-                onChange={(checked) => callback({required: checked})}
+                onChange={(checked) => callback({ ...settings, required: checked })}
             />
         </Grid>
 
@@ -210,59 +191,48 @@ const AdvancedControls = ({settings, callback}) => {
                 __nextHasNoMarginBottom
                 label="Offset Header"
                 checked={!!settings?.['offset-header']}
-                onChange={(checked) => callback({'offset-header': checked})}
+                onChange={(checked) => callback({ ...settings, 'offset-header': checked })}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Container"
                 checked={!!settings?.container}
-                onChange={(checked) => callback({container: checked})}
+                onChange={(checked) => callback({ ...settings, container: checked })}
             />
         </Grid>
     </Grid>
-}
-
+);
 
 export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
-
     const { clientId, attributes, setAttributes, tagName, isSelected } = props;
+    const { uniqueId } = attributes;
 
-    const {
-        uniqueId,
-        'wpbs-style': settings = {
-            props: {},
-            breakpoints: {},
-            advanced: {},
-            hover: {},
-            background: {},
-        },
-    } = attributes;
+    // --- Local style state mirrors wpbs-style
+    const [settings, setSettings] = useState(attributes?.['wpbs-style'] ?? {
+        props: {},
+        breakpoints: {},
+        advanced: {},
+        hover: {},
+        background: {},
+    });
 
-    const { advanced = {} } = settings || {};
-    const { style: styleAttrs = {} } = attributes;
-
-    // Blocks call this to provide their own CSS props.
-    // These will end up in attributes['wpbs-css'].custom
     const blockCss = useCallback((newProps = {}) => {
         cssPropsRef.current = newProps || {};
     }, []);
 
+    // --- Sync settings -> attributes + wpbs-css
     useEffect(() => {
         const cleanedLocal = cleanObject(settings, true);
         const currentAttrStyle = cleanObject(attributes?.['wpbs-style'] ?? {}, true);
 
-        // Bail if wpbs-style hasn't actually changed
-        if (isEqual(cleanedLocal, currentAttrStyle)) {
-            return;
-        }
+        if (isEqual(cleanedLocal, currentAttrStyle)) return;
 
         const cssObj = {
             props: parseSpecialProps(cleanedLocal.props || {}),
             background: parseBackgroundProps(cleanedLocal.background || {}),
             hover: {},
             breakpoints: {},
-            // NEW: custom props from the block via blockCss()
             custom: cleanObject(cssPropsRef.current || {}, true),
         };
 
@@ -280,50 +250,21 @@ export const withStyle = (Component) => (props) => {
         const cleanedCss = cleanObject(cssObj, true);
         const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
 
-        // Bail if wpbs-css (including custom) is already in sync
-        if (isEqual(cleanedCss, prevCss)) {
-            return;
-        }
+        if (isEqual(cleanedCss, prevCss)) return;
 
         setAttributes({
             'wpbs-style': settings,
             'wpbs-css': cleanedCss,
         });
-    }, [settings, uniqueId, attributes, setAttributes]);
+    }, [settings, setAttributes]);
 
+    // --- UI sends full object -> update local settings
     const updateStyleSettings = useCallback(
         (nextLayout) => {
-            // Prevent useless update loops
-            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) {
-                return;
-            }
-
-            setAttributes({
-                'wpbs-style': nextLayout,
-            });
+            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) return;
+            setSettings(nextLayout);
         },
-        [setAttributes, settings]
-    );
-
-    const updateAdvancedSetting = useCallback(
-        (updates) => {
-            setAttributes((prev) => {
-                const prevStyle = prev['wpbs-style'] || {};
-                const prevAdvanced = prevStyle.advanced || {};
-
-                return {
-                    ...prev,
-                    'wpbs-style': {
-                        ...prevStyle,
-                        advanced: {
-                            ...prevAdvanced,
-                            ...updates, // merge new values in
-                        },
-                    },
-                };
-            });
-        },
-        [setAttributes]
+        [settings]
     );
 
     const memoizedComponent = useMemo(
@@ -331,17 +272,11 @@ export const withStyle = (Component) => (props) => {
             <Component
                 {...getDataProps(props)}
                 BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper
-                        {...wrapperProps}
-                        props={props}
-                        clientId={clientId}
-                        tagName={tagName}
-                    />
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId} />
                 )}
-                blockCss={blockCss}
             />
         ),
-        [clientId, blockCss, settings, styleAttrs, uniqueId]
+        [clientId, settings, uniqueId]
     );
 
     const memoizedStyleEditor = useMemo(
@@ -364,19 +299,21 @@ export const withStyle = (Component) => (props) => {
 
             <InspectorControls group="advanced">
                 <AdvancedControls
-                    settings={advanced}
-                    callback={updateAdvancedSetting}
+                    settings={settings?.advanced ?? {}}
+                    callback={(nextAdvanced) =>
+                        updateStyleSettings({
+                            ...settings,
+                            advanced: nextAdvanced,
+                        })
+                    }
                 />
             </InspectorControls>
-
-            {/* No per-block <style> tag anymore.
-               CSS injection is handled by the external manager based on wpbs-css. */}
         </>
     );
 };
 
 export const withStyleSave = (Component) => (props) => {
-    const {attributes, clientId} = props;
+    const { attributes, clientId } = props;
     const {'wpbs-style': styleData = {}} = attributes;
 
     return (
@@ -389,8 +326,3 @@ export const withStyleSave = (Component) => (props) => {
         />
     );
 };
-
-
-
-
-

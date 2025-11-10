@@ -224,31 +224,35 @@ const AdvancedControls = ({settings, callback}) => {
 
 
 export const withStyle = (Component) => (props) => {
-
-    const styleRef = useRef(null);
     const cssPropsRef = useRef({});
 
-    const {clientId, attributes, setAttributes, tagName, isSelected} = props;
+    const { clientId, attributes, setAttributes, tagName, isSelected } = props;
 
     const {
         uniqueId,
-        'wpbs-style': settings = {props: {}, breakpoints: {}, advanced: {}, hover: {}, background: {}}
+        'wpbs-style': settings = {
+            props: {},
+            breakpoints: {},
+            advanced: {},
+            hover: {},
+            background: {},
+        },
     } = attributes;
 
-    const {advanced = {}} = settings || {};
+    const { advanced = {} } = settings || {};
+    const { style: styleAttrs = {} } = attributes;
 
-    const {style: styleAttrs = {}} = attributes;
-
-    const blockCss = useCallback((newProps) => {
-        //console.log('blockCss');
-        cssPropsRef.current = newProps;
+    // Blocks call this to provide their own CSS props.
+    // These will end up in attributes['wpbs-css'].custom
+    const blockCss = useCallback((newProps = {}) => {
+        cssPropsRef.current = newProps || {};
     }, []);
 
     useEffect(() => {
         const cleanedLocal = cleanObject(settings, true);
-
         const currentAttrStyle = cleanObject(attributes?.['wpbs-style'] ?? {}, true);
 
+        // Bail if wpbs-style hasn't actually changed
         if (isEqual(cleanedLocal, currentAttrStyle)) {
             return;
         }
@@ -258,6 +262,8 @@ export const withStyle = (Component) => (props) => {
             background: parseBackgroundProps(cleanedLocal.background || {}),
             hover: {},
             breakpoints: {},
+            // NEW: custom props from the block via blockCss()
+            custom: cleanObject(cssPropsRef.current || {}, true),
         };
 
         for (const [bpKey, bpProps] of Object.entries(cleanedLocal.breakpoints || {})) {
@@ -272,31 +278,32 @@ export const withStyle = (Component) => (props) => {
         }
 
         const cleanedCss = cleanObject(cssObj, true);
-
         const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
 
+        // Bail if wpbs-css (including custom) is already in sync
         if (isEqual(cleanedCss, prevCss)) {
             return;
         }
-
-        console.log(cleanedCss);
 
         setAttributes({
             'wpbs-style': settings,
             'wpbs-css': cleanedCss,
         });
-    }, [settings, uniqueId]);
+    }, [settings, uniqueId, attributes, setAttributes]);
 
-    const updateStyleSettings = useCallback((nextLayout) => {
-        // Prevent useless update loops
-        if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) {
-            return;
-        }
+    const updateStyleSettings = useCallback(
+        (nextLayout) => {
+            // Prevent useless update loops
+            if (_.isEqual(cleanObject(nextLayout, true), cleanObject(settings, true))) {
+                return;
+            }
 
-        setAttributes({
-            'wpbs-style': nextLayout,
-        });
-    }, [setAttributes, settings]);
+            setAttributes({
+                'wpbs-style': nextLayout,
+            });
+        },
+        [setAttributes, settings]
+    );
 
     const updateAdvancedSetting = useCallback(
         (updates) => {
@@ -319,40 +326,51 @@ export const withStyle = (Component) => (props) => {
         [setAttributes]
     );
 
-    useEffect(() => {
-        if (styleRef.current) {
-            updateStyleString(props, styleRef);
-        }
-    }, [attributes['wpbs-css'], uniqueId]);
+    const memoizedComponent = useMemo(
+        () => (
+            <Component
+                {...getDataProps(props)}
+                BlockWrapper={(wrapperProps) => (
+                    <BlockWrapper
+                        {...wrapperProps}
+                        props={props}
+                        clientId={clientId}
+                        tagName={tagName}
+                    />
+                )}
+                blockCss={blockCss}
+            />
+        ),
+        [clientId, blockCss, settings, styleAttrs, uniqueId]
+    );
 
-    const memoizedComponent = useMemo(() => (
-        <Component
-            {...getDataProps(props)}
-            BlockWrapper={(wrapperProps) => (
-                <BlockWrapper {...wrapperProps} props={props} clientId={clientId} tagName={tagName}/>
-            )}
-            blockCss={blockCss}
-        />
-    ), [clientId, blockCss, settings, styleAttrs, uniqueId]);
-
-    const memoizedStyleEditor = useMemo(() => (
-        <StyleEditorUI
-            settings={settings}
-            updateStyleSettings={updateStyleSettings}
-        />
-    ), [settings]);
+    const memoizedStyleEditor = useMemo(
+        () => (
+            <StyleEditorUI
+                settings={settings}
+                updateStyleSettings={updateStyleSettings}
+            />
+        ),
+        [settings, updateStyleSettings]
+    );
 
     return (
         <>
             {memoizedComponent}
+
             <InspectorControls group="styles">
                 {isSelected && memoizedStyleEditor}
             </InspectorControls>
+
             <InspectorControls group="advanced">
-                <AdvancedControls settings={advanced} callback={updateAdvancedSetting}/>
+                <AdvancedControls
+                    settings={advanced}
+                    callback={updateAdvancedSetting}
+                />
             </InspectorControls>
 
-            <style ref={styleRef} id={`wpbs-style-${clientId}`}></style>
+            {/* No per-block <style> tag anymore.
+               CSS injection is handled by the external manager based on wpbs-css. */}
         </>
     );
 };

@@ -10,7 +10,6 @@ import {
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
-import React from "react";
 
 const BackgroundFields = memo(({settings, updateFn}) => {
     const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
@@ -33,7 +32,7 @@ export const BackgroundControls = ({settings = {}, callback}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
 
     return (
-        <PanelBody title="Background" initialOpen={isPanelOpen}>
+        <PanelBody title="Background" initialOpen={isPanelOpen} className={'wpbs-background-controls'}>
             <Grid columns={1} columnGap={15} rowGap={25}>
                 <SelectControl
                     __next40pxDefaultSize
@@ -49,75 +48,73 @@ export const BackgroundControls = ({settings = {}, callback}) => {
                     ]}
                 />
                 {!isPanelOpen ? null : <>
-                    <div>
-                        {/* --- Media pickers under Type --- */}
-                        {(settings.type === 'image' || settings.type === 'featured-image') && (
-                            <BaseControl label="Image" __nextHasNoMarginBottom>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title="Select Image"
-                                        allowedTypes={['image']}
-                                        value={settings?.image?.id}
-                                        onSelect={(media) =>
-                                            callback({
-                                                image: {
-                                                    id: media.id,
-                                                    url: media.url,
-                                                    alt: media?.alt,
-                                                    type: media?.type,
-                                                    sizes: media?.sizes,
-                                                },
-                                            })
-                                        }
-                                        render={({open}) => (
-                                            <PreviewThumbnail
-                                                image={settings?.image}
-                                                onClick={open}
-                                                callback={() => callback({image: {}})}
-                                                style={{
-                                                    objectFit: 'contain',
-                                                    borderRadius: '6px',
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
-                        )}
+                    {/* --- Media pickers under Type --- */}
+                    {(settings.type === 'image' || settings.type === 'featured-image') && (
+                        <BaseControl label="Image" __nextHasNoMarginBottom>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title="Select Image"
+                                    allowedTypes={['image']}
+                                    value={settings?.image?.id}
+                                    onSelect={(media) =>
+                                        callback({
+                                            image: {
+                                                id: media.id,
+                                                url: media.url,
+                                                alt: media?.alt,
+                                                type: media?.type,
+                                                sizes: media?.sizes,
+                                            },
+                                        })
+                                    }
+                                    render={({open}) => (
+                                        <PreviewThumbnail
+                                            image={settings?.image}
+                                            onClick={open}
+                                            callback={() => callback({image: {}})}
+                                            style={{
+                                                objectFit: 'contain',
+                                                borderRadius: '6px',
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
+                    )}
 
-                        {settings.type === 'video' && (
-                            <BaseControl label="Video" __nextHasNoMarginBottom>
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title="Select Video"
-                                        allowedTypes={['video']}
-                                        value={settings?.video?.id}
-                                        onSelect={(media) =>
-                                            callback({
-                                                video: {
-                                                    id: media.id,
-                                                    url: media.url,
-                                                    type: media?.type,
-                                                    mime: media?.mime,
-                                                },
-                                            })
-                                        }
-                                        render={({open}) => (
-                                            <PreviewThumbnail
-                                                image={settings?.video}
-                                                onClick={open}
-                                                callback={() => callback({video: {}})}
-                                                style={{
-                                                    objectFit: 'contain',
-                                                    borderRadius: '6px',
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
-                        )}
-                    </div>
+                    {settings.type === 'video' && (
+                        <BaseControl label="Video" __nextHasNoMarginBottom>
+                            <MediaUploadCheck>
+                                <MediaUpload
+                                    title="Select Video"
+                                    allowedTypes={['video']}
+                                    value={settings?.video?.id}
+                                    onSelect={(media) =>
+                                        callback({
+                                            video: {
+                                                id: media.id,
+                                                url: media.url,
+                                                type: media?.type,
+                                                mime: media?.mime,
+                                            },
+                                        })
+                                    }
+                                    render={({open}) => (
+                                        <PreviewThumbnail
+                                            image={settings?.video}
+                                            onClick={open}
+                                            callback={() => callback({video: {}})}
+                                            style={{
+                                                objectFit: 'contain',
+                                                borderRadius: '6px',
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </MediaUploadCheck>
+                        </BaseControl>
+                    )}
 
                     <Grid columns={2} columnGap={15} rowGap={20}>
                         <ToggleControl
@@ -131,8 +128,8 @@ export const BackgroundControls = ({settings = {}, callback}) => {
                             onChange={(v) => callback({fixed: v})}
                         />
                     </Grid>
-                    <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
-                        <div style={{padding: '12px', backgroundColor: '#efefef', borderRadius: '6px'}}>
+                    <div className={'wpbs-background-controls__card'}>
+                        <BaseControl label="Overlay" __nextHasNoMarginBottom={true}>
                             <GradientPicker
                                 gradients={[
                                     {
@@ -155,8 +152,9 @@ export const BackgroundControls = ({settings = {}, callback}) => {
                                 value={settings?.['overlay'] ?? undefined}
                                 onChange={(newValue) => callback({overlay: newValue})}
                             />
-                        </div>
-                    </BaseControl>
+                        </BaseControl>
+                    </div>
+
                     <div>
                         <ToolsPanel
                             label="Advanced Background"

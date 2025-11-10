@@ -338,7 +338,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
                 <BackgroundControls
                     settings={localLayout.background}
-                    callback={(newProps) => updateBackgroundItem(newProps)}
+                    callback={(newProps, reset) => updateBackgroundItem(newProps, reset)}
                 />
 
             </div>

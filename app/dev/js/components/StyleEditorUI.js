@@ -10,10 +10,8 @@ import { __ } from "@wordpress/i18n";
 const API = window?.WPBS_StyleEditor ?? {};
 const { cleanObject } = API;
 
-const BreakpointPanel = memo(
-    ({ bpKey, localLayout, breakpoints, breakpointKeys, updateLocalLayout, updateBreakpointItem, removeBreakpointPanel }) => {
-        const bpSettings = localLayout.breakpoints[bpKey] || {};
-
+export const BreakpointPanel = memo(
+    ({ bpKey, data, breakpoints, breakpointKeys, updateBreakpointItem, removeBreakpointPanel }) => {
         return (
             <div className="wpbs-layout-tools__panel">
                 <div className="wpbs-layout-tools__header">
@@ -25,27 +23,12 @@ const BreakpointPanel = memo(
                         icon="no-alt"
                     />
                     <label className="wpbs-layout-tools__breakpoint">
-                        <select
-                            id={bpKey}
-                            value={bpKey}
-                            onChange={(e) => {
-                                const newKey = e.target.value;
-                                const nextBreakpoints = { ...localLayout.breakpoints };
-                                nextBreakpoints[newKey] = nextBreakpoints[bpKey];
-                                delete nextBreakpoints[bpKey];
-                                const next = { ...localLayout, breakpoints: nextBreakpoints };
-                                updateLocalLayout(next, true);
-                            }}
-                        >
+                        <select id={bpKey} value={bpKey} disabled style={{ opacity: 0.6 }}>
                             {breakpoints.map((b) => {
                                 const size = b?.size ? `(${b.size}px)` : "";
                                 const label = [b?.label ?? bpKey, size].filter(Boolean).join(" ");
                                 return (
-                                    <option
-                                        key={b.key}
-                                        value={b.key}
-                                        disabled={b.key !== bpKey && breakpointKeys.includes(b.key)}
-                                    >
+                                    <option key={b.key} value={b.key}>
                                         {label}
                                     </option>
                                 );
@@ -53,35 +36,18 @@ const BreakpointPanel = memo(
                         </select>
                     </label>
                 </div>
-                <ToolsPanel
-                    label={__("Layout")}
-                    resetAll={() => {
-                        const next = {
-                            ...localLayout,
-                            breakpoints: {
-                                ...localLayout.breakpoints,
-                                [bpKey]: {},
-                            },
-                        };
-                        updateLocalLayout(next, true);
-                    }}
-                >
-                    {/* Pass only this breakpoint’s props */}
+
+                <ToolsPanel label={__("Layout")}>
                     <LayoutFields
                         bpKey={bpKey}
-                        settings={bpSettings.props || {}}
+                        settings={data?.props || {}}
                         updateFn={(newProps) => updateBreakpointItem({ props: newProps }, bpKey)}
                     />
                 </ToolsPanel>
             </div>
         );
     },
-    (prev, next) => {
-        // Only re-render if this breakpoint's data changed
-        const prevBP = prev.localLayout.breakpoints?.[prev.bpKey] || {};
-        const nextBP = next.localLayout.breakpoints?.[next.bpKey] || {};
-        return _.isEqual(prevBP, nextBP);
-    }
+    (prev, next) => _.isEqual(prev.data, next.data)
 );
 
 export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
@@ -89,7 +55,7 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
 
     // Debounced state updater that accepts commit flag
     const updateLocalLayout = useCallback(() => {
-        const debounced = _.debounce((next) => setLocalLayout(next), 600);
+        const debounced = _.debounce((next) => setLocalLayout(next), 900);
 
         return (nextLayout, commit = false) => {
             if (commit) {
@@ -109,6 +75,9 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
         // Only trigger update when cleaned versions differ
         if (!_.isEqual(cleanedLocal, cleanedSettings)) {
             updateStyleSettings(localLayout);
+        } else {
+            console.log(localLayout);
+            console.log('nothing to update');
         }
     }, [localLayout, updateStyleSettings]);
 
@@ -291,15 +260,13 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                 <BreakpointPanel
                     key={bpKey}
                     bpKey={bpKey}
-                    localLayout={localLayout}
+                    data={localLayout.breakpoints[bpKey] || { props: {}, background: {} }}
                     breakpoints={breakpoints}
                     breakpointKeys={breakpointKeys}
-                    updateLocalLayout={updateLocalLayout}
                     updateBreakpointItem={updateBreakpointItem}
                     removeBreakpointPanel={removeBreakpointPanel}
                 />
             ))}
-
 
             <Button
                 variant="primary"

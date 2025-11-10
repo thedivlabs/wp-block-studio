@@ -151,13 +151,14 @@ const BreakpointPanel = memo(
                         }
                     />
 
-                    <BackgroundControls
-                        settings={data?.background || {}}
-                        callback={(newProps) =>
-                            updateBreakpointItem({background: newProps}, bpKey)
-                        }
-                    />
                 </ToolsPanel>
+
+                <BackgroundControls
+                    settings={data?.background || {}}
+                    callback={(newProps) =>
+                        updateBreakpointItem({background: newProps}, bpKey)
+                    }
+                />
             </div>
         );
     },

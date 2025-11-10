@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, memo } from "@wordpress/element";
+import { useState, useEffect, useMemo, useCallback } from "@wordpress/element";
 import { Field } from "Components/Field";
 import _ from "lodash";
 import {
@@ -9,56 +9,6 @@ import { __ } from "@wordpress/i18n";
 
 const API = window?.WPBS_StyleEditor ?? {};
 const { cleanObject } = API;
-
-export const BreakpointPanel = memo(
-    ({
-         bpKey,
-         data,
-         breakpoints,
-         breakpointKeys,
-         updateBreakpointItem,
-         removeBreakpointPanel,
-         LayoutFields, // 👈 receive it
-     }) => {
-        return (
-            <div className="wpbs-layout-tools__panel">
-                <div className="wpbs-layout-tools__header">
-                    <Button
-                        isSmall
-                        size="small"
-                        iconSize={20}
-                        onClick={() => removeBreakpointPanel(bpKey)}
-                        icon="no-alt"
-                    />
-                    <label className="wpbs-layout-tools__breakpoint">
-                        <select id={bpKey} value={bpKey} disabled style={{ opacity: 0.6 }}>
-                            {breakpoints.map((b) => {
-                                const size = b?.size ? `(${b.size}px)` : "";
-                                const label = [b?.label ?? bpKey, size].filter(Boolean).join(" ");
-                                return (
-                                    <option key={b.key} value={b.key}>
-                                        {label}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    </label>
-                </div>
-
-                <ToolsPanel label={__("Layout")}>
-                    <LayoutFields
-                        bpKey={bpKey}
-                        settings={data?.props || {}}
-                        updateFn={(newProps) =>
-                            updateBreakpointItem({ props: newProps }, bpKey)
-                        }
-                    />
-                </ToolsPanel>
-            </div>
-        );
-    },
-    (prev, next) => _.isEqual(prev.data, next.data)
-);
 
 export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
     const [localLayout, setLocalLayout] = useState(settings);
@@ -231,6 +181,87 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                 ));
     }, [updateHoverItem]);
 
+    const BreakpointPanel = useMemo(
+        () =>
+            ({
+                 bpKey,
+                 breakpoints,
+                 breakpointKeys,
+                 updateBreakpointItem,
+                 removeBreakpointPanel,
+             }) => (
+                <div className="wpbs-layout-tools__panel">
+                    <div className="wpbs-layout-tools__header">
+                        <Button
+                            isSmall
+                            size="small"
+                            iconSize={20}
+                            onClick={() => removeBreakpointPanel(bpKey)}
+                            icon="no-alt"
+                        />
+                        <label className="wpbs-layout-tools__breakpoint">
+                            <select
+                                id={bpKey}
+                                value={bpKey}
+                                onChange={(e) => {
+                                    const newKey = e.target.value;
+                                    const nextBreakpoints = { ...localLayout.breakpoints };
+                                    nextBreakpoints[newKey] = nextBreakpoints[bpKey];
+                                    delete nextBreakpoints[bpKey];
+
+                                    const next = {
+                                        ...localLayout,
+                                        breakpoints: nextBreakpoints,
+                                    };
+                                    updateLocalLayout(next, true);
+                                }}
+                            >
+                                {breakpoints.map((b) => {
+                                    const size = b?.size ? `(${b.size}px)` : "";
+                                    const label = [b?.label ?? bpKey, size]
+                                        .filter(Boolean)
+                                        .join(" ");
+                                    return (
+                                        <option
+                                            key={b.key}
+                                            value={b.key}
+                                            disabled={
+                                                b.key !== bpKey && breakpointKeys.includes(b.key)
+                                            }
+                                        >
+                                            {label}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </label>
+                    </div>
+                    <ToolsPanel
+                        label={__("Layout")}
+                        resetAll={() => {
+                            const next = {
+                                ...localLayout,
+                                breakpoints: {
+                                    ...localLayout.breakpoints,
+                                    [bpKey]: {},
+                                },
+                            };
+                            updateLocalLayout(next, true);
+                        }}
+                    >
+                        <LayoutFields
+                            bpKey={bpKey}
+                            settings={localLayout.breakpoints[bpKey]?.props || {}}
+                            updateFn={(newProps) =>
+                                updateBreakpointItem({ props: newProps }, bpKey)
+                            }
+                        />
+                    </ToolsPanel>
+                </div>
+            ),
+        [localLayout, updateLocalLayout, breakpoints, updateBreakpointItem]
+    );
+
     // --- Render ---------------------------------------------------------------
 
     return (
@@ -270,12 +301,10 @@ export const StyleEditorUI = ({ settings, updateStyleSettings }) => {
                 <BreakpointPanel
                     key={bpKey}
                     bpKey={bpKey}
-                    data={localLayout.breakpoints[bpKey] || { props: {}, background: {} }}
                     breakpoints={breakpoints}
                     breakpointKeys={breakpointKeys}
                     updateBreakpointItem={updateBreakpointItem}
                     removeBreakpointPanel={removeBreakpointPanel}
-                    LayoutFields={LayoutFields}   // 👈 add this
                 />
             ))}
 

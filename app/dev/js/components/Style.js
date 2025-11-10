@@ -208,66 +208,60 @@ export const withStyle = (Component) => (props) => {
     const { clientId, attributes, setAttributes, tagName, isSelected } = props;
     const { uniqueId } = attributes;
 
-    // --- Local style state mirrors wpbs-style
-    const [settings, setSettings] = useState(attributes?.['wpbs-style'] ?? {
+    const settings = attributes?.['wpbs-style'] ?? {
         props: {},
         breakpoints: {},
         advanced: {},
         hover: {},
         background: {},
-    });
+    };
 
     const blockCss = useCallback((newProps = {}) => {
         cssPropsRef.current = newProps || {};
     }, []);
 
-    // --- Sync settings -> attributes + wpbs-css
-    useEffect(() => {
-        // Cleaned versions for comparison only
-        const cleanedLocal = cleanObject(settings, true);
-        const currentAttrStyle = cleanObject(attributes?.['wpbs-style'] ?? {}, true);
+    // --- Reactive version of updateStyleSettings
+    const updateStyleSettings = useCallback(
+        (nextLayout) => {
+            const cleanedNext = cleanObject(nextLayout, true);
+            const cleanedCurrent = cleanObject(settings, true);
 
-        // If cleaned versions are identical, bail out early
-        if (isEqual(cleanedLocal, currentAttrStyle)) return;
+            // Bail if nothing meaningful changed
+            if (_.isEqual(cleanedNext, cleanedCurrent)) return;
 
-        // --- Build CSS from the cleaned version ---
-        const cssObj = {
-            props: parseSpecialProps(cleanedLocal.props || {}),
-            background: parseBackgroundProps(cleanedLocal.background || {}),
-            hover: {},
-            breakpoints: {},
-            custom: cleanObject(cssPropsRef.current || {}, true),
-        };
-
-        for (const [bpKey, bpProps] of Object.entries(cleanedLocal.breakpoints || {})) {
-            cssObj.breakpoints[bpKey] = {
-                props: parseSpecialProps(bpProps.props || {}),
-                background: parseBackgroundProps(bpProps.background || {}),
+            // --- Build CSS object immediately
+            const cssObj = {
+                props: parseSpecialProps(cleanedNext.props || {}),
+                background: parseBackgroundProps(cleanedNext.background || {}),
+                hover: {},
+                breakpoints: {},
+                custom: cleanObject(cssPropsRef.current || {}, true),
             };
-        }
 
-        if (cleanedLocal.hover) {
-            cssObj.hover = parseSpecialProps(cleanedLocal.hover);
-        }
+            for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
+                cssObj.breakpoints[bpKey] = {
+                    props: parseSpecialProps(bpProps.props || {}),
+                    background: parseBackgroundProps(bpProps.background || {}),
+                };
+            }
 
-        const cleanedCss = cleanObject(cssObj, true);
-        const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
+            if (cleanedNext.hover) {
+                cssObj.hover = parseSpecialProps(cleanedNext.hover);
+            }
 
-        // Only rebuild CSS if the cleaned version actually changed
-        const cssDifferent = !isEqual(cleanedCss, prevCss);
+            const cleanedCss = cleanObject(cssObj, true);
+            const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
 
-        // --- Persist raw settings (including blanks) + cleaned CSS ---
-        if (cssDifferent || !isEqual(cleanedLocal, currentAttrStyle)) {
-            setAttributes({
-                'wpbs-style': settings,   // raw state (includes "")
-                'wpbs-css': cleanedCss,   // cleaned css only
-            });
-        }
-    }, [settings, setAttributes]);
-
-    const updateStyleSettings = useCallback((nextLayout) => {
-        setSettings(nextLayout);
-    }, [settings]);
+            // Only update attributes if CSS or style changed
+            if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
+                setAttributes({
+                    'wpbs-style': nextLayout, // raw (so "" persists)
+                    'wpbs-css': cleanedCss,   // cleaned CSS only
+                });
+            }
+        },
+        [attributes, settings, setAttributes]
+    );
 
     const memoizedComponent = useMemo(
         () => (
@@ -294,11 +288,9 @@ export const withStyle = (Component) => (props) => {
     return (
         <>
             {memoizedComponent}
-
             <InspectorControls group="styles">
                 {isSelected && memoizedStyleEditor}
             </InspectorControls>
-
             <InspectorControls group="advanced">
                 <AdvancedControls
                     settings={settings?.advanced ?? {}}
@@ -313,7 +305,6 @@ export const withStyle = (Component) => (props) => {
         </>
     );
 };
-
 export const withStyleSave = (Component) => (props) => {
     const { attributes, clientId } = props;
     const {'wpbs-style': styleData = {}} = attributes;

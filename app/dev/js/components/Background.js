@@ -259,6 +259,8 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
+    console.log(isSave);
+
     const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
 
     console.log(attributes)
@@ -270,5 +272,5 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
     ].filter(x => x).join(' ');
 
 
-    return <div className={bgClass}><BackgroundVideo settings={settings} isSave={isSave}/></div>;
+    return <div className={bgClass}><BackgroundVideo settings={settings} isSave={!!isSave}/></div>;
 }

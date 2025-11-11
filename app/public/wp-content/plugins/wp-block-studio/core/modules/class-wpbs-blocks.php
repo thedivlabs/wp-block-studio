@@ -13,6 +13,7 @@ class WPBS_Blocks {
 
 		add_action( 'wp_head', function () {
 			$css = get_post_meta( get_the_ID(), '_wpbs_combined_css', true );
+			WPBS::console_log( [ $css ] );
 			if ( ! empty( $css ) ) {
 				echo '<style id="wpbs-style">' . $css . '</style>';
 			}
@@ -60,7 +61,7 @@ class WPBS_Blocks {
 			}
 
 			if ( ! empty( $block['innerBlocks'] ) ) {
-				$css .= self::collect_block_styles( $block['innerBlocks'] );
+				//$css .= self::collect_block_styles( $block['innerBlocks'] );
 			}
 		}
 
@@ -68,6 +69,9 @@ class WPBS_Blocks {
 	}
 
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {
+
+		WPBS::console_log( $attributes );
+
 		if ( empty( $attributes['uniqueId'] ) ) {
 			return '';
 		}
@@ -164,7 +168,7 @@ class WPBS_Blocks {
 
 		$final_css = trim( $css . ' ' . $bg_css );
 
-		return $final_css ? $final_css : '';
+		return $final_css ?: '';
 	}
 
 	public function render_block( $attributes, $content, $block ): string {

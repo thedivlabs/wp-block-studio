@@ -86,7 +86,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
 };
 
 const BlockBackground = memo(({attributes, isSave}) => (
-    <BackgroundElement attributes={attributes} isSave={isSave}/>
+    <BackgroundElement attributes={attributes} isSave={!!isSave}/>
 ));
 
 
@@ -96,7 +96,7 @@ const BlockWrapper = ({
                           tagName = 'div',
                           children,
                           hasBackground = false,
-                          isSave = false,
+                          isSave,
                           ...wrapperProps
                       }) => {
     const {attributes, name} = props;
@@ -121,6 +121,7 @@ const BlockWrapper = ({
 
     // --- Save (frontend) version ---
     if (isSave) {
+        console.log('isSave', isSave);
         const saveProps = useBlockProps.save(baseBlockProps);
 
         return (
@@ -133,7 +134,7 @@ const BlockWrapper = ({
                     <InnerBlocks.Content/>
                 )}
                 {children}
-                <BlockBackground attributes={attributes} isSave/>
+                <BlockBackground attributes={attributes} isSave={!!isSave}/>
             </Tag>
         );
     }
@@ -209,6 +210,29 @@ const AdvancedControls = ({settings, callback}) => (
     </Grid>
 );
 
+const StyledComponent = memo((props) => {
+    const {clientId, attributes} = props;
+    const {uniqueId} = attributes;
+    const settings = attributes['wpbs-style'] ?? {};
+
+    return (
+        <Component
+            {...getDataProps(props)}
+            BlockWrapper={(wrapperProps) => (
+                <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+            )}
+        />
+    );
+});
+
+const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
+    <StyleEditorUI
+        settings={settings}
+        updateStyleSettings={updateStyleSettings}
+    />
+));
+
+
 export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
@@ -282,33 +306,16 @@ export const withStyle = (Component) => (props) => {
         [settings, setAttributes]
     );
 
-    const memoizedComponent = useMemo(
-        () => (
-            <Component
-                {...getDataProps(props)}
-                BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
-                )}
-            />
-        ),
-        [clientId, settings, uniqueId, blockGapKey]
-    );
-
-    const memoizedStyleEditor = useMemo(
-        () => (
-            <StyleEditorUI
-                settings={settings}
-                updateStyleSettings={updateStyleSettings}
-            />
-        ),
-        [settings, updateStyleSettings]
-    );
-
     return (
         <>
-            {memoizedComponent}
+            <StyledComponent {...props}/>
             <InspectorControls group="styles">
-                {isSelected && memoizedStyleEditor}
+                {isSelected && (
+                    <StyleEditorPanel
+                        settings={settings}
+                        updateStyleSettings={updateStyleSettings}
+                    />
+                )}
             </InspectorControls>
             <InspectorControls group="advanced">
                 <AdvancedControls
@@ -324,7 +331,9 @@ export const withStyle = (Component) => (props) => {
         </>
     );
 };
+
 export const withStyleSave = (Component) => (props) => {
+
     const {attributes, clientId} = props;
     const {'wpbs-style': styleData = {}} = attributes;
 
@@ -332,7 +341,7 @@ export const withStyleSave = (Component) => (props) => {
         <Component
             {...getDataProps(props)}
             BlockWrapper={(wrapperProps) => (
-                <BlockWrapper {...wrapperProps} props={props} clientId={clientId} isSave/>
+                <BlockWrapper props={props} clientId={clientId} isSave={true} {...wrapperProps}/>
             )}
             styleData={styleData}
         />

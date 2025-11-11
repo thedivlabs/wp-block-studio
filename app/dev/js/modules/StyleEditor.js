@@ -237,46 +237,21 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
 function parseBackgroundProps(props = {}) {
     const result = {};
-    const {breakpoints = {}, image, video, resolution = 'large', force} = props;
+    const {image, video, resolution = 'large', force} = props;
 
-    // --- Base image ---
+    // --- Base media ---
     if (image?.url) {
         const url = image?.sizes?.[resolution]?.url ?? image.url;
         result['--image'] = `url("${url}")`;
+    } else if (video?.url) {
+        result['--video'] = `url("${video.url}")`;
     } else if (force) {
         result['--image'] = '#';
     }
 
-    // --- Handle breakpoint overrides ---
-    for (const [bpKey, bpValue] of Object.entries(breakpoints)) {
-        const bp = bpValue?.background || {};
-        const bpImage = bp.image;
-        const bpVideo = bp.video;
-        const bpResolution = bp.resolution || resolution;
-        const bpForce = bp.force ?? force;
-
-        if (bpImage?.url) {
-            const url = bpImage?.sizes?.[bpResolution]?.url ?? bpImage.url;
-            result[`--image-${bpKey}`] = `url("${url}")`;
-        } else if (bpForce) {
-            result[`--image-${bpKey}`] = '#';
-        }
-
-        if (bpVideo?.url) {
-            result[`--video-${bpKey}`] = `url("${bpVideo.url}")`;
-        } else if (bpForce) {
-            result[`--video-${bpKey}`] = '#';
-        }
-    }
-
-    if (props.fixed) {
-        result['--attachment'] = 'fixed';
-    }
-
-    // --- Other visual props ---
+    // --- Common visual modifiers ---
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
-
         switch (key) {
             case 'scale':
                 result['--size'] = `${parseFloat(val)}%`;
@@ -284,15 +259,17 @@ function parseBackgroundProps(props = {}) {
             case 'opacity':
                 result['--opacity'] = parseFloat(val) / 100;
                 break;
-            case 'width':
-            case 'height':
-                result[`--${key}`] = `${val}%`;
-                break;
             case 'fade':
                 result['--fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
                 break;
             case 'overlay':
                 result['--overlay'] = val;
+                break;
+            case 'color':
+                result['--color'] = val;
+                break;
+            case 'background-blend-mode':
+                result['--blend'] = val;
                 break;
             case 'maskImage':
                 result['--mask-image'] = `url(${val?.url ?? '#'})`;
@@ -306,19 +283,18 @@ function parseBackgroundProps(props = {}) {
             case 'maskSize':
                 result['--mask-size'] = val;
                 break;
-            case 'color':
-                result['--color'] = val;
-                break;
-            case 'background-blend-mode':
-                result['--blend'] = val;
-                break;
             default:
                 break;
         }
     });
 
+    if (props.fixed) {
+        result['--attachment'] = 'fixed';
+    }
+
     return result;
 }
+
 
 const layoutFieldsMap = [
     {type: 'heading', label: 'Flex Settings FPO'},
@@ -660,10 +636,20 @@ export function initStyleEditor() {
             for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints || {})) {
                 const bp = bps[bpKey];
                 if (bp && !_.isEmpty(bpProps)) {
-                    const mergedBp = {...(bpProps.props || {}), ...(bpProps.custom || {})};
-                    css += `@media (max-width:${bp.size - 1}px){${selector}{${buildRules(mergedBp, true)}}}`;
+                    // merge props, custom, and background vars
+                    const mergedBp = {
+                        ...(bpProps.props || {}),
+                        ...(bpProps.custom || {}),
+                        ...(bpProps.background || {}),
+                    };
+
+                    // only build rule if something meaningful exists
+                    if (!_.isEmpty(mergedBp)) {
+                        css += `@media (max-width:${bp.size - 1}px){${selector}{${buildRules(mergedBp, true)}}}`;
+                    }
                 }
             }
+
 
             return css;
         };

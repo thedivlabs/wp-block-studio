@@ -248,7 +248,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // Bail early if no entries
     if (!entries.length) return null;
 
-    const srcAttr = !!background?.eager || !isSave ? 'src' : 'data-src';
+    const srcAttr = !background?.eager || !isSave ? 'data-src' : 'src';
 
     return (
         <video

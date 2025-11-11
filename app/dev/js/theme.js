@@ -228,33 +228,44 @@ class WPBS_Theme {
     }
 
     responsiveVideoSrc(video) {
-        // Guard: ensure this.videos always exists
         if (!Array.isArray(this.videos)) this.videos = [];
 
-        // Process all <source> elements
         [...video.querySelectorAll('source')].forEach((source) => {
             const mq = source.dataset.media;
+            const hasDataSrc = !!source.dataset.src;
 
-            // No media query → keep as is
+            // No media query → keep as-is
             if (!mq) {
-                if (source.dataset.src) {
+                if (hasDataSrc) {
                     source.src = source.dataset.src;
                     delete source.dataset.src;
                 }
                 return;
             }
 
-            // Switch source based on viewport match
-            if (window.matchMedia(mq).matches) {
-                source.src = source.dataset.src || '#';
+            const matches = window.matchMedia(mq).matches;
+
+            if (matches) {
+                // If the query matches, ensure the real src is active
+                if (hasDataSrc) {
+                    source.src = source.dataset.src;
+                    delete source.dataset.src;
+                } else if (!source.src) {
+                    source.src = '#';
+                }
             } else {
+                // Query does NOT match → revert src → data-src
+                if (source.src && source.src !== '#') {
+                    source.dataset.src = source.src;
+                }
                 source.src = '#';
             }
         });
 
-        // Reload the video element to reflect updated sources
+        // Reload video sources after any change
         video.load();
     }
+
 
     observeMedia(refElement) {
         // Always initialize videos array
@@ -309,7 +320,7 @@ class WPBS_Theme {
             'picture:has(source[data-src]),' +
             'video:has(source[data-src]),' +
             'video:has(source[data-media]),' +
-            '.wpbs-background.--lazy';
+            '.wpbs-background';
 
         [...(refElement || document).querySelectorAll(selector)].forEach((el) =>
             observerIntersection.observe(el)

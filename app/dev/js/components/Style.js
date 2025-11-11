@@ -119,20 +119,17 @@ const BlockWrapper = ({
     const baseBlockProps = getBlockProps(props, wrapperProps);
 
     // ──────────────────────────────────────────────
-    // SAVE VERSION  (static serialization)
+    // SAVE VERSION
     // ──────────────────────────────────────────────
     if (isSave) {
-        // build block + inner-block props for save context
         const saveProps = useBlockProps.save(baseBlockProps);
-
-        const innerBlocksProps = hasContainer
-            ? useInnerBlocksProps.save({className: containerClass})
-            : useInnerBlocksProps.save(saveProps);
 
         return (
             <Tag {...saveProps}>
                 {hasContainer ? (
-                    <div {...innerBlocksProps}>{innerBlocksProps.children}</div>
+                    <div className={containerClass}>
+                        <InnerBlocks.Content/>
+                    </div>
                 ) : (
                     <InnerBlocks.Content/>
                 )}
@@ -145,7 +142,7 @@ const BlockWrapper = ({
     }
 
     // ──────────────────────────────────────────────
-    // EDIT VERSION  (live editor runtime)
+    // EDIT VERSION
     // ──────────────────────────────────────────────
     const blockProps = useBlockProps(baseBlockProps);
 

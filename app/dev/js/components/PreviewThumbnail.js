@@ -1,9 +1,11 @@
 import {Button, Icon} from '@wordpress/components'
-import React from "react";
+import {IMAGE_BUTTON_STYLE} from 'Includes/config'
+
 
 function PreviewThumbnail({image = {}, callback, style = {}, onClick, contain = false}) {
 
     const thumbnailStyle = {
+        ...IMAGE_BUTTON_STYLE,
         width: '100%',
         height: '100%',
         objectFit: !!contain ? 'contain' : 'inherit',

@@ -208,7 +208,6 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
     );
 };
 
-
 function BackgroundVideo({settings = {}, isSave = false}) {
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
@@ -275,10 +274,26 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     );
 }
 
-
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
+    const baseBg = settings?.background ?? {};
+    const breakpoints = settings?.breakpoints ?? {};
+
+    const hasAnyBackground = (() => {
+        // Base background
+        if (baseBg?.type) return true;
+
+        // Any breakpoint with a defined background type
+        for (const bp of Object.values(breakpoints)) {
+            if (bp?.background?.type) return true;
+        }
+
+        return false;
+    })();
+
+    // If *no* breakpoint defines a type, don’t render the background wrapper at all
+    if (!hasAnyBackground) return null;
 
     const bgClass = [
         'wpbs-background',

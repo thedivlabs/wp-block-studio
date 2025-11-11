@@ -193,43 +193,53 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 };
 
 
-function BackgroundVideo({settings = {}}) {
-
-    const {background, breakpoints = {}} = settings;
-
-    const bpDefs = WPBS?.settings?.breakpoints ?? {};
+function BackgroundVideo({settings = {}, isSave = false}) {
+    const {video, breakpoints = {}} = settings;
+    const bpDefs = window?.WPBS_StyleEditor?.breakpoints ?? {};
     const entries = [];
 
-    // 1. base-level background video
-    if (background?.video?.url) {
-        entries.push({size: Infinity, video: background.video});
+    // 1. base-level video
+    if (video?.url) {
+        entries.push({size: Infinity, video});
     }
 
     // 2. breakpoints
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
-        const video = bpData?.background?.video;
+        const bpVideo = bpData?.background?.video;
         const size = bpDefs[bpKey]?.size ?? 0;
-        if (video?.url) entries.push({size, video});
+        if (bpVideo?.url) entries.push({size, video: bpVideo});
     });
 
     entries.sort((a, b) => b.size - a.size);
 
     if (!entries.length) return null;
 
+    const srcAttr = isSave ? 'data-src' : 'src';
+
     return (
-        <video muted loop autoPlay playsInline
-               className={'absolute top-0 left-0 w-full h-full z-0 pointer-events-none'}>
+        <video
+            muted
+            loop
+            autoPlay
+            playsInline
+            className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
+        >
             {entries.map(({size, video}, i) => (
                 <source
                     key={i}
-                    data-src={video.url}
-                    data-media={Number.isFinite(size) && size !== Infinity ? `(max-width: ${size - 1}px)` : null}
-                    //data-type={video.mime || 'video/mp4'}
+                    {srcAttr}={video.url}
+                    data-media={
+                        Number.isFinite(size) && size !== Infinity
+                            ? `(max-width:${size - 1}px)`
+                            : null
+                    }
+                    type={video.mime || 'video/mp4'}
                 />
             ))}
         </video>
     );
 }
+
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

@@ -177,51 +177,53 @@ export const BackgroundControls = ({settings = {}, callback}) => {
 
 
 const Video = memo(({settings = {}}) => {
-    const breakpoints = settings?.breakpoints || {};
     const bpMap = window?.WPBS_StyleEditor?.breakpoints || {};
+    const breakpoints = settings?.breakpoints || {};
     const srcAttr = 'data-src';
-    const sources = [];
 
-    // Loop through defined breakpoints and extract video URLs
-    for (const [bpKey, bpData] of Object.entries(breakpoints)) {
-        const videoUrl = bpData?.background?.video?.url;
-        if (!videoUrl) continue;
+    // Collect breakpoint entries that have a video + a numeric size
+    const bpEntries = Object.entries(breakpoints)
+        .map(([bpKey, bpData]) => {
+            const bpConfig = bpMap[bpKey];
+            const size = bpConfig?.size; // e.g. 640, 768, 1140...
+            const videoUrl = bpData?.background?.video?.url;
 
-        const bpWidth = bpMap[bpKey];
-        if (!bpWidth) continue;
+            if (!videoUrl || typeof size !== 'number' || Number.isNaN(size)) {
+                return null;
+            }
 
-        // mobile-first logic: smaller breakpoints use max-width
-        const isSmall = /xs|sm|mobile/i.test(bpKey);
-        const mediaQuery = isSmall
-            ? `(max-width:${bpWidth})`
-            : `(min-width:${bpWidth})`;
+            return {bpKey, size, videoUrl};
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.size - b.size); // smallest → largest
 
-        sources.push(
-            <source
-                key={bpKey}
-                {...{
-                    [srcAttr]: videoUrl,
-                    type: 'video/mp4',
-                    'data-media': mediaQuery,
-                }}
-            />
-        );
-    }
+    // No videos anywhere → kill the component
+    if (bpEntries.length === 0) return null;
 
-    return  sources.length > 0 && (
-            <video muted loop autoPlay playsInline
-                   className="wpbs-background__media absolute inset-0 z-0 overflow-hidden w-full h-full"
-                   fetchpriority={settings.eager ? 'high' : undefined}
-            >
-                {sources}
+    return (
+        <div
+            className="wpbs-background__media absolute inset-0 z-0 overflow-hidden w-full h-full"
+            fetchpriority={settings.eager ? 'high' : undefined}
+        >
+            <video muted loop autoPlay playsInline>
+                {bpEntries.map(({bpKey, size, videoUrl}) => (
+                    <source
+                        key={bpKey}
+                        {...{
+                            [srcAttr]: videoUrl,
+                            type: 'video/mp4',
+                            'data-media': `(max-width:${size}px)`,
+                        }}
+                    />
+                ))}
             </video>
-        );
+        </div>
+    );
 });
-export function BackgroundElement({settings = {}, editor = false}) {
 
-    if (!settings.type) {
-        return false;
-    }
+export function BackgroundElement({attributes = {}, isSave = false}) {
+
+    const {'wpbs-style': settings = {}} = attributes;
 
     const bgClass = [
         'wpbs-background',
@@ -231,7 +233,5 @@ export function BackgroundElement({settings = {}, editor = false}) {
     ].filter(x => x).join(' ');
 
 
-    return <div className={bgClass}>
-        <Media attributes={settings}/>
-    </div>;
+    return <div className={bgClass}><Video settings={settings}/></div>;
 }

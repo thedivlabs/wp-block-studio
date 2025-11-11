@@ -252,26 +252,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
     return result;
 }
 
-function imageSet(media, resolution = 'large') {
-    if (!media) return '';
-
-    // Try to get the URL for the specified resolution
-    const size = media?.sizes?.[resolution];
-    const url = size?.url ?? media?.url ?? null;
-
-    if (!url) return '';
-
-    // Detect image type for the fallback
-    const isPng = url.toLowerCase().endsWith('.png');
-    const ext = isPng ? 'image/png' : 'image/jpeg';
-
-    // Construct the image-set() syntax
-    const webp = `url("${url}.webp") type("image/webp")`;
-    const fallback = `url("${url}") type("${ext}")`;
-
-    return `image-set(${webp}, ${fallback})`;
-}
-
 function parseBackgroundProps(props = {}) {
     const result = {};
     const {breakpoints = {}, image, video, resolution = 'large', force} = props;
@@ -332,7 +312,7 @@ function parseBackgroundProps(props = {}) {
                 result['--fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
                 break;
             case 'overlay':
-                result['--overlay'] = val;
+                result['--overlay'] = `background-image(${val})`;
                 break;
             case 'maskImage':
                 result['--mask-image'] = `url(${val?.url ?? '#'})`;

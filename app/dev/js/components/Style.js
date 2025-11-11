@@ -46,10 +46,10 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
     const {props: layout = {}, background = {}, hover = {}} = settings;
 
-    const blockNameClass = name ? name.replace('/', '-') : '';
+    const blockBaseName = name ? name.replace('/', '-') : '';
 
     const classList = [
-        blockNameClass,
+        blockBaseName,
         uniqueId,
         userClass || null,
         layout['offset-height'] && '--offset-height',
@@ -94,10 +94,11 @@ const BlockWrapper = ({
                           isSave = false,
                           ...wrapperProps
                       }) => {
-    const {attributes} = props;
-    const {uniqueId} = attributes;
+    const {attributes, name} = props;
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;
+
+    const blockBaseName = name ? name.replace('/', '-') : '';
 
     const Tag = getElementTag(advanced?.tagName, tagName);
     const isBackgroundActive = hasBackground && settings?.background?.type;
@@ -105,7 +106,7 @@ const BlockWrapper = ({
     const hasContainer = isContainer || isBackgroundActive;
 
     const containerClass = [
-        uniqueId ? `${uniqueId}__container` : null,
+        blockBaseName ? `${blockBaseName}__container` : null,
         'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
     ]
         .filter(Boolean)
@@ -127,6 +128,7 @@ const BlockWrapper = ({
                     <InnerBlocks.Content/>
                 )}
                 {children}
+                <BackgroundElement {...attributes} isSave/>
             </Tag>
         );
     }
@@ -145,6 +147,7 @@ const BlockWrapper = ({
                     {containerProps.children}
                 </div>
                 {children}
+                <BackgroundElement {...attributes} isSave/>
             </Tag>
         );
     }

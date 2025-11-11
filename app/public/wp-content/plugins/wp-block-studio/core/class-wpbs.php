@@ -225,8 +225,6 @@ class WPBS {
 		] );
 
 
-
-
 	}
 
 	public function block_assets(): void {
@@ -253,6 +251,7 @@ class WPBS {
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-editor' );
+		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_localize_script( 'wpbs-editor', 'WPBS', self::$theme_vars );
 	}
 

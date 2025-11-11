@@ -250,6 +250,7 @@ function parseSpecialProps(props = {}, attributes = {}) {
 }
 
 function parseBackgroundProps(props = {}) {
+    
     const result = {};
     const {image, video, resolution = 'large', force} = props;
     const hasMedia = !!(image?.url || video?.url);
@@ -258,8 +259,6 @@ function parseBackgroundProps(props = {}) {
     if (image?.url) {
         const url = image?.sizes?.[resolution]?.url ?? image.url;
         result['--image'] = `url("${url}")`;
-    } else if (video?.url) {
-        result['--video'] = `url("${video.url}")`;
     } else if (force) {
         result['--image'] = '#';
     }

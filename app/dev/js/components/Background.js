@@ -211,26 +211,30 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
 function BackgroundVideo({settings = {}, isSave = false}) {
     const {background = {}, breakpoints = {}} = settings;
-    const bpDefs = window?.WPBS_StyleEditor?.breakpoints ?? {};
+    const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
-    // 1. Base-level video (main background)
+    // 1. Base-level video
     const baseVideo = background?.video;
     if (baseVideo?.url) {
         entries.push({size: Infinity, video: baseVideo});
     }
 
-    // 2. Breakpoint-level videos (and placeholders)
+    // 2. Breakpoint-level videos and placeholders
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
         const bpForce = bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
+        console.log(size);
+        console.log(bpDefs);
+        console.log(bpKey);
+
         if (bpVideo?.url) {
-            // real video found
+            // Real video defined for this breakpoint
             entries.push({size, video: bpVideo});
         } else if (bpForce) {
-            // force placeholder if no video
+            // Force placeholder only when no video URL
             entries.push({
                 size,
                 video: {url: '#', mime: 'video/mp4', isPlaceholder: true},
@@ -241,10 +245,10 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // Sort descending by breakpoint size (largest first)
     entries.sort((a, b) => b.size - a.size);
 
-    // Bail early if nothing to render
+    // Bail early if no entries
     if (!entries.length) return null;
 
-    const srcAttr = isSave ? 'data-src' : 'src';
+    const srcAttr = !!background?.eager || !isSave ? 'src' : 'data-src';
 
     return (
         <video
@@ -254,18 +258,19 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             playsInline
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
-            {entries.map(({size, video}, i) => (
-                <source
-                    key={i}
-                    {...{[srcAttr]: video.url}}
-                    data-media={
-                        Number.isFinite(size) && size !== Infinity
-                            ? `(max-width:${size - 1}px)`
-                            : null
-                    }
-                    type={video.mime || 'video/mp4'}
-                />
-            ))}
+            {entries.map(({size, video}, i) => {
+                const hasValidSize =
+                    Number.isFinite(size) && size > 0 && size !== Infinity;
+
+                return (
+                    <source
+                        key={i}
+                        {...{[srcAttr]: video.url}}
+                        data-media={hasValidSize ? `(max-width:${size - 1}px)` : null}
+                        type={video.mime || 'video/mp4'}
+                    />
+                );
+            })}
         </video>
     );
 }

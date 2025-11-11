@@ -128,7 +128,7 @@ const BlockWrapper = ({
                     <InnerBlocks.Content/>
                 )}
                 {children}
-                <BackgroundElement {...attributes} isSave/>
+                <BackgroundElement attributes={attributes} isSave/>
             </Tag>
         );
     }
@@ -147,7 +147,7 @@ const BlockWrapper = ({
                     {containerProps.children}
                 </div>
                 {children}
-                <BackgroundElement {...attributes}/>
+                <BackgroundElement attributes={attributes}/>
             </Tag>
         );
     }

@@ -220,6 +220,8 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
 
+    console.log(settings)
+
     const bgClass = [
         'wpbs-background',
         !settings.eager ? '--lazy' : null,

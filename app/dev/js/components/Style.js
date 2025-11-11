@@ -73,6 +73,8 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         Object.entries({
             rowGap: blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined),
             columnGap: blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined),
+            '--row-gap': blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined),
+            '--column-gap': blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined),
         })
             .map(([key, value]) => [key, getCSSFromStyle(value)])
             .filter(([_, v]) => v !== undefined && v !== null && v !== '')

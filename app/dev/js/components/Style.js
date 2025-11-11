@@ -45,6 +45,9 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {className: userClass = '', style: blockStyle = {}, ...restWrapperProps} = wrapperProps;
     const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
     const {props: layout = {}, background = {}, hover = {}} = settings;
+    const hasBackground =
+        !!(background && (background.type || background.image || background.video));
+
 
     const blockBaseName = name ? name.replace('/', '-') : '';
 
@@ -52,6 +55,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         blockBaseName,
         uniqueId,
         userClass || null,
+        hasBackground ? 'relative' : null,
         layout['offset-height'] && '--offset-height',
         layout['hide-empty'] && '--hide-empty',
         layout['box-shadow'] && '--shadow',

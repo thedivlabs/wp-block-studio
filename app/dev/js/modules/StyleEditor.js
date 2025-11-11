@@ -313,7 +313,7 @@ function parseBackgroundProps(props = {}) {
 const layoutFieldsMap = [
     {type: 'heading', label: 'Flex Settings FPO'},
     {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
-    {type: 'unit', slug: 'basis', label: 'Basis'},
+    {type: 'unit', slug: 'flex-basis', label: 'Basis'},
     {type: 'box', slug: 'border-radius', label: 'Radius', full: true},
     {
         type: 'box',

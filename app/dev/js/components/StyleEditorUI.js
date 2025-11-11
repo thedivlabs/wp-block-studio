@@ -259,6 +259,24 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     const updateBreakpointItem = useCallback(
         (updates, bpKey) => {
+            const isReset =
+                updates &&
+                typeof updates === "object" &&
+                Object.keys(updates).length === 0;
+
+            // If updates is empty, treat as full reset
+            if (isReset) {
+                const next = {
+                    ...localLayout,
+                    breakpoints: {
+                        ...localLayout.breakpoints,
+                        [bpKey]: {}, // replace entirely
+                    },
+                };
+                updateLocalLayout(next, true);
+                return;
+            }
+
             const current =
                 localLayout.breakpoints?.[bpKey] || {props: {}, background: {}};
 
@@ -288,6 +306,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         },
         [localLayout, updateLocalLayout]
     );
+
 
     /* --------------------------- Panel management -------------------------- */
     const addBreakpointPanel = useCallback(() => {

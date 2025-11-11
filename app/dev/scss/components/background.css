@@ -64,4 +64,5 @@
 .wpbs-background > video {
   max-height: var(--max-height, 100%);
   mix-blend-mode: var(--blend, none);
+  display: var(--video, none);
 }

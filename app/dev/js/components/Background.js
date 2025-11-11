@@ -33,7 +33,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
     return (
         <PanelBody title="Background" initialOpen={isPanelOpen} className={'wpbs-background-controls'}>
-            <Grid columns={1} columnGap={15} rowGap={15}>
+            <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -116,6 +116,21 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                         </BaseControl>
                     )}
 
+                    <PanelColorSettings
+                        className={'wpbs-background-controls__color'}
+                        enableAlpha
+                        colorSettings={[
+                            {
+                                slug: 'background-color',
+                                label: 'Color',
+                                value: settings?.['background-color'] ?? undefined,
+                                onChange: (newValue) => callback({'background-color': newValue}),
+                                isShownByDefault: true,
+                            },
+                        ]}
+                        __nextHasNoMarginBottom
+                    />
+
                     <BaseControl label={'Overlay'}>
                         <div className={'wpbs-background-controls__card'}>
                             <GradientPicker
@@ -142,21 +157,6 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             />
                         </div>
                     </BaseControl>
-
-                    <PanelColorSettings
-                        className={'wpbs-background-controls__color'}
-                        enableAlpha
-                        colorSettings={[
-                            {
-                                slug: 'background-color',
-                                label: 'Color',
-                                value: settings?.['background-color'] ?? undefined,
-                                onChange: (newValue) => callback({'background-color': newValue}),
-                                isShownByDefault: true,
-                            },
-                        ]}
-                        __nextHasNoMarginBottom
-                    />
 
                     {isBreakpoint && settings.type === 'video' ? null : <Grid columns={2} columnGap={15} rowGap={20}>
                         {!isBreakpoint && <ToggleControl

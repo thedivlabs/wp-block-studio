@@ -227,7 +227,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             {entries.map(({size, video}, i) => (
                 <source
                     key={i}
-                    {srcAttr}={video.url}
+                    {...{[srcAttr]: video.url}}
                     data-media={
                         Number.isFinite(size) && size !== Infinity
                             ? `(max-width:${size - 1}px)`

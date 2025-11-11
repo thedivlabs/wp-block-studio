@@ -132,7 +132,7 @@ const BlockWrapper = ({
         return (
             <Tag {...saveProps}>
                 {hasContainer ? (
-                    <div {...innerBlocksProps} />
+                    <div {...innerBlocksProps}>{innerBlocksProps.children}</div>
                 ) : (
                     <InnerBlocks.Content/>
                 )}
@@ -165,6 +165,7 @@ const BlockWrapper = ({
     }
 
     const innerProps = useInnerBlocksProps(blockProps, {});
+
     return (
         <Tag {...innerProps}>
             {innerProps.children}
@@ -240,8 +241,18 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
     const {uniqueId} = attributes;
+    const rawBlockGap = attributes?.style?.spacing?.blockGap ?? null;
 
-    console.log(attributes);
+    const blockGapKey = useMemo(() => {
+        if (typeof rawBlockGap === 'string') {
+            return rawBlockGap;
+        }
+        if (rawBlockGap && typeof rawBlockGap === 'object') {
+            const {top = '', left = ''} = rawBlockGap;
+            return `${top}|${left}`; // stable string representation
+        }
+        return ''; // fallback for null/undefined
+    }, [rawBlockGap?.top, rawBlockGap?.left, typeof rawBlockGap]);
 
     const settings = attributes?.['wpbs-style'] ?? {
         props: {},

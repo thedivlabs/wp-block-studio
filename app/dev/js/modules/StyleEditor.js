@@ -102,20 +102,6 @@ const heightVal = (val) => {
 function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
 
-    const blockGap = props?.style?.spacing?.blockGap ?? null;
-    if (blockGap) {
-        const rowGap = blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined);
-        const columnGap = blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined);
-        if (rowGap) {
-            result['--row-gap'] = rowGap;
-            result['row-gap'] = rowGap;
-        }
-        if (columnGap) {
-            result['--column-gap'] = columnGap;
-            result['column-gap'] = columnGap;
-        }
-    }
-
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
 

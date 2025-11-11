@@ -260,7 +260,7 @@ export const withStyle = (Component) => (props) => {
             // Bail if nothing meaningful changed
             if (_.isEqual(cleanedNext, cleanedCurrent)) return;
 
-            // --- Build CSS object immediately
+            // --- Base CSS object
             const cssObj = {
                 props: parseSpecialProps(cleanedNext.props || {}),
                 background: parseBackgroundProps(cleanedNext.background || {}),
@@ -269,6 +269,28 @@ export const withStyle = (Component) => (props) => {
                 custom: cleanObject(cssPropsRef.current || {}, true),
             };
 
+            // --- Add default Gutenberg gap from attributes.style
+            const blockGap = attributes?.style?.spacing?.blockGap;
+            if (blockGap) {
+                const rowGapVal =
+                    blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined);
+                const columnGapVal =
+                    blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined);
+
+                if (rowGapVal) {
+                    const gap = getCSSFromStyle(rowGapVal);
+                    cssObj.props['--row-gap'] = gap;
+                    cssObj.props['row-gap'] = gap;
+                }
+                if (columnGapVal) {
+                    const gap = getCSSFromStyle(columnGapVal);
+                    cssObj.props['--column-gap'] = gap;
+                    cssObj.props['column-gap'] = gap;
+                }
+            }
+
+
+            // --- Breakpoints (responsive gaps handled separately)
             for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
                 cssObj.breakpoints[bpKey] = {
                     props: parseSpecialProps(bpProps.props || {}),
@@ -276,23 +298,24 @@ export const withStyle = (Component) => (props) => {
                 };
             }
 
+            // --- Hover styles
             if (cleanedNext.hover) {
                 cssObj.hover = parseSpecialProps(cleanedNext.hover, attributes);
             }
 
+            // --- Compare and apply
             const cleanedCss = cleanObject(cssObj, true);
             const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
 
-            // Only update attributes if CSS or style changed
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
                 console.log('setting attributes');
                 setAttributes({
-                    'wpbs-style': nextLayout, // raw (so "" persists)
-                    'wpbs-css': cleanedCss,   // cleaned CSS only
+                    'wpbs-style': nextLayout,
+                    'wpbs-css': cleanedCss,
                 });
             }
         },
-        [settings, setAttributes]
+        [settings, setAttributes, attributes]
     );
 
     return (

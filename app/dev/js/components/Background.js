@@ -7,7 +7,7 @@ import {
     SelectControl,
     ToggleControl
 } from "@wordpress/components";
-import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
+import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
 
@@ -33,7 +33,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
     return (
         <PanelBody title="Background" initialOpen={isPanelOpen} className={'wpbs-background-controls'}>
-            <Grid columns={1} columnGap={15} rowGap={25}>
+            <Grid columns={1} columnGap={15} rowGap={15}>
                 <SelectControl
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -142,6 +142,21 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             />
                         </div>
                     </BaseControl>
+
+                    <PanelColorSettings
+                        className={'wpbs-background-controls__color'}
+                        enableAlpha
+                        colorSettings={[
+                            {
+                                slug: 'background-color',
+                                label: 'Color',
+                                value: settings?.['background-color'] ?? undefined,
+                                onChange: (newValue) => callback({'background-color': newValue}),
+                                isShownByDefault: true,
+                            },
+                        ]}
+                        __nextHasNoMarginBottom
+                    />
 
                     {isBreakpoint && settings.type === 'video' ? null : <Grid columns={2} columnGap={15} rowGap={20}>
                         {!isBreakpoint && <ToggleControl

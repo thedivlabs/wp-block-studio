@@ -140,24 +140,6 @@ export const Field = memo(({field, settings, callback}) => {
             );
             break;
 
-        /*        case "color":
-                    control = (
-                        <PanelColorSettings
-                            enableAlpha
-                            colorSettings={[
-                                {
-                                    slug,
-                                    label,
-                                    value,
-                                    onChange: commit,
-                                    isShownByDefault: true,
-                                },
-                            ]}
-                            __nextHasNoMarginBottom
-                        />
-                    );
-                    break;*/
-
         case "box":
             control = (
                 <BoxControl

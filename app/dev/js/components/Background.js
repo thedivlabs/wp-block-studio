@@ -220,11 +220,10 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const bgClass = [
         'wpbs-background',
-        settings.mask ? '--mask' : null,
         !settings.eager ? '--lazy' : null,
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
     ].filter(x => x).join(' ');
 
 
-    return <div className={bgClass}><Video settings={settings}/></div>;
+    return <div className={bgClass}><BackgroundVideo settings={settings} isSave={isSave}/></div>;
 }

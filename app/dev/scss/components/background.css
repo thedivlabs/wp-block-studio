@@ -56,10 +56,7 @@
 }
 
 /* Image & pattern fallback styles when not lazy OR inside block editor */
-.wpbs-background.--image:not(.--lazy):before,
-.wpbs-background.--pattern:not(.--lazy):before,
-.block-editor-page .wpbs-background.--image::before,
-.block-editor-page .wpbs-background.--pattern::before {
+.wpbs-background:not(.--lazy):before {
   background-image: var(--image, none);
 }
 

@@ -312,7 +312,7 @@ function parseBackgroundProps(props = {}) {
                 result['--fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
                 break;
             case 'overlay':
-                result['--overlay'] = `background-image(${val})`;
+                result['--overlay'] = val;
                 break;
             case 'maskImage':
                 result['--mask-image'] = `url(${val?.url ?? '#'})`;

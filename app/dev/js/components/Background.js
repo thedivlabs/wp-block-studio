@@ -144,19 +144,19 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                         </div>
                     </BaseControl>
 
-                    {!isBreakpoint && <Grid columns={2} columnGap={15} rowGap={20}>
 
-                        <ToggleControl
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        {!isBreakpoint && <ToggleControl
                             label="Eager"
                             checked={!!settings?.['eager']}
                             onChange={(v) => callback({eager: v})}
-                        />
+                        />}
                         <ToggleControl
                             label="Fixed"
                             checked={!!settings?.['fixed']}
                             onChange={(v) => callback({fixed: v})}
                         />
-                    </Grid>}
+                    </Grid>
 
                     <div>
                         <ToolsPanel

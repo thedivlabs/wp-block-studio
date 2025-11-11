@@ -116,20 +116,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             </MediaUploadCheck>
                         </BaseControl>
                     )}
-
-                    {!isBreakpoint && <Grid columns={2} columnGap={15} rowGap={20}>
-
-                        <ToggleControl
-                            label="Eager"
-                            checked={!!settings?.['eager']}
-                            onChange={(v) => callback({eager: v})}
-                        />
-                        <ToggleControl
-                            label="Fixed"
-                            checked={!!settings?.['fixed']}
-                            onChange={(v) => callback({fixed: v})}
-                        />
-                    </Grid>}
+                    
                     <div className={'wpbs-background-controls__card'}>
                         <GradientPicker
                             gradients={[
@@ -154,6 +141,20 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             onChange={(newValue) => callback({overlay: newValue})}
                         />
                     </div>
+
+                    {!isBreakpoint && <Grid columns={2} columnGap={15} rowGap={20}>
+
+                        <ToggleControl
+                            label="Eager"
+                            checked={!!settings?.['eager']}
+                            onChange={(v) => callback({eager: v})}
+                        />
+                        <ToggleControl
+                            label="Fixed"
+                            checked={!!settings?.['fixed']}
+                            onChange={(v) => callback({fixed: v})}
+                        />
+                    </Grid>}
 
                     <div>
                         <ToolsPanel

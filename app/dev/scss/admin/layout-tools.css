@@ -48,6 +48,10 @@
 
     .components-base-control {
       width: 100%;
+
+      .components-base-control__field {
+        margin: 0 !important;
+      }
     }
 
     .components-range-control {

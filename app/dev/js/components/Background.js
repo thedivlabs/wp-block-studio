@@ -148,10 +148,10 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                         enableAlpha
                         colorSettings={[
                             {
-                                slug: 'background-color',
+                                slug: 'color',
                                 label: 'Color',
-                                value: settings?.['background-color'] ?? undefined,
-                                onChange: (newValue) => callback({'background-color': newValue}),
+                                value: settings?.['color'] ?? undefined,
+                                onChange: (newValue) => callback({'color': newValue}),
                                 isShownByDefault: true,
                             },
                         ]}

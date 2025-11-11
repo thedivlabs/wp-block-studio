@@ -29,24 +29,7 @@ const SPECIAL_FIELDS = [
     'basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
     'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
     'text-decoration-color', 'position', 'container', 'padding', 'shadow', 'border',
-    'border-radius', 'background-color',
-
-    'type',
-    'image',
-    'bgVideo',
-    'bgEager',
-    'bgFixed',
-    'bgResolution',
-    'bgMaxHeight',
-    'bgScale',
-    'bgOpacity',
-    'bgWidth',
-    'bgHeight',
-    'bgFade',
-    'bgMaskImage',
-    'bgMaskOrigin',
-    'bgMaskSize',
-    'bgOverlay'
+    'border-radius', 'background-color'
 ];
 
 function cleanObject(obj, strict = false) {
@@ -272,7 +255,6 @@ function parseBackgroundProps(props = {}) {
         const bpResolution = bp.resolution || resolution;
         const bpForce = bp.force ?? force;
 
-        // If image exists, set variable for this breakpoint
         if (bpImage?.url) {
             const url = bpImage?.sizes?.[bpResolution]?.url ?? bpImage.url;
             result[`--image-${bpKey}`] = `url("${url}")`;
@@ -280,7 +262,6 @@ function parseBackgroundProps(props = {}) {
             result[`--image-${bpKey}`] = '#';
         }
 
-        // If video exists, set variable for this breakpoint
         if (bpVideo?.url) {
             result[`--video-${bpKey}`] = `url("${bpVideo.url}")`;
         } else if (bpForce) {
@@ -288,7 +269,6 @@ function parseBackgroundProps(props = {}) {
         }
     }
 
-    // --- Fixed / scroll attachment ---
     if (props.fixed) {
         result['--attachment'] = 'fixed';
     }
@@ -327,7 +307,7 @@ function parseBackgroundProps(props = {}) {
                 result['--mask-size'] = val;
                 break;
             default:
-                break;
+                result[`--${key}`] = val;
         }
     });
 
@@ -432,12 +412,6 @@ const hoverFieldsMap = [
 ];
 
 const backgroundFieldsMap = [
-    // --- Base color ---
-    {
-        type: 'color',
-        slug: 'background-color',
-        label: 'Color',
-    },
 
     // --- Core CSS background properties ---
     {

@@ -239,6 +239,8 @@ export const withStyle = (Component) => (props) => {
         cssPropsRef.current = newProps || {};
     }, []);
 
+    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
+
     const StyledComponent = useMemo(() => {
         return (
             <Component
@@ -248,7 +250,7 @@ export const withStyle = (Component) => (props) => {
                 )}
             />
         );
-    }, [clientId, settings, typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap]);
+    }, [clientId, settings, blockGapDeps]);
 
 
     // --- Reactive version of updateStyleSettings
@@ -258,7 +260,7 @@ export const withStyle = (Component) => (props) => {
             const cleanedCurrent = cleanObject(settings, true);
 
             // Bail if nothing meaningful changed
-            if (_.isEqual(cleanedNext, cleanedCurrent)) return;
+            //if (_.isEqual(cleanedNext, cleanedCurrent)) return;
 
             // --- Base CSS object
             const cssObj = {
@@ -315,8 +317,22 @@ export const withStyle = (Component) => (props) => {
                 });
             }
         },
-        [settings, setAttributes, attributes?.style?.spacing?.blockGap?.top, attributes?.style?.spacing?.blockGap?.left, typeof attributes?.style?.spacing?.blockGap]
+        [settings, setAttributes, blockGapDeps]
     );
+
+    // Create a debounced version that survives re-renders
+    const debouncedUpdateStyleSettings = useMemo(
+        () => _.debounce(updateStyleSettings, 150),
+        [updateStyleSettings]
+    );
+
+// Watch for changes in Gutenberg's native gap control
+    useEffect(() => {
+        debouncedUpdateStyleSettings(settings);
+        // Cleanup to cancel pending debounce when unmounting or deps change
+        return () => debouncedUpdateStyleSettings.cancel();
+    }, [blockGapDeps]);
+
 
     return (
         <>

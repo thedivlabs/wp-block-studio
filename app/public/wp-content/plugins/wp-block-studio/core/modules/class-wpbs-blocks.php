@@ -11,54 +11,63 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		add_action('wp_head', function () {
-			$css = get_post_meta(get_the_ID(), '_wpbs_combined_css', true);
-			if (!empty($css)) {
+		add_action( 'wp_head', function () {
+			$css = get_post_meta( get_the_ID(), '_wpbs_combined_css', true );
+			if ( ! empty( $css ) ) {
 				echo '<style id="wpbs-style">' . $css . '</style>';
 			}
-		});
+		} );
 
-		add_action('save_post', function ($post_id, $post) {
-			if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-			if (wp_is_post_revision($post_id)) return;
+		add_action( 'save_post', function ( $post_id, $post ) {
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+				return;
+			}
+			if ( wp_is_post_revision( $post_id ) ) {
+				return;
+			}
 
 			// Only process posts that use WPBS blocks
-			if (!has_blocks($post)) return;
+			if ( ! has_blocks( $post ) ) {
+				return;
+			}
 
-			$blocks = parse_blocks($post->post_content);
-			if (empty($blocks)) return;
+			$blocks = parse_blocks( $post->post_content );
+			if ( empty( $blocks ) ) {
+				return;
+			}
 
-			$css = self::collect_block_styles($blocks);
+			$css = self::collect_block_styles( $blocks );
 
-			update_post_meta($post_id, '_wpbs_combined_css', $css);
-		}, 20, 2);
+			update_post_meta( $post_id, '_wpbs_combined_css', $css );
+		}, 20, 2 );
 
 
 	}
 
-	private function collect_block_styles(array $blocks): string {
+	private function collect_block_styles( array $blocks ): string {
 		$css = '';
 
-		foreach ($blocks as $block) {
-			if (!is_array($block)) continue;
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
 
 			$name       = $block['blockName'] ?? '';
 			$attributes = $block['attrs'] ?? [];
 
-			if (str_starts_with($name, 'wpbs/')) {
-				$css .= self::parse_block_styles($attributes, $name);
+			if ( str_starts_with( $name, 'wpbs/' ) ) {
+				$css .= self::parse_block_styles( $attributes, $name );
 			}
 
-			if (!empty($block['innerBlocks'])) {
-				$css .= self::collect_block_styles($block['innerBlocks']);
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$css .= self::collect_block_styles( $block['innerBlocks'] );
 			}
 		}
 
-		return trim($css);
+		return trim( $css );
 	}
 
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {
-
 		if ( empty( $attributes['uniqueId'] ) ) {
 			return '';
 		}
@@ -70,9 +79,8 @@ class WPBS_Blocks {
 
 		$parsed_css = $attributes['wpbs-css'] ?? [];
 
-		// Helper: convert array of props to CSS string
+		// Convert associative array to CSS
 		$props_to_css = function ( $props = [], $important = false, $importantKeysCustom = [] ) {
-			// Default important keys
 			$importantProps = array_merge( [
 				'padding',
 				'margin',
@@ -97,76 +105,66 @@ class WPBS_Blocks {
 			], $importantKeysCustom );
 
 			$result = '';
-
 			foreach ( $props as $k => $v ) {
-				if ( $v === null || $v === '' || ! is_string( $v ) ) {
+				if ( $v === null || $v === '' ) {
 					continue;
 				}
-
-				// Check if property should get !important
 				$needsImportant = $important && array_reduce(
 						$importantProps,
 						fn( $carry, $sub ) => $carry || str_contains( $k, $sub ),
 						false
 					);
-
-				$result .= $k . ': ' . $v . ( $needsImportant ? ' !important' : '' ) . '; ';
+				$result         .= "{$k}: {$v}" . ( $needsImportant ? ' !important' : '' ) . '; ';
 			}
 
 			return trim( $result );
 		};
 
+		// Build CSS
+		$css    = '';
+		$bg_css = '';
 
-		// Helper: build CSS from parsed object + selector
-		$build_css = function ( $css_obj, string $sel ) use ( $props_to_css, $breakpoints_config ) {
-			$css_obj = (array) $css_obj; // <-- force array
-			$result  = '';
+		// base props
+		if ( ! empty( $parsed_css['props'] ) ) {
+			$css .= "{$selector} { " . $props_to_css( $parsed_css['props'] ) . " } ";
+		}
 
-			// default props
-			if ( ! empty( $css_obj['props'] ) && is_array( $css_obj['props'] ) ) {
-				$result .= $sel . ' { ' . $props_to_css( $css_obj['props'] ) . ' } ';
-			}
+		// base background
+		if ( ! empty( $parsed_css['background'] ) ) {
+			$bg_selector = "{$selector} > .wpbs-background";
+			$bg_css      .= "{$bg_selector} { " . $props_to_css( $parsed_css['background'] ) . " } ";
+		}
 
-			// breakpoints
-			if ( ! empty( $css_obj['breakpoints'] ) && is_array( $css_obj['breakpoints'] ) ) {
-				foreach ( $css_obj['breakpoints'] as $bp_key => $bp_props ) {
-					if ( empty( $bp_props ) || ! is_array( $bp_props ) ) {
-						continue;
-					}
+		// breakpoints
+		if ( ! empty( $parsed_css['breakpoints'] ) && is_array( $parsed_css['breakpoints'] ) ) {
+			foreach ( $parsed_css['breakpoints'] as $bp_key => $bp_props ) {
+				$bp = $breakpoints_config[ $bp_key ] ?? null;
+				if ( ! $bp || empty( $bp['size'] ) ) {
+					continue;
+				}
+				$max_width = (int) $bp['size'] - 1;
+				$bp_css    = '';
 
-					$bp = $breakpoints_config[ $bp_key ] ?? null;
-					if ( ! $bp || empty( $bp['size'] ) ) {
-						continue;
-					}
+				// layout props at breakpoint
+				if ( ! empty( $bp_props['props'] ) ) {
+					$bp_css .= "{$selector} { " . $props_to_css( $bp_props['props'], true ) . " } ";
+				}
 
-					$result .= "@media (max-width: " . ( $bp['size'] - 1 ) . "px) { {$sel} { " . $props_to_css( $bp_props, true ) . " } } ";
+				// background props at breakpoint
+				if ( ! empty( $bp_props['background'] ) ) {
+					$bg_selector = "{$selector} > .wpbs-background";
+					$bp_css      .= "{$bg_selector} { " . $props_to_css( $bp_props['background'], true ) . " } ";
+				}
+
+				if ( $bp_css ) {
+					$css .= "@media (max-width: {$max_width}px) { {$bp_css} } ";
 				}
 			}
-
-			// hover
-			if ( ! empty( $css_obj['hover'] ) && is_array( $css_obj['hover'] ) ) {
-				$result .= $sel . ':hover { ' . $props_to_css( $css_obj['hover'] ) . ' } ';
-			}
-
-			return $result;
-		};
-
-		// Main block CSS
-		$css = $build_css( $parsed_css, $selector );
-
-		// Background CSS
-		$background_css = '';
-		if ( ! empty( $parsed_css['background'] ) && is_array( $parsed_css['background'] ) ) {
-			$bg_selector    = $selector . ' > .wpbs-background';
-			$background_css = $build_css( $parsed_css['background'], $bg_selector );
 		}
 
-		$final_css = trim( $css . ' ' . $background_css );
-		if ( empty( $final_css ) ) {
-			return '';
-		}
+		$final_css = trim( $css . ' ' . $bg_css );
 
-		return $final_css;
+		return $final_css ? $final_css : '';
 	}
 
 	public function render_block( $attributes, $content, $block ): string {

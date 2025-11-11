@@ -290,9 +290,9 @@ function parseBackgroundProps(props = {}) {
     });
 
     if (props.fixed) {
-        result['background-attachment'] = 'fixed';
+        result['--attachment'] = 'fixed';
     } else if (hasMedia) {
-        result['background-attachment'] = 'scroll';
+        result['--attachment'] = 'scroll';
     }
 
     return result;

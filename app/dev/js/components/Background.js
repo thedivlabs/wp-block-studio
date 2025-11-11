@@ -29,7 +29,7 @@ const BackgroundFields = memo(({settings, updateFn}) => {
     });
 });
 
-export const BackgroundControls = ({settings = {}, callback}) => {
+export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
 
     return (
@@ -117,7 +117,8 @@ export const BackgroundControls = ({settings = {}, callback}) => {
                         </BaseControl>
                     )}
 
-                    <Grid columns={2} columnGap={15} rowGap={20}>
+                    {!isBreakpoint && <Grid columns={2} columnGap={15} rowGap={20}>
+
                         <ToggleControl
                             label="Eager"
                             checked={!!settings?.['eager']}
@@ -128,7 +129,7 @@ export const BackgroundControls = ({settings = {}, callback}) => {
                             checked={!!settings?.['fixed']}
                             onChange={(v) => callback({fixed: v})}
                         />
-                    </Grid>
+                    </Grid>}
                     <div className={'wpbs-background-controls__card'}>
                         <GradientPicker
                             gradients={[

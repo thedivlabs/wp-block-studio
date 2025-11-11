@@ -158,6 +158,7 @@ const BreakpointPanel = memo(
                     callback={(newProps) =>
                         updateBreakpointItem({background: newProps}, bpKey)
                     }
+                    isBreakpoint={true}
                 />
             </div>
         );

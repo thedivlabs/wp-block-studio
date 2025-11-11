@@ -28,3 +28,5 @@ package-lock.json
 app/public/wp-content/plugins/wp-block-studio/build
 app/public/wp-content/plugins/wp-block-studio/build/**
 app/public/wp-content/plugins/wp-block-studio/**/*.min.*
+
+*-OLD.js

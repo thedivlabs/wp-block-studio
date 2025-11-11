@@ -10,6 +10,7 @@ import {
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
+import React from "react";
 
 const BackgroundFields = memo(({settings, updateFn}) => {
     const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
@@ -174,6 +175,7 @@ export const BackgroundControls = ({settings = {}, callback}) => {
     );
 };
 
+
 const VideoElement = ({settings}) => {
 
     let MediaElement;
@@ -230,40 +232,19 @@ const VideoElement = ({settings}) => {
     </div>;
 }
 
-function Media({attributes}) {
+const Media = ({settings}) => memo(() => {
 
     let MediaElement;
 
-    const {['wpbs-background']: settings = {}} = attributes;
-    //const breakpoint = WPBS?.settings?.breakpoints[attributes['wpbs-layout']?.breakpoint ?? 'normal'];
+    const breakpoint = window.WPBS_StyleEditor?.breakpoints?.[bpKey];
 
-    const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
-
-    if (settings.type === 'image' || settings.type === 'featured-image') {
-        mediaClass.push(imageClass);
-    }
+    const mediaClass = 'wpbs-background__media absolute z-0 overflow-hidden w-full h-full';
 
     if (settings.type === 'video') {
 
-        mediaClass.push(videoClass);
-
-        let {mobileVideo = {}, largeVideo = {}} = settings;
-
-        if (!largeVideo && !mobileVideo) {
-            return false;
-        }
-
-        if (!settings.force) {
-            mobileVideo = mobileVideo || largeVideo || false;
-            largeVideo = largeVideo || mobileVideo || false;
-        } else {
-            mobileVideo = mobileVideo || {};
-            largeVideo = largeVideo || {};
-        }
-
         let srcAttr;
 
-        srcAttr = !!editor ? 'src' : 'data-src';
+        srcAttr = 'data-src';
 
         MediaElement = <video muted loop autoPlay={true}>
             <source {...{
@@ -280,15 +261,14 @@ function Media({attributes}) {
     }
 
     const mediaProps = Object.fromEntries(Object.entries({
-        className: mediaClass.filter(x => x).join(' '),
+        className: mediaClass,
         'fetchpriority': settings.eager ? 'high' : null,
     }).filter(x => !!x));
 
     return <div {...mediaProps}>
         {MediaElement}
     </div>;
-}
-
+})
 
 export function BackgroundElement({settings = {}, editor = false}) {
 
@@ -296,8 +276,15 @@ export function BackgroundElement({settings = {}, editor = false}) {
         return false;
     }
 
+    const bgClass = [
+        'wpbs-background',
+        settings.mask ? '--mask' : null,
+        !settings.eager ? '--lazy' : null,
+        'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
+    ].filter(x => x).join(' ');
+
 
     return <div className={bgClass}>
-        <Media attributes={attributes}/>
+        <Media attributes={settings}/>
     </div>;
 }

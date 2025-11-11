@@ -116,26 +116,6 @@ const heightVal = (val) => {
     return height;
 };
 
-function imageSet(media, resolution = 'large') {
-    if (!media) return '';
-
-    // Try to get the URL for the specified resolution
-    const size = media?.sizes?.[resolution];
-    const url = size?.url ?? media?.url ?? null;
-
-    if (!url) return '';
-
-    // Detect image type for the fallback
-    const isPng = url.toLowerCase().endsWith('.png');
-    const ext = isPng ? 'image/png' : 'image/jpeg';
-
-    // Construct the image-set() syntax
-    const webp = `url("${url}.webp") type("image/webp")`;
-    const fallback = `url("${url}") type("${ext}")`;
-
-    return `image-set(${webp}, ${fallback})`;
-}
-
 function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
 
@@ -272,57 +252,100 @@ function parseSpecialProps(props = {}, attributes = {}) {
     return result;
 }
 
+function imageSet(media, resolution = 'large') {
+    if (!media) return '';
+
+    // Try to get the URL for the specified resolution
+    const size = media?.sizes?.[resolution];
+    const url = size?.url ?? media?.url ?? null;
+
+    if (!url) return '';
+
+    // Detect image type for the fallback
+    const isPng = url.toLowerCase().endsWith('.png');
+    const ext = isPng ? 'image/png' : 'image/jpeg';
+
+    // Construct the image-set() syntax
+    const webp = `url("${url}.webp") type("image/webp")`;
+    const fallback = `url("${url}") type("${ext}")`;
+
+    return `image-set(${webp}, ${fallback})`;
+}
+
 function parseBackgroundProps(props = {}) {
     const result = {};
+    const {breakpoints = {}, image, video, resolution = 'large', force} = props;
 
+    // --- Base image ---
+    if (image?.url) {
+        const url = image?.sizes?.[resolution]?.url ?? image.url;
+        result['--image'] = `url("${url}")`;
+    } else if (force) {
+        result['--image'] = '#';
+    }
+
+    // --- Handle breakpoint overrides ---
+    for (const [bpKey, bpValue] of Object.entries(breakpoints)) {
+        const bp = bpValue?.background || {};
+        const bpImage = bp.image;
+        const bpVideo = bp.video;
+        const bpResolution = bp.resolution || resolution;
+        const bpForce = bp.force ?? force;
+
+        // If image exists, set variable for this breakpoint
+        if (bpImage?.url) {
+            const url = bpImage?.sizes?.[bpResolution]?.url ?? bpImage.url;
+            result[`--image-${bpKey}`] = `url("${url}")`;
+        } else if (bpForce) {
+            result[`--image-${bpKey}`] = '#';
+        }
+
+        // If video exists, set variable for this breakpoint
+        if (bpVideo?.url) {
+            result[`--video-${bpKey}`] = `url("${bpVideo.url}")`;
+        } else if (bpForce) {
+            result[`--video-${bpKey}`] = '#';
+        }
+    }
+
+    // --- Fixed / scroll attachment ---
+    if (props.fixed) {
+        result['--attachment'] = 'fixed';
+    }
+
+    // --- Other visual props ---
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
 
         switch (key) {
-            // --- Base background div ---
-            case 'image':
-                result['--bg-image'] = imageSet(val, props.resolution || 'large');
-                break;
-            case 'video':
-                if (val?.url) {
-                    result['--bg-video'] = `url(${val.url})`;
-                }
-                break;
-            case 'fixed':
-                result['--bg-attachment'] = 'fixed';
-                break;
             case 'scale':
-                result['--bg-size'] = `${parseFloat(val)}%`;
+                result['--size'] = `${parseFloat(val)}%`;
                 break;
             case 'opacity':
-                result['--bg-opacity'] = parseFloat(val) / 100;
+                result['--opacity'] = parseFloat(val) / 100;
                 break;
             case 'width':
             case 'height':
                 result[`--${key}`] = `${val}%`;
                 break;
             case 'fade':
-                // Fade affects the main background div (gradient overlay)
-                result['--bg-fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
+                result['--fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
                 break;
             case 'overlay':
-                result['--bg-overlay'] = val;
+                result['--overlay'] = val;
                 break;
-
-            // --- Pseudo-element mask layer ---
             case 'maskImage':
-                result['--bg-mask-image'] = `url(${val?.url ?? '#'})`;
-                result['--bg-mask-repeat'] = 'no-repeat';
-                result['--bg-mask-size'] = props.maskSize || 'contain';
-                result['--bg-mask-position'] = props.maskOrigin || 'center center';
+                result['--mask-image'] = `url(${val?.url ?? '#'})`;
+                result['--mask-repeat'] = 'no-repeat';
+                result['--mask-size'] = props.maskSize || 'contain';
+                result['--mask-position'] = props.maskOrigin || 'center center';
                 break;
             case 'maskOrigin':
-                result['--bg-mask-position'] = val;
+                result['--mask-position'] = val;
                 break;
             case 'maskSize':
-                result['--bg-mask-size'] = val;
+                result['--mask-size'] = val;
                 break;
-
             default:
                 break;
         }
@@ -330,6 +353,7 @@ function parseBackgroundProps(props = {}) {
 
     return result;
 }
+
 
 const layoutFieldsMap = [
     {type: 'heading', label: 'Flex Settings FPO'},

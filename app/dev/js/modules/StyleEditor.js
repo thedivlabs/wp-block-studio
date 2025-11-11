@@ -354,7 +354,7 @@ const layoutFieldsMap = [
             inputProps: {units: DIMENSION_UNITS},
         },
     },
-    {type: 'unit', slug: 'max-height', label: 'Max-Height'},
+    {type: 'unit', slug: 'max-height', label: 'Max-Height', units: DIMENSION_UNITS},
     {type: 'unit', slug: 'max-width', label: 'Max Width'},
     {type: 'select', slug: 'min-height', label: 'Min Height', options: HEIGHT_OPTIONS},
     {type: 'unit', slug: 'min-height-custom', label: 'Min-Height Custom'},

@@ -297,7 +297,7 @@ export const withStyle = (Component) => (props) => {
 
     return (
         <>
-            <StyledComponent props={props} Component={Component}/>
+            {StyledComponent}
             <InspectorControls group="styles">
                 {isSelected && (
                     <StyleEditorPanel

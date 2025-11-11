@@ -165,7 +165,7 @@ class WPBS_Blocks {
 			}
 		}
 
-		$final_css = trim( $css . ' ' . $bg_css );
+		$final_css = trim( $bg_css . ' ' . $css );
 
 		return $final_css ?: '';
 	}

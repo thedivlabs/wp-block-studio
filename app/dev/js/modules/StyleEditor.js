@@ -333,7 +333,7 @@ const layoutFieldsMap = [
     {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
     {type: 'select', slug: 'flex-direction', label: 'Direction', options: DIRECTION_OPTIONS},
     {type: 'number', slug: 'flex-grow', label: 'Grow'},
-    {type: 'box', slug: 'gap', label: 'Gap', options: {sides: ['top', 'left']}},
+    {type: 'box', slug: 'gap', label: 'Gap', options: {sides: ['top', 'left']}, full: true},
     {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
     {type: 'unit', slug: 'height-custom', label: 'Height Custom'},
     {type: 'select', slug: 'justify-content', label: 'Justify', options: JUSTIFY_OPTIONS},

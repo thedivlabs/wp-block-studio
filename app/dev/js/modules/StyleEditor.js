@@ -238,6 +238,7 @@ function parseSpecialProps(props = {}, attributes = {}) {
 function parseBackgroundProps(props = {}) {
     const result = {};
     const {image, video, resolution = 'large', force} = props;
+    const hasMedia = !!(image?.url || video?.url);
 
     // --- Base media ---
     if (image?.url) {
@@ -289,7 +290,9 @@ function parseBackgroundProps(props = {}) {
     });
 
     if (props.fixed) {
-        result['--attachment'] = 'fixed';
+        result['background-attachment'] = 'fixed';
+    } else if (hasMedia) {
+        result['background-attachment'] = 'scroll';
     }
 
     return result;

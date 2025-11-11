@@ -38,8 +38,18 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
                     label="Type"
-                    value={settings?.['type']}
-                    onChange={(newValue) => callback({type: newValue})}
+                    value={settings?.type}
+                    onChange={(newValue) => {
+                        // Skip if user re-selects the same value
+                        if (newValue === settings?.type) return;
+
+                        // Always reset image and video when type changes
+                        callback({
+                            type: newValue,
+                            image: {},
+                            video: {},
+                        });
+                    }}
                     options={[
                         {label: 'Select', value: ''},
                         {label: 'Image', value: 'image'},
@@ -47,6 +57,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                         {label: 'Video', value: 'video'},
                     ]}
                 />
+
                 {!isPanelOpen ? null : <>
                     {/* --- Media pickers under Type --- */}
                     {(settings.type === 'image' || settings.type === 'featured-image') && (

@@ -13,11 +13,12 @@ class WPBS_Blocks {
 
 		add_action( 'wp_head', function () {
 			$css = get_post_meta( get_the_ID(), '_wpbs_combined_css', true );
-			WPBS::console_log( [ $css ] );
 			if ( ! empty( $css ) ) {
 				echo '<style id="wpbs-style">' . $css . '</style>';
 			}
 		} );
+
+		add_filter( 'render_block', [ $this, 'render_block' ], 10, 3 );
 
 		add_action( 'save_post', function ( $post_id, $post ) {
 			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -61,7 +62,7 @@ class WPBS_Blocks {
 			}
 
 			if ( ! empty( $block['innerBlocks'] ) ) {
-				//$css .= self::collect_block_styles( $block['innerBlocks'] );
+				$css .= self::collect_block_styles( $block['innerBlocks'] );
 			}
 		}
 
@@ -69,8 +70,6 @@ class WPBS_Blocks {
 	}
 
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {
-
-		WPBS::console_log( $attributes );
 
 		if ( empty( $attributes['uniqueId'] ) ) {
 			return '';
@@ -171,7 +170,13 @@ class WPBS_Blocks {
 		return $final_css ?: '';
 	}
 
-	public function render_block( $attributes, $content, $block ): string {
+	public function render_block( $content, $parsed_block, $block ): string {
+
+		if ( ! str_starts_with( $block->name ?? '', 'wpbs/' ) ) {
+			return $content;
+		}
+
+		//WPBS::console_log( [ $content ] );
 
 		return $content;
 	}
@@ -211,10 +216,6 @@ class WPBS_Blocks {
 				$block_object['attributes'] ?? [],
 				$extra_attributes
 			);
-
-			if ( empty( $block_object['render'] ) && empty( $block_object['render_callback'] ) ) {
-				$block_object['render_callback'] = [ $this, 'render_block' ];
-			}
 
 			if ( empty( $block_object['editorScript'] ) ) {
 				$block_object['editorScript'] = 'wpbs-editor';

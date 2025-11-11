@@ -85,18 +85,17 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     }, true);
 };
 
-const BlockBackground = memo(({attributes, isSave}) => (
+const BlockBackground = ({attributes, isSave}) => (
     <BackgroundElement attributes={attributes} isSave={!!isSave}/>
-));
-
+);
 
 const BlockWrapper = ({
                           props,
                           className,
                           tagName = 'div',
                           children,
-                          hasBackground = false,
-                          isSave,
+                          hasBackground = true,
+                          isSave = false,
                           ...wrapperProps
                       }) => {
     const {attributes, name} = props;
@@ -104,8 +103,8 @@ const BlockWrapper = ({
     const {advanced} = settings;
 
     const blockBaseName = name ? name.replace('/', '-') : '';
-
     const Tag = getElementTag(advanced?.tagName, tagName);
+
     const isBackgroundActive = hasBackground && settings?.background?.type;
     const isContainer = settings?.advanced?.container;
     const hasContainer = isContainer || isBackgroundActive;
@@ -119,26 +118,35 @@ const BlockWrapper = ({
 
     const baseBlockProps = getBlockProps(props, wrapperProps);
 
-    // --- Save (frontend) version ---
+    // ──────────────────────────────────────────────
+    // SAVE VERSION  (static serialization)
+    // ──────────────────────────────────────────────
     if (isSave) {
-        console.log('isSave', isSave);
+        // build block + inner-block props for save context
         const saveProps = useBlockProps.save(baseBlockProps);
+
+        const innerBlocksProps = hasContainer
+            ? useInnerBlocksProps.save({className: containerClass})
+            : useInnerBlocksProps.save(saveProps);
 
         return (
             <Tag {...saveProps}>
                 {hasContainer ? (
-                    <div className={containerClass}>
-                        <InnerBlocks.Content/>
-                    </div>
+                    <div {...innerBlocksProps} />
                 ) : (
                     <InnerBlocks.Content/>
                 )}
+
                 {children}
-                <BlockBackground attributes={attributes} isSave={!!isSave}/>
+
+                <BlockBackground attributes={attributes} isSave={true}/>
             </Tag>
         );
     }
 
+    // ──────────────────────────────────────────────
+    // EDIT VERSION  (live editor runtime)
+    // ──────────────────────────────────────────────
     const blockProps = useBlockProps(baseBlockProps);
 
     if (hasContainer || isBackgroundActive) {
@@ -149,9 +157,7 @@ const BlockWrapper = ({
 
         return (
             <Tag {...blockProps}>
-                <div {...containerProps}>
-                    {containerProps.children}
-                </div>
+                <div {...containerProps}>{containerProps.children}</div>
                 {children}
                 <BlockBackground attributes={attributes}/>
             </Tag>
@@ -159,7 +165,6 @@ const BlockWrapper = ({
     }
 
     const innerProps = useInnerBlocksProps(blockProps, {});
-
     return (
         <Tag {...innerProps}>
             {innerProps.children}
@@ -210,10 +215,8 @@ const AdvancedControls = ({settings, callback}) => (
     </Grid>
 );
 
-const StyledComponent = memo((props) => {
-    const {clientId, attributes} = props;
-    const {uniqueId} = attributes;
-    const settings = attributes['wpbs-style'] ?? {};
+const StyledComponent = memo(({props, Component}) => {
+    const {clientId} = props;
 
     return (
         <Component
@@ -308,7 +311,7 @@ export const withStyle = (Component) => (props) => {
 
     return (
         <>
-            <StyledComponent {...props}/>
+            <StyledComponent props={props} Component={Component}/>
             <InspectorControls group="styles">
                 {isSelected && (
                     <StyleEditorPanel

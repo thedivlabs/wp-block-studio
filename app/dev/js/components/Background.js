@@ -176,50 +176,43 @@ export const BackgroundControls = ({settings = {}, callback}) => {
 };
 
 
-const Video = memo(({settings = {}}) => {
-    const bpMap = window?.WPBS_StyleEditor?.breakpoints || {};
-    const breakpoints = settings?.breakpoints || {};
-    const srcAttr = 'data-src';
+function BackgroundVideo({settings = {}}) {
 
-    // Collect breakpoint entries that have a video + a numeric size
-    const bpEntries = Object.entries(breakpoints)
-        .map(([bpKey, bpData]) => {
-            const bpConfig = bpMap[bpKey];
-            const size = bpConfig?.size; // e.g. 640, 768, 1140...
-            const videoUrl = bpData?.background?.video?.url;
+    const {background, breakpoints = {}} = settings;
 
-            if (!videoUrl || typeof size !== 'number' || Number.isNaN(size)) {
-                return null;
-            }
+    const bpDefs = WPBS?.settings?.breakpoints ?? {};
+    const entries = [];
 
-            return {bpKey, size, videoUrl};
-        })
-        .filter(Boolean)
-        .sort((a, b) => a.size - b.size); // smallest → largest
+    // 1. base-level background video
+    if (background?.video?.url) {
+        entries.push({size: Infinity, video: background.video});
+    }
 
-    // No videos anywhere → kill the component
-    if (bpEntries.length === 0) return null;
+    // 2. breakpoints
+    Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
+        const video = bpData?.background?.video;
+        const size = bpDefs[bpKey]?.size ?? 0;
+        if (video?.url) entries.push({size, video});
+    });
+
+    entries.sort((a, b) => b.size - a.size);
+
+    if (!entries.length) return null;
 
     return (
-        <div
-            className="wpbs-background__media absolute inset-0 z-0 overflow-hidden w-full h-full"
-            fetchpriority={settings.eager ? 'high' : undefined}
-        >
-            <video muted loop autoPlay playsInline>
-                {bpEntries.map(({bpKey, size, videoUrl}) => (
-                    <source
-                        key={bpKey}
-                        {...{
-                            [srcAttr]: videoUrl,
-                            type: 'video/mp4',
-                            'data-media': `(max-width:${size}px)`,
-                        }}
-                    />
-                ))}
-            </video>
-        </div>
+        <video muted loop autoPlay playsInline
+               className={'absolute top-0 left-0 w-full h-full z-0 pointer-events-none'}>
+            {entries.map(({size, video}, i) => (
+                <source
+                    key={i}
+                    data-src={video.url}
+                    data-media={Number.isFinite(size) && size !== Infinity ? `(max-width: ${size - 1}px)` : null}
+                    //data-type={video.mime || 'video/mp4'}
+                />
+            ))}
+        </video>
     );
-});
+}
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

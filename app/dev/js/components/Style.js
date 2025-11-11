@@ -147,19 +147,17 @@ const BlockWrapper = ({
                     {containerProps.children}
                 </div>
                 {children}
-                <BackgroundElement {...attributes} isSave/>
+                <BackgroundElement {...attributes}/>
             </Tag>
         );
     }
 
     const innerProps = useInnerBlocksProps(blockProps, {});
-    const Background = useMemo(() => (<BackgroundElement {...props} />), []);
 
     return (
         <Tag {...innerProps}>
             {innerProps.children}
             {children}
-            {Background}
         </Tag>
     );
 };

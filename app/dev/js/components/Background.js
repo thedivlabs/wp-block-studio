@@ -210,24 +210,38 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
 
 function BackgroundVideo({settings = {}, isSave = false}) {
-    const {video, breakpoints = {}} = settings;
+    const {background = {}, breakpoints = {}} = settings;
     const bpDefs = window?.WPBS_StyleEditor?.breakpoints ?? {};
     const entries = [];
 
-    // 1. base-level video
-    if (video?.url) {
-        entries.push({size: Infinity, video});
+    // 1. Base-level video (main background)
+    const baseVideo = background?.video;
+    if (baseVideo?.url) {
+        entries.push({size: Infinity, video: baseVideo});
     }
 
-    // 2. breakpoints
+    // 2. Breakpoint-level videos (and placeholders)
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
-        const size = bpDefs[bpKey]?.size ?? 0;
-        if (bpVideo?.url) entries.push({size, video: bpVideo});
+        const bpForce = bpData?.background?.force;
+        const size = bpDefs?.[bpKey]?.size ?? 0;
+
+        if (bpVideo?.url) {
+            // real video found
+            entries.push({size, video: bpVideo});
+        } else if (bpForce) {
+            // force placeholder if no video
+            entries.push({
+                size,
+                video: {url: '#', mime: 'video/mp4', isPlaceholder: true},
+            });
+        }
     });
 
+    // Sort descending by breakpoint size (largest first)
     entries.sort((a, b) => b.size - a.size);
 
+    // Bail early if nothing to render
     if (!entries.length) return null;
 
     const srcAttr = isSave ? 'data-src' : 'src';
@@ -268,5 +282,5 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
     ].filter(x => x).join(' ');
 
 
-    return <div className={bgClass}><BackgroundVideo settings={settings} isSave={!!isSave}/></div>;
+    return <div className={bgClass}><BackgroundVideo settings={attributes?.['wpbs-style']} isSave={!!isSave}/></div>;
 }

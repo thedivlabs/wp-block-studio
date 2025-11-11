@@ -176,100 +176,47 @@ export const BackgroundControls = ({settings = {}, callback}) => {
 };
 
 
-const VideoElement = ({settings}) => {
+const Video = memo(({settings = {}}) => {
+    const breakpoints = settings?.breakpoints || {};
+    const bpMap = window?.WPBS_StyleEditor?.breakpoints || {};
+    const srcAttr = 'data-src';
+    const sources = [];
 
-    let MediaElement;
+    // Loop through defined breakpoints and extract video URLs
+    for (const [bpKey, bpData] of Object.entries(breakpoints)) {
+        const videoUrl = bpData?.background?.video?.url;
+        if (!videoUrl) continue;
 
-    const breakpoint = '%%__BREAKPOINT__' + (attributes['wpbs-layout']?.breakpoint ?? 'normal') + '__%%';
+        const bpWidth = bpMap[bpKey];
+        if (!bpWidth) continue;
 
-    if (settings.type === 'image' || settings.type === 'featured-image') {
-        mediaClass.push(imageClass);
+        // mobile-first logic: smaller breakpoints use max-width
+        const isSmall = /xs|sm|mobile/i.test(bpKey);
+        const mediaQuery = isSmall
+            ? `(max-width:${bpWidth})`
+            : `(min-width:${bpWidth})`;
+
+        sources.push(
+            <source
+                key={bpKey}
+                {...{
+                    [srcAttr]: videoUrl,
+                    type: 'video/mp4',
+                    'data-media': mediaQuery,
+                }}
+            />
+        );
     }
 
-    if (settings.type === 'video') {
-
-        mediaClass.push(videoClass);
-
-        let {mobileVideo = {}, largeVideo = {}} = settings;
-
-        if (!largeVideo && !mobileVideo) {
-            return false;
-        }
-
-        if (!settings.force) {
-            mobileVideo = mobileVideo || largeVideo || false;
-            largeVideo = largeVideo || mobileVideo || false;
-        } else {
-            mobileVideo = mobileVideo || {};
-            largeVideo = largeVideo || {};
-        }
-
-        let srcAttr;
-
-        srcAttr = !!editor ? 'src' : 'data-src';
-
-        MediaElement = <video muted loop autoPlay={true}>
-            <source {...{
-                [srcAttr]: largeVideo.url ? largeVideo.url : '#',
-                type: 'video/mp4',
-                'data-media': '(min-width:' + breakpoint + ')'
-            }}/>
-            <source {...{
-                [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
-                type: 'video/mp4',
-                'data-media': '(width < ' + breakpoint + ')'
-            }}/>
-        </video>
-    }
-
-    const mediaProps = Object.fromEntries(Object.entries({
-        className: mediaClass.filter(x => x).join(' '),
-        'fetchpriority': settings.eager ? 'high' : null,
-    }).filter(x => !!x));
-
-    return <div {...mediaProps}>
-        {MediaElement}
-    </div>;
-}
-
-const Media = ({settings}) => memo(() => {
-
-    let MediaElement;
-
-    const breakpoint = window.WPBS_StyleEditor?.breakpoints?.[bpKey];
-
-    const mediaClass = 'wpbs-background__media absolute z-0 overflow-hidden w-full h-full';
-
-    if (settings.type === 'video') {
-
-        let srcAttr;
-
-        srcAttr = 'data-src';
-
-        MediaElement = <video muted loop autoPlay={true}>
-            <source {...{
-                [srcAttr]: largeVideo.url ? largeVideo.url : '#',
-                type: 'video/mp4',
-                'data-media': '(min-width:' + breakpoint + ')'
-            }}/>
-            <source {...{
-                [srcAttr]: mobileVideo.url ? mobileVideo.url : '#',
-                type: 'video/mp4',
-                'data-media': '(width < ' + breakpoint + ')'
-            }}/>
-        </video>
-    }
-
-    const mediaProps = Object.fromEntries(Object.entries({
-        className: mediaClass,
-        'fetchpriority': settings.eager ? 'high' : null,
-    }).filter(x => !!x));
-
-    return <div {...mediaProps}>
-        {MediaElement}
-    </div>;
-})
-
+    return  sources.length > 0 && (
+            <video muted loop autoPlay playsInline
+                   className="wpbs-background__media absolute inset-0 z-0 overflow-hidden w-full h-full"
+                   fetchpriority={settings.eager ? 'high' : undefined}
+            >
+                {sources}
+            </video>
+        );
+});
 export function BackgroundElement({settings = {}, editor = false}) {
 
     if (!settings.type) {

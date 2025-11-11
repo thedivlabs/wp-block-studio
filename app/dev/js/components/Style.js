@@ -315,7 +315,7 @@ export const withStyle = (Component) => (props) => {
                 });
             }
         },
-        [settings, setAttributes, attributes]
+        [settings, setAttributes, attributes?.style?.spacing?.blockGap?.top, attributes?.style?.spacing?.blockGap?.left, typeof attributes?.style?.spacing?.blockGap]
     );
 
     return (

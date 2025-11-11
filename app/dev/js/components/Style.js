@@ -71,15 +71,9 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         .join(' ')
         .trim();
 
-    const blockGap = attributes?.style?.spacing?.blockGap ?? {};
 
     const styleList = Object.fromEntries(
-        Object.entries({
-            rowGap: blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined),
-            columnGap: blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined),
-            '--row-gap': blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined),
-            '--column-gap': blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined),
-        })
+        Object.entries({})
             .map(([key, value]) => [key, getCSSFromStyle(value)])
             .filter(([_, v]) => v !== undefined && v !== null && v !== '')
     );

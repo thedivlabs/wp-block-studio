@@ -109,13 +109,18 @@ function parseSpecialProps(props = {}, attributes = {}) {
             switch (key) {
                 case 'margin':
                 case 'padding':
-                case 'gap':
                     if (typeof val === 'object') {
                         if (val.top) result[`${key}-top`] = val.top;
                         if (val.right) result[`${key}-right`] = val.right;
                         if (val.bottom) result[`${key}-bottom`] = val.bottom;
                         if (val.left) result[`${key}-left`] = val.left;
                     }
+                    break;
+                case 'gap':
+                    result['row-gap'] = val.top ?? val;
+                    result['column-gap'] = val.left ?? val;
+                    result['--row-gap'] = val.top ?? val;
+                    result['--column-gap'] = val.left ?? val;
                     break;
 
                 case 'height':

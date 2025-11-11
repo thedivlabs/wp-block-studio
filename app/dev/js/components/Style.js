@@ -262,7 +262,7 @@ export const withStyle = (Component) => (props) => {
 
             // --- Build CSS object immediately
             const cssObj = {
-                props: parseSpecialProps(cleanedNext.props || {}, attributes),
+                props: parseSpecialProps(cleanedNext.props || {}),
                 background: parseBackgroundProps(cleanedNext.background || {}),
                 hover: {},
                 breakpoints: {},
@@ -271,7 +271,7 @@ export const withStyle = (Component) => (props) => {
 
             for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
                 cssObj.breakpoints[bpKey] = {
-                    props: parseSpecialProps(bpProps.props || {}, attributes),
+                    props: parseSpecialProps(bpProps.props || {}),
                     background: parseBackgroundProps(bpProps.background || {}),
                 };
             }

@@ -223,48 +223,67 @@ class WPBS_Theme {
     }
 
     responsiveBackgroundSrc(element) {
-
+        // Remove lazy flag once loaded
         element.classList.remove('--lazy');
     }
 
     responsiveVideoSrc(video) {
+        // Guard: ensure this.videos always exists
+        if (!Array.isArray(this.videos)) this.videos = [];
 
+        // Process all <source> elements
         [...video.querySelectorAll('source')].forEach((source) => {
             const mq = source.dataset.media;
 
+            // No media query → keep as is
             if (!mq) {
-                source.remove();
-                return false;
+                if (source.dataset.src) {
+                    source.src = source.dataset.src;
+                    delete source.dataset.src;
+                }
+                return;
             }
 
+            // Switch source based on viewport match
             if (window.matchMedia(mq).matches) {
-                source.src = source.dataset.src;
+                source.src = source.dataset.src || '#';
             } else {
                 source.src = '#';
             }
         });
 
+        // Reload the video element to reflect updated sources
         video.load();
-
     }
 
     observeMedia(refElement) {
+        // Always initialize videos array
+        if (!Array.isArray(this.videos)) this.videos = [];
 
-        let observerIntersection = new IntersectionObserver((entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
+        const observerIntersection = new IntersectionObserver(
+            (entries, observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
 
                     const media = entry.target;
-                    observer.unobserve(entry.target);
+                    observer.unobserve(media);
 
+                    // 1. Handle videos
                     if (media.tagName === 'VIDEO') {
                         this.videos.push(media);
                         this.responsiveVideoSrc(media);
-                    } else if (media.classList.contains('wpbs-background')) {
-                        this.responsiveBackgroundSrc(media);
-                    } else {
-                        [...media.querySelectorAll('[data-src],[data-srcset]'), media].forEach((element) => {
+                        return;
+                    }
 
+                    // 2. Handle background wrappers
+                    if (media.classList.contains('wpbs-background')) {
+                        this.responsiveBackgroundSrc(media);
+                        return;
+                    }
+
+                    // 3. Handle images and other lazy elements
+                    [...media.querySelectorAll('[data-src],[data-srcset]'), media].forEach(
+                        (element) => {
                             if (element.dataset.src) {
                                 element.src = element.dataset.src;
                                 element.removeAttribute('data-src');
@@ -273,24 +292,30 @@ class WPBS_Theme {
                                 element.srcset = element.dataset.srcset;
                                 element.removeAttribute('data-srcset');
                             }
+                        }
+                    );
+                });
+            },
+            {
+                root: null,
+                rootMargin: '90px',
+                threshold: 0,
+            }
+        );
 
-                        });
-                    }
+        // Observe all relevant elements for lazy loading
+        const selector =
+            'img[data-src],' +
+            'picture:has(source[data-src]),' +
+            'video:has(source[data-src]),' +
+            'video:has(source[data-media]),' +
+            '.wpbs-background.--lazy';
 
-
-                }
-            });
-
-        }, {
-            root: null,
-            rootMargin: "90px",
-            threshold: 0,
-        });
-
-        [...(refElement || document).querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background.--lazy')].forEach((el) => observerIntersection.observe(el));
-
-
+        [...(refElement || document).querySelectorAll(selector)].forEach((el) =>
+            observerIntersection.observe(el)
+        );
     }
+
 
     slideToggle(element, duration, callback, display) {
         jQuery(element).slideToggle(duration, function () {

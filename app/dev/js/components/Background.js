@@ -250,7 +250,7 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
 
-    console.log(settings)
+    console.log(attributes)
 
     const bgClass = [
         'wpbs-background',

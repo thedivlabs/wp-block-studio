@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
+import {Fragment, memo, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
 import {
     InnerBlocks,
     InspectorControls,
@@ -85,6 +85,11 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     }, true);
 };
 
+const BlockBackground = memo(({attributes, isSave}) => (
+    <BackgroundElement attributes={attributes} isSave={isSave}/>
+));
+
+
 const BlockWrapper = ({
                           props,
                           className,
@@ -128,7 +133,7 @@ const BlockWrapper = ({
                     <InnerBlocks.Content/>
                 )}
                 {children}
-                <BackgroundElement attributes={attributes} isSave/>
+                <BlockBackground attributes={attributes} isSave/>
             </Tag>
         );
     }
@@ -147,7 +152,7 @@ const BlockWrapper = ({
                     {containerProps.children}
                 </div>
                 {children}
-                <BackgroundElement attributes={attributes}/>
+                <BlockBackground attributes={attributes}/>
             </Tag>
         );
     }

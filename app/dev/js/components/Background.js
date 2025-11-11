@@ -158,7 +158,12 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                         __nextHasNoMarginBottom
                     />
 
-                    {isBreakpoint && settings.type === 'video' ? null : <Grid columns={2} columnGap={15} rowGap={20}>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
+                        {isBreakpoint && <ToggleControl
+                            label="Force"
+                            checked={!!settings?.['force']}
+                            onChange={(v) => callback({force: v})}
+                        />}
                         {!isBreakpoint && <ToggleControl
                             label="Eager"
                             checked={!!settings?.['eager']}
@@ -169,7 +174,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             checked={!!settings?.['fixed']}
                             onChange={(v) => callback({fixed: v})}
                         />}
-                    </Grid>}
+                    </Grid>
 
                     <div>
                         <ToolsPanel

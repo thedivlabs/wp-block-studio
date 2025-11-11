@@ -116,8 +116,8 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             </MediaUploadCheck>
                         </BaseControl>
                     )}
-                    
-                    <div className={'wpbs-background-controls__card'}>
+
+                    <BaseControl label={'Overlay'} className={'wpbs-background-controls__card'}>
                         <GradientPicker
                             gradients={[
                                 {
@@ -140,7 +140,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             value={settings?.['overlay'] ?? undefined}
                             onChange={(newValue) => callback({overlay: newValue})}
                         />
-                    </div>
+                    </BaseControl>
 
                     {!isBreakpoint && <Grid columns={2} columnGap={15} rowGap={20}>
 

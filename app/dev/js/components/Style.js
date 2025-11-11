@@ -213,19 +213,6 @@ const AdvancedControls = ({settings, callback}) => (
     </Grid>
 );
 
-const StyledComponent = memo(({props, Component}) => {
-    const {clientId} = props;
-
-    return (
-        <Component
-            {...getDataProps(props)}
-            BlockWrapper={(wrapperProps) => (
-                <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
-            )}
-        />
-    );
-});
-
 const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
     <StyleEditorUI
         settings={settings}
@@ -238,18 +225,7 @@ export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
     const {uniqueId} = attributes;
-    const rawBlockGap = attributes?.style?.spacing?.blockGap ?? null;
-
-    const blockGapKey = useMemo(() => {
-        if (typeof rawBlockGap === 'string') {
-            return rawBlockGap;
-        }
-        if (rawBlockGap && typeof rawBlockGap === 'object') {
-            const {top = '', left = ''} = rawBlockGap;
-            return `${top}|${left}`; // stable string representation
-        }
-        return ''; // fallback for null/undefined
-    }, [rawBlockGap?.top, rawBlockGap?.left, typeof rawBlockGap]);
+    const blockGap = attributes?.style?.spacing?.blockGap;
 
     const settings = attributes?.['wpbs-style'] ?? {
         props: {},
@@ -262,6 +238,18 @@ export const withStyle = (Component) => (props) => {
     const blockCss = useCallback((newProps = {}) => {
         cssPropsRef.current = newProps || {};
     }, []);
+
+    const StyledComponent = useMemo(() => {
+        return (
+            <Component
+                {...getDataProps(props)}
+                BlockWrapper={(wrapperProps) => (
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+                )}
+            />
+        );
+    }, [clientId, settings, typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap]);
+
 
     // --- Reactive version of updateStyleSettings
     const updateStyleSettings = useCallback(

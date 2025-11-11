@@ -309,6 +309,9 @@ function parseBackgroundProps(props = {}) {
             case 'color':
                 result['--color'] = val;
                 break;
+            case 'blend-mode':
+                result['--blend-mode'] = val;
+                break;
             default:
                 break;
         }

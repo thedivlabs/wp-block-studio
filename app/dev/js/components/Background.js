@@ -218,7 +218,7 @@ function BackgroundVideo({settings = {}}) {
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
-    const {background: settings = {}} = attributes?.['wpbs-style'];
+    const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
 
     const bgClass = [
         'wpbs-background',

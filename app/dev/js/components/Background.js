@@ -10,7 +10,6 @@ import {
 import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
-import React from "react";
 
 const BackgroundFields = memo(({settings, updateFn}) => {
     const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
@@ -144,19 +143,18 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                         </div>
                     </BaseControl>
 
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
+                    {isBreakpoint && settings.type === 'video' ? null : <Grid columns={2} columnGap={15} rowGap={20}>
                         {!isBreakpoint && <ToggleControl
                             label="Eager"
                             checked={!!settings?.['eager']}
                             onChange={(v) => callback({eager: v})}
                         />}
-                        <ToggleControl
+                        {settings.type !== 'video' && <ToggleControl
                             label="Fixed"
                             checked={!!settings?.['fixed']}
                             onChange={(v) => callback({fixed: v})}
-                        />
-                    </Grid>
+                        />}
+                    </Grid>}
 
                     <div>
                         <ToolsPanel
@@ -220,7 +218,7 @@ function BackgroundVideo({settings = {}}) {
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
-    const {'wpbs-style': settings = {}} = attributes;
+    const {background: settings = {}} = attributes?.['wpbs-style'];
 
     const bgClass = [
         'wpbs-background',

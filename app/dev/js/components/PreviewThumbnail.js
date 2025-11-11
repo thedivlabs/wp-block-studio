@@ -2,13 +2,13 @@ import {Button, Icon} from '@wordpress/components'
 import {IMAGE_BUTTON_STYLE} from 'Includes/config'
 
 
-function PreviewThumbnail({image = {}, callback, style = {}, onClick, contain = false}) {
+function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
         width: '100%',
         height: '100%',
-        objectFit: !!contain ? 'contain' : 'inherit',
+        objectFit: 'cover',
         pointerEvents: 'none',
     }
 

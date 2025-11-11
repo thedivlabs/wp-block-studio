@@ -306,8 +306,11 @@ function parseBackgroundProps(props = {}) {
             case 'maskSize':
                 result['--mask-size'] = val;
                 break;
+            case 'color':
+                result['--color'] = val;
+                break;
             default:
-                result[`--${key}`] = val;
+                break;
         }
     });
 

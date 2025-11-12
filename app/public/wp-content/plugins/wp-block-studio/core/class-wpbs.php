@@ -189,6 +189,12 @@ class WPBS {
 
 
 		/* Odometer */
+		wp_register_style( 'aos-css', 'https://unpkg.com/aos@2.3.1/dist/aos.css', [], false );
+		wp_register_script( 'aos-js', 'https://unpkg.com/aos@2.3.1/dist/aos.js', [], false, [
+			'strategy' => 'defer'
+		] );
+
+		/* Odometer */
 		wp_register_style( 'odometer-css', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-default.min.css', [], false );
 		wp_register_script( 'odometer-js', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/odometer.min.js', [], false, [
 			'strategy' => 'defer'

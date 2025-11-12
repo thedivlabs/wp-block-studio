@@ -663,9 +663,10 @@ export function initStyleEditor() {
                 css += `${selector}{${buildRules(merged)}}`;
             }
 
-            // --- Background ---
+            // --- Background (scope to > .wpbs-background) ---
             if (!_.isEmpty(cssObj.background)) {
-                css += `${selector}{${buildRules(cssObj.background)}}`;
+                const bgSelector = `${selector} > .wpbs-background`;
+                css += `${bgSelector}{${buildRules(cssObj.background)}}`;
             }
 
             // --- Hover ---

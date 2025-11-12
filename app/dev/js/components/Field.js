@@ -2,7 +2,7 @@ import {memo, useCallback} from "@wordpress/element";
 import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
-import { ShadowSelector } from "Components/ShadowSelector";
+import {ShadowSelector} from "Components/ShadowSelector";
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -49,7 +49,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 <ShadowSelector
                     label={label}
                     value={value}
-                    onChange={(val) => commit({ [slug]: val })}
+                    onChange={(val) => commit({[slug]: val})}
                     {...controlProps}
                 />
             );
@@ -95,14 +95,15 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             break;
         case "gradient":
             control = (
-                <GradientPicker
-                    id={inputId}
-                    label={label}
-                    value={value || 'linear-gradient(90deg,#000 0%,#fff 100%)'}
-                    gradients={[]}
-                    onChange={commit}
-                    __nextHasNoMarginBottom
-                />
+                <BaseControl label={label}>
+                    <GradientPicker
+                        id={inputId}
+                        value={value || 'linear-gradient(90deg,#000 0%,#fff 100%)'}
+                        gradients={[]}
+                        onChange={commit}
+                        __nextHasNoMarginBottom
+                    />
+                </BaseControl>
             );
             break;
 

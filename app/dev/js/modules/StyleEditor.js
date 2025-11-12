@@ -285,6 +285,9 @@ function parseBackgroundProps(props = {}) {
             case 'fade':
                 result['--fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
                 break;
+            case 'max-height':
+                result['--max-height'] = val;
+                break;
             case 'overlay':
                 result['--overlay'] = val;
                 break;
@@ -308,10 +311,10 @@ function parseBackgroundProps(props = {}) {
                 result['--mask-position'] = props.maskOrigin || 'center center';
                 break;
             }
-            case 'maskOrigin':
+            case 'mask-origin':
                 result['--mask-position'] = val;
                 break;
-            case 'maskSize':
+            case 'mask-size':
                 result['--mask-size'] = val;
                 break;
             default:
@@ -522,9 +525,11 @@ const backgroundFieldsMap = [
         full: true,
     },
     {
-        type: 'gradient',
+        type: 'range',
         slug: 'fade', // handled via pseudo-element overlay gradient
         label: 'Fade',
+        min:0,
+        max:100,
         full: true,
     },
 

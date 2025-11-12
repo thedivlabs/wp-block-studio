@@ -227,7 +227,7 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     break;
 
                 case 'offset-header':
-                    result['padding-top'] = `calc(${getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px')} + var(--wpbs-header-height, 0px)) !important`;
+                    result['padding-top'] = `calc(${getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px')} + var(--wpbs-header-height, 0px) + ${val || '0px'}) !important`;
                     break;
 
                 case 'align-header':

@@ -177,7 +177,7 @@ const AdvancedControls = ({settings, callback}) => (
             <ElementTagControl
                 value={settings?.tagName ?? 'div'}
                 label="HTML Tag"
-                onChange={(tag) => callback({...settings, tagName: tag})}
+                onChange={(tag) => callback({tagName: tag})}
             />
         </Grid>
 
@@ -186,13 +186,13 @@ const AdvancedControls = ({settings, callback}) => (
                 __nextHasNoMarginBottom
                 label="Hide if Empty"
                 checked={!!settings?.['hide-empty']}
-                onChange={(checked) => callback({...settings, 'hide-empty': checked})}
+                onChange={(checked) => callback({'hide-empty': checked})}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Required"
                 checked={!!settings?.required}
-                onChange={(checked) => callback({...settings, required: checked})}
+                onChange={(checked) => callback({required: checked})}
             />
         </Grid>
 
@@ -201,13 +201,13 @@ const AdvancedControls = ({settings, callback}) => (
                 __nextHasNoMarginBottom
                 label="Offset Header"
                 checked={!!settings?.['offset-header']}
-                onChange={(checked) => callback({...settings, 'offset-header': checked})}
+                onChange={(checked) => callback({'offset-header': checked})}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Container"
                 checked={!!settings?.container}
-                onChange={(checked) => callback({...settings, container: checked})}
+                onChange={(checked) => callback({container: checked})}
             />
         </Grid>
     </Grid>
@@ -351,9 +351,14 @@ export const withStyle = (Component) => (props) => {
                     callback={(nextAdvanced) =>
                         updateStyleSettings({
                             ...settings,
-                            advanced: nextAdvanced,
+                            advanced: {
+                                ...settings.advanced,
+                                ...nextAdvanced,
+                            },
                         })
                     }
+
+
                 />
             </InspectorControls>
         </>

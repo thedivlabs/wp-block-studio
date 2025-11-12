@@ -4,20 +4,19 @@ import {__experimentalGrid as Grid, ToggleControl} from "@wordpress/components";
 import {ElementTagControl} from "Components/ElementTag";
 
 export const AdvancedControls = ({settings = {}, callback}) => {
-    // Keep only the advanced section in local state
+
     const [localSettings, setLocalSettings] = useState(settings.advanced ?? {});
 
-    // Sync local state if parent settings change externally
+    // Keep local in sync with external settings
     useEffect(() => {
+        setLocalSettings(settings.advanced ?? {});
+    }, [settings.advanced]);
 
-        const nextSettings = {
-            ...settings,
-            advanced: localSettings,
+    // Notify parent when local changes
+    useEffect(() => {
+        if (!_.isEqual(settings.advanced, localSettings)) {
+            callback({advanced: localSettings});
         }
-        if (!_.isEqual(settings, nextSettings)) {
-            callback(nextSettings);
-        }
-
     }, [localSettings]);
 
     const commitSettings = useCallback(
@@ -26,13 +25,11 @@ export const AdvancedControls = ({settings = {}, callback}) => {
                 ...localSettings,
                 ...nextPartial,
             };
-
-            // Only update if something actually changed
             if (!_.isEqual(localSettings, nextAdvanced)) {
                 setLocalSettings(nextAdvanced);
             }
         },
-        [localSettings, callback]
+        [localSettings]
     );
 
     return (

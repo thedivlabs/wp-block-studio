@@ -81,9 +81,18 @@ export const withStyle = (Component) => (props) => {
     const updateStyleSettings = useCallback(
         (nextLayout) => {
 
-            console.log(nextLayout);
+            const mergedLayout = {
+                ...settings,
+                ...nextLayout,
+                advanced: {
+                    ...settings.advanced,
+                    ...nextLayout.advanced,
+                },
+            };
 
-            const cleanedNext = cleanObject(nextLayout, true);
+            console.log(mergedLayout);
+
+            const cleanedNext = cleanObject(mergedLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
 
@@ -168,14 +177,14 @@ export const withStyle = (Component) => (props) => {
                 {isSelected && (
                     <StyleEditorPanel
                         settings={settings}
-                        updateStyleSettings={updateStyleSettings}
+                        updateStyleSettings={debouncedUpdateStyleSettings}
                     />
                 )}
             </InspectorControls>
             <InspectorControls group="advanced">
                 <StyledAdvancedControls
                     settings={settings ?? {}}
-                    callback={updateStyleSettings}
+                    callback={debouncedUpdateStyleSettings}
                 />
             </InspectorControls>
 

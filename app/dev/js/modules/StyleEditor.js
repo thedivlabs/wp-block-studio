@@ -390,6 +390,24 @@ const layoutFieldsMap = [
     {type: 'number', slug: 'z-index', label: 'Z Index'},
     {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
     {type: 'unit', slug: 'width-custom', label: 'Width Custom'},
+    {
+        type: 'image',
+        slug: 'mask-image', // maps to CSS mask-image
+        label: 'Mask Image',
+        full: true,
+    },
+    {
+        type: 'select',
+        slug: 'mask-origin', // CSS mask-origin
+        label: 'Mask Origin',
+        options: ORIGIN_OPTIONS,
+    },
+    {
+        type: 'select',
+        slug: 'mask-size', // CSS mask-size
+        label: 'Mask Size',
+        options: IMAGE_SIZE_OPTIONS,
+    },
 ];
 
 const hoverFieldsMap = [

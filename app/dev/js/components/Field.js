@@ -1,4 +1,5 @@
 import {memo, useCallback} from "@wordpress/element";
+import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
 
@@ -7,8 +8,6 @@ export const Field = memo(({field, settings, callback}) => {
     if (!type || !slug || !label) return null;
 
     const {
-        MediaUploadCheck,
-        MediaUpload,
         SelectControl,
         GradientPicker,
         ToggleControl,

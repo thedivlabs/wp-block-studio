@@ -260,7 +260,7 @@ function parseBackgroundProps(props = {}) {
     }
 
     // --- Video display ---
-    if (video?.url || force) {
+    if (video?.url) {
         result['--video'] = 'block';
     } else {
         result['--video'] = 'none';

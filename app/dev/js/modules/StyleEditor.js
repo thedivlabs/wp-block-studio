@@ -25,7 +25,7 @@ const SPECIAL_FIELDS = [
     'gap', 'margin', 'box-shadow', 'transform', 'filter', 'hide-empty', 'required',
     'offset-height', 'align-header', 'outline',
 
-    'reveal-duration', 'reveal-timing', 'reveal-distance', 'reveal-anim',
+    'reveal-duration', 'reveal-easing', 'reveal-distance', 'reveal-anim',
 
     'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
     'flex-basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',

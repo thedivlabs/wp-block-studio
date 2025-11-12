@@ -155,7 +155,7 @@ const BreakpointPanel = memo(
                         updateFn={(newProps) =>
                             updateBreakpointItem({props: newProps}, bpKey)
                         }
-                        suppress={['container']}
+                        suppress={['container', 'reveal-anim', 'reveal-offset', 'reveal-delay', 'reveal-duration', 'reveal-easing', 'reveal-distance']}
                     />
 
                 </ToolsPanel>

@@ -379,7 +379,7 @@ const layoutFieldsMap = [
     },
     {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
     {type: 'select', slug: 'aspect-ratio', label: 'Shape', options: SHAPE_OPTIONS},
-    {type: 'shadow', slug: 'box-shadow', label: 'Shadow'},
+    {type: 'shadow', slug: 'box-shadow', label: 'Shadow', full: true},
     {type: 'border', slug: 'outline', label: 'Outline'},
     {type: 'unit', slug: 'font-size', label: 'Font Size', units: DIMENSION_UNITS_TEXT},
     {type: 'number', slug: 'flex-shrink', label: 'Shrink'},

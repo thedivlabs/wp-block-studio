@@ -11,25 +11,27 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
 
-const BackgroundFields = memo(({settings, updateFn}) => {
-    const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-    return map.map((field) => {
-        const callback = (v) => updateFn({[field.slug]: v});
-
-        return (
-            <Field
-                key={field.slug}
-                field={field}
-                settings={settings}
-                callback={callback}
-            />
-        );
-    });
-});
 
 export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
+
+    const BackgroundFields = memo(({settings, updateFn}) => {
+        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+
+        return map.map((field) => {
+            const callback = (v) => updateFn({[field.slug]: v});
+
+            return (
+                <Field
+                    key={field.slug}
+                    field={field}
+                    settings={settings}
+                    callback={callback}
+                />
+            );
+        });
+    });
 
     return (
         <PanelBody title="Background" initialOpen={isPanelOpen} className={'wpbs-background-controls'}>
@@ -204,7 +206,6 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
             </Grid>
         </PanelBody>
-
     );
 };
 

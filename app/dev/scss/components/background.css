@@ -26,6 +26,7 @@
 .wpbs-background:before,
 .wpbs-background > video {
   mask-image: var(--fade, none);
+  -webkit-mask-image: var(--fade, none);
 }
 
 /* Main background media element */

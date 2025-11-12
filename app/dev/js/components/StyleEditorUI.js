@@ -195,7 +195,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                 if (!_.isEqual(cleanedLocal, cleanedSettings)) {
                     updateStyleSettings(next);
                 }
-            }, 250),
+            }, 600),
         [settings, updateStyleSettings]
     );
 

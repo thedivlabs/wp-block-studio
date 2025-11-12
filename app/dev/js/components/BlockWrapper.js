@@ -3,6 +3,7 @@ import _ from "lodash";
 import {__experimentalGrid as Grid, ToggleControl} from "@wordpress/components";
 import {getElementTag} from "Components/ElementTag";
 import {BackgroundElement} from "Components/Background";
+import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {cleanObject} = API;

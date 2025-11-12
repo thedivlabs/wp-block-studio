@@ -49,12 +49,12 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 <ShadowSelector
                     label={label}
                     value={value}
-                    onChange={(val) => commit(val)}
+                    onChange={(val) => commit({ [slug]: val })}
                     {...controlProps}
                 />
             );
             break;
-        case "color": {
+        case "color":
             const colorFields = controlProps.colors || [];
 
             const colorSettings = colorFields.map((c) => ({
@@ -80,7 +80,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-        }
         case "range":
             control = (
                 <RangeControl

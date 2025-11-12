@@ -233,6 +233,10 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     result['top'] = 'var(--wpbs-header-height, auto)';
                     break;
 
+                case 'box-shadow':
+                    result['box-shadow'] = val?.shadow || val;
+                    break;
+
                 default:
                     result[key] = val;
             }

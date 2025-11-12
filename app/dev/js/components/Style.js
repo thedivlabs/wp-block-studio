@@ -171,13 +171,34 @@ const BlockWrapper = ({
     );
 };
 
-const AdvancedControls = ({settings, callback}) => (
-    <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
+const AdvancedControls = memo(({settings, callback}) => {
+
+    const [localSettings, setLocalSettings] = useState(settings?.advanced ?? {});
+
+
+    const commitSettings = useCallback((nextSettings) => {
+
+        const result = {
+            ...localSettings,
+            advanced: {
+                ...localSettings.advanced,
+                ...nextSettings,
+            },
+        }
+
+        if (!_.isEqual(localSettings, result)) {
+            callback(result);
+            setLocalSettings(result);
+        }
+
+    }, [localSettings]);
+
+    return <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
         <Grid columns={2} columnGap={15} rowGap={20}>
             <ElementTagControl
-                value={settings?.tagName ?? 'div'}
+                value={localSettings?.tagName ?? 'div'}
                 label="HTML Tag"
-                onChange={(tag) => callback({tagName: tag})}
+                onChange={(tag) => commitSettings({tagName: tag})}
             />
         </Grid>
 
@@ -185,14 +206,14 @@ const AdvancedControls = ({settings, callback}) => (
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Hide if Empty"
-                checked={!!settings?.['hide-empty']}
-                onChange={(checked) => callback({'hide-empty': checked})}
+                checked={!!localSettings?.['hide-empty']}
+                onChange={(checked) => commitSettings({'hide-empty': checked})}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Required"
-                checked={!!settings?.required}
-                onChange={(checked) => callback({required: checked})}
+                checked={!!localSettings?.required}
+                onChange={(checked) => commitSettings({required: checked})}
             />
         </Grid>
 
@@ -200,18 +221,18 @@ const AdvancedControls = ({settings, callback}) => (
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Offset Header"
-                checked={!!settings?.['offset-header']}
-                onChange={(checked) => callback({'offset-header': checked})}
+                checked={!!localSettings?.['offset-header']}
+                onChange={(checked) => commitSettings({'offset-header': checked})}
             />
             <ToggleControl
                 __nextHasNoMarginBottom
                 label="Container"
-                checked={!!settings?.container}
-                onChange={(checked) => callback({container: checked})}
+                checked={!!localSettings?.container}
+                onChange={(checked) => commitSettings({container: checked})}
             />
         </Grid>
-    </Grid>
-);
+    </Grid>;
+});
 
 const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
     <StyleEditorUI
@@ -310,7 +331,6 @@ export const withStyle = (Component) => (props) => {
             const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
 
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
-                console.log('setting attributes');
                 setAttributes({
                     'wpbs-style': nextLayout,
                     'wpbs-css': cleanedCss,
@@ -347,16 +367,8 @@ export const withStyle = (Component) => (props) => {
             </InspectorControls>
             <InspectorControls group="advanced">
                 <AdvancedControls
-                    settings={settings?.advanced ?? {}}
-                    callback={(nextAdvanced) =>
-                        updateStyleSettings({
-                            ...settings,
-                            advanced: {
-                                ...settings.advanced,
-                                ...nextAdvanced,
-                            },
-                        })
-                    }
+                    settings={settings ?? {}}
+                    callback={(nextAdvanced) => updateStyleSettings(nextAdvanced)}
 
 
                 />

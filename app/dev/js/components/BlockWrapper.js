@@ -3,7 +3,7 @@ import {BackgroundElement} from "Components/Background";
 import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {cleanObject} = API;
+const {cleanObject,getCSSFromStyle} = API;
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
@@ -29,7 +29,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         layout['offset-header'] && '--offset-header',
         hasContainer && '--has-container',
         isContainer && 'wpbs-container',
-        layout['reveal-anim'] && '--reveal',
         layout['content-visibility'] && '--content-visibility',
         layout['mask-image'] && '--mask',
     ]
@@ -44,9 +43,20 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
             .filter(([_, v]) => v !== undefined && v !== null && v !== '')
     );
 
+    const dataProps = Object.fromEntries(
+        Object.entries({
+            'data-aos': layout?.['reveal-anim'] ?? null,
+            'data-aos-distance': layout?.['reveal-distance'] ?? null,
+            'data-aos-duration': layout?.['reveal-duration'] ?? null,
+            'data-aos-easing': layout?.['reveal-easing'] ?? null,
+        })
+            .filter(Boolean)
+    );
+
     return cleanObject({
         className: classList,
         style: {...blockStyle, ...styleList},
+        ...dataProps,
         ...restWrapperProps,
     }, true);
 };

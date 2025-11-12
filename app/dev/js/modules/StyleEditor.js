@@ -23,7 +23,10 @@ import _ from "lodash";
 
 const SPECIAL_FIELDS = [
     'gap', 'margin', 'box-shadow', 'transform', 'filter', 'hide-empty', 'required',
-    'offset-height', 'align-header', 'outline', 'reveal-offset', 'reveal-distance',
+    'offset-height', 'align-header', 'outline',
+
+    'reveal-duration', 'reveal-timing', 'reveal-distance', 'reveal-anim',
+
     'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
     'flex-basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
     'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
@@ -220,16 +223,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     result['top'] = 'var(--wpbs-header-height, auto)';
                     break;
 
-                case 'reveal-offset':
-                    result['--reveal-offset'] = val;
-                    break;
-                case 'reveal-distance':
-                    result['--reveal-distance'] = val;
-                    break;
-                case 'reveal-anim':
-                    result['--reveal-anim'] = val;
-                    break;
-
                 default:
                     result[key] = val;
             }
@@ -380,11 +373,10 @@ const layoutFieldsMap = [
         full: true,
     },
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
-    {type: 'number', slug: 'transition-duration', label: 'Reveal Duration'},
-    {type: 'select', slug: 'transition-timing-function', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
-    {type: 'unit', slug: 'reveal-offset', label: 'Reveal Offset'},
-    {type: 'unit', slug: 'reveal-distance', label: 'Reveal Distance'},
     {type: 'select', slug: 'reveal-anim', label: 'Reveal Animation', options: REVEAL_ANIMATION_OPTIONS},
+    {type: 'number', slug: 'reveal-duration', label: 'Reveal Duration'},
+    {type: 'select', slug: 'reveal-easing', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
+    {type: 'unit', slug: 'reveal-distance', label: 'Reveal Distance'},
     {type: 'number', slug: 'z-index', label: 'Z Index'},
     {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
     {type: 'unit', slug: 'width-custom', label: 'Width Custom'},

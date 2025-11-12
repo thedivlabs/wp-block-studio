@@ -51,9 +51,13 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 label: c.label,
                 value: settings?.[slug]?.[c.slug] ?? "",
                 onChange: (newValue) => {
+                    // Merge new color into this field’s nested slug
+                    const next = {
+                        ...settings,
+                        [slug]: { ...(settings?.[slug] || {}), [c.slug]: newValue },
+                    };
 
-                    const next = { ...settings, [c.slug]: newValue };
-                    commit(next);
+                    commit(next[slug]); // use commit, so it compares + propagates correctly
                 },
             }));
 

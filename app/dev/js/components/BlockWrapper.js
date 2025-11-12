@@ -1,4 +1,4 @@
-import {getElementTag} from "Components/ElementTag";
+import {ElementTag} from "Components/AdvancedControls";
 import {BackgroundElement} from "Components/Background";
 import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
 
@@ -71,7 +71,7 @@ export const BlockWrapper = ({
     const {advanced} = settings;
 
     const blockBaseName = name ? name.replace('/', '-') : '';
-    const Tag = getElementTag(advanced?.tagName, tagName);
+    const Tag = ElementTag(advanced?.tagName, tagName);
 
     const isBackgroundActive = hasBackground && settings?.background?.type;
     const hasContainer = isBackgroundActive || settings?.advanced?.container;

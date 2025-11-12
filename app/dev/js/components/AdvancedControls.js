@@ -1,7 +1,7 @@
 import {memo, useCallback, useEffect, useState} from "@wordpress/element";
 import _ from "lodash";
-import {__experimentalGrid as Grid, ToggleControl} from "@wordpress/components";
-import {ElementTagControl} from "Components/ElementTag";
+import {__experimentalGrid as Grid, SelectControl, ToggleControl} from "@wordpress/components";
+import {ELEMENT_TAG_OPTIONS} from "Includes/config";
 
 export const AdvancedControls = ({settings = {}, callback}) => {
 
@@ -37,10 +37,13 @@ export const AdvancedControls = ({settings = {}, callback}) => {
     return (
         <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
             <Grid columns={2} columnGap={15} rowGap={20}>
-                <ElementTagControl
+                <SelectControl
+                    label={label || "HTML Tag"}
                     value={localSettings?.tagName ?? ''}
-                    label="HTML Tag"
+                    options={ELEMENT_TAG_OPTIONS}
                     onChange={(tag) => commitSettings({tagName: tag})}
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                 />
             </Grid>
 
@@ -76,3 +79,7 @@ export const AdvancedControls = ({settings = {}, callback}) => {
         </Grid>
     );
 };
+
+export function ElementTag(value, defaultTag = 'div') {
+    return value || defaultTag;
+}

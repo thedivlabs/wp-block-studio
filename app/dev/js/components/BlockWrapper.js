@@ -1,8 +1,11 @@
 import {memo, useCallback, useEffect, useState} from "@wordpress/element";
 import _ from "lodash";
 import {__experimentalGrid as Grid, ToggleControl} from "@wordpress/components";
-import {ElementTagControl, getElementTag} from "Components/ElementTag";
+import {getElementTag} from "Components/ElementTag";
 import {BackgroundElement} from "Components/Background";
+
+const API = window?.WPBS_StyleEditor ?? {};
+const {cleanObject} = API;
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;

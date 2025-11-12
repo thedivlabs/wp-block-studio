@@ -3,7 +3,7 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
 
-export const Field = memo(({field, settings, callback}) => {
+export const Field = memo(({field, settings, callback, isToolsPanel=true}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
@@ -225,7 +225,7 @@ export const Field = memo(({field, settings, callback}) => {
             control = null;
     }
 
-    return control ? (
+    return control ? ( !!isToolsPanel ?
         <ToolsPanelItem
             hasValue={() => value !== undefined && value !== null}
             label={label}
@@ -235,6 +235,6 @@ export const Field = memo(({field, settings, callback}) => {
             isShownByDefault={false}
         >
             {control}
-        </ToolsPanelItem>
+        </ToolsPanelItem> : control
     ) : null;
 });

@@ -670,7 +670,7 @@ export function initStyleEditor() {
 
             // --- Hover ---
             if (!_.isEmpty(cssObj.hover)) {
-                css += `${selector}:hover{${buildRules(cssObj.hover)}}`;
+                css += `${selector}:hover{${buildRules(cssObj.hover)} !important}`;
             }
 
             // --- Breakpoints ---

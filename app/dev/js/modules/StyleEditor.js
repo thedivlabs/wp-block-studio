@@ -419,6 +419,7 @@ const layoutFieldsMap = [
         label: 'Mask Size',
         options: IMAGE_SIZE_OPTIONS,
     },
+    { type: "shadow", slug: "shadow", label: "Shadow", full: true },
 ];
 
 const hoverFieldsMap = [

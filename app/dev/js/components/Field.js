@@ -2,6 +2,7 @@ import {memo, useCallback} from "@wordpress/element";
 import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
+import { ShadowSelector } from "Components/ShadowSelector";
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -43,6 +44,16 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
     controlProps.label = label;
 
     switch (type) {
+        case "shadow":
+            control = (
+                <ShadowSelector
+                    label={label}
+                    value={value}
+                    onChange={(val) => commit(val)}
+                    {...controlProps}
+                />
+            );
+            break;
         case "color": {
             const colorFields = controlProps.colors || [];
 

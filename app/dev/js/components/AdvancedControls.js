@@ -7,11 +7,6 @@ export const AdvancedControls = ({settings = {}, callback}) => {
 
     const [localSettings, setLocalSettings] = useState(settings.advanced ?? {});
 
-    // Keep local in sync with external updates
-    useEffect(() => {
-        setLocalSettings(settings.advanced ?? {});
-    }, [settings.advanced]);
-
     // Whenever local advanced changes, build full object and send up
     useEffect(() => {
         if (!_.isEqual(settings.advanced, localSettings)) {

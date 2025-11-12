@@ -1,4 +1,6 @@
 import {memo, useCallback} from "@wordpress/element";
+import PreviewThumbnail from "Components/PreviewThumbnail";
+import {BaseControl} from "@wordpress/components";
 
 export const Field = memo(({field, settings, callback}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -11,7 +13,6 @@ export const Field = memo(({field, settings, callback}) => {
         GradientPicker,
         ToggleControl,
         RangeControl,
-        PanelColorSettings,
         TextControl,
         __experimentalToolsPanelItem: ToolsPanelItem,
         __experimentalBoxControl: BoxControl,
@@ -153,36 +154,46 @@ export const Field = memo(({field, settings, callback}) => {
 
         case "image":
         case "video": {
-            const allowedTypes = type === "image" ? ["image"] : ["video"];
-            const clear = () => commit(undefined);
+            const isImage = type === "image";
+            const allowedTypes = isImage ? ["image"] : ["video"];
+            const currentValue = value || {};
+
+            const onSelect = (media) => {
+                // Normalize shape to match other working components
+                const mediaData = {
+                    id: media.id,
+                    url: media.url,
+                    alt: media?.alt,
+                    type: media?.type,
+                    sizes: media?.sizes,
+                };
+                commit(mediaData);
+            };
+
+            const clear = () => commit({});
+
             control = (
-                <MediaUploadCheck>
-                    <MediaUpload
-                        title={label}
-                        onSelect={commit}
-                        allowedTypes={allowedTypes}
-                        value={value}
-                        render={({open}) => (
-                            <button
-                                type="button"
-                                className="components-button"
-                                onClick={open}
-                            >
-                                {value ? "Replace" : "Select"} {type}
-                            </button>
-                        )}
-                        __nextHasNoMarginBottom
-                    />
-                    {value ? (
-                        <button
-                            type="button"
-                            className="components-button is-secondary"
-                            onClick={clear}
-                        >
-                            Clear
-                        </button>
-                    ) : null}
-                </MediaUploadCheck>
+                <BaseControl label={label} __nextHasNoMarginBottom>
+                    <MediaUploadCheck>
+                        <MediaUpload
+                            title={`Select ${isImage ? "Image" : "Video"}`}
+                            allowedTypes={allowedTypes}
+                            value={currentValue?.id}
+                            onSelect={onSelect}
+                            render={({ open }) => (
+                                <PreviewThumbnail
+                                    image={currentValue}
+                                    onClick={open}
+                                    callback={clear}
+                                    style={{
+                                        objectFit: "contain",
+                                        borderRadius: "6px",
+                                    }}
+                                />
+                            )}
+                        />
+                    </MediaUploadCheck>
+                </BaseControl>
             );
             break;
         }
@@ -195,7 +206,7 @@ export const Field = memo(({field, settings, callback}) => {
         <ToolsPanelItem
             hasValue={() => value !== undefined && value !== null}
             label={label}
-            onDeselect={() => commit(undefined)}
+            onDeselect={() => commit(null)}
             onSelect={() => commit("")} // initialize with an empty string
             className={fieldClassNames}
             isShownByDefault={false}

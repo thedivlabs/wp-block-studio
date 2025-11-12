@@ -1,16 +1,14 @@
-import {Button, Icon} from '@wordpress/components'
-import {IMAGE_BUTTON_STYLE} from 'Includes/config'
+import { Button, Icon } from '@wordpress/components';
+import { IMAGE_BUTTON_STYLE } from 'Includes/config';
 
-
-function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
-
+function PreviewThumbnail({ image = {}, callback, style = {}, onClick }) {
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
         width: '100%',
         height: '100%',
         objectFit: 'cover',
         pointerEvents: 'none',
-    }
+    };
 
     const emptyStyle = {
         border: '1px dashed lightgray',
@@ -23,43 +21,49 @@ function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
         textAlign: 'center',
     };
 
-    let thumbnail;
+    const isVideo = image?.type === 'video';
+    const hasUrl = !!image?.url;
 
-    if ('video' === image.type) {
-        thumbnail = <video preload={'metadata'} style={thumbnailStyle}>
-            <source src={image.url || '#'}
-                    type={'video/mp4'}
-            />
+    const thumbnail = isVideo ? (
+        <video preload="metadata" style={thumbnailStyle}>
+            <source src={image.url || '#'} type="video/mp4" />
         </video>
-    } else {
-        thumbnail = <img src={image.url || '#'}
-                         alt={''}
-                         style={thumbnailStyle}/>
+    ) : (
+        <img src={image.url || '#'} alt="" style={thumbnailStyle} />
+    );
+
+    // Empty state
+    if (!hasUrl) {
+        return (
+            <Button
+                onClick={onClick ?? (() => {})}
+                style={emptyStyle}
+                variant="secondary"
+            >
+                Choose {isVideo ? 'Video' : 'Image'}
+            </Button>
+        );
     }
 
-    if (image.url === undefined) {
-        return <Button onClick={onClick} style={emptyStyle}>Choose Image</Button>
-    } else {
-        return <div style={{
-            width: '100%',
-            display: 'flex',
-            position: 'relative',
-            cursor: 'pointer',
-            aspectRatio: '16/9',
-            overflow: 'hidden',
-            objectFit: 'cover',
-            borderRadius: '4px',
-            ...style,
-        }}
-                    onClick={() => {
-                        if (callback) {
-                            callback(image);
-                        }
-                    }}
+    // Thumbnail state
+    return (
+        <div
+            style={{
+                width: '100%',
+                display: 'flex',
+                position: 'relative',
+                cursor: 'pointer',
+                aspectRatio: '16/9',
+                overflow: 'hidden',
+                objectFit: 'cover',
+                borderRadius: '4px',
+                ...style,
+            }}
+            onClick={() => callback?.(image)}
         >
             {thumbnail}
             <Button
-                icon={'no-alt'}
+                icon={<Icon icon="no-alt" />}
                 style={{
                     position: 'absolute',
                     top: '4px',
@@ -79,13 +83,11 @@ function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
                     color: 'white',
                     minWidth: '0',
                     minHeight: '0',
-                    borderRadius: '4px'
-                }}>
-            </Button>
+                    borderRadius: '4px',
+                }}
+            />
         </div>
-    }
-
-
+    );
 }
 
-export default PreviewThumbnail
+export default PreviewThumbnail;

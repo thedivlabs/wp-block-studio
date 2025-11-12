@@ -280,12 +280,20 @@ function parseBackgroundProps(props = {}) {
             case 'background-blend-mode':
                 result['--blend'] = val;
                 break;
-            case 'mask-image':
-                result['--mask-image'] = `url(${val?.url ?? '#'})`;
+            case 'mask-image': {
+                const imageUrl =
+                    typeof val === 'object' && val?.url
+                        ? val.url
+                        : typeof val === 'string'
+                            ? val
+                            : null;
+
+                result['--mask-image'] = imageUrl ? `url(${imageUrl})` : 'none';
                 result['--mask-repeat'] = 'no-repeat';
                 result['--mask-size'] = props.maskSize || 'contain';
                 result['--mask-position'] = props.maskOrigin || 'center center';
                 break;
+            }
             case 'maskOrigin':
                 result['--mask-position'] = val;
                 break;

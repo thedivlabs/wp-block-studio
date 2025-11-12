@@ -141,7 +141,6 @@ export const Field = memo(({field, settings, callback}) => {
             break;
 
         case "box":
-            console.log(controlProps);
             control = (
                 <BoxControl
                     label={label}

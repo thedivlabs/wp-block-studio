@@ -412,15 +412,16 @@ const layoutFieldsMap = [
 
 const hoverFieldsMap = [
     {
-        type: 'text',
-        slug: 'background-color',
-        label: 'Background Color'
-    },
-    {
-        type: 'text',
-        slug: 'text-color',
-        label: 'Text Color'
-    },
+        type: "color",
+        slug: "colors",
+        label: "Colors",
+        full: true,
+        colors: [
+            { slug: "background-color", label: "Background" },
+            { slug: "color", label: "Text" },
+            { slug: "border-color", label: "Border" },
+        ],
+    }
 ];
 
 const backgroundFieldsMap = [

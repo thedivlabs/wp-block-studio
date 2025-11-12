@@ -1,5 +1,5 @@
 import {memo, useCallback} from "@wordpress/element";
-import {MediaUpload, MediaUploadCheck} from "@wordpress/block-editor";
+import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
 
@@ -43,6 +43,30 @@ export const Field = memo(({field, settings, callback}) => {
     controlProps.label = label;
 
     switch (type) {
+        case "color": {
+            const colorFields = controlProps.colors || [];
+
+            const colorSettings = colorFields.map((c) => ({
+                slug: c.slug,
+                label: c.label,
+                value: settings?.[c.slug] ?? "",
+                onChange: (newValue) => {
+                    // merge into this field’s settings object
+                    const next = { ...settings, [c.slug]: newValue };
+                    commit(next);
+                },
+            }));
+
+            control = (
+                <PanelColorSettings
+                    className="wpbs-field-color"
+                    enableAlpha
+                    colorSettings={colorSettings}
+                    __nextHasNoMarginBottom
+                />
+            );
+            break;
+        }
         case "range":
             control = (
                 <RangeControl
@@ -179,7 +203,7 @@ export const Field = memo(({field, settings, callback}) => {
                             allowedTypes={allowedTypes}
                             value={currentValue?.id}
                             onSelect={onSelect}
-                            render={({ open }) => (
+                            render={({open}) => (
                                 <PreviewThumbnail
                                     image={currentValue}
                                     onClick={open}

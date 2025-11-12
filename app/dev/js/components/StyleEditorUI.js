@@ -7,7 +7,7 @@ import {
 } from "@wordpress/element";
 import {
     Button,
-    __experimentalToolsPanel as ToolsPanel
+    __experimentalToolsPanel as ToolsPanel, PanelBody
 } from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 import _ from "lodash";
@@ -389,19 +389,17 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
                     {/* Hover */}
                     <div className="wpbs-layout-tools__panel">
-                        <ToolsPanel
-                            label={__("Hover")}
-                            resetAll={() => {
-                                const next = {...localLayout, hover: {}};
-                                updateLocalLayout(next, true);
-                            }}
+                        <PanelBody
+                            title={__("Hover")}
+                            initialOpen={Object.keys(localLayout.hover || {}).length > 0}
+                            className="wpbs-hover-controls"
                         >
                             <HoverFields
                                 settings={localLayout.hover}
                                 suppress={["padding", "margin", "gap"]}
                                 updateHoverItem={updateHoverItem}
                             />
-                        </ToolsPanel>
+                        </PanelBody>
                     </div>
 
                     {/* Breakpoints */}

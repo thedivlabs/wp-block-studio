@@ -283,7 +283,7 @@ function parseBackgroundProps(props = {}) {
                 result['--opacity'] = parseFloat(val) / 100;
                 break;
             case 'fade':
-                result['--fade'] = `linear-gradient(to bottom, #000000ff ${val}%, #00000000 100%)`;
+                result['--fade'] = val;
                 break;
             case 'max-height':
                 result['--max-height'] = val;
@@ -525,11 +525,9 @@ const backgroundFieldsMap = [
         full: true,
     },
     {
-        type: 'range',
+        type: 'gradient',
         slug: 'fade', // handled via pseudo-element overlay gradient
         label: 'Fade',
-        min:0,
-        max:100,
         full: true,
     },
 

@@ -435,6 +435,7 @@ const hoverFieldsMap = [
             { slug: "outline-color", label: "Outline" },
         ],
     },
+    { type: "shadow", slug: "shadow", label: "Shadow", full: true },
 ];
 
 const backgroundFieldsMap = [

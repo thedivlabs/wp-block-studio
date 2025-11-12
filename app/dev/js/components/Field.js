@@ -3,7 +3,7 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
 
-export const Field = memo(({field, settings, callback, isToolsPanel=true}) => {
+export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
@@ -52,7 +52,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel=true}) => {
                 value: settings?.[c.slug] ?? "",
                 onChange: (newValue) => {
                     // merge into this field’s settings object
-                    const next = { ...settings, [c.slug]: newValue };
+                    const next = {...settings, [c.slug]: newValue};
                     commit(next);
                 },
             }));
@@ -225,16 +225,16 @@ export const Field = memo(({field, settings, callback, isToolsPanel=true}) => {
             control = null;
     }
 
-    return control ? ( !!isToolsPanel ?
-        <ToolsPanelItem
-            hasValue={() => value !== undefined && value !== null}
-            label={label}
-            onDeselect={() => commit(null)}
-            onSelect={() => commit("")} // initialize with an empty string
-            className={fieldClassNames}
-            isShownByDefault={false}
-        >
-            {control}
-        </ToolsPanelItem> : control
+    return control ? (!!isToolsPanel ?
+            <ToolsPanelItem
+                hasValue={() => value !== undefined && value !== null}
+                label={label}
+                onDeselect={() => commit(null)}
+                onSelect={() => commit("")} // initialize with an empty string
+                className={fieldClassNames}
+                isShownByDefault={false}
+            >
+                {control}
+            </ToolsPanelItem> : control
     ) : null;
 });

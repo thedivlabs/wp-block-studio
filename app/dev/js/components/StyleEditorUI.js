@@ -57,6 +57,7 @@ const HoverFields = memo(({settings, suppress = [], updateHoverItem}) => {
                 field={field}
                 settings={settings}
                 callback={(v) => updateHoverItem({[field.slug]: v})}
+                isToolsPanel={false}
             />
         ));
 });

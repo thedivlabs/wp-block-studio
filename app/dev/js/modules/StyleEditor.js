@@ -526,7 +526,7 @@ const backgroundFieldsMap = [
     },
     {
         type: 'gradient',
-        slug: 'fade', // handled via pseudo-element overlay gradient
+        slug: 'fade',
         label: 'Fade',
         full: true,
     },

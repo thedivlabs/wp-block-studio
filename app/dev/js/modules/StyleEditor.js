@@ -419,7 +419,7 @@ const layoutFieldsMap = [
         label: 'Mask Size',
         options: IMAGE_SIZE_OPTIONS,
     },
-    { type: "shadow", slug: "shadow", label: "Shadow", full: true },
+    { type: "shadow", slug: "box-shadow", label: "Shadow", full: true },
 ];
 
 const hoverFieldsMap = [
@@ -435,7 +435,7 @@ const hoverFieldsMap = [
             { slug: "outline-color", label: "Outline" },
         ],
     },
-    { type: "shadow", slug: "shadow", label: "Shadow", full: true },
+    { type: "shadow", slug: "box-shadow", label: "Shadow", full: true },
 ];
 
 const backgroundFieldsMap = [

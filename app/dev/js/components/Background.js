@@ -12,7 +12,6 @@ import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
 
 
-
 export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
 
@@ -225,10 +224,6 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         const bpVideo = bpData?.background?.video;
         const bpForce = bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
-
-        console.log(size);
-        console.log(bpDefs);
-        console.log(bpKey);
 
         if (bpVideo?.url) {
             // Real video defined for this breakpoint

@@ -42,8 +42,8 @@ const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
     />
 ));
 
-const StyledAdvancedControls = memo(({settings, callback}) => (
-    <AdvancedControls settings={settings} callback={callback}/>
+const StyledAdvancedControls = memo(({settings, updateStyleSettings}) => (
+    <AdvancedControls settings={settings} updateStyleSettings={updateStyleSettings}/>
 ));
 
 export const withStyle = (Component) => (props) => {
@@ -187,7 +187,7 @@ export const withStyle = (Component) => (props) => {
             <InspectorControls group="advanced">
                 <StyledAdvancedControls
                     settings={settings ?? {}}
-                    callback={updateStyleSettings}
+                    updateStyleSettings={updateStyleSettings}
                 />
             </InspectorControls>
 

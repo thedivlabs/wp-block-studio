@@ -3,11 +3,10 @@ import _ from "lodash";
 import {__experimentalGrid as Grid, SelectControl, ToggleControl} from "@wordpress/components";
 import {ELEMENT_TAG_OPTIONS} from "Includes/config";
 
-export const AdvancedControls = ({settings = {}, callback}) => {
+export const AdvancedControls = ({settings = {}, updateStyleSettings}) => {
 
     const [localSettings, setLocalSettings] = useState(settings.advanced ?? {});
 
-    // Whenever local advanced changes, build full object and send up
     useEffect(() => {
         if (!_.isEqual(settings.advanced, localSettings)) {
             const nextFull = {
@@ -15,12 +14,10 @@ export const AdvancedControls = ({settings = {}, callback}) => {
                 advanced: localSettings,
             };
 
-            console.log(nextFull);
-            callback(nextFull); // ✅ full wpbs-style object
+            updateStyleSettings(nextFull); // ✅ full wpbs-style object
         }
     }, [localSettings]);
 
-    // Merge partials into local advanced state
     const commitSettings = useCallback(
         (nextPartial) => {
             const nextAdvanced = {

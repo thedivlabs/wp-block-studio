@@ -173,7 +173,7 @@ const BreakpointPanel = memo(
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     /* ----------------------------- Local state ----------------------------- */
     const [localLayout, setLocalLayout] = useState(
-        settings || {props: {}, breakpoints: {}, hover: {}, background: {}}
+        settings || {props: {}, breakpoints: {}, hover: {}, background: {}, advanced: {}}
     );
 
     /* --------------------------- Debounced updater ------------------------- */

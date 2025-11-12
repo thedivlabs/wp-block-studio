@@ -79,6 +79,7 @@ export const withStyle = (Component) => (props) => {
 
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
+
             // Ensure we always work with the full merged style object
             const mergedLayout = {
                 ...settings,
@@ -165,18 +166,10 @@ export const withStyle = (Component) => (props) => {
         [settings, setAttributes, blockGapDeps]
     );
 
-
-    // Create a debounced version that survives re-renders
-    const debouncedUpdateStyleSettings = useMemo(
-        () => _.debounce(updateStyleSettings, 150),
-        [updateStyleSettings]
-    );
-
     // Watch for changes in Gutenberg's native gap control
     useEffect(() => {
-        debouncedUpdateStyleSettings(settings);
-        // Cleanup to cancel pending debounce when unmounting or deps change
-        return () => debouncedUpdateStyleSettings.cancel();
+        updateStyleSettings(settings);
+
     }, [blockGapDeps]);
 
 
@@ -187,14 +180,14 @@ export const withStyle = (Component) => (props) => {
                 {isSelected && (
                     <StyleEditorPanel
                         settings={settings}
-                        updateStyleSettings={debouncedUpdateStyleSettings}
+                        updateStyleSettings={updateStyleSettings}
                     />
                 )}
             </InspectorControls>
             <InspectorControls group="advanced">
                 <StyledAdvancedControls
                     settings={settings ?? {}}
-                    callback={debouncedUpdateStyleSettings}
+                    callback={updateStyleSettings}
                 />
             </InspectorControls>
 

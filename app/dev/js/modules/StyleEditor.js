@@ -23,7 +23,7 @@ import _ from "lodash";
 
 const SPECIAL_FIELDS = [
     'gap', 'margin', 'transform', 'filter', 'hide-empty', 'required',
-    'offset-height', 'align-header', 'outline',
+    'offset-height', 'align-header', 'outline', 'box-shadow',
 
     'reveal-duration', 'reveal-easing', 'reveal-distance', 'reveal-anim', 'reveal-offset', 'reveal-delay',
 

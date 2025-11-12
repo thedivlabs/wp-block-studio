@@ -51,7 +51,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 label: c.label,
                 value: settings?.[slug]?.[c.slug] ?? "",
                 onChange: (newValue) => {
-
                     const next = { ...settings, [c.slug]: newValue };
                     commit(next);
                 },

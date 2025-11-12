@@ -153,6 +153,30 @@ class WPBS {
 		echo '</style>';
 	}
 
+	private function get_css_vars(): string {
+		$vars           = '';
+		$settings       = wp_get_global_settings()['custom'] ?? [];
+		$header_heights = $settings['header']['height'] ?? [];
+		$breakpoints    = $settings['breakpoints'] ?? [];
+
+		foreach ( $header_heights as $key => $height ) {
+			// Default (no media query)
+			if ( 'xs' === $key ) {
+				$vars .= ":root { --wpbs-header-height: {$height}; }\n";
+				continue;
+			}
+
+			// Look up breakpoint size
+			if ( isset( $breakpoints[ $key ]['size'] ) ) {
+				$min_width = intval( $breakpoints[ $key ]['size'] );
+				$vars      .= "@media (min-width: {$min_width}px) { :root { --wpbs-header-height: {$height}; } }\n";
+			}
+		}
+
+		return trim( $vars );
+	}
+
+
 	public function theme_assets(): void {
 
 		/* Theme Bundle */
@@ -160,6 +184,9 @@ class WPBS {
 			'wpbs-bundle-css',
 			self::$uri . 'build/bundle.css',
 		);
+
+		wp_add_inline_style( 'wpbs-bundle-css', $this->get_css_vars() );
+
 
 		/* Odometer */
 		wp_register_style( 'odometer-css', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-default.min.css', [], false );

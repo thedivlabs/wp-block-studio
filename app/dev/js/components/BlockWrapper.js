@@ -1,7 +1,7 @@
 import {memo, useCallback, useEffect, useState} from "@wordpress/element";
 import _ from "lodash";
 import {__experimentalGrid as Grid, ToggleControl} from "@wordpress/components";
-import {ElementTagControl} from "Components/ElementTag";
+import {ElementTagControl, getElementTag} from "Components/ElementTag";
 import {BackgroundElement} from "Components/Background";
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {

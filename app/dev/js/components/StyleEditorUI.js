@@ -180,7 +180,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     /* --------------------------- Debounced updater ------------------------- */
     const updateLocalLayout = useMemo(() => {
-        const debounced = _.debounce((next) => setLocalLayout(next), 600);
+        const debounced = _.debounce((next) => setLocalLayout(next), 100);
         return (nextLayout, commit = false) => {
             if (commit) {
                 debounced.cancel();

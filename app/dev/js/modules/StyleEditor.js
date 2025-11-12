@@ -17,7 +17,7 @@ import {
     DIMENSION_UNITS,
     ORIGIN_OPTIONS,
     IMAGE_SIZE_OPTIONS,
-    RESOLUTION_OPTIONS, BLEND_OPTIONS, REPEAT_OPTIONS
+    RESOLUTION_OPTIONS, BLEND_OPTIONS, REPEAT_OPTIONS, DIMENSION_UNITS_TEXT
 } from "Includes/config";
 import _ from "lodash";
 
@@ -359,7 +359,7 @@ const layoutFieldsMap = [
     {type: 'unit', slug: 'min-height-custom', label: 'Min-Height Custom'},
     {type: 'number', slug: 'opacity', label: 'Opacity'},
     {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
-    {type: 'unit', slug: 'order', label: 'Order'},
+    {type: 'number', slug: 'order', label: 'Order'},
     {
         type: 'box',
         slug: 'padding',
@@ -374,14 +374,16 @@ const layoutFieldsMap = [
     {type: 'select', slug: 'aspect-ratio', label: 'Shape', options: SHAPE_OPTIONS},
     {type: 'shadow', slug: 'shadow', label: 'Shadow'},
     {type: 'border', slug: 'outline', label: 'Outline'},
-    {type: 'unit', slug: 'font-size', label: 'Font Size'},
-    {type: 'unit', slug: 'flex-shrink', label: 'Shrink'},
+    {type: 'unit', slug: 'font-size', label: 'Font Size', units: DIMENSION_UNITS_TEXT},
+    {type: 'number', slug: 'flex-shrink', label: 'Shrink'},
     {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
     {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
     {
         type: 'box',
         slug: 'translate',
         label: 'Translate',
+        min: -1000,
+        max: 1000,
         options: {
             sides: ['top', 'left'],
             inputProps: {units: DIMENSION_UNITS},

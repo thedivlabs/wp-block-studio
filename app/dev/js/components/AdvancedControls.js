@@ -38,7 +38,7 @@ export const AdvancedControls = ({settings = {}, callback}) => {
         <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <SelectControl
-                    label={label || "HTML Tag"}
+                    label={"HTML Tag"}
                     value={localSettings?.tagName ?? ''}
                     options={ELEMENT_TAG_OPTIONS}
                     onChange={(tag) => commitSettings({tagName: tag})}

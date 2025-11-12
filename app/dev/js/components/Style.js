@@ -77,7 +77,7 @@ export const withStyle = (Component) => (props) => {
 
             // --- Base CSS object
             const cssObj = {
-                props: parseSpecialProps(cleanedNext.props || {}),
+                props: parseSpecialProps(cleanedNext.props || {}, attributes),
                 background: parseBackgroundProps(cleanedNext.background || {}),
                 hover: {},
                 breakpoints: {},
@@ -107,7 +107,7 @@ export const withStyle = (Component) => (props) => {
             // --- Breakpoints (responsive gaps handled separately)
             for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
                 cssObj.breakpoints[bpKey] = {
-                    props: parseSpecialProps(bpProps.props || {}),
+                    props: parseSpecialProps(bpProps.props || {}, attributes),
                     background: parseBackgroundProps(bpProps.background || {}),
                 };
             }

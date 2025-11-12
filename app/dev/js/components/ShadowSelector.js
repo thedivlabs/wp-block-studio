@@ -2,7 +2,6 @@ import {
     Dropdown,
     __experimentalGrid as Grid, BaseControl, Icon,
 } from "@wordpress/components";
-import React from "react";
 import {
     useSetting,
 } from "@wordpress/block-editor";

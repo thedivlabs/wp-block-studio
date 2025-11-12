@@ -1,6 +1,3 @@
-import {memo, useCallback, useEffect, useState} from "@wordpress/element";
-import _ from "lodash";
-import {__experimentalGrid as Grid, ToggleControl} from "@wordpress/components";
 import {getElementTag} from "Components/ElementTag";
 import {BackgroundElement} from "Components/Background";
 import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
@@ -12,9 +9,11 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
     const {className: userClass = '', style: blockStyle = {}, ...restWrapperProps} = wrapperProps;
     const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
-    const {props: layout = {}, background = {}, hover = {}} = settings;
+    const {props: layout = {}, background = {}, hover = {}, advanced = {}} = settings;
     const hasBackground =
         !!(background && (background.type || background.image || background.video));
+    const hasContainer = hasBackground || advanced.container;
+    const isContainer = !hasContainer && !!layout.container;
 
 
     const blockBaseName = name ? name.replace('/', '-') : '';
@@ -29,7 +28,8 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         layout['box-shadow'] && '--shadow',
         layout['required'] && '--required',
         layout['offset-header'] && '--offset-header',
-        layout['container'] && '--container',
+        hasContainer && '--has-container',
+        isContainer && 'wpbs-container',
         layout['reveal'] && '--reveal',
         layout['transition'] && '--transition',
         layout['content-visibility'] && '--content-visibility',
@@ -74,8 +74,7 @@ export const BlockWrapper = ({
     const Tag = getElementTag(advanced?.tagName, tagName);
 
     const isBackgroundActive = hasBackground && settings?.background?.type;
-    const isContainer = settings?.advanced?.container;
-    const hasContainer = isContainer || isBackgroundActive;
+    const hasContainer = isBackgroundActive || settings?.advanced?.container;
 
     const containerClass = [
         blockBaseName ? `${blockBaseName}__container` : null,

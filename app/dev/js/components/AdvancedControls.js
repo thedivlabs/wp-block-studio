@@ -7,18 +7,23 @@ export const AdvancedControls = ({settings = {}, callback}) => {
 
     const [localSettings, setLocalSettings] = useState(settings.advanced ?? {});
 
-    // Keep local in sync with external settings
+    // Keep local in sync with external updates
     useEffect(() => {
         setLocalSettings(settings.advanced ?? {});
     }, [settings.advanced]);
 
-    // Notify parent when local changes
+    // Whenever local advanced changes, build full object and send up
     useEffect(() => {
         if (!_.isEqual(settings.advanced, localSettings)) {
-            callback({advanced: localSettings});
+            const nextFull = {
+                ...settings,
+                advanced: localSettings,
+            };
+            callback(nextFull); // ✅ full wpbs-style object
         }
-    }, [localSettings]);
+    }, [localSettings, settings, callback]);
 
+    // Merge partials into local advanced state
     const commitSettings = useCallback(
         (nextPartial) => {
             const nextAdvanced = {

@@ -78,83 +78,30 @@ export const withStyle = (Component) => (props) => {
     }, [clientId, settings, blockGapDeps]);
 
     // --- Reactive version of updateStyleSettings
-    const updateStyleSettings = useCallback(
-        (nextLayout) => {
+    const updateStyleSettings = useCallback((nextStyle) => {
+        const cleanedNext = cleanObject(nextStyle, true);
+        const cleanedCurrent = cleanObject(settings, true);
 
-            const mergedLayout = {
-                ...settings,
-                ...nextLayout,
-                advanced: {
-                    ...settings.advanced,
-                    ...nextLayout.advanced,
-                },
+        const cssObj = {
+            props: parseSpecialProps(cleanedNext.props || {}),
+            background: parseBackgroundProps(cleanedNext.background || {}),
+            hover: parseSpecialProps(cleanedNext.hover || {}),
+            breakpoints: {},
+            custom: cleanObject(cssPropsRef.current || {}, true),
+        };
+
+        for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
+            cssObj.breakpoints[bpKey] = {
+                props: parseSpecialProps(bpProps.props || {}),
+                background: parseBackgroundProps(bpProps.background || {}),
             };
+        }
 
-            console.log(mergedLayout);
-
-            const cleanedNext = cleanObject(mergedLayout, true);
-            const cleanedCurrent = cleanObject(settings, true);
-
-
-            // Bail if nothing meaningful changed
-            //if (_.isEqual(cleanedNext, cleanedCurrent)) return;
-
-            // --- Base CSS object
-            const cssObj = {
-                props: parseSpecialProps(cleanedNext.props || {}),
-                background: parseBackgroundProps(cleanedNext.background || {}),
-                hover: {},
-                breakpoints: {},
-                custom: cleanObject(cssPropsRef.current || {}, true),
-            };
-
-            // --- Add default Gutenberg gap from attributes.style
-            const blockGap = attributes?.style?.spacing?.blockGap;
-            if (blockGap) {
-                const rowGapVal =
-                    blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined);
-                const columnGapVal =
-                    blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined);
-
-                if (rowGapVal) {
-                    const gap = getCSSFromStyle(rowGapVal);
-                    cssObj.props['--row-gap'] = gap;
-                    cssObj.props['row-gap'] = gap;
-                }
-                if (columnGapVal) {
-                    const gap = getCSSFromStyle(columnGapVal);
-                    cssObj.props['--column-gap'] = gap;
-                    cssObj.props['column-gap'] = gap;
-                }
-            }
-
-
-            // --- Breakpoints (responsive gaps handled separately)
-            for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
-                cssObj.breakpoints[bpKey] = {
-                    props: parseSpecialProps(bpProps.props || {}),
-                    background: parseBackgroundProps(bpProps.background || {}),
-                };
-            }
-
-            // --- Hover styles
-            if (cleanedNext.hover) {
-                cssObj.hover = parseSpecialProps(cleanedNext.hover, attributes);
-            }
-
-            // --- Compare and apply
-            const cleanedCss = cleanObject(cssObj, true);
-            const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
-
-            if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
-                setAttributes({
-                    'wpbs-style': nextLayout,
-                    'wpbs-css': cleanedCss,
-                });
-            }
-        },
-        [settings, setAttributes, blockGapDeps]
-    );
+        setAttributes({
+            'wpbs-style': cleanedNext,
+            'wpbs-css': cleanObject(cssObj, true),
+        });
+    }, [settings, setAttributes]);
 
     // Create a debounced version that survives re-renders
     const debouncedUpdateStyleSettings = useMemo(

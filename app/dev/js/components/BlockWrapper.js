@@ -49,6 +49,8 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
             'data-aos-distance': layout?.['reveal-distance'] ?? null,
             'data-aos-duration': layout?.['reveal-duration'] ?? null,
             'data-aos-easing': layout?.['reveal-easing'] ?? null,
+            'data-aos-offset': layout?.['reveal-offset'] ?? null,
+            'data-aos-delay': layout?.['reveal-delay'] ?? null,
         })
             .filter(Boolean)
     );

@@ -290,6 +290,7 @@ class WPBS {
 
 	public function view_assets(): void {
 		wp_enqueue_style( 'wpbs-bundle-css' );
+		wp_enqueue_style( 'aos-css' );
 		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
 		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );

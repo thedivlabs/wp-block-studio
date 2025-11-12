@@ -16,7 +16,7 @@ export const AdvancedControls = ({settings = {}, callback}) => {
             };
             callback(nextFull); // ✅ full wpbs-style object
         }
-    }, [localSettings, settings, callback]);
+    }, [localSettings, callback]);
 
     // Merge partials into local advanced state
     const commitSettings = useCallback(

@@ -75,8 +75,6 @@ export const withStyle = (Component) => (props) => {
             const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
-            console.log(cleanedNext);
-
             // --- Base CSS object
             const cssObj = {
                 props: parseSpecialProps(cleanedNext.props || {}),

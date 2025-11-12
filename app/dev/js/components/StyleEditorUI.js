@@ -62,7 +62,7 @@ const HoverFields = memo(({settings, suppress = [], updateHoverItem}) => {
                     isToolsPanel={false}
                 />
             ))}
-    </Grid> ;
+    </Grid>;
 });
 
 /* -------------------------------------------------------------------------- */
@@ -155,6 +155,7 @@ const BreakpointPanel = memo(
                         updateFn={(newProps) =>
                             updateBreakpointItem({props: newProps}, bpKey)
                         }
+                        suppress={['container']}
                     />
 
                 </ToolsPanel>
@@ -379,7 +380,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             <LayoutFields
                                 bpKey="layout"
                                 settings={localLayout.props}
-                                suppress={["padding", "margin", "gap", "outline", 'radius','font-size','text-align','box-shadow']}
+                                suppress={["padding", "margin", "gap", "outline", 'radius', 'font-size', 'text-align', 'shadow']}
                                 updateFn={(p) => updateLayoutItem(p)}
                             />
                         </ToolsPanel>

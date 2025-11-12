@@ -138,6 +138,22 @@ class WPBS_Blocks {
 			$bg_css      .= "{$bg_selector} { " . $props_to_css( $parsed_css['background'] ) . " } ";
 		}
 
+		// hover (mirror JS: selector:hover { rules })
+		if ( ! empty( $parsed_css['hover'] ) && is_array( $parsed_css['hover'] ) ) {
+			// Make hover strong enough to win typical block styles.
+			// props_to_css will add !important for keys in the allowlist when $important = true.
+			$css .= "{$selector}:hover { " . $props_to_css(
+					$parsed_css['hover'],
+					true, // $important
+					// keys that should reliably win on hover
+					[ 'color', 'background-color', 'border-color', 'outline-color',
+						'width','min-width','max-width','height','min-height','max-height',
+						'padding','margin','gap','font-size','line-height','letter-spacing',
+						'border-width','border-radius','opacity','box-shadow','filter'
+					]
+				) . " } ";
+		}
+
 		// breakpoints
 		if ( ! empty( $parsed_css['breakpoints'] ) && is_array( $parsed_css['breakpoints'] ) ) {
 			foreach ( $parsed_css['breakpoints'] as $bp_key => $bp_props ) {

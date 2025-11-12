@@ -9,7 +9,15 @@ export const AdvancedControls = ({settings = {}, callback}) => {
 
     // Sync local state if parent settings change externally
     useEffect(() => {
-        callback(localSettings);
+
+        const nextSettings = {
+            ...settings,
+            advanced: localSettings,
+        }
+        if (!_.isEqual(settings, nextSettings)) {
+            callback(nextSettings);
+        }
+
     }, [localSettings]);
 
     const commitSettings = useCallback(
@@ -31,7 +39,7 @@ export const AdvancedControls = ({settings = {}, callback}) => {
         <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <ElementTagControl
-                    value={localSettings?.tagName ?? 'div'}
+                    value={localSettings?.tagName ?? ''}
                     label="HTML Tag"
                     onChange={(tag) => commitSettings({tagName: tag})}
                 />

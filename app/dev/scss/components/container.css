@@ -6,7 +6,7 @@
 
   &.wpbs-layout-wrapper {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: inherit;
     flex-direction: inherit;
     justify-content: inherit;

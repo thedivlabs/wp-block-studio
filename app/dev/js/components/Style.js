@@ -81,16 +81,9 @@ export const withStyle = (Component) => (props) => {
     const updateStyleSettings = useCallback(
         (nextLayout) => {
 
-            const mergedLayout = {
-                ...settings,
-                ...nextLayout,
-                advanced: {
-                    ...settings.advanced,
-                    ...nextLayout.advanced,
-                },
-            };
+            console.log(nextLayout);
 
-            const cleanedNext = cleanObject(mergedLayout, true);
+            const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
 
@@ -182,15 +175,7 @@ export const withStyle = (Component) => (props) => {
             <InspectorControls group="advanced">
                 <StyledAdvancedControls
                     settings={settings ?? {}}
-                    callback={(nextAdvanced) =>
-                        updateStyleSettings({
-                            ...settings,
-                            advanced: {
-                                ...settings.advanced,
-                                ...nextAdvanced,
-                            },
-                        })
-                    }
+                    callback={updateStyleSettings}
                 />
             </InspectorControls>
 

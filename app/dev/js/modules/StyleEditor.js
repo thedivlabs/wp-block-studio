@@ -391,6 +391,7 @@ const layoutFieldsMap = [
         full: true,
     },
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
+    {type: 'unit', slug: 'transition-duration', label: 'Duration', units: [{value: 'ms', label: 'ms', default: 0}],},
     {type: 'select', slug: 'reveal-anim', label: 'Reveal Animation', options: REVEAL_ANIMATION_OPTIONS},
     {type: 'number', slug: 'reveal-duration', label: 'Reveal Duration'},
     {type: 'number', slug: 'reveal-delay', label: 'Reveal Delay'},

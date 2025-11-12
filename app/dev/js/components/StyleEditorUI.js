@@ -173,36 +173,42 @@ const BreakpointPanel = memo(
 /* Main Component */
 /* -------------------------------------------------------------------------- */
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
-    /* ----------------------------- Local state ----------------------------- */
     const [localLayout, setLocalLayout] = useState(
         settings || {props: {}, breakpoints: {}, hover: {}, background: {}, advanced: {}}
     );
 
-    /* --------------------------- Debounced updater ------------------------- */
-    const updateLocalLayout = useMemo(() => {
-        const debounced = _.debounce((next) => setLocalLayout(next), 200);
-        return (nextLayout, commit = false) => {
-            if (commit) {
-                debounced.cancel();
-                setLocalLayout(nextLayout);
-            } else {
-                debounced(nextLayout);
-            }
-        };
+    /* --------------------------- Immediate updater -------------------------- */
+    const updateLocalLayout = useCallback((nextLayout, commit = false) => {
+        setLocalLayout(nextLayout);
     }, []);
 
-    useEffect(() => {
-        return () => updateLocalLayout.cancel?.();
-    }, [updateLocalLayout]);
+    /* -------------------------- Debounced HOC sync -------------------------- */
+    const debouncedSync = useMemo(
+        () =>
+            _.debounce((next) => {
+                const cleanedLocal = cleanObject(next ?? {}, true);
+                const cleanedSettings = cleanObject(settings ?? {}, true);
+                if (!_.isEqual(cleanedLocal, cleanedSettings)) {
+                    updateStyleSettings(next);
+                }
+            }, 250),
+        [settings, updateStyleSettings]
+    );
 
-    /* -------------------------- Sync to HOC props -------------------------- */
     useEffect(() => {
+        debouncedSync(localLayout);
+        return () => debouncedSync.cancel();
+    }, [localLayout, debouncedSync]);
+
+    /* ---------------------------- Sync external ---------------------------- */
+    useEffect(() => {
+        // Keep local state aligned if settings change externally
         const cleanedLocal = cleanObject(localLayout ?? {}, true);
         const cleanedSettings = cleanObject(settings ?? {}, true);
         if (!_.isEqual(cleanedLocal, cleanedSettings)) {
-            updateStyleSettings(localLayout);
+            setLocalLayout(settings);
         }
-    }, [localLayout, settings, updateStyleSettings]);
+    }, [settings]);
 
     /* ----------------------------- Breakpoints ----------------------------- */
     const breakpoints = useMemo(() => {

@@ -111,6 +111,16 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
         if (SPECIAL_FIELDS.includes(key)) {
             switch (key) {
+                case 'colors': {
+                    if (typeof val === 'object') {
+                        Object.entries(val).forEach(([colorKey, colorVal]) => {
+                            if (colorVal) {
+                                result[colorKey] = colorVal;
+                            }
+                        });
+                    }
+                    break;
+                }
                 case 'margin':
                 case 'padding':
                     if (typeof val === 'object') {

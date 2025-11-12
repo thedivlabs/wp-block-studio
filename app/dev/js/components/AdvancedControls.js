@@ -3,32 +3,19 @@ import _ from "lodash";
 import {__experimentalGrid as Grid, SelectControl, ToggleControl} from "@wordpress/components";
 import {ELEMENT_TAG_OPTIONS} from "Includes/config";
 
-export const AdvancedControls = ({settings = {}, updateStyleSettings}) => {
-
-    const [localSettings, setLocalSettings] = useState(settings.advanced ?? {});
-
-    useEffect(() => {
-        if (!_.isEqual(settings.advanced, localSettings)) {
-            const nextFull = {
-                ...settings,
-                advanced: localSettings,
-            };
-
-            updateStyleSettings(nextFull); // ✅ full wpbs-style object
-        }
-    }, [localSettings]);
+export const AdvancedControls = ({settings = {}, callback}) => {
 
     const commitSettings = useCallback(
         (nextPartial) => {
             const nextAdvanced = {
-                ...localSettings,
+                ...settings,
                 ...nextPartial,
             };
-            if (!_.isEqual(localSettings, nextAdvanced)) {
-                setLocalSettings(nextAdvanced);
+            if (!_.isEqual(settings, nextAdvanced)) {
+                callback(nextPartial)
             }
         },
-        [localSettings]
+        [settings]
     );
 
     return (
@@ -36,7 +23,7 @@ export const AdvancedControls = ({settings = {}, updateStyleSettings}) => {
             <Grid columns={2} columnGap={15} rowGap={20}>
                 <SelectControl
                     label={"HTML Tag"}
-                    value={localSettings?.tagName ?? ''}
+                    value={settings?.tagName ?? ''}
                     options={ELEMENT_TAG_OPTIONS}
                     onChange={(tag) => commitSettings({tagName: tag})}
                     __next40pxDefaultSize
@@ -48,13 +35,13 @@ export const AdvancedControls = ({settings = {}, updateStyleSettings}) => {
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Hide if Empty"
-                    checked={!!localSettings?.['hide-empty']}
+                    checked={!!settings?.['hide-empty']}
                     onChange={(checked) => commitSettings({'hide-empty': !!checked})}
                 />
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Required"
-                    checked={!!localSettings?.required}
+                    checked={!!settings?.required}
                     onChange={(checked) => commitSettings({required: !!checked})}
                 />
             </Grid>
@@ -63,13 +50,13 @@ export const AdvancedControls = ({settings = {}, updateStyleSettings}) => {
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Offset Header"
-                    checked={!!localSettings?.['offset-header']}
+                    checked={!!settings?.['offset-header']}
                     onChange={(checked) => commitSettings({'offset-header': !!checked})}
                 />
                 <ToggleControl
                     __nextHasNoMarginBottom
                     label="Container"
-                    checked={!!localSettings?.container}
+                    checked={!!settings?.container}
                     onChange={(checked) => commitSettings({container: !!checked})}
                 />
             </Grid>

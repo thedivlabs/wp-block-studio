@@ -1,11 +1,7 @@
 import {Fragment, memo, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
-import {
-    InspectorControls,
-} from '@wordpress/block-editor';
 import {StyleEditorUI} from "Includes/style";
 import _, {isEqual} from 'lodash';
 import {BlockWrapper} from 'Components/BlockWrapper';
-import {AdvancedControls} from 'Components/AdvancedControls';
 
 
 export const STYLE_ATTRIBUTES = {
@@ -34,18 +30,6 @@ const getDataProps = (props) => {
     return {...props, styleData: data};
 };
 
-
-const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
-    <StyleEditorUI
-        settings={settings}
-        updateStyleSettings={updateStyleSettings}
-    />
-));
-
-const StyledAdvancedControls = memo(({settings, updateStyleSettings}) => (
-    <AdvancedControls settings={settings} updateStyleSettings={updateStyleSettings}/>
-));
-
 export const withStyle = (Component) => (props) => {
     const cssPropsRef = useRef({});
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
@@ -59,6 +43,13 @@ export const withStyle = (Component) => (props) => {
         hover: {},
         background: {},
     };
+
+    const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
+        <StyleEditorUI
+            settings={settings}
+            updateStyleSettings={updateStyleSettings}
+        />
+    ));
 
     const blockCss = useCallback((newProps = {}) => {
         cssPropsRef.current = newProps || {};
@@ -80,35 +71,11 @@ export const withStyle = (Component) => (props) => {
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
 
-            // Ensure we always work with the full merged style object
-            const mergedLayout = {
-                ...settings,
-                ...nextLayout,
-                props: {
-                    ...(settings.props ?? {}),
-                    ...(nextLayout.props ?? {}),
-                },
-                background: {
-                    ...(settings.background ?? {}),
-                    ...(nextLayout.background ?? {}),
-                },
-                hover: {
-                    ...(settings.hover ?? {}),
-                    ...(nextLayout.hover ?? {}),
-                },
-                breakpoints: {
-                    ...(settings.breakpoints ?? {}),
-                    ...(nextLayout.breakpoints ?? {}),
-                },
-                advanced: {
-                    ...(settings.advanced ?? {}),
-                    ...(nextLayout.advanced ?? {}),
-                },
-            };
 
-            // Clean versions for comparison
-            const cleanedNext = cleanObject(mergedLayout, true);
+            const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
+
+            console.log(cleanedNext);
 
             // --- Base CSS object
             const cssObj = {
@@ -158,7 +125,7 @@ export const withStyle = (Component) => (props) => {
 
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
                 setAttributes({
-                    'wpbs-style': mergedLayout,
+                    'wpbs-style': nextLayout,
                     'wpbs-css': cleanedCss,
                 });
             }
@@ -176,20 +143,10 @@ export const withStyle = (Component) => (props) => {
     return (
         <>
             {StyledComponent}
-            <InspectorControls group="styles">
-                {isSelected && (
-                    <StyleEditorPanel
-                        settings={settings}
-                        updateStyleSettings={updateStyleSettings}
-                    />
-                )}
-            </InspectorControls>
-            <InspectorControls group="advanced">
-                <StyledAdvancedControls
-                    settings={settings ?? {}}
-                    updateStyleSettings={updateStyleSettings}
-                />
-            </InspectorControls>
+            <StyleEditorPanel
+                settings={settings}
+                updateStyleSettings={updateStyleSettings}
+            />
 
         </>
     );

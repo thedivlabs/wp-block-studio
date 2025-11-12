@@ -13,6 +13,8 @@ import {__} from "@wordpress/i18n";
 import _ from "lodash";
 import {Field} from "Components/Field";
 import {BackgroundControls} from "./Background";
+import {InspectorControls} from "@wordpress/block-editor";
+import {AdvancedControls} from 'Components/AdvancedControls';
 
 
 const API = window?.WPBS_StyleEditor ?? {};
@@ -244,6 +246,17 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         [localLayout, updateLocalLayout]
     );
 
+    const updateAdvancedItem = useCallback(
+        (newProps) => {
+            const next = {
+                ...localLayout,
+                advanced: {...localLayout.advanced, ...newProps},
+            };
+            updateLocalLayout(next);
+        },
+        [localLayout, updateLocalLayout]
+    );
+
     const updateBackgroundItem = useCallback(
         (newProps, reset = false) => {
             const next = {
@@ -338,78 +351,86 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
 
     /* ------------------------------- Render -------------------------------- */
     return (
-        <div className="wpbs-layout-tools">
-            {/* Layout */}
-            <div className="wpbs-layout-tools__panel">
-                <ToolsPanel
-                    label={__("Layout")}
-                    resetAll={() => {
-                        const next = {...localLayout, props: {}};
-                        updateLocalLayout(next, true);
-                    }}
-                >
-                    <LayoutFields
-                        bpKey="layout"
-                        settings={localLayout.props}
-                        suppress={["padding", "margin", "gap", "outline"]}
-                        updateFn={(p) => updateLayoutItem(p)}
-                    />
-                </ToolsPanel>
+        <>
+            <InspectorControls group="advanced">
+                <AdvancedControls settings={localLayout.advanced} callback={updateAdvancedItem}/>
+            </InspectorControls>
+            <InspectorControls group="styles">
+                <div className="wpbs-layout-tools">
+                    {/* Layout */}
+                    <div className="wpbs-layout-tools__panel">
+                        <ToolsPanel
+                            label={__("Layout")}
+                            resetAll={() => {
+                                const next = {...localLayout, props: {}};
+                                updateLocalLayout(next, true);
+                            }}
+                        >
+                            <LayoutFields
+                                bpKey="layout"
+                                settings={localLayout.props}
+                                suppress={["padding", "margin", "gap", "outline"]}
+                                updateFn={(p) => updateLayoutItem(p)}
+                            />
+                        </ToolsPanel>
 
-                <BackgroundControls
-                    settings={localLayout.background}
-                    callback={(newProps, reset) => updateBackgroundItem(newProps, reset)}
-                />
+                        <BackgroundControls
+                            settings={localLayout.background}
+                            callback={(newProps, reset) => updateBackgroundItem(newProps, reset)}
+                        />
 
-            </div>
+                    </div>
 
-            {/* Hover */}
-            <div className="wpbs-layout-tools__panel">
-                <ToolsPanel
-                    label={__("Hover")}
-                    resetAll={() => {
-                        const next = {...localLayout, hover: {}};
-                        updateLocalLayout(next, true);
-                    }}
-                >
-                    <HoverFields
-                        settings={localLayout.hover}
-                        suppress={["padding", "margin", "gap"]}
-                        updateHoverItem={updateHoverItem}
-                    />
-                </ToolsPanel>
-            </div>
+                    {/* Hover */}
+                    <div className="wpbs-layout-tools__panel">
+                        <ToolsPanel
+                            label={__("Hover")}
+                            resetAll={() => {
+                                const next = {...localLayout, hover: {}};
+                                updateLocalLayout(next, true);
+                            }}
+                        >
+                            <HoverFields
+                                settings={localLayout.hover}
+                                suppress={["padding", "margin", "gap"]}
+                                updateHoverItem={updateHoverItem}
+                            />
+                        </ToolsPanel>
+                    </div>
 
-            {/* Breakpoints */}
-            {breakpointKeys.map((bpKey) => (
-                <BreakpointPanel
-                    key={bpKey}
-                    bpKey={bpKey}
-                    data={localLayout.breakpoints[bpKey] || {props: {}, background: {}}}
-                    localLayout={localLayout}  // ✅ make sure this is passed
-                    breakpoints={breakpoints}
-                    breakpointKeys={breakpointKeys}
-                    updateLocalLayout={updateLocalLayout}
-                    updateBreakpointItem={updateBreakpointItem}
-                    removeBreakpointPanel={removeBreakpointPanel}
-                />
-            ))}
+                    {/* Breakpoints */}
+                    {breakpointKeys.map((bpKey) => (
+                        <BreakpointPanel
+                            key={bpKey}
+                            bpKey={bpKey}
+                            data={localLayout.breakpoints[bpKey] || {props: {}, background: {}}}
+                            localLayout={localLayout}  // ✅ make sure this is passed
+                            breakpoints={breakpoints}
+                            breakpointKeys={breakpointKeys}
+                            updateLocalLayout={updateLocalLayout}
+                            updateBreakpointItem={updateBreakpointItem}
+                            removeBreakpointPanel={removeBreakpointPanel}
+                        />
+                    ))}
 
 
-            {/* Add Breakpoint */}
-            <Button
-                variant="primary"
-                onClick={addBreakpointPanel}
-                style={{
-                    borderRadius: "4px",
-                    width: "100%",
-                    textAlign: "center",
-                    gridColumn: "1/-1",
-                }}
-                disabled={breakpointKeys.length >= 3}
-            >
-                {__("Add Breakpoint")}
-            </Button>
-        </div>
+                    {/* Add Breakpoint */}
+                    <Button
+                        variant="primary"
+                        onClick={addBreakpointPanel}
+                        style={{
+                            borderRadius: "4px",
+                            width: "100%",
+                            textAlign: "center",
+                            gridColumn: "1/-1",
+                        }}
+                        disabled={breakpointKeys.length >= 3}
+                    >
+                        {__("Add Breakpoint")}
+                    </Button>
+                </div>
+            </InspectorControls>
+        </>
+
     );
 };

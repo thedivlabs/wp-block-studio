@@ -156,7 +156,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                     </BaseControl>
 
                     <PanelColorSettings
-                        className={'wpbs-background-controls__color'}
+                        className={'wpbs-controls__color'}
                         enableAlpha
                         colorSettings={[
                             {

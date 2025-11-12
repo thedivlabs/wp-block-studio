@@ -62,7 +62,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
             control = (
                 <PanelColorSettings
-                    className="wpbs-field-color"
+                    className={'wpbs-controls__color'}
                     enableAlpha
                     colorSettings={colorSettings}
                     __nextHasNoMarginBottom

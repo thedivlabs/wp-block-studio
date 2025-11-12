@@ -17,6 +17,16 @@
       border: 0 !important;
     }
 
+    .wpbs-controls__color {
+      margin: 0 !important;
+      border: none !important;
+      padding: 0 !important;
+
+      & > div {
+        margin: 0 !important;
+      }
+    }
+
     .components-panel__body-toggle > span {
       position: relative;
       display: flex;
@@ -79,16 +89,6 @@
 
       &.is-opened > .components-panel__body-title {
         margin-bottom: 18px;
-      }
-
-      .wpbs-background-controls__color {
-        margin: 0 !important;
-        border: none !important;
-        padding: 0 !important;
-
-        & > div {
-          margin: 0 !important;
-        }
       }
 
     }

@@ -23,10 +23,9 @@ import _ from "lodash";
 
 const SPECIAL_FIELDS = [
     'gap', 'margin', 'box-shadow', 'transform', 'filter', 'hide-empty', 'required',
-    'offset-height', 'align-header', 'outline', 'duration', 'reveal', 'reveal-easing',
-    'reveal-duration', 'reveal-offset', 'reveal-distance', 'reveal-repeat', 'reveal-mirror',
-    'transition', 'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
-    'basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
+    'offset-height', 'align-header', 'outline', 'reveal-offset', 'reveal-distance',
+    'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
+    'flex-basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
     'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
     'text-decoration-color', 'position', 'container', 'padding', 'shadow', 'border',
     'border-radius', 'background-color'
@@ -200,19 +199,6 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     break;
                 }
 
-                case 'transition': {
-                    const transitions = Array.isArray(val) ? [...val] : [val];
-                    if (transitions.includes('color') && !transitions.includes('text-decoration-color')) {
-                        transitions.push('text-decoration-color');
-                    }
-                    result['transition-property'] = transitions.join(', ');
-                    break;
-                }
-
-                case 'duration':
-                    result['transition-duration'] = val;
-                    break;
-
                 case 'text-color':
                     result['color'] = val;
                     break;
@@ -232,6 +218,16 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'align-header':
                     result['top'] = 'var(--wpbs-header-height, auto)';
+                    break;
+
+                case 'reveal-offset':
+                    result['--reveal-offset'] = val;
+                    break;
+                case 'reveal-distance':
+                    result['--reveal-distance'] = val;
+                    break;
+                case 'reveal-anim':
+                    result['--reveal-anim'] = val;
                     break;
 
                 default:
@@ -317,7 +313,6 @@ function parseBackgroundProps(props = {}) {
     return result;
 }
 
-
 const layoutFieldsMap = [
     {type: 'heading', label: 'Flex Settings FPO'},
     {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},
@@ -385,11 +380,9 @@ const layoutFieldsMap = [
         full: true,
     },
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
-    {type: 'number', slug: 'reveal-duration', label: 'Reveal Duration'},
-    {type: 'select', slug: 'reveal-easing', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
-    //{type: 'toggle', slug: 'reveal-mirror', label: 'Reveal Mirror'},
+    {type: 'number', slug: 'transition-duration', label: 'Reveal Duration'},
+    {type: 'select', slug: 'transition-timing-function', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
     {type: 'unit', slug: 'reveal-offset', label: 'Reveal Offset'},
-    //{type: 'toggle', slug: 'reveal-repeat', label: 'Reveal Repeat'},
     {type: 'unit', slug: 'reveal-distance', label: 'Reveal Distance'},
     {type: 'select', slug: 'reveal-anim', label: 'Reveal Animation', options: REVEAL_ANIMATION_OPTIONS},
     {type: 'number', slug: 'z-index', label: 'Z Index'},

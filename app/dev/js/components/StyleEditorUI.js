@@ -7,7 +7,8 @@ import {
 } from "@wordpress/element";
 import {
     Button,
-    __experimentalToolsPanel as ToolsPanel, PanelBody
+    __experimentalToolsPanel as ToolsPanel, PanelBody,
+    __experimentalGrid as Grid
 } from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 import _ from "lodash";
@@ -49,17 +50,19 @@ const LayoutFields = memo(({bpKey, settings, suppress = [], updateFn}) => {
 const HoverFields = memo(({settings, suppress = [], updateHoverItem}) => {
     const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-    return map
-        .filter((f) => !suppress.includes(f.slug))
-        .map((field) => (
-            <Field
-                key={field.slug}
-                field={field}
-                settings={settings}
-                callback={(v) => updateHoverItem(v)}
-                isToolsPanel={false}
-            />
-        ));
+    return <Grid columns={1} rowGap={15}>
+        {map
+            .filter((f) => !suppress.includes(f.slug))
+            .map((field) => (
+                <Field
+                    key={field.slug}
+                    field={field}
+                    settings={settings}
+                    callback={(v) => updateHoverItem(v)}
+                    isToolsPanel={false}
+                />
+            ))}
+    </Grid> ;
 });
 
 /* -------------------------------------------------------------------------- */

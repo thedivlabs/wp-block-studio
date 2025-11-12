@@ -270,8 +270,11 @@ function parseBackgroundProps(props = {}) {
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
         switch (key) {
+            case 'background-size':
+                result['--size'] = val;
+                break;
             case 'scale':
-                result['--size'] = `${parseFloat(val)}%`;
+                result['--scale'] = `${parseFloat(val)}%`;
                 break;
             case 'opacity':
                 result['--opacity'] = parseFloat(val) / 100;

@@ -276,9 +276,8 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
-    const {background: settings = {}} = attributes?.['wpbs-style'] ?? {};
-    const baseBg = settings?.background ?? {};
-    const breakpoints = settings?.breakpoints ?? {};
+    const baseBg = attributes?.['wpbs-style']?.background;
+    const breakpoints = attributes?.['wpbs-style']?.breakpoints ?? {};
 
     const hasAnyBackground = (() => {
         // Base background
@@ -292,12 +291,11 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
         return false;
     })();
 
-    // If *no* breakpoint defines a type, don’t render the background wrapper at all
     if (!hasAnyBackground) return null;
 
     const bgClass = [
         'wpbs-background',
-        !settings.eager ? '--lazy' : null,
+        //!settings.eager ? '--lazy' : null,
         'absolute top-0 left-0 w-full h-full z-0 pointer-events-none',
     ].filter(x => x).join(' ');
 

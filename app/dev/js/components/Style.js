@@ -171,68 +171,75 @@ const BlockWrapper = ({
     );
 };
 
-const AdvancedControls = memo(({settings, callback}) => {
+const AdvancedControls = memo(({settings = {}, callback}) => {
+    // Keep only the advanced section in local state
+    const [localSettings, setLocalSettings] = useState(settings.advanced ?? {});
 
-    const [localSettings, setLocalSettings] = useState(settings?.advanced ?? {});
+    // Sync local state if parent settings change externally
+    useEffect(() => {
+        setLocalSettings(settings.advanced ?? {});
+    }, [settings.advanced]);
 
+    const commitSettings = useCallback(
+        (nextPartial) => {
+            const nextAdvanced = {
+                ...localSettings,
+                ...nextPartial,
+            };
 
-    const commitSettings = useCallback((nextSettings) => {
+            // Only update if something actually changed
+            if (!_.isEqual(localSettings, nextAdvanced)) {
+                setLocalSettings(nextAdvanced);
+                // Pass *only the advanced object* upward
+                callback(nextAdvanced);
+            }
+        },
+        [localSettings, callback]
+    );
 
-        const result = {
-            ...localSettings,
-            advanced: {
-                ...localSettings.advanced,
-                ...nextSettings,
-            },
-        }
+    return (
+        <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <ElementTagControl
+                    value={localSettings?.tagName ?? 'div'}
+                    label="HTML Tag"
+                    onChange={(tag) => commitSettings({tagName: tag})}
+                />
+            </Grid>
 
-        if (!_.isEqual(localSettings, result)) {
-            callback(result);
-            setLocalSettings(result);
-        }
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Hide if Empty"
+                    checked={!!localSettings?.['hide-empty']}
+                    onChange={(checked) => commitSettings({'hide-empty': checked})}
+                />
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Required"
+                    checked={!!localSettings?.required}
+                    onChange={(checked) => commitSettings({required: checked})}
+                />
+            </Grid>
 
-    }, [localSettings]);
-
-    return <Grid columns={1} columnGap={15} rowGap={20} style={{padding: '15px 0'}}>
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            <ElementTagControl
-                value={localSettings?.tagName ?? 'div'}
-                label="HTML Tag"
-                onChange={(tag) => commitSettings({tagName: tag})}
-            />
+            <Grid columns={2} columnGap={15} rowGap={20}>
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Offset Header"
+                    checked={!!localSettings?.['offset-header']}
+                    onChange={(checked) => commitSettings({'offset-header': checked})}
+                />
+                <ToggleControl
+                    __nextHasNoMarginBottom
+                    label="Container"
+                    checked={!!localSettings?.container}
+                    onChange={(checked) => commitSettings({container: checked})}
+                />
+            </Grid>
         </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            <ToggleControl
-                __nextHasNoMarginBottom
-                label="Hide if Empty"
-                checked={!!localSettings?.['hide-empty']}
-                onChange={(checked) => commitSettings({'hide-empty': checked})}
-            />
-            <ToggleControl
-                __nextHasNoMarginBottom
-                label="Required"
-                checked={!!localSettings?.required}
-                onChange={(checked) => commitSettings({required: checked})}
-            />
-        </Grid>
-
-        <Grid columns={2} columnGap={15} rowGap={20}>
-            <ToggleControl
-                __nextHasNoMarginBottom
-                label="Offset Header"
-                checked={!!localSettings?.['offset-header']}
-                onChange={(checked) => commitSettings({'offset-header': checked})}
-            />
-            <ToggleControl
-                __nextHasNoMarginBottom
-                label="Container"
-                checked={!!localSettings?.container}
-                onChange={(checked) => commitSettings({container: checked})}
-            />
-        </Grid>
-    </Grid>;
+    );
 });
+
 
 const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
     <StyleEditorUI
@@ -277,8 +284,19 @@ export const withStyle = (Component) => (props) => {
     // --- Reactive version of updateStyleSettings
     const updateStyleSettings = useCallback(
         (nextLayout) => {
-            const cleanedNext = cleanObject(nextLayout, true);
+
+            const mergedLayout = {
+                ...settings,
+                ...nextLayout,
+                advanced: {
+                    ...settings.advanced,
+                    ...nextLayout.advanced,
+                },
+            };
+
+            const cleanedNext = cleanObject(mergedLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
+
 
             // Bail if nothing meaningful changed
             //if (_.isEqual(cleanedNext, cleanedCurrent)) return;
@@ -368,11 +386,18 @@ export const withStyle = (Component) => (props) => {
             <InspectorControls group="advanced">
                 <AdvancedControls
                     settings={settings ?? {}}
-                    callback={(nextAdvanced) => updateStyleSettings(nextAdvanced)}
-
-
+                    callback={(nextAdvanced) =>
+                        updateStyleSettings({
+                            ...settings,
+                            advanced: {
+                                ...settings.advanced,
+                                ...nextAdvanced,
+                            },
+                        })
+                    }
                 />
             </InspectorControls>
+
         </>
     );
 };

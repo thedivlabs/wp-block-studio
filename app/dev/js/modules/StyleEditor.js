@@ -22,7 +22,7 @@ import {
 import _ from "lodash";
 
 const SPECIAL_FIELDS = [
-    'gap', 'margin', 'box-shadow', 'transform', 'filter', 'hide-empty', 'required',
+    'gap', 'margin', 'transform', 'filter', 'hide-empty', 'required',
     'offset-height', 'align-header', 'outline',
 
     'reveal-duration', 'reveal-easing', 'reveal-distance', 'reveal-anim', 'reveal-offset', 'reveal-delay',
@@ -30,7 +30,7 @@ const SPECIAL_FIELDS = [
     'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
     'flex-basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
     'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
-    'text-decoration-color', 'position', 'container', 'padding', 'shadow', 'border',
+    'text-decoration-color', 'position', 'container', 'padding', 'border',
     'border-radius', 'background-color'
 ];
 
@@ -419,7 +419,7 @@ const layoutFieldsMap = [
         label: 'Mask Size',
         options: IMAGE_SIZE_OPTIONS,
     },
-    { type: "shadow", slug: "box-shadow", label: "Shadow", full: true },
+    {type: "shadow", slug: "box-shadow", label: "Shadow", full: true},
 ];
 
 const hoverFieldsMap = [
@@ -429,13 +429,13 @@ const hoverFieldsMap = [
         label: "Hover Colors",
         full: true,
         colors: [
-            { slug: "background-color", label: "Background" },
-            { slug: "color", label: "Text" },
-            { slug: "border-color", label: "Border" },
-            { slug: "outline-color", label: "Outline" },
+            {slug: "background-color", label: "Background"},
+            {slug: "color", label: "Text"},
+            {slug: "border-color", label: "Border"},
+            {slug: "outline-color", label: "Outline"},
         ],
     },
-    { type: "shadow", slug: "box-shadow", label: "Shadow", full: true },
+    {type: "shadow", slug: "box-shadow", label: "Shadow", full: true},
 ];
 
 const backgroundFieldsMap = [

@@ -382,11 +382,13 @@ const layoutFieldsMap = [
         type: 'box',
         slug: 'translate',
         label: 'Translate',
-        min: -1000,
-        max: 1000,
         options: {
             sides: ['top', 'left'],
-            inputProps: {units: DIMENSION_UNITS},
+            inputProps: {
+                units: DIMENSION_UNITS,
+                min: -1000,
+                max: 1000,
+            },
         },
         full: true,
     },

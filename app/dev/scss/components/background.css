@@ -20,9 +20,9 @@
 .wpbs-background:before {
   content: '';
   display: flex;
+  background-size: var(--size, var(--scale, cover));
 }
 
-/* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
 .wpbs-background:before,
 .wpbs-background > video {
   mask-image: var(--fade, none);
@@ -40,7 +40,6 @@
   transform: var(--transform, none);
   opacity: var(--opacity, 1);
   background-repeat: var(--repeat, no-repeat);
-  background-size: var(--size, var(--scale, cover));
   background-blend-mode: var(--blend, none);
   background-attachment: var(--attachment, initial);
   background-position: var(--origin, center);

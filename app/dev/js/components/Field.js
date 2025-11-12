@@ -43,17 +43,21 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
     controlProps.label = label;
 
     switch (type) {
-        case "color": {
+        case "color":
             const colorFields = controlProps.colors || [];
 
             const colorSettings = colorFields.map((c) => ({
                 slug: c.slug,
                 label: c.label,
-                value: settings?.[c.slug] ?? "",
+                value: settings?.[slug]?.[c.slug] ?? "",
                 onChange: (newValue) => {
-                    // merge into this field’s settings object
-                    const next = {...settings, [c.slug]: newValue};
-                    commit(next);
+                    // Merge new color into this field’s nested slug
+                    const next = {
+                        ...settings,
+                        [slug]: { ...(settings?.[slug] || {}), [c.slug]: newValue },
+                    };
+
+                    commit(next[slug]); // use commit, so it compares + propagates correctly
                 },
             }));
 
@@ -66,7 +70,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-        }
         case "range":
             control = (
                 <RangeControl

@@ -321,7 +321,7 @@ class WPBS {
 				'nonce_rest'  => self::$nonce_rest,
 				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
 				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+				'container'   => wp_get_global_settings()['custom']['container'] ?? [],
 			], false )
 		];
 	}

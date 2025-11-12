@@ -102,6 +102,8 @@ const heightVal = (val) => {
 function parseSpecialProps(props = {}, attributes = {}) {
     const result = {};
 
+    const containerMap = WPBS?.settings?.container ?? {};
+
     Object.entries(props).forEach(([key, val]) => {
         if (val == null) return;
 
@@ -121,6 +123,9 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     result['column-gap'] = val.left ?? val;
                     result['--row-gap'] = val.top ?? val;
                     result['--column-gap'] = val.left ?? val;
+                    break;
+                case 'container':
+                    result['--container-width'] = containerMap[val] ?? val;
                     break;
 
                 case 'height':

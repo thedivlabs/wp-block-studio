@@ -51,7 +51,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
         case "composite":
             control = (
                 <BaseControl label={label} className="wpbs-composite-field --full">
-                    <Grid columns={2} columnGap={15} rowGap={15} className="wpbs-composite-field__grid">
+                    <Grid columns={2} columnGap={8} rowGap={15} className="wpbs-composite-field__grid">
                         {field.fields.map((sub) => (
                             <Field
                                 key={sub.slug}

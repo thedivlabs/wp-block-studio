@@ -199,15 +199,15 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 // Normalize shape to match other working components
                 const mediaData = {
                     id: media.id,
-                    url: media.url,
-                    alt: media?.alt,
-                    type: media?.type,
-                    sizes: media?.sizes,
+                    /*      url: media.url,
+                          alt: media?.alt,
+                          type: media?.type,
+                          sizes: media?.sizes,*/
                 };
                 commit(mediaData);
             };
 
-            const clear = () => commit({});
+            const clear = () => commit(null);
 
             control = (
                 <BaseControl label={label} __nextHasNoMarginBottom>

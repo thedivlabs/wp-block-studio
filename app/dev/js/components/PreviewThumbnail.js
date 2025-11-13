@@ -1,7 +1,8 @@
-import { Button, Icon } from '@wordpress/components';
-import { IMAGE_BUTTON_STYLE } from 'Includes/config';
+import {Button, Icon} from '@wordpress/components';
+import {IMAGE_BUTTON_STYLE} from 'Includes/config';
+import {useResolvedMedia} from "Includes/helper";
 
-function PreviewThumbnail({ image = {}, callback, style = {}, onClick }) {
+function PreviewThumbnail({image = {}, callback, style = {}, onClick}) {
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
         width: '100%',
@@ -21,22 +22,25 @@ function PreviewThumbnail({ image = {}, callback, style = {}, onClick }) {
         textAlign: 'center',
     };
 
-    const isVideo = image?.type === 'video';
-    const hasUrl = !!image?.url;
+    const imageObj = useResolvedMedia(image?.id);
+
+    const isVideo = imageObj?.type === 'video';
+    const hasUrl = !!imageObj?.url;
 
     const thumbnail = isVideo ? (
         <video preload="metadata" style={thumbnailStyle}>
-            <source src={image.url || '#'} type="video/mp4" />
+            <source src={imageObj.url || '#'} type="video/mp4"/>
         </video>
     ) : (
-        <img src={image.url || '#'} alt="" style={thumbnailStyle} />
+        <img src={imageObj.url || '#'} alt="" style={thumbnailStyle}/>
     );
 
     // Empty state
     if (!hasUrl) {
         return (
             <Button
-                onClick={onClick ?? (() => {})}
+                onClick={onClick ?? (() => {
+                })}
                 style={emptyStyle}
                 variant="secondary"
             >
@@ -63,7 +67,7 @@ function PreviewThumbnail({ image = {}, callback, style = {}, onClick }) {
         >
             {thumbnail}
             <Button
-                icon={<Icon icon="no-alt" />}
+                icon={<Icon icon="no-alt"/>}
                 style={{
                     position: 'absolute',
                     top: '4px',

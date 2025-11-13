@@ -44,10 +44,6 @@ export const withStyle = (Component) => (props) => {
         background: {},
     };
 
-    useEffect(() => {
-        console.log(settings);
-    }, [settings]);
-
     const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
         <StyleEditorUI
             settings={settings}

@@ -413,61 +413,72 @@ const hoverFieldsMap = [
         label: "Hover Colors",
         full: true,
         colors: [
-            {slug: "background-color", label: "Background"},
-            {slug: "color", label: "Text"},
-            {slug: "border-color", label: "Border"},
-            {slug: "outline-color", label: "Outline"},
-            {slug: "text-decoration-color", label: "Decoration"}, // NEW
+            { slug: "background-color", label: "Background" },
+            { slug: "color", label: "Text" },
+            { slug: "border-color", label: "Border" },
+            { slug: "outline-color", label: "Outline" },
+            { slug: "text-decoration-color", label: "Decoration" },
         ],
     },
+
     {
         type: "composite",
+        slug: "text-decoration",   // required so Field doesn't early-return
         label: "Text Decoration",
+        full: true,
+
         fields: [
             {
                 type: "select",
                 slug: "text-decoration-line",
                 label: "Decoration",
                 options: [
-                    {label: "None", value: "none"},
-                    {label: "Underline", value: "underline"},
-                    {label: "Overline", value: "overline"},
-                    {label: "Line Through", value: "line-through"},
+                    { label: "None", value: "none" },
+                    { label: "Underline", value: "underline" },
+                    { label: "Overline", value: "overline" },
+                    { label: "Line Through", value: "line-through" },
                 ],
             },
+
             {
                 type: "select",
                 slug: "text-decoration-style",
                 label: "Style",
                 options: [
-                    {label: "Solid", value: "solid"},
-                    {label: "Dotted", value: "dotted"},
-                    {label: "Dashed", value: "dashed"},
-                    {label: "Double", value: "double"},
-                    {label: "Wavy", value: "wavy"},
+                    { label: "Solid", value: "solid" },
+                    { label: "Dotted", value: "dotted" },
+                    { label: "Dashed", value: "dashed" },
+                    { label: "Double", value: "double" },
+                    { label: "Wavy", value: "wavy" },
                 ],
             },
+
             {
                 type: "unit",
                 slug: "text-decoration-thickness",
                 label: "Thickness",
-                units: ["px", "em", "rem"],
-                min: 0,
-                max: 20,
-                step: 0.5,
+                inputProps: {
+                    units: ["px", "em", "rem"],
+                    min: 0,
+                    max: 20,
+                    step: 0.5,
+                },
             },
+
             {
                 type: "unit",
                 slug: "text-underline-offset",
                 label: "Offset",
-                units: ["px", "em", "rem"],
-                min: -10,
-                max: 50,
-                step: 1,
-            }
+                inputProps: {
+                    units: ["px", "em", "rem"],
+                    min: -10,
+                    max: 50,
+                    step: 1,
+                },
+            },
         ],
-        full: true,
     },
+
     {
         type: "shadow",
         slug: "box-shadow",
@@ -475,7 +486,6 @@ const hoverFieldsMap = [
         full: true,
     },
 ];
-
 
 const backgroundFieldsMap = [
 

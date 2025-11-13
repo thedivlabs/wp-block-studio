@@ -298,7 +298,7 @@ function parseBackgroundProps(props = {}) {
 
     if (props.fixed) {
         result['--attachment'] = 'fixed';
-    } else if (hasMedia) {
+    } else if (image?.source) {
         result['--attachment'] = 'scroll';
     }
 

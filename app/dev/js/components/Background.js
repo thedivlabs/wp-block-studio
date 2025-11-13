@@ -10,6 +10,7 @@ import {
 import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {Field} from "Components/Field";
+import {extractMinimalImageMeta} from "Includes/helper";
 
 
 export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {

@@ -7,10 +7,8 @@ import {
     SelectControl,
     ToggleControl
 } from "@wordpress/components";
-import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
-import PreviewThumbnail from "Components/PreviewThumbnail";
+import {PanelColorSettings} from "@wordpress/block-editor";
 import {Field} from "Components/Field";
-import {extractMinimalImageMeta} from "Includes/helper";
 
 
 export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {
@@ -62,63 +60,30 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
                 {!isPanelOpen ? null : <>
 
-                    {/* --- Media pickers under Type --- */}
-                    {(settings.type === 'image' || settings.type === 'featured-image') && (
-                        <BaseControl label="Image" __nextHasNoMarginBottom>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title="Select Image"
-                                    allowedTypes={['image']}
-                                    value={settings?.image?.id}
-                                    onSelect={(media) =>
-                                        callback({
-                                            image: extractMinimalImageMeta(media)
-                                        })
-                                    }
-                                    render={({ open }) => (
-                                        <PreviewThumbnail
-                                            image={settings?.image}           // minimal object
-                                            type="image"                     // tell the component what it is
-                                            onClick={open}                   // open media modal
-                                            callback={() => callback({ image: null })} // clear field
-                                            style={{
-                                                objectFit: 'contain',
-                                                borderRadius: '6px',
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
+                    {(settings.type === "image" || settings.type === "featured-image") && (
+                        <Field
+                            field={{
+                                type: "image",
+                                slug: "image",
+                                label: "Image",
+                                full: true
+                            }}
+                            settings={settings}
+                            callback={(val) => callback(val)}
+                        />
                     )}
 
-                    {settings.type === 'video' && (
-                        <BaseControl label="Video" __nextHasNoMarginBottom>
-                            <MediaUploadCheck>
-                                <MediaUpload
-                                    title="Select Video"
-                                    allowedTypes={['video']}
-                                    value={settings?.video?.id}
-                                    onSelect={(media) =>
-                                        callback({
-                                            video: extractMinimalImageMeta(media)
-                                        })
-                                    }
-                                    render={({ open }) => (
-                                        <PreviewThumbnail
-                                            image={settings?.video}          // minimal object
-                                            type="video"                    // tell component it's a video
-                                            onClick={open}                  // modal
-                                            callback={() => callback({ video: null })} // clear
-                                            style={{
-                                                objectFit: 'contain',
-                                                borderRadius: '6px',
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </MediaUploadCheck>
-                        </BaseControl>
+                    {settings.type === "video" && (
+                        <Field
+                            field={{
+                                type: "video",
+                                slug: "video",
+                                label: "Video",
+                                full: true
+                            }}
+                            settings={settings}
+                            callback={(val) => callback(val)}
+                        />
                     )}
 
                     <BaseControl label={'Overlay'}>

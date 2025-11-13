@@ -387,7 +387,7 @@ const layoutFieldsMap = [
         sides: ['top', 'right', 'bottom', 'left'],
         inputProps: {units: DIMENSION_UNITS},
     },
-    {type: 'box', slug: 'gap', label: 'Gap', options: {sides: ['top', 'left']}, full: true},
+    {type: 'box', slug: 'gap', label: 'Gap', sides: ['top', 'left'], full: true},
     {
         type: 'box',
         slug: 'margin',

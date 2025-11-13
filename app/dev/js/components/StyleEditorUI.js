@@ -50,7 +50,7 @@ const LayoutFields = memo(({bpKey, settings, suppress = [], updateFn}) => {
 const HoverFields = memo(({settings, suppress = [], updateHoverItem}) => {
     const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-    return <Grid columns={1} rowGap={15}>
+    return <Grid columns={2} rowGap={15}>
         {map
             .filter((f) => !suppress.includes(f.slug))
             .map((field) => (

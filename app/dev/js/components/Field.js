@@ -7,7 +7,7 @@ import {extractMinimalImageMeta} from "Includes/helper";
 
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
-    const {type, defaultValue = '',itemProps, slug, label, full = false, ...controlProps} = field;
+    const {type, defaultValue = '', itemProps, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -45,6 +45,8 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
     controlProps.__nextHasNoMarginBottom = true;
     controlProps.isShownByDefault = false;
     controlProps.label = label;
+    if (!isToolsPanel) controlProps.className = fieldClassNames;
+    
 
     switch (type) {
         case "shadow":
@@ -213,7 +215,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                             allowedTypes={allowedTypes}
                             value={currentValue?.id}
                             onSelect={onSelect}
-                            render={({ open }) => (
+                            render={({open}) => (
                                 <PreviewThumbnail
                                     image={currentValue}        // minimal image/video object
                                     type={isImage ? "image" : "video"} // <— ADD THIS

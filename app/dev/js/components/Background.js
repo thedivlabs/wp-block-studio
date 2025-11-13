@@ -70,13 +70,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                     value={settings?.image?.id}
                                     onSelect={(media) =>
                                         callback({
-                                            image: {
-                                                id: media.id,
-                                                url: media.url,
-                                                alt: media?.alt,
-                                                type: media?.type,
-                                                sizes: media?.sizes,
-                                            },
+                                            image: extractMinimalImageMeta(media)
                                         })
                                     }
                                     render={({open}) => (
@@ -104,12 +98,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                     value={settings?.video?.id}
                                     onSelect={(media) =>
                                         callback({
-                                            video: {
-                                                id: media.id,
-                                                url: media.url,
-                                                type: media?.type,
-                                                mime: media?.mime,
-                                            },
+                                            video: extractMinimalImageMeta(media)
                                         })
                                     }
                                     render={({open}) => (

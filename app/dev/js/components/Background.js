@@ -175,7 +175,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
     // 1. Base-level video
     const baseVideo = background?.video;
-    if (baseVideo?.url) {
+    if (baseVideo?.source) {
         entries.push({size: Infinity, video: baseVideo});
     }
 

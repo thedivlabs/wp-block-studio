@@ -366,8 +366,13 @@ const layoutFieldsMap = [
     {type: 'number', slug: 'order', label: 'Order'},
     {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
     {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
-    {type: 'select', slug: 'reveal-anim', label: 'Reveal Animation', options: REVEAL_ANIMATION_OPTIONS},
-    {type: 'number', slug: 'reveal-duration', label: 'Reveal Duration'},
+    {type: 'select', slug: 'reveal-anim', label: 'Reveal', options: REVEAL_ANIMATION_OPTIONS},
+    {
+        type: 'unit',
+        slug: 'reveal-duration',
+        label: 'Reveal Speed',
+        inputProps: {units: [{value: 'ms', label: 'ms', default: 0}]}
+    },
     {type: 'number', slug: 'reveal-delay', label: 'Reveal Delay'},
     {type: 'select', slug: 'reveal-easing', label: 'Reveal Easing', options: REVEAL_EASING_OPTIONS},
     {type: 'unit', slug: 'reveal-distance', label: 'Reveal Distance'},
@@ -406,7 +411,6 @@ const layoutFieldsMap = [
         inputProps: {units: DIMENSION_UNITS},
     },
     {type: 'shadow', slug: 'box-shadow', label: 'Shadow', full: true},
-    {type: "shadow", slug: "box-shadow", label: "Shadow", full: true},
     {type: 'box', slug: 'border-radius', label: 'Radius', full: true},
     {
         type: 'box',

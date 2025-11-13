@@ -26,34 +26,55 @@ export default class MediaWatcher {
     static responsiveVideoSrc(video) {
         [...video.querySelectorAll("source")].forEach((source) => {
             const mq = source.dataset.media;
-            const hasDataSrc = !!source.dataset.src;
+            const dataValue = source.dataset.src; // may be undefined or "#"
+            const currentSrc = source.src || "";
 
+            // NO MEDIA QUERY → always ensure src matches data-src once, then stop
             if (!mq) {
-                if (hasDataSrc) {
-                    source.src = source.dataset.src;
+                if (dataValue && currentSrc !== dataValue) {
+                    source.src = dataValue;
                     delete source.dataset.src;
+                    video.load();
                 }
                 return;
             }
 
             const matches = window.matchMedia(mq).matches;
 
+            // --------------------------------------------
+            // WHEN MEDIA QUERY MATCHES
+            // --------------------------------------------
             if (matches) {
-                if (hasDataSrc) {
-                    source.src = source.dataset.src;
+                // Case: matching MQ expects real source (data-src)
+                if (dataValue && currentSrc !== dataValue) {
+                    source.src = dataValue;
                     delete source.dataset.src;
-                } else if (!source.src) {
+                    video.load();
+                }
+
+                // Case: matching MQ but no data-src → ensure src is at least "#"
+                if (!dataValue && !currentSrc) {
                     source.src = "#";
+                    video.load();
                 }
-            } else {
-                if (source.src && source.src !== "#") {
-                    source.dataset.src = source.src;
-                }
+
+                return;
+            }
+
+            // --------------------------------------------
+            // WHEN MEDIA QUERY DOES NOT MATCH
+            // --------------------------------------------
+            // If src has a real URL, move it to data-src only if needed
+            if (currentSrc && currentSrc !== "#" && dataValue !== currentSrc) {
+                source.dataset.src = currentSrc;
+            }
+
+            // Only set src="#" if it's not already "#"
+            if (currentSrc !== "#") {
                 source.src = "#";
+                video.load();
             }
         });
-
-        video.load();
     }
 
     static observeMedia(root) {

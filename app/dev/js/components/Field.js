@@ -1,7 +1,7 @@
 import {memo, useCallback} from "@wordpress/element";
 import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/block-editor";
 import PreviewThumbnail from "Components/PreviewThumbnail";
-import {BaseControl} from "@wordpress/components";
+import {BaseControl, __experimentalGrid as Grid} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
 import {extractMinimalImageMeta} from "Includes/helper";
 
@@ -48,6 +48,24 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
 
     switch (type) {
+        case "composite":
+            control = (
+                <BaseControl label={label} className="wpbs-composite-field --full">
+                    <Grid columns={2} columnGap={15} rowGap={20} className="wpbs-composite-inner">
+                        {field.fields.map((sub) => (
+                            <Field
+                                key={sub.slug}
+                                field={{...sub}}
+                                settings={settings}
+                                isToolsPanel={false}
+                                callback={(v) => callback({...settings, ...v})}
+                            />
+                        ))}
+                    </Grid>
+                </BaseControl>
+            );
+            break;
+
         case "shadow":
             control = (
                 <ShadowSelector

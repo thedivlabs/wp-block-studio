@@ -45,8 +45,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
     controlProps.__nextHasNoMarginBottom = true;
     controlProps.isShownByDefault = false;
     controlProps.label = label;
-    if (!isToolsPanel) controlProps.className = fieldClassNames;
-    
+
 
     switch (type) {
         case "shadow":
@@ -249,6 +248,8 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 {...itemProps}
             >
                 {control}
-            </ToolsPanelItem> : control
+            </ToolsPanelItem> : <div className={fieldClassNames}>
+                {control}
+            </div>
     ) : null;
 });

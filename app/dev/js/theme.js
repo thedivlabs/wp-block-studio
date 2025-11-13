@@ -249,30 +249,6 @@ class WPBS_Theme {
 
             this.mediaWatcher.init();
 
-            [...document.querySelectorAll('link[data-href]')].forEach((link) => {
-                link.href = link.dataset.href;
-            });
-
-        });
-
-        const visibilityElementObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-
-                    visibilityElementObserver.unobserve(entry.target);
-                    entry.target.style.contentVisibility = 'visible';
-                }
-            });
-        }, {
-            root: null, // Defaults to the browser viewport
-            rootMargin: "500px 0px 500px 0px", // Shrinks the top and bottom of the viewport by 100px
-            threshold: 0 // Triggers when 50% of the target is visible within the *modified* root
-        });
-
-        [...document.querySelectorAll('[data-visibility]')].forEach((element) => {
-
-            visibilityElementObserver.observe(element);
-
         });
 
 

@@ -6,8 +6,17 @@ export default class MediaWatcher {
 
     static init() {
 
+        // 1. Watch video / images / background
         this.observeMedia(document);
 
+        // 2. Watch visibility-only elements
+        this.observeVisibility(document);
+
+        [...document.querySelectorAll('link[data-href]')].forEach((link) => {
+            link.href = link.dataset.href;
+        });
+
+        // 3. Debounced MQ checking for videos
         const recheck = debounce(() => {
             this.videos.forEach((video) => {
                 this.responsiveVideoSrc(video);
@@ -19,10 +28,16 @@ export default class MediaWatcher {
         window.addEventListener("load", recheck, {passive: true});
     }
 
+    // -----------------------------------------------------
+    // Background (simple)
+    // -----------------------------------------------------
     static responsiveBackgroundSrc(element) {
         element.classList.remove("--lazy");
     }
 
+    // -----------------------------------------------------
+    // Responsive Video MQ Activation
+    // -----------------------------------------------------
     static responsiveVideoSrc(video) {
         let changed = false;
 
@@ -31,11 +46,8 @@ export default class MediaWatcher {
             const dataSrc = source.dataset.src || "";
             const currentSrc = source.getAttribute("src") || "";
 
-            // ---------------------------------------------------
-            // BASE SOURCE (no data-media)
-            // ---------------------------------------------------
+            // BASE SOURCE (no MQ)
             if (!mq) {
-                // activate base source if not already active
                 if (dataSrc && currentSrc !== dataSrc) {
                     source.setAttribute("src", dataSrc);
                     changed = true;
@@ -43,13 +55,10 @@ export default class MediaWatcher {
                 return;
             }
 
-            // ---------------------------------------------------
-            // MQ SOURCE
-            // ---------------------------------------------------
             const matches = window.matchMedia(mq).matches;
 
             if (matches) {
-                // activate source if not already active
+                // MQ matches → activate
                 if (dataSrc && currentSrc !== dataSrc) {
                     source.setAttribute("src", dataSrc);
                     changed = true;
@@ -58,17 +67,18 @@ export default class MediaWatcher {
             }
 
             // MQ does NOT match → deactivate
-            if (currentSrc !== "#" && currentSrc !== "") {
+            if (currentSrc && currentSrc !== "#") {
                 source.setAttribute("src", "#");
                 changed = true;
             }
         });
 
-        if (changed) {
-            video.load();
-        }
+        if (changed) video.load();
     }
 
+    // -----------------------------------------------------
+    // IntersectionObserver for lazy media
+    // -----------------------------------------------------
     static observeMedia(root) {
         const observer = new IntersectionObserver(
             (entries, obs) => {
@@ -78,17 +88,20 @@ export default class MediaWatcher {
                     const el = entry.target;
                     obs.unobserve(el);
 
+                    // VIDEO
                     if (el.tagName === "VIDEO") {
                         this.videos.push(el);
                         this.responsiveVideoSrc(el);
                         return;
                     }
 
+                    // BACKGROUND WRAPPER
                     if (el.classList.contains("wpbs-background")) {
                         this.responsiveBackgroundSrc(el);
                         return;
                     }
 
+                    // GENERIC LAZY
                     [...el.querySelectorAll("[data-src],[data-srcset]"), el].forEach(
                         (child) => {
                             if (child.dataset.src) {
@@ -118,6 +131,35 @@ export default class MediaWatcher {
             ".wpbs-background";
 
         [...root.querySelectorAll(selector)].forEach((el) =>
+            observer.observe(el)
+        );
+    }
+
+    // -----------------------------------------------------
+    // IntersectionObserver for data-visibility optimizations
+    // -----------------------------------------------------
+    static observeVisibility(root) {
+
+        const observer = new IntersectionObserver(
+            (entries, obs) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+
+                    const el = entry.target;
+                    obs.unobserve(el);
+
+                    // Turn on content-visibility only when shown
+                    el.style.contentVisibility = "visible";
+                });
+            },
+            {
+                root: null,
+                rootMargin: "500px 0px 500px 0px",
+                threshold: 0,
+            }
+        );
+
+        [...root.querySelectorAll("[data-visibility]")].forEach((el) =>
             observer.observe(el)
         );
     }

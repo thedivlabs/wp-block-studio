@@ -227,28 +227,24 @@ function parseSpecialProps(props = {}, attributes = {}) {
 function parseBackgroundProps(props = {}) {
 
     const result = {};
-    const {image, resolution = 'large', force} = props;
 
-    // If the minimal image blob exists, rebuild the correct-size URL
-    if (image?.id && image?.source) {
-        const url = getImageUrlForResolution(image, resolution);
-        if (url) {
-            result["--image"] = `url("${url}")`;
-        }
-    } else if (force) {
-        result["--image"] = "#";
+    // Extract the media props, leave modifiers in `rest`
+    const {image, video, resolution = "large", force, ...rest} = props;
+
+    // --- Image ----------------------------------------------------
+    result["--image"] =
+        image?.source
+            ? `url("${getImageUrlForResolution(image, resolution)}")`
+            : force ? "#" : undefined;
+
+    // --- Video ----------------------------------------------------
+    result["--video"] = video?.source ? "block" : "none";
+    if (video?.source) {
+        result["--video-src"] = video.source;
     }
 
-    // --- Video ---
-    if (videoObj) {
-        result['--video'] = 'block';
-        result['--video-src'] = videoObj.source_url; // if you want video URL support
-    } else {
-        result['--video'] = 'none';
-    }
-
-    // --- Common visual modifiers ---
-    Object.entries(props).forEach(([key, val]) => {
+    // --- Scalar modifiers (background-size, opacity, fade, etc.) ---
+    Object.entries(rest).forEach(([key, val]) => {
         if (val == null) return;
         switch (key) {
             case 'background-size':

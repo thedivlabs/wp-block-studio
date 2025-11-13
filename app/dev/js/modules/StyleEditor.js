@@ -22,7 +22,6 @@ import {
 import _ from "lodash";
 import {getImageUrlForResolution, cleanObject} from "Includes/helper";
 
-
 const SPECIAL_FIELDS = [
     'gap', 'margin', 'transform', 'filter', 'hide-empty', 'required',
     'offset-height', 'align-header', 'outline', 'box-shadow',
@@ -35,7 +34,6 @@ const SPECIAL_FIELDS = [
     'text-decoration-color', 'position', 'container', 'padding', 'border',
     'border-radius', 'background-color'
 ];
-
 
 function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';

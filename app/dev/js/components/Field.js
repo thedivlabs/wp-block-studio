@@ -198,7 +198,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const currentValue = value || {};
 
             const onSelect = (media) => {
-                // Convert WP media object → minimal object
                 const minimal = extractMinimalImageMeta(media);
                 commit(minimal); // save to attributes
             };

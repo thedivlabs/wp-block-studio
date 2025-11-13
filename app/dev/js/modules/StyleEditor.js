@@ -139,19 +139,15 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     break;
 
                 case 'mask-image': {
-                    const imageUrl = val?.sizes?.full?.url;
-                    result['mask-image'] = imageUrl ? `url(${imageUrl})` : 'none';
+                    const imageUrl = val?.source || null;
+                    result['mask-image'] = imageUrl ? `url("${imageUrl}")` : 'none';
                     result['mask-repeat'] = 'no-repeat';
                     result['mask-size'] = (() => {
                         switch (props?.['mask-size']) {
-                            case 'cover':
-                                return 'cover';
-                            case 'horizontal':
-                                return '100% auto';
-                            case 'vertical':
-                                return 'auto 100%';
-                            default:
-                                return 'contain';
+                            case 'cover': return 'cover';
+                            case 'horizontal': return '100% auto';
+                            case 'vertical': return 'auto 100%';
+                            default: return 'contain';
                         }
                     })();
                     result['mask-position'] = props?.['mask-origin'] || 'center center';
@@ -273,13 +269,13 @@ function parseBackgroundProps(props = {}) {
                 break;
             case 'mask-image': {
                 const imageUrl =
-                    typeof val === 'object' && val?.url
-                        ? val.url
+                    typeof val === 'object' && val?.source
+                        ? val.source
                         : typeof val === 'string'
                             ? val
                             : null;
 
-                result['--mask-image'] = imageUrl ? `url(${imageUrl})` : 'none';
+                result['--mask-image'] = imageUrl ? `url("${imageUrl}")` : 'none';
                 result['--mask-repeat'] = 'no-repeat';
                 result['--mask-size'] = props.maskSize || 'contain';
                 result['--mask-position'] = props.maskOrigin || 'center center';

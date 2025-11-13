@@ -220,8 +220,14 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
             {entries.map(({size, video}, i) => {
-                // allow "#" (forced), skip only undefined/null
-                if (video.source == null) return null;
+                if (video.source == null) return null; // allow "#", skip null/undefined
+
+                const isBase = size === Infinity;
+
+                // Base source is always eager
+                const attr = isBase
+                    ? "src"
+                    : (background?.eager && isSave ? "src" : "data-src");
 
                 const hasValidSize =
                     Number.isFinite(size) &&
@@ -231,12 +237,13 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 return (
                     <source
                         key={i}
-                        {...{[srcAttr]: video.source}}
+                        {...{[attr]: video.source}}
                         data-media={hasValidSize ? `(max-width:${size - 1}px)` : null}
                         type={video.mime || "video/mp4"}
                     />
                 );
             })}
+
 
         </video>
     );

@@ -14,9 +14,9 @@ export default class MediaWatcher {
             });
         }, 900);
 
-        window.addEventListener("resize", recheck, { passive: true });
-        window.addEventListener("scroll", recheck, { passive: true });
-        window.addEventListener("load", recheck, { passive: true });
+        window.addEventListener("resize", recheck, {passive: true});
+        window.addEventListener("scroll", recheck, {passive: true});
+        window.addEventListener("load", recheck, {passive: true});
     }
 
     static responsiveBackgroundSrc(element) {
@@ -24,57 +24,52 @@ export default class MediaWatcher {
     }
 
     static responsiveVideoSrc(video) {
+        let changed = false;
+
         [...video.querySelectorAll("source")].forEach((source) => {
             const mq = source.dataset.media;
-            const dataValue = source.dataset.src; // may be undefined or "#"
-            const currentSrc = source.src || "";
-
-            // NO MEDIA QUERY → always ensure src matches data-src once, then stop
             if (!mq) {
-                if (dataValue && currentSrc !== dataValue) {
-                    source.src = dataValue;
-                    delete source.dataset.src;
-                    video.load();
-                }
+                // No data-media → watcher does not manage this source
                 return;
             }
 
+            const dataSrc = source.getAttribute("data-src") || "";
+            const currentSrc = source.getAttribute("src") || "";
             const matches = window.matchMedia(mq).matches;
 
             // --------------------------------------------
             // WHEN MEDIA QUERY MATCHES
             // --------------------------------------------
             if (matches) {
-                // Case: matching MQ expects real source (data-src)
-                if (dataValue && currentSrc !== dataValue) {
-                    source.src = dataValue;
-                    delete source.dataset.src;
-                    video.load();
+                // If we have a data-src and src is already correct → no-op
+                if (dataSrc && currentSrc === dataSrc) {
+                    return;
                 }
 
-                // Case: matching MQ but no data-src → ensure src is at least "#"
-                if (!dataValue && !currentSrc) {
-                    source.src = "#";
-                    video.load();
+                // If we have a data-src but src is different/empty -> activate it
+                if (dataSrc && currentSrc !== dataSrc) {
+                    source.setAttribute("src", dataSrc);
+                    changed = true;
                 }
 
+                // If we *don't* have data-src, we leave src as-is (could be "#", could be real)
                 return;
             }
 
             // --------------------------------------------
             // WHEN MEDIA QUERY DOES NOT MATCH
             // --------------------------------------------
-            // If src has a real URL, move it to data-src only if needed
-            if (currentSrc && currentSrc !== "#" && dataValue !== currentSrc) {
-                source.dataset.src = currentSrc;
+            // If src is a real URL (not "#" and not empty), disable for this MQ
+            if (currentSrc && currentSrc !== "#") {
+                source.setAttribute("src", "#");
+                changed = true;
             }
-
-            // Only set src="#" if it's not already "#"
-            if (currentSrc !== "#") {
-                source.src = "#";
-                video.load();
-            }
+            // If src is already "#" or empty, we leave it alone
         });
+
+        if (changed) {
+            video.load();
+        }
     }
 
     static observeMedia(root) {

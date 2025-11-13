@@ -54,10 +54,15 @@ export function extractMinimalImageMeta(media) {
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;
 
-    const {source, sizes = {}} = image;
+    const { source, sizes = {} } = image;
 
-    // If no sizes (e.g. SVG), just use the source
+    // SVGs or items without sizes → always return source
     if (!sizes || !Object.keys(sizes).length) {
+        return source;
+    }
+
+    // FULL → always use origin; never construct -WxH filenames
+    if (resolution === 'full') {
         return source;
     }
 
@@ -66,26 +71,21 @@ export function getImageUrlForResolution(image, resolution = 'large') {
 
     const [, base, name, ext] = match;
 
-    const pickSize = () => {
-        const direct = sizes[resolution];
-        if (direct?.width && direct?.height) return direct;
+    const direct = sizes[resolution];
+    if (direct?.width && direct?.height) {
+        return `${base}${name}-${direct.width}x${direct.height}.${ext}`;
+    }
 
-        // fallback: smallest non-thumbnail
-        const candidates = Object.entries(sizes)
-            .filter(([key, s]) => key !== 'thumbnail' && s?.width && s?.height)
-            .map(([key, s]) => s)
-            .sort((a, b) => a.width - b.width);
+    // fallback: smallest non-thumbnail
+    const fallback = Object.entries(sizes)
+        .filter(([key, s]) => key !== 'thumbnail' && s?.width && s?.height)
+        .map(([key, s]) => s)
+        .sort((a, b) => a.width - b.width)[0];
 
-        return candidates[0] || null;
-    };
+    if (!fallback) return source;
 
-    const chosen = pickSize();
-    if (!chosen) return source;
-
-    const {width, height} = chosen;
-    return `${base}${name}-${width}x${height}.${ext}`;
+    return `${base}${name}-${fallback.width}x${fallback.height}.${ext}`;
 }
-
 
 export function cleanObject(obj, strict = false) {
     return _.transform(obj, (result, value, key) => {

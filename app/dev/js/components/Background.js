@@ -170,47 +170,51 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
 function BackgroundVideo({settings = {}, isSave = false}) {
 
-    if (!isSave) {
-        return null
-    }
-
+    // Editor never renders video (poster or otherwise)
+    if (!isSave) return null;
 
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
-    // --- 1. Base video ---
+    // --------------------------
+    // 1. BASE VIDEO (always real)
+    // --------------------------
     const baseVideo = background?.video;
     if (baseVideo?.source) {
         entries.push({size: Infinity, video: baseVideo});
     }
 
-    // --- 2. Breakpoint variants ---
+    // --------------------------
+    // 2. BREAKPOINT OVERRIDES
+    // --------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
-        const bpForce = bpData?.background?.force;
+        const bpForce = !!bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
+            // Breakpoint has its own video
             entries.push({size, video: bpVideo});
         } else if (bpForce) {
+            // Force OFF video at this breakpoint
             entries.push({
                 size,
-                video: {source: '#', mime: 'video/mp4', isPlaceholder: true},
+                video: {source: "#", mime: "video/mp4", isPlaceholder: true},
             });
         }
     });
 
-    // --- No video? bail ---
+    // No video? bail.
     if (!entries.length) return null;
 
-    // --- Sort largest → smallest bp ---
+    // Largest → smallest
     entries.sort((a, b) => b.size - a.size);
 
-    const main = entries[0].video;   // <-- The video this block uses at current size
-    const srcAttr = !background?.eager || !isSave ? "data-src" : "src";
+    // Base entry is always the first after sorting
+    const baseEntry = entries[0];
+    const baseSource = baseEntry.video.source;
 
-    // --- Frontend or no poster ---
     return (
         <video
             muted
@@ -220,14 +224,13 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
             {entries.map(({size, video}, i) => {
-                if (video.source == null) return null; // allow "#", skip null/undefined
+                if (video.source == null) return null;
 
                 const isBase = size === Infinity;
-
-                // Base source is always eager
-                const attr = isBase
-                    ? "src"
-                    : (background?.eager && isSave ? "src" : "data-src");
+                const attr =
+                    isBase
+                        ? (background?.eager && isSave ? "src" : "data-src")
+                        : "data-src";
 
                 const hasValidSize =
                     Number.isFinite(size) &&
@@ -243,8 +246,6 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                     />
                 );
             })}
-
-
         </video>
     );
 }

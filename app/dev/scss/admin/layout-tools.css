@@ -5,6 +5,15 @@
   display: flex;
   flex-direction: column;
 
+  .wpbs-composite-field {
+
+    .wpbs-composite-field__grid {
+      padding:12px;
+      background-color: #efefef;
+      border-radius: 5px;
+    }
+  }
+
   .wpbs-layout-tools__panel {
     background: white;
     border: 0;
@@ -317,12 +326,5 @@
     content: '✓';
   }
 
-  .wpbs-composite-field {
 
-    .wpbs-composite-field__grid {
-      padding:12px;
-      background-color: #efefef;
-      border-radius: 5px;
-    }
-  }
 }

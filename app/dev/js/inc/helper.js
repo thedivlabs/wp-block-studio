@@ -4,41 +4,42 @@ import _ from "lodash";
 export function extractMinimalImageMeta(media) {
     if (!media) return null;
 
+    // Robust source fallback chain
     const source =
         media.source_url ||
-        media.guid?.rendered ||
+        media.media_details?.sizes?.full?.source_url ||
+        media.media_details?.sizes?.large?.source_url ||
+        media.url ||
         media.guid?.raw ||
+        media.guid?.rendered ||
         '';
 
-    // SVG: keep it ultra-minimal
+    // SVG: minimal
     if (media.mime_type === 'image/svg+xml') {
         return {
             id: media.id,
             source,
-            sizes: {},
+            sizes: {}
         };
     }
 
-    const wpSizes = media.media_details?.sizes || {};
     const sizes = {};
+    const wpSizes = media.media_details?.sizes || {};
 
     Object.entries(wpSizes).forEach(([key, size]) => {
-        if (!size) return;
-
         const width = Number(size.width) || 0;
         const height = Number(size.height) || 0;
         if (!width || !height) return;
 
-        sizes[key] = {width, height};
+        sizes[key] = { width, height };
     });
 
     return {
         id: media.id,
         source,
-        sizes,
+        sizes
     };
 }
-
 
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;

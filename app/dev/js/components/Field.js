@@ -7,7 +7,7 @@ import {extractMinimalImageMeta} from "Includes/helper";
 
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
-    const {type, slug, label, full = false, ...controlProps} = field;
+    const {type, defaultValue, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -43,6 +43,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
     controlProps.__next40pxDefaultSize = true;
     controlProps.__nextHasNoMarginBottom = true;
+    controlProps.isShownByDefault = false;
     controlProps.label = label;
 
     switch (type) {
@@ -87,7 +88,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 <RangeControl
                     id={inputId}
                     label={label}
-                    value={value ?? ""}
+                    value={value ?? defaultValue}
                     onChange={commit}
                     min={controlProps.min ?? 0}
                     max={controlProps.max ?? 100}

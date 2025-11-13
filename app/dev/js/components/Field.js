@@ -55,10 +55,13 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                         {field.fields.map((sub) => (
                             <Field
                                 key={sub.slug}
-                                field={{...sub}}
+                                field={sub}
                                 settings={settings}
                                 isToolsPanel={false}
-                                callback={(v) => callback({...settings, ...v})}
+
+                                // The correct behavior:
+                                // child field value → merged into hover object via updateHoverItem
+                                callback={(val) => callback({ [sub.slug]: val })}
                             />
                         ))}
                     </Grid>

@@ -401,7 +401,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                         >
                             <HoverFields
                                 settings={localLayout.hover}
-                                suppress={["padding", "margin", "gap"]}
                                 updateHoverItem={updateHoverItem}
                             />
                         </PanelBody>

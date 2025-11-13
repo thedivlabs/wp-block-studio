@@ -144,10 +144,14 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     result['mask-repeat'] = 'no-repeat';
                     result['mask-size'] = (() => {
                         switch (props?.['mask-size']) {
-                            case 'cover': return 'cover';
-                            case 'horizontal': return '100% auto';
-                            case 'vertical': return 'auto 100%';
-                            default: return 'contain';
+                            case 'cover':
+                                return 'cover';
+                            case 'horizontal':
+                                return '100% auto';
+                            case 'vertical':
+                                return 'auto 100%';
+                            default:
+                                return 'contain';
                         }
                     })();
                     result['mask-position'] = props?.['mask-origin'] || 'center center';
@@ -413,10 +417,58 @@ const hoverFieldsMap = [
             {slug: "color", label: "Text"},
             {slug: "border-color", label: "Border"},
             {slug: "outline-color", label: "Outline"},
+            {slug: "text-decoration-color", label: "Decoration"}, // NEW
         ],
     },
-    {type: "shadow", slug: "box-shadow", label: "Shadow", full: true},
+    {
+        type: "select",
+        slug: "text-decoration-line",
+        label: "Text Decoration",
+        options: [
+            {label: "None", value: "none"},
+            {label: "Underline", value: "underline"},
+            {label: "Overline", value: "overline"},
+            {label: "Line Through", value: "line-through"},
+        ],
+    },
+    {
+        type: "select",
+        slug: "text-decoration-style",
+        label: "Decoration Style",
+        options: [
+            {label: "Solid", value: "solid"},
+            {label: "Dotted", value: "dotted"},
+            {label: "Dashed", value: "dashed"},
+            {label: "Double", value: "double"},
+            {label: "Wavy", value: "wavy"},
+        ],
+    },
+    {
+        type: "unit",
+        slug: "text-decoration-thickness",
+        label: "Decoration Thickness",
+        units: ["px", "em", "rem"],
+        min: 0,
+        max: 20,
+        step: 0.5,
+    },
+    {
+        type: "unit",
+        slug: "text-underline-offset",
+        label: "Underline Offset",
+        units: ["px", "em", "rem"],
+        min: -10,
+        max: 50,
+        step: 1,
+    },
+    {
+        type: "shadow",
+        slug: "box-shadow",
+        label: "Shadow",
+        full: true,
+    },
 ];
+
 
 const backgroundFieldsMap = [
 
@@ -480,7 +532,7 @@ const backgroundFieldsMap = [
         min: 0,
         max: 100,
         full: true,
-        itemProps:{
+        itemProps: {
             hasValue: () => true
         }
     },

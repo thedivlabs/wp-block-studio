@@ -1,3 +1,6 @@
+import _ from "lodash";
+
+
 export function extractMinimalImageMeta(media) {
     if (!media) return null;
 

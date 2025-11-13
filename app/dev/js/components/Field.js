@@ -3,6 +3,8 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
+import {extractMinimalImageMeta} from "Includes/helper";
+
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
     const {type, slug, label, full = false, ...controlProps} = field;
@@ -196,15 +198,9 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const currentValue = value || {};
 
             const onSelect = (media) => {
-                // Normalize shape to match other working components
-                const mediaData = {
-                    id: media.id,
-                    /*      url: media.url,
-                          alt: media?.alt,
-                          type: media?.type,
-                          sizes: media?.sizes,*/
-                };
-                commit(mediaData);
+                // Convert WP media object → minimal object
+                const minimal = extractMinimalImageMeta(media);
+                commit(minimal); // save to attributes
             };
 
             const clear = () => commit(null);

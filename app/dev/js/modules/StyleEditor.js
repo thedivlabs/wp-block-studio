@@ -20,43 +20,7 @@ import {
     RESOLUTION_OPTIONS, BLEND_OPTIONS, REPEAT_OPTIONS, DIMENSION_UNITS_TEXT
 } from "Includes/config";
 import _ from "lodash";
-import {select} from '@wordpress/data';
-
-function resolveMediaSync(id) {
-    if (!id) return null;
-
-    // if not loaded yet, resolver fires automatically
-    return select('core').getMedia(id) || null;
-}
-
-function getBestMediaUrlForCss(media, resolution = 'large') {
-    if (!media) return null;
-
-    const sizes = media.media_details?.sizes;
-    if (!sizes) return media.source_url || null;
-
-    // If the requested size exists, use it
-    if (sizes[resolution]?.source_url) {
-        return sizes[resolution].source_url;
-    }
-
-    // Otherwise, find the smallest usable non-thumbnail size
-    const candidates = Object.entries(sizes)
-        .filter(([key, size]) => key !== 'thumbnail' && size?.width)
-        .map(([key, size]) => ({
-            width: Number(size.width) || Infinity,
-            url: size.source_url
-        }))
-        .filter(item => !!item.url);
-
-    if (candidates.length) {
-        candidates.sort((a, b) => a.width - b.width);
-        return candidates[0].url;
-    }
-
-    // Last fallback
-    return media.source_url || null;
-}
+import {getImageUrlForResolution, cleanObject} from "Includes/helper";
 
 
 const SPECIAL_FIELDS = [
@@ -72,30 +36,6 @@ const SPECIAL_FIELDS = [
     'border-radius', 'background-color'
 ];
 
-function cleanObject(obj, strict = false) {
-    return _.transform(obj, (result, value, key) => {
-        if (_.isPlainObject(value)) {
-            const cleaned = cleanObject(value, strict);
-            if (!_.isEmpty(cleaned)) {
-                result[key] = cleaned;
-            }
-        } else if (Array.isArray(value)) {
-            const cleanedArray = value
-                .map((v) => (_.isPlainObject(v) ? cleanObject(v, strict) : v))
-                .filter((v) => v !== undefined && v !== null && (!strict || (v !== '' && !(typeof v === 'string' && v.trim() === ''))));
-
-            if (cleanedArray.length > 0) {
-                result[key] = cleanedArray;
-            }
-        } else if (value !== undefined && value !== null) {
-            if (strict && typeof value === 'string' && value.trim() === '') {
-                // skip empty strings in strict mode
-                return;
-            }
-            result[key] = value;
-        }
-    }, {});
-}
 
 function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
@@ -289,23 +229,16 @@ function parseSpecialProps(props = {}, attributes = {}) {
 function parseBackgroundProps(props = {}) {
 
     const result = {};
-    const {image, video, resolution = 'large', force} = props;
+    const {image, resolution = 'large', force} = props;
 
-
-// Resolve media objects from IDs
-    const imageObj = image?.id ? resolveMediaSync(image.id) : null;
-    const videoObj = video?.id ? resolveMediaSync(video.id) : null;
-
-    const hasMedia = !!imageObj || !!videoObj;
-
-    // --- Base media ---
-    if (imageObj) {
-        const url = getBestMediaUrlForCss(imageObj, resolution);
+    // If the minimal image blob exists, rebuild the correct-size URL
+    if (image?.id && image?.source) {
+        const url = getImageUrlForResolution(image, resolution);
         if (url) {
-            result['--image'] = `url("${url}")`;
+            result["--image"] = `url("${url}")`;
         }
     } else if (force) {
-        result['--image'] = '#';
+        result["--image"] = "#";
     }
 
     // --- Video ---

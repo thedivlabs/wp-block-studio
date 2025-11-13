@@ -1,43 +1,19 @@
 import {Button, Icon} from '@wordpress/components';
 import {IMAGE_BUTTON_STYLE} from 'Includes/config';
-import {useResolvedMedia} from 'Includes/helper';
+import {getImageUrlForResolution} from 'Includes/helper';
 
-function getPreviewSrc(media) {
-    if (!media) return null;
-
-    // Direct fallback
-    const fallback = media.source_url || null;
-
-    const sizes = media.media_details?.sizes;
-    if (!sizes) return fallback;
-
-    // Collect candidates except thumbnail
-    const candidates = Object.entries(sizes)
-        .filter(([key, size]) => key !== 'thumbnail' && size?.width)
-        .map(([key, size]) => ({
-            key,
-            width: Number(size.width) || Infinity,
-            url: size.source_url
-        }))
-        .filter(item => !!item.url);
-
-    if (!candidates.length) return fallback;
-
-    // Sort by ascending width and pick smallest
-    candidates.sort((a, b) => a.width - b.width);
-
-    return candidates[0].url || fallback;
-}
-
-
-function PreviewThumbnail({image = {}, callback, style = {}, onClick, type = 'image'}) {
-    const media = useResolvedMedia(image?.id);
-
-    const src = getPreviewSrc(media);
-    const hasUrl = !!src;
-
-
+function PreviewThumbnail({
+                              image = {},         // { id, source, sizes }
+                              callback,
+                              style = {},
+                              onClick,
+                              type = 'image',
+                              resolution = 'large' // optional, can default to whatever
+                          }) {
     const isVideo = type === 'video';
+
+    const src = getImageUrlForResolution(image, resolution);
+    const hasUrl = !!src;
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
@@ -72,14 +48,12 @@ function PreviewThumbnail({image = {}, callback, style = {}, onClick, type = 'im
 
     const thumb = isVideo ? (
         <video preload="metadata" style={thumbnailStyle}>
-            <source src={src} type={media.mime_type}/>
+            <source src={src} type="video/mp4"/>
         </video>
     ) : (
         <img src={src} alt="" style={thumbnailStyle}/>
     );
 
-
-    // Thumbnail that clears on click — your desired behavior
     return (
         <div
             style={{
@@ -92,7 +66,7 @@ function PreviewThumbnail({image = {}, callback, style = {}, onClick, type = 'im
                 borderRadius: '4px',
                 ...style,
             }}
-            onClick={() => callback?.(image)} // <-- keep your clear behavior
+            onClick={() => callback?.(image)} // your “click to clear” behavior
         >
             {thumb}
 
@@ -106,7 +80,7 @@ function PreviewThumbnail({image = {}, callback, style = {}, onClick, type = 'im
                     padding: 0,
                     width: '26px',
                     height: '26px',
-                    pointerEvents: 'none', // decorative as you intended
+                    pointerEvents: 'none',
                     backgroundColor: 'rgba(0,0,0,.7)',
                     color: 'white',
                     borderRadius: '4px',

@@ -170,34 +170,32 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
 function BackgroundVideo({settings = {}, isSave = false}) {
 
-    // Editor never renders video (poster or otherwise)
+    // Editor never renders video
     if (!isSave) return null;
 
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
-    // --------------------------
-    // 1. BASE VIDEO (always real)
-    // --------------------------
+    // ----------------------------------------
+    // 1. BASE VIDEO (always real, never "#")
+    // ----------------------------------------
     const baseVideo = background?.video;
     if (baseVideo?.source) {
         entries.push({size: Infinity, video: baseVideo});
     }
 
-    // --------------------------
-    // 2. BREAKPOINT OVERRIDES
-    // --------------------------
+    // ----------------------------------------
+    // 2. BREAKPOINT VIDEO OVERRIDES
+    // ----------------------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
         const bpForce = !!bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
-            // Breakpoint has its own video
             entries.push({size, video: bpVideo});
         } else if (bpForce) {
-            // Force OFF video at this breakpoint
             entries.push({
                 size,
                 video: {source: "#", mime: "video/mp4", isPlaceholder: true},
@@ -205,15 +203,23 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         }
     });
 
-    // No video? bail.
+    // No video at all? bail.
     if (!entries.length) return null;
 
-    // Largest → smallest
+    // ----------------------------------------
+    // Sort largest → smallest (base first)
+    // ----------------------------------------
     entries.sort((a, b) => b.size - a.size);
 
-    // Base entry is always the first after sorting
-    const baseEntry = entries[0];
-    const baseSource = baseEntry.video.source;
+    const baseEntry = entries[0]; // always real
+    const baseVideoObj = baseEntry.video;
+
+    // ----------------------------------------
+    // Prepare ordered output lists:
+    // breakpoints first, base last
+    // ----------------------------------------
+    const bpEntries = entries.filter(e => e.size !== Infinity);
+    const finalBaseEntry = baseEntry; // placed last
 
     return (
         <video
@@ -223,14 +229,11 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             playsInline
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
-            {entries.map(({size, video}, i) => {
+            {/* -----------------------------
+               BREAKPOINT SOURCES (always data-src)
+               ----------------------------- */}
+            {bpEntries.map(({size, video}, i) => {
                 if (video.source == null) return null;
-
-                const isBase = size === Infinity;
-                const attr =
-                    isBase
-                        ? (background?.eager && isSave ? "src" : "data-src")
-                        : "data-src";
 
                 const hasValidSize =
                     Number.isFinite(size) &&
@@ -239,16 +242,31 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
                 return (
                     <source
-                        key={i}
-                        {...{[attr]: video.source}}
-                        data-media={hasValidSize ? `(max-width:${size - 1}px)` : null}
+                        key={`bp-${i}`}
+                        data-src={video.source}              // <-- ALWAYS data-src
+                        data-media={
+                            hasValidSize ? `(max-width:${size - 1}px)` : null
+                        }
                         type={video.mime || "video/mp4"}
                     />
                 );
             })}
+
+            {/* -----------------------------
+               BASE SOURCE (always last)
+               Respects eager / non-eager.
+               ----------------------------- */}
+            <source
+                {...{
+                    [background?.eager && isSave ? "src" : "data-src"]:
+                    baseVideoObj.source
+                }}
+                type={baseVideoObj.mime || "video/mp4"}
+            />
         </video>
     );
 }
+
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

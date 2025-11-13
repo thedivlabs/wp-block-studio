@@ -69,7 +69,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                 full: true
                             }}
                             settings={settings}
-                            callback={(val) => callback({image:val})}
+                            callback={(val) => callback({image: val})}
                             isToolsPanel={false}
                         />
                     )}
@@ -83,7 +83,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                 full: true
                             }}
                             settings={settings}
-                            callback={(val) => callback({video:val})}
+                            callback={(val) => callback({video: val})}
                             isToolsPanel={false}
                         />
                     )}
@@ -173,38 +173,50 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
-    // 1. Base-level video
+    // --- 1. Base video ---
     const baseVideo = background?.video;
     if (baseVideo?.source) {
         entries.push({size: Infinity, video: baseVideo});
     }
 
-    // 2. Breakpoint-level videos and placeholders
+    // --- 2. Breakpoint variants ---
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
         const bpForce = bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
-            // Real video defined for this breakpoint
             entries.push({size, video: bpVideo});
         } else if (bpForce) {
-            // Force placeholder only when no video URL
             entries.push({
                 size,
-                video: {url: '#', mime: 'video/mp4', isPlaceholder: true},
+                video: {source: '#', mime: 'video/mp4', isPlaceholder: true},
             });
         }
     });
 
-    // Sort descending by breakpoint size (largest first)
-    entries.sort((a, b) => b.size - a.size);
-
-    // Bail early if no entries
+    // --- No video? bail ---
     if (!entries.length) return null;
 
-    const srcAttr = !background?.eager || !isSave ? 'data-src' : 'src';
+    // --- Sort largest → smallest bp ---
+    entries.sort((a, b) => b.size - a.size);
 
+    const main = entries[0].video;   // <-- The video this block uses at current size
+    const srcAttr = !background?.eager || !isSave ? "data-src" : "src";
+
+    // --- Editor mode: show poster instead of video ---
+    if (!isSave && main.poster) {
+        return (
+            <img
+                className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
+                src={main.poster}
+                alt=""
+                draggable={false}
+            />
+        );
+    }
+
+    // --- Frontend or no poster ---
     return (
         <video
             muted
@@ -215,14 +227,16 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         >
             {entries.map(({size, video}, i) => {
                 const hasValidSize =
-                    Number.isFinite(size) && size > 0 && size !== Infinity;
+                    Number.isFinite(size) &&
+                    size > 0 &&
+                    size !== Infinity;
 
                 return (
                     <source
                         key={i}
-                        {...{[srcAttr]: video?.source}}
+                        {...{[srcAttr]: video.source}}
                         data-media={hasValidSize ? `(max-width:${size - 1}px)` : null}
-                        type={video.mime || 'video/mp4'}
+                        type={video.mime || "video/mp4"}
                     />
                 );
             })}

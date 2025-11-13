@@ -15,7 +15,8 @@ export function extractMinimalImageMeta(media) {
             type: 'video',
             source,
             width: Number(media.width) || null,
-            height: Number(media.height) || null
+            height: Number(media.height) || null,
+            poster: media.image?.src || null
         };
     }
 
@@ -38,7 +39,7 @@ export function extractMinimalImageMeta(media) {
         const width = Number(size.width) || 0;
         const height = Number(size.height) || 0;
         if (width && height) {
-            sizes[key] = { width, height };
+            sizes[key] = {width, height};
         }
     });
 
@@ -54,7 +55,7 @@ export function extractMinimalImageMeta(media) {
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;
 
-    const { source, sizes = {} } = image;
+    const {source, sizes = {}} = image;
 
     // SVGs or anything without sizes → always return source
     if (!sizes || !Object.keys(sizes).length) {

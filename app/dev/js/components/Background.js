@@ -61,6 +61,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                 />
 
                 {!isPanelOpen ? null : <>
+
                     {/* --- Media pickers under Type --- */}
                     {(settings.type === 'image' || settings.type === 'featured-image') && (
                         <BaseControl label="Image" __nextHasNoMarginBottom>
@@ -78,7 +79,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                         <PreviewThumbnail
                                             image={settings?.image}
                                             onClick={open}
-                                            callback={() => callback({image: {}})}
+                                            callback={() => callback({image: null})}
                                             style={{
                                                 objectFit: 'contain',
                                                 borderRadius: '6px',
@@ -106,7 +107,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                         <PreviewThumbnail
                                             image={settings?.video}
                                             onClick={open}
-                                            callback={() => callback({video: {}})}
+                                            callback={() => callback({video: null})}
                                             style={{
                                                 objectFit: 'contain',
                                                 borderRadius: '6px',

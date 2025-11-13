@@ -6,6 +6,7 @@ import Video from './modules/video'
 import Slider from './modules/slider'
 import Reveal from './modules/reveal'
 import Team from './modules/team'
+import MediaWatcher from './modules/MediaWatcher';
 
 
 class WPBS_Theme {
@@ -38,6 +39,9 @@ class WPBS_Theme {
         this.slider.init();
         this.reveal.init();
         this.team.init();
+        this.watcher = MediaWatcher;
+
+        this.watcher.init(this);
 
         window.WPBS = this;
 
@@ -222,112 +226,6 @@ class WPBS_Theme {
         return '';
     }
 
-    responsiveBackgroundSrc(element) {
-        // Remove lazy flag once loaded
-        element.classList.remove('--lazy');
-    }
-
-    responsiveVideoSrc(video) {
-        if (!Array.isArray(this.videos)) this.videos = [];
-
-        [...video.querySelectorAll('source')].forEach((source) => {
-            const mq = source.dataset.media;
-            const hasDataSrc = !!source.dataset.src;
-
-            // No media query → keep as-is
-            if (!mq) {
-                if (hasDataSrc) {
-                    source.src = source.dataset.src;
-                    delete source.dataset.src;
-                }
-                return;
-            }
-
-            const matches = window.matchMedia(mq).matches;
-
-            if (matches) {
-                // If the query matches, ensure the real src is active
-                if (hasDataSrc) {
-                    source.src = source.dataset.src;
-                    delete source.dataset.src;
-                } else if (!source.src) {
-                    source.src = '#';
-                }
-            } else {
-                // Query does NOT match → revert src → data-src
-                if (source.src && source.src !== '#') {
-                    source.dataset.src = source.src;
-                }
-                source.src = '#';
-            }
-        });
-
-        // Reload video sources after any change
-        video.load();
-    }
-
-
-    observeMedia(refElement) {
-        // Always initialize videos array
-        if (!Array.isArray(this.videos)) this.videos = [];
-
-        const observerIntersection = new IntersectionObserver(
-            (entries, observer) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-
-                    const media = entry.target;
-                    observer.unobserve(media);
-
-                    // 1. Handle videos
-                    if (media.tagName === 'VIDEO') {
-                        this.videos.push(media);
-                        this.responsiveVideoSrc(media);
-                        return;
-                    }
-
-                    // 2. Handle background wrappers
-                    if (media.classList.contains('wpbs-background')) {
-                        this.responsiveBackgroundSrc(media);
-                        return;
-                    }
-
-                    // 3. Handle images and other lazy elements
-                    [...media.querySelectorAll('[data-src],[data-srcset]'), media].forEach(
-                        (element) => {
-                            if (element.dataset.src) {
-                                element.src = element.dataset.src;
-                                element.removeAttribute('data-src');
-                            }
-                            if (element.dataset.srcset) {
-                                element.srcset = element.dataset.srcset;
-                                element.removeAttribute('data-srcset');
-                            }
-                        }
-                    );
-                });
-            },
-            {
-                root: null,
-                rootMargin: '90px',
-                threshold: 0,
-            }
-        );
-
-        // Observe all relevant elements for lazy loading
-        const selector =
-            'img[data-src],' +
-            'picture:has(source[data-src]),' +
-            'video:has(source[data-src]),' +
-            'video:has(source[data-media]),' +
-            '.wpbs-background';
-
-        [...(refElement || document).querySelectorAll(selector)].forEach((el) =>
-            observerIntersection.observe(el)
-        );
-    }
-
-
     slideToggle(element, duration, callback, display) {
         jQuery(element).slideToggle(duration, function () {
             if (typeof callback === 'function') {
@@ -345,68 +243,9 @@ class WPBS_Theme {
         jQuery(element).slideDown(duration, callback);
     }
 
-
     init() {
 
-        async function loadFont() {
-            // Define the weights you want
-            const weights = WPBS?.settings?.icons ?? [200, 300, 500];
-
-            // Loop through each weight and load
-            /*for (const weight of weights) {
-                // Adjust your file naming convention as needed
-                const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-v276-latin-${weight}.woff2`;
-
-                const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
-                    weight: weight.toString(),
-                    style: "normal",
-                    display: "swap",
-                });
-
-                try {
-                    const loadedFont = await font.load();
-                    document.fonts.add(loadedFont);
-                } catch (err) {
-                    console.error(`Font ${weight} failed to load`, err);
-                }
-            }*/
-
-            const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-full.woff2`;
-
-            const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
-                style: "normal",
-                display: "swap",
-            });
-
-            try {
-                const loadedFont = await font.load();
-                document.fonts.add(loadedFont);
-            } catch (err) {
-                console.error(`Font failed to load`, err);
-            }
-        }
-
-        /*       loadFont().then(() => {
-                   if (document.fonts && document.fonts.load) {
-                       // Wait until the Material Symbols Outlined font is fully loaded
-                       document.fonts.load('1em "Material Symbols Outlined"').then(() => {
-                           // Add a class to the body to indicate the font is ready
-
-                           document.body.classList.add('icons-loaded');
-
-
-                       }).catch(() => {
-                           // Fallback: in case of error, still add the class
-                           //document.body.classList.add('material-icons-loaded');
-                       });
-                   } else {
-                       // Fallback for older browsers that don't support the Font Loading API
-                       //document.body.classList.add('material-icons-loaded');
-                   }
-               });*/
-
         document.addEventListener('DOMContentLoaded', () => {
-            this.observeMedia();
 
             this.popup.init();
 

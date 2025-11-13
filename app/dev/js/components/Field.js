@@ -8,7 +8,7 @@ import {extractMinimalImageMeta} from "Includes/helper";
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
     const {type, defaultValue = '', itemProps, slug, label, full = false, ...controlProps} = field;
-    if (!type || !slug || !label) return null;
+    if (!type || !label) return null;
 
     const {
         SelectControl,

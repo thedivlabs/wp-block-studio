@@ -4,42 +4,52 @@ import _ from "lodash";
 export function extractMinimalImageMeta(media) {
     if (!media) return null;
 
-    // Robust source fallback chain
-    const source =
-        media.source_url ||
-        media.media_details?.sizes?.full?.source_url ||
-        media.media_details?.sizes?.large?.source_url ||
-        media.url ||
-        media.guid?.raw ||
-        media.guid?.rendered ||
-        '';
+    const mime = media.mime || media.mime_type || '';
+    const type = media.type || (mime.startsWith('video/') ? 'video' : 'image');
+    const source = media.url || '';
 
-    // SVG: minimal
-    if (media.mime_type === 'image/svg+xml') {
+    // --- Handle VIDEO ---
+    if (type === 'video') {
         return {
             id: media.id,
+            type: 'video',
+            source,
+            width: Number(media.width) || null,
+            height: Number(media.height) || null
+        };
+    }
+
+    // --- Handle SVG IMAGE ---
+    const isSVG = mime === 'image/svg+xml';
+    if (isSVG) {
+        return {
+            id: media.id,
+            type: 'image',
             source,
             sizes: {}
         };
     }
 
+    // --- Handle RASTER IMAGE ---
+    const rawSizes = media.sizes || {};
     const sizes = {};
-    const wpSizes = media.media_details?.sizes || {};
 
-    Object.entries(wpSizes).forEach(([key, size]) => {
+    Object.entries(rawSizes).forEach(([key, size]) => {
         const width = Number(size.width) || 0;
         const height = Number(size.height) || 0;
-        if (!width || !height) return;
-
-        sizes[key] = { width, height };
+        if (width && height) {
+            sizes[key] = { width, height };
+        }
     });
 
     return {
         id: media.id,
+        type: 'image',
         source,
         sizes
     };
 }
+
 
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;

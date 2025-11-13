@@ -69,7 +69,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                 full: true
                             }}
                             settings={settings}
-                            callback={(val) => callback(val)}
+                            callback={(val) => callback({image:val})}
                             isToolsPanel={false}
                         />
                     )}
@@ -83,7 +83,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                 full: true
                             }}
                             settings={settings}
-                            callback={(val) => callback(val)}
+                            callback={(val) => callback({video:val})}
                             isToolsPanel={false}
                         />
                     )}

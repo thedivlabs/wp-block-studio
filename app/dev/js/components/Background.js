@@ -70,6 +70,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             }}
                             settings={settings}
                             callback={(val) => callback(val)}
+                            isToolsPanel={false}
                         />
                     )}
 
@@ -83,6 +84,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                             }}
                             settings={settings}
                             callback={(val) => callback(val)}
+                            isToolsPanel={false}
                         />
                     )}
 

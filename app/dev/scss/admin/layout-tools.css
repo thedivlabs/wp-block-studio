@@ -316,4 +316,13 @@
   .wpbs-layout-tools__popover-item.active button::before {
     content: '✓';
   }
+
+  .wpbs-composite-field {
+
+    .wpbs-composite-field__grid {
+      padding:12px;
+      background-color: #efefef;
+      border-radius: 5px;
+    }
+  }
 }

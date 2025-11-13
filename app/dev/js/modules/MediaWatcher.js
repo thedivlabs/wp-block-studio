@@ -1,4 +1,4 @@
-import _ from "lodash";
+import debounce from "lodash/debounce";
 
 export default class MediaWatcher {
 
@@ -8,7 +8,7 @@ export default class MediaWatcher {
 
         this.observeMedia(document);
 
-        const recheck = _.debounce(() => {
+        const recheck = debounce(() => {
             this.videos.forEach((video) => {
                 this.responsiveVideoSrc(video);
             });

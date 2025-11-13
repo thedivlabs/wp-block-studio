@@ -2,36 +2,14 @@ import _ from "lodash";
 
 export default class MediaWatcher {
 
-    static init(themeInstance) {
-        if (!themeInstance) return;
+    static videos = [];
 
-        this.theme = themeInstance;
+    static init() {
 
-        // Ensure videos array exists
-        if (!Array.isArray(this.theme.videos)) {
-            this.theme.videos = [];
-        }
+        this.observeMedia(document);
 
-        // Bind methods
-        this.responsiveVideoSrc = this.responsiveVideoSrc.bind(this);
-        this.responsiveBackgroundSrc = this.responsiveBackgroundSrc.bind(this);
-        this.observeMedia = this.observeMedia.bind(this);
-
-        // Setup watchers
-        document.addEventListener("DOMContentLoaded", () => {
-            this.observeMedia(document);
-
-            // Load lazy hrefs
-            [...document.querySelectorAll('link[data-href]')].forEach((link) => {
-                link.href = link.dataset.href;
-            });
-        });
-
-        // Debounced viewport-based video re-check
         const recheck = _.debounce(() => {
-            if (!Array.isArray(this.theme.videos)) return;
-
-            this.theme.videos.forEach((video) => {
+            this.videos.forEach((video) => {
                 this.responsiveVideoSrc(video);
             });
         }, 900);
@@ -41,17 +19,11 @@ export default class MediaWatcher {
         window.addEventListener("load", recheck, { passive: true });
     }
 
-    // -----------------------------------------------------
-    // Responsive Background
-    // -----------------------------------------------------
-    responsiveBackgroundSrc(element) {
+    static responsiveBackgroundSrc(element) {
         element.classList.remove("--lazy");
     }
 
-    // -----------------------------------------------------
-    // Responsive Video Source MQ Handler
-    // -----------------------------------------------------
-    responsiveVideoSrc(video) {
+    static responsiveVideoSrc(video) {
         [...video.querySelectorAll("source")].forEach((source) => {
             const mq = source.dataset.media;
             const hasDataSrc = !!source.dataset.src;
@@ -84,10 +56,7 @@ export default class MediaWatcher {
         video.load();
     }
 
-    // -----------------------------------------------------
-    // IntersectionObserver Loader (images, video, bg)
-    // -----------------------------------------------------
-    observeMedia(root) {
+    static observeMedia(root) {
         const observer = new IntersectionObserver(
             (entries, obs) => {
                 entries.forEach((entry) => {
@@ -96,20 +65,17 @@ export default class MediaWatcher {
                     const el = entry.target;
                     obs.unobserve(el);
 
-                    // Handle VIDEO
                     if (el.tagName === "VIDEO") {
-                        this.theme.videos.push(el);
+                        this.videos.push(el);
                         this.responsiveVideoSrc(el);
                         return;
                     }
 
-                    // Background wrappers
                     if (el.classList.contains("wpbs-background")) {
                         this.responsiveBackgroundSrc(el);
                         return;
                     }
 
-                    // Generic lazy elements
                     [...el.querySelectorAll("[data-src],[data-srcset]"), el].forEach(
                         (child) => {
                             if (child.dataset.src) {

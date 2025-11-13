@@ -39,9 +39,7 @@ class WPBS_Theme {
         this.slider.init();
         this.reveal.init();
         this.team.init();
-        this.watcher = MediaWatcher;
-
-        this.watcher.init(this);
+        this.mediaWatcher = MediaWatcher;
 
         window.WPBS = this;
 
@@ -248,6 +246,8 @@ class WPBS_Theme {
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
+
+            this.mediaWatcher.init();
 
             [...document.querySelectorAll('link[data-href]')].forEach((link) => {
                 link.href = link.dataset.href;

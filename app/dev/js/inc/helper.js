@@ -56,36 +56,38 @@ export function getImageUrlForResolution(image, resolution = 'large') {
 
     const { source, sizes = {} } = image;
 
-    // SVGs or items without sizes → always return source
+    // SVGs or anything without sizes → always return source
     if (!sizes || !Object.keys(sizes).length) {
         return source;
     }
 
-    // FULL → always use origin; never construct -WxH filenames
+    // Full always returns the real source file
     if (resolution === 'full') {
         return source;
     }
 
-    const match = source.match(/^(.*\/)([^\/]+)\.([a-z0-9]+)$/i);
-    if (!match) return source;
+    // Utility: build resized URL from existing size
+    const buildFromSize = (sizeObj) => {
+        const match = source.match(/^(.*\/)([^\/]+)\.([a-z0-9]+)$/i);
+        if (!match) return source;
+        const [, base, name, ext] = match;
+        return `${base}${name}-${sizeObj.width}x${sizeObj.height}.${ext}`;
+    };
 
-    const [, base, name, ext] = match;
-
-    const direct = sizes[resolution];
-    if (direct?.width && direct?.height) {
-        return `${base}${name}-${direct.width}x${direct.height}.${ext}`;
+    // 1. Exact match
+    if (sizes[resolution]?.width && sizes[resolution]?.height) {
+        return buildFromSize(sizes[resolution]);
     }
 
-    // fallback: smallest non-thumbnail
-    const fallback = Object.entries(sizes)
-        .filter(([key, s]) => key !== 'thumbnail' && s?.width && s?.height)
-        .map(([key, s]) => s)
-        .sort((a, b) => a.width - b.width)[0];
+    // 2. Fallback: "large"
+    if (sizes.large?.width && sizes.large?.height) {
+        return buildFromSize(sizes.large);
+    }
 
-    if (!fallback) return source;
-
-    return `${base}${name}-${fallback.width}x${fallback.height}.${ext}`;
+    // 3. Fallback: "full"
+    return source;
 }
+
 
 export function cleanObject(obj, strict = false) {
     return _.transform(obj, (result, value, key) => {

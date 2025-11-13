@@ -2,10 +2,40 @@ import {Button, Icon} from '@wordpress/components';
 import {IMAGE_BUTTON_STYLE} from 'Includes/config';
 import {useResolvedMedia} from 'Includes/helper';
 
+function getPreviewSrc(media) {
+    if (!media) return null;
+
+    // Direct fallback
+    const fallback = media.source_url || null;
+
+    const sizes = media.media_details?.sizes;
+    if (!sizes) return fallback;
+
+    // Collect candidates except thumbnail
+    const candidates = Object.entries(sizes)
+        .filter(([key, size]) => key !== 'thumbnail' && size?.width)
+        .map(([key, size]) => ({
+            key,
+            width: Number(size.width) || Infinity,
+            url: size.source_url
+        }))
+        .filter(item => !!item.url);
+
+    if (!candidates.length) return fallback;
+
+    // Sort by ascending width and pick smallest
+    candidates.sort((a, b) => a.width - b.width);
+
+    return candidates[0].url || fallback;
+}
+
+
 function PreviewThumbnail({image = {}, callback, style = {}, onClick, type = 'image'}) {
     const media = useResolvedMedia(image?.id);
 
-    const hasUrl = !!media?.url;
+    const src = getPreviewSrc(media);
+    const hasUrl = !!src;
+
 
     const isVideo = type === 'video';
 
@@ -42,11 +72,12 @@ function PreviewThumbnail({image = {}, callback, style = {}, onClick, type = 'im
 
     const thumb = isVideo ? (
         <video preload="metadata" style={thumbnailStyle}>
-            <source src={media.url} type="video/mp4"/>
+            <source src={src} type={media.mime_type}/>
         </video>
     ) : (
-        <img src={media.url} alt="" style={thumbnailStyle}/>
+        <img src={src} alt="" style={thumbnailStyle}/>
     );
+
 
     // Thumbnail that clears on click — your desired behavior
     return (

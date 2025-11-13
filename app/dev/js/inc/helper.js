@@ -1,8 +1,10 @@
 import {useEffect, useState} from '@wordpress/element';
-import {select, dispatch} from '@wordpress/data';
+import {select, subscribe} from '@wordpress/data';
 
 export function useResolvedMedia(id) {
-    const [media, setMedia] = useState(null);
+    const [media, setMedia] = useState(() =>
+        id ? select('core').getMedia(id) : null
+    );
 
     useEffect(() => {
         if (!id) {
@@ -10,16 +12,24 @@ export function useResolvedMedia(id) {
             return;
         }
 
-        const existing = select('core').getMedia(id);
-        if (existing) {
-            setMedia(existing);
-        } else {
-            dispatch('core')
-                .fetchMedia(id)
-                .then((m) => setMedia(m))
-                .catch(() => setMedia(null));
-        }
+        // load whatever exists right now
+        let current = select('core').getMedia(id);
+        setMedia(current);
+
+        // subscribe to store changes until the media arrives
+        const unsubscribe = subscribe(() => {
+            const next = select('core').getMedia(id);
+            if (next && next !== current) {
+                current = next;
+                setMedia(next);
+                unsubscribe();
+            }
+        });
+
+        return unsubscribe;
     }, [id]);
+
+    console.log(media);
 
     return media;
 }

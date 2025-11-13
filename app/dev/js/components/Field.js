@@ -7,7 +7,7 @@ import {extractMinimalImageMeta} from "Includes/helper";
 
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
-    const {type, defaultValue, slug, label, full = false, ...controlProps} = field;
+    const {type, defaultValue,itemProps, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -244,6 +244,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 onSelect={() => commit("")} // initialize with an empty string
                 className={fieldClassNames}
                 isShownByDefault={false}
+                {...itemProps}
             >
                 {control}
             </ToolsPanelItem> : control

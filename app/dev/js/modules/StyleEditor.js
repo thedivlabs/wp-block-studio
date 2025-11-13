@@ -484,7 +484,9 @@ const backgroundFieldsMap = [
         min: 0,
         max: 100,
         full: true,
-        defaultValue: 100
+        itemProps:{
+            hasValue: () => true
+        }
     },
     {
         type: 'range',

@@ -7,7 +7,7 @@ import {extractMinimalImageMeta} from "Includes/helper";
 
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
-    const {type, defaultValue,itemProps, slug, label, full = false, ...controlProps} = field;
+    const {type, defaultValue = '',itemProps, slug, label, full = false, ...controlProps} = field;
     if (!type || !slug || !label) return null;
 
     const {
@@ -51,7 +51,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = (
                 <ShadowSelector
                     label={label}
-                    value={value}
+                    value={value || defaultValue}
                     onChange={(val) => commit({[slug]: val})}
                     {...controlProps}
                 />
@@ -101,7 +101,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 <BaseControl label={label}>
                     <GradientPicker
                         id={inputId}
-                        value={value || 'linear-gradient(90deg,#000 0%,#fff 100%)'}
+                        value={value || defaultValue || 'linear-gradient(90deg,#000 0%,#fff 100%)'}
                         gradients={[]}
                         onChange={commit}
                         __nextHasNoMarginBottom
@@ -114,7 +114,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = (
                 <TextControl
                     id={inputId}
-                    value={value ?? ""}
+                    value={value || defaultValue}
                     aria-label={label}
                     onChange={commit}
                     type="text"
@@ -127,7 +127,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = (
                 <NumberControl
                     id={inputId}
-                    value={value ?? ""}
+                    value={value || defaultValue}
                     aria-label={label}
                     onChange={commit}
                     {...controlProps}
@@ -139,7 +139,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = (
                 <SelectControl
                     id={inputId}
-                    value={value ?? ""}
+                    value={value || defaultValue}
                     options={controlProps.options || []}
                     aria-label={label}
                     onChange={commit}
@@ -164,7 +164,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = (
                 <UnitControl
                     id={inputId}
-                    value={value ?? ""}
+                    value={value || defaultValue}
                     units={
                         controlProps.units || [
                             {value: "px", label: "px"},
@@ -185,7 +185,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = (
                 <BoxControl
                     label={label}
-                    values={value}
+                    values={value || defaultValue}
                     onChange={commit}
                     {...controlProps}
                 />

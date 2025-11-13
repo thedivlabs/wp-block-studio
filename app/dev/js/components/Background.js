@@ -169,6 +169,12 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 };
 
 function BackgroundVideo({settings = {}, isSave = false}) {
+
+    if (!isSave) {
+        return null
+    }
+
+
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
@@ -204,18 +210,6 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     const main = entries[0].video;   // <-- The video this block uses at current size
     const srcAttr = !background?.eager || !isSave ? "data-src" : "src";
 
-    // --- Editor mode: show poster instead of video ---
-    if (!isSave && main.poster) {
-        return (
-            <img
-                className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
-                src={main.poster}
-                alt=""
-                draggable={false}
-            />
-        );
-    }
-
     // --- Frontend or no poster ---
     return (
         <video
@@ -226,6 +220,9 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
             {entries.map(({size, video}, i) => {
+                // allow "#" (forced), skip only undefined/null
+                if (video.source == null) return null;
+
                 const hasValidSize =
                     Number.isFinite(size) &&
                     size > 0 &&
@@ -240,6 +237,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                     />
                 );
             })}
+
         </video>
     );
 }

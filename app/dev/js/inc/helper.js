@@ -16,7 +16,7 @@ export function extractMinimalImageMeta(media) {
             source,
             width: Number(media.width) || null,
             height: Number(media.height) || null,
-            poster: media.image?.src || null
+            //poster: media.image?.src || null
         };
     }
 

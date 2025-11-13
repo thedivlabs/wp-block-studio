@@ -27,44 +27,41 @@ export default class MediaWatcher {
         let changed = false;
 
         [...video.querySelectorAll("source")].forEach((source) => {
-            const mq = source.dataset.media;
-            if (!mq) {
-                // No data-media → watcher does not manage this source
-                return;
-            }
-
-            const dataSrc = source.getAttribute("data-src") || "";
+            const mq = source.dataset.media || null;
+            const dataSrc = source.dataset.src || "";
             const currentSrc = source.getAttribute("src") || "";
-            const matches = window.matchMedia(mq).matches;
 
-            // --------------------------------------------
-            // WHEN MEDIA QUERY MATCHES
-            // --------------------------------------------
-            if (matches) {
-                // If we have a data-src and src is already correct → no-op
-                if (dataSrc && currentSrc === dataSrc) {
-                    return;
-                }
-
-                // If we have a data-src but src is different/empty -> activate it
+            // ---------------------------------------------------
+            // BASE SOURCE (no data-media)
+            // ---------------------------------------------------
+            if (!mq) {
+                // activate base source if not already active
                 if (dataSrc && currentSrc !== dataSrc) {
                     source.setAttribute("src", dataSrc);
                     changed = true;
                 }
-
-                // If we *don't* have data-src, we leave src as-is (could be "#", could be real)
                 return;
             }
 
-            // --------------------------------------------
-            // WHEN MEDIA QUERY DOES NOT MATCH
-            // --------------------------------------------
-            // If src is a real URL (not "#" and not empty), disable for this MQ
-            if (currentSrc && currentSrc !== "#") {
+            // ---------------------------------------------------
+            // MQ SOURCE
+            // ---------------------------------------------------
+            const matches = window.matchMedia(mq).matches;
+
+            if (matches) {
+                // activate source if not already active
+                if (dataSrc && currentSrc !== dataSrc) {
+                    source.setAttribute("src", dataSrc);
+                    changed = true;
+                }
+                return;
+            }
+
+            // MQ does NOT match → deactivate
+            if (currentSrc !== "#" && currentSrc !== "") {
                 source.setAttribute("src", "#");
                 changed = true;
             }
-            // If src is already "#" or empty, we leave it alone
         });
 
         if (changed) {

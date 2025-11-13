@@ -185,7 +185,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         const bpForce = bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
-        if (bpVideo?.url) {
+        if (bpVideo?.source) {
             // Real video defined for this breakpoint
             entries.push({size, video: bpVideo});
         } else if (bpForce) {
@@ -220,7 +220,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 return (
                     <source
                         key={i}
-                        {...{[srcAttr]: video.url}}
+                        {...{[srcAttr]: video?.source}}
                         data-media={hasValidSize ? `(max-width:${size - 1}px)` : null}
                         type={video.mime || 'video/mp4'}
                     />

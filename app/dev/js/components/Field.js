@@ -198,9 +198,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const currentValue = value || {};
 
             const onSelect = (media) => {
-                console.log(media);
                 const minimal = extractMinimalImageMeta(media);
-                console.log(minimal);
                 commit(minimal); // save to attributes
             };
 
@@ -214,11 +212,12 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                             allowedTypes={allowedTypes}
                             value={currentValue?.id}
                             onSelect={onSelect}
-                            render={({open}) => (
+                            render={({ open }) => (
                                 <PreviewThumbnail
-                                    image={currentValue}
-                                    onClick={open}
-                                    callback={clear}
+                                    image={currentValue}        // minimal image/video object
+                                    type={isImage ? "image" : "video"} // <— ADD THIS
+                                    onClick={open}            // open library
+                                    callback={clear}          // clear field
                                     style={{
                                         objectFit: "contain",
                                         borderRadius: "6px",

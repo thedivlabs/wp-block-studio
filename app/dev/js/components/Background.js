@@ -75,11 +75,12 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                             image: extractMinimalImageMeta(media)
                                         })
                                     }
-                                    render={({open}) => (
+                                    render={({ open }) => (
                                         <PreviewThumbnail
-                                            image={settings?.image}
-                                            onClick={open}
-                                            callback={() => callback({image: null})}
+                                            image={settings?.image}           // minimal object
+                                            type="image"                     // tell the component what it is
+                                            onClick={open}                   // open media modal
+                                            callback={() => callback({ image: null })} // clear field
                                             style={{
                                                 objectFit: 'contain',
                                                 borderRadius: '6px',
@@ -103,11 +104,12 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                                             video: extractMinimalImageMeta(media)
                                         })
                                     }
-                                    render={({open}) => (
+                                    render={({ open }) => (
                                         <PreviewThumbnail
-                                            image={settings?.video}
-                                            onClick={open}
-                                            callback={() => callback({video: null})}
+                                            image={settings?.video}          // minimal object
+                                            type="video"                    // tell component it's a video
+                                            onClick={open}                  // modal
+                                            callback={() => callback({ video: null })} // clear
                                             style={{
                                                 objectFit: 'contain',
                                                 borderRadius: '6px',

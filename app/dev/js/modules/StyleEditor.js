@@ -433,6 +433,7 @@ const hoverFieldsMap = [
                 slug: "text-decoration-line",
                 label: "Decoration",
                 options: [
+                    { label: "Select", value: "" },
                     { label: "None", value: "none" },
                     { label: "Underline", value: "underline" },
                     { label: "Overline", value: "overline" },
@@ -445,6 +446,7 @@ const hoverFieldsMap = [
                 slug: "text-decoration-style",
                 label: "Style",
                 options: [
+                    { label: "Select", value: "" },
                     { label: "Solid", value: "solid" },
                     { label: "Dotted", value: "dotted" },
                     { label: "Dashed", value: "dashed" },

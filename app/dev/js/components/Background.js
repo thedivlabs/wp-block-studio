@@ -168,82 +168,63 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
     );
 };
 
-export const BackgroundVideo = ({settings = {}, isSave = false}) => {
+function BackgroundVideo({settings = {}, isSave = false}) {
+
+    // Editor never renders video
     if (!isSave) return null;
 
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
-    /* ------------------------------------------------------------
-       BASE VIDEO
-    ------------------------------------------------------------ */
+    // ----------------------------------------
+    // 1. BASE VIDEO (always real, never "#")
+    // ----------------------------------------
     const baseVideo = background?.video;
-    const baseOff = baseVideo?.off === true || baseVideo === "";
-    const eager = !!background?.eager;   // eager allowed
-
     if (baseVideo?.source) {
         entries.push({
             size: Infinity,
-            source: baseVideo.source,
-            mime: baseVideo.mime || "video/mp4",
-            mq: null,
-            disabled: false,
-            eager,
-        });
-    } else if (baseOff) {
-        entries.push({
-            size: Infinity,
-            source: "#",
-            mime: "video/mp4",
-            mq: null,
-            disabled: true,
-            eager: false,
+            video: baseVideo
         });
     }
 
-    /* ------------------------------------------------------------
-       BREAKPOINT OVERRIDES
-    ------------------------------------------------------------ */
+    // ----------------------------------------
+    // 2. BREAKPOINT VIDEO OVERRIDES
+    // ----------------------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
         const bpOff = bpVideo?.off === true || bpVideo === "";
+
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
-            entries.push({
-                size,
-                source: bpVideo.source,
-                mime: bpVideo.mime || "video/mp4",
-                mq: bpData.media,
-                disabled: false,
-                eager: false,
-            });
+            // real video override
+            entries.push({size, video: bpVideo});
         } else if (bpOff) {
+            // DISABLED BREAKPOINT → source:"#"
             entries.push({
                 size,
-                source: "#",
-                mime: "video/mp4",
-                mq: bpData.media,
-                disabled: true,
-                eager: false,
+                video: {source: "#", mime: "video/mp4", isPlaceholder: true}
             });
         }
     });
 
+    // No usable entries
     if (!entries.length) return null;
 
-    /* ------------------------------------------------------------
-       Sort base first, then breakpoints
-    ------------------------------------------------------------ */
+    // ----------------------------------------
+    // 3. Sort largest → smallest (base first)
+    // ----------------------------------------
     entries.sort((a, b) => b.size - a.size);
 
-    const baseEntry = entries.find((e) => e.size === Infinity);
-    const bpEntries = entries.filter((e) => e.size !== Infinity);
+    const baseEntry = entries[0];
+    const baseVideoObj = baseEntry.video;
 
-    /* ------------------------------------------------------------
-       RENDER VIDEO
-    ------------------------------------------------------------ */
+    // ----------------------------------------
+    // Separate base and breakpoints
+    // ----------------------------------------
+    const bpEntries = entries.filter(e => e.size !== Infinity);
+
     return (
         <video
             muted
@@ -252,39 +233,59 @@ export const BackgroundVideo = ({settings = {}, isSave = false}) => {
             playsInline
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
+
             {/* BREAKPOINT SOURCES */}
-            {bpEntries.map((entry, i) => {
-                if (entry.disabled) {
+            {bpEntries.map(({size, video}, i) => {
+
+                const mq = (
+                    Number.isFinite(size) &&
+                    size > 0 &&
+                    size !== Infinity
+                )
+                    ? `(max-width:${size - 1}px)`
+                    : null;
+
+                // DISABLED = src="#"
+                if (video.source === "#") {
                     return (
                         <source
                             key={`bp-${i}`}
                             src="#"
-                            type={entry.mime}
+                            data-media={mq}
+                            type={video.mime || "video/mp4"}
                         />
                     );
                 }
 
-                return (
-                    <source
-                        key={`bp-${i}`}
-                        data-src={entry.source}
-                        data-media={entry.mq || undefined}
-                        type={entry.mime}
-                    />
-                );
+                // REAL BREAKPOINT VIDEO
+                if (video.source) {
+                    return (
+                        <source
+                            key={`bp-${i}`}
+                            data-src={video.source}
+                            data-media={mq}
+                            type={video.mime || "video/mp4"}
+                        />
+                    );
+                }
+
+                // otherwise skip
+                return null;
             })}
 
-            {/* BASE SOURCE */}
-            {baseEntry.disabled ? (
-                <source src="#" type={baseEntry.mime} />
-            ) : baseEntry.eager ? (
-                <source src={baseEntry.source} type={baseEntry.mime} />
-            ) : (
-                <source data-src={baseEntry.source} type={baseEntry.mime} />
-            )}
+            {/* BASE SOURCE (always last) */}
+            <source
+                {...{
+                    [background?.eager && isSave ? "src" : "data-src"]:
+                    baseVideoObj.source
+                }}
+                type={baseVideoObj.mime || "video/mp4"}
+            />
+
         </video>
     );
-};
+}
+
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const baseBg = attributes?.['wpbs-style']?.background;

@@ -39,81 +39,49 @@ export default class MediaWatcher {
     // Responsive Video MQ Activation
     // -----------------------------------------------------
     static responsiveVideoSrc(video) {
+        const sources = [...video.querySelectorAll("source")];
+        if (!sources.length) return;
+
         let changed = false;
 
-        const sources = [...video.querySelectorAll("source")];
+        // 1. Find matching breakpoint source
+        let active = sources.find(s => {
+            const mq = s.dataset.media;
+            return mq && window.matchMedia(mq).matches;
+        });
 
-        // STEP 1 — Find active breakpoint source (if any)
-        let activeBreakpoint = null;
-
-        for (const source of sources) {
-            const mq = source.dataset.media || null;
-
-            // Only breakpoint sources have mq
-            if (!mq) continue;
-
-            if (window.matchMedia(mq).matches) {
-                activeBreakpoint = source;
-                break;
-            }
+        // 2. If none matched → base is active
+        if (!active) {
+            active = sources.find(s => !s.dataset.media);
+            if (!active) return;
         }
 
-        // STEP 2 — Apply breakpoint behavior if matched
-        if (activeBreakpoint) {
-            const dataSrc = activeBreakpoint.dataset.src ?? "";
-            const disabled = !dataSrc || dataSrc === "#" || dataSrc === "";
+        const activeSrc = active.dataset.src;
 
-            for (const source of sources) {
-                if (source === activeBreakpoint) {
-                    // ENABLED breakpoint
-                    if (!disabled && source.getAttribute("src") !== dataSrc) {
-                        source.setAttribute("src", dataSrc);
-                        changed = true;
-                    }
-
-                    // DISABLED breakpoint
-                    if (disabled && source.getAttribute("src") !== "#") {
-                        source.setAttribute("src", "#");
-                        changed = true;
-                    }
-
-                    continue;
-                }
-
-                // Non-active sources must be reset
-                if (source.getAttribute("src") && source.getAttribute("src") !== "#") {
-                    source.setAttribute("src", "#");
-                    changed = true;
-                }
-            }
-
-            if (changed) video.load();
-            return;
+        // ----- PROMOTE ACTIVE -----
+        if (activeSrc && active.getAttribute("src") !== activeSrc) {
+            active.setAttribute("src", activeSrc);
+            active.removeAttribute("data-src");
+            changed = true;
         }
 
-        // STEP 3 — No matching breakpoint → base behavior
-        const base = sources.find((s) => !s.dataset.media);
+        // ----- DEMOTE ALL OTHERS -----
+        for (const s of sources) {
+            if (s === active) continue;
 
-        if (!base) return;
+            const sSrc = s.getAttribute("src");
 
-        const dataSrc = base.dataset.src ?? "";
-        const disabled = !dataSrc || dataSrc === "#" || dataSrc === "";
-
-        if (disabled) {
-            if (base.getAttribute("src") !== "#") {
-                base.setAttribute("src", "#");
-                changed = true;
-            }
-        } else {
-            if (base.getAttribute("src") !== dataSrc) {
-                base.setAttribute("src", dataSrc);
+            if (sSrc && sSrc !== "#") {
+                s.setAttribute("data-src", sSrc);
+                s.removeAttribute("src");
                 changed = true;
             }
         }
 
         if (changed) video.load();
     }
-    // -----------------------------------------------------
+
+
     // IntersectionObserver for lazy media
     // -----------------------------------------------------
     static observeMedia(root) {

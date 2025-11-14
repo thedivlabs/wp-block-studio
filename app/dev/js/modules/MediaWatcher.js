@@ -127,7 +127,7 @@ export default class MediaWatcher {
             },
             {
                 root: null,
-                rootMargin: "200px 0px 200px 0px",
+                rootMargin: "400px 0px 400px 0px",
                 threshold: 0,
             }
         );

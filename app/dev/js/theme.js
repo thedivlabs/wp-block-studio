@@ -243,11 +243,13 @@ class WPBS_Theme {
 
     init() {
 
+        this.mediaWatcher.init();
+
         document.addEventListener('DOMContentLoaded', () => {
 
             this.popup.init();
 
-            this.mediaWatcher.init();
+
 
         });
 

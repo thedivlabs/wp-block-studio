@@ -170,7 +170,6 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
 
 function BackgroundVideo({settings = {}, isSave = false}) {
 
-    // Editor never renders video
     if (!isSave) return null;
 
     const {background = {}, breakpoints = {}} = settings;
@@ -178,10 +177,10 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     const entries = [];
 
     // ----------------------------------------
-    // 1. BASE VIDEO (always real, never "#")
+    // 1. BASE VIDEO (ONLY if source exists)
     // ----------------------------------------
     const baseVideo = background?.video;
-    if (baseVideo?.source) {
+    if (baseVideo && baseVideo.source) {
         entries.push({
             size: Infinity,
             video: baseVideo
@@ -193,20 +192,28 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // ----------------------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
-        const bpOff = bpVideo?.off === true;
+        if (!bpVideo) return;
 
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
-        if (bpVideo?.source) {
-            // real video override
-            entries.push({size, video: bpVideo});
-        } else if (bpOff) {
-            // DISABLED BREAKPOINT → source:"#"
+        // DISABLED
+        if (bpVideo.source === "#") {
             entries.push({
                 size,
-                video: {source: "#", mime: "video/mp4", isPlaceholder: true}
+                video: bpVideo
+            });
+            return;
+        }
+
+        // ENABLED VIDEO
+        if (bpVideo.source) {
+            entries.push({
+                size,
+                video: bpVideo
             });
         }
+
+        // else skip empty value
     });
 
     // No usable entries
@@ -217,12 +224,9 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // ----------------------------------------
     entries.sort((a, b) => b.size - a.size);
 
-    const baseEntry = entries[0];
-    const baseVideoObj = baseEntry.video;
+    const baseEntry = entries.find(e => e.size === Infinity);
+    const baseVideoObj = baseEntry?.video ?? null;
 
-    // ----------------------------------------
-    // Separate base and breakpoints
-    // ----------------------------------------
     const bpEntries = entries.filter(e => e.size !== Infinity);
 
     return (
@@ -242,19 +246,6 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                         ? `(max-width:${size - 1}px)`
                         : null;
 
-                // DISABLED breakpoint: data-src="#"
-                if (video.source === "#") {
-                    return (
-                        <source
-                            key={`bp-${i}`}
-                            data-src="#"
-                            data-media={mq}
-                            type={video.mime || "video/mp4"}
-                        />
-                    );
-                }
-
-                // ENABLED breakpoint: lazy load
                 return (
                     <source
                         key={`bp-${i}`}
@@ -265,7 +256,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 );
             })}
 
-            {/* BASE SOURCE  */}
+            {/* BASE SOURCE (ONLY if real video exists) */}
             {baseVideoObj?.source && (
                 <source
                     data-src={baseVideoObj.source}

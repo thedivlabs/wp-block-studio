@@ -32,9 +32,16 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData} = props;
+            const {attributes, BlockWrapper, styleData, setPreload, setCss} = props;
 
             const classNames = getClassNames(attributes, styleData);
+
+            setPreload([
+                {id: 100, type: 'image'},
+                {id: 200, type: 'image'},
+            ]);
+
+            setCss({props: {display: 'flex'}});
 
             return (
                 <>

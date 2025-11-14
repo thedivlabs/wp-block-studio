@@ -7,7 +7,7 @@ import {BlockWrapper} from 'Components/BlockWrapper';
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {type: 'string'},
     'wpbs-css': {type: 'object', default: {}},
-    'wpbs-preload': {type: 'array'},
+    'wpbs-preload': {type: 'array', default: [{test: 'test'}]},
     'wpbs-style': {type: 'object', default: {}},
 };
 
@@ -31,7 +31,9 @@ const getDataProps = (props) => {
 };
 
 export const withStyle = (Component) => (props) => {
-    const cssPropsRef = useRef({});
+    const blockCssRef = useRef({});
+    const blockPreloadRef = useRef([]);
+
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
     const {uniqueId} = attributes;
     const blockGap = attributes?.style?.spacing?.blockGap;
@@ -44,33 +46,12 @@ export const withStyle = (Component) => (props) => {
         background: {},
     };
 
-    useEffect(() => {
-        console.log(settings)
-    }, [settings]);
-
     const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
         <StyleEditorUI
             settings={settings}
             updateStyleSettings={updateStyleSettings}
         />
     ));
-
-    const blockCss = useCallback((newProps = {}) => {
-        cssPropsRef.current = newProps || {};
-    }, []);
-
-    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
-
-    const StyledComponent = useMemo(() => {
-        return (
-            <Component
-                {...getDataProps(props)}
-                BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
-                )}
-            />
-        );
-    }, [clientId, settings, blockGapDeps]);
 
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
@@ -85,7 +66,7 @@ export const withStyle = (Component) => (props) => {
                 background: parseBackgroundProps(cleanedNext.background || {}),
                 hover: {},
                 breakpoints: {},
-                custom: cleanObject(cssPropsRef.current || {}, true),
+                custom: cleanObject(blockCssRef.current || {}, true),
             };
 
             // --- Add default Gutenberg gap from attributes.style
@@ -135,12 +116,73 @@ export const withStyle = (Component) => (props) => {
         [settings, setAttributes, blockGapDeps]
     );
 
+    const commitPreload = useCallback((newItems = []) => {
+        console.log(newItems);
+        // Preloads from block-side intent
+        const blockItems = Array.isArray(blockPreloadRef.current)
+            ? blockPreloadRef.current
+            : [];
+
+        // New items coming from HOC logic
+        const incoming = Array.isArray(newItems) ? newItems : [];
+
+        // Combine both
+        const combined = [...blockItems, ...incoming];
+
+        // Deduplicate on (id, resolution, media, type)
+        const seen = new Set();
+        const deduped = [];
+
+        const buildKey = (x) =>
+            `${x.id}|${x.resolution || ''}|${x.media || ''}|${x.type || ''}`;
+
+        for (const item of combined) {
+            if (!item?.id) continue;
+            const key = buildKey(item);
+            if (!seen.has(key)) {
+                seen.add(key);
+                deduped.push(item);
+            }
+        }
+
+        // Compare to saved attributes before writing
+        const currentAttr = attributes['wpbs-preload'] ?? [];
+
+        if (!_.isEqual(currentAttr, deduped)) {
+            setAttributes({'wpbs-preload': deduped});
+        }
+
+    }, [attributes['wpbs-preload'], setAttributes]);
+
+    const updateBlockCssRef = useCallback((newProps = {}) => {
+        blockCssRef.current = newProps || {};
+    }, [updateStyleSettings]);
+
+    const updateBlockPreloadRef = useCallback((newProps = {}) => {
+        blockPreloadRef.current = newProps || [];
+        commitPreload(blockPreloadRef.current);
+    }, [commitPreload]);
+
+    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
+
     // Watch for changes in Gutenberg's native gap control
     useEffect(() => {
         updateStyleSettings(settings);
 
     }, [blockGapDeps]);
 
+    const StyledComponent = useMemo(() => {
+        return (
+            <Component
+                {...getDataProps(props)}
+                BlockWrapper={(wrapperProps) => (
+                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+                )}
+                setCss={updateBlockCssRef}
+                setPreload={updateBlockPreloadRef}
+            />
+        );
+    }, [clientId, settings, blockGapDeps, updateBlockPreloadRef, updateBlockCssRef]);
 
     return (
         <>

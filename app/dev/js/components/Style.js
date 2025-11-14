@@ -30,61 +30,57 @@ const getDataProps = (props) => {
     return {...props, styleData: data};
 };
 
-
 function extractPreloadsFromLayout(layout = {}) {
     const result = [];
 
-    const baseBg = layout?.background;
-    const breakpoints = layout?.breakpoints || {};
-
-    // If base background is not eager, nothing preloads at all.
-    if (!baseBg?.eager) {
-        return result;
-    }
-
     // --- Base background
-    if (baseBg.type === "image" && baseBg.image?.id) {
-        result.push({
-            id: baseBg.image.id,
-            type: "image",
-            resolution: baseBg.resolution || null
-        });
+    const baseBg = layout?.background;
+    if (baseBg?.eager) {
+
+        if (baseBg.type === "image" && baseBg.image?.id) {
+            result.push({
+                id: baseBg.image.id,
+                type: "image",
+                resolution: baseBg.resolution || null
+            });
+        }
+
+        if (baseBg.type === "video" && baseBg.video?.id) {
+            result.push({
+                id: baseBg.video.id,
+                type: "video"
+            });
+        }
     }
 
-    if (baseBg.type === "video" && baseBg.video?.id) {
-        result.push({
-            id: baseBg.video.id,
-            type: "video"
-        });
-    }
+    // --- Breakpoints
+    const breakpoints = layout.breakpoints || {};
 
-    // --- Breakpoints (inherit eager from base)
     for (const [bpKey, bpData] of Object.entries(breakpoints)) {
         const bpBg = bpData?.background;
-        if (!bpBg) continue;
+        if (!baseBg?.eager) continue;  // FIX #1 (correct eager check)
 
-        // Preload image
         if (bpBg.type === "image" && bpBg.image?.id) {
             result.push({
                 id: bpBg.image.id,
                 type: "image",
                 resolution: bpBg.resolution || null,
-                media: bpKey
+                media: bpKey            // FIX #2 (use breakpoint key)
             });
         }
 
-        // Preload video
         if (bpBg.type === "video" && bpBg.video?.id) {
             result.push({
                 id: bpBg.video.id,
                 type: "video",
-                media: bpKey
+                media: bpKey            // FIX #2
             });
         }
     }
 
     return result;
 }
+
 
 function normalizePreloadItem(item) {
     if (!item || !item.id) return null;

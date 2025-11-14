@@ -239,6 +239,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
     const baseEntry = entries.find(e => e.size === Infinity);
     const bpEntries = entries.filter(e => e.size !== Infinity);
+    const baseSrcAttr = settings.eager ? 'src' : 'data-src';
 
     return (
         <video
@@ -279,15 +280,17 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                BASE SOURCE (ALWAYS LAST)
                ------------------------------------------------- */}
             {baseEntry.disabled ? (
+
+
                 // DISABLED BASE → just "#"
                 <source
-                    src="#"
+                    {baseSrcAttr}={'#'}
                     type={baseEntry.mime}
                 />
             ) : (
                 // ENABLED BASE → data-src only
                 <source
-                    data-src={baseEntry.source}
+                    {baseSrcAttr}={baseEntry.source}
                     type={baseEntry.mime}
                 />
             )}

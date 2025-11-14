@@ -15,7 +15,7 @@ function PreviewThumbnail({
     const src = image?.id ? getImageUrlForResolution(image, resolution) : null;
     const hasSelection = !!src;
 
-    const isDisabled = image?.off === true;
+    const isDisabled = image?.isPlaceholder === true;
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
@@ -44,9 +44,13 @@ function PreviewThumbnail({
     if (!hasSelection) {
         const toggleOff = () => {
             if (isDisabled) {
-                callback("");     // ENABLE: clear the off:true flag
+                callback(""); // enable
             } else {
-                callback({ off:true });  // DISABLE
+                callback({
+                    source: "#",
+                    mime: "video/mp4",
+                    isPlaceholder: true
+                });
             }
         };
 

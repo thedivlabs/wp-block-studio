@@ -178,7 +178,7 @@ export const withStyle = (Component) => (props) => {
     );
 
     const commitPreload = useCallback((newItems = []) => {
-        console.log(newItems);
+        //console.log(newItems);
         // Preloads from block-side intent
         const blockItems = Array.isArray(blockPreloadRef.current)
             ? blockPreloadRef.current

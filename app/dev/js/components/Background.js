@@ -168,9 +168,7 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
     );
 };
 
-function BackgroundVideo({settings = {}, isSave = false}) {
-
-    // Editor never renders video
+export const BackgroundVideo = ({settings = {}, isSave = false}) => {
     if (!isSave) return null;
 
     const {background = {}, breakpoints = {}} = settings;
@@ -182,7 +180,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     ------------------------------------------------------------ */
     const baseVideo = background?.video;
     const baseOff = baseVideo?.off === true || baseVideo === "";
-    const baseForce = !!background?.force;
+    const eager = !!background?.eager;   // eager allowed
 
     if (baseVideo?.source) {
         entries.push({
@@ -191,14 +189,16 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             mime: baseVideo.mime || "video/mp4",
             mq: null,
             disabled: false,
+            eager,
         });
-    } else if (baseOff || baseForce) {
+    } else if (baseOff) {
         entries.push({
             size: Infinity,
             source: "#",
             mime: "video/mp4",
             mq: null,
             disabled: true,
+            eager: false,
         });
     }
 
@@ -208,7 +208,6 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
         const bpOff = bpVideo?.off === true || bpVideo === "";
-        const bpForce = !!bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
@@ -218,14 +217,16 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 mime: bpVideo.mime || "video/mp4",
                 mq: bpData.media,
                 disabled: false,
+                eager: false,
             });
-        } else if (bpOff || bpForce) {
+        } else if (bpOff) {
             entries.push({
                 size,
                 source: "#",
                 mime: "video/mp4",
                 mq: bpData.media,
                 disabled: true,
+                eager: false,
             });
         }
     });
@@ -233,14 +234,16 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     if (!entries.length) return null;
 
     /* ------------------------------------------------------------
-       Sort base first (Infinity) → breakpoints
+       Sort base first, then breakpoints
     ------------------------------------------------------------ */
     entries.sort((a, b) => b.size - a.size);
 
-    const baseEntry = entries.find(e => e.size === Infinity);
-    const bpEntries = entries.filter(e => e.size !== Infinity);
-    const baseSrcAttr = settings.eager ? 'src' : 'data-src';
+    const baseEntry = entries.find((e) => e.size === Infinity);
+    const bpEntries = entries.filter((e) => e.size !== Infinity);
 
+    /* ------------------------------------------------------------
+       RENDER VIDEO
+    ------------------------------------------------------------ */
     return (
         <video
             muted
@@ -249,12 +252,8 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             playsInline
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
-
-            {/* -------------------------------------------------
-               BREAKPOINT SOURCES
-               ------------------------------------------------- */}
+            {/* BREAKPOINT SOURCES */}
             {bpEntries.map((entry, i) => {
-                // DISABLED BP → Only src="#"
                 if (entry.disabled) {
                     return (
                         <source
@@ -265,7 +264,6 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                     );
                 }
 
-                // ENABLED BP → data-src only, MQ optional
                 return (
                     <source
                         key={`bp-${i}`}
@@ -276,28 +274,17 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 );
             })}
 
-            {/* -------------------------------------------------
-               BASE SOURCE (ALWAYS LAST)
-               ------------------------------------------------- */}
+            {/* BASE SOURCE */}
             {baseEntry.disabled ? (
-
-
-                // DISABLED BASE → just "#"
-                <source
-                    {baseSrcAttr}={'#'}
-                    type={baseEntry.mime}
-                />
+                <source src="#" type={baseEntry.mime} />
+            ) : baseEntry.eager ? (
+                <source src={baseEntry.source} type={baseEntry.mime} />
             ) : (
-                // ENABLED BASE → data-src only
-                <source
-                    {baseSrcAttr}={baseEntry.source}
-                    type={baseEntry.mime}
-                />
+                <source data-src={baseEntry.source} type={baseEntry.mime} />
             )}
         </video>
     );
-}
-
+};
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const baseBg = attributes?.['wpbs-style']?.background;

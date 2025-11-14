@@ -89,17 +89,17 @@ export const withStyle = (Component) => (props) => {
     const blockPreloadRef = useRef([]);
 
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
-    const {uniqueId} = attributes;
+    const {
+        uniqueId, 'wpbs-style': settings = {
+            props: {},
+            breakpoints: {},
+            advanced: {},
+            hover: {},
+            background: {},
+        }
+    } = attributes;
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
-
-    const settings = attributes?.['wpbs-style'] ?? {
-        props: {},
-        breakpoints: {},
-        advanced: {},
-        hover: {},
-        background: {},
-    };
 
     const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
         <StyleEditorUI

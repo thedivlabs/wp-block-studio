@@ -265,13 +265,8 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 );
             })}
 
-            {/* BASE SOURCE (only one allowed to use src if eager) */}
-            {background?.eager && isSave ? (
-                <source
-                    src={baseVideoObj.source}
-                    type={baseVideoObj.mime || "video/mp4"}
-                />
-            ) : (
+            {/* BASE SOURCE  */}
+            {baseVideoObj?.source && (
                 <source
                     data-src={baseVideoObj.source}
                     type={baseVideoObj.mime || "video/mp4"}

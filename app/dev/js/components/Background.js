@@ -193,7 +193,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // ----------------------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
-        const bpOff = bpVideo?.off === true || bpVideo === "";
+        const bpOff = bpVideo?.off === true;
 
         const size = bpDefs?.[bpKey]?.size ?? 0;
 

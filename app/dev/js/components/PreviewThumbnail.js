@@ -3,17 +3,19 @@ import {IMAGE_BUTTON_STYLE} from 'Includes/config';
 import {getImageUrlForResolution} from 'Includes/helper';
 
 function PreviewThumbnail({
-                              image = null,        // { id, source, sizes }
-                              type = "image",      // "image" | "video"
+                              image = null,
+                              type = "image",
                               resolution = "large",
                               onSelectClick,
-                              callback,            // clear or override field
+                              callback,
                               style = {}
                           }) {
     const isVideo = type === "video";
 
     const src = image?.id ? getImageUrlForResolution(image, resolution) : null;
     const hasSelection = !!src;
+
+    const isDisabled = image?.off === true;
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
@@ -37,20 +39,35 @@ function PreviewThumbnail({
     };
 
     /* ------------------------------------------------------------- */
-    /* EMPTY STATE — now has TWO BUTTONS and NO thumbnail click      */
+    /*  EMPTY OR DISABLED STATE                                      */
     /* ------------------------------------------------------------- */
     if (!hasSelection) {
+        const toggleOff = () => {
+            if (isDisabled) {
+                callback("");     // ENABLE: clear the off:true flag
+            } else {
+                callback({ off:true });  // DISABLE
+            }
+        };
+
         return (
             <div style={emptyStyle}>
-                <Button onClick={onSelectClick}>Choose Image</Button>
+                <Button onClick={onSelectClick}>
+                    Choose Image
+                </Button>
 
-                <Button onClick={() => callback({ off:true })}>Disable</Button>
+                <Button
+                    onClick={toggleOff}
+                    variant={isDisabled ? "primary" : "secondary"}
+                >
+                    {isDisabled ? "Enable" : "Disable"}
+                </Button>
             </div>
         );
     }
 
     /* ------------------------------------------------------------- */
-    /* SELECTED STATE — clicking thumbnail now commits ""            */
+    /* SELECTED THUMBNAIL                                            */
     /* ------------------------------------------------------------- */
     const thumb = isVideo ? (
         <video preload="metadata" style={thumbnailStyle}>
@@ -72,7 +89,7 @@ function PreviewThumbnail({
                 display: "flex",
                 ...style
             }}
-            onClick={() => callback("")}
+            onClick={() => callback("")}  // clicking thumbnail clears
         >
             {thumb}
 

@@ -30,6 +30,60 @@ const getDataProps = (props) => {
     return {...props, styleData: data};
 };
 
+function extractPreloadsFromLayout(layout) {
+    const bpDefs = WPBS?.settings?.breakpoints ?? {};
+    const result = [];
+
+    if (!layout) return result;
+
+    // 1. Base
+    if (layout.background?.eager) {
+        const bg = layout.background;
+        if (bg.type === 'image' && bg.image?.id) {
+            result.push({
+                id: bg.image.id,
+                media: null,
+                resolution: bg.image?.size || null,
+                type: 'image',
+            });
+        }
+        if (bg.type === 'video' && bg.video?.id) {
+            result.push({
+                id: bg.video.id,
+                media: null,
+                resolution: null,
+                type: 'video',
+            });
+        }
+    }
+
+    // 2. Breakpoints
+    Object.entries(layout.breakpoints || {}).forEach(([bpKey, bp]) => {
+        const bg = bp.background;
+        if (!bg?.eager) return;
+
+        if (bg.type === 'image' && bg.image?.id) {
+            result.push({
+                id: bg.image.id,
+                media: bpKey,
+                resolution: bg.image?.size || null,
+                type: 'image',
+            });
+        }
+
+        if (bg.type === 'video' && bg.video?.id) {
+            result.push({
+                id: bg.video.id,
+                media: bpKey,
+                resolution: null,
+                type: 'video',
+            });
+        }
+    });
+
+    return result;
+}
+
 export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
@@ -69,6 +123,12 @@ export const withStyle = (Component) => (props) => {
                 breakpoints: {},
                 custom: cleanObject(blockCssRef.current || {}, true),
             };
+
+            // Generate preload list
+            const preloads = extractPreloadsFromLayout(cleanedNext);
+
+            // Write preload list (deduped)
+            commitPreload(preloads);
 
             // --- Add default Gutenberg gap from attributes.style
             const blockGap = attributes?.style?.spacing?.blockGap;

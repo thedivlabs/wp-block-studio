@@ -6,7 +6,6 @@ import Video from './modules/video'
 import Slider from './modules/slider'
 import Reveal from './modules/reveal'
 import Team from './modules/team'
-import MediaWatcher from './modules/MediaWatcher';
 
 
 class WPBS_Theme {
@@ -39,7 +38,6 @@ class WPBS_Theme {
         this.slider.init();
         this.reveal.init();
         this.team.init();
-        this.mediaWatcher = MediaWatcher;
 
         window.WPBS = this;
 
@@ -242,8 +240,6 @@ class WPBS_Theme {
     }
 
     init() {
-
-        this.mediaWatcher.init();
 
         document.addEventListener('DOMContentLoaded', () => {
 

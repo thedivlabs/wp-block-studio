@@ -20,6 +20,7 @@ function extendScriptConfig(config) {
             theme: './app/dev/js/theme.js',
             admin: './app/dev/js/admin.js',
             editor: './app/dev/js/editor.js',
+            inline: './app/dev/js/inline.js',
         },
         output: {
             filename: '[name].js',

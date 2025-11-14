@@ -856,6 +856,10 @@ class WPBS {
 
 	public function footer_scripts(): void {
 
+		echo '<script>';
+		include_once self::$path . 'build/inline.js';
+		echo '</script>';
+
 		$scripts = array_merge(
 			array_filter( get_field( 'theme_settings', 'option' )['scripts'] ?? false ?: [], function ( $script ) {
 				return empty( $script['in_header'] ) && ! empty( $script['enabled'] ) && ! in_array( get_the_ID(), (array) ( $script['suppress'] ?? [] ) );

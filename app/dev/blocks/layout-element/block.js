@@ -38,15 +38,15 @@ registerBlockType(metadata.name, {
             const classNames = getClassNames(attributes, styleData);
 
 
-            useEffect(() => {
+            /*useEffect(() => {
                 const preloads = [{id: 100, testing: true}];
                 setPreload(preloads);
-            }, [])
+            }, [])*/
 
             useEffect(() => {
                 const css = {props: {'--testing': 100}};
                 setCss(css);
-            }, [])
+            }, []);
 
 
             return (

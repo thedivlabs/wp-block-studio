@@ -84,13 +84,29 @@ function extractPreloadsFromLayout(layout) {
     return result;
 }
 
+function normalizePreloadItem(item) {
+    if (!item || !item.id) return null;
+
+    const out = {
+        id: item.id,
+        type: item.type || "image"
+    };
+
+    if (item.media) out.media = item.media;
+    if (item.resolution) out.resolution = item.resolution;
+
+    return out;
+}
+
 export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
 
-    const {clientId, attributes, setAttributes, tagName, isSelected} = props;
+    const { clientId, attributes, setAttributes } = props;
+
     const {
-        uniqueId, 'wpbs-style': settings = {
+        uniqueId,
+        'wpbs-style': settings = {
             props: {},
             breakpoints: {},
             advanced: {},
@@ -98,20 +114,20 @@ export const withStyle = (Component) => (props) => {
             background: {},
         }
     } = attributes;
-    const blockGap = attributes?.style?.spacing?.blockGap;
-    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
-    const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
-        <StyleEditorUI
-            settings={settings}
-            updateStyleSettings={updateStyleSettings}
-        />
+    const blockGap = attributes?.style?.spacing?.blockGap;
+    const blockGapDeps =
+        typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
+
+    const StyleEditorPanel = memo(({ settings, updateStyleSettings }) => (
+        <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings} />
     ));
 
+    // ------------------------------------------------------------
+    // STYLE / CSS SAVE
+    // ------------------------------------------------------------
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
-
-
             const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
@@ -124,48 +140,48 @@ export const withStyle = (Component) => (props) => {
                 custom: cleanObject(blockCssRef.current || {}, true),
             };
 
-            // Generate preload list
+            // Preloads from layout itself
             const preloads = extractPreloadsFromLayout(cleanedNext);
-
-            // Write preload list (deduped)
             commitPreload(preloads);
 
-            // --- Add default Gutenberg gap from attributes.style
-            const blockGap = attributes?.style?.spacing?.blockGap;
-            if (blockGap) {
+            // --- Default block gap
+            const gap = attributes?.style?.spacing?.blockGap;
+            if (gap) {
                 const rowGapVal =
-                    blockGap?.top ?? (typeof blockGap === 'string' ? blockGap : undefined);
+                    gap?.top ?? (typeof gap === 'string' ? gap : undefined);
                 const columnGapVal =
-                    blockGap?.left ?? (typeof blockGap === 'string' ? blockGap : undefined);
+                    gap?.left ?? (typeof gap === 'string' ? gap : undefined);
 
                 if (rowGapVal) {
-                    const gap = getCSSFromStyle(rowGapVal);
-                    cssObj.props['--row-gap'] = gap;
-                    cssObj.props['row-gap'] = gap;
+                    const g = getCSSFromStyle(rowGapVal);
+                    cssObj.props['--row-gap'] = g;
+                    cssObj.props['row-gap'] = g;
                 }
                 if (columnGapVal) {
-                    const gap = getCSSFromStyle(columnGapVal);
-                    cssObj.props['--column-gap'] = gap;
-                    cssObj.props['column-gap'] = gap;
+                    const g = getCSSFromStyle(columnGapVal);
+                    cssObj.props['--column-gap'] = g;
+                    cssObj.props['column-gap'] = g;
                 }
             }
 
-            // --- Breakpoints (responsive gaps handled separately)
-            for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
+            // --- Breakpoints
+            for (const [bpKey, bpProps] of Object.entries(
+                cleanedNext.breakpoints || {}
+            )) {
                 cssObj.breakpoints[bpKey] = {
                     props: parseSpecialProps(bpProps.props || {}, attributes),
                     background: parseBackgroundProps(bpProps.background || {}),
                 };
             }
 
-            // --- Hover styles
+            // --- Hover
             if (cleanedNext.hover) {
                 cssObj.hover = parseSpecialProps(cleanedNext.hover, attributes);
             }
 
-            // --- Compare and apply only when meaningful changes occur
+            // --- Compare + write
             const cleanedCss = cleanObject(cssObj, true);
-            const prevCss = cleanObject(attributes?.['wpbs-css'] ?? {}, true);
+            const prevCss = cleanObject(attributes['wpbs-css'] ?? {}, true);
 
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
                 setAttributes({
@@ -177,20 +193,28 @@ export const withStyle = (Component) => (props) => {
         [settings, setAttributes, blockGapDeps]
     );
 
+    // ------------------------------------------------------------
+    // PRELOAD SAVE
+    // ------------------------------------------------------------
     const commitPreload = useCallback((newItems = []) => {
-        //console.log(newItems);
-        // Preloads from block-side intent
         const blockItems = Array.isArray(blockPreloadRef.current)
             ? blockPreloadRef.current
             : [];
 
-        // New items coming from HOC logic
         const incoming = Array.isArray(newItems) ? newItems : [];
 
-        // Combine both
-        const combined = [...blockItems, ...incoming];
+        // Normalize + remove nulls
+        const cleanIncoming = incoming
+            .map(normalizePreloadItem)
+            .filter(Boolean);
 
-        // Deduplicate on (id, resolution, media, type)
+        const cleanBlock = blockItems
+            .map(normalizePreloadItem)
+            .filter(Boolean);
+
+        const combined = [...cleanBlock, ...cleanIncoming];
+
+        // Dedupe
         const seen = new Set();
         const deduped = [];
 
@@ -198,7 +222,6 @@ export const withStyle = (Component) => (props) => {
             `${x.id}|${x.resolution || ''}|${x.media || ''}|${x.type || ''}`;
 
         for (const item of combined) {
-            if (!item?.id) continue;
             const key = buildKey(item);
             if (!seen.has(key)) {
                 seen.add(key);
@@ -206,63 +229,75 @@ export const withStyle = (Component) => (props) => {
             }
         }
 
-        // Compare to saved attributes before writing
         const currentAttr = attributes['wpbs-preload'] ?? [];
 
         if (!_.isEqual(currentAttr, deduped)) {
-            setAttributes({'wpbs-preload': deduped});
+            setAttributes({ 'wpbs-preload': deduped });
         }
 
     }, [attributes['wpbs-preload'], setAttributes]);
 
-    const updateBlockCssRef = useCallback((newProps = {}) => {
-        // store custom css
-        blockCssRef.current = newProps || {};
+    // ------------------------------------------------------------
+    // BLOCK → REFS SETTERS
+    // ------------------------------------------------------------
+    const updateBlockCssRef = useCallback(
+        (newCss = {}) => {
+            blockCssRef.current = newCss || {};
 
-        // rebuild css using existing layout (settings)
-        updateStyleSettings(settings);
+            // --- FIXED ---
+            // We ONLY rebuild CSS using the *existing layout* (settings),
+            // not passing blockCssRef into nextLayout.
+            updateStyleSettings(settings);
+        },
+        [updateStyleSettings, settings]
+    );
 
-    }, [updateStyleSettings, settings]);
+    const updatePreloadRef = useCallback(
+        (newItems = []) => {
+            blockPreloadRef.current = Array.isArray(newItems) ? newItems : [];
 
-    const updatePreloadRef = useCallback((newProps = []) => {
-        // store block-side intent
-        blockPreloadRef.current = Array.isArray(newProps) ? newProps : [];
+            // Only commit what came from the block.
+            commitPreload(blockPreloadRef.current);
+        },
+        [commitPreload]
+    );
 
-        // dedupe + save the block’s list
-        commitPreload(blockPreloadRef.current);
-
-    }, [commitPreload]);
-
-    const StyledComponent = useMemo(() => {
-        return (
+    // ------------------------------------------------------------
+    // MAIN RENDER
+    // ------------------------------------------------------------
+    const StyledComponent = useMemo(
+        () => (
             <Component
                 {...getDataProps(props)}
                 BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
+                    <BlockWrapper
+                        {...wrapperProps}
+                        props={props}
+                        clientId={clientId}
+                    />
                 )}
                 setCss={updateBlockCssRef}
                 setPreload={updatePreloadRef}
             />
-        );
-    }, [clientId, settings, blockGapDeps, updateBlockCssRef]);
+        ),
+        [clientId, settings, blockGapDeps, updateBlockCssRef]
+    );
 
-    // Watch for changes in Gutenberg's native gap control
+    // ------------------------------------------------------------
+    // BLOCK GAP TRIGGER
+    // ------------------------------------------------------------
     useEffect(() => {
         updateStyleSettings(settings);
-
     }, [blockGapDeps]);
 
     return (
         <>
             {StyledComponent}
-            <StyleEditorPanel
-                settings={settings}
-                updateStyleSettings={updateStyleSettings}
-            />
-
+            <StyleEditorPanel settings={settings} updateStyleSettings={updateStyleSettings} />
         </>
     );
 };
+
 
 export const withStyleSave = (Component) => (props) => {
 

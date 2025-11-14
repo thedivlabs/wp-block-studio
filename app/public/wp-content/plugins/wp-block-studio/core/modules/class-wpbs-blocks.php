@@ -49,9 +49,25 @@ class WPBS_Blocks {
 	}
 
 	public function collect_preload_media( array $block, array $source_block ): array {
-//WPBS::console_log($block);
+
+
+		if (
+			! str_starts_with( $block['blockName'], 'wpbs' )
+		) {
+			return $block;
+		}
+
+
+		if (
+			! empty( $block['attrs']['wpbs-preload'] )
+		) {
+
+			WPBS::console_log( $block );
+		}
+
+
 		// Register a collector on this block for later
-		add_filter( 'wpbs_preload_media', function( array $carry ) use ( $block ) {
+		add_filter( 'wpbs_preload_media', function ( array $carry ) use ( $block ) {
 
 			$preload = $block['attrs']['wpbs-preload'] ?? null;
 
@@ -61,7 +77,7 @@ class WPBS_Blocks {
 			}
 
 			return $carry;
-		});
+		} );
 
 		return $block;
 	}
@@ -76,7 +92,7 @@ class WPBS_Blocks {
 		}
 
 		// Load theme.json breakpoints
-		$settings   = wp_get_global_settings();
+		$settings    = wp_get_global_settings();
 		$breakpoints = $settings['custom']['breakpoints'] ?? [];
 
 		// Deduplicate
@@ -89,10 +105,10 @@ class WPBS_Blocks {
 
 			// Normalize only relevant keys
 			$keyData = [
-				'id'         => $item['id']         ?? null,
+				'id'         => $item['id'] ?? null,
 				'resolution' => $item['resolution'] ?? null,
-				'bp'         => $item['media']      ?? null, // breakpoint key
-				'type'       => $item['type']       ?? null,
+				'bp'         => $item['media'] ?? null, // breakpoint key
+				'type'       => $item['type'] ?? null,
 			];
 
 			// Build natural uniqueness key
@@ -104,10 +120,10 @@ class WPBS_Blocks {
 		// Output preload tags
 		foreach ( $unique as $item ) {
 
-			$id     = $item['id']         ?? null;
-			$type   = $item['type']       ?? null;
-			$bpKey  = $item['media']      ?? null; // breakpoint key
-			$size   = $item['resolution'] ?? 'full';
+			$id    = $item['id'] ?? null;
+			$type  = $item['type'] ?? null;
+			$bpKey = $item['media'] ?? null; // breakpoint key
+			$size  = $item['resolution'] ?? 'full';
 
 			if ( ! $id || ! $type ) {
 				continue;
@@ -121,11 +137,11 @@ class WPBS_Blocks {
 
 			// Resolve media query from theme.json breakpoint key
 			$mediaAttr = '';
-			if ( $bpKey && isset($breakpoints[$bpKey]) ) {
-				$mq = $breakpoints[$bpKey];
-				if ( is_array($mq) && isset($mq['query']) ) {
+			if ( $bpKey && isset( $breakpoints[ $bpKey ] ) ) {
+				$mq = $breakpoints[ $bpKey ];
+				if ( is_array( $mq ) && isset( $mq['query'] ) ) {
 					$mediaAttr = $mq['query'];
-				} elseif ( is_string($mq) ) {
+				} elseif ( is_string( $mq ) ) {
 					$mediaAttr = $mq;
 				}
 			}
@@ -236,10 +252,28 @@ class WPBS_Blocks {
 					$parsed_css['hover'],
 					true, // $important
 					// keys that should reliably win on hover
-					[ 'color', 'background-color', 'border-color', 'outline-color',
-						'width','min-width','max-width','height','min-height','max-height',
-						'padding','margin','gap','font-size','line-height','letter-spacing',
-						'border-width','border-radius','opacity','box-shadow','filter'
+					[
+						'color',
+						'background-color',
+						'border-color',
+						'outline-color',
+						'width',
+						'min-width',
+						'max-width',
+						'height',
+						'min-height',
+						'max-height',
+						'padding',
+						'margin',
+						'gap',
+						'font-size',
+						'line-height',
+						'letter-spacing',
+						'border-width',
+						'border-radius',
+						'opacity',
+						'box-shadow',
+						'filter'
 					]
 				) . " } ";
 		}

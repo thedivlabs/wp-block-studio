@@ -121,11 +121,6 @@ export const withStyle = (Component) => (props) => {
         <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
     ));
 
-    useEffect(() => {
-        if (!attributes?.['wpbs-preload'].length) return;
-        console.log(attributes);
-    }, [settings]);
-
     // ------------------------------------------------------------
     // STYLE / CSS SAVE
     // ------------------------------------------------------------

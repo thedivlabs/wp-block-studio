@@ -96,7 +96,7 @@ export default class MediaWatcher {
 
         if (!base) return;
 
-        const dataSrc = source.dataset.src ?? "";
+        const dataSrc = base.dataset.src ?? "";
         const disabled = !dataSrc || dataSrc === "#" || dataSrc === "";
 
         if (disabled) {

@@ -168,126 +168,109 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
     );
 };
 
-function BackgroundVideo({settings = {}, isSave = false}) {
-
-    // Editor never renders video
-    if (!isSave) return null;
-
-    const {background = {}, breakpoints = {}} = settings;
-    const bpDefs = WPBS?.settings?.breakpoints ?? {};
+export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
     const entries = [];
 
-    // ----------------------------------------
-    // 1. BASE VIDEO (always real, never "#")
-    // ----------------------------------------
+    /* ------------------------------------------------------------
+       COLLECT BASE VIDEO
+    ------------------------------------------------------------ */
     const baseVideo = background?.video;
+    const baseOff = baseVideo?.off === true || baseVideo === "";
+    const baseForce = !!background?.force;
 
     if (baseVideo?.source) {
-        entries.push({size: Infinity, video: baseVideo});
-
-    } else if (baseVideo?.off === true) {
-        // NEW: disabled base video
+        // Real base video
         entries.push({
             size: Infinity,
-            video: {source: "#", mime: "video/mp4", isPlaceholder: true}
+            source: baseVideo.source,
+            mime: baseVideo.mime || "video/mp4",
+            mq: null,
+            disabled: false,
+        });
+    } else if (baseOff || baseForce) {
+        // Disabled or force fallback
+        entries.push({
+            size: Infinity,
+            source: "#",
+            mime: "video/mp4",
+            mq: null,
+            disabled: true,
         });
     }
 
-
-    // ----------------------------------------
-    // 2. BREAKPOINT VIDEO OVERRIDES
-    // ----------------------------------------
-    Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
-        const bpVideo = bpData?.background?.video;
-        const bpOff = bpVideo?.off === true;
-        const bpForce = !!bpData?.background?.force;
+    /* ------------------------------------------------------------
+       COLLECT BREAKPOINT VIDEOS
+    ------------------------------------------------------------ */
+    Object.entries(breakpoints).forEach(([bpKey, bpObj]) => {
+        const bpVideo = bpObj?.background?.video;
+        const bpOff = bpVideo?.off === true || bpVideo === "";
+        const bpForce = !!bpObj?.background?.force;
+        const bpDefs = WPBS?.settings?.breakpoints ?? {};
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
-            // real video override
-            entries.push({size, video: bpVideo});
-
-        } else if (bpOff) {
-            // NEW: disabled video → placeholder "#"
             entries.push({
                 size,
-                video: {source: "#", mime: "video/mp4", isPlaceholder: true}
+                source: bpVideo.source,
+                mime: bpVideo.mime || "video/mp4",
+                mq: bpObj.media,              // This becomes data-media
+                disabled: false,
             });
-
-        } else if (bpForce) {
-            // "force" still generates placeholder
+        } else if (bpOff || bpForce) {
             entries.push({
                 size,
-                video: {source: "#", mime: "video/mp4", isPlaceholder: true}
+                source: "#",
+                mime: "video/mp4",
+                mq: bpObj.media,
+                disabled: true,
             });
         }
-
     });
 
-    // No video at all? bail.
     if (!entries.length) return null;
 
-    // ----------------------------------------
-    // Sort largest → smallest (base first)
-    // ----------------------------------------
+    /* ------------------------------------------------------------
+       SORT BREAKPOINTS (largest first ensures correct MQ order)
+    ------------------------------------------------------------ */
     entries.sort((a, b) => b.size - a.size);
 
-    const baseEntry = entries[0]; // always real
-    const baseVideoObj = baseEntry.video;
-
-    // ----------------------------------------
-    // Prepare ordered output lists:
-    // breakpoints first, base last
-    // ----------------------------------------
-    const bpEntries = entries.filter(e => e.size !== Infinity);
-    const finalBaseEntry = baseEntry; // placed last
-
+    /* ------------------------------------------------------------
+       RENDER ELEMENT
+    ------------------------------------------------------------ */
     return (
         <video
             muted
             loop
             autoPlay
             playsInline
-            className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
+            className="wpbs-background__video"
         >
-            {/* -----------------------------
-               BREAKPOINT SOURCES (always data-src)
-               ----------------------------- */}
-            {bpEntries.map(({size, video}, i) => {
-                if (video.source == null) return null;
+            {entries.map((entry, i) => {
 
-                const hasValidSize =
-                    Number.isFinite(size) &&
-                    size > 0 &&
-                    size !== Infinity;
+                // DISABLED ENTRY → always immediate "#" source
+                if (entry.disabled) {
+                    return (
+                        <source
+                            key={i}
+                            src="#"
+                            type={entry.mime}
+                        />
+                    );
+                }
 
+                // ENABLED ENTRY → only data-src (no src!)
                 return (
                     <source
-                        key={`bp-${i}`}
-                        data-src={video.source}              // <-- ALWAYS data-src
-                        data-media={
-                            hasValidSize ? `(max-width:${size - 1}px)` : null
-                        }
-                        type={video.mime || "video/mp4"}
+                        key={i}
+                        data-src={entry.source}
+                        data-media={entry.mq || undefined}
+                        type={entry.mime}
                     />
                 );
             })}
-
-            {/* -----------------------------
-               BASE SOURCE (always last)
-               Respects eager / non-eager.
-               ----------------------------- */}
-            <source
-                {...{
-                    [background?.eager && isSave ? "src" : "data-src"]:
-                    baseVideoObj.source
-                }}
-                type={baseVideoObj.mime || "video/mp4"}
-            />
         </video>
     );
-}
-
+};
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

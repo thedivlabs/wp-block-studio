@@ -225,8 +225,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 commit(minimal); // save to attributes
             };
 
-            const clear = () => commit('');
-
             control = (
                 <BaseControl label={label} __nextHasNoMarginBottom>
                     <MediaUploadCheck>
@@ -237,10 +235,10 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                             onSelect={onSelect}
                             render={({open}) => (
                                 <PreviewThumbnail
-                                    image={currentValue}        // minimal image/video object
-                                    type={isImage ? "image" : "video"} // <— ADD THIS
-                                    onClick={open}            // open library
-                                    callback={clear}          // clear field
+                                    image={currentValue}
+                                    type={isImage ? "image" : "video"}
+                                    onSelectClick={open}     // <-- this opens the media popover
+                                    callback={commit}        // <-- this commits values (disable, "", etc.)
                                     style={{
                                         objectFit: "contain",
                                         borderRadius: "6px",

@@ -18,7 +18,7 @@ function PreviewThumbnail({
 
     const isImageDisabled = image?.off === true;
     const isVideoDisabled = video?.off === true;
-    const isDisabled =isVideoDisabled || isImageDisabled;
+    const isDisabled = isVideoDisabled || isImageDisabled;
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,

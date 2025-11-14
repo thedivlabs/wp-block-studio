@@ -237,50 +237,46 @@ function BackgroundVideo({settings = {}, isSave = false}) {
             {/* BREAKPOINT SOURCES */}
             {bpEntries.map(({size, video}, i) => {
 
-                const mq = (
-                    Number.isFinite(size) &&
-                    size > 0 &&
-                    size !== Infinity
-                )
-                    ? `(max-width:${size - 1}px)`
-                    : null;
+                const mq =
+                    Number.isFinite(size) && size > 0 && size !== Infinity
+                        ? `(max-width:${size - 1}px)`
+                        : null;
 
-                // DISABLED = src="#"
+                // DISABLED breakpoint: data-src="#"
                 if (video.source === "#") {
                     return (
                         <source
                             key={`bp-${i}`}
-                            src="#"
+                            data-src="#"
                             data-media={mq}
                             type={video.mime || "video/mp4"}
                         />
                     );
                 }
 
-                // REAL BREAKPOINT VIDEO
-                if (video.source) {
-                    return (
-                        <source
-                            key={`bp-${i}`}
-                            data-src={video.source}
-                            data-media={mq}
-                            type={video.mime || "video/mp4"}
-                        />
-                    );
-                }
-
-                // otherwise skip
-                return null;
+                // ENABLED breakpoint: lazy load
+                return (
+                    <source
+                        key={`bp-${i}`}
+                        data-src={video.source}
+                        data-media={mq}
+                        type={video.mime || "video/mp4"}
+                    />
+                );
             })}
 
-            {/* BASE SOURCE (always last) */}
-            <source
-                {...{
-                    [background?.eager && isSave ? "src" : "data-src"]:
-                    baseVideoObj.source
-                }}
-                type={baseVideoObj.mime || "video/mp4"}
-            />
+            {/* BASE SOURCE (only one allowed to use src if eager) */}
+            {background?.eager && isSave ? (
+                <source
+                    src={baseVideoObj.source}
+                    type={baseVideoObj.mime || "video/mp4"}
+                />
+            ) : (
+                <source
+                    data-src={baseVideoObj.source}
+                    type={baseVideoObj.mime || "video/mp4"}
+                />
+            )}
 
         </video>
     );

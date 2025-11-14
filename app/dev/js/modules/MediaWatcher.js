@@ -42,45 +42,38 @@ export default class MediaWatcher {
         const sources = [...video.querySelectorAll("source")];
         if (!sources.length) return;
 
-        // ⭐ NEW: if there's only one source, always promote it
-        if (sources.length === 1) {
-            const only = sources[0];
-            const onlySrc = only.dataset.src;
-            if (onlySrc && only.getAttribute("src") !== onlySrc) {
-                only.setAttribute("src", onlySrc);
-                only.removeAttribute("data-src");
-                video.load();
-            }
-            return;
-        }
-
         const bpCount = sources.filter(s => s.dataset.media).length;
 
         let changed = false;
 
+        // 1. Find matching breakpoint source
         let active = !bpCount ? sources[0] : sources.find(s => {
             const mq = s.dataset.media;
             return mq && window.matchMedia(mq).matches;
         });
 
+        // 2. If none matched → base is active
         if (!active) {
             active = sources.find(s => !s.dataset.media);
-            if (!active) return;
+            //if (!active) return;
         }
 
-        const activeSrc = active.dataset.src;
+        const activeSrc = active && active.dataset.src;
 
+        // ----- PROMOTE ACTIVE -----
         if (activeSrc && active.getAttribute("src") !== activeSrc) {
             active.setAttribute("src", activeSrc);
             active.removeAttribute("data-src");
             changed = true;
         }
 
+        // ----- DEMOTE ALL OTHER SOURCES -----
         for (const s of sources) {
             if (s === active) continue;
 
             const sSrc = s.getAttribute("src");
 
+            // If inactive and has any src value (even "#" or ""), demote it
             if (sSrc !== null) {
                 s.setAttribute("data-src", sSrc);
                 s.removeAttribute("src");
@@ -90,6 +83,7 @@ export default class MediaWatcher {
 
         if (changed) video.load();
     }
+
 
     // IntersectionObserver for lazy media
     // -----------------------------------------------------

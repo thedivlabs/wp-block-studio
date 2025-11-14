@@ -97,6 +97,7 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     }
                     break;
                 }
+
                 case 'margin':
                 case 'padding':
                     if (typeof val === 'object') {
@@ -106,12 +107,14 @@ function parseSpecialProps(props = {}, attributes = {}) {
                         if (val.left) result[`${key}-left`] = val.left;
                     }
                     break;
+
                 case 'gap':
                     result['row-gap'] = val.top ?? val;
                     result['column-gap'] = val.left ?? val;
                     result['--row-gap'] = val.top ?? val;
                     result['--column-gap'] = val.left ?? val;
                     break;
+
                 case 'container':
                     result['--container-width'] = containerMap[val] ?? val;
                     break;
@@ -125,12 +128,14 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'min-height':
                 case 'min-height-custom':
-                    result['min-height'] = heightVal(props?.['min-height-custom'] ?? props?.['min-height'] ?? val);
+                    result['min-height'] =
+                        heightVal(props?.['min-height-custom'] ?? props?.['min-height'] ?? val);
                     break;
 
                 case 'max-height':
                 case 'max-height-custom':
-                    result['max-height'] = heightVal(props?.['max-height-custom'] ?? props?.['max-height'] ?? val);
+                    result['max-height'] =
+                        heightVal(props?.['max-height-custom'] ?? props?.['max-height'] ?? val);
                     break;
 
                 case 'width':
@@ -139,9 +144,19 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     break;
 
                 case 'mask-image': {
+                    const maskVal = val;
 
-                    // 🔥 NEW: explicit disabled override
-                    if (val?.off === true || val === "") {
+                    const isPlaceholder =
+                        maskVal?.isPlaceholder === true ||
+                        maskVal?.source === "#";
+
+                    if (maskVal === "" || maskVal == null) {
+                        // cleared → emit nothing
+                        break;
+                    }
+
+                    if (isPlaceholder) {
+                        // placeholder → physically no mask
                         result['mask-image'] = 'none';
                         result['mask-repeat'] = 'initial';
                         result['mask-size'] = 'initial';
@@ -149,9 +164,17 @@ function parseSpecialProps(props = {}, attributes = {}) {
                         break;
                     }
 
-                    // Original behavior for actual media objects
-                    const imageUrl = val?.source || null;
-                    result['mask-image'] = imageUrl ? `url("${imageUrl}")` : 'none';
+                    // real mask object
+                    const maskUrl =
+                        typeof maskVal === "object" && maskVal?.source
+                            ? maskVal.source
+                            : typeof maskVal === "string"
+                                ? maskVal
+                                : null;
+
+                    if (!maskUrl) break;
+
+                    result['mask-image'] = `url("${maskUrl}")`;
                     result['mask-repeat'] = 'no-repeat';
 
                     result['mask-size'] = (() => {
@@ -167,17 +190,23 @@ function parseSpecialProps(props = {}, attributes = {}) {
                         }
                     })();
 
-                    result['mask-position'] = props?.['mask-origin'] || 'center center';
+                    result['mask-position'] =
+                        props?.['mask-origin'] || 'center center';
+
                     break;
                 }
 
 
                 case 'border': {
                     if (typeof val === 'object') {
-                        if (val.top) result['border-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
-                        if (val.right) result['border-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
-                        if (val.bottom) result['border-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
-                        if (val.left) result['border-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
+                        if (val.top)
+                            result['border-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        if (val.right)
+                            result['border-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        if (val.bottom)
+                            result['border-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        if (val.left)
+                            result['border-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
                     }
                     break;
                 }
@@ -194,10 +223,14 @@ function parseSpecialProps(props = {}, attributes = {}) {
 
                 case 'outline': {
                     if (typeof val === 'object') {
-                        if (val.top) result['outline-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
-                        if (val.right) result['outline-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
-                        if (val.bottom) result['outline-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
-                        if (val.left) result['outline-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
+                        if (val.top)
+                            result['outline-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        if (val.right)
+                            result['outline-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        if (val.bottom)
+                            result['outline-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        if (val.left)
+                            result['outline-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
                     }
                     break;
                 }

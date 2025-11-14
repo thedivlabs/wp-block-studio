@@ -49,7 +49,7 @@ class WPBS_Blocks {
 	}
 
 	public function collect_preload_media( array $block, array $source_block ): array {
-
+WPBS::console_log($block);
 		// Register a collector on this block for later
 		add_filter( 'wpbs_preload_media', function( array $carry ) use ( $block ) {
 

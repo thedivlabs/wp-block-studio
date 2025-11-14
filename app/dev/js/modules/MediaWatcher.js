@@ -104,7 +104,6 @@ export default class MediaWatcher {
 
                     // VIDEO
                     if (el.tagName === "VIDEO") {
-                        console.log(el);
                         this.videos.push(el);
                         this.responsiveVideoSrc(el);
                         return;

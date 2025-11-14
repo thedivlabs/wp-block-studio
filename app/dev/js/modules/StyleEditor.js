@@ -139,9 +139,21 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     break;
 
                 case 'mask-image': {
+
+                    // 🔥 NEW: explicit disabled override
+                    if (val?.off === true || val === "") {
+                        result['mask-image'] = 'none';
+                        result['mask-repeat'] = 'initial';
+                        result['mask-size'] = 'initial';
+                        result['mask-position'] = 'initial';
+                        break;
+                    }
+
+                    // Original behavior for actual media objects
                     const imageUrl = val?.source || null;
                     result['mask-image'] = imageUrl ? `url("${imageUrl}")` : 'none';
                     result['mask-repeat'] = 'no-repeat';
+
                     result['mask-size'] = (() => {
                         switch (props?.['mask-size']) {
                             case 'cover':
@@ -154,9 +166,11 @@ function parseSpecialProps(props = {}, attributes = {}) {
                                 return 'contain';
                         }
                     })();
+
                     result['mask-position'] = props?.['mask-origin'] || 'center center';
                     break;
                 }
+
 
                 case 'border': {
                     if (typeof val === 'object') {
@@ -272,6 +286,17 @@ function parseBackgroundProps(props = {}) {
                 result['--blend'] = val;
                 break;
             case 'mask-image': {
+
+                // NEW: explicit override "off"
+                if (val?.off === true) {
+                    result['--mask-image'] = 'none';
+                    result['--mask-repeat'] = 'initial';
+                    result['--mask-size'] = 'initial';
+                    result['--mask-position'] = 'initial';
+                    break;
+                }
+
+                // Normal behavior: media object, string, or ""
                 const imageUrl =
                     typeof val === 'object' && val?.source
                         ? val.source
@@ -285,6 +310,7 @@ function parseBackgroundProps(props = {}) {
                 result['--mask-position'] = props.maskOrigin || 'center center';
                 break;
             }
+
             case 'mask-origin':
                 result['--mask-position'] = val;
                 break;
@@ -413,11 +439,11 @@ const hoverFieldsMap = [
         label: "Hover Colors",
         full: true,
         colors: [
-            { slug: "background-color", label: "Background" },
-            { slug: "color", label: "Text" },
-            { slug: "border-color", label: "Border" },
-            { slug: "outline-color", label: "Outline" },
-            { slug: "text-decoration-color", label: "Decoration" },
+            {slug: "background-color", label: "Background"},
+            {slug: "color", label: "Text"},
+            {slug: "border-color", label: "Border"},
+            {slug: "outline-color", label: "Outline"},
+            {slug: "text-decoration-color", label: "Decoration"},
         ],
     },
 
@@ -433,11 +459,11 @@ const hoverFieldsMap = [
                 slug: "text-decoration-line",
                 label: "Decoration",
                 options: [
-                    { label: "Select", value: "" },
-                    { label: "None", value: "none" },
-                    { label: "Underline", value: "underline" },
-                    { label: "Overline", value: "overline" },
-                    { label: "Line Through", value: "line-through" },
+                    {label: "Select", value: ""},
+                    {label: "None", value: "none"},
+                    {label: "Underline", value: "underline"},
+                    {label: "Overline", value: "overline"},
+                    {label: "Line Through", value: "line-through"},
                 ],
             },
 
@@ -446,12 +472,12 @@ const hoverFieldsMap = [
                 slug: "text-decoration-style",
                 label: "Style",
                 options: [
-                    { label: "Select", value: "" },
-                    { label: "Solid", value: "solid" },
-                    { label: "Dotted", value: "dotted" },
-                    { label: "Dashed", value: "dashed" },
-                    { label: "Double", value: "double" },
-                    { label: "Wavy", value: "wavy" },
+                    {label: "Select", value: ""},
+                    {label: "Solid", value: "solid"},
+                    {label: "Dotted", value: "dotted"},
+                    {label: "Dashed", value: "dashed"},
+                    {label: "Double", value: "double"},
+                    {label: "Wavy", value: "wavy"},
                 ],
             },
 

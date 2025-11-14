@@ -1,18 +1,17 @@
-import { Button, Icon } from '@wordpress/components';
-import { IMAGE_BUTTON_STYLE } from 'Includes/config';
-import { getImageUrlForResolution } from 'Includes/helper';
+import {Button, Icon} from '@wordpress/components';
+import {IMAGE_BUTTON_STYLE} from 'Includes/config';
+import {getImageUrlForResolution} from 'Includes/helper';
 
 function PreviewThumbnail({
                               image = null,        // { id, source, sizes }
                               type = "image",      // "image" | "video"
                               resolution = "large",
                               onClick,             // open media modal
-                              callback,            // clear field
+                              callback,            // clear or override field
                               style = {}
                           }) {
     const isVideo = type === "video";
 
-    // Determine if we have a usable selection
     const src = image?.id ? getImageUrlForResolution(image, resolution) : null;
     const hasSelection = !!src;
 
@@ -32,29 +31,43 @@ function PreviewThumbnail({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        textAlign: "center"
+        gap: "8px",
+        textAlign: "center",
+        flexDirection: "column"
     };
 
-    /* ---------------- Empty State: click opens modal ---------------- */
+    /* ------------------------------------------------------------- */
+    /* EMPTY STATE — now has TWO BUTTONS and NO thumbnail click      */
+    /* ------------------------------------------------------------- */
     if (!hasSelection) {
         return (
-            <Button
-                onClick={onClick}
-                style={emptyStyle}
-                variant="secondary"
-            >
-                Choose {isVideo ? "Video" : "Image"}
-            </Button>
+            <div style={emptyStyle}>
+                <Button
+                    onClick={onClick}
+                    variant="secondary"
+                >
+                    Choose {isVideo ? "Video" : "Image"}
+                </Button>
+
+                <Button
+                    onClick={() => callback({off: true})}
+                    variant="tertiary"
+                >
+                    Disable
+                </Button>
+            </div>
         );
     }
 
-    /* ---------------- Selected State: click clears field ---------------- */
+    /* ------------------------------------------------------------- */
+    /* SELECTED STATE — clicking thumbnail now commits ""            */
+    /* ------------------------------------------------------------- */
     const thumb = isVideo ? (
         <video preload="metadata" style={thumbnailStyle}>
-            <source src={src} type="video/mp4" />
+            <source src={src} type="video/mp4"/>
         </video>
     ) : (
-        <img src={src} alt="" style={thumbnailStyle} />
+        <img src={src} alt="" style={thumbnailStyle}/>
     );
 
     return (
@@ -69,12 +82,12 @@ function PreviewThumbnail({
                 display: "flex",
                 ...style
             }}
-            onClick={() => callback(null)} // CLEAR
+            onClick={() => callback("")}    // ← changed from null to ""
         >
             {thumb}
 
             <Button
-                icon={<Icon icon="no-alt" />}
+                icon={<Icon icon="no-alt"/>}
                 style={{
                     position: "absolute",
                     top: "4px",

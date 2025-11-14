@@ -61,7 +61,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
                                 // The correct behavior:
                                 // child field value → merged into hover object via updateHoverItem
-                                callback={(val) => callback({ [sub.slug]: val })}
+                                callback={(val) => callback({[sub.slug]: val})}
                             />
                         ))}
                     </Grid>
@@ -218,14 +218,14 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
         case "video": {
             const isImage = type === "image";
             const allowedTypes = isImage ? ["image"] : ["video"];
-            const currentValue = value || {};
+            const currentValue = value ?? null;
 
             const onSelect = (media) => {
                 const minimal = extractMinimalImageMeta(media);
                 commit(minimal); // save to attributes
             };
 
-            const clear = () => commit(null);
+            const clear = () => commit('');
 
             control = (
                 <BaseControl label={label} __nextHasNoMarginBottom>
@@ -233,7 +233,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                         <MediaUpload
                             title={`Select ${isImage ? "Image" : "Video"}`}
                             allowedTypes={allowedTypes}
-                            value={currentValue?.id}
+                            value={currentValue?.id || '#'}
                             onSelect={onSelect}
                             render={({open}) => (
                                 <PreviewThumbnail

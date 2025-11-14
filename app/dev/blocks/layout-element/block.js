@@ -1,3 +1,4 @@
+import {useEffect} from "@wordpress/element";
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
@@ -32,16 +33,21 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData, setPreload, setCss} = props;
+            const {attributes, BlockWrapper, styleData, setCss, setPreload} = props;
 
             const classNames = getClassNames(attributes, styleData);
 
-            setPreload([
-                {id: 100, type: 'image'},
-                {id: 200, type: 'image'},
-            ]);
 
-            setCss({props: {display: 'flex'}});
+            useEffect(() => {
+                const preloads = [{id: 100, testing: true}];
+                setPreload(preloads);
+            }, [])
+
+            useEffect(() => {
+                const css = {props: {'--testing': 100}};
+                setCss(css);
+            }, [])
+
 
             return (
                 <>

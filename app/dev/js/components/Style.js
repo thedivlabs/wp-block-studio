@@ -156,19 +156,22 @@ export const withStyle = (Component) => (props) => {
     }, [attributes['wpbs-preload'], setAttributes]);
 
     const updateBlockCssRef = useCallback((newProps = {}) => {
+        // store custom css
         blockCssRef.current = newProps || {};
-    }, [updateStyleSettings]);
 
-    const updateBlockPreloadRef = useCallback((newProps = {}) => {
-        blockPreloadRef.current = newProps || [];
-        commitPreload(blockPreloadRef.current);
-    }, [commitPreload]);
-
-    // Watch for changes in Gutenberg's native gap control
-    useEffect(() => {
+        // rebuild css using existing layout (settings)
         updateStyleSettings(settings);
 
-    }, [blockGapDeps]);
+    }, [updateStyleSettings, settings]);
+
+    const updatePreloadRef = useCallback((newProps = []) => {
+        // store block-side intent
+        blockPreloadRef.current = Array.isArray(newProps) ? newProps : [];
+
+        // dedupe + save the block’s list
+        commitPreload(blockPreloadRef.current);
+
+    }, [commitPreload]);
 
     const StyledComponent = useMemo(() => {
         return (
@@ -178,10 +181,16 @@ export const withStyle = (Component) => (props) => {
                     <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
                 )}
                 setCss={updateBlockCssRef}
-                setPreload={updateBlockPreloadRef}
+                setPreload={updatePreloadRef}
             />
         );
-    }, [clientId, settings, blockGapDeps, updateBlockPreloadRef, updateBlockCssRef]);
+    }, [clientId, settings, blockGapDeps, updateBlockCssRef]);
+
+    // Watch for changes in Gutenberg's native gap control
+    useEffect(() => {
+        updateStyleSettings(settings);
+
+    }, [blockGapDeps]);
 
     return (
         <>

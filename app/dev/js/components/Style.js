@@ -176,6 +176,8 @@ export const withStyle = (Component) => (props) => {
             const preloads = extractPreloadsFromLayout(cleanedNext);
             commitPreload(preloads);
 
+            console.log('finished parsing');
+
             // 8. Commit if changed
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
                 setAttributes({
@@ -285,11 +287,14 @@ export const withStyle = (Component) => (props) => {
 
         const cssProps = attributes?.['wpbs-css']?.props || {};
 
-        const rowGapMatch =
-            cssProps['row-gap'] === blockGap.top;
+        const parsedRow = blockGap.top ? getCSSFromStyle(blockGap.top) : null;
+        const parsedCol = blockGap.left ? getCSSFromStyle(blockGap.left) : null;
 
-        const colGapMatch =
-            cssProps['column-gap'] === blockGap.left;
+        const cssRow = cssProps['row-gap'] || null;
+        const cssCol = cssProps['column-gap'] || null;
+
+        const rowGapMatch = parsedRow === cssRow;
+        const colGapMatch = parsedCol === cssCol;
 
         if (rowGapMatch && colGapMatch) return;
 

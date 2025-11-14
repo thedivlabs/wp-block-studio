@@ -124,31 +124,28 @@ export const withStyle = (Component) => (props) => {
     // ------------------------------------------------------------
     // STYLE / CSS SAVE
     // ------------------------------------------------------------
+    import _ from 'lodash';
+
+// ...
+
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
             const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
-            // --- Base CSS object
-            const cssObj = {
+            // 1. Base CSS object from layout
+            let cssObj = {
                 props: parseSpecialProps(cleanedNext.props || {}, attributes),
                 background: parseBackgroundProps(cleanedNext.background || {}),
                 hover: {},
-                breakpoints: {},
-                custom: cleanObject(blockCssRef.current || {}, true),
+                breakpoints: {}
             };
 
-            // Preloads from layout itself
-            const preloads = extractPreloadsFromLayout(cleanedNext);
-            commitPreload(preloads);
-
-            // --- Default block gap
+            // 2. Gaps
             const gap = attributes?.style?.spacing?.blockGap;
             if (gap) {
-                const rowGapVal =
-                    gap?.top ?? (typeof gap === 'string' ? gap : undefined);
-                const columnGapVal =
-                    gap?.left ?? (typeof gap === 'string' ? gap : undefined);
+                const rowGapVal = gap?.top ?? (typeof gap === 'string' ? gap : undefined);
+                const columnGapVal = gap?.left ?? (typeof gap === 'string' ? gap : undefined);
 
                 if (rowGapVal) {
                     const g = getCSSFromStyle(rowGapVal);
@@ -162,29 +159,35 @@ export const withStyle = (Component) => (props) => {
                 }
             }
 
-            // --- Breakpoints
-            for (const [bpKey, bpProps] of Object.entries(
-                cleanedNext.breakpoints || {}
-            )) {
+            // 3. Breakpoints from layout
+            for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
                 cssObj.breakpoints[bpKey] = {
                     props: parseSpecialProps(bpProps.props || {}, attributes),
-                    background: parseBackgroundProps(bpProps.background || {}),
+                    background: parseBackgroundProps(bpProps.background || {})
                 };
             }
 
-            // --- Hover
+            // 4. Hover
             if (cleanedNext.hover) {
                 cssObj.hover = parseSpecialProps(cleanedNext.hover, attributes);
             }
 
-            // --- Compare + write
+            // 5. MERGE block CSS (deep)
+            cssObj = _.merge({}, cssObj, blockCssRef.current || {});
+
+            // 6. Clean for minimal output
             const cleanedCss = cleanObject(cssObj, true);
             const prevCss = cleanObject(attributes['wpbs-css'] ?? {}, true);
 
+            // 7. Preloads from layout
+            const preloads = extractPreloadsFromLayout(cleanedNext);
+            commitPreload(preloads);
+
+            // 8. Commit if changed
             if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
                 setAttributes({
                     'wpbs-style': nextLayout,
-                    'wpbs-css': cleanedCss,
+                    'wpbs-css': cleanedCss
                 });
             }
         },

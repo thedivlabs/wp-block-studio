@@ -65,13 +65,14 @@ export default class MediaWatcher {
             changed = true;
         }
 
-        // ----- DEMOTE ALL OTHERS -----
+        // ----- DEMOTE ALL OTHER SOURCES -----
         for (const s of sources) {
             if (s === active) continue;
 
             const sSrc = s.getAttribute("src");
 
-            if (sSrc && sSrc !== "#") {
+            // If inactive and has any src value (even "#" or ""), demote it
+            if (sSrc !== null) {
                 s.setAttribute("data-src", sSrc);
                 s.removeAttribute("src");
                 changed = true;

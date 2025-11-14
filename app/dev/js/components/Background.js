@@ -168,18 +168,23 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
     );
 };
 
-export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
+function BackgroundVideo({settings = {}, isSave = false}) {
+
+    // Editor never renders video
+    if (!isSave) return null;
+
+    const {background = {}, breakpoints = {}} = settings;
+    const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
     /* ------------------------------------------------------------
-       COLLECT BASE VIDEO
+       BASE VIDEO
     ------------------------------------------------------------ */
     const baseVideo = background?.video;
     const baseOff = baseVideo?.off === true || baseVideo === "";
     const baseForce = !!background?.force;
 
     if (baseVideo?.source) {
-        // Real base video
         entries.push({
             size: Infinity,
             source: baseVideo.source,
@@ -188,7 +193,6 @@ export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
             disabled: false,
         });
     } else if (baseOff || baseForce) {
-        // Disabled or force fallback
         entries.push({
             size: Infinity,
             source: "#",
@@ -199,13 +203,12 @@ export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
     }
 
     /* ------------------------------------------------------------
-       COLLECT BREAKPOINT VIDEOS
+       BREAKPOINT OVERRIDES
     ------------------------------------------------------------ */
-    Object.entries(breakpoints).forEach(([bpKey, bpObj]) => {
-        const bpVideo = bpObj?.background?.video;
+    Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
+        const bpVideo = bpData?.background?.video;
         const bpOff = bpVideo?.off === true || bpVideo === "";
-        const bpForce = !!bpObj?.background?.force;
-        const bpDefs = WPBS?.settings?.breakpoints ?? {};
+        const bpForce = !!bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
@@ -213,7 +216,7 @@ export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
                 size,
                 source: bpVideo.source,
                 mime: bpVideo.mime || "video/mp4",
-                mq: bpObj.media,              // This becomes data-media
+                mq: bpData.media,
                 disabled: false,
             });
         } else if (bpOff || bpForce) {
@@ -221,7 +224,7 @@ export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
                 size,
                 source: "#",
                 mime: "video/mp4",
-                mq: bpObj.media,
+                mq: bpData.media,
                 disabled: true,
             });
         }
@@ -230,47 +233,67 @@ export const BackgroundVideo = ({background = {}, breakpoints = {}}) => {
     if (!entries.length) return null;
 
     /* ------------------------------------------------------------
-       SORT BREAKPOINTS (largest first ensures correct MQ order)
+       Sort base first (Infinity) → breakpoints
     ------------------------------------------------------------ */
     entries.sort((a, b) => b.size - a.size);
 
-    /* ------------------------------------------------------------
-       RENDER ELEMENT
-    ------------------------------------------------------------ */
+    const baseEntry = entries.find(e => e.size === Infinity);
+    const bpEntries = entries.filter(e => e.size !== Infinity);
+
     return (
         <video
             muted
             loop
             autoPlay
             playsInline
-            className="wpbs-background__video"
+            className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
-            {entries.map((entry, i) => {
 
-                // DISABLED ENTRY → always immediate "#" source
+            {/* -------------------------------------------------
+               BREAKPOINT SOURCES
+               ------------------------------------------------- */}
+            {bpEntries.map((entry, i) => {
+                // DISABLED BP → Only src="#"
                 if (entry.disabled) {
                     return (
                         <source
-                            key={i}
+                            key={`bp-${i}`}
                             src="#"
                             type={entry.mime}
                         />
                     );
                 }
 
-                // ENABLED ENTRY → only data-src (no src!)
+                // ENABLED BP → data-src only, MQ optional
                 return (
                     <source
-                        key={i}
+                        key={`bp-${i}`}
                         data-src={entry.source}
                         data-media={entry.mq || undefined}
                         type={entry.mime}
                     />
                 );
             })}
+
+            {/* -------------------------------------------------
+               BASE SOURCE (ALWAYS LAST)
+               ------------------------------------------------- */}
+            {baseEntry.disabled ? (
+                // DISABLED BASE → just "#"
+                <source
+                    src="#"
+                    type={baseEntry.mime}
+                />
+            ) : (
+                // ENABLED BASE → data-src only
+                <source
+                    data-src={baseEntry.source}
+                    type={baseEntry.mime}
+                />
+            )}
         </video>
     );
-};
+}
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

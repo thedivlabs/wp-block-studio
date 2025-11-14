@@ -238,30 +238,37 @@ function parseSpecialProps(props = {}, attributes = {}) {
     return result;
 }
 
-function parseBackgroundProps(props = {}) {
 
+function parseBackgroundProps(props = {}) {
     const result = {};
 
     // Extract the media props, leave modifiers in `rest`
-    const {image, video, resolution = "large", force, ...rest} = props;
+    const {image, video, resolution = "large", ...rest} = props;
 
     /* ------------------------------------------------------------
-       IMAGE: support { off:true } and ""
+       IMAGE: isPlaceholder + "#" system (no `force`)
+       States:
+       - image === "" / null / undefined → no var (no BG image)
+       - image.isPlaceholder / source "#" → placeholder "#"
+       - real image (image.source) → url(...)
     ------------------------------------------------------------ */
-    if (image?.off === true || image === "") {
-        // explicit disable
-        result["--image"] = "none";
-    } else {
-        // normal behavior
-        result["--image"] =
-            image?.source
-                ? `url("${getImageUrlForResolution(image, resolution)}")`
-                : force ? "#" : undefined;
+    const isImagePlaceholder =
+        image?.isPlaceholder === true ||
+        image?.source === "#";
+
+    if (image === "" || image == null) {
+        // cleared: don't emit --image, let CSS fallback
+    } else if (isImagePlaceholder) {
+        // disabled via placeholder object
+        result["--image"] = "#";
+    } else if (image?.source) {
+        const url = getImageUrlForResolution(image, resolution);
+        result["--image"] = `url("${url}")`;
     }
 
     /* ------------------------------------------------------------
-       VIDEO: support { off:true } and ""
-       RULE: off:true → source:"#", display still block
+       VIDEO: keep your existing semantics
+       (still supports off/"" + real source)
     ------------------------------------------------------------ */
     if (video?.off === true || video === "") {
         // explicit disable → placeholder, not "none"
@@ -276,70 +283,93 @@ function parseBackgroundProps(props = {}) {
     }
 
     /* ------------------------------------------------------------
-       Scalar modifiers
+       Scalar + MASK
     ------------------------------------------------------------ */
     Object.entries(rest).forEach(([key, val]) => {
         if (val == null) return;
 
         switch (key) {
-            case 'background-size':
-                result['--size'] = val;
+            case "background-size":
+                result["--size"] = val;
                 break;
-            case 'scale':
-                result['--scale'] = `${parseFloat(val)}%`;
+
+            case "scale":
+                result["--scale"] = `${parseFloat(val)}%`;
                 break;
-            case 'opacity':
-                result['--opacity'] = parseFloat(val) / 100;
+
+            case "opacity":
+                result["--opacity"] = parseFloat(val) / 100;
                 break;
-            case 'fade':
-                result['--fade'] = val;
+
+            case "fade":
+                result["--fade"] = val;
                 break;
-            case 'max-height':
-                result['--max-height'] = val;
+
+            case "max-height":
+                result["--max-height"] = val;
                 break;
-            case 'overlay':
-                result['--overlay'] = val;
+
+            case "overlay":
+                result["--overlay"] = val;
                 break;
-            case 'color':
-                result['--color'] = val;
+
+            case "color":
+                result["--color"] = val;
                 break;
-            case 'background-blend-mode':
-                result['--blend'] = val;
+
+            case "background-blend-mode":
+                result["--blend"] = val;
                 break;
 
             /* --------------------------------------------
-               MASK IMAGE (your updated block already)
+               MASK IMAGE – same disabled system as image:
+               - "" / null          → no mask vars
+               - isPlaceholder/#    → disabled → none
+               - real source/string → url(...)
             -------------------------------------------- */
-            case 'mask-image': {
+            case "mask-image": {
+                const maskVal = val;
 
-                if (val?.off === true || val === "") {
-                    result['--mask-image'] = 'none';
-                    result['--mask-repeat'] = 'initial';
-                    result['--mask-size'] = 'initial';
-                    result['--mask-position'] = 'initial';
+                const isMaskPlaceholder =
+                    maskVal?.isPlaceholder === true ||
+                    maskVal?.source === "#";
+
+                if (maskVal === "" || maskVal == null) {
+                    // cleared: don't emit any mask vars
+                    break;
+                }
+
+                if (isMaskPlaceholder) {
+                    // disabled mask
+                    result["--mask-image"] = "none";
+                    result["--mask-repeat"] = "initial";
+                    result["--mask-size"] = "initial";
+                    result["--mask-position"] = "initial";
                     break;
                 }
 
                 const imageUrl =
-                    typeof val === 'object' && val?.source
-                        ? val.source
-                        : typeof val === 'string'
-                            ? val
+                    typeof maskVal === "object" && maskVal?.source
+                        ? maskVal.source
+                        : typeof maskVal === "string"
+                            ? maskVal
                             : null;
 
-                result['--mask-image'] = imageUrl ? `url("${imageUrl}")` : 'none';
-                result['--mask-repeat'] = 'no-repeat';
-                result['--mask-size'] = props.maskSize || 'contain';
-                result['--mask-position'] = props.maskOrigin || 'center center';
+                if (!imageUrl) break;
+
+                result["--mask-image"] = `url("${imageUrl}")`;
+                result["--mask-repeat"] = "no-repeat";
+                result["--mask-size"] = props.maskSize || "contain";
+                result["--mask-position"] = props.maskOrigin || "center center";
                 break;
             }
 
-            case 'mask-origin':
-                result['--mask-position'] = val;
+            case "mask-origin":
+                result["--mask-position"] = val;
                 break;
 
-            case 'mask-size':
-                result['--mask-size'] = val;
+            case "mask-size":
+                result["--mask-size"] = val;
                 break;
 
             default:
@@ -348,13 +378,15 @@ function parseBackgroundProps(props = {}) {
     });
 
     if (props.fixed) {
-        result['--attachment'] = 'fixed';
+        result["--attachment"] = "fixed";
     } else if (image?.source) {
-        result['--attachment'] = 'scroll';
+        result["--attachment"] = "scroll";
     }
 
     return result;
 }
+
+export default parseBackgroundProps;
 
 const layoutFieldsMap = [
     {type: 'select', slug: 'align-items', label: 'Align', options: ALIGN_OPTIONS},

@@ -281,6 +281,7 @@ export const withStyle = (Component) => (props) => {
     // BLOCK GAP TRIGGER
     // ------------------------------------------------------------
     useEffect(() => {
+        if (blockGapDeps == null) return;
         updateStyleSettings(settings);
     }, [blockGapDeps]);
 

@@ -45,7 +45,7 @@ registerBlockType(metadata.name, {
 
             useEffect(() => {
                 const css = {props: {'--testing': 100}};
-                setCss(css);
+                //setCss(css);
             }, []);
 
 

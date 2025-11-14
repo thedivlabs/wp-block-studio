@@ -245,21 +245,42 @@ function parseBackgroundProps(props = {}) {
     // Extract the media props, leave modifiers in `rest`
     const {image, video, resolution = "large", force, ...rest} = props;
 
-    // --- Image ----------------------------------------------------
-    result["--image"] =
-        image?.source
-            ? `url("${getImageUrlForResolution(image, resolution)}")`
-            : force ? "#" : undefined;
-
-    // --- Video ----------------------------------------------------
-    result["--video"] = video?.source ? "block" : "none";
-    if (video?.source) {
-        result["--video-src"] = video.source;
+    /* ------------------------------------------------------------
+       IMAGE: support { off:true } and ""
+    ------------------------------------------------------------ */
+    if (image?.off === true || image === "") {
+        // explicit disable
+        result["--image"] = "none";
+    } else {
+        // normal behavior
+        result["--image"] =
+            image?.source
+                ? `url("${getImageUrlForResolution(image, resolution)}")`
+                : force ? "#" : undefined;
     }
 
-    // --- Scalar modifiers (background-size, opacity, fade, etc.) ---
+    /* ------------------------------------------------------------
+       VIDEO: support { off:true } and ""
+       RULE: off:true → source:"#", display still block
+    ------------------------------------------------------------ */
+    if (video?.off === true || video === "") {
+        // explicit disable → placeholder, not "none"
+        result["--video"] = "block";     // still output video element
+        result["--video-src"] = "#";     // placeholder source
+    } else {
+        // normal behavior
+        result["--video"] = video?.source ? "block" : "none";
+        if (video?.source) {
+            result["--video-src"] = video.source;
+        }
+    }
+
+    /* ------------------------------------------------------------
+       Scalar modifiers
+    ------------------------------------------------------------ */
     Object.entries(rest).forEach(([key, val]) => {
         if (val == null) return;
+
         switch (key) {
             case 'background-size':
                 result['--size'] = val;
@@ -285,10 +306,13 @@ function parseBackgroundProps(props = {}) {
             case 'background-blend-mode':
                 result['--blend'] = val;
                 break;
+
+            /* --------------------------------------------
+               MASK IMAGE (your updated block already)
+            -------------------------------------------- */
             case 'mask-image': {
 
-                // NEW: explicit override "off"
-                if (val?.off === true) {
+                if (val?.off === true || val === "") {
                     result['--mask-image'] = 'none';
                     result['--mask-repeat'] = 'initial';
                     result['--mask-size'] = 'initial';
@@ -296,7 +320,6 @@ function parseBackgroundProps(props = {}) {
                     break;
                 }
 
-                // Normal behavior: media object, string, or ""
                 const imageUrl =
                     typeof val === 'object' && val?.source
                         ? val.source
@@ -314,9 +337,11 @@ function parseBackgroundProps(props = {}) {
             case 'mask-origin':
                 result['--mask-position'] = val;
                 break;
+
             case 'mask-size':
                 result['--mask-size'] = val;
                 break;
+
             default:
                 break;
         }

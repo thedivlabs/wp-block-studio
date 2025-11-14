@@ -181,26 +181,47 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // 1. BASE VIDEO (always real, never "#")
     // ----------------------------------------
     const baseVideo = background?.video;
+
     if (baseVideo?.source) {
         entries.push({size: Infinity, video: baseVideo});
+
+    } else if (baseVideo?.off === true) {
+        // NEW: disabled base video
+        entries.push({
+            size: Infinity,
+            video: {source: "#", mime: "video/mp4", isPlaceholder: true}
+        });
     }
+
 
     // ----------------------------------------
     // 2. BREAKPOINT VIDEO OVERRIDES
     // ----------------------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
         const bpVideo = bpData?.background?.video;
+        const bpOff = bpVideo?.off === true;
         const bpForce = !!bpData?.background?.force;
         const size = bpDefs?.[bpKey]?.size ?? 0;
 
         if (bpVideo?.source) {
+            // real video override
             entries.push({size, video: bpVideo});
-        } else if (bpForce) {
+
+        } else if (bpOff) {
+            // NEW: disabled video → placeholder "#"
             entries.push({
                 size,
-                video: {source: "#", mime: "video/mp4", isPlaceholder: true},
+                video: {source: "#", mime: "video/mp4", isPlaceholder: true}
+            });
+
+        } else if (bpForce) {
+            // "force" still generates placeholder
+            entries.push({
+                size,
+                video: {source: "#", mime: "video/mp4", isPlaceholder: true}
             });
         }
+
     });
 
     // No video at all? bail.

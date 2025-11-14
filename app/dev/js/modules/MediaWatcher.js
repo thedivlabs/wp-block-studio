@@ -42,10 +42,12 @@ export default class MediaWatcher {
         const sources = [...video.querySelectorAll("source")];
         if (!sources.length) return;
 
+        const bpCount = sources.filter(s => s.dataset.media).length;
+
         let changed = false;
 
         // 1. Find matching breakpoint source
-        let active = sources.find(s => {
+        let active = !bpCount ? sources[0] : sources.find(s => {
             const mq = s.dataset.media;
             return mq && window.matchMedia(mq).matches;
         });
@@ -94,16 +96,17 @@ export default class MediaWatcher {
                     const el = entry.target;
                     obs.unobserve(el);
 
-                    // VIDEO
-                    if (el.tagName === "VIDEO") {
-                        this.videos.push(el);
-                        this.responsiveVideoSrc(el);
-                        return;
-                    }
-
                     // BACKGROUND WRAPPER
                     if (el.classList.contains("wpbs-background")) {
                         this.responsiveBackgroundSrc(el);
+                        return;
+                    }
+
+                    // VIDEO
+                    if (el.tagName === "VIDEO") {
+                        console.log(el);
+                        this.videos.push(el);
+                        this.responsiveVideoSrc(el);
                         return;
                     }
 
@@ -124,7 +127,7 @@ export default class MediaWatcher {
             },
             {
                 root: null,
-                rootMargin: "90px",
+                rootMargin: "200px 0px 200px 0px",
                 threshold: 0,
             }
         );
@@ -133,7 +136,6 @@ export default class MediaWatcher {
             "img[data-src]," +
             "picture:has(source[data-src])," +
             "video:has(source[data-src])," +
-            "video:has(source[data-media])," +
             ".wpbs-background";
 
         [...root.querySelectorAll(selector)].forEach((el) =>

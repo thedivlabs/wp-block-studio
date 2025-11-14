@@ -37,6 +37,7 @@ export const withStyle = (Component) => (props) => {
     const {clientId, attributes, setAttributes, tagName, isSelected} = props;
     const {uniqueId} = attributes;
     const blockGap = attributes?.style?.spacing?.blockGap;
+    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
     const settings = attributes?.['wpbs-style'] ?? {
         props: {},
@@ -162,8 +163,6 @@ export const withStyle = (Component) => (props) => {
         blockPreloadRef.current = newProps || [];
         commitPreload(blockPreloadRef.current);
     }, [commitPreload]);
-
-    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
     // Watch for changes in Gutenberg's native gap control
     useEffect(() => {

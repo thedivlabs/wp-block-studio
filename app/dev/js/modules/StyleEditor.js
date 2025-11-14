@@ -305,10 +305,8 @@ function parseBackgroundProps(props = {}) {
         video?.source === "#";
 
     if (video === "" || video == null) {
-        // cleared → no video
         result["--video"] = "none";
     } else if (isVideoPlaceholder) {
-        // disabled → still visible container but placeholder src
         result["--video"] = "block";
         result["--video-src"] = "#";
     } else if (video?.source) {
@@ -317,7 +315,7 @@ function parseBackgroundProps(props = {}) {
     }
 
     /* ------------------------------------------------------------
-       MASK (same rules as image, but placeholder = off)
+       MASK (placeholder = none)
     ------------------------------------------------------------ */
     const maskVal = rest["mask-image"];
     const isMaskPlaceholder =
@@ -327,7 +325,6 @@ function parseBackgroundProps(props = {}) {
     if (maskVal === "" || maskVal == null) {
         // cleared → emit nothing
     } else if (isMaskPlaceholder) {
-        // placeholder → fully disabled
         result["--mask-image"] = "none";
         result["--mask-repeat"] = "initial";
         result["--mask-size"] = "initial";

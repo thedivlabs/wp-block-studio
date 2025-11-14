@@ -172,15 +172,15 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
     if (!isSave) return null;
 
-    const {background = {}, breakpoints = {}} = settings;
+    const { background = {}, breakpoints = {} } = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
     // ----------------------------------------
-    // 1. BASE VIDEO (ONLY if source exists)
+    // 1. BASE VIDEO (real source only)
     // ----------------------------------------
     const baseVideo = background?.video;
-    if (baseVideo && baseVideo.source) {
+    if (baseVideo?.source) {
         entries.push({
             size: Infinity,
             video: baseVideo
@@ -191,36 +191,36 @@ function BackgroundVideo({settings = {}, isSave = false}) {
     // 2. BREAKPOINT VIDEO OVERRIDES
     // ----------------------------------------
     Object.entries(breakpoints).forEach(([bpKey, bpData]) => {
-        const bpVideo = bpData?.background?.video;
-        if (!bpVideo) return;
-
         const size = bpDefs?.[bpKey]?.size ?? 0;
+        const bpVideo = bpData?.background?.video;
 
-        // DISABLED
-        if (bpVideo.source === "#") {
-            entries.push({
-                size,
-                video: bpVideo
-            });
+        // CASE A — breakpoint has a video object
+        if (bpVideo) {
+            if (bpVideo.source) {
+                // real video
+                entries.push({ size, video: bpVideo });
+            } else {
+                // empty object → treat as implicit disable
+                entries.push({
+                    size,
+                    video: { source: "#", mime: "video/mp4" }
+                });
+            }
             return;
         }
 
-        // ENABLED VIDEO
-        if (bpVideo.source) {
-            entries.push({
-                size,
-                video: bpVideo
-            });
-        }
-
-        // else skip empty value
+        // CASE B — breakpoint has NO video key at all
+        entries.push({
+            size,
+            video: { source: "#", mime: "video/mp4" }
+        });
     });
 
-    // No usable entries
+    // If no entries at all, bail
     if (!entries.length) return null;
 
     // ----------------------------------------
-    // 3. Sort largest → smallest (base first)
+    // Sort: base first (Infinity)
     // ----------------------------------------
     entries.sort((a, b) => b.size - a.size);
 
@@ -229,6 +229,9 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
     const bpEntries = entries.filter(e => e.size !== Infinity);
 
+    // ----------------------------------------
+    // Render
+    // ----------------------------------------
     return (
         <video
             muted
@@ -239,7 +242,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         >
 
             {/* BREAKPOINT SOURCES */}
-            {bpEntries.map(({size, video}, i) => {
+            {bpEntries.map(({ size, video }, i) => {
 
                 const mq =
                     Number.isFinite(size) && size > 0 && size !== Infinity
@@ -249,14 +252,14 @@ function BackgroundVideo({settings = {}, isSave = false}) {
                 return (
                     <source
                         key={`bp-${i}`}
-                        data-src={video.source}
+                        data-src={video.source || "#"}
                         data-media={mq}
                         type={video.mime || "video/mp4"}
                     />
                 );
             })}
 
-            {/* BASE SOURCE (ONLY if real video exists) */}
+            {/* BASE SOURCE (real source only) */}
             {baseVideoObj?.source && (
                 <source
                     data-src={baseVideoObj.source}

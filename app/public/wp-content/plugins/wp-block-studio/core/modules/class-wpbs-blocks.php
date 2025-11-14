@@ -62,7 +62,7 @@ class WPBS_Blocks {
 			! empty( $block['attrs']['wpbs-preload'] )
 		) {
 
-			WPBS::console_log( $block );
+			//WPBS::console_log( $block );
 		}
 
 

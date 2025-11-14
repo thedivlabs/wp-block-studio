@@ -30,56 +30,58 @@ const getDataProps = (props) => {
     return {...props, styleData: data};
 };
 
-function extractPreloadsFromLayout(layout) {
-    const bpDefs = WPBS?.settings?.breakpoints ?? {};
+function extractPreloadsFromLayout(layout = {}) {
     const result = [];
 
-    if (!layout) return result;
+    // --- Base background
+    const baseBg = layout?.background;
+    if (baseBg?.eager) {
 
-    // 1. Base
-    if (layout.background?.eager) {
-        const bg = layout.background;
-        if (bg.type === 'image' && bg.image?.id) {
+        if (baseBg.type === "image" && baseBg.image?.id) {
             result.push({
-                id: bg.image.id,
-                media: null,
-                resolution: bg.image?.size || null,
-                type: 'image',
+                id: baseBg.image.id,
+                type: "image",
+                resolution: baseBg.resolution || null
             });
         }
-        if (bg.type === 'video' && bg.video?.id) {
+
+        if (baseBg.type === "video" && baseBg.video?.id) {
             result.push({
-                id: bg.video.id,
-                media: null,
-                resolution: null,
-                type: 'video',
+                id: baseBg.video.id,
+                type: "video"
             });
         }
     }
 
-    // 2. Breakpoints
-    Object.entries(layout.breakpoints || {}).forEach(([bpKey, bp]) => {
-        const bg = bp.background;
-        if (!bg?.eager) return;
+    // --- Breakpoints
+    const breakpoints = layout.breakpoints || {};
+    const bpDefs = window?.WPBS?.settings?.breakpoints || {};
 
-        if (bg.type === 'image' && bg.image?.id) {
+    for (const [bpKey, bpData] of Object.entries(breakpoints)) {
+        const bpBg = bpData?.background;
+        if (!baseBg?.eager) continue; // breakpoint eager toggle
+
+        const mq = bpDefs[bpKey]?.size
+            ? `(max-width:${bpDefs[bpKey].size - 1}px)`
+            : null;
+
+        if (bpBg.type === "image" && bpBg.image?.id) {
             result.push({
-                id: bg.image.id,
-                media: bpKey,
-                resolution: bg.image?.size || null,
-                type: 'image',
+                id: bpBg.image.id,
+                type: "image",
+                resolution: bpBg.resolution || null,
+                media: mq
             });
         }
 
-        if (bg.type === 'video' && bg.video?.id) {
+        if (bpBg.type === "video" && bpBg.video?.id) {
             result.push({
-                id: bg.video.id,
-                media: bpKey,
-                resolution: null,
-                type: 'video',
+                id: bpBg.video.id,
+                type: "video",
+                media: mq
             });
         }
-    });
+    }
 
     return result;
 }
@@ -102,7 +104,7 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
 
-    const { clientId, attributes, setAttributes } = props;
+    const {clientId, attributes, setAttributes} = props;
 
     const {
         uniqueId,
@@ -119,9 +121,14 @@ export const withStyle = (Component) => (props) => {
     const blockGapDeps =
         typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
-    const StyleEditorPanel = memo(({ settings, updateStyleSettings }) => (
-        <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings} />
+    const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
+        <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
     ));
+
+    useEffect(() => {
+        if (!attributes?.['wpbs-preload'].length) return;
+        console.log(attributes);
+    }, [settings]);
 
     // ------------------------------------------------------------
     // STYLE / CSS SAVE
@@ -232,7 +239,7 @@ export const withStyle = (Component) => (props) => {
         const currentAttr = attributes['wpbs-preload'] ?? [];
 
         if (!_.isEqual(currentAttr, deduped)) {
-            setAttributes({ 'wpbs-preload': deduped });
+            setAttributes({'wpbs-preload': deduped});
         }
 
     }, [attributes['wpbs-preload'], setAttributes]);
@@ -293,7 +300,7 @@ export const withStyle = (Component) => (props) => {
     return (
         <>
             {StyledComponent}
-            <StyleEditorPanel settings={settings} updateStyleSettings={updateStyleSettings} />
+            <StyleEditorPanel settings={settings} updateStyleSettings={updateStyleSettings}/>
         </>
     );
 };

@@ -43,7 +43,97 @@ class WPBS_Blocks {
 			update_post_meta( $post_id, '_wpbs_combined_css', $css );
 		}, 20, 2 );
 
+		add_action( 'wp_head', [ $this, 'output_preload_media' ] );
+		add_filter( 'render_block_data', [ $this, 'collect_preload_media' ], 10, 2 );
 
+	}
+
+	public function collect_preload_media( array $block, array $source_block ): array {
+
+		// Register a collector on this block for later
+		add_filter( 'wpbs_preload_media', function( array $carry ) use ( $block ) {
+
+			$preload = $block['attrs']['wpbs-preload'] ?? null;
+
+			if ( is_array( $preload ) && ! empty( $preload ) ) {
+				// merge block's preload items into the accumulator
+				$carry = array_merge( $carry, $preload );
+			}
+
+			return $carry;
+		});
+
+		return $block;
+	}
+
+	public function output_preload_media(): void {
+
+		// Ask all blocks to report their preload items
+		$items = apply_filters( 'wpbs_preload_media', [] );
+
+		if ( empty( $items ) || ! is_array( $items ) ) {
+			return;
+		}
+
+		// Load theme.json breakpoints
+		$settings   = wp_get_global_settings();
+		$breakpoints = $settings['custom']['breakpoints'] ?? [];
+
+		// Deduplicate
+		$unique = [];
+
+		foreach ( $items as $item ) {
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			// Normalize only relevant keys
+			$keyData = [
+				'id'         => $item['id']         ?? null,
+				'resolution' => $item['resolution'] ?? null,
+				'bp'         => $item['media']      ?? null, // breakpoint key
+				'type'       => $item['type']       ?? null,
+			];
+
+			// Build natural uniqueness key
+			$key = json_encode( $keyData, JSON_UNESCAPED_SLASHES );
+
+			$unique[ $key ] = $item;
+		}
+
+		// Output preload tags
+		foreach ( $unique as $item ) {
+
+			$id     = $item['id']         ?? null;
+			$type   = $item['type']       ?? null;
+			$bpKey  = $item['media']      ?? null; // breakpoint key
+			$size   = $item['resolution'] ?? 'full';
+
+			if ( ! $id || ! $type ) {
+				continue;
+			}
+
+			// Resolve URL
+			$src = wp_get_attachment_image_url( $id, $size );
+			if ( ! $src ) {
+				continue;
+			}
+
+			// Resolve media query from theme.json breakpoint key
+			$mediaAttr = '';
+			if ( $bpKey && isset($breakpoints[$bpKey]) ) {
+				$mq = $breakpoints[$bpKey];
+				if ( is_array($mq) && isset($mq['query']) ) {
+					$mediaAttr = $mq['query'];
+				} elseif ( is_string($mq) ) {
+					$mediaAttr = $mq;
+				}
+			}
+
+			echo '<link rel="preload" href="' . esc_url( $src ) . '" as="' . esc_attr( $type ) . '"'
+			     . ( $mediaAttr ? ' media="' . esc_attr( $mediaAttr ) . '"' : '' )
+			     . ' />' . "\n";
+		}
 	}
 
 	private function collect_block_styles( array $blocks ): string {

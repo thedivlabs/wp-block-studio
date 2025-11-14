@@ -131,11 +131,6 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
                     />
 
                     <Grid columns={2} columnGap={15} rowGap={20}>
-                        {isBreakpoint && <ToggleControl
-                            label="Force"
-                            checked={!!settings?.['force']}
-                            onChange={(v) => callback({force: v})}
-                        />}
                         {!isBreakpoint && <ToggleControl
                             label="Eager"
                             checked={!!settings?.['eager']}

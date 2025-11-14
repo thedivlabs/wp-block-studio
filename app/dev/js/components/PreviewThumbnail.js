@@ -4,6 +4,7 @@ import {getImageUrlForResolution} from 'Includes/helper';
 
 function PreviewThumbnail({
                               image = null,        // { id, source, sizes }
+                              video = null,        // { id, source, sizes }
                               type = "image",      // "image" | "video"
                               resolution = "large",
                               onClick,             // open media modal
@@ -14,6 +15,10 @@ function PreviewThumbnail({
 
     const src = image?.id ? getImageUrlForResolution(image, resolution) : null;
     const hasSelection = !!src;
+
+    const isImageDisabled = image?.off === true;
+    const isVideoDisabled = video?.off === true;
+    const isDisabled =isVideoDisabled || isImageDisabled;
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
@@ -52,6 +57,7 @@ function PreviewThumbnail({
                 <Button
                     onClick={() => callback({off: true})}
                     variant="tertiary"
+                    className={isDisabled ? 'active' : ''}
                 >
                     Disable
                 </Button>

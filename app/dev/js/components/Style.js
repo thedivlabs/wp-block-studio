@@ -281,7 +281,18 @@ export const withStyle = (Component) => (props) => {
     // BLOCK GAP TRIGGER
     // ------------------------------------------------------------
     useEffect(() => {
-        if (blockGapDeps == null) return;
+        if (!blockGap) return;
+
+        const cssProps = attributes?.['wpbs-css']?.props || {};
+
+        const rowGapMatch =
+            cssProps['row-gap'] === blockGap.top;
+
+        const colGapMatch =
+            cssProps['column-gap'] === blockGap.left;
+
+        if (rowGapMatch && colGapMatch) return;
+
         updateStyleSettings(settings);
     }, [blockGapDeps]);
 

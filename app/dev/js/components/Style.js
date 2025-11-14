@@ -121,13 +121,6 @@ export const withStyle = (Component) => (props) => {
         <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
     ));
 
-    // ------------------------------------------------------------
-    // STYLE / CSS SAVE
-    // ------------------------------------------------------------
-    import _ from 'lodash';
-
-// ...
-
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
             const cleanedNext = cleanObject(nextLayout, true);

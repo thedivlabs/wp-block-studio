@@ -30,55 +30,55 @@ const getDataProps = (props) => {
     return {...props, styleData: data};
 };
 
+
 function extractPreloadsFromLayout(layout = {}) {
     const result = [];
 
-    // --- Base background
     const baseBg = layout?.background;
-    if (baseBg?.eager) {
+    const breakpoints = layout?.breakpoints || {};
 
-        if (baseBg.type === "image" && baseBg.image?.id) {
-            result.push({
-                id: baseBg.image.id,
-                type: "image",
-                resolution: baseBg.resolution || null
-            });
-        }
-
-        if (baseBg.type === "video" && baseBg.video?.id) {
-            result.push({
-                id: baseBg.video.id,
-                type: "video"
-            });
-        }
+    // If base background is not eager, nothing preloads at all.
+    if (!baseBg?.eager) {
+        return result;
     }
 
-    // --- Breakpoints
-    const breakpoints = layout.breakpoints || {};
-    const bpDefs = window?.WPBS?.settings?.breakpoints || {};
+    // --- Base background
+    if (baseBg.type === "image" && baseBg.image?.id) {
+        result.push({
+            id: baseBg.image.id,
+            type: "image",
+            resolution: baseBg.resolution || null
+        });
+    }
 
+    if (baseBg.type === "video" && baseBg.video?.id) {
+        result.push({
+            id: baseBg.video.id,
+            type: "video"
+        });
+    }
+
+    // --- Breakpoints (inherit eager from base)
     for (const [bpKey, bpData] of Object.entries(breakpoints)) {
         const bpBg = bpData?.background;
-        if (!baseBg?.eager) continue; // breakpoint eager toggle
+        if (!bpBg) continue;
 
-        const mq = bpDefs[bpKey]?.size
-            ? `(max-width:${bpDefs[bpKey].size - 1}px)`
-            : null;
-
+        // Preload image
         if (bpBg.type === "image" && bpBg.image?.id) {
             result.push({
                 id: bpBg.image.id,
                 type: "image",
                 resolution: bpBg.resolution || null,
-                media: mq
+                media: bpKey
             });
         }
 
+        // Preload video
         if (bpBg.type === "video" && bpBg.video?.id) {
             result.push({
                 id: bpBg.video.id,
                 type: "video",
-                media: mq
+                media: bpKey
             });
         }
     }

@@ -517,7 +517,7 @@ const hoverFieldsMap = [
             {
                 type: "select",
                 slug: "text-decoration-line",
-                label: "Decoration",
+                label: "Type",
                 options: [
                     {label: "Select", value: ""},
                     {label: "None", value: "none"},
@@ -770,6 +770,7 @@ export function initStyleEditor() {
             }
             return acc;
         };
+
 
         const scheduleFlush = () => {
             clearTimeout(flushTimer);

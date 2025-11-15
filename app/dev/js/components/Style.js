@@ -96,6 +96,11 @@ function normalizePreloadItem(item) {
     return out;
 }
 
+
+const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
+    <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
+));
+
 export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
@@ -117,9 +122,6 @@ export const withStyle = (Component) => (props) => {
     const blockGapDeps =
         typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
-    const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
-        <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
-    ));
 
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {

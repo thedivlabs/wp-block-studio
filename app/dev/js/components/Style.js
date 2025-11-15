@@ -109,15 +109,15 @@ export const withStyle = (Component) => (props) => {
     ----------------------------------------------------------------------
     */
     useEffect(() => {
-        if (typeof onStyleChange !== 'function') return;
+        if (typeof onStyleChange !== "function") return;
 
         onStyleChange({
-            clientId,
             css: blockCssRef.current,
             preload: blockPreloadRef.current,
-            attributes,
+            props,
         });
     }, [settings, blockGapDeps]);
+
 
     /*
     ----------------------------------------------------------------------
@@ -141,18 +141,6 @@ export const withStyle = (Component) => (props) => {
         ),
         [clientId]
     );
-
-    /*
-    ----------------------------------------------------------------------
-    BLOCK GAP TRIGGER
-    ----------------------------------------------------------------------
-    */
-    useEffect(() => {
-        if (!blockGap) return;
-
-        // Block gap no longer compares CSS — simply triggers a layout update
-        updateStyleSettings(settings);
-    }, [blockGapDeps]);
 
     /*
     ----------------------------------------------------------------------

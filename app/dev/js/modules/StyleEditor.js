@@ -495,10 +495,18 @@ export function initStyleEditor() {
         });
     }
 
-    function buildCssTextFromObject(cssObj = {}, attributes = {}) {
-        const uniqueId = attributes?.uniqueId;
-        const blockName = attributes?.name?.replace('/', '-');
+    function buildCssTextFromObject(cssObj = {}, props = {}) {
+        if (!props) return "";
+
+        const {attributes, name} = props;
+        if (!attributes) return "";
+
+        const uniqueId = attributes.uniqueId;
+        const blockName = name ? name.replace("/", "-") : null;
+
         if (!uniqueId || !blockName) return "";
+
+        console.log(blockName);
 
         let css = "";
         const selector = `.${blockName}.${uniqueId}`;
@@ -514,7 +522,7 @@ export function initStyleEditor() {
             css += `${selector}{${buildRules(cssObj.props)}}`;
         }
 
-        // Background (scope: > .wpbs-background)
+        // Background
         if (!_.isEmpty(cssObj.background)) {
             const bgSelector = `${selector} > .wpbs-background`;
             css += `${bgSelector}{${buildRules(cssObj.background)}}`;
@@ -555,24 +563,22 @@ export function initStyleEditor() {
     // MAIN STYLE ENGINE ENTRYPOINT
     // Called by the HOC after it updates wpbs-style
     // ------------------------------------------------------------
-    function onStyleChange(payload = {}) {
-        const {
-            clientId,
-            css = {},
-            preload = [],
-            attributes = {}
-        } = payload;
+    function onStyleChange({css = {}, preload = [], props}) {
+        if (!props) return;
 
-        if (!clientId) return;
+        const {clientId, name, attributes} = props;
+        if (!clientId || !attributes) return;
 
-        // ----------------------------------------
-        // 1. Extract everything from attributes
-        // ----------------------------------------
+        // block identity
+        const blockName = name ? name.replace('/', '-') : null;
+        const uniqueId = attributes.uniqueId;
+        if (!blockName || !uniqueId) return;
+
+        // layout + stored css
         const layout = attributes['wpbs-style'] || {};
         const prevCss = attributes['wpbs-css'] || {};
         const prevPreload = attributes['wpbs-preload'] || [];
         const blockStyle = attributes.style || {};
-        const uniqueId = attributes.uniqueId;
 
         // ----------------------------------------
         // 2. Clean layout
@@ -610,7 +616,7 @@ export function initStyleEditor() {
         }
 
         // ----------------------------------------
-        // 5. BREAKPOINTS — FIXED INHERITANCE
+        // 5. Breakpoints (inherit + overrides)
         // ----------------------------------------
         Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
             const bpCss = {
@@ -618,15 +624,11 @@ export function initStyleEditor() {
                 background: {}
             };
 
-            // inherit base props/background before applying overrides
-            if (cssObj.props) {
-                bpCss.props = {...cssObj.props};
-            }
-            if (cssObj.background) {
-                bpCss.background = {...cssObj.background};
-            }
+            // inherit base
+            if (cssObj.props) bpCss.props = {...cssObj.props};
+            if (cssObj.background) bpCss.background = {...cssObj.background};
 
-            // layout overrides
+            // overrides
             if (bpProps?.props) {
                 bpCss.props = {
                     ...bpCss.props,
@@ -673,21 +675,23 @@ export function initStyleEditor() {
         });
 
         // ----------------------------------------
-        // 10. Bail if no changes
+        // 10. Bail if nothing changed
         // ----------------------------------------
         const cssUnchanged = _.isEqual(cleanedCss, cleanedPrevCss);
         const preloadUnchanged = _.isEqual(nextPreload, prevPreload);
 
-        if (cssUnchanged && preloadUnchanged) {
-            return;
-        }
+        if (cssUnchanged && preloadUnchanged) return;
 
         // ----------------------------------------
         // 11. Inject CSS into DOM
         // ----------------------------------------
         setBlockCss(
             clientId,
-            buildCssTextFromObject(cleanedCss, attributes)
+            buildCssTextFromObject(cleanedCss, {
+                ...attributes,
+                blockName,
+                uniqueId
+            })
         );
 
         // ----------------------------------------

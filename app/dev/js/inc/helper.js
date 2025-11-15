@@ -195,3 +195,45 @@ export function normalizePreloadItem(item) {
 
     return out;
 }
+
+export function getCSSFromStyle(raw, presetKeyword = '') {
+    if (raw == null) return '';
+
+    if (typeof raw === 'object' && !Array.isArray(raw)) {
+        return Object.entries(raw)
+            .map(([k, v]) => `${k}: ${getCSSFromStyle(v, presetKeyword)};`)
+            .join(' ');
+    }
+
+    if (Array.isArray(raw)) {
+        return raw.map(v => getCSSFromStyle(v, presetKeyword)).join(', ');
+    }
+
+    if (typeof raw !== 'string') return raw;
+
+    if (raw.startsWith('var:')) {
+        const [source, type, name] = raw.slice(4).split('|');
+        if (source && type && name) {
+            return `var(--wp--${source}--${type}--${name})`;
+        }
+        return raw;
+    }
+
+    if (raw.startsWith('--wp--')) {
+        return `var(${raw})`;
+    }
+
+    if (presetKeyword) {
+        return `var(--wp--preset--${presetKeyword}--${raw})`;
+    }
+
+    return raw;
+}
+
+export const heightVal = (val) => {
+    let height = val;
+    if (val === 'screen') height = 'calc(100svh - var(--wpbs-header-height, 0px))';
+    if (val === 'full-screen') height = '100svh';
+    if (['auto', 'full', 'inherit'].includes(val)) height = val;
+    return height;
+};

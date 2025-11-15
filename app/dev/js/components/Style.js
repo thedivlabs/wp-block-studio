@@ -278,7 +278,7 @@ export const withStyle = (Component) => (props) => {
                 setPreload={updatePreloadRef}
             />
         ),
-        [clientId, settings, blockGapDeps, updateBlockCssRef]
+        [clientId, settings]
     );
 
     // ------------------------------------------------------------

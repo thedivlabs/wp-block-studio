@@ -2,6 +2,11 @@ import {Fragment, memo, useCallback, useEffect, useMemo, useRef, useState} from 
 import {StyleEditorUI} from "Includes/style";
 import _, {isEqual} from 'lodash';
 import {BlockWrapper} from 'Components/BlockWrapper';
+import {
+    normalizePreloadItem,
+    extractPreloadsFromLayout,
+    getDataProps
+} from 'Includes/helper';
 
 
 export const STYLE_ATTRIBUTES = {
@@ -13,88 +18,6 @@ export const STYLE_ATTRIBUTES = {
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {getCSSFromStyle, cleanObject, parseSpecialProps, parseBackgroundProps} = API;
-
-const getDataProps = (props) => {
-    const {attributes} = props;
-    const style = attributes['wpbs-style'] || {};
-    const background = style.background || {};
-    const layout = style.layout || {};
-
-    const data = Object.fromEntries(Object.entries({
-        ElementTagName: 'div',
-        hasBackground: !!background.type,
-        hasContainer: !!layout.container || !!background.type,
-        background,
-    }).filter(Boolean));
-
-    return {...props, styleData: data};
-};
-
-function extractPreloadsFromLayout(layout = {}) {
-    const result = [];
-
-    // --- Base background
-    const baseBg = layout?.background;
-    if (baseBg?.eager) {
-
-        if (baseBg.type === "image" && baseBg.image?.id) {
-            result.push({
-                id: baseBg.image.id,
-                type: "image",
-                resolution: baseBg.resolution || null
-            });
-        }
-
-        if (baseBg.type === "video" && baseBg.video?.id) {
-            result.push({
-                id: baseBg.video.id,
-                type: "video"
-            });
-        }
-    }
-
-    // --- Breakpoints
-    const breakpoints = layout.breakpoints || {};
-
-    for (const [bpKey, bpData] of Object.entries(breakpoints)) {
-        const bpBg = bpData?.background;
-        if (!baseBg?.eager) continue;  // FIX #1 (correct eager check)
-
-        if (bpBg.type === "image" && bpBg.image?.id) {
-            result.push({
-                id: bpBg.image.id,
-                type: "image",
-                resolution: bpBg.resolution || null,
-                media: bpKey            // FIX #2 (use breakpoint key)
-            });
-        }
-
-        if (bpBg.type === "video" && bpBg.video?.id) {
-            result.push({
-                id: bpBg.video.id,
-                type: "video",
-                media: bpKey            // FIX #2
-            });
-        }
-    }
-
-    return result;
-}
-
-
-function normalizePreloadItem(item) {
-    if (!item || !item.id) return null;
-
-    const out = {
-        id: item.id,
-        type: item.type || "image"
-    };
-
-    if (item.media) out.media = item.media;
-    if (item.resolution) out.resolution = item.resolution;
-
-    return out;
-}
 
 
 const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
@@ -121,7 +44,6 @@ export const withStyle = (Component) => (props) => {
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps =
         typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
-
 
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
@@ -278,7 +200,7 @@ export const withStyle = (Component) => (props) => {
                 setPreload={updatePreloadRef}
             />
         ),
-        [clientId, settings]
+        [clientId]
     );
 
     // ------------------------------------------------------------
@@ -310,7 +232,6 @@ export const withStyle = (Component) => (props) => {
         </>
     );
 };
-
 
 export const withStyleSave = (Component) => (props) => {
 

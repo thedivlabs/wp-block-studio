@@ -15,8 +15,7 @@ import _ from "lodash";
 import {Field} from "Components/Field";
 import {BackgroundControls} from "./Background";
 import {InspectorControls} from "@wordpress/block-editor";
-import {AdvancedControls} from 'Components/AdvancedControls';
-
+import {AdvancedControls} from "Components/AdvancedControls";
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {cleanObject} = API;
@@ -30,8 +29,7 @@ const LayoutFields = memo(({bpKey, settings, suppress = [], updateFn}) => {
     return map
         .filter((f) => !suppress.includes(f.slug))
         .map((field) => {
-            const callback = (v) =>
-                updateFn({[field.slug]: v}, bpKey);
+            const callback = (v) => updateFn({[field.slug]: v}, bpKey);
 
             return (
                 <Field
@@ -50,23 +48,25 @@ const LayoutFields = memo(({bpKey, settings, suppress = [], updateFn}) => {
 const HoverFields = memo(({settings, suppress = [], updateHoverItem}) => {
     const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-    return <Grid columns={2} rowGap={15}>
-        {map
-            .filter((f) => !suppress.includes(f.slug))
-            .map((field) => (
-                <Field
-                    key={field.slug}
-                    field={field}
-                    settings={settings}
-                    callback={(v) => updateHoverItem(v)}
-                    isToolsPanel={false}
-                />
-            ))}
-    </Grid>;
+    return (
+        <Grid columns={2} rowGap={15}>
+            {map
+                .filter((f) => !suppress.includes(f.slug))
+                .map((field) => (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        settings={settings}
+                        callback={(v) => updateHoverItem(v)}
+                        isToolsPanel={false}
+                    />
+                ))}
+        </Grid>
+    );
 });
 
 /* -------------------------------------------------------------------------- */
-/* BreakpointPanel – fully isolated per-breakpoint UI */
+/* BreakpointPanel – isolated per-breakpoint UI */
 /* -------------------------------------------------------------------------- */
 const BreakpointPanel = memo(
     ({
@@ -79,17 +79,15 @@ const BreakpointPanel = memo(
          updateBreakpointItem,
          removeBreakpointPanel,
      }) => {
+
         const handleChangeKey = useCallback(
             (newKey) => {
                 if (!newKey || newKey === bpKey) return;
 
-                // Ensure we always have a breakpoints object
                 const currentBreakpoints = localLayout.breakpoints || {};
 
-                // Prevent renaming to an existing key
                 if (breakpointKeys.includes(newKey)) return;
 
-                // Clone and move data
                 const nextBreakpoints = {...currentBreakpoints};
                 nextBreakpoints[newKey] = nextBreakpoints[bpKey];
                 delete nextBreakpoints[bpKey];
@@ -99,7 +97,6 @@ const BreakpointPanel = memo(
                     breakpoints: nextBreakpoints,
                 };
 
-                // Commit immediately (structural change)
                 updateLocalLayout(next, true);
             },
             [bpKey, localLayout, breakpointKeys, updateLocalLayout]
@@ -155,9 +152,16 @@ const BreakpointPanel = memo(
                         updateFn={(newProps) =>
                             updateBreakpointItem({props: newProps}, bpKey)
                         }
-                        suppress={['container', 'reveal-anim', 'reveal-offset', 'reveal-delay', 'reveal-duration', 'reveal-easing', 'reveal-distance']}
+                        suppress={[
+                            "container",
+                            "reveal-anim",
+                            "reveal-offset",
+                            "reveal-delay",
+                            "reveal-duration",
+                            "reveal-easing",
+                            "reveal-distance",
+                        ]}
                     />
-
                 </ToolsPanel>
 
                 <BackgroundControls
@@ -173,33 +177,25 @@ const BreakpointPanel = memo(
     (prev, next) => _.isEqual(prev.data, next.data)
 );
 
-
 /* -------------------------------------------------------------------------- */
 /* Main Component */
 /* -------------------------------------------------------------------------- */
 export const StyleEditorUI = ({settings, updateStyleSettings}) => {
-    // ----------------------------- Local slice state -----------------------------
+
+    /* ------------------------------------------------------------------ */
+    /*  LOCAL STATE — initialized from settings ONCE, then fully decoupled */
+    /* ------------------------------------------------------------------ */
     const [localProps, setLocalProps] = useState(settings?.props || {});
     const [localHover, setLocalHover] = useState(settings?.hover || {});
     const [localBackground, setLocalBackground] = useState(settings?.background || {});
     const [localAdvanced, setLocalAdvanced] = useState(settings?.advanced || {});
     const [localBreakpoints, setLocalBreakpoints] = useState(settings?.breakpoints || {});
 
-    // Single derived object for places that still expect "layout"
-    const localLayout = useMemo(
-        () => ({
-            props: localProps || {},
-            hover: localHover || {},
-            background: localBackground || {},
-            advanced: localAdvanced || {},
-            breakpoints: localBreakpoints || {},
-        }),
-        [localProps, localHover, localBackground, localAdvanced, localBreakpoints]
-    );
 
-    /* --------------------------- Immediate updater -------------------------- */
-    // Used by BreakpointPanel for structural operations (rename / reset)
-    const updateLocalLayout = useCallback((nextLayout, commit = false) => {
+    /* ----------------------------------------------- */
+    /*  Structural updater (used by BreakpointPanel)   */
+    /* ----------------------------------------------- */
+    const updateLocalLayout = useCallback((nextLayout) => {
         const safe = nextLayout || {};
         setLocalProps(safe.props || {});
         setLocalHover(safe.hover || {});
@@ -208,102 +204,74 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         setLocalBreakpoints(safe.breakpoints || {});
     }, []);
 
-    /* -------------------------- Debounced HOC sync -------------------------- */
-    const debouncedSync = useMemo(
-        () =>
-            _.debounce((next) => {
-                const cleanedLocal = cleanObject(next ?? {}, true);
-                const cleanedSettings = cleanObject(settings ?? {}, true);
 
-                if (!_.isEqual(cleanedLocal, cleanedSettings)) {
-                    updateStyleSettings(next);
-                }
-            }, 400),
-        [settings, updateStyleSettings]
+    /* ------------------------------------------------------------------ */
+    /*  Derived localLayout object */
+    /* ------------------------------------------------------------------ */
+    const localLayout = useMemo(
+        () => ({
+            props: localProps,
+            hover: localHover,
+            background: localBackground,
+            advanced: localAdvanced,
+            breakpoints: localBreakpoints,
+        }),
+        [localProps, localHover, localBackground, localAdvanced, localBreakpoints]
     );
 
     useEffect(() => {
-        debouncedSync(localLayout);
-        return () => debouncedSync.cancel();
-    }, [localLayout, debouncedSync]);
+        console.log(localLayout);
+    }, [localLayout])
 
-    /* ---------------------------- Sync external ---------------------------- */
+    /* ------------------------------------------------------------------ */
+    /*  IMPORTANT: NO SYNC FROM `settings` AFTER MOUNT                     */
+    /* ------------------------------------------------------------------ */
+    // The effect below is intentionally removed.
+    // StyleEditorUI owns its own state and never rehydrates from props.
+    //
+    // useEffect(() => {
+    //     setLocalProps(settings.props);
+    //     setLocalHover(settings.hover);
+    //     ...
+    // }, [settings]);
+
+    /* ------------------------------------------------------------------ */
+    /*  Debounced commit to HOC                                           */
+    /* ------------------------------------------------------------------ */
+    const debouncedCommit = useMemo(
+        () => _.debounce((next) => updateStyleSettings(next), 400),
+        [updateStyleSettings]
+    );
+
     useEffect(() => {
-        // Only run when parent passes a new settings object
-        setLocalProps(settings?.props || {});
-        setLocalHover(settings?.hover || {});
-        setLocalBackground(settings?.background || {});
-        setLocalAdvanced(settings?.advanced || {});
-        setLocalBreakpoints(settings?.breakpoints || {});
-    }, [settings]);
+        debouncedCommit(localLayout);
+        return () => debouncedCommit.cancel();
+    }, [localLayout, debouncedCommit]);
 
-    /* ----------------------------- Breakpoints ----------------------------- */
-    const breakpoints = useMemo(() => {
-        const bps = WPBS?.settings?.breakpoints ?? {};
-        return Object.entries(bps).map(([key, {label, size}]) => ({
-            key,
-            label,
-            size,
-        }));
-    }, []);
-
-    const breakpointKeys = useMemo(() => {
-        const keys = Object.keys(localBreakpoints || {});
-        return keys.sort((a, b) => {
-            const bpA = breakpoints.find((bp) => bp.key === a);
-            const bpB = breakpoints.find((bp) => bp.key === b);
-            return (bpA?.size || 0) - (bpB?.size || 0);
-        });
-    }, [localBreakpoints, breakpoints]);
-
-    /* ------------------------------ Updaters ------------------------------- */
+    /* ------------------------------------------------------------------ */
+    /* Update helpers — modify local state only                           */
+    /* ------------------------------------------------------------------ */
     const updateLayoutItem = useCallback((newProps) => {
-        setLocalProps((prev) => ({
-            ...prev,
-            ...newProps,
-        }));
+        setLocalProps((prev) => ({...prev, ...newProps}));
     }, []);
 
     const updateHoverItem = useCallback((newProps) => {
-        setLocalHover((prev) => ({
-            ...prev,
-            ...newProps,
-        }));
+        setLocalHover((prev) => ({...prev, ...newProps}));
     }, []);
 
     const updateAdvancedItem = useCallback((newProps) => {
-        setLocalAdvanced((prev) => ({
-            ...prev,
-            ...newProps,
-        }));
+        setLocalAdvanced((prev) => ({...prev, ...newProps}));
     }, []);
 
     const updateBackgroundItem = useCallback((newProps, reset = false) => {
         setLocalBackground((prev) =>
-            reset
-                ? {} // reset wipes everything
-                : {
-                    ...prev,
-                    ...newProps,
-                }
+            reset ? {} : {...prev, ...newProps}
         );
     }, []);
 
     const updateBreakpointItem = useCallback((updates, bpKey) => {
         setLocalBreakpoints((prev) => {
-            const isReset =
-                updates &&
-                typeof updates === "object" &&
-                Object.keys(updates).length === 0;
-
-            const current = prev?.[bpKey] || {props: {}, background: {}};
-
-            if (isReset) {
-                return {
-                    ...prev,
-                    [bpKey]: {},
-                };
-            }
+            const current = prev[bpKey] || {props: {}, background: {}};
 
             const nextBP = {
                 props: {...current.props},
@@ -311,8 +279,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             };
 
             if (updates.props) Object.assign(nextBP.props, updates.props);
-            if (updates.background)
-                Object.assign(nextBP.background, updates.background);
+            if (updates.background) Object.assign(nextBP.background, updates.background);
 
             for (const [key, value] of Object.entries(updates)) {
                 if (key !== "props" && key !== "background") {
@@ -327,52 +294,63 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         });
     }, []);
 
-    /* --------------------------- Panel management -------------------------- */
+    /* ------------------------------------------------------------------ */
+    /* Breakpoint panel management                                        */
+    /* ------------------------------------------------------------------ */
+    const breakpoints = useMemo(() => {
+        const bps = WPBS?.settings?.breakpoints ?? {};
+        return Object.entries(bps).map(([key, {label, size}]) => ({
+            key, label, size
+        }));
+    }, []);
+
+    const breakpointKeys = useMemo(() => {
+        return Object.keys(localBreakpoints || {}).sort((a, b) => {
+            const bpA = breakpoints.find((bp) => bp.key === a);
+            const bpB = breakpoints.find((bp) => bp.key === b);
+            return (bpA?.size || 0) - (bpB?.size || 0);
+        });
+    }, [localBreakpoints, breakpoints]);
+
     const addBreakpointPanel = useCallback(() => {
         setLocalBreakpoints((prev) => {
-            const keys = Object.keys(prev || {});
+            const keys = Object.keys(prev);
             if (keys.length >= 3) return prev;
 
             const available = breakpoints
                 .map((bp) => bp.key)
-                .filter((bp) => !keys.includes(bp));
+                .filter((key) => !keys.includes(key));
+
             if (!available.length) return prev;
 
-            const newKey = available[0];
-
-            return {
-                ...prev,
-                [newKey]: {},
-            };
+            return {...prev, [available[0]]: {}};
         });
     }, [breakpoints]);
 
     const removeBreakpointPanel = useCallback((bpKey) => {
         setLocalBreakpoints((prev) => {
-            if (!prev || !prev[bpKey]) return prev;
             const {[bpKey]: _, ...rest} = prev;
             return rest;
         });
     }, []);
 
-    /* ------------------------------- Render -------------------------------- */
+    /* ------------------------------------------------------------------ */
+    /* Render UI                                                          */
+    /* ------------------------------------------------------------------ */
     return (
         <>
             <InspectorControls group="advanced">
-                <AdvancedControls
-                    settings={localAdvanced}
-                    callback={updateAdvancedItem}
-                />
+                <AdvancedControls settings={localAdvanced} callback={updateAdvancedItem}/>
             </InspectorControls>
+
             <InspectorControls group="styles">
                 <div className="wpbs-layout-tools">
+
                     {/* Layout */}
                     <div className="wpbs-layout-tools__panel">
                         <ToolsPanel
                             label={__("Layout")}
-                            resetAll={() => {
-                                setLocalProps({});
-                            }}
+                            resetAll={() => setLocalProps({})}
                         >
                             <LayoutFields
                                 bpKey="layout"
@@ -403,7 +381,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                     <div className="wpbs-layout-tools__panel">
                         <PanelBody
                             title={__("Hover")}
-                            initialOpen={Object.keys(localHover || {}).length > 0}
+                            initialOpen={Object.keys(localHover).length > 0}
                             className="wpbs-hover-controls"
                         >
                             <HoverFields

@@ -219,10 +219,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         [localProps, localHover, localBackground, localAdvanced, localBreakpoints]
     );
 
-    useEffect(() => {
-        console.log(localLayout);
-    }, [localLayout])
-
     /* ------------------------------------------------------------------ */
     /*  IMPORTANT: NO SYNC FROM `settings` AFTER MOUNT                     */
     /* ------------------------------------------------------------------ */

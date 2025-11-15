@@ -3,7 +3,9 @@ import {
     getImageUrlForResolution,
     cleanObject,
     heightVal,
-    getCSSFromStyle
+    getCSSFromStyle,
+    normalizePreloadItem,
+    extractPreloadsFromLayout,
 } from "Includes/helper";
 import {
     layoutFieldsMap,
@@ -341,16 +343,104 @@ function parseBackgroundProps(props = {}) {
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 
-    const api = {
-        layoutFieldsMap,
-        hoverFieldsMap,
-        backgroundFieldsMap,
-        cleanObject,
-        getCSSFromStyle,
-        parseSpecialProps,
-        parseBackgroundProps,
-    };
+    // ------------------------------------------------------------
+    // PRELOAD ARRAY PARSING
+    // ------------------------------------------------------------
+    /**
+     * Build a deduped preload array from:
+     *  - blockItems: items coming from the block (blockPreloadRef.current)
+     *  - incoming: items extracted from layout (extractPreloadsFromLayout)
+     *  - current: currently stored preload attribute (wpbs-preload)
+     *
+     * Mirrors the old commitPreload logic, but purely returns the array.
+     */
+    function buildPreloadArray({blockItems = [], incoming = [], current = []} = {}) {
+        const safeBlock = Array.isArray(blockItems) ? blockItems : [];
+        const safeIncoming = Array.isArray(incoming) ? incoming : [];
+        const safeCurrent = Array.isArray(current) ? current : [];
 
+        // Normalize + remove nulls
+        const cleanIncoming = safeIncoming
+            .map(normalizePreloadItem)
+            .filter(Boolean);
+
+        const cleanBlock = safeBlock
+            .map(normalizePreloadItem)
+            .filter(Boolean);
+
+        const combined = [...cleanBlock, ...cleanIncoming];
+
+        // Dedupe
+        const seen = new Set();
+        const deduped = [];
+
+        const buildKey = (x) =>
+            `${x.id}|${x.resolution || ''}|${x.media || ''}|${x.type || ''}`;
+
+        for (const item of combined) {
+            const key = buildKey(item);
+            if (!seen.has(key)) {
+                seen.add(key);
+                deduped.push(item);
+            }
+        }
+
+        // If nothing changed, return the original array to avoid churn
+        return _.isEqual(safeCurrent, deduped) ? safeCurrent : deduped;
+    }
+
+    // ------------------------------------------------------------
+    // CSS MANAGER – PER-BLOCK <style> TAGS, CALLBACK-DRIVEN
+    // ------------------------------------------------------------
+    /**
+     * Create or update the <style> tag for a given block uniqueId.
+     * If cssText is falsy, the style tag is removed.
+     */
+    function setBlockCss(clientId, cssText) {
+        if (!clientId) return;
+
+        const styleId = `wpbs-style-${clientId}`;
+        let styleEl = document.getElementById(styleId);
+
+        // Remove if no CSS provided
+        if (!cssText) {
+            if (styleEl && styleEl.parentNode) {
+                styleEl.parentNode.removeChild(styleEl);
+            }
+            return;
+        }
+
+        // Ensure element exists
+        if (!styleEl) {
+            styleEl = document.createElement('style');
+            styleEl.id = styleId;
+            document.head.appendChild(styleEl);
+        }
+
+        // Only update if content actually changed
+        if (styleEl.textContent !== cssText) {
+            styleEl.textContent = cssText;
+        }
+    }
+
+    /**
+     * Explicit cleanup callback for when a block is removed.
+     * The HOC will call this in its cleanup effect.
+     */
+    function removeBlockCss(clientId) {
+        if (!clientId) return;
+
+        const styleId = `wpbs-style-${clientId}`;
+        const styleEl = document.getElementById(styleId);
+
+        if (styleEl && styleEl.parentNode) {
+            styleEl.parentNode.removeChild(styleEl);
+        }
+    }
+
+    // ------------------------------------------------------------
+    // DUPLICATE WATCHER (UNCHANGED)
+    // ------------------------------------------------------------
     function startDuplicateWatcher() {
         const {subscribe, select, dispatch} = wp.data;
         const store = 'core/block-editor';
@@ -376,7 +466,10 @@ export function initStyleEditor() {
                 const wpbsBlocks = flattenWPBSBlocks(rootBlocks);
 
                 // build a signature to avoid redundant passes
-                const sig = wpbsBlocks.map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`).join('|');
+                const sig = wpbsBlocks
+                    .map((b) => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
+                    .join('|');
+
                 if (sig === lastSig) return;
                 lastSig = sig;
 
@@ -389,7 +482,8 @@ export function initStyleEditor() {
 
                     // missing, invalid, or duplicate ID → regenerate
                     if (!uid || !uid.startsWith(baseName) || seen.has(uid)) {
-                        const newId = `${baseName}-${Math.random().toString(36).slice(2, 8)}`;
+                        const newId =
+                            `${baseName}-${Math.random().toString(36).slice(2, 8)}`;
                         dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
                     } else {
                         seen.add(uid);
@@ -401,137 +495,235 @@ export function initStyleEditor() {
         });
     }
 
-    function startCssManager() {
-        const {subscribe, select} = wp.data;
-        const store = 'core/block-editor';
-        const blockCssMap = new Map();
-        let prevIds = new Set();
-        let flushTimer = null;
+    function buildCssTextFromObject(cssObj = {}, attributes = {}) {
+        const uniqueId = attributes?.uniqueId;
+        const blockName = attributes?.name?.replace('/', '-');
+        if (!uniqueId || !blockName) return "";
 
-        // ensure <style> exists
-        let styleEl = document.getElementById('wpbs-styles');
-        if (!styleEl) {
-            styleEl = document.createElement('style');
-            styleEl.id = 'wpbs-styles';
-            document.head.appendChild(styleEl);
-        }
-
-        const flattenWPBSBlocks = (arr, acc = []) => {
-            for (const b of arr) {
-                if (b.name?.startsWith('wpbs/')) acc.push(b);
-                if (b.innerBlocks?.length) flattenWPBSBlocks(b.innerBlocks, acc);
-            }
-            return acc;
-        };
-
-
-        const scheduleFlush = () => {
-            clearTimeout(flushTimer);
-            flushTimer = setTimeout(flush, 120);
-        };
-
-        const flush = () => {
-            const css = Array.from(blockCssMap.entries())
-                .map(([uid, cssText]) => `/* ${uid} */\n${cssText}`)
-                .join('\n');
-            if (styleEl.textContent !== css) {
-                styleEl.textContent = css;
-            }
-        };
+        let css = "";
+        const selector = `.${blockName}.${uniqueId}`;
 
         const buildRules = (obj = {}, important = false) =>
             Object.entries(obj)
-                .filter(([_, v]) => v != null && v !== '')
-                .map(([k, v]) => `${k}:${v}${important ? ' !important' : ''};`)
-                .join(' ');
+                .filter(([_, v]) => v != null && v !== "")
+                .map(([k, v]) => `${k}:${v}${important ? " !important" : ""};`)
+                .join("");
 
-        const computeCssForBlock = (block) => {
-            const cssObj = block.attributes?.['wpbs-css'];
-            const uid = block.attributes?.uniqueId;
-            const name = block.name;
-            if (!cssObj || !uid) return '';
+        // Base props
+        if (!_.isEmpty(cssObj.props)) {
+            css += `${selector}{${buildRules(cssObj.props)}}`;
+        }
 
-            const selector = `.${name.replace('/', '-')}.${uid}`;
-            let css = '';
+        // Background (scope: > .wpbs-background)
+        if (!_.isEmpty(cssObj.background)) {
+            const bgSelector = `${selector} > .wpbs-background`;
+            css += `${bgSelector}{${buildRules(cssObj.background)}}`;
+        }
 
-            // --- Base props (merged with custom) ---
-            const merged = {...(cssObj.props || {}), ...(cssObj.custom || {})};
-            if (!_.isEmpty(merged)) {
-                css += `${selector}{${buildRules(merged)}}`;
-            }
+        // Hover
+        if (!_.isEmpty(cssObj.hover)) {
+            css += `${selector}:hover{${buildRules(cssObj.hover, true)}}`;
+        }
 
-            // --- Background (scope to > .wpbs-background) ---
-            if (!_.isEmpty(cssObj.background)) {
-                const bgSelector = `${selector} > .wpbs-background`;
-                css += `${bgSelector}{${buildRules(cssObj.background)}}`;
-            }
+        // Breakpoints
+        const bps = WPBS?.settings?.breakpoints || {};
+        Object.entries(cssObj.breakpoints || {}).forEach(([bpKey, bpProps]) => {
+            const bp = bps[bpKey];
+            if (!bp) return;
 
-            // --- Hover ---
-            if (!_.isEmpty(cssObj.hover)) {
-                css += `${selector}:hover{${buildRules(cssObj.hover, true)}}`;
-            }
+            const mergedBp = {
+                ...(bpProps.props || {}),
+                ...(bpProps.custom || {}),
+                ...(bpProps.background || {}),
+            };
 
-            // --- Breakpoints ---
-            const bps = WPBS?.settings?.breakpoints || {};
-            for (const [bpKey, bpProps] of Object.entries(cssObj.breakpoints || {})) {
-                const bp = bps[bpKey];
-                if (bp && !_.isEmpty(bpProps)) {
-                    // merge props, custom, and background vars
-                    const mergedBp = {
-                        ...(bpProps.props || {}),
-                        ...(bpProps.custom || {}),
-                        ...(bpProps.background || {}),
-                    };
-
-                    // only build rule if something meaningful exists
-                    if (!_.isEmpty(mergedBp)) {
-                        css += `@media (max-width:${bp.size - 1}px){${selector}{${buildRules(mergedBp, true)}}}`;
+            if (!_.isEmpty(mergedBp)) {
+                css += `
+                @media (max-width:${bp.size - 1}px){
+                    ${selector}{
+                        ${buildRules(mergedBp, true)}
                     }
                 }
+            `;
             }
+        });
 
+        return css;
+    }
 
-            return css;
+    // ------------------------------------------------------------
+    // MAIN STYLE ENGINE ENTRYPOINT
+    // Called by the HOC after it updates wpbs-style
+    // ------------------------------------------------------------
+    function onStyleChange(payload = {}) {
+        const {
+            clientId,
+            css = {},
+            preload = [],
+            attributes = {}
+        } = payload;
+
+        if (!clientId) return;
+
+        // ----------------------------------------
+        // 1. Extract everything from attributes
+        // ----------------------------------------
+        const layout = attributes['wpbs-style'] || {};
+        const prevCss = attributes['wpbs-css'] || {};
+        const prevPreload = attributes['wpbs-preload'] || [];
+        const blockStyle = attributes.style || {};
+        const uniqueId = attributes.uniqueId;
+
+        // ----------------------------------------
+        // 2. Clean layout
+        // ----------------------------------------
+        const cleanedLayout = cleanObject(layout, true);
+
+        // ----------------------------------------
+        // 3. Base CSS from layout
+        // ----------------------------------------
+        let cssObj = {
+            props: parseSpecialProps(cleanedLayout.props || {}, attributes),
+            background: parseBackgroundProps(cleanedLayout.background || {}),
+            hover: {},
+            breakpoints: {},
         };
 
-        subscribe(() => {
-            try {
-                const rootBlocks = select(store).getBlocks();
-                if (!rootBlocks.length) return;
+        // ----------------------------------------
+        // 4. Gaps
+        // ----------------------------------------
+        const gap = blockStyle?.spacing?.blockGap;
+        if (gap) {
+            const rowGapVal = gap?.top ?? (typeof gap === "string" ? gap : undefined);
+            const colGapVal = gap?.left ?? (typeof gap === "string" ? gap : undefined);
 
-                const blocks = flattenWPBSBlocks(rootBlocks);
-                const currentIds = new Set();
-
-                for (const b of blocks) {
-                    const uid = b.attributes?.uniqueId;
-                    if (!uid) continue;
-                    currentIds.add(uid);
-
-                    const cssText = computeCssForBlock(b);
-                    if (cssText && blockCssMap.get(uid) !== cssText) {
-                        blockCssMap.set(uid, cssText);
-                        scheduleFlush();
-                    }
-                }
-
-                // Deletions
-                for (const oldId of prevIds) {
-                    if (!currentIds.has(oldId) && blockCssMap.has(oldId)) {
-                        blockCssMap.delete(oldId);
-                        scheduleFlush();
-                    }
-                }
-
-                prevIds = currentIds;
-            } catch (err) {
-                console.warn('WPBS: CSS manager error', err);
+            if (rowGapVal) {
+                const g = getCSSFromStyle(rowGapVal);
+                cssObj.props["--row-gap"] = g;
+                cssObj.props["row-gap"] = g;
             }
+            if (colGapVal) {
+                const g = getCSSFromStyle(colGapVal);
+                cssObj.props["--column-gap"] = g;
+                cssObj.props["column-gap"] = g;
+            }
+        }
+
+        // ----------------------------------------
+        // 5. BREAKPOINTS — FIXED INHERITANCE
+        // ----------------------------------------
+        Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
+            const bpCss = {
+                props: {},
+                background: {}
+            };
+
+            // inherit base props/background before applying overrides
+            if (cssObj.props) {
+                bpCss.props = {...cssObj.props};
+            }
+            if (cssObj.background) {
+                bpCss.background = {...cssObj.background};
+            }
+
+            // layout overrides
+            if (bpProps?.props) {
+                bpCss.props = {
+                    ...bpCss.props,
+                    ...parseSpecialProps(bpProps.props, attributes)
+                };
+            }
+
+            if (bpProps?.background) {
+                bpCss.background = {
+                    ...bpCss.background,
+                    ...parseBackgroundProps(bpProps.background)
+                };
+            }
+
+            cssObj.breakpoints[bpKey] = bpCss;
+        });
+
+        // ----------------------------------------
+        // 6. Hover
+        // ----------------------------------------
+        if (cleanedLayout.hover) {
+            cssObj.hover = parseSpecialProps(cleanedLayout.hover, attributes);
+        }
+
+        // ----------------------------------------
+        // 7. Merge block-level CSS from ref
+        // ----------------------------------------
+        cssObj = _.merge({}, cssObj, css || {});
+
+        // ----------------------------------------
+        // 8. Clean final CSS object
+        // ----------------------------------------
+        const cleanedCss = cleanObject(cssObj, true);
+        const cleanedPrevCss = cleanObject(prevCss, true);
+
+        // ----------------------------------------
+        // 9. Preload merging
+        // ----------------------------------------
+        const incoming = extractPreloadsFromLayout(cleanedLayout);
+        const nextPreload = buildPreloadArray({
+            blockItems: preload,
+            incoming,
+            current: prevPreload,
+        });
+
+        // ----------------------------------------
+        // 10. Bail if no changes
+        // ----------------------------------------
+        const cssUnchanged = _.isEqual(cleanedCss, cleanedPrevCss);
+        const preloadUnchanged = _.isEqual(nextPreload, prevPreload);
+
+        if (cssUnchanged && preloadUnchanged) {
+            return;
+        }
+
+        // ----------------------------------------
+        // 11. Inject CSS into DOM
+        // ----------------------------------------
+        setBlockCss(
+            clientId,
+            buildCssTextFromObject(cleanedCss, attributes)
+        );
+
+        // ----------------------------------------
+        // 12. Persist css + preload
+        // ----------------------------------------
+        const {dispatch} = wp.data;
+        dispatch("core/block-editor").updateBlockAttributes(clientId, {
+            "wpbs-css": cleanedCss,
+            "wpbs-preload": nextPreload,
         });
     }
 
     startDuplicateWatcher();
-    startCssManager();
+
+    // ------------------------------------------------------------
+    // PUBLIC API
+    // ------------------------------------------------------------
+    const api = {
+        layoutFieldsMap,
+        hoverFieldsMap,
+        backgroundFieldsMap,
+        cleanObject,
+        getCSSFromStyle,
+
+        // Main entrypoint used by the HOC
+        onStyleChange,
+
+        // New helpers for the new pipeline
+        buildPreloadArray,
+        setBlockCss,
+        removeBlockCss,
+    };
 
     window.WPBS_StyleEditor = api;
     return api;
 }
+
+
+

@@ -16,15 +16,15 @@ export const STYLE_ATTRIBUTES = {
     'wpbs-style': {type: 'object', default: {}},
 };
 
-const API = window?.WPBS_StyleEditor ?? {};
-const {getCSSFromStyle, cleanObject, parseSpecialProps, parseBackgroundProps} = API;
-
 
 const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
     <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
 ));
 
 export const withStyle = (Component) => (props) => {
+    const API = window?.WPBS_StyleEditor ?? {};
+    const {onStyleChange, cleanObject, removeBlockCss} = API;
+
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
 
@@ -45,146 +45,85 @@ export const withStyle = (Component) => (props) => {
     const blockGapDeps =
         typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
+    // ------------------------------------------------------------
+    // CLEANUP EFFECT — remove CSS on unmount
+    // ------------------------------------------------------------
+    useEffect(() => {
+        return () => {
+            if (removeBlockCss && clientId) {
+                removeBlockCss(clientId);
+            }
+        };
+    }, []); // clientId is stable
+
+    /*
+    ----------------------------------------------------------------------
+    UPDATE SETTINGS (only saves wpbs-style)
+    ----------------------------------------------------------------------
+    */
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
             const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
-            // 1. Base CSS object from layout
-            let cssObj = {
-                props: parseSpecialProps(cleanedNext.props || {}, attributes),
-                background: parseBackgroundProps(cleanedNext.background || {}),
-                hover: {},
-                breakpoints: {}
-            };
-
-            // 2. Gaps
-            const gap = attributes?.style?.spacing?.blockGap;
-            if (gap) {
-                const rowGapVal = gap?.top ?? (typeof gap === 'string' ? gap : undefined);
-                const columnGapVal = gap?.left ?? (typeof gap === 'string' ? gap : undefined);
-
-                if (rowGapVal) {
-                    const g = getCSSFromStyle(rowGapVal);
-                    cssObj.props['--row-gap'] = g;
-                    cssObj.props['row-gap'] = g;
-                }
-                if (columnGapVal) {
-                    const g = getCSSFromStyle(columnGapVal);
-                    cssObj.props['--column-gap'] = g;
-                    cssObj.props['column-gap'] = g;
-                }
+            if (!_.isEqual(cleanedNext, cleanedCurrent)) {
+                setAttributes({'wpbs-style': nextLayout});
             }
-
-            // 3. Breakpoints from layout
-            for (const [bpKey, bpProps] of Object.entries(cleanedNext.breakpoints || {})) {
-                cssObj.breakpoints[bpKey] = {
-                    props: parseSpecialProps(bpProps.props || {}, attributes),
-                    background: parseBackgroundProps(bpProps.background || {})
-                };
-            }
-
-            // 4. Hover
-            if (cleanedNext.hover) {
-                cssObj.hover = parseSpecialProps(cleanedNext.hover, attributes);
-            }
-
-            // 5. MERGE block CSS (deep)
-            cssObj = _.merge({}, cssObj, blockCssRef.current || {});
-
-            // 6. Clean for minimal output
-            const cleanedCss = cleanObject(cssObj, true);
-            const prevCss = cleanObject(attributes['wpbs-css'] ?? {}, true);
-
-            // 7. Preloads from layout
-            const preloads = extractPreloadsFromLayout(cleanedNext);
-            commitPreload(preloads);
-
-            console.log('finished parsing');
-
-            // 8. Commit if changed
-            if (!_.isEqual(cleanedCss, prevCss) || !_.isEqual(cleanedNext, cleanedCurrent)) {
-                setAttributes({
-                    'wpbs-style': nextLayout,
-                    'wpbs-css': cleanedCss
-                });
-            }
+            // no onStyleChange here anymore
         },
-        [settings, setAttributes, blockGapDeps]
+        [settings, setAttributes]
     );
 
-    // ------------------------------------------------------------
-    // PRELOAD SAVE
-    // ------------------------------------------------------------
-    const commitPreload = useCallback((newItems = []) => {
-        const blockItems = Array.isArray(blockPreloadRef.current)
-            ? blockPreloadRef.current
-            : [];
-
-        const incoming = Array.isArray(newItems) ? newItems : [];
-
-        // Normalize + remove nulls
-        const cleanIncoming = incoming
-            .map(normalizePreloadItem)
-            .filter(Boolean);
-
-        const cleanBlock = blockItems
-            .map(normalizePreloadItem)
-            .filter(Boolean);
-
-        const combined = [...cleanBlock, ...cleanIncoming];
-
-        // Dedupe
-        const seen = new Set();
-        const deduped = [];
-
-        const buildKey = (x) =>
-            `${x.id}|${x.resolution || ''}|${x.media || ''}|${x.type || ''}`;
-
-        for (const item of combined) {
-            const key = buildKey(item);
-            if (!seen.has(key)) {
-                seen.add(key);
-                deduped.push(item);
-            }
-        }
-
-        const currentAttr = attributes['wpbs-preload'] ?? [];
-
-        if (!_.isEqual(currentAttr, deduped)) {
-            setAttributes({'wpbs-preload': deduped});
-        }
-
-    }, [attributes['wpbs-preload'], setAttributes]);
-
-    // ------------------------------------------------------------
-    // BLOCK → REFS SETTERS
-    // ------------------------------------------------------------
+    /*
+    ----------------------------------------------------------------------
+    BLOCK → RAW CSS REF
+    ----------------------------------------------------------------------
+    */
     const updateBlockCssRef = useCallback(
         (newCss = {}) => {
             blockCssRef.current = newCss || {};
-
-            // --- FIXED ---
-            // We ONLY rebuild CSS using the *existing layout* (settings),
-            // not passing blockCssRef into nextLayout.
-            updateStyleSettings(settings);
+            // parsing is driven by the wpbs-style watcher effect
         },
-        [updateStyleSettings, settings]
+        []
     );
 
+    /*
+    ----------------------------------------------------------------------
+    BLOCK → RAW PRELOAD REF
+    ----------------------------------------------------------------------
+    */
     const updatePreloadRef = useCallback(
         (newItems = []) => {
-            blockPreloadRef.current = Array.isArray(newItems) ? newItems : [];
-
-            // Only commit what came from the block.
-            commitPreload(blockPreloadRef.current);
+            blockPreloadRef.current = Array.isArray(newItems)
+                ? newItems
+                : [];
+            // parsing is driven by the wpbs-style watcher effect
         },
-        [commitPreload]
+        []
     );
 
-    // ------------------------------------------------------------
-    // MAIN RENDER
-    // ------------------------------------------------------------
+    /*
+    ----------------------------------------------------------------------
+    STYLE CHANGE EFFECT
+    Watches wpbs-style (settings) and kicks the external parser.
+    ----------------------------------------------------------------------
+    */
+    useEffect(() => {
+        if (typeof onStyleChange !== 'function') return;
+
+        onStyleChange({
+            clientId,
+            css: blockCssRef.current,
+            preload: blockPreloadRef.current,
+            attributes,
+        });
+    }, [settings, blockGapDeps]);
+
+    /*
+    ----------------------------------------------------------------------
+    MAIN RENDER
+    ----------------------------------------------------------------------
+    */
     const StyledComponent = useMemo(
         () => (
             <Component
@@ -203,35 +142,34 @@ export const withStyle = (Component) => (props) => {
         [clientId]
     );
 
-    // ------------------------------------------------------------
-    // BLOCK GAP TRIGGER
-    // ------------------------------------------------------------
+    /*
+    ----------------------------------------------------------------------
+    BLOCK GAP TRIGGER
+    ----------------------------------------------------------------------
+    */
     useEffect(() => {
         if (!blockGap) return;
 
-        const cssProps = attributes?.['wpbs-css']?.props || {};
-
-        const parsedRow = blockGap.top ? getCSSFromStyle(blockGap.top) : null;
-        const parsedCol = blockGap.left ? getCSSFromStyle(blockGap.left) : null;
-
-        const cssRow = cssProps['row-gap'] || null;
-        const cssCol = cssProps['column-gap'] || null;
-
-        const rowGapMatch = parsedRow === cssRow;
-        const colGapMatch = parsedCol === cssCol;
-
-        if (rowGapMatch && colGapMatch) return;
-
+        // Block gap no longer compares CSS — simply triggers a layout update
         updateStyleSettings(settings);
     }, [blockGapDeps]);
 
+    /*
+    ----------------------------------------------------------------------
+    OUTPUT
+    ----------------------------------------------------------------------
+    */
     return (
         <>
             {StyledComponent}
-            <StyleEditorPanel settings={settings} updateStyleSettings={updateStyleSettings}/>
+            <StyleEditorPanel
+                settings={settings}
+                updateStyleSettings={updateStyleSettings}
+            />
         </>
     );
 };
+
 
 export const withStyleSave = (Component) => (props) => {
 

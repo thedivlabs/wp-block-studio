@@ -51,7 +51,6 @@ export function extractMinimalImageMeta(media) {
     };
 }
 
-
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;
 
@@ -88,7 +87,6 @@ export function getImageUrlForResolution(image, resolution = 'large') {
     // 3. Fallback: "full"
     return source;
 }
-
 
 export function cleanObject(obj, strict = false) {
     return _.transform(obj, (result, value, key) => {

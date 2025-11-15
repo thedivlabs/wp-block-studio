@@ -504,9 +504,10 @@ export function initStyleEditor() {
         const uniqueId = attributes.uniqueId;
         const blockName = name ? name.replace("/", "-") : null;
 
+        console.log(attributes);
+
         if (!uniqueId || !blockName) return "";
 
-        console.log(blockName);
 
         let css = "";
         const selector = `.${blockName}.${uniqueId}`;
@@ -687,11 +688,7 @@ export function initStyleEditor() {
         // ----------------------------------------
         setBlockCss(
             clientId,
-            buildCssTextFromObject(cleanedCss, {
-                ...attributes,
-                blockName,
-                uniqueId
-            })
+            buildCssTextFromObject(cleanedCss, props)
         );
 
         // ----------------------------------------

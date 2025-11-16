@@ -10,26 +10,26 @@ import {
 import {PanelColorSettings} from "@wordpress/block-editor";
 import {Field} from "Components/Field";
 
+const BackgroundFields = memo(({settings, updateFn}) => {
+    const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {
+    return map.map((field) => {
+        const callback = (v) => updateFn({[field.slug]: v});
+
+        return (
+            <Field
+                key={field.slug}
+                field={field}
+                settings={settings}
+                callback={callback}
+            />
+        );
+    });
+});
+
+export const BackgroundControls = memo(({settings = {}, callback, isBreakpoint = false}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
 
-    const BackgroundFields = memo(({settings, updateFn}) => {
-        const {backgroundFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-
-        return map.map((field) => {
-            const callback = (v) => updateFn({[field.slug]: v});
-
-            return (
-                <Field
-                    key={field.slug}
-                    field={field}
-                    settings={settings}
-                    callback={callback}
-                />
-            );
-        });
-    });
 
     return (
         <PanelBody title="Background" initialOpen={isPanelOpen} className={'wpbs-background-controls'}>
@@ -161,13 +161,13 @@ export const BackgroundControls = ({settings = {}, callback, isBreakpoint = fals
             </Grid>
         </PanelBody>
     );
-};
+});
 
-function BackgroundVideo({settings = {}, isSave = false}) {
+const BackgroundVideo = memo(({settings = {}, isSave = false}) => {
 
     if (!isSave) return null;
 
-    const { background = {}, breakpoints = {} } = settings;
+    const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
@@ -193,12 +193,12 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         if (bpVideo) {
             if (bpVideo.source) {
                 // real video
-                entries.push({ size, video: bpVideo });
+                entries.push({size, video: bpVideo});
             } else {
                 // empty object → treat as implicit disable
                 entries.push({
                     size,
-                    video: { source: "#", mime: "video/mp4" }
+                    video: {source: "#", mime: "video/mp4"}
                 });
             }
             return;
@@ -207,7 +207,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         // CASE B — breakpoint has NO video key at all
         entries.push({
             size,
-            video: { source: "#", mime: "video/mp4" }
+            video: {source: "#", mime: "video/mp4"}
         });
     });
 
@@ -237,7 +237,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
         >
 
             {/* BREAKPOINT SOURCES */}
-            {bpEntries.map(({ size, video }, i) => {
+            {bpEntries.map(({size, video}, i) => {
 
                 const mq =
                     Number.isFinite(size) && size > 0 && size !== Infinity
@@ -264,7 +264,7 @@ function BackgroundVideo({settings = {}, isSave = false}) {
 
         </video>
     );
-}
+})
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

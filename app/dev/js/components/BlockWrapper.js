@@ -63,12 +63,14 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
 };
 
 const BlockBackground = memo(
-    ({attributes, isSave}) => (
-        <BackgroundElement attributes={attributes} isSave={!!isSave}/>
-    ),
+    ({attributes}) => {
+        return <BackgroundElement attributes={attributes} isSave={false}/>;
+    },
     (prev, next) =>
-        prev.isSave === next.isSave &&
-        _.isEqual(prev.attributes['wpbs-style'], next.attributes['wpbs-style'])
+        _.isEqual(
+            prev.attributes['wpbs-style']?.background,
+            next.attributes['wpbs-style']?.background
+        )
 );
 
 

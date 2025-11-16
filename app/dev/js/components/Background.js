@@ -293,6 +293,8 @@ const BackgroundVideo = memo(({settings = {}, isSave = false}) => {
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
+    console.log('render BG', isSave);
+
     const {'wpbs-style': settings = {}} = attributes;
 
     if (!hasAnyBackground(settings)) return null;

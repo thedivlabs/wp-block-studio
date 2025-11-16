@@ -116,7 +116,6 @@ class WPBS {
 
 	}
 
-
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
 
 		if ( is_admin() ) {
@@ -147,11 +146,8 @@ class WPBS {
 			$base_css = file_get_contents( $theme_css_path );
 		}
 
-		// Combine the block CSS
-		$combined = join( ' ', array_values( $css ) );
-
 		// Minify it
-		$combined = $this->minify_css( $combined );
+		$combined = $this->minify_css( join( ' ', array_values( $css ) ) );
 
 		echo '<style class="wpbs-critical-css">';
 		echo $base_css;

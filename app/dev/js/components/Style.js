@@ -27,6 +27,8 @@ export const withStyle = (Component) => (props) => {
 
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
+    const styleRef = useRef(null);
+
 
     const {clientId, attributes, setAttributes} = props;
 
@@ -110,11 +112,14 @@ export const withStyle = (Component) => (props) => {
     */
     useEffect(() => {
         if (typeof onStyleChange !== "function") return;
+        if (!styleRef.current) return;
+
 
         onStyleChange({
             css: blockCssRef.current,
             preload: blockPreloadRef.current,
             props,
+            styleRef
         });
     }, [settings, blockGapDeps]);
 
@@ -150,6 +155,9 @@ export const withStyle = (Component) => (props) => {
     return (
         <>
             {StyledComponent}
+            {attributes?.['wpbs-css'] && (
+                <style ref={styleRef}/>
+            )}
             <StyleEditorPanel
                 settings={settings}
                 updateStyleSettings={updateStyleSettings}

@@ -390,55 +390,6 @@ export function initStyleEditor() {
     }
 
     // ------------------------------------------------------------
-    // CSS MANAGER – PER-BLOCK <style> TAGS, CALLBACK-DRIVEN
-    // ------------------------------------------------------------
-    /**
-     * Create or update the <style> tag for a given block uniqueId.
-     * If cssText is falsy, the style tag is removed.
-     */
-    function setBlockCss(clientId, cssText) {
-        if (!clientId) return;
-
-        const styleId = `wpbs-style-${clientId}`;
-        let styleEl = document.getElementById(styleId);
-
-        // Remove if no CSS provided
-        if (!cssText) {
-            if (styleEl && styleEl.parentNode) {
-                styleEl.parentNode.removeChild(styleEl);
-            }
-            return;
-        }
-
-        // Ensure element exists
-        if (!styleEl) {
-            styleEl = document.createElement('style');
-            styleEl.id = styleId;
-            document.head.appendChild(styleEl);
-        }
-
-        // Only update if content actually changed
-        if (styleEl.textContent !== cssText) {
-            styleEl.textContent = cssText;
-        }
-    }
-
-    /**
-     * Explicit cleanup callback for when a block is removed.
-     * The HOC will call this in its cleanup effect.
-     */
-    function removeBlockCss(clientId) {
-        if (!clientId) return;
-
-        const styleId = `wpbs-style-${clientId}`;
-        const styleEl = document.getElementById(styleId);
-
-        if (styleEl && styleEl.parentNode) {
-            styleEl.parentNode.removeChild(styleEl);
-        }
-    }
-
-    // ------------------------------------------------------------
     // DUPLICATE WATCHER (UNCHANGED)
     // ------------------------------------------------------------
     function startDuplicateWatcher() {
@@ -562,7 +513,7 @@ export function initStyleEditor() {
     // MAIN STYLE ENGINE ENTRYPOINT
     // Called by the HOC after it updates wpbs-style
     // ------------------------------------------------------------
-    function onStyleChange({css = {}, preload = [], props}) {
+    function onStyleChange({css = {}, preload = [], props, styleRef}) {
         if (!props) return;
 
         const {clientId, name, attributes} = props;
@@ -575,7 +526,6 @@ export function initStyleEditor() {
 
         // layout + stored css
         const layout = attributes['wpbs-style'] || {};
-        const prevCss = attributes['wpbs-css'] || {};
         const prevPreload = attributes['wpbs-preload'] || [];
         const blockStyle = attributes.style || {};
 
@@ -661,7 +611,6 @@ export function initStyleEditor() {
         // 8. Clean final CSS object
         // ----------------------------------------
         const cleanedCss = cleanObject(cssObj, true);
-        const cleanedPrevCss = cleanObject(prevCss, true);
 
         // ----------------------------------------
         // 9. Preload merging
@@ -672,25 +621,12 @@ export function initStyleEditor() {
             incoming,
             current: prevPreload,
         });
-
-        // ----------------------------------------
-        // 10. Bail if nothing changed
-        // ----------------------------------------
-        const cssUnchanged = _.isEqual(cleanedCss, cleanedPrevCss);
-        const preloadUnchanged = _.isEqual(nextPreload, prevPreload);
-
-        if (cssUnchanged && preloadUnchanged) {
-            console.log('updating when it shouldnt');
-            //return
+        
+        const cssText = buildCssTextFromObject(cleanedCss, props);
+        if (styleRef?.current) {
+            styleRef.current.textContent = cssText;
         }
 
-        // ----------------------------------------
-        // 11. Inject CSS into DOM
-        // ----------------------------------------
-        setBlockCss(
-            clientId,
-            buildCssTextFromObject(cleanedCss, props)
-        );
 
         // ----------------------------------------
         // 12. Persist css + preload
@@ -719,8 +655,6 @@ export function initStyleEditor() {
 
         // New helpers for the new pipeline
         buildPreloadArray,
-        setBlockCss,
-        removeBlockCss,
     };
 
     window.WPBS_StyleEditor = api;

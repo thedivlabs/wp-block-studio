@@ -38,7 +38,6 @@ export const withStyle = (Component) => (props) => {
     const styleRef = useRef(null);
     const uniqueIdRef = useRef(null);
 
-
     const {clientId, attributes, setAttributes, name} = props;
 
     const instanceId = useInstanceId(withStyle, name.replace('/', '-'));
@@ -58,6 +57,10 @@ export const withStyle = (Component) => (props) => {
             background: {},
         }
     } = attributes;
+
+    if (!uniqueId) {
+        setAttributes({uniqueId: instanceId});
+    }
 
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps =

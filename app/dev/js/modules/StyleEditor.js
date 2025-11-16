@@ -646,7 +646,7 @@ export function initStyleEditor() {
         });
     }
 
-    startDuplicateWatcher();
+    //startDuplicateWatcher();
 
     // ------------------------------------------------------------
     // PUBLIC API

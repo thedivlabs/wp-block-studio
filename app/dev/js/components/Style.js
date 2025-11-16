@@ -57,27 +57,34 @@ export const withStyle = (Component) => (props) => {
         }
     } = attributes;
 
+
     useEffect(() => {
-        // CASE 1 — first load, block has NO uniqueId yet
-        if (!attributes.uniqueId) {
+        if (!uniqueId) {
             setAttributes({uniqueId: instanceId});
-            uniqueIdRef.current = instanceId;
-            return;
         }
+    }, [])
 
-        // CASE 2 — block has uniqueId, store it in the ref (only once)
-        if (uniqueIdRef.current === null) {
-            uniqueIdRef.current = attributes.uniqueId;
-        }
+    /*   useEffect(() => {
+           // CASE 1 — first load, block has NO uniqueId yet
+           if (!attributes.uniqueId) {
+               setAttributes({uniqueId: instanceId});
+               uniqueIdRef.current = instanceId;
+               return;
+           }
 
-        // CASE 3 — compare stored ref with the new instanceId
-        if (uniqueIdRef.current !== instanceId) {
-            // mismatch → repair
-            setAttributes({uniqueId: instanceId});
-            uniqueIdRef.current = instanceId;
-        }
+           // CASE 2 — block has uniqueId, store it in the ref (only once)
+           if (uniqueIdRef.current === null) {
+               uniqueIdRef.current = attributes.uniqueId;
+           }
 
-    }, []);
+           // CASE 3 — compare stored ref with the new instanceId
+           if (uniqueIdRef.current !== instanceId) {
+               // mismatch → repair
+               setAttributes({uniqueId: instanceId});
+               uniqueIdRef.current = instanceId;
+           }
+
+       }, []);*/
 
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps =

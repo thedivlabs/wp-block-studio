@@ -627,7 +627,7 @@ export function initStyleEditor() {
         if (styleRef?.current) {
             styleRef.current.textContent = cssText;
         }
-        
+
         const sameCss = _.isEqual(attributes["wpbs-css"], cleanedCss);
         const samePreload = _.isEqual(attributes["wpbs-preload"], nextPreload);
 
@@ -640,10 +640,10 @@ export function initStyleEditor() {
         // 12. Persist css + preload
         // ----------------------------------------
         const {dispatch} = wp.data;
-        /*dispatch("core/block-editor").updateBlockAttributes(clientId, {
+        dispatch("core/block-editor").updateBlockAttributes(clientId, {
             "wpbs-css": cleanedCss,
             "wpbs-preload": nextPreload,
-        });*/
+        });
     }
 
     startDuplicateWatcher();

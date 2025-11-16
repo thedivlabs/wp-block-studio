@@ -192,8 +192,6 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     if (!isSave) return null;
 
-    console.log(isSave);
-
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
@@ -298,8 +296,6 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
     const {'wpbs-style': settings = {}} = attributes;
 
     if (!hasAnyBackground(settings)) return null;
-
-    console.log('render BG', isSave);
 
     const bgClass = [
         'wpbs-background',

@@ -36,16 +36,16 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
-    //const uniqueIdRef = useRef(null);
+    const uniqueIdRef = useRef(null);
 
 
     const {clientId, attributes, setAttributes, name} = props;
 
-    /* const instanceId = useInstanceId(withStyle, name.replace('/', '-'));
+    const instanceId = useInstanceId(withStyle, name.replace('/', '-'));
 
-     useEffect(() => {
-         console.log(instanceId);
-     }, [])*/
+    useEffect(() => {
+        console.log(instanceId);
+    }, [])
 
 
     const {
@@ -88,7 +88,7 @@ export const withStyle = (Component) => (props) => {
                 console.log('updateStyleSettings', nextLayout);
                 setAttributes({
                     'wpbs-style': nextLayout,
-                    //uniqueId: instanceId
+                    uniqueId: instanceId
                 });
             }
             // no onStyleChange here anymore

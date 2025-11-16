@@ -147,11 +147,44 @@ class WPBS {
 			$base_css = file_get_contents( $theme_css_path );
 		}
 
+		// Combine the block CSS
+		$combined = join( ' ', array_values( $css ) );
+
+		// Minify it
+		$combined = $this->minify_css( $combined );
+
 		echo '<style class="wpbs-critical-css">';
-		echo join( ' ', array_values( $css ) );
 		echo $base_css;
+		echo $combined;
 		echo '</style>';
 	}
+
+
+	private function minify_css( string $css ): string {
+
+		// Protect url(...) values by temporarily encoding spaces
+		$css = preg_replace_callback( '/url\(([^)]+)\)/', function ( $matches ) {
+			return 'url(' . str_replace( ' ', '__WPBS_SPACE__', $matches[1] ) . ')';
+		}, $css );
+
+		// Remove comments
+		$css = preg_replace( '/\/\*[^!*][\s\S]*?\*\//', '', $css );
+
+		// Remove whitespace around punctuation
+		$css = preg_replace( '/\s*([{};:>,])\s*/', '$1', $css );
+
+		// Collapse multiple spaces
+		$css = preg_replace( '/\s+/', ' ', $css );
+
+		// Remove trailing semicolons
+		$css = preg_replace( '/;}/', '}', $css );
+
+		// Restore url(...) spaces
+		$css = str_replace( '__WPBS_SPACE__', ' ', $css );
+
+		return trim( $css );
+	}
+
 
 	private function get_css_vars(): string {
 		$vars           = '';

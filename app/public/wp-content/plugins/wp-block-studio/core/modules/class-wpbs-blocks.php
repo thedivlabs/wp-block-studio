@@ -11,98 +11,33 @@ class WPBS_Blocks {
 
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
-		add_action( 'wp_head', function () {
-			$id  = get_queried_object_id();
-			$css = $id ? get_post_meta( $id, '_wpbs_combined_css', true ) : '';
-
-			if ( $css ) {
-				echo '<style id="wpbs-style">' . $css . '</style>';
-			}
-		} );
-
-
 		add_filter( 'render_block', [ $this, 'render_block' ], 10, 3 );
 
-		// --- Unified CSS builder registration -------------------------------------
-
-		add_action( 'save_post', [ $this, 'handle_content_saved' ], 20, 2 );
-
-
+		add_action( 'wp_print_styles', [ $this, 'critical_css' ], 1 );
 		add_action( 'wp_head', [ $this, 'output_preload_media' ] );
 		add_filter( 'render_block_data', [ $this, 'collect_preload_media' ], 10, 2 );
-
 	}
-
-	private function handle_content_saved( int $post_id, string $type, string $content ): void {
-
-		if ( in_array( $type, [ 'wp_template', 'wp_template_part' ], true ) ) {
-
-			if ( did_action( 'rest_after_insert_' . $type ) ) {
-				return;
-			}
-		}
-
-
-		// Prevent autosaves/revisions
-		if ( wp_is_post_revision( $post_id ) ) {
-			return;
-		}
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
-		}
-
-		// Parse blocks safely
-		if ( ! has_blocks( $content ) ) {
-			delete_post_meta( $post_id, '_wpbs_combined_css' ); // prevents stale CSS
-
-			return;
-		}
-
-		$blocks = parse_blocks( $content );
-		if ( empty( $blocks ) ) {
-			delete_post_meta( $post_id, '_wpbs_combined_css' );
-
-			return;
-		}
-
-		// Build CSS
-		$css = self::collect_block_styles( $blocks );
-
-		// Store
-		update_post_meta( $post_id, '_wpbs_combined_css', $css );
-	}
-
 
 	public function collect_preload_media( array $block, array $source_block ): array {
 
-
-		if (
-			! str_starts_with( $block['blockName'], 'wpbs' )
-		) {
+		if ( ! str_starts_with( $block['blockName'] ?? '', 'wpbs' ) ) {
 			return $block;
 		}
 
+		if ( ! empty( $block['attrs']['wpbs-preload'] ) ) {
+			// Register a collector on this block for later
+			add_filter( 'wpbs_preload_media', function ( array $carry ) use ( $block ) {
 
-		if (
-			! empty( $block['attrs']['wpbs-preload'] )
-		) {
+				$preload = $block['attrs']['wpbs-preload'] ?? null;
 
-			//WPBS::console_log( $block );
+				if ( is_array( $preload ) && ! empty( $preload ) ) {
+					// merge block's preload items into the accumulator
+					$carry = array_merge( $carry, $preload );
+				}
+
+				return $carry;
+			} );
 		}
-
-
-		// Register a collector on this block for later
-		add_filter( 'wpbs_preload_media', function ( array $carry ) use ( $block ) {
-
-			$preload = $block['attrs']['wpbs-preload'] ?? null;
-
-			if ( is_array( $preload ) && ! empty( $preload ) ) {
-				// merge block's preload items into the accumulator
-				$carry = array_merge( $carry, $preload );
-			}
-
-			return $carry;
-		} );
 
 		return $block;
 	}
@@ -177,63 +112,27 @@ class WPBS_Blocks {
 		}
 	}
 
-	private function collect_block_styles( array $blocks, array &$map = [] ): array {
-		foreach ( $blocks as $block ) {
-			if ( ! is_array( $block ) ) {
-				continue;
-			}
+	public function critical_css(): void {
+		global $wp_styles;
 
-			$name       = $block['blockName'] ?? '';
-			$attributes = $block['attrs'] ?? [];
+		$theme_css      = $wp_styles->registered['wpbs-theme-css']->src ?? '';
+		$theme_css_path = ABSPATH . ltrim( str_replace( home_url(), '', $theme_css ), '/' );
 
-			// 1. Our own blocks: generate CSS and key by uniqueId
-			if ( str_starts_with( $name, 'wpbs/' ) ) {
-				$css       = self::parse_block_styles( $attributes, $name );
-				$unique_id = $attributes['uniqueId'] ?? null;
+		$wp_styles->dequeue( 'wpbs-theme-css' );
+		$wp_styles->remove( 'wpbs-theme-css' );
 
-				if ( $css ) {
-					if ( $unique_id ) {
-						// Append in case multiple passes add CSS for same block
-						$existing          = $map[ $unique_id ] ?? '';
-						$map[ $unique_id ] = $existing . $css;
-					} else {
-						// Fallback bucket for blocks without uniqueId (should be rare)
-						$map[] = $css;
-					}
-				}
-			}
+		$css = apply_filters( 'wpbs_critical_css', [] );
+		$css = array_unique( $css );
 
-			// 2. Inner blocks
-			if ( ! empty( $block['innerBlocks'] ) ) {
-				$this->collect_block_styles( $block['innerBlocks'], $map );
-			}
-
-			// 3. Referenced patterns (core/block)
-			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
-				$ref_id   = (int) $block['attrs']['ref'];
-				$ref_post = get_post( $ref_id );
-
-				if ( $ref_post && has_blocks( $ref_post->post_content ) ) {
-					$ref_blocks = parse_blocks( $ref_post->post_content );
-					$this->collect_block_styles( $ref_blocks, $map );
-				}
-			}
-
-			// 4. Template-part references (when you’re ready to turn this back on)
-			/*
-			if ( $block['blockName'] === 'core/template-part' && ! empty( $block['attrs']['slug'] ) ) {
-				$slug          = $block['attrs']['slug'];
-				$template_part = block_template_part( $slug );
-
-				if ( $template_part && ! empty( $template_part->content ) ) {
-					$tp_blocks = parse_blocks( $template_part->content );
-					$this->collect_block_styles( $tp_blocks, $map );
-				}
-			}
-			*/
+		static $base_css = null;
+		if ( $base_css === null && file_exists( $theme_css_path ) ) {
+			$base_css = file_get_contents( $theme_css_path );
 		}
 
-		return $map;
+		echo '<style class="wpbs-critical-css">';
+		echo join( ' ', array_values( $css ) );
+		echo $base_css;
+		echo '</style>';
 	}
 
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {
@@ -250,8 +149,8 @@ class WPBS_Blocks {
 		$parsed_css = $attributes['wpbs-css'] ?? [];
 
 		// Convert associative array to CSS
-		$props_to_css = function ( $props = [], $important = false, $importantKeysCustom = [] ) {
-			$importantProps = array_merge( [
+		$props_to_css = function ( $props = [], $important = false ) {
+			$importantProps = [
 				'padding',
 				'margin',
 				'gap',
@@ -264,6 +163,8 @@ class WPBS_Blocks {
 				'color',
 				'background-color',
 				'border-color',
+				'outline-color',
+				'text-decoration-color',
 				'font-size',
 				'line-height',
 				'letter-spacing',
@@ -272,7 +173,7 @@ class WPBS_Blocks {
 				'opacity',
 				'box-shadow',
 				'filter',
-			], $importantKeysCustom );
+			];
 
 			$result = '';
 			foreach ( $props as $k => $v ) {
@@ -305,38 +206,9 @@ class WPBS_Blocks {
 			$bg_css      .= "{$bg_selector} { " . $props_to_css( $parsed_css['background'] ) . " } ";
 		}
 
-		// hover (mirror JS: selector:hover { rules })
+		// hover
 		if ( ! empty( $parsed_css['hover'] ) && is_array( $parsed_css['hover'] ) ) {
-			// Make hover strong enough to win typical block styles.
-			// props_to_css will add !important for keys in the allowlist when $important = true.
-			$css .= "{$selector}:hover { " . $props_to_css(
-					$parsed_css['hover'],
-					true, // $important
-					// keys that should reliably win on hover
-					[
-						'color',
-						'background-color',
-						'border-color',
-						'outline-color',
-						'width',
-						'min-width',
-						'max-width',
-						'height',
-						'min-height',
-						'max-height',
-						'padding',
-						'margin',
-						'gap',
-						'font-size',
-						'line-height',
-						'letter-spacing',
-						'border-width',
-						'border-radius',
-						'opacity',
-						'box-shadow',
-						'filter'
-					]
-				) . " } ";
+			$css .= "{$selector}:hover { " . $props_to_css( $parsed_css['hover'], true ) . " } ";
 		}
 
 		// breakpoints
@@ -373,11 +245,26 @@ class WPBS_Blocks {
 
 	public function render_block( $content, $parsed_block, $block ): string {
 
+		// Bail if wp_head has already run
+		if ( did_action( 'wp_head' ) > 0 ) {
+			return $content;
+		}
+
 		if ( ! str_starts_with( $block->name ?? '', 'wpbs/' ) ) {
 			return $content;
 		}
 
-		//WPBS::console_log( [ $content ] );
+		$attrs = $parsed_block['attrs'] ?? [];
+		$css   = self::parse_block_styles( $attrs, $block->name );
+
+		if ( $css ) {
+			// Push CSS to the critical_css filter
+			add_filter( 'wpbs_critical_css', function ( $list ) use ( $css ) {
+				$list[] = $css;
+
+				return $list;
+			} );
+		}
 
 		return $content;
 	}
@@ -400,11 +287,11 @@ class WPBS_Blocks {
 					'show_in_rest' => true,
 				],
 				'wpbs-css'     => [
-					'type'         => 'string',
+					'type'         => 'object',
 					'show_in_rest' => true,
 				],
 				'wpbs-preload' => [
-					'type'         => 'object',
+					'type'         => 'array',
 					'show_in_rest' => true,
 				],
 				'wpbs-props'   => [
@@ -425,7 +312,7 @@ class WPBS_Blocks {
 				$block_object['editorScript'] = array_merge( [ 'wpbs-editor' ], $existing );
 			}
 
-			$block = register_block_type( $block_dir, $block_object );
+			register_block_type( $block_dir, $block_object );
 
 		}
 	}
@@ -439,5 +326,3 @@ class WPBS_Blocks {
 	}
 
 }
-
-

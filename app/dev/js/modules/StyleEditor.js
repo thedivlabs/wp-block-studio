@@ -504,8 +504,6 @@ export function initStyleEditor() {
         const uniqueId = attributes.uniqueId;
         const blockName = name ? name.replace("/", "-") : null;
 
-        console.log(attributes);
-
         if (!uniqueId || !blockName) return "";
 
 
@@ -681,7 +679,10 @@ export function initStyleEditor() {
         const cssUnchanged = _.isEqual(cleanedCss, cleanedPrevCss);
         const preloadUnchanged = _.isEqual(nextPreload, prevPreload);
 
-        if (cssUnchanged && preloadUnchanged) return;
+        if (cssUnchanged && preloadUnchanged) {
+            console.log('updating when it shouldnt');
+            //return
+        }
 
         // ----------------------------------------
         // 11. Inject CSS into DOM

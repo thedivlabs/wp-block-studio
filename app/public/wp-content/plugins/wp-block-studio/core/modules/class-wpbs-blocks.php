@@ -167,9 +167,34 @@ class WPBS_Blocks {
 				$css .= self::parse_block_styles( $attributes, $name );
 			}
 
+			// 1. Handle innerBlocks as before
 			if ( ! empty( $block['innerBlocks'] ) ) {
 				$css .= self::collect_block_styles( $block['innerBlocks'] );
 			}
+
+			// 2. Handle referenced patterns (core/block)
+			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
+				$ref_id   = intval( $block['attrs']['ref'] );
+				$ref_post = get_post( $ref_id );
+
+				if ( $ref_post && has_blocks( $ref_post->post_content ) ) {
+					$ref_blocks = parse_blocks( $ref_post->post_content );
+					$css        .= self::collect_block_styles( $ref_blocks );
+				}
+			}
+
+			// 3. Handle template-part references
+			/*if ( $block['blockName'] === 'core/template-part' && ! empty( $block['attrs']['slug'] ) ) {
+				$slug = $block['attrs']['slug'];
+
+				$template_part = wp_get_post_template_part( $slug ); // loads template-part post by slug
+
+				if ( $template_part && has_blocks( $template_part->post_content ) ) {
+					$tp_blocks = parse_blocks( $template_part->post_content );
+					$css       .= self::collect_block_styles( $tp_blocks );
+				}
+			}*/
+
 		}
 
 		return trim( $css );

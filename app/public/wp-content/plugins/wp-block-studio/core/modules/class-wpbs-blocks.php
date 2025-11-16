@@ -12,41 +12,82 @@ class WPBS_Blocks {
 		add_action( 'init', [ $this, 'register_blocks' ] );
 
 		add_action( 'wp_head', function () {
-			$css = get_post_meta( get_the_ID(), '_wpbs_combined_css', true );
-			if ( ! empty( $css ) ) {
+			$id  = get_queried_object_id();
+			$css = $id ? get_post_meta( $id, '_wpbs_combined_css', true ) : '';
+
+			if ( $css ) {
 				echo '<style id="wpbs-style">' . $css . '</style>';
 			}
 		} );
 
+
 		add_filter( 'render_block', [ $this, 'render_block' ], 10, 3 );
 
+		// --- Unified CSS builder registration -------------------------------------
+
+// Normal posts/pages
 		add_action( 'save_post', function ( $post_id, $post ) {
-			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-				return;
-			}
-			if ( wp_is_post_revision( $post_id ) ) {
-				return;
-			}
-
-			// Only process posts that use WPBS blocks
-			if ( ! has_blocks( $post ) ) {
-				return;
-			}
-
-			$blocks = parse_blocks( $post->post_content );
-			if ( empty( $blocks ) ) {
-				return;
-			}
-
-			$css = self::collect_block_styles( $blocks );
-
-			update_post_meta( $post_id, '_wpbs_combined_css', $css );
+			$this->handle_content_saved( $post_id, $post->post_type, $post->post_content );
 		}, 20, 2 );
+
+// Templates
+		add_action( 'rest_after_insert_wp_template', function ( $template, $request ) {
+			$this->handle_content_saved( $template->ID, 'wp_template', $template->content );
+		}, 20, 2 );
+
+// Template parts
+		add_action( 'rest_after_insert_wp_template_part', function ( $template_part, $request ) {
+			$this->handle_content_saved( $template_part->ID, 'wp_template_part', $template_part->content );
+		}, 20, 2 );
+
 
 		add_action( 'wp_head', [ $this, 'output_preload_media' ] );
 		add_filter( 'render_block_data', [ $this, 'collect_preload_media' ], 10, 2 );
 
 	}
+
+	/**
+	 * Unified entry point for generating CSS after *any* block-based content is saved.
+	 */
+	private function handle_content_saved( int $post_id, string $type, string $content ): void {
+
+		if ( in_array( $type, [ 'wp_template', 'wp_template_part' ], true ) ) {
+			// Prevent double-triggering from save_post for templates
+			if ( did_action( 'rest_after_insert_' . $type ) ) {
+				return;
+			}
+		}
+
+
+		// Prevent autosaves/revisions
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		// Parse blocks safely
+		if ( ! has_blocks( $content ) ) {
+			delete_post_meta( $post_id, '_wpbs_combined_css' ); // prevents stale CSS
+
+			return;
+		}
+
+		$blocks = parse_blocks( $content );
+		if ( empty( $blocks ) ) {
+			delete_post_meta( $post_id, '_wpbs_combined_css' );
+
+			return;
+		}
+
+		// Build CSS
+		$css = self::collect_block_styles( $blocks );
+
+		// Store
+		update_post_meta( $post_id, '_wpbs_combined_css', $css );
+	}
+
 
 	public function collect_preload_media( array $block, array $source_block ): array {
 

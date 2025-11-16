@@ -14,7 +14,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const hasBackground = hasAnyBackground(settings);
     const hasContainer = hasBackground || advanced.container;
     const isContainer = !hasContainer && !!layout.container;
-    
+
     const blockBaseName = name ? name.replace('/', '-') : '';
 
     const classList = [
@@ -62,9 +62,15 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     }, true);
 };
 
-const BlockBackground = memo(({attributes, isSave}) => (
-    <BackgroundElement attributes={attributes} isSave={!!isSave}/>
-));
+const BlockBackground = memo(
+    ({attributes, isSave}) => (
+        <BackgroundElement attributes={attributes} isSave={!!isSave}/>
+    ),
+    (prev, next) =>
+        prev.isSave === next.isSave &&
+        _.isEqual(prev.attributes['wpbs-style'], next.attributes['wpbs-style'])
+);
+
 
 export const BlockWrapper = ({
                                  props,

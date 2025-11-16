@@ -157,7 +157,7 @@ export const withStyle = (Component) => (props) => {
                 setPreload={updatePreloadRef}
             />
         ),
-        [clientId]
+        [clientId, settings, uniqueId]
     );
 
     /*

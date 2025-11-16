@@ -293,7 +293,6 @@ class WPBS_Blocks {
 		} );
 	}
 
-
 	public function render_block( $content, $parsed_block, $block ): string {
 
 		if ( ! str_starts_with( $block->name ?? '', 'wpbs/' ) ) {

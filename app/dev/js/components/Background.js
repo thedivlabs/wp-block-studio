@@ -295,7 +295,7 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
 
     const {'wpbs-style': settings = {}} = attributes;
 
-    //if (!hasAnyBackground(settings)) return null;
+    if (!hasAnyBackground(settings)) return null;
 
     const bgClass = [
         'wpbs-background',

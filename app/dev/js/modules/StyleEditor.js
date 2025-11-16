@@ -435,6 +435,7 @@ export function initStyleEditor() {
                     if (!uid || !uid.startsWith(baseName) || seen.has(uid)) {
                         const newId =
                             `${baseName}-${Math.random().toString(36).slice(2, 8)}`;
+                        console.log('updating duplicate ID for ', clientId, ' to ', newId,)
                         dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
                     } else {
                         seen.add(uid);
@@ -632,10 +633,10 @@ export function initStyleEditor() {
         // 12. Persist css + preload
         // ----------------------------------------
         const {dispatch} = wp.data;
-        dispatch("core/block-editor").updateBlockAttributes(clientId, {
+        /*dispatch("core/block-editor").updateBlockAttributes(clientId, {
             "wpbs-css": cleanedCss,
             "wpbs-preload": nextPreload,
-        });
+        });*/
     }
 
     startDuplicateWatcher();

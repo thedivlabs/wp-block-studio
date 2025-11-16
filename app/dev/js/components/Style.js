@@ -29,7 +29,7 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
-    const uniqueIdRef = useRef(null);
+    //const uniqueIdRef = useRef(null);
 
 
     const {clientId, attributes, setAttributes, name} = props;

@@ -621,7 +621,7 @@ export function initStyleEditor() {
             incoming,
             current: prevPreload,
         });
-        
+
         const cssText = buildCssTextFromObject(cleanedCss, props);
         if (styleRef?.current) {
             styleRef.current.textContent = cssText;
@@ -638,7 +638,7 @@ export function initStyleEditor() {
         });
     }
 
-    startDuplicateWatcher();
+    //startDuplicateWatcher();
 
     // ------------------------------------------------------------
     // PUBLIC API

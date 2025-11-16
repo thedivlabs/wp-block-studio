@@ -7,6 +7,7 @@ import {
     extractPreloadsFromLayout,
     getDataProps
 } from 'Includes/helper';
+import {useInstanceId} from "@wordpress/compose";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -28,9 +29,17 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
+    const uniqueIdRef = useRef(null);
 
 
-    const {clientId, attributes, setAttributes} = props;
+    const {clientId, attributes, setAttributes, name} = props;
+
+    /* const instanceId = useInstanceId(withStyle, name.replace('/', '-'));
+
+     useEffect(() => {
+         console.log(instanceId);
+     }, [])*/
+
 
     const {
         uniqueId,
@@ -69,7 +78,11 @@ export const withStyle = (Component) => (props) => {
             const cleanedCurrent = cleanObject(settings, true);
 
             if (!_.isEqual(cleanedNext, cleanedCurrent)) {
-                setAttributes({'wpbs-style': nextLayout});
+                console.log('updateStyleSettings', nextLayout);
+                setAttributes({
+                    'wpbs-style': nextLayout,
+                    //uniqueId: instanceId
+                });
             }
             // no onStyleChange here anymore
         },

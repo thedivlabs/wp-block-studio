@@ -283,6 +283,8 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
         return false;
     })();
 
+    console.log('hasAnyBackground', hasAnyBackground);
+
     if (!hasAnyBackground) return null;
 
     const bgClass = [

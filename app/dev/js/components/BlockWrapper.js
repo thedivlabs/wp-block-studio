@@ -1,9 +1,10 @@
 import {ElementTag} from "Components/AdvancedControls";
 import {BackgroundElement} from "Components/Background";
 import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
+import {memo} from "@wordpress/element";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {cleanObject,getCSSFromStyle} = API;
+const {cleanObject, getCSSFromStyle} = API;
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
@@ -63,9 +64,9 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     }, true);
 };
 
-const BlockBackground = ({attributes, isSave}) => (
+const BlockBackground = memo(({attributes, isSave}) => (
     <BackgroundElement attributes={attributes} isSave={!!isSave}/>
-);
+));
 
 export const BlockWrapper = ({
                                  props,

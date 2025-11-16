@@ -25,20 +25,7 @@ class WPBS_Blocks {
 
 		// --- Unified CSS builder registration -------------------------------------
 
-// Normal posts/pages
-		add_action( 'save_post', function ( $post_id, $post ) {
-			$this->handle_content_saved( $post_id, $post->post_type, $post->post_content );
-		}, 20, 2 );
-
-// Templates
-		add_action( 'rest_after_insert_wp_template', function ( $template, $request ) {
-			$this->handle_content_saved( $template->ID, 'wp_template', $template->content );
-		}, 20, 2 );
-
-// Template parts
-		add_action( 'rest_after_insert_wp_template_part', function ( $template_part, $request ) {
-			$this->handle_content_saved( $template_part->ID, 'wp_template_part', $template_part->content );
-		}, 20, 2 );
+		add_action( 'save_post', [ $this, 'handle_content_saved' ], 20, 2 );
 
 
 		add_action( 'wp_head', [ $this, 'output_preload_media' ] );
@@ -46,13 +33,10 @@ class WPBS_Blocks {
 
 	}
 
-	/**
-	 * Unified entry point for generating CSS after *any* block-based content is saved.
-	 */
 	private function handle_content_saved( int $post_id, string $type, string $content ): void {
 
 		if ( in_array( $type, [ 'wp_template', 'wp_template_part' ], true ) ) {
-			// Prevent double-triggering from save_post for templates
+
 			if ( did_action( 'rest_after_insert_' . $type ) ) {
 				return;
 			}
@@ -193,9 +177,7 @@ class WPBS_Blocks {
 		}
 	}
 
-	private function collect_block_styles( array $blocks ): string {
-		$css = '';
-
+	private function collect_block_styles( array $blocks, array &$map = [] ): array {
 		foreach ( $blocks as $block ) {
 			if ( ! is_array( $block ) ) {
 				continue;
@@ -204,41 +186,54 @@ class WPBS_Blocks {
 			$name       = $block['blockName'] ?? '';
 			$attributes = $block['attrs'] ?? [];
 
+			// 1. Our own blocks: generate CSS and key by uniqueId
 			if ( str_starts_with( $name, 'wpbs/' ) ) {
-				$css .= self::parse_block_styles( $attributes, $name );
+				$css       = self::parse_block_styles( $attributes, $name );
+				$unique_id = $attributes['uniqueId'] ?? null;
+
+				if ( $css ) {
+					if ( $unique_id ) {
+						// Append in case multiple passes add CSS for same block
+						$existing          = $map[ $unique_id ] ?? '';
+						$map[ $unique_id ] = $existing . $css;
+					} else {
+						// Fallback bucket for blocks without uniqueId (should be rare)
+						$map[] = $css;
+					}
+				}
 			}
 
-			// 1. Handle innerBlocks as before
+			// 2. Inner blocks
 			if ( ! empty( $block['innerBlocks'] ) ) {
-				$css .= self::collect_block_styles( $block['innerBlocks'] );
+				$this->collect_block_styles( $block['innerBlocks'], $map );
 			}
 
-			// 2. Handle referenced patterns (core/block)
+			// 3. Referenced patterns (core/block)
 			if ( $block['blockName'] === 'core/block' && ! empty( $block['attrs']['ref'] ) ) {
-				$ref_id   = intval( $block['attrs']['ref'] );
+				$ref_id   = (int) $block['attrs']['ref'];
 				$ref_post = get_post( $ref_id );
 
 				if ( $ref_post && has_blocks( $ref_post->post_content ) ) {
 					$ref_blocks = parse_blocks( $ref_post->post_content );
-					$css        .= self::collect_block_styles( $ref_blocks );
+					$this->collect_block_styles( $ref_blocks, $map );
 				}
 			}
 
-			// 3. Handle template-part references
-			/*if ( $block['blockName'] === 'core/template-part' && ! empty( $block['attrs']['slug'] ) ) {
-				$slug = $block['attrs']['slug'];
+			// 4. Template-part references (when you’re ready to turn this back on)
+			/*
+			if ( $block['blockName'] === 'core/template-part' && ! empty( $block['attrs']['slug'] ) ) {
+				$slug          = $block['attrs']['slug'];
+				$template_part = block_template_part( $slug );
 
-				$template_part = wp_get_post_template_part( $slug ); // loads template-part post by slug
-
-				if ( $template_part && has_blocks( $template_part->post_content ) ) {
-					$tp_blocks = parse_blocks( $template_part->post_content );
-					$css       .= self::collect_block_styles( $tp_blocks );
+				if ( $template_part && ! empty( $template_part->content ) ) {
+					$tp_blocks = parse_blocks( $template_part->content );
+					$this->collect_block_styles( $tp_blocks, $map );
 				}
-			}*/
-
+			}
+			*/
 		}
 
-		return trim( $css );
+		return $map;
 	}
 
 	public static function parse_block_styles( array $attributes, string $name = '' ): string {

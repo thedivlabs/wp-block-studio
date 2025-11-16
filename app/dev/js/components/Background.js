@@ -188,9 +188,11 @@ export function hasAnyBackground(settings = {}) {
     return false;
 }
 
-const BackgroundVideo = memo(({settings = {}, isSave = false}) => {
+const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     if (!isSave) return null;
+
+    console.log(isSave);
 
     const {background = {}, breakpoints = {}} = settings;
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
@@ -289,7 +291,7 @@ const BackgroundVideo = memo(({settings = {}, isSave = false}) => {
 
         </video>
     );
-})
+}
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 

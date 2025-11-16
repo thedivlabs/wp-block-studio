@@ -18,9 +18,16 @@ export const STYLE_ATTRIBUTES = {
 };
 
 
-const StyleEditorPanel = memo(({settings, updateStyleSettings}) => (
-    <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
-));
+const StyleEditorPanel = memo(
+    ({settings, updateStyleSettings}) => (
+        <StyleEditorUI
+            settings={settings}
+            updateStyleSettings={updateStyleSettings}
+        />
+    ),
+    (prev, next) => _.isEqual(prev.settings, next.settings)
+);
+
 
 export const withStyle = (Component) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
@@ -157,7 +164,7 @@ export const withStyle = (Component) => (props) => {
                 setPreload={updatePreloadRef}
             />
         ),
-        [clientId, settings, uniqueId]
+        [clientId, uniqueId]
     );
 
     /*

@@ -27,7 +27,7 @@ const BackgroundFields = memo(({settings, updateFn}) => {
     });
 });
 
-export const BackgroundControls = memo(({settings = {}, callback, isBreakpoint = false}) => {
+export const BackgroundControls = ({settings = {}, callback, isBreakpoint = false}) => {
     const isPanelOpen = Object.keys(settings).length > 0;
 
 
@@ -161,7 +161,32 @@ export const BackgroundControls = memo(({settings = {}, callback, isBreakpoint =
             </Grid>
         </PanelBody>
     );
-});
+};
+
+export function hasAnyBackground(settings = {}) {
+    if (!settings) return false;
+    //console.log(settings);
+
+    const bg = settings.background || {};
+    const breakpoints = settings.breakpoints || {};
+
+    // Base background: any real signal
+    if (bg.type) return true;
+    if (bg.image?.id) return true;
+    if (bg.video?.source) return true;
+
+    // Breakpoint overrides
+    for (const bp of Object.values(breakpoints)) {
+        const bpBg = bp?.background;
+        if (!bpBg) continue;
+
+        if (bpBg.type) return true;
+        if (bpBg.image?.id) return true;
+        if (bpBg.video?.source) return true;
+    }
+
+    return false;
+}
 
 const BackgroundVideo = memo(({settings = {}, isSave = false}) => {
 
@@ -268,24 +293,9 @@ const BackgroundVideo = memo(({settings = {}, isSave = false}) => {
 
 export function BackgroundElement({attributes = {}, isSave = false}) {
 
-    const baseBg = attributes?.['wpbs-style']?.background;
-    const breakpoints = attributes?.['wpbs-style']?.breakpoints ?? {};
+    const {'wpbs-style': settings = {}} = attributes;
 
-    const hasAnyBackground = (() => {
-        // Base background
-        if (baseBg?.type) return true;
-
-        // Any breakpoint with a defined background type
-        for (const bp of Object.values(breakpoints)) {
-            if (bp?.background?.type) return true;
-        }
-
-        return false;
-    })();
-
-    console.log('hasAnyBackground', hasAnyBackground);
-
-    if (!hasAnyBackground) return null;
+    if (!hasAnyBackground(settings)) return null;
 
     const bgClass = [
         'wpbs-background',
@@ -294,5 +304,5 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
     ].filter(x => x).join(' ');
 
 
-    return <div className={bgClass}><BackgroundVideo settings={attributes?.['wpbs-style']} isSave={!!isSave}/></div>;
+    return <div className={bgClass}><BackgroundVideo settings={settings} isSave={!!isSave}/></div>;
 }

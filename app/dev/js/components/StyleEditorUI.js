@@ -23,47 +23,65 @@ const {cleanObject} = API;
 /* -------------------------------------------------------------------------- */
 /* LayoutFields – controlled, memoized mapper */
 /* -------------------------------------------------------------------------- */
-const LayoutFields = memo(({bpKey, settings, suppress = [], updateFn}) => {
-    const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+const LayoutFields = memo(
+    ({bpKey, settings, suppress = [], updateFn}) => {
+        const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-    return map
-        .filter((f) => !suppress.includes(f.slug))
-        .map((field) => {
-            const callback = (v) => updateFn({[field.slug]: v}, bpKey);
+        return map
+            .filter((f) => !suppress.includes(f.slug))
+            .map((field) => {
+                const callback = (v) => updateFn({[field.slug]: v}, bpKey);
 
-            return (
-                <Field
-                    key={`${bpKey || "base"}-${field.slug}`}
-                    field={field}
-                    settings={settings}
-                    callback={callback}
-                />
-            );
-        });
-});
-
-/* -------------------------------------------------------------------------- */
-/* HoverFields – controlled, memoized mapper */
-/* -------------------------------------------------------------------------- */
-const HoverFields = memo(({settings, suppress = [], updateHoverItem}) => {
-    const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-
-    return (
-        <Grid columns={2} rowGap={15}>
-            {map
-                .filter((f) => !suppress.includes(f.slug))
-                .map((field) => (
+                return (
                     <Field
-                        key={field.slug}
+                        key={`${bpKey || "base"}-${field.slug}`}
                         field={field}
                         settings={settings}
-                        callback={(v) => updateHoverItem(v)}
-                        isToolsPanel={false}
+                        callback={callback}
                     />
-                ))}
-        </Grid>
-    );
-});
+                );
+            });
+    },
+
+    (prev, next) => {
+        // Memo condition:
+        // - bpKey unchanged
+        // - suppress unchanged
+        // - settings unchanged (deep compare)
+        return (
+            prev.bpKey === next.bpKey &&
+            _.isEqual(prev.settings, next.settings) &&
+            _.isEqual(prev.suppress, next.suppress)
+        );
+    }
+);
+
+
+const HoverFields = memo(
+    ({settings, suppress = [], updateHoverItem}) => {
+        const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+
+        return (
+            <Grid columns={2} rowGap={15}>
+                {map
+                    .filter((f) => !suppress.includes(f.slug))
+                    .map((field) => (
+                        <Field
+                            key={field.slug}
+                            field={field}
+                            settings={settings}
+                            callback={(v) => updateHoverItem(v)}
+                            isToolsPanel={false}
+                        />
+                    ))}
+            </Grid>
+        );
+    },
+    (prev, next) =>
+        _.isEqual(prev.settings, next.settings) &&
+        _.isEqual(prev.suppress, next.suppress)
+);
+
 
 /* -------------------------------------------------------------------------- */
 /* BreakpointPanel – isolated per-breakpoint UI */
@@ -164,18 +182,42 @@ const BreakpointPanel = memo(
                     />
                 </ToolsPanel>
 
-                <BackgroundControls
+                <BackgroundFields
                     settings={data?.background || {}}
-                    callback={(newProps) =>
+                    updateFn={(newProps, reset) =>
                         updateBreakpointItem({background: newProps}, bpKey)
                     }
-                    isBreakpoint={true}
                 />
+
+
             </div>
         );
     },
-    (prev, next) => _.isEqual(prev.data, next.data)
+    (prev, next) => {
+        return (
+            prev.bpKey === next.bpKey &&
+            _.isEqual(prev.data, next.data) &&
+            prev.breakpoints === next.breakpoints &&
+            _.isEqual(prev.breakpointKeys, next.breakpointKeys)
+        );
+    }
 );
+
+
+const BackgroundFields = memo(
+    ({settings, updateFn}) => {
+        return (
+            <BackgroundControls
+                settings={settings}
+                callback={(newProps, reset) =>
+                    updateFn(newProps, reset)
+                }
+            />
+        );
+    },
+    (prev, next) => _.isEqual(prev.settings, next.settings)
+);
+
 
 /* -------------------------------------------------------------------------- */
 /* Main Component */
@@ -218,18 +260,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
         }),
         [localProps, localHover, localBackground, localAdvanced, localBreakpoints]
     );
-
-    /* ------------------------------------------------------------------ */
-    /*  IMPORTANT: NO SYNC FROM `settings` AFTER MOUNT                     */
-    /* ------------------------------------------------------------------ */
-    // The effect below is intentionally removed.
-    // StyleEditorUI owns its own state and never rehydrates from props.
-    //
-    // useEffect(() => {
-    //     setLocalProps(settings.props);
-    //     setLocalHover(settings.hover);
-    //     ...
-    // }, [settings]);
 
     /* ------------------------------------------------------------------ */
     /*  Debounced commit to HOC                                           */
@@ -365,12 +395,13 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
                             />
                         </ToolsPanel>
 
-                        <BackgroundControls
+                        <BackgroundFields
                             settings={localBackground}
-                            callback={(newProps, reset) =>
+                            updateFn={(newProps, reset) =>
                                 updateBackgroundItem(newProps, reset)
                             }
                         />
+
                     </div>
 
                     {/* Hover */}

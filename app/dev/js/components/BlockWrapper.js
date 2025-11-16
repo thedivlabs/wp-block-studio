@@ -1,5 +1,5 @@
 import {ElementTag} from "Components/AdvancedControls";
-import {BackgroundElement} from "Components/Background";
+import {BackgroundElement, hasAnyBackground} from "Components/Background";
 import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
 import {memo} from "@wordpress/element";
 
@@ -11,12 +11,10 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {className: userClass = '', style: blockStyle = {}, ...restWrapperProps} = wrapperProps;
     const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
     const {props: layout = {}, background = {}, hover = {}, advanced = {}} = settings;
-    const hasBackground =
-        !!(background && (background.type || background.image || background.video));
+    const hasBackground = hasAnyBackground(settings);
     const hasContainer = hasBackground || advanced.container;
     const isContainer = !hasContainer && !!layout.container;
-
-
+    
     const blockBaseName = name ? name.replace('/', '-') : '';
 
     const classList = [
@@ -84,7 +82,8 @@ export const BlockWrapper = ({
     const blockBaseName = name ? name.replace('/', '-') : '';
     const Tag = ElementTag(advanced?.tagName, tagName);
 
-    const isBackgroundActive = hasBackground && settings?.background?.type;
+    const isBackgroundActive = hasAnyBackground(settings);
+
     const hasContainer = isBackgroundActive || settings?.advanced?.container;
 
     const containerClass = [

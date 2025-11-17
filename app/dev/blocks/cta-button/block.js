@@ -57,14 +57,13 @@ registerBlockType(metadata.name, {
         const { 'wpbs-cta': settings = {} } = attributes;
 
         const updateSettings = useCallback((newValue) => {
-            setAttributes({
+            setAttributes((prev) => ({
                 'wpbs-cta': {
-                    ...settings,
+                    ...prev['wpbs-cta'],
                     ...newValue,
                 }
-            });
-        }, [settings]);
-
+            }));
+        }, []);
         const computedClassName = classNames(attributes);
 
         // ----------------------------------------
@@ -93,7 +92,7 @@ registerBlockType(metadata.name, {
                     />
                 </Grid>
             </Grid>
-        ), [settings]);
+        ), []);
 
         // ----------------------------------------
         // TAB: ICON
@@ -103,7 +102,7 @@ registerBlockType(metadata.name, {
                 <IconControl
                     label="Icon"
                     value={settings?.icon}
-                    onChange={(icon) => updateSettings({ icon:icon })}
+                    onChange={(icon) => updateSettings({ 'icon':icon })}
                 />
 
                 <Grid

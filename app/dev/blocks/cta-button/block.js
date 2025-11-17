@@ -53,10 +53,12 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle((props) => {
-        const { attributes, BlockWrapper, setAttributes, setCss, styleData } = props;
+        const { attributes, BlockWrapper, setAttributes, setCss } = props;
         const { 'wpbs-cta': settings = {} } = attributes;
 
         const updateSettings = useCallback((newValue) => {
+            console.log(settings);
+            console.log(newValue);
             setAttributes((prev) => ({
                 'wpbs-cta': {
                     ...prev['wpbs-cta'],
@@ -151,7 +153,7 @@ registerBlockType(metadata.name, {
                     ]}
                 />
             </Grid>
-        ), []);
+        ), [attributes?.['wpbs-cta']]);
 
         // ----------------------------------------
         // LINK SETTINGS
@@ -177,7 +179,7 @@ registerBlockType(metadata.name, {
             breakpoints: {
                 xs: { '--testing': '20px' }
             }
-        }), [settings, styleData]);
+        }), [settings]);
 
         useEffect(() => setCss(cssObj), [cssObj]);
 

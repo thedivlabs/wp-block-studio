@@ -1,12 +1,7 @@
 import {Fragment, memo, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
 import {StyleEditorUI} from "Includes/style";
-import _, {isEqual} from 'lodash';
+import _ from 'lodash';
 import {BlockWrapper} from 'Components/BlockWrapper';
-import {
-    normalizePreloadItem,
-    extractPreloadsFromLayout,
-    getDataProps
-} from 'Includes/helper';
 import {useInstanceId} from "@wordpress/compose";
 
 
@@ -152,23 +147,18 @@ export const withStyle = (Component) => (props) => {
     MAIN RENDER
     ----------------------------------------------------------------------
     */
-    const StyledComponent = useMemo(
-        () => (
-            <Component
-                {...getDataProps(props)}
-                BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper
-                        {...wrapperProps}
-                        props={props}
-                        clientId={clientId}
-                    />
-                )}
-                setCss={updateBlockCssRef}
-                setPreload={updatePreloadRef}
+    const StyledComponent = <Component
+        {...props}
+        BlockWrapper={(wrapperProps) => (
+            <BlockWrapper
+                {...wrapperProps}
+                props={props}
+                clientId={clientId}
             />
-        ),
-        [clientId, uniqueId]
-    );
+        )}
+        setCss={updateBlockCssRef}
+        setPreload={updatePreloadRef}
+    />;
 
     /*
     ----------------------------------------------------------------------
@@ -197,7 +187,6 @@ export const withStyleSave = (Component) => (props) => {
 
     return (
         <Component
-            {...getDataProps(props)}
             BlockWrapper={(wrapperProps) => (
                 <BlockWrapper props={props} clientId={clientId} isSave={true} {...wrapperProps}/>
             )}

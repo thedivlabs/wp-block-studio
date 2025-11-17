@@ -55,13 +55,18 @@ export const withStyle = (Component) => (props) => {
     } = attributes;
 
     useEffect(() => {
-        const status = registerBlock(uniqueId, clientId);
+        const oldId = uniqueId;
+        const status = registerBlock(oldId, clientId);
 
         if (status === "fresh" || status === "clone") {
             const newId = instanceId;
-            setAttributes({ uniqueId: newId });
 
+            setAttributes({ uniqueId: newId });
             registerBlock(newId, clientId);
+
+            if (oldId && oldId !== newId) {
+                unregisterBlock(oldId, clientId);
+            }
         }
     }, []);
 

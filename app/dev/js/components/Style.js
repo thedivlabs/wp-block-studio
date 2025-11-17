@@ -107,7 +107,7 @@ export const withStyle = (Component) => (props) => {
             if (!_.isEqual(cleanedNext, cleanedCurrent)) {
                 console.log('updateStyleSettings', nextLayout);
                 setAttributes({
-                    'wpbs-style': nextLayout,
+                    'wpbs-style': cleanedNext,
                     uniqueId: instanceId
                 });
             }

@@ -36,7 +36,8 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
-    const uniqueIdRef = useRef(null);
+    const initialClientIdRef = useRef(null);
+
 
     const {clientId, attributes, setAttributes, name} = props;
 
@@ -57,34 +58,26 @@ export const withStyle = (Component) => (props) => {
         }
     } = attributes;
 
-
     useEffect(() => {
-        if (!uniqueId) {
-            setAttributes({uniqueId: instanceId});
+        if (!initialClientIdRef.current) {
+
+
+            if (!attributes.uniqueId) {
+                //setAttributes({uniqueId: instanceId});
+                //console.log('BLOCK CREATED');
+            }
         }
-    }, [])
 
-    /*   useEffect(() => {
-           // CASE 1 — first load, block has NO uniqueId yet
-           if (!attributes.uniqueId) {
-               setAttributes({uniqueId: instanceId});
-               uniqueIdRef.current = instanceId;
-               return;
-           }
+        if (attributes.uniqueId !== instanceId && !initialClientIdRef.current) {
+            // BLOCK WAS CLONED
+            //setAttributes({uniqueId: instanceId});
+            console.log('BLOCK WAS CLONED');
+        } else {
+            console.log('BLOCK CREATED');
+            initialClientIdRef.current = clientId;
+        }
+    }, []);
 
-           // CASE 2 — block has uniqueId, store it in the ref (only once)
-           if (uniqueIdRef.current === null) {
-               uniqueIdRef.current = attributes.uniqueId;
-           }
-
-           // CASE 3 — compare stored ref with the new instanceId
-           if (uniqueIdRef.current !== instanceId) {
-               // mismatch → repair
-               setAttributes({uniqueId: instanceId});
-               uniqueIdRef.current = instanceId;
-           }
-
-       }, []);*/
 
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps =

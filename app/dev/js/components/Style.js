@@ -36,7 +36,9 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
+
     const initialClientIdRef = useRef(null);
+    const initialInstanceIdRef = useRef(null);
 
 
     const {clientId, attributes, setAttributes, name} = props;
@@ -59,25 +61,38 @@ export const withStyle = (Component) => (props) => {
     } = attributes;
 
     useEffect(() => {
-        if (!initialClientIdRef.current) {
-
-
-            if (!attributes.uniqueId) {
-                //setAttributes({uniqueId: instanceId});
-                //console.log('BLOCK CREATED');
-            }
+        // Store first-seen fingerprints
+        if (initialInstanceIdRef.current === null) {
+            initialInstanceIdRef.current = instanceId;
         }
-
-        if (attributes.uniqueId !== instanceId && !initialClientIdRef.current) {
-            // BLOCK WAS CLONED
-            //setAttributes({uniqueId: instanceId});
-            console.log('BLOCK WAS CLONED');
-        } else {
-            console.log('BLOCK CREATED');
+        if (initialClientIdRef.current === null) {
             initialClientIdRef.current = clientId;
         }
-    }, []);
 
+        const firstInstance = initialInstanceIdRef.current;
+        const firstClient = initialClientIdRef.current;
+        const savedId = attributes.uniqueId;
+
+        // 1. Fresh block (no saved uniqueId)
+        if (!savedId) {
+            console.log('savedId', savedId);
+            //setAttributes({ uniqueId: instanceId });
+            return;
+        }
+
+        // 2. Clone: attributes.uniqueId came from another block,
+        //    but we mounted with fresh clientId + fresh instanceId.
+        const isClone =
+            savedId !== firstInstance &&
+            clientId !== firstClient;
+
+        if (isClone) {
+            console.log('isClone', isClone);
+            //setAttributes({ uniqueId: instanceId });
+        }
+
+        // 3. Otherwise: normal loaded block, do nothing
+    }, []);
 
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps =

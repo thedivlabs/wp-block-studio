@@ -147,18 +147,23 @@ export const withStyle = (Component) => (props) => {
     MAIN RENDER
     ----------------------------------------------------------------------
     */
-    const StyledComponent = <Component
-        {...props}
-        BlockWrapper={(wrapperProps) => (
-            <BlockWrapper
-                {...wrapperProps}
-                props={props}
-                clientId={clientId}
+    const StyledComponent = useMemo(
+        () => (
+            <Component
+                {...props}
+                BlockWrapper={(wrapperProps) => (
+                    <BlockWrapper
+                        props={props}         // ← the real props, always first
+                        clientId={clientId}
+                        {...wrapperProps}     // ← wrapper only adds layout stuff
+                    />
+                )}
+                setCss={updateBlockCssRef}
+                setPreload={updatePreloadRef}
             />
-        )}
-        setCss={updateBlockCssRef}
-        setPreload={updatePreloadRef}
-    />;
+        ),
+        [clientId, uniqueId]
+    );
 
     /*
     ----------------------------------------------------------------------
@@ -179,16 +184,20 @@ export const withStyle = (Component) => (props) => {
     );
 };
 
-
 export const withStyleSave = (Component) => (props) => {
-
-    const {attributes, clientId} = props;
-    const {'wpbs-style': styleData = {}} = attributes;
+    const { attributes, clientId } = props;
+    const { 'wpbs-style': styleData = {} } = attributes;
 
     return (
         <Component
+            {...props} // ← this is the important part
             BlockWrapper={(wrapperProps) => (
-                <BlockWrapper props={props} clientId={clientId} isSave={true} {...wrapperProps}/>
+                <BlockWrapper
+                    props={props}
+                    clientId={clientId}
+                    isSave={true}
+                    {...wrapperProps}
+                />
             )}
             styleData={styleData}
         />

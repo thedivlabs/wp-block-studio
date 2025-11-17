@@ -876,7 +876,6 @@ div.ui-datepicker.gravity-theme#ui-datepicker-div[style] {
     }
 
     tbody {
-      //grid-template-rows: repeat(6, 1fr);
       gap: .5rem;
       @apply
       grid

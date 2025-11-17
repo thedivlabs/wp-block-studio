@@ -53,7 +53,7 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle((props) => {
-        const { attributes, BlockWrapper, setAttributes, blockCss, styleData } = props;
+        const { attributes, BlockWrapper, setAttributes, setCss, styleData } = props;
         const { 'wpbs-cta': settings = {} } = attributes;
 
         const updateSettings = useCallback((newValue) => {
@@ -103,7 +103,7 @@ registerBlockType(metadata.name, {
                 <IconControl
                     label="Icon"
                     value={settings?.icon}
-                    onChange={(icon) => updateSettings({ icon })}
+                    onChange={(icon) => updateSettings({ icon:icon })}
                 />
 
                 <Grid
@@ -152,7 +152,7 @@ registerBlockType(metadata.name, {
                     ]}
                 />
             </Grid>
-        ), [settings]);
+        ), []);
 
         // ----------------------------------------
         // LINK SETTINGS
@@ -180,7 +180,7 @@ registerBlockType(metadata.name, {
             }
         }), [settings, styleData]);
 
-        useEffect(() => blockCss(cssObj), [cssObj]);
+        useEffect(() => setCss(cssObj), [cssObj]);
 
         return (
             <>

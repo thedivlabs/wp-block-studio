@@ -9,14 +9,18 @@ const selector = "wpbs-layout-element";
 const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-element": settings} = attributes;
 
-    return [
+    const result = [
         selector,
         "w-full",
         "block",
         "relative",
     ]
         .filter(Boolean)
-        .join(' ');
+        .join(' ')
+
+    console.log(result);
+
+    return result;
 };
 
 registerBlockType(metadata.name, {
@@ -60,10 +64,8 @@ registerBlockType(metadata.name, {
         }),
 
     save: withStyleSave((props) => {
-        const {attributes, BlockWrapper} = props;
-        const classNames = getClassNames(attributes);
-        console.log(classNames);
-
+        const {attributes, BlockWrapper, styleData} = props;
+        const classNames = getClassNames(attributes, styleData);
         return (
             <BlockWrapper
                 className={classNames}

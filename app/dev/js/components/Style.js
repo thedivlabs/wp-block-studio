@@ -143,12 +143,12 @@ export const withStyle = (Component) => (props) => {
             props,
             styleRef
         });
-    }, [settings, blockGapDeps]);
+    }, [settings, blockGapDeps, uniqueId]);
 
 
     props.BlockWrapper = useCallback((wrapperProps) => {
         return <BlockWrapper props={props} clientId={clientId} {...wrapperProps} />
-    }, [clientId, uniqueId]);
+    }, [clientId]);
 
     props.setCss = updateBlockCssRef;
     props.setPreload = updatePreloadRef;

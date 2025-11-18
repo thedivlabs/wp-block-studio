@@ -142,7 +142,7 @@ export const withStyle = (Component) => (props) => {
             props,
             styleRef
         });
-    }, [settings, blockGapDeps]);
+    }, [settings, blockGapDeps, uniqueId]);
 
 
     const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {

@@ -29,6 +29,7 @@
     }
   ],
   "supports": {
+    "innerBlocks": false,
     "interactivity": true,
     "dimensions": {
       "minHeight": true

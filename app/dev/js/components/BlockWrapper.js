@@ -17,7 +17,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const hasContainer = hasBackground || advanced.container;
     const isContainer = !hasContainer && !!layout.container;
 
-    
+
     const classList = [
         //blockBaseName,
         userClass || null,
@@ -75,22 +75,13 @@ const BlockBackground = memo(
 );
 
 
-/*export const BlockWrapper = ({
-                                 props,
-                                 className,
-                                 tagName = 'div',
-                                 children,
-                                 hasBackground = true,
-                                 isSave = false,
-                                 wrapperProps
-                             }) => {*/
-
 export const BlockWrapper = ({
                                  props,            // full block props from Gutenberg
                                  wrapperProps = {},// wrapper-level props (className, tagName, etc.)
                                  children,
                                  tagName = 'div',
                                  isSave = false,
+                                 hasChildren = true,
                              }) => {
 
 
@@ -98,8 +89,8 @@ export const BlockWrapper = ({
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;
 
-    //const blockBaseName = name ? name.replace('/', '-') : '';
-    const Tag = ElementTag(advanced?.tagName, tagName);
+    const {tagName: wrapperTagName} = wrapperProps;
+    const Tag = ElementTag(advanced?.tagName, wrapperTagName || tagName);
 
     const isBackgroundActive = hasAnyBackground(settings);
 
@@ -142,7 +133,8 @@ export const BlockWrapper = ({
     // ──────────────────────────────────────────────
     const blockProps = useBlockProps(baseBlockProps);
 
-    if (hasContainer || isBackgroundActive) {
+    if (hasChildren && (hasContainer || isBackgroundActive)) {
+
         const containerProps = useInnerBlocksProps(
             {className: containerClass},
             {}
@@ -157,12 +149,21 @@ export const BlockWrapper = ({
         );
     }
 
-    const innerProps = useInnerBlocksProps(blockProps, {});
+    if (hasChildren) {
+        const innerProps = useInnerBlocksProps(blockProps, {});
+        return (
+            <Tag {...innerProps}>
+                {innerProps.children}
+                {children}
+            </Tag>
+        );
+    }
 
+// NO CHILDREN — Basic rendering
     return (
-        <Tag {...innerProps}>
-            {innerProps.children}
+        <Tag {...blockProps}>
             {children}
         </Tag>
     );
+
 };

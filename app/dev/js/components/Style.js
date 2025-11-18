@@ -142,15 +142,12 @@ export const withStyle = (Component) => (props) => {
             props,
             styleRef
         });
-    }, [settings, blockGapDeps, uniqueId]);
+    }, [settings, blockGapDeps]);
 
 
-    props.BlockWrapper = useCallback((wrapperProps) => {
+    const wrappedBlockWrapperCallback = useCallback((wrapperProps) => {
         return <BlockWrapper props={props} wrapperProps={wrapperProps}/>
-    }, [clientId]);
-
-    props.setCss = updateBlockCssRef;
-    props.setPreload = updatePreloadRef;
+    }, [props]);
 
 
     /*
@@ -160,7 +157,12 @@ export const withStyle = (Component) => (props) => {
     */
     return (
         <>
-            <Component {...props}  />
+            <Component
+                {...props}
+                BlockWrapper={wrappedBlockWrapperCallback}
+                setCss={updateBlockCssRef}
+                setPreload={updatePreloadRef}
+            />
             {attributes?.['wpbs-css'] && (
                 <style ref={styleRef}/>
             )}

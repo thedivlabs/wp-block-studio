@@ -2,6 +2,7 @@ import {ElementTag} from "Components/AdvancedControls";
 import {BackgroundElement, hasAnyBackground} from "Components/Background";
 import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
 import {memo} from "@wordpress/element";
+import _ from "lodash";
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {cleanObject, getCSSFromStyle} = API;
@@ -16,14 +17,11 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const hasContainer = hasBackground || advanced.container;
     const isContainer = !hasContainer && !!layout.container;
 
-    const blockBaseName = name ? name.replace('/', '-') : '';
-
-    console.log(blockBaseName);
-
+    
     const classList = [
-        blockBaseName,
-        uniqueId,
+        //blockBaseName,
         userClass || null,
+        uniqueId,
         hasBackground ? 'relative' : null,
         layout['hide-empty'] && '--hide-empty',
         layout['box-shadow'] && '--shadow',
@@ -77,20 +75,30 @@ const BlockBackground = memo(
 );
 
 
-export const BlockWrapper = ({
+/*export const BlockWrapper = ({
                                  props,
                                  className,
                                  tagName = 'div',
                                  children,
                                  hasBackground = true,
                                  isSave = false,
-                                 ...wrapperProps
+                                 wrapperProps
+                             }) => {*/
+
+export const BlockWrapper = ({
+                                 props,            // full block props from Gutenberg
+                                 wrapperProps = {},// wrapper-level props (className, tagName, etc.)
+                                 children,
+                                 tagName = 'div',
+                                 isSave = false,
                              }) => {
-    const {attributes, name} = props;
+
+
+    const {attributes} = props;
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;
 
-    const blockBaseName = name ? name.replace('/', '-') : '';
+    //const blockBaseName = name ? name.replace('/', '-') : '';
     const Tag = ElementTag(advanced?.tagName, tagName);
 
     const isBackgroundActive = hasAnyBackground(settings);
@@ -98,7 +106,7 @@ export const BlockWrapper = ({
     const hasContainer = isBackgroundActive || settings?.advanced?.container;
 
     const containerClass = [
-        blockBaseName ? `${blockBaseName}__container` : null,
+        //blockBaseName ? `${blockBaseName}__container` : null,
         'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
     ]
         .filter(Boolean)

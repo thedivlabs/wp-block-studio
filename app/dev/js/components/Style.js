@@ -146,7 +146,7 @@ export const withStyle = (Component) => (props) => {
 
 
     props.BlockWrapper = useCallback((wrapperProps) => {
-        return <BlockWrapper props={props} {...wrapperProps}/>
+        return <BlockWrapper props={props} wrapperProps={wrapperProps}/>
     }, [clientId]);
 
     props.setCss = updateBlockCssRef;
@@ -160,7 +160,7 @@ export const withStyle = (Component) => (props) => {
     */
     return (
         <>
-            <Component {...props} />
+            <Component {...props}  />
             {attributes?.['wpbs-css'] && (
                 <style ref={styleRef}/>
             )}
@@ -179,14 +179,15 @@ export const withStyleSave = (Component) => (props) => {
     return (
         <Component
             {...props}
-            BlockWrapper={(wrapperProps) => (
-                <BlockWrapper
+            BlockWrapper={(wrapperProps) => {
+
+                return <BlockWrapper
 
                     props={props}
                     isSave={true}
-                    {...wrapperProps}
+                    wrapperProps={wrapperProps}
                 />
-            )}
+            }}
             styleData={styleData}
         />
     );

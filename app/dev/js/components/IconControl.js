@@ -33,7 +33,7 @@ const generateCSS = (fill, weight, opsz) => {
     return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
 };
 
-const IconPreview = memo(({name, weight, size, style}) => {
+const IconPreview = memo(({name = 'home', weight = 300, size = 24, style = 'default'}) => {
     const previewStyle = {
         flexGrow: 0,
         display: 'inline-flex',
@@ -48,7 +48,8 @@ const IconPreview = memo(({name, weight, size, style}) => {
     };
 
     return <img
-        src={`https://fonts.gstatic.com/s/i/materialsymbolsoutlined/${name}/${weight}/${size}px.png`} alt={name}
+        src={`https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/${name}/${style}/${size}px.svg`}
+        alt={name}
         style={previewStyle}
     />;
 
@@ -66,7 +67,7 @@ export const IconControl = ({
 
     const fieldId = [fieldKey, props?.clientId].join('-');
 
-    const {weight = 300, size = 24, style = 0} = value;
+    const {weight = 300, size = 24, style = 'default', name} = value;
     const [isOpen, setIsOpen] = useState(false);
 
     const icons = props.attributes['wpbs-icons'] || [];
@@ -126,7 +127,7 @@ export const IconControl = ({
             commit(local);
         }
     }, [local]);
-    
+
     return (
         <BaseControl label={label} style={{marginBottom: 0}}>
             {/* Name input */}
@@ -176,8 +177,8 @@ export const IconControl = ({
                                     value={style}
                                     options={[
                                         {value: '', label: 'Select'},
-                                        {value: 1, label: 'Solid'},
-                                        {value: 0, label: 'Outlined'},
+                                        {value: 'solid', label: 'Solid'},
+                                        {value: 'outlined', label: 'Outlined'},
                                     ]}
                                     onChange={(val) => update('style', val !== '' ? Number(val) : '')}
                                 />

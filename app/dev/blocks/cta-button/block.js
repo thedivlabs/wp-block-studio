@@ -31,6 +31,7 @@ function classNames(attributes = {}) {
     const {'wpbs-cta': settings = {}} = attributes;
 
     return [
+        'wpbs-cta-button',
         'relative',
         !settings?.['is-link'] ? 'wp-element-button' : null,
         settings?.['icon'] && '--icon',
@@ -220,7 +221,6 @@ registerBlockType(metadata.name, {
 
                 <BlockWrapper
                     tagName="a"
-                    props={props}
                     className={computedClassName}
                     {...anchorProps}
                 >
@@ -251,7 +251,6 @@ registerBlockType(metadata.name, {
 
         return (
             <BlockWrapper
-                props={props}
                 className={classNames(attributes)}
                 tagName="a"
                 {...anchorProps}

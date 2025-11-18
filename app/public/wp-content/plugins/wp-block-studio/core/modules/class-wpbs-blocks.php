@@ -15,10 +15,47 @@ class WPBS_Blocks {
 		if ( ! is_admin() ) {
 			add_filter( 'render_block', [ $this, 'render_block' ], 10, 3 );
 			add_action( 'wp_head', [ $this, 'output_preload_media' ] );
+			add_action( 'wp_head', [ $this, 'output_page_icons' ] );
+			add_filter( 'render_block_data', [ $this, 'handle_block_icons' ], 10, 2 );
 			add_filter( 'render_block_data', [ $this, 'collect_preload_media' ], 10, 2 );
 			add_filter( 'render_block_data', [ $this, 'handle_block_styles' ], 10, 2 );
+			add_action( 'save_post', [ $this, 'flush_material_icons_cache' ], 20, 2 );
+
 		}
 
+	}
+
+	public function handle_block_icons( array $block, array $source_block ): array {
+
+		// Only process WPBS blocks
+		if ( ! str_starts_with( $block['blockName'], 'wpbs' ) ) {
+			return $block;
+		}
+
+		// Don't accumulate after wp_head has started or finished
+		if ( did_action( 'wp_head' ) ) {
+			return $block;
+		}
+
+		// Attach accumulator
+		add_filter( 'wpbs_block_icons', function ( array $carry ) use ( $block ) {
+
+			// Always start with a clean carry
+			if ( ! is_array( $carry ) ) {
+				$carry = [];
+			}
+
+			// Extract valid icon entries
+			$icons = array_filter(
+				$block['attrs']['wpbs-icons'] ?? [],
+				fn( $item ) => is_array( $item ) && ! empty( $item['name'] )
+			);
+
+			// Merge into accumulator
+			return array_merge( $carry, $icons );
+		} );
+
+		return $block;
 	}
 
 	public function handle_block_styles( array $block, array $source_block ): array {
@@ -79,6 +116,176 @@ class WPBS_Blocks {
 
 		return $block;
 	}
+
+	public function output_page_icons(): void {
+
+		// Don't run in admin, feeds, etc.
+		if ( is_admin() || is_feed() || is_robots() || is_trackback() ) {
+			return;
+		}
+
+		$post_id = get_queried_object_id();
+		if ( ! $post_id ) {
+			return;
+		}
+
+		$cache_key = '_wpbs_material_icons_url';
+
+		// Try cached URL first
+		$cached_url = get_post_meta( $post_id, $cache_key, true );
+		if ( is_string( $cached_url ) && $cached_url !== '' ) {
+			echo '<link rel="stylesheet" href="' . esc_url( $cached_url ) . '" />' . "\n";
+
+			return;
+		}
+
+		// 1. Collect icons from blocks (via your collector)
+		$icons = apply_filters( 'wpbs_block_icons', [] );
+
+		// 2. Merge in global icons from ACF (optional)
+		$global_icons = $this->get_global_icon_icons();
+		if ( ! empty( $global_icons ) ) {
+			$icons = array_merge( $icons, $global_icons );
+		}
+
+		// 3. Build URL from collected + global icons
+		$url = $this->build_material_icons_url( $icons );
+
+		if ( ! $url ) {
+			return;
+		}
+
+		// Cache per post
+		update_post_meta( $post_id, $cache_key, $url );
+
+		// Output final <link>
+		echo '<link rel="stylesheet" href="' . esc_url( $url ) . '" />' . "\n";
+
+		// Optional: preconnect to speed things up
+		echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />' . "\n";
+		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />' . "\n";
+	}
+
+	private function build_material_icons_url( array $icons ): ?string {
+
+		$names  = [];
+		$opsz   = [];
+		$weight = [];
+		$fill   = [];
+		$grade  = [];
+
+		foreach ( $icons as $icon ) {
+			if ( ! is_array( $icon ) ) {
+				continue;
+			}
+
+			$name = isset( $icon['name'] ) ? trim( (string) $icon['name'] ) : '';
+			if ( $name === '' ) {
+				continue;
+			}
+
+			// Track unique icon names
+			$names[ $name ] = true;
+
+			$opsz[]   = isset( $icon['opsz'] ) ? (int) $icon['opsz'] : 24;
+			$weight[] = isset( $icon['weight'] ) ? (int) $icon['weight'] : 300;
+			$fill[]   = isset( $icon['fill'] ) ? (int) $icon['fill'] : 0;
+			$grade[]  = isset( $icon['grade'] ) ? (int) $icon['grade'] : 0;
+		}
+
+		if ( empty( $names ) ) {
+			return null;
+		}
+
+		// Unique, sorted icon names
+		$icon_names = array_keys( $names );
+		sort( $icon_names );
+
+		// Axis ranges
+		$opsz_range   = $this->axis_range( $opsz, 24 );
+		$weight_range = $this->axis_range( $weight, 300 );
+		$fill_range   = $this->axis_range( $fill, 0 );
+		$grade_range  = $this->axis_range( $grade, 0 );
+
+		// Family (outlined to match your MaterialIcon renderer)
+		$family = 'Material+Symbols+Outlined';
+
+		// Build URL
+		$url = 'https://fonts.googleapis.com/css2?family=' . $family;
+		$url .= ':opsz,wght,FILL,GRAD@' . $opsz_range . ',' . $weight_range . ',' . $fill_range . ',' . $grade_range;
+		$url .= '&icon_names=' . implode( ',', $icon_names );
+		$url .= '&display=swap';
+
+		return $url;
+	}
+
+	private function axis_range( array $values, int $fallback ): string {
+
+		$values = array_filter(
+			array_map( 'intval', $values ),
+			static fn( int $v ): bool => $v >= 0
+		);
+
+		if ( empty( $values ) ) {
+			return (string) $fallback;
+		}
+
+		sort( $values, SORT_NUMERIC );
+		$values = array_values( array_unique( $values ) );
+
+		if ( count( $values ) === 1 ) {
+			return (string) $values[0];
+		}
+
+		$min = $values[0];
+		$max = $values[ array_key_last( $values ) ];
+
+		return $min . '..' . $max;
+	}
+
+	private function get_global_icon_icons(): array {
+
+		if ( ! function_exists( 'get_field' ) ) {
+			return [];
+		}
+
+		$raw = get_field( 'theme_settings_api_material_icons', 'options' ) ?: '';
+
+		$names = array_filter(
+			array_map(
+				'trim',
+				explode( ',', str_replace( ' ', '', $raw ) )
+			),
+			static fn( string $name ): bool => $name !== ''
+		);
+
+		if ( empty( $names ) ) {
+			return [];
+		}
+
+		$icons = [];
+
+		foreach ( $names as $name ) {
+			$icons[] = [
+				'name'   => $name,
+				'fill'   => 0,
+				'weight' => 300,
+				'opsz'   => 24,
+				'grade'  => 0,
+			];
+		}
+
+		return $icons;
+	}
+
+	public function flush_material_icons_cache( int $post_id, \WP_Post $post ): void {
+		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+			return;
+		}
+
+		delete_post_meta( $post_id, '_wpbs_material_icons_url' );
+	}
+
 
 	public function output_preload_media(): void {
 

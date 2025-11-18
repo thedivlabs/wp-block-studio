@@ -41,6 +41,9 @@ export const withStyle = (Component) => (props) => {
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
 
+    useEffect(() => {
+        console.log(attributes);
+    }, [attributes]);
 
     const {
         uniqueId,

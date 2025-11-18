@@ -18,7 +18,7 @@ import {
 import {useMemo, useCallback, useEffect} from '@wordpress/element';
 
 import Link from "Components/Link.js";
-import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
+import {IconControl, MaterialIcon} from "Components/IconControl";
 import PopupSelector from "Components/PopupSelector";
 
 import {
@@ -179,7 +179,6 @@ registerBlockType(metadata.name, {
             props: {
                 '--testing': '60px',
                 '--icon-color': settings?.['icon-color'] || null,
-                ...iconProps(settings?.icon),
             },
             breakpoints: {
                 xs: {'--testing': '20px'}
@@ -226,10 +225,10 @@ registerBlockType(metadata.name, {
                     {...anchorProps}
                 >
                     <span className="wpbs-cta-button__title relative">{title}</span>
-                    {/* <MaterialIcon
+                    <MaterialIcon
                         className="wpbs-cta-button__icon"
                         {...(settings?.icon ?? {})}
-                    />*/}
+                    />
                 </BlockWrapper>
             </>
         );
@@ -258,10 +257,10 @@ registerBlockType(metadata.name, {
                 {...anchorProps}
             >
                 <span className="wpbs-cta-button__title">{'Learn more'}</span>
-                {/*<MaterialIcon
+                <MaterialIcon
                     className="wpbs-cta-button__icon"
                     {...(settings?.icon ?? {})}
-                />*/}
+                />
             </BlockWrapper>
         );
     }),

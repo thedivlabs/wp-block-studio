@@ -135,7 +135,6 @@ export const withStyle = (Component) => (props) => {
         if (typeof onStyleChange !== "function") return;
         if (!styleRef.current) return;
 
-
         onStyleChange({
             css: blockCssRef.current,
             preload: blockPreloadRef.current,

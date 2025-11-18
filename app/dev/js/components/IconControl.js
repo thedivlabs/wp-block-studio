@@ -33,7 +33,7 @@ const generateCSS = (fill, weight, opsz) => {
     return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
 };
 
-const IconPreview = memo(({name = 'home', weight = 300, size = 24, style = 'default'}) => {
+const IconPreview = memo(({name = 'home', weight = 300, style = 'default'}) => {
     const previewStyle = {
         flexGrow: 0,
         display: 'inline-flex',
@@ -47,8 +47,10 @@ const IconPreview = memo(({name = 'home', weight = 300, size = 24, style = 'defa
         objectPosition: 'center',
     };
 
+    style = style === '' ? 'default' : style;
+
     return <img
-        src={`https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/${name}/${style}/${size}px.svg`}
+        src={`https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/${name}/${style}/24px.svg`}
         alt={name}
         style={previewStyle}
     />;

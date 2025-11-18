@@ -181,10 +181,11 @@ export const withStyleSave = (Component) => (props) => {
             {...props} // ← this is the important part
             BlockWrapper={(wrapperProps) => (
                 <BlockWrapper
+                    {...wrapperProps}
                     props={props}
                     clientId={clientId}
                     isSave={true}
-                    {...wrapperProps}
+
                 />
             )}
             styleData={styleData}

@@ -148,11 +148,25 @@ export const IconControl = ({
 
     const {name, weight = 300, size = 24, style = "outlined"} = local;
 
+    const labelNode = (
+        <span>
+        Icon{' '}
+            <a
+                href="https://fonts.google.com/icons"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{textDecoration: 'none'}}
+            >
+            <MaterialIcon name="help" size={14} style="solid"/>
+        </a>
+    </span>
+    );
+
     /* --------------------------------------------
      * UI
      * -------------------------------------------- */
     return (
-        <BaseControl label={label} style={{marginBottom: 0}}>
+        <BaseControl label={labelNode} style={{marginBottom: 0}}>
             <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
                 <TextControl
                     value={name}

@@ -17,7 +17,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const isContainer = !hasContainer && !!layout.container;
 
     const blockBaseName = name ? name.replace('/', '-') : '';
-    console.log(wrapperProps);
+
     const classList = [
         blockBaseName,
         uniqueId,

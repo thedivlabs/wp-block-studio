@@ -36,3 +36,14 @@ body:not(.icons-loaded) .material-icon-before:before {
     fill: currentColor;
   }
 }
+
+.wpbs-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: text-bottom;
+  line-height: inherit;
+  height: 1em;
+  width: fit-content;
+}

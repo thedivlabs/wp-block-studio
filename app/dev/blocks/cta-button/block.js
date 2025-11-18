@@ -10,6 +10,7 @@ import metadata from "./block.json";
 
 import {
     __experimentalGrid as Grid,
+    __experimentalUnitControl as UnitControl,
     PanelBody,
     TabPanel,
     ToggleControl
@@ -39,6 +40,7 @@ function classNames(attributes = {}) {
         settings?.['icon-bold'] && '--icon-bold',
         settings?.['icon-only'] && '--icon-only',
         settings?.['icon-first'] && '--icon-first',
+        settings?.['offset'] && '--offset',
     ].filter(Boolean).join(' ');
 }
 
@@ -81,6 +83,21 @@ registerBlockType(metadata.name, {
                     onChange={(popup) => updateSettings({popup})}
                     label="Popup"
                 />
+
+                <Grid columns={2} columnGap={15} rowGap={20}>
+                    <UnitControl
+                        label="Offset"
+                        value={settings?.offset}
+                        units={
+                            [
+                                {value: "px", label: "px"}
+                            ]}
+                        onChange={(offset) => updateSettings({offset: offset})}
+                        isResetValueOnUnitChange
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
+                    />
+                </Grid>
 
                 <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <ToggleControl
@@ -177,8 +194,8 @@ registerBlockType(metadata.name, {
         // ----------------------------------------
         const cssObj = useMemo(() => ({
             props: {
-                '--testing': '60px',
                 '--icon-color': settings?.['icon-color'] || null,
+                '--offset': settings?.['offset'] || null,
             },
             breakpoints: {
                 xs: {'--testing': '20px'}

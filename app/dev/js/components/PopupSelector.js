@@ -1,18 +1,19 @@
 // Components/PopupSelector.js
 
-import { useMemo } from '@wordpress/element';
-import { SelectControl } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
-import { store as coreStore } from '@wordpress/core-data';
+import {useMemo} from '@wordpress/element';
+import {SelectControl} from '@wordpress/components';
+import {useSelect} from '@wordpress/data';
+import {store as coreStore} from '@wordpress/core-data';
 
 export default function PopupSelector({
                                           value = '',
-                                          onChange = () => {},
+                                          onChange = () => {
+                                          },
                                           label = 'Popup',
                                       }) {
 
     // Stable query object
-    const QUERY = useMemo(() => ({ per_page: -1 }), []);
+    const QUERY = useMemo(() => ({per_page: -1}), []);
 
     // Fetch popup posts
     const popups = useSelect(
@@ -24,7 +25,7 @@ export default function PopupSelector({
     // Build options list
     const options = useMemo(() => {
         return [
-            { label: 'Select', value: '' },
+            {label: 'Select', value: ''},
             ...popups.map((popup) => ({
                 label: popup.title?.raw || '(Untitled)',
                 value: popup.id,
@@ -35,10 +36,11 @@ export default function PopupSelector({
     return (
         <SelectControl
             label={label}
-            __nextHasNoMarginBottom
             value={value}
             options={options}
             onChange={(newValue) => onChange(newValue)}
+            __nextHasNoMarginBottom
+            __next40pxDefaultSize
         />
     );
 }

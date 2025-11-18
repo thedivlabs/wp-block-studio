@@ -38,8 +38,10 @@ export const withStyle = (Component) => (props) => {
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
     const blockCssRef = useRef({});
+    const blockCssDeps = JSON.stringify(blockCssRef.current || {});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
+
 
     useEffect(() => {
         console.log(attributes);
@@ -97,7 +99,7 @@ export const withStyle = (Component) => (props) => {
             }
 
         },
-        [settings, setAttributes]
+        [settings, setAttributes, blockCssDeps]
     );
 
     /*
@@ -145,7 +147,7 @@ export const withStyle = (Component) => (props) => {
             props,
             styleRef
         });
-    }, [settings, blockGapDeps, uniqueId]);
+    }, [settings, blockGapDeps, uniqueId, blockCssDeps]);
 
 
     const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {

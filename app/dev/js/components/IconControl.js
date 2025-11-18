@@ -149,17 +149,28 @@ export const IconControl = ({
     const {name, weight = 300, size = 24, style = "outlined"} = local;
 
     const labelNode = (
-        <span>
+        <><span>
         Icon{' '}
+    </span>
             <a
                 href="https://fonts.google.com/icons"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{textDecoration: 'none'}}
+                style={{
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    verticalAlign: 'text-bottom',
+                    lineHeight: 'inherit',
+                    height: '1em',
+                    width: 'fit-content',
+                    marginLeft: '2px',
+                }}
             >
-            <MaterialIcon name="help" size={14} style="solid"/>
-        </a>
-    </span>
+                <MaterialIcon name="help" size={15} style="outlined" weight={400}/>
+            </a>
+        </>
     );
 
     /* --------------------------------------------
@@ -260,7 +271,7 @@ export const MaterialIcon = ({
 
     return !name ? null : (
         <span
-            className={`material-symbols-outlined ${className}`}
+            className={`material-symbols-outlined wpbs-icon ${className}`}
             style={iconStyle}
         >
             {name}

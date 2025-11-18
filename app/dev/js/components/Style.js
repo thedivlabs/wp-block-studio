@@ -146,7 +146,7 @@ export const withStyle = (Component) => (props) => {
 
 
     props.BlockWrapper = useCallback((wrapperProps) => {
-        return <BlockWrapper props={props} clientId={clientId} {...wrapperProps} />
+        return <BlockWrapper {...wrapperProps} props={props} clientId={clientId}/>
     }, [clientId, settings]);
 
     props.setCss = updateBlockCssRef;

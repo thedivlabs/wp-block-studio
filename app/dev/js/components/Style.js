@@ -131,16 +131,28 @@ export const withStyle = (Component) => (props) => {
     Watches wpbs-style (settings) and kicks the external parser.
     ----------------------------------------------------------------------
     */
+    const debouncedOnStyleChange = useMemo(() => {
+        return _.debounce((payload) => {
+            if (typeof onStyleChange === "function") {
+                console.log('calling onStyleChange');
+                onStyleChange(payload);
+            }
+        }, 200, {leading: true}); // adjust delay as needed
+    }, []);
+
+
     useEffect(() => {
-        if (typeof onStyleChange !== "function") return;
         if (!styleRef.current) return;
 
-        onStyleChange({
+        debouncedOnStyleChange({
             css: blockCssRef.current,
             preload: blockPreloadRef.current,
             props,
-            styleRef
+            styleRef,
         });
+
+        // Cleanup on unmount to flush or cancel
+        return () => debouncedOnStyleChange.cancel();
     }, [settings, blockGapDeps, uniqueId]);
 
 

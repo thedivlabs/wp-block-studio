@@ -79,15 +79,15 @@ export const BlockWrapper = ({
                                  props,            // full block props from Gutenberg
                                  wrapperProps = {},// wrapper-level props (className, tagName, etc.)
                                  children,
-                                 tagName = 'div',
                                  isSave = false,
+                                 ...rest
                              }) => {
-
+    console.log(rest);
     const {attributes} = props;
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;
 
-    const {tagName: wrapperTagName, hasChildren = false} = wrapperProps;
+    const {tagName: wrapperTagName = 'div', hasChildren = false} = wrapperProps;
     const Tag = ElementTag(advanced?.tagName, wrapperTagName || tagName);
 
     const isBackgroundActive = hasAnyBackground(settings);

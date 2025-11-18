@@ -145,8 +145,8 @@ export const withStyle = (Component) => (props) => {
     }, [settings, blockGapDeps]);
 
 
-    const wrappedBlockWrapperCallback = useCallback((wrapperProps) => {
-        return <BlockWrapper props={props} wrapperProps={wrapperProps}/>
+    const wrappedBlockWrapperCallback = useCallback((children, ...wrapperProps) => {
+        return <BlockWrapper props={props} wrapperProps={wrapperProps}>{children}</BlockWrapper>;
     }, [props]);
 
 

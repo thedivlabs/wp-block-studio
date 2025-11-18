@@ -256,7 +256,7 @@ registerBlockType(metadata.name, {
                 tagName="a"
                 {...anchorProps}
             >
-                <span className="wpbs-cta-button__title">{title}</span>
+                <span className="wpbs-cta-button__title">{'Learn more'}</span>
                 {/*<MaterialIcon
                     className="wpbs-cta-button__icon"
                     {...(settings?.icon ?? {})}

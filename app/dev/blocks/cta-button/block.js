@@ -76,27 +76,28 @@ registerBlockType(metadata.name, {
         // TAB: OPTIONS
         // ----------------------------------------
         const tabOptions = useMemo(() => (<Grid columns={1} columnGap={15} rowGap={20}>
-            <PopupSelector
-                value={settings?.popup}
-                onChange={(popup) => updateSettings({popup})}
-                label="Popup"
-            />
+                <PopupSelector
+                    value={settings?.popup}
+                    onChange={(popup) => updateSettings({popup})}
+                    label="Popup"
+                />
 
-            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
-                <ToggleControl
-                    label="Loop"
-                    __nextHasNoMarginBottom
-                    checked={!!settings?.loop}
-                    onChange={(loop) => updateSettings({loop: !!loop})}
-                />
-                <ToggleControl
-                    label="Link"
-                    __nextHasNoMarginBottom
-                    checked={!!settings?.['is-link']}
-                    onChange={(val) => updateSettings({'is-link': val})}
-                />
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
+                    <ToggleControl
+                        label="Loop"
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.loop}
+                        onChange={(loop) => updateSettings({loop: !!loop})}
+                    />
+                    <ToggleControl
+                        label="Link"
+                        __nextHasNoMarginBottom
+                        checked={!!settings?.['is-link']}
+                        onChange={(val) => updateSettings({'is-link': val})}
+                    />
+                </Grid>
             </Grid>
-        </Grid>), []);
+        ), [attributes?.['wpbs-cta']]);
 
         // ----------------------------------------
         // TAB: ICON

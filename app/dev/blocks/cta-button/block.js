@@ -221,7 +221,6 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <BlockWrapper
-                    tagName="a"
                     className={computedClassName}
                     {...anchorProps}
                 >

@@ -52,7 +52,6 @@ registerBlockType(metadata.name, {
             return (
                 <>
                     <BlockWrapper
-                        props={props}
                         className={classNames}
                         hasBackground={true}
                     />
@@ -61,12 +60,12 @@ registerBlockType(metadata.name, {
         }),
 
     save: withStyleSave((props) => {
-        const {attributes, BlockWrapper, styleData} = props;
-        const classNames = getClassNames(attributes, styleData);
+        const {attributes, BlockWrapper} = props;
+        const classNames = getClassNames(attributes);
+        console.log(classNames);
 
         return (
             <BlockWrapper
-                props={props}
                 className={classNames}
                 hasBackground={true}
             />

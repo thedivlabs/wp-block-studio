@@ -220,7 +220,6 @@ registerBlockType(metadata.name, {
 
                 <BlockWrapper
                     tagName="a"
-                    props={props}
                     className={computedClassName}
                     {...anchorProps}
                 >
@@ -251,7 +250,6 @@ registerBlockType(metadata.name, {
 
         return (
             <BlockWrapper
-                props={props}
                 className={classNames(attributes)}
                 tagName="a"
                 {...anchorProps}

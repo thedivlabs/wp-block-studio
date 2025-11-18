@@ -56,6 +56,7 @@ registerBlockType(metadata.name, {
                     <BlockWrapper
                         className={classNames}
                         hasBackground={true}
+                        hasChildren={true}
                     />
                 </>
             );
@@ -69,6 +70,7 @@ registerBlockType(metadata.name, {
             <BlockWrapper
                 className={classNames}
                 hasBackground={true}
+                hasChildren={true}
             />
         );
     }),

@@ -9,7 +9,7 @@ import {
     Popover,
 } from '@wordpress/components';
 import {useSetting} from "@wordpress/block-editor";
-import {useEffect, useMemo, useState, useCallback} from "@wordpress/element";
+import {useEffect, useMemo, useState, useCallback, memo} from "@wordpress/element";
 import {debounce, isEqual} from "lodash";
 
 export function iconProps(prop, key = '') {
@@ -32,6 +32,27 @@ export function iconProps(prop, key = '') {
 const generateCSS = (fill, weight, opsz) => {
     return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
 };
+
+const IconPreview = memo(({name, weight, size, style}) => {
+    const previewStyle = {
+        flexGrow: 0,
+        display: 'inline-flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        lineHeight: 1,
+        verticalAlign: 'middle',
+        width: '32px',
+        height: '32px',
+        objectFit: 'contain',
+        objectPosition: 'center',
+    };
+
+    return <img
+        src={`https://fonts.gstatic.com/s/i/materialsymbolsoutlined/${name}/${weight}/${size}px.png`} alt={name}
+        style={previewStyle}
+    />;
+
+}, (prev, next) => isEqual(prev, next));
 
 export const IconControl = ({
                                 fieldKey,
@@ -109,52 +130,6 @@ export const IconControl = ({
     }, [local]);
 
 
-    /*const update = (key, val) => {
-        if (key === 'weight') {
-            val = Math.round(val / 100) * 100;
-        }
-
-        const newVal = {...value, [key]: val};
-        newVal.css = generateCSS(newVal.style ?? 0, newVal.weight ?? 300, newVal.size || 24);
-
-        // update block-level field
-        onChange(newVal);
-
-        // update global icon list
-        const next = [
-            ...icons.filter(icon => icon.key !== fieldId),
-            newVal.name
-                ? {
-                    key: fieldId,
-                    name: newVal.name,
-                    style: newVal.style ?? 0,
-                    weight: newVal.weight ?? 300,
-                    grade: newVal.grade ?? 0,
-                    opsz: newVal.size ?? 24,
-                    fill: newVal.style ?? 0,
-                }
-                : null
-        ].filter(Boolean);
-
-        props.setAttributes({'wpbs-icons': next});
-    };*/
-
-
-    const previewStyle = useMemo(() => ({
-        flexGrow: 0,
-        fontVariationSettings: generateCSS(value?.style ?? 0, value?.weight ?? 300, 26),
-        fontFamily: "'Material Symbols Outlined', sans-serif",
-        fontSize: '26px',
-        display: 'inline-flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        lineHeight: 1,
-        verticalAlign: 'middle',
-        width: '32px',
-        height: '32px',
-        textAlign: 'center',
-    }), [value?.style, value?.weight]);
-
     const weightOptions = themeWeights.replace(' ', '').split(',').map(weight => {
         return {value: weight.toString(), label: weight.toString()};
     })
@@ -173,7 +148,7 @@ export const IconControl = ({
                 />
 
                 {/* Preview div */}
-                <div style={previewStyle}>{name || 'home'}</div>
+                <IconPreview name={name} weight={weight} size={size} style={style}/>
 
                 {/* Settings button */}
                 <div>

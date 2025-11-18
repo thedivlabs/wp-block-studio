@@ -87,7 +87,6 @@ export const withStyle = (Component) => (props) => {
             const cleanedCurrent = cleanObject(settings, true);
 
             if (!_.isEqual(cleanedNext, cleanedCurrent)) {
-                console.log('updateStyleSettings', nextLayout);
                 setAttributes({
                     'wpbs-style': cleanedNext,
                     //uniqueId: instanceId
@@ -148,7 +147,7 @@ export const withStyle = (Component) => (props) => {
 
     props.BlockWrapper = useCallback((wrapperProps) => {
         return <BlockWrapper props={props} clientId={clientId} {...wrapperProps} />
-    }, [clientId]);
+    }, [clientId, settings]);
 
     props.setCss = updateBlockCssRef;
     props.setPreload = updatePreloadRef;

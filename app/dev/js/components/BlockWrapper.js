@@ -8,6 +8,7 @@ const {cleanObject, getCSSFromStyle} = API;
 
 const getBlockProps = (props = {}, wrapperProps = {}) => {
     const {attributes = {}, name} = props;
+
     const {className: userClass = '', style: blockStyle = {}, ...restWrapperProps} = wrapperProps;
     const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
     const {props: layout = {}, background = {}, hover = {}, advanced = {}} = settings;
@@ -16,7 +17,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     const isContainer = !hasContainer && !!layout.container;
 
     const blockBaseName = name ? name.replace('/', '-') : '';
-
+    console.log(wrapperProps);
     const classList = [
         blockBaseName,
         uniqueId,

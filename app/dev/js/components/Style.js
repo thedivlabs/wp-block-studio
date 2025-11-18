@@ -1,37 +1,46 @@
-import {memo, useCallback, useEffect, useRef} from '@wordpress/element';
+import {Fragment, memo, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
 import {StyleEditorUI} from "Includes/style";
 import _ from 'lodash';
 import {BlockWrapper} from 'Components/BlockWrapper';
 import {useInstanceId} from "@wordpress/compose";
 
+
 export const STYLE_ATTRIBUTES = {
-    uniqueId: {type: 'string'},
+    'uniqueId': {type: 'string'},
     'wpbs-css': {type: 'object', default: {}},
-    'wpbs-preload': {type: 'array', default: []},
-    'wpbs-icons': {type: 'array', default: []},
+    'wpbs-preload': {type: 'array', default: [{test: 'test'}]},
+    'wpbs-icons': {
+        type: 'array',
+        default: []
+    },
     'wpbs-style': {type: 'object', default: {}},
 };
 
+
 const StyleEditorPanel = memo(
     ({settings, updateStyleSettings}) => (
-        <StyleEditorUI settings={settings} updateStyleSettings={updateStyleSettings}/>
+        <StyleEditorUI
+            settings={settings}
+            updateStyleSettings={updateStyleSettings}
+        />
     ),
     (prev, next) => _.isEqual(prev.settings, next.settings)
 );
+
 
 export const withStyle = (Component) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
     const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
     const {clientId, attributes, setAttributes, name} = props;
 
-    // capture original props identity
-    const realProps = props;
-
     const instanceId = useInstanceId(withStyle, name.replace('/', '-'));
 
+    const blockGap = attributes?.style?.spacing?.blockGap;
+    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
+
 
     const {
         uniqueId,
@@ -44,15 +53,13 @@ export const withStyle = (Component) => (props) => {
         }
     } = attributes;
 
-    /* --------------------------------------------
-       Block Registration (first mount only)
-    -------------------------------------------- */
     useEffect(() => {
         const oldId = uniqueId;
         const status = registerBlock(oldId, clientId);
 
         if (status === "fresh" || status === "clone") {
             const newId = instanceId;
+
             setAttributes({uniqueId: newId});
             registerBlock(newId, clientId);
 
@@ -63,83 +70,100 @@ export const withStyle = (Component) => (props) => {
     }, []);
 
     useEffect(() => {
-        return () => unregisterBlock(attributes.uniqueId, clientId);
+        return () => {
+            unregisterBlock(attributes.uniqueId, clientId);
+        };
     }, []);
 
 
-    /* --------------------------------------------
-       STYLE SETTER (only wpbs-style)
-    -------------------------------------------- */
+    /*
+    ----------------------------------------------------------------------
+    UPDATE SETTINGS (only saves wpbs-style)
+    ----------------------------------------------------------------------
+    */
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
             const cleanedNext = cleanObject(nextLayout, true);
             const cleanedCurrent = cleanObject(settings, true);
 
             if (!_.isEqual(cleanedNext, cleanedCurrent)) {
-                setAttributes({'wpbs-style': cleanedNext});
+                setAttributes({
+                    'wpbs-style': cleanedNext,
+                    //uniqueId: instanceId
+                });
             }
+
         },
-        [settings]
+        [settings, setAttributes]
     );
 
-    /* --------------------------------------------
-       CSS + Preload setters
-    -------------------------------------------- */
-    const updateBlockCssRef = useCallback((newCss = {}) => {
-        blockCssRef.current = newCss || {};
-    }, []);
+    /*
+    ----------------------------------------------------------------------
+    BLOCK → RAW CSS REF
+    ----------------------------------------------------------------------
+    */
+    const updateBlockCssRef = useCallback(
+        (newCss = {}) => {
+            blockCssRef.current = newCss || {};
+            // parsing is driven by the wpbs-style watcher effect
+        },
+        []
+    );
 
-    const updatePreloadRef = useCallback((newItems = []) => {
-        blockPreloadRef.current = Array.isArray(newItems) ? newItems : [];
-    }, []);
+    /*
+    ----------------------------------------------------------------------
+    BLOCK → RAW PRELOAD REF
+    ----------------------------------------------------------------------
+    */
+    const updatePreloadRef = useCallback(
+        (newItems = []) => {
+            blockPreloadRef.current = Array.isArray(newItems)
+                ? newItems
+                : [];
+            // parsing is driven by the wpbs-style watcher effect
+        },
+        []
+    );
 
-
-    /* --------------------------------------------
-       Notify parser when style changes
-    -------------------------------------------- */
+    /*
+    ----------------------------------------------------------------------
+    STYLE CHANGE EFFECT
+    Watches wpbs-style (settings) and kicks the external parser.
+    ----------------------------------------------------------------------
+    */
     useEffect(() => {
         if (typeof onStyleChange !== "function") return;
         if (!styleRef.current) return;
 
+
         onStyleChange({
             css: blockCssRef.current,
             preload: blockPreloadRef.current,
-            props: realProps,  // stable
-            styleRef,
+            props,
+            styleRef
         });
+    }, [settings, blockGapDeps, uniqueId]);
 
-    }, [settings, uniqueId]);  // minimal deps
 
-
-    /* --------------------------------------------
-       Stable BlockWrapper (never captures changing props)
-    -------------------------------------------- */
-    props.BlockWrapper = useCallback(
-        (wrapperProps) => {
-            return (
-                <BlockWrapper
-                    props={realProps}      // stable canonical props
-                    {...wrapperProps}
-                />
-            );
-        },
-        [clientId]     // does NOT depend on settings
-    );
-
+    props.BlockWrapper = useCallback((wrapperProps) => {
+        return <BlockWrapper props={props} {...wrapperProps}/>
+    }, [clientId]);
 
     props.setCss = updateBlockCssRef;
     props.setPreload = updatePreloadRef;
 
 
-    /* --------------------------------------------
-       OUTPUT
-    -------------------------------------------- */
+    /*
+    ----------------------------------------------------------------------
+    OUTPUT
+    ----------------------------------------------------------------------
+    */
     return (
         <>
             <Component {...props} />
-
-            {attributes?.['wpbs-css'] && <style ref={styleRef}/>}
-
+            {attributes?.['wpbs-css'] && (
+                <style ref={styleRef}/>
+            )}
             <StyleEditorPanel
                 settings={settings}
                 updateStyleSettings={updateStyleSettings}
@@ -148,12 +172,8 @@ export const withStyle = (Component) => (props) => {
     );
 };
 
-
-/* --------------------------------------------
-   SAVE VERSION
--------------------------------------------- */
 export const withStyleSave = (Component) => (props) => {
-    const {attributes, clientId} = props;
+    const {attributes} = props;
     const {'wpbs-style': styleData = {}} = attributes;
 
     return (
@@ -161,6 +181,7 @@ export const withStyleSave = (Component) => (props) => {
             {...props}
             BlockWrapper={(wrapperProps) => (
                 <BlockWrapper
+
                     props={props}
                     isSave={true}
                     {...wrapperProps}

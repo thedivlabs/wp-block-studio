@@ -10,14 +10,13 @@ const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-element": settings} = attributes;
 
     const result = [
+        selector,
         "w-full",
         "block",
         "relative",
     ]
         .filter(Boolean)
         .join(' ')
-
-    console.log(result);
 
     return result;
 };

@@ -221,6 +221,7 @@ registerBlockType(metadata.name, {
                 </InspectorControls>
 
                 <BlockWrapper
+                    props={props}
                     className={computedClassName}
                     {...anchorProps}
                 >
@@ -251,6 +252,7 @@ registerBlockType(metadata.name, {
 
         return (
             <BlockWrapper
+                props={props}
                 className={classNames(attributes)}
                 tagName="a"
                 {...anchorProps}

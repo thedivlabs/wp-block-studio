@@ -82,7 +82,7 @@ export const BlockWrapper = ({
                                  isSave = false,
                                  ...rest
                              }) => {
-    console.log(rest);
+    
     const {attributes} = props;
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;

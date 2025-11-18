@@ -54,6 +54,7 @@ registerBlockType(metadata.name, {
             return (
                 <>
                     <BlockWrapper
+                        props={props}
                         className={classNames}
                         hasBackground={true}
                         hasChildren={true}
@@ -68,6 +69,7 @@ registerBlockType(metadata.name, {
 
         return (
             <BlockWrapper
+                props={props}
                 className={classNames}
                 hasBackground={true}
                 hasChildren={true}

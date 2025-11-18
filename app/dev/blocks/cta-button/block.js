@@ -54,36 +54,27 @@ registerBlockType(metadata.name, {
 
     edit: withStyle((props) => {
 
-        console.log(props);
-
         const {attributes, BlockWrapper, setAttributes, setCss} = props;
         const {'wpbs-cta': settings = {}} = attributes;
 
-        const updateSettings = (newValue) => {
+        const updateSettings = useCallback((newValue) => {
 
             const result = {
                 ...settings,
                 ...newValue,
             };
 
-            console.log(result);
             setAttributes({
                 'wpbs-cta': result
             });
-        };
-
-
-        useEffect(() => {
-            console.log('updated', attributes);
-        }, [attributes['wpbs-cta']]);
-
+        }, [setAttributes, settings]);
 
         const computedClassName = classNames(attributes);
 
         // ----------------------------------------
         // TAB: OPTIONS
         // ----------------------------------------
-        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
+        const tabOptions = useMemo(() => (<Grid columns={1} columnGap={15} rowGap={20}>
             <PopupSelector
                 value={settings?.popup}
                 onChange={(popup) => updateSettings({popup})}
@@ -104,7 +95,7 @@ registerBlockType(metadata.name, {
                     onChange={(val) => updateSettings({'is-link': val})}
                 />
             </Grid>
-        </Grid>;
+        </Grid>));
 
         // ----------------------------------------
         // TAB: ICON

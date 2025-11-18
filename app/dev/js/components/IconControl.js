@@ -71,8 +71,6 @@ export const IconControl = ({
 
     const icons = props.attributes['wpbs-icons'] || [];
 
-    const themeWeights = useSetting('custom')?.icons ?? '';
-
     const commit = useMemo(() =>
             debounce((next) => {
 
@@ -128,12 +126,7 @@ export const IconControl = ({
             commit(local);
         }
     }, [local]);
-
-
-    const weightOptions = themeWeights.replace(' ', '').split(',').map(weight => {
-        return {value: weight.toString(), label: weight.toString()};
-    })
-
+    
     return (
         <BaseControl label={label} style={{marginBottom: 0}}>
             {/* Name input */}
@@ -170,12 +163,12 @@ export const IconControl = ({
                                     step={1}
                                 />
                                 <SelectControl
-                                    label="Style"
-                                    value={weight.toString()}
+                                    label="Weight"
+                                    value={weight}
                                     onChange={(val) => update('weight', val)}
                                     options={[
                                         {value: '', label: 'Select'},
-                                        ...weightOptions
+                                        {value: 300, label: 300},
                                     ]}
                                 />
                                 <SelectControl

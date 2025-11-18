@@ -9,6 +9,10 @@ export const STYLE_ATTRIBUTES = {
     'uniqueId': {type: 'string'},
     'wpbs-css': {type: 'object', default: {}},
     'wpbs-preload': {type: 'array', default: [{test: 'test'}]},
+    'wpbs-icons': {
+        type: 'array',
+        default: []
+    },
     'wpbs-style': {type: 'object', default: {}},
 };
 
@@ -56,7 +60,7 @@ export const withStyle = (Component) => (props) => {
         if (status === "fresh" || status === "clone") {
             const newId = instanceId;
 
-            setAttributes({ uniqueId: newId });
+            setAttributes({uniqueId: newId});
             registerBlock(newId, clientId);
 
             if (oldId && oldId !== newId) {
@@ -142,28 +146,13 @@ export const withStyle = (Component) => (props) => {
     }, [settings, blockGapDeps]);
 
 
-    /*
-    ----------------------------------------------------------------------
-    MAIN RENDER
-    ----------------------------------------------------------------------
-    */
-    const StyledComponent = useMemo(
-        () => (
-            <Component
-                {...props}
-                BlockWrapper={(wrapperProps) => (
-                    <BlockWrapper
-                        props={props}         // ← the real props, always first
-                        clientId={clientId}
-                        {...wrapperProps}     // ← wrapper only adds layout stuff
-                    />
-                )}
-                setCss={updateBlockCssRef}
-                setPreload={updatePreloadRef}
-            />
-        ),
-        [clientId, uniqueId]
-    );
+    props.BlockWrapper = useCallback((wrapperProps) => {
+        return <BlockWrapper props={props} clientId={clientId} {...wrapperProps} />
+    }, [clientId]);
+    
+    props.setCss = updateBlockCssRef;
+    props.setPreload = updatePreloadRef;
+
 
     /*
     ----------------------------------------------------------------------
@@ -172,7 +161,7 @@ export const withStyle = (Component) => (props) => {
     */
     return (
         <>
-            {StyledComponent}
+            <Component {...props} />
             {attributes?.['wpbs-css'] && (
                 <style ref={styleRef}/>
             )}
@@ -185,8 +174,8 @@ export const withStyle = (Component) => (props) => {
 };
 
 export const withStyleSave = (Component) => (props) => {
-    const { attributes, clientId } = props;
-    const { 'wpbs-style': styleData = {} } = attributes;
+    const {attributes, clientId} = props;
+    const {'wpbs-style': styleData = {}} = attributes;
 
     return (
         <Component

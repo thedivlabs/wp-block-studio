@@ -1,4 +1,3 @@
-import React, {useState} from 'react';
 import {
     BaseControl,
     TextControl,
@@ -10,6 +9,8 @@ import {
     Popover,
 } from '@wordpress/components';
 import {useSetting} from "@wordpress/block-editor";
+import {useEffect, useMemo, useState, useCallback} from "@wordpress/element";
+import {debounce, isEqual} from "lodash";
 
 export function iconProps(prop, key = '') {
 
@@ -28,25 +29,118 @@ export function iconProps(prop, key = '') {
 
 }
 
-export function IconControl({value = {}, onChange, label = 'Icon', defaultValue = ''}) {
+const generateCSS = (fill, weight, opsz) => {
+    return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
+};
 
-    const {name = defaultValue, weight = 300, size = 24, style = 0} = value;
+export const IconControl = ({
+                                fieldKey,
+                                props,
+                                value = {},
+                                onChange,
+                                label = 'Icon',
+                            }) => {
+
+    const [local, setLocal] = useState(value)
+
+    const fieldId = [fieldKey, props?.clientId].join('-');
+
+    const {weight = 300, size = 24, style = 0} = value;
     const [isOpen, setIsOpen] = useState(false);
+
+    const icons = props.attributes['wpbs-icons'] || [];
 
     const themeWeights = useSetting('custom')?.icons ?? '';
 
-    const generateCSS = (fill, weight, opsz) => {
-        return `'FILL' ${parseInt(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
-    };
+    const commit = useMemo(() =>
+            debounce((next) => {
+
+                // -- Normalize fields
+                const normalized = {
+                    ...next,
+                    name: next?.name,
+                    weight: next?.weight ?? 300,
+                    size: next?.size ?? 24,
+                    style: next?.style ?? 0,
+                };
+
+                normalized.css = generateCSS(
+                    normalized.style,
+                    normalized.weight,
+                    normalized.size
+                );
+
+                // 1. Update the block's icon value
+                onChange(normalized);
+
+                // 2. Update wpbs-icons
+                const nextIcons = [
+                    ...icons.filter(icon => icon.key !== fieldId),
+                    normalized.name
+                        ? {
+                            key: fieldId,
+                            name: normalized.name,
+                            style: normalized.style,
+                            weight: normalized.weight,
+                            grade: normalized.grade ?? 0,
+                            opsz: normalized.size,
+                            fill: normalized.style,
+                        }
+                        : null
+                ].filter(Boolean);
+
+                props.setAttributes({'wpbs-icons': nextIcons});
+
+            }, 200)
+        , []);
 
     const update = (key, val) => {
-        if (key === 'weight') val = Math.round(val / 100) * 100;
-        const newVal = {...value, [key]: val};
-        newVal.css = generateCSS(newVal?.style ?? 0, newVal?.weight ?? 300, newVal?.size || 24);
-        onChange(newVal);
+        setLocal(prev => ({
+            ...prev,
+            [key]: val
+        }));
     };
 
-    const previewStyle = {
+
+    useEffect(() => {
+        if (!isEqual(local, value)) {
+            commit(local);
+        }
+    }, [local]);
+
+
+    /*const update = (key, val) => {
+        if (key === 'weight') {
+            val = Math.round(val / 100) * 100;
+        }
+
+        const newVal = {...value, [key]: val};
+        newVal.css = generateCSS(newVal.style ?? 0, newVal.weight ?? 300, newVal.size || 24);
+
+        // update block-level field
+        onChange(newVal);
+
+        // update global icon list
+        const next = [
+            ...icons.filter(icon => icon.key !== fieldId),
+            newVal.name
+                ? {
+                    key: fieldId,
+                    name: newVal.name,
+                    style: newVal.style ?? 0,
+                    weight: newVal.weight ?? 300,
+                    grade: newVal.grade ?? 0,
+                    opsz: newVal.size ?? 24,
+                    fill: newVal.style ?? 0,
+                }
+                : null
+        ].filter(Boolean);
+
+        props.setAttributes({'wpbs-icons': next});
+    };*/
+
+
+    const previewStyle = useMemo(() => ({
         flexGrow: 0,
         fontVariationSettings: generateCSS(value?.style ?? 0, value?.weight ?? 300, 26),
         fontFamily: "'Material Symbols Outlined', sans-serif",
@@ -59,7 +153,7 @@ export function IconControl({value = {}, onChange, label = 'Icon', defaultValue 
         width: '32px',
         height: '32px',
         textAlign: 'center',
-    };
+    }), [value?.style, value?.weight]);
 
     const weightOptions = themeWeights.replace(' ', '').split(',').map(weight => {
         return {value: weight.toString(), label: weight.toString()};

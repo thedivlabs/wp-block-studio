@@ -5,7 +5,7 @@ import {
     PanelColorSettings,
 } from "@wordpress/block-editor";
 
-import { registerBlockType } from "@wordpress/blocks";
+import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
 import {
@@ -15,10 +15,10 @@ import {
     ToggleControl
 } from "@wordpress/components";
 
-import { useMemo, useCallback, useEffect } from '@wordpress/element';
+import {useMemo, useCallback, useEffect} from '@wordpress/element';
 
 import Link from "Components/Link.js";
-import { IconControl, MaterialIcon, iconProps } from "Components/IconControl";
+import {IconControl, MaterialIcon, iconProps} from "Components/IconControl";
 import PopupSelector from "Components/PopupSelector";
 
 import {
@@ -28,7 +28,7 @@ import {
 } from 'Components/Style';
 
 function classNames(attributes = {}) {
-    const { 'wpbs-cta': settings = {} } = attributes;
+    const {'wpbs-cta': settings = {}} = attributes;
 
     return [
         'relative',
@@ -53,48 +53,58 @@ registerBlockType(metadata.name, {
     },
 
     edit: withStyle((props) => {
-        const { attributes, BlockWrapper, setAttributes, setCss } = props;
-        const { 'wpbs-cta': settings = {} } = attributes;
 
-        const updateSettings = useCallback((newValue) => {
-            console.log(settings);
-            console.log(newValue);
-            setAttributes((prev) => ({
-                'wpbs-cta': {
-                    ...prev['wpbs-cta'],
-                    ...newValue,
-                }
-            }));
-        }, []);
+        console.log(props);
+
+        const {attributes, BlockWrapper, setAttributes, setCss} = props;
+        const {'wpbs-cta': settings = {}} = attributes;
+
+        const updateSettings = (newValue) => {
+
+            const result = {
+                ...settings,
+                ...newValue,
+            };
+
+            console.log(result);
+            setAttributes({
+                'wpbs-cta': result
+            });
+        };
+
+
+        useEffect(() => {
+            console.log('updated', attributes);
+        }, [attributes['wpbs-cta']]);
+
+
         const computedClassName = classNames(attributes);
 
         // ----------------------------------------
         // TAB: OPTIONS
         // ----------------------------------------
-        const tabOptions = useMemo(() => (
-            <Grid columns={1} columnGap={15} rowGap={20}>
-                <PopupSelector
-                    value={settings?.popup}
-                    onChange={(popup) => updateSettings({ popup })}
-                    label="Popup"
-                />
+        const tabOptions = <Grid columns={1} columnGap={15} rowGap={20}>
+            <PopupSelector
+                value={settings?.popup}
+                onChange={(popup) => updateSettings({popup})}
+                label="Popup"
+            />
 
-                <Grid columns={2} columnGap={15} rowGap={20} style={{ padding: '1rem 0' }}>
-                    <ToggleControl
-                        label="Loop"
-                        __nextHasNoMarginBottom
-                        checked={!!settings?.loop}
-                        onChange={(loop) => updateSettings({ loop })}
-                    />
-                    <ToggleControl
-                        label="Link"
-                        __nextHasNoMarginBottom
-                        checked={!!settings?.['is-link']}
-                        onChange={(val) => updateSettings({ 'is-link': val })}
-                    />
-                </Grid>
+            <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
+                <ToggleControl
+                    label="Loop"
+                    __nextHasNoMarginBottom
+                    checked={!!settings?.loop}
+                    onChange={(loop) => updateSettings({loop: !!loop})}
+                />
+                <ToggleControl
+                    label="Link"
+                    __nextHasNoMarginBottom
+                    checked={!!settings?.['is-link']}
+                    onChange={(val) => updateSettings({'is-link': val})}
+                />
             </Grid>
-        ), []);
+        </Grid>;
 
         // ----------------------------------------
         // TAB: ICON
@@ -103,39 +113,41 @@ registerBlockType(metadata.name, {
             <Grid columns={1} columnGap={15} rowGap={20}>
                 <IconControl
                     label="Icon"
+                    fieldKey="cta-icon"
                     value={settings?.icon}
-                    onChange={(icon) => updateSettings({ 'icon':icon })}
+                    onChange={(icon) => updateSettings({'icon': icon})}
+                    props={props}
                 />
 
                 <Grid
                     columns={2}
                     columnGap={15}
                     rowGap={20}
-                    style={{ padding: '1rem 0' }}
+                    style={{padding: '1rem 0'}}
                 >
                     <ToggleControl
                         label="Icon Only"
                         __nextHasNoMarginBottom
                         checked={!!settings?.['icon-only']}
-                        onChange={(val) => updateSettings({ 'icon-only': val })}
+                        onChange={(val) => updateSettings({'icon-only': val})}
                     />
                     <ToggleControl
                         label="Hide Icon"
                         __nextHasNoMarginBottom
                         checked={!!settings?.['icon-hide']}
-                        onChange={(val) => updateSettings({ 'icon-hide': val })}
+                        onChange={(val) => updateSettings({'icon-hide': val})}
                     />
                     <ToggleControl
                         label="Icon First"
                         __nextHasNoMarginBottom
                         checked={!!settings?.['icon-first']}
-                        onChange={(val) => updateSettings({ 'icon-first': val })}
+                        onChange={(val) => updateSettings({'icon-first': val})}
                     />
                     <ToggleControl
                         label="Bold Icon"
                         __nextHasNoMarginBottom
                         checked={!!settings?.['icon-bold']}
-                        onChange={(val) => updateSettings({ 'icon-bold': val })}
+                        onChange={(val) => updateSettings({'icon-bold': val})}
                     />
                 </Grid>
 
@@ -147,7 +159,7 @@ registerBlockType(metadata.name, {
                             slug: 'icon',
                             label: 'Icon Color',
                             value: settings?.['icon-color'],
-                            onChange: (val) => updateSettings({ 'icon-color': val }),
+                            onChange: (val) => updateSettings({'icon-color': val}),
                             isShownByDefault: true,
                         }
                     ]}
@@ -158,12 +170,12 @@ registerBlockType(metadata.name, {
         // ----------------------------------------
         // LINK SETTINGS
         // ----------------------------------------
-        const { title = 'Learn more', openInNewTab = false } = settings?.link ?? {};
+        const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
         const anchorProps = {
             title,
             href: settings?.popup ? '#' : '%%URL%%',
             target: openInNewTab ? '_blank' : '_self',
-            ...(settings?.popup && { role: 'button' }),
+            ...(settings?.popup && {role: 'button'}),
             onClick: (e) => e.preventDefault(),
         };
 
@@ -177,7 +189,7 @@ registerBlockType(metadata.name, {
                 ...iconProps(settings?.icon),
             },
             breakpoints: {
-                xs: { '--testing': '20px' }
+                xs: {'--testing': '20px'}
             }
         }), [settings]);
 
@@ -187,7 +199,7 @@ registerBlockType(metadata.name, {
             <>
                 <Link
                     defaultValue={settings?.link}
-                    callback={(val) => updateSettings({ link: val })}
+                    callback={(val) => updateSettings({link: val})}
                 />
 
                 <InspectorControls group="styles">
@@ -197,8 +209,8 @@ registerBlockType(metadata.name, {
                             activeClass="active"
                             initialTabName="options"
                             tabs={[
-                                { name: 'options', title: 'Options' },
-                                { name: 'icon', title: 'Icon' }
+                                {name: 'options', title: 'Options'},
+                                {name: 'icon', title: 'Icon'}
                             ]}
                         >
                             {(tab) => {
@@ -222,27 +234,27 @@ registerBlockType(metadata.name, {
                     {...anchorProps}
                 >
                     <span className="wpbs-cta-button__title relative">{title}</span>
-                    <MaterialIcon
+                    {/* <MaterialIcon
                         className="wpbs-cta-button__icon"
                         {...(settings?.icon ?? {})}
-                    />
+                    />*/}
                 </BlockWrapper>
             </>
         );
     }),
 
     save: withStyleSave((props) => {
-        const { attributes, BlockWrapper } = props;
-        const { 'wpbs-cta': settings = {} } = attributes;
+        const {attributes, BlockWrapper} = props;
+        const {'wpbs-cta': settings = {}} = attributes;
 
-        const { title = 'Learn more', openInNewTab = false } = settings?.link ?? {};
+        const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
 
         const anchorProps = {
             title,
             href: settings?.popup ? '#' : '%%URL%%',
             target: openInNewTab ? '_blank' : '_self',
-            ...(settings?.popup && { role: 'button' }),
-            ...(settings?.popup && { onClick: (e) => e.preventDefault() }),
+            ...(settings?.popup && {role: 'button'}),
+            ...(settings?.popup && {onClick: (e) => e.preventDefault()}),
             'data-popup': settings?.popup ?? null,
         };
 
@@ -254,10 +266,10 @@ registerBlockType(metadata.name, {
                 {...anchorProps}
             >
                 <span className="wpbs-cta-button__title">{title}</span>
-                <MaterialIcon
+                {/*<MaterialIcon
                     className="wpbs-cta-button__icon"
                     {...(settings?.icon ?? {})}
-                />
+                />*/}
             </BlockWrapper>
         );
     }),

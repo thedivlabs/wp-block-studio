@@ -41,6 +41,7 @@ function classNames(attributes = {}) {
         settings?.['icon-only'] && '--icon-only',
         settings?.['icon-first'] && '--icon-first',
         settings?.['offset'] && '--offset',
+        settings?.['offset-icon'] && '--offset-icon',
     ].filter(Boolean).join(' ');
 }
 
@@ -93,6 +94,18 @@ registerBlockType(metadata.name, {
                                 {value: "px", label: "px"}
                             ]}
                         onChange={(offset) => updateSettings({offset: offset})}
+                        isResetValueOnUnitChange
+                        __nextHasNoMarginBottom
+                        __next40pxDefaultSize
+                    />
+                    <UnitControl
+                        label="Offset Icon"
+                        value={settings?.['offset-icon']}
+                        units={
+                            [
+                                {value: "px", label: "px"}
+                            ]}
+                        onChange={(offset) => updateSettings({'offset-icon': offset})}
                         isResetValueOnUnitChange
                         __nextHasNoMarginBottom
                         __next40pxDefaultSize
@@ -196,6 +209,7 @@ registerBlockType(metadata.name, {
             props: {
                 '--icon-color': settings?.['icon-color'] || null,
                 '--offset': settings?.['offset'] || null,
+                '--offset-icon': settings?.['offset-icon'] || null,
             },
             breakpoints: {
                 xs: {'--testing': '20px'}

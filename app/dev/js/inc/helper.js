@@ -164,22 +164,6 @@ export function extractPreloadsFromLayout(layout = {}) {
     return result;
 }
 
-export const getDataProps = (props) => {
-    const {attributes} = props;
-    const style = attributes['wpbs-style'] || {};
-    const background = style.background || {};
-    const layout = style.layout || {};
-
-    const data = Object.fromEntries(Object.entries({
-        ElementTagName: 'div',
-        hasBackground: !!background.type,
-        hasContainer: !!layout.container || !!background.type,
-        background,
-    }).filter(Boolean));
-
-    return {...props, styleData: data};
-};
-
 export function normalizePreloadItem(item) {
     if (!item || !item.id) return null;
 
@@ -235,3 +219,18 @@ export const heightVal = (val) => {
     if (['auto', 'full', 'inherit'].includes(val)) height = val;
     return height;
 };
+
+export function normalizeGapVal(v) {
+    if (!v) return null;
+
+    // WP BoxControl / UnitControl sometimes gives objects
+    if (typeof v === "object") {
+        if (typeof v.value === "string") return v.value;
+        if (typeof v.top === "string") return v.top;
+        if (typeof v.left === "string") return v.left;
+        if (typeof v.raw === "string") return v.raw;
+    }
+
+    return v; // already a string
+}
+

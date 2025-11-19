@@ -181,6 +181,7 @@ class WPBS_Blocks {
 			], $importantKeysCustom );
 
 			$result = '';
+			
 			foreach ( $props as $k => $v ) {
 				if ( $v === null || $v === '' ) {
 					continue;

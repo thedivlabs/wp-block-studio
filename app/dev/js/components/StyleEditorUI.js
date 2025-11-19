@@ -282,7 +282,6 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, []);
 
     const updateHoverItem = useCallback((newProps) => {
-        console.log(newProps, 'newProps');
         setLocalHover((prev) => ({...prev, ...newProps}));
     }, []);
 

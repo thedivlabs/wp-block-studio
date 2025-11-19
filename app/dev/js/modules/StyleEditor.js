@@ -1,5 +1,6 @@
 import _ from "lodash";
 import {
+    normalizeGapVal,
     getImageUrlForResolution,
     cleanObject,
     heightVal,
@@ -57,12 +58,26 @@ function parseSpecialProps(props = {}, attributes = {}) {
                     }
                     break;
 
-                case 'gap':
-                    result['row-gap'] = val.top ?? val;
-                    result['column-gap'] = val.left ?? val;
-                    result['--row-gap'] = val.top ?? val;
-                    result['--column-gap'] = val.left ?? val;
+                case 'gap': {
+                    const rawTop = val?.top ?? null;
+                    const rawLeft = val?.left ?? null;
+
+                    const top = normalizeGapVal(rawTop);
+                    const left = normalizeGapVal(rawLeft);
+
+                    if (top) {
+                        result['row-gap'] = top;
+                        result['--row-gap'] = top;
+                    }
+
+                    if (left) {
+                        result['column-gap'] = left;
+                        result['--column-gap'] = left;
+                    }
+
                     break;
+                }
+
 
                 case 'container':
                     result['--container-width'] = containerMap[val] ?? val;

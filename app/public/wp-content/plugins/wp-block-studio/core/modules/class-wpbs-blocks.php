@@ -109,7 +109,7 @@ class WPBS_Blocks {
 
 		// Output preload tags
 		foreach ( $unique as $item ) {
-
+			
 			$id    = $item['id'] ?? null;
 			$type  = $item['type'] ?? null;
 			$bpKey = $item['media'] ?? null; // breakpoint key
@@ -127,11 +127,15 @@ class WPBS_Blocks {
 
 			$mediaAttr = '';
 			if ( $bpKey && isset( $breakpoints[ $bpKey ] ) ) {
-				$mq = $breakpoints[ $bpKey ];
-				if ( is_array( $mq ) && isset( $mq['query'] ) ) {
-					$mediaAttr = $mq['query'];
-				} elseif ( is_string( $mq ) ) {
-					$mediaAttr = $mq;
+				$bp = $breakpoints[ $bpKey ];
+
+				// If theme.json explicitly provides "query", use it.
+				if ( isset( $bp['query'] ) && is_string( $bp['query'] ) ) {
+					$mediaAttr = $bp['query'];
+				} // Otherwise build a media query from the numeric size.
+				elseif ( isset( $bp['size'] ) ) {
+					$size      = (int) $bp['size'];
+					$mediaAttr = "(max-width: {$size}px)";
 				}
 			}
 

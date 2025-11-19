@@ -11,10 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // PRELOAD FIRST — this needs max priority
     document.querySelectorAll('link[rel="preload"][data-href]').forEach(link => {
+
         const href = link.dataset.href;
         const mq = link.dataset.media;
 
-        if (!mq || window.matchMedia(mq).matches) {
+        if (window.matchMedia(mq).matches) {
             link.href = href;
             link.removeAttribute('data-href');
         }

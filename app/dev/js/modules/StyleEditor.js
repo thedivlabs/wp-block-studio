@@ -4,6 +4,7 @@ import {
     getImageUrlForResolution,
     cleanObject,
     heightVal,
+    buildImageSet,
     getCSSFromStyle,
     normalizePreloadItem,
     extractPreloadsFromLayout,
@@ -257,8 +258,8 @@ function parseBackgroundProps(props = {}) {
     } else if (isImagePlaceholder) {
         result["--image"] = "#";
     } else if (image?.source) {
-        const url = getImageUrlForResolution(image, resolution);
-        result["--image"] = `url("${url}")`;
+        const resolved = getImageUrlForResolution(image, resolution);
+        result["--image"] = buildImageSet(resolved);
     }
 
     /* ------------------------------------------------------------

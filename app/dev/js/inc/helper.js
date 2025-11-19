@@ -1,5 +1,16 @@
 import _ from "lodash";
 
+export function buildImageSet(url) {
+    if (!url) return '';
+
+    const ext = url.endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+    const webp = `url("${url}.webp") type("image/webp")`;
+    const fallback = `url("${url}") type("${ext}")`;
+
+    return `image-set(${webp}, ${fallback})`;
+}
+
 
 export function extractMinimalImageMeta(media) {
     if (!media) return null;

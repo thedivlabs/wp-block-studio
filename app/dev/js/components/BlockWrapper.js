@@ -82,7 +82,7 @@ export const BlockWrapper = ({
                                  isSave = false,
                                  ...rest
                              }) => {
-    
+
     const {attributes} = props;
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;
@@ -109,29 +109,58 @@ export const BlockWrapper = ({
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
-        return (
-            <Tag {...saveProps}>
-                {hasContainer ? (
+        // CASE 1 — InnerBlocks + container/background
+        if (hasChildren && (hasContainer || isBackgroundActive)) {
+            return (
+                <Tag {...saveProps}>
                     <div className={containerClass}>
                         <InnerBlocks.Content/>
+                        {children}
                     </div>
-                ) : (
+
+                    <BackgroundElement attributes={attributes} isSave={true}/>
+                </Tag>
+            );
+        }
+
+        // CASE 2 — InnerBlocks only
+        if (hasChildren) {
+            return (
+                <Tag {...saveProps}>
                     <InnerBlocks.Content/>
-                )}
+                    {children}
+                </Tag>
+            );
+        }
 
+        // CASE 3 — No InnerBlocks + container/background
+        if (hasContainer || isBackgroundActive) {
+            return (
+                <Tag {...saveProps}>
+                    <div className={containerClass}>
+                        {children}
+                    </div>
+
+                    <BackgroundElement attributes={attributes} isSave={true}/>
+                </Tag>
+            );
+        }
+
+        // CASE 4 — No InnerBlocks, no container/background
+        return (
+            <Tag {...saveProps}>
                 {children}
-
-                <BackgroundElement attributes={attributes} isSave={true}/>
             </Tag>
         );
     }
+
 
     // ──────────────────────────────────────────────
     // EDIT VERSION
     // ──────────────────────────────────────────────
     const blockProps = useBlockProps(baseBlockProps);
 
-    if (hasChildren && (hasContainer || isBackgroundActive)) {
+    if (hasContainer || isBackgroundActive) {
 
         const containerProps = useInnerBlocksProps(
             {className: containerClass},
@@ -140,8 +169,11 @@ export const BlockWrapper = ({
 
         return (
             <Tag {...blockProps}>
-                <div {...containerProps}>{containerProps.children}</div>
-                {children}
+                <div {...containerProps}>
+                    {containerProps.children}
+                    {children}
+                </div>
+
                 <BlockBackground attributes={attributes}/>
             </Tag>
         );
@@ -153,6 +185,23 @@ export const BlockWrapper = ({
             <Tag {...innerProps}>
                 {innerProps.children}
                 {children}
+            </Tag>
+        );
+    }
+
+    if (hasContainer || isBackgroundActive) {
+
+        const containerProps = {
+            className: containerClass
+        };
+
+        return (
+            <Tag {...blockProps}>
+                <div {...containerProps}>
+                    {children}
+                </div>
+
+                <BlockBackground attributes={attributes}/>
             </Tag>
         );
     }

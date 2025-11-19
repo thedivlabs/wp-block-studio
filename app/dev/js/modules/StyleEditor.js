@@ -258,7 +258,7 @@ function parseBackgroundProps(props = {}) {
     } else if (isImagePlaceholder) {
         result["--image"] = "#";
     } else if (image?.source) {
-        const resolved = getImageUrlForResolution(image, resolution);
+        const resolved = getImageUrlForResolution(image, resolution || "large");
         result["--image"] = buildImageSet(resolved);
     }
 

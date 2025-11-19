@@ -135,9 +135,10 @@ class WPBS_Blocks {
 				}
 			}
 
-			echo '<link rel="preload" href="' . esc_url( $src ) . '" as="' . esc_attr( $type ) . '"'
-			     . ( $mediaAttr ? ' media="' . esc_attr( $mediaAttr ) . '"' : '' )
+			echo '<link rel="preload" data-href="' . esc_url( $src ) . '" as="' . esc_attr( $type ) . '"'
+			     . ( $mediaAttr ? ' data-media="' . esc_attr( $mediaAttr ) . '"' : '' )
 			     . ' fetchpriority="high" />' . "\n";
+
 		}
 	}
 
@@ -356,6 +357,7 @@ class WPBS_Blocks {
 
 		// If the WebP exists on disk
 		$path = str_replace( home_url(), ABSPATH, $webp );
+
 		/*if ( file_exists( $path ) ) {
 			return $webp;
 		}*/

@@ -50,8 +50,8 @@ class WPBS {
 		add_action( 'wp_body_open', [ $this, 'body_open_scripts' ], 1 );
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
 
-		add_action( 'admin_footer', [ $this, 'inline_scripts' ], 10 );
-		add_action( 'wp_footer', [ $this, 'inline_scripts' ], 10 );
+		add_action( 'admin_head', [ $this, 'inline_scripts' ], 30 );
+		add_action( 'wp_head', [ $this, 'inline_scripts' ], 30 );
 
 		add_action( 'script_loader_tag', [ $this, 'defer_scripts' ], 10, 2 );
 
@@ -114,7 +114,7 @@ class WPBS {
 			'jquery-migrate',
 			//'wp-polyfill',
 			'wp-hooks',
-			//'wp-i18n',
+			'wp-i18n',
 			'wp-element',
 			'wp-components',
 			'wp-data',

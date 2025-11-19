@@ -64,7 +64,7 @@ export function extractMinimalImageMeta(media) {
 
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;
-
+    
     const {source, sizes = {}} = image;
 
     // SVGs or anything without sizes → always return source

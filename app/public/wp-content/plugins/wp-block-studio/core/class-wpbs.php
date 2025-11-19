@@ -522,8 +522,31 @@ class WPBS {
 
 		global $wp_scripts;
 
-		$theme_fonts = array_values( array_unique( array_merge( [], ...wp_list_pluck( array_merge( [], ...( array_column( ( wp_get_global_settings()['typography']['fontFamilies']['theme'] ?? [] ), 'fontFace' ) ?: [] ) ), 'src' ) ) ) );
-		$theme_uri   = get_template_directory_uri();
+// ------------------------------------------------------------
+// THEME FONT PRELOADS (unchanged behavior, saner syntax)
+// ------------------------------------------------------------
+		$settings                = wp_get_global_settings();
+		$theme_fonts_definitions = $settings['typography']['fontFamilies']['theme'] ?? [];
+
+// Each theme font can define one or more "fontFace" entries.
+// Collect all fontFace arrays from each theme font.
+		$font_faces_nested = array_column( $theme_fonts_definitions, 'fontFace' ) ?: [];
+
+// Flatten nested fontFace arrays into one flat array.
+		$font_faces = array_merge( [], ...$font_faces_nested );
+
+// Extract the "src" field from each fontFace.
+// Each src can itself be an array of URLs, so we keep the nesting for now.
+		$font_src_nested = wp_list_pluck( $font_faces, 'src' );
+
+// Flatten all src arrays into one flat list of URLs, then dedupe.
+		$theme_fonts = array_values(
+			array_unique(
+				array_merge( [], ...$font_src_nested )
+			)
+		);
+
+		$theme_uri = get_template_directory_uri();
 
 		foreach ( $theme_fonts as $src ) {
 			if ( str_starts_with( $src, 'file:' ) ) {
@@ -533,9 +556,17 @@ class WPBS {
 			}
 		}
 
-		$preconnect_sources = [ 'fonts.gstatic.com', ...apply_filters( 'wpbs_preconnect_sources', [] ) ];
-		$preload_sources    = apply_filters( 'wpbs_preload_sources', [] );
-		$preload_images     = apply_filters( 'wpbs_preload_images', [] );
+
+		// ------------------------------------------------------------
+		// PRECONNECT SOURCES (unchanged)
+		// ------------------------------------------------------------
+		$preconnect_sources = [
+			'fonts.gstatic.com',
+			...apply_filters( 'wpbs_preconnect_sources', [] )
+		];
+
+		$preload_sources = apply_filters( 'wpbs_preload_sources', [] );
+		$preload_images  = apply_filters( 'wpbs_preload_images', [] );
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
@@ -544,6 +575,10 @@ class WPBS {
 			}
 		}
 
+
+		// ------------------------------------------------------------
+		// GENERIC PRELOAD SOURCES (unchanged)
+		// ------------------------------------------------------------
 		foreach ( array_unique( array_filter( $preload_sources ) ) as $src ) {
 			$url = parse_url( $src );
 
@@ -553,57 +588,38 @@ class WPBS {
 			}
 		}
 
+
+		// ------------------------------------------------------------
+		// LEGACY IMAGE PRELOAD SECTION — extracted
+		// ------------------------------------------------------------
 		if ( ! empty( $preload_images ) ) {
-			echo '<!-- Preload images -->';
+			echo '<!-- Preload images -->' . "\n";
 		}
 
-		foreach ( array_unique( array_keys( $preload_images ) ) as $image_id ) {
 
-			$image_data   = $preload_images[ $image_id ];
-			$src          = wp_get_attachment_image_src( $image_id, $image_data['resolution'] ?? 'large' )[0] ?? false;
-			$image_srcset = wp_get_attachment_image_srcset( $image_id );
-			$path         = str_replace( home_url(), ABSPATH, $src );
-			$webp         = ! str_contains( $path, '.svg' );
-			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
-			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
-
-			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
-
-			echo 'href="' . ( $src . ( $webp ? '.webp' : '' ) ) . '"';
-
-			if ( ! empty( $image_data['breakpoint'] ) ) {
-				echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';
-			}
-
-
-			if ( $image_srcset ) {
-				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [
-						'.jpg',
-						'.png',
-						'.jpeg'
-					], [ '.jpg.webp', '.png.webp', '.jpeg.webp' ], $image_srcset ) ) . '"';
-			}
-
-			echo 'type="image/webp"';
-
-			echo '/>';
-
-		}
-
+		// ------------------------------------------------------------
+		// SCRIPT PRELOADS (unchanged)
+		// ------------------------------------------------------------
 		$default_scripts = [
 			'jquery-core',
 			'jquery',
 			'jquery-migrate',
 		];
 
-		$preload_scripts = array_values( array_filter( array_map( function ( $slug ) use ( $wp_scripts, $default_scripts ) {
-			return in_array( $slug, $default_scripts ) ? $wp_scripts->registered[ $slug ]->src ?? '' : [];
-		}, $wp_scripts->queue ?? [] ) ) );
+		$preload_scripts = array_values( array_filter(
+			array_map(
+				function ( $slug ) use ( $wp_scripts, $default_scripts ) {
+					return in_array( $slug, $default_scripts, true )
+						? $wp_scripts->registered[ $slug ]->src ?? ''
+						: [];
+				},
+				$wp_scripts->queue ?? []
+			)
+		) );
 
 		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_scripts', $preload_scripts ) ) ) as $url ) {
-			echo '<link rel="preload" as="script" href="' . $url . '">';
+			echo '<link rel="preload" as="script" href="' . $url . '">' . "\n";
 		}
-
 	}
 
 	public static function clean_array( $array, &$ref_array = [] ): mixed {

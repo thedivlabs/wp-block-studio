@@ -3,12 +3,15 @@
 final class WPBS_Icons {
 
 	private static ?WPBS_Icons $instance = null;
+	private array $icons = [];
 
 	private function __construct() {
 
 		if ( ! is_admin() ) {
-			add_filter( 'render_block_data', [ $this, 'collect_block_icons' ], 10, 2 );
+			//add_filter( 'render_block_data', [ $this, 'collect_block_icons' ], 10, 2 );
 		}
+
+		add_filter( 'render_block_data', [ $this, 'collect_block_icons' ], 10, 2 );
 
 		add_action( 'wp_head', [ $this, 'output_icons_stylesheet' ], 40 );
 		add_action( 'admin_head', [ $this, 'output_icons_stylesheet' ], 40 );
@@ -28,19 +31,15 @@ final class WPBS_Icons {
 			return $block;
 		}
 
-		if ( did_action( 'wp_head' ) ) {
-			return $block;
+		$names = array_filter(
+			wp_list_pluck( $block['attrs']['wpbs-icons'] ?? [], 'name' ),
+			fn( $n ) => is_string( $n ) && $n !== ''
+		);
+
+		if ( $names ) {
+			WPBS::console_log( $names );
+			$this->icons = array_merge( $this->icons, $names );
 		}
-
-		add_filter( 'wpbs_icon_names', function ( array $carry ) use ( $block ) {
-
-			$names = array_filter(
-				wp_list_pluck( $block['attrs']['wpbs-icons'] ?? [], 'name' ),
-				fn( $n ) => is_string( $n ) && $n !== ''
-			);
-
-			return array_merge( $carry, $names );
-		} );
 
 		return $block;
 	}
@@ -64,7 +63,7 @@ final class WPBS_Icons {
 			return [];
 		}
 
-		$raw = get_field( 'theme_settings_api_material_icons', 'options' );
+		$raw = get_field( 'theme_settings_api_material_icons', 'option' );
 		if ( ! $raw ) {
 			set_transient( 'wpbs_global_icon_names', [], DAY_IN_SECONDS );
 
@@ -137,6 +136,13 @@ final class WPBS_Icons {
 
 		$names = $this->get_default_safelist();
 
+		// NEW: merge collected block icons
+		if ( ! empty( $this->icons ) ) {
+			$names = array_merge( $names, $this->icons );
+		}
+
+		// optional: keep the old filter if you still want it,
+		// but it’s probably obsolete now.
 		$block_names = apply_filters( 'wpbs_icon_names', [] );
 		if ( ! empty( $block_names ) ) {
 			$names = array_merge( $names, $block_names );
@@ -144,11 +150,7 @@ final class WPBS_Icons {
 
 		$names = array_merge( $names, $this->get_global_icon_names() );
 
-		$names = array_values(
-			array_unique(
-				array_filter( array_map( 'trim', $names ) )
-			)
-		);
+		$names = array_values( array_unique( array_filter( array_map( 'trim', $names ) ) ) );
 
 		if ( empty( $names ) ) {
 			return;
@@ -162,4 +164,5 @@ final class WPBS_Icons {
 		echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
 		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 	}
+
 }

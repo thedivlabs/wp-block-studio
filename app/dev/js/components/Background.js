@@ -251,8 +251,8 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
     const baseVideoObj = baseEntry?.video ?? null;
 
     const bpEntries = entries.filter(e => e.size !== Infinity);
-    console.log(bpEntries);
-    console.log(baseEntry);
+
+    
     // ----------------------------------------
     // Render
     // ----------------------------------------

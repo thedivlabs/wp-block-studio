@@ -53,6 +53,8 @@ class WPBS {
 		add_action( 'admin_footer', [ $this, 'inline_scripts' ], 10 );
 		add_action( 'wp_footer', [ $this, 'inline_scripts' ], 10 );
 
+		add_action( 'script_loader_tag', [ $this, 'defer_scripts' ], 10, 2 );
+
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
 
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
@@ -101,13 +103,42 @@ class WPBS {
 
 	}
 
+	public function defer_scripts( $tag, $handle ): string {
+
+		if ( is_admin() ) {
+			return $tag;
+		}
+
+		$dont_defer = [
+			'jquery-core',
+			'jquery-migrate',
+			//'wp-polyfill',
+			'wp-hooks',
+			//'wp-i18n',
+			'wp-element',
+			'wp-components',
+			'wp-data',
+			'wp-dom-ready',
+			//'wp-a11y',
+		];
+
+		if ( in_array( $handle, $dont_defer, true ) ) {
+			return $tag;
+		}
+
+		if ( str_contains( $tag, ' src=' ) ) {
+			return str_replace( ' src', ' defer src', $tag );
+		}
+
+		return $tag;
+
+	}
+
 	public function remove_default_image_sizes( $sizes ): array {
 
 		$sizes = array_intersect( $sizes, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] );
 
-		$sizes = array_values( array_unique( $sizes ) );
-
-		return $sizes;
+		return array_values( array_unique( $sizes ) );
 	}
 
 	public function image_sizes(): void {

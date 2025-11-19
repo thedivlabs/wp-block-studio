@@ -232,13 +232,15 @@ class WPBS {
 			'strategy' => 'defer'
 		] );
 
-		wp_register_script(
-			'wpbs-editor',
-			self::$uri . 'build/editor.js',
-			[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
-			filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
-			false
-		);
+		if ( file_exists( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ) ) {
+			wp_register_script(
+				'wpbs-editor',
+				self::$uri . 'build/editor.js',
+				[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
+				filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
+				false
+			);
+		}
 
 
 		/* Swiper */

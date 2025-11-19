@@ -193,11 +193,12 @@ registerBlockType(metadata.name, {
         // ----------------------------------------
         // LINK SETTINGS
         // ----------------------------------------
-        const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
+        const {title = 'Learn more', linkNewTab = false} = settings?.link ?? {};
+
         const anchorProps = {
             title,
             href: settings?.popup ? '#' : '%%URL%%',
-            target: openInNewTab ? '_blank' : '_self',
+            target: linkNewTab ? '_blank' : '_self',
             ...(settings?.popup && {role: 'button'}),
             onClick: (e) => e.preventDefault(),
         };
@@ -270,12 +271,12 @@ registerBlockType(metadata.name, {
         const {attributes, BlockWrapper} = props;
         const {'wpbs-cta': settings = {}} = attributes;
 
-        const {title = 'Learn more', openInNewTab = false} = settings?.link ?? {};
+        const {title = 'Learn more', linkNewTab = false} = settings?.link ?? {};
 
         const anchorProps = {
             title,
             href: settings?.popup ? '#' : '%%URL%%',
-            target: openInNewTab ? '_blank' : '_self',
+            target: linkNewTab ? '_blank' : '_self',
             ...(settings?.popup && {role: 'button'}),
             ...(settings?.popup && {onClick: (e) => e.preventDefault()}),
             'data-popup': settings?.popup ?? null,

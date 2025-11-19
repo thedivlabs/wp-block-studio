@@ -28,6 +28,7 @@
       "label": "Link"
     }
   ],
+  "usesContext": ["wpbs/loopItem"],
   "supports": {
     "interactivity": true,
     "dimensions": {

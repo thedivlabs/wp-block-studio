@@ -122,7 +122,7 @@ class WPBS {
 			//'wp-a11y',
 		];
 
-		if ( in_array( $handle, $dont_defer, true ) ) {
+		if ( in_array( $handle, $dont_defer, true ) || str_starts_with( $handle, 'wpbs' ) ) {
 			return $tag;
 		}
 

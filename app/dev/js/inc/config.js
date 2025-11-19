@@ -583,7 +583,7 @@ export const hoverFieldsMap = [
                 type: "box",
                 slug: "gap",
                 label: "Gap",
-                sides: ['top', 'right', 'bottom', 'left'],
+                sides: ['top', 'left'],
                 inputProps: {units: DIMENSION_UNITS},
                 full: true,
             },

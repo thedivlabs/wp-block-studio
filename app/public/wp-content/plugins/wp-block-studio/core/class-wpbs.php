@@ -49,11 +49,9 @@ class WPBS {
 		add_action( 'wp_head', [ $this, 'header_scripts' ], 110 );
 		add_action( 'wp_body_open', [ $this, 'body_open_scripts' ], 1 );
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
-		add_action( 'wp_footer', [ $this, 'inline_scripts' ], 10 );
-		add_action( 'admin_footer', [ $this, 'inline_scripts' ], 10 );
 
-		add_action( 'wp_footer', [ $this, 'inline_scripts' ], 10 );
 		add_action( 'admin_footer', [ $this, 'inline_scripts' ], 10 );
+		add_action( 'wp_footer', [ $this, 'inline_scripts' ], 10 );
 
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
 

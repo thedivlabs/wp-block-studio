@@ -1,9 +1,11 @@
 import MediaWatcher from './modules/MediaWatcher';
 
-MediaWatcher.init();
+if (!document.body.classList.contains('wp-admin')) {
+    MediaWatcher.init();
+}
+
 
 document.fonts.load('24px "Material Symbols Outlined"').then(() => {
-    
-    console.log(document.querySelectorAll('.material-symbols-outlined'));
 
+    document.body.classList.add('icons-loaded');
 });

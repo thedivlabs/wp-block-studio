@@ -578,18 +578,16 @@ export const hoverFieldsMap = [
                     step: 1,
                 },
             },
-
-            {
-                type: "box",
-                slug: "gap",
-                label: "Gap",
-                sides: ['top', 'left'],
-                inputProps: {units: DIMENSION_UNITS},
-                full: true,
-            },
         ],
     },
-
+    {
+        type: "box",
+        slug: "gap",
+        label: "Gap",
+        sides: ['top', 'left'],
+        inputProps: {units: DIMENSION_UNITS},
+        full: true,
+    },
     {
         type: "shadow",
         slug: "box-shadow",

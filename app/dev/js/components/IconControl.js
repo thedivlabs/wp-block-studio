@@ -252,6 +252,7 @@ export const IconControl = ({
  * Frontend renderer
  * ------------------------------------------------------------ */
 export const MaterialIcon = ({
+                                 isEditor = false,
                                  name,
                                  weight = 300,
                                  size,

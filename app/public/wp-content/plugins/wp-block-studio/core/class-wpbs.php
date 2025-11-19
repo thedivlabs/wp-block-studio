@@ -50,6 +50,9 @@ class WPBS {
 		add_action( 'wp_body_open', [ $this, 'body_open_scripts' ], 1 );
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
 
+		add_action( 'wp_footer', [ $this, 'inline_scripts' ], 10 );
+		add_action( 'admin_footer', [ $this, 'inline_scripts' ], 10 );
+
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
 
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
@@ -884,11 +887,13 @@ class WPBS {
 
 	}
 
-	public function footer_scripts(): void {
-
+	public function inline_scripts(): void {
 		echo '<script>';
 		include_once self::$path . 'build/inline.js';
 		echo '</script>';
+	}
+
+	public function footer_scripts(): void {
 
 		$scripts = array_merge(
 			array_filter( get_field( 'theme_settings', 'option' )['scripts'] ?? false ?: [], function ( $script ) {

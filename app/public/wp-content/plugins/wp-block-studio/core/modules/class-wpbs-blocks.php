@@ -76,7 +76,7 @@ class WPBS_Blocks {
 
 		// Gather all items reported from blocks
 		$items = apply_filters( 'wpbs_preload_media', [] );
-		
+
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return;
 		}
@@ -104,6 +104,7 @@ class WPBS_Blocks {
 		foreach ( $groups as $group_key => $group_items ) {
 
 			$attrs = [
+				'href'          => '',
 				'rel'           => 'preload',
 				'as'            => 'image',
 				'data-group'    => $group_key,

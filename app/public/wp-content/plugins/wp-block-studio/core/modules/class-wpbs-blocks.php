@@ -74,75 +74,73 @@ class WPBS_Blocks {
 
 	public function output_preload_media(): void {
 
-		// Ask all blocks to report their preload items
+		// Gather all items reported from blocks
 		$items = apply_filters( 'wpbs_preload_media', [] );
-
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return;
 		}
 
-		// Load theme.json breakpoints
+		// Load breakpoints from theme.json
 		$settings    = wp_get_global_settings();
 		$breakpoints = $settings['custom']['breakpoints'] ?? [];
 
-		// Deduplicate
-		$unique = [];
-
+		// Group by block (requires item['group'])
+		$groups = [];
 		foreach ( $items as $item ) {
 			if ( ! is_array( $item ) ) {
 				continue;
 			}
 
-			// Normalize only relevant keys
-			$keyData = [
-				'id'         => $item['id'] ?? null,
-				'resolution' => $item['resolution'] ?? null,
-				'bp'         => $item['media'] ?? null, // breakpoint key
-				'type'       => $item['type'] ?? null,
-			];
+			$group = $item['group'] ?? null;
+			if ( ! $group ) {
+				continue;
+			}
 
-			// Build natural uniqueness key
-			$key = json_encode( $keyData, JSON_UNESCAPED_SLASHES );
-
-			$unique[ $key ] = $item;
+			$groups[ $group ][] = $item;
 		}
 
-		// Output preload tags
-		foreach ( $unique as $item ) {
-			
-			$id    = $item['id'] ?? null;
-			$type  = $item['type'] ?? null;
-			$bpKey = $item['media'] ?? null; // breakpoint key
-			$size  = $item['resolution'] ?? 'large';
+		// Build one preload link per group
+		foreach ( $groups as $group_key => $group_items ) {
 
-			if ( ! $id || ! $type ) {
-				continue;
-			}
+			$attrs = [
+				'rel'           => 'preload',
+				'as'            => 'image',
+				'data-group'    => $group_key,
+				'fetchpriority' => 'high',
+			];
 
-			// Resolve URL
-			$src = $this->resolve_image_url( $id, $size );
-			if ( ! $src ) {
-				continue;
-			}
+			foreach ( $group_items as $item ) {
 
-			$mediaAttr = '';
-			if ( $bpKey && isset( $breakpoints[ $bpKey ] ) ) {
-				$bp = $breakpoints[ $bpKey ];
+				$id    = $item['id'] ?? null;
+				$type  = $item['type'] ?? null;
+				$bpKey = $item['media'] ?? null;
+				$size  = $item['resolution'] ?? 'large';
 
-				// If theme.json explicitly provides "query", use it.
-				if ( isset( $bp['query'] ) && is_string( $bp['query'] ) ) {
-					$mediaAttr = $bp['query'];
-				} // Otherwise build a media query from the numeric size.
-				elseif ( isset( $bp['size'] ) ) {
-					$size      = (int) $bp['size'];
-					$mediaAttr = "(max-width: {$size}px)";
+				if ( ! $id || ! $type ) {
+					continue;
 				}
+
+				// Resolve URL
+				$src = $this->resolve_image_url( $id, $size );
+				if ( ! $src ) {
+					continue;
+				}
+
+				// Determine the attribute name (data-sm, data-md, or data-default)
+				$attrKey = $bpKey ?: 'default';
+
+				// Convert breakpoint keys into usable media names if needed
+				$attrs["data-{$attrKey}"] = esc_url( $src );
 			}
 
-			echo '<link rel="preload" data-href="' . esc_url( $src ) . '" as="' . esc_attr( $type ) . '"'
-			     . ( $mediaAttr ? ' data-media="' . esc_attr( $mediaAttr ) . '"' : '' )
-			     . ' fetchpriority="high" />' . "\n";
+			// Output final link tag
+			$html = '<link ';
+			foreach ( $attrs as $key => $value ) {
+				$html .= $key . '="' . esc_attr( $value ) . '" ';
+			}
+			$html .= '/>';
 
+			echo $html . "\n";
 		}
 	}
 

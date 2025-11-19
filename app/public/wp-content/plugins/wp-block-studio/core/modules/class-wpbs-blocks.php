@@ -104,7 +104,7 @@ class WPBS_Blocks {
 		foreach ( $groups as $group_key => $group_items ) {
 
 			$attrs = [
-				'href'          => '',
+				'href'          => '#',
 				'rel'           => 'preload',
 				'as'            => 'image',
 				'data-group'    => $group_key,

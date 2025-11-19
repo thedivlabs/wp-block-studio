@@ -69,6 +69,10 @@ export const withStyle = (Component) => (props) => {
     }, []);
 
     useEffect(() => {
+        console.log('attributes', attributes);
+    }, [])
+
+    useEffect(() => {
         return () => {
             unregisterBlock(attributes.uniqueId, clientId);
         };

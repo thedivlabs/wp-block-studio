@@ -70,7 +70,7 @@ const HoverFields = memo(
                             key={field.slug}
                             field={field}
                             settings={settings}
-                            callback={(v) => updateHoverItem(v)}
+                            callback={(v) => updateHoverItem({[field.slug]: v})}
                             isToolsPanel={false}
                         />
                     ))}
@@ -282,6 +282,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
     }, []);
 
     const updateHoverItem = useCallback((newProps) => {
+        console.log(newProps, 'newProps');
         setLocalHover((prev) => ({...prev, ...newProps}));
     }, []);
 

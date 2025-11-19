@@ -139,7 +139,7 @@ final class WPBS_Icons {
 		if ( ! empty( $this->icons ) ) {
 			$names = array_merge( $names, $this->icons );
 		}
-		
+
 		$names = array_merge( $names, $this->get_global_icon_names() );
 
 		$names = array_values( array_unique( array_filter( array_map( 'trim', $names ) ) ) );
@@ -150,7 +150,7 @@ final class WPBS_Icons {
 
 		$url = $this->build_url( $names );
 		if ( $url ) {
-			echo '<link rel="stylesheet" href="' . esc_url( $url ) . '">' . "\n";
+			echo '<link rel="stylesheet" data-href="' . esc_url( $url ) . '">' . "\n";
 		}
 
 		echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";

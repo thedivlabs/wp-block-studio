@@ -37,7 +37,7 @@ final class WPBS_Icons {
 		);
 
 		if ( $names ) {
-			$this->icons = array_merge( $this->icons, $names );
+			$this->icons = array_unique( array_merge( $this->icons, $names ) );
 		}
 
 		return $block;
@@ -139,14 +139,7 @@ final class WPBS_Icons {
 		if ( ! empty( $this->icons ) ) {
 			$names = array_merge( $names, $this->icons );
 		}
-
-		// optional: keep the old filter if you still want it,
-		// but it’s probably obsolete now.
-		$block_names = apply_filters( 'wpbs_icon_names', [] );
-		if ( ! empty( $block_names ) ) {
-			$names = array_merge( $names, $block_names );
-		}
-
+		
 		$names = array_merge( $names, $this->get_global_icon_names() );
 
 		$names = array_values( array_unique( array_filter( array_map( 'trim', $names ) ) ) );

@@ -382,8 +382,6 @@ class WPBS_Blocks {
 
 		sort( $list, SORT_STRING );
 
-		WPBS::console_log( [ $list ] );
-
 		return $list;
 	}
 

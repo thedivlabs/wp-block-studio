@@ -38,14 +38,8 @@ export const withStyle = (Component) => (props) => {
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
     const blockCssRef = useRef({});
-    const blockCssDeps = JSON.stringify(blockCssRef.current || {});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
-
-
-    useEffect(() => {
-        console.log(attributes);
-    }, [attributes]);
 
     const {
         uniqueId,
@@ -99,7 +93,7 @@ export const withStyle = (Component) => (props) => {
             }
 
         },
-        [settings, setAttributes, blockCssDeps]
+        [settings, setAttributes]
     );
 
     /*
@@ -107,13 +101,22 @@ export const withStyle = (Component) => (props) => {
     BLOCK → RAW CSS REF
     ----------------------------------------------------------------------
     */
-    const updateBlockCssRef = useCallback(
-        (newCss = {}) => {
-            blockCssRef.current = newCss || {};
-            // parsing is driven by the wpbs-style watcher effect
-        },
-        []
-    );
+    const updateBlockCssRef = useCallback((newCss = {}) => {
+        blockCssRef.current = newCss || {};
+
+        // Immediate update for responsiveness
+        if (typeof onStyleChange === "function" && styleRef.current) {
+            onStyleChange({
+                css: blockCssRef.current,
+                preload: blockPreloadRef.current,
+                props,
+                styleRef
+            });
+        }
+
+        // The effect will still fire when settings change
+    }, [onStyleChange, props]);
+
 
     /*
     ----------------------------------------------------------------------
@@ -147,7 +150,7 @@ export const withStyle = (Component) => (props) => {
             props,
             styleRef
         });
-    }, [settings, blockGapDeps, uniqueId, blockCssDeps]);
+    }, [settings, blockGapDeps, uniqueId]);
 
 
     const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {

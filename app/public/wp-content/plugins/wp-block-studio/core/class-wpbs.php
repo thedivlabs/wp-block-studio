@@ -557,7 +557,7 @@ class WPBS {
 			if ( str_starts_with( $src, 'file:' ) ) {
 				$relative_path = substr( $src, 5 );
 				$url           = $theme_uri . '/' . ltrim( $relative_path, '/' );
-				echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+				echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin fetchpriority="high">' . "\n";
 			}
 		}
 
@@ -571,12 +571,11 @@ class WPBS {
 		];
 
 		$preload_sources = apply_filters( 'wpbs_preload_sources', [] );
-		$preload_images  = apply_filters( 'wpbs_preload_images', [] );
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
 			if ( ! empty( $url['host'] ) ) {
-				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
 			}
 		}
 
@@ -588,8 +587,8 @@ class WPBS {
 			$url = parse_url( $src );
 
 			if ( ! empty( $url['host'] ) ) {
-				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
-				echo '<link rel="preload" href="' . $src . '">';
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
+				echo '<link rel="preload" href="' . $src . '" fetchpriority="high">';
 			}
 		}
 
@@ -615,7 +614,7 @@ class WPBS {
 		) );
 
 		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_scripts', $preload_scripts ) ) ) as $url ) {
-			echo '<link rel="preload" as="script" href="' . $url . '">' . "\n";
+			echo '<link rel="preload" as="script" href="' . $url . '" fetchpriority="high">' . "\n";
 		}
 	}
 

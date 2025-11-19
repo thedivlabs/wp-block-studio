@@ -109,9 +109,7 @@ class WPBS_Blocks {
 
 		// Output preload tags
 		foreach ( $unique as $item ) {
-
-			WPBS::console_log( $item );
-
+			
 			$id    = $item['id'] ?? null;
 			$type  = $item['type'] ?? null;
 			$bpKey = $item['media'] ?? null; // breakpoint key
@@ -139,7 +137,7 @@ class WPBS_Blocks {
 
 			echo '<link rel="preload" href="' . esc_url( $src ) . '" as="' . esc_attr( $type ) . '"'
 			     . ( $mediaAttr ? ' media="' . esc_attr( $mediaAttr ) . '"' : '' )
-			     . ' />' . "\n";
+			     . ' fetchpriority="high" />' . "\n";
 		}
 	}
 

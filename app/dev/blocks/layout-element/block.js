@@ -39,17 +39,6 @@ registerBlockType(metadata.name, {
 
             const classNames = getClassNames(attributes, styleData);
 
-
-            useEffect(() => {
-                console.log(attributes);
-            }, [])
-
-            useEffect(() => {
-                const css = {props: {'--testing': 100}};
-                //setCss(css);
-            }, []);
-
-
             return (
                 <>
                     <BlockWrapper

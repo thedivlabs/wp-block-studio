@@ -40,10 +40,9 @@ registerBlockType(metadata.name, {
             const classNames = getClassNames(attributes, styleData);
 
 
-            /*useEffect(() => {
-                const preloads = [{id: 100, testing: true}];
-                setPreload(preloads);
-            }, [])*/
+            useEffect(() => {
+                console.log(attributes);
+            }, [])
 
             useEffect(() => {
                 const css = {props: {'--testing': 100}};

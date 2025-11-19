@@ -109,7 +109,7 @@ class WPBS_Blocks {
 
 		// Output preload tags
 		foreach ( $unique as $item ) {
-			
+
 			$id    = $item['id'] ?? null;
 			$type  = $item['type'] ?? null;
 			$bpKey = $item['media'] ?? null; // breakpoint key
@@ -356,11 +356,13 @@ class WPBS_Blocks {
 
 		// If the WebP exists on disk
 		$path = str_replace( home_url(), ABSPATH, $webp );
-		if ( file_exists( $path ) ) {
+		/*if ( file_exists( $path ) ) {
 			return $webp;
-		}
+		}*/
 
-		return $src;
+		return $webp;
+
+		//return $src;
 	}
 
 

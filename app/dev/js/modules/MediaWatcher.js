@@ -12,10 +12,6 @@ export default class MediaWatcher {
         // 2. Watch visibility-only elements
         this.observeVisibility(document);
 
-        [...document.querySelectorAll('link[data-href]')].forEach((link) => {
-            link.href = link.dataset.href;
-        });
-
         // 3. Debounced MQ checking for videos
         const recheck = debounce(() => {
             this.videos.forEach((video) => {

@@ -76,6 +76,7 @@ class WPBS_Blocks {
 
 		// Gather all items reported from blocks
 		$items = apply_filters( 'wpbs_preload_media', [] );
+		
 		if ( empty( $items ) || ! is_array( $items ) ) {
 			return;
 		}

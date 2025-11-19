@@ -64,7 +64,7 @@ export function extractMinimalImageMeta(media) {
 
 export function getImageUrlForResolution(image, resolution = 'large') {
     if (!image?.source) return null;
-    
+
     const {source, sizes = {}} = image;
 
     // SVGs or anything without sizes → always return source
@@ -124,7 +124,7 @@ export function cleanObject(obj, strict = false) {
     }, {});
 }
 
-export function extractPreloadsFromLayout(layout = {}) {
+export function extractPreloadsFromLayout(layout = {}, uniqueId) {
     const result = [];
 
     // --- Base background
@@ -133,6 +133,7 @@ export function extractPreloadsFromLayout(layout = {}) {
 
         if (baseBg.type === "image" && baseBg.image?.id) {
             result.push({
+                group: uniqueId,
                 id: baseBg.image.id,
                 type: "image",
                 resolution: baseBg.resolution || null
@@ -141,6 +142,7 @@ export function extractPreloadsFromLayout(layout = {}) {
 
         if (baseBg.type === "video" && baseBg.video?.id) {
             result.push({
+                group: uniqueId,
                 id: baseBg.video.id,
                 type: "video"
             });
@@ -152,22 +154,24 @@ export function extractPreloadsFromLayout(layout = {}) {
 
     for (const [bpKey, bpData] of Object.entries(breakpoints)) {
         const bpBg = bpData?.background;
-        if (!baseBg?.eager) continue;  // FIX #1 (correct eager check)
+        if (!baseBg?.eager) continue;
 
         if (bpBg.type === "image" && bpBg.image?.id) {
             result.push({
+                group: uniqueId,
                 id: bpBg.image.id,
                 type: "image",
                 resolution: bpBg.resolution || null,
-                media: bpKey            // FIX #2 (use breakpoint key)
+                media: bpKey
             });
         }
 
         if (bpBg.type === "video" && bpBg.video?.id) {
             result.push({
+                group: uniqueId,
                 id: bpBg.video.id,
                 type: "video",
-                media: bpKey            // FIX #2
+                media: bpKey
             });
         }
     }
@@ -180,14 +184,16 @@ export function normalizePreloadItem(item) {
 
     const out = {
         id: item.id,
-        type: item.type || "image"
+        type: item.type || "image",
     };
 
+    if (item.group) out.group = item.group;
     if (item.media) out.media = item.media;
     if (item.resolution) out.resolution = item.resolution;
 
     return out;
 }
+
 
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';

@@ -10,16 +10,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // PRELOAD FIRST — this needs max priority
-    document.querySelectorAll('link[rel="preload"][data-href]').forEach(link => {
+    document.addEventListener("DOMContentLoaded", () => {
+        const bp = window.WPBS?.settings?.breakpoints || {};
 
-        const href = link.dataset.href;
-        const mq = link.dataset.media;
+        document.querySelectorAll('link[rel="preload"][data-group]').forEach(link => {
+            let chosen = link.dataset.default || null;
 
-        if (window.matchMedia(mq).matches) {
-            link.href = href;
-            link.removeAttribute('data-href');
-        }
+            for (const attr of link.attributes) {
+                const name = attr.name;
+
+                if (!name.startsWith('data-') || name === 'data-default' || name === 'data-group')
+                    continue;
+
+                const bpKey = name.replace('data-', '');
+                const config = bp[bpKey];
+
+                if (!config || !config.size) continue;
+
+                const max = config.size;
+                if (window.matchMedia(`(max-width:${max}px)`).matches) {
+                    chosen = attr.value;
+                    break;
+                }
+            }
+
+            if (chosen) link.href = chosen;
+        });
     });
+
 
     // NON-CRITICAL LINK HYDRATION — next animation frame
     requestAnimationFrame(() => {

@@ -556,7 +556,7 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     // ----------------------------------------
     // 9. Preload merging
     // ----------------------------------------
-    const incoming = extractPreloadsFromLayout(cleanedLayout);
+    const incoming = extractPreloadsFromLayout(cleanedLayout, uniqueId);
     const nextPreload = buildPreloadArray({
         blockItems: preload,
         incoming,

@@ -87,10 +87,10 @@ export const BlockWrapper = ({
     const {'wpbs-style': settings = {}} = attributes;
     const {advanced} = settings;
 
-    const {tagName: wrapperTagName = 'div', hasChildren = false} = wrapperProps;
+    const {tagName: wrapperTagName = 'div', hasBackground = true, hasChildren = false} = wrapperProps;
     const Tag = ElementTag(advanced?.tagName, wrapperTagName || tagName);
 
-    const isBackgroundActive = hasAnyBackground(settings);
+    const isBackgroundActive = hasAnyBackground(settings) && !!hasBackground;
 
     const hasContainer = isBackgroundActive || settings?.advanced?.container;
 

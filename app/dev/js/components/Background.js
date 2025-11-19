@@ -200,6 +200,8 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
     // 1. BASE VIDEO (real source only)
     // ----------------------------------------
     const baseVideo = background?.video;
+    const hasRealBase = !!baseVideo?.source;
+
     if (baseVideo?.source) {
         entries.push({
             size: Infinity,
@@ -219,8 +221,7 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
             if (bpVideo.source) {
                 // real video
                 entries.push({size, video: bpVideo});
-            } else {
-                // empty object → treat as implicit disable
+            } else if (bpVideo.isPlaceholder && hasRealBase) {
                 entries.push({
                     size,
                     video: {source: "#", mime: "video/mp4"}
@@ -230,10 +231,12 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
         }
 
         // CASE B — breakpoint has NO video key at all
-        entries.push({
-            size,
-            video: {source: "#", mime: "video/mp4"}
-        });
+        if (hasRealBase) {
+            entries.push({
+                size,
+                video: {source: "#", mime: "video/mp4"}
+            });
+        }
     });
 
     // If no entries at all, bail
@@ -248,7 +251,8 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
     const baseVideoObj = baseEntry?.video ?? null;
 
     const bpEntries = entries.filter(e => e.size !== Infinity);
-
+    console.log(bpEntries);
+    console.log(baseEntry);
     // ----------------------------------------
     // Render
     // ----------------------------------------

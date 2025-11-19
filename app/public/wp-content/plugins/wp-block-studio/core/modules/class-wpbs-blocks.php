@@ -110,22 +110,23 @@ class WPBS_Blocks {
 		// Output preload tags
 		foreach ( $unique as $item ) {
 
+			WPBS::console_log( $item );
+
 			$id    = $item['id'] ?? null;
 			$type  = $item['type'] ?? null;
 			$bpKey = $item['media'] ?? null; // breakpoint key
-			$size  = $item['resolution'] ?? 'full';
+			$size  = $item['resolution'] ?? 'large';
 
 			if ( ! $id || ! $type ) {
 				continue;
 			}
 
 			// Resolve URL
-			$src = wp_get_attachment_image_url( $id, $size );
+			$src = $this->resolve_image_url( $id, $size );
 			if ( ! $src ) {
 				continue;
 			}
 
-			// Resolve media query from theme.json breakpoint key
 			$mediaAttr = '';
 			if ( $bpKey && isset( $breakpoints[ $bpKey ] ) ) {
 				$mq = $breakpoints[ $bpKey ];
@@ -181,7 +182,7 @@ class WPBS_Blocks {
 			], $importantKeysCustom );
 
 			$result = '';
-			
+
 			foreach ( $props as $k => $v ) {
 				if ( $v === null || $v === '' ) {
 					continue;
@@ -343,6 +344,25 @@ class WPBS_Blocks {
 			$block = register_block_type( $block_dir, $block_object );
 
 		}
+	}
+
+	private function resolve_image_url( $id, $resolution = 'large' ): ?string {
+		$src = wp_get_attachment_image_url( $id, $resolution );
+
+		if ( ! $src ) {
+			return null;
+		}
+
+		// webp always preferred
+		$webp = $src . '.webp';
+
+		// If the WebP exists on disk
+		$path = str_replace( home_url(), ABSPATH, $webp );
+		if ( file_exists( $path ) ) {
+			return $webp;
+		}
+
+		return $src;
 	}
 
 

@@ -37,7 +37,6 @@ final class WPBS_Icons {
 		);
 
 		if ( $names ) {
-			WPBS::console_log( $names );
 			$this->icons = array_merge( $this->icons, $names );
 		}
 

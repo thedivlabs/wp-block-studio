@@ -8,6 +8,9 @@ document.fonts.load('24px "Material Symbols Outlined"').then(() => {
     document.body.classList.add('icons-loaded');
 });
 
-[...document.querySelectorAll('link[data-href]')].forEach((link) => {
-    link.href = link.dataset.href;
+requestAnimationFrame(() => {
+    document.querySelectorAll('link[data-href]').forEach((link) => {
+        link.href = link.dataset.href;
+    });
 });
+

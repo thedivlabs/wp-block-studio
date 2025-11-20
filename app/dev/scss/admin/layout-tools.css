@@ -256,5 +256,11 @@
   }
 }
 
+.is-style-unstyled.components-panel__body {
+  border: none !important;
+}
 
+.is-style-unstyled .components-panel__body-content {
+  padding: 0 !important;
+}
 

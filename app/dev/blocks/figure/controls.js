@@ -32,10 +32,11 @@ export function FigureInspector({attributes, updateSettings}) {
 
     return (
         <>
-            <Link defaultValue={settings?.link} callback={(val) => updateSettings({link: val})} />
+            <Link defaultValue={settings?.link} callback={(val) => updateSettings({link: val})}/>
 
             <InspectorControls group="styles">
-                <PanelBody initialOpen={true} className="wpbs-block-controls">
+                <PanelBody initialOpen={true} className="wpbs-block-controls"
+                           style={{paddingTop: 0, paddingBottom: 0, border: 'none'}}>
 
                     <Grid columns={2} columnGap={15} rowGap={20}>
 

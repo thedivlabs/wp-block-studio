@@ -30,6 +30,7 @@ export default function Link({defaultValue = {}, callback}) {
         ariaLabel: defaultValue.ariaLabel || "",
         id: defaultValue.id || "",
         rel: defaultValue.rel || "",
+        alt: defaultValue.alt || "",
         // add any custom keys here
     });
 
@@ -56,6 +57,14 @@ export default function Link({defaultValue = {}, callback}) {
                             <MenuItem>
                                 <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
 
+                                    <TextControl
+                                        label="Text"
+                                        value={link.title}
+                                        onChange={(v) => update({title: v})}
+                                        style={{gridColumn: '1/-1'}}
+                                        {...sharedProps}
+                                    />
+
                                     <LinkField
                                         label="Link"
                                         checked={!!link.url}
@@ -74,7 +83,7 @@ export default function Link({defaultValue = {}, callback}) {
 
                                             <TextControl
                                                 label="Title attribute"
-                                                value={link.title}
+                                                value={link.alt}
                                                 onChange={(v) => update({title: v})}
                                                 style={{gridColumn: '1/-1'}}
                                                 {...sharedProps}

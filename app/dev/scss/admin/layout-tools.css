@@ -225,7 +225,6 @@
     height: auto;
     grid-column: span 1;
     max-width: 100%;
-    overflow: hidden;
 
     &.--full {
       grid-column: 1 / -1;
@@ -259,10 +258,10 @@
   border: none !important;
   padding: 0 !important;
 }
+
 .is-style-unstyled .components-panel__body-title {
   margin: 0 !important;
 }
-
 
 
 .is-style-unstyled .components-panel__body-content {

@@ -1,15 +1,12 @@
 export const IMAGE_BUTTON_STYLE = {
-    border: '1px dashed lightgray',
     width: '100%',
-    height: 'auto',
-    aspectRatio: '16/9',
+    //aspectRatio: '16/9',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
-    minHeight:"100px",
+    height: "100px",
     objectFit: "cover",
-    pointerEvents: "none",
     gap: "8px",
     flexDirection: "column",
 }

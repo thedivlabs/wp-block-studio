@@ -17,7 +17,10 @@ function PreviewThumbnail({
 
     const isDisabled = image?.isPlaceholder === true;
 
-    const thumbnailStyle = IMAGE_BUTTON_STYLE;
+    const thumbnailStyle = {
+        ...IMAGE_BUTTON_STYLE,
+        pointerEvents: "none",
+    };
 
     const emptyStyle = {
         ...IMAGE_BUTTON_STYLE,

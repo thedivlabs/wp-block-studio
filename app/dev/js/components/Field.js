@@ -54,7 +54,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const bpOptions = [
                 { label: "Select", value: "" },
                 ...Object.entries(breakpoints).map(([key, data]) => ({
-                    label: data?.label || key,
+                    label: data?.label || [key,data?.size + 'px'].join(' '),
                     value: key,
                 })),
             ];

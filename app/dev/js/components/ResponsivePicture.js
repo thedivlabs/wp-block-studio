@@ -17,51 +17,84 @@ const ResponsivePicture = ({
         style = {}
     } = settings;
 
-    // Global theme breakpoints
+    /* ------------------------------------------------------------
+     * BREAKPOINT
+     * ------------------------------------------------------------ */
     const breakpoints = WPBS.settings.breakpoints || {};
-    const breakpoint = breakpoints[breakpointKey] || "768px";
+    const bp = breakpoints[breakpointKey];
+    const breakpoint = bp?.size ? `${bp.size}px` : "768px";
 
-    // ------------------------------------------------------------
-    // SAFE IMAGE FALLBACKS
-    // ------------------------------------------------------------
-    // If only ONE image is provided, use it for BOTH breakpoints.
-    const baseMobile = mobile?.id ? mobile : large?.id ? large : null;
-    const baseLarge = large?.id ? large : mobile?.id ? mobile : null;
+    /* ------------------------------------------------------------
+     * PLACEHOLDER DETECTION
+     * ------------------------------------------------------------ */
+    const isMobilePlaceholder = mobile?.isPlaceholder === true;
+    const isLargePlaceholder = large?.isPlaceholder === true;
 
+    /* ------------------------------------------------------------
+     * BASE IMAGE SELECTION
+     * ------------------------------------------------------------ */
+    // If only one valid image exists, it becomes base for both breakpoints.
+    const baseMobile =
+        !isMobilePlaceholder && mobile?.id
+            ? mobile
+            : !isLargePlaceholder && large?.id
+                ? large
+                : null;
+
+    const baseLarge =
+        !isLargePlaceholder && large?.id
+            ? large
+            : !isMobilePlaceholder && mobile?.id
+                ? mobile
+                : null;
+
+    // nothing to render if both are invalid or placeholders
     if (!baseMobile && !baseLarge) {
         return null;
     }
 
-    // Pull URLs using helper
-    const urlMobile = getImageUrlForResolution(baseMobile, resolutionMobile);
-    const urlLarge = getImageUrlForResolution(baseLarge, resolutionLarge);
+    /* ------------------------------------------------------------
+     * BUILD URLs
+     * ------------------------------------------------------------ */
+    const urlMobile = isMobilePlaceholder
+        ? "#"
+        : getImageUrlForResolution(baseMobile, resolutionMobile);
 
-    // If still nothing, abort rendering
+    const urlLarge = isLargePlaceholder
+        ? "#"
+        : getImageUrlForResolution(baseLarge, resolutionLarge);
+
+    // If both URLs fail, abort render.
     if (!urlMobile && !urlLarge) {
         return null;
     }
 
-    // WebP variants
-    const webpMobile = urlMobile && !urlMobile.endsWith(".svg")
-        ? `${urlMobile}.webp`
-        : null;
+    /* ------------------------------------------------------------
+     * WEBP
+     * ------------------------------------------------------------ */
+    const webpMobile =
+        urlMobile && urlMobile !== "#" && !urlMobile.endsWith(".svg")
+            ? `${urlMobile}.webp`
+            : null;
 
-    const webpLarge = urlLarge && !urlLarge.endsWith(".svg")
-        ? `${urlLarge}.webp`
-        : null;
+    const webpLarge =
+        urlLarge && urlLarge !== "#" && !urlLarge.endsWith(".svg")
+            ? `${urlLarge}.webp`
+            : null;
 
-    // data- attributes when lazy
+    /* ------------------------------------------------------------
+     * LOADING + ATTRIBUTES
+     * ------------------------------------------------------------ */
     const srcAttr = editor || eager ? "src" : "data-src";
     const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
 
-    const className = [
-        "wpbs-picture",
-        extraClass
-    ].filter(Boolean).join(" ");
+    const className = ["wpbs-picture", extraClass]
+        .filter(Boolean)
+        .join(" ");
 
-    // ------------------------------------------------------------
-    // RENDER
-    // ------------------------------------------------------------
+    /* ------------------------------------------------------------
+     * RENDER OUTPUT
+     * ------------------------------------------------------------ */
     return (
         <picture
             className={className}
@@ -81,6 +114,7 @@ const ResponsivePicture = ({
                             {...{[srcsetAttr]: webpMobile}}
                         />
                     )}
+
                     <source
                         media={`(max-width: calc(${breakpoint} - 1px))`}
                         {...{[srcsetAttr]: urlMobile}}
@@ -98,6 +132,7 @@ const ResponsivePicture = ({
                             {...{[srcsetAttr]: webpLarge}}
                         />
                     )}
+
                     <source
                         media={`(min-width: ${breakpoint})`}
                         {...{[srcsetAttr]: urlLarge}}

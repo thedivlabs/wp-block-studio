@@ -19,7 +19,7 @@ function PreviewThumbnail({
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
-        pointerEvents: "none",
+        //pointerEvents: "none",
     };
 
     const emptyStyle = {
@@ -31,14 +31,14 @@ function PreviewThumbnail({
     const buttonStyle = {
         width: "100%",
         maxWidth: "100px",
-        textAlign:"center",
+        textAlign: "center",
         justifyContent: "center"
     }
 
     const imageStyle = {
         width: "100%",
         height: "100%",
-        objectFit:"cover"
+        objectFit: "cover"
     }
 
     /* ------------------------------------------------------------- */

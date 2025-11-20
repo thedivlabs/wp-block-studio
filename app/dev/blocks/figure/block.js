@@ -132,50 +132,40 @@ registerBlockType(metadata.name, {
                 const type = settings?.type ?? null;
                 const overlay = settings?.overlay ?? null;
                 const origin = settings?.origin ?? null;
-                const width = settings?.['element-width'] ?? null;
-                const height = settings?.['element-height'] ?? null;
+                const width = settings?.["element-width"] ?? null;
+                const height = settings?.["element-height"] ?? null;
 
                 // Raw URLs
                 const largeURL = settings?.imageLarge?.url || null;
                 const mobileURL = settings?.imageMobile?.url || null;
 
-                // Breakpoint keys (from block attributes)
-                const bp = settings?.breakpoint || {};
-                const bpLarge = bp.large || null;   // e.g., "lg"
-                const bpMobile = bp.mobile || null; // e.g., "sm"
+                // Single breakpoint key (e.g. "sm", "md", "normal")
+                const bpKey = settings?.breakpoint || null;
+
+                const breakpoints = {
+                    // If a breakpoint + mobile image is set,
+                    // override the figure image there.
+                    ...(bpKey && mobileURL
+                        ? {
+                            [bpKey]: {
+                                "--figure-image": mobileURL,
+                            },
+                        }
+                        : {}),
+                };
 
                 return {
                     props: {
-                        '--figure-type': type,
-                        '--overlay': overlay,
-                        '--origin': origin,
-                        '--element-width': width,
-                        '--element-height': height,
+                        "--figure-type": type,
+                        "--overlay": overlay,
+                        "--origin": origin,
+                        "--element-width": width,
+                        "--element-height": height,
 
-                        // BASE figure image:
-                        // Use large image by default (matches WordPress behavior)
-                        '--figure-image': largeURL,
+                        // base image for all viewports
+                        "--figure-image": largeURL,
                     },
-
-                    breakpoints: {
-                        // MOBILE breakpoint override
-                        ...(bpMobile && mobileURL
-                            ? {
-                                [bpMobile]: {
-                                    '--figure-image': mobileURL,
-                                },
-                            }
-                            : {}),
-
-                        // LARGE breakpoint override (only if explicitly present)
-                        ...(bpLarge && largeURL
-                            ? {
-                                [bpLarge]: {
-                                    '--figure-image': largeURL,
-                                },
-                            }
-                            : {}),
-                    },
+                    breakpoints,
                 };
             }, [settings]);
 
@@ -234,21 +224,6 @@ registerBlockType(metadata.name, {
             const inspectorPanel = useMemo(() => <FigureInspector attributes={attributes}
                                                                   updateSettings={updateSettings}/>, [settings]);
 
-            const pictureProps = {
-                mobile: settings?.imageMobile,
-                large: settings?.imageLarge,
-                settings: {
-                    resolutionMobile: settings?.resolutionMobile,
-                    resolutionLarge: settings?.resolutionLarge,
-                    force: settings?.force,
-                    eager: settings?.eager,
-                    breakpoint: attributes?.breakpoint,
-                    className: null,
-                    style: null,
-                },
-                editor: true,
-            }
-
 
             return (
                 <>
@@ -271,35 +246,6 @@ registerBlockType(metadata.name, {
         const {attributes, styleData, BlockWrapper} = props;
         const settings = attributes["wpbs-figure"] || {};
         const classNames = getClassNames(attributes, styleData);
-
-        const isFeatured = settings?.type === "featured-image";
-
-        const largeURL = isFeatured
-            ? "#FEATURED_LARGE#"
-            : settings?.imageLarge?.url || null;
-
-        const mobileURL = isFeatured
-            ? "#FEATURED_MOBILE#"
-            : settings?.imageMobile?.url || null;
-
-        const pictureSettings = {
-            resolutionMobile: settings?.resolutionMobile,
-            resolutionLarge: settings?.resolutionLarge,
-            force: settings?.force,
-            eager: settings?.eager,
-            breakpoint: attributes?.breakpoint,
-            className: null,
-            style: null,
-        };
-
-        const pictureElement = (
-            <ResponsivePicture
-                mobile={{...(settings.imageMobile || {}), url: mobileURL}}
-                large={{...(settings.imageLarge || {}), url: largeURL}}
-                settings={pictureSettings}
-                editor={false}
-            />
-        );
 
         return (
             <BlockWrapper

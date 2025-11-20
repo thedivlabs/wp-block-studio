@@ -78,107 +78,102 @@ const sharedConfig = {
                         callback={(val) => updateSettings({type: val})}
                         {...sharedConfig}
                     />
-                </Grid>
+                    {settings.type && (
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            {/* IMAGE + FEATURED IMAGE */}
+                            {(settings.type === "image" || settings.type === "featured-image") && (
+                                <>
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "imageMobile")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({imageMobile: val})}
+                                        {...sharedConfig}
+                                    />
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "imageLarge")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({imageLarge: val})}
+                                        {...sharedConfig}
+                                    />
 
-                {/* Everything else depends on type */}
-                {settings.type && (
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        {/* IMAGE + FEATURED IMAGE */}
-                        {(settings.type === "image" || settings.type === "featured-image") && (
-                            <Grid columns={2} columnGap={15} rowGap={20}>
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "imageMobile")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({imageMobile: val})}
-                                    {...sharedConfig}
-                                />
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "imageLarge")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({imageLarge: val})}
-                                    {...sharedConfig}
-                                />
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "blend")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({blend: val})}
+                                        {...sharedConfig}
+                                    />
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "origin")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({origin: val})}
+                                        {...sharedConfig}
+                                    />
 
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "blend")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({blend: val})}
-                                    {...sharedConfig}
-                                />
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "origin")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({origin: val})}
-                                    {...sharedConfig}
-                                />
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "resolutionLarge")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({resolutionLarge: val})}
+                                        {...sharedConfig}
+                                    />
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "resolutionMobile")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({resolutionMobile: val})}
+                                        {...sharedConfig}
+                                    />
 
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "resolutionLarge")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({resolutionLarge: val})}
-                                    {...sharedConfig}
-                                />
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "resolutionMobile")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({resolutionMobile: val})}
-                                    {...sharedConfig}
-                                />
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "breakpoint")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({blend: val})}
+                                        {...sharedConfig}
+                                    />
+                                </>
+                            )}
 
-                                <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "breakpoint")}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({blend: val})}
-                                    {...sharedConfig}
-                                />
-                            </Grid>
-                        )}
-
-                        {/* OVERLAY always available (after selecting type) */}
-                        <Grid columns={1} columnGap={15} rowGap={20}>
                             <Field
                                 field={FIGURE_FIELDS.find(f => f.slug === "overlay")}
                                 settings={settings}
                                 callback={(val) => updateSettings({overlay: val})}
                                 {...sharedConfig}
                             />
-                        </Grid>
 
-                        {/* VIDEO */}
-                        {settings.type === "video" && (
-                            <Grid columns={1} columnGap={15} rowGap={20}>
+                            {/* VIDEO */}
+                            {settings.type === "video" && (
+                                <Grid columns={1} columnGap={15} rowGap={20}>
+                                    <Field
+                                        field={FIGURE_FIELDS.find(f => f.slug === "video")}
+                                        settings={settings}
+                                        callback={(val) => updateSettings({video: val})}
+                                        {...sharedConfig}
+                                    />
+                                </Grid>
+                            )}
+
+                            {/* Eager / Force / Contain */}
+                            <Grid columns={2} columnGap={15} rowGap={20}>
                                 <Field
-                                    field={FIGURE_FIELDS.find(f => f.slug === "video")}
+                                    field={FIGURE_FIELDS.find(f => f.slug === "eager")}
                                     settings={settings}
-                                    callback={(val) => updateSettings({video: val})}
+                                    callback={(val) => updateSettings({eager: val})}
+                                    {...sharedConfig}
+                                />
+                                <Field
+                                    field={FIGURE_FIELDS.find(f => f.slug === "force")}
+                                    settings={settings}
+                                    callback={(val) => updateSettings({force: val})}
+                                    {...sharedConfig}
+                                />
+                                <Field
+                                    field={FIGURE_FIELDS.find(f => f.slug === "contain")}
+                                    settings={settings}
+                                    callback={(val) => updateSettings({contain: val})}
                                     {...sharedConfig}
                                 />
                             </Grid>
-                        )}
-
-                        {/* Eager / Force / Contain */}
-                        <Grid columns={2} columnGap={15} rowGap={20}>
-                            <Field
-                                field={FIGURE_FIELDS.find(f => f.slug === "eager")}
-                                settings={settings}
-                                callback={(val) => updateSettings({eager: val})}
-                                {...sharedConfig}
-                            />
-                            <Field
-                                field={FIGURE_FIELDS.find(f => f.slug === "force")}
-                                settings={settings}
-                                callback={(val) => updateSettings({force: val})}
-                                {...sharedConfig}
-                            />
-                            <Field
-                                field={FIGURE_FIELDS.find(f => f.slug === "contain")}
-                                settings={settings}
-                                callback={(val) => updateSettings({contain: val})}
-                                {...sharedConfig}
-                            />
                         </Grid>
-                    </Grid>
-                )}
+                    )}
+                </Grid>
             </PanelBody>
         </InspectorControls>
     );

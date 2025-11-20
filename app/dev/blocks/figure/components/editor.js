@@ -18,6 +18,7 @@ const FIGURE_FIELDS = [
     // images
     {slug: "imageMobile", type: "image", label: "Mobile Image"},
     {slug: "imageLarge", type: "image", label: "Large Image"},
+    {slug: "breakpoint", type: "select", label: "Breakpoint", full: true},
 
     // resolutions
     {slug: "resolutionLarge", type: "select", label: "Size Large", options: RESOLUTION_OPTIONS},
@@ -58,6 +59,8 @@ const FIGURE_FIELDS = [
 export function FigureInspector({attributes, updateSettings}) {
     const settings = attributes["wpbs-figure"] || {};
 
+    const breakpoints = window.WPBS?.settings?.breakpoints ?? {};
+
     return (
         <InspectorControls group="styles">
             <PanelBody initialOpen={true} title="Figure">
@@ -72,7 +75,7 @@ export function FigureInspector({attributes, updateSettings}) {
 
                 {/* Everything else depends on type */}
                 {settings.type && (
-                    <Grid columns={1} columnGap={15} rowGap={20}>
+                    <Grid columns={2} columnGap={15} rowGap={20}>
                         {/* IMAGE + FEATURED IMAGE */}
                         {(settings.type === "image" || settings.type === "featured-image") && (
                             <Grid columns={2} columnGap={15} rowGap={20}>
@@ -108,6 +111,12 @@ export function FigureInspector({attributes, updateSettings}) {
                                     settings={settings}
                                     callback={(val) => updateSettings({resolutionMobile: val})}
                                 />
+
+                                <Field
+                                    field={FIGURE_FIELDS.find(f => f.slug === "breakpoint")}
+                                    settings={settings}
+                                    callback={(val) => updateSettings({blend: val})}
+                                />
                             </Grid>
                         )}
 
@@ -130,20 +139,6 @@ export function FigureInspector({attributes, updateSettings}) {
                                 />
                             </Grid>
                         )}
-
-                        {/* WIDTH + HEIGHT */}
-                        <Grid columns={2} columnGap={15} rowGap={20}>
-                            <Field
-                                field={FIGURE_FIELDS.find(f => f.slug === "element-width")}
-                                settings={settings}
-                                callback={(val) => updateSettings({"element-width": val})}
-                            />
-                            <Field
-                                field={FIGURE_FIELDS.find(f => f.slug === "element-height")}
-                                settings={settings}
-                                callback={(val) => updateSettings({"element-height": val})}
-                            />
-                        </Grid>
 
                         {/* Eager / Force / Contain */}
                         <Grid columns={3} columnGap={15} rowGap={20}>

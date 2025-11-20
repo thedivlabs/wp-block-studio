@@ -1,82 +1,105 @@
-const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false}) => {
+import React from "react";
 
+const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false}) => {
     const {
-        resolutionMobile: sizeMobile = 'medium',
-        resolutionLarge: sizeLarge = 'large',
+        resolutionMobile: sizeMobile = "medium",
+        resolutionLarge: sizeLarge = "large",
+        force = false,
+        eager = false,
     } = settings;
 
-    const breakpoints = WPBS.settings.breakpoints;
-    const breakpoint = breakpoints[settings?.breakpoint ?? 'normal'];
+    // Pull global breakpoints
+    const breakpoints = WPBS.settings.breakpoints || {};
+    const breakpointKey = settings?.breakpoint ?? "normal";
+    const breakpoint = breakpoints[breakpointKey];
 
-    const {[sizeMobile]: mobileLarge = {}} = mobile.sizes || {};
-    const {[sizeLarge]: largeLarge = {}} = large.sizes || {};
+    // Extract correct sized variants
+    const {[sizeMobile]: mobileVariant = {}} = mobile.sizes || {};
+    const {[sizeLarge]: largeVariant = {}} = large.sizes || {};
 
+    // Determine URLs with fallback logic (matches PHP logic)
     let urlLarge;
     let urlMobile;
 
-    if (!settings.force) {
-        urlLarge = largeLarge.url || mobileLarge.url || false;
-        urlMobile = mobileLarge.url || largeLarge.url || false;
+    if (!force) {
+        urlLarge = largeVariant.url || mobileVariant.url || null;
+        urlMobile = mobileVariant.url || largeVariant.url || null;
     } else {
-        urlLarge = largeLarge.url || false;
-        urlMobile = mobileLarge.url || false;
+        urlLarge = largeVariant.url || null;
+        urlMobile = mobileVariant.url || null;
     }
 
+    // Nothing to render
     if (!urlLarge && !urlMobile) {
-        return false;
+        return null;
     }
+
+    // Only create WebP if not SVG
+    const webpLarge = urlLarge && !urlLarge.includes(".svg") ? urlLarge + ".webp" : null;
+    const webpMobile = urlMobile && !urlMobile.includes(".svg") ? urlMobile + ".webp" : null;
 
     const className = [
-        'wpbs-picture',
-        settings.className || false,
-    ].filter(x => x).join(' ');
+        "wpbs-picture",
+        settings.className || null
+    ].filter(Boolean).join(" ");
 
-    let srcAttr;
-    let srcsetAttr;
+    // Attribute mode
+    const srcAttr = editor || eager ? "src" : "data-src";
+    const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
 
-    if (editor === true) {
-        srcAttr = 'src';
-        srcsetAttr = 'srcset';
-    } else {
-        srcAttr = !!settings.eager ? 'src' : 'data-src';
-        srcsetAttr = !!settings.eager ? 'srcset' : 'data-srcset';
-    }
+    return (
+        <picture
+            className={className}
+            style={{
+                ...(settings.style || {}),
+                objectFit: "inherit",
+            }}
+        >
+            {/* MOBILE FIRST (max-width) */}
+            {urlMobile && (
+                <>
+                    {webpMobile && (
+                        <source
+                            type="image/webp"
+                            media={`(max-width: calc(${breakpoint} - 1px))`}
+                            {...{[srcsetAttr]: webpMobile}}
+                        />
+                    )}
+                    <source
+                        media={`(max-width: calc(${breakpoint} - 1px))`}
+                        {...{[srcsetAttr]: urlMobile}}
+                    />
+                </>
+            )}
 
-    if (!urlLarge && !urlMobile) {
-        return false;
-    }
+            {/* LARGE (min-width) */}
+            {urlLarge && (
+                <>
+                    {webpLarge && (
+                        <source
+                            type="image/webp"
+                            media={`(min-width: ${breakpoint})`}
+                            {...{[srcsetAttr]: webpLarge}}
+                        />
+                    )}
+                    <source
+                        media={`(min-width: ${breakpoint})`}
+                        {...{[srcsetAttr]: urlLarge}}
+                    />
+                </>
+            )}
 
-    const webpExtLarge = typeof urlLarge === 'string' && !urlLarge.includes('.svg') ? '.webp' : '';
-    const webpExtMobile = typeof urlMobile === 'string' && !urlMobile.includes('.svg') ? '.webp' : '';
-
-    return <picture className={className} style={{
-        ...settings.style || {},
-        ['object-fit']: 'inherit'
-    }}>
-        <source {...{
-            [srcsetAttr]: urlLarge ? urlLarge + webpExtLarge : '#',
-            media: '(width >= ' + breakpoint + ')',
-        }}/>
-        <source {...{
-            [srcsetAttr]: urlLarge || '#',
-            media: '(width >= ' + breakpoint + ')',
-        }}/>
-        <source {...{
-            [srcsetAttr]: urlMobile ? urlMobile + webpExtMobile : '#',
-            media: '(width >= 32px)',
-        }}/>
-        <source {...{
-            [srcsetAttr]: urlMobile || '#',
-            media: '(width >= 32px)',
-        }}/>
-        <img {...{
-            [srcAttr]: urlMobile + webpExtMobile || '#',
-            alt: large.alt || mobile.alt || '',
-            ariaHidden: true,
-            loading: settings.eager ? 'eager' : 'lazy'
-        }}
-        />
-    </picture>;
-}
+            {/* FALLBACK IMG — always large */}
+            <img
+                {...{
+                    [srcAttr]: urlLarge || "#",
+                    alt: large?.alt || mobile?.alt || "",
+                    ariaHidden: true,
+                    loading: eager ? "eager" : "lazy",
+                }}
+            />
+        </picture>
+    );
+};
 
 export default ResponsivePicture;

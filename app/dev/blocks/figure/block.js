@@ -4,6 +4,7 @@ import metadata from "./block.json";
 import {FigureInspector} from './components/editor';
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
+import ResponsivePicture from "Components/ResponsivePicture";
 
 const selector = "wpbs-figure";
 
@@ -98,14 +99,44 @@ registerBlockType(metadata.name, {
             }, [settings]);
 
             const preloadObj = useMemo(() => {
+                const eager = !!settings?.eager;
+                if (!eager) return [];
 
+                const group = attributes?.uniqueId || null;
+                if (!group) return [];
 
-                return {};
-            }, [settings, attributes["wpbs-breakpoint"]]);
+                const bpKey = attributes?.breakpoint || null; // e.g. "sm"
 
-            useEffect(() => setCss(cssObj), [cssObj]);
+                const large = settings?.imageLarge;
+                const mobile = settings?.imageMobile;
+
+                const result = [];
+
+                // 1. BASE preload — large image (NO breakpoint key)
+                if (large?.id) {
+                    result.push({
+                        id: large.id,
+                        type: "image",
+                        group,
+                    });
+                }
+
+                // 2. BREAKPOINT preload — mobile image (WITH breakpoint key)
+                if (bpKey && mobile?.id) {
+                    result.push({
+                        id: mobile.id,
+                        type: "image",
+                        group,
+                        breakpoint: bpKey,
+                    });
+                }
+
+                return result;
+            }, [settings, attributes?.uniqueId, attributes?.breakpoint]);
 
             useEffect(() => setPreload(preloadObj), [preloadObj]);
+
+            useEffect(() => setCss(cssObj), [cssObj]);
 
 
             const updateSettings = useCallback((newValue) => {
@@ -126,19 +157,60 @@ registerBlockType(metadata.name, {
             return (
                 <>
                     {inspectorPanel}
+
                     <BlockWrapper
                         props={props}
                         className={classNames}
                         hasBackground={true}
                         tagName="figure"
-                    />
+                    >
+                        <ResponsivePicture
+                            mobile={settings?.imageMobile}
+                            large={settings?.imageLarge}
+                            settings={{
+                                resolutionMobile: settings?.resolutionMobile,
+                                resolutionLarge: settings?.resolutionLarge,
+                                force: settings?.force,
+                                eager: settings?.eager,
+                                breakpoint: attributes?.breakpoint,
+                                className: null,
+                                style: null,
+                            }}
+                            editor={true}
+                        />
+                    </BlockWrapper>
                 </>
             );
+
         }),
 
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
+        const settings = attributes["wpbs-figure"] || {};
         const classNames = getClassNames(attributes, styleData);
+
+        // --- Determine image URLs or placeholders ---
+        const isFeatured = settings?.type === "featured-image";
+
+        // Large + mobile URLs or placeholders
+        const largeURL = isFeatured
+            ? "#FEATURED_LARGE#"
+            : settings?.imageLarge?.url || null;
+
+        const mobileURL = isFeatured
+            ? "#FEATURED_MOBILE#"
+            : settings?.imageMobile?.url || null;
+
+        // Build a settings object to feed ResponsivePicture
+        const pictureSettings = {
+            resolutionMobile: settings?.resolutionMobile,
+            resolutionLarge: settings?.resolutionLarge,
+            force: settings?.force,
+            eager: settings?.eager,
+            breakpoint: attributes?.breakpoint,
+            className: null,
+            style: null,
+        };
 
         return (
             <BlockWrapper
@@ -146,7 +218,15 @@ registerBlockType(metadata.name, {
                 className={classNames}
                 hasBackground={true}
                 tagName="figure"
-            />
+            >
+                <ResponsivePicture
+                    mobile={{...(settings.imageMobile || {}), url: mobileURL}}
+                    large={{...(settings.imageLarge || {}), url: largeURL}}
+                    settings={pictureSettings}
+                    editor={false}
+                />
+            </BlockWrapper>
         );
     }),
+
 });

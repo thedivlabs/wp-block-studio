@@ -91,7 +91,7 @@ export default function LinkField({ value = {}, onChange }) {
         display:'flex',
         flexDirection:'column',
         gap:'16px',
-        padding:'35px 0px 25px'
+        padding:'35px 0px 10px'
     };
     const itemStyle = {
         width:'100%',

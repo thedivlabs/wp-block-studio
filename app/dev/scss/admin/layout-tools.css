@@ -212,7 +212,6 @@
   }
 
 
-
 }
 
 .wpbs-block-controls {
@@ -262,5 +261,14 @@
 
 .is-style-unstyled .components-panel__body-content {
   padding: 0 !important;
+}
+
+.is-style-unstyled .components-panel__body-toggle {
+  padding: 0 !important;
+  background-color: unset !important;
+
+  &:hover {
+    background-color: unset !important;
+  }
 }
 

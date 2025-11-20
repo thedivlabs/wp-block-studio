@@ -58,7 +58,7 @@ function PreviewThumbnail({
         return (
             <div style={emptyStyle}>
                 <Button onClick={onSelectClick} variant={'primary'}>
-                    Choose Image
+                    Choose
                 </Button>
 
                 <Button

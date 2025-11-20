@@ -8,6 +8,8 @@ export const IMAGE_BUTTON_STYLE = {
     objectFit: "cover",
     gap: "8px",
     flexDirection: "column",
+    overflow: "hidden",
+    borderRadius:"4px"
 }
 
 

@@ -35,6 +35,12 @@ function PreviewThumbnail({
         justifyContent: "center"
     }
 
+    const imageStyle = {
+        width: "100%",
+        height: "100%",
+        objectFit:"cover"
+    }
+
     /* ------------------------------------------------------------- */
     /*  EMPTY OR DISABLED STATE                                      */
     /* ------------------------------------------------------------- */
@@ -76,25 +82,16 @@ function PreviewThumbnail({
     /* SELECTED THUMBNAIL                                            */
     /* ------------------------------------------------------------- */
     const thumb = isVideo ? (
-        <video preload="metadata" style={thumbnailStyle}>
+        <video preload="metadata" style={imageStyle}>
             <source src={src} type="video/mp4"/>
         </video>
     ) : (
-        <img src={src} alt="" style={thumbnailStyle}/>
+        <img src={src} alt="" style={imageStyle}/>
     );
 
     return (
         <div
-            style={{
-                width: "100%",
-                position: "relative",
-                cursor: "pointer",
-                aspectRatio: "16/9",
-                overflow: "hidden",
-                borderRadius: "4px",
-                display: "flex",
-                ...style
-            }}
+            style={thumbnailStyle}
             onClick={() => callback("")}  // clicking thumbnail clears
         >
             {thumb}

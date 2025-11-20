@@ -8,6 +8,7 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
+import {cleanObject} from "Includes/helper";
 
 const selector = "wpbs-figure";
 
@@ -137,7 +138,7 @@ registerBlockType(metadata.name, {
                 const bpKey = settings?.breakpoint || null;
 
 
-                return {
+                return cleanObject({
                     props: {
                         "--figure-type": type,
                         "--overlay": overlay,
@@ -149,7 +150,7 @@ registerBlockType(metadata.name, {
                     breakpoints: {
                         [bpKey]: {}
                     },
-                };
+                });
             }, [settings]);
 
             const preloadObj = useMemo(() => {

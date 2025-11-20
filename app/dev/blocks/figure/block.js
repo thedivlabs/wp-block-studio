@@ -132,27 +132,10 @@ registerBlockType(metadata.name, {
                 const type = settings?.type ?? null;
                 const overlay = settings?.overlay ?? null;
                 const origin = settings?.origin ?? null;
-                const width = settings?.["element-width"] ?? null;
-                const height = settings?.["element-height"] ?? null;
-
-                // Raw URLs
-                const largeURL = settings?.imageLarge?.url || null;
-                const mobileURL = settings?.imageMobile?.url || null;
 
                 // Single breakpoint key (e.g. "sm", "md", "normal")
                 const bpKey = settings?.breakpoint || null;
 
-                const breakpoints = {
-                    // If a breakpoint + mobile image is set,
-                    // override the figure image there.
-                    ...(bpKey && mobileURL
-                        ? {
-                            [bpKey]: {
-                                "--figure-image": mobileURL,
-                            },
-                        }
-                        : {}),
-                };
 
                 return {
                     props: {
@@ -162,10 +145,10 @@ registerBlockType(metadata.name, {
                         "--element-width": width,
                         "--element-height": height,
 
-                        // base image for all viewports
-                        "--figure-image": largeURL,
                     },
-                    breakpoints,
+                    breakpoints: {
+                        [bpKey]: {}
+                    },
                 };
             }, [settings]);
 

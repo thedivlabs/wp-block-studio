@@ -58,7 +58,7 @@ registerBlockType(metadata.name, {
                 const mobileURL = settings?.imageMobile?.url || null;
 
                 // Breakpoint keys (from block attributes)
-                const bp = attributes?.["wpbs-breakpoint"] || {};
+                const bp = settings?.breakpoint || {};
                 const bpLarge = bp.large || null;   // e.g., "lg"
                 const bpMobile = bp.mobile || null; // e.g., "sm"
 
@@ -95,9 +95,17 @@ registerBlockType(metadata.name, {
                             : {}),
                     },
                 };
+            }, [settings]);
+
+            const preloadObj = useMemo(() => {
+
+
+                return {};
             }, [settings, attributes["wpbs-breakpoint"]]);
 
             useEffect(() => setCss(cssObj), [cssObj]);
+
+            useEffect(() => setPreload(preloadObj), [preloadObj]);
 
 
             const updateSettings = useCallback((newValue) => {
@@ -113,7 +121,7 @@ registerBlockType(metadata.name, {
             }, [setAttributes, settings]);
 
             const inspectorPanel = useMemo(() => <FigureInspector attributes={attributes}
-                                                                  updateSettings={updateSettings}/>, [settings]);
+                                                                  updateSettings={updateSettings}/>, []);
 
             return (
                 <>

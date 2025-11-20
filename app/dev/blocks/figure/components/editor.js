@@ -27,7 +27,7 @@ const FIGURE_FIELDS = [
     // visual fields
     {slug: "blend", type: "select", label: "Blend", options: BLEND_OPTIONS},
     {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
-    {slug: "overlay", type: "gradient", label: "Overlay"},
+    {slug: "overlay", type: "gradient", label: "Overlay", full:true},
 
     // video
     {slug: "video", type: "video", label: "Video"},
@@ -157,7 +157,7 @@ const sharedConfig = {
                         )}
 
                         {/* Eager / Force / Contain */}
-                        <Grid columns={3} columnGap={15} rowGap={20}>
+                        <Grid columns={2} columnGap={15} rowGap={20}>
                             <Field
                                 field={FIGURE_FIELDS.find(f => f.slug === "eager")}
                                 settings={settings}

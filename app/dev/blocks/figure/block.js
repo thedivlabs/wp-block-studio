@@ -140,12 +140,8 @@ registerBlockType(metadata.name, {
 
                 return cleanObject({
                     props: {
-                        "--figure-type": type,
                         "--overlay": overlay,
                         "--origin": origin,
-                        "--element-width": width,
-                        "--element-height": height,
-
                     },
                     breakpoints: {
                         [bpKey]: {}

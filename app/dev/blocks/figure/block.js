@@ -27,6 +27,84 @@ const getClassNames = (attributes = {}, styleData) => {
         .join(" ");
 };
 
+function renderFigureContent(settings, attributes, mode = "edit") {
+    const type = settings?.type || "image";
+
+    // Shared link wrapper
+    const wrapWithLink = (content) => {
+        return settings?.link
+            ? <a class="wpbs-layout-wrapper" {...getAnchorProps(settings.link)}>{content}</a>
+            : content;
+    };
+
+    // --- 1. RESPONSIVE PICTURE (default image mode) ---
+    if (type === "image") {
+        const pictureProps = {
+            mobile: settings?.imageMobile,
+            large: settings?.imageLarge,
+            settings: {
+                resolutionMobile: settings?.resolutionMobile,
+                resolutionLarge: settings?.resolutionLarge,
+                force: settings?.force,
+                eager: settings?.eager,
+                breakpoint: attributes?.breakpoint,
+                className: null,
+                style: null,
+            },
+            editor: mode === "edit"
+        };
+
+        return wrapWithLink(<ResponsivePicture {...pictureProps} />);
+    }
+
+    // --- 2. FEATURED IMAGE ---
+    if (type === "featured-image") {
+        // edit mode: still show ResponsivePicture
+        if (mode === "edit") {
+            const pictureProps = {
+                mobile: settings?.imageMobile,
+                large: settings?.imageLarge,
+                settings: {
+                    resolutionMobile: settings?.resolutionMobile,
+                    resolutionLarge: settings?.resolutionLarge,
+                    force: settings?.force,
+                    eager: settings?.eager,
+                    breakpoint: attributes?.breakpoint,
+                    className: null,
+                    style: null,
+                },
+                editor: true
+            };
+            return wrapWithLink(<ResponsivePicture {...pictureProps} />);
+        }
+
+        // save mode: output plain img tag replaced via PHP
+        return wrapWithLink(
+            <img
+                src="#FEATURED_LARGE#"
+                alt="#FEATURED_ALT#"
+                class="wpbs-picture-featured"
+                loading={settings?.eager ? "eager" : "lazy"}
+                aria-hidden="true"
+            />
+        );
+    }
+
+    // --- 3. LOTTIE ---
+    if (type === "lottie") {
+        const lottieSrc = settings?.lottieFile?.url || null;
+        return wrapWithLink(
+            <div
+                class="wpbs-lottie"
+                data-src={lottieSrc}
+                aria-hidden="true"
+            />
+        );
+    }
+
+    return null;
+}
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -180,10 +258,7 @@ registerBlockType(metadata.name, {
                         hasBackground={true}
                         tagName="figure"
                     >
-                        {settings?.link ?
-                            <a class={'wpbs-layout-wrapper'} {...getAnchorProps(settings?.link)}><ResponsivePicture {...pictureProps} /></a>
-                            : <ResponsivePicture {...pictureProps} />
-                        }
+                        {renderFigureContent(settings, attributes, "edit")}
                     </BlockWrapper>
                 </>
             );
@@ -231,9 +306,7 @@ registerBlockType(metadata.name, {
                 hasBackground={true}
                 tagName="figure"
             >
-                {settings?.link
-                    ? <a class={'wpbs-layout-wrapper'} {...getAnchorProps(settings.link)}>{pictureElement}</a>
-                    : pictureElement}
+                {renderFigureContent(settings, attributes, "save")}
             </BlockWrapper>
         );
     }),

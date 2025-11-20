@@ -1,59 +1,77 @@
-const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false}) => {
+import {getImageUrlForResolution} from "Includes/helper";
+
+const ResponsivePicture = ({
+                               mobile = {},
+                               large = {},
+                               settings = {},
+                               editor = false
+                           }) => {
+
     const {
-        resolutionMobile: sizeMobile = "medium",
-        resolutionLarge: sizeLarge = "large",
+        resolutionMobile = "medium",
+        resolutionLarge = "large",
         force = false,
         eager = false,
+        breakpoint: breakpointKey = "normal",
+        className: extraClass = "",
+        style = {}
     } = settings;
 
-    // Pull global breakpoints
+    // Global theme breakpoints
     const breakpoints = WPBS.settings.breakpoints || {};
-    const breakpointKey = settings?.breakpoint ?? "normal";
-    const breakpoint = breakpoints[breakpointKey];
+    const breakpoint = breakpoints[breakpointKey] || "768px";
 
-    // Extract correct sized variants
-    const {[sizeMobile]: mobileVariant = {}} = mobile.sizes || {};
-    const {[sizeLarge]: largeVariant = {}} = large.sizes || {};
+    // ------------------------------------------------------------
+    // SAFE IMAGE FALLBACKS
+    // ------------------------------------------------------------
+    // If only ONE image is provided, use it for BOTH breakpoints.
+    const baseMobile = mobile?.id ? mobile : large?.id ? large : null;
+    const baseLarge = large?.id ? large : mobile?.id ? mobile : null;
 
-    // Determine URLs with fallback logic (matches PHP logic)
-    let urlLarge;
-    let urlMobile;
-
-    if (!force) {
-        urlLarge = largeVariant.url || mobileVariant.url || null;
-        urlMobile = mobileVariant.url || largeVariant.url || null;
-    } else {
-        urlLarge = largeVariant.url || null;
-        urlMobile = mobileVariant.url || null;
-    }
-
-    // Nothing to render
-    if (!urlLarge && !urlMobile) {
+    if (!baseMobile && !baseLarge) {
         return null;
     }
 
-    // Only create WebP if not SVG
-    const webpLarge = urlLarge && !urlLarge.includes(".svg") ? urlLarge + ".webp" : null;
-    const webpMobile = urlMobile && !urlMobile.includes(".svg") ? urlMobile + ".webp" : null;
+    // Pull URLs using helper
+    const urlMobile = getImageUrlForResolution(baseMobile, resolutionMobile);
+    const urlLarge = getImageUrlForResolution(baseLarge, resolutionLarge);
 
-    const className = [
-        "wpbs-picture",
-        settings.className || null
-    ].filter(Boolean).join(" ");
+    // If still nothing, abort rendering
+    if (!urlMobile && !urlLarge) {
+        return null;
+    }
 
-    // Attribute mode
+    // WebP variants
+    const webpMobile = urlMobile && !urlMobile.endsWith(".svg")
+        ? `${urlMobile}.webp`
+        : null;
+
+    const webpLarge = urlLarge && !urlLarge.endsWith(".svg")
+        ? `${urlLarge}.webp`
+        : null;
+
+    // data- attributes when lazy
     const srcAttr = editor || eager ? "src" : "data-src";
     const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
 
+    const className = [
+        "wpbs-picture",
+        extraClass
+    ].filter(Boolean).join(" ");
+
+    // ------------------------------------------------------------
+    // RENDER
+    // ------------------------------------------------------------
     return (
         <picture
             className={className}
             style={{
-                ...(settings.style || {}),
-                objectFit: "inherit",
+                ...style,
+                objectFit: "inherit"
             }}
         >
-            {/* MOBILE FIRST (max-width) */}
+
+            {/* ================= MOBILE FIRST ================= */}
             {urlMobile && (
                 <>
                     {webpMobile && (
@@ -70,7 +88,7 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
                 </>
             )}
 
-            {/* LARGE (min-width) */}
+            {/* ================= LARGE ================= */}
             {urlLarge && (
                 <>
                     {webpLarge && (
@@ -87,13 +105,13 @@ const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = fal
                 </>
             )}
 
-            {/* FALLBACK IMG — always large */}
+            {/* ================= FALLBACK IMG ================= */}
             <img
                 {...{
                     [srcAttr]: urlLarge || "#",
                     alt: large?.alt || mobile?.alt || "",
-                    ariaHidden: true,
                     loading: eager ? "eager" : "lazy",
+                    ariaHidden: true
                 }}
             />
         </picture>

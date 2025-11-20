@@ -1,6 +1,5 @@
 export const IMAGE_BUTTON_STYLE = {
     width: '100%',
-    //aspectRatio: '16/9',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

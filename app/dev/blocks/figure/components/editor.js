@@ -30,7 +30,7 @@ const FIGURE_FIELDS = [
     {slug: "overlay", type: "gradient", label: "Overlay", full: true},
 
     // video
-    {slug: "video", type: "video", label: "Video", full: true},
+    {slug: "video", type: "image", label: "Video", full: true},
 
     // toggles
     {slug: "eager", type: "toggle", label: "Eager"},
@@ -118,8 +118,7 @@ export function FigureInspector({attributes, updateSettings}) {
                 callback={(val) => updateSettings({overlay: val})}
                 {...sharedConfig}
             />
-        </Grid>
-        <Grid columns={2} columnGap={15} rowGap={20}>
+
             <Field
                 field={FIGURE_FIELDS.find(f => f.slug === "eager")}
                 settings={settings}

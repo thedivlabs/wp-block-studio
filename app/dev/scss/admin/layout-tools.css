@@ -65,23 +65,7 @@
       min-height: 46px !important;
     }
 
-    .components-base-control {
-      width: 100%;
 
-      .components-base-control__field {
-        margin: 0 !important;
-      }
-    }
-
-    .components-range-control {
-      .components-range-control__number {
-        width: auto;
-      }
-
-      .components-range-control__wrapper {
-        flex-basis: 100%;
-      }
-    }
 
     .wpbs-background-controls {
       margin-top: 10px;
@@ -212,26 +196,7 @@
 
   }
 
-  .wpbs-layout-tools__field {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 100%;
-    justify-content: space-between;
-    align-items: flex-start;
-    height: auto;
-    grid-column: span 1;
-    max-width: 100%;
-    overflow: hidden;
 
-    &.--full {
-      grid-column: 1 / -1;
-    }
-
-    & > .components-grid {
-      width: 100%;
-    }
-  }
 
   .wpbs-layout-tools__label {
     display: block;
@@ -246,5 +211,44 @@
     align-items: center;
     gap: 5px;
     justify-content: space-between;
+  }
+}
+
+.wpbs-layout-tools__field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: auto;
+  grid-column: span 1;
+  max-width: 100%;
+  overflow: hidden;
+
+  &.--full {
+    grid-column: 1 / -1;
+  }
+
+  & > .components-grid {
+    width: 100%;
+  }
+
+  .components-base-control {
+    width: 100%;
+
+    .components-base-control__field {
+      margin: 0 !important;
+    }
+  }
+
+  .components-range-control {
+    .components-range-control__number {
+      width: auto;
+    }
+
+    .components-range-control__wrapper {
+      flex-basis: 100%;
+    }
   }
 }

@@ -17,7 +17,7 @@ const getClassNames = (attributes = {}, styleData) => {
 
     return [
         selector,            // "wpbs-figure"
-        "h-full",
+        "h-fit w-fit max-w-full max-h-full flex",
         settings.contain ? "--contain" : null,
         isEmpty ? "--empty" : null,
         attributes.uniqueId ?? "",

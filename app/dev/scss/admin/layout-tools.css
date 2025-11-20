@@ -8,7 +8,7 @@
   .wpbs-composite-field {
 
     .wpbs-composite-field__grid {
-      padding:12px 8px;
+      padding: 12px 8px;
       background-color: #efefef;
       border-radius: 5px;
     }
@@ -64,7 +64,6 @@
       padding: 12px !important;
       min-height: 46px !important;
     }
-
 
 
     .wpbs-background-controls {
@@ -197,7 +196,6 @@
   }
 
 
-
   .wpbs-layout-tools__label {
     display: block;
     width: 100%;
@@ -212,43 +210,45 @@
     gap: 5px;
     justify-content: space-between;
   }
+
+
+  .wpbs-layout-tools__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: auto;
+    grid-column: span 1;
+    max-width: 100%;
+    overflow: hidden;
+
+    &.--full {
+      grid-column: 1 / -1;
+    }
+
+    & > .components-grid {
+      width: 100%;
+    }
+
+    .components-base-control {
+      width: 100%;
+
+      .components-base-control__field {
+        margin: 0 !important;
+      }
+    }
+
+    .components-range-control {
+      .components-range-control__number {
+        width: auto;
+      }
+
+      .components-range-control__wrapper {
+        flex-basis: 100%;
+      }
+    }
+  }
 }
 
-.wpbs-layout-tools__field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 100%;
-  justify-content: space-between;
-  align-items: flex-start;
-  height: auto;
-  grid-column: span 1;
-  max-width: 100%;
-  overflow: hidden;
-
-  &.--full {
-    grid-column: 1 / -1;
-  }
-
-  & > .components-grid {
-    width: 100%;
-  }
-
-  .components-base-control {
-    width: 100%;
-
-    .components-base-control__field {
-      margin: 0 !important;
-    }
-  }
-
-  .components-range-control {
-    .components-range-control__number {
-      width: auto;
-    }
-
-    .components-range-control__wrapper {
-      flex-basis: 100%;
-    }
-  }
-}

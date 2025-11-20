@@ -72,12 +72,6 @@ export default function Link({defaultValue = {}, callback}) {
                                                 onChange={(v) => update({linkNewTab: v})}
                                             />
 
-                                            <ToggleControl
-                                                label="Open in new window"
-                                                checked={!!link.newWindow}
-                                                onChange={(v) => update({newWindow: v})}
-                                            />
-
                                             <TextControl
                                                 label="Title attribute"
                                                 value={link.title}

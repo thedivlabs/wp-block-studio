@@ -181,7 +181,7 @@ registerBlockType(metadata.name, {
                         tagName="figure"
                     >
                         {settings?.link ?
-                            <a {...getAnchorProps(settings?.link)}><ResponsivePicture {...pictureProps} /></a>
+                            <a class={'wpbs-layout-wrapper'} {...getAnchorProps(settings?.link)}><ResponsivePicture {...pictureProps} /></a>
                             : <ResponsivePicture {...pictureProps} />
                         }
                     </BlockWrapper>
@@ -232,7 +232,7 @@ registerBlockType(metadata.name, {
                 tagName="figure"
             >
                 {settings?.link
-                    ? <a {...getAnchorProps(settings.link)}>{pictureElement}</a>
+                    ? <a class={'wpbs-layout-wrapper'} {...getAnchorProps(settings.link)}>{pictureElement}</a>
                     : pictureElement}
             </BlockWrapper>
         );

@@ -138,7 +138,6 @@ registerBlockType(metadata.name, {
 
             useEffect(() => setCss(cssObj), [cssObj]);
 
-
             const updateSettings = useCallback((newValue) => {
 
                 const result = {
@@ -152,7 +151,7 @@ registerBlockType(metadata.name, {
             }, [setAttributes, settings]);
 
             const inspectorPanel = useMemo(() => <FigureInspector attributes={attributes}
-                                                                  updateSettings={updateSettings}/>, []);
+                                                                  updateSettings={updateSettings}/>, [settings]);
 
             return (
                 <>

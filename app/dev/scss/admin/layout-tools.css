@@ -257,7 +257,13 @@
 
 .is-style-unstyled.components-panel__body {
   border: none !important;
+  padding: 0 !important;
 }
+.is-style-unstyled .components-panel__body-title {
+  margin: 0 !important;
+}
+
+
 
 .is-style-unstyled .components-panel__body-content {
   padding: 0 !important;

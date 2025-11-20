@@ -137,3 +137,56 @@ export default function Link({defaultValue = {}, callback}) {
         </BlockControls>
     );
 }
+
+
+// utils/linkProps.js
+
+export function getAnchorProps(settings = {}) {
+    const {
+        url = "",
+        linkNewTab = false,
+        title = "",
+        ariaLabel = "",
+        id = "",
+        rel = "",
+        alt = "",
+    } = settings;
+
+    const props = {};
+
+    if (url) {
+        props.href = url;
+    }
+
+    if (id) {
+        props.id = id;
+    }
+
+    if (title) {
+        props.title = title;
+    }
+
+    if (ariaLabel) {
+        props['aria-label'] = ariaLabel;
+    }
+
+    if (alt) {
+        props['title'] = alt;
+    }
+
+    if (rel) {
+        props.rel = rel;
+    }
+
+    if (linkNewTab) {
+        props.target = "_blank";
+
+        // security pairing — only add if a rel value isn't already supplied
+        if (!rel || !rel.includes("noopener") || !rel.includes("noreferrer")) {
+            const safe = ["noopener", "noreferrer"];
+            props.rel = rel ? `${rel} ${safe.join(" ")}` : safe.join(" ");
+        }
+    }
+
+    return props;
+}

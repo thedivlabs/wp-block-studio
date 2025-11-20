@@ -90,8 +90,8 @@ export default function LinkField({ value = {}, onChange }) {
         width:'100%',
         display:'flex',
         flexDirection:'column',
-        gap:'8px',
-        padding:'25px 0px'
+        gap:'16px',
+        padding:'35px 0px 25px'
     };
     const itemStyle = {
         width:'100%',
@@ -105,7 +105,7 @@ export default function LinkField({ value = {}, onChange }) {
     return (
         <div className="block-editor-link-control wpbs-link-field">
 
-            <div className="block-editor-link-control__search">
+            <div className="block-editor-link-control__search" style={{backgroundColor:'white'}}>
                 <TextControl
                     className="block-editor-link-control__search-input"
                     placeholder="Search or type URL…"

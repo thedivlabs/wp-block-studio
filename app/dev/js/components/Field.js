@@ -48,6 +48,30 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
 
     switch (type) {
+        case "breakpoint": {
+            const breakpoints = WPBS?.settings?.breakpoints || {};
+
+            const bpOptions = [
+                { label: "Select", value: "" },
+                ...Object.entries(breakpoints).map(([key, data]) => ({
+                    label: data?.label || key,
+                    value: key,
+                })),
+            ];
+
+            control = (
+                <SelectControl
+                    id={inputId}
+                    label={label}
+                    value={value || defaultValue || ""}
+                    options={bpOptions}
+                    aria-label={label}
+                    onChange={commit}
+                    {...controlProps}
+                />
+            );
+            break;
+        }
         case "composite":
             control = (
                 <BaseControl label={label} className="wpbs-composite-field --full">

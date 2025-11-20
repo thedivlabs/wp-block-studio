@@ -18,7 +18,7 @@ const FIGURE_FIELDS = [
     // images
     {slug: "imageMobile", type: "image", label: "Mobile Image"},
     {slug: "imageLarge", type: "image", label: "Large Image"},
-    {slug: "breakpoint", type: "select", label: "Breakpoint", full: true},
+    {slug: "breakpoint", type: "breakpoint", label: "Breakpoint", full: true},
 
     // resolutions
     {slug: "resolutionLarge", type: "select", label: "Size Large", options: RESOLUTION_OPTIONS},

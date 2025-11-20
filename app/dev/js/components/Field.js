@@ -147,14 +147,16 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 <BaseControl label={label}>
                     <GradientPicker
                         id={inputId}
-                        value={value || defaultValue || 'linear-gradient(90deg,#000 0%,#fff 100%)'}
-                        gradients={[]}
+                        value={value || defaultValue || undefined}
+                        gradients={controlProps.gradients || []}
+                        clearable={controlProps.clearable ?? false}
                         onChange={commit}
                         __nextHasNoMarginBottom
                     />
                 </BaseControl>
             );
             break;
+
 
         case "text":
             control = (

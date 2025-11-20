@@ -60,10 +60,10 @@ export function FigureInspector({attributes, updateSettings}) {
     const settings = attributes["wpbs-figure"] || {};
 
     const breakpoints = window.WPBS?.settings?.breakpoints ?? {};
-
+console.log(breakpoints);
     return (
         <InspectorControls group="styles">
-            <PanelBody initialOpen={true} title="Figure">
+            <PanelBody initialOpen={true}>
                 {/* Type selector alone */}
                 <Grid columns={1} columnGap={15} rowGap={20}>
                     <Field

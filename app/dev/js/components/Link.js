@@ -17,6 +17,7 @@ import {
 } from "@wordpress/block-editor";
 
 import {customLink} from "@wordpress/icons";
+import LinkField from "Components/LinkField";
 
 
 export default function Link({defaultValue = {}, callback}) {
@@ -49,22 +50,11 @@ export default function Link({defaultValue = {}, callback}) {
                         <MenuGroup>
                             <MenuItem>
                                 <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
-                                    <LinkControl
-                                        searchInputPlaceholder="Search…"
-                                        allowDirectEntry={true}
-                                        forceIsEditingLink={true}
-                                        hasTextControl={true}
-                                        settings={[]}
-                                        value={{
-                                            url: link.url,
-                                        }}
-                                        onChange={(value) => {
-                                            update({
-                                                url: value?.url || "",
-                                                linkNewTab: !!value?.linkNewTab
-                                            });
-                                        }}
-                                        withCreateSuggestion={true}
+
+                                    <LinkField
+                                        label="Link"
+                                        checked={!!link.url}
+                                        onChange={(v) => update({url: v})}
                                     />
 
 

@@ -58,7 +58,7 @@ export default function Link({defaultValue = {}, callback}) {
                                     />
 
 
-                                    <PanelBody title="Advanced Settings" initialOpen={false}>
+                                    <PanelBody title="Advanced Settings" initialOpen={false}  style={{paddingTop: 0, paddingBottom: 0, border: 'none'}}>
                                         <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
                                             <ToggleControl
                                                 label="Open in new tab"

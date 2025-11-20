@@ -90,13 +90,15 @@ export default function LinkField({ value = {}, onChange }) {
         width:'100%',
         display:'flex',
         flexDirection:'column',
-        gap:'8px'
+        gap:'8px',
+        padding:'25px 0px'
     };
     const itemStyle = {
         width:'100%',
         display:'flex',
         flexDirection:'column',
-        gap:'4px'
+        gap:'4px',
+        padding:'0px'
     };
 
 

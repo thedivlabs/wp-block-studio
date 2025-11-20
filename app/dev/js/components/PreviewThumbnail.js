@@ -41,8 +41,9 @@ function PreviewThumbnail({
 
     const buttonStyle = {
         width: "100%",
-        maxWidth: "120px",
-        textAlign:"center"
+        maxWidth: "100px",
+        textAlign:"center",
+        justifyContent: "center"
     }
 
     /* ------------------------------------------------------------- */

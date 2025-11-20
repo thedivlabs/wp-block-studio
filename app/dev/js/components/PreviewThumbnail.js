@@ -39,6 +39,12 @@ function PreviewThumbnail({
         padding: "8px"
     };
 
+    const buttonStyle = {
+        width: "100%",
+        maxWidth: "120px",
+        textAlign:"center"
+    }
+
     /* ------------------------------------------------------------- */
     /*  EMPTY OR DISABLED STATE                                      */
     /* ------------------------------------------------------------- */
@@ -57,13 +63,18 @@ function PreviewThumbnail({
 
         return (
             <div style={emptyStyle}>
-                <Button onClick={onSelectClick} variant={'primary'}>
+                <Button
+                    onClick={onSelectClick}
+                    variant={'primary'}
+                    style={buttonStyle}
+                >
                     Choose
                 </Button>
 
                 <Button
                     onClick={toggleOff}
                     variant={isDisabled ? "primary" : "secondary"}
+                    style={buttonStyle}
                 >
                     {isDisabled ? "Enable" : "Disable"}
                 </Button>

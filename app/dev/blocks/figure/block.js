@@ -1,7 +1,7 @@
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {FigureInspector} from './components/editor';
+import {FigureInspector} from './controls';
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";

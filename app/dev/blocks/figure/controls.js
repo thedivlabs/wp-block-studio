@@ -41,10 +41,6 @@ const FIGURE_FIELDS = [
 export function FigureInspector({attributes, updateSettings}) {
     const settings = attributes["wpbs-figure"] || {};
 
-    const breakpoints = window.WPBS?.settings?.breakpoints ?? {};
-    console.log(breakpoints);
-
-
     const sharedConfig = {
         isToolsPanel: false,
     }
@@ -126,12 +122,6 @@ export function FigureInspector({attributes, updateSettings}) {
                 {...sharedConfig}
             />
             <Field
-                field={FIGURE_FIELDS.find(f => f.slug === "force")}
-                settings={settings}
-                callback={(val) => updateSettings({force: val})}
-                {...sharedConfig}
-            />
-            <Field
                 field={FIGURE_FIELDS.find(f => f.slug === "contain")}
                 settings={settings}
                 callback={(val) => updateSettings({contain: val})}
@@ -142,7 +132,7 @@ export function FigureInspector({attributes, updateSettings}) {
 
     return (
         <InspectorControls group="styles">
-            <PanelBody initialOpen={true}>
+            <PanelBody initialOpen={true} className={'wpbs-block-controls'}>
                 {/* Type selector alone */}
                 <Grid columns={1} columnGap={15} rowGap={20}>
                     <Field

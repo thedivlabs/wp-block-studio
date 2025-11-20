@@ -23,7 +23,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
     } = wp.components || {};
 
     const inputId = `wpbs-${slug}`;
-    const fieldClassNames = ["wpbs-layout-tools__field", full ? "--full" : null]
+    const fieldClassNames = ["wpbs-control", full ? "--full" : null]
         .filter(Boolean)
         .join(" ");
 

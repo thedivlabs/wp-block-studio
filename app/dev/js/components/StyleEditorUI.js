@@ -370,7 +370,7 @@ export const StyleEditorUI = ({settings, updateStyleSettings}) => {
             </InspectorControls>
 
             <InspectorControls group="styles">
-                <div className="wpbs-layout-tools">
+                <div className="wpbs-layout-tools wpbs-block-controls">
 
                     {/* Layout */}
                     <div className="wpbs-layout-tools__panel">

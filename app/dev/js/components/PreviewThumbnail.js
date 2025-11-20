@@ -35,7 +35,8 @@ function PreviewThumbnail({
         alignItems: "center",
         gap: "8px",
         textAlign: "center",
-        flexDirection: "column"
+        flexDirection: "column",
+        padding: "8px"
     };
 
     /* ------------------------------------------------------------- */
@@ -56,7 +57,7 @@ function PreviewThumbnail({
 
         return (
             <div style={emptyStyle}>
-                <Button onClick={onSelectClick}>
+                <Button onClick={onSelectClick} variant={'primary'}>
                     Choose Image
                 </Button>
 

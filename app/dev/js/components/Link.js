@@ -6,13 +6,13 @@ import {
     PanelBody,
     TextControl,
     ToggleControl,
-    __experimentalGrid as Grid
+    __experimentalGrid as Grid,
+    SelectControl
 } from "@wordpress/components";
 
 
 import {useState} from "@wordpress/element";
 import {
-    __experimentalLinkControl as LinkControl,
     BlockControls
 } from "@wordpress/block-editor";
 
@@ -41,6 +41,11 @@ export default function Link({defaultValue = {}, callback}) {
         callback?.(merged);
     }
 
+    const sharedProps = {
+        __nextHasNoMarginBottom: true,
+        __next40pxDefaultSize: true,
+    }
+
 
     return (
         <BlockControls>
@@ -58,7 +63,8 @@ export default function Link({defaultValue = {}, callback}) {
                                     />
 
 
-                                    <PanelBody title="Advanced Settings" initialOpen={false}  className="is-style-unstyled">
+                                    <PanelBody title="Advanced Settings" initialOpen={false}
+                                               className="is-style-unstyled">
                                         <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
                                             <ToggleControl
                                                 label="Open in new tab"
@@ -77,6 +83,7 @@ export default function Link({defaultValue = {}, callback}) {
                                                 value={link.title}
                                                 onChange={(v) => update({title: v})}
                                                 style={{gridColumn: '1/-1'}}
+                                                {...sharedProps}
                                             />
 
                                             <TextControl
@@ -84,20 +91,36 @@ export default function Link({defaultValue = {}, callback}) {
                                                 value={link.ariaLabel}
                                                 onChange={(v) => update({ariaLabel: v})}
                                                 style={{gridColumn: '1/-1'}}
+                                                {...sharedProps}
                                             />
 
                                             <TextControl
                                                 label="Anchor ID"
                                                 value={link.id}
                                                 onChange={(v) => update({id: v})}
+                                                {...sharedProps}
                                             />
 
-                                            <TextControl
+                                            <SelectControl
                                                 label="rel"
                                                 value={link.rel}
-                                                placeholder="nofollow ugc sponsored"
+                                                {...sharedProps}
+                                                options={[
+                                                    {label: "Select", value: ""},
+                                                    {label: "nofollow", value: "nofollow"},
+                                                    {label: "ugc", value: "ugc"},
+                                                    {label: "sponsored", value: "sponsored"},
+                                                    {label: "nofollow + ugc", value: "nofollow ugc"},
+                                                    {label: "nofollow + sponsored", value: "nofollow sponsored"},
+                                                    {label: "ugc + sponsored", value: "ugc sponsored"},
+                                                    {
+                                                        label: "nofollow + ugc + sponsored",
+                                                        value: "nofollow ugc sponsored"
+                                                    },
+                                                ]}
                                                 onChange={(v) => update({rel: v})}
                                             />
+
                                         </Grid>
                                     </PanelBody>
                                 </div>

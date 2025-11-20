@@ -1,24 +1,21 @@
-import {useEffect} from "@wordpress/element";
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {withStyle, STYLE_ATTRIBUTES, withStyleSave} from 'Components/Style';
+import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 
 const selector = "wpbs-layout-element";
 
 const getClassNames = (attributes = {}, styleData) => {
     const {"wpbs-layout-element": settings} = attributes;
 
-    const result = [
+    return [
         selector,
         "w-full",
         "block",
         "relative",
     ]
         .filter(Boolean)
-        .join(' ')
-
-    return result;
+        .join(' ');
 };
 
 registerBlockType(metadata.name, {

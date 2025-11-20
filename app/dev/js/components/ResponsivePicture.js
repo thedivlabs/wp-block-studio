@@ -1,5 +1,3 @@
-import React from "react";
-
 const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false}) => {
     const {
         resolutionMobile: sizeMobile = "medium",

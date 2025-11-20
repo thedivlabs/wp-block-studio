@@ -5,6 +5,7 @@ import {FigureInspector} from './controls';
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
+import {getAnchorProps} from "Components/Link";
 
 const selector = "wpbs-figure";
 
@@ -153,6 +154,22 @@ registerBlockType(metadata.name, {
             const inspectorPanel = useMemo(() => <FigureInspector attributes={attributes}
                                                                   updateSettings={updateSettings}/>, [settings]);
 
+            const pictureProps = {
+                mobile: settings?.imageMobile,
+                large: settings?.imageLarge,
+                settings: {
+                    resolutionMobile: settings?.resolutionMobile,
+                    resolutionLarge: settings?.resolutionLarge,
+                    force: settings?.force,
+                    eager: settings?.eager,
+                    breakpoint: attributes?.breakpoint,
+                    className: null,
+                    style: null,
+                },
+                editor: true,
+            }
+
+
             return (
                 <>
                     {inspectorPanel}
@@ -163,20 +180,10 @@ registerBlockType(metadata.name, {
                         hasBackground={true}
                         tagName="figure"
                     >
-                        <ResponsivePicture
-                            mobile={settings?.imageMobile}
-                            large={settings?.imageLarge}
-                            settings={{
-                                resolutionMobile: settings?.resolutionMobile,
-                                resolutionLarge: settings?.resolutionLarge,
-                                force: settings?.force,
-                                eager: settings?.eager,
-                                breakpoint: attributes?.breakpoint,
-                                className: null,
-                                style: null,
-                            }}
-                            editor={true}
-                        />
+                        {settings?.link ?
+                            <a {...getAnchorProps(settings?.link)}><ResponsivePicture {...pictureProps} /></a>
+                            : <ResponsivePicture {...pictureProps} />
+                        }
                     </BlockWrapper>
                 </>
             );
@@ -188,10 +195,8 @@ registerBlockType(metadata.name, {
         const settings = attributes["wpbs-figure"] || {};
         const classNames = getClassNames(attributes, styleData);
 
-        // --- Determine image URLs or placeholders ---
         const isFeatured = settings?.type === "featured-image";
 
-        // Large + mobile URLs or placeholders
         const largeURL = isFeatured
             ? "#FEATURED_LARGE#"
             : settings?.imageLarge?.url || null;
@@ -200,7 +205,6 @@ registerBlockType(metadata.name, {
             ? "#FEATURED_MOBILE#"
             : settings?.imageMobile?.url || null;
 
-        // Build a settings object to feed ResponsivePicture
         const pictureSettings = {
             resolutionMobile: settings?.resolutionMobile,
             resolutionLarge: settings?.resolutionLarge,
@@ -211,6 +215,15 @@ registerBlockType(metadata.name, {
             style: null,
         };
 
+        const pictureElement = (
+            <ResponsivePicture
+                mobile={{...(settings.imageMobile || {}), url: mobileURL}}
+                large={{...(settings.imageLarge || {}), url: largeURL}}
+                settings={pictureSettings}
+                editor={false}
+            />
+        );
+
         return (
             <BlockWrapper
                 props={props}
@@ -218,14 +231,12 @@ registerBlockType(metadata.name, {
                 hasBackground={true}
                 tagName="figure"
             >
-                <ResponsivePicture
-                    mobile={{...(settings.imageMobile || {}), url: mobileURL}}
-                    large={{...(settings.imageLarge || {}), url: largeURL}}
-                    settings={pictureSettings}
-                    editor={false}
-                />
+                {settings?.link
+                    ? <a {...getAnchorProps(settings.link)}>{pictureElement}</a>
+                    : pictureElement}
             </BlockWrapper>
         );
     }),
+
 
 });

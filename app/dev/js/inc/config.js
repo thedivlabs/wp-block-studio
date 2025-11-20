@@ -9,8 +9,26 @@ export const IMAGE_BUTTON_STYLE = {
     gap: "8px",
     flexDirection: "column",
     overflow: "hidden",
-    borderRadius:"4px"
+    borderRadius: "4px"
 }
+
+export const OVERLAY_GRADIENTS = [
+    {
+        name: "Transparent",
+        gradient: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0))",
+        slug: "transparent",
+    },
+    {
+        name: "Light",
+        gradient: "linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3))",
+        slug: "light",
+    },
+    {
+        name: "Strong",
+        gradient: "linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7))",
+        slug: "strong",
+    },
+];
 
 
 export const ELEMENT_TAG_OPTIONS = [
@@ -708,3 +726,5 @@ export const backgroundFieldsMap = [
         options: IMAGE_SIZE_OPTIONS,
     },
 ];
+
+

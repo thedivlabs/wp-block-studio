@@ -1,7 +1,7 @@
 import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
-import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
+import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS, OVERLAY_GRADIENTS} from "Includes/config";
 import Link from "Components/Link";
 
 // MAP #1: image-related settings
@@ -17,7 +17,13 @@ const FIGURE_IMAGE_FIELDS = [
 const FIGURE_SETTING_FIELDS = [
     {slug: "blend", type: "select", label: "Blend", options: BLEND_OPTIONS},
     {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
-    {slug: "overlay", type: "gradient", label: "Overlay", full: true},
+    {
+        slug: "overlay",
+        type: "gradient",
+        label: "Overlay",
+        full: true,
+        gradients: OVERLAY_GRADIENTS,
+    },
 
     {slug: "eager", type: "toggle", label: "Eager"},
     {slug: "contain", type: "toggle", label: "Contain"},

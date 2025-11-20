@@ -2,6 +2,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
 import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS} from "Includes/config";
+import Link from "Components/Link";
 
 // MAP #1: image-related settings
 const FIGURE_IMAGE_FIELDS = [
@@ -30,34 +31,48 @@ export function FigureInspector({attributes, updateSettings}) {
     };
 
     return (
-        <InspectorControls group="styles">
-            <PanelBody initialOpen={true} className="wpbs-block-controls">
+        <>
+            <Link defaultValue={settings?.link} callback={(val) => updateSettings({link: val})} />
 
-                <Grid columns={2} columnGap={15} rowGap={20}>
+            <InspectorControls group="styles">
+                <PanelBody initialOpen={true} className="wpbs-block-controls">
 
-                    {/** TYPE FIELD – standalone */}
-                    <Field
-                        field={{
-                            slug: "type",
-                            type: "select",
-                            label: "Type",
-                            options: [
-                                {label: "Select", value: ""},
-                                {label: "Image", value: "image"},
-                                {label: "Featured Image", value: "featured-image"},
-                                {label: "Lottie", value: "lottie"},
-                                {label: "Icon", value: "icon"},
-                            ],
-                            full: true
-                        }}
-                        settings={settings}
-                        callback={(val) => updateSettings({type: val})}
-                        {...sharedConfig}
-                    />
+                    <Grid columns={2} columnGap={15} rowGap={20}>
 
-                    {/** MAP #1 — IMAGE + BREAKPOINT + RESOLUTIONS */}
-                    {(settings.type === "image" || settings.type === "featured-image") &&
-                        FIGURE_IMAGE_FIELDS.map((field) => (
+                        {/** TYPE FIELD – standalone */}
+                        <Field
+                            field={{
+                                slug: "type",
+                                type: "select",
+                                label: "Type",
+                                options: [
+                                    {label: "Select", value: ""},
+                                    {label: "Image", value: "image"},
+                                    {label: "Featured Image", value: "featured-image"},
+                                    {label: "Lottie", value: "lottie"},
+                                    {label: "Icon", value: "icon"},
+                                ],
+                                full: true
+                            }}
+                            settings={settings}
+                            callback={(val) => updateSettings({type: val})}
+                            {...sharedConfig}
+                        />
+
+                        {/** MAP #1 — IMAGE + BREAKPOINT + RESOLUTIONS */}
+                        {(settings.type === "image" || settings.type === "featured-image") &&
+                            FIGURE_IMAGE_FIELDS.map((field) => (
+                                <Field
+                                    key={field.slug}
+                                    field={field}
+                                    settings={settings}
+                                    callback={(val) => updateSettings({[field.slug]: val})}
+                                    {...sharedConfig}
+                                />
+                            ))}
+
+                        {/** MAP #2 — STYLE + TOGGLES */}
+                        {settings.type && FIGURE_SETTING_FIELDS.map((field) => (
                             <Field
                                 key={field.slug}
                                 field={field}
@@ -67,20 +82,10 @@ export function FigureInspector({attributes, updateSettings}) {
                             />
                         ))}
 
-                    {/** MAP #2 — STYLE + TOGGLES */}
-                    {settings.type && FIGURE_SETTING_FIELDS.map((field) => (
-                        <Field
-                            key={field.slug}
-                            field={field}
-                            settings={settings}
-                            callback={(val) => updateSettings({[field.slug]: val})}
-                            {...sharedConfig}
-                        />
-                    ))}
+                    </Grid>
 
-                </Grid>
-
-            </PanelBody>
-        </InspectorControls>
+                </PanelBody>
+            </InspectorControls>
+        </>
     );
 }

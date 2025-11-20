@@ -1,7 +1,7 @@
 import {
     DropdownMenu, MenuGroup, MenuItem, ToolbarGroup
 } from "@wordpress/components";
-import React, {useState} from "react";
+import {useState} from "@wordpress/element";
 import {__experimentalLinkControl as LinkControl, BlockControls} from "@wordpress/block-editor";
 import {customLink} from "@wordpress/icons";
 

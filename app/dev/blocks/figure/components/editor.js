@@ -47,7 +47,6 @@ export function FigureInspector({attributes, updateSettings}) {
 
     const sharedConfig = {
         isToolsPanel: false,
-        full:true,
     }
 
     const ControlFields = <>

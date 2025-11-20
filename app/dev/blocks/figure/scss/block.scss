@@ -31,8 +31,6 @@
   }
 }
 
-
-/* Overlay layer inside media */
 .wpbs-figure::before {
   content: '';
   background: var(--overlay, transparent);

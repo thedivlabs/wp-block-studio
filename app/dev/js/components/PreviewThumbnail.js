@@ -17,26 +17,12 @@ function PreviewThumbnail({
 
     const isDisabled = image?.isPlaceholder === true;
 
-    const thumbnailStyle = {
-        ...IMAGE_BUTTON_STYLE,
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        pointerEvents: "none"
-    };
+    const thumbnailStyle = IMAGE_BUTTON_STYLE;
 
     const emptyStyle = {
+        ...IMAGE_BUTTON_STYLE,
         border: "1px dashed lightgray",
-        width: "100%",
-        height: "auto",
-        aspectRatio: "16/9",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "8px",
-        textAlign: "center",
-        flexDirection: "column",
-        padding: "8px"
+        padding: "8px",
     };
 
     const buttonStyle = {

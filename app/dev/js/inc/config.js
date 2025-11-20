@@ -7,6 +7,11 @@ export const IMAGE_BUTTON_STYLE = {
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+    minHeight:"100px",
+    objectFit: "cover",
+    pointerEvents: "none",
+    gap: "8px",
+    flexDirection: "column",
 }
 
 

@@ -52,9 +52,9 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const breakpoints = WPBS?.settings?.breakpoints || {};
 
             const bpOptions = [
-                { label: "Select", value: "" },
+                {label: "Select", value: ""},
                 ...Object.entries(breakpoints).map(([key, data]) => ({
-                    label: data?.label || [key,data?.size + 'px'].join(' '),
+                    label: [data?.label, data?.size + 'px'].join(' - '),
                     value: key,
                 })),
             ];

@@ -73,7 +73,8 @@ function renderFigureContent(settings, attributes, mode = "edit") {
 
     // --- 2. FEATURED IMAGE ---
     if (type === "featured-image") {
-        // edit mode: still show ResponsivePicture
+
+        // Edit Mode: Use the settings provided (previews, placeholders, etc.)
         if (mode === "edit") {
             const pictureProps = {
                 mobile: settings?.imageMobile,
@@ -92,16 +93,32 @@ function renderFigureContent(settings, attributes, mode = "edit") {
             return wrapWithLink(<ResponsivePicture {...pictureProps} />);
         }
 
-        // save mode: output plain img tag replaced via PHP
-        return wrapWithLink(
-            <img
-                src="%%_FEATURED_IMAGE_%%"
-                alt="%%_FEATURED_ALT_%%"
-                class="wpbs-picture-featured"
-                loading={settings?.eager ? "eager" : "lazy"}
-                aria-hidden="true"
-            />
-        );
+        // Save Mode: Output placeholders via ResponsivePicture structure
+        if (mode === "save") {
+            const featuredProps = {
+                // Fake image objects containing the PHP placeholders
+                mobile: {
+                    source: "%%_FEATURED_IMAGE_MOBILE_%%",
+                    // We leave width/height undefined here; the browser will handle the source provided
+                },
+                large: {
+                    source: "%%_FEATURED_IMAGE_LARGE_%%",
+                    alt: "%%_FEATURED_ALT_%%"
+                },
+                settings: {
+                    resolutionMobile: settings?.resolutionMobile,
+                    resolutionLarge: settings?.resolutionLarge,
+                    force: settings?.force,
+                    eager: settings?.eager,
+                    breakpoint: attributes?.breakpoint,
+                    className: "wpbs-picture-featured",
+                    style: null,
+                },
+                editor: false
+            };
+            // This will render the full <picture> tag with your placeholders as src/srcset
+            return wrapWithLink(<ResponsivePicture {...featuredProps} />);
+        }
     }
 
     // --- 3. LOTTIE ---

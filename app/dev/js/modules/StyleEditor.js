@@ -509,7 +509,6 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     // ----------------------------------------
     // 5. Breakpoints (inherit + overrides)
     // ----------------------------------------
-    import { diffObjects } from "./diff"; // your lodash helper
 
     Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
         const bpCss = {
@@ -517,57 +516,49 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             background: {}
         };
 
-        // inherit base
-        if (cssObj.props) bpCss.props = {...cssObj.props};
-        if (cssObj.background) bpCss.background = {...cssObj.background};
-
-        // ----- props overrides -----
-        if (bpProps?.props) {
-            bpCss.props = {
-                ...bpCss.props,
-                ...parseSpecialProps(bpProps.props, attributes)
-            };
-        }
-
-        // ----- background overrides -----
-        if (bpProps?.background) {
-            const baseBg = cleanedLayout.background || {};
-            const merged = { ...bpProps.background };
-
-            // inherit base resolution
-            if (merged.resolution == null && bpCss.background?.resolution) {
-                merged.resolution = bpCss.background.resolution;
-            }
-
-            // inherit base image when resolution overrides exist
-            if (merged.resolution && !merged.image) {
-                merged.image = baseBg.image;
-            }
-
-            const parsed = parseBackgroundProps(merged);
-
-            bpCss.background = {
-                ...bpCss.background,
-                ...parsed,
-            };
-        }
-
-        // ---------------------------------------------------------------------
-        // DIFF AGAINST BASE BEFORE SAVING ANYTHING!
-        // ---------------------------------------------------------------------
-
+        // ----------------------------------------
+        // PROPS: inherit → override → diff
+        // ----------------------------------------
         const baseProps = cssObj.props || {};
-        const baseBg = cssObj.background || {};
+        const mergedProps = bpProps?.props
+            ? { ...baseProps, ...parseSpecialProps(bpProps.props, attributes) }
+            : baseProps;
 
-        const diffPropsObj = diffObjects(baseProps, bpCss.props);
-        const diffBgObj = diffObjects(baseBg, bpCss.background);
+        const diffPropsObj = diffObjects(baseProps, mergedProps);
+        if (!_.isEmpty(diffPropsObj)) {
+            bpCss.props = diffPropsObj;
+        }
 
-        const finalDiff = {};
-        if (!_.isEmpty(diffPropsObj)) finalDiff.props = diffPropsObj;
-        if (!_.isEmpty(diffBgObj)) finalDiff.background = diffBgObj;
+        // ----------------------------------------
+        // BACKGROUND: NO automatic inheritance.
+        // Only compute vars for what the user explicitly changed.
+        // ----------------------------------------
 
-        cssObj.breakpoints[bpKey] = finalDiff;
+        const baseBg = cleanedLayout.background || {};
+        const rawBpBg = bpProps?.background || {};
+
+        // If user overrides only resolution, inherit base image safely
+        let effectiveBpBg = { ...rawBpBg };
+        if (effectiveBpBg.resolution && !effectiveBpBg.image) {
+            effectiveBpBg.image = baseBg.image;
+        }
+
+        // If nothing changed, output nothing
+        if (Object.keys(effectiveBpBg).length > 0) {
+            // parseBackgroundProps returns full var set, so we diff against base
+            const parsedBase = parseBackgroundProps(baseBg);
+            const parsedBp   = parseBackgroundProps(effectiveBpBg);
+
+            const diffBgObj = diffObjects(parsedBase, parsedBp);
+            if (!_.isEmpty(diffBgObj)) {
+                bpCss.background = diffBgObj;
+            }
+        }
+
+        // Save simplified diff object
+        cssObj.breakpoints[bpKey] = bpCss;
     });
+
 
     // ----------------------------------------
     // 6. Hover

@@ -33,7 +33,6 @@ const ResponsivePicture = ({
     /* ------------------------------------------------------------
      * BASE IMAGE SELECTION
      * ------------------------------------------------------------ */
-    // If only one valid image exists, it becomes base for both breakpoints.
     const baseMobile =
         !isMobilePlaceholder && mobile?.id
             ? mobile
@@ -48,23 +47,30 @@ const ResponsivePicture = ({
                 ? mobile
                 : null;
 
-    // nothing to render if both are invalid or placeholders
-    if (!baseMobile && !baseLarge) {
+    // If no real images and no placeholders → no render
+    if (!baseMobile && !baseLarge && !isMobilePlaceholder && !isLargePlaceholder) {
         return null;
     }
 
     /* ------------------------------------------------------------
-     * BUILD URLs
+     * BUILD URLs — FULLY PATCHED FALLBACK LOGIC
      * ------------------------------------------------------------ */
+
+    // MOBILE URL
     const urlMobile = isMobilePlaceholder
-        ? "#"
-        : getImageUrlForResolution(baseMobile, resolutionMobile);
+        ? (mobile?.url || "#")
+        : mobile?.source                        // <-- NEW: use block source first
+            ? mobile.source
+            : getImageUrlForResolution(baseMobile, resolutionMobile);
 
+    // LARGE URL
     const urlLarge = isLargePlaceholder
-        ? "#"
-        : getImageUrlForResolution(baseLarge, resolutionLarge);
+        ? (large?.url || "#")
+        : large?.source                         // <-- NEW: use block source first
+            ? large.source
+            : getImageUrlForResolution(baseLarge, resolutionLarge);
 
-    // If both URLs fail, abort render.
+    // If both URLs fail → bail
     if (!urlMobile && !urlLarge) {
         return null;
     }
@@ -83,28 +89,20 @@ const ResponsivePicture = ({
             : null;
 
     /* ------------------------------------------------------------
-     * LOADING + ATTRIBUTES
+     * ATTRIBUTES
      * ------------------------------------------------------------ */
     const srcAttr = editor || eager ? "src" : "data-src";
     const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
 
-    const className = ["wpbs-picture", extraClass]
-        .filter(Boolean)
-        .join(" ");
+    const className = ["wpbs-picture", extraClass].filter(Boolean).join(" ");
 
     /* ------------------------------------------------------------
-     * RENDER OUTPUT
+     * RENDER
      * ------------------------------------------------------------ */
     return (
-        <picture
-            className={className}
-            style={{
-                ...style,
-                objectFit: "inherit"
-            }}
-        >
+        <picture className={className} style={{...style, objectFit: "inherit"}}>
 
-            {/* ================= MOBILE FIRST ================= */}
+            {/* MOBILE */}
             {urlMobile && (
                 <>
                     {webpMobile && (
@@ -122,7 +120,7 @@ const ResponsivePicture = ({
                 </>
             )}
 
-            {/* ================= LARGE ================= */}
+            {/* LARGE */}
             {urlLarge && (
                 <>
                     {webpLarge && (
@@ -140,10 +138,9 @@ const ResponsivePicture = ({
                 </>
             )}
 
-            {/* ================= FALLBACK IMG ================= */}
             <img
                 {...{
-                    [srcAttr]: urlLarge || "#",
+                    [srcAttr]: urlLarge || urlMobile || "#",
                     alt: large?.alt || mobile?.alt || "",
                     loading: eager ? "eager" : "lazy",
                     ariaHidden: true

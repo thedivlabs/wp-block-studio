@@ -71,10 +71,10 @@ function renderFigureContent(settings, attributes, mode = "edit") {
         return wrapWithLink(<ResponsivePicture {...pictureProps} />);
     }
 
-    // --- 2. FEATURED IMAGE ---
+// --- 2. FEATURED IMAGE ---
     if (type === "featured-image") {
 
-        // Edit Mode: Use the settings provided (previews, placeholders, etc.)
+        // Edit preview mode (unchanged)
         if (mode === "edit") {
             const pictureProps = {
                 mobile: settings?.imageMobile,
@@ -90,18 +90,23 @@ function renderFigureContent(settings, attributes, mode = "edit") {
                 },
                 editor: true
             };
+
             return wrapWithLink(<ResponsivePicture {...pictureProps} />);
         }
 
-        // Save Mode: Output placeholders via ResponsivePicture structure
+        // -------------------------
+        // SAVE MODE (FINAL, CORRECT)
+        // -------------------------
         if (mode === "save") {
             const featuredProps = {
                 mobile: {
+                    isPlaceholder: true,
                     url: "%%_FEATURED_IMAGE_MOBILE_%%",
                     alt: "%%_FEATURED_ALT_%%",
                     id: null,
                 },
                 large: {
+                    isPlaceholder: true,
                     url: "%%_FEATURED_IMAGE_LARGE_%%",
                     alt: "%%_FEATURED_ALT_%%",
                     id: null,
@@ -120,8 +125,8 @@ function renderFigureContent(settings, attributes, mode = "edit") {
 
             return wrapWithLink(<ResponsivePicture {...featuredProps} />);
         }
-
     }
+
 
     // --- 3. LOTTIE ---
     if (type === "lottie") {

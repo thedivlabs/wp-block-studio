@@ -110,9 +110,6 @@ export default function LinkField({value = {}, onChange}) {
         zIndex: 10
     };
 
-    console.log('value', value);
-    console.log('query', query);
-
     return (
         <div className="block-editor-link-control wpbs-link-field">
 

@@ -1,4 +1,5 @@
 import {InspectorControls} from "@wordpress/block-editor";
+import {useMemo} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
 import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS, OVERLAY_GRADIENTS} from "Includes/config";
@@ -36,10 +37,13 @@ export function FigureInspector({attributes, updateSettings}) {
         isToolsPanel: false,
     };
 
+    const LinkControls = useMemo(() => (<Link defaultValue={settings?.link}
+                                              callback={(val) => updateSettings({link: val})}/>), [settings?.link, updateSettings])
+
     return (
         <>
-            <Link defaultValue={settings?.link} callback={(val) => updateSettings({link: val})}/>
 
+            {LinkControls}
             <InspectorControls group="styles">
                 <PanelBody initialOpen={true} className="wpbs-block-controls">
 

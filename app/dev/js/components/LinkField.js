@@ -65,11 +65,6 @@ export default function LinkField({value = {}, onChange}) {
         };
     }, [query]);
 
-    useEffect(() => {
-        setQuery(value.url || "");
-    }, [value.url]);
-
-
     function apply(url) {
         onChange?.(url);
         setQuery(url);
@@ -115,6 +110,8 @@ export default function LinkField({value = {}, onChange}) {
         zIndex: 10
     };
 
+    console.log('value', value);
+    console.log('query', query);
 
     return (
         <div className="block-editor-link-control wpbs-link-field">
@@ -123,14 +120,14 @@ export default function LinkField({value = {}, onChange}) {
                 <TextControl
                     className="block-editor-link-control__search-input"
                     placeholder="Search or type URL…"
-                    value={query}
+                    value={value}
                     onFocus={() => {
                         if (results.length > 0) setOpen(true);
                     }}
                     onBlur={handleBlur}
                     onChange={(v) => {
                         setQuery(v);
-                        onChange?.(v);
+                        onChange(v);
                     }}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize

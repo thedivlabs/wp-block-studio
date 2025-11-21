@@ -11,19 +11,24 @@ import {
 } from "@wordpress/components";
 
 
-import {useState} from "@wordpress/element";
+import {useState, useMemo} from "@wordpress/element";
 import {
     BlockControls
 } from "@wordpress/block-editor";
 
 import {customLink} from "@wordpress/icons";
 import LinkField from "Components/LinkField";
+import {cleanObject} from "Includes/helper";
 
 
 export default function Link({defaultValue = {}, callback}) {
 
     // unified link state
-    const [link, setLink] = useState({
+    const [link, setLink] = useState(defaultValue);
+
+    /*
+    *
+    * cleanObject({
         url: defaultValue.url || "",
         linkNewTab: defaultValue.linkNewTab || false,
         title: defaultValue.title || "",
@@ -31,8 +36,9 @@ export default function Link({defaultValue = {}, callback}) {
         id: defaultValue.id || "",
         rel: defaultValue.rel || "",
         alt: defaultValue.alt || "",
-        // add any custom keys here
-    });
+    })
+    *
+    * */
 
 
     // one update fn for everything
@@ -47,7 +53,12 @@ export default function Link({defaultValue = {}, callback}) {
         __next40pxDefaultSize: true,
     }
 
-    console.log(link);
+    const LinkControl = useMemo(() => (<LinkField
+        label="Link"
+        value={link.url}
+        onChange={(url) => update({url})}
+    />), [link?.url]);
+
     return (
         <BlockControls>
             <ToolbarGroup>
@@ -65,11 +76,7 @@ export default function Link({defaultValue = {}, callback}) {
                                         {...sharedProps}
                                     />
 
-                                    <LinkField
-                                        label="Link"
-                                        checked={!!link.url}
-                                        onChange={(url) => update({ url })}
-                                        />
+                                    {LinkControl}
 
 
                                     <PanelBody title="Advanced Settings" initialOpen={false}
@@ -86,7 +93,7 @@ export default function Link({defaultValue = {}, callback}) {
                                             <TextControl
                                                 label="Title attribute"
                                                 value={link.alt}
-                                                onChange={(v) => update({ alt: v })}
+                                                onChange={(v) => update({alt: v})}
                                                 style={{gridColumn: '1/-1'}}
                                                 {...sharedProps}
                                             />

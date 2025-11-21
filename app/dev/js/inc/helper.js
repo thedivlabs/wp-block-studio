@@ -213,7 +213,6 @@ export function normalizePreloadItem(item) {
     return out;
 }
 
-
 export function getCSSFromStyle(raw, presetKeyword = '') {
     if (raw == null) return '';
 

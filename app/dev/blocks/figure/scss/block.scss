@@ -8,7 +8,6 @@
   grid-template-columns: 100%;
   overflow: hidden;
   object-fit: cover;
-  pointer-events: none;
 
   &.--contain {
     object-fit: contain;
@@ -33,6 +32,7 @@
     object-fit: inherit;
     position: relative;
     z-index: 1;
+    pointer-events: none;
 
     img {
       object-fit: inherit;

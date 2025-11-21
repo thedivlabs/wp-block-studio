@@ -62,8 +62,8 @@ class WPBS {
 		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
 		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
 
-		add_filter( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 30 );
-		$this->image_sizes();
+		add_action('init', [ $this, 'image_sizes' ], 5);
+		add_filter('intermediate_image_sizes_advanced', [ $this, 'filter_sizes' ], 20);
 
 		if (
 			function_exists( 'acf_add_options_page' )
@@ -134,11 +134,16 @@ class WPBS {
 
 	}
 
-	public function remove_default_image_sizes( $sizes ): array {
+	public function filter_sizes( $sizes ): array {
 
-		$sizes = array_intersect( $sizes, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] );
-
-		return array_values( array_unique( $sizes ) );
+		return array_intersect_key($sizes, array_flip([
+			'thumbnail',
+			'mobile',
+			'small',
+			'medium',
+			'large',
+			'xlarge'
+		]));
 	}
 
 	public function image_sizes(): void {
@@ -146,7 +151,7 @@ class WPBS {
 		add_image_size( 'mobile', 624, 1200 );
 		add_image_size( 'small', 640 );
 		add_image_size( 'medium', 1130 );
-		add_image_size( 'xlarge', 1800 );
+		add_image_size( 'xlarge', 1800, 1800, true );
 
 	}
 

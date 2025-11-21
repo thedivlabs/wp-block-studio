@@ -63,7 +63,11 @@ export function extractMinimalImageMeta(media) {
 }
 
 export function getImageUrlForResolution(image, resolution = 'large') {
+
     if (!image?.source) return null;
+
+    console.log(image);
+    console.log(resolution);
 
     const {source, sizes = {}} = image;
 
@@ -87,14 +91,17 @@ export function getImageUrlForResolution(image, resolution = 'large') {
 
     // 1. Exact match
     if (sizes[resolution]?.width && sizes[resolution]?.height) {
+        console.log('exact match', buildFromSize(sizes[resolution]));
         return buildFromSize(sizes[resolution]);
     }
 
     // 2. Fallback: "large"
     if (sizes.large?.width && sizes.large?.height) {
+        console.log('fallback large', buildFromSize(sizes.large))
         return buildFromSize(sizes.large);
     }
 
+    console.log('fallback full', source)
     // 3. Fallback: "full"
     return source;
 }

@@ -527,9 +527,21 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         }
 
         if (bpProps?.background) {
+
+            // ----------------------------------------
+            // FIX: inherit resolution if missing
+            // ----------------------------------------
+            const inheritedResolution = bpCss.background?.resolution;
+            const bpBg = { ...bpProps.background };
+
+            if (inheritedResolution && bpBg.resolution == null) {
+                bpBg.resolution = inheritedResolution;
+            }
+
+            // Apply merged background
             bpCss.background = {
                 ...bpCss.background,
-                ...parseBackgroundProps(bpProps.background)
+                ...parseBackgroundProps(bpBg),
             };
         }
 

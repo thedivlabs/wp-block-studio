@@ -80,6 +80,8 @@ export default function Link({defaultValue = {}, callback}) {
                                                 checked={!!link.linkNewTab}
                                                 onChange={(v) => update({linkNewTab: v})}
                                             />
+                                        </Grid>
+                                        <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
 
                                             <TextControl
                                                 label="Title attribute"
@@ -151,6 +153,8 @@ export function getAnchorProps(settings = {}) {
         rel = "",
         alt = "",
     } = settings;
+
+    console.log(settings);
 
     const props = {};
 

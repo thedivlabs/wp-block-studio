@@ -35,6 +35,11 @@ function PreviewThumbnail({
         justifyContent: "center"
     }
 
+    const buttonDisabledStyle = {
+        backgroundColor: "var(--wp--preset--color--vivid-red)",
+        borderColor: "var(--wp--preset--color--vivid-red)",
+    }
+
     const imageStyle = {
         width: "100%",
         height: "100%",
@@ -70,7 +75,10 @@ function PreviewThumbnail({
                 <Button
                     onClick={toggleOff}
                     variant={isDisabled ? "primary" : "secondary"}
-                    style={buttonStyle}
+                    style={{
+                        ...buttonStyle,
+                        ...(isDisabled && buttonDisabledStyle)
+                    }}
                 >
                     {isDisabled ? "Enable" : "Disable"}
                 </Button>

@@ -53,22 +53,44 @@ const ResponsivePicture = ({
     }
 
     /* ------------------------------------------------------------
-     * BUILD URLs — FULLY PATCHED FALLBACK LOGIC
+     * ALWAYS RESPECT RESOLUTION SETTINGS
      * ------------------------------------------------------------ */
 
-    // MOBILE URL
-    const urlMobile = isMobilePlaceholder
-        ? (mobile?.url || "#")
-        : mobile?.source                        // <-- NEW: use block source first
-            ? mobile.source
-            : getImageUrlForResolution(baseMobile, resolutionMobile);
+    // MOBILE
+    let urlMobile;
 
-    // LARGE URL
-    const urlLarge = isLargePlaceholder
-        ? (large?.url || "#")
-        : large?.source                         // <-- NEW: use block source first
-            ? large.source
-            : getImageUrlForResolution(baseLarge, resolutionLarge);
+    if (isMobilePlaceholder) {
+        urlMobile = mobile?.url || "#";
+    } else if (mobile?.source && mobile?.sizes) {
+        // Always compute via helper using selected resolution
+        urlMobile =
+            getImageUrlForResolution(
+                {source: mobile.source, sizes: mobile.sizes},
+                resolutionMobile
+            ) || mobile.source;
+    } else if (mobile?.source) {
+        urlMobile = mobile.source;
+    } else {
+        urlMobile = getImageUrlForResolution(baseMobile, resolutionMobile);
+    }
+
+    // LARGE
+    let urlLarge;
+
+    if (isLargePlaceholder) {
+        urlLarge = large?.url || "#";
+    } else if (large?.source && large?.sizes) {
+        // Always compute via helper using selected resolution
+        urlLarge =
+            getImageUrlForResolution(
+                {source: large.source, sizes: large.sizes},
+                resolutionLarge
+            ) || large.source;
+    } else if (large?.source) {
+        urlLarge = large.source;
+    } else {
+        urlLarge = getImageUrlForResolution(baseLarge, resolutionLarge);
+    }
 
     // If both URLs fail → bail
     if (!urlMobile && !urlLarge) {

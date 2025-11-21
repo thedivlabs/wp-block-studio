@@ -48,7 +48,7 @@ function renderFigureContent(settings, attributes, mode = "edit") {
 
         return isSave
             ? <a {...getAnchorProps(settings.link)}>{content}</a>
-            : <div>{content}</div>;
+            : <a>{content}</a>;
     };
 
     // --- 1. RESPONSIVE PICTURE (default image mode) ---

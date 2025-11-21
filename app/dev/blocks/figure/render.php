@@ -7,8 +7,6 @@
 
 $settings = $attributes['wpbs-figure'] ?? [];
 
-WPBS::console_log( $settings );
-
 if ( empty( $content ) ) {
 	return;
 }
@@ -29,10 +27,12 @@ $acf_mobile_id = function_exists( 'get_field' ) ? get_field( 'page_settings_medi
 if ( $has_featured || $acf_mobile_id ) {
 
 	// --- LARGE IMAGE (Featured)
-	$img_large_url = get_the_post_thumbnail_url(
-		$post_id,
-		$settings['resolutionLarge'] ?? 'large'
-	);
+	$img_large_url = $has_featured
+		? get_the_post_thumbnail_url(
+			$post_id,
+			$settings['resolutionLarge'] ?? 'large'
+		)
+		: '';
 
 	// --- MOBILE IMAGE (ACF override takes priority)
 	if ( $acf_mobile_id ) {
@@ -42,8 +42,8 @@ if ( $has_featured || $acf_mobile_id ) {
 		);
 	}
 
-	// If no ACF mobile, use featured at mobile resolution
-	if ( empty( $img_mobile_url ) ) {
+	// If no ACF mobile, grab featured version (when it exists)
+	if ( empty( $img_mobile_url ) && $has_featured ) {
 		$img_mobile_url = get_the_post_thumbnail_url(
 			$post_id,
 			$settings['resolutionMobile'] ?? 'medium_large'
@@ -55,24 +55,65 @@ if ( $has_featured || $acf_mobile_id ) {
 		$img_mobile_url = $img_large_url;
 	}
 
-	// ALT
-	$thumbnail_id = get_post_thumbnail_id( $post_id );
-	$img_alt      = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
+	// ALT from featured image if we have one
+	if ( $has_featured ) {
+		$thumbnail_id = get_post_thumbnail_id( $post_id );
+		$img_alt      = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
+	}
+
 	if ( empty( $img_alt ) ) {
 		$img_alt = get_the_title( $post_id );
 	}
 
+	/**
+	 * IMPORTANT: if there is NO featured image but there IS an ACF mobile image,
+	 * we still want a proper LARGE fallback from the block settings.
+	 */
+	if ( empty( $img_large_url ) ) {
+
+		$large  = $settings['imageLarge'] ?? null;
+		$mobile = $settings['imageMobile'] ?? null;
+
+		// Try block large ID
+		if ( ! empty( $large['id'] ) ) {
+			$img_large_url = wp_get_attachment_image_url(
+				$large['id'],
+				$settings['resolutionLarge'] ?? 'large'
+			);
+		}
+
+		// If that fails, try block large source
+		if ( empty( $img_large_url ) && ! empty( $large['source'] ) && $large['source'] !== '#' ) {
+			$img_large_url = $large['source'];
+		}
+
+		// As a last resort, allow block mobile to drive large
+		if ( empty( $img_large_url ) && ! empty( $mobile['id'] ) ) {
+			$img_large_url = wp_get_attachment_image_url(
+				$mobile['id'],
+				$settings['resolutionLarge'] ?? 'large'
+			);
+		}
+
+		if ( empty( $img_large_url ) && ! empty( $mobile['source'] ) && $mobile['source'] !== '#' ) {
+			$img_large_url = $mobile['source'];
+		}
+
+		// If STILL empty, at least mirror mobile
+		if ( empty( $img_large_url ) ) {
+			$img_large_url = $img_mobile_url;
+		}
+	}
+
 } /* ------------------------------------------------------------
- * 2. BLOCK FALLBACK SETTINGS (only if no featured image)
+ * 2. BLOCK FALLBACK SETTINGS (only if no featured + no ACF mobile)
  * ------------------------------------------------------------ */
 else {
 
 	$large  = $settings['imageLarge'] ?? null;
 	$mobile = $settings['imageMobile'] ?? null;
 
-	/* -------------------------
-	 * LARGE FALLBACK
-	 * ------------------------- */
+	// --- LARGE FALLBACK ---
 	if ( ! empty( $large['id'] ) ) {
 		$img_large_url = wp_get_attachment_image_url(
 			$large['id'],
@@ -80,14 +121,12 @@ else {
 		);
 	}
 
-	// If WP could not build from ID but "source" exists → use it
-	if ( empty( $img_large_url ) && ! empty( $large['source'] ) ) {
+	// If WP fails to fetch from ID, use saved source
+	if ( empty( $img_large_url ) && ! empty( $large['source'] ) && $large['source'] !== '#' ) {
 		$img_large_url = $large['source'];
 	}
 
-	/* -------------------------
-	 * MOBILE FALLBACK
-	 * ------------------------- */
+	// --- MOBILE FALLBACK ---
 	if ( ! empty( $mobile['id'] ) ) {
 		$img_mobile_url = wp_get_attachment_image_url(
 			$mobile['id'],
@@ -95,31 +134,29 @@ else {
 		);
 	}
 
-	// If mobile has a usable URL (NOT "#"), use it
+	// If WP fails or mobile had no ID, use its source (if any)
 	if ( empty( $img_mobile_url ) && ! empty( $mobile['source'] ) && $mobile['source'] !== '#' ) {
 		$img_mobile_url = $mobile['source'];
 	}
 
-	// If mobile still empty → copy large
+	// If mobile missing, use large
 	if ( empty( $img_mobile_url ) ) {
 		$img_mobile_url = $img_large_url;
 	}
 
-	// If large empty → copy mobile
+	// If large missing, use mobile
 	if ( empty( $img_large_url ) ) {
 		$img_large_url = $img_mobile_url;
 	}
 
-	// If STILL nothing → abort
+	// If still nothing → abort
 	if ( empty( $img_large_url ) ) {
 		echo '';
 
 		return;
 	}
 
-	/* -------------------------
-	 * ALT FALLBACK
-	 * ------------------------- */
+	// ALT fallback
 	if ( ! empty( $large['id'] ) ) {
 		$img_alt = get_post_meta( $large['id'], '_wp_attachment_image_alt', true );
 	}

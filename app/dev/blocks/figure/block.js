@@ -95,8 +95,8 @@ function renderFigureContent(settings, attributes, mode = "edit") {
         // save mode: output plain img tag replaced via PHP
         return wrapWithLink(
             <img
-                src="#FEATURED_LARGE#"
-                alt="#FEATURED_ALT#"
+                src="%%_FEATURED_IMAGE_%%"
+                alt="%%_FEATURED_ALT_%%"
                 class="wpbs-picture-featured"
                 loading={settings?.eager ? "eager" : "lazy"}
                 aria-hidden="true"

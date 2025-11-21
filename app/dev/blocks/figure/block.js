@@ -96,15 +96,15 @@ function renderFigureContent(settings, attributes, mode = "edit") {
         // Save Mode: Output placeholders via ResponsivePicture structure
         if (mode === "save") {
             const featuredProps = {
-                // Fake image objects containing the PHP placeholders
                 mobile: {
-                    source: "%%_FEATURED_IMAGE_MOBILE_%%",
-                    id: settings?.imageMobile?.id, // <--- THIS WAS ADDED
+                    url: "%%_FEATURED_IMAGE_MOBILE_%%",
+                    alt: "%%_FEATURED_ALT_%%",
+                    id: null,
                 },
                 large: {
-                    source: "%%_FEATURED_IMAGE_LARGE_%%",
+                    url: "%%_FEATURED_IMAGE_LARGE_%%",
                     alt: "%%_FEATURED_ALT_%%",
-                    id: settings?.imageLarge?.id, // <--- THIS WAS ADDED
+                    id: null,
                 },
                 settings: {
                     resolutionMobile: settings?.resolutionMobile,
@@ -117,9 +117,10 @@ function renderFigureContent(settings, attributes, mode = "edit") {
                 },
                 editor: false
             };
-            // This will render the full <picture> tag with your placeholders as src/srcset
+
             return wrapWithLink(<ResponsivePicture {...featuredProps} />);
         }
+
     }
 
     // --- 3. LOTTIE ---

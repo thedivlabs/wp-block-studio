@@ -64,11 +64,6 @@ class WPBS {
 
 		add_action( 'after_setup_theme', [ $this, 'register_image_sizes' ], 1 );
 
-		add_action( 'init', function() {
-			global $_wp_additional_image_sizes;
-			WPBS::console_log( $_wp_additional_image_sizes );
-		}, 30);
-
 		if (
 			function_exists( 'acf_add_options_page' )
 		) {

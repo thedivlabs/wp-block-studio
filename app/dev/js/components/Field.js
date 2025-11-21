@@ -238,7 +238,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const currentValue = value ?? null;
 
             const onSelect = (media) => {
-                console.log(media);
                 const minimal = extractMinimalImageMeta(media);
                 commit(minimal); // save to attributes
             };

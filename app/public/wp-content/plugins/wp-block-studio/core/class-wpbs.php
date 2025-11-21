@@ -149,14 +149,51 @@ class WPBS {
 		]));
 	}
 
-	public function register_image_sizes():void {
-		add_image_size( 'mobile', 624, 900 );
-		add_image_size( 'small', 720, 1200 );
-		add_image_size( 'xlarge', 1800, 1800 );
+	public function register_image_sizes(): void {
 
-		add_filter( 'intermediate_image_sizes_advanced', [ $this, 'filter_sizes' ] );
+		// One canonical place for definitions.
+		$custom_sizes = [
+			'mobile' => [
+				'label'  => __( 'Mobile' ),
+				'width'  => 624,
+				'height' => 900,
+				'crop'   => false,
+			],
+			'small' => [
+				'label'  => __( 'Small' ),
+				'width'  => 720,
+				'height' => 1200,
+				'crop'   => false,
+			],
+			'xlarge' => [
+				'label'  => __( 'Extra Large' ),
+				'width'  => 1800,
+				'height' => 1800,
+				'crop'   => false,
+			],
+		];
+
+		// Register each size from the definitions.
+		foreach ( $custom_sizes as $name => $args ) {
+			add_image_size( $name, $args['width'], $args['height'], $args['crop'] );
+		}
+
+		// Limit generated image sizes.
+		add_filter( 'intermediate_image_sizes_advanced', function( $sizes ) use ( $custom_sizes ) {
+			return array_intersect_key( $sizes, array_flip( array_keys( $custom_sizes ) ) );
+		} );
+
+		// Expose the names to the editor.
+		add_filter( 'image_size_names_choose', function( $sizes ) use ( $custom_sizes ) {
+
+			$labels = [];
+			foreach ( $custom_sizes as $name => $args ) {
+				$labels[ $name ] = $args['label'];
+			}
+
+			return array_merge( $sizes, $labels );
+		} );
 	}
-
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
 
 		if ( is_admin() ) {

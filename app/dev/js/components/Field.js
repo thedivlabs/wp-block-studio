@@ -92,7 +92,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 </BaseControl>
             );
             break;
-
         case "shadow":
             control = (
                 <ShadowSelector
@@ -156,8 +155,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 </BaseControl>
             );
             break;
-
-
         case "text":
             control = (
                 <TextControl
@@ -170,7 +167,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-
         case "number":
             control = (
                 <NumberControl
@@ -182,7 +178,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-
         case "select":
             control = (
                 <SelectControl
@@ -196,7 +191,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-
         case "toggle":
             control = (
                 <ToggleControl
@@ -207,7 +201,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-
         case "unit":
             control = (
                 <UnitControl
@@ -228,7 +221,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-
         case "box":
             control = (
                 <BoxControl
@@ -239,7 +231,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
-
         case "image":
         case "video": {
             const isImage = type === "image";

@@ -51,7 +51,7 @@ function PreviewThumbnail({
             } else {
                 callback({
                     source: "#",
-                    mime: "video/mp4",
+                    //mime: "video/mp4",
                     isPlaceholder: true
                 });
             }

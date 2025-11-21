@@ -33,6 +33,11 @@ if ( ! defined( 'WPINC' ) ) {
 // -----------------------------------------------------------------------------
 require_once __DIR__ . '/core/class-wpbs.php';
 
+// Initialize plugin safely.
+if ( class_exists( 'WPBS' ) ) {
+	WPBS::init( plugin_dir_path( __FILE__ ) );
+}
+
 // -----------------------------------------------------------------------------
 // Initialize only when ACF is loaded.
 // -----------------------------------------------------------------------------
@@ -49,8 +54,4 @@ add_action( 'plugins_loaded', function () {
 		return;
 	}
 
-	// Initialize plugin safely.
-	if ( class_exists( 'WPBS' ) ) {
-		WPBS::init( plugin_dir_path( __FILE__ ) );
-	}
 } );

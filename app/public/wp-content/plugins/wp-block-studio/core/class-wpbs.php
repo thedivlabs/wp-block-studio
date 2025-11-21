@@ -62,8 +62,12 @@ class WPBS {
 		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
 		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
 
-		add_action('init', [ $this, 'image_sizes' ], 5);
-		add_filter('intermediate_image_sizes_advanced', [ $this, 'filter_sizes' ], 20);
+		add_action( 'after_setup_theme', [ $this, 'register_image_sizes' ], 1 );
+
+		add_action( 'init', function() {
+			global $_wp_additional_image_sizes;
+			WPBS::console_log( $_wp_additional_image_sizes );
+		}, 30);
 
 		if (
 			function_exists( 'acf_add_options_page' )
@@ -134,8 +138,7 @@ class WPBS {
 
 	}
 
-	public function filter_sizes( $sizes ): array {
-
+	public function filter_sizes( $sizes ):array {
 		return array_intersect_key($sizes, array_flip([
 			'thumbnail',
 			'mobile',
@@ -146,13 +149,12 @@ class WPBS {
 		]));
 	}
 
-	public function image_sizes(): void {
+	public function register_image_sizes():void {
+		add_image_size( 'mobile', 624, 900 );
+		add_image_size( 'small', 720, 1200 );
+		add_image_size( 'xlarge', 1800, 1800 );
 
-		add_image_size( 'mobile', 624, 1200 );
-		add_image_size( 'small', 640 );
-		add_image_size( 'medium', 1130 );
-		add_image_size( 'xlarge', 1800, 1800, true );
-
+		add_filter( 'intermediate_image_sizes_advanced', [ $this, 'filter_sizes' ] );
 	}
 
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {

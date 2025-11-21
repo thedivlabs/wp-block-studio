@@ -1,4 +1,5 @@
 import {registerBlockType} from "@wordpress/blocks";
+import {useEffect} from "@wordpress/element";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
@@ -33,8 +34,16 @@ registerBlockType(metadata.name, {
         (props) => {
 
             const {attributes, styleData, BlockWrapper, setCss, setPreload} = props;
-
+            const {'wpbs-style': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
+
+
+            useEffect(() => {
+                if (!settings?.background) {
+                    return
+                }
+                console.log(attributes);
+            }, []);
 
             return (
                 <>

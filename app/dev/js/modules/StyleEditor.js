@@ -539,10 +539,24 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             }
 
             // Apply merged background
-            bpCss.background = {
-                ...bpCss.background,
-                ...parseBackgroundProps(bpBg),
-            };
+            if (bpProps?.background) {
+
+                const baseBg = cleanedLayout.background || {};
+                const bpBg = { ...bpProps.background };
+
+                // Inherit the base image object if breakpoint defines a resolution override
+                if (bpBg.resolution && !bpBg.image) {
+                    bpBg.image = baseBg.image;
+                }
+
+                // Now parse with the merged background
+                const parsed = parseBackgroundProps(bpBg);
+
+                bpCss.background = {
+                    ...bpCss.background,
+                    ...parsed,
+                };
+            }
         }
 
         cssObj.breakpoints[bpKey] = bpCss;

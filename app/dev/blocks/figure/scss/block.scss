@@ -9,14 +9,12 @@
   overflow: hidden;
   object-fit: cover;
 
-  &.--contain {
-    object-fit: contain;
+  &.--blend {
+    mix-blend-mode: var(--blend, none);
   }
 
-  &.--blend {
-    picture img {
-      mix-blend-mode: var(--blend, none);
-    }
+  &.--contain {
+    object-fit: contain;
   }
 
   &.--origin {

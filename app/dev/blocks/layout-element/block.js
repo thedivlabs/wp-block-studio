@@ -37,14 +37,6 @@ registerBlockType(metadata.name, {
             const {'wpbs-style': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
-
-            useEffect(() => {
-                if (!settings?.background) {
-                    return
-                }
-                console.log(attributes);
-            }, []);
-
             return (
                 <>
                     <BlockWrapper

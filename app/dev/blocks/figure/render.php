@@ -1,75 +1,120 @@
 <?php
 /**
- * Render.php
- * * Replaces placeholders from block.js with actual Featured Image data.
+ * Render.php — Correct Featured-Image Fallback Logic
+ *
+ * Replaces block.js placeholders with:
+ * 1. Featured image URLs (if the post has a thumbnail)
+ * 2. Otherwise: the block’s fallback imageLarge / imageMobile
  */
-
-$settings = $attributes['wpbs-figure'] ?? [];
 
 if ( empty( $content ) ) {
 	return;
 }
 
-// 1. Get the current Post ID
-$post_id = get_the_ID();
+$settings = $attributes['wpbs-figure'] ?? [];
+$type     = $settings['type'] ?? 'image';
+$post_id  = get_the_ID();
 
-// 2. Initialize variables
-$img_large_url  = '';
-$img_mobile_url = '';
+/**
+ * Only Featured Image mode uses PHP replacement.
+ */
+if ( $type !== 'featured-image' ) {
+	echo $content;
+
+	return;
+}
+
+/* ------------------------------------------------------------
+ * 1. Helper: Get ALT from attachment ID
+ * ------------------------------------------------------------ */
+$get_alt = static function ( $attachment_id ): string {
+	if ( ! $attachment_id ) {
+		return '';
+	}
+
+	// Primary source: dedicated alt field
+	$alt = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
+
+	// Fallback: attachment title
+	if ( ! $alt ) {
+		$alt = get_the_title( $attachment_id );
+	}
+
+	return $alt ?: '';
+};
+
+/* ------------------------------------------------------------
+ * 2. Try the post’s Featured Image first
+ * ------------------------------------------------------------ */
+$img_large_url  = null;
+$img_mobile_url = null;
 $img_alt        = '';
 
-// 3. Logic: Fetch Featured Image Data
-// Check if we have a standard featured image OR an ACF mobile override
-if ( has_post_thumbnail( $post_id ) || ( function_exists( 'get_field' ) && get_field( 'page_settings_media_mobile_image' ) ) ) {
+$has_featured = $post_id && has_post_thumbnail( $post_id );
 
-	// A. GET LARGE IMAGE (Standard Featured Image)
-	// Uses the block setting 'resolutionLarge' (e.g., 'full', 'large') or defaults to 'large'
-	$img_large_url = get_the_post_thumbnail_url( $post_id, $settings['resolutionLarge'] ?? 'large' );
+if ( $has_featured ) {
 
-	// B. GET MOBILE IMAGE
-	// Priority 1: Check ACF Field 'page_settings_media_mobile_image'
-	if ( function_exists( 'get_field' ) ) {
-		$acf_mobile_id = get_field( 'page_settings_media_mobile_image' );
-		if ( $acf_mobile_id ) {
-			$img_mobile_url = wp_get_attachment_image_url(
-				$acf_mobile_id,
-				$settings['resolutionMobile'] ?? 'medium_large'
-			);
-		}
+	$featured_id    = get_post_thumbnail_id( $post_id );
+	$img_large_url  = wp_get_attachment_image_url( $featured_id, 'full' );
+	$img_mobile_url = wp_get_attachment_image_url( $featured_id, 'medium_large' );
+	$img_alt        = $get_alt( $featured_id );
+
+} else {
+
+	/* ------------------------------------------------------------
+	 * 3. FALLBACK: block-defined Large/Mobile images
+	 * ------------------------------------------------------------ */
+	$large  = $settings['imageLarge'] ?? null;
+	$mobile = $settings['imageMobile'] ?? null;
+
+	// Try to get fallback alt text from either image
+	if ( ! empty( $large['id'] ) ) {
+		$img_alt = $get_alt( $large['id'] );
+	} elseif ( ! empty( $mobile['id'] ) ) {
+		$img_alt = $get_alt( $mobile['id'] );
 	}
 
-	// Priority 2: If ACF is empty, use Standard Featured Image at Mobile Resolution
-	if ( empty( $img_mobile_url ) ) {
-		$img_mobile_url = get_the_post_thumbnail_url(
-			$post_id,
-			$settings['resolutionMobile'] ?? 'medium_large'
-		);
+	// Build URLs for fallback images
+	if ( ! empty( $large['id'] ) ) {
+		$img_large_url = wp_get_attachment_image_url( $large['id'], 'full' );
 	}
 
-	// Priority 3: Final Fallback (use Large URL)
-	if ( empty( $img_mobile_url ) ) {
+	if ( ! empty( $mobile['id'] ) ) {
+		$img_mobile_url = wp_get_attachment_image_url( $mobile['id'], 'medium_large' );
+	}
+
+	// If neither image exists → bail out
+	if ( ! $img_large_url && ! $img_mobile_url ) {
+		echo '';
+
+		return;
+	}
+
+	// Match ResponsivePicture’s own fallback rules:
+	if ( ! $img_mobile_url ) {
 		$img_mobile_url = $img_large_url;
 	}
-
-	// C. GET ALT TEXT
-	// We default to the standard featured image alt text
-	$thumbnail_id = get_post_thumbnail_id( $post_id );
-	$img_alt      = get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true );
-
-	// Fallback Alt if empty (uses post title)
-	if ( empty( $img_alt ) ) {
-		$img_alt = get_the_title( $post_id );
+	if ( ! $img_large_url ) {
+		$img_large_url = $img_mobile_url;
 	}
 }
 
-// 4. Perform String Replacement
+/* ------------------------------------------------------------
+ * 4. Replace placeholders (block.js emits these)
+ * ------------------------------------------------------------ */
 $replacements = [
 	'%%_FEATURED_IMAGE_LARGE_%%'  => esc_url( $img_large_url ),
 	'%%_FEATURED_IMAGE_MOBILE_%%' => esc_url( $img_mobile_url ),
 	'%%_FEATURED_ALT_%%'          => esc_attr( $img_alt ),
 ];
 
-$content = str_replace( array_keys( $replacements ), array_values( $replacements ), $content );
+$content = str_replace(
+	array_keys( $replacements ),
+	array_values( $replacements ),
+	$content
+);
 
-// 5. Output
+/* ------------------------------------------------------------
+ * 5. Output final markup
+ * ------------------------------------------------------------ */
 echo $content;

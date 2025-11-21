@@ -99,11 +99,12 @@ function renderFigureContent(settings, attributes, mode = "edit") {
                 // Fake image objects containing the PHP placeholders
                 mobile: {
                     source: "%%_FEATURED_IMAGE_MOBILE_%%",
-                    // We leave width/height undefined here; the browser will handle the source provided
+                    id: settings?.imageMobile?.id, // <--- THIS WAS ADDED
                 },
                 large: {
                     source: "%%_FEATURED_IMAGE_LARGE_%%",
-                    alt: "%%_FEATURED_ALT_%%"
+                    alt: "%%_FEATURED_ALT_%%",
+                    id: settings?.imageLarge?.id, // <--- THIS WAS ADDED
                 },
                 settings: {
                     resolutionMobile: settings?.resolutionMobile,

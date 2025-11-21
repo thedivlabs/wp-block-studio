@@ -68,7 +68,8 @@ export default function Link({defaultValue = {}, callback}) {
                                     <LinkField
                                         label="Link"
                                         checked={!!link.url}
-                                        onChange={(v) => update({url: v?.url || v})}/>
+                                        onChange={(url) => update({ url })}
+                                        />
 
 
                                     <PanelBody title="Advanced Settings" initialOpen={false}
@@ -85,7 +86,7 @@ export default function Link({defaultValue = {}, callback}) {
                                             <TextControl
                                                 label="Title attribute"
                                                 value={link.alt}
-                                                onChange={(v) => update({title: v})}
+                                                onChange={(v) => update({ alt: v })}
                                                 style={{gridColumn: '1/-1'}}
                                                 {...sharedProps}
                                             />

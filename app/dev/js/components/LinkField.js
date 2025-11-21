@@ -31,7 +31,6 @@ export default function LinkField({value = {}, onChange}) {
                 const urls = [
                     `/wp-json/wp/v2/search?search=${encodeURIComponent(query)}&type=post&subtype=any`,
                     `/wp-json/wp/v2/search?search=${encodeURIComponent(query)}&type=term&subtype=any`,
-                    `/wp-json/wp/v2/search?search=${encodeURIComponent(query)}&type=user`,
                 ];
 
                 const responses = await Promise.all(
@@ -67,8 +66,7 @@ export default function LinkField({value = {}, onChange}) {
     }, [query]);
 
     function apply(url) {
-        console.log(url);
-        onChange?.({...value, url});
+        onChange?.(url);
         setQuery(url);
         setResults([]);
         setOpen(false);
@@ -112,7 +110,7 @@ export default function LinkField({value = {}, onChange}) {
         zIndex: 10
     };
 
-
+console.log(value);
     return (
         <div className="block-editor-link-control wpbs-link-field">
 
@@ -127,7 +125,7 @@ export default function LinkField({value = {}, onChange}) {
                     onBlur={handleBlur}
                     onChange={(v) => {
                         setQuery(v);
-                        onChange?.({...value, url: v});
+                        onChange?.(v);
                     }}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize

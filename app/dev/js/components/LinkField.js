@@ -118,7 +118,7 @@ console.log(value);
                 <TextControl
                     className="block-editor-link-control__search-input"
                     placeholder="Search or type URL…"
-                    value={query}
+                    value={query || value}
                     onFocus={() => {
                         if (results.length > 0) setOpen(true);
                     }}

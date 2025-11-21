@@ -47,7 +47,7 @@ export default function Link({defaultValue = {}, callback}) {
         __next40pxDefaultSize: true,
     }
 
-
+    console.log(link);
     return (
         <BlockControls>
             <ToolbarGroup>
@@ -68,8 +68,7 @@ export default function Link({defaultValue = {}, callback}) {
                                     <LinkField
                                         label="Link"
                                         checked={!!link.url}
-                                        onChange={(v) => update({url: v?.url})}
-                                    />
+                                        onChange={(v) => update({url: v?.url || v})}/>
 
 
                                     <PanelBody title="Advanced Settings" initialOpen={false}

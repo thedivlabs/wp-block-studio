@@ -6,7 +6,7 @@ import {
     __experimentalItem as Item,
 } from "@wordpress/components";
 
-export default function LinkField({ value = {}, onChange }) {
+export default function LinkField({value = {}, onChange}) {
     const [query, setQuery] = useState(value.url || "");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ export default function LinkField({ value = {}, onChange }) {
         }
 
         const controller = new AbortController();
-        const { signal } = controller;
+        const {signal} = controller;
 
         setLoading(true);
 
@@ -36,7 +36,7 @@ export default function LinkField({ value = {}, onChange }) {
 
                 const responses = await Promise.all(
                     urls.map((u) =>
-                        fetch(u, { signal }).then((r) => r.json()).catch(() => [])
+                        fetch(u, {signal}).then((r) => r.json()).catch(() => [])
                     )
                 );
 
@@ -67,7 +67,8 @@ export default function LinkField({ value = {}, onChange }) {
     }, [query]);
 
     function apply(url) {
-        onChange?.({ ...value, url });
+        console.log(url);
+        onChange?.({...value, url});
         setQuery(url);
         setResults([]);
         setOpen(false);
@@ -87,28 +88,28 @@ export default function LinkField({ value = {}, onChange }) {
     }
 
     const itemGroupStyle = {
-        width:'100%',
-        display:'flex',
-        flexDirection:'column',
-        gap:'16px',
-        padding:'35px 0px 10px'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        padding: '35px 0px 10px'
     };
     const itemStyle = {
-        width:'100%',
-        display:'flex',
-        flexDirection:'column',
-        gap:'4px',
-        padding:'0px'
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px',
+        padding: '0px'
     };
     const searchStyle = {
-        width:'100%',
-        display:'flex',
-        flexDirection:'column',
-        gap:'4px',
-        padding:'0px',
-        backgroundColor:'white',
-        position:'relative',
-        zIndex:10
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px',
+        padding: '0px',
+        backgroundColor: 'white',
+        position: 'relative',
+        zIndex: 10
     };
 
 
@@ -126,7 +127,7 @@ export default function LinkField({ value = {}, onChange }) {
                     onBlur={handleBlur}
                     onChange={(v) => {
                         setQuery(v);
-                        onChange?.({ ...value, url: v });
+                        onChange?.({...value, url: v});
                     }}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
@@ -135,7 +136,7 @@ export default function LinkField({ value = {}, onChange }) {
                     inputRef={inputRef}
                 />
 
-                {loading && <Spinner />}
+                {loading && <Spinner/>}
             </div>
 
 
@@ -145,7 +146,7 @@ export default function LinkField({ value = {}, onChange }) {
                         <Item
                             key={item.id}
                             className="block-editor-link-control__search-item"
-style={itemStyle}
+                            style={itemStyle}
                             // ⭐ the magic: use onMouseDown, not onClick
                             onMouseDown={(e) => {
                                 e.preventDefault();   // stop input blur from winning

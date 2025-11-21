@@ -23,6 +23,9 @@ const getClassNames = (attributes = {}, styleData) => {
         selector,            // "wpbs-figure"
         "h-fit w-fit max-w-full max-h-full flex",
         settings.contain ? "--contain" : null,
+        settings.blend ? "--blend" : null,
+        settings.overlay ? "--overlay" : null,
+        settings.origin ? "--origin" : null,
         isEmpty ? "--empty" : null,
         attributes.uniqueId ?? "",
     ]
@@ -141,6 +144,7 @@ registerBlockType(metadata.name, {
                 const type = settings?.type ?? null;
                 const overlay = settings?.overlay ?? null;
                 const origin = settings?.origin ?? null;
+                const blend = settings?.blend ?? null;
 
                 // Single breakpoint key (e.g. "sm", "md", "normal")
                 const bpKey = settings?.breakpoint || null;
@@ -150,6 +154,7 @@ registerBlockType(metadata.name, {
                     props: {
                         "--overlay": overlay,
                         "--origin": origin,
+                        "--blend": blend,
                     },
                     breakpoints: {
                         [bpKey]: {}

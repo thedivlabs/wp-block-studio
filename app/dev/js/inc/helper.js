@@ -103,6 +103,21 @@ export function getImageUrlForResolution(image, resolution = 'large') {
     return source;
 }
 
+export function diffObjects(base = {}, bp = {}) {
+    const out = {};
+
+    Object.keys(bp).forEach((key) => {
+        const bpVal = bp[key];
+        const baseVal = base[key];
+
+        if (!_.isEqual(bpVal, baseVal)) {
+            out[key] = bpVal;
+        }
+    });
+
+    return out;
+}
+
 export function cleanObject(obj, strict = false) {
     return _.transform(obj, (result, value, key) => {
         if (_.isPlainObject(value)) {

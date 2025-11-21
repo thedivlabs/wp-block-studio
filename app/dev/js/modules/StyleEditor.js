@@ -5,6 +5,7 @@ import {
     cleanObject,
     heightVal,
     buildImageSet,
+    diffObjects,
     getCSSFromStyle,
     normalizePreloadItem,
     extractPreloadsFromLayout,
@@ -508,6 +509,8 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     // ----------------------------------------
     // 5. Breakpoints (inherit + overrides)
     // ----------------------------------------
+    import { diffObjects } from "./diff"; // your lodash helper
+
     Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
         const bpCss = {
             props: {},
@@ -518,7 +521,7 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         if (cssObj.props) bpCss.props = {...cssObj.props};
         if (cssObj.background) bpCss.background = {...cssObj.background};
 
-        // overrides
+        // ----- props overrides -----
         if (bpProps?.props) {
             bpCss.props = {
                 ...bpCss.props,
@@ -526,40 +529,44 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             };
         }
 
+        // ----- background overrides -----
         if (bpProps?.background) {
+            const baseBg = cleanedLayout.background || {};
+            const merged = { ...bpProps.background };
 
-            // ----------------------------------------
-            // FIX: inherit resolution if missing
-            // ----------------------------------------
-            const inheritedResolution = bpCss.background?.resolution;
-            const bpBg = { ...bpProps.background };
-
-            if (inheritedResolution && bpBg.resolution == null) {
-                bpBg.resolution = inheritedResolution;
+            // inherit base resolution
+            if (merged.resolution == null && bpCss.background?.resolution) {
+                merged.resolution = bpCss.background.resolution;
             }
 
-            // Apply merged background
-            if (bpProps?.background) {
-
-                const baseBg = cleanedLayout.background || {};
-                const bpBg = { ...bpProps.background };
-
-                // Inherit the base image object if breakpoint defines a resolution override
-                if (bpBg.resolution && !bpBg.image) {
-                    bpBg.image = baseBg.image;
-                }
-
-                // Now parse with the merged background
-                const parsed = parseBackgroundProps(bpBg);
-
-                bpCss.background = {
-                    ...bpCss.background,
-                    ...parsed,
-                };
+            // inherit base image when resolution overrides exist
+            if (merged.resolution && !merged.image) {
+                merged.image = baseBg.image;
             }
+
+            const parsed = parseBackgroundProps(merged);
+
+            bpCss.background = {
+                ...bpCss.background,
+                ...parsed,
+            };
         }
 
-        cssObj.breakpoints[bpKey] = bpCss;
+        // ---------------------------------------------------------------------
+        // DIFF AGAINST BASE BEFORE SAVING ANYTHING!
+        // ---------------------------------------------------------------------
+
+        const baseProps = cssObj.props || {};
+        const baseBg = cssObj.background || {};
+
+        const diffPropsObj = diffObjects(baseProps, bpCss.props);
+        const diffBgObj = diffObjects(baseBg, bpCss.background);
+
+        const finalDiff = {};
+        if (!_.isEmpty(diffPropsObj)) finalDiff.props = diffPropsObj;
+        if (!_.isEmpty(diffBgObj)) finalDiff.background = diffBgObj;
+
+        cssObj.breakpoints[bpKey] = finalDiff;
     });
 
     // ----------------------------------------

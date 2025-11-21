@@ -47,8 +47,8 @@ function renderFigureContent(settings, attributes, mode = "edit") {
 
 
         return isSave
-            ? <a className="wpbs-layout-wrapper" {...getAnchorProps(settings.link)}>{content}</a>
-            : <div className="wpbs-layout-wrapper">{content}</div>;
+            ? <a {...getAnchorProps(settings.link)}>{content}</a>
+            : <div>{content}</div>;
     };
 
     // --- 1. RESPONSIVE PICTURE (default image mode) ---

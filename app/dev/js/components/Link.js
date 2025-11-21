@@ -68,7 +68,7 @@ export default function Link({defaultValue = {}, callback}) {
                                     <LinkField
                                         label="Link"
                                         checked={!!link.url}
-                                        onChange={(v) => update({url: v})}
+                                        onChange={(v) => update({url: v?.url})}
                                     />
 
 
@@ -153,8 +153,6 @@ export function getAnchorProps(settings = {}) {
         rel = "",
         alt = "",
     } = settings;
-
-    console.log(settings);
 
     const props = {};
 

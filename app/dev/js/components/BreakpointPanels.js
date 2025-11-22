@@ -215,7 +215,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                 isPrimary
                 onClick={addBreakpoint}
                 style={{
-                    borderRadius: 4,
+                    borderRadius: 0,
                     width: "100%",
                     textAlign: "center",
                     gridColumn: "1 / -1"

@@ -101,8 +101,8 @@
     gap: 8px;
     grid-column: 1/-1;
     line-height: 1 !important;
-    padding: 14px !important;
-    min-height: 46px !important;
+    padding: 12px !important;
+    min-height: 40px !important;
     background-color: #efefef;
 
     .components-button {
@@ -229,6 +229,7 @@
     &.--full {
       grid-column: 1 / -1;
     }
+
 
     & > .components-grid {
       width: 100% !important;

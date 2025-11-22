@@ -5,71 +5,52 @@ import {
     useMemo,
     useCallback,
 } from "@wordpress/element";
-import { InspectorControls } from "@wordpress/block-editor";
+import {InspectorControls} from "@wordpress/block-editor";
 
-import { BreakpointPanels } from "./BreakpointPanels";
-import { LayoutFields } from "./LayoutFields";
-import { cleanObject } from "Includes/helper";
-import isEqual from "lodash/isEqual";
+import {BreakpointPanels} from "./BreakpointPanels";
+import {LayoutFields} from "./LayoutFields";
+import {cleanObject} from "Includes/helper";
+import {isEqual,debounce} from "lodash";
 
-export const StyleEditorUI = ({ settings = {}, updateStyleSettings }) => {
+export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // ----------------------------------------
     // LOCAL STATE (flat-entry layout)
     // layout = { base:{...}, xs:{...}, md:{...} }
     // ----------------------------------------
-    const [layout, setLayout] = useState(() => {
-        const { props = {}, breakpoints = {} } = settings;
-        return {
-            base: props,
-            ...breakpoints,
-        };
-    });
+    const [layout, setLayout] = useState({});
 
-    // ----------------------------------------
-    // BUILT LAYOUT FOR ATTRIBUTES
-    // Convert flat layout → wpbs-style structure
-    // ----------------------------------------
-    const externalLayout = useMemo(() => {
-        const { base = {}, ...bps } = layout;
-        return {
-            props: base,
-            breakpoints: bps,
-        };
-    }, [layout]);
-
-    // ----------------------------------------
-    // EFFECT: LOCAL STATE → ATTRIBUTES
-    // ----------------------------------------
     useEffect(() => {
-        const cleanedLocal = cleanObject(externalLayout, true);
-        const cleanedExternal = cleanObject(settings, true);
 
-        if (!isEqual(cleanedLocal, cleanedExternal)) {
-            updateStyleSettings(cleanedLocal);
+        if (!isEqual(cleanObject(settings), cleanObject(layout))) {
+            setLayout(settings);
         }
-    }, [externalLayout, settings, updateStyleSettings]);
 
-    // ----------------------------------------
-    // EFFECT: ATTRIBUTES → LOCAL STATE
-    // (sync on external change only)
-    // ----------------------------------------
+    }, [settings])
+
+
+// debounced commit
+    const debouncedCommit = useMemo(() =>
+            debounce((nextLayout, externalSettings) => {
+                const cleanedLocal = cleanObject(nextLayout, true);
+                const cleanedExternal = cleanObject(externalSettings, true);
+
+                if (!isEqual(cleanedLocal, cleanedExternal)) {
+                    updateStyleSettings(nextLayout);
+                }
+            }, 500),
+        [updateStyleSettings]);
+
+
+// LOCAL → ATTRIBUTES
     useEffect(() => {
-        const cleanedLocal = cleanObject(externalLayout, true);
-        const cleanedExternal = cleanObject(settings, true);
+        debouncedCommit(layout, settings);
 
-        if (isEqual(cleanedLocal, cleanedExternal)) return;
+        return () => debouncedCommit.cancel();
 
-        const { props = {}, breakpoints = {} } = settings;
-        setLayout({
-            base: props,
-            ...breakpoints,
-        });
-    }, [settings]); // do NOT include externalLayout
+    }, [layout, settings, debouncedCommit]);
 
-    // ----------------------------------------
-    // UPDATE HANDLER FOR REPEATER
-    // nextPanels = { base:{...}, xs:{...}, md:{...} }
-    // ----------------------------------------
+
+
     const updateLayout = useCallback((nextPanels) => {
         setLayout(nextPanels);
     }, []);
@@ -78,7 +59,7 @@ export const StyleEditorUI = ({ settings = {}, updateStyleSettings }) => {
     // PANEL RENDERERS
     // ----------------------------------------
     const LayoutFieldsPanel = useCallback(
-        ({ entry, update }) => (
+        ({entry, update}) => (
             <LayoutFields
                 label="Settings"
                 settings={entry ?? {}}
@@ -88,7 +69,17 @@ export const StyleEditorUI = ({ settings = {}, updateStyleSettings }) => {
         []
     );
 
-    const BreakpointFieldsPanel = LayoutFieldsPanel; // identical behavior
+    const BreakpointFieldsPanel = useCallback(
+        ({entry, update}) => (
+            <LayoutFields
+                label="Settings"
+                settings={entry ?? {}}
+                updateFn={(nextProps) => update(nextProps)}
+            />
+        ),
+        []
+    );
+
 
     // ----------------------------------------
     // BREAKPOINT PANELS UI
@@ -105,7 +96,7 @@ export const StyleEditorUI = ({ settings = {}, updateStyleSettings }) => {
                 }}
             />
         ),
-        [layout, updateLayout, LayoutFieldsPanel, BreakpointFieldsPanel]
+        [layout]
     );
 
     return (

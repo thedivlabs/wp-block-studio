@@ -22,17 +22,19 @@ export const LayoutFields = memo(
                 label={label}
                 resetAll={() => updateFn({})}
             >
-                {map
-                    .filter((f) => !suppress.includes(f.slug))
-                    .map((field) => (
-                        <Field
-                            key={field.slug}
-                            field={field}
-                            settings={settings}
-                            callback={(value) => onUpdate(field.slug, value)}
-                            isToolsPanel={true}
-                        />
-                    ))}
+                <Grid columns={2} rowGap={15} columnGap={20}>
+                    {map
+                        .filter((f) => !suppress.includes(f.slug))
+                        .map((field) => (
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={(value) => onUpdate(field.slug, value)}
+                                isToolsPanel={false}
+                            />
+                        ))}
+                </Grid>
             </ToolsPanel>
         );
     },

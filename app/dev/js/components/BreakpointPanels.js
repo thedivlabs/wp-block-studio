@@ -1,57 +1,75 @@
-// BreakpointPanels.js (safe version)
-// With full normalization so empty objects NEVER break anything.
+// BreakpointPanels.js
+// Structural repeater for base + responsive layouts,
+// with normalization that preserves "" values and only strips null/undefined.
 
 import {useState, useEffect, useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
 
-/* ------------------------------------------------------------
- * Helper: createPanel
- * ------------------------------------------------------------ */
+// ------------------------------------------------------------
+// Helper: createPanel
+// ------------------------------------------------------------
 export function createPanel(builderFn) {
     return function PanelComponent({bpKey, entry, update}) {
         return builderFn({bpKey, entry, update});
     };
 }
 
-/* ------------------------------------------------------------
- * Normalize any entry into a safe shape
- * ------------------------------------------------------------ */
+// ------------------------------------------------------------
+// Helpers: normalization
+// ------------------------------------------------------------
+function normalizeProps(propsObj = {}) {
+    const safe = {};
+
+    for (const [key, val] of Object.entries(propsObj)) {
+        // keep empty strings (critical)
+        if (val === "") {
+            safe[key] = "";
+            continue;
+        }
+
+        // drop null / undefined, keep everything else
+        if (val !== null && val !== undefined) {
+            safe[key] = val;
+        }
+    }
+
+    return safe;
+}
+
 function normalizeEntry(entry) {
     if (!entry || typeof entry !== "object") {
         return {props: {}};
     }
+
     return {
-        props: entry.props || {},
+        props: normalizeProps(entry.props || {}),
     };
 }
 
-/* ------------------------------------------------------------
- * Normalize entire breakpoints object
- * ------------------------------------------------------------ */
 function normalizeAll(bps = {}) {
     const out = {};
     for (const [key, val] of Object.entries(bps)) {
-        out[key] = normalizeEntry(val);
+        out[key] = normalizeEntry(val || {props: {}});
     }
     return out;
 }
 
-/* ------------------------------------------------------------
- * BreakpointPanels — structural repeater
- * ------------------------------------------------------------ */
+// ------------------------------------------------------------
+// BreakpointPanels — structural repeater
+// ------------------------------------------------------------
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    /* ----------------------------------------
-     * LOCAL STATE (CRITICAL)
-     * ---------------------------------------- */
+    // ----------------------------------------
+    // LOCAL STATE (CRITICAL)
+    // ----------------------------------------
     const [localBps, setLocalBps] = useState(() => {
-        // If nothing exists → make base props
+        // No value → ensure base exists
         if (!value || typeof value !== "object" || Object.keys(value).length === 0) {
             return {base: {props: {}}};
         }
 
-        // If no base → insert one
+        // No base key → inject it
         if (!value.base) {
             return {
                 base: {props: {}},
@@ -62,9 +80,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         return normalizeAll(value);
     });
 
-    /* ----------------------------------------
-     * EXTERNAL SYNC
-     * ---------------------------------------- */
+    // Sync when block updates externally
     useEffect(() => {
         if (!value || typeof value !== "object") {
             setLocalBps({base: {props: {}}});
@@ -87,9 +103,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         setLocalBps(normalizeAll(value));
     }, [value]);
 
-    /* ----------------------------------------
-     * Breakpoint list (sorted)
-     * ---------------------------------------- */
+    // ----------------------------------------
+    // Breakpoint list (sorted)
+    // ----------------------------------------
     const breakpoints = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
             key,
@@ -98,9 +114,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         }));
     }, [themeBreakpoints]);
 
-    /* ----------------------------------------
-     * Ordered keys
-     * ---------------------------------------- */
+    // Ordered keys (base first, then sorted by size)
     const orderedKeys = useMemo(() => {
         return Object.keys(localBps).sort((a, b) => {
             if (a === "base") return -1;
@@ -112,20 +126,20 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [localBps, breakpoints]);
 
-    /* ----------------------------------------
-     * Update a row (safe)
-     * ---------------------------------------- */
+    // ----------------------------------------
+    // Update a row
+    // ----------------------------------------
     const updateEntry = useCallback(
         (bpKey, data) => {
-            const safeExisting = normalizeEntry(localBps[bpKey]);
-            const safeData = normalizeEntry(data);
+            const existing = normalizeEntry(localBps[bpKey]);
+            const incoming = normalizeEntry(data);
 
             const next = {
                 ...localBps,
                 [bpKey]: {
                     props: {
-                        ...safeExisting.props,
-                        ...safeData.props,
+                        ...existing.props,
+                        ...incoming.props,
                     },
                 },
             };
@@ -136,17 +150,17 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [localBps, onChange]
     );
 
-    /* ----------------------------------------
-     * Remove / Rename
-     * ---------------------------------------- */
+    // ----------------------------------------
+    // Remove / Rename
+    // ----------------------------------------
     const removeEntry = useCallback(
         (bpKey, opts = {}) => {
             const next = {...localBps};
-            const transfer = normalizeEntry(opts.transfer);
+            const transfer = opts.transfer ? normalizeEntry(opts.transfer) : null;
 
             delete next[bpKey];
 
-            if (opts.transfer && opts.newKey) {
+            if (transfer && opts.newKey) {
                 next[opts.newKey] = transfer;
             }
 
@@ -156,9 +170,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [localBps, onChange]
     );
 
-    /* ----------------------------------------
-     * Add breakpoint
-     * ---------------------------------------- */
+    // ----------------------------------------
+    // Add breakpoint
+    // ----------------------------------------
     const addBreakpoint = useCallback(() => {
         const existing = Object.keys(localBps);
 
@@ -179,9 +193,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         onChange(next);
     }, [localBps, breakpoints, onChange]);
 
-    /* ----------------------------------------
-     * Render
-     * ---------------------------------------- */
+    // ----------------------------------------
+    // Render
+    // ----------------------------------------
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
             {orderedKeys.map((bpKey) => {
@@ -214,6 +228,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                             onChange={(e) => {
                                                 const newKey = e.target.value;
 
+                                                // prevent duplicate keys
                                                 if (
                                                     newKey !== bpKey &&
                                                     Object.keys(localBps).includes(newKey)

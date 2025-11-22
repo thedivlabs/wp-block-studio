@@ -1,3 +1,92 @@
+export const MediaSource = {
+        // Root-level mode
+        isFeatured: 'boolean',          // pulled from featured media?
+
+        // Root media objects (one or the other)
+        image: {
+            id: 'number',
+            sizes: 'object',            // WordPress size variants (images only)
+            source: 'string',    // base URL
+            isPlaceholder: 'boolean'
+        },
+
+        video: {
+            id: 'number',
+            source: 'string',    // base URL
+            mime: 'string',      // video/mp4, video/webm, etc.
+            isPlaceholder: 'boolean'
+        },
+
+        // Root resolution (applies only to images, ignored for video)
+        resolution: 'string',
+
+        // Global eager toggle
+        isEager: 'boolean',
+
+        // Breakpoints mirror the root exactly
+        breakpoints: {
+            sm: {
+                isFeatured: 'boolean',
+
+                image: {
+                    id: 'number',
+                    sizes: 'object',
+                    source: 'string',
+                    isPlaceholder: 'boolean'
+                },
+
+                video: {
+                    id: 'number',
+                    source: 'string',
+                    mime: 'string',
+                    isPlaceholder: 'boolean'
+                },
+
+                resolution: 'string'
+            },
+
+            md: {
+                isFeatured: 'boolean',
+                image: {
+                    id: 'number',
+                    sizes: 'object',
+                    source: 'string',
+                    isPlaceholder: 'boolean'
+                },
+
+                video: {
+                    id: 'number',
+                    source: 'string',
+                    mime: 'string',
+                    isPlaceholder: 'boolean'
+                },
+
+                resolution: 'string'
+            },
+
+            lg: {
+                isFeatured: 'boolean',
+                image: {
+                    id: 'number',
+                    sizes: 'object',
+                    source: 'string',
+                    isPlaceholder: 'boolean'
+                },
+
+                video: {
+                    id: 'number',
+                    source: 'string',
+                    mime: 'string',
+                    isPlaceholder: 'boolean'
+                },
+
+                resolution: 'string'
+            }
+        }
+    }
+;
+
+
 export const IMAGE_BUTTON_STYLE = {
     width: '100%',
     display: 'flex',

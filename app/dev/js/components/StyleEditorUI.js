@@ -11,7 +11,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     const [bps, setBps] = useState(settings.breakpoints || {});
 
 
-
     const updateBaseProps = useCallback((next) => {
         setBaseProps(prev => {
             const updated = next && Object.keys(next).length === 0

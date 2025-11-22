@@ -19,17 +19,6 @@ export const STYLE_ATTRIBUTES = {
 };
 
 
-const StyleEditorPanel = memo(
-    ({settings, updateStyleSettings}) => (
-        <StyleEditorUI
-            settings={settings}
-            updateStyleSettings={updateStyleSettings}
-        />
-    ),
-    (prev, next) => _.isEqual(prev.settings, next.settings)
-);
-
-
 export const withStyle = (Component) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
     const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
@@ -171,7 +160,7 @@ export const withStyle = (Component) => (props) => {
                 <style ref={styleRef}/>
             )}
 
-            <StyleEditorPanel
+            <StyleEditorUI
                 settings={settings}
                 updateStyleSettings={updateStyleSettings}
             />

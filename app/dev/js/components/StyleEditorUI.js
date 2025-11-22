@@ -1,92 +1,100 @@
-import {useState, useMemo, useCallback} from "@wordpress/element";
+// StyleEditorUI.js
+import {
+    useState,
+    useEffect,
+    useMemo,
+    useCallback
+} from "@wordpress/element";
 import {InspectorControls} from "@wordpress/block-editor";
+
 import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
+import _ from "lodash";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
-    // -------------------------
-    // LOCAL STATE (source of truth)
-    // -------------------------
-    const [baseProps, setBaseProps] = useState(settings.props || {});
-    const [bps, setBps]             = useState(settings.breakpoints || {});
 
-    // If you want to re-sync when settings change externally,
-    // you can add a guarded useEffect here, but for now we
-    // treat local as the live source of truth (like the old code).
+    // ----------------------------------------
+    // LOCAL STATE — initialized from settings ONCE
+    // ----------------------------------------
+    const [localProps, setLocalProps] = useState(settings.props || {});
+    const [localBreakpoints, setLocalBreakpoints] = useState(settings.breakpoints || {});
 
-    // -------------------------
-    // PUSH FULL LAYOUT UP
-    // -------------------------
-    const commitLayout = useCallback(
-        (nextProps, nextBps) => {
-            updateStyleSettings({
-                props: nextProps,
-                breakpoints: nextBps,
-            });
-        },
+    // ----------------------------------------
+    // DERIVED LAYOUT OBJECT (like old localLayout)
+    // ----------------------------------------
+    const localLayout = useMemo(
+        () => ({
+            props: localProps,
+            breakpoints: localBreakpoints,
+        }),
+        [localProps, localBreakpoints]
+    );
+
+    // ----------------------------------------
+    // DEBOUNCED COMMIT TO ATTRIBUTES (same pattern as old code)
+    // ----------------------------------------
+    const debouncedCommit = useMemo(
+        () => _.debounce((next) => updateStyleSettings(next), 300),
         [updateStyleSettings]
     );
 
-    // -------------------------
-    // UPDATE BASE PROPS (LayoutFields)
-    // -------------------------
-    const updateBaseProps = useCallback(
-        (next) => {
-            setBaseProps((prev) => {
-                const nextProps =
-                    next && Object.keys(next).length === 0
-                        ? {}
-                        : { ...prev, ...next };
+    useEffect(() => {
+        debouncedCommit(localLayout);
+        return () => debouncedCommit.cancel();
+    }, [localLayout, debouncedCommit]);
 
-                // use current bps from state (NOT settings)
-                commitLayout(nextProps, bps);
-                return nextProps;
-            });
-        },
-        [bps, commitLayout]
-    );
+    // ----------------------------------------
+    // UPDATE BASE PROPS
+    // ----------------------------------------
+    const updateBaseProps = useCallback((next) => {
+        setLocalProps((prev) => {
+            // ToolsPanel resetAll → clear all props
+            if (next && Object.keys(next).length === 0) {
+                return {};
+            }
+            return {
+                ...prev,
+                ...next,
+            };
+        });
+    }, []);
 
-    // -------------------------
-    // UPDATE BREAKPOINTS (BreakpointPanels)
-    // -------------------------
-    const updateBreakpoints = useCallback(
-        (nextBps) => {
-            setBps(() => {
-                // use current baseProps from state (NOT settings)
-                commitLayout(baseProps, nextBps);
-                return nextBps;
-            });
-        },
-        [baseProps, commitLayout]
-    );
+    // ----------------------------------------
+    // UPDATE BREAKPOINTS (from BreakpointPanels)
+    // ----------------------------------------
+    const updateBreakpoints = useCallback((nextBps) => {
+        setLocalBreakpoints(nextBps || {});
+    }, []);
 
-    // -------------------------
+    // ----------------------------------------
     // RENDER PANELS
-    // -------------------------
+    // ----------------------------------------
     const LayoutFieldsPanel = useCallback(
-        ({bpKey, entry, update}) => (
+        () => (
             <LayoutFields
-                settings={baseProps}
+                label="Layout"
+                settings={localProps}
                 updateFn={updateBaseProps}
             />
         ),
-        [baseProps, updateBaseProps]
+        [localProps, updateBaseProps]
     );
 
     const BreakpointFieldsPanel = useCallback(
         ({bpKey, entry, update}) => (
             <LayoutFields
+                label="Layout"
                 settings={entry.props ?? {}}
                 updateFn={(nextProps) => update({props: nextProps})}
             />
         ),
-        [] // stable; "update" is provided fresh by BreakpointPanels per row
+        []
     );
 
     const BreakpointPanelsUI = useMemo(
         () => (
             <BreakpointPanels
-                value={bps}
+                value={localBreakpoints}
                 onChange={updateBreakpoints}
                 label="Layout"
                 render={{
@@ -95,7 +103,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 }}
             />
         ),
-        [bps, LayoutFieldsPanel, BreakpointFieldsPanel, updateBreakpoints]
+        [localBreakpoints, updateBreakpoints, LayoutFieldsPanel, BreakpointFieldsPanel]
     );
 
     return (

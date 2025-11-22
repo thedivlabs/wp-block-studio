@@ -11,7 +11,6 @@ export function buildImageSet(url) {
     return `image-set(${webp}, ${fallback})`;
 }
 
-
 export function extractMinimalImageMeta(media) {
     if (!media) return null;
 

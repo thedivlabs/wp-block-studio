@@ -2,6 +2,8 @@ import {useState, useEffect, useMemo, useCallback} from "@wordpress/element";
 import {InspectorControls} from "@wordpress/block-editor";
 import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
+import {cleanObject} from "Includes/helper";
+import {isEqual} from "lodash";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // -------------------------
@@ -12,78 +14,117 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         breakpoints: settings.breakpoints || {},
     }));
 
-    // re-sync when block updates externally
-    useEffect(() => {
-        setLocalSettings({
-            props: settings.props || {},
-            breakpoints: settings.breakpoints || {},
-        });
-    }, [settings]);
+    // -------------------------
+    // DERIVED VALUES
+    // -------------------------
+    const baseProps = localSettings.props || {};
+    const bps = localSettings.breakpoints || {};
 
-    // stable memo derived values
-    const baseProps = useMemo(() => localSettings.props, [localSettings.props]);
-    const bps = useMemo(
-        () => localSettings.breakpoints || {},
-        [localSettings.breakpoints]
-    );
 
-    // update base props (LayoutFields)
+    // -------------------------
+    // UPDATE BASE PROPS (LayoutFields)
+    // -------------------------
     const updateBaseProps = useCallback(
         (next) => {
             setLocalSettings((prev) => {
-                const updated = {
-                    ...prev,
-                    props: {
+                let nextProps;
+
+                // Special case: ToolsPanel resetAll → we want to clear props entirely
+                if (next && Object.keys(next).length === 0) {
+                    nextProps = {};
+                } else {
+                    nextProps = {
                         ...prev.props,
                         ...next,
-                    },
+                    };
+                }
+
+                const result = {
+                    ...prev,
+                    props: nextProps,
                 };
-                updateStyleSettings(updated);
-                return updated;
+
+                // Only push up if something actually changed vs current external settings
+                const cleanedExternal = cleanObject(settings, true);
+                const cleanedResult = cleanObject(result, true);
+
+                if (!isEqual(cleanedExternal, cleanedResult)) {
+                    updateStyleSettings(result);
+                }
+
+                return result;
             });
         },
-        [updateStyleSettings]
+        [settings, updateStyleSettings]
     );
 
-    // update breakpoints (BreakpointPanels)
+    // -------------------------
+    // UPDATE BREAKPOINTS (BreakpointPanels)
+    // -------------------------
     const updateBreakpoints = useCallback(
         (nextBps) => {
             setLocalSettings((prev) => {
-                const updated = {
+                const result = {
                     ...prev,
                     breakpoints: nextBps,
                 };
-                updateStyleSettings(updated);
-                return updated;
+
+                const cleanedExternal = cleanObject(settings, true);
+                const cleanedResult = cleanObject(result, true);
+
+                if (!isEqual(cleanedExternal, cleanedResult)) {
+                    updateStyleSettings(result);
+                }
+
+                return result;
             });
         },
-        [updateStyleSettings]
+        [settings?.breakpoints, updateStyleSettings]
     );
 
-    return (
-        <InspectorControls group="styles">
+    const LayoutFieldsPanel = useCallback(
+        ({bpKey, entry, update}) => (
+            <LayoutFields
+                settings={baseProps}
+                updateFn={updateBaseProps}
+            />
+        ),
+        [baseProps, updateBaseProps]
+    );
+
+    const BreakpointFieldsPanel = useCallback(
+        ({bpKey, entry, update}) => (
+            <LayoutFields
+                settings={entry.props ?? {}}
+                updateFn={(nextProps) => update({props: nextProps})}
+            />
+        ),
+        [] // stable, no deps needed
+    );
+
+
+// -------------------------
+// BREAKPOINT PANELS UI
+// -------------------------
+    const BreakpointPanelsUI = useMemo(
+        () => (
             <BreakpointPanels
                 value={bps}
                 onChange={updateBreakpoints}
                 label="Layout"
                 render={{
-                    base: ({bpKey, entry, update}) => (
-                        <LayoutFields
-                            label="Layout"
-                            settings={baseProps}
-                            updateFn={updateBaseProps}
-                        />
-                    ),
-
-                    breakpoints: ({bpKey, entry, update}) => (
-                        <LayoutFields
-                            label="Layout"
-                            settings={entry.props ?? {}}
-                            updateFn={(nextProps) => update({props: nextProps})}
-                        />
-                    ),
+                    base: LayoutFieldsPanel,
+                    breakpoints: BreakpointFieldsPanel,
                 }}
             />
+        ),
+        [bps, LayoutFieldsPanel, BreakpointFieldsPanel, updateBreakpoints]
+    );
+
+
+    return (
+        <InspectorControls group="styles">
+            {BreakpointPanelsUI}
         </InspectorControls>
     );
 };

@@ -28,7 +28,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     }, [settings])
 
 
-// debounced commit
     const debouncedCommit = useMemo(() =>
             debounce((nextLayout, externalSettings) => {
                 const cleanedLocal = cleanObject(nextLayout, true);
@@ -41,7 +40,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         [updateStyleSettings]);
 
 
-// LOCAL → ATTRIBUTES
     useEffect(() => {
         debouncedCommit(layout, settings);
 
@@ -50,14 +48,11 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     }, [layout, settings, debouncedCommit]);
 
 
-
     const updateLayout = useCallback((nextPanels) => {
         setLayout(nextPanels);
     }, []);
 
-    // ----------------------------------------
-    // PANEL RENDERERS
-    // ----------------------------------------
+
     const LayoutFieldsPanel = useCallback(
         ({entry, update}) => (
             <LayoutFields
@@ -81,9 +76,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     );
 
 
-    // ----------------------------------------
-    // BREAKPOINT PANELS UI
-    // ----------------------------------------
     const BreakpointPanelsUI = useMemo(
         () => (
             <BreakpointPanels

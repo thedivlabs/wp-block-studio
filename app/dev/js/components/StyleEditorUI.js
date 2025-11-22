@@ -10,7 +10,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
 import {cleanObject} from "Includes/helper";
-import {isEqual,debounce} from "lodash";
+import {isEqual, debounce} from "lodash";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // ----------------------------------------
@@ -45,7 +45,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 
         return () => debouncedCommit.cancel();
 
-    }, [layout, settings, debouncedCommit]);
+    }, [layout]);
 
 
     const updateLayout = useCallback((nextPanels) => {

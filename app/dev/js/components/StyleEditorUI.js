@@ -1,52 +1,68 @@
-import {useState, useEffect, useMemo, useCallback} from "@wordpress/element";
+import {useState, useMemo, useCallback} from "@wordpress/element";
 import {InspectorControls} from "@wordpress/block-editor";
 import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
-import {cleanObject} from "Includes/helper";
-import {isEqual} from "lodash";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
-
+    // -------------------------
+    // LOCAL STATE (source of truth)
+    // -------------------------
     const [baseProps, setBaseProps] = useState(settings.props || {});
-    const [bps, setBps] = useState(settings.breakpoints || {});
+    const [bps, setBps]             = useState(settings.breakpoints || {});
 
+    // If you want to re-sync when settings change externally,
+    // you can add a guarded useEffect here, but for now we
+    // treat local as the live source of truth (like the old code).
 
-
-    const updateBaseProps = useCallback((next) => {
-        setBaseProps(prev => {
-            const updated = next && Object.keys(next).length === 0
-                ? {}
-                : { ...prev, ...next };
-
-            const result = {
-                props: updated,
-                breakpoints: bps,
-            };
-            if (!isEqual(cleanObject(settings, true), cleanObject(result, true))) {
-                updateStyleSettings(result);
-            }
-
-            return updated;
-        });
-    }, [bps, settings, updateStyleSettings]);
-
-
-    const updateBreakpoints = useCallback((nextBps) => {
-        setBps(() => {
-            const result = {
-                props: baseProps,
+    // -------------------------
+    // PUSH FULL LAYOUT UP
+    // -------------------------
+    const commitLayout = useCallback(
+        (nextProps, nextBps) => {
+            updateStyleSettings({
+                props: nextProps,
                 breakpoints: nextBps,
-            };
+            });
+        },
+        [updateStyleSettings]
+    );
 
-            if (!isEqual(cleanObject(settings, true), cleanObject(result, true))) {
-                updateStyleSettings(result);
-            }
+    // -------------------------
+    // UPDATE BASE PROPS (LayoutFields)
+    // -------------------------
+    const updateBaseProps = useCallback(
+        (next) => {
+            setBaseProps((prev) => {
+                const nextProps =
+                    next && Object.keys(next).length === 0
+                        ? {}
+                        : { ...prev, ...next };
 
-            return nextBps;
-        });
-    }, [baseProps, settings, updateStyleSettings]);
+                // use current bps from state (NOT settings)
+                commitLayout(nextProps, bps);
+                return nextProps;
+            });
+        },
+        [bps, commitLayout]
+    );
 
+    // -------------------------
+    // UPDATE BREAKPOINTS (BreakpointPanels)
+    // -------------------------
+    const updateBreakpoints = useCallback(
+        (nextBps) => {
+            setBps(() => {
+                // use current baseProps from state (NOT settings)
+                commitLayout(baseProps, nextBps);
+                return nextBps;
+            });
+        },
+        [baseProps, commitLayout]
+    );
 
+    // -------------------------
+    // RENDER PANELS
+    // -------------------------
     const LayoutFieldsPanel = useCallback(
         ({bpKey, entry, update}) => (
             <LayoutFields
@@ -64,13 +80,9 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 updateFn={(nextProps) => update({props: nextProps})}
             />
         ),
-        [] // stable, no deps needed
+        [] // stable; "update" is provided fresh by BreakpointPanels per row
     );
 
-
-// -------------------------
-// BREAKPOINT PANELS UI
-// -------------------------
     const BreakpointPanelsUI = useMemo(
         () => (
             <BreakpointPanels
@@ -85,7 +97,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         ),
         [bps, LayoutFieldsPanel, BreakpointFieldsPanel, updateBreakpoints]
     );
-
 
     return (
         <InspectorControls group="styles">

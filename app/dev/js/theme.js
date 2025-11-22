@@ -222,76 +222,6 @@ class WPBS_Theme {
         return '';
     }
 
-    responsiveBackgroundSrc(element) {
-
-        element.classList.remove('--lazy');
-    }
-
-    responsiveVideoSrc(video) {
-
-        [...video.querySelectorAll('source')].forEach((source) => {
-            const mq = source.dataset.media;
-
-            if (!mq) {
-                source.remove();
-                return false;
-            }
-
-            if (window.matchMedia(mq).matches) {
-                source.src = source.dataset.src;
-            } else {
-                source.src = '#';
-            }
-        });
-
-        video.load();
-
-    }
-
-    observeMedia(refElement) {
-
-        let observerIntersection = new IntersectionObserver((entries, observer) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-
-                    const media = entry.target;
-                    observer.unobserve(entry.target);
-
-                    if (media.tagName === 'VIDEO') {
-                        this.videos.push(media);
-                        this.responsiveVideoSrc(media);
-                    } else if (media.classList.contains('wpbs-background')) {
-                        this.responsiveBackgroundSrc(media);
-                    } else {
-                        [...media.querySelectorAll('[data-src],[data-srcset]'), media].forEach((element) => {
-
-                            if (element.dataset.src) {
-                                element.src = element.dataset.src;
-                                element.removeAttribute('data-src');
-                            }
-                            if (element.dataset.srcset) {
-                                element.srcset = element.dataset.srcset;
-                                element.removeAttribute('data-srcset');
-                            }
-
-                        });
-                    }
-
-
-                }
-            });
-
-        }, {
-            root: null,
-            rootMargin: "90px",
-            threshold: 0,
-        });
-
-        [...(refElement || document).querySelectorAll('img[data-src],picture:has(source[data-src]),video:has(source[data-src]),video:has(source[data-media]),.wpbs-background.--lazy')].forEach((el) => observerIntersection.observe(el));
-
-
-    }
-
     slideToggle(element, duration, callback, display) {
         jQuery(element).slideToggle(duration, function () {
             if (typeof callback === 'function') {
@@ -309,94 +239,13 @@ class WPBS_Theme {
         jQuery(element).slideDown(duration, callback);
     }
 
-
     init() {
 
-        async function loadFont() {
-            // Define the weights you want
-            const weights = WPBS?.settings?.icons ?? [200, 300, 500];
-
-            // Loop through each weight and load
-            /*for (const weight of weights) {
-                // Adjust your file naming convention as needed
-                const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-v276-latin-${weight}.woff2`;
-
-                const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
-                    weight: weight.toString(),
-                    style: "normal",
-                    display: "swap",
-                });
-
-                try {
-                    const loadedFont = await font.load();
-                    document.fonts.add(loadedFont);
-                } catch (err) {
-                    console.error(`Font ${weight} failed to load`, err);
-                }
-            }*/
-
-            const path = `${WPBS?.settings?.path?.theme}/assets/fonts/material-symbols-outlined-full.woff2`;
-
-            const font = new FontFace("Material Symbols Outlined", `url(${path})`, {
-                style: "normal",
-                display: "swap",
-            });
-
-            try {
-                const loadedFont = await font.load();
-                document.fonts.add(loadedFont);
-            } catch (err) {
-                console.error(`Font failed to load`, err);
-            }
-        }
-
-        /*       loadFont().then(() => {
-                   if (document.fonts && document.fonts.load) {
-                       // Wait until the Material Symbols Outlined font is fully loaded
-                       document.fonts.load('1em "Material Symbols Outlined"').then(() => {
-                           // Add a class to the body to indicate the font is ready
-
-                           document.body.classList.add('icons-loaded');
-
-
-                       }).catch(() => {
-                           // Fallback: in case of error, still add the class
-                           //document.body.classList.add('material-icons-loaded');
-                       });
-                   } else {
-                       // Fallback for older browsers that don't support the Font Loading API
-                       //document.body.classList.add('material-icons-loaded');
-                   }
-               });*/
-
         document.addEventListener('DOMContentLoaded', () => {
-            this.observeMedia();
 
             this.popup.init();
 
-            [...document.querySelectorAll('link[data-href]')].forEach((link) => {
-                link.href = link.dataset.href;
-            });
 
-        });
-
-        const visibilityElementObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-
-                    visibilityElementObserver.unobserve(entry.target);
-                    entry.target.style.contentVisibility = 'visible';
-                }
-            });
-        }, {
-            root: null, // Defaults to the browser viewport
-            rootMargin: "500px 0px 500px 0px", // Shrinks the top and bottom of the viewport by 100px
-            threshold: 0 // Triggers when 50% of the target is visible within the *modified* root
-        });
-
-        [...document.querySelectorAll('[data-visibility]')].forEach((element) => {
-
-            visibilityElementObserver.observe(element);
 
         });
 

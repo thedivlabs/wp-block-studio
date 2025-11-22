@@ -11,32 +11,28 @@
     "@wordpress/icons": "^10.9.0",
     "@wordpress/interactivity": "^6.24.0",
     "@wordpress/scripts": "^30.7.0",
-    "postcss-nesting": "^13.0.2"
+    "npm-run-all": "^4.1.5",
+    "tailwindcss": "latest"
   },
   "scripts": {
     "wp-build": "wp-scripts build --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/plugins/wp-block-studio/build/ --experimental-modules",
     "wp-dev": "wp-scripts start --webpack-src-dir=./app/dev/blocks/ --output-path=./app/public/wp-content/plugins/wp-block-studio/build/ --experimental-modules",
-    "tailwind-theme-dev": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --watch",
-    "tailwind-admin-dev": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --watch",
-    "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css --minify",
-    "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css --minify",
-    "start": "npm-run-all --parallel wp-dev tailwind-theme-dev tailwind-admin-dev",
-    "build": "npm-run-all --parallel wp-build tailwind-theme tailwind-admin"
+    "blocks-dev": "webpack serve --config webpack.blocks.config.js",
+    "tailwind-bundle": "npx @tailwindcss/cli -i ./app/dev/scss/bundle.css -o ./app/public/wp-content/plugins/wp-block-studio/build/bundle.css --minify",
+    "tailwind-theme": "npx @tailwindcss/cli -i ./app/dev/scss/theme.css  -o ./app/public/wp-content/plugins/wp-block-studio/build/theme.css  --minify",
+    "tailwind-admin": "npx @tailwindcss/cli -i ./app/dev/scss/admin.css  -o ./app/public/wp-content/plugins/wp-block-studio/build/admin.css  --minify",
+    "tailwind-bundle-dev": "npm run tailwind-bundle -- --watch",
+    "tailwind-theme-dev": "npm run tailwind-theme -- --watch",
+    "tailwind-admin-dev": "npm run tailwind-admin -- --watch",
+    "start": "npm-run-all wp-build --parallel wp-dev tailwind-theme-dev tailwind-admin-dev tailwind-bundle-dev",
+    "start-blocks": "npm-run-all --parallel blocks-dev tailwind-theme-dev",
+    "build": "npm-run-all wp-build tailwind-theme tailwind-admin tailwind-bundle"
+
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.6",
-    "@tailwindcss/postcss": "^4.1.11",
     "@wordpress/api-fetch": "^7.28.0",
     "@wordpress/date": "^5.32.0",
-    "@wordpress/server-side-render": "^6.3.0",
-    "autoprefixer": "^10.4.21",
-    "lodash": "^4.17.21",
-    "lodash.merge": "^4.6.2",
-    "mini-css-extract-plugin": "^2.9.2",
-    "npm-run-all": "^4.1.5",
-    "postcss": "^8.5.6",
-    "postcss-import": "^16.1.1",
-    "react": "^18.3.1",
-    "tailwindcss": "latest"
+    "@wordpress/i18n": "^6.7.0",
+    "lodash": "^4.17.21"
   }
 }

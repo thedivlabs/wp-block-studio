@@ -1,6 +1,18 @@
 .wpbs-container {
-
   max-width: var(--container-width, 100%);
   margin-left: auto;
   margin-right: auto;
+}
+
+.wpbs-layout-wrapper {
+  width: 100%;
+  height: 100%;
+  display: inherit;
+  flex-direction: inherit;
+  justify-content: inherit;
+  align-items: inherit;
+  row-gap: inherit;
+  column-gap: inherit;
+  flex-wrap: inherit;
+  position: relative;
 }

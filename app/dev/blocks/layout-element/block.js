@@ -1,7 +1,8 @@
 import {registerBlockType} from "@wordpress/blocks";
+import {useEffect} from "@wordpress/element";
 import metadata from "./block.json";
 
-import {withStyle, STYLE_ATTRIBUTES, withStyleSave} from 'Components/Style';
+import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 
 const selector = "wpbs-layout-element";
 
@@ -32,8 +33,8 @@ registerBlockType(metadata.name, {
     edit: withStyle(
         (props) => {
 
-            const {attributes, BlockWrapper, styleData} = props;
-
+            const {attributes, styleData, BlockWrapper, setCss, setPreload} = props;
+            const {'wpbs-style': settings = {}} = attributes;
             const classNames = getClassNames(attributes, styleData);
 
             return (
@@ -42,13 +43,14 @@ registerBlockType(metadata.name, {
                         props={props}
                         className={classNames}
                         hasBackground={true}
+                        hasChildren={true}
                     />
                 </>
             );
         }),
 
     save: withStyleSave((props) => {
-        const {attributes, BlockWrapper, styleData} = props;
+        const {attributes, styleData, BlockWrapper} = props;
         const classNames = getClassNames(attributes, styleData);
 
         return (
@@ -56,6 +58,7 @@ registerBlockType(metadata.name, {
                 props={props}
                 className={classNames}
                 hasBackground={true}
+                hasChildren={true}
             />
         );
     }),

@@ -10,8 +10,23 @@
   transition-duration: 300ms;
   transition-timing-function: linear;
 
+  column-gap: 4px;
+  line-height: 1;
+
   &:hover > .wpbs-cta-button__icon {
     transform: translateX(6px);
+  }
+
+  &.--offset {
+    & > .wpbs-cta-button__title {
+      transform: translate(0, var(--offset, 0));
+    }
+  }
+
+  &.--offset-icon {
+    & > .wpbs-cta-button__icon {
+      transform: translate(0, var(--offset-icon, 0));
+    }
   }
 
   .wpbs-cta-button__title,

@@ -34,7 +34,7 @@ class WPBS {
 		add_action( 'init', [ $this, 'theme_assets' ], 20 );
 		add_action( 'enqueue_block_editor_assets', [ $this, 'editor_assets' ] );
 		add_action( 'enqueue_block_assets', [ $this, 'block_assets' ] );
-		add_action( 'admin_init', [ $this, 'admin_assets' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'admin_assets' ] );
 		add_action( 'wp_enqueue_scripts', [ $this, 'view_assets' ] );
 		add_action( 'wp_head', [ $this, 'pre_load_critical' ], 2 );
 		add_action( 'wp_print_styles', [ $this, 'critical_css' ], 1 );
@@ -50,6 +50,11 @@ class WPBS {
 		add_action( 'wp_body_open', [ $this, 'body_open_scripts' ], 1 );
 		add_action( 'wp_footer', [ $this, 'footer_scripts' ], 10 );
 
+		add_action( 'admin_head', [ $this, 'inline_scripts' ], 30 );
+		add_action( 'wp_head', [ $this, 'inline_scripts' ], 30 );
+
+		add_action( 'script_loader_tag', [ $this, 'defer_scripts' ], 10, 2 );
+
 		apply_filters( 'nonce_life', HOUR_IN_SECONDS );
 
 		add_filter( 'wp_get_attachment_image', [ $this, 'kill_img_src' ], 300, 5 );
@@ -57,8 +62,7 @@ class WPBS {
 		add_action( 'rest_api_init', [ $this, 'lightbox_endpoint' ] );
 		add_action( 'rest_api_init', [ $this, 'grid_endpoint' ] );
 
-		add_filter( 'intermediate_image_sizes', [ $this, 'remove_default_image_sizes' ], 30 );
-		$this->image_sizes();
+		add_action( 'after_setup_theme', [ $this, 'register_image_sizes' ], 1 );
 
 		if (
 			function_exists( 'acf_add_options_page' )
@@ -98,25 +102,93 @@ class WPBS {
 
 	}
 
-	public function remove_default_image_sizes( $sizes ): array {
+	public function defer_scripts( $tag, $handle ): string {
 
-		$sizes = array_intersect( $sizes, [ 'thumbnail', 'mobile', 'small', 'medium', 'large', 'xlarge' ] );
+		if ( is_admin() ) {
+			return $tag;
+		}
 
-		$sizes = array_values( array_unique( $sizes ) );
+		$dont_defer = [
+			'jquery-core',
+			'jquery-migrate',
+			//'wp-polyfill',
+			'wp-hooks',
+			'wp-i18n',
+			'wp-element',
+			'wp-components',
+			'wp-data',
+			'wp-dom-ready',
+			//'wp-a11y',
+		];
 
-		return $sizes;
+		if ( in_array( $handle, $dont_defer, true ) || str_starts_with( $handle, 'wpbs' ) ) {
+			return $tag;
+		}
+
+		if ( str_contains( $tag, ' src=' ) ) {
+			return str_replace( ' src', ' defer src', $tag );
+		}
+
+		return $tag;
+
 	}
 
-	public function image_sizes(): void {
-
-		add_image_size( 'mobile', 624, 1200 );
-		add_image_size( 'small', 640 );
-		add_image_size( 'medium', 1130 );
-		add_image_size( 'xlarge', 1800 );
-
+	public function filter_sizes( $sizes ):array {
+		return array_intersect_key($sizes, array_flip([
+			'thumbnail',
+			'mobile',
+			'small',
+			'medium',
+			'large',
+			'xlarge'
+		]));
 	}
 
+	public function register_image_sizes(): void {
 
+		// One canonical place for definitions.
+		$custom_sizes = [
+			'mobile' => [
+				'label'  => __( 'Mobile' ),
+				'width'  => 624,
+				'height' => 900,
+				'crop'   => false,
+			],
+			'small' => [
+				'label'  => __( 'Small' ),
+				'width'  => 720,
+				'height' => 1200,
+				'crop'   => false,
+			],
+			'xlarge' => [
+				'label'  => __( 'Extra Large' ),
+				'width'  => 1800,
+				'height' => 1800,
+				'crop'   => false,
+			],
+		];
+
+		// Register each size from the definitions.
+		foreach ( $custom_sizes as $name => $args ) {
+			add_image_size( $name, $args['width'], $args['height'], $args['crop'] );
+		}
+
+		// Limit generated image sizes.
+		add_filter( 'intermediate_image_sizes_advanced', function( $sizes ) use ( $custom_sizes ) {
+			return array_intersect_key( $sizes, array_flip( array_keys( $custom_sizes ) ) );
+		} );
+
+		// Expose the names to the editor.
+		add_filter( 'image_size_names_choose', function( $sizes ) use ( $custom_sizes ) {
+
+			$labels = [];
+			foreach ( $custom_sizes as $name => $args ) {
+				$labels[ $name ] = $args['label'];
+			}
+
+			return array_merge( $sizes, $labels );
+		} );
+	}
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
 
 		if ( is_admin() ) {
@@ -131,7 +203,6 @@ class WPBS {
 	}
 
 	public function critical_css(): void {
-
 		global $wp_styles;
 
 		$theme_css      = $wp_styles->registered['wpbs-theme-css']->src ?? '';
@@ -141,17 +212,89 @@ class WPBS {
 		$wp_styles->remove( 'wpbs-theme-css' );
 
 		$css = apply_filters( 'wpbs_critical_css', [] );
-
 		$css = array_unique( $css );
 
-		echo '<style class="wpbs-critical-css">';
-		echo join( ' ', array_values( $css ) );
-		echo file_get_contents( $theme_css_path );
-		echo '</style>';
+		static $base_css = null;
+		if ( $base_css === null && file_exists( $theme_css_path ) ) {
+			$base_css = file_get_contents( $theme_css_path );
+		}
 
+		// Minify it
+		$combined = $this->minify_css( join( ' ', array_values( $css ) ) );
+
+		echo '<style class="wpbs-critical-css">';
+		echo $base_css;
+		echo $combined;
+		echo '</style>';
 	}
 
+
+	private function minify_css( string $css ): string {
+
+		// Protect url(...) values by temporarily encoding spaces
+		$css = preg_replace_callback( '/url\(([^)]+)\)/', function ( $matches ) {
+			return 'url(' . str_replace( ' ', '__WPBS_SPACE__', $matches[1] ) . ')';
+		}, $css );
+
+		// Remove comments
+		$css = preg_replace( '/\/\*[^!*][\s\S]*?\*\//', '', $css );
+
+		// Remove whitespace around punctuation
+		$css = preg_replace( '/\s*([{};:>,])\s*/', '$1', $css );
+
+		// Collapse multiple spaces
+		$css = preg_replace( '/\s+/', ' ', $css );
+
+		// Remove trailing semicolons
+		$css = preg_replace( '/;}/', '}', $css );
+
+		// Restore url(...) spaces
+		$css = str_replace( '__WPBS_SPACE__', ' ', $css );
+
+		return trim( $css );
+	}
+
+
+	private function get_css_vars(): string {
+		$vars           = '';
+		$settings       = wp_get_global_settings()['custom'] ?? [];
+		$header_heights = $settings['header']['height'] ?? [];
+		$breakpoints    = $settings['breakpoints'] ?? [];
+
+		foreach ( $header_heights as $key => $height ) {
+			// Default (no media query)
+			if ( 'xs' === $key ) {
+				$vars .= ":root { --wpbs-header-height: {$height}; }\n";
+				continue;
+			}
+
+			// Look up breakpoint size
+			if ( isset( $breakpoints[ $key ]['size'] ) ) {
+				$min_width = intval( $breakpoints[ $key ]['size'] );
+				$vars      .= "@media (min-width: {$min_width}px) { :root { --wpbs-header-height: {$height}; } }\n";
+			}
+		}
+
+		return trim( $vars );
+	}
+
+
 	public function theme_assets(): void {
+
+		/* Theme Bundle */
+		wp_register_style(
+			'wpbs-bundle-css',
+			self::$uri . 'build/bundle.css',
+		);
+
+		wp_add_inline_style( 'wpbs-bundle-css', $this->get_css_vars() );
+
+
+		/* Odometer */
+		wp_register_style( 'aos-css', 'https://unpkg.com/aos@2.3.1/dist/aos.css', [], false );
+		wp_register_script( 'aos-js', 'https://unpkg.com/aos@2.3.1/dist/aos.js', [], false, [
+			'strategy' => 'defer'
+		] );
 
 		/* Odometer */
 		wp_register_style( 'odometer-css', 'https://cdn.jsdelivr.net/npm/odometer@0.4.8/themes/odometer-theme-default.min.css', [], false );
@@ -159,27 +302,14 @@ class WPBS {
 			'strategy' => 'defer'
 		] );
 
-		wp_register_script(
-			'wpbs-editor',
-			self::$uri . 'build/editor.js',
-			[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
-			filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
-			false
-		);
-
-		//$icon_names = 'keyboard_arrow_down,keyboard_arrow_up,circle,account_box,account_circle,add,add_box,add_circle,alarm,album,analytics,api,archive,arrow_back,arrow_drop_down,arrow_drop_up,arrow_forward,art_track,assessment,attach_file,attach_file_off,attach_money,auto_fix_high,auto_fix_normal,auto_fix_off,bar_chart,battery_charging_full,battery_full,bedtime,block,bluetooth,bookmark,bookmark_border,brightness_5,brightness_6,brightness_7,brush,bug_report,build,cafe,calendar_today,camera,camera_alt,camera_roll,cancel,cast,chat,check,close,cloud,cloud_download,cloud_upload,code,coffee,construction,content_copy,content_cut,content_paste,credit_card,data_usage,delete,description,desktop_windows,directions_bike,directions_bus,directions_car,directions_walk,donut_large,drag_indicator,edit,edit_note,email,emoji_events,error,expand_less,expand_more,extension,fast_forward,fast_rewind,fastfood,favorite,fiber_manual_record,fiber_new,fiber_smart_record,file_download,file_upload,filter_list,fingerprint,first_page,fitness_center,flash_off,flash_on,flight,folder,folder_open,format_align_center,format_align_left,format_align_right,format_bold,format_italic,format_list_bulleted,format_list_numbered,format_underline,forum,fullscreen,fullscreen_exit,gamepad,gavel,gpp_bad,gpp_good,graphic_eq,group,groups,headphones,headset,headset_mic,help,help_outline,home,image,info,joystick,keyboard,keyboard_arrow_down,keyboard_arrow_left,keyboard_arrow_right,keyboard_arrow_up,language,laptop,last_page,lightbulb,line_chart,link,local_bar,local_cafe,local_grocery_store,local_hospital,local_pizza,local_shipping,location_on,lock,loop,loyalty,lunch_dining,manage_accounts,map,menu,mic,mic_none,mode_comment,money,more_horiz,more_vert,mouse,movie,navigate_before,navigate_next,nightlight,notifications,palette,pause,pause_circle,payments,person,phone,phonelink,photo,photo_camera,pie_chart,play_arrow,play_circle,playlist_add,playlist_play,policy,post_add,present_to_all,print,public,push_pin,question_mark,redo,refresh,remove,remove_circle,remove_circle_outline,restaurant,rocket_launch,router,scanner,schedule,school,search,security,send,settings,share,shield,shopping_bag,shopping_basket,shopping_cart,shopping_cart_checkout,show_chart,skip_next,skip_previous,sort,speaker,sports_esports,star,star_half,sticky_note_2,stop,stop_circle,store,storefront,subway,support,support_agent,swap_horiz,swap_vert,sync,sync_alt,tablet,terminal,text_snippet,thermostat,thumb_down,thumb_up,timer,train,translate,trending_down,trending_flat,trending_up,tv,unarchive,undo,video_camera_front,videocam,visibility,visibility_off,volume_down,volume_mute,volume_up,vpn_key,wb_sunny,webhook,widgets,wifi,work,zoom_in,zoom_out';
-		$icon_names = array_filter( explode( ',', str_replace( [ ' ' ], [ '' ], get_field( 'theme_settings_api_material_icons', 'options' ) ?: '' ) ) );
-		if ( ! empty( $icon_names ) ) {
-			sort( $icon_names );
-			$icon_names = '&icon_names=' . implode( ',', $icon_names );
-
-			wp_register_style( 'google-material-icons-outlined', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..500,0..1,-50..200&display=swap' . $icon_names, [], false );
-			add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
-				$sources[] = 'https://fonts.googleapis.com';
-				$sources[] = 'https://fonts.gstatic.com';
-
-				return $sources;
-			} );
+		if ( file_exists( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ) ) {
+			wp_register_script(
+				'wpbs-editor',
+				self::$uri . 'build/editor.js',
+				[ 'wp-element', 'wp-components', 'wp-data', 'wp-block-editor', 'wp-edit-post' ],
+				filemtime( WP_PLUGIN_DIR . '/wp-block-studio/build/editor.js' ),
+				false
+			);
 		}
 
 
@@ -188,12 +318,12 @@ class WPBS {
 		wp_register_script( 'swiper-js', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js', [], false, [
 			'strategy' => 'async'
 		] );
+
 		add_filter( 'wpbs_preconnect_sources', function ( $sources ) {
 			$sources[] = 'https://cdn.jsdelivr.net';
 
 			return $sources;
 		} );
-
 
 		/* Masonry */
 		wp_register_script( 'masonry-js', 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js', [], false, [
@@ -216,43 +346,41 @@ class WPBS {
 			'in_footer' => true,
 		] );
 
-		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
-
 
 	}
 
 	public function block_assets(): void {
 
-		wp_enqueue_script( 'masonry-js' );
-		wp_enqueue_script( 'wpbs-theme-js' );
-		wp_enqueue_style( 'google-material-icons-outlined' );
+
+		//wp_enqueue_script( 'wpbs-theme-js' );
 		//wp_enqueue_script( 'wpbs-admin-js' );
 		//wp_enqueue_script( 'swiper-js' );
 		//wp_enqueue_style( 'swiper-css' );
-		wp_enqueue_style( 'wpbs-theme-css' );
+		//wp_enqueue_script( 'swiper-js' );
+		//wp_enqueue_style( 'swiper-css' );
+
 	}
 
 	public function admin_assets(): void {
 		wp_enqueue_style( 'wpbs-admin-css' );
 		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_style( 'google-material-icons-outlined' );
 	}
 
 	public function editor_assets(): void {
+		wp_enqueue_style( 'wpbs-bundle-css' );
 		wp_enqueue_style( 'wpbs-theme-css' );
 		wp_enqueue_style( 'wpbs-admin-css' );
-		wp_enqueue_script( 'wpbs-admin-js' );
-		wp_enqueue_style( 'google-material-icons-outlined' );
-		wp_enqueue_script( 'swiper-js' );
-		wp_enqueue_style( 'swiper-css' );
 		wp_enqueue_script( 'wpbs-editor' );
-
+		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_localize_script( 'wpbs-editor', 'WPBS', self::$theme_vars );
 	}
 
 	public function view_assets(): void {
-		wp_enqueue_style( 'google-material-icons-outlined' );
+		wp_enqueue_style( 'wpbs-bundle-css' );
+		wp_enqueue_style( 'aos-css' );
 		wp_enqueue_script( 'masonry-js' );
 		wp_enqueue_script( 'wpbs-theme-js' );
+		wp_localize_script( 'wpbs-theme-js', 'WPBS', self::$theme_vars );
 	}
 
 	public function init_theme(): void {
@@ -268,6 +396,7 @@ class WPBS {
 		require_once $core_path . 'modules/class-wpbs-wp.php';
 		require_once $core_path . 'modules/class-wpbs-acf.php';
 		require_once $core_path . 'modules/class-wpbs-blocks.php';
+		require_once $core_path . 'modules/class-wpbs-icons.php';
 		require_once $core_path . 'modules/class-wpbs-cpt.php';
 		require_once $core_path . 'modules/class-wpbs-taxonomy.php';
 		require_once $core_path . 'modules/class-wpbs-popup.php';
@@ -286,6 +415,7 @@ class WPBS {
 		WPBS_WP::init();
 		WPBS_ACF::init();
 		WPBS_Blocks::init();
+		WPBS_Icons::init();
 		WPBS_Popup::init();
 		WPBS_Media_Gallery::init();
 		WPBS_Company::init();
@@ -314,7 +444,7 @@ class WPBS {
 				'nonce_rest'  => self::$nonce_rest,
 				'icons'       => explode( ',', str_replace( [ ' ' ], [ '' ], (string) ( wp_get_global_settings()['custom']['icons'] ?? '' ) ) ),
 				'breakpoints' => wp_get_global_settings()['custom']['breakpoints'] ?? [],
-				'containers'  => wp_get_global_settings()['custom']['container'] ?? [],
+				'container'   => wp_get_global_settings()['custom']['container'] ?? [],
 			], false )
 		];
 	}
@@ -467,88 +597,95 @@ class WPBS {
 
 		global $wp_scripts;
 
-		$theme_fonts = array_values( array_unique( array_merge( [], ...wp_list_pluck( array_merge( [], ...( array_column( ( wp_get_global_settings()['typography']['fontFamilies']['theme'] ?? [] ), 'fontFace' ) ?: [] ) ), 'src' ) ) ) );
-		$theme_uri   = get_template_directory_uri();
+// ------------------------------------------------------------
+// THEME FONT PRELOADS (unchanged behavior, saner syntax)
+// ------------------------------------------------------------
+		$settings                = wp_get_global_settings();
+		$theme_fonts_definitions = $settings['typography']['fontFamilies']['theme'] ?? [];
+
+// Each theme font can define one or more "fontFace" entries.
+// Collect all fontFace arrays from each theme font.
+		$font_faces_nested = array_column( $theme_fonts_definitions, 'fontFace' ) ?: [];
+
+// Flatten nested fontFace arrays into one flat array.
+		$font_faces = array_merge( [], ...$font_faces_nested );
+
+// Extract the "src" field from each fontFace.
+// Each src can itself be an array of URLs, so we keep the nesting for now.
+		$font_src_nested = wp_list_pluck( $font_faces, 'src' );
+
+// Flatten all src arrays into one flat list of URLs, then dedupe.
+		$theme_fonts = array_values(
+			array_unique(
+				array_merge( [], ...$font_src_nested )
+			)
+		);
+
+		$theme_uri = get_template_directory_uri();
 
 		foreach ( $theme_fonts as $src ) {
 			if ( str_starts_with( $src, 'file:' ) ) {
 				$relative_path = substr( $src, 5 );
 				$url           = $theme_uri . '/' . ltrim( $relative_path, '/' );
-				echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+				echo '<link rel="preload" href="' . esc_url( $url ) . '" as="font" type="font/woff2" crossorigin fetchpriority="high">' . "\n";
 			}
 		}
 
-		$preconnect_sources = [ 'fonts.gstatic.com', ...apply_filters( 'wpbs_preconnect_sources', [] ) ];
-		$preload_sources    = apply_filters( 'wpbs_preload_sources', [] );
-		$preload_images     = apply_filters( 'wpbs_preload_images', [] );
+
+		// ------------------------------------------------------------
+		// PRECONNECT SOURCES (unchanged)
+		// ------------------------------------------------------------
+		$preconnect_sources = [
+			'fonts.gstatic.com',
+			...apply_filters( 'wpbs_preconnect_sources', [] )
+		];
+
+		$preload_sources = apply_filters( 'wpbs_preload_sources', [] );
 
 		foreach ( array_unique( array_filter( $preconnect_sources ) ) as $src ) {
 			$url = parse_url( $src );
 			if ( ! empty( $url['host'] ) ) {
-				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
 			}
 		}
 
+
+		// ------------------------------------------------------------
+		// GENERIC PRELOAD SOURCES (unchanged)
+		// ------------------------------------------------------------
 		foreach ( array_unique( array_filter( $preload_sources ) ) as $src ) {
 			$url = parse_url( $src );
 
 			if ( ! empty( $url['host'] ) ) {
-				echo '<link rel="preconnect" href="https://' . $url['host'] . '">';
-				echo '<link rel="preload" href="' . $src . '">';
+				echo '<link rel="preconnect" href="https://' . $url['host'] . '" fetchpriority="high">';
+				echo '<link rel="preload" href="' . $src . '" fetchpriority="high">';
 			}
 		}
 
-		if ( ! empty( $preload_images ) ) {
-			echo '<!-- Preload images -->';
-		}
 
-		foreach ( array_unique( array_keys( $preload_images ) ) as $image_id ) {
-
-			$image_data   = $preload_images[ $image_id ];
-			$src          = wp_get_attachment_image_src( $image_id, $image_data['resolution'] ?? 'large' )[0] ?? false;
-			$image_srcset = wp_get_attachment_image_srcset( $image_id );
-			$path         = str_replace( home_url(), ABSPATH, $src );
-			$webp         = ! str_contains( $path, '.svg' );
-			$breakpoints  = wp_get_global_settings()['custom']['breakpoints'] ?? [];
-			$operator     = ! empty( $image_data['mobile'] ) ? '<' : '>=';
-
-			echo '<link rel="preload" as="image" data-preload-id="' . $image_id . '"';
-
-			echo 'href="' . ( $src . ( $webp ? '.webp' : '' ) ) . '"';
-
-			if ( ! empty( $image_data['breakpoint'] ) ) {
-				echo 'media="(width ' . $operator . ' ' . ( $breakpoints[ $image_data['breakpoint'] ] ?? '992px' ) . ')"';
-			}
-
-
-			if ( $image_srcset ) {
-				echo 'imagesrcset="' . ( ! $webp ? $image_srcset : str_replace( [
-						'.jpg',
-						'.png',
-						'.jpeg'
-					], [ '.jpg.webp', '.png.webp', '.jpeg.webp' ], $image_srcset ) ) . '"';
-			}
-
-			echo 'type="image/webp"';
-
-			echo '/>';
-
-		}
-
+		// ------------------------------------------------------------
+		// SCRIPT PRELOADS (unchanged)
+		// ------------------------------------------------------------
 		$default_scripts = [
 			'jquery-core',
 			'jquery',
 			'jquery-migrate',
 		];
 
-		$preload_scripts = array_values( array_filter( array_map( function ( $slug ) use ( $wp_scripts, $default_scripts ) {
-			return in_array( $slug, $default_scripts ) ? $wp_scripts->registered[ $slug ]->src ?? '' : [];
-		}, $wp_scripts->queue ?? [] ) ) );
+		$preload_scripts = array_values( array_filter(
+			array_map(
+				function ( $slug ) use ( $wp_scripts, $default_scripts ) {
+					return in_array( $slug, $default_scripts, true )
+						? $wp_scripts->registered[ $slug ]->src ?? ''
+						: [];
+				},
+				$wp_scripts->queue ?? []
+			)
+		) );
 
 		foreach ( array_unique( array_filter( apply_filters( 'wpbs_preload_scripts', $preload_scripts ) ) ) as $url ) {
-			echo '<link rel="preload" as="script" href="' . $url . '">';
+			echo '<link rel="preload" as="script" href="' . $url . '" fetchpriority="high">' . "\n";
 		}
-
 	}
 
 	public static function clean_array( $array, &$ref_array = [] ): mixed {
@@ -811,6 +948,12 @@ class WPBS {
 			}
 		}
 
+	}
+
+	public function inline_scripts(): void {
+		echo '<script>';
+		include_once self::$path . 'build/inline.js';
+		echo '</script>';
 	}
 
 	public function footer_scripts(): void {

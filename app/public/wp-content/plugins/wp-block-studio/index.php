@@ -21,22 +21,37 @@
  * agreement with the copyright holder.
  */
 
-
-// If this file is called directly, abort.
+// -----------------------------------------------------------------------------
+// Exit if accessed directly.
+// -----------------------------------------------------------------------------
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// -----------------------------------------------------------------------------
+// Load core class.
+// -----------------------------------------------------------------------------
 require_once __DIR__ . '/core/class-wpbs.php';
 
+// Initialize plugin safely.
 if ( class_exists( 'WPBS' ) ) {
-	$wpbs = WPBS::init( plugin_dir_path( __FILE__ ) );
+	WPBS::init( plugin_dir_path( __FILE__ ) );
 }
 
+// -----------------------------------------------------------------------------
+// Initialize only when ACF is loaded.
+// -----------------------------------------------------------------------------
+add_action( 'plugins_loaded', function () {
 
-add_action( 'admin_enqueue_scripts', function () {
-	wp_enqueue_code_editor( [
-		'type' => 'text/javascript'
-	] );
-	wp_enqueue_style( 'wp-codemirror' );
+	// Bail early if ACF isn’t available.
+	if ( ! function_exists( 'get_field' ) ) {
+
+		// Add admin notice to inform user.
+		add_action( 'admin_notices', function () {
+			echo '<div class="notice notice-warning"><p><strong>WP Block Studio</strong> requires the Advanced Custom Fields (ACF) plugin to be installed and active. The plugin has been paused.</p></div>';
+		} );
+
+		return;
+	}
+
 } );

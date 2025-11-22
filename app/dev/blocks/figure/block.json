@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wpbs/figure",
+  "title": "Figure",
+  "description": "Display a figure element",
+  "attributes": {
+    "uniqueId": {
+      "type": "string"
+    },
+    "postId": {
+      "type": "string"
+    }
+  },
+  "usesContext": [
+    "postId"
+  ],
+  "selectors": {
+    "root": ".wpbs-figure"
+  },
+  "supports": {
+    "layout": false,
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "__experimentalBorder": {
+      "size": true,
+      "color": true,
+      "radius": true
+    }
+  },
+  "editorScript": "file:./block.js",
+  "render": "file:./render.php",
+  "style": "file:./block.css",
+  "icon": "format-image"
+}
+
+

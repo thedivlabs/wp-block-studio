@@ -20,12 +20,13 @@
 .wpbs-background:before {
   content: '';
   display: flex;
+  background-size: var(--size, var(--scale, cover));
 }
 
-/* Modifier: .wpbs-background--mask targeting .wpbs-background__media */
 .wpbs-background:before,
 .wpbs-background > video {
   mask-image: var(--fade, none);
+  -webkit-mask-image: var(--fade, none);
 }
 
 /* Main background media element */
@@ -40,7 +41,6 @@
   transform: var(--transform, none);
   opacity: var(--opacity, 1);
   background-repeat: var(--repeat, no-repeat);
-  background-size: var(--size, var(--scale, cover));
   background-blend-mode: var(--blend, none);
   background-attachment: var(--attachment, initial);
   background-position: var(--origin, center);
@@ -56,15 +56,18 @@
 }
 
 /* Image & pattern fallback styles when not lazy OR inside block editor */
-.wpbs-background.--image:not(.--lazy):before,
-.wpbs-background.--pattern:not(.--lazy):before,
-.block-editor-page .wpbs-background.--image::before,
-.block-editor-page .wpbs-background.--pattern::before {
+.wpbs-background:not(.--lazy):before {
   background-image: var(--image, none);
 }
 
 /* Video-specific styling */
+.wpbs-background > video:has(source + source) {
+  display: var(--video, none);
+}
+
 .wpbs-background > video {
+  display: flex;
   max-height: var(--max-height, 100%);
   mix-blend-mode: var(--blend, none);
+  object-fit: var(--size, var(--scale, cover));
 }

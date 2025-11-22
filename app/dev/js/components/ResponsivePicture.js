@@ -1,82 +1,175 @@
-const ResponsivePicture = ({mobile = {}, large = {}, settings = {}, editor = false}) => {
+import {getImageUrlForResolution} from "Includes/helper";
+
+const ResponsivePicture = ({
+                               mobile = {},
+                               large = {},
+                               settings = {},
+                               editor = false
+                           }) => {
 
     const {
-        resolutionMobile: sizeMobile = 'medium',
-        resolutionLarge: sizeLarge = 'large',
+        resolutionMobile = "medium",
+        resolutionLarge = "large",
+        force = false,
+        eager = false,
+        breakpoint: breakpointKey = "normal",
+        className: extraClass = "",
+        style = {}
     } = settings;
 
-    const breakpoints = WPBS.settings.breakpoints;
-    const breakpoint = breakpoints[settings?.breakpoint ?? 'normal'];
+    /* ------------------------------------------------------------
+     * BREAKPOINT
+     * ------------------------------------------------------------ */
+    const breakpoints = WPBS.settings.breakpoints || {};
+    const bp = breakpoints[breakpointKey];
+    const breakpoint = bp?.size ? `${bp.size}px` : "768px";
 
-    const {[sizeMobile]: mobileLarge = {}} = mobile.sizes || {};
-    const {[sizeLarge]: largeLarge = {}} = large.sizes || {};
+    /* ------------------------------------------------------------
+     * PLACEHOLDER DETECTION
+     * ------------------------------------------------------------ */
+    const isMobilePlaceholder = mobile?.isPlaceholder === true;
+    const isLargePlaceholder = large?.isPlaceholder === true;
 
-    let urlLarge;
+    /* ------------------------------------------------------------
+     * BASE IMAGE SELECTION
+     * ------------------------------------------------------------ */
+    const baseMobile =
+        !isMobilePlaceholder && mobile?.id
+            ? mobile
+            : !isLargePlaceholder && large?.id
+                ? large
+                : null;
+
+    const baseLarge =
+        !isLargePlaceholder && large?.id
+            ? large
+            : !isMobilePlaceholder && mobile?.id
+                ? mobile
+                : null;
+
+    // If no real images and no placeholders → no render
+    if (!baseMobile && !baseLarge && !isMobilePlaceholder && !isLargePlaceholder) {
+        return null;
+    }
+
+    /* ------------------------------------------------------------
+     * ALWAYS RESPECT RESOLUTION SETTINGS
+     * ------------------------------------------------------------ */
+
+    // MOBILE
     let urlMobile;
 
-    if (!settings.force) {
-        urlLarge = largeLarge.url || mobileLarge.url || false;
-        urlMobile = mobileLarge.url || largeLarge.url || false;
+    if (isMobilePlaceholder) {
+        urlMobile = mobile?.url || "#";
+    } else if (mobile?.source && mobile?.sizes) {
+        // Always compute via helper using selected resolution
+        urlMobile =
+            getImageUrlForResolution(
+                {source: mobile.source, sizes: mobile.sizes},
+                resolutionMobile
+            ) || mobile.source;
+    } else if (mobile?.source) {
+        urlMobile = mobile.source;
     } else {
-        urlLarge = largeLarge.url || false;
-        urlMobile = mobileLarge.url || false;
+        urlMobile = getImageUrlForResolution(baseMobile, resolutionMobile);
     }
 
-    if (!urlLarge && !urlMobile) {
-        return false;
-    }
+    // LARGE
+    let urlLarge;
 
-    const className = [
-        'wpbs-picture',
-        settings.className || false,
-    ].filter(x => x).join(' ');
-
-    let srcAttr;
-    let srcsetAttr;
-
-    if (editor === true) {
-        srcAttr = 'src';
-        srcsetAttr = 'srcset';
+    if (isLargePlaceholder) {
+        urlLarge = large?.url || "#";
+    } else if (large?.source && large?.sizes) {
+        // Always compute via helper using selected resolution
+        urlLarge =
+            getImageUrlForResolution(
+                {source: large.source, sizes: large.sizes},
+                resolutionLarge
+            ) || large.source;
+    } else if (large?.source) {
+        urlLarge = large.source;
     } else {
-        srcAttr = !!settings.eager ? 'src' : 'data-src';
-        srcsetAttr = !!settings.eager ? 'srcset' : 'data-srcset';
+        urlLarge = getImageUrlForResolution(baseLarge, resolutionLarge);
     }
 
-    if (!urlLarge && !urlMobile) {
-        return false;
+    // If both URLs fail → bail
+    if (!urlMobile && !urlLarge) {
+        return null;
     }
 
-    const webpExtLarge = typeof urlLarge === 'string' && !urlLarge.includes('.svg') ? '.webp' : '';
-    const webpExtMobile = typeof urlMobile === 'string' && !urlMobile.includes('.svg') ? '.webp' : '';
+    /* ------------------------------------------------------------
+     * WEBP
+     * ------------------------------------------------------------ */
+    const webpMobile =
+        urlMobile && urlMobile !== "#" && !urlMobile.endsWith(".svg")
+            ? `${urlMobile}.webp`
+            : null;
 
-    return <picture className={className} style={{
-        ...settings.style || {},
-        ['object-fit']: 'inherit'
-    }}>
-        <source {...{
-            [srcsetAttr]: urlLarge ? urlLarge + webpExtLarge : '#',
-            media: '(width >= ' + breakpoint + ')',
-        }}/>
-        <source {...{
-            [srcsetAttr]: urlLarge || '#',
-            media: '(width >= ' + breakpoint + ')',
-        }}/>
-        <source {...{
-            [srcsetAttr]: urlMobile ? urlMobile + webpExtMobile : '#',
-            media: '(width >= 32px)',
-        }}/>
-        <source {...{
-            [srcsetAttr]: urlMobile || '#',
-            media: '(width >= 32px)',
-        }}/>
-        <img {...{
-            [srcAttr]: urlMobile + webpExtMobile || '#',
-            alt: large.alt || mobile.alt || '',
-            ariaHidden: true,
-            loading: settings.eager ? 'eager' : 'lazy'
-        }}
-        />
-    </picture>;
-}
+    const webpLarge =
+        urlLarge && urlLarge !== "#" && !urlLarge.endsWith(".svg")
+            ? `${urlLarge}.webp`
+            : null;
+
+    /* ------------------------------------------------------------
+     * ATTRIBUTES
+     * ------------------------------------------------------------ */
+    const srcAttr = editor || eager ? "src" : "data-src";
+    const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
+
+    const className = ["wpbs-picture", extraClass].filter(Boolean).join(" ");
+
+    /* ------------------------------------------------------------
+     * RENDER
+     * ------------------------------------------------------------ */
+    return (
+        <picture className={className} style={{...style, objectFit: "inherit"}}>
+
+            {/* MOBILE */}
+            {urlMobile && (
+                <>
+                    {webpMobile && (
+                        <source
+                            type="image/webp"
+                            media={`(max-width: calc(${breakpoint} - 1px))`}
+                            {...{[srcsetAttr]: webpMobile}}
+                        />
+                    )}
+
+                    <source
+                        media={`(max-width: calc(${breakpoint} - 1px))`}
+                        {...{[srcsetAttr]: urlMobile}}
+                    />
+                </>
+            )}
+
+            {/* LARGE */}
+            {urlLarge && (
+                <>
+                    {webpLarge && (
+                        <source
+                            type="image/webp"
+                            media={`(min-width: ${breakpoint})`}
+                            {...{[srcsetAttr]: webpLarge}}
+                        />
+                    )}
+
+                    <source
+                        media={`(min-width: ${breakpoint})`}
+                        {...{[srcsetAttr]: urlLarge}}
+                    />
+                </>
+            )}
+
+            <img
+                {...{
+                    [srcAttr]: urlLarge || urlMobile || "#",
+                    alt: large?.alt || mobile?.alt || "",
+                    loading: eager ? "eager" : "lazy",
+                    ariaHidden: true
+                }}
+            />
+        </picture>
+    );
+};
 
 export default ResponsivePicture;

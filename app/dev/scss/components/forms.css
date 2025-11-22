@@ -280,9 +280,7 @@
   select {
     display: block !important;
     width: 100% !important;
-
-    @apply
-    outline-none
+    outline: none;
   }
 }
 
@@ -481,7 +479,7 @@
 
       input[type=text],
       input[type=email],
-      input[type=tel],
+      input[type=tel]
       {
         text-align: inherit;
         @apply
@@ -611,22 +609,6 @@
     @apply
     transition-opacity
     duration-300
-  }
-
-  @keyframes wiggle {
-    25% {
-      transform: translate(-2px, 0)
-    }
-    50% {
-      transform: translate(0, 0)
-    }
-    75% {
-      transform: translate(2px, 0)
-    }
-    100% {
-      transform: translate(0, 0)
-    }
-
   }
 
   &.gform_validation_error {
@@ -876,7 +858,6 @@ div.ui-datepicker.gravity-theme#ui-datepicker-div[style] {
     }
 
     tbody {
-      //grid-template-rows: repeat(6, 1fr);
       gap: .5rem;
       @apply
       grid

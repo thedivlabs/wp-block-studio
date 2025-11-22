@@ -1,553 +1,682 @@
-import {memo, createRoot, useState, useCallback, useMemo, useEffect} from '@wordpress/element';
-import {
-    Button,
-    Popover
-} from '@wordpress/components';
 import _ from "lodash";
 import {
-    ALIGN_OPTIONS,
-    CONTAINER_OPTIONS, CONTENT_VISIBILITY_OPTIONS, DIMENSION_UNITS,
-    DIRECTION_OPTIONS,
-    DISPLAY_OPTIONS, HEIGHT_OPTIONS, JUSTIFY_OPTIONS, OVERFLOW_OPTIONS, POSITION_OPTIONS,
-    REVEAL_ANIMATION_OPTIONS,
-    REVEAL_EASING_OPTIONS, SHAPE_OPTIONS, TEXT_ALIGN_OPTIONS, WIDTH_OPTIONS, WRAP_OPTIONS
+    normalizeGapVal,
+    getImageUrlForResolution,
+    cleanObject,
+    heightVal,
+    buildImageSet,
+    diffObjects,
+    getCSSFromStyle,
+    normalizePreloadItem,
+    extractPreloadsFromLayout,
+} from "Includes/helper";
+import {
+    layoutFieldsMap,
+    hoverFieldsMap,
+    backgroundFieldsMap,
 } from "Includes/config";
 
-import {updateStyleString, saveStyle, Field} from 'Includes/style';
+const SPECIAL_FIELDS = [
+    'gap', 'margin', 'transform', 'filter', 'hide-empty', 'required',
+    'offset-height', 'align-header', 'outline', 'box-shadow',
 
-export default class WPBS_StyleEditor {
-    constructor() {
-        this.updateStyleString = updateStyleString;
-        this.StyleEditorUI = StyleEditorUI;
+    'reveal-duration', 'reveal-easing', 'reveal-distance', 'reveal-anim', 'reveal-offset', 'reveal-delay',
 
-        if (window.WPBS_StyleEditor) {
-            console.warn('WPBS.StyleControls already defined, skipping reinit.');
-            return window.WPBS_StyleEditor;
-        }
+    'breakpoint', 'mask-image', 'mask-repeat', 'mask-size', 'mask-origin',
+    'flex-basis', 'height', 'height-custom', 'min-height', 'min-height-custom', 'max-height',
+    'max-height-custom', 'width', 'width-custom', 'translate', 'offset-header', 'text-color',
+    'text-decoration-color', 'position', 'container', 'padding', 'border',
+    'border-radius', 'background-color'
+];
 
-        this.init();
-        this.watchDuplicates();
-    }
+function parseSpecialProps(props = {}, attributes = {}) {
+    const result = {};
 
-    init() {
-        window.WPBS_StyleEditor = this;
-        return this;
-    }
+    const containerMap = WPBS?.settings?.container ?? {};
 
-    watchDuplicates() {
-        const {select, dispatch, subscribe} = window.wp.data;
-        const store = 'core/block-editor';
-        let lastSig = '';
+    Object.entries(props).forEach(([key, val]) => {
+        if (val == null) return;
 
-        const checkBlocks = _.debounce(() => {
-            const flatten = (blocks, acc = []) => {
-                for (const b of blocks) {
-                    if (b.name?.startsWith('wpbs/')) acc.push(b);
-                    if (b.innerBlocks?.length) flatten(b.innerBlocks, acc);
+        if (SPECIAL_FIELDS.includes(key)) {
+            switch (key) {
+                case 'colors': {
+                    if (typeof val === 'object') {
+                        Object.entries(val).forEach(([colorKey, colorVal]) => {
+                            if (colorVal) {
+                                result[colorKey] = colorVal;
+                            }
+                        });
+                    }
+                    break;
                 }
-                return acc;
-            };
 
-            const blocks = flatten(select(store).getBlocks());
-            if (!blocks.length) return;
+                case 'margin':
+                case 'padding':
+                    if (typeof val === 'object') {
+                        if (val.top) result[`${key}-top`] = val.top;
+                        if (val.right) result[`${key}-right`] = val.right;
+                        if (val.bottom) result[`${key}-bottom`] = val.bottom;
+                        if (val.left) result[`${key}-left`] = val.left;
+                    }
+                    break;
 
-            const sig = blocks
-                .map(b => `${b.clientId}:${b.attributes?.uniqueId ?? ''}`)
-                .join('|');
+                case 'gap': {
+                    const rawTop = val?.top ?? null;
+                    const rawLeft = val?.left ?? null;
 
-            if (sig === lastSig) return;
-            lastSig = sig;
+                    const top = normalizeGapVal(rawTop);
+                    const left = normalizeGapVal(rawLeft);
 
-            const seen = new Map();
+                    if (top) {
+                        result['row-gap'] = top;
+                        result['--row-gap'] = top;
+                    }
 
-            for (const b of blocks) {
-                const {clientId, name, attributes} = b;
-                const {uniqueId} = attributes || {};
-                if (!uniqueId) continue;
+                    if (left) {
+                        result['column-gap'] = left;
+                        result['--column-gap'] = left;
+                    }
 
-                if (seen.has(uniqueId)) {
-                    const base = name.split('/').pop();
-                    const newId = `${base}-${Math.random().toString(36).slice(2, 6)}`;
-                    console.log('updating ID', newId);
-                    dispatch(store).updateBlockAttributes(clientId, {uniqueId: newId});
-                } else {
-                    seen.set(uniqueId, true);
+                    break;
                 }
+
+
+                case 'container':
+                    result['--container-width'] = containerMap[val] ?? val;
+                    break;
+
+                case 'height':
+                case 'height-custom': {
+                    result['height'] = props?.['height-custom'] ?? props?.['height'] ?? val;
+                    if (result['height'] === 'screen') result['height'] = '100svh';
+                    break;
+                }
+
+                case 'min-height':
+                case 'min-height-custom':
+                    result['min-height'] =
+                        heightVal(props?.['min-height-custom'] ?? props?.['min-height'] ?? val);
+                    break;
+
+                case 'max-height':
+                case 'max-height-custom':
+                    result['max-height'] =
+                        heightVal(props?.['max-height-custom'] ?? props?.['max-height'] ?? val);
+                    break;
+
+                case 'width':
+                case 'width-custom':
+                    result['width'] = props?.['width-custom'] ?? props?.['width'] ?? val;
+                    break;
+
+                case 'mask-image': {
+                    const maskVal = val;
+
+                    const isPlaceholder =
+                        maskVal?.isPlaceholder === true ||
+                        maskVal?.source === "#";
+
+                    if (maskVal === "" || maskVal == null) {
+                        // cleared → emit nothing
+                        break;
+                    }
+
+                    if (isPlaceholder) {
+                        // placeholder → physically no mask
+                        result['mask-image'] = 'none';
+                        result['mask-repeat'] = 'initial';
+                        result['mask-size'] = 'initial';
+                        result['mask-position'] = 'initial';
+                        break;
+                    }
+
+                    // real mask object
+                    const maskUrl =
+                        typeof maskVal === "object" && maskVal?.source
+                            ? maskVal.source
+                            : typeof maskVal === "string"
+                                ? maskVal
+                                : null;
+
+                    if (!maskUrl) break;
+
+                    result['mask-image'] = `url("${maskUrl}")`;
+                    result['mask-repeat'] = 'no-repeat';
+
+                    result['mask-size'] = (() => {
+                        switch (props?.['mask-size']) {
+                            case 'cover':
+                                return 'cover';
+                            case 'horizontal':
+                                return '100% auto';
+                            case 'vertical':
+                                return 'auto 100%';
+                            default:
+                                return 'contain';
+                        }
+                    })();
+
+                    result['mask-position'] =
+                        props?.['mask-origin'] || 'center center';
+
+                    break;
+                }
+
+
+                case 'border': {
+                    if (typeof val === 'object') {
+                        if (val.top)
+                            result['border-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        if (val.right)
+                            result['border-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        if (val.bottom)
+                            result['border-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        if (val.left)
+                            result['border-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
+                    }
+                    break;
+                }
+
+                case 'border-radius': {
+                    if (typeof val === 'object') {
+                        if (val.topLeft) result['border-top-left-radius'] = val.topLeft;
+                        if (val.topRight) result['border-top-right-radius'] = val.topRight;
+                        if (val.bottomRight) result['border-bottom-right-radius'] = val.bottomRight;
+                        if (val.bottomLeft) result['border-bottom-left-radius'] = val.bottomLeft;
+                    }
+                    break;
+                }
+
+                case 'outline': {
+                    if (typeof val === 'object') {
+                        if (val.top)
+                            result['outline-top'] = Object.values({style: 'solid', ...val.top}).join(' ');
+                        if (val.right)
+                            result['outline-right'] = Object.values({style: 'solid', ...val.right}).join(' ');
+                        if (val.bottom)
+                            result['outline-bottom'] = Object.values({style: 'solid', ...val.bottom}).join(' ');
+                        if (val.left)
+                            result['outline-left'] = Object.values({style: 'solid', ...val.left}).join(' ');
+                    }
+                    break;
+                }
+
+                case 'text-color':
+                    result['color'] = val;
+                    break;
+
+                case 'text-decoration-color':
+                    result['text-decoration-color'] = `${val} !important`;
+                    result['text-underline-offset'] = '.3em';
+                    break;
+
+                case 'translate':
+                    result['transform'] = `translate(${getCSSFromStyle(val?.left || '0px')}, ${getCSSFromStyle(val?.top || '0px')})`;
+                    break;
+
+                case 'offset-header':
+                    result['padding-top'] = `calc(${getCSSFromStyle(attributes?.style?.spacing?.padding?.top || '0px')} + var(--wpbs-header-height, 0px) + ${val || '0px'}) !important`;
+                    break;
+
+                case 'align-header':
+                    result['top'] = 'var(--wpbs-header-height, auto)';
+                    break;
+
+                case 'box-shadow':
+                    result['box-shadow'] = val?.shadow || val;
+                    break;
+
+                default:
+                    result[key] = val;
             }
-        }, 300);
-
-        subscribe(checkBlocks);
-    }
-}
-
-
-const DynamicFieldPopover = ({
-                                 currentSettings,
-                                 fieldsMap = layoutFieldsMap,
-                                 onAdd,
-                                 onClear,
-                             }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
-    const close = () => setIsOpen(false);
-
-    const list = useMemo(() => {
-        return fieldsMap.map((f) => {
-            const isActive = currentSettings?.[f.slug] !== undefined && currentSettings?.[f.slug] !== null;
-            return {...f, isActive};
-        });
-    }, [fieldsMap, currentSettings]);
-
-    return (
-        <div className="wpbs-layout-tools__popover-wrapper">
-            <Button
-                size="small"
-                icon="plus-alt2"
-                iconSize={15}
-                onClick={toggle}
-                aria-expanded={isOpen}
-                className="wpbs-layout-tools__toggle"
-            />
-
-            {isOpen && (
-                <Popover
-                    placement="bottom-start"
-                    onFocusOutside={close}
-                    className="wpbs-layout-tools__popover"
-                >
-                    <ul className="wpbs-layout-tools__popover-list">
-                        {list.map((f) => (
-                            <li
-                                key={f.slug}
-                                className={`wpbs-layout-tools__popover-item ${f.isActive ? 'active' : ''}`}
-                            >
-                                <Button
-                                    variant="link"
-                                    onClick={() => {
-                                        if (f.isActive) {
-                                            // Clear the field
-                                            onClear
-                                                ? onClear(f.slug)
-                                                : onAdd(f.slug, true); // fallback clears too
-                                        } else {
-                                            onAdd(f.slug);
-                                        }
-                                        close();
-                                    }}
-                                >
-                                    <span>{f.label}</span>
-                                </Button>
-                            </li>
-                        ))}
-                    </ul>
-                </Popover>
-            )}
-        </div>
-    );
-};
-
-const layoutFieldsMap = [
-
-    {type: 'select', slug: 'container', label: 'Container', options: CONTAINER_OPTIONS},
-
-
-    // Reveal / animation
-    {
-        type: 'composite',
-        slug: 'reveal-group',
-        label: 'Reveal',
-        fields: [
-            {type: 'select', slug: 'reveal-anim', label: 'Animation', large: true, options: REVEAL_ANIMATION_OPTIONS},
-            {type: 'select', slug: 'reveal-easing', label: 'Easing', options: REVEAL_EASING_OPTIONS},
-            {type: 'number', slug: 'reveal-duration', label: 'Duration'},
-            {type: 'unit', slug: 'reveal-offset', label: 'Offset'},
-            {type: 'unit', slug: 'reveal-distance', label: 'Distance'},
-            {type: 'toggle', slug: 'reveal-repeat', label: 'Repeat'},
-            {type: 'toggle', slug: 'reveal-mirror', label: 'Mirror'},
-        ],
-        large: true
-    },
-
-
-    // Header alignment
-    {type: 'unit', slug: 'offset-header', label: 'Offset Header'},
-    {type: 'toggle', slug: 'align-header', label: 'Align Header'},
-
-    // Display / flex
-    {type: 'select', slug: 'display', label: 'Display', options: DISPLAY_OPTIONS},
-    {type: 'select', slug: 'flex-direction', label: 'Flex Direction', options: DIRECTION_OPTIONS},
-    {type: 'select', slug: 'flex-wrap', label: 'Flex Wrap', options: WRAP_OPTIONS},
-    {type: 'select', slug: 'align-items', label: 'Align Items', options: ALIGN_OPTIONS},
-    {type: 'select', slug: 'justify-content', label: 'Justify Content', options: JUSTIFY_OPTIONS},
-
-    // Sizing
-    {type: 'select', slug: 'aspect-ratio', label: 'Aspect Ratio', options: SHAPE_OPTIONS},
-    {type: 'number', slug: 'opacity', label: 'Opacity'},
-    {type: 'unit', slug: 'basis', label: 'Flex Basis'},
-    {type: 'select', slug: 'width', label: 'Width', options: WIDTH_OPTIONS},
-    {type: 'unit', slug: 'width-custom', label: 'Custom Width'},
-    {type: 'unit', slug: 'max-width', label: 'Max Width'},
-    {type: 'select', slug: 'height', label: 'Height', options: HEIGHT_OPTIONS},
-    {type: 'unit', slug: 'height-custom', label: 'Custom Height'},
-    {type: 'unit', slug: 'min-height', label: 'Min Height'},
-    {type: 'unit', slug: 'min-height-custom', label: 'Custom Min Height'},
-    {type: 'unit', slug: 'max-height', label: 'Max Height'},
-    {type: 'unit', slug: 'max-height-custom', label: 'Custom Max Height'},
-    {type: 'unit', slug: 'offset-height', label: 'Offset Height'},
-
-    {type: 'unit', slug: 'flex-grow', label: 'Flex Grow'},
-    {type: 'unit', slug: 'flex-shrink', label: 'Flex Shrink'},
-
-    // Positioning
-    {type: 'select', slug: 'position', label: 'Position', options: POSITION_OPTIONS},
-    {type: 'number', slug: 'z-index', label: 'Z Index'},
-    {
-        type: 'composite',
-        slug: 'box-position',
-        label: 'Box Position',
-        fields: [
-            {type: 'unit', slug: 'top', label: 'Top'},
-            {type: 'unit', slug: 'right', label: 'Right'},
-            {type: 'unit', slug: 'bottom', label: 'Bottom'},
-            {type: 'unit', slug: 'left', label: 'Left'},
-        ],
-        large: true
-    },
-
-    // Overflow
-    {type: 'select', slug: 'overflow', label: 'Overflow', options: OVERFLOW_OPTIONS},
-    {type: 'unit', slug: 'aspect-ratio', label: 'Aspect Ratio'},
-    {type: 'unit', slug: 'order', label: 'Order'},
-    {
-        type: 'box',
-        slug: 'translate',
-        label: 'Translate',
-        options: {sides: ['top', 'left'], inputProps: {units: DIMENSION_UNITS}}
-    },
-
-    // Misc toggles
-    {type: 'toggle', slug: 'outline', label: 'Outline'},
-    {type: 'toggle', slug: 'mark-empty', label: 'Mark Empty'},
-
-    // Colors / visibility
-    {type: 'color', slug: 'text-decoration-color', label: 'Text Decoration Color'},
-    {type: 'select', slug: 'content-visibility', label: 'Content Visibility', options: CONTENT_VISIBILITY_OPTIONS},
-
-    {
-        type: 'box', slug: 'padding', label: 'Padding', large: true,
-        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}}
-    },
-    {
-        type: 'box', slug: 'margin', label: 'Margin', large: true,
-        options: {sides: ['top', 'right', 'bottom', 'left'], inputProps: {units: DIMENSION_UNITS}}
-    },
-
-    {type: 'unit', slug: 'gap', label: 'Gap'},
-    {type: 'unit', slug: 'border-radius', label: 'Border Radius'},
-    {type: 'unit', slug: 'font-size', label: 'Font Size'},
-    {type: 'unit', slug: 'line-height', label: 'Line Height'},
-    {type: 'select', slug: 'text-align', label: 'Text Align', options: TEXT_ALIGN_OPTIONS},
-
-    {type: 'color', slug: 'text-color', label: 'Text Color'},
-    {type: 'color', slug: 'background-color', label: 'Background Color'},
-    {type: 'text', slug: 'box-shadow', label: 'Shadow'},
-];
-
-const hoverFieldsMap = [
-    {
-        type: 'text',
-        slug: 'background-color',
-        label: 'Background Color'
-    },
-    {
-        type: 'text',
-        slug: 'text-color',
-        label: 'Text Color'
-    },
-];
-
-const LayoutFields = memo(function LayoutFields({bpKey, settings, updateLayoutItem, suppress = []}) {
-    const updateProp = useCallback(
-        (newProps) => updateLayoutItem(newProps, bpKey),
-        [updateLayoutItem, bpKey]
-    );
-
-    const activeFields = useMemo(() => {
-        return layoutFieldsMap.filter(
-            (field) =>
-                !suppress.includes(field.slug) &&
-                settings?.[field.slug] !== undefined &&
-                settings?.[field.slug] !== null
-        );
-    }, [settings, suppress]);
-
-    return activeFields.map((field) => <Field field={field}
-                                              settings={settings}
-                                              callback={(newValue) => updateProp({[field.slug]: newValue})}
-    />);
-});
-
-const HoverFields = memo(function HoverFields({hoverSettings, updateHoverItem, suppress = []}) {
-    const updateProp = useCallback(
-        (newProps) => updateHoverItem(newProps),
-        [updateHoverItem]
-    );
-
-
-    return hoverFieldsMap.filter((field) => !suppress.includes(field.slug)).map((field) => {
-        return <Field field={field}
-                      settings={hoverSettings}
-                      callback={(newValue) => updateProp({[field.slug]: newValue})}
-        />;
+        } else {
+            result[key] = val;
+        }
     });
 
-});
+    return result;
+}
 
-const openStyleEditor = (mountNode, props, styleRef, updateStyleSettings) => {
-    if (!mountNode || !mountNode.classList.contains('wpbs-style-placeholder')) return;
+function parseBackgroundProps(props = {}) {
+    const result = {};
 
-    // Ensure WPBS_StyleEditor exists
-    window.WPBS_StyleEditor.roots = window.WPBS_StyleEditor.roots || new Map();
+    const {
+        image,
+        video,
+        resolution = "large",
+        ...rest
+    } = props;
 
-    // Retrieve or create a root for this mount node
-    let root = window.WPBS_StyleEditor.roots.get(mountNode);
-    if (!root) {
-        root = createRoot(mountNode);
-        window.WPBS_StyleEditor.roots.set(mountNode, root);
+    /* ------------------------------------------------------------
+       IMAGE (matches PreviewThumbnail)
+    ------------------------------------------------------------ */
+    const isImagePlaceholder =
+        image?.isPlaceholder === true ||
+        image?.source === "#";
+
+    if (image === "" || image == null) {
+        // cleared → no --image
+    } else if (isImagePlaceholder) {
+        result["--image"] = "#";
+    } else if (image?.source) {
+        const resolved = getImageUrlForResolution(image, resolution || "large");
+        result["--image"] = buildImageSet(resolved);
     }
 
-    // Just render (no unmount)
-    root.render(<StyleEditorUI props={props} styleRef={styleRef} updateStyleSettings={updateStyleSettings}/>);
-};
+    /* ------------------------------------------------------------
+       VIDEO (same 3-state model)
+    ------------------------------------------------------------ */
+    const isVideoPlaceholder =
+        video?.isPlaceholder === true ||
+        video?.source === "#";
 
-const StyleEditorUI = ({props, styleRef, updateStyleSettings}) => {
+    if (video === "" || video == null) {
+        result["--video"] = "none";
+    } else if (isVideoPlaceholder) {
+        result["--video"] = "block";
+        result["--video-src"] = "#";
+    } else if (video?.source) {
+        result["--video"] = "block";
+        result["--video-src"] = video.source;
+    }
 
-    const {attributes} = props;
+    /* ------------------------------------------------------------
+       MASK (placeholder = none)
+    ------------------------------------------------------------ */
+    const maskVal = rest["mask-image"];
+    const isMaskPlaceholder =
+        maskVal?.isPlaceholder === true ||
+        maskVal?.source === "#";
 
-    // Breakpoints config
-    const breakpoints = useMemo(() => {
-        const bps = WPBS?.settings?.breakpoints ?? {};
-        return Object.entries(bps).map(([key, {label, size}]) => ({key, label, size}));
-    }, []);
+    if (maskVal === "" || maskVal == null) {
+        // cleared → emit nothing
+    } else if (isMaskPlaceholder) {
+        result["--mask-image"] = "none";
+        result["--mask-repeat"] = "initial";
+        result["--mask-size"] = "initial";
+        result["--mask-position"] = "initial";
+    } else {
+        const maskUrl =
+            typeof maskVal === "object" && maskVal?.source
+                ? maskVal.source
+                : typeof maskVal === "string"
+                    ? maskVal
+                    : null;
 
-    const initialLayout = attributes['wpbs-style'] || {
-        props: {},
-        breakpoints: {},
+        if (maskUrl) {
+            result["--mask-image"] = `url("${maskUrl}")`;
+            result["--mask-repeat"] = "no-repeat";
+            result["--mask-size"] = props.maskSize || "contain";
+            result["--mask-position"] = props.maskOrigin || "center center";
+        }
+    }
+
+    /* ------------------------------------------------------------
+       OTHER PROPS
+    ------------------------------------------------------------ */
+    Object.entries(rest).forEach(([key, val]) => {
+        if (val == null) return;
+
+        switch (key) {
+            case "background-size":
+                result["--size"] = val;
+                break;
+            case "scale":
+                result["--scale"] = `${parseFloat(val)}%`;
+                break;
+            case "opacity":
+                result["--opacity"] = parseFloat(val) / 100;
+                break;
+            case "fade":
+                result["--fade"] = val;
+                break;
+            case "max-height":
+                result["--max-height"] = val;
+                break;
+            case "overlay":
+                result["--overlay"] = val;
+                break;
+            case "color":
+                result["--color"] = val;
+                break;
+            case "background-blend-mode":
+                result["--blend"] = val;
+                break;
+        }
+    });
+
+    /* ------------------------------------------------------------
+       Attachment
+    ------------------------------------------------------------ */
+    if (props.fixed) {
+        result["--attachment"] = "fixed";
+    } else if (image?.source) {
+        result["--attachment"] = "scroll";
+    }
+
+    return result;
+}
+
+function buildPreloadArray({blockItems = [], incoming = [], current = []} = {}) {
+    const safeBlock = Array.isArray(blockItems) ? blockItems : [];
+    const safeIncoming = Array.isArray(incoming) ? incoming : [];
+    const safeCurrent = Array.isArray(current) ? current : [];
+
+    // Normalize + remove nulls
+    const cleanIncoming = safeIncoming
+        .map(normalizePreloadItem)
+        .filter(Boolean);
+
+    const cleanBlock = safeBlock
+        .map(normalizePreloadItem)
+        .filter(Boolean);
+
+    const combined = [...cleanBlock, ...cleanIncoming];
+
+    // Dedupe
+    const seen = new Set();
+    const deduped = [];
+
+    const buildKey = (x) =>
+        `${x.id}|${x.resolution || ''}|${x.media || ''}|${x.type || ''}`;
+
+    for (const item of combined) {
+        const key = buildKey(item);
+        if (!seen.has(key)) {
+            seen.add(key);
+            deduped.push(item);
+        }
+    }
+
+    // If nothing changed, return the original array to avoid churn
+    return _.isEqual(safeCurrent, deduped) ? safeCurrent : deduped;
+}
+
+function buildCssTextFromObject(cssObj = {}, props = {}) {
+    if (!props) return "";
+
+    const {attributes, name} = props;
+    if (!attributes) return "";
+
+    const uniqueId = attributes.uniqueId;
+    const blockName = name ? name.replace("/", "-") : null;
+
+    if (!uniqueId || !blockName) return "";
+
+
+    let css = "";
+    const selector = `.${blockName}.${uniqueId}`;
+
+    const buildRules = (obj = {}, important = false) =>
+        Object.entries(obj)
+            .filter(([_, v]) => v != null && v !== "")
+            .map(([k, v]) => `${k}:${v}${important ? " !important" : ""};`)
+            .join("");
+
+    // Base props
+    if (!_.isEmpty(cssObj.props)) {
+        css += `${selector}{${buildRules(cssObj.props)}}`;
+    }
+
+    // Background
+    if (!_.isEmpty(cssObj.background)) {
+        const bgSelector = `${selector} > .wpbs-background`;
+        css += `${bgSelector}{${buildRules(cssObj.background)}}`;
+    }
+
+    // Hover
+    if (!_.isEmpty(cssObj.hover)) {
+        css += `${selector}:hover{${buildRules(cssObj.hover, true)}}`;
+    }
+
+    // Breakpoints
+    const bps = WPBS?.settings?.breakpoints || {};
+    Object.entries(cssObj.breakpoints || {}).forEach(([bpKey, bpProps]) => {
+        const bp = bps[bpKey];
+        if (!bp) return;
+
+        const mergedBp = {
+            ...(bpProps.props || {}),
+            ...(bpProps.custom || {}),
+            ...(bpProps.background || {}),
+        };
+
+        if (!_.isEmpty(mergedBp)) {
+            css += `
+                @media (max-width:${bp.size - 1}px){
+                    ${selector}{
+                        ${buildRules(mergedBp, true)}
+                    }
+                }
+            `;
+        }
+    });
+
+    return css;
+}
+
+function onStyleChange({css = {}, preload = [], props, styleRef}) {
+    if (!props) return;
+
+    const {clientId, name, attributes} = props;
+    if (!clientId || !attributes) return;
+
+    // block identity
+    const blockName = name ? name.replace('/', '-') : null;
+    const uniqueId = attributes.uniqueId;
+    if (!blockName || !uniqueId) return;
+
+    // layout + stored css
+    const layout = attributes['wpbs-style'] || {};
+    const prevPreload = attributes['wpbs-preload'] || [];
+    const blockStyle = attributes.style || {};
+
+    // ----------------------------------------
+    // 2. Clean layout
+    // ----------------------------------------
+    const cleanedLayout = cleanObject(layout, true);
+
+    // ----------------------------------------
+    // 3. Base CSS from layout
+    // ----------------------------------------
+    let cssObj = {
+        props: parseSpecialProps(cleanedLayout.props || {}, attributes),
+        background: parseBackgroundProps(cleanedLayout.background || {}),
         hover: {},
+        breakpoints: {},
     };
 
-    // Local editing state (keeps empty values visible until committed)
-    const [localLayout, setLocalLayout] = useState(initialLayout);
+    // ----------------------------------------
+    // 4. Gaps
+    // ----------------------------------------
+    const gap = blockStyle?.spacing?.blockGap;
+    if (gap) {
+        const rowGapVal = gap?.top ?? (typeof gap === "string" ? gap : undefined);
+        const colGapVal = gap?.left ?? (typeof gap === "string" ? gap : undefined);
 
-    // Sync local state if attributes change from outside
-    useEffect(() => {
-        if (!_.isEqual(localLayout, initialLayout)) {
-            setLocalLayout(initialLayout);
+        if (rowGapVal) {
+            const g = getCSSFromStyle(rowGapVal);
+            cssObj.props["--row-gap"] = g;
+            cssObj.props["row-gap"] = g;
         }
-    }, [initialLayout]);
+        if (colGapVal) {
+            const g = getCSSFromStyle(colGapVal);
+            cssObj.props["--column-gap"] = g;
+            cssObj.props["column-gap"] = g;
+        }
+    }
 
-    const commit = useCallback(
-        (next) => {
-            setLocalLayout(next);
-            updateStyleSettings(saveStyle(next, props));
-        },
-        [props, styleRef]
-    );
+    // ----------------------------------------
+    // 5. Breakpoints (inherit + overrides)
+    // ----------------------------------------
 
-    // Update helpers
-    const updateDefaultLayout = useCallback(
-        (newProps) => {
-            commit({
-                ...localLayout,
-                props: {...localLayout.props, ...newProps},
-            });
-        },
-        [localLayout, commit]
-    );
+    Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
+        const bpCss = {
+            props: {},
+            background: {}
+        };
 
-    const updateHoverItem = useCallback(
-        (newProps) => {
-            commit({
-                ...localLayout,
-                hover: {...localLayout.hover, ...newProps},
-            });
-        },
-        [localLayout, commit]
-    );
+        // ----------------------------------------
+        // PROPS: inherit → override → diff
+        // ----------------------------------------
+        const baseProps = cssObj.props || {};
+        const mergedProps = bpProps?.props
+            ? { ...baseProps, ...parseSpecialProps(bpProps.props, attributes) }
+            : baseProps;
 
-    const updateLayoutItem = useCallback(
-        (newProps, bpKey) => {
-            commit({
-                ...localLayout,
-                breakpoints: {
-                    ...localLayout.breakpoints,
-                    [bpKey]: {
-                        ...localLayout.breakpoints[bpKey],
-                        ...newProps,
-                    },
-                },
-            });
-        },
-        [localLayout, commit]
-    );
+        const diffPropsObj = diffObjects(baseProps, mergedProps);
+        if (!_.isEmpty(diffPropsObj)) {
+            bpCss.props = diffPropsObj;
+        }
 
-    const addLayoutItem = useCallback(() => {
-        const keys = Object.keys(localLayout.breakpoints || {});
-        if (keys.length >= 3) return;
+        // ----------------------------------------
+        // BACKGROUND: NO automatic inheritance.
+        // Only compute vars for what the user explicitly changed.
+        // ----------------------------------------
 
-        const availableBps = breakpoints
-            .map((bp) => bp.key)
-            .filter((bp) => !keys.includes(bp));
-        if (!availableBps.length) return;
+        const baseBg = cleanedLayout.background || {};
+        const rawBpBg = bpProps?.background || {};
 
-        const newKey = availableBps[0];
-        commit({
-            ...localLayout,
-            breakpoints: {
-                ...localLayout.breakpoints,
-                [newKey]: {},
-            },
-        });
-    }, [localLayout, breakpoints, commit]);
+        // If user overrides only resolution, inherit base image safely
+        let effectiveBpBg = { ...rawBpBg };
+        if (effectiveBpBg.resolution && !effectiveBpBg.image) {
+            effectiveBpBg.image = baseBg.image;
+        }
 
-    const removeLayoutItem = useCallback(
-        (bpKey) => {
-            const {[bpKey]: removed, ...rest} = localLayout.breakpoints;
-            commit({...localLayout, breakpoints: rest});
-        },
-        [localLayout, commit]
-    );
+        // If nothing changed, output nothing
+        if (Object.keys(effectiveBpBg).length > 0) {
+            // parseBackgroundProps returns full var set, so we diff against base
+            const parsedBase = parseBackgroundProps(baseBg);
+            const parsedBp   = parseBackgroundProps(effectiveBpBg);
 
-    // Sorted list of breakpoints
-    const layoutKeys = useMemo(() => {
-        const keys = Object.keys(localLayout?.breakpoints || {});
-        return keys.sort((a, b) => {
-            const bpA = breakpoints.find((bp) => bp.key === a);
-            const bpB = breakpoints.find((bp) => bp.key === b);
-            return (bpA?.size || 0) - (bpB?.size || 0);
-        });
-    }, [localLayout?.breakpoints, breakpoints]);
+            const diffBgObj = diffObjects(parsedBase, parsedBp);
+            if (!_.isEmpty(diffBgObj)) {
+                bpCss.background = diffBgObj;
+            }
+        }
+
+        // Save simplified diff object
+        cssObj.breakpoints[bpKey] = bpCss;
+    });
 
 
-    return (
-        <div className="wpbs-layout-tools__container">
-            {/* Default */}
-            <section className="wpbs-layout-tools__panel active">
-                <div className="wpbs-layout-tools__header">
-                    <strong>Default</strong>
-                    <DynamicFieldPopover
-                        currentSettings={localLayout.props}
-                        fieldsMap={layoutFieldsMap}
-                        onAdd={(slug) => updateDefaultLayout({[slug]: ''})}
-                        onClear={(slug) => updateDefaultLayout({[slug]: null})}
-                    />
-                </div>
-                <div className="wpbs-layout-tools__grid">
-                    <LayoutFields
-                        bpKey="layout"
-                        settings={localLayout.props}
-                        updateLayoutItem={updateDefaultLayout}
-                        suppress={['padding', 'margin', 'gap']}
-                    />
-                </div>
-            </section>
+    // ----------------------------------------
+    // 6. Hover
+    // ----------------------------------------
+    if (cleanedLayout.hover) {
+        cssObj.hover = parseSpecialProps(cleanedLayout.hover, attributes);
+    }
 
-            {/* Hover */}
-            <section className="wpbs-layout-tools__panel active">
-                <div className="wpbs-layout-tools__header">
-                    <strong>Hover</strong>
-                    <DynamicFieldPopover
-                        currentSettings={localLayout.hover}
-                        fieldsMap={hoverFieldsMap}
-                        onAdd={(slug) => updateHoverItem({[slug]: ''})}
-                        onClear={(slug) => updateHoverItem({[slug]: null})}
-                    />
-                </div>
-                <div className="wpbs-layout-tools__grid">
-                    <HoverFields
-                        hoverSettings={localLayout.hover}
-                        updateHoverItem={updateHoverItem}
-                    />
-                </div>
-            </section>
+    // ----------------------------------------
+    // 7. Merge block-level CSS from ref
+    // ----------------------------------------
+    cssObj = _.merge({}, cssObj, css || {});
 
-            {/* Breakpoints */}
-            {layoutKeys.map((bpKey) => {
-                const bp = breakpoints.find((b) => b.key === bpKey);
-                const size = bp?.size ? `(${bp.size}px)` : '';
-                const panelLabel = [bp ? bp.label : bpKey, size].filter(Boolean).join(' ');
+    // ----------------------------------------
+    // 8. Clean final CSS object
+    // ----------------------------------------
+    const cleanedCss = cleanObject(cssObj, true);
 
-                return (
-                    <section key={bpKey} className="wpbs-layout-tools__panel active">
-                        <div className="wpbs-layout-tools__header">
-                            <Button
-                                isSmall
-                                size="small"
-                                iconSize={20}
-                                onClick={() => removeLayoutItem(bpKey)}
-                                icon="no-alt"
-                            />
-                            <strong>{panelLabel}</strong>
-                            <DynamicFieldPopover
-                                currentSettings={localLayout.breakpoints[bpKey]}
-                                fieldsMap={layoutFieldsMap}
-                                onAdd={(slug) => updateLayoutItem({[slug]: ''}, bpKey)}
-                                onClear={(slug) => updateLayoutItem({[slug]: null}, bpKey)}
-                            />
-                        </div>
-                        <div className="wpbs-layout-tools__grid">
-                            <label className="wpbs-layout-tools__field --full">
-                                <strong>Breakpoint</strong>
-                                <div className="wpbs-layout-tools__control">
-                                    <select
-                                        value={bpKey}
-                                        onChange={(e) => {
-                                            const newBpKey = e.target.value;
-                                            const newBreakpoints = {...localLayout.breakpoints};
-                                            newBreakpoints[newBpKey] = newBreakpoints[bpKey];
-                                            delete newBreakpoints[bpKey];
-                                            commit({...localLayout, breakpoints: newBreakpoints});
-                                        }}
-                                    >
-                                        {breakpoints.map((b) => (
-                                            <option
-                                                key={b.key}
-                                                value={b.key}
-                                                disabled={b.key !== bpKey && layoutKeys.includes(b.key)}
-                                            >
-                                                {b.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </label>
+    // ----------------------------------------
+    // 9. Preload merging
+    // ----------------------------------------
+    const incoming = extractPreloadsFromLayout(cleanedLayout, uniqueId);
+    const nextPreload = buildPreloadArray({
+        blockItems: preload,
+        incoming,
+        current: prevPreload,
+    });
 
-                            <LayoutFields
-                                bpKey={bpKey}
-                                settings={localLayout.breakpoints[bpKey]}
-                                updateLayoutItem={(newProps) => updateLayoutItem(newProps, bpKey)}
-                            />
-                        </div>
-                    </section>
-                );
-            })}
+    const cssText = buildCssTextFromObject(cleanedCss, props);
+    if (styleRef?.current) {
+        styleRef.current.textContent = cssText;
+    }
 
-            <Button
-                variant="primary"
-                onClick={addLayoutItem}
-                style={{
-                    borderRadius: '4px',
-                    width: '100%',
-                    textAlign: 'center',
-                    gridColumn: '1/-1',
-                }}
-                disabled={layoutKeys.length >= 3}
-            >
-                Add Breakpoint
-            </Button>
-        </div>
-    );
-};
+    const sameCss = _.isEqual(attributes["wpbs-css"], cleanedCss);
+    const samePreload = _.isEqual(attributes["wpbs-preload"], nextPreload);
+
+    if (sameCss && samePreload) {
+        return; // nothing changed, do not dirty the block
+    }
+
+
+    // ----------------------------------------
+    // 12. Persist css + preload
+    // ----------------------------------------
+    const {dispatch} = wp.data;
+    dispatch("core/block-editor").updateBlockAttributes(clientId, {
+        "wpbs-css": cleanedCss,
+        "wpbs-preload": nextPreload,
+    });
+}
+
+export function initStyleEditor() {
+    if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
+
+    const identityStore = new Map();
+
+    function registerBlock(uniqueId, clientId) {
+        // Fresh block: no ID assigned yet
+        if (!uniqueId) {
+            return "fresh";
+        }
+
+        // First time this uniqueId is seen
+        if (!identityStore.has(uniqueId)) {
+            identityStore.set(uniqueId, new Set([clientId]));
+            return "normal";
+        }
+
+        const clients = identityStore.get(uniqueId);
+
+        // If this clientId already recorded, normal load / re-render
+        if (clients.has(clientId)) {
+            return "normal";
+        }
+
+        // Another clientId already exists → this is a clone
+        if (clients.size >= 1) {
+            clients.add(clientId);
+            return "clone";
+        }
+
+        // Fallback: treat as normal
+        clients.add(clientId);
+        return "normal";
+    }
+
+    function unregisterBlock(uniqueId, clientId) {
+        if (!uniqueId) return;
+
+        const clients = identityStore.get(uniqueId);
+        if (!clients) return;
+
+        clients.delete(clientId);
+
+        // Clean empty sets
+        if (clients.size === 0) {
+            identityStore.delete(uniqueId);
+        }
+    }
+
+
+    const api = {
+        layoutFieldsMap,
+        hoverFieldsMap,
+        backgroundFieldsMap,
+        cleanObject,
+        getCSSFromStyle,
+        onStyleChange,
+        buildPreloadArray,
+
+        // NEW identity helpers
+        registerBlock,
+        unregisterBlock,
+    };
+
+    window.WPBS_StyleEditor = api;
+    return api;
+}
 
 
 

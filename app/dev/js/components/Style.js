@@ -160,21 +160,6 @@ export const withStyle = (Component) => (props) => {
     }, []);
 
 
-    /*
-    ----------------------------------------------------------------------
-    OUTPUT
-    ----------------------------------------------------------------------
-    */
-
-    const testBasePanel = createPanel(({bpKey, entry, update}) => {
-        return <div>Base Panel ({bpKey})</div>;
-    });
-
-    const testBreakpointPanel = createPanel(({bpKey, entry, update}) => {
-        return <div>Breakpoint Panel ({bpKey})</div>;
-    });
-
-
     return (
         <>
             <Component
@@ -186,20 +171,6 @@ export const withStyle = (Component) => (props) => {
             {attributes?.['wpbs-css'] && (
                 <style ref={styleRef}/>
             )}
-
-            <InspectorControls group={'styles'}>
-                <BreakpointPanels
-                    value={{}}
-                    onChange={(val) => {
-                        console.log(val);
-                    }}
-                    //label={'Testing Breakpoint Panels:'}
-                    render={{
-                        base: testBasePanel,
-                        breakpoints: testBreakpointPanel
-                    }}
-                />
-            </InspectorControls>
 
             <StyleEditorPanel
                 settings={settings}

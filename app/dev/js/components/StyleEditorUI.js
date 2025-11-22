@@ -3,99 +3,101 @@ import {
     useState,
     useEffect,
     useMemo,
-    useCallback
+    useCallback,
 } from "@wordpress/element";
-import {InspectorControls} from "@wordpress/block-editor";
+import { InspectorControls } from "@wordpress/block-editor";
 
-import {BreakpointPanels} from "./BreakpointPanels";
-import {LayoutFields} from "./LayoutFields";
-import _ from "lodash";
+import { BreakpointPanels } from "./BreakpointPanels";
+import { LayoutFields } from "./LayoutFields";
+import { cleanObject } from "Includes/helper";
+import isEqual from "lodash/isEqual";
 
-export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
-
+export const StyleEditorUI = ({ settings = {}, updateStyleSettings }) => {
     // ----------------------------------------
-    // LOCAL STATE — initialized from settings ONCE
+    // LOCAL STATE (flat-entry layout)
+    // layout = { base:{...}, xs:{...}, md:{...} }
     // ----------------------------------------
-    const [localProps, setLocalProps] = useState(settings.props || {});
-    const [localBreakpoints, setLocalBreakpoints] = useState(settings.breakpoints || {});
-
-    // ----------------------------------------
-    // DERIVED LAYOUT OBJECT (like old localLayout)
-    // ----------------------------------------
-    const localLayout = useMemo(
-        () => ({
-            props: localProps,
-            breakpoints: localBreakpoints,
-        }),
-        [localProps, localBreakpoints]
-    );
+    const [layout, setLayout] = useState(() => {
+        const { props = {}, breakpoints = {} } = settings;
+        return {
+            base: props,
+            ...breakpoints,
+        };
+    });
 
     // ----------------------------------------
-    // DEBOUNCED COMMIT TO ATTRIBUTES (same pattern as old code)
+    // BUILT LAYOUT FOR ATTRIBUTES
+    // Convert flat layout → wpbs-style structure
     // ----------------------------------------
-    const debouncedCommit = useMemo(
-        () => _.debounce((next) => updateStyleSettings(next), 300),
-        [updateStyleSettings]
-    );
+    const externalLayout = useMemo(() => {
+        const { base = {}, ...bps } = layout;
+        return {
+            props: base,
+            breakpoints: bps,
+        };
+    }, [layout]);
 
+    // ----------------------------------------
+    // EFFECT: LOCAL STATE → ATTRIBUTES
+    // ----------------------------------------
     useEffect(() => {
-        debouncedCommit(localLayout);
-        return () => debouncedCommit.cancel();
-    }, [localLayout, debouncedCommit]);
+        const cleanedLocal = cleanObject(externalLayout, true);
+        const cleanedExternal = cleanObject(settings, true);
+
+        if (!isEqual(cleanedLocal, cleanedExternal)) {
+            updateStyleSettings(cleanedLocal);
+        }
+    }, [externalLayout, settings, updateStyleSettings]);
 
     // ----------------------------------------
-    // UPDATE BASE PROPS
+    // EFFECT: ATTRIBUTES → LOCAL STATE
+    // (sync on external change only)
     // ----------------------------------------
-    const updateBaseProps = useCallback((next) => {
-        setLocalProps((prev) => {
-            // ToolsPanel resetAll → clear all props
-            if (next && Object.keys(next).length === 0) {
-                return {};
-            }
-            return {
-                ...prev,
-                ...next,
-            };
+    useEffect(() => {
+        const cleanedLocal = cleanObject(externalLayout, true);
+        const cleanedExternal = cleanObject(settings, true);
+
+        if (isEqual(cleanedLocal, cleanedExternal)) return;
+
+        const { props = {}, breakpoints = {} } = settings;
+        setLayout({
+            base: props,
+            ...breakpoints,
         });
+    }, [settings]); // do NOT include externalLayout
+
+    // ----------------------------------------
+    // UPDATE HANDLER FOR REPEATER
+    // nextPanels = { base:{...}, xs:{...}, md:{...} }
+    // ----------------------------------------
+    const updateLayout = useCallback((nextPanels) => {
+        setLayout(nextPanels);
     }, []);
 
     // ----------------------------------------
-    // UPDATE BREAKPOINTS (from BreakpointPanels)
-    // ----------------------------------------
-    const updateBreakpoints = useCallback((nextBps) => {
-        setLocalBreakpoints(nextBps || {});
-    }, []);
-
-    // ----------------------------------------
-    // RENDER PANELS
+    // PANEL RENDERERS
     // ----------------------------------------
     const LayoutFieldsPanel = useCallback(
-        () => (
+        ({ entry, update }) => (
             <LayoutFields
-                label="Layout"
-                settings={localProps}
-                updateFn={updateBaseProps}
-            />
-        ),
-        [localProps, updateBaseProps]
-    );
-
-    const BreakpointFieldsPanel = useCallback(
-        ({bpKey, entry, update}) => (
-            <LayoutFields
-                label="Layout"
-                settings={entry.props ?? {}}
-                updateFn={(nextProps) => update({props: nextProps})}
+                label="Settings"
+                settings={entry ?? {}}
+                updateFn={(nextProps) => update(nextProps)}
             />
         ),
         []
     );
 
+    const BreakpointFieldsPanel = LayoutFieldsPanel; // identical behavior
+
+    // ----------------------------------------
+    // BREAKPOINT PANELS UI
+    // ----------------------------------------
     const BreakpointPanelsUI = useMemo(
         () => (
             <BreakpointPanels
-                value={localBreakpoints}
-                onChange={updateBreakpoints}
+                value={layout}
+                onChange={updateLayout}
                 label="Layout"
                 render={{
                     base: LayoutFieldsPanel,
@@ -103,7 +105,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 }}
             />
         ),
-        [localBreakpoints, updateBreakpoints, LayoutFieldsPanel, BreakpointFieldsPanel]
+        [layout, updateLayout, LayoutFieldsPanel, BreakpointFieldsPanel]
     );
 
     return (

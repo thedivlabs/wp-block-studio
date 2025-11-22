@@ -159,11 +159,6 @@ export const withStyle = (Component) => (props) => {
         return <BlockWrapper props={props} wrapperProps={wrapperProps}>{children}</BlockWrapper>;
     }, []);
 
-    const StyleEditorUI = useMemo(() => (<StyleEditorPanel
-        settings={settings}
-        updateStyleSettings={updateStyleSettings}
-    />), [settings, updateStyleSettings]);
-
     return (
         <>
             <Component
@@ -176,7 +171,10 @@ export const withStyle = (Component) => (props) => {
                 <style ref={styleRef}/>
             )}
 
-            {StyleEditorUI}
+            <StyleEditorPanel
+                settings={settings}
+                updateStyleSettings={updateStyleSettings}
+            />
         </>
     );
 };

@@ -1,7 +1,6 @@
 // BreakpointPanels.js
-// Fully controlled + stable version
-// No internal normalization, no local state fighting the parent.
-// Base row is virtual only; ALL breakpoint data lives in `value`.
+// Flat-entry version (entry = flat object)
+// Base row is virtual, breakpoints controlled entirely by parent (value)
 
 import {useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
@@ -27,10 +26,10 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         }));
     }, [themeBreakpoints]);
 
-    // keys present in the value
-    const bpKeys = useMemo(() => Object.keys(value || {}), [value]);
+    // keys present in value (excluding base, which is virtual)
+    const bpKeys = useMemo(() => Object.keys(value || {}).filter(k => k !== "base"), [value]);
 
-    // final ordering: base first, then sorted
+    // final ordering: base first, then sorted breakpoint keys
     const orderedKeys = useMemo(() => {
         const sorted = [...bpKeys].sort((a, b) => {
             const A = breakpointDefs.find((bp) => bp.key === a);
@@ -41,24 +40,17 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     }, [bpKeys, breakpointDefs]);
 
     // ----------------------------------------
-    // UPDATE
+    // UPDATE (flat merge)
     // ----------------------------------------
     const updateEntry = useCallback(
         (bpKey, data) => {
-            if (bpKey === "base") return;
-
-            const entry = value[bpKey] || {};
-            const prevProps = entry.props || {};
-            const nextProps = data.props || {};
+            const current = value[bpKey] || {};
 
             const next = {
                 ...value,
                 [bpKey]: {
-                    ...entry,
-                    props: {
-                        ...prevProps,
-                        ...nextProps,
-                    },
+                    ...current,
+                    ...data,   // flat merge (NOT props)
                 },
             };
 
@@ -94,7 +86,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
         const available = breakpointDefs
             .map((bp) => bp.key)
-            .filter((k) => !existing.includes(k));
+            .filter((key) => !existing.includes(key));
 
         if (!available.length) return;
 
@@ -102,21 +94,27 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
         const next = {
             ...value,
-            [newKey]: {},
+            [newKey]: {},   // flat empty entry
         };
 
         onChange(next);
     }, [value, breakpointDefs, onChange]);
 
     // ----------------------------------------
-    // RENDER
+    // RENDER PANELS
     // ----------------------------------------
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
+
             {orderedKeys.map((bpKey) => {
                 const isBase = bpKey === "base";
-                const entry = isBase ? {} : (value[bpKey] || {});
-                const Panel = isBase ? render.base : render.breakpoints;
+                const entry = isBase
+                    ? (value.base || {})
+                    : (value[bpKey] || {});
+
+                const Panel = isBase
+                    ? render.base
+                    : render.breakpoints;
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
@@ -145,6 +143,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                             onChange={(e) => {
                                                 const newKey = e.target.value;
 
+                                                // prevent duplicate keys
                                                 if (
                                                     newKey !== bpKey &&
                                                     Object.keys(value || {}).includes(newKey)
@@ -160,6 +159,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                                 const disabled =
                                                     bp.key !== bpKey &&
                                                     Object.keys(value || {}).includes(bp.key);
+
                                                 return (
                                                     <option
                                                         key={bp.key}
@@ -203,6 +203,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             >
                 Add Breakpoint
             </Button>
+
         </div>
     );
 }

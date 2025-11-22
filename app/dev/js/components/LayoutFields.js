@@ -9,9 +9,11 @@ export const LayoutFields = memo(
     ({label = "Settings", settings = {}, suppress = [], updateFn}) => {
         const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
+        const safeSettings = settings || {};
+
         const onUpdate = useCallback(
             (slug, value) => {
-                updateFn({[slug]: value});
+                updateFn({ [slug]: value });
             },
             [updateFn]
         );
@@ -27,7 +29,7 @@ export const LayoutFields = memo(
                         <Field
                             key={field.slug}
                             field={field}
-                            settings={settings}
+                            settings={safeSettings}
                             callback={(value) => onUpdate(field.slug, value)}
                             isToolsPanel={true}
                         />

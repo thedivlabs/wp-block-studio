@@ -1,22 +1,22 @@
 // BreakpointPanels.js
 // Fully working version with correct local state + sorting + add/remove/rename.
 
-import { useState, useEffect, useCallback, useMemo } from "@wordpress/element";
-import { Button } from "@wordpress/components";
+import {useState, useEffect, useCallback, useMemo} from "@wordpress/element";
+import {Button} from "@wordpress/components";
 
 // ------------------------------------------------------------
 // Helper: createPanel
 // ------------------------------------------------------------
 export function createPanel(builderFn) {
-    return function PanelComponent({ bpKey, entry, update }) {
-        return builderFn({ bpKey, entry, update });
+    return function PanelComponent({bpKey, entry, update}) {
+        return builderFn({bpKey, entry, update});
     };
 }
 
 // ------------------------------------------------------------
 // BreakpointPanels — structural repeater
 // ------------------------------------------------------------
-export function BreakpointPanels({ value = {}, onChange, renderFields }) {
+export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
     // ----------------------------------------
@@ -24,9 +24,9 @@ export function BreakpointPanels({ value = {}, onChange, renderFields }) {
     // ----------------------------------------
     const [localBps, setLocalBps] = useState(() => {
         if (!value || typeof value !== "object" || Object.keys(value).length === 0) {
-            return { base: {} };
+            return {base: {}};
         }
-        if (!value.base) return { base: {}, ...value };
+        if (!value.base) return {base: {}, ...value};
         return value;
     });
 
@@ -35,12 +35,12 @@ export function BreakpointPanels({ value = {}, onChange, renderFields }) {
         if (!value || typeof value !== "object") return;
 
         if (Object.keys(value).length === 0) {
-            setLocalBps({ base: {} });
+            setLocalBps({base: {}});
             return;
         }
 
         if (!value.base) {
-            setLocalBps({ base: {}, ...value });
+            setLocalBps({base: {}, ...value});
             return;
         }
 
@@ -77,7 +77,7 @@ export function BreakpointPanels({ value = {}, onChange, renderFields }) {
         (bpKey, data) => {
             const next = {
                 ...localBps,
-                [bpKey]: { ...localBps[bpKey], ...data }
+                [bpKey]: {...localBps[bpKey], ...data}
             };
             setLocalBps(next);
             onChange(next);
@@ -90,7 +90,7 @@ export function BreakpointPanels({ value = {}, onChange, renderFields }) {
     // ----------------------------------------
     const removeEntry = useCallback(
         (bpKey, opts = {}) => {
-            const next = { ...localBps };
+            const next = {...localBps};
             delete next[bpKey];
 
             if (opts.transfer && opts.newKey) {
@@ -135,25 +135,27 @@ export function BreakpointPanels({ value = {}, onChange, renderFields }) {
             {orderedKeys.map((bpKey) => {
                 const entry = localBps[bpKey] || {};
                 const isBase = bpKey === "base";
-                const Panel = isBase ? renderFields.base : renderFields.breakpoints;
+                const Panel = isBase ? render.base : render.breakpoints;
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
 
                         {/* HEADER */}
-                        <div className="wpbs-layout-tools__header">
+                        {(isBase && !label) ? null : (<div className="wpbs-layout-tools__header">
                             {isBase ? (
                                 <strong>
-                                    {renderFields.base?.label ?? "Base"}
+                                    {label ?? "Base"}
                                 </strong>
                             ) : (
+
                                 <Button
                                     isSmall
+                                    size="small"
+                                    iconSize={20}
+                                    icon="no-alt"
                                     className="components-button is-small has-icon"
                                     onClick={() => removeEntry(bpKey)}
-                                >
-                                    <span className="dashicon dashicons-no-alt"></span>
-                                </Button>
+                                />
                             )}
 
                             {!isBase && (
@@ -193,7 +195,7 @@ export function BreakpointPanels({ value = {}, onChange, renderFields }) {
                                     </select>
                                 </label>
                             )}
-                        </div>
+                        </div>)}
 
                         {/* PANEL CONTENT */}
                         <div className="wpbs-layout-tools__grid">

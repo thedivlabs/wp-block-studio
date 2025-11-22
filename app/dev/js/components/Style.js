@@ -3,7 +3,7 @@ import {StyleEditorUI} from "Includes/style";
 import _ from 'lodash';
 import {BlockWrapper} from 'Components/BlockWrapper';
 import {useInstanceId} from "@wordpress/compose";
-import {BreakpointPanels,createPanel} from 'Components/BreakpointPanels'
+import {BreakpointPanels, createPanel} from 'Components/BreakpointPanels'
 import {InspectorControls} from "@wordpress/block-editor";
 
 
@@ -166,11 +166,11 @@ export const withStyle = (Component) => (props) => {
     ----------------------------------------------------------------------
     */
 
-    const testBasePanel = createPanel(({ bpKey, entry, update }) => {
+    const testBasePanel = createPanel(({bpKey, entry, update}) => {
         return <div>Base Panel ({bpKey})</div>;
     });
 
-    const testBreakpointPanel = createPanel(({ bpKey, entry, update }) => {
+    const testBreakpointPanel = createPanel(({bpKey, entry, update}) => {
         return <div>Breakpoint Panel ({bpKey})</div>;
     });
 
@@ -188,16 +188,17 @@ export const withStyle = (Component) => (props) => {
             )}
 
             <InspectorControls group={'styles'}>
-            <BreakpointPanels
-                value={{}}
-                onChange={(val) => {
-                    console.log(val);
-                }}
-                renderFields={{
-                    base: testBasePanel,
-                    breakpoints: testBreakpointPanel
-                }}
-            />
+                <BreakpointPanels
+                    value={{}}
+                    onChange={(val) => {
+                        console.log(val);
+                    }}
+                    //label={'Testing Breakpoint Panels:'}
+                    render={{
+                        base: testBasePanel,
+                        breakpoints: testBreakpointPanel
+                    }}
+                />
             </InspectorControls>
 
             <StyleEditorPanel

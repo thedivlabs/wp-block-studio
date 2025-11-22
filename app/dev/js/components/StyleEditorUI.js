@@ -49,32 +49,34 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         });
     }, [updateStyleSettings]);
 
+    const BreakpointPanelsWrapper = useMemo(() => <BreakpointPanels
+        value={bps}
+        onChange={updateBreakpoints}
+        label="Layout"
+        render={{
+            base: ({bpKey, entry, update}) => (
+                <LayoutFields
+                    label="Layout"
+                    settings={baseProps}
+                    updateFn={updateBaseProps}
+                />
+            ),
+
+            breakpoints: ({bpKey, entry, update}) => (
+                <LayoutFields
+                    label="Layout"
+                    settings={entry.props ?? {}}
+                    updateFn={(nextProps) => update({props: nextProps})}
+                />
+            ),
+        }}
+    />, [updateBreakpoints]);
+
     return (
         <InspectorControls group="styles">
 
-            {/* BASE + BREAKPOINT PANELS */}
-            <BreakpointPanels
-                value={bps}
-                onChange={updateBreakpoints}
-                label="Layout"
-                render={{
-                    base: ({bpKey, entry, update}) => (
-                        <LayoutFields
-                            label="Layout"
-                            settings={baseProps}
-                            updateFn={updateBaseProps}
-                        />
-                    ),
+            {BreakpointPanelsWrapper}
 
-                    breakpoints: ({bpKey, entry, update}) => (
-                        <LayoutFields
-                            label="Layout"
-                            settings={entry.props ?? {}}
-                            updateFn={(nextProps) => update({props: nextProps})}
-                        />
-                    ),
-                }}
-            />
 
         </InspectorControls>
     );

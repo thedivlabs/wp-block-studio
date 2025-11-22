@@ -147,7 +147,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                     {label ?? "Base"}
                                 </strong>
                             ) : (
-
                                 <Button
                                     isSmall
                                     size="small"

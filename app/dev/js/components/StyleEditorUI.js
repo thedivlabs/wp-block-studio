@@ -53,31 +53,24 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     }, []);
 
 
-    const LayoutFieldsPanel = useCallback(
-        ({entry, update}) => (
-            <LayoutFields
-                label="Settings"
-                settings={entry ?? {}}
-                updateFn={(nextProps) => update(nextProps)}
-            />
-        ),
-        []
+    const LayoutFieldsPanel = ({entry, update}) => (
+        <LayoutFields
+            label="Settings"
+            settings={entry ?? {}}
+            updateFn={(nextProps) => update(nextProps)}
+        />
     );
 
-    const BreakpointFieldsPanel = useCallback(
-        ({entry, update}) => (
-            <LayoutFields
-                label="Settings"
-                settings={entry ?? {}}
-                updateFn={(nextProps) => update(nextProps)}
-            />
-        ),
-        []
+    const BreakpointFieldsPanel = ({entry, update}) => (
+        <LayoutFields
+            label="Settings"
+            settings={entry ?? {}}
+            updateFn={(nextProps) => update(nextProps)}
+        />
     );
 
-
-    const BreakpointPanelsUI = useMemo(
-        () => (
+    return (
+        <InspectorControls group="styles">
             <BreakpointPanels
                 value={layout}
                 onChange={updateLayout}
@@ -87,13 +80,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                     breakpoints: BreakpointFieldsPanel,
                 }}
             />
-        ),
-        [layout]
-    );
-
-    return (
-        <InspectorControls group="styles">
-            {BreakpointPanelsUI}
         </InspectorControls>
     );
 };

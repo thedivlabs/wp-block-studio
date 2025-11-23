@@ -47,32 +47,31 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
         (data) => {
             onChange({
                 props: { ...props, ...data },
-                breakpoints: { ...breakpoints },
+                breakpoints: { ...breakpoints }
             });
         },
         [props, breakpoints, onChange]
     );
+
 
     // ----------------------------------------
     // UPDATE BREAKPOINT PROPS
     // ----------------------------------------
     const updateEntry = useCallback(
         (bpKey, data) => {
-            const entry = breakpoints[bpKey] || {};
+            const entry       = breakpoints[bpKey] || {};
+            const nextEntry   = { ...entry, ...data };
+            const nextBps     = { ...breakpoints, [bpKey]: nextEntry };
 
             onChange({
                 props: { ...props },
-                breakpoints: {
-                    ...breakpoints,
-                    [bpKey]: {
-                        ...entry,
-                        ...data,
-                    },
-                },
+                breakpoints: nextBps
             });
         },
-        [props, breakpoints, onChange]
+        [breakpoints, props, onChange]
     );
+
+
 
     // ----------------------------------------
     // REMOVE OR RENAME A BREAKPOINT ROW

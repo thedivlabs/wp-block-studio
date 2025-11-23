@@ -23,8 +23,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         const cleanedLocal = cleanObject(layout, true);
         const cleanedExternal = cleanObject(settings, true);
         if (!isEqual(cleanedLocal, cleanedExternal)) {
-            //updateStyleSettings(layout);
-            //console.log(layout);
+            updateStyleSettings(layout);
         }
     }, [layout]);
 

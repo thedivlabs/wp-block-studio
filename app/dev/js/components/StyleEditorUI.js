@@ -80,18 +80,20 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     };
 
     return (
-        <BreakpointPanels
-            value={normalizedLayout}
-            onChange={updateSettings}
-            label="Layout"
-            render={{
+        <PanelBody title={'Styles'} initialOpen={false}>
+            <BreakpointPanels
+                value={normalizedLayout}
+                onChange={updateSettings}
+                label="Layout"
+                render={{
 
-                // ------------------- BASE -------------------
-                base: baseRenderer,
+                    // ------------------- BASE -------------------
+                    base: baseRenderer,
 
-                // ---------------- BREAKPOINTS ----------------
-                breakpoints: breakpointRenderer,
-            }}
-        />
+                    // ---------------- BREAKPOINTS ----------------
+                    breakpoints: breakpointRenderer,
+                }}
+            />
+        </PanelBody>
     );
 };

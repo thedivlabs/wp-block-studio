@@ -48,9 +48,17 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
             <BreakpointPanels
                 value={layout}
                 onChange={(nextPanels) => {
-                    console.log(nextPanels);
-                    setLayout(nextPanels);
+                    setLayout(prev => {
+                        // functional updater from BreakpointPanels
+                        if (typeof nextPanels === "function") {
+                            return nextPanels(prev);
+                        }
+
+                        // plain object replacement
+                        return nextPanels || {};
+                    });
                 }}
+
                 label="Layout"
                 render={{
                     base: ({entry, update}) => (

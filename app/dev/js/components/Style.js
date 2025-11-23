@@ -4,6 +4,7 @@ import {BlockWrapper} from 'Components/BlockWrapper';
 import {useInstanceId} from "@wordpress/compose";
 import {InspectorControls} from "@wordpress/block-editor";
 import {PanelBody} from "@wordpress/components";
+import {BackgroundControls} from "Components/Background";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -17,7 +18,6 @@ export const STYLE_ATTRIBUTES = {
     },
     'wpbs-style': {type: 'object', default: {}},
 };
-
 
 export const withStyle = (Component) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
@@ -40,6 +40,10 @@ export const withStyle = (Component) => (props) => {
             advanced: {},
             hover: {},
             background: {},
+        },
+        'wpbs-background': bgSettings = {
+            props: {},
+            breakpoints: {}
         }
     } = attributes;
 
@@ -79,6 +83,15 @@ export const withStyle = (Component) => (props) => {
             });
         },
         [settings, setAttributes]
+    );
+
+    const updateBgSettings = useCallback(
+        (nextLayout = {}) => {
+            setAttributes({
+                'wpbs-background': cleanObject(nextLayout),
+            });
+        },
+        [bgSettings, setAttributes]
     );
 
     /*
@@ -160,9 +173,7 @@ export const withStyle = (Component) => (props) => {
                     settings={settings}
                     updateStyleSettings={updateStyleSettings}
                 />
-                <PanelBody title={'Background'} initialOpen={false} >
-                    <div>BACKGROUND</div>
-                </PanelBody>
+                <BackgroundControls settings={bgSettings} callback={updateBgSettings} />
             </InspectorControls>
         </>
     );

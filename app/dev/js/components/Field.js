@@ -273,21 +273,27 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = null;
     }
 
-    const hasValue = (val) => {
+    const hasValue = () => {
+        const val = settings?.[slug];
 
-        // Composite (object) fields — check if the object has ANY keys
-        if (val && typeof val === "object") {
-            return !!Object.values(val).some(v => v !== null && v !== undefined);
+        // composite field stored under slug
+        if (val && typeof val === "object" && !Array.isArray(val)) {
+            return Object.values(val).some(v => v != null && v !== "");
         }
 
-        // Allow empty string '' as a valid value.
-        return !!(val !== undefined && val !== null);
+        // hover color field (slug === "hover")
+        if (type === "color") {
+            return Object.values(settings).some(v => v != null && v !== "");
+        }
+
+        // primitive fields
+        return val != null;
     };
 
 
     return control ? (!!isToolsPanel ?
             <ToolsPanelItem
-                hasValue={() => hasValue(value)}
+                hasValue={hasValue}
                 label={label}
                 onDeselect={() => commit(null)}
                 onSelect={() => commit("")} // initialize with an empty string

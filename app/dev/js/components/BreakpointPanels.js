@@ -2,6 +2,19 @@ import {useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
 import _ from "lodash";
 
+function normalizePatch(patch) {
+    if (!patch || typeof patch !== "object" || Array.isArray(patch)) {
+        return {};
+    }
+
+    return Object.fromEntries(
+        Object.entries(patch).filter(([k, v]) =>
+            v && typeof v === "object" && !Array.isArray(v)
+        )
+    );
+}
+
+
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
@@ -16,7 +29,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // Build base entry object for Option A
     const baseEntry = { props, hover };
 
-    // Sorted breakpoint list
+    // Sorted breakpoint list from theme settings
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
             key,
@@ -38,10 +51,11 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // ------------------------------------------------------------
     const updateEntry = useCallback(
         (bpKey, patch, reset = false) => {
-            console.log(patch);
+
+
             if (bpKey === "base") {
                 const next = reset
-                    ? { props: {}, hover: {} }
+                    ? {props: {}, hover: {}}
                     : _.merge({}, baseEntry, patch);
 
                 onChange({
@@ -54,8 +68,8 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                 return;
             }
 
-            const prev = breakpoints[bpKey] || { props: {}, hover: {} };
-            const next = reset ? { props: {}, hover: {} } : _.merge({}, prev, patch);
+            const prev = breakpoints[bpKey] || {props: {}, hover: {}};
+            const next = reset ? {props: {}, hover: {}} : _.merge({}, prev, patch);
 
             onChange({
                 ...rest,
@@ -69,6 +83,34 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         },
         [baseEntry, props, hover, breakpoints, rest, onChange]
     );
+
+    // ------------------------------------------------------------
+    // ADD NEW BREAKPOINT ENTRY
+    // ------------------------------------------------------------
+    const addBreakpoint = useCallback(() => {
+        const existingKeys = Object.keys(breakpoints);
+
+        const available = breakpointDefs
+            .map((bp) => bp.key)
+            .filter((k) => !existingKeys.includes(k));
+
+        if (!available.length) return;
+
+        const newKey = available[0];
+
+        onChange({
+            ...rest,
+            props,
+            hover,
+            breakpoints: {
+                ...breakpoints,
+                [newKey]: {
+                    props: {},
+                    hover: {},
+                },
+            },
+        });
+    }, [breakpoints, breakpointDefs, props, hover, rest, onChange]);
 
     // ------------------------------------------------------------
     // RENDER
@@ -94,7 +136,11 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
             {/* BREAKPOINT PANELS */}
             {orderedBpKeys.map((bpKey) => {
-                const entry = breakpoints[bpKey] || { props: {}, hover: {} };
+                const raw = breakpoints[bpKey] || {};
+                const entry = {
+                    props: raw.props || {},
+                    hover: raw.hover || {},
+                };
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
@@ -162,6 +208,20 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                     </div>
                 );
             })}
+
+            {/* ADD BREAKPOINT BUTTON */}
+            <Button
+                isPrimary
+                onClick={addBreakpoint}
+                style={{
+                    borderRadius: 0,
+                    width: "100%",
+                    textAlign: "center",
+                    marginTop: "8px",
+                }}
+            >
+                Add Breakpoint
+            </Button>
         </div>
     );
 }

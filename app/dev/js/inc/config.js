@@ -619,7 +619,7 @@ export const layoutFieldsMap = [
 export const hoverFieldsMap = [
     {
         type: "color",
-        slug: "hover",
+        slug: "hover-colors",
         label: "Hover Colors",
         full: true,
         colors: [

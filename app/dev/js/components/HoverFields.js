@@ -8,7 +8,7 @@ export const HoverFields = ({
                                 updateFn,
                             }) => {
     const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-
+console.log(settings);
     return (
         <ToolsPanel
             label={label}

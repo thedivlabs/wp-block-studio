@@ -30,29 +30,30 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // UNIFIED UPDATE FUNCTION
     // ------------------------------------------------------------
     const updateForKey = useCallback(
-        (bpKey, data) => {
-            // Base props update
+        (bpKey, data, reset = false) => {
+
+            // Base
             if (bpKey === "base") {
-                const nextProps = _.merge({}, props, data);
+                const nextProps = reset ? {} : _.merge({}, props, data);
 
                 onChange({
                     props: nextProps,
-                    breakpoints: breakpoints,
+                    breakpoints,
                 });
                 return;
             }
 
-            // Breakpoint update
-            const nextEntry = _.merge({}, breakpoints[bpKey], data);
-
-            const nextBreakpoints = {
-                ...breakpoints,
-                [bpKey]: nextEntry,
-            };
+            // Breakpoint
+            const nextEntry = reset
+                ? {}
+                : _.merge({}, breakpoints[bpKey], data);
 
             onChange({
-                props: props,            // unchanged
-                breakpoints: nextBreakpoints
+                props,
+                breakpoints: {
+                    ...breakpoints,
+                    [bpKey]: nextEntry,
+                },
             });
         },
         [props, breakpoints, onChange]
@@ -115,7 +116,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                     {render.base({
                         bpKey: "base",
                         entry: props,
-                        update: (data) => updateForKey("base", data),
+                        update: (...args) => updateForKey("base", ...args),
                     })}
                 </div>
             </div>
@@ -171,7 +172,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                             {render.breakpoints({
                                 bpKey,
                                 entry,
-                                update: (data) => updateForKey(bpKey, data),
+                                update: (...args) => updateForKey(bpKey, ...args),
                             })}
                         </div>
                     </div>

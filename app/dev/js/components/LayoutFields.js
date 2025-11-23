@@ -17,7 +17,7 @@ export const LayoutFields = ({label = "Settings", settings = {}, suppress = [], 
     return (
         <ToolsPanel
             label={label}
-            resetAll={() => updateFn({})}
+            resetAll={() => updateFn({}, true)}
         >
             {map
                 .filter((f) => !suppress.includes(f.slug))

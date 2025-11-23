@@ -12,6 +12,7 @@ import {HoverFields} from "Components/HoverFields";
 
 import {cleanObject} from "Includes/helper";
 import {isEqual} from "lodash";
+import {PanelBody} from "@wordpress/components";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 
@@ -79,20 +80,18 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     };
 
     return (
-        <InspectorControls group="styles">
-            <BreakpointPanels
-                value={normalizedLayout}
-                onChange={updateSettings}
-                label="Layout"
-                render={{
+        <BreakpointPanels
+            value={normalizedLayout}
+            onChange={updateSettings}
+            label="Layout"
+            render={{
 
-                    // ------------------- BASE -------------------
-                    base: baseRenderer,
+                // ------------------- BASE -------------------
+                base: baseRenderer,
 
-                    // ---------------- BREAKPOINTS ----------------
-                    breakpoints: breakpointRenderer,
-                }}
-            />
-        </InspectorControls>
+                // ---------------- BREAKPOINTS ----------------
+                breakpoints: breakpointRenderer,
+            }}
+        />
     );
 };

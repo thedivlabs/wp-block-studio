@@ -2,6 +2,8 @@ import {Fragment, useCallback, useEffect, useRef} from '@wordpress/element';
 import {StyleEditorUI} from "Includes/style";
 import {BlockWrapper} from 'Components/BlockWrapper';
 import {useInstanceId} from "@wordpress/compose";
+import {InspectorControls} from "@wordpress/block-editor";
+import {PanelBody} from "@wordpress/components";
 
 
 export const STYLE_ATTRIBUTES = {
@@ -152,10 +154,16 @@ export const withStyle = (Component) => (props) => {
                 <style ref={styleRef}/>
             )}
 
-            <StyleEditorUI
-                settings={settings}
-                updateStyleSettings={updateStyleSettings}
-            />
+
+            <InspectorControls group={'styles'}>
+                <StyleEditorUI
+                    settings={settings}
+                    updateStyleSettings={updateStyleSettings}
+                />
+                <PanelBody title={'Background'} initialOpen={false} >
+                    <div>BACKGROUND</div>
+                </PanelBody>
+            </InspectorControls>
         </>
     );
 };

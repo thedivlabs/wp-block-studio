@@ -1,4 +1,3 @@
-import {useCallback} from "@wordpress/element";
 import {__experimentalToolsPanel as ToolsPanel} from "@wordpress/components";
 import {Field} from "Components/Field";
 
@@ -9,13 +8,6 @@ export const HoverFields = ({
                                 updateFn,
                             }) => {
     const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-
-    const onUpdate = useCallback(
-        (slug, value) => {
-            updateFn({[slug]: value});
-        },
-        [updateFn]
-    );
 
     return (
         <ToolsPanel
@@ -29,7 +21,7 @@ export const HoverFields = ({
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(value) => onUpdate(field.slug, value)}
+                        callback={(value) => updateFn(value)}
                         isToolsPanel={true}
                     />
                 ))}

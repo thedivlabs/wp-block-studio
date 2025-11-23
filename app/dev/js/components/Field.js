@@ -273,9 +273,21 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             control = null;
     }
 
+    const hasValue = (val) => {
+
+        // Composite (object) fields — check if the object has ANY keys
+        if (val && typeof val === "object") {
+            return !!Object.values(val).some(v => v !== null && v !== undefined);
+        }
+
+        // Allow empty string '' as a valid value.
+        return !!(val !== undefined && val !== null);
+    };
+
+
     return control ? (!!isToolsPanel ?
             <ToolsPanelItem
-                hasValue={() => value !== undefined && value !== null}
+                hasValue={() => hasValue(value)}
                 label={label}
                 onDeselect={() => commit(null)}
                 onSelect={() => commit("")} // initialize with an empty string

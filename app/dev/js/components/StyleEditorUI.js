@@ -2,7 +2,7 @@ import {
     useState,
     useEffect,
     useCallback,
-    Fragment,
+    Fragment, useMemo,
 } from "@wordpress/element";
 import {InspectorControls} from "@wordpress/block-editor";
 
@@ -41,54 +41,56 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         "border",
     ];
 
+    const baseRenderer = ({ entry, update }) => (
+        <Fragment>
+            <LayoutFields
+                label="Settings"
+                settings={entry.props ?? {}}
+                suppress={baseLayoutSuppress}
+                updateFn={(patch, reset) => update({ props: patch }, reset)}
+            />
+
+            <HoverFields
+                settings={entry.hover ?? {}}
+                updateFn={(patch, reset) => update({ hover: patch }, reset)}
+            />
+        </Fragment>
+    );
+
+    const breakpointRenderer = ({ entry, update }) => (
+        <Fragment>
+            <LayoutFields
+                label="Settings"
+                settings={entry.props ?? {}}
+                updateFn={(patch, reset) => update({ props: patch }, reset)}
+            />
+
+            <HoverFields
+                settings={entry.hover ?? {}}
+                updateFn={(patch, reset) => update({ hover: patch }, reset)}
+            />
+        </Fragment>
+    );
+
+    const normalizedLayout = {
+        props: layout.props || {},
+        hover: layout.hover || {},
+        breakpoints: layout.breakpoints || {},
+    };
+
     return (
         <InspectorControls group="styles">
             <BreakpointPanels
-                value={layout}
+                value={normalizedLayout}
                 onChange={updateSettings}
                 label="Layout"
                 render={{
 
                     // ------------------- BASE -------------------
-                    base: ({entry, update}) => (
-                        <Fragment>
-                            <LayoutFields
-                                label="Settings"
-                                settings={entry.props ?? {}}
-                                suppress={baseLayoutSuppress}
-                                updateFn={(patch, reset) =>
-                                    update({ props: patch }, reset)
-                                }
-                            />
-
-                            <HoverFields
-                                settings={entry.hover ?? {}}
-                                updateFn={(patch, reset) =>
-                                    update({ hover: patch }, reset)
-                                }
-                            />
-                        </Fragment>
-                    ),
+                    base: baseRenderer,
 
                     // ---------------- BREAKPOINTS ----------------
-                    breakpoints: ({entry, update}) => (
-                        <Fragment>
-                            <LayoutFields
-                                label="Settings"
-                                settings={entry.props ?? {}}
-                                updateFn={(patch, reset) =>
-                                    update({ props: patch }, reset)
-                                }
-                            />
-
-                            <HoverFields
-                                settings={entry.hover ?? {}}
-                                updateFn={(patch, reset) =>
-                                    update({ hover: patch }, reset)
-                                }
-                            />
-                        </Fragment>
-                    ),
+                    breakpoints: breakpointRenderer,
                 }}
             />
         </InspectorControls>

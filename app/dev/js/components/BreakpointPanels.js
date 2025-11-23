@@ -38,6 +38,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // ------------------------------------------------------------
     const updateEntry = useCallback(
         (bpKey, patch, reset = false) => {
+            console.log(patch);
             if (bpKey === "base") {
                 const next = reset
                     ? { props: {}, hover: {} }

@@ -45,37 +45,38 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // UPDATE BASE PROPS
     // ----------------------------------------
     const updateBase = (data) => {
-        const nextProps = _.merge({}, value.props || {}, data);
-        const nextBreakpoints = _.merge({}, value.breakpoints || {});
 
-        onChange({
+        const nextProps = _.merge({}, props, data);
+
+        const result = {
             props: nextProps,
-            breakpoints: nextBreakpoints
-        });
-    };
+            breakpoints: breakpoints,
+        };
 
+        onChange(result);
+    };
 
     // ----------------------------------------
     // UPDATE BREAKPOINT PROPS
     // ----------------------------------------
     const updateEntry = (bpKey, data) => {
-        const prevBreakpoints = value.breakpoints || {};
-        const prevEntry = prevBreakpoints[bpKey] || {};
 
-        const nextEntry = _.merge({}, prevEntry, data);
+        // Deep merge the entry
+        const nextEntry = _.merge({}, breakpoints[bpKey], data);
 
-        const nextBreakpoints = _.merge({}, prevBreakpoints, {
+        // Deep clone + replace the one entry
+        const nextBreakpoints = _.merge({}, breakpoints, {
             [bpKey]: nextEntry
         });
 
-        const nextProps = _.merge({}, value.props || {});
-
-        onChange({
-            props: nextProps,
+        // Final layout object
+        const nextLayout = {
+            props: props,   // deep clone base props
             breakpoints: nextBreakpoints
-        });
-    };
+        };
 
+        onChange(nextLayout);
+    };
 
     // ----------------------------------------
     // REMOVE OR RENAME A BREAKPOINT ROW

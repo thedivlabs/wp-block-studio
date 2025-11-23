@@ -8,7 +8,6 @@ export const HoverFields = ({
                                 updateFn,
                             }) => {
     const {hoverFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
-console.log(settings);
 
     return (
         <ToolsPanel
@@ -18,8 +17,6 @@ console.log(settings);
             {map
                 .filter((f) => !suppress.includes(f.slug))
                 .map((field) => {
-
-                    console.log(field);
 
                     return (<Field
                         key={field.slug}

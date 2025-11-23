@@ -274,21 +274,32 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
     }
 
     const hasValue = () => {
-        const val = settings?.[slug];
 
-        // composite field stored under slug
-        if (val && typeof val === "object" && !Array.isArray(val)) {
-            return Object.values(val).some(v => v != null && v !== "");
+        // Composite fields store values under each sub.slug, not field.slug
+        if (type === "composite") {
+            return field.fields.some(sub => {
+                const v = settings?.[sub.slug];
+                return v != null && v !== "";
+            });
         }
 
-        // hover color field (slug === "hover")
+        const val = settings?.[slug];
+
+        // shadow, box, unit, primitive, all behave correctly here
+
+        // hover color field
         if (type === "color") {
             return Object.values(settings).some(v => v != null && v !== "");
         }
 
-        // primitive fields
-        return val != null;
+        // structural object stored under slug (rare for hover)
+        if (val && typeof val === "object" && !Array.isArray(val)) {
+            return Object.values(val).some(v => v != null && v !== "");
+        }
+
+        return val != null && val !== "";
     };
+
 
 
     return control ? (!!isToolsPanel ?

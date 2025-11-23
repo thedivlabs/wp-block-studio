@@ -441,16 +441,28 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
             ...(bpProps.background || {}),
         };
 
+        // Base breakpoint props/background
         if (!_.isEmpty(mergedBp)) {
             css += `
-                @media (max-width:${bp.size - 1}px){
-                    ${selector}{
-                        ${buildRules(mergedBp, true)}
-                    }
+            @media (max-width:${bp.size - 1}px){
+                ${selector}{
+                    ${buildRules(mergedBp, true)}
                 }
-            `;
+            }
+        `;
+        }
+
+        if (!_.isEmpty(bpProps.hover)) {
+            css += `
+            @media (max-width:${bp.size - 1}px){
+                ${selector}:hover{
+                    ${buildRules(bpProps.hover, true)}
+                }
+            }
+        `;
         }
     });
+
 
     return css;
 }
@@ -513,7 +525,8 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
         const bpCss = {
             props: {},
-            background: {}
+            background: {},
+            hover: {}
         };
 
         // ----------------------------------------
@@ -521,7 +534,7 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         // ----------------------------------------
         const baseProps = cssObj.props || {};
         const mergedProps = bpProps?.props
-            ? { ...baseProps, ...parseSpecialProps(bpProps.props, attributes) }
+            ? {...baseProps, ...parseSpecialProps(bpProps.props, attributes)}
             : baseProps;
 
         const diffPropsObj = diffObjects(baseProps, mergedProps);
@@ -538,7 +551,7 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         const rawBpBg = bpProps?.background || {};
 
         // If user overrides only resolution, inherit base image safely
-        let effectiveBpBg = { ...rawBpBg };
+        let effectiveBpBg = {...rawBpBg};
         if (effectiveBpBg.resolution && !effectiveBpBg.image) {
             effectiveBpBg.image = baseBg.image;
         }
@@ -547,12 +560,16 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         if (Object.keys(effectiveBpBg).length > 0) {
             // parseBackgroundProps returns full var set, so we diff against base
             const parsedBase = parseBackgroundProps(baseBg);
-            const parsedBp   = parseBackgroundProps(effectiveBpBg);
+            const parsedBp = parseBackgroundProps(effectiveBpBg);
 
             const diffBgObj = diffObjects(parsedBase, parsedBp);
             if (!_.isEmpty(diffBgObj)) {
                 bpCss.background = diffBgObj;
             }
+        }
+
+        if (bpProps.hover) {
+            bpCss.hover = parseSpecialProps(bpProps.hover, attributes);
         }
 
         // Save simplified diff object

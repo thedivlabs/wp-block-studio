@@ -6,23 +6,24 @@
 // }
 // NO "base" key. NO nested props inside breakpoints.
 
-import { useCallback, useMemo } from "@wordpress/element";
-import { Button } from "@wordpress/components";
+import {useCallback, useMemo} from "@wordpress/element";
+import {Button} from "@wordpress/components";
+import _ from "lodash";
 
 // Public helper for custom builder syntax
 export function createPanel(builderFn) {
-    return function PanelComponent({ bpKey, entry, update }) {
-        return builderFn({ bpKey, entry, update });
+    return function PanelComponent({bpKey, entry, update}) {
+        return builderFn({bpKey, entry, update});
     };
 }
 
-export function BreakpointPanels({ value = {}, onChange, render, label }) {
+export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
     // Extract base + breakpoints from value
     const props = value.props || {};
     const breakpoints = value.breakpoints || {};
-console.log(value);
+
     // Build sorted breakpoint list
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
@@ -45,22 +46,19 @@ console.log(value);
     // ----------------------------------------
     const updateBase = useCallback(
         (data) => {
-            const prevProps = value.props || {};
+            const prevProps       = value.props || {};
             const prevBreakpoints = value.breakpoints || {};
 
-            const nextProps = {
-                ...prevProps,
-                ...data
-            };
+            const nextProps       = _.merge({}, prevProps, data);
+            const nextBreakpoints = _.merge({}, prevBreakpoints);
 
             onChange({
                 props: nextProps,
-                breakpoints: { ...prevBreakpoints }
+                breakpoints: nextBreakpoints,
             });
         },
         [value, onChange]
     );
-
 
 
 
@@ -69,52 +67,46 @@ console.log(value);
     // ----------------------------------------
     const updateEntry = useCallback(
         (bpKey, data) => {
-            const prevProps = value.props || {};
+            const prevProps       = value.props || {};
             const prevBreakpoints = value.breakpoints || {};
-            const prevEntry = prevBreakpoints[bpKey] || {};
+            const prevEntry       = prevBreakpoints[bpKey] || {};
 
-            const nextEntry = {
-                ...prevEntry,
-                ...data
-            };
+            // Deep merge the entry
+            const nextEntry = _.merge({}, prevEntry, data);
 
-            const nextBreakpoints = {
-                ...prevBreakpoints,
-                [bpKey]: nextEntry,
-            };
-
-            onChange({
-                props: { ...prevProps },
-                breakpoints: nextBreakpoints
+            // Deep clone + replace the one entry
+            const nextBreakpoints = _.merge({}, prevBreakpoints, {
+                [bpKey]: nextEntry
             });
+
+            // Final layout object
+            const nextLayout = {
+                props: _.merge({}, prevProps),   // deep clone base props
+                breakpoints: nextBreakpoints
+            };
+
+            onChange(nextLayout);
         },
         [value, onChange]
     );
 
-
-
-
-
     // ----------------------------------------
     // REMOVE OR RENAME A BREAKPOINT ROW
     // ----------------------------------------
-    const removeEntry = useCallback(
-        (bpKey, opts = {}) => {
-            const existing = breakpoints[bpKey] || {};
-            const next = { ...breakpoints };
-            delete next[bpKey];
+    const removeEntry = (bpKey, opts = {}) => {
+        const existing = breakpoints[bpKey] || {};
+        const next = {...breakpoints};
+        delete next[bpKey];
 
-            if (opts.transfer && opts.newKey) {
-                next[opts.newKey] = opts.transfer;
-            }
+        if (opts.transfer && opts.newKey) {
+            next[opts.newKey] = opts.transfer;
+        }
 
-            onChange({
-                props: { ...props },
-                breakpoints: next,
-            });
-        },
-        [props, breakpoints, onChange]
-    );
+        onChange({
+            props: {...props},
+            breakpoints: next,
+        });
+    };
 
     // ----------------------------------------
     // ADD NEW BREAKPOINT
@@ -131,7 +123,7 @@ console.log(value);
         const newKey = available[0];
 
         onChange({
-            props: { ...props },
+            props: {...props},
             breakpoints: {
                 ...breakpoints,
                 [newKey]: {},

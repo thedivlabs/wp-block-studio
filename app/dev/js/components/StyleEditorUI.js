@@ -27,9 +27,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         }
     }, [layout]);
 
-
-
-
     return (
         <InspectorControls group="styles">
             <BreakpointPanels
@@ -41,14 +38,14 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                         <LayoutFields
                             label="Settings"
                             settings={entry ?? {}}
-                            updateFn={(nextProps) => update(nextProps)}
+                            updateFn={update}
                         />
                     ),
                     breakpoints: ({entry, update}) => (
                         <LayoutFields
                             label="Settings"
                             settings={entry ?? {}}
-                            updateFn={(nextProps) => update(nextProps)}
+                            updateFn={update}
                         />
                     ),
                 }}

@@ -74,7 +74,7 @@ export const withStyle = (Component) => (props) => {
     const updateStyleSettings = useCallback(
         (nextLayout = {}) => {
             setAttributes({
-                'wpbs-style': nextLayout,
+                'wpbs-style': cleanObject(nextLayout),
                 //uniqueId: instanceId
             });
         },

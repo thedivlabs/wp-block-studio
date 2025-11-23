@@ -1,23 +1,29 @@
 // BreakpointPanels.js
-// Flat-entry version (entry = flat object)
-// Base row is virtual, breakpoints controlled entirely by parent (value)
+// Compatible with:
+// {
+//   props: { ... },
+//   breakpoints: { xs:{...}, md:{...} }
+// }
+// NO "base" key. NO nested props inside breakpoints.
 
-import {useCallback, useMemo} from "@wordpress/element";
-import {Button} from "@wordpress/components";
+import { useCallback, useMemo } from "@wordpress/element";
+import { Button } from "@wordpress/components";
 
-// public helper
+// Public helper for custom builder syntax
 export function createPanel(builderFn) {
-    return function PanelComponent({bpKey, entry, update}) {
-        return builderFn({bpKey, entry, update});
+    return function PanelComponent({ bpKey, entry, update }) {
+        return builderFn({ bpKey, entry, update });
     };
 }
 
-export function BreakpointPanels({value = {}, onChange, render, label}) {
+export function BreakpointPanels({ value = {}, onChange, render, label }) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // ----------------------------------------
-    // Breakpoint definitions sorted by size
-    // ----------------------------------------
+    // Extract base + breakpoints from value
+    const props = value.props || {};
+    const breakpoints = value.breakpoints || {};
+
+    // Build sorted breakpoint list
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
             key,
@@ -26,164 +32,163 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         }));
     }, [themeBreakpoints]);
 
-    // keys present in value (excluding base, which is virtual)
-    const bpKeys = useMemo(() => Object.keys(value || {}).filter(k => k !== "base"), [value]);
-
-    // final ordering: base first, then sorted breakpoint keys
-    const orderedKeys = useMemo(() => {
-        const sorted = [...bpKeys].sort((a, b) => {
+    const orderedBpKeys = useMemo(() => {
+        return Object.keys(breakpoints).sort((a, b) => {
             const A = breakpointDefs.find((bp) => bp.key === a);
             const B = breakpointDefs.find((bp) => bp.key === b);
             return (A?.size || 0) - (B?.size || 0);
         });
-        return ["base", ...sorted];
-    }, [bpKeys, breakpointDefs]);
+    }, [breakpoints, breakpointDefs]);
 
     // ----------------------------------------
-    // UPDATE (flat merge)
+    // UPDATE BASE PROPS
     // ----------------------------------------
-    const updateEntry = useCallback(
-        (bpKey, data) => {
-            const current = value[bpKey] || {};
-
-            const next = {
-                ...value,
-                [bpKey]: {
-                    ...current,
-                    ...data,   // flat merge (NOT props)
-                },
-            };
-
-            onChange(next);
+    const updateBase = useCallback(
+        (data) => {
+            onChange({
+                props: { ...props, ...data },
+                breakpoints: { ...breakpoints },
+            });
         },
-        [value, onChange]
+        [props, breakpoints, onChange]
     );
 
     // ----------------------------------------
-    // REMOVE / RENAME
+    // UPDATE BREAKPOINT PROPS
+    // ----------------------------------------
+    const updateEntry = useCallback(
+        (bpKey, data) => {
+            const entry = breakpoints[bpKey] || {};
+
+            onChange({
+                props: { ...props },
+                breakpoints: {
+                    ...breakpoints,
+                    [bpKey]: {
+                        ...entry,
+                        ...data,
+                    },
+                },
+            });
+        },
+        [props, breakpoints, onChange]
+    );
+
+    // ----------------------------------------
+    // REMOVE OR RENAME A BREAKPOINT ROW
     // ----------------------------------------
     const removeEntry = useCallback(
         (bpKey, opts = {}) => {
-            if (bpKey === "base") return;
-
-            const next = {...value};
+            const existing = breakpoints[bpKey] || {};
+            const next = { ...breakpoints };
             delete next[bpKey];
 
             if (opts.transfer && opts.newKey) {
                 next[opts.newKey] = opts.transfer;
             }
 
-            onChange(next);
+            onChange({
+                props: { ...props },
+                breakpoints: next,
+            });
         },
-        [value, onChange]
+        [props, breakpoints, onChange]
     );
 
     // ----------------------------------------
-    // ADD BREAKPOINT
+    // ADD NEW BREAKPOINT
     // ----------------------------------------
     const addBreakpoint = useCallback(() => {
-        const existing = Object.keys(value || {});
+        const existingKeys = Object.keys(breakpoints);
 
         const available = breakpointDefs
             .map((bp) => bp.key)
-            .filter((key) => !existing.includes(key));
+            .filter((k) => !existingKeys.includes(k));
 
         if (!available.length) return;
 
         const newKey = available[0];
 
-        const next = {
-            ...value,
-            [newKey]: {},   // flat empty entry
-        };
-
-        onChange(next);
-    }, [value, breakpointDefs, onChange]);
+        onChange({
+            props: { ...props },
+            breakpoints: {
+                ...breakpoints,
+                [newKey]: {},
+            },
+        });
+    }, [props, breakpoints, breakpointDefs, onChange]);
 
     // ----------------------------------------
-    // RENDER PANELS
+    // RENDER
     // ----------------------------------------
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
 
-            {orderedKeys.map((bpKey) => {
-                const isBase = bpKey === "base";
-                const entry = isBase
-                    ? (value.base || {})
-                    : (value[bpKey] || {});
+            {/* BASE PANEL */}
+            <div className="wpbs-layout-tools__panel" key="base">
+                <div className="wpbs-layout-tools__header">
+                    <strong>{label ?? "Base"}</strong>
+                </div>
 
-                const Panel = isBase
-                    ? render.base
-                    : render.breakpoints;
+                <div className="wpbs-layout-tools__grid">
+                    {render.base({
+                        bpKey: "base",
+                        entry: props,
+                        update: updateBase,
+                    })}
+                </div>
+            </div>
+
+            {/* BREAKPOINT PANELS */}
+            {orderedBpKeys.map((bpKey) => {
+                const entry = breakpoints[bpKey] || {};
+                const bpDef = breakpointDefs.find((bp) => bp.key === bpKey);
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
 
-                        {/* HEADER */}
-                        {(isBase && !label) ? null : (
-                            <div className="wpbs-layout-tools__header">
-
-                                {isBase ? (
-                                    <strong>{label ?? "Base"}</strong>
-                                ) : (
-                                    <Button
-                                        isSmall
-                                        size="small"
-                                        iconSize={20}
-                                        icon="no-alt"
-                                        className="components-button is-small has-icon"
-                                        onClick={() => removeEntry(bpKey)}
-                                    />
-                                )}
-
-                                {!isBase && (
-                                    <label className="wpbs-layout-tools__breakpoint">
-                                        <select
-                                            value={bpKey}
-                                            onChange={(e) => {
-                                                const newKey = e.target.value;
-
-                                                // prevent duplicate keys
-                                                if (
-                                                    newKey !== bpKey &&
-                                                    Object.keys(value || {}).includes(newKey)
-                                                ) return;
-
-                                                removeEntry(bpKey, {
-                                                    transfer: entry,
-                                                    newKey,
-                                                });
-                                            }}
-                                        >
-                                            {breakpointDefs.map((bp) => {
-                                                const disabled =
-                                                    bp.key !== bpKey &&
-                                                    Object.keys(value || {}).includes(bp.key);
-
-                                                return (
-                                                    <option
-                                                        key={bp.key}
-                                                        value={bp.key}
-                                                        disabled={disabled}
-                                                    >
-                                                        {bp.label} ({bp.size}px)
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
-                                    </label>
-                                )}
-
-                            </div>
-                        )}
-
-                        {/* CONTENT */}
-                        <div className="wpbs-layout-tools__grid">
-                            <Panel
-                                bpKey={bpKey}
-                                entry={entry}
-                                update={(data) => updateEntry(bpKey, data)}
+                        <div className="wpbs-layout-tools__header">
+                            <Button
+                                isSmall
+                                icon="no-alt"
+                                onClick={() => removeEntry(bpKey)}
                             />
+
+                            <label className="wpbs-layout-tools__breakpoint">
+                                <select
+                                    value={bpKey}
+                                    onChange={(e) => {
+                                        const newKey = e.target.value;
+                                        if (
+                                            newKey !== bpKey &&
+                                            breakpoints[newKey]
+                                        ) return;
+
+                                        removeEntry(bpKey, {
+                                            transfer: entry,
+                                            newKey,
+                                        });
+                                    }}
+                                >
+                                    {breakpointDefs.map((bp) => (
+                                        <option
+                                            key={bp.key}
+                                            value={bp.key}
+                                            disabled={breakpoints[bp.key] && bp.key !== bpKey}
+                                        >
+                                            {bp.label} ({bp.size}px)
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                        </div>
+
+                        <div className="wpbs-layout-tools__grid">
+                            {render.breakpoints({
+                                bpKey,
+                                entry,
+                                update: (data) => updateEntry(bpKey, data),
+                            })}
                         </div>
 
                     </div>

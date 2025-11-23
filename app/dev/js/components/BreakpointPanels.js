@@ -22,7 +22,7 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
     // Extract base + breakpoints from value
     const props = value.props || {};
     const breakpoints = value.breakpoints || {};
-
+console.log(value);
     // Build sorted breakpoint list
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
@@ -45,13 +45,23 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
     // ----------------------------------------
     const updateBase = useCallback(
         (data) => {
-            onChange({
-                props: { ...props, ...data },
-                breakpoints: { ...breakpoints }
+            onChange(prev => {
+                const prevProps = prev.props || {};
+
+                const nextProps = {
+                    ...prevProps,
+                    ...data,
+                };
+
+                return {
+                    ...prev,
+                    props: nextProps,
+                };
             });
         },
-        [props, breakpoints, onChange]
+        [onChange]
     );
+
 
 
     // ----------------------------------------
@@ -59,17 +69,27 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
     // ----------------------------------------
     const updateEntry = useCallback(
         (bpKey, data) => {
-            const entry       = breakpoints[bpKey] || {};
-            const nextEntry   = { ...entry, ...data };
-            const nextBps     = { ...breakpoints, [bpKey]: nextEntry };
+            onChange(prev => {
+                const prevBreakpoints = prev.breakpoints || {};
+                const prevEntry = prevBreakpoints[bpKey] || {};
 
-            onChange({
-                props: { ...props },
-                breakpoints: nextBps
+                const nextEntry = {
+                    ...prevEntry,
+                    ...data,
+                };
+
+                return {
+                    ...prev,
+                    breakpoints: {
+                        ...prevBreakpoints,
+                        [bpKey]: nextEntry,
+                    },
+                };
             });
         },
-        [breakpoints, props, onChange]
+        [onChange]
     );
+
 
 
 

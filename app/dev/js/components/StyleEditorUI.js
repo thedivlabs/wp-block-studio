@@ -19,6 +19,11 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // ----------------------------------------
     const [layout, setLayout] = useState(() => settings);
 
+// Keep layout in sync when settings updates externally
+    useEffect(() => {
+        setLayout(settings);
+    }, [settings]);
+
     const debouncedCommit = useMemo(() =>
             debounce((nextLayout, externalSettings) => {
                 const cleanedLocal = cleanObject(nextLayout, true);
@@ -30,13 +35,11 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
             }, 500),
         [updateStyleSettings]);
 
-
     useEffect(() => {
         debouncedCommit(layout, settings);
-
         return () => debouncedCommit.cancel();
-
     }, [layout]);
+
 
 
 

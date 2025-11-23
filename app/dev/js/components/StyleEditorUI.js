@@ -16,17 +16,22 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 
     const [layout, setLayout] = useState(settings);
 
-    useEffect(() => {
-        const cleanedLocal = cleanObject(layout, true);
-        const cleanedExternal = cleanObject(settings, true);
-        if (!isEqual(cleanedLocal, cleanedExternal)) {
-            updateStyleSettings(layout);
-        }
-    }, [layout]);
 
-    const updateSettings = (newLayout) => {
-        setLayout(newLayout);
-    }
+    useEffect(() => {
+        const cleanedIncoming = cleanObject(settings || {}, true);
+        const cleanedLocal = cleanObject(layout || {}, true);
+
+        if (!isEqual(cleanedIncoming, cleanedLocal)) {
+            setLayout(settings || {});
+        }
+    }, [settings]);
+
+// 2. Update attributes ONLY on user action
+    const updateSettings = useCallback((nextLayout) => {
+        setLayout(nextLayout);
+        updateStyleSettings(nextLayout); // safe, user-initiated
+    }, [updateStyleSettings]);
+
 
     return (
         <InspectorControls group="styles">

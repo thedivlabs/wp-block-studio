@@ -42,8 +42,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 render={{
                     base: ({entry, update}) => {
 
-                        console.log(entry);
-
                         return <LayoutFields
                             label="Settings"
                             settings={entry ?? {}}
@@ -51,9 +49,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                         />;
                     },
                     breakpoints: ({entry, update}) => {
-
-                        console.log(entry);
-
+                        
                         return <LayoutFields
                             label="Settings"
                             settings={entry ?? {}}

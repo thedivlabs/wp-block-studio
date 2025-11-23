@@ -1,8 +1,7 @@
-import {memo, useCallback} from "@wordpress/element";
+import {useCallback} from "@wordpress/element";
 import {
     __experimentalToolsPanel as ToolsPanel,
 } from "@wordpress/components";
-import _ from "lodash";
 import {Field} from "Components/Field";
 
 export const LayoutFields = ({label = "Settings", settings = {}, suppress = [], updateFn}) => {

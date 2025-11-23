@@ -1,35 +1,15 @@
 import {useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
-import _ from "lodash";
-
-function normalizePatch(patch) {
-    if (!patch || typeof patch !== "object" || Array.isArray(patch)) {
-        return {};
-    }
-
-    return Object.fromEntries(
-        Object.entries(patch).filter(([k, v]) =>
-            v && typeof v === "object" && !Array.isArray(v)
-        )
-    );
-}
-
 
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // Unpack layout namespaces
+    // Everything except `breakpoints` is treated as the "base entry"
     const {
-        props = {},
-        hover = {},
         breakpoints = {},
-        ...rest
+        ...baseEntry
     } = value || {};
 
-    // Build base entry object for Option A
-    const baseEntry = { props, hover };
-
-    // Sorted breakpoint list from theme settings
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
             key,
@@ -46,47 +26,65 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [breakpoints, breakpointDefs]);
 
-    // ------------------------------------------------------------
-    // UPDATE BASE OR BREAKPOINT ENTRY (props + hover together)
-    // ------------------------------------------------------------
-    const updateEntry = useCallback(
-        (bpKey, patch, reset = false) => {
-
-
-            if (bpKey === "base") {
-                const next = reset
-                    ? {props: {}, hover: {}}
-                    : _.merge({}, baseEntry, patch);
-
-                onChange({
-                    ...rest,
-                    props: next.props,
-                    hover: next.hover,
-                    breakpoints,
-                });
-
-                return;
-            }
-
-            const prev = breakpoints[bpKey] || {props: {}, hover: {}};
-            const next = reset ? {props: {}, hover: {}} : _.merge({}, prev, patch);
-
+    // `nextEntry` is expected to be the FULL base entry (merge already done upstream)
+    const updateBase = useCallback(
+        (nextEntry) => {
             onChange({
-                ...rest,
-                props,
-                hover,
-                breakpoints: {
-                    ...breakpoints,
-                    [bpKey]: next,
-                },
+                ...(nextEntry || {}),
+                breakpoints,
             });
         },
-        [baseEntry, props, hover, breakpoints, rest, onChange]
+        [breakpoints, onChange]
     );
 
-    // ------------------------------------------------------------
-    // ADD NEW BREAKPOINT ENTRY
-    // ------------------------------------------------------------
+    // `nextEntry` is expected to be the FULL breakpoint entry (merge already done upstream)
+    const updateBreakpoint = useCallback(
+        (bpKey, nextEntry) => {
+            const nextBreakpoints = {
+                ...breakpoints,
+                [bpKey]: nextEntry || {},
+            };
+
+            onChange({
+                ...baseEntry,
+                breakpoints: nextBreakpoints,
+            });
+        },
+        [baseEntry, breakpoints, onChange]
+    );
+
+    const removeBreakpoint = useCallback(
+        (bpKey) => {
+            const next = {...breakpoints};
+            delete next[bpKey];
+
+            onChange({
+                ...baseEntry,
+                breakpoints: next,
+            });
+        },
+        [baseEntry, breakpoints, onChange]
+    );
+
+    const renameBreakpoint = useCallback(
+        (oldKey, newKey) => {
+            if (newKey === oldKey) return;
+            if (!breakpoints[oldKey]) return;
+            if (breakpoints[newKey]) return;
+
+            const entry = breakpoints[oldKey];
+            const next = {...breakpoints};
+            delete next[oldKey];
+            next[newKey] = entry;
+
+            onChange({
+                ...baseEntry,
+                breakpoints: next,
+            });
+        },
+        [baseEntry, breakpoints, onChange]
+    );
+
     const addBreakpoint = useCallback(() => {
         const existingKeys = Object.keys(breakpoints);
 
@@ -94,31 +92,26 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             .map((bp) => bp.key)
             .filter((k) => !existingKeys.includes(k));
 
-        if (!available.length) return;
+        if (!available.length) {
+            return;
+        }
 
         const newKey = available[0];
 
-        onChange({
-            ...rest,
-            props,
-            hover,
-            breakpoints: {
-                ...breakpoints,
-                [newKey]: {
-                    props: {},
-                    hover: {},
-                },
-            },
-        });
-    }, [breakpoints, breakpointDefs, props, hover, rest, onChange]);
+        const nextBreakpoints = {
+            ...breakpoints,
+            [newKey]: {},
+        };
 
-    // ------------------------------------------------------------
-    // RENDER
-    // ------------------------------------------------------------
+        onChange({
+            ...baseEntry,
+            breakpoints: nextBreakpoints,
+        });
+    }, [baseEntry, breakpoints, breakpointDefs, onChange]);
+
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
-
-            {/* BASE PANEL */}
+            {/* Base panel */}
             <div className="wpbs-layout-tools__panel" key="base">
                 <div className="wpbs-layout-tools__header">
                     <strong>{label ?? "Base"}</strong>
@@ -128,38 +121,23 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                     {render.base({
                         bpKey: "base",
                         entry: baseEntry,
-                        update: (patch, reset = false) =>
-                            updateEntry("base", patch, reset),
+                        // Upstream does the merge; we just accept a full next entry
+                        update: (nextEntry) => updateBase(nextEntry),
                     })}
                 </div>
             </div>
 
-            {/* BREAKPOINT PANELS */}
+            {/* Breakpoint panels */}
             {orderedBpKeys.map((bpKey) => {
-                const raw = breakpoints[bpKey] || {};
-                const entry = {
-                    props: raw.props || {},
-                    hover: raw.hover || {},
-                };
+                const entry = breakpoints[bpKey] || {};
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
                         <div className="wpbs-layout-tools__header">
-
                             <Button
                                 isSmall
                                 icon="no-alt"
-                                onClick={() => {
-                                    const next = {...breakpoints};
-                                    delete next[bpKey];
-
-                                    onChange({
-                                        ...rest,
-                                        props,
-                                        hover,
-                                        breakpoints: next,
-                                    });
-                                }}
+                                onClick={() => removeBreakpoint(bpKey)}
                             />
 
                             <label className="wpbs-layout-tools__breakpoint">
@@ -168,18 +146,11 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                     onChange={(e) => {
                                         const newKey = e.target.value;
 
-                                        if (newKey !== bpKey && breakpoints[newKey]) return;
+                                        if (newKey !== bpKey && breakpoints[newKey]) {
+                                            return;
+                                        }
 
-                                        const next = {...breakpoints};
-                                        delete next[bpKey];
-                                        next[newKey] = entry;
-
-                                        onChange({
-                                            ...rest,
-                                            props,
-                                            hover,
-                                            breakpoints: next,
-                                        });
+                                        renameBreakpoint(bpKey, newKey);
                                     }}
                                 >
                                     {breakpointDefs.map((bp) => (
@@ -201,15 +172,14 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                             {render.breakpoints({
                                 bpKey,
                                 entry,
-                                update: (patch, reset = false) =>
-                                    updateEntry(bpKey, patch, reset),
+                                // Upstream does the merge; we just accept a full next entry
+                                update: (nextEntry) => updateBreakpoint(bpKey, nextEntry),
                             })}
                         </div>
                     </div>
                 );
             })}
 
-            {/* ADD BREAKPOINT BUTTON */}
             <Button
                 isPrimary
                 onClick={addBreakpoint}

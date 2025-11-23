@@ -11,6 +11,7 @@ import {
 import { PanelColorSettings } from "@wordpress/block-editor";
 import { Field } from "Components/Field";
 import { BreakpointPanels } from "Components/BreakpointPanels";
+import { merge } from "lodash";
 
 const BackgroundFields = memo(({ settings, updateFn }) => {
     const { backgroundFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
@@ -29,13 +30,6 @@ const BackgroundFields = memo(({ settings, updateFn }) => {
     });
 });
 
-/**
- * Inner panel for a single background "entry"
- * (either base or a single breakpoint).
- *
- * This only knows about a flat "props" object:
- *   { type, image, video, overlay, color, ... }
- */
 const BackgroundPanelFields = ({
                                    settings = {},
                                    onChange,
@@ -51,17 +45,13 @@ const BackgroundPanelFields = ({
                 label="Type"
                 value={settings?.type ?? ""}
                 onChange={(newValue) => {
-                    // Skip if user re-selects the same value
                     if (newValue === settings?.type) return;
 
-                    // Always reset image and video when type changes
-                    onChange(
-                        {
-                            type: newValue,
-                            image: {},
-                            video: {},
-                        },
-                    );
+                    onChange({
+                        type: newValue,
+                        image: {},
+                        video: {},
+                    });
                 }}
                 options={[
                     { label: "Select", value: "" },
@@ -127,9 +117,7 @@ const BackgroundPanelFields = ({
                                 ]}
                                 clearable={false}
                                 value={settings?.overlay ?? undefined}
-                                onChange={(newValue) =>
-                                    onChange({ overlay: newValue })
-                                }
+                                onChange={(newValue) => onChange({ overlay: newValue })}
                             />
                         </div>
                     </BaseControl>
@@ -142,8 +130,7 @@ const BackgroundPanelFields = ({
                                 slug: "color",
                                 label: "Color",
                                 value: settings?.color ?? undefined,
-                                onChange: (newValue) =>
-                                    onChange({ color: newValue }),
+                                onChange: (newValue) => onChange({ color: newValue }),
                                 isShownByDefault: true,
                             },
                         ]}
@@ -185,29 +172,40 @@ const BackgroundPanelFields = ({
     );
 };
 
-/**
- * Top–level BackgroundControls:
- * wraps BreakpointPanels so wpbs-background is:
- *
- *   {
- *     props: { ...base background props },
- *     breakpoints: {
- *       [key]: { props: { ...bp props }, hover: {} }
- *     }
- *   }
- */
+
 export const BackgroundControls = ({ settings = {}, callback }) => {
+    // Normalize shape:
+    // wpbs-background = { props: {...}, breakpoints: { [bpKey]: { props: {...} } } }
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
     };
 
     const handleChange = (next = {}) => {
-        const { props = {}, breakpoints = {} } = next || {};
-        callback({ props, breakpoints });
+        const {
+            props = {},
+            breakpoints = {},
+        } = next || {};
+
+        callback({
+            props,
+            breakpoints,
+        });
     };
 
     const panelOpen = hasAnyBackground(value);
+
+    // helper to merge a patch into an entry.props
+    const mergeEntryProps = (entry = {}, patch = {}, reset = false) => {
+        const currentProps = entry.props || {};
+        const baseProps = reset ? {} : currentProps;
+
+        const nextProps = merge({}, baseProps, patch || {});
+        return {
+            ...entry,
+            props: nextProps,
+        };
+    };
 
     return (
         <PanelBody
@@ -220,38 +218,53 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
                 value={value}
                 onChange={handleChange}
                 render={{
-                    base: ({ entry, update }) => (
-                        <BackgroundPanelFields
-                            settings={entry?.props || {}}
-                            isBreakpoint={false}
-                            onChange={(propPatch, reset = false) =>
-                                update({ props: propPatch }, reset)
-                            }
-                        />
-                    ),
-                    breakpoints: ({ entry, update }) => (
-                        <BackgroundPanelFields
-                            settings={entry?.props || {}}
-                            isBreakpoint={true}
-                            onChange={(propPatch, reset = false) =>
-                                update({ props: propPatch }, reset)
-                            }
-                        />
-                    ),
+                    base: ({ entry, update }) => {
+                        const currentEntry = entry || {};
+                        const currentProps = currentEntry.props || {};
+
+                        const handlePanelChange = (patch = {}, reset = false) => {
+                            const nextEntry = mergeEntryProps(currentEntry, patch, reset);
+                            update(nextEntry);
+                        };
+
+                        return (
+                            <BackgroundPanelFields
+                                settings={currentProps}
+                                isBreakpoint={false}
+                                onChange={handlePanelChange}
+                            />
+                        );
+                    },
+
+                    breakpoints: ({ entry, update }) => {
+                        const currentEntry = entry || {};
+                        const currentProps = currentEntry.props || {};
+
+                        const handlePanelChange = (patch = {}, reset = false) => {
+                            const nextEntry = mergeEntryProps(currentEntry, patch, reset);
+                            update(nextEntry);
+                        };
+
+                        return (
+                            <BackgroundPanelFields
+                                settings={currentProps}
+                                isBreakpoint={true}
+                                onChange={handlePanelChange}
+                            />
+                        );
+                    },
                 }}
             />
         </PanelBody>
     );
 };
 
-/**
- * Detect whether ANY background is configured in base or breakpoints,
- * using the new wpbs-background shape.
- */
+
 export function hasAnyBackground(bgSettings = {}) {
     const { props = {}, breakpoints = {} } = bgSettings || {};
 
     const base = props || {};
+
     if (base.type) return true;
     if (base.image?.id) return true;
     if (base.video?.source) return true;

@@ -1,8 +1,6 @@
-// StyleEditorUI.js
 import {
     useState,
     useEffect,
-    useMemo,
     useCallback,
 } from "@wordpress/element";
 import {InspectorControls} from "@wordpress/block-editor";
@@ -10,7 +8,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
 import {cleanObject} from "Includes/helper";
-import {isEqual, debounce} from "lodash";
+import {isEqual} from "lodash";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 

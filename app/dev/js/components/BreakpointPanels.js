@@ -44,37 +44,37 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // ----------------------------------------
     // UPDATE BASE PROPS
     // ----------------------------------------
-    const updateBase = (data) => {
-        const nextProps = _.merge({}, value.props || {}, data);
-        const nextBreakpoints = _.merge({}, value.breakpoints || {});
+    const updateBase = useCallback(
+        (data) => {
+            onChange({
+                props: { ...props, ...data },
+                breakpoints: { ...breakpoints }
+            });
+        },
+        [props, breakpoints, onChange]
+    );
 
-        onChange({
-            props: nextProps,
-            breakpoints: nextBreakpoints
-        });
-    };
 
 
     // ----------------------------------------
     // UPDATE BREAKPOINT PROPS
     // ----------------------------------------
-    const updateEntry = (bpKey, data) => {
-        const prevBreakpoints = value.breakpoints || {};
-        const prevEntry = prevBreakpoints[bpKey] || {};
+    const updateEntry = useCallback(
+        (bpKey, data) => {
+            const prevEntry = breakpoints[bpKey] || {};
+            const nextEntry = { ...prevEntry, ...data };
 
-        const nextEntry = _.merge({}, prevEntry, data);
+            onChange({
+                props: { ...props },
+                breakpoints: {
+                    ...breakpoints,
+                    [bpKey]: nextEntry,
+                }
+            });
+        },
+        [props, breakpoints, onChange]
+    );
 
-        const nextBreakpoints = _.merge({}, prevBreakpoints, {
-            [bpKey]: nextEntry
-        });
-
-        const nextProps = _.merge({}, value.props || {});
-
-        onChange({
-            props: nextProps,
-            breakpoints: nextBreakpoints
-        });
-    };
 
 
     // ----------------------------------------

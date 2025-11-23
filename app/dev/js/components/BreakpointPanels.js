@@ -197,9 +197,17 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                             {render.breakpoints({
                                 bpKey,
                                 entry,
+                                hover: entry.hover ?? {},              // <-- add this
                                 update: (...args) => updateForKey(bpKey, ...args),
+                                updateHover: (data, reset = false) => { // <-- add this
+                                    const prev = entry.hover ?? {};
+                                    const next = reset ? {} : _.merge({}, prev, data);
+
+                                    updateForKey(bpKey, {hover: next}, reset);
+                                },
                             })}
                         </div>
+
                     </div>
                 );
             })}

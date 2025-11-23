@@ -17,7 +17,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // LOCAL STATE (flat-entry layout)
     // layout = { base:{...}, xs:{...}, md:{...} }
     // ----------------------------------------
-    const [layout, setLayout] = useState(() => settings);
+    const [layout, setLayout] = useState(settings);
 
     useEffect(() => {
         const cleanedLocal = cleanObject(layout, true);
@@ -27,7 +27,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         }
     }, [layout]);
 
-    const updateSettings = (newLayout)=>{
+    const updateSettings = (newLayout) => {
         setLayout(newLayout);
     }
 

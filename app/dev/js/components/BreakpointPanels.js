@@ -1,24 +1,15 @@
-// BreakpointPanels.js
-// Compatible with:
-// {
-//   props: { ... },
-//   breakpoints: { xs:{...}, md:{...} }
-// }
-// NO "base" key. NO nested props inside breakpoints.
-
 import {useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
 import _ from "lodash";
 
-
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // Extract base + breakpoints from value
+    // Extract base + breakpoints
     const props = value.props || {};
     const breakpoints = value.breakpoints || {};
 
-    // Build sorted breakpoint list
+    // Sorted breakpoint list
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
             key,
@@ -35,48 +26,43 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [breakpoints, breakpointDefs]);
 
-    // ----------------------------------------
-    // UPDATE BASE PROPS
-    // ----------------------------------------
-    const updateBase = (data) => {
+    // ------------------------------------------------------------
+    // UNIFIED UPDATE FUNCTION
+    // ------------------------------------------------------------
+    const updateForKey = useCallback(
+        (bpKey, data) => {
+            // Base props update
+            if (bpKey === "base") {
+                const nextProps = _.merge({}, props, data);
 
-        const nextProps = _.merge({}, props, data);
+                onChange({
+                    props: nextProps,
+                    breakpoints: breakpoints,
+                });
+                return;
+            }
 
-        const result = {
-            props: nextProps,
-            breakpoints: breakpoints,
-        };
+            // Breakpoint update
+            const nextEntry = _.merge({}, breakpoints[bpKey], data);
 
-        onChange(result);
-    };
+            const nextBreakpoints = {
+                ...breakpoints,
+                [bpKey]: nextEntry,
+            };
 
-    // ----------------------------------------
-    // UPDATE BREAKPOINT PROPS
-    // ----------------------------------------
-    const updateEntry = (bpKey, data) => {
+            onChange({
+                props: props,            // unchanged
+                breakpoints: nextBreakpoints
+            });
+        },
+        [props, breakpoints, onChange]
+    );
 
-        // Deep merge the entry
-        const nextEntry = _.merge({}, breakpoints[bpKey], data);
 
-        // Deep clone + replace the one entry
-        const nextBreakpoints = _.merge({}, breakpoints, {
-            [bpKey]: nextEntry
-        });
-
-        // Final layout object
-        const nextLayout = {
-            props: props,   // deep clone base props
-            breakpoints: nextBreakpoints
-        };
-
-        onChange(nextLayout);
-    };
-
-    // ----------------------------------------
+    // ------------------------------------------------------------
     // REMOVE OR RENAME A BREAKPOINT ROW
-    // ----------------------------------------
+    // ------------------------------------------------------------
     const removeEntry = (bpKey, opts = {}) => {
-        const existing = breakpoints[bpKey] || {};
         const next = {...breakpoints};
         delete next[bpKey];
 
@@ -90,9 +76,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     };
 
-    // ----------------------------------------
+    // ------------------------------------------------------------
     // ADD NEW BREAKPOINT
-    // ----------------------------------------
+    // ------------------------------------------------------------
     const addBreakpoint = useCallback(() => {
         const existingKeys = Object.keys(breakpoints);
 
@@ -113,9 +99,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [props, breakpoints, breakpointDefs, onChange]);
 
-    // ----------------------------------------
+    // ------------------------------------------------------------
     // RENDER
-    // ----------------------------------------
+    // ------------------------------------------------------------
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
 
@@ -129,7 +115,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                     {render.base({
                         bpKey: "base",
                         entry: props,
-                        update: updateBase,
+                        update: (data) => updateForKey("base", data),
                     })}
                 </div>
             </div>
@@ -141,8 +127,8 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
-
                         <div className="wpbs-layout-tools__header">
+
                             <Button
                                 isSmall
                                 icon="no-alt"
@@ -169,7 +155,10 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                         <option
                                             key={bp.key}
                                             value={bp.key}
-                                            disabled={breakpoints[bp.key] && bp.key !== bpKey}
+                                            disabled={
+                                                breakpoints[bp.key] &&
+                                                bp.key !== bpKey
+                                            }
                                         >
                                             {bp.label} ({bp.size}px)
                                         </option>
@@ -182,15 +171,14 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                             {render.breakpoints({
                                 bpKey,
                                 entry,
-                                update: (data) => updateEntry(bpKey, data),
+                                update: (data) => updateForKey(bpKey, data),
                             })}
                         </div>
-
                     </div>
                 );
             })}
 
-            {/* ADD */}
+            {/* ADD BUTTON */}
             <Button
                 isPrimary
                 onClick={addBreakpoint}

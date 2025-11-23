@@ -5,40 +5,32 @@ import {
 import _ from "lodash";
 import {Field} from "Components/Field";
 
-export const LayoutFields = memo(
-    ({label = "Settings", settings = {}, suppress = [], updateFn}) => {
-        const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+export const LayoutFields = ({label = "Settings", settings = {}, suppress = [], updateFn}) => {
+    const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
-        const safeSettings = settings || {};
+    const onUpdate = useCallback(
+        (slug, value) => {
+            updateFn({[slug]: value});
+        },
+        [updateFn]
+    );
 
-        const onUpdate = useCallback(
-            (slug, value) => {
-                updateFn({ [slug]: value });
-            },
-            [updateFn]
-        );
-
-        return (
-            <ToolsPanel
-                label={label}
-                resetAll={() => updateFn({})}
-            >
-                {map
-                    .filter((f) => !suppress.includes(f.slug))
-                    .map((field) => (
-                        <Field
-                            key={field.slug}
-                            field={field}
-                            settings={safeSettings}
-                            callback={(value) => onUpdate(field.slug, value)}
-                            isToolsPanel={true}
-                        />
-                    ))}
-            </ToolsPanel>
-        );
-    },
-    (prev, next) =>
-        _.isEqual(prev.settings, next.settings) &&
-        _.isEqual(prev.suppress, next.suppress) &&
-        prev.label === next.label
-);
+    return (
+        <ToolsPanel
+            label={label}
+            resetAll={() => updateFn({})}
+        >
+            {map
+                .filter((f) => !suppress.includes(f.slug))
+                .map((field) => (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        settings={settings}
+                        callback={(value) => onUpdate(field.slug, value)}
+                        isToolsPanel={true}
+                    />
+                ))}
+        </ToolsPanel>
+    );
+};

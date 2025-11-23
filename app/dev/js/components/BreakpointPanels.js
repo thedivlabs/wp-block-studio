@@ -56,8 +56,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         onChange(result);
     };
 
-
-
     // ----------------------------------------
     // UPDATE BREAKPOINT PROPS
     // ----------------------------------------

@@ -17,16 +17,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // LOCAL STATE (flat-entry layout)
     // layout = { base:{...}, xs:{...}, md:{...} }
     // ----------------------------------------
-    const [layout, setLayout] = useState({});
-
-    useEffect(() => {
-
-        if (!isEqual(cleanObject(settings), cleanObject(layout))) {
-            setLayout(settings);
-        }
-
-    }, [settings])
-
+    const [layout, setLayout] = useState(() => settings);
 
     const debouncedCommit = useMemo(() =>
             debounce((nextLayout, externalSettings) => {
@@ -48,36 +39,31 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     }, [layout]);
 
 
-    const updateLayout = useCallback((nextPanels) => {
-        setLayout(nextPanels);
-    }, []);
-
-
-    const LayoutFieldsPanel = ({entry, update}) => (
-        <LayoutFields
-            label="Settings"
-            settings={entry ?? {}}
-            updateFn={(nextProps) => update(nextProps)}
-        />
-    );
-
-    const BreakpointFieldsPanel = ({entry, update}) => (
-        <LayoutFields
-            label="Settings"
-            settings={entry ?? {}}
-            updateFn={(nextProps) => update(nextProps)}
-        />
-    );
 
     return (
         <InspectorControls group="styles">
             <BreakpointPanels
                 value={layout}
-                onChange={updateLayout}
+                onChange={(nextPanels) => {
+                    console.log(nextPanels);
+                    setLayout(nextPanels);
+                }}
                 label="Layout"
                 render={{
-                    base: LayoutFieldsPanel,
-                    breakpoints: BreakpointFieldsPanel,
+                    base: ({entry, update}) => (
+                        <LayoutFields
+                            label="Settings"
+                            settings={entry ?? {}}
+                            updateFn={(nextProps) => update(nextProps)}
+                        />
+                    ),
+                    breakpoints: ({entry, update}) => (
+                        <LayoutFields
+                            label="Settings"
+                            settings={entry ?? {}}
+                            updateFn={(nextProps) => update(nextProps)}
+                        />
+                    ),
                 }}
             />
         </InspectorControls>

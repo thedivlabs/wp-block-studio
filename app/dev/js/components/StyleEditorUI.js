@@ -75,37 +75,23 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                         );
                     },
 
-                    breakpoints: ({bpKey, entry, update}) => {
-                        // entry → breakpoint entry (may include .hover)
-                        const bpHover = entry?.hover ?? {};
-
+                    breakpoints: ({bpKey, entry, hover, update, updateHover}) => {
                         return (
                             <Fragment>
                                 <LayoutFields
                                     label="Settings"
                                     settings={entry ?? {}}
-                                    updateFn={(data, reset = false) =>
-                                        update(data, reset)
-                                    }
+                                    updateFn={(data, reset = false) => update(data, reset)}
                                 />
 
                                 <HoverFields
-                                    settings={bpHover}
-                                    updateFn={(data, reset = false) => {
-                                        if (reset) {
-                                            // Clear only hover for this breakpoint
-                                            update({hover: {}}, true);
-                                            return;
-                                        }
-
-                                        // Deep-merge hover into the breakpoint entry
-                                        // via BreakpointPanels' _.merge
-                                        update({hover: data}, false);
-                                    }}
+                                    settings={hover ?? {}}
+                                    updateFn={(data, reset = false) => updateHover(data, reset)}
                                 />
                             </Fragment>
                         );
                     },
+
                 }}
             />
         </InspectorControls>

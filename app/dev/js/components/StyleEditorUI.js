@@ -19,25 +19,12 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     // ----------------------------------------
     const [layout, setLayout] = useState(() => settings);
 
-// Keep layout in sync when settings updates externally
     useEffect(() => {
-        setLayout(settings);
-    }, [settings]);
-
-    const debouncedCommit = useMemo(() =>
-            debounce((nextLayout, externalSettings) => {
-                const cleanedLocal = cleanObject(nextLayout, true);
-                const cleanedExternal = cleanObject(externalSettings, true);
-
-                if (!isEqual(cleanedLocal, cleanedExternal)) {
-                    updateStyleSettings(nextLayout);
-                }
-            }, 500),
-        [updateStyleSettings]);
-
-    useEffect(() => {
-        debouncedCommit(layout, settings);
-        return () => debouncedCommit.cancel();
+        const cleanedLocal = cleanObject(layout, true);
+        const cleanedExternal = cleanObject(settings, true);
+        if (!isEqual(cleanedLocal, cleanedExternal)) {
+            updateStyleSettings(layout);
+        }
     }, [layout]);
 
 
@@ -47,18 +34,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         <InspectorControls group="styles">
             <BreakpointPanels
                 value={layout}
-                onChange={(nextPanels) => {
-                    setLayout(prev => {
-                        // functional updater from BreakpointPanels
-                        if (typeof nextPanels === "function") {
-                            return nextPanels(prev);
-                        }
-
-                        // plain object replacement
-                        return nextPanels || {};
-                    });
-                }}
-
+                onChange={setLayout}
                 label="Layout"
                 render={{
                     base: ({entry, update}) => (

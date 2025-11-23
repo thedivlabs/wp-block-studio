@@ -45,22 +45,22 @@ console.log(value);
     // ----------------------------------------
     const updateBase = useCallback(
         (data) => {
-            onChange(prev => {
-                const prevProps = prev.props || {};
+            const prevProps = value.props || {};
+            const prevBreakpoints = value.breakpoints || {};
 
-                const nextProps = {
-                    ...prevProps,
-                    ...data,
-                };
+            const nextProps = {
+                ...prevProps,
+                ...data
+            };
 
-                return {
-                    ...prev,
-                    props: nextProps,
-                };
+            onChange({
+                props: nextProps,
+                breakpoints: { ...prevBreakpoints }
             });
         },
-        [onChange]
+        [value, onChange]
     );
+
 
 
 
@@ -69,26 +69,28 @@ console.log(value);
     // ----------------------------------------
     const updateEntry = useCallback(
         (bpKey, data) => {
-            onChange(prev => {
-                const prevBreakpoints = prev.breakpoints || {};
-                const prevEntry = prevBreakpoints[bpKey] || {};
+            const prevProps = value.props || {};
+            const prevBreakpoints = value.breakpoints || {};
+            const prevEntry = prevBreakpoints[bpKey] || {};
 
-                const nextEntry = {
-                    ...prevEntry,
-                    ...data,
-                };
+            const nextEntry = {
+                ...prevEntry,
+                ...data
+            };
 
-                return {
-                    ...prev,
-                    breakpoints: {
-                        ...prevBreakpoints,
-                        [bpKey]: nextEntry,
-                    },
-                };
+            const nextBreakpoints = {
+                ...prevBreakpoints,
+                [bpKey]: nextEntry,
+            };
+
+            onChange({
+                props: { ...prevProps },
+                breakpoints: nextBreakpoints
             });
         },
-        [onChange]
+        [value, onChange]
     );
+
 
 
 

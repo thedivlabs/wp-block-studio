@@ -174,18 +174,24 @@ const BackgroundPanelFields = ({
 
 
 export const BackgroundControls = ({ settings = {}, callback }) => {
-    // Normalize shape:
-    // wpbs-background = { props: {...}, breakpoints: { [bpKey]: { props: {...} } } }
+    //
+    // Normalize the shape:
+    //
+    // {
+    //   props: { … },
+    //   breakpoints: {
+    //     sm: { props:{…} },
+    //     md: { props:{…} }
+    //   }
+    // }
+    //
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
     };
 
     const handleChange = (next = {}) => {
-        const {
-            props = {},
-            breakpoints = {},
-        } = next || {};
+        const { props = {}, breakpoints = {} } = next || {};
 
         callback({
             props,
@@ -193,14 +199,13 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
         });
     };
 
-    const panelOpen = hasAnyBackground(value);
-
-    // helper to merge a patch into an entry.props
     const mergeEntryProps = (entry = {}, patch = {}, reset = false) => {
         const currentProps = entry.props || {};
         const baseProps = reset ? {} : currentProps;
 
+        // identical to style editor: deep merge patch into entry.props
         const nextProps = merge({}, baseProps, patch || {});
+
         return {
             ...entry,
             props: nextProps,
@@ -210,8 +215,8 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
     return (
         <PanelBody
             title="Background"
-            initialOpen={panelOpen}
-            className={"wpbs-background-controls"}
+            initialOpen={hasAnyBackground(value)}
+            className="wpbs-background-controls"
         >
             <BreakpointPanels
                 label="Background"
@@ -220,36 +225,36 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
                 render={{
                     base: ({ entry, update }) => {
                         const currentEntry = entry || {};
-                        const currentProps = currentEntry.props || {};
+                        const props = currentEntry.props || {};
 
-                        const handlePanelChange = (patch = {}, reset = false) => {
+                        const onChange = (patch = {}, reset = false) => {
                             const nextEntry = mergeEntryProps(currentEntry, patch, reset);
                             update(nextEntry);
                         };
 
                         return (
                             <BackgroundPanelFields
-                                settings={currentProps}
+                                settings={props}
                                 isBreakpoint={false}
-                                onChange={handlePanelChange}
+                                onChange={onChange}
                             />
                         );
                     },
 
                     breakpoints: ({ entry, update }) => {
                         const currentEntry = entry || {};
-                        const currentProps = currentEntry.props || {};
+                        const props = currentEntry.props || {};
 
-                        const handlePanelChange = (patch = {}, reset = false) => {
+                        const onChange = (patch = {}, reset = false) => {
                             const nextEntry = mergeEntryProps(currentEntry, patch, reset);
                             update(nextEntry);
                         };
 
                         return (
                             <BackgroundPanelFields
-                                settings={currentProps}
+                                settings={props}
                                 isBreakpoint={true}
-                                onChange={handlePanelChange}
+                                onChange={onChange}
                             />
                         );
                     },
@@ -259,37 +264,30 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
     );
 };
 
-
 export function hasAnyBackground(bgSettings = {}) {
     const { props = {}, breakpoints = {} } = bgSettings || {};
 
-    const base = props || {};
+    const check = (obj) => {
+        if (!obj) return false;
+        if (obj.type) return true;
+        if (obj.image?.id) return true;
+        if (obj.video?.source) return true;
+        if (obj.color) return true;
+        if (obj.overlay) return true;
+        if (obj.fade) return true;
+        return false;
+    };
 
-    if (base.type) return true;
-    if (base.image?.id) return true;
-    if (base.video?.source) return true;
-    if (base.color) return true;
-    if (base.overlay) return true;
-    if (base.fade) return true;
+    if (check(props)) return true;
 
     for (const bp of Object.values(breakpoints)) {
-        const bpProps = bp?.props || {};
-        if (bpProps.type) return true;
-        if (bpProps.image?.id) return true;
-        if (bpProps.video?.source) return true;
-        if (bpProps.color) return true;
-        if (bpProps.overlay) return true;
-        if (bpProps.fade) return true;
+        if (check(bp?.props)) return true;
     }
 
     return false;
 }
 
-/**
- * New video renderer: reads from wpbs-background:
- *   base: props.video
- *   breakpoints: breakpoints[bpKey].props.video
- */
+
 const BackgroundVideo = ({ settings = {}, isSave = false }) => {
     if (!isSave) return null;
 

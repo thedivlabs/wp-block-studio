@@ -44,51 +44,41 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     // ----------------------------------------
     // UPDATE BASE PROPS
     // ----------------------------------------
-    const updateBase = useCallback(
-        (data) => {
-            const prevProps       = value.props || {};
-            const prevBreakpoints = value.breakpoints || {};
+    const updateBase = (data) => {
 
-            const nextProps       = _.merge({}, prevProps, data);
-            const nextBreakpoints = _.merge({}, prevBreakpoints);
+        const nextProps       = _.merge({}, props, data);
 
-            onChange({
-                props: nextProps,
-                breakpoints: nextBreakpoints,
-            });
-        },
-        [value, onChange]
-    );
+        const result = {
+            props: nextProps,
+            breakpoints: breakpoints,
+        };
+
+        onChange(result);
+    };
 
 
 
     // ----------------------------------------
     // UPDATE BREAKPOINT PROPS
     // ----------------------------------------
-    const updateEntry = useCallback(
-        (bpKey, data) => {
-            const prevProps       = value.props || {};
-            const prevBreakpoints = value.breakpoints || {};
-            const prevEntry       = prevBreakpoints[bpKey] || {};
+    const updateEntry = (bpKey, data) => {
 
-            // Deep merge the entry
-            const nextEntry = _.merge({}, prevEntry, data);
+        // Deep merge the entry
+        const nextEntry = _.merge({}, breakpoints[bpKey], data);
 
-            // Deep clone + replace the one entry
-            const nextBreakpoints = _.merge({}, prevBreakpoints, {
-                [bpKey]: nextEntry
-            });
+        // Deep clone + replace the one entry
+        const nextBreakpoints = _.merge({}, breakpoints, {
+            [bpKey]: nextEntry
+        });
 
-            // Final layout object
-            const nextLayout = {
-                props: _.merge({}, prevProps),   // deep clone base props
-                breakpoints: nextBreakpoints
-            };
+        // Final layout object
+        const nextLayout = {
+            props: props,   // deep clone base props
+            breakpoints: nextBreakpoints
+        };
 
-            onChange(nextLayout);
-        },
-        [value, onChange]
-    );
+        onChange(nextLayout);
+    };
 
     // ----------------------------------------
     // REMOVE OR RENAME A BREAKPOINT ROW

@@ -28,11 +28,15 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         }
     }, [layout]);
 
+    const updateSettings = (newLayout)=>{
+        setLayout(newLayout);
+    }
+
     return (
         <InspectorControls group="styles">
             <BreakpointPanels
                 value={layout}
-                onChange={setLayout}
+                onChange={updateSettings}
                 label="Layout"
                 render={{
                     base: ({entry, update}) => (

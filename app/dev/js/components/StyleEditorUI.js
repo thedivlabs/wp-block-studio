@@ -9,6 +9,7 @@ import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
 import {cleanObject} from "Includes/helper";
 import {isEqual} from "lodash";
+import {HoverFields} from "Components/HoverFields";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 
@@ -30,6 +31,12 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         updateStyleSettings(nextLayout); // safe, user-initiated
     }, [updateStyleSettings]);
 
+    const baseLayoutSuppress = [
+        'padding',
+        'margin',
+        'gap',
+        'border',
+    ]
 
     return (
         <InspectorControls group="styles">
@@ -40,19 +47,32 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 render={{
                     base: ({entry, update}) => {
 
-                        return <LayoutFields
-                            label="Settings"
-                            settings={entry ?? {}}
-                            updateFn={(data, reset = false) => update(data, reset)}
-                        />;
+                        return <>
+                            <LayoutFields
+                                label="Settings"
+                                settings={entry ?? {}}
+                                suppress={baseLayoutSuppress}
+                                updateFn={(data, reset = false) => update(data, reset)}
+                            />
+                            <HoverFields
+                                settings={entry.hover ?? {}}
+                                updateFn={(data, reset) => update({hover: data}, reset)}
+                            />
+                        </>;
                     },
                     breakpoints: ({entry, update}) => {
 
-                        return <LayoutFields
-                            label="Settings"
-                            settings={entry ?? {}}
-                            updateFn={(data, reset = false) => update(data, reset)}
-                        />;
+                        return <>
+                            <LayoutFields
+                                label="Settings"
+                                settings={entry ?? {}}
+                                updateFn={(data, reset = false) => update(data, reset)}
+                            />
+                            <HoverFields
+                                settings={entry.hover ?? {}}
+                                updateFn={(data, reset) => update({hover: data}, reset)}
+                            />
+                        </>;
                     },
                 }}
             />

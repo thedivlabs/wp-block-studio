@@ -7,6 +7,7 @@ import {useInstanceId} from "@wordpress/compose";
 export const STYLE_ATTRIBUTES = {
     'uniqueId': {type: 'string'},
     'wpbs-css': {type: 'object', default: {}},
+    'wpbs-background': {type: 'object', default: {}},
     'wpbs-preload': {type: 'array', default: [{test: 'test'}]},
     'wpbs-icons': {
         type: 'array',

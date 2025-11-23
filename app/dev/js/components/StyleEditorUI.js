@@ -2,6 +2,7 @@ import {
     useState,
     useEffect,
     useCallback,
+    Fragment,
 } from "@wordpress/element";
 import {InspectorControls} from "@wordpress/block-editor";
 
@@ -15,7 +16,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 
     const [layout, setLayout] = useState(settings);
 
-
     useEffect(() => {
         const cleanedIncoming = cleanObject(settings || {}, true);
         const cleanedLocal = cleanObject(layout || {}, true);
@@ -25,18 +25,21 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         }
     }, [settings]);
 
-// 2. Update attributes ONLY on user action
-    const updateSettings = useCallback((nextLayout) => {
-        setLayout(nextLayout);
-        updateStyleSettings(nextLayout); // safe, user-initiated
-    }, [updateStyleSettings]);
+    // Update attributes ONLY on user action
+    const updateSettings = useCallback(
+        (nextLayout) => {
+            setLayout(nextLayout);
+            updateStyleSettings(nextLayout); // safe, user-initiated
+        },
+        [updateStyleSettings]
+    );
 
     const baseLayoutSuppress = [
-        'padding',
-        'margin',
-        'gap',
-        'border',
-    ]
+        "padding",
+        "margin",
+        "gap",
+        "border",
+    ];
 
     return (
         <InspectorControls group="styles">
@@ -45,34 +48,63 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 onChange={updateSettings}
                 label="Layout"
                 render={{
-                    base: ({entry, update}) => {
+                    base: ({entry, hover, update, updateHover}) => {
+                        // entry      → base props
+                        // hover      → base hover object
+                        // update     → base props updater (deep-merges into props)
+                        // updateHover→ base hover updater (deep-merges into hover)
 
-                        return <>
-                            <LayoutFields
-                                label="Settings"
-                                settings={entry ?? {}}
-                                suppress={baseLayoutSuppress}
-                                updateFn={(data, reset = false) => update(data, reset)}
-                            />
-                            <HoverFields
-                                settings={entry.hover ?? {}}
-                                updateFn={(data, reset) => update({hover: data}, reset)}
-                            />
-                        </>;
+                        return (
+                            <Fragment>
+                                <LayoutFields
+                                    label="Settings"
+                                    settings={entry ?? {}}
+                                    suppress={baseLayoutSuppress}
+                                    updateFn={(data, reset = false) =>
+                                        update(data, reset)
+                                    }
+                                />
+
+                                <HoverFields
+                                    settings={hover ?? {}}
+                                    updateFn={(data, reset = false) =>
+                                        updateHover(data, reset)
+                                    }
+                                />
+                            </Fragment>
+                        );
                     },
-                    breakpoints: ({entry, update}) => {
 
-                        return <>
-                            <LayoutFields
-                                label="Settings"
-                                settings={entry ?? {}}
-                                updateFn={(data, reset = false) => update(data, reset)}
-                            />
-                            <HoverFields
-                                settings={entry.hover ?? {}}
-                                updateFn={(data, reset) => update({hover: data}, reset)}
-                            />
-                        </>;
+                    breakpoints: ({bpKey, entry, update}) => {
+                        // entry → breakpoint entry (may include .hover)
+                        const bpHover = entry?.hover ?? {};
+
+                        return (
+                            <Fragment>
+                                <LayoutFields
+                                    label="Settings"
+                                    settings={entry ?? {}}
+                                    updateFn={(data, reset = false) =>
+                                        update(data, reset)
+                                    }
+                                />
+
+                                <HoverFields
+                                    settings={bpHover}
+                                    updateFn={(data, reset = false) => {
+                                        if (reset) {
+                                            // Clear only hover for this breakpoint
+                                            update({hover: {}}, true);
+                                            return;
+                                        }
+
+                                        // Deep-merge hover into the breakpoint entry
+                                        // via BreakpointPanels' _.merge
+                                        update({hover: data}, false);
+                                    }}
+                                />
+                            </Fragment>
+                        );
                     },
                 }}
             />

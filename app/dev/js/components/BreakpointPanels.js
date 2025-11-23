@@ -5,9 +5,13 @@ import _ from "lodash";
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // Extract base + breakpoints
-    const props = value.props || {};
-    const breakpoints = value.breakpoints || {};
+    // Extract base + breakpoints + hover + any other root keys
+    const {
+        props = {},
+        breakpoints = {},
+        hover = {},
+        ...rest
+    } = value || {};
 
     // Sorted breakpoint list
     const breakpointDefs = useMemo(() => {
@@ -27,38 +31,57 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
     }, [breakpoints, breakpointDefs]);
 
     // ------------------------------------------------------------
-    // UNIFIED UPDATE FUNCTION
+    // UNIFIED UPDATE FUNCTION (props + breakpoint entries)
     // ------------------------------------------------------------
     const updateForKey = useCallback(
         (bpKey, data, reset = false) => {
 
-            // Base
+            // Base → merge into props
             if (bpKey === "base") {
                 const nextProps = reset ? {} : _.merge({}, props, data);
 
                 onChange({
+                    ...rest,
                     props: nextProps,
                     breakpoints,
+                    hover, // preserve existing hover
                 });
                 return;
             }
 
-            // Breakpoint
-            const nextEntry = reset
-                ? {}
-                : _.merge({}, breakpoints[bpKey], data);
+            // Breakpoint → merge into breakpoint entry
+            const prevEntry = breakpoints[bpKey] || {};
+            const nextEntry = reset ? {} : _.merge({}, prevEntry, data);
 
             onChange({
+                ...rest,
                 props,
+                hover,
                 breakpoints: {
                     ...breakpoints,
                     [bpKey]: nextEntry,
                 },
             });
         },
-        [props, breakpoints, onChange]
+        [props, breakpoints, hover, rest, onChange]
     );
 
+    // ------------------------------------------------------------
+    // BASE HOVER UPDATE (root-level hover)
+    // ------------------------------------------------------------
+    const updateBaseHover = useCallback(
+        (data, reset = false) => {
+            const nextHover = reset ? {} : _.merge({}, hover, data);
+
+            onChange({
+                ...rest,
+                props,
+                breakpoints,
+                hover: nextHover,
+            });
+        },
+        [hover, props, breakpoints, rest, onChange]
+    );
 
     // ------------------------------------------------------------
     // REMOVE OR RENAME A BREAKPOINT ROW
@@ -72,7 +95,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         }
 
         onChange({
+            ...rest,
             props: {...props},
+            hover,
             breakpoints: next,
         });
     };
@@ -92,13 +117,15 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         const newKey = available[0];
 
         onChange({
+            ...rest,
             props: {...props},
+            hover,
             breakpoints: {
                 ...breakpoints,
                 [newKey]: {},
             },
         });
-    }, [props, breakpoints, breakpointDefs, onChange]);
+    }, [props, hover, breakpoints, breakpointDefs, rest, onChange]);
 
     // ------------------------------------------------------------
     // RENDER
@@ -115,8 +142,10 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                 <div className="wpbs-layout-tools__grid">
                     {render.base({
                         bpKey: "base",
-                        entry: props,
+                        entry: props,        // base layout props
+                        hover,               // base hover map
                         update: (...args) => updateForKey("base", ...args),
+                        updateHover: updateBaseHover,
                     })}
                 </div>
             </div>
@@ -141,10 +170,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                     value={bpKey}
                                     onChange={(e) => {
                                         const newKey = e.target.value;
-                                        if (
-                                            newKey !== bpKey &&
-                                            breakpoints[newKey]
-                                        ) return;
+                                        if (newKey !== bpKey && breakpoints[newKey]) return;
 
                                         removeEntry(bpKey, {
                                             transfer: entry,
@@ -157,8 +183,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                             key={bp.key}
                                             value={bp.key}
                                             disabled={
-                                                breakpoints[bp.key] &&
-                                                bp.key !== bpKey
+                                                breakpoints[bp.key] && bp.key !== bpKey
                                             }
                                         >
                                             {bp.label} ({bp.size}px)

@@ -40,20 +40,20 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 onChange={updateSettings}
                 label="Layout"
                 render={{
-                    base: ({entry, update, bpKey}) => {
+                    base: ({entry, update}) => {
 
                         return <LayoutFields
                             label="Settings"
                             settings={entry ?? {}}
-                            updateFn={(data, reset = false) => update(bpKey, data, reset)}
+                            updateFn={(data, reset = false) => update(data, reset)}
                         />;
                     },
-                    breakpoints: ({entry, update, bpKey}) => {
+                    breakpoints: ({entry, update}) => {
 
                         return <LayoutFields
                             label="Settings"
                             settings={entry ?? {}}
-                            updateFn={(data, reset = false) => update(bpKey, data, reset)}
+                            updateFn={(data, reset = false) => update(data, reset)}
                         />;
                     },
                 }}

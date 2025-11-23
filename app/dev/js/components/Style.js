@@ -1,10 +1,7 @@
-import {Fragment, memo, useCallback, useEffect, useMemo, useRef, useState} from '@wordpress/element';
+import {Fragment, useCallback, useEffect, useRef} from '@wordpress/element';
 import {StyleEditorUI} from "Includes/style";
-import _ from 'lodash';
 import {BlockWrapper} from 'Components/BlockWrapper';
 import {useInstanceId} from "@wordpress/compose";
-import {BreakpointPanels, createPanel} from 'Components/BreakpointPanels'
-import {InspectorControls} from "@wordpress/block-editor";
 
 
 export const STYLE_ATTRIBUTES = {

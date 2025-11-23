@@ -10,12 +10,6 @@ import {useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
 import _ from "lodash";
 
-// Public helper for custom builder syntax
-export function createPanel(builderFn) {
-    return function PanelComponent({bpKey, entry, update}) {
-        return builderFn({bpKey, entry, update});
-    };
-}
 
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};

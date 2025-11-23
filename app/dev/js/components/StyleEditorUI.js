@@ -13,10 +13,8 @@ import {cleanObject} from "Includes/helper";
 import {isEqual, debounce} from "lodash";
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
-    // ----------------------------------------
-    // LOCAL STATE (flat-entry layout)
-    // layout = { base:{...}, xs:{...}, md:{...} }
-    // ----------------------------------------
+
+    
     const [layout, setLayout] = useState(settings);
 
     useEffect(() => {

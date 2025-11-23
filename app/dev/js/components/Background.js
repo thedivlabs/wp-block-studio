@@ -174,17 +174,7 @@ const BackgroundPanelFields = ({
 
 
 export const BackgroundControls = ({ settings = {}, callback }) => {
-    //
-    // Normalize the shape:
-    //
-    // {
-    //   props: { … },
-    //   breakpoints: {
-    //     sm: { props:{…} },
-    //     md: { props:{…} }
-    //   }
-    // }
-    //
+
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
@@ -286,7 +276,6 @@ export function hasAnyBackground(bgSettings = {}) {
 
     return false;
 }
-
 
 const BackgroundVideo = ({ settings = {}, isSave = false }) => {
     if (!isSave) return null;

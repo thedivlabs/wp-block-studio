@@ -4,11 +4,16 @@ import {Button} from "@wordpress/components";
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // Everything except `breakpoints` is treated as the "base entry"
+    // Extract & normalize base entry
     const {
         breakpoints = {},
         ...baseEntry
     } = value || {};
+
+    const normalizedBaseEntry = {
+        props: baseEntry.props || {},
+        ...baseEntry,
+    };
 
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
@@ -26,7 +31,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [breakpoints, breakpointDefs]);
 
-    // `nextEntry` is expected to be the FULL base entry (merge already done upstream)
     const updateBase = useCallback(
         (nextEntry) => {
             onChange({
@@ -37,7 +41,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [breakpoints, onChange]
     );
 
-    // `nextEntry` is expected to be the FULL breakpoint entry (merge already done upstream)
     const updateBreakpoint = useCallback(
         (bpKey, nextEntry) => {
             const nextBreakpoints = {
@@ -46,11 +49,11 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             };
 
             onChange({
-                ...baseEntry,
+                ...normalizedBaseEntry,
                 breakpoints: nextBreakpoints,
             });
         },
-        [baseEntry, breakpoints, onChange]
+        [normalizedBaseEntry, breakpoints, onChange]
     );
 
     const removeBreakpoint = useCallback(
@@ -59,11 +62,11 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             delete next[bpKey];
 
             onChange({
-                ...baseEntry,
+                ...normalizedBaseEntry,
                 breakpoints: next,
             });
         },
-        [baseEntry, breakpoints, onChange]
+        [normalizedBaseEntry, breakpoints, onChange]
     );
 
     const renameBreakpoint = useCallback(
@@ -78,11 +81,11 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             next[newKey] = entry;
 
             onChange({
-                ...baseEntry,
+                ...normalizedBaseEntry,
                 breakpoints: next,
             });
         },
-        [baseEntry, breakpoints, onChange]
+        [normalizedBaseEntry, breakpoints, onChange]
     );
 
     const addBreakpoint = useCallback(() => {
@@ -92,26 +95,26 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             .map((bp) => bp.key)
             .filter((k) => !existingKeys.includes(k));
 
-        if (!available.length) {
-            return;
-        }
+        if (!available.length) return;
 
         const newKey = available[0];
 
         const nextBreakpoints = {
             ...breakpoints,
-            [newKey]: {},
+            [newKey]: {
+                props: {},   // ensure props key exists
+            },
         };
 
         onChange({
-            ...baseEntry,
+            ...normalizedBaseEntry,
             breakpoints: nextBreakpoints,
         });
-    }, [baseEntry, breakpoints, breakpointDefs, onChange]);
+    }, [normalizedBaseEntry, breakpoints, breakpointDefs, onChange]);
 
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
-            {/* Base panel */}
+
             <div className="wpbs-layout-tools__panel" key="base">
                 <div className="wpbs-layout-tools__header">
                     <strong>{label ?? "Base"}</strong>
@@ -120,16 +123,19 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                 <div className="wpbs-layout-tools__grid">
                     {render.base({
                         bpKey: "base",
-                        entry: baseEntry,
-                        // Upstream does the merge; we just accept a full next entry
+                        entry: normalizedBaseEntry,
                         update: (nextEntry) => updateBase(nextEntry),
                     })}
                 </div>
             </div>
 
-            {/* Breakpoint panels */}
             {orderedBpKeys.map((bpKey) => {
-                const entry = breakpoints[bpKey] || {};
+                const raw = breakpoints[bpKey] || {};
+
+                const entry = {
+                    props: raw.props || {},
+                    ...raw,
+                };
 
                 return (
                     <div className="wpbs-layout-tools__panel" key={bpKey}>
@@ -172,7 +178,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                             {render.breakpoints({
                                 bpKey,
                                 entry,
-                                // Upstream does the merge; we just accept a full next entry
                                 update: (nextEntry) => updateBreakpoint(bpKey, nextEntry),
                             })}
                         </div>

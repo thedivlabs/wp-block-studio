@@ -238,8 +238,8 @@ function parseBackgroundProps(props = {}) {
     const result = {};
 
     const {
-        media,
-        type,
+        type,            // "image", "video", "featured-image"
+        media,           // unified media object
         resolution = "large",
         overlay,
         color,
@@ -255,65 +255,59 @@ function parseBackgroundProps(props = {}) {
         maxHeight,
     } = props;
 
-    // Unified media object (fallback or server-injected)
     const mediaObj = media || null;
 
     /* ------------------------------------------------------------
-     * IMAGE (supports featured-image fallback)
+     * IMAGE BACKGROUND
      * ------------------------------------------------------------ */
-    let image = null;
-
     if (type === "image" || type === "featured-image") {
-        if (mediaObj && mediaObj.type === "image") {
-            image = mediaObj;
+
+        if (!mediaObj || mediaObj === "" || mediaObj == null) {
+            // No image at all — emit nothing
         }
-    }
 
-    const video =
-        props.video ||
-        (mediaObj && type === "video" && mediaObj.type === "video"
-            ? mediaObj
-            : null);
+        else if (mediaObj.isPlaceholder || mediaObj.source === "#") {
+            // Disabled at this breakpoint
+            result["--image"] = "#";
+        }
 
-    /* ------------------------------------------------------------
-     * IMAGE
-     * ------------------------------------------------------------ */
-    if (image === "" || image == null) {
-        // no --image
-    } else if (image?.isPlaceholder || image?.source === "#") {
-        result["--image"] = "#";
-    } else if (image?.source) {
-        const resolved = getImageUrlForResolution(image, resolution);
-        if (resolved) {
-            result["--image"] = buildImageSet(resolved);
+        else if (mediaObj.source) {
+            const resolved = getImageUrlForResolution(mediaObj, resolution);
+            if (resolved) {
+                result["--image"] = buildImageSet(resolved);
+            }
         }
     }
 
     /* ------------------------------------------------------------
-     * VIDEO
+     * VIDEO BACKGROUND (handled via <video> HTML tag)
+     * ------------------------------------------------------------
+     * We DO NOT emit any CSS custom props for video.
+     * All HTML video logic is handled by Background component.
+     *
+     * But:
+     * VISUAL props like overlay, opacity, blend, etc.
+     * MUST still be output normally.
      * ------------------------------------------------------------ */
-    if (video === "" || video == null) {
-        result["--video"] = "none";
-    } else if (video?.isPlaceholder || video?.source === "#") {
-        result["--video"] = "block";
-        result["--video-src"] = "#";
-    } else if (video?.source) {
-        result["--video"] = "block";
-        result["--video-src"] = video.source;
-    }
+
+    // No CSS output needed for mediaObj.type === "video"
+
 
     /* ------------------------------------------------------------
      * MASK IMAGE
      * ------------------------------------------------------------ */
     const maskVal = maskImage || props["mask-image"];
+
     if (maskVal === "" || maskVal == null) {
         // cleared
-    } else if (maskVal?.isPlaceholder || maskVal?.source === "#") {
+    }
+    else if (maskVal?.isPlaceholder || maskVal?.source === "#") {
         result["--mask-image"] = "none";
         result["--mask-repeat"] = "initial";
         result["--mask-size"] = "initial";
         result["--mask-position"] = "initial";
-    } else {
+    }
+    else {
         const url =
             typeof maskVal === "object" && maskVal?.source
                 ? maskVal.source
@@ -324,7 +318,8 @@ function parseBackgroundProps(props = {}) {
         if (url) {
             result["--mask-image"] = `url("${url}")`;
             result["--mask-repeat"] = "no-repeat";
-            result["--mask-size"] = maskSize || props["mask-size"] || "contain";
+            result["--mask-size"] =
+                maskSize || props["mask-size"] || "contain";
             result["--mask-position"] =
                 maskOrigin || props["mask-origin"] || "center";
         }
@@ -395,7 +390,8 @@ function parseBackgroundProps(props = {}) {
      * ------------------------------------------------------------ */
     if (fixed) {
         result["--attachment"] = "fixed";
-    } else if (image?.source) {
+    }
+    else if (type === "image" && mediaObj?.source) {
         result["--attachment"] = "scroll";
     }
 

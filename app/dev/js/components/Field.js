@@ -3,6 +3,7 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl, __experimentalGrid as Grid} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
+import {normalizeMedia} from "Includes/helper";
 
 
 export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {

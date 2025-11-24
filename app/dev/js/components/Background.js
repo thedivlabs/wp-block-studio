@@ -1,201 +1,52 @@
-import { memo } from "@wordpress/element";
-import {
-    __experimentalGrid as Grid,
-    __experimentalToolsPanel as ToolsPanel,
-    BaseControl,
-    GradientPicker,
-    PanelBody,
-    SelectControl,
-    ToggleControl,
-} from "@wordpress/components";
-import { PanelColorSettings } from "@wordpress/block-editor";
-import { Field } from "Components/Field";
+import { memo, useCallback } from "@wordpress/element";
+import { PanelBody } from "@wordpress/components";
 import { BreakpointPanels } from "Components/BreakpointPanels";
 import { merge } from "lodash";
-
-const BackgroundFields = memo(({ settings, updateFn }) => {
-    const { backgroundFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
-
-    return map.map((field) => {
-        const callback = (v) => updateFn({ [field.slug]: v });
-
-        return (
-            <Field
-                key={field.slug}
-                field={field}
-                settings={settings}
-                callback={callback}
-            />
-        );
-    });
-});
-
-const BackgroundPanelFields = ({
-                                   settings = {},
-                                   onChange,
-                                   isBreakpoint = false,
-                               }) => {
-    const hasSettings = settings && Object.keys(settings).length > 0;
-
-    return (
-        <Grid columns={1} columnGap={15} rowGap={20}>
-            <SelectControl
-                __next40pxDefaultSize
-                __nextHasNoMarginBottom
-                label="Type"
-                value={settings?.type ?? ""}
-                onChange={(newValue) => {
-                    if (newValue === settings?.type) return;
-
-                    onChange({
-                        type: newValue,
-                        image: {},
-                        video: {},
-                    });
-                }}
-                options={[
-                    { label: "Select", value: "" },
-                    { label: "Image", value: "image" },
-                    { label: "Featured Image", value: "featured-image" },
-                    { label: "Video", value: "video" },
-                ]}
-            />
-
-            {!hasSettings ? null : (
-                <>
-                    {(settings.type === "image" ||
-                        settings.type === "featured-image") && (
-                        <Field
-                            field={{
-                                type: "image",
-                                slug: "image",
-                                label: "Image",
-                                full: true,
-                            }}
-                            settings={settings}
-                            callback={(val) => onChange({ image: val })}
-                            isToolsPanel={false}
-                        />
-                    )}
-
-                    {settings.type === "video" && (
-                        <Field
-                            field={{
-                                type: "video",
-                                slug: "video",
-                                label: "Video",
-                                full: true,
-                            }}
-                            settings={settings}
-                            callback={(val) => onChange({ video: val })}
-                            isToolsPanel={false}
-                        />
-                    )}
-
-                    <BaseControl label={"Overlay"}>
-                        <div className={"wpbs-background-controls__card"}>
-                            <GradientPicker
-                                gradients={[
-                                    {
-                                        name: "Transparent",
-                                        gradient:
-                                            "linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))",
-                                        slug: "transparent",
-                                    },
-                                    {
-                                        name: "Light",
-                                        gradient:
-                                            "linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))",
-                                        slug: "light",
-                                    },
-                                    {
-                                        name: "Strong",
-                                        gradient:
-                                            "linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))",
-                                        slug: "strong",
-                                    },
-                                ]}
-                                clearable={false}
-                                value={settings?.overlay ?? undefined}
-                                onChange={(newValue) => onChange({ overlay: newValue })}
-                            />
-                        </div>
-                    </BaseControl>
-
-                    <PanelColorSettings
-                        className={"wpbs-controls__color"}
-                        enableAlpha
-                        colorSettings={[
-                            {
-                                slug: "color",
-                                label: "Color",
-                                value: settings?.color ?? undefined,
-                                onChange: (newValue) => onChange({ color: newValue }),
-                                isShownByDefault: true,
-                            },
-                        ]}
-                        __nextHasNoMarginBottom
-                    />
-
-                    <Grid columns={2} columnGap={15} rowGap={20}>
-                        {!isBreakpoint && (
-                            <ToggleControl
-                                label="Eager"
-                                checked={!!settings?.eager}
-                                onChange={(v) => onChange({ eager: v })}
-                            />
-                        )}
-                        {settings.type !== "video" && (
-                            <ToggleControl
-                                label="Fixed"
-                                checked={!!settings?.fixed}
-                                onChange={(v) => onChange({ fixed: v })}
-                            />
-                        )}
-                    </Grid>
-
-                    <div>
-                        <ToolsPanel
-                            label="Advanced Background"
-                            resetAll={() => onChange({}, true)}
-                            className={"wpbs-advanced-background"}
-                        >
-                            <BackgroundFields
-                                settings={settings}
-                                updateFn={(newProps) => onChange(newProps)}
-                            />
-                        </ToolsPanel>
-                    </div>
-                </>
-            )}
-        </Grid>
-    );
-};
+import { BackgroundFields } from "./BackgroundFields";
+import { BackgroundMedia } from "./BackgroundMedia";
 
 
-export const BackgroundControls = ({ settings = {}, callback }) => {
-    // wpbs-background has shape:
-    // { props: {...}, breakpoints: { [bpKey]: { props: {...} } } }
+function mergeEntryProps(entry = {}, patch = {}, reset = false) {
+    const currentProps = entry.props || {};
+    const baseProps = reset ? {} : currentProps;
+    const nextProps = merge({}, baseProps, patch || {});
+
+    return {
+        ...entry,
+        props: nextProps,
+    };
+}
+
+function makeEntryHandlers(entry = {}, update) {
+    const currentEntry = entry || {};
+    const settings = currentEntry.props || {};
+
+    const updateFn = (patch = {}, reset = false) => {
+        const nextEntry = mergeEntryProps(currentEntry, patch, reset);
+        update(nextEntry);
+    };
+
+    return { settings, updateFn };
+}
+
+
+export const BackgroundControls = memo(function BackgroundControls({
+                                                                       settings = {},
+                                                                       callback,
+                                                                   }) {
+    // Normalize shape for BreakpointPanels
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
     };
 
-    // IMPORTANT: forward the whole layout; do NOT cherry-pick keys
-    const handleChange = (next = {}) => {
-        callback(next || {});
-    };
-
-    const mergeEntryProps = (entry = {}, patch = {}, reset = false) => {
-        const currentProps = entry.props || {};
-        const baseProps = reset ? {} : currentProps;
-        const nextProps = merge({}, baseProps, patch || {});
-
-        return {
-            ...entry,
-            props: nextProps,
-        };
-    };
+    // Pass the full object upward (props + breakpoints)
+    const handleChange = useCallback(
+        (next = {}) => {
+            callback(next || {});
+        },
+        [callback]
+    );
 
     return (
         <PanelBody
@@ -209,37 +60,25 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
                 onChange={handleChange}
                 render={{
                     base: ({ entry, update }) => {
-                        const currentEntry = entry || {};
-                        const props = currentEntry.props || {};
-
-                        const onChange = (patch = {}, reset = false) => {
-                            const nextEntry = mergeEntryProps(currentEntry, patch, reset);
-                            update(nextEntry);
-                        };
+                        const { settings, updateFn } = makeEntryHandlers(entry, update);
 
                         return (
-                            <BackgroundPanelFields
-                                settings={props}
+                            <BackgroundFields
+                                settings={settings}
+                                updateFn={updateFn}
                                 isBreakpoint={false}
-                                onChange={onChange}
                             />
                         );
                     },
 
                     breakpoints: ({ entry, update }) => {
-                        const currentEntry = entry || {};
-                        const props = currentEntry.props || {};
-
-                        const onChange = (patch = {}, reset = false) => {
-                            const nextEntry = mergeEntryProps(currentEntry, patch, reset);
-                            update(nextEntry);
-                        };
+                        const { settings, updateFn } = makeEntryHandlers(entry, update);
 
                         return (
-                            <BackgroundPanelFields
-                                settings={props}
+                            <BackgroundFields
+                                settings={settings}
+                                updateFn={updateFn}
                                 isBreakpoint={true}
-                                onChange={onChange}
                             />
                         );
                     },
@@ -247,8 +86,12 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
             />
         </PanelBody>
     );
-};
+});
 
+/**
+ * Determine whether any background exists.
+ * Used to auto-open the Background panel + determine whether to render.
+ */
 export function hasAnyBackground(bgSettings = {}) {
     const { props = {}, breakpoints = {} } = bgSettings || {};
 
@@ -272,111 +115,11 @@ export function hasAnyBackground(bgSettings = {}) {
     return false;
 }
 
-const BackgroundVideo = ({ settings = {}, isSave = false }) => {
-    if (!isSave) return null;
-
-    const { props = {}, breakpoints = {} } = settings || {};
-    const bpDefs = WPBS?.settings?.breakpoints ?? {};
-    const entries = [];
-
-    // ----------------------------------------
-    // 1. BASE VIDEO (real source only)
-    // ----------------------------------------
-    const baseVideo = props?.video;
-    const hasRealBase = !!baseVideo?.source;
-
-    if (baseVideo?.source) {
-        entries.push({
-            size: Infinity,
-            video: baseVideo,
-        });
-    }
-
-    // ----------------------------------------
-    // 2. BREAKPOINT VIDEO OVERRIDES
-    // ----------------------------------------
-    Object.entries(breakpoints || {}).forEach(([bpKey, bpData]) => {
-        const size = bpDefs?.[bpKey]?.size ?? 0;
-        const bpVideo = bpData?.props?.video;
-
-        // CASE A — breakpoint has a video object
-        if (bpVideo) {
-            if (bpVideo.source) {
-                // real video
-                entries.push({ size, video: bpVideo });
-            } else if (bpVideo.isPlaceholder && hasRealBase) {
-                // empty / placeholder → implicit disable
-                entries.push({
-                    size,
-                    video: { source: "#", mime: "video/mp4" },
-                });
-            }
-            return;
-        }
-
-        // CASE B — breakpoint has NO video key at all
-        if (hasRealBase) {
-            entries.push({
-                size,
-                video: { source: "#", mime: "video/mp4" },
-            });
-        }
-    });
-
-    // If no entries at all, bail
-    if (!entries.length) return null;
-
-    // ----------------------------------------
-    // Sort: base first (Infinity)
-    // ----------------------------------------
-    entries.sort((a, b) => b.size - a.size);
-
-    const baseEntry = entries.find((e) => e.size === Infinity);
-    const baseVideoObj = baseEntry?.video ?? null;
-
-    const bpEntries = entries.filter((e) => e.size !== Infinity);
-
-    // ----------------------------------------
-    // Render
-    // ----------------------------------------
-    return (
-        <video
-            muted
-            loop
-            autoPlay
-            playsInline
-            className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
-        >
-            {/* BREAKPOINT SOURCES */}
-            {bpEntries.map(({ size, video }, i) => {
-                const mq =
-                    Number.isFinite(size) &&
-                    size > 0 &&
-                    size !== Infinity
-                        ? `(max-width:${size - 1}px)`
-                        : null;
-
-                return (
-                    <source
-                        key={`bp-${i}`}
-                        data-src={video.source || "#"}
-                        data-media={mq}
-                        type={video.mime || "video/mp4"}
-                    />
-                );
-            })}
-
-            {/* BASE SOURCE (real source only) */}
-            {baseVideoObj?.source && (
-                <source
-                    data-src={baseVideoObj.source}
-                    type={baseVideoObj.mime || "video/mp4"}
-                />
-            )}
-        </video>
-    );
-};
-
+/**
+ * BackgroundElement
+ *
+ * The outer container that renders the final background media element.
+ */
 export function BackgroundElement({ attributes = {}, isSave = false }) {
     const { "wpbs-background": bgSettings = {} } = attributes;
 
@@ -391,7 +134,7 @@ export function BackgroundElement({ attributes = {}, isSave = false }) {
 
     return (
         <div className={bgClass}>
-            <BackgroundVideo settings={bgSettings} isSave={!!isSave} />
+            <BackgroundMedia settings={bgSettings} isSave={!!isSave} />
         </div>
     );
 }

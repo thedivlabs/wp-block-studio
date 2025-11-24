@@ -4,13 +4,16 @@ import { getImageUrlForResolution } from 'Includes/helper';
 
 function PreviewThumbnail({
                               image = null,
-                              type = "image",
                               resolution = "large",
                               onSelectClick,
                               callback,
                               style = {}
                           }) {
-    const isVideoType = type === "video";
+
+    /* -------------------------------------------------------------
+     * STATE: image.type now determines video mode
+     * ------------------------------------------------------------- */
+    const isVideoType = image?.type === "video";
 
     /* -------------------------------------------------------------
      * NORMALIZED OUTPUT HELPERS
@@ -18,15 +21,14 @@ function PreviewThumbnail({
 
     // Clear selection entirely
     const clearValue = () => {
-        // Keep existing behavior: use empty string
-        callback("");
+        callback(""); // unchanged behavior
     };
 
     // Set unified placeholder object
     const setPlaceholder = () => {
         callback({
             id: null,
-            source: "#",     // important: used later to "hide" at breakpoints
+            source: "#",     // used for breakpoint hiding & picture tag logic
             type: null,
             width: null,
             height: null,
@@ -35,7 +37,7 @@ function PreviewThumbnail({
         });
     };
 
-    // Enabling from placeholder just nukes it back to "no selection"
+    // From placeholder → back to empty
     const enableFromPlaceholder = () => {
         clearValue();
     };
@@ -46,9 +48,6 @@ function PreviewThumbnail({
 
     const isPlaceholder = image?.isPlaceholder === true;
 
-    // We only consider it a "real" media selection if it has an ID
-    // and is not marked as placeholder. This keeps placeholders from
-    // creating a thumbnail or generating a real src.
     const hasRealMedia = !!(image?.id && !isPlaceholder);
 
     const src = hasRealMedia
@@ -97,10 +96,8 @@ function PreviewThumbnail({
     if (!hasSelection) {
         const toggleDisabled = () => {
             if (isPlaceholder) {
-                // Currently disabled → enable (clear placeholder)
                 enableFromPlaceholder();
             } else {
-                // Currently enabled or empty → disable via placeholder
                 setPlaceholder();
             }
         };
@@ -144,7 +141,7 @@ function PreviewThumbnail({
     return (
         <div
             style={thumbnailStyle}
-            onClick={clearValue} // clicking the thumbnail clears selection
+            onClick={clearValue}
         >
             {thumb}
 

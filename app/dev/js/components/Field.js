@@ -256,9 +256,8 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                             render={({open}) => (
                                 <PreviewThumbnail
                                     image={currentValue}
-                                    type={isImage ? "image" : "video"}
-                                    onSelectClick={open}          // opens media modal
-                                    callback={commit}             // handles disable/clear
+                                    onSelectClick={open}
+                                    callback={commit}
                                     style={{
                                         objectFit: "contain",
                                         borderRadius: "6px",

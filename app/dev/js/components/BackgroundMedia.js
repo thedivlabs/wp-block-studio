@@ -1,14 +1,4 @@
-import {memo} from "@wordpress/element";
 
-/**
- * BackgroundVideo
- *
- * Handles the <video> element for background video rendering.
- * - Works with unified media shape: settings.props.media
- * - Fully breakpoint-aware
- * - Supports placeholder ("#") disabling
- * - No CSS-based video logic — HTML <video> is always the renderer
- */
 const BackgroundVideo = ({settings = {}, isSave = false}) => {
     if (!isSave) return null; // only output on frontend save
 

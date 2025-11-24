@@ -16,12 +16,13 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
-    // Unified root-level media
     const baseMedia = props?.media;
 
-    // 🔧 LOOSENED: don't require baseMedia.type === "video"
     const isBaseVideo =
-        props?.type === "video"
+        props?.type === "video" &&
+        baseMedia &&
+        typeof baseMedia.source === "string" &&
+        baseMedia.source !== "";
 
     if (isBaseVideo) {
         entries.push({

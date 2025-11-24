@@ -1,7 +1,7 @@
-import {useCallback, useMemo} from "@wordpress/element";
-import {Button} from "@wordpress/components";
+import { useCallback, useMemo } from "@wordpress/element";
+import { Button } from "@wordpress/components";
 
-export function BreakpointPanels({value = {}, onChange, render, label}) {
+export function BreakpointPanels({ value = {}, onChange, render, label }) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
     // Extract & normalize base entry
@@ -31,6 +31,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [breakpoints, breakpointDefs]);
 
+    // FULL base entry expected; merge already done upstream
     const updateBase = useCallback(
         (nextEntry) => {
             onChange({
@@ -41,6 +42,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [breakpoints, onChange]
     );
 
+    // FULL breakpoint entry expected; merge already done upstream
     const updateBreakpoint = useCallback(
         (bpKey, nextEntry) => {
             const nextBreakpoints = {
@@ -58,7 +60,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
     const removeBreakpoint = useCallback(
         (bpKey) => {
-            const next = {...breakpoints};
+            const next = { ...breakpoints };
             delete next[bpKey];
 
             onChange({
@@ -76,7 +78,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             if (breakpoints[newKey]) return;
 
             const entry = breakpoints[oldKey];
-            const next = {...breakpoints};
+            const next = { ...breakpoints };
             delete next[oldKey];
             next[newKey] = entry;
 
@@ -102,7 +104,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         const nextBreakpoints = {
             ...breakpoints,
             [newKey]: {
-                props: {},   // ensure props key exists
+                props: {}, // guarantee props exists
             },
         };
 
@@ -114,7 +116,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
-
+            {/* Base panel */}
             <div className="wpbs-layout-tools__panel" key="base">
                 <div className="wpbs-layout-tools__header">
                     <strong>{label ?? "Base"}</strong>
@@ -129,9 +131,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                 </div>
             </div>
 
+            {/* Breakpoint panels */}
             {orderedBpKeys.map((bpKey) => {
                 const raw = breakpoints[bpKey] || {};
-
                 const entry = {
                     props: raw.props || {},
                     ...raw,

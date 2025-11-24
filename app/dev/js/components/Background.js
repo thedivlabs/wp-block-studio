@@ -174,26 +174,21 @@ const BackgroundPanelFields = ({
 
 
 export const BackgroundControls = ({ settings = {}, callback }) => {
-
+    // wpbs-background has shape:
+    // { props: {...}, breakpoints: { [bpKey]: { props: {...} } } }
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
     };
 
+    // IMPORTANT: forward the whole layout; do NOT cherry-pick keys
     const handleChange = (next = {}) => {
-        const { props = {}, breakpoints = {} } = next || {};
-
-        callback({
-            props,
-            breakpoints,
-        });
+        callback(next || {});
     };
 
     const mergeEntryProps = (entry = {}, patch = {}, reset = false) => {
         const currentProps = entry.props || {};
         const baseProps = reset ? {} : currentProps;
-
-        // identical to style editor: deep merge patch into entry.props
         const nextProps = merge({}, baseProps, patch || {});
 
         return {

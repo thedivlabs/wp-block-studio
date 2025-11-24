@@ -34,10 +34,6 @@ export const withStyle = (Component) => (props) => {
         "wpbs-background": bgData = { props: {}, breakpoints: {} },
     } = attributes;
 
-    useEffect(()=>{
-        console.log(instanceId);
-    },[]);
-
     /* ------------------------------------------------------------------
        UNIQUE ID / REGISTRATION
     ------------------------------------------------------------------ */

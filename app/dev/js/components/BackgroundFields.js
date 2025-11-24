@@ -58,12 +58,9 @@ export const BackgroundFields = memo(function BackgroundFields({
                             type === "video") && (
                             <Field
                                 field={{
-                                    type,
+                                    type: type === "video" ? "video" : "image",
                                     slug: "media",
-                                    label:
-                                        type === "video"
-                                            ? "Video"
-                                            : "Image",
+                                    label: type === "video" ? "Video" : "Image",
                                     full: true,
                                 }}
                                 settings={settings}

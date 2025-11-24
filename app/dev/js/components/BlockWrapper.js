@@ -1,111 +1,133 @@
-import {ElementTag} from "Components/AdvancedControls";
-import {BackgroundElement, hasAnyBackground} from "Components/Background";
-import {useBlockProps, useInnerBlocksProps, InnerBlocks} from "@wordpress/block-editor";
-import {memo} from "@wordpress/element";
+import { ElementTag } from "Components/AdvancedControls";
+import { BackgroundElement, hasAnyBackground } from "Components/Background";
+import {
+    useBlockProps,
+    useInnerBlocksProps,
+    InnerBlocks,
+} from "@wordpress/block-editor";
+import { memo } from "@wordpress/element";
 import _ from "lodash";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {cleanObject, getCSSFromStyle} = API;
+const { cleanObject, getCSSFromStyle } = API;
 
+/**
+ * Build block props (classes, styles, data attributes) from layout props.
+ */
 const getBlockProps = (props = {}, wrapperProps = {}) => {
-    const {attributes = {}, name} = props;
+    const { attributes = {} } = props;
+    const {
+        className: userClass = "",
+        style: blockStyle = {},
+        ...restWrapperProps
+    } = wrapperProps;
 
-    const {className: userClass = '', style: blockStyle = {}, ...restWrapperProps} = wrapperProps;
-    const {'wpbs-style': settings = {}, uniqueId, style: attrStyle = {}} = attributes;
-    const {props: layout = {}, background = {}, hover = {}, advanced = {}} = settings;
-    const hasBackground = hasAnyBackground(settings);
+    const { "wpbs-style": styleSettings = {}, uniqueId } = attributes;
+    const { props: layout = {}, hover = {}, advanced = {} } = styleSettings;
+
+    // background now comes from separate attribute
+    const bgSettings = attributes["wpbs-background"] || {};
+    const hasBackground = hasAnyBackground(bgSettings);
     const hasContainer = hasBackground || advanced.container;
     const isContainer = !hasContainer && !!layout.container;
 
-
     const classList = [
-        //blockBaseName,
         userClass || null,
         uniqueId,
-        hasBackground ? 'relative' : null,
-        layout['hide-empty'] && '--hide-empty',
-        layout['box-shadow'] && '--shadow',
-        layout['required'] && '--required',
-        layout['offset-header'] && '--offset-header',
-        hasContainer && '--has-container',
-        isContainer && 'wpbs-container',
-        layout['content-visibility'] && '--content-visibility',
-        layout['mask-image'] && '--mask',
+        hasBackground ? "relative" : null,
+        layout["hide-empty"] && "--hide-empty",
+        layout["box-shadow"] && "--shadow",
+        layout["required"] && "--required",
+        layout["offset-header"] && "--offset-header",
+        hasContainer && "--has-container",
+        isContainer && "wpbs-container",
+        layout["content-visibility"] && "--content-visibility",
+        layout["mask-image"] && "--mask",
     ]
         .filter(Boolean)
-        .join(' ')
+        .join(" ")
         .trim();
-
 
     const styleList = Object.fromEntries(
         Object.entries({})
             .map(([key, value]) => [key, getCSSFromStyle(value)])
-            .filter(([_, v]) => v !== undefined && v !== null && v !== '')
+            .filter(([_, v]) => v !== undefined && v !== null && v !== "")
     );
 
     const dataProps = Object.fromEntries(
         Object.entries({
-            'data-aos': layout?.['reveal-anim'] ?? null,
-            'data-aos-distance': layout?.['reveal-distance'] ?? null,
-            'data-aos-duration': layout?.['reveal-duration'] ?? null,
-            'data-aos-easing': layout?.['reveal-easing'] ?? null,
-            'data-aos-offset': layout?.['reveal-offset'] ?? null,
-            'data-aos-delay': layout?.['reveal-delay'] ?? null,
-        })
-            .filter(Boolean)
+            "data-aos": layout?.["reveal-anim"] ?? null,
+            "data-aos-distance": layout?.["reveal-distance"] ?? null,
+            "data-aos-duration": layout?.["reveal-duration"] ?? null,
+            "data-aos-easing": layout?.["reveal-easing"] ?? null,
+            "data-aos-offset": layout?.["reveal-offset"] ?? null,
+            "data-aos-delay": layout?.["reveal-delay"] ?? null,
+        }).filter(Boolean)
     );
 
-    return cleanObject({
-        className: classList,
-        style: {...blockStyle, ...styleList},
-        ...dataProps,
-        ...restWrapperProps,
-    }, true);
+    return cleanObject(
+        {
+            className: classList,
+            style: { ...blockStyle, ...styleList },
+            ...dataProps,
+            ...restWrapperProps,
+        },
+        true
+    );
 };
 
+/**
+ * Memoized editor-only background layer.
+ * Must compare `wpbs-background` instead of old `wpbs-style.background`.
+ */
 const BlockBackground = memo(
-    ({attributes}) => {
-        return <BackgroundElement attributes={attributes} isSave={false}/>;
+    ({ attributes }) => {
+        return <BackgroundElement attributes={attributes} isSave={false} />;
     },
     (prev, next) =>
         _.isEqual(
-            prev.attributes['wpbs-style']?.background,
-            next.attributes['wpbs-style']?.background
+            prev.attributes["wpbs-background"],
+            next.attributes["wpbs-background"]
         )
 );
 
-
 export const BlockWrapper = ({
-                                 props,            // full block props from Gutenberg
-                                 wrapperProps = {},// wrapper-level props (className, tagName, etc.)
+                                 props,
+                                 wrapperProps = {},
                                  children,
                                  isSave = false,
-                                 ...rest
                              }) => {
+    const { attributes } = props;
 
-    const {attributes} = props;
-    const {'wpbs-style': settings = {}} = attributes;
-    const {advanced} = settings;
+    // NEW: background comes from wpbs-background, not wpbs-style
+    const bgSettings = attributes["wpbs-background"] || {};
+    const {"wpbs-style": styleSettings = {} } = attributes;
+    const { advanced = {} } = styleSettings;
 
-    const {tagName: wrapperTagName = 'div', hasBackground = true, hasChildren = false} = wrapperProps;
-    const Tag = ElementTag(advanced?.tagName, wrapperTagName || tagName);
+    const {
+        tagName: wrapperTagName = "div",
+        hasBackground = true,
+        hasChildren = false,
+    } = wrapperProps;
 
-    const isBackgroundActive = hasAnyBackground(settings) && !!hasBackground;
+    const Tag = ElementTag(advanced?.tagName, wrapperTagName);
 
-    const hasContainer = isBackgroundActive || settings?.advanced?.container;
+    const isBackgroundActive =
+        hasAnyBackground(bgSettings) && !!hasBackground;
+
+    const hasContainer = isBackgroundActive || advanced?.container;
 
     const containerClass = [
-        //blockBaseName ? `${blockBaseName}__container` : null,
-        'wpbs-layout-wrapper wpbs-container w-full h-full relative z-20',
+        "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20",
     ]
         .filter(Boolean)
-        .join(' ');
+        .join(" ");
 
     const baseBlockProps = getBlockProps(props, wrapperProps);
 
-    // ──────────────────────────────────────────────
-    // SAVE VERSION
-    // ──────────────────────────────────────────────
+    /* ──────────────────────────────────────────────────────────────
+       SAVE VERSION
+    ─────────────────────────────────────────────────────────────── */
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
@@ -114,11 +136,11 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>
-                        <InnerBlocks.Content/>
+                        <InnerBlocks.Content />
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    <BackgroundElement attributes={attributes} isSave={true} />
                 </Tag>
             );
         }
@@ -127,7 +149,7 @@ export const BlockWrapper = ({
         if (hasChildren) {
             return (
                 <Tag {...saveProps}>
-                    <InnerBlocks.Content/>
+                    <InnerBlocks.Content />
                     {children}
                 </Tag>
             );
@@ -137,33 +159,25 @@ export const BlockWrapper = ({
         if (hasContainer || isBackgroundActive) {
             return (
                 <Tag {...saveProps}>
-                    <div className={containerClass}>
-                        {children}
-                    </div>
+                    <div className={containerClass}>{children}</div>
 
-                    <BackgroundElement attributes={attributes} isSave={true}/>
+                    <BackgroundElement attributes={attributes} isSave={true} />
                 </Tag>
             );
         }
 
         // CASE 4 — No InnerBlocks, no container/background
-        return (
-            <Tag {...saveProps}>
-                {children}
-            </Tag>
-        );
+        return <Tag {...saveProps}>{children}</Tag>;
     }
 
-
-    // ──────────────────────────────────────────────
-    // EDIT VERSION
-    // ──────────────────────────────────────────────
+    /* ──────────────────────────────────────────────────────────────
+       EDIT VERSION
+    ─────────────────────────────────────────────────────────────── */
     const blockProps = useBlockProps(baseBlockProps);
 
     if (hasContainer || isBackgroundActive) {
-
         const containerProps = useInnerBlocksProps(
-            {className: containerClass},
+            { className: containerClass },
             {}
         );
 
@@ -174,7 +188,7 @@ export const BlockWrapper = ({
                     {children}
                 </div>
 
-                <BlockBackground attributes={attributes}/>
+                <BlockBackground attributes={attributes} />
             </Tag>
         );
     }
@@ -189,28 +203,6 @@ export const BlockWrapper = ({
         );
     }
 
-    if (hasContainer || isBackgroundActive) {
-
-        const containerProps = {
-            className: containerClass
-        };
-
-        return (
-            <Tag {...blockProps}>
-                <div {...containerProps}>
-                    {children}
-                </div>
-
-                <BlockBackground attributes={attributes}/>
-            </Tag>
-        );
-    }
-
-// NO CHILDREN — Basic rendering
-    return (
-        <Tag {...blockProps}>
-            {children}
-        </Tag>
-    );
-
+    // NO CHILDREN — Basic rendering
+    return <Tag {...blockProps}>{children}</Tag>;
 };

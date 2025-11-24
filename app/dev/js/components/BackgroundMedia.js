@@ -1,31 +1,55 @@
 import { memo } from "@wordpress/element";
 
+/**
+ * BackgroundVideo
+ *
+ * Handles the <video> element for background video rendering.
+ * - Works with unified media shape: settings.props.media
+ * - Fully breakpoint-aware
+ * - Supports placeholder ("#") disabling
+ * - No CSS-based video logic — HTML <video> is always the renderer
+ */
 const BackgroundVideo = ({ settings = {}, isSave = false }) => {
-    if (!isSave) return null;
+    if (!isSave) return null; // only output on frontend save
 
     const { props = {}, breakpoints = {} } = settings || {};
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
+    // Unified root-level media
     const baseMedia = props?.media;
-    const hasRealBase =
-        baseMedia?.type === "video" && baseMedia?.source;
+    const isBaseVideo =
+        props?.type === "video" &&
+        baseMedia?.type === "video" &&
+        typeof baseMedia?.source === "string" &&
+        baseMedia.source !== "";
 
-    if (hasRealBase) {
+    if (isBaseVideo) {
         entries.push({
             size: Infinity,
             media: baseMedia,
         });
     }
 
+    // Breakpoints
     Object.entries(breakpoints || {}).forEach(([bpKey, bpData]) => {
         const size = bpDefs?.[bpKey]?.size ?? 0;
         const bpMedia = bpData?.props?.media;
+        const bpType = bpData?.props?.type;
 
-        if (bpMedia && bpMedia.type === "video") {
-            if (bpMedia.source) {
-                entries.push({ size, media: bpMedia });
-            } else if (bpMedia.isPlaceholder && hasRealBase) {
+        // Breakpoint explicitly requests video
+        if (bpType === "video") {
+            // Real video at this breakpoint
+            if (bpMedia?.source) {
+                entries.push({
+                    size,
+                    media: bpMedia,
+                });
+                return;
+            }
+
+            // Disabled placeholder video at this breakpoint
+            if (bpMedia?.isPlaceholder || bpMedia?.source === "#") {
                 entries.push({
                     size,
                     media: {
@@ -38,11 +62,12 @@ const BackgroundVideo = ({ settings = {}, isSave = false }) => {
                         isPlaceholder: true,
                     },
                 });
+                return;
             }
-            return;
         }
 
-        if (hasRealBase) {
+        // Breakpoint NOT video, but base video exists
+        if (isBaseVideo) {
             entries.push({
                 size,
                 media: {
@@ -60,10 +85,12 @@ const BackgroundVideo = ({ settings = {}, isSave = false }) => {
 
     if (!entries.length) return null;
 
+    // Largest -> smallest (Infinity keeps base last)
     entries.sort((a, b) => b.size - a.size);
 
     const baseEntry = entries.find((e) => e.size === Infinity);
     const baseObj = baseEntry?.media ?? null;
+
     const bpEntries = entries.filter((e) => e.size !== Infinity);
 
     return (
@@ -76,7 +103,9 @@ const BackgroundVideo = ({ settings = {}, isSave = false }) => {
         >
             {bpEntries.map(({ size, media }, i) => {
                 const mq =
-                    Number.isFinite(size) && size > 0 && size !== Infinity
+                    Number.isFinite(size) &&
+                    size > 0 &&
+                    size !== Infinity
                         ? `(max-width:${size - 1}px)`
                         : null;
 
@@ -100,6 +129,13 @@ const BackgroundVideo = ({ settings = {}, isSave = false }) => {
     );
 };
 
+/**
+ * BackgroundMedia
+ *
+ * Switches by props.type only.
+ * - No old image/video props
+ * - Unified "media" object only
+ */
 export const BackgroundMedia = memo(function BackgroundMedia({
                                                                  settings = {},
                                                                  isSave = false,

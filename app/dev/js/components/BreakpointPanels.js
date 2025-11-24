@@ -97,9 +97,6 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
             .map((bp) => bp.key)
             .filter((k) => !existingKeys.includes(k));
 
-        console.log(existingKeys);
-        console.log(available);
-
         if (!available.length) return;
 
         const newKey = available[0];
@@ -110,8 +107,6 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
                 props: {}, // guarantee props exists
             },
         };
-
-        console.log(nextBreakpoints);
 
         onChange({
             ...normalizedBaseEntry,

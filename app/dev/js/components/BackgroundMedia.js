@@ -12,8 +12,6 @@ import {memo} from "@wordpress/element";
 const BackgroundVideo = ({settings = {}, isSave = false}) => {
     if (!isSave) return null; // only output on frontend save
 
-    console.log(isSave);
-
     const {props = {}, breakpoints = {}} = settings || {};
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
@@ -94,8 +92,6 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     const bpEntries = entries.filter((e) => e.size !== Infinity);
 
-    console.log(bpEntries);
-
     return (
         <video
             muted
@@ -144,7 +140,7 @@ export const BackgroundMedia = ({
                                     isSave = false,
                                 }) => {
     const type = settings?.props?.type;
-    console.log(isSave);
+
     switch (type) {
         case "video":
             return <BackgroundVideo settings={settings} isSave={isSave}/>;

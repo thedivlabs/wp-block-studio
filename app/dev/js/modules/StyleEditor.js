@@ -667,51 +667,57 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 
-    const identityStore = new Map();
+    const identityStore = new Map();   // uniqueId → Set<clientId>
 
+// The ONLY correct definition of a clone:
+// A block is a clone if:
+//   - it has a uniqueId, AND
+//   - that id already exists in identityStore AND
+//   - that id belongs to a different clientId
     function registerBlock(uniqueId, clientId) {
-        // If block has no ID → definitely fresh
+        // ---------------------------------------------
+        // 1. Block has no ID → always FRESH
+        // ---------------------------------------------
         if (!uniqueId) {
             return "fresh";
         }
 
-        // First time seeing this uniqueId
+        // ---------------------------------------------
+        // 2. First time seeing this ID
+        // ---------------------------------------------
         if (!identityStore.has(uniqueId)) {
             identityStore.set(uniqueId, new Set([clientId]));
             return "normal";
         }
 
-        const clients = identityStore.get(uniqueId);
+        const owners = identityStore.get(uniqueId);
 
-        // If this block already owns this id → normal render
-        if (clients.has(clientId)) {
+        // ---------------------------------------------
+        // 3. If THIS block already owns the ID → normal
+        // ---------------------------------------------
+        if (owners.has(clientId)) {
             return "normal";
         }
 
-        // If the id is already owned by another block → this is a DUPLICATE
-        if (clients.size >= 1) {
-            clients.add(clientId);
-            return "clone";
-        }
-
-        // fallback safety
-        clients.add(clientId);
-        return "normal";
+        // ---------------------------------------------
+        // 4. ID belongs to a DIFFERENT block → CLONE
+        // ---------------------------------------------
+        owners.add(clientId);
+        return "clone";
     }
 
     function unregisterBlock(uniqueId, clientId) {
         if (!uniqueId) return;
+        if (!identityStore.has(uniqueId)) return;
 
-        const clients = identityStore.get(uniqueId);
-        if (!clients) return;
+        const owners = identityStore.get(uniqueId);
+        owners.delete(clientId);
 
-        clients.delete(clientId);
-
-        // Clean empty sets
-        if (clients.size === 0) {
+        if (owners.size === 0) {
             identityStore.delete(uniqueId);
         }
     }
+
 
 
     const api = {

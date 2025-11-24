@@ -1,27 +1,27 @@
-import { Fragment, useCallback, useEffect, useRef } from "@wordpress/element";
-import { StyleEditorUI } from "Includes/style";
-import { BlockWrapper } from "Components/BlockWrapper";
-import { useInstanceId } from "@wordpress/compose";
-import { InspectorControls } from "@wordpress/block-editor";
-import { BackgroundControls } from "Components/Background";
+import {Fragment, useCallback, useEffect, useRef} from "@wordpress/element";
+import {StyleEditorUI} from "Includes/style";
+import {BlockWrapper} from "Components/BlockWrapper";
+import {useInstanceId} from "@wordpress/compose";
+import {InspectorControls} from "@wordpress/block-editor";
+import {BackgroundControls} from "Components/Background";
 
 export const STYLE_ATTRIBUTES = {
-    uniqueId: { type: "string" },
-    "wpbs-css": { type: "object", default: {} },
+    uniqueId: {type: "string"},
+    "wpbs-css": {type: "object", default: {}},
 
     // Clean separation of concerns:
-    "wpbs-style": { type: "object", default: { props: {}, breakpoints: {}, hover: {} } },
-    "wpbs-background": { type: "object", default: { props: {}, breakpoints: {} } },
+    "wpbs-style": {type: "object", default: {props: {}, breakpoints: {}, hover: {}}},
+    "wpbs-background": {type: "object", default: {props: {}, breakpoints: {}}},
 
-    "wpbs-preload": { type: "array", default: [] },
-    "wpbs-icons": { type: "array", default: [] },
+    "wpbs-preload": {type: "array", default: []},
+    "wpbs-icons": {type: "array", default: []},
 };
 
 export const withStyle = (Component) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
-    const { onStyleChange, cleanObject, registerBlock, unregisterBlock } = API;
+    const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
 
-    const { clientId, attributes, setAttributes, name } = props;
+    const {clientId, attributes, setAttributes, name} = props;
     const instanceId = useInstanceId(withStyle, name.replace("/", "-"));
 
     const blockCssRef = useRef({});
@@ -30,34 +30,28 @@ export const withStyle = (Component) => (props) => {
 
     const {
         uniqueId,
-        "wpbs-style": styleData = { props: {}, breakpoints: {}, hover: {} },
-        "wpbs-background": bgData = { props: {}, breakpoints: {} },
+        "wpbs-style": styleData = {props: {}, breakpoints: {}, hover: {}},
+        "wpbs-background": bgData = {props: {}, breakpoints: {}},
     } = attributes;
 
-    /* ------------------------------------------------------------------
-       UNIQUE ID / REGISTRATION
-    ------------------------------------------------------------------ */
     useEffect(() => {
-        const oldId = uniqueId;
-        const status = registerBlock(oldId, clientId);
+        const status = registerBlock(uniqueId, clientId);
 
         if (status === "fresh" || status === "clone") {
-            const newId = instanceId;
+            setAttributes({ uniqueId: instanceId });
 
-            setAttributes({ uniqueId: newId });
-            registerBlock(newId, clientId);
+            registerBlock(instanceId, clientId);
 
-            if (oldId && oldId !== newId) {
-                unregisterBlock(oldId, clientId);
+            if (uniqueId && uniqueId !== instanceId) {
+                unregisterBlock(uniqueId, clientId);
             }
         }
-    }, []);
 
-    useEffect(() => {
         return () => {
             unregisterBlock(attributes.uniqueId, clientId);
         };
     }, []);
+
 
     /* ------------------------------------------------------------------
        UPDATE: STYLE (wpbs-style)
@@ -66,6 +60,7 @@ export const withStyle = (Component) => (props) => {
         (next) => {
             setAttributes({
                 "wpbs-style": cleanObject(next),
+                uniqueId: instanceId
             });
         },
         [setAttributes]
@@ -127,7 +122,7 @@ export const withStyle = (Component) => (props) => {
     /* ------------------------------------------------------------------
        BLOCK WRAPPER CALLBACK
     ------------------------------------------------------------------ */
-    const wrappedBlockWrapperCallback = useCallback(({ children, props, ...wrapperProps }) => {
+    const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {
         return (
             <BlockWrapper props={props} wrapperProps={wrapperProps}>
                 {children}
@@ -147,7 +142,7 @@ export const withStyle = (Component) => (props) => {
                 setPreload={updatePreloadRef}
             />
 
-            {attributes?.["wpbs-css"] && <style ref={styleRef} />}
+            {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
 
             <InspectorControls group="styles">
                 <StyleEditorUI
@@ -164,13 +159,13 @@ export const withStyle = (Component) => (props) => {
 };
 
 export const withStyleSave = (Component) => (props) => {
-    const { attributes } = props;
-    const { "wpbs-style": styleData = {} } = attributes;
+    const {attributes} = props;
+    const {"wpbs-style": styleData = {}} = attributes;
 
     return (
         <Component
             {...props}
-            BlockWrapper={({ children, props: blockProps, ...wrapperProps }) => (
+            BlockWrapper={({children, props: blockProps, ...wrapperProps}) => (
                 <BlockWrapper props={blockProps} wrapperProps={wrapperProps} isSave={true}>
                     {children}
                 </BlockWrapper>

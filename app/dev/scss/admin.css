@@ -5,3 +5,16 @@
 @import "./admin/editor";
 @import "./admin/layout-tools";
 @import "./components/material-icons";
+
+
+p:empty {
+  display: none;
+}
+
+p:not(p + p) {
+  margin-top: 0 !important;
+}
+
+p {
+  margin-bottom: 0;
+}

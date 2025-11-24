@@ -142,52 +142,63 @@ export function cleanObject(obj, strict = false) {
     }, {});
 }
 
-export function extractPreloadsFromLayout(layout = {}, uniqueId) {
+export function extractPreloadsFromLayout(bgData = {}, uniqueId) {
     const result = [];
 
-    // --- Base background
-    const baseBg = layout?.background;
-    if (baseBg?.eager) {
+    if (!uniqueId) return result;
 
-        if (baseBg.type === "image" && baseBg.image?.id) {
-            result.push({
-                group: uniqueId,
-                id: baseBg.image.id,
-                type: "image",
-                resolution: baseBg.resolution || null
-            });
-        }
+    // NEW: bgData comes directly from wpbs-background
+    const base = bgData?.props || {};
+    const bps = bgData?.breakpoints || {};
 
-        if (baseBg.type === "video" && baseBg.video?.id) {
-            result.push({
-                group: uniqueId,
-                id: baseBg.video.id,
-                type: "video"
-            });
-        }
+    const isEager = base?.eager === true;
+
+    if (!isEager) {
+        return result; // background not eager → nothing to preload
     }
 
-    // --- Breakpoints
-    const breakpoints = layout.breakpoints || {};
+    // ----------------------------------------
+    // BASE BACKGROUND
+    // ----------------------------------------
+    if (base.type === "image" && base.image?.id) {
+        result.push({
+            group: uniqueId,
+            id: base.image.id,
+            type: "image",
+            resolution: base.resolution || null
+        });
+    }
 
-    for (const [bpKey, bpData] of Object.entries(breakpoints)) {
-        const bpBg = bpData?.background;
-        if (!baseBg?.eager) continue;
+    if (base.type === "video" && base.video?.id) {
+        result.push({
+            group: uniqueId,
+            id: base.video.id,
+            type: "video"
+        });
+    }
 
-        if (bpBg.type === "image" && bpBg.image?.id) {
+    // ----------------------------------------
+    // BREAKPOINT BACKGROUNDS
+    // ----------------------------------------
+    for (const [bpKey, bpEntry] of Object.entries(bps)) {
+        const bpProps = bpEntry?.props || {};
+        if (!bpProps.type) continue;
+
+        // Breakpoints inherit eagerness from base
+        if (bpProps.type === "image" && bpProps.image?.id) {
             result.push({
                 group: uniqueId,
-                id: bpBg.image.id,
+                id: bpProps.image.id,
                 type: "image",
-                resolution: bpBg.resolution || null,
+                resolution: bpProps.resolution || null,
                 media: bpKey
             });
         }
 
-        if (bpBg.type === "video" && bpBg.video?.id) {
+        if (bpProps.type === "video" && bpProps.video?.id) {
             result.push({
                 group: uniqueId,
-                id: bpBg.video.id,
+                id: bpProps.video.id,
                 type: "video",
                 media: bpKey
             });

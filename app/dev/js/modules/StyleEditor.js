@@ -558,6 +558,9 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         breakpoints: {},
     };
 
+    // --------------------------------------------
+    // Gap from core block spacing (blockGap)
+    // --------------------------------------------
     const gap = blockStyle?.spacing?.blockGap;
     if (gap) {
         const rowGapVal = gap?.top ?? (typeof gap === "string" ? gap : undefined);
@@ -575,16 +578,28 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         }
     }
 
-    Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
+    // --------------------------------------------
+    // Unified breakpoint processing
+    // --------------------------------------------
+    const layoutBpMap = cleanedLayout.breakpoints || {};
+    const allBpKeys = new Set([
+        ...Object.keys(layoutBpMap),
+        ...Object.keys(bpBgMap),
+    ]);
+
+    for (const bpKey of allBpKeys) {
         const bpCss = {
             props: {},
             background: {},
             hover: {},
         };
 
+        // 1. Layout props
+        const bpLayout = layoutBpMap[bpKey] || {};
         const baseProps = cssObj.props || {};
-        const mergedProps = bpProps?.props
-            ? {...baseProps, ...parseSpecialProps(bpProps.props, attributes)}
+
+        const mergedProps = bpLayout.props
+            ? { ...baseProps, ...parseSpecialProps(bpLayout.props, attributes) }
             : baseProps;
 
         const diffPropsObj = diffObjects(baseProps, mergedProps);
@@ -592,11 +607,17 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             bpCss.props = diffPropsObj;
         }
 
+        // 2. Background props
         const rawBpBg = bpBgMap[bpKey]?.props || {};
         let effectiveBpBg = { ...rawBpBg };
 
-        if (effectiveBpBg.resolution && !effectiveBpBg.media && !effectiveBpBg.image) {
-            effectiveBpBg.media = baseBgProps.media || baseBgProps.image || null;
+        if (
+            effectiveBpBg.resolution &&
+            !effectiveBpBg.media &&
+            !effectiveBpBg.image
+        ) {
+            effectiveBpBg.media =
+                baseBgProps.media || baseBgProps.image || null;
         }
 
         if (Object.keys(effectiveBpBg).length > 0) {
@@ -609,17 +630,22 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             }
         }
 
-        if (bpProps.hover) {
-            bpCss.hover = parseSpecialProps(bpProps.hover, attributes);
+        // 3. Hover props
+        if (bpLayout.hover) {
+            bpCss.hover = parseSpecialProps(bpLayout.hover, attributes);
         }
 
         cssObj.breakpoints[bpKey] = bpCss;
-    });
+    }
 
+    // --------------------------------------------
+    // Base hover (non-breakpoint)
+    // --------------------------------------------
     if (cleanedLayout.hover) {
         cssObj.hover = parseSpecialProps(cleanedLayout.hover, attributes);
     }
 
+    // External CSS overrides (if any)
     cssObj = _.merge({}, cssObj, css || {});
 
     const cleanedCss = cleanObject(cssObj, true);

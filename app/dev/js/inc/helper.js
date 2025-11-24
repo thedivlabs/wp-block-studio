@@ -11,53 +11,93 @@ export function buildImageSet(url) {
     return `image-set(${webp}, ${fallback})`;
 }
 
-export function extractMinimalImageMeta(media) {
-    if (!media) return null;
-
-    const mime = media.mime || media.mime_type || '';
-    const type = media.type || (mime.startsWith('video/') ? 'video' : 'image');
-    const source = media.url || '';
-
-    // --- Handle VIDEO ---
-    if (type === 'video') {
+export function normalizeMedia(input) {
+    // ------------------------------------------------------------
+    // 0. EMPTY INPUT → return fully empty normalized object
+    // ------------------------------------------------------------
+    if (!input || input === "" || typeof input !== "object") {
         return {
-            id: media.id,
-            type: 'video',
-            source,
-            width: Number(media.width) || null,
-            height: Number(media.height) || null,
-            //poster: media.image?.src || null
+            id: null,
+            source: null,
+            type: null,
+            width: null,
+            height: null,
+            sizes: null,
+            isPlaceholder: false
         };
     }
 
-    // --- Handle SVG IMAGE ---
-    const isSVG = mime === 'image/svg+xml';
-    if (isSVG) {
+    // ------------------------------------------------------------
+    // 1. PLACEHOLDER INPUT (PreviewThumbnail)
+    // ------------------------------------------------------------
+    if (input.isPlaceholder === true) {
         return {
-            id: media.id,
-            type: 'image',
-            source,
-            sizes: {}
+            id: null,
+            source: "#",        // required for <picture> + CSS hiding logic
+            type: null,
+            width: null,
+            height: null,
+            sizes: null,
+            isPlaceholder: true
         };
     }
 
-    // --- Handle RASTER IMAGE ---
-    const rawSizes = media.sizes || {};
-    const sizes = {};
+    // ------------------------------------------------------------
+    // 2. ALREADY NORMALIZED
+    // ------------------------------------------------------------
+    // If the shape already matches our unified spec, return as-is.
+    const alreadyNormalized =
+        "id" in input &&
+        "source" in input &&
+        "type" in input &&
+        "isPlaceholder" in input;
 
-    Object.entries(rawSizes).forEach(([key, size]) => {
-        const width = Number(size.width) || 0;
-        const height = Number(size.height) || 0;
-        if (width && height) {
-            sizes[key] = {width, height};
-        }
-    });
+    if (alreadyNormalized) {
+        return {
+            id: input.id ?? null,
+            source: input.source ?? null,
+            type: input.type ?? null,
+            width: input.width ?? null,
+            height: input.height ?? null,
+            sizes: input.sizes ?? null,
+            isPlaceholder: input.isPlaceholder === true
+        };
+    }
+
+    // ------------------------------------------------------------
+    // 3. WP MEDIA OBJECT → extract minimal unified data
+    // ------------------------------------------------------------
+    const isImage = input.type?.startsWith("image");
+    const isVideo = input.type?.startsWith("video");
+
+    // WordPress attachment full URL
+    const fullSrc =
+        input?.media_details?.sizes?.full?.source_url ||
+        input?.media_details?.sizes?.full?.url ||
+        input?.source_url ||
+        null;
+
+    // Image sizes map → only width/height
+    let sizeMap = null;
+    if (isImage && input.media_details?.sizes) {
+        sizeMap = {};
+
+        Object.entries(input.media_details.sizes).forEach(([key, val]) => {
+            sizeMap[key] = {
+                width: val?.width ?? null,
+                height: val?.height ?? null
+            };
+        });
+    }
 
     return {
-        id: media.id,
-        type: 'image',
-        source,
-        sizes
+        id: input.id ?? null,
+        source: fullSrc,
+        type: isImage ? "image" : isVideo ? "video" : null,
+        width: input.media_details?.width ?? null,
+        height: input.media_details?.height ?? null,
+        sizes: sizeMap,
+        isPlaceholder: false
     };
 }
 

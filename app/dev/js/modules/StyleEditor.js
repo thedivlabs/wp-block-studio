@@ -531,10 +531,10 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
     return css;
 }
 
-function onStyleChange({css = {}, preload = [], props, styleRef}) {
+function onStyleChange({ css = {}, preload = [], props, styleRef }) {
     if (!props) return;
 
-    const {clientId, name, attributes} = props;
+    const { clientId, name, attributes } = props;
     if (!clientId || !attributes) return;
 
     const blockName = name ? name.replace('/', '-') : null;
@@ -579,25 +579,19 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     }
 
     // --------------------------------------------
-    // Unified breakpoint processing
+    // 1) LAYOUT BREAKPOINTS (props + hover)
     // --------------------------------------------
     const layoutBpMap = cleanedLayout.breakpoints || {};
-    const allBpKeys = new Set([
-        ...Object.keys(layoutBpMap),
-        ...Object.keys(bpBgMap),
-    ]);
 
-    for (const bpKey of allBpKeys) {
-        const bpCss = {
+    Object.entries(layoutBpMap).forEach(([bpKey, bpLayout]) => {
+        const bpCss = cssObj.breakpoints[bpKey] || {
             props: {},
             background: {},
             hover: {},
         };
 
-        // 1. Layout props
-        const bpLayout = layoutBpMap[bpKey] || {};
+        // Props: inherit → override → diff
         const baseProps = cssObj.props || {};
-
         const mergedProps = bpLayout.props
             ? { ...baseProps, ...parseSpecialProps(bpLayout.props, attributes) }
             : baseProps;
@@ -607,10 +601,22 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             bpCss.props = diffPropsObj;
         }
 
-        // 2. Background props
-        const rawBpBg = bpBgMap[bpKey]?.props || {};
+        // Hover
+        if (bpLayout.hover) {
+            bpCss.hover = parseSpecialProps(bpLayout.hover, attributes);
+        }
+
+        cssObj.breakpoints[bpKey] = bpCss;
+    });
+
+    // --------------------------------------------
+    // 2) BACKGROUND BREAKPOINTS (background only)
+    // --------------------------------------------
+    Object.entries(bpBgMap || {}).forEach(([bpKey, bpValue]) => {
+        const rawBpBg = bpValue?.props || {};
         let effectiveBpBg = { ...rawBpBg };
 
+        // Inherit base media when only resolution is changed
         if (
             effectiveBpBg.resolution &&
             !effectiveBpBg.media &&
@@ -620,23 +626,27 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
                 baseBgProps.media || baseBgProps.image || null;
         }
 
-        if (Object.keys(effectiveBpBg).length > 0) {
-            const parsedBase = parseBackgroundProps(baseBgProps);
-            const parsedBp = parseBackgroundProps(effectiveBpBg);
-
-            const diffBgObj = diffObjects(parsedBase, parsedBp);
-            if (!_.isEmpty(diffBgObj)) {
-                bpCss.background = diffBgObj;
-            }
+        if (Object.keys(effectiveBpBg).length === 0) {
+            return;
         }
 
-        // 3. Hover props
-        if (bpLayout.hover) {
-            bpCss.hover = parseSpecialProps(bpLayout.hover, attributes);
+        const parsedBase = parseBackgroundProps(baseBgProps);
+        const parsedBp = parseBackgroundProps(effectiveBpBg);
+
+        const diffBgObj = diffObjects(parsedBase, parsedBp);
+        if (_.isEmpty(diffBgObj)) {
+            return;
         }
 
+        const bpCss = cssObj.breakpoints[bpKey] || {
+            props: {},
+            background: {},
+            hover: {},
+        };
+
+        bpCss.background = diffBgObj;
         cssObj.breakpoints[bpKey] = bpCss;
-    }
+    });
 
     // --------------------------------------------
     // Base hover (non-breakpoint)
@@ -669,13 +679,12 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         return;
     }
 
-    const {dispatch} = wp.data;
+    const { dispatch } = wp.data;
     dispatch("core/block-editor").updateBlockAttributes(clientId, {
         "wpbs-css": cleanedCss,
         "wpbs-preload": nextPreload,
     });
 }
-
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 

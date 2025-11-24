@@ -1,6 +1,6 @@
-import {Button, Icon} from '@wordpress/components';
-import {IMAGE_BUTTON_STYLE} from 'Includes/config';
-import {getImageUrlForResolution} from 'Includes/helper';
+import { Button, Icon } from '@wordpress/components';
+import { IMAGE_BUTTON_STYLE } from 'Includes/config';
+import { getImageUrlForResolution } from 'Includes/helper';
 
 function PreviewThumbnail({
                               image = null,
@@ -10,22 +10,57 @@ function PreviewThumbnail({
                               callback,
                               style = {}
                           }) {
-    const isVideo = type === "video";
+    /* -------------------------------------------------------------
+     * HELPERS: NORMALIZED OUTPUT SHAPES
+     * ------------------------------------------------------------- */
 
-    const src = image?.id ? getImageUrlForResolution(image, resolution) : null;
+    const normalizeEmpty = () => {
+        callback({});
+    };
+
+    const normalizePlaceholder = () => {
+        callback({
+            id: null,
+            source: "#",
+            type: null,
+            width: null,
+            height: null,
+            sizes: null,
+            isPlaceholder: true
+        });
+    };
+
+    const normalizeEnable = () => {
+        // enabling from placeholder just clears to empty
+        normalizeEmpty();
+    };
+
+    /* -------------------------------------------------------------
+     * STATE DETECTION
+     * ------------------------------------------------------------- */
+
+    const isPlaceholder = image?.isPlaceholder === true;
+
+    const hasRealMedia = image?.id && !isPlaceholder;
+
+    const src = hasRealMedia
+        ? getImageUrlForResolution(image, resolution)
+        : null;
+
     const hasSelection = !!src;
 
-    const isDisabled = image?.isPlaceholder === true;
+    /* -------------------------------------------------------------
+     * STYLES
+     * ------------------------------------------------------------- */
 
     const thumbnailStyle = {
-        ...IMAGE_BUTTON_STYLE,
-        //pointerEvents: "none",
+        ...IMAGE_BUTTON_STYLE
     };
 
     const emptyStyle = {
         ...IMAGE_BUTTON_STYLE,
         border: "1px dashed lightgray",
-        padding: "8px",
+        padding: "8px"
     };
 
     const buttonStyle = {
@@ -33,32 +68,29 @@ function PreviewThumbnail({
         maxWidth: "100px",
         textAlign: "center",
         justifyContent: "center"
-    }
+    };
 
     const buttonDisabledStyle = {
         backgroundColor: "var(--wp--preset--color--vivid-red)",
-        borderColor: "var(--wp--preset--color--vivid-red)",
-    }
+        borderColor: "var(--wp--preset--color--vivid-red)"
+    };
 
     const imageStyle = {
         width: "100%",
         height: "100%",
         objectFit: "cover"
-    }
+    };
 
-    /* ------------------------------------------------------------- */
-    /*  EMPTY OR DISABLED STATE                                      */
-    /* ------------------------------------------------------------- */
+    /* -------------------------------------------------------------
+     * EMPTY OR PLACEHOLDER UI
+     * ------------------------------------------------------------- */
+
     if (!hasSelection) {
-        const toggleOff = () => {
-            if (isDisabled) {
-                callback(""); // enable
+        const toggle = () => {
+            if (isPlaceholder) {
+                normalizeEnable();
             } else {
-                callback({
-                    source: "#",
-                    //mime: "video/mp4",
-                    isPlaceholder: true
-                });
+                normalizePlaceholder();
             }
         };
 
@@ -73,39 +105,40 @@ function PreviewThumbnail({
                 </Button>
 
                 <Button
-                    onClick={toggleOff}
-                    variant={isDisabled ? "primary" : "secondary"}
+                    onClick={toggle}
+                    variant={isPlaceholder ? "primary" : "secondary"}
                     style={{
                         ...buttonStyle,
-                        ...(isDisabled && buttonDisabledStyle)
+                        ...(isPlaceholder && buttonDisabledStyle)
                     }}
                 >
-                    {isDisabled ? "Enable" : "Disable"}
+                    {isPlaceholder ? "Enable" : "Disable"}
                 </Button>
             </div>
         );
     }
 
-    /* ------------------------------------------------------------- */
-    /* SELECTED THUMBNAIL                                            */
-    /* ------------------------------------------------------------- */
-    const thumb = isVideo ? (
+    /* -------------------------------------------------------------
+     * SELECTED THUMBNAIL
+     * ------------------------------------------------------------- */
+
+    const thumb = type === "video" ? (
         <video preload="metadata" style={imageStyle}>
-            <source src={src} type="video/mp4"/>
+            <source src={src} type="video/mp4" />
         </video>
     ) : (
-        <img src={src} alt="" style={imageStyle}/>
+        <img src={src} alt="" style={imageStyle} />
     );
 
     return (
         <div
             style={thumbnailStyle}
-            onClick={() => callback("")}  // clicking thumbnail clears
+            onClick={() => normalizeEmpty()} // clicking thumbnail clears
         >
             {thumb}
 
             <Button
-                icon={<Icon icon="no-alt"/>}
+                icon={<Icon icon="no-alt" />}
                 style={{
                     position: "absolute",
                     top: "4px",

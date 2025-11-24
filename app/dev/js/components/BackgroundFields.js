@@ -40,10 +40,9 @@ export const BackgroundFields = memo(function BackgroundFields({
 
     return (
         <Fragment>
-            <Grid columns={1} columnGap={15} rowGap={20}>
-                {/* ---------------------------- */}
-                {/* TYPE SELECTOR                */}
-                {/* ---------------------------- */}
+            <Grid columns={1} columnGap={15} rowGap={20} style={{padding:'16px'}}>
+
+
                 <SelectControl
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -68,9 +67,7 @@ export const BackgroundFields = memo(function BackgroundFields({
 
                 {!hasSettings ? null : (
                     <Fragment>
-                        {/* ---------------------------- */}
-                        {/* IMAGE FIELD                  */}
-                        {/* ---------------------------- */}
+
                         {(type === "image" || type === "featured-image") && (
                             <Field
                                 field={{
@@ -85,9 +82,7 @@ export const BackgroundFields = memo(function BackgroundFields({
                             />
                         )}
 
-                        {/* ---------------------------- */}
-                        {/* VIDEO FIELD                  */}
-                        {/* ---------------------------- */}
+
                         {type === "video" && (
                             <Field
                                 field={{
@@ -102,9 +97,7 @@ export const BackgroundFields = memo(function BackgroundFields({
                             />
                         )}
 
-                        {/* ---------------------------- */}
-                        {/* OVERLAY GRADIENT             */}
-                        {/* ---------------------------- */}
+
                         <BaseControl label="Overlay">
                             <div className="wpbs-background-controls__card">
                                 <GradientPicker
@@ -135,9 +128,7 @@ export const BackgroundFields = memo(function BackgroundFields({
                             </div>
                         </BaseControl>
 
-                        {/* ---------------------------- */}
-                        {/* BACKGROUND COLOR             */}
-                        {/* ---------------------------- */}
+
                         <PanelColorSettings
                             className="wpbs-controls__color"
                             enableAlpha
@@ -153,9 +144,7 @@ export const BackgroundFields = memo(function BackgroundFields({
                             __nextHasNoMarginBottom
                         />
 
-                        {/* ---------------------------- */}
-                        {/* EAGER / FIXED TOGGLES        */}
-                        {/* ---------------------------- */}
+
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             {!isBreakpoint && (
                                 <ToggleControl
@@ -174,27 +163,27 @@ export const BackgroundFields = memo(function BackgroundFields({
                             )}
                         </Grid>
 
-                        {/* ---------------------------- */}
-                        {/* ADVANCED FIELDS (ToolsPanel) */}
-                        {/* ---------------------------- */}
-                        <ToolsPanel
-                            label="Advanced Background"
-                            className="wpbs-background-tools"
-                            resetAll={() => updateFn({}, true)}
-                        >
-                            {map.map((field) => (
-                                <Field
-                                    key={field.slug}
-                                    field={field}
-                                    settings={settings}
-                                    callback={(v) => onUpdate(field.slug, v)}
-                                    isToolsPanel={true}
-                                />
-                            ))}
-                        </ToolsPanel>
+
+
+
                     </Fragment>
                 )}
             </Grid>
+            <ToolsPanel
+                label="Advanced Background"
+                className="wpbs-background-tools"
+                resetAll={() => updateFn({}, true)}
+            >
+                {map.map((field) => (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        settings={settings}
+                        callback={(v) => onUpdate(field.slug, v)}
+                        isToolsPanel={true}
+                    />
+                ))}
+            </ToolsPanel>
         </Fragment>
     );
 });

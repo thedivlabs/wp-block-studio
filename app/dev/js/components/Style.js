@@ -3,7 +3,6 @@ import {StyleEditorUI} from "Includes/style";
 import {BlockWrapper} from 'Components/BlockWrapper';
 import {useInstanceId} from "@wordpress/compose";
 import {InspectorControls} from "@wordpress/block-editor";
-import {PanelBody} from "@wordpress/components";
 import {BackgroundControls} from "Components/Background";
 
 
@@ -12,10 +11,7 @@ export const STYLE_ATTRIBUTES = {
     'wpbs-css': {type: 'object', default: {}},
     'wpbs-background': {type: 'object', default: {}},
     'wpbs-preload': {type: 'array', default: [{test: 'test'}]},
-    'wpbs-icons': {
-        type: 'array',
-        default: []
-    },
+    'wpbs-icons': {type: 'array', default: []},
     'wpbs-style': {type: 'object', default: {}},
 };
 
@@ -173,7 +169,7 @@ export const withStyle = (Component) => (props) => {
                     settings={settings}
                     updateStyleSettings={updateStyleSettings}
                 />
-                <BackgroundControls settings={bgSettings} callback={updateBgSettings} />
+                <BackgroundControls settings={bgSettings} callback={updateBgSettings}/>
             </InspectorControls>
         </>
     );

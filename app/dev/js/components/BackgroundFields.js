@@ -10,39 +10,26 @@ import {
 import { PanelColorSettings } from "@wordpress/block-editor";
 import { Field } from "Components/Field";
 
-/**
- * BackgroundFields
- *
- * A full replacement for BackgroundPanelFields + the old BackgroundFields.
- * Identical architecture to LayoutFields, but background-specific:
- *
- * - Hard-coded fields (Type, Image, Video, Overlay, Color, Fixed, Eager)
- * - Dynamic fields from `backgroundFieldsMap`
- * - Emits `{ slug: value }` patch objects
- * - Handles `resetAll`
- */
 export const BackgroundFields = memo(function BackgroundFields({
                                                                    settings = {},
                                                                    updateFn,
                                                                    isBreakpoint = false,
                                                                    label = "Background",
                                                                }) {
-    const { backgroundFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
+    const { backgroundFieldsMap: map = [] } =
+    window?.WPBS_StyleEditor ?? {};
 
-    // simple wrapper: ensures updates always emit patches shaped like { slug: value }
     const onUpdate = useCallback(
         (slug, value) => updateFn({ [slug]: value }),
         [updateFn]
     );
 
-    const hasSettings = settings && Object.keys(settings).length > 0;
     const type = settings?.type ?? "";
+    const hasSettings = !!settings && Object.keys(settings).length > 0;
 
     return (
         <Fragment>
-            <Grid columns={1} columnGap={15} rowGap={20} style={{padding:'16px'}}>
-
-
+            <Grid columns={1} columnGap={15} rowGap={20} style={{ padding: "16px" }}>
                 <SelectControl
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -53,8 +40,7 @@ export const BackgroundFields = memo(function BackgroundFields({
 
                         updateFn({
                             type: newType,
-                            image: {},
-                            video: {},
+                            media: {},
                         });
                     }}
                     options={[
@@ -67,36 +53,24 @@ export const BackgroundFields = memo(function BackgroundFields({
 
                 {!hasSettings ? null : (
                     <Fragment>
-
-                        {(type === "image" || type === "featured-image") && (
+                        {(type === "image" ||
+                            type === "featured-image" ||
+                            type === "video") && (
                             <Field
                                 field={{
-                                    type: "image",
-                                    slug: "image",
-                                    label: "Image",
+                                    type,
+                                    slug: "media",
+                                    label:
+                                        type === "video"
+                                            ? "Video"
+                                            : "Image",
                                     full: true,
                                 }}
                                 settings={settings}
-                                callback={(v) => onUpdate("image", v)}
+                                callback={(v) => onUpdate("media", v)}
                                 isToolsPanel={false}
                             />
                         )}
-
-
-                        {type === "video" && (
-                            <Field
-                                field={{
-                                    type: "video",
-                                    slug: "video",
-                                    label: "Video",
-                                    full: true,
-                                }}
-                                settings={settings}
-                                callback={(v) => onUpdate("video", v)}
-                                isToolsPanel={false}
-                            />
-                        )}
-
 
                         <BaseControl label="Overlay">
                             <div className="wpbs-background-controls__card">
@@ -123,11 +97,12 @@ export const BackgroundFields = memo(function BackgroundFields({
                                     ]}
                                     clearable={false}
                                     value={settings?.overlay ?? undefined}
-                                    onChange={(value) => onUpdate("overlay", value)}
+                                    onChange={(value) =>
+                                        onUpdate("overlay", value)
+                                    }
                                 />
                             </div>
                         </BaseControl>
-
 
                         <PanelColorSettings
                             className="wpbs-controls__color"
@@ -137,13 +112,12 @@ export const BackgroundFields = memo(function BackgroundFields({
                                     slug: "color",
                                     label: "Color",
                                     value: settings?.color ?? undefined,
-                                    onChange: (value) => onUpdate("color", value),
-                                    isShownByDefault: true,
+                                    onChange: (value) =>
+                                        onUpdate("color", value),
                                 },
                             ]}
                             __nextHasNoMarginBottom
                         />
-
 
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             {!isBreakpoint && (
@@ -162,13 +136,10 @@ export const BackgroundFields = memo(function BackgroundFields({
                                 />
                             )}
                         </Grid>
-
-
-
-
                     </Fragment>
                 )}
             </Grid>
+
             <ToolsPanel
                 label="Advanced Background"
                 className="wpbs-background-tools"

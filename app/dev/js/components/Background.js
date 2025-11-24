@@ -5,7 +5,6 @@ import { merge } from "lodash";
 import { BackgroundFields } from "./BackgroundFields";
 import { BackgroundMedia } from "./BackgroundMedia";
 
-
 function mergeEntryProps(entry = {}, patch = {}, reset = false) {
     const currentProps = entry.props || {};
     const baseProps = reset ? {} : currentProps;
@@ -29,24 +28,25 @@ function makeEntryHandlers(entry = {}, update) {
     return { settings, updateFn };
 }
 
-
 export const BackgroundControls = memo(function BackgroundControls({
                                                                        settings = {},
                                                                        callback,
                                                                    }) {
-    // Normalize shape for BreakpointPanels
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
     };
 
-    // Pass the full object upward (props + breakpoints)
     const handleChange = useCallback(
         (next = {}) => {
             callback({
                 props: { ...(settings.props || {}), ...(next.props || {}) },
-                breakpoints: { ...(settings.breakpoints || {}), ...(next.breakpoints || {}) },
-            });        },
+                breakpoints: {
+                    ...(settings.breakpoints || {}),
+                    ...(next.breakpoints || {}),
+                },
+            });
+        },
         [callback]
     );
 
@@ -62,7 +62,10 @@ export const BackgroundControls = memo(function BackgroundControls({
                 onChange={handleChange}
                 render={{
                     base: ({ entry, update }) => {
-                        const { settings, updateFn } = makeEntryHandlers(entry, update);
+                        const { settings, updateFn } = makeEntryHandlers(
+                            entry,
+                            update
+                        );
 
                         return (
                             <BackgroundFields
@@ -74,7 +77,10 @@ export const BackgroundControls = memo(function BackgroundControls({
                     },
 
                     breakpoints: ({ entry, update }) => {
-                        const { settings, updateFn } = makeEntryHandlers(entry, update);
+                        const { settings, updateFn } = makeEntryHandlers(
+                            entry,
+                            update
+                        );
 
                         return (
                             <BackgroundFields
@@ -90,21 +96,20 @@ export const BackgroundControls = memo(function BackgroundControls({
     );
 });
 
-/**
- * Determine whether any background exists.
- * Used to auto-open the Background panel + determine whether to render.
- */
 export function hasAnyBackground(bgSettings = {}) {
     const { props = {}, breakpoints = {} } = bgSettings || {};
 
     const check = (obj) => {
         if (!obj) return false;
-        if (obj.type) return true;
-        if (obj.image?.id) return true;
-        if (obj.video?.source) return true;
+
+        if (obj.media?.source) return true;
+        if (obj.media?.id) return true;
+        if (obj.media?.isPlaceholder) return true;
+
         if (obj.color) return true;
         if (obj.overlay) return true;
         if (obj.fade) return true;
+
         return false;
     };
 
@@ -117,11 +122,6 @@ export function hasAnyBackground(bgSettings = {}) {
     return false;
 }
 
-/**
- * BackgroundElement
- *
- * The outer container that renders the final background media element.
- */
 export function BackgroundElement({ attributes = {}, isSave = false }) {
     const { "wpbs-background": bgSettings = {} } = attributes;
 

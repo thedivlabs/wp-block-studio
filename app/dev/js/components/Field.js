@@ -231,15 +231,18 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 />
             );
             break;
+
         case "image":
         case "video": {
             const isImage = type === "image";
             const allowedTypes = isImage ? ["image"] : ["video"];
             const currentValue = value ?? null;
 
-            const onSelect = (media) => {
-                const minimal = extractMinimalImageMeta(media);
-                commit(minimal); // save to attributes
+            // NEW: use normalizeMedia instead of extractMinimalImageMeta
+            const onSelect = (wpMediaObject) => {
+                // Convert WP attachment → unified media shape
+                const normalized = normalizeMedia(wpMediaObject);
+                commit(normalized);
             };
 
             control = (
@@ -248,14 +251,14 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                         <MediaUpload
                             title={`Select ${isImage ? "Image" : "Video"}`}
                             allowedTypes={allowedTypes}
-                            value={currentValue?.id || '#'}
+                            value={currentValue?.id || '#'}     // consistent with PreviewThumbnail behavior
                             onSelect={onSelect}
                             render={({open}) => (
                                 <PreviewThumbnail
                                     image={currentValue}
                                     type={isImage ? "image" : "video"}
-                                    onSelectClick={open}     // <-- this opens the media popover
-                                    callback={commit}        // <-- this commits values (disable, "", etc.)
+                                    onSelectClick={open}          // opens media modal
+                                    callback={commit}             // handles disable/clear
                                     style={{
                                         objectFit: "contain",
                                         borderRadius: "6px",

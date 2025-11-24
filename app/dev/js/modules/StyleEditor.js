@@ -685,6 +685,7 @@ function onStyleChange({ css = {}, preload = [], props, styleRef }) {
         "wpbs-preload": nextPreload,
     });
 }
+
 export function initStyleEditor() {
     if (window.WPBS_StyleEditor) return window.WPBS_StyleEditor;
 

@@ -12,9 +12,6 @@ export function buildImageSet(url) {
 }
 
 export function normalizeMedia(input) {
-    // ------------------------------------------------------------
-    // 0. EMPTY INPUT → return fully empty normalized object
-    // ------------------------------------------------------------
     if (!input || input === "" || typeof input !== "object") {
         return {
             id: null,
@@ -27,13 +24,10 @@ export function normalizeMedia(input) {
         };
     }
 
-    // ------------------------------------------------------------
-    // 1. PLACEHOLDER INPUT (PreviewThumbnail)
-    // ------------------------------------------------------------
     if (input.isPlaceholder === true) {
         return {
             id: null,
-            source: "#",        // required for <picture> + CSS hiding logic
+            source: "#",
             type: null,
             width: null,
             height: null,
@@ -42,10 +36,6 @@ export function normalizeMedia(input) {
         };
     }
 
-    // ------------------------------------------------------------
-    // 2. ALREADY NORMALIZED
-    // ------------------------------------------------------------
-    // If the shape already matches our unified spec, return as-is.
     const alreadyNormalized =
         "id" in input &&
         "source" in input &&
@@ -64,20 +54,15 @@ export function normalizeMedia(input) {
         };
     }
 
-    // ------------------------------------------------------------
-    // 3. WP MEDIA OBJECT → extract minimal unified data
-    // ------------------------------------------------------------
     const isImage = input.type?.startsWith("image");
     const isVideo = input.type?.startsWith("video");
 
-    // WordPress attachment full URL
     const fullSrc =
         input?.media_details?.sizes?.full?.source_url ||
         input?.media_details?.sizes?.full?.url ||
         input?.source_url ||
         null;
 
-    // Image sizes map → only width/height
     let sizeMap = null;
     if (isImage && input.media_details?.sizes) {
         sizeMap = {};
@@ -107,17 +92,14 @@ export function getImageUrlForResolution(image, resolution = 'large') {
 
     const {source, sizes = {}} = image;
 
-    // SVGs or anything without sizes → always return source
     if (!sizes || !Object.keys(sizes).length) {
         return source;
     }
 
-    // Full always returns the real source file
     if (resolution === 'full') {
         return source;
     }
 
-    // Utility: build resized URL from existing size
     const buildFromSize = (sizeObj) => {
         const match = source.match(/^(.*\/)([^\/]+)\.([a-z0-9]+)$/i);
         if (!match) return source;
@@ -125,20 +107,14 @@ export function getImageUrlForResolution(image, resolution = 'large') {
         return `${base}${name}-${sizeObj.width}x${sizeObj.height}.${ext}`;
     };
 
-    // 1. Exact match
     if (sizes[resolution]?.width && sizes[resolution]?.height) {
-        //console.log('exact match', buildFromSize(sizes[resolution]));
         return buildFromSize(sizes[resolution]);
     }
 
-    // 2. Fallback: "large"
     if (sizes.large?.width && sizes.large?.height) {
-        //console.log('fallback large', buildFromSize(sizes.large))
         return buildFromSize(sizes.large);
     }
 
-    //console.log('fallback full', source)
-    // 3. Fallback: "full"
     return source;
 }
 
@@ -174,7 +150,6 @@ export function cleanObject(obj, strict = false) {
             }
         } else if (value !== undefined && value !== null) {
             if (strict && typeof value === 'string' && value.trim() === '') {
-                // skip empty strings in strict mode
                 return;
             }
             result[key] = value;
@@ -187,60 +162,63 @@ export function extractPreloadsFromLayout(bgData = {}, uniqueId) {
 
     if (!uniqueId) return result;
 
-    // NEW: bgData comes directly from wpbs-background
     const base = bgData?.props || {};
     const bps = bgData?.breakpoints || {};
 
     const isEager = base?.eager === true;
-
     if (!isEager) {
-        return result; // background not eager → nothing to preload
+        return result;
     }
 
-    // ----------------------------------------
-    // BASE BACKGROUND
-    // ----------------------------------------
-    if (base.type === "image" && base.image?.id) {
-        result.push({
-            group: uniqueId,
-            id: base.image.id,
-            type: "image",
-            resolution: base.resolution || null
-        });
-    }
+    const baseMedia =
+        base.media || base.image || base.video || null;
 
-    if (base.type === "video" && base.video?.id) {
-        result.push({
-            group: uniqueId,
-            id: base.video.id,
-            type: "video"
-        });
-    }
-
-    // ----------------------------------------
-    // BREAKPOINT BACKGROUNDS
-    // ----------------------------------------
-    for (const [bpKey, bpEntry] of Object.entries(bps)) {
-        const bpProps = bpEntry?.props || {};
-        if (!bpProps.type) continue;
-
-        // Breakpoints inherit eagerness from base
-        if (bpProps.type === "image" && bpProps.image?.id) {
+    if (baseMedia && !baseMedia.isPlaceholder && baseMedia.id) {
+        if (base.type === "video" || baseMedia.type === "video") {
             result.push({
                 group: uniqueId,
-                id: bpProps.image.id,
+                id: baseMedia.id,
+                type: "video",
+            });
+        } else if (
+            base.type === "image" ||
+            base.type === "featured-image" ||
+            baseMedia.type === "image"
+        ) {
+            result.push({
+                group: uniqueId,
+                id: baseMedia.id,
                 type: "image",
-                resolution: bpProps.resolution || null,
-                media: bpKey
+                resolution: base.resolution || null,
             });
         }
+    }
 
-        if (bpProps.type === "video" && bpProps.video?.id) {
+    for (const [bpKey, bpEntry] of Object.entries(bps)) {
+        const bpProps = bpEntry?.props || {};
+        const bpMedia =
+            bpProps.media || bpProps.image || bpProps.video || null;
+
+        if (!bpMedia || bpMedia.isPlaceholder || !bpMedia.id) continue;
+
+        if (bpProps.type === "video" || bpMedia.type === "video") {
             result.push({
                 group: uniqueId,
-                id: bpProps.video.id,
+                id: bpMedia.id,
                 type: "video",
-                media: bpKey
+                media: bpKey,
+            });
+        } else if (
+            bpProps.type === "image" ||
+            bpProps.type === "featured-image" ||
+            bpMedia.type === "image"
+        ) {
+            result.push({
+                group: uniqueId,
+                id: bpMedia.id,
+                type: "image",
+                resolution: bpProps.resolution || base.resolution || null,
+                media: bpKey,
             });
         }
     }
@@ -308,7 +286,6 @@ export const heightVal = (val) => {
 export function normalizeGapVal(v) {
     if (!v) return null;
 
-    // WP BoxControl / UnitControl sometimes gives objects
     if (typeof v === "object") {
         if (typeof v.value === "string") return v.value;
         if (typeof v.top === "string") return v.top;
@@ -316,6 +293,5 @@ export function normalizeGapVal(v) {
         if (typeof v.raw === "string") return v.raw;
     }
 
-    return v; // already a string
+    return v;
 }
-

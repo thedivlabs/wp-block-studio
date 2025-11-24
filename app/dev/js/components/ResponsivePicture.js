@@ -17,22 +17,13 @@ const ResponsivePicture = ({
         style = {}
     } = settings;
 
-    /* ------------------------------------------------------------
-     * BREAKPOINT
-     * ------------------------------------------------------------ */
     const breakpoints = WPBS.settings.breakpoints || {};
     const bp = breakpoints[breakpointKey];
     const breakpoint = bp?.size ? `${bp.size}px` : "768px";
 
-    /* ------------------------------------------------------------
-     * PLACEHOLDER DETECTION
-     * ------------------------------------------------------------ */
     const isMobilePlaceholder = mobile?.isPlaceholder === true;
     const isLargePlaceholder = large?.isPlaceholder === true;
 
-    /* ------------------------------------------------------------
-     * BASE IMAGE SELECTION
-     * ------------------------------------------------------------ */
     const baseMobile =
         !isMobilePlaceholder && mobile?.id
             ? mobile
@@ -47,7 +38,6 @@ const ResponsivePicture = ({
                 ? mobile
                 : null;
 
-    // If no real images and no placeholders → no render
     if (!baseMobile && !baseLarge && !isMobilePlaceholder && !isLargePlaceholder) {
         return null;
     }
@@ -56,50 +46,34 @@ const ResponsivePicture = ({
      * ALWAYS RESPECT RESOLUTION SETTINGS
      * ------------------------------------------------------------ */
 
-    // MOBILE
     let urlMobile;
 
     if (isMobilePlaceholder) {
-        urlMobile = mobile?.url || "#";
-    } else if (mobile?.source && mobile?.sizes) {
-        // Always compute via helper using selected resolution
-        urlMobile =
-            getImageUrlForResolution(
-                {source: mobile.source, sizes: mobile.sizes},
-                resolutionMobile
-            ) || mobile.source;
+        urlMobile = mobile?.source || "#";
     } else if (mobile?.source) {
-        urlMobile = mobile.source;
-    } else {
+        urlMobile = getImageUrlForResolution(mobile, resolutionMobile) || mobile.source;
+    } else if (baseMobile) {
         urlMobile = getImageUrlForResolution(baseMobile, resolutionMobile);
+    } else {
+        urlMobile = null;
     }
 
-    // LARGE
     let urlLarge;
 
     if (isLargePlaceholder) {
-        urlLarge = large?.url || "#";
-    } else if (large?.source && large?.sizes) {
-        // Always compute via helper using selected resolution
-        urlLarge =
-            getImageUrlForResolution(
-                {source: large.source, sizes: large.sizes},
-                resolutionLarge
-            ) || large.source;
+        urlLarge = large?.source || "#";
     } else if (large?.source) {
-        urlLarge = large.source;
-    } else {
+        urlLarge = getImageUrlForResolution(large, resolutionLarge) || large.source;
+    } else if (baseLarge) {
         urlLarge = getImageUrlForResolution(baseLarge, resolutionLarge);
+    } else {
+        urlLarge = null;
     }
 
-    // If both URLs fail → bail
     if (!urlMobile && !urlLarge) {
         return null;
     }
 
-    /* ------------------------------------------------------------
-     * WEBP
-     * ------------------------------------------------------------ */
     const webpMobile =
         urlMobile && urlMobile !== "#" && !urlMobile.endsWith(".svg")
             ? `${urlMobile}.webp`
@@ -110,17 +84,11 @@ const ResponsivePicture = ({
             ? `${urlLarge}.webp`
             : null;
 
-    /* ------------------------------------------------------------
-     * ATTRIBUTES
-     * ------------------------------------------------------------ */
     const srcAttr = editor || eager ? "src" : "data-src";
     const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
 
     const className = ["wpbs-picture", extraClass].filter(Boolean).join(" ");
 
-    /* ------------------------------------------------------------
-     * RENDER
-     * ------------------------------------------------------------ */
     return (
         <picture className={className} style={{...style, objectFit: "inherit"}}>
 

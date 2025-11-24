@@ -60,7 +60,7 @@ export const withStyle = (Component) => (props) => {
         (next) => {
             setAttributes({
                 "wpbs-style": cleanObject(next),
-                uniqueId: instanceId
+                //uniqueId: instanceId
             });
         },
         [setAttributes]

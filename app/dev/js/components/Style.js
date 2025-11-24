@@ -35,6 +35,10 @@ export const withStyle = (Component) => (props) => {
     } = attributes;
 
     useEffect(() => {
+        console.log(attributes);
+    }, []);
+
+    useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
         if (status === "fresh" || status === "clone") {

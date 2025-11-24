@@ -255,16 +255,19 @@ function parseBackgroundProps(props = {}) {
         maxHeight,
     } = props;
 
-    // Back-compat: fall back to legacy image/video fields if present
+    // Unified media object (fallback or server-injected)
     const mediaObj = media || null;
 
-    const image =
-        props.image ||
-        (mediaObj &&
-        (type === "image" || type === "featured-image") &&
-        mediaObj.type === "image"
-            ? mediaObj
-            : null);
+    /* ------------------------------------------------------------
+     * IMAGE (supports featured-image fallback)
+     * ------------------------------------------------------------ */
+    let image = null;
+
+    if (type === "image" || type === "featured-image") {
+        if (mediaObj && mediaObj.type === "image") {
+            image = mediaObj;
+        }
+    }
 
     const video =
         props.video ||

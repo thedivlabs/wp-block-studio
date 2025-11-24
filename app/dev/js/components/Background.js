@@ -201,7 +201,7 @@ export const BackgroundControls = ({ settings = {}, callback }) => {
         <PanelBody
             title="Background"
             initialOpen={hasAnyBackground(value)}
-            className="wpbs-background-controls"
+            className="wpbs-background-controls is-style-unstyled"
         >
             <BreakpointPanels
                 label="Background"

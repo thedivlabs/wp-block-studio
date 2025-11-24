@@ -113,7 +113,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     };
 
     return (
-        <PanelBody title={"Styles"} initialOpen={false}>
+        <PanelBody title={"Styles"} initialOpen={false} className={'is-style-unstyled'}>
             <BreakpointPanels
                 value={normalizedLayout}
                 onChange={updateSettings}

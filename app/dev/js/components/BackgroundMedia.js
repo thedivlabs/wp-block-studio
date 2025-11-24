@@ -139,12 +139,12 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
  * - No old image/video props
  * - Unified "media" object only
  */
-export const BackgroundMedia = memo(function BackgroundMedia({
-                                                                 settings = {},
-                                                                 isSave = false,
-                                                             }) {
+export const BackgroundMedia = ({
+                                    settings = {},
+                                    isSave = false,
+                                }) => {
     const type = settings?.props?.type;
-
+    console.log(isSave);
     switch (type) {
         case "video":
             return <BackgroundVideo settings={settings} isSave={isSave}/>;
@@ -152,4 +152,4 @@ export const BackgroundMedia = memo(function BackgroundMedia({
         default:
             return null;
     }
-});
+};

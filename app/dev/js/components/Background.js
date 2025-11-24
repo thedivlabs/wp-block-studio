@@ -133,7 +133,7 @@ export function BackgroundElement({ attributes = {}, isSave = false }) {
 
     return (
         <div className={bgClass}>
-            <BackgroundMedia settings={bgSettings} isSave={!!isSave} />
+            <BackgroundMedia settings={bgSettings} isSave={isSave} />
         </div>
     );
 }

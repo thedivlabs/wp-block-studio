@@ -1,4 +1,4 @@
-import { memo } from "@wordpress/element";
+import {memo} from "@wordpress/element";
 
 /**
  * BackgroundVideo
@@ -9,19 +9,21 @@ import { memo } from "@wordpress/element";
  * - Supports placeholder ("#") disabling
  * - No CSS-based video logic — HTML <video> is always the renderer
  */
-const BackgroundVideo = ({ settings = {}, isSave = false }) => {
+const BackgroundVideo = ({settings = {}, isSave = false}) => {
     if (!isSave) return null; // only output on frontend save
 
-    const { props = {}, breakpoints = {} } = settings || {};
+    const {props = {}, breakpoints = {}} = settings || {};
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
 
     // Unified root-level media
     const baseMedia = props?.media;
+
+    // 🔧 LOOSENED: don't require baseMedia.type === "video"
     const isBaseVideo =
         props?.type === "video" &&
-        baseMedia?.type === "video" &&
-        typeof baseMedia?.source === "string" &&
+        baseMedia &&
+        typeof baseMedia.source === "string" &&
         baseMedia.source !== "";
 
     if (isBaseVideo) {
@@ -66,7 +68,7 @@ const BackgroundVideo = ({ settings = {}, isSave = false }) => {
             }
         }
 
-        // Breakpoint NOT video, but base video exists
+        // Breakpoint NOT video, but base video exists → explicit disable
         if (isBaseVideo) {
             entries.push({
                 size,
@@ -101,7 +103,7 @@ const BackgroundVideo = ({ settings = {}, isSave = false }) => {
             playsInline
             className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
         >
-            {bpEntries.map(({ size, media }, i) => {
+            {bpEntries.map(({size, media}, i) => {
                 const mq =
                     Number.isFinite(size) &&
                     size > 0 &&
@@ -144,7 +146,7 @@ export const BackgroundMedia = memo(function BackgroundMedia({
 
     switch (type) {
         case "video":
-            return <BackgroundVideo settings={settings} isSave={isSave} />;
+            return <BackgroundVideo settings={settings} isSave={isSave}/>;
 
         default:
             return null;

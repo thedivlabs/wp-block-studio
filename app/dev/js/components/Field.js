@@ -242,6 +242,9 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
             const onSelect = (wpMediaObject) => {
                 // Convert WP attachment → unified media shape
                 const normalized = normalizeMedia(wpMediaObject);
+
+                console.log(wpMediaObject);
+                console.log(normalized);
                 commit(normalized);
             };
 

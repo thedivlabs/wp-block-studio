@@ -12,6 +12,7 @@ export function buildImageSet(url) {
 }
 
 export function normalizeMedia(input) {
+    // 1. empty / invalid
     if (!input || input === "" || typeof input !== "object") {
         return {
             id: null,
@@ -24,7 +25,8 @@ export function normalizeMedia(input) {
         };
     }
 
-    if (input.isPlaceholder === true) {
+    // 2. placeholder (PreviewThumbnail)
+    if (input.isPlaceholder === true || input.source === "#") {
         return {
             id: null,
             source: "#",
@@ -36,13 +38,14 @@ export function normalizeMedia(input) {
         };
     }
 
-    const alreadyNormalized =
-        "id" in input &&
+    // 3. already normalized
+    const already =
         "source" in input &&
         "type" in input &&
+        "sizes" in input &&
         "isPlaceholder" in input;
 
-    if (alreadyNormalized) {
+    if (already) {
         return {
             id: input.id ?? null,
             source: input.source ?? null,
@@ -50,24 +53,31 @@ export function normalizeMedia(input) {
             width: input.width ?? null,
             height: input.height ?? null,
             sizes: input.sizes ?? null,
-            isPlaceholder: input.isPlaceholder === true
+            isPlaceholder: !!input.isPlaceholder
         };
     }
 
-    const isImage = input.type?.startsWith("image");
-    const isVideo = input.type?.startsWith("video");
+    // 4. WP MediaUpload object (THIS is what you showed me)
+    const {
+        id = null,
+        url = null,
+        mime = null,
+        type = null,
+        width = null,
+        height = null,
+        sizes = null
+    } = input;
 
-    const fullSrc =
-        input?.media_details?.sizes?.full?.source_url ||
-        input?.media_details?.sizes?.full?.url ||
-        input?.source_url ||
-        null;
+    // resolve "image", "video"
+    const resolvedType =
+        mime?.startsWith("video") || type === "video"
+            ? "video"
+            : "image";
 
-    let sizeMap = null;
-    if (isImage && input.media_details?.sizes) {
-        sizeMap = {};
-
-        Object.entries(input.media_details.sizes).forEach(([key, val]) => {
+    // build wordPress size map
+    const sizeMap = {};
+    if (sizes && typeof sizes === "object") {
+        Object.entries(sizes).forEach(([key, val]) => {
             sizeMap[key] = {
                 width: val?.width ?? null,
                 height: val?.height ?? null
@@ -76,16 +86,15 @@ export function normalizeMedia(input) {
     }
 
     return {
-        id: input.id ?? null,
-        source: fullSrc,
-        type: isImage ? "image" : isVideo ? "video" : null,
-        width: input.media_details?.width ?? null,
-        height: input.media_details?.height ?? null,
-        sizes: sizeMap,
+        id,
+        source: url,             // <-- THE REAL SOURCE
+        type: resolvedType,
+        width: width ?? null,
+        height: height ?? null,
+        sizes: Object.keys(sizeMap).length ? sizeMap : null,
         isPlaceholder: false
     };
 }
-
 export function getImageUrlForResolution(image, resolution = 'large') {
 
     if (!image?.source) return null;

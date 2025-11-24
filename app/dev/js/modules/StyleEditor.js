@@ -238,41 +238,49 @@ function parseSpecialProps(props = {}, attributes = {}) {
 }
 
 function parseBackgroundProps(props = {}) {
+    if (!props || typeof props !== "object") return {};
+
     const result = {};
 
     const {
         image,
         video,
         resolution = "large",
+        overlay,
+        color,
+        opacity,
+        scale,
+        fade,
+        fixed,
+        maskImage,
+        maskSize,
+        maskOrigin,
+        backgroundSize,
+        backgroundBlendMode,
+        maxHeight,
         ...rest
     } = props;
 
     /* ------------------------------------------------------------
-       IMAGE (matches PreviewThumbnail)
-    ------------------------------------------------------------ */
-    const isImagePlaceholder =
-        image?.isPlaceholder === true ||
-        image?.source === "#";
-
+     * IMAGE
+     * ------------------------------------------------------------ */
     if (image === "" || image == null) {
         // cleared → no --image
-    } else if (isImagePlaceholder) {
+    } else if (image?.isPlaceholder || image?.source === "#") {
         result["--image"] = "#";
     } else if (image?.source) {
-        const resolved = getImageUrlForResolution(image, resolution || "large");
-        result["--image"] = buildImageSet(resolved);
+        const resolved = getImageUrlForResolution(image, resolution);
+        if (resolved) {
+            result["--image"] = buildImageSet(resolved);
+        }
     }
 
     /* ------------------------------------------------------------
-       VIDEO (same 3-state model)
-    ------------------------------------------------------------ */
-    const isVideoPlaceholder =
-        video?.isPlaceholder === true ||
-        video?.source === "#";
-
+     * VIDEO
+     * ------------------------------------------------------------ */
     if (video === "" || video == null) {
         result["--video"] = "none";
-    } else if (isVideoPlaceholder) {
+    } else if (video?.isPlaceholder || video?.source === "#") {
         result["--video"] = "block";
         result["--video-src"] = "#";
     } else if (video?.source) {
@@ -281,78 +289,105 @@ function parseBackgroundProps(props = {}) {
     }
 
     /* ------------------------------------------------------------
-       MASK (placeholder = none)
-    ------------------------------------------------------------ */
-    const maskVal = rest["mask-image"];
-    const isMaskPlaceholder =
-        maskVal?.isPlaceholder === true ||
-        maskVal?.source === "#";
-
+     * MASK IMAGE
+     * ------------------------------------------------------------ */
+    const maskVal = maskImage || props["mask-image"];
     if (maskVal === "" || maskVal == null) {
         // cleared → emit nothing
-    } else if (isMaskPlaceholder) {
+    } else if (maskVal?.isPlaceholder || maskVal?.source === "#") {
         result["--mask-image"] = "none";
         result["--mask-repeat"] = "initial";
         result["--mask-size"] = "initial";
         result["--mask-position"] = "initial";
     } else {
-        const maskUrl =
+        const url =
             typeof maskVal === "object" && maskVal?.source
                 ? maskVal.source
                 : typeof maskVal === "string"
                     ? maskVal
                     : null;
 
-        if (maskUrl) {
-            result["--mask-image"] = `url("${maskUrl}")`;
+        if (url) {
+            result["--mask-image"] = `url("${url}")`;
             result["--mask-repeat"] = "no-repeat";
-            result["--mask-size"] = props.maskSize || "contain";
-            result["--mask-position"] = props.maskOrigin || "center center";
+            result["--mask-size"] = maskSize || props["mask-size"] || "contain";
+            result["--mask-position"] = maskOrigin || props["mask-origin"] || "center";
         }
     }
 
     /* ------------------------------------------------------------
-       OTHER PROPS
-    ------------------------------------------------------------ */
-    Object.entries(rest).forEach(([key, val]) => {
-        if (val == null) return;
-
-        switch (key) {
-            case "background-size":
-                result["--size"] = val;
-                break;
-            case "scale":
-                result["--scale"] = `${parseFloat(val)}%`;
-                break;
-            case "opacity":
-                result["--opacity"] = parseFloat(val) / 100;
-                break;
-            case "fade":
-                result["--fade"] = val;
-                break;
-            case "max-height":
-                result["--max-height"] = val;
-                break;
-            case "overlay":
-                result["--overlay"] = val;
-                break;
-            case "color":
-                result["--color"] = val;
-                break;
-            case "background-blend-mode":
-                result["--blend"] = val;
-                break;
+     * OPACITY
+     * ------------------------------------------------------------ */
+    if (opacity != null) {
+        const n = parseFloat(opacity);
+        if (!isNaN(n)) {
+            result["--opacity"] = n > 1 ? n / 100 : n;
         }
-    });
+    }
 
     /* ------------------------------------------------------------
-       Attachment
-    ------------------------------------------------------------ */
-    if (props.fixed) {
+     * OVERLAY
+     * ------------------------------------------------------------ */
+    if (overlay != null) {
+        result["--overlay"] = overlay;
+    }
+
+    /* ------------------------------------------------------------
+     * COLOR
+     * ------------------------------------------------------------ */
+    if (color != null) {
+        result["--color"] = color;
+    }
+
+    /* ------------------------------------------------------------
+     * BLEND MODE
+     * ------------------------------------------------------------ */
+    if (backgroundBlendMode || props["background-blend-mode"]) {
+        result["--blend"] =
+            backgroundBlendMode || props["background-blend-mode"];
+    }
+
+    /* ------------------------------------------------------------
+     * SIZE / SCALE
+     * ------------------------------------------------------------ */
+    if (backgroundSize != null || props["background-size"] != null) {
+        result["--size"] = backgroundSize || props["background-size"];
+    }
+
+    if (scale != null) {
+        const s = parseFloat(scale);
+        if (!isNaN(s)) {
+            result["--scale"] = `${s}%`;
+        }
+    }
+
+    /* ------------------------------------------------------------
+     * FADE MASK
+     * ------------------------------------------------------------ */
+    if (fade != null) {
+        result["--fade"] = fade;
+    }
+
+    /* ------------------------------------------------------------
+     * MAX-HEIGHT
+     * ------------------------------------------------------------ */
+    if (maxHeight != null || props["max-height"] != null) {
+        result["--max-height"] = maxHeight || props["max-height"];
+    }
+
+    /* ------------------------------------------------------------
+     * ATTACHMENT
+     * ------------------------------------------------------------ */
+    if (fixed) {
         result["--attachment"] = "fixed";
     } else if (image?.source) {
         result["--attachment"] = "scroll";
     }
+
+    /* ------------------------------------------------------------
+     * REST (IGNORE UNKNOWN KEYS)
+     * ------------------------------------------------------------ */
+    // Nothing else should create CSS vars.
 
     return result;
 }
@@ -483,17 +518,25 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     const prevPreload = attributes['wpbs-preload'] || [];
     const blockStyle = attributes.style || {};
 
+    // NEW: get background from wpbs-background
+    const bgData = attributes["wpbs-background"] || {};
+    const baseBgProps = bgData.props || {};
+    const bpBgMap = bgData.breakpoints || {};
+
     // ----------------------------------------
     // 2. Clean layout
     // ----------------------------------------
     const cleanedLayout = cleanObject(layout, true);
 
     // ----------------------------------------
-    // 3. Base CSS from layout
+    // 3. Base CSS from layout + background
     // ----------------------------------------
     let cssObj = {
         props: parseSpecialProps(cleanedLayout.props || {}, attributes),
-        background: parseBackgroundProps(cleanedLayout.background || {}),
+
+        // NEW: background comes from wpbs-background, not wpbs-style
+        background: parseBackgroundProps(baseBgProps),
+
         hover: {},
         breakpoints: {},
     };
@@ -521,7 +564,6 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     // ----------------------------------------
     // 5. Breakpoints (inherit + overrides)
     // ----------------------------------------
-
     Object.entries(cleanedLayout.breakpoints || {}).forEach(([bpKey, bpProps]) => {
         const bpCss = {
             props: {},
@@ -543,23 +585,18 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         }
 
         // ----------------------------------------
-        // BACKGROUND: NO automatic inheritance.
-        // Only compute vars for what the user explicitly changed.
+        // BACKGROUND (NEW)
         // ----------------------------------------
+        const rawBpBg = bpBgMap[bpKey]?.props || {};
 
-        const baseBg = cleanedLayout.background || {};
-        const rawBpBg = bpProps?.background || {};
-
-        // If user overrides only resolution, inherit base image safely
-        let effectiveBpBg = {...rawBpBg};
+        // inherit base if only resolution is replaced
+        let effectiveBpBg = { ...rawBpBg };
         if (effectiveBpBg.resolution && !effectiveBpBg.image) {
-            effectiveBpBg.image = baseBg.image;
+            effectiveBpBg.image = baseBgProps.image;
         }
 
-        // If nothing changed, output nothing
         if (Object.keys(effectiveBpBg).length > 0) {
-            // parseBackgroundProps returns full var set, so we diff against base
-            const parsedBase = parseBackgroundProps(baseBg);
+            const parsedBase = parseBackgroundProps(baseBgProps);
             const parsedBp = parseBackgroundProps(effectiveBpBg);
 
             const diffBgObj = diffObjects(parsedBase, parsedBp);
@@ -568,14 +605,15 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
             }
         }
 
+        // ----------------------------------------
+        // HOVER
+        // ----------------------------------------
         if (bpProps.hover) {
             bpCss.hover = parseSpecialProps(bpProps.hover, attributes);
         }
 
-        // Save simplified diff object
         cssObj.breakpoints[bpKey] = bpCss;
     });
-
 
     // ----------------------------------------
     // 6. Hover
@@ -613,9 +651,8 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     const samePreload = _.isEqual(attributes["wpbs-preload"], nextPreload);
 
     if (sameCss && samePreload) {
-        return; // nothing changed, do not dirty the block
+        return; // nothing changed
     }
-
 
     // ----------------------------------------
     // 12. Persist css + preload

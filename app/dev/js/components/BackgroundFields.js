@@ -4,10 +4,10 @@ import {
     __experimentalToolsPanel as ToolsPanel,
     BaseControl,
     GradientPicker,
-    PanelColorSettings,
     SelectControl,
     ToggleControl,
 } from "@wordpress/components";
+import { PanelColorSettings } from "@wordpress/block-editor";
 import { Field } from "Components/Field";
 
 /**

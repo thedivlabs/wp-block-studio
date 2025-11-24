@@ -4,7 +4,6 @@ import {
     useCallback,
     Fragment,
 } from "@wordpress/element";
-import {InspectorControls} from "@wordpress/block-editor";
 
 import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";

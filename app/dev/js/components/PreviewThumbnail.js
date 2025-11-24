@@ -10,18 +10,23 @@ function PreviewThumbnail({
                               callback,
                               style = {}
                           }) {
+    const isVideoType = type === "video";
+
     /* -------------------------------------------------------------
-     * HELPERS: NORMALIZED OUTPUT SHAPES
+     * NORMALIZED OUTPUT HELPERS
      * ------------------------------------------------------------- */
 
-    const normalizeEmpty = () => {
-        callback({});
+    // Clear selection entirely
+    const clearValue = () => {
+        // Keep existing behavior: use empty string
+        callback("");
     };
 
-    const normalizePlaceholder = () => {
+    // Set unified placeholder object
+    const setPlaceholder = () => {
         callback({
             id: null,
-            source: "#",
+            source: "#",     // important: used later to "hide" at breakpoints
             type: null,
             width: null,
             height: null,
@@ -30,9 +35,9 @@ function PreviewThumbnail({
         });
     };
 
-    const normalizeEnable = () => {
-        // enabling from placeholder just clears to empty
-        normalizeEmpty();
+    // Enabling from placeholder just nukes it back to "no selection"
+    const enableFromPlaceholder = () => {
+        clearValue();
     };
 
     /* -------------------------------------------------------------
@@ -41,7 +46,10 @@ function PreviewThumbnail({
 
     const isPlaceholder = image?.isPlaceholder === true;
 
-    const hasRealMedia = image?.id && !isPlaceholder;
+    // We only consider it a "real" media selection if it has an ID
+    // and is not marked as placeholder. This keeps placeholders from
+    // creating a thumbnail or generating a real src.
+    const hasRealMedia = !!(image?.id && !isPlaceholder);
 
     const src = hasRealMedia
         ? getImageUrlForResolution(image, resolution)
@@ -54,7 +62,8 @@ function PreviewThumbnail({
      * ------------------------------------------------------------- */
 
     const thumbnailStyle = {
-        ...IMAGE_BUTTON_STYLE
+        ...IMAGE_BUTTON_STYLE,
+        ...style
     };
 
     const emptyStyle = {
@@ -82,15 +91,17 @@ function PreviewThumbnail({
     };
 
     /* -------------------------------------------------------------
-     * EMPTY OR PLACEHOLDER UI
+     * EMPTY / PLACEHOLDER UI
      * ------------------------------------------------------------- */
 
     if (!hasSelection) {
-        const toggle = () => {
+        const toggleDisabled = () => {
             if (isPlaceholder) {
-                normalizeEnable();
+                // Currently disabled → enable (clear placeholder)
+                enableFromPlaceholder();
             } else {
-                normalizePlaceholder();
+                // Currently enabled or empty → disable via placeholder
+                setPlaceholder();
             }
         };
 
@@ -98,14 +109,14 @@ function PreviewThumbnail({
             <div style={emptyStyle}>
                 <Button
                     onClick={onSelectClick}
-                    variant={'primary'}
+                    variant="primary"
                     style={buttonStyle}
                 >
                     Choose
                 </Button>
 
                 <Button
-                    onClick={toggle}
+                    onClick={toggleDisabled}
                     variant={isPlaceholder ? "primary" : "secondary"}
                     style={{
                         ...buttonStyle,
@@ -122,7 +133,7 @@ function PreviewThumbnail({
      * SELECTED THUMBNAIL
      * ------------------------------------------------------------- */
 
-    const thumb = type === "video" ? (
+    const thumb = isVideoType ? (
         <video preload="metadata" style={imageStyle}>
             <source src={src} type="video/mp4" />
         </video>
@@ -133,7 +144,7 @@ function PreviewThumbnail({
     return (
         <div
             style={thumbnailStyle}
-            onClick={() => normalizeEmpty()} // clicking thumbnail clears
+            onClick={clearValue} // clicking the thumbnail clears selection
         >
             {thumb}
 

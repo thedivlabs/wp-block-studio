@@ -1,35 +1,200 @@
-import {useCallback} from "@wordpress/element";
+import { memo, Fragment, useCallback } from "@wordpress/element";
 import {
+    __experimentalGrid as Grid,
     __experimentalToolsPanel as ToolsPanel,
+    BaseControl,
+    GradientPicker,
+    PanelColorSettings,
+    SelectControl,
+    ToggleControl,
 } from "@wordpress/components";
-import {Field} from "Components/Field";
+import { Field } from "Components/Field";
 
-export const BackgroundFields = ({label = "Settings", settings = {}, suppress = [], updateFn}) => {
-    const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
+/**
+ * BackgroundFields
+ *
+ * A full replacement for BackgroundPanelFields + the old BackgroundFields.
+ * Identical architecture to LayoutFields, but background-specific:
+ *
+ * - Hard-coded fields (Type, Image, Video, Overlay, Color, Fixed, Eager)
+ * - Dynamic fields from `backgroundFieldsMap`
+ * - Emits `{ slug: value }` patch objects
+ * - Handles `resetAll`
+ */
+export const BackgroundFields = memo(function BackgroundFields({
+                                                                   settings = {},
+                                                                   updateFn,
+                                                                   isBreakpoint = false,
+                                                                   label = "Background",
+                                                               }) {
+    const { backgroundFieldsMap: map = [] } = window?.WPBS_StyleEditor ?? {};
 
+    // simple wrapper: ensures updates always emit patches shaped like { slug: value }
     const onUpdate = useCallback(
-        (slug, value) => {
-            updateFn({[slug]: value});
-        },
+        (slug, value) => updateFn({ [slug]: value }),
         [updateFn]
     );
 
+    const hasSettings = settings && Object.keys(settings).length > 0;
+    const type = settings?.type ?? "";
+
     return (
-        <ToolsPanel
-            label={label}
-            resetAll={() => updateFn({}, true)}
-        >
-            {map
-                .filter((f) => !suppress.includes(f.slug))
-                .map((field) => (
-                    <Field
-                        key={field.slug}
-                        field={field}
-                        settings={settings}
-                        callback={(value) => onUpdate(field.slug, value)}
-                        isToolsPanel={true}
-                    />
-                ))}
-        </ToolsPanel>
+        <Fragment>
+            <Grid columns={1} columnGap={15} rowGap={20}>
+                {/* ---------------------------- */}
+                {/* TYPE SELECTOR                */}
+                {/* ---------------------------- */}
+                <SelectControl
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
+                    label="Type"
+                    value={type}
+                    onChange={(newType) => {
+                        if (newType === type) return;
+
+                        updateFn({
+                            type: newType,
+                            image: {},
+                            video: {},
+                        });
+                    }}
+                    options={[
+                        { label: "Select", value: "" },
+                        { label: "Image", value: "image" },
+                        { label: "Featured Image", value: "featured-image" },
+                        { label: "Video", value: "video" },
+                    ]}
+                />
+
+                {!hasSettings ? null : (
+                    <Fragment>
+                        {/* ---------------------------- */}
+                        {/* IMAGE FIELD                  */}
+                        {/* ---------------------------- */}
+                        {(type === "image" || type === "featured-image") && (
+                            <Field
+                                field={{
+                                    type: "image",
+                                    slug: "image",
+                                    label: "Image",
+                                    full: true,
+                                }}
+                                settings={settings}
+                                callback={(v) => onUpdate("image", v)}
+                                isToolsPanel={false}
+                            />
+                        )}
+
+                        {/* ---------------------------- */}
+                        {/* VIDEO FIELD                  */}
+                        {/* ---------------------------- */}
+                        {type === "video" && (
+                            <Field
+                                field={{
+                                    type: "video",
+                                    slug: "video",
+                                    label: "Video",
+                                    full: true,
+                                }}
+                                settings={settings}
+                                callback={(v) => onUpdate("video", v)}
+                                isToolsPanel={false}
+                            />
+                        )}
+
+                        {/* ---------------------------- */}
+                        {/* OVERLAY GRADIENT             */}
+                        {/* ---------------------------- */}
+                        <BaseControl label="Overlay">
+                            <div className="wpbs-background-controls__card">
+                                <GradientPicker
+                                    gradients={[
+                                        {
+                                            name: "Transparent",
+                                            gradient:
+                                                "linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))",
+                                            slug: "transparent",
+                                        },
+                                        {
+                                            name: "Light",
+                                            gradient:
+                                                "linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))",
+                                            slug: "light",
+                                        },
+                                        {
+                                            name: "Strong",
+                                            gradient:
+                                                "linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))",
+                                            slug: "strong",
+                                        },
+                                    ]}
+                                    clearable={false}
+                                    value={settings?.overlay ?? undefined}
+                                    onChange={(value) => onUpdate("overlay", value)}
+                                />
+                            </div>
+                        </BaseControl>
+
+                        {/* ---------------------------- */}
+                        {/* BACKGROUND COLOR             */}
+                        {/* ---------------------------- */}
+                        <PanelColorSettings
+                            className="wpbs-controls__color"
+                            enableAlpha
+                            colorSettings={[
+                                {
+                                    slug: "color",
+                                    label: "Color",
+                                    value: settings?.color ?? undefined,
+                                    onChange: (value) => onUpdate("color", value),
+                                    isShownByDefault: true,
+                                },
+                            ]}
+                            __nextHasNoMarginBottom
+                        />
+
+                        {/* ---------------------------- */}
+                        {/* EAGER / FIXED TOGGLES        */}
+                        {/* ---------------------------- */}
+                        <Grid columns={2} columnGap={15} rowGap={20}>
+                            {!isBreakpoint && (
+                                <ToggleControl
+                                    label="Eager"
+                                    checked={!!settings?.eager}
+                                    onChange={(v) => onUpdate("eager", v)}
+                                />
+                            )}
+
+                            {type !== "video" && (
+                                <ToggleControl
+                                    label="Fixed"
+                                    checked={!!settings?.fixed}
+                                    onChange={(v) => onUpdate("fixed", v)}
+                                />
+                            )}
+                        </Grid>
+
+                        {/* ---------------------------- */}
+                        {/* ADVANCED FIELDS (ToolsPanel) */}
+                        {/* ---------------------------- */}
+                        <ToolsPanel
+                            label="Advanced Background"
+                            className="wpbs-background-tools"
+                            resetAll={() => updateFn({}, true)}
+                        >
+                            {map.map((field) => (
+                                <Field
+                                    key={field.slug}
+                                    field={field}
+                                    settings={settings}
+                                    callback={(v) => onUpdate(field.slug, v)}
+                                    isToolsPanel={true}
+                                />
+                            ))}
+                        </ToolsPanel>
+                    </Fragment>
+                )}
+            </Grid>
+        </Fragment>
     );
-};
+});

@@ -256,7 +256,6 @@
 }
 
 .is-style-unstyled.components-panel__body {
-  border: none !important;
   padding: 0 !important;
 }
 
@@ -270,8 +269,6 @@
 }
 
 .is-style-unstyled .components-panel__body-toggle {
-  padding: 0 !important;
-  background-color: unset !important;
 
   &:hover {
     background-color: unset !important;

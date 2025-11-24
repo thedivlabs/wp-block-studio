@@ -670,12 +670,12 @@ export function initStyleEditor() {
     const identityStore = new Map();
 
     function registerBlock(uniqueId, clientId) {
-        // Fresh block: no ID assigned yet
+        // If block has no ID → definitely fresh
         if (!uniqueId) {
             return "fresh";
         }
 
-        // First time this uniqueId is seen
+        // First time seeing this uniqueId
         if (!identityStore.has(uniqueId)) {
             identityStore.set(uniqueId, new Set([clientId]));
             return "normal";
@@ -683,18 +683,18 @@ export function initStyleEditor() {
 
         const clients = identityStore.get(uniqueId);
 
-        // If this clientId already recorded, normal load / re-render
+        // If this block already owns this id → normal render
         if (clients.has(clientId)) {
             return "normal";
         }
 
-        // Another clientId already exists → this is a clone
+        // If the id is already owned by another block → this is a DUPLICATE
         if (clients.size >= 1) {
             clients.add(clientId);
             return "clone";
         }
 
-        // Fallback: treat as normal
+        // fallback safety
         clients.add(clientId);
         return "normal";
     }

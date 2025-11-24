@@ -35,7 +35,7 @@ export const withStyle = (Component) => (props) => {
     } = attributes;
 
     useEffect(()=>{
-        console.log(attributes);
+        console.log(instanceId);
     },[]);
 
     /* ------------------------------------------------------------------
@@ -81,7 +81,7 @@ export const withStyle = (Component) => (props) => {
     const updateBgSettings = useCallback(
         (next) => {
             setAttributes({
-                "wpbs-background": cleanObject(next),
+                "wpbs-background": next,
             });
         },
         [setAttributes]

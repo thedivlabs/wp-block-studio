@@ -251,7 +251,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                         <MediaUpload
                             title={`Select ${isImage ? "Image" : "Video"}`}
                             allowedTypes={allowedTypes}
-                            value={currentValue?.id || '#'}     // consistent with PreviewThumbnail behavior
+                            value={currentValue?.id || '#'}
                             onSelect={onSelect}
                             render={({open}) => (
                                 <PreviewThumbnail

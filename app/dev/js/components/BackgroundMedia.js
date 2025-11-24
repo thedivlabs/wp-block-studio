@@ -12,6 +12,8 @@ import {memo} from "@wordpress/element";
 const BackgroundVideo = ({settings = {}, isSave = false}) => {
     if (!isSave) return null; // only output on frontend save
 
+    console.log(isSave);
+
     const {props = {}, breakpoints = {}} = settings || {};
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
@@ -21,10 +23,7 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     // 🔧 LOOSENED: don't require baseMedia.type === "video"
     const isBaseVideo =
-        props?.type === "video" &&
-        baseMedia &&
-        typeof baseMedia.source === "string" &&
-        baseMedia.source !== "";
+        props?.type === "video"
 
     if (isBaseVideo) {
         entries.push({
@@ -94,6 +93,8 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
     const baseObj = baseEntry?.media ?? null;
 
     const bpEntries = entries.filter((e) => e.size !== Infinity);
+
+    console.log(bpEntries);
 
     return (
         <video

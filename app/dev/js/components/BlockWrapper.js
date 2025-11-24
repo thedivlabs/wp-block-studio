@@ -188,7 +188,7 @@ export const BlockWrapper = ({
                     {children}
                 </div>
 
-                <BlockBackground attributes={attributes} />
+                <BlockBackground attributes={attributes} isSave={false} />
             </Tag>
         );
     }

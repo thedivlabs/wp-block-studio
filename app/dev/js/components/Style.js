@@ -170,7 +170,7 @@ export const withStyleSave = (Component) => (props) => {
         <Component
             {...props}
             BlockWrapper={({children, props: blockProps, ...wrapperProps}) => (
-                <BlockWrapper props={blockProps} wrapperProps={wrapperProps} isSave={true}>
+                <BlockWrapper props={props} wrapperProps={wrapperProps} isSave={true}>
                     {children}
                 </BlockWrapper>
             )}

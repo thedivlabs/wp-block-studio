@@ -40,8 +40,11 @@ export const BackgroundControls = memo(function BackgroundControls({
     const handleChange = useCallback(
         (next = {}) => {
             callback({
-                props: next.props || {},
-                breakpoints: next.breakpoints || {},
+                props: { ...(settings.props || {}), ...(next.props || {}) },
+                breakpoints: {
+                    ...(settings.breakpoints || {}),
+                    ...(next.breakpoints || {}),
+                },
             });
         },
         [callback]

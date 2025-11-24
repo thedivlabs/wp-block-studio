@@ -35,8 +35,8 @@ export const withStyle = (Component) => (props) => {
     } = attributes;
 
     useEffect(() => {
-        console.log(attributes);
-    }, []);
+        console.log(bgData);
+    }, [bgData]);
 
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);

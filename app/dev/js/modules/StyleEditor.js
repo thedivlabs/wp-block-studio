@@ -442,7 +442,6 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
 
     const uniqueId = attributes.uniqueId;
     const blockName = name ? name.replace("/", "-") : null;
-
     if (!uniqueId || !blockName) return "";
 
     let css = "";
@@ -454,48 +453,78 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
             .map(([k, v]) => `${k}:${v}${important ? " !important" : ""};`)
             .join("");
 
+    /* ----------------------------------------------
+     * BASE PROPS (layout)
+     * ---------------------------------------------- */
     if (!_.isEmpty(cssObj.props)) {
         css += `${selector}{${buildRules(cssObj.props)}}`;
     }
 
+    /* ----------------------------------------------
+     * BASE BACKGROUND
+     * ---------------------------------------------- */
     if (!_.isEmpty(cssObj.background)) {
         const bgSelector = `${selector} > .wpbs-background`;
         css += `${bgSelector}{${buildRules(cssObj.background)}}`;
     }
 
+    /* ----------------------------------------------
+     * BASE HOVER
+     * ---------------------------------------------- */
     if (!_.isEmpty(cssObj.hover)) {
         css += `${selector}:hover{${buildRules(cssObj.hover, true)}}`;
     }
 
+    /* ----------------------------------------------
+     * BREAKPOINTS
+     * ---------------------------------------------- */
     const bps = WPBS?.settings?.breakpoints || {};
-    Object.entries(cssObj.breakpoints || {}).forEach(([bpKey, bpProps]) => {
+
+    Object.entries(cssObj.breakpoints || {}).forEach(([bpKey, bpCss]) => {
         const bp = bps[bpKey];
         if (!bp) return;
 
-        const mergedBp = {
-            ...(bpProps.props || {}),
-            ...(bpProps.custom || {}),
-            ...(bpProps.background || {}),
-        };
+        const maxWidth = bp.size - 1;
 
-        if (!_.isEmpty(mergedBp)) {
+        /* ---------------------------
+         * BREAKPOINT LAYOUT PROPS
+         * --------------------------- */
+        if (!_.isEmpty(bpCss.props)) {
             css += `
-            @media (max-width:${bp.size - 1}px){
-                ${selector}{
-                    ${buildRules(mergedBp, true)}
+                @media (max-width:${maxWidth}px){
+                    ${selector}{
+                        ${buildRules(bpCss.props, true)}
+                    }
                 }
-            }
-        `;
+            `;
         }
 
-        if (!_.isEmpty(bpProps.hover)) {
+        /* ---------------------------
+         * BREAKPOINT BACKGROUND PROPS
+         * --------------------------- */
+        if (!_.isEmpty(bpCss.background)) {
+            const bgSelector = `${selector} > .wpbs-background`;
+
             css += `
-            @media (max-width:${bp.size - 1}px){
-                ${selector}:hover{
-                    ${buildRules(bpProps.hover, true)}
+                @media (max-width:${maxWidth}px){
+                    ${bgSelector}{
+                        ${buildRules(bpCss.background, true)}
+                    }
                 }
-            }
-        `;
+            `;
+        }
+
+        /* ---------------------------
+         * BREAKPOINT HOVER
+         * --------------------------- */
+        if (!_.isEmpty(bpCss.hover)) {
+            css += `
+                @media (max-width:${maxWidth}px){
+                    ${selector}:hover{
+                        ${buildRules(bpCss.hover, true)}
+                    }
+                }
+            `;
         }
     });
 

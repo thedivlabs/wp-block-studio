@@ -50,7 +50,7 @@ export const BackgroundControls = memo(function BackgroundControls({
     return (
         <PanelBody
             title="Background"
-            initialOpen={hasAnyBackground(value)}
+            initialOpen={false}
             className="wpbs-background-controls is-style-unstyled"
         >
             <BreakpointPanels

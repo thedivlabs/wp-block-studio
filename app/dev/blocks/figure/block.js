@@ -9,57 +9,38 @@ import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
 import {cleanObject} from "Includes/helper";
+import {
+    getBreakpointPropsList,
+    anyProp,
+    isRealImage,
+    hasAnyImage,
+    isFeaturedType
+} from "./utils";
 
 const selector = "wpbs-figure";
 
 const getClassNames = (attributes = {}, styleData) => {
-    const { "wpbs-figure": raw = {} } = attributes;
-
+    const raw = attributes["wpbs-figure"] || {};
     const base = raw.props || {};
-    const breakpoints = raw.breakpoints || {};
-    const bpList = Object.values(breakpoints).map(bp => bp?.props || {});
 
-    // Utility: read a prop from base OR any breakpoint override
-    const anyProp = (key) => {
-        if (base[key]) return true;
-        for (const bp of bpList) {
-            if (bp[key]) return true;
-        }
-        return false;
-    };
+    const bpPropsList = getBreakpointPropsList(raw);
 
-    // Utility: detect real image
-    const isRealImage = (img) => {
-        if (!img || img.isPlaceholder) return false;
-        if (img.id) return true;
-        if (img.source && img.source !== "#") return true;
-        return false;
-    };
+    // Detect image presence across all props + breakpoints
+    const hasImage = hasAnyImage(base, bpPropsList);
 
-    // Detect any image at any level
-    const hasAnyImage = (() => {
-        if (isRealImage(base.image)) return true;
-        for (const bp of bpList) {
-            if (isRealImage(bp.image)) return true;
-        }
-        return false;
-    })();
+    // Featured-image types always count as "has something"
+    const featured = isFeaturedType(base.type);
 
-    // Featured-image types are never empty
-    const isFeatured =
-        base.type === "featured-image" ||
-        base.type === "featured-image-mobile";
-
-    const isEmpty = !hasAnyImage && !isFeatured;
+    const isEmpty = !hasImage && !featured;
 
     return [
         selector,
         "h-fit w-fit max-w-full max-h-full flex",
 
-        anyProp("contain") ? "--contain" : null,
-        anyProp("blend") ? "--blend" : null,
-        anyProp("overlay") ? "--overlay" : null,
-        anyProp("origin") ? "--origin" : null,
+        anyProp(base, bpPropsList, "contain") ? "--contain" : null,
+        anyProp(base, bpPropsList, "blend") ? "--blend" : null,
+        anyProp(base, bpPropsList, "overlay") ? "--overlay" : null,
+        anyProp(base, bpPropsList, "origin") ? "--origin" : null,
 
         isEmpty ? "--empty" : null,
 

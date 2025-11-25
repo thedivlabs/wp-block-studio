@@ -1,6 +1,6 @@
-import { Button, Icon } from '@wordpress/components';
-import { IMAGE_BUTTON_STYLE } from 'Includes/config';
-import { getImageUrlForResolution } from 'Includes/helper';
+import {Button, Icon} from '@wordpress/components';
+import {IMAGE_BUTTON_STYLE} from 'Includes/config';
+import {getImageUrlForResolution} from 'Includes/helper';
 
 function PreviewThumbnail({
                               image = null,
@@ -59,6 +59,7 @@ function PreviewThumbnail({
     /* -------------------------------------------------------------
      * STYLES
      * ------------------------------------------------------------- */
+
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
@@ -132,10 +133,10 @@ function PreviewThumbnail({
 
     const thumb = isVideoType ? (
         <video preload="metadata" style={imageStyle}>
-            <source src={src} type="video/mp4" />
+            <source src={src} type="video/mp4"/>
         </video>
     ) : (
-        <img src={src} alt="" style={imageStyle} />
+        <img src={src} alt="" style={imageStyle}/>
     );
 
     return (
@@ -146,7 +147,7 @@ function PreviewThumbnail({
             {thumb}
 
             <Button
-                icon={<Icon icon="no-alt" />}
+                icon={<Icon icon="no-alt"/>}
                 style={{
                     position: "absolute",
                     top: "4px",

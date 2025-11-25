@@ -98,6 +98,7 @@ export const IMAGE_BUTTON_STYLE = {
     gap: "8px",
     flexDirection: "column",
     overflow: "hidden",
+    position: "relative",
     borderRadius: "4px"
 }
 
@@ -118,7 +119,6 @@ export const OVERLAY_GRADIENTS = [
         slug: "strong",
     },
 ];
-
 
 export const ELEMENT_TAG_OPTIONS = [
     {label: '<div>', value: ''},

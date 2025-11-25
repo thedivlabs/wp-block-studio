@@ -109,7 +109,6 @@ function renderFigureContent(settings, attributes, isEditor = false) {
                 id: null,
                 source: token,
                 type: "image",
-                isPlaceholder: true,
             };
         }
     } else {

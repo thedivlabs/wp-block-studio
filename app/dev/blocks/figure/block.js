@@ -8,7 +8,7 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
-import {cleanObject} from "Includes/helper";
+import {cleanObject, getImageUrlForResolution, normalizeMedia} from "Includes/helper";
 import {
     getBreakpointPropsList,
     anyProp,
@@ -41,7 +41,7 @@ const getClassNames = (attributes = {}, styleData) => {
         .join(" ");
 };
 
-function renderFigureContent(settings, attributes, mode = "edit") {
+function renderFigureContent(settings, attributes, isEditor = false) {
     const baseProps = settings?.props || {};
     const bpMap = settings?.breakpoints || {};
 
@@ -49,17 +49,40 @@ function renderFigureContent(settings, attributes, mode = "edit") {
         const link = baseProps.link;
         if (!link) return content;
 
-        return mode === "save"
+        return !isEditor
             ? <a {...getAnchorProps(link)}>{content}</a>
             : <a>{content}</a>;
     };
 
     // ============================================================
-    // Build picture settings with proper per-breakpoint logic
+    // Helpers
+    // ============================================================
+
+    const makeToken = (modeKey, res, fallbackUrl = null) => {
+        const payload = {
+            mode: modeKey,
+            resolution: res,
+            fallback: fallbackUrl || null,
+        };
+
+        const json = JSON.stringify(payload);
+        const b64 = btoa(json);
+
+        return `%%__FEATURED_IMAGE__${b64}__%%`;
+    };
+
+    const getFallbackUrl = (media, res) => {
+        const normalized = normalizeMedia(media);
+        if (!normalized || !normalized.source) return null;
+        return getImageUrlForResolution(normalized, res);
+    };
+
+    // ============================================================
+    // Build picture settings with token logic
     // ============================================================
 
     const finalSettings = {
-        props: {...baseProps},
+        props: { ...baseProps },
         breakpoints: {},
     };
 
@@ -68,25 +91,29 @@ function renderFigureContent(settings, attributes, mode = "edit") {
     // -------------------------
     const baseType = baseProps.type;
     const baseRes = (baseProps.resolution || "large").toUpperCase();
+    const baseFallback = getFallbackUrl(baseProps.image, baseRes);
 
-    if (baseType === "featured-image") {
-        finalSettings.props.image = {
-            id: null,
-            source: `%%__FEATURED_IMAGE__${baseRes}__%%`,
-            type: "image",
-            isPlaceholder: true,
-            alt: "",
-        };
-    } else if (baseType === "featured-image-mobile") {
-        finalSettings.props.image = {
-            id: null,
-            source: `%%__FEATURED_IMAGE_MOBILE__${baseRes}__%%`,
-            type: "image",
-            isPlaceholder: true,
-            alt: "",
-        };
+    if (baseType === "featured-image" || baseType === "featured-image-mobile") {
+        if (isEditor) {
+            // Editor mode → always show fallback image!
+            finalSettings.props.image = normalizeMedia(baseProps.image);
+        } else {
+            // Save mode → output token for PHP resolver
+            const token = makeToken(
+                baseType === "featured-image" ? "featured" : "featured-mobile",
+                baseRes,
+                baseFallback
+            );
+
+            finalSettings.props.image = {
+                id: null,
+                source: token,
+                type: "image",
+                isPlaceholder: true,
+            };
+        }
     } else {
-        // normal image
+        // Normal image selected
         finalSettings.props.image = baseProps.image;
     }
 
@@ -97,27 +124,29 @@ function renderFigureContent(settings, attributes, mode = "edit") {
         const bpProps = bpEntry.props || {};
         const bpType = bpProps.type || baseProps.type;
         const bpRes = (bpProps.resolution || baseProps.resolution || "large").toUpperCase();
+        const bpFallback = getFallbackUrl(bpProps.image, bpRes);
 
         let imageObj;
 
-        if (bpType === "featured-image") {
-            imageObj = {
-                id: null,
-                source: `%%__FEATURED_IMAGE__${bpRes}__%%`,
-                type: "image",
-                isPlaceholder: true,
-                alt: "",
-            };
-        } else if (bpType === "featured-image-mobile") {
-            imageObj = {
-                id: null,
-                source: `%%__FEATURED_IMAGE_MOBILE__${bpRes}__%%`,
-                type: "image",
-                isPlaceholder: true,
-                alt: "",
-            };
+        if (bpType === "featured-image" || bpType === "featured-image-mobile") {
+            if (isEditor) {
+                // In editor, fallback only
+                imageObj = normalizeMedia(bpProps.image || baseProps.image);
+            } else {
+                const token = makeToken(
+                    bpType === "featured-image" ? "featured" : "featured-mobile",
+                    bpRes,
+                    bpFallback
+                );
+
+                imageObj = {
+                    id: null,
+                    source: token,
+                    type: "image",
+                    isPlaceholder: true,
+                };
+            }
         } else {
-            // normal image for this breakpoint
             imageObj = bpProps.image;
         }
 
@@ -136,13 +165,14 @@ function renderFigureContent(settings, attributes, mode = "edit") {
     const content = (
         <ResponsivePicture
             settings={finalSettings}
-            editor={mode === "edit"}
+            editor={!!isEditor}
         />
     );
 
+    console.log(finalSettings);
+
     return wrapWithLink(content);
 }
-
 
 function getCssProps(settings) {
     const baseProps = settings?.props || {};
@@ -280,7 +310,7 @@ registerBlockType(metadata.name, {
                         hasBackground={true}
                         tagName="figure"
                     >
-                        {renderFigureContent(settings, attributes, "edit")}
+                        {renderFigureContent(settings, attributes, true)}
                     </BlockWrapper>
                 </>
             );
@@ -300,7 +330,7 @@ registerBlockType(metadata.name, {
                 hasBackground={true}
                 tagName="figure"
             >
-                {renderFigureContent(settings, attributes, "save")}
+                {renderFigureContent(settings, attributes, false)}
             </BlockWrapper>
         );
     }),

@@ -3,58 +3,81 @@
 if ( empty( $content ) ) {
 	return;
 }
+
+//WPBS::console_log($block ?? false);
+
 // --------------------------------------------------------------
-// Replace FEATURED IMAGE placeholders before echoing content
+// Replace FEATURED_IMAGE tokens (Base64 JSON)
 // --------------------------------------------------------------
 
-// 1. DESKTOP FEATURED IMAGE
 $block_content = preg_replace_callback(
-	'/%%__FEATURED_IMAGE__([A-Z0-9_-]+)__%%/',
-	function ( $match ) {
+	'/%%__FEATURED_IMAGE__([A-Za-z0-9+\/=]+)__%%/',
+	function( $matches ) {
 
-		// Extract resolution from placeholder
-		$size = strtolower( $match[1] );
-
-		// Load featured image for the current post
-		$url = get_the_post_thumbnail_url( null, $size );
-
-		// If no featured image exists, remove placeholder
-		if ( ! $url ) {
+		// --------------------------
+		// Decode payload
+		// --------------------------
+		$b64  = $matches[1];
+		$json = base64_decode( $b64 );
+		if ( ! $json ) {
 			return '';
 		}
 
-		return esc_url( $url );
-	},
-	$content
-);
-
-
-// 2. MOBILE FEATURED IMAGE
-$block_content = preg_replace_callback(
-	'/%%__FEATURED_IMAGE_MOBILE__([A-Z0-9_-]+)__%%/',
-	function ( $match ) {
-
-		$size = strtolower( $match[1] );
-
-		// ACF mobile featured image field
-		$mobile_id = get_field( 'page_settings_media_featured_image_mobile' );
-
-		// Fallback to regular featured image if mobile doesn't exist
-		if ( ! $mobile_id ) {
-			$fallback = get_the_post_thumbnail_url( null, $size );
-
-			return $fallback ? esc_url( $fallback ) : '';
+		$data = json_decode( $json, true );
+		if ( ! is_array( $data ) ) {
+			return '';
 		}
 
-		$url = wp_get_attachment_image_url( $mobile_id, $size );
+		$mode       = $data['mode'] ?? null;          // featured | featured-mobile
+		$resolution = strtolower( $data['resolution'] ?? 'large' );
+		$fallback   = $data['fallback'] ?? null;      // string URL
 
-		return $url ? esc_url( $url ) : '';
+		$url = '';
+
+		// ----------------------------------------------------------
+		// FEATURED (desktop)
+		// ----------------------------------------------------------
+		if ( $mode === 'featured' ) {
+
+			$url = get_the_post_thumbnail_url( null, $resolution );
+
+			if ( ! $url && $fallback ) {
+				$url = $fallback;
+			}
+		}
+
+		// ----------------------------------------------------------
+		// FEATURED-MOBILE (ACF)
+		// ----------------------------------------------------------
+		elseif ( $mode === 'featured-mobile' ) {
+
+			$mobile_id = get_field( 'page_settings_media_featured_image_mobile' );
+
+			if ( $mobile_id ) {
+				$url = wp_get_attachment_image_url( $mobile_id, $resolution );
+			}
+
+			// If no mobile → try desktop featured
+			if ( ! $url ) {
+				$url = get_the_post_thumbnail_url( null, $resolution );
+			}
+
+			// If nothing → fallback
+			if ( ! $url && $fallback ) {
+				$url = $fallback;
+			}
+		}
+
+		// ----------------------------------------------------------
+		// If no valid mode → fallback only
+		// ----------------------------------------------------------
+		if ( ! $url && $fallback ) {
+			$url = $fallback;
+		}
+
+		return esc_url( $url ?: '' );
 	},
 	$content
 );
 
-
-// --------------------------------------------------------------
-// Output the final processed HTML
-// --------------------------------------------------------------
 echo $block_content;

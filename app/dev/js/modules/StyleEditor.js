@@ -275,6 +275,7 @@ function parseBackgroundProps(props = {}) {
             const resolved = getImageUrlForResolution(mediaObj, resolution);
             if (resolved) {
                 result["--image"] = buildImageSet(resolved);
+                result["--video"] = 'none';
             }
         }
     }

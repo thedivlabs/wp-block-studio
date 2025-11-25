@@ -93,23 +93,11 @@ function renderFigureContent(settings, attributes, mode = "edit") {
     // --------------------------------------
     // TYPE: IMAGE (dynamic responsive)
     // --------------------------------------
-    if (type === "image") {
+    if (type === "image" || type === "featured-image") {
         return wrapWithLink(
             <ResponsivePicture
                 settings={pictureSettings}
                 editor={mode === "edit"}
-            />
-        );
-    }
-
-    // --------------------------------------
-    // TYPE: FEATURED IMAGE (edit mode)
-    // --------------------------------------
-    if (type === "featured-image" && mode === "edit") {
-        return wrapWithLink(
-            <ResponsivePicture
-                settings={pictureSettings}
-                editor={true}
             />
         );
     }

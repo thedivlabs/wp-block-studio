@@ -7,7 +7,7 @@ import Link from "Components/Link";
 
 // MAP #1: image-related settings
 const FIGURE_IMAGE_FIELDS = [
-    {slug: "image", type: "image", label: "Image", full:true},
+    {slug: "image", type: "image", label: "Image", full: true},
 
     {slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS},
 ];
@@ -26,10 +26,22 @@ const FIGURE_SETTING_FIELDS = [
     {slug: "eager", type: "toggle", label: "Eager"},
     {slug: "contain", type: "toggle", label: "Contain"},
 ];
-import {BreakpointPanels} from "Components/BreakpointPanels";
 
-// Assuming these are defined/imported elsewhere in this file/module:
-// import { FIGURE_IMAGE_FIELDS, FIGURE_SETTING_FIELDS } from "./config";
+const BREAKPOINT_FIGURE_SETTING_FIELDS = [
+    {slug: "blend", type: "select", label: "Blend", options: BLEND_OPTIONS},
+    {slug: "origin", type: "select", label: "Origin", options: ORIGIN_OPTIONS},
+    {
+        slug: "overlay",
+        type: "gradient",
+        label: "Overlay",
+        full: true,
+        gradients: OVERLAY_GRADIENTS,
+    },
+
+    {slug: "contain", type: "toggle", label: "Contain"},
+];
+
+import {BreakpointPanels} from "Components/BreakpointPanels";
 
 const TYPE_FIELD = {
     slug: "type",
@@ -107,7 +119,7 @@ export function FigureInspector({attributes, updateSettings}) {
 
     // Shared renderer for base + breakpoint panels
     const renderFields = useCallback(
-        (entry, updateEntry) => {
+        (entry, updateEntry, bpKey) => {
             const settings = entry?.props || {};
 
             const applyPatch = (patch) => {
@@ -150,7 +162,7 @@ export function FigureInspector({attributes, updateSettings}) {
 
                     {/* MAP #2 — STYLE + TOGGLES */}
                     {settings.type &&
-                        FIGURE_SETTING_FIELDS.map((field) => (
+                        (!!bpKey ? BREAKPOINT_FIGURE_SETTING_FIELDS : FIGURE_SETTING_FIELDS).map((field) => (
                             <Field
                                 key={field.slug}
                                 field={field}
@@ -168,12 +180,12 @@ export function FigureInspector({attributes, updateSettings}) {
     );
 
     const renderBase = useCallback(
-        ({bpKey, entry, update}) => renderFields(entry, update),
+        ({bpKey, entry, update}) => renderFields(entry, update, false),
         [renderFields]
     );
 
     const renderBreakpoints = useCallback(
-        ({bpKey, entry, update}) => renderFields(entry, update),
+        ({bpKey, entry, update}) => renderFields(entry, update, bpKey),
         [renderFields]
     );
 

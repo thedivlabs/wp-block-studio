@@ -136,7 +136,14 @@ export function getImageUrlForResolution(image, resolution = 'large') {
 
     if (!image?.source) return null;
 
-    const {source, sizes = {}} = image;
+    const source = image.source;
+    const isSvg = source.toLowerCase().endsWith('.svg');
+
+    if (isSvg) {
+        return source;
+    }
+
+    const sizes = image.sizes || {};
 
     if (!sizes || !Object.keys(sizes).length) {
         return source;
@@ -163,6 +170,7 @@ export function getImageUrlForResolution(image, resolution = 'large') {
 
     return source;
 }
+
 
 export function diffObjects(base = {}, bp = {}) {
     const out = {};

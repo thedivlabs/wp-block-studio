@@ -17,7 +17,7 @@ export function resolveFeaturedMedia({type, media, resolution, isEditor}) {
     if (type === "featured-image" || type === "featured-image-mobile") {
 
         const payload = {
-            mode: type === "featured-image-mobile" ? "featured-mobile" : "featured",
+            mode: type,
             resolution: res,
             fallback: fallbackUrl || null,
         };

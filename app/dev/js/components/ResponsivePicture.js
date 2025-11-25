@@ -1,7 +1,4 @@
-// ResponsivePicture.js — Fully Dynamic Multi-Breakpoint Version
-// Uses your helper fn getImageUrlForResolution ( [oai_citation:2‡helper.js](sediment://file_000000009b8c71fdb41fda13dcc2f65d))
-
-import { getImageUrlForResolution } from "Includes/helper";
+import {getImageUrlForResolution} from "Includes/helper";
 import {Fragment} from "@wordpress/element";
 
 export default function ResponsivePicture({
@@ -26,7 +23,7 @@ export default function ResponsivePicture({
         if (!input || typeof input !== "object") return null;
 
         if (input.isPlaceholder) {
-            return { ...input, source: "#" };
+            return {...input, source: "#"};
         }
 
         if (input.source) return input;
@@ -118,7 +115,7 @@ export default function ResponsivePicture({
     // Render <picture>
     // ------------------------------------------------------------
     return (
-        <picture className={cls} style={{ ...style, objectFit: "inherit" }}>
+        <picture className={cls} style={{...style, objectFit: "inherit"}}>
             {/* --- Breakpoint <source> tags (xs, sm, md…) --- */}
             {bpEntries.map((entry, i) => {
                 const url = resolveUrl(entry);
@@ -137,10 +134,10 @@ export default function ResponsivePicture({
                             <source
                                 media={mq}
                                 type="image/webp"
-                                {...{ [srcsetAttr]: webp }}
+                                {...{[srcsetAttr]: webp}}
                             />
                         )}
-                        <source media={mq} {...{ [srcsetAttr]: url }} />
+                        <source media={mq} {...{[srcsetAttr]: url}} />
                     </Fragment>
                 );
             })}
@@ -155,11 +152,11 @@ export default function ResponsivePicture({
                         {webp && (
                             <source
                                 type="image/webp"
-                                {...{ [srcsetAttr]: webp }}
+                                {...{[srcsetAttr]: webp}}
                             />
                         )}
 
-                        <source {...{ [srcsetAttr]: url }} />
+                        <source {...{[srcsetAttr]: url}} />
                     </>
                 );
             })()}

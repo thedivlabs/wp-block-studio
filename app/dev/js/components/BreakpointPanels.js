@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from "@wordpress/element";
-import { Button } from "@wordpress/components";
+import {useCallback, useMemo} from "@wordpress/element";
+import {Button} from "@wordpress/components";
 
-export function BreakpointPanels({ value = {}, onChange, render, label }) {
+export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
     // Extract & normalize base entry
@@ -27,9 +27,10 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
         return Object.keys(breakpoints).sort((a, b) => {
             const A = breakpointDefs.find((bp) => bp.key === a);
             const B = breakpointDefs.find((bp) => bp.key === b);
-            return (A?.size || 0) - (B?.size || 0);
+            return (B?.size || 0) - (A?.size || 0); // DESCENDING
         });
     }, [breakpoints, breakpointDefs]);
+
 
     // FULL base entry expected; merge already done upstream
     const updateBase = useCallback(
@@ -60,7 +61,7 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
 
     const removeBreakpoint = useCallback(
         (bpKey) => {
-            const next = { ...breakpoints };
+            const next = {...breakpoints};
             delete next[bpKey];
 
             onChange({
@@ -78,7 +79,7 @@ export function BreakpointPanels({ value = {}, onChange, render, label }) {
             if (breakpoints[newKey]) return;
 
             const entry = breakpoints[oldKey];
-            const next = { ...breakpoints };
+            const next = {...breakpoints};
             delete next[oldKey];
             next[newKey] = entry;
 

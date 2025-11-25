@@ -28,7 +28,7 @@ $block_content = preg_replace_callback(
 			return '';
 		}
 
-		$mode       = $data['mode'] ?? null;          // featured | featured-mobile
+		$mode       = $data['mode'] ?? null;
 		$resolution = strtolower( $data['resolution'] ?? 'large' );
 		$fallback   = $data['fallback'] ?? null;      // string URL
 
@@ -37,7 +37,7 @@ $block_content = preg_replace_callback(
 		// ----------------------------------------------------------
 		// FEATURED (desktop)
 		// ----------------------------------------------------------
-		if ( $mode === 'featured' ) {
+		if ( $mode === 'featured-image' ) {
 
 			$url = get_the_post_thumbnail_url( null, $resolution );
 
@@ -49,7 +49,7 @@ $block_content = preg_replace_callback(
 		// ----------------------------------------------------------
 		// FEATURED-MOBILE (ACF)
 		// ----------------------------------------------------------
-		elseif ( $mode === 'featured-mobile' ) {
+		elseif ( $mode === 'featured-image-mobile' ) {
 
 			$mobile_id = get_field( 'page_settings_media_image_mobile' );
 

@@ -1,5 +1,5 @@
 import {InspectorControls} from "@wordpress/block-editor";
-import {useMemo,useCallback} from "@wordpress/element";
+import {useMemo, useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
 import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS, OVERLAY_GRADIENTS} from "Includes/config";
@@ -7,7 +7,7 @@ import Link from "Components/Link";
 
 // MAP #1: image-related settings
 const FIGURE_IMAGE_FIELDS = [
-    {slug: "image", type: "image", label: "Image"},
+    {slug: "image", type: "image", label: "Image", full:true},
 
     {slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS},
 ];
@@ -26,7 +26,7 @@ const FIGURE_SETTING_FIELDS = [
     {slug: "eager", type: "toggle", label: "Eager"},
     {slug: "contain", type: "toggle", label: "Contain"},
 ];
-import { BreakpointPanels } from "Components/BreakpointPanels";
+import {BreakpointPanels} from "Components/BreakpointPanels";
 
 // Assuming these are defined/imported elsewhere in this file/module:
 // import { FIGURE_IMAGE_FIELDS, FIGURE_SETTING_FIELDS } from "./config";
@@ -36,17 +36,17 @@ const TYPE_FIELD = {
     type: "select",
     label: "Type",
     options: [
-        { label: "Select", value: "" },
-        { label: "Image", value: "image" },
-        { label: "Featured Image", value: "featured-image" },
-        { label: "Featured Image Mobile", value: "featured-image-mobile" },
-        { label: "Lottie", value: "lottie" },
-        { label: "Icon", value: "icon" },
+        {label: "Select", value: ""},
+        {label: "Image", value: "image"},
+        {label: "Featured Image", value: "featured-image"},
+        {label: "Featured Image Mobile", value: "featured-image-mobile"},
+        {label: "Lottie", value: "lottie"},
+        {label: "Icon", value: "icon"},
     ],
     full: true,
 };
 
-export function FigureInspector({ attributes, updateSettings }) {
+export function FigureInspector({attributes, updateSettings}) {
     const rawSettings = attributes["wpbs-figure"] || {};
 
     // Normalize into { props, breakpoints } shape
@@ -128,12 +128,13 @@ export function FigureInspector({ attributes, updateSettings }) {
                     <Field
                         field={TYPE_FIELD}
                         settings={settings}
-                        callback={(val) => applyPatch({ type: val })}
+                        callback={(val) => applyPatch({type: val})}
                         {...sharedConfig}
                     />
 
                     {/* MAP #1 — IMAGE + BREAKPOINT + RESOLUTIONS */}
                     {(settings.type === "image" ||
+                            settings.type === "featured-image-mobile" ||
                             settings.type === "featured-image") &&
                         FIGURE_IMAGE_FIELDS.map((field) => (
                             <Field
@@ -141,7 +142,7 @@ export function FigureInspector({ attributes, updateSettings }) {
                                 field={field}
                                 settings={settings}
                                 callback={(val) =>
-                                    applyPatch({ [field.slug]: val })
+                                    applyPatch({[field.slug]: val})
                                 }
                                 {...sharedConfig}
                             />
@@ -155,7 +156,7 @@ export function FigureInspector({ attributes, updateSettings }) {
                                 field={field}
                                 settings={settings}
                                 callback={(val) =>
-                                    applyPatch({ [field.slug]: val })
+                                    applyPatch({[field.slug]: val})
                                 }
                                 {...sharedConfig}
                             />
@@ -167,12 +168,12 @@ export function FigureInspector({ attributes, updateSettings }) {
     );
 
     const renderBase = useCallback(
-        ({ bpKey, entry, update }) => renderFields(entry, update),
+        ({bpKey, entry, update}) => renderFields(entry, update),
         [renderFields]
     );
 
     const renderBreakpoints = useCallback(
-        ({ bpKey, entry, update }) => renderFields(entry, update),
+        ({bpKey, entry, update}) => renderFields(entry, update),
         [renderFields]
     );
 
@@ -181,7 +182,7 @@ export function FigureInspector({ attributes, updateSettings }) {
             {LinkControls}
 
             <InspectorControls group="styles">
-                <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title={'Figure'} >
+                <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title={'Figure'}>
                     <BreakpointPanels
                         value={value}
                         onChange={handlePanelsChange}

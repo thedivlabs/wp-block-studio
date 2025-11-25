@@ -1,9 +1,52 @@
-import { memo, useCallback } from "@wordpress/element";
-import { PanelBody } from "@wordpress/components";
-import { BreakpointPanels } from "Components/BreakpointPanels";
-import { merge } from "lodash";
-import { BackgroundFields } from "./BackgroundFields";
-import { BackgroundMedia } from "./BackgroundMedia";
+import {memo, useCallback} from "@wordpress/element";
+import {PanelBody} from "@wordpress/components";
+import {BreakpointPanels} from "Components/BreakpointPanels";
+import {merge} from "lodash";
+import {BackgroundFields} from "./BackgroundFields";
+import {BackgroundMedia} from "./BackgroundMedia";
+import {resolveFeaturedMedia} from "Includes/helper";
+
+function resolveBackgroundSettings(settings = {}, isEditor = false) {
+    const base = settings?.props || {};
+    const bps = settings?.breakpoints || {};
+
+    const baseType = base.type;
+    const baseRes = (base.resolution || "large").toUpperCase();
+
+    const resolved = {
+        props: {
+            ...base,
+            media: resolveFeaturedMedia({
+                type: baseType,
+                media: base.media,
+                resolution: baseRes,
+                isEditor,
+            }),
+        },
+        breakpoints: {},
+    };
+
+    Object.entries(bps).forEach(([bpKey, bpEntry]) => {
+        const bpProps = bpEntry?.props || {};
+        const bpType = bpProps.type || base.type;
+        const bpRes = (bpProps.resolution || base.resolution || "large").toUpperCase();
+
+        resolved.breakpoints[bpKey] = {
+            props: {
+                ...bpProps,
+                media: resolveFeaturedMedia({
+                    type: bpType,
+                    media: bpProps.media || base.media,
+                    resolution: bpRes,
+                    isEditor,
+                }),
+            },
+        };
+    });
+
+    return resolved;
+}
+
 
 function mergeEntryProps(entry = {}, patch = {}, reset = false) {
     const currentProps = entry.props || {};
@@ -25,7 +68,7 @@ function makeEntryHandlers(entry = {}, update) {
         update(nextEntry);
     };
 
-    return { settings, updateFn };
+    return {settings, updateFn};
 }
 
 export const BackgroundControls = memo(function BackgroundControls({
@@ -58,8 +101,8 @@ export const BackgroundControls = memo(function BackgroundControls({
                 value={value}
                 onChange={handleChange}
                 render={{
-                    base: ({ entry, update }) => {
-                        const { settings, updateFn } = makeEntryHandlers(
+                    base: ({entry, update}) => {
+                        const {settings, updateFn} = makeEntryHandlers(
                             entry,
                             update
                         );
@@ -73,8 +116,8 @@ export const BackgroundControls = memo(function BackgroundControls({
                         );
                     },
 
-                    breakpoints: ({ entry, update }) => {
-                        const { settings, updateFn } = makeEntryHandlers(
+                    breakpoints: ({entry, update}) => {
+                        const {settings, updateFn} = makeEntryHandlers(
                             entry,
                             update
                         );
@@ -94,7 +137,7 @@ export const BackgroundControls = memo(function BackgroundControls({
 });
 
 export function hasAnyBackground(bgSettings = {}) {
-    const { props = {}, breakpoints = {} } = bgSettings || {};
+    const {props = {}, breakpoints = {}} = bgSettings || {};
 
     const check = (obj) => {
         if (!obj) return false;
@@ -119,8 +162,8 @@ export function hasAnyBackground(bgSettings = {}) {
     return false;
 }
 
-export function BackgroundElement({ attributes = {}, isSave = false }) {
-    const { "wpbs-background": bgSettings = {} } = attributes;
+export function BackgroundElement({attributes = {}, isSave = false}) {
+    const {"wpbs-background": bgSettings = {}} = attributes;
 
     if (!hasAnyBackground(bgSettings)) return null;
 
@@ -131,9 +174,11 @@ export function BackgroundElement({ attributes = {}, isSave = false }) {
         .filter(Boolean)
         .join(" ");
 
+    const resolvedSettings = resolveBackgroundSettings(bgSettings, !isSave);
+    
     return (
         <div className={bgClass}>
-            <BackgroundMedia settings={bgSettings} isSave={isSave} />
+            <BackgroundMedia settings={resolvedSettings} isSave={isSave}/>
         </div>
     );
 }

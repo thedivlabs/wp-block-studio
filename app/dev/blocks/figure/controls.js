@@ -135,7 +135,7 @@ export function FigureInspector({attributes, updateSettings}) {
             };
 
             return (
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding:'16px'}}>
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding:'12px'}}>
                     {/* TYPE FIELD – standalone */}
                     <Field
                         field={TYPE_FIELD}

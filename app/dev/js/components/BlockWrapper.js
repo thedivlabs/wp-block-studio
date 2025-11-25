@@ -23,7 +23,8 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     } = wrapperProps;
 
     const { "wpbs-style": styleSettings = {}, uniqueId } = attributes;
-    const { props: layout = {}, hover = {}, advanced = {} } = styleSettings;
+    const advanced = attributes["wpbs-advanced"] || {};
+    const { props: layout = {}, hover = {},  } = styleSettings;
 
     // background now comes from separate attribute
     const bgSettings = attributes["wpbs-background"] || {};
@@ -99,16 +100,23 @@ export const BlockWrapper = ({
                              }) => {
     const { attributes } = props;
 
-    // NEW: background comes from wpbs-background, not wpbs-style
     const bgSettings = attributes["wpbs-background"] || {};
     const {"wpbs-style": styleSettings = {} } = attributes;
-    const { advanced = {} } = styleSettings;
 
     const {
         tagName: wrapperTagName = "div",
         hasBackground = true,
         hasChildren = false,
     } = wrapperProps;
+
+    const advancedFlags = [
+        advanced["hide-empty"] ? "--hide-empty" : null,
+        advanced.required ? "--required" : null,
+        advanced["offset-header"] ? "--offset-header" : null,
+        advanced.container ? "--container" : null,
+    ]
+        .filter(Boolean)
+        .join(" ");
 
     const Tag = ElementTag(advanced?.tagName, wrapperTagName);
 

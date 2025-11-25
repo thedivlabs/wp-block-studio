@@ -164,6 +164,52 @@ function renderFigureContent(settings, attributes, mode = "edit") {
     return null;
 }
 
+function getCssProps(settings) {
+
+    return {
+        props: {
+            "--overlay": settings.overlay,
+            "--origin": settings.origin,
+            "--blend": settings.blend,
+        },
+        breakpoints: {
+            sm: {
+                props: {
+                    "--testing": "Chat GPT",
+                },
+            },
+        },
+    }
+}
+
+function getPreload(settings, uniqueId) {
+
+    const preloadObj = [];
+
+    if (settings.eager) {
+        const group = uniqueId;
+
+        if (settings.imageLarge?.id) {
+            preloadObj.push({
+                id: settings.imageLarge.id,
+                type: "image",
+                group,
+            });
+        }
+
+        if (settings.breakpoint && settings.imageMobile?.id) {
+            preloadObj.push({
+                id: settings.imageMobile.id,
+                type: "image",
+                group,
+                breakpoint: settings.breakpoint,
+            });
+        }
+    }
+
+    return preloadObj;
+}
+
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -180,75 +226,16 @@ registerBlockType(metadata.name, {
 
             const {attributes, styleData, BlockWrapper, setCss, setPreload, setAttributes} = props;
 
-            const {'wpbs-figure': settings = {}} = attributes;
+            const {'wpbs-figure': settings = {}, uniqueId} = attributes;
 
             const classNames = getClassNames(attributes, styleData);
 
-            const cssObj = useMemo(() => {
-                const type = settings?.type ?? null;
-                const overlay = settings?.overlay ?? null;
-                const origin = settings?.origin ?? null;
-                const blend = settings?.blend ?? null;
 
-                // Single breakpoint key (e.g. "sm", "md", "normal")
-                const bpKey = settings?.breakpoint || 'normal';
+            useEffect(() => {
+                setCss(getCssProps(settings));
+                setPreload(getPreload(settings, uniqueId));
+            }, [settings, uniqueId]);
 
-
-                return cleanObject({
-                    props: {
-                        "--overlay": overlay,
-                        "--origin": origin,
-                        "--blend": blend,
-                    },
-                    breakpoints: {
-                        sm: {
-                            props: {
-                                '--testing': 'Chat GPT'
-                            }
-                        }
-                    },
-                });
-            }, [settings]);
-
-            const preloadObj = useMemo(() => {
-                const eager = !!settings?.eager;
-                if (!eager) return [];
-
-                const group = attributes?.uniqueId || null;
-                if (!group) return [];
-
-                const bpKey = attributes?.breakpoint || null; // e.g. "sm"
-
-                const large = settings?.imageLarge;
-                const mobile = settings?.imageMobile;
-
-                const result = [];
-
-                // 1. BASE preload — large image (NO breakpoint key)
-                if (large?.id) {
-                    result.push({
-                        id: large.id,
-                        type: "image",
-                        group,
-                    });
-                }
-
-                // 2. BREAKPOINT preload — mobile image (WITH breakpoint key)
-                if (bpKey && mobile?.id) {
-                    result.push({
-                        id: mobile.id,
-                        type: "image",
-                        group,
-                        breakpoint: bpKey,
-                    });
-                }
-
-                return result;
-            }, [settings, attributes?.uniqueId, attributes?.breakpoint]);
-
-            useEffect(() => setPreload(preloadObj), [preloadObj]);
-
-            useEffect(() => setCss(cssObj), [cssObj]);
 
             const updateSettings = useCallback((newValue) => {
 

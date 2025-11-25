@@ -37,10 +37,9 @@ export const withStyle = (Component) => (props) => {
         "wpbs-advanced": advData = {},
     } = attributes;
 
-    useEffect(()=>{
-        console.log(attributes);
-    }, []);
-
+    /* --------------------------------------------------------------
+       BLOCK REGISTRATION / UNIQUE ID SYNC
+    -------------------------------------------------------------- */
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
@@ -60,9 +59,9 @@ export const withStyle = (Component) => (props) => {
     }, []);
 
 
-    /* ------------------------------------------------------------------
-       UPDATE: STYLE (wpbs-style)
-    ------------------------------------------------------------------ */
+    /* --------------------------------------------------------------
+       UPDATE: STYLE SETTINGS
+    -------------------------------------------------------------- */
     const updateStyleSettings = useCallback(
         (next) => {
             setAttributes({
@@ -84,9 +83,6 @@ export const withStyle = (Component) => (props) => {
         [setAttributes, advData]
     );
 
-    /* ------------------------------------------------------------------
-       UPDATE: BACKGROUND (wpbs-background)
-    ------------------------------------------------------------------ */
     const updateBgSettings = useCallback(
         (next) => {
             setAttributes({
@@ -96,12 +92,43 @@ export const withStyle = (Component) => (props) => {
         [setAttributes]
     );
 
-    /* ------------------------------------------------------------------
-       UPDATE: RAW CSS REF
-    ------------------------------------------------------------------ */
-    const updateBlockCssRef = useCallback(
-        (newCss = {}) => {
-            blockCssRef.current = newCss || {};
+
+    /* --------------------------------------------------------------
+       APPLY CSS: clean + diff + trigger
+    -------------------------------------------------------------- */
+    const applyCss = useCallback(
+        (raw) => {
+            if (!raw || typeof raw !== "object") return;
+
+            const cleaned = cleanObject(raw);
+
+            if (window._.isEqual(blockCssRef.current, cleaned)) return;
+
+            blockCssRef.current = cleaned;
+
+            if (typeof onStyleChange === "function" && styleRef.current) {
+                onStyleChange({
+                    css: blockCssRef.current,
+                    preload: blockPreloadRef.current,
+                    props,
+                    styleRef,
+                });
+            }
+        },
+        [cleanObject, onStyleChange, props]
+    );
+
+
+    /* --------------------------------------------------------------
+       APPLY PRELOAD: clean + diff + trigger
+    -------------------------------------------------------------- */
+    const applyPreload = useCallback(
+        (items) => {
+            const arr = Array.isArray(items) ? items : [];
+
+            if (window._.isEqual(blockPreloadRef.current, arr)) return;
+
+            blockPreloadRef.current = arr;
 
             if (typeof onStyleChange === "function" && styleRef.current) {
                 onStyleChange({
@@ -115,16 +142,10 @@ export const withStyle = (Component) => (props) => {
         [onStyleChange, props]
     );
 
-    /* ------------------------------------------------------------------
-       UPDATE: RAW PRELOAD REF
-    ------------------------------------------------------------------ */
-    const updatePreloadRef = useCallback((items = []) => {
-        blockPreloadRef.current = Array.isArray(items) ? items : [];
-    }, []);
 
-    /* ------------------------------------------------------------------
-       TRIGGER CSS PARSER
-    ------------------------------------------------------------------ */
+    /* --------------------------------------------------------------
+       AUTO-REPARSE WHEN STYLE/BG ATTRIBUTES CHANGE
+    -------------------------------------------------------------- */
     useEffect(() => {
         if (typeof onStyleChange !== "function") return;
         if (!styleRef.current) return;
@@ -137,9 +158,10 @@ export const withStyle = (Component) => (props) => {
         });
     }, [styleData, bgData, uniqueId]);
 
-    /* ------------------------------------------------------------------
+
+    /* --------------------------------------------------------------
        BLOCK WRAPPER CALLBACK
-    ------------------------------------------------------------------ */
+    -------------------------------------------------------------- */
     const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {
         return (
             <BlockWrapper props={props} wrapperProps={wrapperProps}>
@@ -148,16 +170,17 @@ export const withStyle = (Component) => (props) => {
         );
     }, []);
 
-    /* ------------------------------------------------------------------
+
+    /* --------------------------------------------------------------
        RENDER
-    ------------------------------------------------------------------ */
+    -------------------------------------------------------------- */
     return (
         <>
             <Component
                 {...props}
                 BlockWrapper={wrappedBlockWrapperCallback}
-                setCss={updateBlockCssRef}
-                setPreload={updatePreloadRef}
+                setCss={applyCss}
+                setPreload={applyPreload}
             />
 
             {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
@@ -168,6 +191,7 @@ export const withStyle = (Component) => (props) => {
                     callback={updateAdvancedSettings}
                 />
             </InspectorControls>
+
             <InspectorControls group="styles">
                 <StyleEditorUI
                     settings={styleData}
@@ -177,7 +201,6 @@ export const withStyle = (Component) => (props) => {
                     settings={bgData}
                     callback={updateBgSettings}
                 />
-
             </InspectorControls>
         </>
     );

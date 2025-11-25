@@ -1,5 +1,5 @@
 import {InspectorControls} from "@wordpress/block-editor";
-import {useMemo} from "@wordpress/element";
+import {useMemo,useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
 import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS, OVERLAY_GRADIENTS} from "Includes/config";
@@ -7,12 +7,9 @@ import Link from "Components/Link";
 
 // MAP #1: image-related settings
 const FIGURE_IMAGE_FIELDS = [
-    {slug: "imageMobile", type: "image", label: "Mobile Image"},
-    {slug: "imageLarge", type: "image", label: "Large Image"},
-    {slug: "breakpoint", type: "breakpoint", label: "Breakpoint", full: true},
+    {slug: "image", type: "image", label: "Image"},
 
-    {slug: "resolutionLarge", type: "select", label: "Size Large", options: RESOLUTION_OPTIONS},
-    {slug: "resolutionMobile", type: "select", label: "Size Mobile", options: RESOLUTION_OPTIONS},
+    {slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS},
 ];
 
 const FIGURE_SETTING_FIELDS = [
@@ -29,71 +26,171 @@ const FIGURE_SETTING_FIELDS = [
     {slug: "eager", type: "toggle", label: "Eager"},
     {slug: "contain", type: "toggle", label: "Contain"},
 ];
+import { BreakpointPanels } from "Components/BreakpointPanels";
 
-export function FigureInspector({attributes, updateSettings}) {
-    const settings = attributes["wpbs-figure"] || {};
+// Assuming these are defined/imported elsewhere in this file/module:
+// import { FIGURE_IMAGE_FIELDS, FIGURE_SETTING_FIELDS } from "./config";
 
-    const sharedConfig = {
-        isToolsPanel: false,
-    };
+const TYPE_FIELD = {
+    slug: "type",
+    type: "select",
+    label: "Type",
+    options: [
+        { label: "Select", value: "" },
+        { label: "Image", value: "image" },
+        { label: "Featured Image", value: "featured-image" },
+        { label: "Featured Image Mobile", value: "featured-image-mobile" },
+        { label: "Lottie", value: "lottie" },
+        { label: "Icon", value: "icon" },
+    ],
+    full: true,
+};
 
-    const LinkControls = useMemo(() => (<Link defaultValue={settings?.link}
-                                              callback={(val) => updateSettings({link: val})}/>), [settings?.link, updateSettings])
+export function FigureInspector({ attributes, updateSettings }) {
+    const rawSettings = attributes["wpbs-figure"] || {};
 
-    return (
-        <>
+    // Normalize into { props, breakpoints } shape
+    const value = useMemo(() => {
+        // New structured format
+        if (rawSettings && (rawSettings.props || rawSettings.breakpoints)) {
+            return {
+                props: rawSettings.props || {},
+                breakpoints: rawSettings.breakpoints || {},
+            };
+        }
 
-            {LinkControls}
-            <InspectorControls group="styles">
-                <PanelBody initialOpen={true} className="wpbs-block-controls">
+        // Legacy flat format → treat as base props
+        return {
+            props: rawSettings,
+            breakpoints: {},
+        };
+    }, [rawSettings]);
 
-                    <Grid columns={2} columnGap={15} rowGap={20}>
+    const sharedConfig = useMemo(
+        () => ({
+            isToolsPanel: false,
+        }),
+        []
+    );
 
-                        {/** TYPE FIELD – standalone */}
-                        <Field
-                            field={{
-                                slug: "type",
-                                type: "select",
-                                label: "Type",
-                                options: [
-                                    {label: "Select", value: ""},
-                                    {label: "Image", value: "image"},
-                                    {label: "Featured Image", value: "featured-image"},
-                                    {label: "Lottie", value: "lottie"},
-                                    {label: "Icon", value: "icon"},
-                                ],
-                                full: true
-                            }}
-                            settings={settings}
-                            callback={(val) => updateSettings({type: val})}
-                            {...sharedConfig}
-                        />
+    // Link stays global (non-responsive) as before, using base props
+    const LinkControls = useMemo(
+        () => (
+            <Link
+                defaultValue={value?.props?.link}
+                callback={(val) =>
+                    updateSettings({
+                        ...value,
+                        props: {
+                            ...(value.props || {}),
+                            link: val,
+                        },
+                    })
+                }
+            />
+        ),
+        [value, updateSettings]
+    );
 
-                        {/** MAP #1 — IMAGE + BREAKPOINT + RESOLUTIONS */}
-                        {(settings.type === "image" || settings.type === "featured-image") &&
-                            FIGURE_IMAGE_FIELDS.map((field) => (
-                                <Field
-                                    key={field.slug}
-                                    field={field}
-                                    settings={settings}
-                                    callback={(val) => updateSettings({[field.slug]: val})}
-                                    {...sharedConfig}
-                                />
-                            ))}
+    const handlePanelsChange = useCallback(
+        (nextValue) => {
+            const normalized = {
+                props: nextValue?.props || {},
+                breakpoints: nextValue?.breakpoints || {},
+            };
 
-                        {/** MAP #2 — STYLE + TOGGLES */}
-                        {settings.type && FIGURE_SETTING_FIELDS.map((field) => (
+            // Expectation: updateSettings replaces the wpbs-figure object
+            updateSettings(normalized);
+        },
+        [updateSettings]
+    );
+
+    // Shared renderer for base + breakpoint panels
+    const renderFields = useCallback(
+        (entry, updateEntry) => {
+            const settings = entry?.props || {};
+
+            const applyPatch = (patch) => {
+                const nextProps = {
+                    ...(entry.props || {}),
+                    ...patch,
+                };
+
+                updateEntry({
+                    ...entry,
+                    props: nextProps,
+                });
+            };
+
+            return (
+                <Grid columns={2} columnGap={15} rowGap={20}>
+                    {/* TYPE FIELD – standalone */}
+                    <Field
+                        field={TYPE_FIELD}
+                        settings={settings}
+                        callback={(val) => applyPatch({ type: val })}
+                        {...sharedConfig}
+                    />
+
+                    {/* MAP #1 — IMAGE + BREAKPOINT + RESOLUTIONS */}
+                    {(settings.type === "image" ||
+                            settings.type === "featured-image") &&
+                        FIGURE_IMAGE_FIELDS.map((field) => (
                             <Field
                                 key={field.slug}
                                 field={field}
                                 settings={settings}
-                                callback={(val) => updateSettings({[field.slug]: val})}
+                                callback={(val) =>
+                                    applyPatch({ [field.slug]: val })
+                                }
                                 {...sharedConfig}
                             />
                         ))}
 
-                    </Grid>
+                    {/* MAP #2 — STYLE + TOGGLES */}
+                    {settings.type &&
+                        FIGURE_SETTING_FIELDS.map((field) => (
+                            <Field
+                                key={field.slug}
+                                field={field}
+                                settings={settings}
+                                callback={(val) =>
+                                    applyPatch({ [field.slug]: val })
+                                }
+                                {...sharedConfig}
+                            />
+                        ))}
+                </Grid>
+            );
+        },
+        [sharedConfig]
+    );
 
+    const renderBase = useCallback(
+        ({ bpKey, entry, update }) => renderFields(entry, update),
+        [renderFields]
+    );
+
+    const renderBreakpoints = useCallback(
+        ({ bpKey, entry, update }) => renderFields(entry, update),
+        [renderFields]
+    );
+
+    return (
+        <>
+            {LinkControls}
+
+            <InspectorControls group="styles">
+                <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title={'Figure'} >
+                    <BreakpointPanels
+                        value={value}
+                        onChange={handlePanelsChange}
+                        //label="Figure"
+                        render={{
+                            base: renderBase,
+                            breakpoints: renderBreakpoints,
+                        }}
+                    />
                 </PanelBody>
             </InspectorControls>
         </>

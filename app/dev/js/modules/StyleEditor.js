@@ -280,10 +280,10 @@ function parseBackgroundProps(props = {}) {
         }
     }
 
-    if (mediaObj?.isPlaceholder === false) {
-        result["--video"] = "flex";
-    } else {
+    if (mediaObj?.isPlaceholder === true) {
         result["--video"] = "none";
+    } else {
+        result["--video"] = "flex";
     }
 
 

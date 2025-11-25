@@ -249,23 +249,23 @@ registerBlockType(metadata.name, {
 
             const {attributes, styleData, BlockWrapper, setCss, setPreload, setAttributes} = props;
 
-            const {'wpbs-figure': settings = {}, uniqueId} = attributes;
+            const {'wpbs-figure': settings = {}} = attributes;
 
             const classNames = getClassNames(attributes, styleData);
-
 
             useEffect(() => {
                 console.log(settings);
             }, [settings])
 
+            // ---------------------------------------------------------
+            // SEND CSS + PRELOAD TO HOC
+            // ---------------------------------------------------------
             useEffect(() => {
                 setCss(getCssProps(settings));
-                setPreload(getPreload(settings, uniqueId));
-            }, [settings, uniqueId]);
-
+                setPreload(getPreload(settings));   // ← uniqueId removed
+            }, [settings]);
 
             const updateSettings = useCallback((newValue) => {
-
                 const result = {
                     ...settings,
                     ...newValue,
@@ -276,9 +276,12 @@ registerBlockType(metadata.name, {
                 });
             }, [setAttributes, settings]);
 
-            const inspectorPanel = useMemo(() => <FigureInspector attributes={attributes}
-                                                                  updateSettings={updateSettings}/>, [settings]);
-
+            const inspectorPanel = useMemo(() => (
+                <FigureInspector
+                    attributes={attributes}
+                    updateSettings={updateSettings}
+                />
+            ), [settings]);
 
             return (
                 <>
@@ -296,6 +299,7 @@ registerBlockType(metadata.name, {
             );
 
         }),
+
 
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;

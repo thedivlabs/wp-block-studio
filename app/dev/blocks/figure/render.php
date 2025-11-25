@@ -4,8 +4,6 @@ if ( empty( $content ) ) {
 	return;
 }
 
-//WPBS::console_log( get_field( 'page_settings' )['media']['mobile_image'] ?? null );
-
 // --------------------------------------------------------------
 // Replace FEATURED_IMAGE tokens (Base64 JSON)
 // --------------------------------------------------------------

@@ -2,6 +2,8 @@ export default class Video {
 
     static init() {
 
+        if (document.body.classList.contains('wp-admin')) return;
+
         document.addEventListener('click', (e) => {
             if (e.target.closest('.wpbs-video:not(.--disabled)')) {
                 this.clickHandler(e.target.closest('.wpbs-video'));

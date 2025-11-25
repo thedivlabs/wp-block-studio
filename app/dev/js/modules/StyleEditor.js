@@ -260,7 +260,7 @@ function parseBackgroundProps(props = {}) {
     /* ------------------------------------------------------------
      * IMAGE BACKGROUND
      * ------------------------------------------------------------ */
-    if (type === "image" || type === "featured-image") {
+    if (type === "image" || type === "featured-image" || type === "featured-image-mobile") {
 
         if (!mediaObj || mediaObj === "" || mediaObj == null) {
             // No image at all — emit nothing
@@ -277,6 +277,9 @@ function parseBackgroundProps(props = {}) {
 
         if (type === "featured-image") {
             result["--featured-image"] = "true";
+        }
+        if (type === "featured-image-mobile") {
+            result["--featured-image-mobile"] = "true";
         }
     }
 

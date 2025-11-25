@@ -202,33 +202,51 @@ class WPBS_Blocks {
 		};
 
 		$props_filtered = function ( $props = [] ) {
-			// Only act if flag is present
-			if ( ! isset( $props['--featured-image'] ) ) {
-				return $props;
+
+			// FEATURED IMAGE (desktop)
+			if ( isset( $props['--featured-image'] ) ) {
+
+				unset( $props['--featured-image'] );
+
+				$post_id = get_the_ID();
+				if ( $post_id ) {
+
+					$featured_url = get_the_post_thumbnail_url( $post_id, 'full' );
+
+					if ( $featured_url ) {
+						$props['--image'] = sprintf(
+							'image-set(url("%s.webp") type("image/webp"), url("%s") type("image/jpeg"))',
+							esc_url( $featured_url ),
+							esc_url( $featured_url )
+						);
+					}
+				}
 			}
 
-			unset( $props['--featured-image'] );
+			// FEATURED IMAGE MOBILE (mobile)
+			if ( isset( $props['--featured-image-mobile'] ) ) {
 
-			$post_id = get_the_ID();
-			if ( ! $post_id ) {
-				return $props;
+				unset( $props['--featured-image-mobile'] );
+
+				// ACF mobile featured image
+				$mobile_id = get_field( 'page_settings_media_mobile_image', get_the_ID() );
+
+				if ( $mobile_id ) {
+					$mobile_url = wp_get_attachment_image_url( $mobile_id, 'full' );
+
+					if ( $mobile_url ) {
+						$props['--image'] = sprintf(
+							'image-set(url("%s.webp") type("image/webp"), url("%s") type("image/jpeg"))',
+							esc_url( $mobile_url ),
+							esc_url( $mobile_url )
+						);
+					}
+				}
 			}
-
-			$featured_url = get_the_post_thumbnail_url( $post_id, 'full' );
-			if ( ! $featured_url ) {
-				return $props;
-			}
-
-			$featured_set = sprintf(
-				'image-set(url("%s.webp") type("image/webp"), url("%s") type("image/jpeg"))',
-				esc_url( $featured_url ),
-				esc_url( $featured_url )
-			);
-
-			$props['--image'] = $featured_set;
 
 			return $props;
 		};
+
 
 		// Build CSS
 		$css    = '';

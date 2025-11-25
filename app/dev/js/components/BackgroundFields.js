@@ -47,6 +47,12 @@ export const BackgroundFields = memo(function BackgroundFields({
                         { label: "Select", value: "" },
                         { label: "Image", value: "image" },
                         { label: "Featured Image", value: "featured-image" },
+
+                        // add only when isBreakpoint === true
+                        ...(isBreakpoint
+                            ? [{ label: "Featured Image Mobile", value: "featured-image-mobile" }]
+                            : []),
+
                         { label: "Video", value: "video" },
                     ]}
                 />

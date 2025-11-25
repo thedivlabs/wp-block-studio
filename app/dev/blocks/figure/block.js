@@ -13,20 +13,56 @@ import {cleanObject} from "Includes/helper";
 const selector = "wpbs-figure";
 
 const getClassNames = (attributes = {}, styleData) => {
-    const {"wpbs-figure": settings = {}} = attributes;
+    const { "wpbs-figure": raw = {} } = attributes;
 
-    const hasLarge = !!settings?.imageLarge?.id;
-    const hasMobile = !!settings?.imageMobile?.id;
-    const isEmpty = !hasLarge && !hasMobile && settings?.type !== "featured-image";
+    const base = raw.props || {};
+    const breakpoints = raw.breakpoints || {};
+    const bpList = Object.values(breakpoints).map(bp => bp?.props || {});
+
+    // Utility: read a prop from base OR any breakpoint override
+    const anyProp = (key) => {
+        if (base[key]) return true;
+        for (const bp of bpList) {
+            if (bp[key]) return true;
+        }
+        return false;
+    };
+
+    // Utility: detect real image
+    const isRealImage = (img) => {
+        if (!img || img.isPlaceholder) return false;
+        if (img.id) return true;
+        if (img.source && img.source !== "#") return true;
+        return false;
+    };
+
+    // Detect any image at any level
+    const hasAnyImage = (() => {
+        if (isRealImage(base.image)) return true;
+        for (const bp of bpList) {
+            if (isRealImage(bp.image)) return true;
+        }
+        return false;
+    })();
+
+    // Featured-image types are never empty
+    const isFeatured =
+        base.type === "featured-image" ||
+        base.type === "featured-image-mobile";
+
+    const isEmpty = !hasAnyImage && !isFeatured;
 
     return [
-        selector,            // "wpbs-figure"
+        selector,
         "h-fit w-fit max-w-full max-h-full flex",
-        settings.contain ? "--contain" : null,
-        settings.blend ? "--blend" : null,
-        settings.overlay ? "--overlay" : null,
-        settings.origin ? "--origin" : null,
+
+        anyProp("contain") ? "--contain" : null,
+        anyProp("blend") ? "--blend" : null,
+        anyProp("overlay") ? "--overlay" : null,
+        anyProp("origin") ? "--origin" : null,
+
         isEmpty ? "--empty" : null,
+
         attributes.uniqueId ?? "",
     ]
         .filter(Boolean)
@@ -82,13 +118,20 @@ function renderFigureContent(settings, attributes, mode = "edit") {
     // TYPE: FEATURED IMAGE (save mode)
     // --------------------------------------
     if (type === "featured-image" && mode === "save") {
+        const payload = {
+            isMobile: false,
+            resolution: baseProps.resolution,
+        };
+
+        const encoded = btoa(JSON.stringify(payload));
+
         const featuredSettings = {
             props: {
                 ...baseProps,
                 image: {
                     isPlaceholder: true,
-                    source: "%%_FEATURED_IMAGE_LARGE_%%",
-                    alt: "%%_FEATURED_ALT_%%",
+                    source: `%%_FEATURED_JSON_${encoded}%%`,  // <-- encoded JSON placeholder
+                    alt: "%%_FEATURED_ALT_%%",                // still handled separately
                 }
             },
             breakpoints: bpMap,
@@ -106,14 +149,21 @@ function renderFigureContent(settings, attributes, mode = "edit") {
     // TYPE: FEATURED IMAGE MOBILE
     // --------------------------------------
     if (type === "featured-image-mobile") {
+        const payload = {
+            isMobile: true,
+            resolution: props.resolution,
+        };
+
+        const encoded = btoa(JSON.stringify(payload));
+
         const mobileSettings = {
             props: {
                 ...baseProps,
                 image: {
                     isPlaceholder: true,
-                    source: "%%_FEATURED_IMAGE_MOBILE_%%",
+                    source: `%%_FEATURED_JSON_${encoded}%%`,
                     alt: "%%_FEATURED_ALT_%%",
-                }
+                },
             },
             breakpoints: bpMap,
         };
@@ -125,6 +175,7 @@ function renderFigureContent(settings, attributes, mode = "edit") {
             />
         );
     }
+
 
     // --------------------------------------
     // LOTTIE
@@ -182,8 +233,8 @@ registerBlockType(metadata.name, {
                     },
                     breakpoints: {
                         sm: {
-                            props:{
-                                '--testing':'Chat GPT'
+                            props: {
+                                '--testing': 'Chat GPT'
                             }
                         }
                     },

@@ -1,5 +1,16 @@
 .wpbs-video {
 
+  &.--overlay:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--overlay, none);
+  }
+
   .wpbs-video__title {
     color: var(--title-color, white);
     padding: .7rem;

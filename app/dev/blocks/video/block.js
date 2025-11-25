@@ -6,41 +6,113 @@ import metadata from "./block.json";
 import {
     withStyle,
     withStyleSave,
-    STYLE_ATTRIBUTES
+    STYLE_ATTRIBUTES,
 } from "Components/Style";
 
-import PreviewThumbnail from "Components/PreviewThumbnail";
-import {IconControl} from "Components/IconControl";
+import {Field} from "Components/Field";
+import {OVERLAY_GRADIENTS, RESOLUTION_OPTIONS} from "Includes/config";
 
 import {
     useCallback,
     useEffect,
+    useMemo,
 } from "@wordpress/element";
 
 import {
     InspectorControls,
-    MediaUpload,
-    MediaUploadCheck,
-    PanelColorSettings,
 } from "@wordpress/block-editor";
 
 import {
     PanelBody,
-    SelectControl,
-    TextControl,
-    ToggleControl,
-    BaseControl,
     __experimentalGrid as Grid,
-    GradientPicker,
 } from "@wordpress/components";
 
-import {RESOLUTION_OPTIONS} from "Includes/config";
 import {cleanObject} from "Includes/helper";
 
+//
+// -------------------------------------------------------------
+// FIELD MAP
+// -------------------------------------------------------------
+//
 
-// -------------------------------------------
+const fieldsMap = [
+    {
+        type: "text",
+        slug: "link",
+        label: "Share Link",
+        full: true,
+    },
+    {
+        type: "text",
+        slug: "title",
+        label: "Title",
+        full: true,
+    },
+    {
+        type: "image",
+        slug: "poster",
+        label: "Poster",
+        full: true,
+    },
+    {
+        type: "select",
+        slug: "resolution",
+        label: "Resolution",
+        options: RESOLUTION_OPTIONS,
+    },
+    {
+        type: "select",
+        slug: "title-position",
+        label: "Title Position",
+        options: [
+            {label: "Select", value: ""},
+            {label: "Top", value: "top"},
+            {label: "Bottom", value: "bottom"},
+        ],
+    },
+    {
+        type: "composite",
+        slug: "options",
+        label: "Options",
+        full: true,
+        fields: [
+            {
+                type: "toggle",
+                slug: "eager",
+                label: "Eager",
+            },
+            {
+                type: "toggle",
+                slug: "lightbox",
+                label: "Lightbox",
+            },
+        ],
+    },
+    {
+        type: "color",
+        slug: "colors",
+        label: "Colors",
+        full: true,
+        colors: [
+            {slug: "icon-color", label: "Icon Color"},
+            {slug: "title-color", label: "Title Color"},
+        ],
+    },
+    {
+        type: "gradient",
+        slug: "overlay",
+        label: "Overlay",
+        full: true,
+        gradients: OVERLAY_GRADIENTS,
+    },
+];
+
+
+//
+// -------------------------------------------------------------
 // Helpers
-// -------------------------------------------
+// -------------------------------------------------------------
+//
 
 const selector = "wpbs-video";
 
@@ -63,17 +135,17 @@ function getVideoId(link = "") {
     return null;
 }
 
-function getClassNames(attributes = {}, styleData) {
-    const uniqueId = attributes.uniqueId || "";
+/** Block wrapper classes */
+function getClassNames(attributes = {}, settings = {}) {
     return [
         selector,
+        attributes.uniqueId,
         "flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer aspect-video",
-        uniqueId
+        settings.lightbox ? "--lightbox" : null,
     ]
         .filter(Boolean)
         .join(" ");
 }
-
 
 /** CSS vars for HOC */
 function getCssProps(settings = {}) {
@@ -83,7 +155,7 @@ function getCssProps(settings = {}) {
             "--icon-color": settings["icon-color"] ?? null,
             "--title-color": settings["title-color"] ?? null,
         },
-        breakpoints: {} // no breakpoints for this block
+        breakpoints: {},
     });
 }
 
@@ -94,28 +166,22 @@ function getPreload(settings = {}) {
     const poster = settings.poster;
     if (poster?.id) {
         return [
-            {
-                id: poster.id,
-                type: "image"
-            }
+            poster,
         ];
     }
 
     return [];
 }
 
-
 /** Compute poster URL */
 function getPosterSrc(settings) {
     const {poster, resolution = "medium"} = settings;
     const vid = getVideoId(settings.link);
 
-    // 1) Custom poster
     if (poster?.sizes?.[resolution]?.url) {
         return poster.sizes[resolution].url;
     }
 
-    // 2) Fallback YouTube poster
     if (vid) {
         return `https://i3.ytimg.com/vi/${vid}/hqdefault.jpg`;
     }
@@ -123,23 +189,15 @@ function getPosterSrc(settings) {
     return "";
 }
 
-
 /** Render the inner video markup */
 function renderVideoContent(settings, attributes, isEditor) {
-    const videoId = getVideoId(settings.link);
     const posterSrc = getPosterSrc(settings);
-
-    const mediaProps = Object.fromEntries(Object.entries({
-        className: 'wpbs-video__media w-full h-full overflow-hidden relative',
-        'data-wp-on--click': !isEditor && 'actions.play',
-        'data-video-id': videoId,
-    }).filter(Boolean));
-
+    const titlePosition = settings["title-position"] === "bottom" ? "bottom-0" : "top-0";
 
     return (
-        <div {...mediaProps}>
+        <div className="wpbs-video__media w-full h-full overflow-hidden relative">
             {settings.title && (
-                <div className="wpbs-video__title absolute z-20 top-0 left-0 w-full">
+                <div className={`wpbs-video__title absolute z-20 left-0 w-full ${titlePosition}`}>
                     <span>{settings.title}</span>
                 </div>
             )}
@@ -160,10 +218,11 @@ function renderVideoContent(settings, attributes, isEditor) {
     );
 }
 
-
-// -------------------------------------------
+//
+// -------------------------------------------------------------
 // REGISTER BLOCK
-// -------------------------------------------
+// -------------------------------------------------------------
+//
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -186,158 +245,80 @@ registerBlockType(metadata.name, {
                 "button-icon": undefined,
                 "icon-color": undefined,
                 "title-color": undefined,
-            }
-        }
+                "title-position": "top",
+            },
+        },
     },
 
+    //
     // -----------------------------------------------------
     // EDIT (HOC)
     // -----------------------------------------------------
+    //
     edit: withStyle((props) => {
-        const {attributes, setAttributes, styleData, BlockWrapper, setCss, setPreload} = props;
+        const {
+            attributes,
+            setAttributes,
+            styleData,
+            BlockWrapper,
+            setCss,
+            setPreload,
+        } = props;
+
         const settings = attributes["wpbs-video"] || {};
 
-        const updateSettings = useCallback((newValue) => {
-            setAttributes({
-                "wpbs-video": {
-                    ...settings,
-                    ...newValue
-                }
-            });
-        }, [settings, setAttributes]);
 
-        // Push CSS + preload into HOC
+        useEffect(() => {
+            console.log(settings);
+        }, [settings]);
+
+        const updateSettings = useCallback(
+            (newValue) => {
+                setAttributes({
+                    "wpbs-video": {
+                        ...settings,
+                        ...newValue,
+                    },
+                });
+            },
+            [settings, setAttributes]
+        );
+
+        //
+        // Sync CSS + preload
+        //
         useEffect(() => {
             setCss(getCssProps(settings));
             setPreload(getPreload(settings));
         }, [settings]);
 
-        // Classnames
-        const classNames = getClassNames(attributes, styleData);
+        const classNames = getClassNames(attributes, settings);
+
+        const InspectorFields = useMemo(
+            () =>
+                fieldsMap.map((field) => (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        settings={settings}
+                        callback={(val) =>
+                            updateSettings({[field.slug]: val})
+                        }
+                        isToolsPanel={false}
+                    />
+                )),
+            [settings]
+        );
 
         return (
             <>
                 <InspectorControls group="styles">
-                    <PanelBody initialOpen={false} title={'Video'}>
-                        <Grid columns={1} columnGap={15} rowGap={20}>
-
-                            <TextControl
-                                label="Share Link"
-                                value={settings?.link}
-                                onChange={(v) => updateSettings({link: v})}
-                                __next40pxDefaultSize
-                            />
-
-                            <TextControl
-                                label="Title"
-                                value={settings?.title}
-                                onChange={(v) => updateSettings({title: v})}
-                                __next40pxDefaultSize
-                            />
-
-                            <IconControl
-                                label="Button Icon"
-                                value={settings["button-icon"]}
-                                onChange={(v) => updateSettings({"button-icon": v})}
-                                props={props}
-                            />
-
-                            <PanelColorSettings
-                                enableAlpha
-                                colorSettings={[
-                                    {
-                                        slug: "icon-color",
-                                        label: "Icon Color",
-                                        value: settings["icon-color"],
-                                        onChange: (v) => updateSettings({"icon-color": v}),
-                                    },
-                                    {
-                                        slug: "title-color",
-                                        label: "Title Color",
-                                        value: settings["title-color"],
-                                        onChange: (v) => updateSettings({"title-color": v}),
-                                    }
-                                ]}
-                            />
-
-                            <BaseControl label="Poster Image">
-                                <MediaUploadCheck>
-                                    <MediaUpload
-                                        title={"Poster Image"}
-                                        onSelect={(value) => updateSettings({
-                                            poster: {
-                                                type: value.type,
-                                                id: value.id,
-                                                url: value.url,
-                                                alt: value.alt,
-                                                sizes: value.sizes,
-                                            }
-                                        })}
-                                        allowedTypes={["image"]}
-                                        value={settings?.poster}
-                                        render={({open}) => (
-                                            <PreviewThumbnail
-                                                image={settings?.poster || {}}
-                                                callback={() => updateSettings({poster: undefined})}
-                                                onClick={open}
-                                            />
-                                        )}
-                                    />
-                                </MediaUploadCheck>
-                            </BaseControl>
-
-                            <SelectControl
-                                label="Resolution"
-                                options={RESOLUTION_OPTIONS}
-                                value={settings.resolution}
-                                onChange={(v) => updateSettings({resolution: v})}
-                            />
-
-                            <Grid columns={2} columnGap={15} rowGap={20}>
-
-                                <ToggleControl
-                                    label="Eager"
-                                    checked={!!settings.eager}
-                                    onChange={(v) => updateSettings({eager: v})}
-                                />
-
-                                <ToggleControl
-                                    label="Lightbox"
-                                    checked={!!settings.lightbox}
-                                    onChange={(v) => updateSettings({lightbox: v})}
-                                />
-
-                            </Grid>
-
-                            <BaseControl label="Overlay">
-                                <GradientPicker
-                                    gradients={[
-                                        {
-                                            name: "Transparent",
-                                            gradient: "linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))",
-                                            slug: "transparent"
-                                        },
-                                        {
-                                            name: "Light",
-                                            gradient: "linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3))",
-                                            slug: "light"
-                                        },
-                                        {
-                                            name: "Strong",
-                                            gradient: "linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7))",
-                                            slug: "strong"
-                                        }
-                                    ]}
-                                    clearable={true}
-                                    value={settings.overlay ?? undefined}
-                                    onChange={(v) => updateSettings({overlay: v})}
-                                />
-                            </BaseControl>
-
+                    <PanelBody initialOpen={true} title={"Video"}>
+                        <Grid className={'wpbs-block-controls'} columns={2} columnGap={15} rowGap={20}>
+                            {InspectorFields}
                         </Grid>
                     </PanelBody>
                 </InspectorControls>
-
 
                 <BlockWrapper
                     props={props}
@@ -345,8 +326,8 @@ registerBlockType(metadata.name, {
                     tagName="div"
                     hasBackground={false}
                     data-platform="youtube"
-                    data-video-id={getVideoId(settings.link)}
-                    data-lightbox={settings.lightbox ? "1" : "0"}
+                    data-vid={getVideoId(settings.link)}
+                    data-title={settings.title || ""}
                 >
                     {renderVideoContent(settings, attributes, true)}
                 </BlockWrapper>
@@ -354,14 +335,16 @@ registerBlockType(metadata.name, {
         );
     }),
 
-
+    //
     // -----------------------------------------------------
     // SAVE (HOC)
     // -----------------------------------------------------
+    //
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
+
         const settings = attributes["wpbs-video"] || {};
-        const classNames = getClassNames(attributes, styleData);
+        const classNames = getClassNames(attributes, settings);
 
         return (
             <BlockWrapper
@@ -370,15 +353,8 @@ registerBlockType(metadata.name, {
                 tagName="div"
                 hasBackground={false}
                 data-platform="youtube"
-                data-video-id={getVideoId(settings.link)}
-                data-lightbox={settings.lightbox ? "1" : "0"}
-                data-wp-interactive="wpbsVideo"
-                data-wp-context={JSON.stringify({
-                    videoId: getVideoId(settings.link),
-                    lightbox: !!settings.lightbox,
-                    platform: "youtube"
-                })}
-
+                data-vid={getVideoId(settings.link)}
+                data-title={settings.title || ""}
             >
                 {renderVideoContent(settings, attributes, false)}
             </BlockWrapper>

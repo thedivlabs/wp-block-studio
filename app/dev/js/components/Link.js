@@ -18,27 +18,12 @@ import {
 
 import {customLink} from "@wordpress/icons";
 import LinkField from "Components/LinkField";
-import {cleanObject} from "Includes/helper";
 
 
 export default function Link({defaultValue = {}, callback}) {
 
     // unified link state
     const [link, setLink] = useState(defaultValue);
-
-    /*
-    *
-    * cleanObject({
-        url: defaultValue.url || "",
-        linkNewTab: defaultValue.linkNewTab || false,
-        title: defaultValue.title || "",
-        ariaLabel: defaultValue.ariaLabel || "",
-        id: defaultValue.id || "",
-        rel: defaultValue.rel || "",
-        alt: defaultValue.alt || "",
-    })
-    *
-    * */
 
 
     // one update fn for everything

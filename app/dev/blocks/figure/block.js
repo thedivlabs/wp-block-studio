@@ -8,7 +8,7 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
-import {cleanObject, getImageUrlForResolution, normalizeMedia, resolveFeaturedMedia} from "Includes/helper";
+import {cleanObject, resolveFeaturedMedia} from "Includes/helper";
 import {
     getBreakpointPropsList,
     anyProp,
@@ -108,7 +108,7 @@ function renderFigureContent(settings, attributes, isEditor = false) {
             editor={!!isEditor}
         />
     );
-    
+
     return wrapWithLink(content);
 }
 
@@ -207,10 +207,6 @@ registerBlockType(metadata.name, {
             const {'wpbs-figure': settings = {}} = attributes;
 
             const classNames = getClassNames(attributes, styleData);
-
-            useEffect(() => {
-                console.log(settings);
-            }, [settings])
 
             // ---------------------------------------------------------
             // SEND CSS + PRELOAD TO HOC

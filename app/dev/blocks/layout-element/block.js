@@ -1,5 +1,4 @@
 import {registerBlockType} from "@wordpress/blocks";
-import {useEffect} from "@wordpress/element";
 import metadata from "./block.json";
 
 import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';

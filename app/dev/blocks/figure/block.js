@@ -171,7 +171,7 @@ registerBlockType(metadata.name, {
                 const blend = settings?.blend ?? null;
 
                 // Single breakpoint key (e.g. "sm", "md", "normal")
-                const bpKey = settings?.breakpoint || null;
+                const bpKey = settings?.breakpoint || 'normal';
 
 
                 return cleanObject({
@@ -181,7 +181,11 @@ registerBlockType(metadata.name, {
                         "--blend": blend,
                     },
                     breakpoints: {
-                        [bpKey]: {}
+                        sm: {
+                            props:{
+                                '--testing':'Chat GPT'
+                            }
+                        }
                     },
                 });
             }, [settings]);

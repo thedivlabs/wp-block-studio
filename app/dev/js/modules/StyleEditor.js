@@ -272,19 +272,24 @@ function parseBackgroundProps(props = {}) {
         }
 
         else if (mediaObj.source) {
+            result["--video"] = 'none';
             const resolved = getImageUrlForResolution(mediaObj, resolution);
             if (resolved) {
                 result["--image"] = buildImageSet(resolved);
-                result["--video"] = 'none';
             }
         }
     }
 
-    if (mediaObj?.isPlaceholder === true) {
-        result["--video"] = "none";
+    if (type === "video" ) {
+        if (mediaObj?.isPlaceholder === true) {
+            result["--video"] = "none";
+        } else {
+            result["--video"] = "flex";
+        }
     } else {
-        result["--video"] = "flex";
+        result["--video"] = "none";
     }
+
 
 
     /* ------------------------------------------------------------

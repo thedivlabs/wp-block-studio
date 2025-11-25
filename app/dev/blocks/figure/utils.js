@@ -30,26 +30,25 @@ export const isRealImage = (img) => {
 };
 
 
-/**
- * Detects if any level contains an actual image.
- */
 export const hasAnyImage = (baseProps = {}, bpPropsList = []) => {
+    // If any level has a real image → true
     if (isRealImage(baseProps.image)) return true;
     for (const bp of bpPropsList) {
         if (isRealImage(bp.image)) return true;
     }
+
+    // If type indicates the featured-image system → true
+    const baseType = baseProps.type;
+    if (
+        baseType === "featured-image" ||
+        baseType === "featured-image-mobile"
+    ) {
+        return true;
+    }
+
+    // Otherwise → no image anywhere
     return false;
 };
 
-
-/**
- * Returns true if this is a featured-image type (desktop or mobile).
- */
-export const isFeaturedType = (baseType) => {
-    return (
-        baseType === "featured-image" ||
-        baseType === "featured-image-mobile"
-    );
-};
 
 

@@ -24,14 +24,7 @@ const getClassNames = (attributes = {}, styleData) => {
     const base = raw.props || {};
 
     const bpPropsList = getBreakpointPropsList(raw);
-
-    // Detect image presence across all props + breakpoints
     const hasImage = hasAnyImage(base, bpPropsList);
-
-    // Featured-image types always count as "has something"
-    const featured = isFeaturedType(base.type);
-
-    const isEmpty = !hasImage && !featured;
 
     return [
         selector,
@@ -42,7 +35,7 @@ const getClassNames = (attributes = {}, styleData) => {
         anyProp(base, bpPropsList, "overlay") ? "--overlay" : null,
         anyProp(base, bpPropsList, "origin") ? "--origin" : null,
 
-        isEmpty ? "--empty" : null,
+        !hasImage ? "--empty" : null,
 
         attributes.uniqueId ?? "",
     ]
@@ -170,8 +163,8 @@ function getCssProps(settings) {
 
     // ----- base props (no breakpoint) -----
     const overlay = baseProps.overlay ?? null;
-    const origin  = baseProps.origin ?? null;
-    const blend   = baseProps.blend ?? null;
+    const origin = baseProps.origin ?? null;
+    const blend = baseProps.blend ?? null;
 
     const css = {
         props: {
@@ -187,8 +180,8 @@ function getCssProps(settings) {
         const bpProps = bpEntry.props || {};
 
         const bpOverlay = bpProps.overlay ?? overlay ?? null;
-        const bpOrigin  = bpProps.origin  ?? origin  ?? null;
-        const bpBlend   = bpProps.blend   ?? blend   ?? null;
+        const bpOrigin = bpProps.origin ?? origin ?? null;
+        const bpBlend = bpProps.blend ?? blend ?? null;
 
         let bpContain;
         if (typeof bpProps.contain === "boolean") {

@@ -3,25 +3,78 @@ import debounce from "lodash/debounce";
 export default class MediaWatcher {
 
     static videos = [];
+    static pictures = [];
 
     static init() {
 
-        // 1. Watch video / images / background
+        // 1. Watch video / images / background / picture
         this.observeMedia(document);
 
         // 2. Watch visibility-only elements
         this.observeVisibility(document);
 
-        // 3. Debounced MQ checking for videos
+        // 3. Debounced MQ checking for videos + pictures
         const recheck = debounce(() => {
             this.videos.forEach((video) => {
                 this.responsiveVideoSrc(video);
+            });
+            this.pictures.forEach((pic) => {
+                this.responsivePictureSrc(pic);
             });
         }, 900);
 
         window.addEventListener("resize", recheck, {passive: true});
         window.addEventListener("scroll", recheck, {passive: true});
         window.addEventListener("load", recheck, {passive: true});
+    }
+
+    // -----------------------------------------------------
+    // Responsive Picture MQ Activation (NEW)
+    // -----------------------------------------------------
+    static responsivePictureSrc(picture) {
+        const sources = [...picture.querySelectorAll("source")];
+        const img = picture.querySelector("img");
+        if (!img || !sources.length) return;
+
+        // How many breakpoint-specific sources?
+        const bpSources = sources.filter(s => s.dataset.media);
+
+        // 1. Find matching breakpoint <source>
+        let active = bpSources.find(s => {
+            const mq = s.dataset.media;
+            return mq && window.matchMedia(mq).matches;
+        });
+
+        // 2. Fallback to base <source>
+        if (!active) {
+            active = sources.find(s => !s.dataset.media);
+        }
+        if (!active) return;
+
+        const activeSrc = active.getAttribute("srcset") || active.dataset.srcset;
+        if (!activeSrc) return;
+
+        // 3. Promote active <source> to <img src>
+        if (img.getAttribute("src") !== activeSrc) {
+            img.setAttribute("src", activeSrc);
+        }
+
+        // 4. Promote active <source> (for <img srcset="" usage)
+        if (active.dataset.srcset) {
+            active.setAttribute("srcset", active.dataset.srcset);
+            active.removeAttribute("data-srcset");
+        }
+
+        // 5. Demote all others
+        for (const s of sources) {
+            if (s === active) continue;
+
+            const current = s.getAttribute("srcset");
+            if (current) {
+                s.setAttribute("data-srcset", current);
+                s.removeAttribute("srcset");
+            }
+        }
     }
 
     // -----------------------------------------------------
@@ -51,25 +104,23 @@ export default class MediaWatcher {
         // 2. If none matched → base is active
         if (!active) {
             active = sources.find(s => !s.dataset.media);
-            //if (!active) return;
         }
 
         const activeSrc = active && active.dataset.src;
 
-        // ----- PROMOTE ACTIVE -----
+        // Promote active
         if (activeSrc && active.getAttribute("src") !== activeSrc) {
             active.setAttribute("src", activeSrc);
             active.removeAttribute("data-src");
             changed = true;
         }
 
-        // ----- DEMOTE ALL OTHER SOURCES -----
+        // Demote others
         for (const s of sources) {
             if (s === active) continue;
 
             const sSrc = s.getAttribute("src");
 
-            // If inactive and has any src value (even "#" or ""), demote it
             if (sSrc !== null) {
                 s.setAttribute("data-src", sSrc);
                 s.removeAttribute("src");
@@ -80,7 +131,7 @@ export default class MediaWatcher {
         if (changed) video.load();
     }
 
-
+    // -----------------------------------------------------
     // IntersectionObserver for lazy media
     // -----------------------------------------------------
     static observeMedia(root) {
@@ -92,20 +143,50 @@ export default class MediaWatcher {
                     const el = entry.target;
                     obs.unobserve(el);
 
-                    // BACKGROUND WRAPPER
+                    // -------------------------------------------------
+                    // BACKGROUND
+                    // -------------------------------------------------
                     if (el.classList.contains("wpbs-background")) {
                         this.responsiveBackgroundSrc(el);
                         return;
                     }
 
+                    // -------------------------------------------------
                     // VIDEO
+                    // -------------------------------------------------
                     if (el.tagName === "VIDEO") {
                         this.videos.push(el);
                         this.responsiveVideoSrc(el);
                         return;
                     }
 
-                    // GENERIC LAZY
+                    // -------------------------------------------------
+                    // PICTURE (NEW)
+                    // -------------------------------------------------
+                    if (el.tagName === "PICTURE") {
+                        this.pictures.push(el);
+
+                        // Promote child data-src/srcset → src/srcset
+                        [...el.querySelectorAll("[data-src],[data-srcset]"), el].forEach(
+                            (child) => {
+                                if (child.dataset.src) {
+                                    child.src = child.dataset.src;
+                                    child.removeAttribute("data-src");
+                                }
+                                if (child.dataset.srcset) {
+                                    child.srcset = child.dataset.srcset;
+                                    child.removeAttribute("data-srcset");
+                                }
+                            }
+                        );
+
+                        this.responsivePictureSrc(el);
+                        return;
+                    }
+
+                    // -------------------------------------------------
+                    // GENERIC LAZY (img, source)
+                    // -------------------------------------------------
                     [...el.querySelectorAll("[data-src],[data-srcset]"), el].forEach(
                         (child) => {
                             if (child.dataset.src) {
@@ -139,10 +220,9 @@ export default class MediaWatcher {
     }
 
     // -----------------------------------------------------
-    // IntersectionObserver for data-visibility optimizations
+    // IntersectionObserver for content-visibility
     // -----------------------------------------------------
     static observeVisibility(root) {
-
         const observer = new IntersectionObserver(
             (entries, obs) => {
                 entries.forEach((entry) => {
@@ -151,7 +231,6 @@ export default class MediaWatcher {
                     const el = entry.target;
                     obs.unobserve(el);
 
-                    // Turn on content-visibility only when shown
                     el.style.contentVisibility = "visible";
                 });
             },

@@ -95,6 +95,7 @@ export function normalizeMedia(input) {
         isPlaceholder: false
     };
 }
+
 export function getImageUrlForResolution(image, resolution = 'large') {
 
     if (!image?.source) return null;

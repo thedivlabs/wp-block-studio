@@ -201,6 +201,35 @@ class WPBS_Blocks {
 			return trim( $result );
 		};
 
+		$props_filtered = function ( $props = [] ) {
+			// Only act if flag is present
+			if ( ! isset( $props['--featured-image'] ) ) {
+				return $props;
+			}
+
+			unset( $props['--featured-image'] );
+
+			$post_id = get_the_ID();
+			if ( ! $post_id ) {
+				return $props;
+			}
+
+			$featured_url = get_the_post_thumbnail_url( $post_id, 'full' );
+			if ( ! $featured_url ) {
+				return $props;
+			}
+
+			$featured_set = sprintf(
+				'image-set(url("%s.webp") type("image/webp"), url("%s") type("image/jpeg"))',
+				esc_url( $featured_url ),
+				esc_url( $featured_url )
+			);
+
+			$props['--image'] = $featured_set;
+
+			return $props;
+		};
+
 		// Build CSS
 		$css    = '';
 		$bg_css = '';
@@ -212,8 +241,11 @@ class WPBS_Blocks {
 
 		// base background
 		if ( ! empty( $parsed_css['background'] ) ) {
+
+			$bg_props = $props_filtered( $parsed_css['background'] );
+
 			$bg_selector = "{$selector} > .wpbs-background";
-			$bg_css      .= "{$bg_selector} { " . $props_to_css( $parsed_css['background'] ) . " } ";
+			$bg_css      .= "{$bg_selector} { " . $props_to_css( $bg_props ) . " } ";
 		}
 
 		// hover (mirror JS: selector:hover { rules })
@@ -267,8 +299,11 @@ class WPBS_Blocks {
 
 				// background props at breakpoint
 				if ( ! empty( $bp_props['background'] ) ) {
+
+					$bp_bg_props = $props_filtered( $bp_props['background'] );
+
 					$bg_selector = "{$selector} > .wpbs-background";
-					$bp_css      .= "{$bg_selector} { " . $props_to_css( $bp_props['background'], true ) . " } ";
+					$bp_css      .= "{$bg_selector} { " . $props_to_css( $bp_bg_props, true ) . " } ";
 				}
 
 				if ( $bp_css ) {

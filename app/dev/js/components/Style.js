@@ -37,6 +37,10 @@ export const withStyle = (Component) => (props) => {
         "wpbs-advanced": advData = {},
     } = attributes;
 
+    useEffect(()=>{
+        console.log(attributes);
+    },[bgData]);
+
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 

@@ -274,6 +274,10 @@ function parseBackgroundProps(props = {}) {
                 result["--image"] = buildImageSet(resolved);
             }
         }
+
+        if (type === "featured-image") {
+            result["--featured-image"] = "true";
+        }
     }
 
     if (type === "video") {

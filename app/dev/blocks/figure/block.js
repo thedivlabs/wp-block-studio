@@ -34,103 +34,104 @@ const getClassNames = (attributes = {}, styleData) => {
 };
 
 function renderFigureContent(settings, attributes, mode = "edit") {
-    const type = settings?.type || "image";
+    const type = settings?.props?.type || "image";
+    const baseProps = settings?.props || {};
+    const bpMap = settings?.breakpoints || {};
 
-    // Shared link wrapper
+    // Link wrapper — uses new baseProps.link
     const wrapWithLink = (content) => {
+        const link = baseProps.link;
+        if (!link) return content;
 
-        if (!settings?.link) {
-            return content;
-        }
-
-        const isSave = mode === "save";
-
-
-        return isSave
-            ? <a {...getAnchorProps(settings.link)}>{content}</a>
+        return mode === "save"
+            ? <a {...getAnchorProps(link)}>{content}</a>
             : <a>{content}</a>;
     };
 
-    // --- 1. RESPONSIVE PICTURE (default image mode) ---
+    // Unified settings passed to ResponsivePicture
+    const pictureSettings = {
+        props: baseProps,
+        breakpoints: bpMap,
+    };
+
+    // --------------------------------------
+    // TYPE: IMAGE (dynamic responsive)
+    // --------------------------------------
     if (type === "image") {
-        const pictureProps = {
-            mobile: settings?.imageMobile,
-            large: settings?.imageLarge,
-            settings: {
-                resolutionMobile: settings?.resolutionMobile,
-                resolutionLarge: settings?.resolutionLarge,
-                force: settings?.force,
-                eager: settings?.eager,
-                breakpoint: attributes?.breakpoint,
-                className: null,
-                style: null,
+        return wrapWithLink(
+            <ResponsivePicture
+                settings={pictureSettings}
+                editor={mode === "edit"}
+            />
+        );
+    }
+
+    // --------------------------------------
+    // TYPE: FEATURED IMAGE (edit mode)
+    // --------------------------------------
+    if (type === "featured-image" && mode === "edit") {
+        return wrapWithLink(
+            <ResponsivePicture
+                settings={pictureSettings}
+                editor={true}
+            />
+        );
+    }
+
+    // --------------------------------------
+    // TYPE: FEATURED IMAGE (save mode)
+    // --------------------------------------
+    if (type === "featured-image" && mode === "save") {
+        const featuredSettings = {
+            props: {
+                ...baseProps,
+                image: {
+                    isPlaceholder: true,
+                    source: "%%_FEATURED_IMAGE_LARGE_%%",
+                    alt: "%%_FEATURED_ALT_%%",
+                }
             },
-            editor: mode === "edit"
+            breakpoints: bpMap,
         };
 
-        return wrapWithLink(<ResponsivePicture {...pictureProps} />);
+        return wrapWithLink(
+            <ResponsivePicture
+                settings={featuredSettings}
+                editor={false}
+            />
+        );
     }
 
-// --- 2. FEATURED IMAGE ---
-    if (type === "featured-image") {
-
-        // Edit preview mode (unchanged)
-        if (mode === "edit") {
-            const pictureProps = {
-                mobile: settings?.imageMobile,
-                large: settings?.imageLarge,
-                settings: {
-                    resolutionMobile: settings?.resolutionMobile,
-                    resolutionLarge: settings?.resolutionLarge,
-                    force: settings?.force,
-                    eager: settings?.eager,
-                    breakpoint: attributes?.breakpoint,
-                    className: null,
-                    style: null,
-                },
-                editor: true
-            };
-
-            return wrapWithLink(<ResponsivePicture {...pictureProps} />);
-        }
-
-        // -------------------------
-        // SAVE MODE (FINAL, CORRECT)
-        // -------------------------
-        if (mode === "save") {
-            const featuredProps = {
-                mobile: {
+    // --------------------------------------
+    // TYPE: FEATURED IMAGE MOBILE
+    // --------------------------------------
+    if (type === "featured-image-mobile") {
+        const mobileSettings = {
+            props: {
+                ...baseProps,
+                image: {
                     isPlaceholder: true,
-                    url: "%%_FEATURED_IMAGE_MOBILE_%%",
+                    source: "%%_FEATURED_IMAGE_MOBILE_%%",
                     alt: "%%_FEATURED_ALT_%%",
-                    id: null,
-                },
-                large: {
-                    isPlaceholder: true,
-                    url: "%%_FEATURED_IMAGE_LARGE_%%",
-                    alt: "%%_FEATURED_ALT_%%",
-                    id: null,
-                },
-                settings: {
-                    resolutionMobile: settings?.resolutionMobile,
-                    resolutionLarge: settings?.resolutionLarge,
-                    force: settings?.force,
-                    eager: settings?.eager,
-                    breakpoint: attributes?.breakpoint,
-                    className: "wpbs-picture-featured",
-                    style: null,
-                },
-                editor: false
-            };
+                }
+            },
+            breakpoints: bpMap,
+        };
 
-            return wrapWithLink(<ResponsivePicture {...featuredProps} />);
-        }
+        return wrapWithLink(
+            <ResponsivePicture
+                settings={mobileSettings}
+                editor={mode === "edit"}
+            />
+        );
     }
 
-
-    // --- 3. LOTTIE ---
+    // --------------------------------------
+    // LOTTIE
+    // --------------------------------------
     if (type === "lottie") {
-        const lottieSrc = settings?.lottieFile?.url || null;
+        const lottieSrc = baseProps?.lottieFile?.url || null;
+
         return wrapWithLink(
             <div
                 class="wpbs-lottie"
@@ -142,7 +143,6 @@ function renderFigureContent(settings, attributes, mode = "edit") {
 
     return null;
 }
-
 
 registerBlockType(metadata.name, {
     apiVersion: 3,

@@ -38,10 +38,6 @@ export const withStyle = (Component) => (props) => {
         "wpbs-advanced": advData = {},
     } = attributes;
 
-    useEffect(()=>{
-        console.log(attributes);
-    },[])
-
     /* --------------------------------------------------------------
        BLOCK REGISTRATION / UNIQUE ID SYNC
     -------------------------------------------------------------- */

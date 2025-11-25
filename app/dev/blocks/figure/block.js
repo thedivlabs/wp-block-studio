@@ -201,29 +201,48 @@ function getPreload(settings, uniqueId) {
 
     const preloadObj = [];
 
-    if (settings.eager) {
-        const group = uniqueId;
+    const baseProps = settings?.props || {};
+    const breakpoints = settings?.breakpoints || {};
 
-        if (settings.imageLarge?.id) {
+    // Only load if eager is enabled in base props
+    if (!baseProps.eager) {
+        return preloadObj;
+    }
+
+    const group = uniqueId;
+
+    // --------------------------------------------------
+    // BASE IMAGE
+    // --------------------------------------------------
+    const baseImage = baseProps.image;
+    if (baseImage?.id && !baseImage.isPlaceholder) {
+        preloadObj.push({
+            id: baseImage.id,
+            type: "image",
+            group,
+        });
+    }
+
+    // --------------------------------------------------
+    // BREAKPOINT IMAGES
+    // --------------------------------------------------
+    for (const [bpKey, bpEntry] of Object.entries(breakpoints)) {
+        const bpProps = bpEntry?.props || {};
+        const bpImage = bpProps.image;
+
+        if (bpImage?.id && !bpImage.isPlaceholder) {
             preloadObj.push({
-                id: settings.imageLarge.id,
+                id: bpImage.id,
                 type: "image",
                 group,
-            });
-        }
-
-        if (settings.breakpoint && settings.imageMobile?.id) {
-            preloadObj.push({
-                id: settings.imageMobile.id,
-                type: "image",
-                group,
-                breakpoint: settings.breakpoint,
+                breakpoint: bpKey,
             });
         }
     }
 
     return preloadObj;
 }
+
 
 registerBlockType(metadata.name, {
     apiVersion: 3,
@@ -245,6 +264,10 @@ registerBlockType(metadata.name, {
 
             const classNames = getClassNames(attributes, styleData);
 
+
+            useEffect(() => {
+                console.log(settings);
+            }, [settings])
 
             useEffect(() => {
                 setCss(getCssProps(settings));

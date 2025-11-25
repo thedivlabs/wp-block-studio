@@ -25,8 +25,8 @@ export const anyProp = (baseProps = {}, bpPropsList = [], key) => {
 export const isRealImage = (img) => {
     if (!img || img.isPlaceholder) return false;
     if (img.id) return true;
-    if (img.source && img.source !== "#") return true;
-    return false;
+    return img.source && img.source !== "#";
+
 };
 
 

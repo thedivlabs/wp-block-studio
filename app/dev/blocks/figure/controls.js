@@ -53,7 +53,6 @@ const TYPE_FIELD = {
         {label: "Featured Image", value: "featured-image"},
         {label: "Featured Image Mobile", value: "featured-image-mobile"},
         {label: "Lottie", value: "lottie"},
-        {label: "Icon", value: "icon"},
     ],
     full: true,
 };

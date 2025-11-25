@@ -61,6 +61,7 @@ export const BackgroundFields = memo(function BackgroundFields({
                     <Fragment>
                         {(type === "image" ||
                             type === "featured-image" ||
+                            type === "featured-image-mobile" ||
                             type === "video") && (
                             <Field
                                 field={{

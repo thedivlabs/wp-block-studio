@@ -12,7 +12,7 @@ if ( empty( $content ) ) {
 
 $block_content = preg_replace_callback(
 	'/%%__FEATURED_IMAGE__([A-Za-z0-9+\/=]+)__%%/',
-	function( $matches ) {
+	function ( $matches ) {
 
 		// --------------------------
 		// Decode payload
@@ -51,7 +51,7 @@ $block_content = preg_replace_callback(
 		// ----------------------------------------------------------
 		elseif ( $mode === 'featured-mobile' ) {
 
-			$mobile_id = get_field( 'page_settings_media_featured_image_mobile' );
+			$mobile_id = get_field( 'page_settings_media_image_mobile' );
 
 			if ( $mobile_id ) {
 				$url = wp_get_attachment_image_url( $mobile_id, $resolution );

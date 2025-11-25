@@ -133,15 +133,15 @@ class WPBS {
 
 	}
 
-	public function filter_sizes( $sizes ):array {
-		return array_intersect_key($sizes, array_flip([
+	public function filter_sizes( $sizes ): array {
+		return array_intersect_key( $sizes, array_flip( [
 			'thumbnail',
 			'mobile',
 			'small',
 			'medium',
 			'large',
 			'xlarge'
-		]));
+		] ) );
 	}
 
 	public function register_image_sizes(): void {
@@ -154,7 +154,7 @@ class WPBS {
 				'height' => 900,
 				'crop'   => false,
 			],
-			'small' => [
+			'small'  => [
 				'label'  => __( 'Small' ),
 				'width'  => 720,
 				'height' => 1200,
@@ -174,12 +174,12 @@ class WPBS {
 		}
 
 		// Limit generated image sizes.
-		add_filter( 'intermediate_image_sizes_advanced', function( $sizes ) use ( $custom_sizes ) {
+		add_filter( 'intermediate_image_sizes_advanced', function ( $sizes ) use ( $custom_sizes ) {
 			return array_intersect_key( $sizes, array_flip( array_keys( $custom_sizes ) ) );
 		} );
 
 		// Expose the names to the editor.
-		add_filter( 'image_size_names_choose', function( $sizes ) use ( $custom_sizes ) {
+		add_filter( 'image_size_names_choose', function ( $sizes ) use ( $custom_sizes ) {
 
 			$labels = [];
 			foreach ( $custom_sizes as $name => $args ) {
@@ -189,6 +189,7 @@ class WPBS {
 			return array_merge( $sizes, $labels );
 		} );
 	}
+
 	public function kill_img_src( $html, $attachment_id, $size, $icon, $attr ): string {
 
 		if ( is_admin() ) {
@@ -208,22 +209,34 @@ class WPBS {
 		$theme_css      = $wp_styles->registered['wpbs-theme-css']->src ?? '';
 		$theme_css_path = ABSPATH . ltrim( str_replace( home_url(), '', $theme_css ), '/' );
 
+		// Prevent interference.
 		$wp_styles->dequeue( 'wpbs-theme-css' );
 		$wp_styles->remove( 'wpbs-theme-css' );
 
+		// Gather block CSS.
 		$css = apply_filters( 'wpbs_critical_css', [] );
 		$css = array_unique( $css );
 
+		// Cache base Tailwind/theme CSS.
 		static $base_css = null;
 		if ( $base_css === null && file_exists( $theme_css_path ) ) {
 			$base_css = file_get_contents( $theme_css_path );
 		}
 
-		// Minify it
+		// Minify block CSS.
 		$combined = $this->minify_css( join( ' ', array_values( $css ) ) );
 
-		echo '<style class="wpbs-critical-css">';
+		// ------------------------------------------------------------
+		// OUTPUT #1 — Theme/Tailwind CSS
+		// ------------------------------------------------------------
+		echo '<style class="wpbs-critical-css-theme">';
 		echo $base_css;
+		echo '</style>';
+
+		// ------------------------------------------------------------
+		// OUTPUT #2 — Block CSS
+		// ------------------------------------------------------------
+		echo '<style class="wpbs-critical-css-blocks">';
 		echo $combined;
 		echo '</style>';
 	}

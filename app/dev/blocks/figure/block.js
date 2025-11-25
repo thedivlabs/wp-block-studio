@@ -12,9 +12,7 @@ import {cleanObject} from "Includes/helper";
 import {
     getBreakpointPropsList,
     anyProp,
-    isRealImage,
     hasAnyImage,
-    isFeaturedType
 } from "./utils";
 
 const selector = "wpbs-figure";
@@ -44,11 +42,9 @@ const getClassNames = (attributes = {}, styleData) => {
 };
 
 function renderFigureContent(settings, attributes, mode = "edit") {
-    const type = settings?.props?.type || "image";
     const baseProps = settings?.props || {};
     const bpMap = settings?.breakpoints || {};
 
-    // Link wrapper — uses new baseProps.link
     const wrapWithLink = (content) => {
         const link = baseProps.link;
         if (!link) return content;
@@ -58,104 +54,95 @@ function renderFigureContent(settings, attributes, mode = "edit") {
             : <a>{content}</a>;
     };
 
-    // Unified settings passed to ResponsivePicture
-    const pictureSettings = {
-        props: baseProps,
-        breakpoints: bpMap,
+    // ============================================================
+    // Build picture settings with proper per-breakpoint logic
+    // ============================================================
+
+    const finalSettings = {
+        props: {...baseProps},
+        breakpoints: {},
     };
 
-    // --------------------------------------
-    // TYPE: IMAGE (dynamic responsive)
-    // --------------------------------------
-    if (type === "image" || type === "featured-image") {
-        return wrapWithLink(
-            <ResponsivePicture
-                settings={pictureSettings}
-                editor={mode === "edit"}
-            />
-        );
+    // -------------------------
+    // BASE IMAGE LOGIC
+    // -------------------------
+    const baseType = baseProps.type;
+    const baseRes = (baseProps.resolution || "large").toUpperCase();
+
+    if (baseType === "featured-image") {
+        finalSettings.props.image = {
+            id: null,
+            source: `%%__FEATURED_IMAGE__${baseRes}__%%`,
+            type: "image",
+            isPlaceholder: true,
+            alt: "",
+        };
+    } else if (baseType === "featured-image-mobile") {
+        finalSettings.props.image = {
+            id: null,
+            source: `%%__FEATURED_IMAGE_MOBILE__${baseRes}__%%`,
+            type: "image",
+            isPlaceholder: true,
+            alt: "",
+        };
+    } else {
+        // normal image
+        finalSettings.props.image = baseProps.image;
     }
 
-    // --------------------------------------
-    // TYPE: FEATURED IMAGE (save mode)
-    // --------------------------------------
-    if (type === "featured-image" && mode === "save") {
-        const payload = {
-            isMobile: false,
-            resolution: baseProps.resolution,
-        };
+    // -------------------------
+    // BREAKPOINT IMAGE LOGIC
+    // -------------------------
+    Object.entries(bpMap).forEach(([bpKey, bpEntry]) => {
+        const bpProps = bpEntry.props || {};
+        const bpType = bpProps.type || baseProps.type;
+        const bpRes = (bpProps.resolution || baseProps.resolution || "large").toUpperCase();
 
-        const encoded = btoa(JSON.stringify(payload));
+        let imageObj;
 
-        const featuredSettings = {
+        if (bpType === "featured-image") {
+            imageObj = {
+                id: null,
+                source: `%%__FEATURED_IMAGE__${bpRes}__%%`,
+                type: "image",
+                isPlaceholder: true,
+                alt: "",
+            };
+        } else if (bpType === "featured-image-mobile") {
+            imageObj = {
+                id: null,
+                source: `%%__FEATURED_IMAGE_MOBILE__${bpRes}__%%`,
+                type: "image",
+                isPlaceholder: true,
+                alt: "",
+            };
+        } else {
+            // normal image for this breakpoint
+            imageObj = bpProps.image;
+        }
+
+        finalSettings.breakpoints[bpKey] = {
             props: {
-                ...baseProps,
-                image: {
-                    isPlaceholder: true,
-                    source: `%%_FEATURED_JSON_${encoded}%%`,  // <-- encoded JSON placeholder
-                    alt: "%%_FEATURED_ALT_%%",                // still handled separately
-                }
-            },
-            breakpoints: bpMap,
+                ...bpProps,
+                image: imageObj,
+            }
         };
+    });
 
-        return wrapWithLink(
-            <ResponsivePicture
-                settings={featuredSettings}
-                editor={false}
-            />
-        );
-    }
+    // ============================================================
+    // Pass to ResponsivePicture
+    // ============================================================
 
-    // --------------------------------------
-    // TYPE: FEATURED IMAGE MOBILE
-    // --------------------------------------
-    if (type === "featured-image-mobile") {
-        const payload = {
-            isMobile: true,
-            resolution: props.resolution,
-        };
+    const content = (
+        <ResponsivePicture
+            settings={finalSettings}
+            editor={mode === "edit"}
+        />
+    );
 
-        const encoded = btoa(JSON.stringify(payload));
-
-        const mobileSettings = {
-            props: {
-                ...baseProps,
-                image: {
-                    isPlaceholder: true,
-                    source: `%%_FEATURED_JSON_${encoded}%%`,
-                    alt: "%%_FEATURED_ALT_%%",
-                },
-            },
-            breakpoints: bpMap,
-        };
-
-        return wrapWithLink(
-            <ResponsivePicture
-                settings={mobileSettings}
-                editor={mode === "edit"}
-            />
-        );
-    }
-
-
-    // --------------------------------------
-    // LOTTIE
-    // --------------------------------------
-    if (type === "lottie") {
-        const lottieSrc = baseProps?.lottieFile?.url || null;
-
-        return wrapWithLink(
-            <div
-                class="wpbs-lottie"
-                data-src={lottieSrc}
-                aria-hidden="true"
-            />
-        );
-    }
-
-    return null;
+    return wrapWithLink(content);
 }
+
 
 function getCssProps(settings) {
     const baseProps = settings?.props || {};

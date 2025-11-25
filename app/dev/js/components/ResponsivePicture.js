@@ -1,143 +1,179 @@
-import {getImageUrlForResolution} from "Includes/helper";
+// ResponsivePicture.js — Fully Dynamic Multi-Breakpoint Version
+// Uses your helper fn getImageUrlForResolution ( [oai_citation:2‡helper.js](sediment://file_000000009b8c71fdb41fda13dcc2f65d))
 
-const ResponsivePicture = ({
-                               mobile = {},
-                               large = {},
-                               settings = {},
-                               editor = false
-                           }) => {
+import { getImageUrlForResolution } from "Includes/helper";
 
-    const {
-        resolutionMobile = "medium",
-        resolutionLarge = "large",
-        force = false,
-        eager = false,
-        breakpoint: breakpointKey = "normal",
-        className: extraClass = "",
-        style = {}
-    } = settings;
+export default function ResponsivePicture({
+                                              settings = {},
+                                              editor = false,
+                                          }) {
+    const base = settings.props || {};
+    const bps = settings.breakpoints || {};
+    const bpDefs = WPBS?.settings?.breakpoints || {};
 
-    const breakpoints = WPBS.settings.breakpoints || {};
-    const bp = breakpoints[breakpointKey];
-    const breakpoint = bp?.size ? `${bp.size}px` : "768px";
+    const eager = !!base.eager;
+    const srcAttr = eager || editor ? "src" : "data-src";
+    const srcsetAttr = eager || editor ? "srcset" : "data-srcset";
 
-    const isMobilePlaceholder = mobile?.isPlaceholder === true;
-    const isLargePlaceholder = large?.isPlaceholder === true;
+    const cls = ["wpbs-picture", base.className].filter(Boolean).join(" ");
+    const style = base.style || {};
 
-    const baseMobile =
-        !isMobilePlaceholder && mobile?.id
-            ? mobile
-            : !isLargePlaceholder && large?.id
-                ? large
-                : null;
+    // ------------------------------------------------------------
+    // Utility: normalize any media object into a usable {source,id,...}
+    // ------------------------------------------------------------
+    const normalizeImg = (input) => {
+        if (!input || typeof input !== "object") return null;
 
-    const baseLarge =
-        !isLargePlaceholder && large?.id
-            ? large
-            : !isMobilePlaceholder && mobile?.id
-                ? mobile
-                : null;
+        if (input.isPlaceholder) {
+            return { ...input, source: "#" };
+        }
 
-    if (!baseMobile && !baseLarge && !isMobilePlaceholder && !isLargePlaceholder) {
+        if (input.source) return input;
+
         return null;
+    };
+
+    // ------------------------------------------------------------
+    // Build ordered breakpoint entries
+    // ------------------------------------------------------------
+    let entries = [];
+
+    // --- Base first (largest fallback) ---
+    const baseImage = normalizeImg(base.image || base.media);
+    const baseResolution = base.resolution || "large";
+
+    if (baseImage) {
+        entries.push({
+            size: Infinity,      // fallback default
+            image: baseImage,
+            resolution: baseResolution,
+        });
     }
 
-    /* ------------------------------------------------------------
-     * ALWAYS RESPECT RESOLUTION SETTINGS
-     * ------------------------------------------------------------ */
+    // --- Breakpoint entries (xs, sm, md...) ---
+    Object.entries(bps).forEach(([bpKey, bpData]) => {
+        const props = bpData?.props || {};
+        const img = normalizeImg(props.image || props.media);
+        const resolution = props.resolution || baseResolution;
 
-    let urlMobile;
+        const size = bpDefs?.[bpKey]?.size ?? null;
 
-    if (isMobilePlaceholder) {
-        urlMobile = mobile?.source || "#";
-    } else if (mobile?.source) {
-        urlMobile = getImageUrlForResolution(mobile, resolutionMobile) || mobile.source;
-    } else if (baseMobile) {
-        urlMobile = getImageUrlForResolution(baseMobile, resolutionMobile);
-    } else {
-        urlMobile = null;
-    }
+        entries.push({
+            size,
+            image: img,
+            resolution,
+            bpKey,
+        });
+    });
 
-    let urlLarge;
+    // ------------------------------------------------------------
+    // Clean entries: if no image in bp, disable it with placeholder
+    // (Same logic as background video implementation)
+    // ------------------------------------------------------------
+    entries = entries.map((e) => {
+        if (e.image) return e;
 
-    if (isLargePlaceholder) {
-        urlLarge = large?.source || "#";
-    } else if (large?.source) {
-        urlLarge = getImageUrlForResolution(large, resolutionLarge) || large.source;
-    } else if (baseLarge) {
-        urlLarge = getImageUrlForResolution(baseLarge, resolutionLarge);
-    } else {
-        urlLarge = null;
-    }
+        return {
+            ...e,
+            image: {
+                id: null,
+                source: "#",
+                type: "image",
+                width: null,
+                height: null,
+                sizes: null,
+                isPlaceholder: true,
+            },
+        };
+    });
 
-    if (!urlMobile && !urlLarge) {
-        return null;
-    }
+    // ------------------------------------------------------------
+    // Sort breakpoints: smallest → largest, base last
+    // ------------------------------------------------------------
+    const bpEntries = entries
+        .filter((e) => Number.isFinite(e.size))
+        .sort((a, b) => a.size - b.size);
 
-    const webpMobile =
-        urlMobile && urlMobile !== "#" && !urlMobile.endsWith(".svg")
-            ? `${urlMobile}.webp`
+    const baseEntry = entries.find((e) => e.size === Infinity);
+
+    // ------------------------------------------------------------
+    // Resolve URL for each entry using resolution map
+    // ------------------------------------------------------------
+    const resolveUrl = (entry) => {
+        const img = entry.image;
+        if (img.isPlaceholder) return "#";
+        return getImageUrlForResolution(img, entry.resolution) || img.source;
+    };
+
+    // ------------------------------------------------------------
+    // WebP helper
+    // ------------------------------------------------------------
+    const makeWebp = (url) =>
+        url && !url.endsWith(".svg") && url !== "#"
+            ? `${url}.webp`
             : null;
 
-    const webpLarge =
-        urlLarge && urlLarge !== "#" && !urlLarge.endsWith(".svg")
-            ? `${urlLarge}.webp`
-            : null;
-
-    const srcAttr = editor || eager ? "src" : "data-src";
-    const srcsetAttr = editor || eager ? "srcset" : "data-srcset";
-
-    const className = ["wpbs-picture", extraClass].filter(Boolean).join(" ");
-
+    // ------------------------------------------------------------
+    // Render <picture>
+    // ------------------------------------------------------------
     return (
-        <picture className={className} style={{...style, objectFit: "inherit"}}>
+        <picture className={cls} style={{ ...style, objectFit: "inherit" }}>
+            {/* --- Breakpoint <source> tags (xs, sm, md…) --- */}
+            {bpEntries.map((entry, i) => {
+                const url = resolveUrl(entry);
+                const webp = makeWebp(url);
 
-            {/* MOBILE */}
-            {urlMobile && (
-                <>
-                    {webpMobile && (
-                        <source
-                            type="image/webp"
-                            media={`(max-width: calc(${breakpoint} - 1px))`}
-                            {...{[srcsetAttr]: webpMobile}}
-                        />
-                    )}
+                const mq =
+                    Number.isFinite(entry.size) && entry.size > 0
+                        ? `(max-width:${entry.size - 1}px)`
+                        : null;
 
-                    <source
-                        media={`(max-width: calc(${breakpoint} - 1px))`}
-                        {...{[srcsetAttr]: urlMobile}}
-                    />
-                </>
+                if (!mq) return null;
+
+                return (
+                    <Fragment key={`bp-${i}`}>
+                        {webp && (
+                            <source
+                                media={mq}
+                                type="image/webp"
+                                {...{ [srcsetAttr]: webp }}
+                            />
+                        )}
+                        <source media={mq} {...{ [srcsetAttr]: url }} />
+                    </Fragment>
+                );
+            })}
+
+            {/* --- Base fallback (min-width last) --- */}
+            {baseEntry && (() => {
+                const url = resolveUrl(baseEntry);
+                const webp = makeWebp(url);
+
+                return (
+                    <>
+                        {webp && (
+                            <source
+                                type="image/webp"
+                                {...{ [srcsetAttr]: webp }}
+                            />
+                        )}
+
+                        <source {...{ [srcsetAttr]: url }} />
+                    </>
+                );
+            })()}
+
+            {/* --- <img> ultimate fallback --- */}
+            {baseEntry && (
+                <img
+                    {...{
+                        [srcAttr]: resolveUrl(baseEntry),
+                        alt: base?.alt || "",
+                        loading: eager ? "eager" : "lazy",
+                        ariaHidden: true,
+                    }}
+                />
             )}
-
-            {/* LARGE */}
-            {urlLarge && (
-                <>
-                    {webpLarge && (
-                        <source
-                            type="image/webp"
-                            media={`(min-width: ${breakpoint})`}
-                            {...{[srcsetAttr]: webpLarge}}
-                        />
-                    )}
-
-                    <source
-                        media={`(min-width: ${breakpoint})`}
-                        {...{[srcsetAttr]: urlLarge}}
-                    />
-                </>
-            )}
-
-            <img
-                {...{
-                    [srcAttr]: urlLarge || urlMobile || "#",
-                    alt: large?.alt || mobile?.alt || "",
-                    loading: eager ? "eager" : "lazy",
-                    ariaHidden: true
-                }}
-            />
         </picture>
     );
-};
-
-export default ResponsivePicture;
+}

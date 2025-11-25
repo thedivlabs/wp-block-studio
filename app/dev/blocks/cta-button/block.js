@@ -62,7 +62,6 @@ registerBlockType(metadata.name, {
         const {'wpbs-cta': settings = {}} = attributes;
 
         const updateSettings = useCallback((newValue) => {
-
             const result = {
                 ...settings,
                 ...newValue,
@@ -89,10 +88,7 @@ registerBlockType(metadata.name, {
                     <UnitControl
                         label="Offset"
                         value={settings?.offset}
-                        units={
-                            [
-                                {value: "px", label: "px"}
-                            ]}
+                        units={[{value: "px", label: "px"}]}
                         onChange={(offset) => updateSettings({offset: offset})}
                         isResetValueOnUnitChange
                         __nextHasNoMarginBottom
@@ -101,10 +97,7 @@ registerBlockType(metadata.name, {
                     <UnitControl
                         label="Offset Icon"
                         value={settings?.['offset-icon']}
-                        units={
-                            [
-                                {value: "px", label: "px"}
-                            ]}
+                        units={[{value: "px", label: "px"}]}
                         onChange={(offset) => updateSettings({'offset-icon': offset})}
                         isResetValueOnUnitChange
                         __nextHasNoMarginBottom
@@ -142,12 +135,7 @@ registerBlockType(metadata.name, {
                     props={props}
                 />
 
-                <Grid
-                    columns={2}
-                    columnGap={15}
-                    rowGap={20}
-                    style={{padding: '1rem 0'}}
-                >
+                <Grid columns={2} columnGap={15} rowGap={20} style={{padding: '1rem 0'}}>
                     <ToggleControl
                         label="Icon Only"
                         __nextHasNoMarginBottom
@@ -217,7 +205,10 @@ registerBlockType(metadata.name, {
             }
         }), [settings]);
 
-        useEffect(() => setCss(cssObj), [cssObj]);
+        // FINAL: send to HOC's applyCss
+        useEffect(() => {
+            setCss(cssObj);
+        }, [cssObj]);
 
         return (
             <>
@@ -244,7 +235,7 @@ registerBlockType(metadata.name, {
                                     case 'icon':
                                         return tabIcon;
                                     default:
-                                        return null; // safe catch-all
+                                        return null;
                                 }
                             }}
                         </TabPanel>

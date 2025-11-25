@@ -111,12 +111,13 @@ export const withStyle = (Component) => (props) => {
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
+                    group: uniqueId,        // ← inject group here
                     props,
                     styleRef,
                 });
             }
         },
-        [cleanObject, onStyleChange, props]
+        [cleanObject, onStyleChange, props, uniqueId]
     );
 
 
@@ -135,12 +136,13 @@ export const withStyle = (Component) => (props) => {
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
+                    group: uniqueId,        // ← inject group here
                     props,
                     styleRef,
                 });
             }
         },
-        [onStyleChange, props]
+        [onStyleChange, props, uniqueId]
     );
 
 
@@ -154,6 +156,7 @@ export const withStyle = (Component) => (props) => {
         onStyleChange({
             css: blockCssRef.current,
             preload: blockPreloadRef.current,
+            group: uniqueId,            // ← inject group here
             props,
             styleRef,
         });

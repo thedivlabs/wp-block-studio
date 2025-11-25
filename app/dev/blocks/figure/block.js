@@ -197,35 +197,25 @@ function getCssProps(settings) {
     return cleanObject(css);
 }
 
-function getPreload(settings, uniqueId) {
+function getPreload(settings) {
 
     const preloadObj = [];
 
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
 
-    // Only load if eager is enabled in base props
-    if (!baseProps.eager) {
-        return preloadObj;
-    }
+    if (!baseProps.eager) return preloadObj;
 
-    const group = uniqueId;
-
-    // --------------------------------------------------
-    // BASE IMAGE
-    // --------------------------------------------------
+    // Base image
     const baseImage = baseProps.image;
     if (baseImage?.id && !baseImage.isPlaceholder) {
         preloadObj.push({
             id: baseImage.id,
             type: "image",
-            group,
         });
     }
 
-    // --------------------------------------------------
-    // BREAKPOINT IMAGES
-    // --------------------------------------------------
+    // Breakpoint images
     for (const [bpKey, bpEntry] of Object.entries(breakpoints)) {
         const bpProps = bpEntry?.props || {};
         const bpImage = bpProps.image;
@@ -234,7 +224,6 @@ function getPreload(settings, uniqueId) {
             preloadObj.push({
                 id: bpImage.id,
                 type: "image",
-                group,
                 breakpoint: bpKey,
             });
         }

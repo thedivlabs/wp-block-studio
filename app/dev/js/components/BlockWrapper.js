@@ -102,21 +102,13 @@ export const BlockWrapper = ({
 
     const bgSettings = attributes["wpbs-background"] || {};
     const {"wpbs-style": styleSettings = {} } = attributes;
+    const {"wpbs-advanced": advanced = {} } = attributes;
 
     const {
         tagName: wrapperTagName = "div",
         hasBackground = true,
         hasChildren = false,
     } = wrapperProps;
-
-    const advancedFlags = [
-        advanced["hide-empty"] ? "--hide-empty" : null,
-        advanced.required ? "--required" : null,
-        advanced["offset-header"] ? "--offset-header" : null,
-        advanced.container ? "--container" : null,
-    ]
-        .filter(Boolean)
-        .join(" ");
 
     const Tag = ElementTag(advanced?.tagName, wrapperTagName);
 

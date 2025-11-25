@@ -279,18 +279,11 @@ function parseBackgroundProps(props = {}) {
         }
     }
 
-    /* ------------------------------------------------------------
-     * VIDEO BACKGROUND (handled via <video> HTML tag)
-     * ------------------------------------------------------------
-     * We DO NOT emit any CSS custom props for video.
-     * All HTML video logic is handled by Background component.
-     *
-     * But:
-     * VISUAL props like overlay, opacity, blend, etc.
-     * MUST still be output normally.
-     * ------------------------------------------------------------ */
-
-    // No CSS output needed for mediaObj.type === "video"
+    if (mediaObj?.isPlaceholder === true) {
+        result["--video"] = "none";
+    } else {
+        result["--video"] = "block";
+    }
 
 
     /* ------------------------------------------------------------

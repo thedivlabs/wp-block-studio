@@ -179,16 +179,10 @@ function getCssProps(settings) {
     Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
         const bpProps = bpEntry.props || {};
 
-        const bpOverlay = bpProps.overlay ?? overlay ?? null;
-        const bpOrigin = bpProps.origin ?? origin ?? null;
-        const bpBlend = bpProps.blend ?? blend ?? null;
-
-        let bpContain;
-        if (typeof bpProps.contain === "boolean") {
-            bpContain = bpProps.contain ? "contain" : null;
-        } else {
-            bpContain = contain;
-        }
+        const bpOverlay = bpProps.overlay ?? null;
+        const bpOrigin = bpProps.origin ?? null;
+        const bpBlend = bpProps.blend ?? null;
+        const bpContain = bpProps.contain
 
         css.breakpoints[bpKey] = {
             props: {

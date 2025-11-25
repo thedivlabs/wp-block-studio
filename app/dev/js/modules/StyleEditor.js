@@ -281,8 +281,6 @@ function parseBackgroundProps(props = {}) {
 
     if (mediaObj?.isPlaceholder === true) {
         result["--video"] = "none";
-    } else {
-        result["--video"] = "block";
     }
 
 

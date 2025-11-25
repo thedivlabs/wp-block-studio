@@ -4,6 +4,7 @@ import {BlockWrapper} from "Components/BlockWrapper";
 import {useInstanceId} from "@wordpress/compose";
 import {InspectorControls} from "@wordpress/block-editor";
 import {BackgroundControls} from "Components/Background";
+import {AdvancedControls} from "Components/AdvancedControls";
 
 export const STYLE_ATTRIBUTES = {
     uniqueId: {type: "string"},
@@ -12,6 +13,7 @@ export const STYLE_ATTRIBUTES = {
     // Clean separation of concerns:
     "wpbs-style": {type: "object", default: {props: {}, breakpoints: {}, hover: {}}},
     "wpbs-background": {type: "object", default: {props: {}, breakpoints: {}}},
+    "wpbs-advanced": {type: "object", default: {}},
 
     "wpbs-preload": {type: "array", default: []},
     "wpbs-icons": {type: "array", default: []},
@@ -32,13 +34,14 @@ export const withStyle = (Component) => (props) => {
         uniqueId,
         "wpbs-style": styleData = {props: {}, breakpoints: {}, hover: {}},
         "wpbs-background": bgData = {props: {}, breakpoints: {}},
+        "wpbs-advanced": advData = {},
     } = attributes;
 
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
         if (status === "fresh" || status === "clone") {
-            setAttributes({ uniqueId: instanceId });
+            setAttributes({uniqueId: instanceId});
 
             registerBlock(instanceId, clientId);
 
@@ -64,6 +67,18 @@ export const withStyle = (Component) => (props) => {
             });
         },
         [setAttributes]
+    );
+
+    const updateAdvancedSettings = useCallback(
+        (next) => {
+            setAttributes({
+                "wpbs-advanced": {
+                    ...advData,
+                    ...next,
+                },
+            });
+        },
+        [setAttributes, advData]
     );
 
     /* ------------------------------------------------------------------
@@ -144,6 +159,12 @@ export const withStyle = (Component) => (props) => {
 
             {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
 
+            <InspectorControls group="advanced">
+                <AdvancedControls
+                    settings={advData}
+                    callback={updateAdvancedSettings}
+                />
+            </InspectorControls>
             <InspectorControls group="styles">
                 <StyleEditorUI
                     settings={styleData}
@@ -153,6 +174,7 @@ export const withStyle = (Component) => (props) => {
                     settings={bgData}
                     callback={updateBgSettings}
                 />
+
             </InspectorControls>
         </>
     );

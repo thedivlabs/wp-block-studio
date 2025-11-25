@@ -2,6 +2,7 @@
 // Uses your helper fn getImageUrlForResolution ( [oai_citation:2‡helper.js](sediment://file_000000009b8c71fdb41fda13dcc2f65d))
 
 import { getImageUrlForResolution } from "Includes/helper";
+import {Fragment} from "@wordpress/element";
 
 export default function ResponsivePicture({
                                               settings = {},

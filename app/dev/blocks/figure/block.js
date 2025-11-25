@@ -165,21 +165,49 @@ function renderFigureContent(settings, attributes, mode = "edit") {
 }
 
 function getCssProps(settings) {
+    const baseProps = settings?.props || {};
+    const breakpoints = settings?.breakpoints || {};
 
-    return {
+    // ----- base props (no breakpoint) -----
+    const overlay = baseProps.overlay ?? null;
+    const origin  = baseProps.origin ?? null;
+    const blend   = baseProps.blend ?? null;
+
+    const css = {
         props: {
-            "--overlay": settings.overlay,
-            "--origin": settings.origin,
-            "--blend": settings.blend,
+            "--overlay": overlay,
+            "--origin": origin,
+            "--blend": blend,
         },
-        breakpoints: {
-            sm: {
-                props: {
-                    "--testing": "Chat GPT",
-                },
+        breakpoints: {},
+    };
+
+    // ----- breakpoint overrides -----
+    Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
+        const bpProps = bpEntry.props || {};
+
+        const bpOverlay = bpProps.overlay ?? overlay ?? null;
+        const bpOrigin  = bpProps.origin  ?? origin  ?? null;
+        const bpBlend   = bpProps.blend   ?? blend   ?? null;
+
+        let bpContain;
+        if (typeof bpProps.contain === "boolean") {
+            bpContain = bpProps.contain ? "contain" : null;
+        } else {
+            bpContain = contain;
+        }
+
+        css.breakpoints[bpKey] = {
+            props: {
+                "--overlay": bpOverlay,
+                "--origin": bpOrigin,
+                "--blend": bpBlend,
+                "--contain": bpContain,
             },
-        },
-    }
+        };
+    });
+
+    return cleanObject(css);
 }
 
 function getPreload(settings, uniqueId) {

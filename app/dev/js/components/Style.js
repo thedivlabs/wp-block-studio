@@ -5,6 +5,7 @@ import {useInstanceId} from "@wordpress/compose";
 import {InspectorControls} from "@wordpress/block-editor";
 import {BackgroundControls} from "Components/Background";
 import {AdvancedControls} from "Components/AdvancedControls";
+import {isEqual} from 'lodash';
 
 export const STYLE_ATTRIBUTES = {
     uniqueId: {type: "string"},
@@ -36,6 +37,10 @@ export const withStyle = (Component) => (props) => {
         "wpbs-background": bgData = {props: {}, breakpoints: {}},
         "wpbs-advanced": advData = {},
     } = attributes;
+
+    useEffect(()=>{
+        console.log(attributes);
+    },[])
 
     /* --------------------------------------------------------------
        BLOCK REGISTRATION / UNIQUE ID SYNC
@@ -102,7 +107,7 @@ export const withStyle = (Component) => (props) => {
 
             const cleaned = cleanObject(raw);
 
-            if (window._.isEqual(blockCssRef.current, cleaned)) return;
+            if (isEqual(blockCssRef.current, cleaned)) return;
 
             blockCssRef.current = cleaned;
 
@@ -126,7 +131,7 @@ export const withStyle = (Component) => (props) => {
         (items) => {
             const arr = Array.isArray(items) ? items : [];
 
-            if (window._.isEqual(blockPreloadRef.current, arr)) return;
+            if (isEqual(blockPreloadRef.current, arr)) return;
 
             blockPreloadRef.current = arr;
 

@@ -4,7 +4,7 @@ if ( empty( $content ) ) {
 	return;
 }
 
-//WPBS::console_log($block ?? false);
+//WPBS::console_log( get_field( 'page_settings' )['media']['mobile_image'] ?? null );
 
 // --------------------------------------------------------------
 // Replace FEATURED_IMAGE tokens (Base64 JSON)
@@ -51,7 +51,7 @@ $block_content = preg_replace_callback(
 		// ----------------------------------------------------------
 		elseif ( $mode === 'featured-image-mobile' ) {
 
-			$mobile_id = get_field( 'page_settings_media_image_mobile' );
+			$mobile_id = get_field( 'page_settings' )['media']['mobile_image'] ?? null;
 
 			if ( $mobile_id ) {
 				$url = wp_get_attachment_image_url( $mobile_id, $resolution );

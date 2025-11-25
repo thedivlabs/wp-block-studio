@@ -264,14 +264,10 @@ function parseBackgroundProps(props = {}) {
 
         if (!mediaObj || mediaObj === "" || mediaObj == null) {
             // No image at all — emit nothing
-        }
-
-        else if (mediaObj.isPlaceholder || mediaObj.source === "#") {
+        } else if (mediaObj.isPlaceholder || mediaObj.source === "#") {
             // Disabled at this breakpoint
             result["--image"] = "#";
-        }
-
-        else if (mediaObj.source) {
+        } else if (mediaObj.source) {
             result["--video"] = 'none';
             const resolved = getImageUrlForResolution(mediaObj, resolution);
             if (resolved) {
@@ -280,16 +276,11 @@ function parseBackgroundProps(props = {}) {
         }
     }
 
-    if (type === "video" ) {
-        if (mediaObj?.isPlaceholder === true) {
-            result["--video"] = "none";
-        } else {
+    if (type === "video") {
+        if (mediaObj && mediaObj.isPlaceholder !== true) {
             result["--video"] = "flex";
         }
-    } else {
-        result["--video"] = "none";
     }
-
 
 
     /* ------------------------------------------------------------
@@ -299,14 +290,12 @@ function parseBackgroundProps(props = {}) {
 
     if (maskVal === "" || maskVal == null) {
         // cleared
-    }
-    else if (maskVal?.isPlaceholder || maskVal?.source === "#") {
+    } else if (maskVal?.isPlaceholder || maskVal?.source === "#") {
         result["--mask-image"] = "none";
         result["--mask-repeat"] = "initial";
         result["--mask-size"] = "initial";
         result["--mask-position"] = "initial";
-    }
-    else {
+    } else {
         const url =
             typeof maskVal === "object" && maskVal?.source
                 ? maskVal.source
@@ -389,8 +378,7 @@ function parseBackgroundProps(props = {}) {
      * ------------------------------------------------------------ */
     if (fixed) {
         result["--attachment"] = "fixed";
-    }
-    else if (type === "image" && mediaObj?.source) {
+    } else if (type === "image" && mediaObj?.source) {
         result["--attachment"] = "scroll";
     }
 
@@ -526,10 +514,10 @@ function buildCssTextFromObject(cssObj = {}, props = {}) {
     return css;
 }
 
-function onStyleChange({ css = {}, preload = [], props, styleRef }) {
+function onStyleChange({css = {}, preload = [], props, styleRef}) {
     if (!props) return;
 
-    const { clientId, name, attributes } = props;
+    const {clientId, name, attributes} = props;
     if (!clientId || !attributes) return;
 
     const blockName = name ? name.replace('/', '-') : null;
@@ -588,7 +576,7 @@ function onStyleChange({ css = {}, preload = [], props, styleRef }) {
         // Props: inherit → override → diff
         const baseProps = cssObj.props || {};
         const mergedProps = bpLayout.props
-            ? { ...baseProps, ...parseSpecialProps(bpLayout.props, attributes) }
+            ? {...baseProps, ...parseSpecialProps(bpLayout.props, attributes)}
             : baseProps;
 
         const diffPropsObj = diffObjects(baseProps, mergedProps);
@@ -609,7 +597,7 @@ function onStyleChange({ css = {}, preload = [], props, styleRef }) {
     // --------------------------------------------
     Object.entries(bpBgMap || {}).forEach(([bpKey, bpValue]) => {
         const rawBpBg = bpValue?.props || {};
-        let effectiveBpBg = { ...rawBpBg };
+        let effectiveBpBg = {...rawBpBg};
 
         // Inherit base media when only resolution is changed
         if (
@@ -674,7 +662,7 @@ function onStyleChange({ css = {}, preload = [], props, styleRef }) {
         return;
     }
 
-    const { dispatch } = wp.data;
+    const {dispatch} = wp.data;
     dispatch("core/block-editor").updateBlockAttributes(clientId, {
         "wpbs-css": cleanedCss,
         "wpbs-preload": nextPreload,

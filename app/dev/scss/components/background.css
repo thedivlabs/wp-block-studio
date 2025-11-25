@@ -62,7 +62,7 @@
 
 /* Video-specific styling */
 .wpbs-background > video:has(source + source) {
-  display: var(--video, flex);
+  display: var(--video, none);
 }
 
 .wpbs-background > video {

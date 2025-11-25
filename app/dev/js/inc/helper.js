@@ -1,5 +1,41 @@
 import _ from "lodash";
 
+export function resolveFeaturedMedia({type, media, resolution, isEditor}) {
+    const res = (resolution || "large").toUpperCase();
+
+    const normalized = normalizeMedia(media);
+    const fallbackUrl = normalized?.source
+        ? getImageUrlForResolution(normalized, res)
+        : null;
+
+    // Editor → always show fallback real media
+    if (isEditor) {
+        return normalized;
+    }
+
+    // Save mode: featured-image → return token
+    if (type === "featured-image" || type === "featured-image-mobile") {
+
+        const payload = {
+            mode: type === "featured-image-mobile" ? "featured-mobile" : "featured",
+            resolution: res,
+            fallback: fallbackUrl || null,
+        };
+
+        const b64 = btoa(JSON.stringify(payload));
+
+        return {
+            id: null,
+            type: "image",
+            source: `%%__FEATURED_IMAGE__${b64}__%%`,
+        };
+    }
+
+    // Normal image / video
+    return normalized;
+}
+
+
 export function buildImageSet(url) {
     if (!url) return '';
 

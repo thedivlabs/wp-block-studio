@@ -8,7 +8,7 @@ import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
-import {cleanObject, getImageUrlForResolution, normalizeMedia} from "Includes/helper";
+import {cleanObject, getImageUrlForResolution, normalizeMedia, resolveFeaturedMedia} from "Includes/helper";
 import {
     getBreakpointPropsList,
     anyProp,
@@ -54,35 +54,9 @@ function renderFigureContent(settings, attributes, isEditor = false) {
             : <a>{content}</a>;
     };
 
-    // ============================================================
-    // Helpers
-    // ============================================================
-
-    const makeToken = (modeKey, res, fallbackUrl = null) => {
-        const payload = {
-            mode: modeKey,
-            resolution: res,
-            fallback: fallbackUrl || null,
-        };
-
-        const json = JSON.stringify(payload);
-        const b64 = btoa(json);
-
-        return `%%__FEATURED_IMAGE__${b64}__%%`;
-    };
-
-    const getFallbackUrl = (media, res) => {
-        const normalized = normalizeMedia(media);
-        if (!normalized || !normalized.source) return null;
-        return getImageUrlForResolution(normalized, res);
-    };
-
-    // ============================================================
-    // Build picture settings with token logic
-    // ============================================================
 
     const finalSettings = {
-        props: { ...baseProps },
+        props: {...baseProps},
         breakpoints: {},
     };
 
@@ -91,30 +65,13 @@ function renderFigureContent(settings, attributes, isEditor = false) {
     // -------------------------
     const baseType = baseProps.type;
     const baseRes = (baseProps.resolution || "large").toUpperCase();
-    const baseFallback = getFallbackUrl(baseProps.image, baseRes);
 
-    if (baseType === "featured-image" || baseType === "featured-image-mobile") {
-        if (isEditor) {
-            // Editor mode → always show fallback image!
-            finalSettings.props.image = normalizeMedia(baseProps.image);
-        } else {
-            // Save mode → output token for PHP resolver
-            const token = makeToken(
-                baseType === "featured-image" ? "featured" : "featured-mobile",
-                baseRes,
-                baseFallback
-            );
-
-            finalSettings.props.image = {
-                id: null,
-                source: token,
-                type: "image",
-            };
-        }
-    } else {
-        // Normal image selected
-        finalSettings.props.image = baseProps.image;
-    }
+    finalSettings.props.image = resolveFeaturedMedia({
+        type: baseType,
+        media: baseProps.image,
+        resolution: baseRes,
+        isEditor,
+    });
 
     // -------------------------
     // BREAKPOINT IMAGE LOGIC
@@ -123,31 +80,14 @@ function renderFigureContent(settings, attributes, isEditor = false) {
         const bpProps = bpEntry.props || {};
         const bpType = bpProps.type || baseProps.type;
         const bpRes = (bpProps.resolution || baseProps.resolution || "large").toUpperCase();
-        const bpFallback = getFallbackUrl(bpProps.image, bpRes);
 
-        let imageObj;
+        const imageObj = resolveFeaturedMedia({
+            type: bpType,
+            media: bpProps.image || baseProps.image,
+            resolution: bpRes,
+            isEditor,
+        });
 
-        if (bpType === "featured-image" || bpType === "featured-image-mobile") {
-            if (isEditor) {
-                // In editor, fallback only
-                imageObj = normalizeMedia(bpProps.image || baseProps.image);
-            } else {
-                const token = makeToken(
-                    bpType === "featured-image" ? "featured" : "featured-mobile",
-                    bpRes,
-                    bpFallback
-                );
-
-                imageObj = {
-                    id: null,
-                    source: token,
-                    type: "image",
-                    isPlaceholder: true,
-                };
-            }
-        } else {
-            imageObj = bpProps.image;
-        }
 
         finalSettings.breakpoints[bpKey] = {
             props: {
@@ -155,6 +95,7 @@ function renderFigureContent(settings, attributes, isEditor = false) {
                 image: imageObj,
             }
         };
+
     });
 
     // ============================================================
@@ -167,9 +108,7 @@ function renderFigureContent(settings, attributes, isEditor = false) {
             editor={!!isEditor}
         />
     );
-
-    console.log(finalSettings);
-
+    
     return wrapWithLink(content);
 }
 

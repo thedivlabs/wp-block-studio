@@ -28,16 +28,24 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
         .filter(Boolean)
         .join(" ");
 
-    // Controlled input: value always comes from settings
     const value = settings?.[slug];
 
+    // ALWAYS wrap updates in an object argument
     const commit = useCallback(
         (newValue) => {
-            if (newValue !== value) {
-                callback(newValue);
+            const wrapped =
+                typeof newValue === "object" && newValue !== null && !Array.isArray(newValue)
+                    ? newValue
+                    : {[slug]: newValue};
+
+            const incoming = wrapped[slug];
+            const current = value;
+
+            if (incoming !== current) {
+                callback(wrapped);
             }
         },
-        [callback, value]
+        [callback, value, slug]
     );
 
     let control = null;
@@ -54,11 +62,10 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                 <IconControl
                     fieldKey={slug}
                     value={value || defaultValue || ""}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     props={props || {}}
                     label={label}
                     isCommit={false}
-
                 />
             );
             break;
@@ -69,7 +76,7 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
             const bpOptions = [
                 {label: "Select", value: ""},
                 ...Object.entries(breakpoints).map(([key, data]) => ({
-                    label: [data?.label, '(' + data?.size + 'px)'].join(' '),
+                    label: `${data?.label} (${data?.size}px)`,
                     value: key,
                 })),
             ];
@@ -81,12 +88,13 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                     value={value || defaultValue || ""}
                     options={bpOptions}
                     aria-label={label}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
         }
+
         case "composite":
             control = (
                 <BaseControl label={label} className="wpbs-composite-field --full">
@@ -97,16 +105,14 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                                 field={sub}
                                 settings={settings}
                                 isToolsPanel={false}
-
-                                // The correct behavior:
-                                // child field value → merged into hover object via updateHoverItem
-                                callback={(val) => callback({[sub.slug]: val})}
+                                callback={(val) => callback(val)} // already an object, pass through
                             />
                         ))}
                     </Grid>
                 </BaseControl>
             );
             break;
+
         case "shadow":
             control = (
                 <ShadowSelector
@@ -117,44 +123,41 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                 />
             );
             break;
+
         case "color":
             const colorFields = controlProps.colors || [];
-
             const colorSettings = colorFields.map((c) => ({
                 slug: c.slug,
                 label: c.label,
                 value: settings?.[c.slug] ?? "",
-                onChange: (newValue) => {
-                    commit({[c.slug]: newValue});
-
-                },
-                onColorCleared: () => {
-                    commit({[c.slug]: ""});
-                },
+                onChange: (newValue) => callback({[c.slug]: newValue}),
+                onColorCleared: () => callback({[c.slug]: ""}),
             }));
 
             control = (
                 <PanelColorSettings
-                    className={'wpbs-controls__color'}
+                    className="wpbs-controls__color"
                     enableAlpha
                     colorSettings={colorSettings}
                     __nextHasNoMarginBottom
                 />
             );
             break;
+
         case "range":
             control = (
                 <RangeControl
                     id={inputId}
                     label={label}
                     value={value ?? defaultValue}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     min={controlProps.min ?? 0}
                     max={controlProps.max ?? 100}
                     __nextHasNoMarginBottom
                 />
             );
             break;
+
         case "gradient":
             control = (
                 <BaseControl label={label}>
@@ -163,35 +166,38 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                         value={value || defaultValue || undefined}
                         gradients={controlProps.gradients || []}
                         clearable={controlProps.clearable ?? false}
-                        onChange={commit}
+                        onChange={(v) => commit({[slug]: v})}
                         __nextHasNoMarginBottom
                     />
                 </BaseControl>
             );
             break;
+
         case "text":
             control = (
                 <TextControl
                     id={inputId}
                     value={value || defaultValue}
                     aria-label={label}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     type="text"
                     {...controlProps}
                 />
             );
             break;
+
         case "number":
             control = (
                 <NumberControl
                     id={inputId}
                     value={value || defaultValue}
                     aria-label={label}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
+
         case "select":
             control = (
                 <SelectControl
@@ -199,22 +205,24 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                     value={value || defaultValue}
                     options={controlProps.options || []}
                     aria-label={label}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     __nextHasNoMarginBottom
                     {...controlProps}
                 />
             );
             break;
+
         case "toggle":
             control = (
                 <ToggleControl
                     aria-label={label}
                     checked={!!value}
-                    onChange={(checked) => commit(!!checked)}
+                    onChange={(checked) => commit({[slug]: !!checked})}
                     {...controlProps}
                 />
             );
             break;
+
         case "unit":
             control = (
                 <UnitControl
@@ -228,19 +236,20 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                             {value: "%", label: "%"},
                         ]
                     }
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     aria-label={label}
                     isResetValueOnUnitChange
                     {...controlProps}
                 />
             );
             break;
+
         case "box":
             control = (
                 <BoxControl
                     label={label}
                     values={value || defaultValue}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
@@ -252,12 +261,9 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
             const allowedTypes = isImage ? ["image"] : ["video"];
             const currentValue = value ?? null;
 
-            // NEW: use normalizeMedia instead of extractMinimalImageMeta
             const onSelect = (wpMediaObject) => {
-                // Convert WP attachment → unified media shape
                 const normalized = normalizeMedia(wpMediaObject);
-
-                commit(normalized);
+                commit({[slug]: normalized});
             };
 
             control = (
@@ -266,13 +272,13 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                         <MediaUpload
                             title={`Select ${isImage ? "Image" : "Video"}`}
                             allowedTypes={allowedTypes}
-                            value={currentValue?.id || '#'}
+                            value={currentValue?.id || "#"}
                             onSelect={onSelect}
                             render={({open}) => (
                                 <PreviewThumbnail
                                     image={currentValue}
                                     onSelectClick={open}
-                                    callback={commit}
+                                    callback={(v) => commit({[slug]: v})}
                                     style={{
                                         objectFit: "contain",
                                         borderRadius: "6px",
@@ -291,8 +297,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
     }
 
     const hasValue = () => {
-
-        // Composite fields store values under each sub.slug, not field.slug
         if (type === "composite") {
             return field.fields.some(sub => {
                 const v = settings?.[sub.slug];
@@ -302,14 +306,10 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
 
         const val = settings?.[slug];
 
-        // shadow, box, unit, primitive, all behave correctly here
-
-        // hover color field
         if (type === "color") {
             return Object.values(settings).some(v => v != null && v !== "");
         }
 
-        // structural object stored under slug (rare for hover)
         if (val && typeof val === "object" && !Array.isArray(val)) {
             return Object.values(val).some(v => v != null && v !== "");
         }
@@ -317,20 +317,21 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
         return val != null && val !== "";
     };
 
-
-    return control ? (!!isToolsPanel ?
+    return control ? (
+        isToolsPanel ? (
             <ToolsPanelItem
                 hasValue={hasValue}
                 label={label}
-                onDeselect={() => commit(null)}
-                onSelect={() => commit("")} // initialize with an empty string
+                onDeselect={() => commit({[slug]: null})}
+                onSelect={() => commit({[slug]: ""})}
                 className={fieldClassNames}
                 isShownByDefault={false}
                 {...itemProps}
             >
                 {control}
-            </ToolsPanelItem> : <div className={fieldClassNames}>
-                {control}
-            </div>
+            </ToolsPanelItem>
+        ) : (
+            <div className={fieldClassNames}>{control}</div>
+        )
     ) : null;
 });

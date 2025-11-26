@@ -15,7 +15,6 @@ import {PanelBody} from "@wordpress/components";
 
 const mergeEntry = (entry, patch, reset = false) => {
     const base = reset ? {} : (entry || {});
-    // Deep merge into a fresh object to keep things immutable
     return merge({}, base, patch || {});
 };
 
@@ -23,10 +22,10 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     const [layout, setLayout] = useState(settings);
 
     useEffect(() => {
-        const cleanedIncoming = cleanObject(settings || {}, false);
-        const cleanedLocal = cleanObject(layout || {}, false);
+        const incoming = cleanObject(settings || {}, false);
+        const local = cleanObject(layout || {}, false);
 
-        if (!isEqual(cleanedIncoming, cleanedLocal)) {
+        if (!isEqual(incoming, local)) {
             setLayout(settings || {});
         }
     }, [settings, layout]);
@@ -47,29 +46,29 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     ];
 
     const baseRenderer = ({entry, update}) => {
-        const currentEntry = entry || {};
+        const current = entry || {};
 
         const handleLayoutUpdate = (patch, reset = false) => {
-            const nextEntry = mergeEntry(currentEntry, {props: patch}, reset);
-            update(nextEntry);
+            const next = mergeEntry(current, {props: patch}, reset);
+            update({...next});       // ALWAYS object
         };
 
         const handleHoverUpdate = (patch, reset = false) => {
-            const nextEntry = mergeEntry(currentEntry, {hover: patch}, reset);
-            update(nextEntry);
+            const next = mergeEntry(current, {hover: patch}, reset);
+            update({...next});
         };
 
         return (
             <Fragment>
                 <LayoutFields
                     label="Settings"
-                    settings={currentEntry.props || {}}
+                    settings={current.props || {}}
                     suppress={baseLayoutSuppress}
                     updateFn={handleLayoutUpdate}
                 />
 
                 <HoverFields
-                    settings={currentEntry.hover || {}}
+                    settings={current.hover || {}}
                     updateFn={handleHoverUpdate}
                 />
             </Fragment>
@@ -77,35 +76,34 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     };
 
     const breakpointRenderer = ({entry, update}) => {
-        const currentEntry = entry || {};
+        const current = entry || {};
 
         const handleLayoutUpdate = (patch, reset = false) => {
-            const nextEntry = mergeEntry(currentEntry, {props: patch}, reset);
-            update(nextEntry);
+            const next = mergeEntry(current, {props: patch}, reset);
+            update({...next});
         };
 
         const handleHoverUpdate = (patch, reset = false) => {
-            const nextEntry = mergeEntry(currentEntry, {hover: patch}, reset);
-            update(nextEntry);
+            const next = mergeEntry(current, {hover: patch}, reset);
+            update({...next});
         };
 
         return (
             <Fragment>
                 <LayoutFields
                     label="Settings"
-                    settings={currentEntry.props || {}}
+                    settings={current.props || {}}
                     updateFn={handleLayoutUpdate}
                 />
 
                 <HoverFields
-                    settings={currentEntry.hover || {}}
+                    settings={current.hover || {}}
                     updateFn={handleHoverUpdate}
                 />
             </Fragment>
         );
     };
 
-    // Make sure `breakpoints` exists, but otherwise just pass through
     const normalizedLayout = {
         ...(layout || {}),
         breakpoints: (layout && layout.breakpoints) || {},
@@ -115,7 +113,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         <PanelBody title={"Styles"} initialOpen={false} className={'is-style-unstyled'}>
             <BreakpointPanels
                 value={normalizedLayout}
-                onChange={updateSettings}
+                onChange={(obj) => updateSettings(obj)} // object-only
                 label="Layout"
                 render={{
                     base: baseRenderer,

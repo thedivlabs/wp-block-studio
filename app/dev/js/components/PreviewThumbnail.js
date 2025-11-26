@@ -10,44 +10,31 @@ function PreviewThumbnail({
                               style = {}
                           }) {
 
-    /* -------------------------------------------------------------
-     * STATE: image.type now determines video mode
-     * ------------------------------------------------------------- */
     const isVideoType = image?.type === "video";
 
-    /* -------------------------------------------------------------
-     * NORMALIZED OUTPUT HELPERS
-     * ------------------------------------------------------------- */
-
-    // Clear selection entirely
     const clearValue = () => {
-        callback(""); // unchanged behavior
+        callback({media: ""});  // wrapped
     };
 
-    // Set unified placeholder object
     const setPlaceholder = () => {
         callback({
-            id: null,
-            source: "#",     // used for breakpoint hiding & picture tag logic
-            type: null,
-            width: null,
-            height: null,
-            sizes: null,
-            isPlaceholder: true
+            media: {
+                id: null,
+                source: "#",
+                type: null,
+                width: null,
+                height: null,
+                sizes: null,
+                isPlaceholder: true,
+            }
         });
     };
 
-    // From placeholder → back to empty
     const enableFromPlaceholder = () => {
         clearValue();
     };
 
-    /* -------------------------------------------------------------
-     * STATE DETECTION
-     * ------------------------------------------------------------- */
-
     const isPlaceholder = image?.isPlaceholder === true;
-
     const hasRealMedia = !!(image?.id && !isPlaceholder);
 
     const src = hasRealMedia
@@ -55,11 +42,6 @@ function PreviewThumbnail({
         : null;
 
     const hasSelection = !!src;
-
-    /* -------------------------------------------------------------
-     * STYLES
-     * ------------------------------------------------------------- */
-
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
@@ -89,10 +71,6 @@ function PreviewThumbnail({
         height: "100%",
         objectFit: "cover"
     };
-
-    /* -------------------------------------------------------------
-     * EMPTY / PLACEHOLDER UI
-     * ------------------------------------------------------------- */
 
     if (!hasSelection) {
         const toggleDisabled = () => {
@@ -126,10 +104,6 @@ function PreviewThumbnail({
             </div>
         );
     }
-
-    /* -------------------------------------------------------------
-     * SELECTED THUMBNAIL
-     * ------------------------------------------------------------- */
 
     const thumb = isVideoType ? (
         <video preload="metadata" style={imageStyle}>

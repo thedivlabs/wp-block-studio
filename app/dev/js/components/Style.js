@@ -5,13 +5,12 @@ import {useInstanceId} from "@wordpress/compose";
 import {InspectorControls} from "@wordpress/block-editor";
 import {BackgroundControls} from "Components/Background";
 import {AdvancedControls} from "Components/AdvancedControls";
-import {isEqual} from 'lodash';
+import {isEqual, merge} from 'lodash';
 
 export const STYLE_ATTRIBUTES = {
     uniqueId: {type: "string"},
     "wpbs-css": {type: "object", default: {}},
 
-    // Clean separation of concerns:
     "wpbs-style": {type: "object", default: {props: {}, breakpoints: {}, hover: {}}},
     "wpbs-background": {type: "object", default: {props: {}, breakpoints: {}}},
     "wpbs-advanced": {type: "object", default: {}},
@@ -40,9 +39,9 @@ export const withStyle = (Component, config) => (props) => {
         "wpbs-advanced": advData = {},
     } = attributes;
 
-    /* --------------------------------------------------------------
+    /* ----------------------------------------------
        BLOCK REGISTRATION / UNIQUE ID SYNC
-    -------------------------------------------------------------- */
+    ---------------------------------------------- */
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
@@ -62,43 +61,43 @@ export const withStyle = (Component, config) => (props) => {
     }, []);
 
 
-    /* --------------------------------------------------------------
-       UPDATE: STYLE SETTINGS
-    -------------------------------------------------------------- */
+    /* ----------------------------------------------
+       UPDATE: STYLE SETTINGS (now merges objects)
+    ---------------------------------------------- */
     const updateStyleSettings = useCallback(
-        (next) => {
-            setAttributes({
-                "wpbs-style": cleanObject(next),
-            });
+        (patch) => {
+            const next = merge({}, styleData, patch);
+            setAttributes({"wpbs-style": cleanObject(next)});
         },
-        [setAttributes]
+        [setAttributes, styleData]
     );
 
+    /* ----------------------------------------------
+       UPDATE: ADVANCED SETTINGS (now merges)
+    ---------------------------------------------- */
     const updateAdvancedSettings = useCallback(
-        (next) => {
-            setAttributes({
-                "wpbs-advanced": {
-                    ...advData,
-                    ...next,
-                },
-            });
+        (patch) => {
+            const next = merge({}, advData, patch);
+            setAttributes({"wpbs-advanced": next});
         },
         [setAttributes, advData]
     );
 
+    /* ----------------------------------------------
+       UPDATE: BACKGROUND SETTINGS (now merges)
+    ---------------------------------------------- */
     const updateBgSettings = useCallback(
-        (next) => {
-            setAttributes({
-                "wpbs-background": next,
-            });
+        (patch) => {
+            const next = merge({}, bgData, patch);
+            setAttributes({"wpbs-background": next});
         },
-        [setAttributes]
+        [setAttributes, bgData]
     );
 
 
-    /* --------------------------------------------------------------
+    /* ----------------------------------------------
        APPLY CSS: clean + diff + trigger
-    -------------------------------------------------------------- */
+    ---------------------------------------------- */
     const applyCss = useCallback(
         (raw) => {
             if (!raw || typeof raw !== "object") return;
@@ -113,7 +112,7 @@ export const withStyle = (Component, config) => (props) => {
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
-                    group: uniqueId,        // ← inject group here
+                    group: uniqueId,
                     props,
                     styleRef,
                 });
@@ -123,9 +122,9 @@ export const withStyle = (Component, config) => (props) => {
     );
 
 
-    /* --------------------------------------------------------------
+    /* ----------------------------------------------
        APPLY PRELOAD: clean + diff + trigger
-    -------------------------------------------------------------- */
+    ---------------------------------------------- */
     const applyPreload = useCallback(
         (items) => {
             const arr = Array.isArray(items) ? items : [];
@@ -138,7 +137,7 @@ export const withStyle = (Component, config) => (props) => {
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
-                    group: uniqueId,        // ← inject group here
+                    group: uniqueId,
                     props,
                     styleRef,
                 });
@@ -148,9 +147,9 @@ export const withStyle = (Component, config) => (props) => {
     );
 
 
-    /* --------------------------------------------------------------
+    /* ----------------------------------------------
        AUTO-REPARSE WHEN STYLE/BG ATTRIBUTES CHANGE
-    -------------------------------------------------------------- */
+    ---------------------------------------------- */
     useEffect(() => {
         if (typeof onStyleChange !== "function") return;
         if (!styleRef.current) return;
@@ -158,35 +157,35 @@ export const withStyle = (Component, config) => (props) => {
         onStyleChange({
             css: blockCssRef.current,
             preload: blockPreloadRef.current,
-            group: uniqueId,            // ← inject group here
+            group: uniqueId,
             props,
             styleRef,
         });
     }, [styleData, bgData, uniqueId, props]);
 
 
-    /* --------------------------------------------------------------
-       BLOCK WRAPPER CALLBACK
-    -------------------------------------------------------------- */
+    /* ----------------------------------------------
+       WRAPPER CALLBACK
+    ---------------------------------------------- */
     const wrappedBlockWrapperCallback = useCallback(
         ({children, props: blockProps, ...wrapperProps}) => {
             return (
                 <BlockWrapper
                     props={blockProps}
-                    wrapperProps={{...wrapperProps, ...config}} // fresh every time
-                    config={config} // optional if BlockWrapper uses it
+                    wrapperProps={{...wrapperProps, ...config}}
+                    config={config}
                 >
                     {children}
                 </BlockWrapper>
             );
         },
-        [config] // ← minimal, safe, and required
+        [config]
     );
 
 
-    /* --------------------------------------------------------------
+    /* ----------------------------------------------
        RENDER
-    -------------------------------------------------------------- */
+    ---------------------------------------------- */
     return (
         <>
             <Component
@@ -198,26 +197,31 @@ export const withStyle = (Component, config) => (props) => {
 
             {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
 
-            {hasAdvanced && <InspectorControls group="advanced">
-                <AdvancedControls
-                    settings={advData}
-                    callback={updateAdvancedSettings}
-                />
-            </InspectorControls>}
+            {hasAdvanced && (
+                <InspectorControls group="advanced">
+                    <AdvancedControls
+                        settings={advData}
+                        callback={updateAdvancedSettings}
+                    />
+                </InspectorControls>
+            )}
 
             <InspectorControls group="styles">
                 <StyleEditorUI
                     settings={styleData}
                     updateStyleSettings={updateStyleSettings}
                 />
-                {hasBackground && <BackgroundControls
-                    settings={bgData}
-                    callback={updateBgSettings}
-                />}
+                {hasBackground && (
+                    <BackgroundControls
+                        settings={bgData}
+                        callback={updateBgSettings}
+                    />
+                )}
             </InspectorControls>
         </>
     );
 };
+
 
 export const withStyleSave = (Component, config) => (props) => {
     const {attributes} = props;

@@ -5,15 +5,12 @@ import {
     useInnerBlocksProps,
     InnerBlocks,
 } from "@wordpress/block-editor";
-import {memo, useMemo} from "@wordpress/element";
+import {memo} from "@wordpress/element";
 import _ from "lodash";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const {cleanObject, getCSSFromStyle} = API;
+const {cleanObject} = API;
 
-/**
- * Memoized background renderer — safe + cheap.
- */
 const BlockBackground = memo(
     ({attributes}) => {
         return <BackgroundElement attributes={attributes} isSave={false}/>;
@@ -25,18 +22,14 @@ const BlockBackground = memo(
         )
 );
 
-/**
- * Compute full block props (classes, styles, data attributes).
- * MUST run every render — DO NOT memoize the output.
- */
-const getBlockPropsMerged = (props, mergedWrapperProps) => {
+const getBlockPropsMerged = (props, mergedWrapperProps = {}) => {
     const {attributes = {}} = props;
 
     const {
         className: userClass = "",
         style: blockStyle = {},
         ...restWrapperProps
-    } = mergedWrapperProps;
+    } = mergedWrapperProps || {};
 
     const {"wpbs-style": styleSettings = {}, uniqueId} = attributes;
     const advanced = attributes["wpbs-advanced"] || {};
@@ -95,9 +88,7 @@ export const BlockWrapper = ({
                              }) => {
     const {attributes} = props;
 
-
     const bgSettings = attributes["wpbs-background"] || {};
-    const {"wpbs-style": styleSettings = {}} = attributes;
     const {"wpbs-advanced": advanced = {}} = attributes;
 
     const {
@@ -111,28 +102,19 @@ export const BlockWrapper = ({
     const isBackgroundActive =
         hasAnyBackground(bgSettings) && !!hasBackground;
 
-    const hasContainer = isBackgroundActive || advanced?.container;
+    const hasContainer =
+        isBackgroundActive || advanced?.container;
 
     const containerClass =
         "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20";
 
-    /**
-     * ✔ SAFE MEMOIZATION
-     * Merge wrapperProps + config in BlockWrapper.
-     * Prevents identity churn.
-     */
-    const mergedWrapperProps = {...wrapperProps, ...config};
+    const mergedWrapperProps = {
+        ...(wrapperProps || {}),
+        ...(config || {}),
+    };
 
-    /**
-     * MUST NOT MEMOIZE
-     * baseBlockProps MUST be recomputed every render
-     * to keep Gutenberg’s useSelect hook in the correct mode.
-     */
     const baseBlockProps = getBlockPropsMerged(props, mergedWrapperProps);
 
-    /* ─────────────────────────────────────────────
-       SAVE VERSION
-    ───────────────────────────────────────────── */
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
@@ -162,7 +144,6 @@ export const BlockWrapper = ({
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>{children}</div>
-
                     <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
@@ -171,9 +152,6 @@ export const BlockWrapper = ({
         return <Tag {...saveProps}>{children}</Tag>;
     }
 
-    /* ─────────────────────────────────────────────
-       EDIT VERSION
-    ───────────────────────────────────────────── */
     const blockProps = useBlockProps(baseBlockProps);
 
     if (hasContainer || isBackgroundActive) {

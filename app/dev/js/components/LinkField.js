@@ -6,8 +6,8 @@ import {
     __experimentalItem as Item,
 } from "@wordpress/components";
 
-export default function LinkField({value = {}, onChange}) {
-    const [query, setQuery] = useState(value.url || "");
+export default function LinkField({value = "", onChange}) {
+    const [query, setQuery] = useState(value || "");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
@@ -35,7 +35,9 @@ export default function LinkField({value = {}, onChange}) {
 
                 const responses = await Promise.all(
                     urls.map((u) =>
-                        fetch(u, {signal}).then((r) => r.json()).catch(() => [])
+                        fetch(u, {signal})
+                            .then((r) => r.json())
+                            .catch(() => [])
                     )
                 );
 
@@ -49,13 +51,9 @@ export default function LinkField({value = {}, onChange}) {
                 setResults(merged);
                 setOpen(true);
             } catch (err) {
-                if (!signal.aborted) {
-                    console.error(err);
-                }
+                if (!signal.aborted) console.error(err);
             } finally {
-                if (!signal.aborted) {
-                    setLoading(false);
-                }
+                if (!signal.aborted) setLoading(false);
             }
         }, 180);
 
@@ -66,20 +64,17 @@ export default function LinkField({value = {}, onChange}) {
     }, [query]);
 
     function apply(url) {
-        onChange?.(url);
+        onChange?.({url});  // wrapped
         setQuery(url);
         setResults([]);
         setOpen(false);
 
-        // blur the input immediately
         if (inputRef.current) {
             inputRef.current.blur();
         }
     }
 
-
     function handleBlur() {
-        // Small delay so clicking outside or navigation works
         setTimeout(() => {
             setOpen(false);
         }, 80);
@@ -92,6 +87,7 @@ export default function LinkField({value = {}, onChange}) {
         gap: '16px',
         padding: '35px 0px 10px'
     };
+
     const itemStyle = {
         width: '100%',
         display: 'flex',
@@ -99,6 +95,7 @@ export default function LinkField({value = {}, onChange}) {
         gap: '4px',
         padding: '0px'
     };
+
     const searchStyle = {
         width: '100%',
         display: 'flex',
@@ -117,36 +114,35 @@ export default function LinkField({value = {}, onChange}) {
                 <TextControl
                     className="block-editor-link-control__search-input"
                     placeholder="Search or type URL…"
-                    value={value}
+                    value={query}
                     onFocus={() => {
                         if (results.length > 0) setOpen(true);
                     }}
                     onBlur={handleBlur}
                     onChange={(v) => {
                         setQuery(v);
-                        onChange(v);
+                        onChange?.({url: v}); // wrapped
                     }}
                     __nextHasNoMarginBottom
                     __next40pxDefaultSize
-
-                    // ⭐ important
                     inputRef={inputRef}
                 />
 
                 {loading && <Spinner/>}
             </div>
 
-
             {open && results.length > 0 && (
-                <ItemGroup className="block-editor-link-control__search-results" style={itemGroupStyle}>
+                <ItemGroup
+                    className="block-editor-link-control__search-results"
+                    style={itemGroupStyle}
+                >
                     {results.map((item) => (
                         <Item
                             key={item.id}
                             className="block-editor-link-control__search-item"
                             style={itemStyle}
-                            // ⭐ the magic: use onMouseDown, not onClick
                             onMouseDown={(e) => {
-                                e.preventDefault();   // stop input blur from winning
+                                e.preventDefault();
                                 apply(item.url);
                             }}
                         >

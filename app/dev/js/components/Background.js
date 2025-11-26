@@ -54,10 +54,8 @@ function deepMergeAllowUndefined(base = {}, patch = {}) {
         const value = patch[key];
 
         if (isPlainObject(value)) {
-            // recurse
             result[key] = deepMergeAllowUndefined(base[key] || {}, value);
         } else {
-            // allow clearing: undefined, null, empty string
             result[key] = value;
         }
     }
@@ -81,7 +79,9 @@ function makeEntryHandlers(entry = {}, update) {
 
     const updateFn = (patch = {}, reset = false) => {
         const nextEntry = mergeEntryProps(currentEntry, patch, reset);
-        update(nextEntry);
+
+        // nextEntry is just props — BreakpointPanels expects update({ props })
+        update({props: nextEntry.props});
     };
 
     return {settings, updateFn};
@@ -96,15 +96,17 @@ export const BackgroundControls = function BackgroundControls({
         breakpoints: settings?.breakpoints || {},
     };
 
+    // ALWAYS produce a single object argument
     const handleChange = useCallback(
         (next = {}) => {
-            callback({
+            const out = {
                 props: next.props ?? value.props,
                 breakpoints: next.breakpoints ?? value.breakpoints,
-            });
+            };
 
+            callback(out);
         },
-        [callback]
+        [callback, value.props, value.breakpoints]
     );
 
     return (
@@ -190,7 +192,7 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
     ]
         .filter(Boolean)
         .join(" ");
-    //console.log(bgSettings);
+
     const resolvedSettings = resolveBackgroundSettings(bgSettings, !isSave);
 
     return (

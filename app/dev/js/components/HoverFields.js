@@ -17,21 +17,25 @@ export const HoverFields = ({
             {map
                 .filter((f) => !suppress.includes(f.slug))
                 .map((field) => {
+                    return (
+                        <Field
+                            key={field.slug}
+                            field={field}
+                            settings={settings}
+                            isToolsPanel={true}
 
-                    return (<Field
-                        key={field.slug}
-                        field={field}
-                        settings={settings}
-                        callback={(value) => {
-                            const nextHover = {
-                                ...settings,   // keep existing hover values
-                                ...value       // add the new patched values
-                            };
+                            // Field now ALWAYS gives an object,
+                            // so we merge it into the hover object and pass through.
+                            callback={(valueObj) => {
+                                const nextHover = {
+                                    ...settings,
+                                    ...valueObj,
+                                };
 
-                            updateFn(nextHover);
-                        }}
-                        isToolsPanel={true}
-                    />)
+                                updateFn(nextHover);
+                            }}
+                        />
+                    );
                 })}
         </ToolsPanel>
     );

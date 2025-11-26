@@ -10,39 +10,38 @@ import {
     SelectControl
 } from "@wordpress/components";
 
-
 import {useState, useMemo} from "@wordpress/element";
-import {
-    BlockControls
-} from "@wordpress/block-editor";
-
+import {BlockControls} from "@wordpress/block-editor";
 import {customLink} from "@wordpress/icons";
 import LinkField from "Components/LinkField";
-
 
 export default function Link({defaultValue = {}, callback}) {
 
     // unified link state
     const [link, setLink] = useState(defaultValue);
 
-
-    // one update fn for everything
+    // one update fn for everything — now object-only
     function update(next) {
         const merged = {...link, ...next};
         setLink(merged);
-        callback?.(merged);
+        callback?.(merged ? {...merged} : {}); // ALWAYS object
     }
 
     const sharedProps = {
         __nextHasNoMarginBottom: true,
         __next40pxDefaultSize: true,
-    }
+    };
 
-    const LinkControl = useMemo(() => (<LinkField
-        label="Link"
-        value={link.url}
-        onChange={(url) => update({url})}
-    />), [link?.url]);
+    const LinkControl = useMemo(
+        () => (
+            <LinkField
+                label="Link"
+                value={link.url}
+                onChange={(url) => update({url})}
+            />
+        ),
+        [link?.url]
+    );
 
     return (
         <BlockControls>
@@ -63,9 +62,11 @@ export default function Link({defaultValue = {}, callback}) {
 
                                     {LinkControl}
 
-
-                                    <PanelBody title="Advanced Settings" initialOpen={false}
-                                               className="is-style-unstyled">
+                                    <PanelBody
+                                        title="Advanced Settings"
+                                        initialOpen={false}
+                                        className="is-style-unstyled"
+                                    >
                                         <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
                                             <ToggleControl
                                                 label="Open in new tab"
@@ -73,8 +74,13 @@ export default function Link({defaultValue = {}, callback}) {
                                                 onChange={(v) => update({linkNewTab: v})}
                                             />
                                         </Grid>
-                                        <Grid columns={2} columnGap={15} rowGap={20} style={{marginTop: '15px'}}>
 
+                                        <Grid
+                                            columns={2}
+                                            columnGap={15}
+                                            rowGap={20}
+                                            style={{marginTop: '15px'}}
+                                        >
                                             <TextControl
                                                 label="Title attribute"
                                                 value={link.alt}
@@ -117,12 +123,10 @@ export default function Link({defaultValue = {}, callback}) {
                                                 ]}
                                                 onChange={(v) => update({rel: v})}
                                             />
-
                                         </Grid>
                                     </PanelBody>
+
                                 </div>
-
-
                             </MenuItem>
                         </MenuGroup>
                     )}
@@ -148,34 +152,16 @@ export function getAnchorProps(settings = {}) {
 
     const props = {};
 
-    if (url) {
-        props.href = url;
-    }
-
-    if (id) {
-        props.id = id;
-    }
-
-    if (title) {
-        props.title = title;
-    }
-
-    if (ariaLabel) {
-        props['aria-label'] = ariaLabel;
-    }
-
-    if (alt) {
-        props['title'] = alt;
-    }
-
-    if (rel) {
-        props.rel = rel;
-    }
+    if (url) props.href = url;
+    if (id) props.id = id;
+    if (title) props.title = title;
+    if (ariaLabel) props['aria-label'] = ariaLabel;
+    if (alt) props['title'] = alt;
+    if (rel) props.rel = rel;
 
     if (linkNewTab) {
         props.target = "_blank";
 
-        // security pairing — only add if a rel value isn't already supplied
         if (!rel || !rel.includes("noopener") || !rel.includes("noreferrer")) {
             const safe = ["noopener", "noreferrer"];
             props.rel = rel ? `${rel} ${safe.join(" ")}` : safe.join(" ");

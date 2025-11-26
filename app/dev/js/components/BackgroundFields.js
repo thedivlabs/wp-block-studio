@@ -19,8 +19,11 @@ export const BackgroundFields = function BackgroundFields({
     const {backgroundFieldsMap: map = []} =
     window?.WPBS_StyleEditor ?? {};
 
+    // ALWAYS send a single object argument to updateFn
     const onUpdate = useCallback(
-        (slug, value) => updateFn({[slug]: value}),
+        (slug, value) => {
+            updateFn({[slug]: value});
+        },
         [updateFn]
     );
 
@@ -47,12 +50,9 @@ export const BackgroundFields = function BackgroundFields({
                         {label: "Select", value: ""},
                         {label: "Image", value: "image"},
                         {label: "Featured Image", value: "featured-image"},
-
-                        // add only when isBreakpoint === true
                         ...(isBreakpoint
                             ? [{label: "Featured Image Mobile", value: "featured-image-mobile"}]
                             : []),
-
                         {label: "Video", value: "video"},
                     ]}
                 />
@@ -71,7 +71,7 @@ export const BackgroundFields = function BackgroundFields({
                                     full: true,
                                 }}
                                 settings={settings}
-                                callback={(v) => onUpdate("media", v)}
+                                callback={(obj) => updateFn(obj)}
                                 isToolsPanel={false}
                             />
                         )}
@@ -102,7 +102,7 @@ export const BackgroundFields = function BackgroundFields({
                                     clearable={false}
                                     value={settings?.overlay ?? undefined}
                                     onChange={(value) =>
-                                        onUpdate("overlay", value)
+                                        updateFn({overlay: value})
                                     }
                                 />
                             </div>
@@ -116,10 +116,8 @@ export const BackgroundFields = function BackgroundFields({
                                     slug: "color",
                                     label: "Color",
                                     value: settings?.color ?? undefined,
-                                    onChange: (value) => {
-                                        onUpdate("color", value);
-                                    }
-
+                                    onChange: (value) =>
+                                        updateFn({color: value}),
                                 },
                             ]}
                             __nextHasNoMarginBottom
@@ -130,7 +128,7 @@ export const BackgroundFields = function BackgroundFields({
                                 <ToggleControl
                                     label="Eager"
                                     checked={!!settings?.eager}
-                                    onChange={(v) => onUpdate("eager", v)}
+                                    onChange={(v) => updateFn({eager: v})}
                                 />
                             )}
 
@@ -138,7 +136,7 @@ export const BackgroundFields = function BackgroundFields({
                                 <ToggleControl
                                     label="Fixed"
                                     checked={!!settings?.fixed}
-                                    onChange={(v) => onUpdate("fixed", v)}
+                                    onChange={(v) => updateFn({fixed: v})}
                                 />
                             )}
                         </Grid>
@@ -156,11 +154,11 @@ export const BackgroundFields = function BackgroundFields({
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(v) => onUpdate(field.slug, v)}
+                        callback={(obj) => updateFn(obj)}
                         isToolsPanel={true}
                     />
                 ))}
             </ToolsPanel>
         </Fragment>
     );
-}
+};

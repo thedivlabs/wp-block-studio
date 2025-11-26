@@ -187,53 +187,28 @@ export function diffObjects(base = {}, bp = {}) {
 }
 
 export function cleanObject(obj, strict = false) {
-    return _.transform(
-        obj,
-        (result, value, key) => {
-            // 1) Objects (recurse, but KEEP empty objects if value is undefined in parent)
-            if (_.isPlainObject(value)) {
-                const cleaned = cleanObject(value, strict);
-                // If child object is empty and strict=false, keep it
-                if (!_.isEmpty(cleaned) || !strict) {
-                    result[key] = cleaned;
-                }
+    return _.transform(obj, (result, value, key) => {
+        if (_.isPlainObject(value)) {
+            const cleaned = cleanObject(value, strict);
+            if (!_.isEmpty(cleaned)) {
+                result[key] = cleaned;
+            }
+        } else if (Array.isArray(value)) {
+            const cleanedArray = value
+                .map((v) => (_.isPlainObject(v) ? cleanObject(v, strict) : v))
+                .filter((v) => v !== undefined && v !== null && (!strict || (v !== '' && !(typeof v === 'string' && v.trim() === ''))));
+
+            if (cleanedArray.length > 0) {
+                result[key] = cleanedArray;
+            }
+        } else if (value !== undefined && value !== null) {
+            if (strict && typeof value === 'string' && value.trim() === '') {
                 return;
             }
-
-            // 2) Arrays (clean items but keep structure)
-            if (Array.isArray(value)) {
-                result[key] = value
-                    .map((v) =>
-                        _.isPlainObject(v) ? cleanObject(v, strict) : v
-                    )
-                    .filter((v) => {
-                        if (v === undefined) return true;  // <-- keep undefined
-                        if (v === null) return true;       // <-- keep null
-                        if (strict && typeof v === "string" && !v.trim()) {
-                            return false;
-                        }
-                        return true;
-                    });
-                return;
-            }
-
-            // 3) Scalars — KEEP undefined & null!
-            if (value === undefined || value === null) {
-                result[key] = value; // <-- this is the important fix
-                return;
-            }
-
-            // 4) Strings: in strict mode remove empty strings, otherwise allow them
-            if (strict && typeof value === "string" && !value.trim()) {
-                return;
-            }
-
             result[key] = value;
-        },
-        {}
-    );
+        }
+    }, {});
 }
-
 
 export function extractPreloadsFromLayout(bgData = {}, uniqueId) {
     const result = [];

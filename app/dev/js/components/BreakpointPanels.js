@@ -4,7 +4,6 @@ import {Button} from "@wordpress/components";
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // Extract & normalize base entry
     const {
         breakpoints = {},
         ...baseEntry
@@ -27,28 +26,46 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         return Object.keys(breakpoints).sort((a, b) => {
             const A = breakpointDefs.find((bp) => bp.key === a);
             const B = breakpointDefs.find((bp) => bp.key === b);
-            return (B?.size || 0) - (A?.size || 0); // DESCENDING
+            return (B?.size || 0) - (A?.size || 0);
         });
     }, [breakpoints, breakpointDefs]);
 
 
-    // FULL base entry expected; merge already done upstream
+    // FIX #1 — MERGE base entry instead of overwriting
     const updateBase = useCallback(
         (nextEntry) => {
-            onChange({
-                ...(nextEntry || {}),
+            const merged = {
+                ...normalizedBaseEntry,
+                ...nextEntry,
+                props: {
+                    ...(normalizedBaseEntry.props || {}),
+                    ...(nextEntry?.props || {}),
+                },
                 breakpoints,
-            });
+            };
+            onChange(merged);
         },
-        [breakpoints, onChange]
+        [breakpoints, normalizedBaseEntry, onChange]
     );
 
-    // FULL breakpoint entry expected; merge already done upstream
+
+    // FIX #2 — DEEP MERGE breakpoint entries instead of replacing
     const updateBreakpoint = useCallback(
         (bpKey, nextEntry) => {
+            const prev = breakpoints[bpKey] || {};
+
+            const mergedEntry = {
+                ...prev,
+                ...nextEntry,
+                props: {
+                    ...(prev.props || {}),
+                    ...(nextEntry?.props || {}),
+                },
+            };
+
             const nextBreakpoints = {
                 ...breakpoints,
-                [bpKey]: nextEntry || {},
+                [bpKey]: mergedEntry,
             };
 
             onChange({
@@ -58,6 +75,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         },
         [normalizedBaseEntry, breakpoints, onChange]
     );
+
 
     const removeBreakpoint = useCallback(
         (bpKey) => {
@@ -105,7 +123,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         const nextBreakpoints = {
             ...breakpoints,
             [newKey]: {
-                props: {}, // guarantee props exists
+                props: {},   // MUST EXIST
             },
         };
 
@@ -117,7 +135,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
-            {/* Base panel */}
             <div className="wpbs-layout-tools__panel" key="base">
                 <div className="wpbs-layout-tools__header">
                     <strong>{label ?? "Base"}</strong>
@@ -132,7 +149,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                 </div>
             </div>
 
-            {/* Breakpoint panels */}
             {orderedBpKeys.map((bpKey) => {
                 const raw = breakpoints[bpKey] || {};
                 const entry = {
@@ -154,11 +170,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                     value={bpKey}
                                     onChange={(e) => {
                                         const newKey = e.target.value;
-
-                                        if (newKey !== bpKey && breakpoints[newKey]) {
-                                            return;
-                                        }
-
+                                        if (newKey !== bpKey && breakpoints[newKey]) return;
                                         renameBreakpoint(bpKey, newKey);
                                     }}
                                 >

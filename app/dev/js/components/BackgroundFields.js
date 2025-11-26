@@ -117,8 +117,7 @@ export const BackgroundFields = function BackgroundFields({
                                     label: "Color",
                                     value: settings?.color ?? undefined,
                                     onChange: (value) => {
-                                        const newValue = value === settings?.color ? "" : value;
-                                        onUpdate("color", newValue);
+                                        onUpdate("color", value);
                                     }
 
                                 },

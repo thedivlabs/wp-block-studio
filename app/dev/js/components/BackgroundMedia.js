@@ -1,7 +1,75 @@
+import {useEffect, useRef, useState} from "@wordpress/element";
+
+const BackgroundVideoEditor = ({bpEntries = [], baseObj}) => {
+    const allVideos = [
+        ...(baseObj?.source ? [{size: Infinity, src: baseObj.source}] : []),
+        ...bpEntries.map(o => ({size: o.size, src: o.media.source})),
+    ];
+
+    // Sort largest → smallest
+    allVideos.sort((a, b) => b.size - a.size);
+
+    const [videoSrc, setVideoSrc] = useState(null);
+
+    useEffect(() => {
+        if (!allVideos.length) return;
+
+        // Build matchMedia listeners for real breakpoints (skip Infinity)
+        const queries = allVideos
+            .filter(v => v.size !== Infinity)
+            .map(v => ({
+                size: v.size,
+                src: v.src,
+                mql: window.matchMedia(`(max-width: ${v.size - 1}px)`),
+            }));
+
+        const pick = () => {
+            // 1. Try to match breakpoints in descending order
+            for (let q of queries) {
+                if (q.mql.matches) {
+                    setVideoSrc(q.src);
+                    return;
+                }
+            }
+
+            // 2. Otherwise fall back to Infinity (base video)
+            const base = allVideos.find(v => v.size === Infinity);
+            setVideoSrc(base?.src || null);
+        };
+
+        // Initial pick
+        pick();
+
+        // Attach listeners
+        queries.forEach(q => q.mql.addEventListener("change", pick));
+
+        return () => {
+            queries.forEach(q => q.mql.removeEventListener("change", pick));
+        };
+    }, [bpEntries, baseObj]);
+
+    if (!videoSrc) return null;
+
+    return (
+        <video
+            src={videoSrc}
+            muted
+            playsInline
+            preload="metadata"
+            poster={videoSrc}
+            className="absolute top-0 left-0 w-full h-full object-cover pointer-events-none opacity-60"
+            onLoadedMetadata={(e) => {
+                try {
+                    e.target.currentTime = 0;
+                } catch (_) {
+                }
+            }}
+            onCanPlay={(e) => e.target.pause()}
+        />
+    );
+};
 
 const BackgroundVideo = ({settings = {}, isSave = false}) => {
-    if (!isSave) return null; // only output on frontend save
-
     const {props = {}, breakpoints = {}} = settings || {};
     const bpDefs = WPBS?.settings?.breakpoints ?? {};
     const entries = [];
@@ -24,21 +92,17 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
     // Breakpoints
     Object.entries(breakpoints || {}).forEach(([bpKey, bpData]) => {
         const size = bpDefs?.[bpKey]?.size ?? 0;
-        const bpMedia = bpData?.props?.media;
-        const bpType = bpData?.props?.type;
+        const bpProps = bpData?.props || {};
+        const bpType = bpProps.type;
+        const bpMedia = bpProps.media;
 
         // Breakpoint explicitly requests video
         if (bpType === "video") {
-            // Real video at this breakpoint
             if (bpMedia?.source) {
-                entries.push({
-                    size,
-                    media: bpMedia,
-                });
+                entries.push({size, media: bpMedia});
                 return;
             }
 
-            // Disabled placeholder video at this breakpoint
             if (bpMedia?.isPlaceholder || bpMedia?.source === "#") {
                 entries.push({
                     size,
@@ -56,7 +120,7 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
             }
         }
 
-        // Breakpoint NOT video, but base video exists → explicit disable
+        // Breakpoint NOT video → disable base video
         if (isBaseVideo) {
             entries.push({
                 size,
@@ -75,7 +139,6 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     if (!entries.length) return null;
 
-    // Largest -> smallest (Infinity keeps base last)
     entries.sort((a, b) => b.size - a.size);
 
     const baseEntry = entries.find((e) => e.size === Infinity);
@@ -83,14 +146,53 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     const bpEntries = entries.filter((e) => e.size !== Infinity);
 
+    /* ------------------------------------------------------------
+     * EDIT vs SAVE props
+     * ------------------------------------------------------------ */
+
+    const videoPropsEdit = {
+        muted: true,
+        playsInline: true,
+        preload: "metadata",
+        poster: baseObj?.source || undefined,
+        onLoadedMetadata: (e) => {
+            try {
+                e.target.currentTime = 0;  // freeze on first frame
+            } catch (err) {
+            }
+        },
+        onCanPlay: (e) => {
+            e.target.pause(); // prevent accidental playback
+        },
+        className:
+            "absolute top-0 left-0 w-full h-full object-cover pointer-events-none opacity-60",
+    };
+
+    const videoPropsSave = {
+        muted: true,
+        loop: true,
+        autoPlay: true,
+        playsInline: true,
+        preload: "auto",
+        className:
+            "absolute top-0 left-0 w-full h-full z-0 pointer-events-none",
+    };
+
+    const videoProps = isSave ? videoPropsSave : videoPropsEdit;
+
+    const srcAttr = isSave ? "data-src" : "data-src";
+
+
+    console.log(bpEntries);
+
+
+    if (!isSave) {
+        return <BackgroundVideoEditor bpEntries={bpEntries} baseObj={baseObj}/>;
+    }
+
+
     return (
-        <video
-            muted
-            loop
-            autoPlay
-            playsInline
-            className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
-        >
+        <video {...videoProps}>
             {bpEntries.map(({size, media}, i) => {
                 const mq =
                     Number.isFinite(size) &&
@@ -102,7 +204,7 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
                 return (
                     <source
                         key={`bp-${i}`}
-                        data-src={media.source || "#"}
+                        {...{[srcAttr]: media.source || "#"}}
                         data-media={mq}
                         type="video/mp4"
                     />

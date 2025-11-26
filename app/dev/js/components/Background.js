@@ -1,7 +1,7 @@
 import {memo, useCallback} from "@wordpress/element";
 import {PanelBody} from "@wordpress/components";
 import {BreakpointPanels} from "Components/BreakpointPanels";
-import {merge} from "lodash";
+import {merge, isPlainObject} from "lodash";
 import {BackgroundFields} from "./BackgroundFields";
 import {BackgroundMedia} from "./BackgroundMedia";
 import {resolveFeaturedMedia} from "Includes/helper";
@@ -47,17 +47,35 @@ function resolveBackgroundSettings(settings = {}, isEditor = false) {
     return resolved;
 }
 
+function deepMergeAllowUndefined(base = {}, patch = {}) {
+    const result = {...base};
+
+    for (const key in patch) {
+        const value = patch[key];
+
+        if (isPlainObject(value)) {
+            // recurse
+            result[key] = deepMergeAllowUndefined(base[key] || {}, value);
+        } else {
+            // allow clearing: undefined, null, empty string
+            result[key] = value;
+        }
+    }
+
+    return result;
+}
+
 
 function mergeEntryProps(entry = {}, patch = {}, reset = false) {
     const currentProps = entry.props || {};
     const baseProps = reset ? {} : currentProps;
-    const nextProps = merge({}, baseProps, patch || {});
 
     return {
         ...entry,
-        props: nextProps,
+        props: deepMergeAllowUndefined(baseProps, patch),
     };
 }
+
 
 function makeEntryHandlers(entry = {}, update) {
     const currentEntry = entry || {};
@@ -83,9 +101,10 @@ export const BackgroundControls = function BackgroundControls({
     const handleChange = useCallback(
         (next = {}) => {
             callback({
-                props: next.props || {},
-                breakpoints: next.breakpoints || {},
+                props: next.props ?? value.props,
+                breakpoints: next.breakpoints ?? value.breakpoints,
             });
+
         },
         [callback]
     );

@@ -280,11 +280,6 @@ registerBlockType(metadata.name, {
         const settings = attributes["wpbs-video"] || {};
 
 
-        useEffect(() => {
-            console.log(settings);
-        }, [settings]);
-
-
         const updateSettings = useCallback(
             (obj) => {
                 if (!obj || typeof obj !== "object") return;

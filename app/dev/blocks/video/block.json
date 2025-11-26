@@ -7,6 +7,16 @@
   "selectors": {
     "root": ".wpbs-video"
   },
+  "attributes": {
+    "style": {
+      "type": "object",
+      "default": {
+        "color": {
+          "background": "#151a1fa1"
+        }
+      }
+    }
+  },
   "supports": {
     "layout": false,
     "interactivity": true,
@@ -33,5 +43,3 @@
     "file:./block.css"
   ]
 }
-
-

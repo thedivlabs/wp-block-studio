@@ -182,6 +182,10 @@ const BackgroundVideo = ({settings = {}, isSave = false}) => {
 
     const srcAttr = isSave ? "data-src" : "data-src";
 
+
+    console.log(bpEntries);
+
+
     if (!isSave) {
         return <BackgroundVideoEditor bpEntries={bpEntries} baseObj={baseObj}/>;
     }

@@ -119,7 +119,7 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [cleanObject, onStyleChange, props, uniqueId]
+        [cleanObject, onStyleChange, uniqueId]
     );
 
 
@@ -144,7 +144,7 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [onStyleChange, props, uniqueId]
+        [onStyleChange, uniqueId]
     );
 
 

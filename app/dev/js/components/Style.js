@@ -173,14 +173,14 @@ export const withStyle = (Component, config) => (props) => {
             return (
                 <BlockWrapper
                     props={blockProps}
-                    wrapperProps={wrapperProps}
-                    config={config}     // pass separately
+                    wrapperProps={{...wrapperProps, ...config}} // fresh every time
+                    config={config} // optional if BlockWrapper uses it
                 >
                     {children}
                 </BlockWrapper>
             );
         },
-        [config]
+        [config] // ← minimal, safe, and required
     );
 
 

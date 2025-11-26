@@ -5,37 +5,52 @@ import {
     useInnerBlocksProps,
     InnerBlocks,
 } from "@wordpress/block-editor";
-import {memo} from "@wordpress/element";
+import {memo, useMemo} from "@wordpress/element";
 import _ from "lodash";
 
 const API = window?.WPBS_StyleEditor ?? {};
 const {cleanObject, getCSSFromStyle} = API;
 
 /**
- * Build block props (classes, styles, data attributes) from layout props.
+ * Memoized background renderer — safe + cheap.
  */
-const getBlockProps = (props = {}, wrapperProps = {}) => {
+const BlockBackground = memo(
+    ({attributes}) => {
+        return <BackgroundElement attributes={attributes} isSave={false}/>;
+    },
+    (prev, next) =>
+        _.isEqual(
+            prev.attributes["wpbs-background"],
+            next.attributes["wpbs-background"]
+        )
+);
+
+/**
+ * Compute full block props (classes, styles, data attributes).
+ * MUST run every render — DO NOT memoize the output.
+ */
+const getBlockPropsMerged = (props, mergedWrapperProps) => {
     const {attributes = {}} = props;
+
     const {
         className: userClass = "",
         style: blockStyle = {},
         ...restWrapperProps
-    } = wrapperProps;
+    } = mergedWrapperProps;
 
     const {"wpbs-style": styleSettings = {}, uniqueId} = attributes;
     const advanced = attributes["wpbs-advanced"] || {};
-    const {props: layout = {}, hover = {},} = styleSettings;
+    const {props: layout = {}} = styleSettings;
 
-    // background now comes from separate attribute
     const bgSettings = attributes["wpbs-background"] || {};
-    const hasBackground = hasAnyBackground(bgSettings);
-    const hasContainer = hasBackground || advanced.container;
+    const hasBackgroundActive = hasAnyBackground(bgSettings);
+    const hasContainer = hasBackgroundActive || advanced.container;
     const isContainer = !hasContainer && !!layout.container;
 
     const classList = [
         userClass || null,
         uniqueId,
-        hasBackground ? "relative" : null,
+        hasBackgroundActive ? "relative" : null,
         advanced["hide-empty"] && "--hide-empty",
         advanced["required"] && "--required",
         layout["box-shadow"] && "--shadow",
@@ -48,12 +63,6 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
         .filter(Boolean)
         .join(" ")
         .trim();
-
-    const styleList = Object.fromEntries(
-        Object.entries({})
-            .map(([key, value]) => [key, getCSSFromStyle(value)])
-            .filter(([_, v]) => v !== undefined && v !== null && v !== "")
-    );
 
     const dataProps = Object.fromEntries(
         Object.entries({
@@ -69,7 +78,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     return cleanObject(
         {
             className: classList,
-            style: {...blockStyle, ...styleList},
+            style: {...blockStyle},
             ...dataProps,
             ...restWrapperProps,
         },
@@ -77,24 +86,10 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     );
 };
 
-/**
- * Memoized editor-only background layer.
- * Must compare `wpbs-background` instead of old `wpbs-style.background`.
- */
-const BlockBackground = memo(
-    ({attributes}) => {
-        return <BackgroundElement attributes={attributes} isSave={false}/>;
-    },
-    (prev, next) =>
-        _.isEqual(
-            prev.attributes["wpbs-background"],
-            next.attributes["wpbs-background"]
-        )
-);
-
 export const BlockWrapper = ({
                                  props,
                                  wrapperProps = {},
+                                 config = {},
                                  children,
                                  isSave = false,
                              }) => {
@@ -117,21 +112,29 @@ export const BlockWrapper = ({
 
     const hasContainer = isBackgroundActive || advanced?.container;
 
-    const containerClass = [
-        "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20",
-    ]
-        .filter(Boolean)
-        .join(" ");
+    const containerClass =
+        "wpbs-layout-wrapper wpbs-container w-full h-full relative z-20";
 
-    const baseBlockProps = getBlockProps(props, wrapperProps);
+    /**
+     * ✔ SAFE MEMOIZATION
+     * Merge wrapperProps + config in BlockWrapper.
+     * Prevents identity churn.
+     */
+    const mergedWrapperProps = {...wrapperProps, ...config};
 
-    /* ──────────────────────────────────────────────────────────────
+    /**
+     * MUST NOT MEMOIZE
+     * baseBlockProps MUST be recomputed every render
+     * to keep Gutenberg’s useSelect hook in the correct mode.
+     */
+    const baseBlockProps = getBlockPropsMerged(props, mergedWrapperProps);
+
+    /* ─────────────────────────────────────────────
        SAVE VERSION
-    ─────────────────────────────────────────────────────────────── */
+    ───────────────────────────────────────────── */
     if (isSave) {
         const saveProps = useBlockProps.save(baseBlockProps);
 
-        // CASE 1 — InnerBlocks + container/background
         if (hasChildren && (hasContainer && isBackgroundActive)) {
             return (
                 <Tag {...saveProps}>
@@ -145,7 +148,6 @@ export const BlockWrapper = ({
             );
         }
 
-        // CASE 2 — InnerBlocks only
         if (hasChildren) {
             return (
                 <Tag {...saveProps}>
@@ -155,7 +157,6 @@ export const BlockWrapper = ({
             );
         }
 
-        // CASE 3 — No InnerBlocks + container/background
         if (hasContainer || isBackgroundActive) {
             return (
                 <Tag {...saveProps}>
@@ -166,13 +167,12 @@ export const BlockWrapper = ({
             );
         }
 
-        // CASE 4 — No InnerBlocks, no container/background
         return <Tag {...saveProps}>{children}</Tag>;
     }
 
-    /* ──────────────────────────────────────────────────────────────
+    /* ─────────────────────────────────────────────
        EDIT VERSION
-    ─────────────────────────────────────────────────────────────── */
+    ───────────────────────────────────────────── */
     const blockProps = useBlockProps(baseBlockProps);
 
     if (hasContainer || isBackgroundActive) {
@@ -188,7 +188,7 @@ export const BlockWrapper = ({
                     {children}
                 </div>
 
-                <BlockBackground attributes={attributes} isSave={false}/>
+                <BlockBackground attributes={attributes}/>
             </Tag>
         );
     }
@@ -203,6 +203,5 @@ export const BlockWrapper = ({
         );
     }
 
-    // NO CHILDREN — Basic rendering
     return <Tag {...blockProps}>{children}</Tag>;
 };

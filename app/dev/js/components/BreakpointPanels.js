@@ -1,20 +1,29 @@
 import {useCallback, useMemo} from "@wordpress/element";
 import {Button} from "@wordpress/components";
 
+//
+// BreakpointPanels
+// Patch-based, no slug-based updates.
+// Inner panels send patch objects (e.g. { "font-size": "20px" }).
+// This file merges those patches into full entries.
+//
+
 export function BreakpointPanels({value = {}, onChange, render, label}) {
     const themeBreakpoints = WPBS?.settings?.breakpoints || {};
 
-    // Extract & normalize base entry
-    const {
-        breakpoints = {},
-        ...baseEntry
-    } = value || {};
+    //
+    // Normalize incoming shape
+    //
+    const {breakpoints = {}, ...baseEntry} = value || {};
 
     const normalizedBaseEntry = {
         props: baseEntry.props || {},
         ...baseEntry,
     };
 
+    //
+    // Prepare breakpoint list
+    //
     const breakpointDefs = useMemo(() => {
         return Object.entries(themeBreakpoints).map(([key, bp]) => ({
             key,
@@ -23,32 +32,56 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         }));
     }, [themeBreakpoints]);
 
+    // Sort DESCENDING (largest first)
     const orderedBpKeys = useMemo(() => {
         return Object.keys(breakpoints).sort((a, b) => {
             const A = breakpointDefs.find((bp) => bp.key === a);
             const B = breakpointDefs.find((bp) => bp.key === b);
-            return (B?.size || 0) - (A?.size || 0); // DESCENDING
+            return (B?.size || 0) - (A?.size || 0);
         });
     }, [breakpoints, breakpointDefs]);
 
-
-    // FULL base entry expected; merge already done upstream
+    //
+    // Base entry updater (receives FULL ENTRY PATCH)
+    //
     const updateBase = useCallback(
-        (nextEntry) => {
+        (partialEntry) => {
+            const nextEntry = {
+                ...normalizedBaseEntry,
+                ...partialEntry, // merge patch
+                props: {
+                    ...(normalizedBaseEntry.props || {}),
+                    ...(partialEntry?.props || {}),
+                },
+            };
+
             onChange({
-                ...(nextEntry || {}),
+                ...nextEntry,
                 breakpoints,
             });
         },
-        [breakpoints, onChange]
+        [normalizedBaseEntry, breakpoints, onChange]
     );
 
-    // FULL breakpoint entry expected; merge already done upstream
+    //
+    // Breakpoint entry updater (FULL ENTRY PATCH)
+    //
     const updateBreakpoint = useCallback(
-        (bpKey, nextEntry) => {
+        (bpKey, partialEntry) => {
+            const current = breakpoints[bpKey] || {props: {}};
+
+            const nextEntry = {
+                ...current,
+                ...partialEntry,
+                props: {
+                    ...(current.props || {}),
+                    ...(partialEntry?.props || {}),
+                },
+            };
+
             const nextBreakpoints = {
                 ...breakpoints,
-                [bpKey]: nextEntry || {},
+                [bpKey]: nextEntry,
             };
 
             onChange({
@@ -59,6 +92,9 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [normalizedBaseEntry, breakpoints, onChange]
     );
 
+    //
+    // Remove breakpoint
+    //
     const removeBreakpoint = useCallback(
         (bpKey) => {
             const next = {...breakpoints};
@@ -72,13 +108,17 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [normalizedBaseEntry, breakpoints, onChange]
     );
 
+    //
+    // Rename breakpoint
+    //
     const renameBreakpoint = useCallback(
         (oldKey, newKey) => {
-            if (newKey === oldKey) return;
             if (!breakpoints[oldKey]) return;
             if (breakpoints[newKey]) return;
+            if (newKey === oldKey) return;
 
             const entry = breakpoints[oldKey];
+
             const next = {...breakpoints};
             delete next[oldKey];
             next[newKey] = entry;
@@ -91,33 +131,37 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [normalizedBaseEntry, breakpoints, onChange]
     );
 
+    //
+    // Add new breakpoint
+    //
     const addBreakpoint = useCallback(() => {
-        const existingKeys = Object.keys(breakpoints);
+        const existing = Object.keys(breakpoints);
 
         const available = breakpointDefs
             .map((bp) => bp.key)
-            .filter((k) => !existingKeys.includes(k));
+            .filter((k) => !existing.includes(k));
 
         if (!available.length) return;
 
         const newKey = available[0];
 
-        const nextBreakpoints = {
+        const next = {
             ...breakpoints,
-            [newKey]: {
-                props: {}, // guarantee props exists
-            },
+            [newKey]: {props: {}},
         };
 
         onChange({
             ...normalizedBaseEntry,
-            breakpoints: nextBreakpoints,
+            breakpoints: next,
         });
     }, [normalizedBaseEntry, breakpoints, breakpointDefs, onChange]);
 
+    //
+    // RENDER
+    //
     return (
         <div className="wpbs-layout-tools wpbs-block-controls">
-            {/* Base panel */}
+            {/* Base Panel */}
             <div className="wpbs-layout-tools__panel" key="base">
                 <div className="wpbs-layout-tools__header">
                     <strong>{label ?? "Base"}</strong>
@@ -127,12 +171,12 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                     {render.base({
                         bpKey: "base",
                         entry: normalizedBaseEntry,
-                        update: (nextEntry) => updateBase(nextEntry),
+                        update: updateBase,
                     })}
                 </div>
             </div>
 
-            {/* Breakpoint panels */}
+            {/* Breakpoint Panels */}
             {orderedBpKeys.map((bpKey) => {
                 const raw = breakpoints[bpKey] || {};
                 const entry = {
@@ -154,11 +198,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                                     value={bpKey}
                                     onChange={(e) => {
                                         const newKey = e.target.value;
-
-                                        if (newKey !== bpKey && breakpoints[newKey]) {
-                                            return;
-                                        }
-
                                         renameBreakpoint(bpKey, newKey);
                                     }}
                                 >
@@ -181,13 +220,14 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
                             {render.breakpoints({
                                 bpKey,
                                 entry,
-                                update: (nextEntry) => updateBreakpoint(bpKey, nextEntry),
+                                update: (partial) => updateBreakpoint(bpKey, partial),
                             })}
                         </div>
                     </div>
                 );
             })}
 
+            {/* Add Btn */}
             <Button
                 isPrimary
                 onClick={addBreakpoint}

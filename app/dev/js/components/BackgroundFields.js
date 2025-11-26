@@ -19,8 +19,12 @@ export const BackgroundFields = function BackgroundFields({
     const {backgroundFieldsMap: map = []} =
     window?.WPBS_StyleEditor ?? {};
 
-    const onUpdate = useCallback(
-        (slug, value) => updateFn({[slug]: value}),
+    // `updateFn` expects a patch object for this entry's props
+    const onPatch = useCallback(
+        (patch) => {
+            if (!patch || typeof patch !== "object") return;
+            updateFn(patch);
+        },
         [updateFn]
     );
 
@@ -29,7 +33,12 @@ export const BackgroundFields = function BackgroundFields({
 
     return (
         <Fragment>
-            <Grid columns={1} columnGap={15} rowGap={20} style={{padding: "16px"}}>
+            <Grid
+                columns={1}
+                columnGap={15}
+                rowGap={20}
+                style={{padding: "16px"}}
+            >
                 <SelectControl
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -38,6 +47,7 @@ export const BackgroundFields = function BackgroundFields({
                     onChange={(newType) => {
                         if (newType === type) return;
 
+                        // Reset media when changing type
                         updateFn({
                             type: newType,
                             media: {},
@@ -48,9 +58,13 @@ export const BackgroundFields = function BackgroundFields({
                         {label: "Image", value: "image"},
                         {label: "Featured Image", value: "featured-image"},
 
-                        // add only when isBreakpoint === true
                         ...(isBreakpoint
-                            ? [{label: "Featured Image Mobile", value: "featured-image-mobile"}]
+                            ? [
+                                {
+                                    label: "Featured Image Mobile",
+                                    value: "featured-image-mobile",
+                                },
+                            ]
                             : []),
 
                         {label: "Video", value: "video"},
@@ -71,7 +85,7 @@ export const BackgroundFields = function BackgroundFields({
                                     full: true,
                                 }}
                                 settings={settings}
-                                callback={(v) => onUpdate("media", v)}
+                                callback={onPatch}
                                 isToolsPanel={false}
                             />
                         )}
@@ -102,7 +116,7 @@ export const BackgroundFields = function BackgroundFields({
                                     clearable={false}
                                     value={settings?.overlay ?? undefined}
                                     onChange={(value) =>
-                                        onUpdate("overlay", value)
+                                        onPatch({overlay: value})
                                     }
                                 />
                             </div>
@@ -116,10 +130,8 @@ export const BackgroundFields = function BackgroundFields({
                                     slug: "color",
                                     label: "Color",
                                     value: settings?.color ?? undefined,
-                                    onChange: (value) => {
-                                        onUpdate("color", value);
-                                    }
-
+                                    onChange: (value) =>
+                                        onPatch({color: value}),
                                 },
                             ]}
                             __nextHasNoMarginBottom
@@ -130,7 +142,9 @@ export const BackgroundFields = function BackgroundFields({
                                 <ToggleControl
                                     label="Eager"
                                     checked={!!settings?.eager}
-                                    onChange={(v) => onUpdate("eager", v)}
+                                    onChange={(v) =>
+                                        onPatch({eager: !!v})
+                                    }
                                 />
                             )}
 
@@ -138,7 +152,9 @@ export const BackgroundFields = function BackgroundFields({
                                 <ToggleControl
                                     label="Fixed"
                                     checked={!!settings?.fixed}
-                                    onChange={(v) => onUpdate("fixed", v)}
+                                    onChange={(v) =>
+                                        onPatch({fixed: !!v})
+                                    }
                                 />
                             )}
                         </Grid>
@@ -156,11 +172,11 @@ export const BackgroundFields = function BackgroundFields({
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(v) => onUpdate(field.slug, v)}
+                        callback={onPatch}
                         isToolsPanel={true}
                     />
                 ))}
             </ToolsPanel>
         </Fragment>
     );
-}
+};

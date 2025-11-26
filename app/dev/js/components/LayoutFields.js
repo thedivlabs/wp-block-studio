@@ -4,12 +4,19 @@ import {
 } from "@wordpress/components";
 import {Field} from "Components/Field";
 
-export const LayoutFields = ({label = "Settings", settings = {}, suppress = [], updateFn}) => {
+export const LayoutFields = ({
+                                 label = "Settings",
+                                 settings = {},
+                                 suppress = [],
+                                 updateFn,
+                             }) => {
     const {layoutFieldsMap: map = []} = window?.WPBS_StyleEditor ?? {};
 
+    // Field now always emits a patch object, e.g. { "justify-content": "center" }
     const onUpdate = useCallback(
-        (slug, value) => {
-            updateFn({[slug]: value});
+        (patch) => {
+            if (!patch || typeof patch !== "object") return;
+            updateFn(patch);
         },
         [updateFn]
     );
@@ -26,7 +33,7 @@ export const LayoutFields = ({label = "Settings", settings = {}, suppress = [], 
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(value) => onUpdate(field.slug, value)}
+                        callback={onUpdate}
                         isToolsPanel={true}
                     />
                 ))}

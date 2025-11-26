@@ -6,9 +6,14 @@ import {ShadowSelector} from "Components/ShadowSelector";
 import {normalizeMedia} from "Includes/helper";
 import {IconControl} from "Components/IconControl";
 
-
-export const Field = memo(({field, settings, callback, isToolsPanel = true, props = {}}) => {
-    const {type, defaultValue = '', itemProps, slug, label, full = false, ...controlProps} = field;
+export const Field = memo(function Field({
+                                             field,
+                                             settings,
+                                             callback,
+                                             isToolsPanel = true,
+                                             props = {}
+                                         }) {
+    const {type, defaultValue = "", itemProps, slug, label, full = false, ...controlProps} = field;
     if (!type || !label) return null;
 
     const {
@@ -24,20 +29,17 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
     } = wp.components || {};
 
     const inputId = `wpbs-${slug}`;
-    const fieldClassNames = ["wpbs-control", full ? "--full" : null]
-        .filter(Boolean)
-        .join(" ");
+    const fieldClassNames = ["wpbs-control", full ? "--full" : null].filter(Boolean).join(" ");
 
-    // Controlled input: value always comes from settings
     const value = settings?.[slug];
 
+    // 🔥 ALWAYS send patch objects upward
     const commit = useCallback(
-        (newValue) => {
-            if (newValue !== value) {
-                callback(newValue);
-            }
+        (patch) => {
+            if (!patch) return;
+            callback(patch); // example: { "icon-color": "#fff" }
         },
-        [callback, value]
+        [callback]
     );
 
     let control = null;
@@ -47,29 +49,26 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
     controlProps.isShownByDefault = false;
     controlProps.label = label;
 
-
     switch (type) {
         case "icon":
             control = (
                 <IconControl
                     fieldKey={slug}
-                    value={value || defaultValue || ""}
-                    onChange={commit}
+                    value={value || defaultValue}
+                    onChange={(val) => commit({[slug]: val})}
                     props={props || {}}
                     label={label}
                     isCommit={false}
-
                 />
             );
             break;
 
         case "breakpoint": {
             const breakpoints = WPBS?.settings?.breakpoints || {};
-
             const bpOptions = [
                 {label: "Select", value: ""},
                 ...Object.entries(breakpoints).map(([key, data]) => ({
-                    label: [data?.label, '(' + data?.size + 'px)'].join(' '),
+                    label: `${data.label} (${data.size}px)`,
                     value: key,
                 })),
             ];
@@ -78,15 +77,15 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                 <SelectControl
                     id={inputId}
                     label={label}
-                    value={value || defaultValue || ""}
+                    value={value || ""}
                     options={bpOptions}
-                    aria-label={label}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
         }
+
         case "composite":
             control = (
                 <BaseControl label={label} className="wpbs-composite-field --full">
@@ -97,150 +96,137 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                                 field={sub}
                                 settings={settings}
                                 isToolsPanel={false}
-
-                                // The correct behavior:
-                                // child field value → merged into hover object via updateHoverItem
-                                callback={(val) => callback({[sub.slug]: val})}
+                                callback={(val) => commit(val)} // val is already { key: value }
                             />
                         ))}
                     </Grid>
                 </BaseControl>
             );
             break;
+
         case "shadow":
             control = (
                 <ShadowSelector
                     label={label}
-                    value={value || defaultValue}
+                    value={value}
                     onChange={(val) => commit({[slug]: val})}
                     {...controlProps}
                 />
             );
             break;
-        case "color":
+
+        case "color": {
             const colorFields = controlProps.colors || [];
 
             const colorSettings = colorFields.map((c) => ({
                 slug: c.slug,
                 label: c.label,
                 value: settings?.[c.slug] ?? "",
-                onChange: (newValue) => {
-                    commit({[c.slug]: newValue});
-
-                },
-                onColorCleared: () => {
-                    commit({[c.slug]: ""});
-                },
+                onChange: (newValue) => commit({[c.slug]: newValue}),
+                onColorCleared: () => commit({[c.slug]: ""}),
             }));
 
             control = (
                 <PanelColorSettings
-                    className={'wpbs-controls__color'}
+                    className="wpbs-controls__color"
                     enableAlpha
                     colorSettings={colorSettings}
                     __nextHasNoMarginBottom
                 />
             );
             break;
+        }
+
         case "range":
             control = (
                 <RangeControl
                     id={inputId}
                     label={label}
                     value={value ?? defaultValue}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     min={controlProps.min ?? 0}
                     max={controlProps.max ?? 100}
-                    __nextHasNoMarginBottom
+                    {...controlProps}
                 />
             );
             break;
+
         case "gradient":
             control = (
                 <BaseControl label={label}>
                     <GradientPicker
                         id={inputId}
-                        value={value || defaultValue || undefined}
+                        value={value || defaultValue}
                         gradients={controlProps.gradients || []}
                         clearable={controlProps.clearable ?? false}
-                        onChange={commit}
+                        onChange={(v) => commit({[slug]: v})}
                         __nextHasNoMarginBottom
                     />
                 </BaseControl>
             );
             break;
+
         case "text":
             control = (
                 <TextControl
                     id={inputId}
                     value={value || defaultValue}
-                    aria-label={label}
-                    onChange={commit}
-                    type="text"
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
+
         case "number":
             control = (
                 <NumberControl
                     id={inputId}
                     value={value || defaultValue}
-                    aria-label={label}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
+
         case "select":
             control = (
                 <SelectControl
                     id={inputId}
                     value={value || defaultValue}
                     options={controlProps.options || []}
-                    aria-label={label}
-                    onChange={commit}
-                    __nextHasNoMarginBottom
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
+
         case "toggle":
             control = (
                 <ToggleControl
-                    aria-label={label}
                     checked={!!value}
-                    onChange={(checked) => commit(!!checked)}
+                    onChange={(checked) => commit({[slug]: !!checked})}
                     {...controlProps}
                 />
             );
             break;
+
         case "unit":
             control = (
                 <UnitControl
                     id={inputId}
                     value={value || defaultValue}
-                    units={
-                        controlProps.units || [
-                            {value: "px", label: "px"},
-                            {value: "em", label: "em"},
-                            {value: "rem", label: "rem"},
-                            {value: "%", label: "%"},
-                        ]
-                    }
-                    onChange={commit}
-                    aria-label={label}
-                    isResetValueOnUnitChange
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
             break;
+
         case "box":
             control = (
                 <BoxControl
                     label={label}
                     values={value || defaultValue}
-                    onChange={commit}
+                    onChange={(v) => commit({[slug]: v})}
                     {...controlProps}
                 />
             );
@@ -252,12 +238,9 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
             const allowedTypes = isImage ? ["image"] : ["video"];
             const currentValue = value ?? null;
 
-            // NEW: use normalizeMedia instead of extractMinimalImageMeta
             const onSelect = (wpMediaObject) => {
-                // Convert WP attachment → unified media shape
                 const normalized = normalizeMedia(wpMediaObject);
-
-                commit(normalized);
+                commit({[slug]: normalized});
             };
 
             control = (
@@ -266,17 +249,13 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
                         <MediaUpload
                             title={`Select ${isImage ? "Image" : "Video"}`}
                             allowedTypes={allowedTypes}
-                            value={currentValue?.id || '#'}
+                            value={currentValue?.id || "#"}
                             onSelect={onSelect}
                             render={({open}) => (
                                 <PreviewThumbnail
                                     image={currentValue}
                                     onSelectClick={open}
-                                    callback={commit}
-                                    style={{
-                                        objectFit: "contain",
-                                        borderRadius: "6px",
-                                    }}
+                                    callback={(v) => commit({[slug]: v})}
                                 />
                             )}
                         />
@@ -290,47 +269,19 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true, prop
             control = null;
     }
 
-    const hasValue = () => {
-
-        // Composite fields store values under each sub.slug, not field.slug
-        if (type === "composite") {
-            return field.fields.some(sub => {
-                const v = settings?.[sub.slug];
-                return v != null && v !== "";
-            });
-        }
-
-        const val = settings?.[slug];
-
-        // shadow, box, unit, primitive, all behave correctly here
-
-        // hover color field
-        if (type === "color") {
-            return Object.values(settings).some(v => v != null && v !== "");
-        }
-
-        // structural object stored under slug (rare for hover)
-        if (val && typeof val === "object" && !Array.isArray(val)) {
-            return Object.values(val).some(v => v != null && v !== "");
-        }
-
-        return val != null && val !== "";
-    };
-
-
-    return control ? (!!isToolsPanel ?
+    return control ? (
+        isToolsPanel ? (
             <ToolsPanelItem
-                hasValue={hasValue}
+                hasValue={() => true}
                 label={label}
-                onDeselect={() => commit(null)}
-                onSelect={() => commit("")} // initialize with an empty string
+                onDeselect={() => commit({[slug]: null})}
                 className={fieldClassNames}
-                isShownByDefault={false}
                 {...itemProps}
             >
                 {control}
-            </ToolsPanelItem> : <div className={fieldClassNames}>
-                {control}
-            </div>
+            </ToolsPanelItem>
+        ) : (
+            <div className={fieldClassNames}>{control}</div>
+        )
     ) : null;
 });

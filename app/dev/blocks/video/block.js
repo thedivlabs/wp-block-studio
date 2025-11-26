@@ -280,48 +280,37 @@ registerBlockType(metadata.name, {
         const settings = attributes["wpbs-video"] || {};
 
 
+        // 🔥 NEW unified update function
         const updateSettings = useCallback(
-            (slug, newValue) => {
-                if (!slug) return;
+            (patch) => {
+                if (!patch || typeof patch !== "object") return;
 
-                let next;
-
-                // Special-case media objects (poster, icons)
-                if (['poster', 'button-icon'].includes(slug)) {
-                    next = {
-                        ...settings,
-                        [slug]: newValue,
-                    };
-                }
-
-                // Pure object fields (composites, media, icon configs)
-                else if (
-                    newValue &&
-                    typeof newValue === "object" &&
-                    !Array.isArray(newValue)
-                ) {
-                    next = {
-                        ...settings,
-                        [slug]: {
-                            ...(settings?.[slug] || {}),   // preserve existing keys
-                            ...newValue,                   // merge new updates
-                        },
-                    };
-                }
-
-                // Primitive values (strings, numbers, booleans)
-                else {
-                    next = {
-                        ...settings,
-                        [slug]: newValue,
-                    };
-                }
+                const next = {
+                    ...settings,
+                    ...patch,   // patch may contain 1 or many keys
+                };
 
                 if (!isEqual(settings, next)) {
                     setAttributes({"wpbs-video": next});
                 }
             },
             [settings, setAttributes]
+        );
+
+// 🔥 UPDATED InspectorFields
+        const InspectorFields = useMemo(
+            () =>
+                fieldsMap.map((field) => (
+                    <Field
+                        key={field.slug}
+                        field={field}
+                        settings={settings}
+                        callback={updateSettings}  // passes patches directly
+                        props={props}
+                        isToolsPanel={false}
+                    />
+                )),
+            [settings]
         );
 
 
@@ -335,20 +324,6 @@ registerBlockType(metadata.name, {
 
         const classNames = getClassNames(attributes, settings);
 
-        const InspectorFields = useMemo(
-            () =>
-                fieldsMap.map((field) => (
-                    <Field
-                        key={field.slug}
-                        field={field}
-                        settings={settings}
-                        callback={(val) => updateSettings(field.slug, val)}
-                        props={props}
-                        isToolsPanel={false}
-                    />
-                )),
-            [settings]
-        );
 
         return (
             <>

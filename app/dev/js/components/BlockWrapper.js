@@ -95,6 +95,7 @@ export const BlockWrapper = ({
                              }) => {
     const {attributes} = props;
 
+
     const bgSettings = attributes["wpbs-background"] || {};
     const {"wpbs-style": styleSettings = {}} = attributes;
     const {"wpbs-advanced": advanced = {}} = attributes;

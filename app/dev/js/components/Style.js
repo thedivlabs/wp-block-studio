@@ -164,17 +164,25 @@ export const withStyle = (Component, config) => (props) => {
         });
     }, [styleData, bgData, uniqueId]);
 
-
     /* --------------------------------------------------------------
        BLOCK WRAPPER CALLBACK
     -------------------------------------------------------------- */
-    const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {
-        return (
-            <BlockWrapper props={props} wrapperProps={{...wrapperProps, ...config}}>
-                {children}
-            </BlockWrapper>
-        );
-    }, []);
+    const stableConfig = useMemo(() => config, []);
+
+    const wrappedBlockWrapperCallback = useCallback(
+        ({children, props, ...wrapperProps}) => {
+            return (
+                <BlockWrapper
+                    props={props}
+                    wrapperProps={Object.assign({}, wrapperProps, stableConfig)}
+                >
+                    {children}
+                </BlockWrapper>
+            );
+        },
+        [stableConfig]
+    );
+
 
     const memoizedBackgroundControls = useMemo(() => {
         if (!hasBackground) return null;

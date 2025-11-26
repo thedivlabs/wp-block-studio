@@ -65,7 +65,6 @@ function deepMergeAllowUndefined(base = {}, patch = {}) {
     return result;
 }
 
-
 function mergeEntryProps(entry = {}, patch = {}, reset = false) {
     const currentProps = entry.props || {};
     const baseProps = reset ? {} : currentProps;
@@ -75,7 +74,6 @@ function mergeEntryProps(entry = {}, patch = {}, reset = false) {
         props: deepMergeAllowUndefined(baseProps, patch),
     };
 }
-
 
 function makeEntryHandlers(entry = {}, update) {
     const currentEntry = entry || {};

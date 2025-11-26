@@ -162,19 +162,26 @@ export const withStyle = (Component, config) => (props) => {
             props,
             styleRef,
         });
-    }, [styleData, bgData, uniqueId]);
+    }, [styleData, bgData, uniqueId, props]);
 
 
     /* --------------------------------------------------------------
        BLOCK WRAPPER CALLBACK
     -------------------------------------------------------------- */
-    const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {
-        return (
-            <BlockWrapper props={props} wrapperProps={{...wrapperProps, ...config}}>
-                {children}
-            </BlockWrapper>
-        );
-    }, []);
+    const wrappedBlockWrapperCallback = useCallback(
+        ({children, props: blockProps, ...wrapperProps}) => {
+            return (
+                <BlockWrapper
+                    props={blockProps}
+                    wrapperProps={wrapperProps}
+                    config={config}     // pass separately
+                >
+                    {children}
+                </BlockWrapper>
+            );
+        },
+        [config]
+    );
 
 
     /* --------------------------------------------------------------
@@ -220,7 +227,12 @@ export const withStyleSave = (Component, config) => (props) => {
         <Component
             {...props}
             BlockWrapper={({children, props: blockProps, ...wrapperProps}) => (
-                <BlockWrapper props={props} wrapperProps={{...wrapperProps, ...config}} isSave={true}>
+                <BlockWrapper
+                    props={props}
+                    wrapperProps={wrapperProps}
+                    config={config}
+                    isSave={true}
+                >
                     {children}
                 </BlockWrapper>
             )}

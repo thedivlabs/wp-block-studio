@@ -207,7 +207,7 @@ function renderVideoContent(settings, attributes, isEditor) {
             )}
 
             <div
-                className="wpbs-video__button wp-element-button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
+                className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
                 <span className="screen-reader-text">Play video</span>
             </div>
 

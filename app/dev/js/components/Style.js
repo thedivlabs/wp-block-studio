@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useRef} from "@wordpress/element";
+import {Fragment, useCallback, useEffect, useMemo, useRef} from "@wordpress/element";
 import {StyleEditorUI} from "Includes/style";
 import {BlockWrapper} from "Components/BlockWrapper";
 import {useInstanceId} from "@wordpress/compose";
@@ -176,6 +176,37 @@ export const withStyle = (Component, config) => (props) => {
         );
     }, []);
 
+    const memoizedBackgroundControls = useMemo(() => {
+        if (!hasBackground) return null;
+
+        return (
+            <BackgroundControls
+                settings={bgData}
+                callback={updateBgSettings}
+            />
+        );
+    }, [hasBackground, bgData, updateBgSettings]);
+
+    const memoizedAdvancedControls = useMemo(() => {
+        if (!hasAdvanced) return null;
+
+        return (
+            <AdvancedControls
+                settings={advData}
+                callback={updateAdvancedSettings}
+            />
+        );
+    }, [hasAdvanced, advData, updateAdvancedSettings]);
+
+    const memoizedStyleEditor = useMemo(() => {
+        return (
+            <StyleEditorUI
+                settings={styleData}
+                updateStyleSettings={updateStyleSettings}
+            />
+        );
+    }, [styleData, updateStyleSettings]);
+
 
     /* --------------------------------------------------------------
        RENDER
@@ -191,25 +222,19 @@ export const withStyle = (Component, config) => (props) => {
 
             {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
 
-            {hasAdvanced && <InspectorControls group="advanced">
-                <AdvancedControls
-                    settings={advData}
-                    callback={updateAdvancedSettings}
-                />
-            </InspectorControls>}
+            {hasAdvanced && (
+                <InspectorControls group="advanced">
+                    {memoizedAdvancedControls}
+                </InspectorControls>
+            )}
 
             <InspectorControls group="styles">
-                <StyleEditorUI
-                    settings={styleData}
-                    updateStyleSettings={updateStyleSettings}
-                />
-                {hasBackground && <BackgroundControls
-                    settings={bgData}
-                    callback={updateBgSettings}
-                />}
+                {memoizedStyleEditor}
+                {memoizedBackgroundControls}
             </InspectorControls>
         </>
     );
+
 };
 
 export const withStyleSave = (Component, config) => (props) => {

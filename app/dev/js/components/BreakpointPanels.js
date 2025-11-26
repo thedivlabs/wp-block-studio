@@ -79,8 +79,10 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
 
     const removeBreakpoint = useCallback(
         (bpKey) => {
-            const next = {...breakpoints};
-            delete next[bpKey];
+            const next = {
+                ...breakpoints,
+                [bpKey]: null, // <-- KEY FIX
+            };
 
             onChange({
                 ...normalizedBaseEntry,
@@ -89,6 +91,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         },
         [normalizedBaseEntry, breakpoints, onChange]
     );
+
 
     const renameBreakpoint = useCallback(
         (oldKey, newKey) => {

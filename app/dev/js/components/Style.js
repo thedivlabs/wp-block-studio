@@ -6,6 +6,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {BackgroundControls} from "Components/Background";
 import {AdvancedControls} from "Components/AdvancedControls";
 import {isEqual, merge} from 'lodash';
+import {normalizeBreakpoints} from "Includes/helper";
 
 export const STYLE_ATTRIBUTES = {
     uniqueId: {type: "string"},
@@ -66,11 +67,33 @@ export const withStyle = (Component, config) => (props) => {
     ---------------------------------------------- */
     const updateStyleSettings = useCallback(
         (patch) => {
-            const next = merge({}, styleData, patch);
-            setAttributes({"wpbs-style": cleanObject(next)});
+            console.log('patch', patch);
+            console.log('styleData', styleData);
+
+            // 1. Replace breakpoints if the patch contains them.
+            let next = {
+                ...styleData,
+                ...patch,
+            };
+
+            if (patch.breakpoints !== undefined) {
+                next.breakpoints = patch.breakpoints;
+            }
+
+            console.log('merged', next);
+
+            // 2. Normalize + clean
+            next = normalizeBreakpoints(next);
+            console.log('normalized', next);
+
+            //next = cleanObject(next, true);
+            //console.log('cleaned', next);
+
+            setAttributes({"wpbs-style": next});
         },
         [setAttributes, styleData]
     );
+
 
     /* ----------------------------------------------
        UPDATE: ADVANCED SETTINGS (now merges)
@@ -89,7 +112,8 @@ export const withStyle = (Component, config) => (props) => {
     const updateBgSettings = useCallback(
         (patch) => {
             const next = merge({}, bgData, patch);
-            setAttributes({"wpbs-background": next});
+            const normalized = normalizeBreakpoints(next);
+            setAttributes({"wpbs-background": cleanObject(normalized)});
         },
         [setAttributes, bgData]
     );

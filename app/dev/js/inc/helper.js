@@ -35,6 +35,30 @@ export function resolveFeaturedMedia({type, media, resolution, isEditor}) {
     return normalized;
 }
 
+export function normalizeBreakpoints(style = {}) {
+    if (!style.breakpoints) return style;
+
+    const out = {...style, breakpoints: {...style.breakpoints}};
+
+    for (const key in out.breakpoints) {
+        const entry = out.breakpoints[key];
+
+        // 🔥 THIS is the critical bit:
+        if (entry === null) {
+            delete out.breakpoints[key];
+            continue;
+        }
+
+        // Normalize existing breakpoint
+        out.breakpoints[key] = {
+            props: entry.props || {},
+            hover: entry.hover || {},
+            background: entry.background || {},
+        };
+    }
+
+    return out;
+}
 
 export function buildImageSet(url) {
     if (!url) return '';

@@ -9,7 +9,7 @@ import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
 import {HoverFields} from "Components/HoverFields";
 
-import {cleanObject} from "Includes/helper";
+import {cleanObject, normalizeBreakpoints} from "Includes/helper";
 import {isEqual, merge} from "lodash";
 import {PanelBody} from "@wordpress/components";
 
@@ -31,12 +31,18 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     }, [settings, layout]);
 
     const updateSettings = useCallback(
-        (nextLayout) => {
-            setLayout(nextLayout);
-            updateStyleSettings(nextLayout);
+        (patch) => {
+            console.log('updateSettings', patch);
+            /*let merged = merge({}, layout, patch);
+            merged = cleanObject(merged, true);
+            merged = normalizeBreakpoints(merged);
+
+            setLayout(merged);*/
+            updateStyleSettings(patch);
         },
-        [updateStyleSettings]
+        [layout, updateStyleSettings]
     );
+
 
     const baseLayoutSuppress = [
         "padding",
@@ -104,9 +110,10 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
         );
     };
 
+
     const normalizedLayout = {
-        ...(layout || {}),
-        breakpoints: (layout && layout.breakpoints) || {},
+        ...(settings || {}),
+        breakpoints: (settings && settings.breakpoints) || {},
     };
 
     return (

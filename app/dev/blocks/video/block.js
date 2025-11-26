@@ -29,6 +29,7 @@ import {
 
 import {cleanObject} from "Includes/helper";
 import {isEqual} from "lodash";
+import {MaterialIcon} from "Components/IconControl";
 
 //
 // -------------------------------------------------------------
@@ -106,6 +107,12 @@ const fieldsMap = [
         label: "Overlay",
         full: true,
         gradients: OVERLAY_GRADIENTS,
+    },
+    {
+        type: "icon",
+        slug: "button-icon",
+        label: "Icon",
+        full: true,
     },
 ];
 
@@ -209,6 +216,7 @@ function renderVideoContent(settings, attributes, isEditor) {
             <div
                 className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
                 <span className="screen-reader-text">Play video</span>
+                <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
             </div>
 
             {posterSrc && (
@@ -278,26 +286,31 @@ registerBlockType(metadata.name, {
 
 
         const updateSettings = useCallback(
-            (newValue, slug) => {
+            (obj) => {
+                if (!obj || typeof obj !== "object") return;
+
+                const [slug, newValue] = Object.entries(obj)[0];
+                if (!slug) return;
+
                 let next;
 
                 // 0) NEVER spread poster (media object)
-                if (slug === "poster") {
+                if (['poster', 'button-icon'].includes(slug)) {
                     next = {
                         ...settings,
-                        poster: newValue
+                        [slug]: newValue,
                     };
                 }
 
-                // 1) Field.js returned an object (composite, color, media)
+                // 1) Structured object (media, icon, composite, etc.)
                 else if (newValue && typeof newValue === "object" && !Array.isArray(newValue)) {
                     next = {
                         ...settings,
-                        ...newValue,   // merges composite + color correctly
+                        [slug]: newValue,
                     };
                 }
 
-                // 2) Primitive (string, boolean, number)
+                // 2) Primitive
                 else {
                     next = {
                         ...settings,
@@ -333,7 +346,7 @@ registerBlockType(metadata.name, {
                         field={field}
                         settings={settings}
                         callback={(val) => updateSettings(val, field.slug)}
-
+                        props={props}
                         isToolsPanel={false}
                     />
                 )),

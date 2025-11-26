@@ -31,7 +31,7 @@ export const withStyle = (Component, config) => (props) => {
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
 
-    const {hasBackground, hasAdvanced, hasChildren} = config || {};
+    const {hasBackground = true, hasAdvanced = true, hasChildren} = config || {};
 
     const {
         uniqueId,

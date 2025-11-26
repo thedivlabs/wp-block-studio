@@ -58,6 +58,7 @@ export const IconControl = ({
                                 value = {},
                                 onChange,
                                 label = 'Icon',
+                                isCommit = true,
                             }) => {
 
     /* --------------------------------------------
@@ -112,7 +113,9 @@ export const IconControl = ({
                         : null,
                 ].filter(Boolean);
 
-                props.setAttributes({"wpbs-icons": nextIcons});
+                if (!!isCommit) {
+                    props.setAttributes({"wpbs-icons": nextIcons});
+                }
 
             }, 900),
         [] // Stable debounce

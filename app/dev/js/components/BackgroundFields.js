@@ -1,4 +1,4 @@
-import { memo, Fragment, useCallback } from "@wordpress/element";
+import {memo, Fragment, useCallback} from "@wordpress/element";
 import {
     __experimentalGrid as Grid,
     __experimentalToolsPanel as ToolsPanel,
@@ -7,20 +7,20 @@ import {
     SelectControl,
     ToggleControl,
 } from "@wordpress/components";
-import { PanelColorSettings } from "@wordpress/block-editor";
-import { Field } from "Components/Field";
+import {PanelColorSettings} from "@wordpress/block-editor";
+import {Field} from "Components/Field";
 
-export const BackgroundFields = memo(function BackgroundFields({
-                                                                   settings = {},
-                                                                   updateFn,
-                                                                   isBreakpoint = false,
-                                                                   label = "Background",
-                                                               }) {
-    const { backgroundFieldsMap: map = [] } =
+export const BackgroundFields = function BackgroundFields({
+                                                              settings = {},
+                                                              updateFn,
+                                                              isBreakpoint = false,
+                                                              label = "Background",
+                                                          }) {
+    const {backgroundFieldsMap: map = []} =
     window?.WPBS_StyleEditor ?? {};
 
     const onUpdate = useCallback(
-        (slug, value) => updateFn({ [slug]: value }),
+        (slug, value) => updateFn({[slug]: value}),
         [updateFn]
     );
 
@@ -29,7 +29,7 @@ export const BackgroundFields = memo(function BackgroundFields({
 
     return (
         <Fragment>
-            <Grid columns={1} columnGap={15} rowGap={20} style={{ padding: "16px" }}>
+            <Grid columns={1} columnGap={15} rowGap={20} style={{padding: "16px"}}>
                 <SelectControl
                     __next40pxDefaultSize
                     __nextHasNoMarginBottom
@@ -44,16 +44,16 @@ export const BackgroundFields = memo(function BackgroundFields({
                         });
                     }}
                     options={[
-                        { label: "Select", value: "" },
-                        { label: "Image", value: "image" },
-                        { label: "Featured Image", value: "featured-image" },
+                        {label: "Select", value: ""},
+                        {label: "Image", value: "image"},
+                        {label: "Featured Image", value: "featured-image"},
 
                         // add only when isBreakpoint === true
                         ...(isBreakpoint
-                            ? [{ label: "Featured Image Mobile", value: "featured-image-mobile" }]
+                            ? [{label: "Featured Image Mobile", value: "featured-image-mobile"}]
                             : []),
 
-                        { label: "Video", value: "video" },
+                        {label: "Video", value: "video"},
                     ]}
                 />
 
@@ -116,8 +116,11 @@ export const BackgroundFields = memo(function BackgroundFields({
                                     slug: "color",
                                     label: "Color",
                                     value: settings?.color ?? undefined,
-                                    onChange: (value) =>
-                                        onUpdate("color", value),
+                                    onChange: (value) => {
+                                        const newValue = value === settings?.color ? "" : value;
+                                        onUpdate("color", newValue);
+                                    }
+
                                 },
                             ]}
                             __nextHasNoMarginBottom
@@ -161,4 +164,4 @@ export const BackgroundFields = memo(function BackgroundFields({
             </ToolsPanel>
         </Fragment>
     );
-});
+}

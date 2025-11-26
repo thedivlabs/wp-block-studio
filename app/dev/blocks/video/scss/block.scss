@@ -13,7 +13,7 @@
 
 
   .wpbs-video__title {
-    color: var(--title-color, white);
+    color: var(--title-text, white);
     padding: .7rem;
     background: var(--title-bar, transparent);
 
@@ -31,10 +31,6 @@
     transform: translate(-50%, -50%);
 
     &:before {
-      content: var(--icon, "play_circle");
-      font-family: 'Material Symbols Outlined', sans-serif;
-      font-variation-settings: var(--icon-css);
-      font-size: var(--icon-size, 48px);
       color: var(--icon-color, inherit);
     }
   }

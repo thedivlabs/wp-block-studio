@@ -4,9 +4,10 @@ import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl, __experimentalGrid as Grid} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
 import {normalizeMedia} from "Includes/helper";
+import {IconControl} from "Components/IconControl";
 
 
-export const Field = memo(({field, settings, callback, isToolsPanel = true}) => {
+export const Field = memo(({field, settings, callback, isToolsPanel = true, props = {}}) => {
     const {type, defaultValue = '', itemProps, slug, label, full = false, ...controlProps} = field;
     if (!type || !label) return null;
 
@@ -48,6 +49,20 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
 
     switch (type) {
+        case "icon":
+            control = (
+                <IconControl
+                    fieldKey={slug}
+                    value={value || defaultValue || ""}
+                    onChange={commit}
+                    props={props || {}}
+                    label={label}
+                    isCommit={false}
+
+                />
+            );
+            break;
+
         case "breakpoint": {
             const breakpoints = WPBS?.settings?.breakpoints || {};
 
@@ -110,12 +125,11 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
                 label: c.label,
                 value: settings?.[c.slug] ?? "",
                 onChange: (newValue) => {
-                    // Merge directly instead of nesting under slug
-                    const next = {
-                        ...settings,
-                        [c.slug]: newValue,
-                    };
-                    commit(next);
+                    commit({[c.slug]: newValue});
+
+                },
+                onColorCleared: () => {
+                    commit({[c.slug]: ""});
                 },
             }));
 
@@ -302,7 +316,6 @@ export const Field = memo(({field, settings, callback, isToolsPanel = true}) => 
 
         return val != null && val !== "";
     };
-
 
 
     return control ? (!!isToolsPanel ?

@@ -71,10 +71,10 @@ function makeEntryHandlers(entry = {}, update) {
     return {settings, updateFn};
 }
 
-export const BackgroundControls = memo(function BackgroundControls({
-                                                                       settings = {},
-                                                                       callback,
-                                                                   }) {
+export const BackgroundControls = function BackgroundControls({
+                                                                  settings = {},
+                                                                  callback,
+                                                              }) {
     const value = {
         props: settings?.props || {},
         breakpoints: settings?.breakpoints || {},
@@ -134,7 +134,7 @@ export const BackgroundControls = memo(function BackgroundControls({
             />
         </PanelBody>
     );
-});
+};
 
 export function hasAnyBackground(bgSettings = {}) {
     const {props = {}, breakpoints = {}} = bgSettings || {};
@@ -175,7 +175,7 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
         .join(" ");
 
     const resolvedSettings = resolveBackgroundSettings(bgSettings, !isSave);
-    
+
     return (
         <div className={bgClass}>
             <BackgroundMedia settings={resolvedSettings} isSave={isSave}/>

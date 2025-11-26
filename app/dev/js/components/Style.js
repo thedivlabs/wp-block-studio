@@ -164,23 +164,23 @@ export const withStyle = (Component, config) => (props) => {
         });
     }, [styleData, bgData, uniqueId]);
 
+    console.log(styleData, bgData, uniqueId);
     /* --------------------------------------------------------------
        BLOCK WRAPPER CALLBACK
     -------------------------------------------------------------- */
-    const stableConfig = useMemo(() => config, []);
-
     const wrappedBlockWrapperCallback = useCallback(
         ({children, props, ...wrapperProps}) => {
             return (
                 <BlockWrapper
                     props={props}
-                    wrapperProps={Object.assign({}, wrapperProps, stableConfig)}
+                    wrapperProps={wrapperProps}   // pass as-is
+                    config={config}               // pass separately
                 >
                     {children}
                 </BlockWrapper>
             );
         },
-        [stableConfig]
+        [config]
     );
 
 

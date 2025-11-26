@@ -281,15 +281,12 @@ registerBlockType(metadata.name, {
 
 
         const updateSettings = useCallback(
-            (obj) => {
-                if (!obj || typeof obj !== "object") return;
-
-                const [slug, newValue] = Object.entries(obj)[0];
+            (slug, newValue) => {
                 if (!slug) return;
 
                 let next;
 
-                // 0) NEVER spread poster (media object)
+                // Special-case media objects (poster, icons)
                 if (['poster', 'button-icon'].includes(slug)) {
                     next = {
                         ...settings,
@@ -297,15 +294,22 @@ registerBlockType(metadata.name, {
                     };
                 }
 
-                // 1) Structured object (media, icon, composite, etc.)
-                else if (newValue && typeof newValue === "object" && !Array.isArray(newValue)) {
+                // Pure object fields (composites, media, icon configs)
+                else if (
+                    newValue &&
+                    typeof newValue === "object" &&
+                    !Array.isArray(newValue)
+                ) {
                     next = {
                         ...settings,
-                        [slug]: newValue,
+                        [slug]: {
+                            ...(settings?.[slug] || {}),   // preserve existing keys
+                            ...newValue,                   // merge new updates
+                        },
                     };
                 }
 
-                // 2) Primitive
+                // Primitive values (strings, numbers, booleans)
                 else {
                     next = {
                         ...settings,
@@ -314,9 +318,7 @@ registerBlockType(metadata.name, {
                 }
 
                 if (!isEqual(settings, next)) {
-                    setAttributes({
-                        "wpbs-video": next,
-                    });
+                    setAttributes({"wpbs-video": next});
                 }
             },
             [settings, setAttributes]
@@ -340,7 +342,7 @@ registerBlockType(metadata.name, {
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(val) => updateSettings(val, field.slug)}
+                        callback={(val) => updateSettings(field.slug, val)}
                         props={props}
                         isToolsPanel={false}
                     />

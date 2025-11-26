@@ -192,7 +192,7 @@ export function BackgroundElement({attributes = {}, isSave = false}) {
     ]
         .filter(Boolean)
         .join(" ");
-
+    //console.log(bgSettings);
     const resolvedSettings = resolveBackgroundSettings(bgSettings, !isSave);
 
     return (

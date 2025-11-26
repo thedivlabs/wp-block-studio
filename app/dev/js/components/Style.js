@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useMemo, useRef} from "@wordpress/element";
+import {Fragment, useCallback, useEffect, useRef} from "@wordpress/element";
 import {StyleEditorUI} from "Includes/style";
 import {BlockWrapper} from "Components/BlockWrapper";
 import {useInstanceId} from "@wordpress/compose";
@@ -119,7 +119,7 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [cleanObject, onStyleChange, uniqueId]
+        [cleanObject, onStyleChange, props, uniqueId]
     );
 
 
@@ -144,7 +144,7 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [onStyleChange, uniqueId]
+        [onStyleChange, props, uniqueId]
     );
 
 
@@ -164,56 +164,17 @@ export const withStyle = (Component, config) => (props) => {
         });
     }, [styleData, bgData, uniqueId]);
 
-    console.log(styleData, bgData, uniqueId);
+
     /* --------------------------------------------------------------
        BLOCK WRAPPER CALLBACK
     -------------------------------------------------------------- */
-    const wrappedBlockWrapperCallback = useCallback(
-        ({children, props, ...wrapperProps}) => {
-            return (
-                <BlockWrapper
-                    props={props}
-                    wrapperProps={wrapperProps}   // pass as-is
-                    config={config}               // pass separately
-                >
-                    {children}
-                </BlockWrapper>
-            );
-        },
-        [config]
-    );
-
-
-    const memoizedBackgroundControls = useMemo(() => {
-        if (!hasBackground) return null;
-
+    const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {
         return (
-            <BackgroundControls
-                settings={bgData}
-                callback={updateBgSettings}
-            />
+            <BlockWrapper props={props} wrapperProps={{...wrapperProps, ...config}}>
+                {children}
+            </BlockWrapper>
         );
-    }, [hasBackground, bgData, updateBgSettings]);
-
-    const memoizedAdvancedControls = useMemo(() => {
-        if (!hasAdvanced) return null;
-
-        return (
-            <AdvancedControls
-                settings={advData}
-                callback={updateAdvancedSettings}
-            />
-        );
-    }, [hasAdvanced, advData, updateAdvancedSettings]);
-
-    const memoizedStyleEditor = useMemo(() => {
-        return (
-            <StyleEditorUI
-                settings={styleData}
-                updateStyleSettings={updateStyleSettings}
-            />
-        );
-    }, [styleData, updateStyleSettings]);
+    }, []);
 
 
     /* --------------------------------------------------------------
@@ -230,19 +191,25 @@ export const withStyle = (Component, config) => (props) => {
 
             {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
 
-            {hasAdvanced && (
-                <InspectorControls group="advanced">
-                    {memoizedAdvancedControls}
-                </InspectorControls>
-            )}
+            {hasAdvanced && <InspectorControls group="advanced">
+                <AdvancedControls
+                    settings={advData}
+                    callback={updateAdvancedSettings}
+                />
+            </InspectorControls>}
 
             <InspectorControls group="styles">
-                {memoizedStyleEditor}
-                {memoizedBackgroundControls}
+                <StyleEditorUI
+                    settings={styleData}
+                    updateStyleSettings={updateStyleSettings}
+                />
+                {hasBackground && <BackgroundControls
+                    settings={bgData}
+                    callback={updateBgSettings}
+                />}
             </InspectorControls>
         </>
     );
-
 };
 
 export const withStyleSave = (Component, config) => (props) => {

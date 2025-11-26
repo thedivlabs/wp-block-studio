@@ -67,10 +67,7 @@ export const withStyle = (Component, config) => (props) => {
     ---------------------------------------------- */
     const updateStyleSettings = useCallback(
         (patch) => {
-            console.log('patch', patch);
-            console.log('styleData', styleData);
 
-            // 1. Replace breakpoints if the patch contains them.
             let next = {
                 ...styleData,
                 ...patch,
@@ -80,14 +77,7 @@ export const withStyle = (Component, config) => (props) => {
                 next.breakpoints = patch.breakpoints;
             }
 
-            console.log('merged', next);
-
-            // 2. Normalize + clean
             next = normalizeBreakpoints(next);
-            console.log('normalized', next);
-
-            //next = cleanObject(next, true);
-            //console.log('cleaned', next);
 
             setAttributes({"wpbs-style": next});
         },

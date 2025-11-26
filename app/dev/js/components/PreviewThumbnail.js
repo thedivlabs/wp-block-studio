@@ -6,32 +6,33 @@ function PreviewThumbnail({
                               image = null,
                               resolution = "large",
                               onSelectClick,
-                              callback,
+                              callback,      // must receive raw media object
                               style = {}
                           }) {
 
     const isVideoType = image?.type === "video";
 
+    //
+    // FIX: send RAW values, never wrapped
+    //
     const clearValue = () => {
-        callback({media: ""});  // wrapped
+        callback(null);     // not { media:"" }
     };
 
     const setPlaceholder = () => {
         callback({
-            media: {
-                id: null,
-                source: "#",
-                type: null,
-                width: null,
-                height: null,
-                sizes: null,
-                isPlaceholder: true,
-            }
+            id: null,
+            source: "#",
+            type: null,
+            width: null,
+            height: null,
+            sizes: null,
+            isPlaceholder: true,
         });
     };
 
     const enableFromPlaceholder = () => {
-        clearValue();
+        clearValue(); // restores normal selector
     };
 
     const isPlaceholder = image?.isPlaceholder === true;
@@ -45,33 +46,38 @@ function PreviewThumbnail({
 
     const thumbnailStyle = {
         ...IMAGE_BUTTON_STYLE,
-        ...style
+        ...style,
+        position: "relative",
+        cursor: "pointer"
     };
 
     const emptyStyle = {
         ...IMAGE_BUTTON_STYLE,
         border: "1px dashed lightgray",
-        padding: "8px"
+        padding: "8px",
     };
 
     const buttonStyle = {
         width: "100%",
         maxWidth: "100px",
         textAlign: "center",
-        justifyContent: "center"
+        justifyContent: "center",
     };
 
     const buttonDisabledStyle = {
         backgroundColor: "var(--wp--preset--color--vivid-red)",
-        borderColor: "var(--wp--preset--color--vivid-red)"
+        borderColor: "var(--wp--preset--color--vivid-red)",
     };
 
     const imageStyle = {
         width: "100%",
         height: "100%",
-        objectFit: "cover"
+        objectFit: "cover",
     };
 
+    //
+    // EMPTY STATE (no selected media)
+    //
     if (!hasSelection) {
         const toggleDisabled = () => {
             if (isPlaceholder) {
@@ -96,7 +102,7 @@ function PreviewThumbnail({
                     variant={isPlaceholder ? "primary" : "secondary"}
                     style={{
                         ...buttonStyle,
-                        ...(isPlaceholder && buttonDisabledStyle)
+                        ...(isPlaceholder && buttonDisabledStyle),
                     }}
                 >
                     {isPlaceholder ? "Enable" : "Disable"}
@@ -105,6 +111,9 @@ function PreviewThumbnail({
         );
     }
 
+    //
+    // SELECTED MEDIA STATE
+    //
     const thumb = isVideoType ? (
         <video preload="metadata" style={imageStyle}>
             <source src={src} type="video/mp4"/>
@@ -133,7 +142,7 @@ function PreviewThumbnail({
                     pointerEvents: "none",
                     backgroundColor: "rgba(0,0,0,.7)",
                     color: "white",
-                    borderRadius: "4px"
+                    borderRadius: "4px",
                 }}
             />
         </div>

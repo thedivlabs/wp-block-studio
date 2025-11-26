@@ -28,6 +28,7 @@ import {
 } from "@wordpress/components";
 
 import {cleanObject} from "Includes/helper";
+import {isEqual} from "lodash";
 
 //
 // -------------------------------------------------------------
@@ -94,8 +95,9 @@ const fieldsMap = [
         label: "Colors",
         full: true,
         colors: [
-            {slug: "icon-color", label: "Icon Color"},
-            {slug: "title-color", label: "Title Color"},
+            {slug: "icon-color", label: "Icon"},
+            {slug: "title-text", label: "Title Text"},
+            {slug: "title-bar", label: "Title Bar"},
         ],
     },
     {
@@ -114,7 +116,7 @@ const fieldsMap = [
 // -------------------------------------------------------------
 //
 
-const selector = "wpbs-video";
+const selector = "wpbs-video-element";
 
 /** Extract a YouTube ID from a share URL or watch URL. */
 function getVideoId(link = "") {
@@ -140,8 +142,9 @@ function getClassNames(attributes = {}, settings = {}) {
     return [
         selector,
         attributes.uniqueId,
-        "flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer aspect-video",
+        "wpbs-video flex items-center justify-center relative w-full h-auto overflow-hidden cursor-pointer aspect-video",
         settings.lightbox ? "--lightbox" : null,
+        settings.overlay ? "--overlay" : null,
     ]
         .filter(Boolean)
         .join(" ");
@@ -153,7 +156,8 @@ function getCssProps(settings = {}) {
         props: {
             "--overlay": settings.overlay ?? "none",
             "--icon-color": settings["icon-color"] ?? null,
-            "--title-color": settings["title-color"] ?? null,
+            "--title-text": settings["title-text"] ?? null,
+            "--title-bar": settings["title-bar"] ?? null,
         },
         breakpoints: {},
     });
@@ -195,7 +199,7 @@ function renderVideoContent(settings, attributes, isEditor) {
     const titlePosition = settings["title-position"] === "bottom" ? "bottom-0" : "top-0";
 
     return (
-        <div className="wpbs-video__media w-full h-full overflow-hidden relative">
+        <>
             {settings.title && (
                 <div className={`wpbs-video__title absolute z-20 left-0 w-full ${titlePosition}`}>
                     <span>{settings.title}</span>
@@ -214,7 +218,7 @@ function renderVideoContent(settings, attributes, isEditor) {
                     className="w-full !h-full absolute top-0 left-0 z-0 object-cover object-center"
                 />
             )}
-        </div>
+        </>
     );
 }
 
@@ -272,17 +276,44 @@ registerBlockType(metadata.name, {
             console.log(settings);
         }, [settings]);
 
+
         const updateSettings = useCallback(
-            (newValue) => {
-                setAttributes({
-                    "wpbs-video": {
+            (newValue, slug) => {
+                let next;
+
+                // 0) NEVER spread poster (media object)
+                if (slug === "poster") {
+                    next = {
                         ...settings,
-                        ...newValue,
-                    },
-                });
+                        poster: newValue
+                    };
+                }
+
+                // 1) Field.js returned an object (composite, color, media)
+                else if (newValue && typeof newValue === "object" && !Array.isArray(newValue)) {
+                    next = {
+                        ...settings,
+                        ...newValue,   // merges composite + color correctly
+                    };
+                }
+
+                // 2) Primitive (string, boolean, number)
+                else {
+                    next = {
+                        ...settings,
+                        [slug]: newValue,
+                    };
+                }
+
+                if (!isEqual(settings, next)) {
+                    setAttributes({
+                        "wpbs-video": next,
+                    });
+                }
             },
             [settings, setAttributes]
         );
+
 
         //
         // Sync CSS + preload
@@ -301,9 +332,8 @@ registerBlockType(metadata.name, {
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(val) =>
-                            updateSettings({[field.slug]: val})
-                        }
+                        callback={(val) => updateSettings(val, field.slug)}
+
                         isToolsPanel={false}
                     />
                 )),
@@ -324,7 +354,6 @@ registerBlockType(metadata.name, {
                     props={props}
                     className={classNames}
                     tagName="div"
-                    hasBackground={false}
                     data-platform="youtube"
                     data-vid={getVideoId(settings.link)}
                     data-title={settings.title || ""}
@@ -333,6 +362,10 @@ registerBlockType(metadata.name, {
                 </BlockWrapper>
             </>
         );
+    }, {
+        hasBackground: false,
+        hasAdvanced: false,
+        hasChildren: false,
     }),
 
     //
@@ -351,7 +384,6 @@ registerBlockType(metadata.name, {
                 props={props}
                 className={classNames}
                 tagName="div"
-                hasBackground={false}
                 data-platform="youtube"
                 data-vid={getVideoId(settings.link)}
                 data-title={settings.title || ""}
@@ -359,5 +391,9 @@ registerBlockType(metadata.name, {
                 {renderVideoContent(settings, attributes, false)}
             </BlockWrapper>
         );
+    }, {
+        hasBackground: false,
+        hasAdvanced: false,
+        hasChildren: false,
     }),
 });

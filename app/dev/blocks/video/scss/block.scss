@@ -11,9 +11,11 @@
     background: var(--overlay, none);
   }
 
+
   .wpbs-video__title {
     color: var(--title-color, white);
     padding: .7rem;
+    background: var(--title-bar, transparent);
 
     & > span {
       display: -webkit-box;

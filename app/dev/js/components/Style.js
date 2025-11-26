@@ -20,7 +20,7 @@ export const STYLE_ATTRIBUTES = {
     "wpbs-icons": {type: "array", default: []},
 };
 
-export const withStyle = (Component) => (props) => {
+export const withStyle = (Component, config) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
     const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
 
@@ -30,6 +30,8 @@ export const withStyle = (Component) => (props) => {
     const blockCssRef = useRef({});
     const blockPreloadRef = useRef([]);
     const styleRef = useRef(null);
+
+    const {hasBackground, hasAdvanced, hasChildren} = config || {};
 
     const {
         uniqueId,
@@ -168,7 +170,7 @@ export const withStyle = (Component) => (props) => {
     -------------------------------------------------------------- */
     const wrappedBlockWrapperCallback = useCallback(({children, props, ...wrapperProps}) => {
         return (
-            <BlockWrapper props={props} wrapperProps={wrapperProps}>
+            <BlockWrapper props={props} wrapperProps={{...wrapperProps, ...config}}>
                 {children}
             </BlockWrapper>
         );
@@ -189,28 +191,28 @@ export const withStyle = (Component) => (props) => {
 
             {attributes?.["wpbs-css"] && <style ref={styleRef}/>}
 
-            <InspectorControls group="advanced">
+            {hasAdvanced && <InspectorControls group="advanced">
                 <AdvancedControls
                     settings={advData}
                     callback={updateAdvancedSettings}
                 />
-            </InspectorControls>
+            </InspectorControls>}
 
             <InspectorControls group="styles">
                 <StyleEditorUI
                     settings={styleData}
                     updateStyleSettings={updateStyleSettings}
                 />
-                <BackgroundControls
+                {hasBackground && <BackgroundControls
                     settings={bgData}
                     callback={updateBgSettings}
-                />
+                />}
             </InspectorControls>
         </>
     );
 };
 
-export const withStyleSave = (Component) => (props) => {
+export const withStyleSave = (Component, config) => (props) => {
     const {attributes} = props;
     const {"wpbs-style": styleData = {}} = attributes;
 
@@ -218,7 +220,7 @@ export const withStyleSave = (Component) => (props) => {
         <Component
             {...props}
             BlockWrapper={({children, props: blockProps, ...wrapperProps}) => (
-                <BlockWrapper props={props} wrapperProps={wrapperProps} isSave={true}>
+                <BlockWrapper props={props} wrapperProps={{...wrapperProps, ...config}} isSave={true}>
                     {children}
                 </BlockWrapper>
             )}

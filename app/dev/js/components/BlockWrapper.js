@@ -1,30 +1,30 @@
-import { ElementTag } from "Components/AdvancedControls";
-import { BackgroundElement, hasAnyBackground } from "Components/Background";
+import {ElementTag} from "Components/AdvancedControls";
+import {BackgroundElement, hasAnyBackground} from "Components/Background";
 import {
     useBlockProps,
     useInnerBlocksProps,
     InnerBlocks,
 } from "@wordpress/block-editor";
-import { memo } from "@wordpress/element";
+import {memo} from "@wordpress/element";
 import _ from "lodash";
 
 const API = window?.WPBS_StyleEditor ?? {};
-const { cleanObject, getCSSFromStyle } = API;
+const {cleanObject, getCSSFromStyle} = API;
 
 /**
  * Build block props (classes, styles, data attributes) from layout props.
  */
 const getBlockProps = (props = {}, wrapperProps = {}) => {
-    const { attributes = {} } = props;
+    const {attributes = {}} = props;
     const {
         className: userClass = "",
         style: blockStyle = {},
         ...restWrapperProps
     } = wrapperProps;
 
-    const { "wpbs-style": styleSettings = {}, uniqueId } = attributes;
+    const {"wpbs-style": styleSettings = {}, uniqueId} = attributes;
     const advanced = attributes["wpbs-advanced"] || {};
-    const { props: layout = {}, hover = {},  } = styleSettings;
+    const {props: layout = {}, hover = {},} = styleSettings;
 
     // background now comes from separate attribute
     const bgSettings = attributes["wpbs-background"] || {};
@@ -69,7 +69,7 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
     return cleanObject(
         {
             className: classList,
-            style: { ...blockStyle, ...styleList },
+            style: {...blockStyle, ...styleList},
             ...dataProps,
             ...restWrapperProps,
         },
@@ -82,8 +82,8 @@ const getBlockProps = (props = {}, wrapperProps = {}) => {
  * Must compare `wpbs-background` instead of old `wpbs-style.background`.
  */
 const BlockBackground = memo(
-    ({ attributes }) => {
-        return <BackgroundElement attributes={attributes} isSave={false} />;
+    ({attributes}) => {
+        return <BackgroundElement attributes={attributes} isSave={false}/>;
     },
     (prev, next) =>
         _.isEqual(
@@ -98,11 +98,11 @@ export const BlockWrapper = ({
                                  children,
                                  isSave = false,
                              }) => {
-    const { attributes } = props;
+    const {attributes} = props;
 
     const bgSettings = attributes["wpbs-background"] || {};
-    const {"wpbs-style": styleSettings = {} } = attributes;
-    const {"wpbs-advanced": advanced = {} } = attributes;
+    const {"wpbs-style": styleSettings = {}} = attributes;
+    const {"wpbs-advanced": advanced = {}} = attributes;
 
     const {
         tagName: wrapperTagName = "div",
@@ -132,15 +132,15 @@ export const BlockWrapper = ({
         const saveProps = useBlockProps.save(baseBlockProps);
 
         // CASE 1 — InnerBlocks + container/background
-        if (hasChildren && (hasContainer || isBackgroundActive)) {
+        if (hasChildren && (hasContainer && isBackgroundActive)) {
             return (
                 <Tag {...saveProps}>
                     <div className={containerClass}>
-                        <InnerBlocks.Content />
+                        <InnerBlocks.Content/>
                         {children}
                     </div>
 
-                    <BackgroundElement attributes={attributes} isSave={true} />
+                    <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
         }
@@ -149,7 +149,7 @@ export const BlockWrapper = ({
         if (hasChildren) {
             return (
                 <Tag {...saveProps}>
-                    <InnerBlocks.Content />
+                    <InnerBlocks.Content/>
                     {children}
                 </Tag>
             );
@@ -161,7 +161,7 @@ export const BlockWrapper = ({
                 <Tag {...saveProps}>
                     <div className={containerClass}>{children}</div>
 
-                    <BackgroundElement attributes={attributes} isSave={true} />
+                    <BackgroundElement attributes={attributes} isSave={true}/>
                 </Tag>
             );
         }
@@ -177,7 +177,7 @@ export const BlockWrapper = ({
 
     if (hasContainer || isBackgroundActive) {
         const containerProps = useInnerBlocksProps(
-            { className: containerClass },
+            {className: containerClass},
             {}
         );
 
@@ -188,7 +188,7 @@ export const BlockWrapper = ({
                     {children}
                 </div>
 
-                <BlockBackground attributes={attributes} isSave={false} />
+                <BlockBackground attributes={attributes} isSave={false}/>
             </Tag>
         );
     }

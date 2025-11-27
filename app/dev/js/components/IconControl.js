@@ -118,8 +118,7 @@ export const IconControl = ({
 
     }, [onChange, props.setAttributes]);
 
-
-    /* --------------------------------------------
+    /* -------------------------------------------
      * Sync external changes back into local
      * -------------------------------------------- */
     useEffect(() => {

@@ -140,7 +140,7 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [cleanObject, onStyleChange, uniqueId, styleData]
+        [cleanObject, onStyleChange, uniqueId, styleData, bgData]
     );
 
 

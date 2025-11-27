@@ -61,7 +61,8 @@ export const IconControl = ({
 
     const icons = props.attributes["wpbs-icons"] || [];
 
-    const fieldId = `${fieldKey}-${props.clientId}`;
+    //const fieldId = `${fieldKey}-${props.clientId}`;
+    const fieldId = fieldKey;
 
 
     const debouncedRegistryCommit = useMemo(
@@ -84,7 +85,10 @@ export const IconControl = ({
                 ].filter(Boolean);
 
                 props.setAttributes({"wpbs-icons": nextIcons});
-                updateEditorIcons(nextIcons);
+
+                if (typeof updateEditorIcons === "function") {
+                    updateEditorIcons(nextIcons);
+                }
 
 
             }, 1500),

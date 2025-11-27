@@ -3,7 +3,7 @@ import {MediaUpload, MediaUploadCheck, PanelColorSettings} from "@wordpress/bloc
 import PreviewThumbnail from "Components/PreviewThumbnail";
 import {BaseControl, __experimentalGrid as Grid} from "@wordpress/components";
 import {ShadowSelector} from "Components/ShadowSelector";
-import {normalizeMedia} from "Includes/helper";
+import {cleanObject, normalizeMedia} from "Includes/helper";
 import {IconControl} from "Components/IconControl";
 
 export const Field = memo(
@@ -53,23 +53,12 @@ export const Field = memo(
         // UNIVERSAL commit wrapper — always sends { slug: newValue }
         //
         const commit = useCallback(
-            (newValue) => {
-                let wrapped =
-                    typeof newValue === "object" &&
-                    newValue !== null &&
-                    !Array.isArray(newValue)
-                        ? newValue
-                        : {[slug]: newValue};
-
-                const incoming = wrapped[slug];
-                const current = value;
-
-                if (incoming !== current) {
-                    callback(wrapped);
-                }
+            (patch) => {
+                callback(patch);
             },
-            [callback, value, slug]
+            [callback]
         );
+
 
         let control = null;
 
@@ -171,7 +160,9 @@ export const Field = memo(
                     label: c.label,
                     value: settings?.[c.slug] ?? "",
                     onChange: (newValue) => {
-                        callback({[c.slug]: newValue});
+                        const result = {[c.slug]: newValue};
+                        console.log(result);
+                        callback(result);
                     },
                 }));
 

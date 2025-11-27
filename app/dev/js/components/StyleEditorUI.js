@@ -49,6 +49,24 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     ];
 
     const baseRenderer = ({entry, update}) => {
+        return (
+            <>
+                <LayoutFields
+                    label="Settings"
+                    settings={entry.props || {}}
+                    updateFn={(patch) => update({props: patch})}
+                />
+
+                <HoverFields
+                    settings={entry.hover || {}}
+                    updateFn={(patch) => update({hover: patch})}
+                />
+            </>
+        );
+    };
+
+
+    const breakpointRenderer = ({entry, update}) => {
         const current = entry || {};
 
         const handleLayoutUpdate = (patch) => {
@@ -59,36 +77,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
             update({hover: patch});
         };
 
-
-        return (
-            <Fragment>
-                <LayoutFields
-                    label="Settings"
-                    settings={current.props || {}}
-                    suppress={baseLayoutSuppress}
-                    updateFn={handleLayoutUpdate}
-                />
-
-                <HoverFields
-                    settings={current.hover || {}}
-                    updateFn={handleHoverUpdate}
-                />
-            </Fragment>
-        );
-    };
-
-    const breakpointRenderer = ({entry, update}) => {
-        const current = entry || {};
-
-        const handleLayoutUpdate = (patch, reset = false) => {
-            const next = mergeEntry(current, {props: patch}, reset);
-            update({...next});
-        };
-
-        const handleHoverUpdate = (patch, reset = false) => {
-            const next = mergeEntry(current, {hover: patch}, reset);
-            update({...next});
-        };
 
         return (
             <Fragment>

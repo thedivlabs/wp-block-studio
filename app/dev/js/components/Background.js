@@ -80,10 +80,10 @@ export const BackgroundControls = function BackgroundControls({
     const baseRenderer = ({entry, update}) => {
         const current = entry || {};
 
-        const handlePropsUpdate = (patch, reset = false) => {
-            const next = mergeEntry(current, {props: patch}, reset);
-            update({...next});
+        const handlePropsUpdate = (patch) => {
+            update({props: patch});
         };
+
 
         return (
             <BackgroundFields
@@ -98,10 +98,10 @@ export const BackgroundControls = function BackgroundControls({
     const breakpointRenderer = ({entry, update}) => {
         const current = entry || {};
 
-        const handlePropsUpdate = (patch, reset = false) => {
-            const next = mergeEntry(current, {props: patch}, reset);
-            update({...next});
+        const handlePropsUpdate = (patch) => {
+            update({props: patch});
         };
+
 
         return (
             <BackgroundFields

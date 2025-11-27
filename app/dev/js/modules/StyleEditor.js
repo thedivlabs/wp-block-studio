@@ -15,6 +15,7 @@ import {
     hoverFieldsMap,
     backgroundFieldsMap,
 } from "Includes/config";
+import {updateEditorIcons} from './icons'
 
 const SPECIAL_FIELDS = [
     'gap', 'margin', 'transform', 'filter', 'hide-empty', 'required',
@@ -713,6 +714,7 @@ export function initStyleEditor() {
         }
     }
 
+
     const api = {
         layoutFieldsMap,
         hoverFieldsMap,
@@ -723,6 +725,7 @@ export function initStyleEditor() {
         buildPreloadArray,
         registerBlock,
         unregisterBlock,
+        updateEditorIcons,
     };
 
     window.WPBS_StyleEditor = api;

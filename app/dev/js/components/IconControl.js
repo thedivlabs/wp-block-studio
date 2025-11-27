@@ -53,6 +53,9 @@ export const IconControl = ({
                                 label = 'Icon',
                                 isCommit = true,
                             }) => {
+
+    const {updateEditorIcons} = window?.WPBS_StyleEditor ?? {};
+
     const [local, setLocal] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -78,7 +81,10 @@ export const IconControl = ({
                 ].filter(Boolean);
 
                 props.setAttributes({"wpbs-icons": nextIcons});
-            }, 900),
+                updateEditorIcons(nextIcons);
+
+
+            }, 1500),
         [icons, fieldKey, props.setAttributes]
     );
 

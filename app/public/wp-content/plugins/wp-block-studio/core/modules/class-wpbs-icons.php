@@ -150,7 +150,7 @@ final class WPBS_Icons {
 
 		$url = $this->build_url( $names );
 		if ( $url ) {
-			echo '<link rel="stylesheet" data-href="' . esc_url( $url ) . '">' . "\n";
+			echo '<link rel="stylesheet" id="wpbs-material-icons-css" data-href="' . esc_url( $url ) . '">' . "\n";
 		}
 
 		echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";

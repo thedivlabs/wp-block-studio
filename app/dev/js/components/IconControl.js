@@ -7,21 +7,12 @@ import {
     Button,
     Popover,
 } from '@wordpress/components';
-import {useSetting} from "@wordpress/block-editor";
-import {useEffect, useMemo, useState, memo, useCallback} from "@wordpress/element";
+import {useEffect, useState, memo, useCallback, useMemo} from "@wordpress/element";
 import {debounce, isEqual} from "lodash";
-import {cleanObject} from "Includes/helper";
 
-/* ------------------------------------------------------------
- * CSS utility for Material Symbols variable font
- * ------------------------------------------------------------ */
-const generateCSS = (fill, weight, opsz) => {
-    return `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
-};
+const generateCSS = (fill, weight, opsz) =>
+    `'FILL' ${Number(fill) || 0}, 'wght' ${weight || 300}, 'GRAD' 0, 'opsz' ${opsz || 24}`;
 
-/* ------------------------------------------------------------
- * SVG preview component
- * ------------------------------------------------------------ */
 const FAMILY_MAP = {
     solid: "materialsymbols",
     outlined: "materialsymbolsoutlined",
@@ -33,26 +24,27 @@ const IconPreview = memo(
         const family = FAMILY_MAP[style] ?? FAMILY_MAP.outlined;
         const url = `https://fonts.gstatic.com/s/i/short-term/release/${family}/${name}/default/24px.svg`;
 
-        const previewStyle = {
-            flexGrow: 0,
-            width: '32px',
-            height: '32px',
-            display: 'inline-flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            objectFit: 'contain',
-            objectPosition: 'center',
-            verticalAlign: 'middle',
-        };
-
-        return <img src={url} alt={name} style={previewStyle}/>;
+        return (
+            <img
+                src={url}
+                alt={name}
+                style={{
+                    flexGrow: 0,
+                    width: '32px',
+                    height: '32px',
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    objectFit: 'contain',
+                    objectPosition: 'center',
+                    verticalAlign: 'middle',
+                }}
+            />
+        );
     },
     (prev, next) => isEqual(prev, next)
 );
 
-/* ------------------------------------------------------------
- * Main IconControl
- * ------------------------------------------------------------ */
 export const IconControl = ({
                                 fieldKey,
                                 props,
@@ -61,93 +53,78 @@ export const IconControl = ({
                                 label = 'Icon',
                                 isCommit = true,
                             }) => {
-
-    /* --------------------------------------------
-     * Local state for the full icon object
-     * -------------------------------------------- */
     const [local, setLocal] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Important: unique key so cloned blocks don't collide
     const fieldId = `${fieldKey}-${props.clientId}`;
-
     const icons = props.attributes["wpbs-icons"] || [];
 
-    /* --------------------------------------------
-     * Debounced commit function
-     * -------------------------------------------- */
-    const commit = useCallback((next) => {
+    const debouncedCommit = useMemo(
+        () =>
+            debounce((next) => {
+                const normalized = {
+                    ...next,
+                    name: next.name || "",
+                    weight: Number(next.weight ?? 300),
+                    size: Number(next.size ?? 24),
+                    style: next.style ?? "outlined",
+                };
 
-        const normalized = {
-            ...next,
-            name: next.name || "",
-            weight: Number(next.weight ?? 300),
-            size: Number(next.size ?? 24),
-            style: next.style ?? "outlined",
-        };
+                normalized.css = generateCSS(
+                    normalized.style === "solid" ? 1 : 0,
+                    normalized.weight,
+                    normalized.size
+                );
 
-        // Generate CSS variation string
-        normalized.css = generateCSS(
-            normalized.style === "solid" ? 1 : 0,
-            normalized.weight,
-            normalized.size
-        );
+                const nextIcons = [
+                    ...icons.filter((icon) => icon.key !== fieldId),
+                    normalized.name
+                        ? {
+                            key: fieldId,
+                            name: normalized.name,
+                            fill: normalized.style === "solid" ? 1 : 0,
+                            weight: normalized.weight,
+                            opsz: normalized.size,
+                            grade: Number(normalized.grade ?? 0),
+                        }
+                        : null,
+                ].filter(Boolean);
 
-        // 1. Update block-local field
-        onChange(normalized);
+                const patch = {
+                    [fieldKey]: normalized,
+                };
 
-        // 2. Update wpbs-icons (keep everyone else)
-        const nextIcons = [
-            ...icons.filter((icon) => icon.key !== fieldId),
-            normalized.name
-                ? {
-                    key: fieldId,
-                    name: normalized.name,
-                    // Fill axis: solid → 1, outlined → 0
-                    fill: normalized.style === "solid" ? 1 : 0,
-                    weight: normalized.weight,
-                    opsz: normalized.size,
-                    grade: Number(normalized.grade ?? 0),
+                if (isCommit) {
+                    patch["wpbs-icons"] = nextIcons;
                 }
-                : null,
-        ].filter(Boolean);
 
-        if (!!isCommit) {
-            props.setAttributes({"wpbs-icons": nextIcons});
-        }
+                onChange(patch);
+            }, 400),
+        [icons, fieldId, onChange, isCommit]
+    );
 
-    }, [onChange, props.setAttributes]);
+    const update = useCallback(
+        (key, val) => {
+            setLocal((prev) => {
+                const next = {...prev, [key]: val};
+                debouncedCommit(next);
+                return next;
+            });
+        },
+        [debouncedCommit]
+    );
 
-    /* -------------------------------------------
-     * Sync external changes back into local
-     * -------------------------------------------- */
     useEffect(() => {
-        if (!isEqual(cleanObject(local, true), cleanObject(value, true))) {
+        if (!isEqual(value, local)) {
             setLocal(value);
         }
     }, [value]);
 
-    /* --------------------------------------------
-     * Update local only
-     * -------------------------------------------- */
-    const update = (key, val) => {
-        if (isEqual(cleanObject(local, true), cleanObject(value, true))) {
-            return
-        }
-        setLocal((prev) => ({
-            ...prev,
-            [key]: val,
-        }));
-        commit(local);
-
-    };
-
     const {name, weight = 300, size = 24, style = "outlined"} = local;
 
     const labelNode = (
-        <><span>
-        Icon{' '}
-    </span>
+        <>
+            <span>Icon </span>
             <a
                 href="https://fonts.google.com/icons"
                 target="_blank"
@@ -169,9 +146,6 @@ export const IconControl = ({
         </>
     );
 
-    /* --------------------------------------------
-     * UI
-     * -------------------------------------------- */
     return (
         <BaseControl label={labelNode} style={{marginBottom: 0}}>
             <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
@@ -244,11 +218,7 @@ export const IconControl = ({
     );
 };
 
-/* ------------------------------------------------------------
- * Frontend renderer
- * ------------------------------------------------------------ */
 export const MaterialIcon = ({
-                                 isEditor = false,
                                  name,
                                  weight = 300,
                                  size,
@@ -259,17 +229,15 @@ export const MaterialIcon = ({
         size || 24
     }`;
 
-    const iconStyle = {
-        fontVariationSettings: css,
-        display: "inline-flex",
-        fontSize: `${size}px`,
-        fontWeight: `${weight}`,
-    };
-
     return !name ? null : (
         <span
             className={`material-symbols-outlined wpbs-icon ${className}`}
-            style={iconStyle}
+            style={{
+                fontVariationSettings: css,
+                display: "inline-flex",
+                fontSize: `${size}px`,
+                fontWeight: `${weight}`,
+            }}
         >
             {name}
         </span>

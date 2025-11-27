@@ -312,9 +312,8 @@ registerBlockType(metadata.name, {
         );
 
         useEffect(() => {
-            console.log(settings);
             console.log(attributes);
-        }, []);
+        }, [settings]);
 
         return (
             <>

@@ -56,12 +56,39 @@ export const IconControl = ({
     const [local, setLocal] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
 
-    const fieldId = `${fieldKey}-${props.clientId}`;
     const icons = props.attributes["wpbs-icons"] || [];
 
-    const debouncedCommit = useMemo(
+    const debouncedRegistryCommit = useMemo(
         () =>
-            debounce((next) => {
+            debounce((normalized) => {
+                //if (!isCommit) return;
+
+                const nextIcons = [
+                    ...icons.filter((icon) => icon.key !== fieldKey),
+                    normalized.name
+                        ? {
+                            key: fieldKey,
+                            name: normalized.name,
+                            fill: normalized.style === "solid" ? 1 : 0,
+                            weight: normalized.weight,
+                            opsz: normalized.size,
+                            grade: Number(normalized.grade ?? 0),
+                        }
+                        : null,
+                ].filter(Boolean);
+
+                props.setAttributes({"wpbs-icons": nextIcons});
+            }, 900),
+        [icons, fieldKey, props.setAttributes]
+    );
+
+
+    const update = useCallback(
+        (key, val) => {
+            setLocal((prev) => {
+                const next = {...prev, [key]: val};
+
+                // create the clean normalized icon object immediately
                 const normalized = {
                     ...next,
                     name: next.name || "",
@@ -76,41 +103,18 @@ export const IconControl = ({
                     normalized.size
                 );
 
-                const nextIcons = [
-                    ...icons.filter((icon) => icon.key !== fieldId),
-                    normalized.name
-                        ? {
-                            key: fieldId,
-                            name: normalized.name,
-                            fill: normalized.style === "solid" ? 1 : 0,
-                            weight: normalized.weight,
-                            opsz: normalized.size,
-                            grade: Number(normalized.grade ?? 0),
-                        }
-                        : null,
-                ].filter(Boolean);
+                // send normalized object UP to HOC immediately
+                onChange(normalized);
 
-                const patch = {
-                    ...normalized,
-                };
+                // fire delayed registry update
+                debouncedRegistryCommit(normalized);
 
-                patch["wpbs-icons"] = nextIcons;
-
-                onChange(patch);
-            }, 300),
-        [icons, fieldId, onChange, isCommit]
-    );
-
-    const update = useCallback(
-        (key, val) => {
-            setLocal((prev) => {
-                const next = {...prev, [key]: val};
-                debouncedCommit(next);
                 return next;
             });
         },
-        [debouncedCommit]
+        [debouncedRegistryCommit, onChange]
     );
+
 
     useEffect(() => {
         if (!isEqual(value, local)) {

@@ -189,7 +189,7 @@ function getPosterSrc(settings) {
     const {poster, resolution = "medium"} = settings;
     const vid = getVideoId(settings.link);
 
-    if (poster?.sizes?.[resolution]?.url) {
+    if (poster?.source) {
         return getImageUrlForResolution(poster, resolution);
     }
 
@@ -290,6 +290,7 @@ registerBlockType(metadata.name, {
         );
 
         useEffect(() => {
+            console.log(settings);
             setCss(getCssProps(settings));
             setPreload(getPreload(settings));
         }, [settings]);
@@ -311,9 +312,6 @@ registerBlockType(metadata.name, {
             [settings]
         );
 
-        useEffect(() => {
-            console.log(attributes);
-        }, [settings]);
 
         return (
             <>

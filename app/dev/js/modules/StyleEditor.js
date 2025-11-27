@@ -663,13 +663,11 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
         styleRef.current.textContent = cssText;
     }
 
-    const sameCss = _.isEqual(attributes["wpbs-css"], cleanedCss);
+    const sameCss = _.isEqual(cleanedLayout, cleanedCss);
 
-    
     if (sameCss) {
         return;
     }
-
 
     const {dispatch} = wp.data;
     dispatch("core/block-editor").updateBlockAttributes(clientId, {

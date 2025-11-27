@@ -104,18 +104,18 @@ export const IMAGE_BUTTON_STYLE = {
 export const OVERLAY_GRADIENTS = [
     {
         name: "Transparent",
-        gradient: "linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0))",
+        gradient: "none",
         slug: "transparent",
     },
     {
-        name: "Light",
+        name: "Light Solid",
         gradient: "linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.3))",
-        slug: "light",
+        slug: "light-solid",
     },
     {
-        name: "Strong",
+        name: "Strong Solid",
         gradient: "linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7))",
-        slug: "strong",
+        slug: "strong-solid",
     },
 ];
 

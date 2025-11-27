@@ -1,5 +1,10 @@
 .wpbs-video {
 
+  &.--overlay:hover:after {
+    opacity: .2;
+    transition: opacity .3s linear;
+  }
+
   &.--overlay:after {
     content: '';
     display: block;

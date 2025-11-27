@@ -161,7 +161,6 @@ export const Field = memo(
                     value: settings?.[c.slug] ?? "",
                     onChange: (newValue) => {
                         const result = {[c.slug]: newValue};
-                        console.log(result);
                         callback(result);
                     },
                 }));

@@ -96,7 +96,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     };
 
     return (
-        <PanelBody title={"Styles"} initialOpen={false} className={'is-style-unstyled'}>
+        <PanelBody title={"Style"} initialOpen={false} className={'is-style-unstyled'}>
             <BreakpointPanels
                 value={normalizedLayout}
                 onChange={(obj) => updateSettings(obj)} // object-only

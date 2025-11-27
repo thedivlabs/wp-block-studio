@@ -27,7 +27,7 @@ import {
     __experimentalGrid as Grid,
 } from "@wordpress/components";
 
-import {cleanObject} from "Includes/helper";
+import {cleanObject, getImageUrlForResolution} from "Includes/helper";
 import {isEqual} from "lodash";
 import {MaterialIcon} from "Components/IconControl";
 
@@ -190,7 +190,7 @@ function getPosterSrc(settings) {
     const vid = getVideoId(settings.link);
 
     if (poster?.sizes?.[resolution]?.url) {
-        return poster.sizes[resolution].url;
+        return getImageUrlForResolution(poster, resolution);
     }
 
     if (vid) {
@@ -281,42 +281,8 @@ registerBlockType(metadata.name, {
 
 
         const updateSettings = useCallback(
-            (slug, newValue) => {
-                if (!slug) return;
-
-                let next;
-
-                // Special-case media objects (poster, icons)
-                if (['poster', 'button-icon'].includes(slug)) {
-                    next = {
-                        ...settings,
-                        [slug]: newValue,
-                    };
-                }
-
-                // Pure object fields (composites, media, icon configs)
-                else if (
-                    newValue &&
-                    typeof newValue === "object" &&
-                    !Array.isArray(newValue)
-                ) {
-                    next = {
-                        ...settings,
-                        [slug]: {
-                            ...(settings?.[slug] || {}),   // preserve existing keys
-                            ...newValue,                   // merge new updates
-                        },
-                    };
-                }
-
-                // Primitive values (strings, numbers, booleans)
-                else {
-                    next = {
-                        ...settings,
-                        [slug]: newValue,
-                    };
-                }
-
+            (patchObj) => {
+                const next = {...settings, ...patchObj};
                 if (!isEqual(settings, next)) {
                     setAttributes({"wpbs-video": next});
                 }
@@ -342,7 +308,7 @@ registerBlockType(metadata.name, {
                         key={field.slug}
                         field={field}
                         settings={settings}
-                        callback={(val) => updateSettings(field.slug, val)}
+                        callback={(obj) => updateSettings(obj)}
                         props={props}
                         isToolsPanel={false}
                     />

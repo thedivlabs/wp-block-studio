@@ -33,6 +33,10 @@ export const withStyle = (Component, config) => (props) => {
 
     const {hasBackground = true, hasAdvanced = true, hasChildren} = config || {};
 
+    const blockGap = attributes?.style?.spacing?.blockGap;
+    const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
+
+
     const {
         uniqueId,
         "wpbs-style": styleData = {props: {}, breakpoints: {}, hover: {}},
@@ -103,30 +107,30 @@ export const withStyle = (Component, config) => (props) => {
     );
 
 
-    /* ----------------------------------------------
-   UPDATE: ADVANCED SETTINGS (now merges)
----------------------------------------------- */
     const updateAdvancedSettings = useCallback(
-        (patch) => {
-            const next = merge({}, advData, patch);
+        (patch = {}) => {
+            const next = {
+                ...advData,
+                ...patch,
+            };
+
             setAttributes({"wpbs-advanced": next});
         },
         [setAttributes, advData]
     );
 
 
-    /* ----------------------------------------------
-       APPLY CSS: clean + diff + trigger
-    ---------------------------------------------- */
     const applyCss = useCallback(
         (raw) => {
             if (!raw || typeof raw !== "object") return;
 
-            const cleaned = cleanObject(raw);
+            const cleaned = cleanObject(raw, true);
 
-            if (isEqual(blockCssRef.current, cleaned)) return;
+            if (isEqual(cleanObject(blockCssRef.current, true), cleaned)) return;
 
             blockCssRef.current = cleaned;
+
+            console.log(cleaned);
 
             if (typeof onStyleChange === "function" && styleRef.current) {
                 onStyleChange({
@@ -138,13 +142,24 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [cleanObject, onStyleChange, props, uniqueId]
+        [cleanObject, onStyleChange, uniqueId]
     );
 
 
-    /* ----------------------------------------------
-       APPLY PRELOAD: clean + diff + trigger
-    ---------------------------------------------- */
+    useEffect(() => {
+        if (typeof onStyleChange !== "function") return;
+        if (!styleRef.current) return;
+
+        onStyleChange({
+            css: blockCssRef.current,
+            preload: blockPreloadRef.current,
+            group: uniqueId,
+            props,
+            styleRef,
+        });
+    }, [styleData, blockGapDeps, uniqueId]);
+
+
     const applyPreload = useCallback(
         (items) => {
             const arr = Array.isArray(items) ? items : [];
@@ -163,30 +178,9 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [onStyleChange, props, uniqueId]
+        [onStyleChange, uniqueId]
     );
 
-
-    /* ----------------------------------------------
-       AUTO-REPARSE WHEN STYLE/BG ATTRIBUTES CHANGE
-    ---------------------------------------------- */
-    useEffect(() => {
-        if (typeof onStyleChange !== "function") return;
-        if (!styleRef.current) return;
-
-        onStyleChange({
-            css: blockCssRef.current,
-            preload: blockPreloadRef.current,
-            group: uniqueId,
-            props,
-            styleRef,
-        });
-    }, [styleData, bgData, uniqueId, props]);
-
-
-    /* ----------------------------------------------
-       WRAPPER CALLBACK
-    ---------------------------------------------- */
     const wrappedBlockWrapperCallback = useCallback(
         ({children, props: blockProps, ...wrapperProps}) => {
             return (

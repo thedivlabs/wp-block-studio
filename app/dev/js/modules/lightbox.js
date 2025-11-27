@@ -51,7 +51,7 @@ export default class Lightbox {
                 callback: (modal) => {
                     [...modal.querySelectorAll('.swiper')].forEach((slider_element) => {
                         WPBS.slider.observe(slider_element, this.swiper_args(args.index));
-                        WPBS.observeMedia(modal);
+                        //WPBS.observeMedia(modal);
                     })
                 }
             });

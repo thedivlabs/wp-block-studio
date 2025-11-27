@@ -160,7 +160,7 @@ export default class Modals {
                 modal.classList.add('active');
             }, 50);
 
-            WPBS.observeMedia(modal);
+            //WPBS.observeMedia(modal);
 
 
         }, delay);

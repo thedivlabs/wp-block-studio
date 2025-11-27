@@ -61,16 +61,19 @@ export const IconControl = ({
 
     const icons = props.attributes["wpbs-icons"] || [];
 
+    const fieldId = `${fieldKey}-${props.clientId}`;
+
+
     const debouncedRegistryCommit = useMemo(
         () =>
             debounce((normalized) => {
                 //if (!isCommit) return;
 
                 const nextIcons = [
-                    ...icons.filter((icon) => icon.key !== fieldKey),
+                    ...icons.filter((icon) => icon.key !== fieldId),
                     normalized.name
                         ? {
-                            key: fieldKey,
+                            key: fieldId,
                             name: normalized.name,
                             fill: normalized.style === "solid" ? 1 : 0,
                             weight: normalized.weight,
@@ -85,7 +88,7 @@ export const IconControl = ({
 
 
             }, 1500),
-        [icons, fieldKey, props.setAttributes]
+        [icons, fieldId, props.setAttributes, updateEditorIcons]
     );
 
 

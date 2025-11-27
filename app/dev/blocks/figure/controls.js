@@ -2,14 +2,24 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {useMemo, useCallback} from "@wordpress/element";
 import {PanelBody, __experimentalGrid as Grid} from "@wordpress/components";
 import {Field} from "Components/Field";
-import {BLEND_OPTIONS, ORIGIN_OPTIONS, RESOLUTION_OPTIONS, OVERLAY_GRADIENTS} from "Includes/config";
+import {
+    BLEND_OPTIONS,
+    ORIGIN_OPTIONS,
+    RESOLUTION_OPTIONS,
+    OVERLAY_GRADIENTS,
+} from "Includes/config";
 import Link from "Components/Link";
+import {BreakpointPanels} from "Components/BreakpointPanels";
 
 // MAP #1: image-related settings
 const FIGURE_IMAGE_FIELDS = [
     {slug: "image", type: "image", label: "Image", full: true},
-
-    {slug: "resolution", type: "select", label: "Size", options: RESOLUTION_OPTIONS},
+    {
+        slug: "resolution",
+        type: "select",
+        label: "Size",
+        options: RESOLUTION_OPTIONS,
+    },
 ];
 
 const FIGURE_SETTING_FIELDS = [
@@ -40,8 +50,6 @@ const BREAKPOINT_FIGURE_SETTING_FIELDS = [
 
     {slug: "contain", type: "toggle", label: "Contain"},
 ];
-
-import {BreakpointPanels} from "Components/BreakpointPanels";
 
 const TYPE_FIELD = {
     slug: "type",
@@ -134,12 +142,17 @@ export function FigureInspector({attributes, updateSettings}) {
             };
 
             return (
-                <Grid columns={2} columnGap={15} rowGap={20} style={{padding:'12px'}}>
+                <Grid
+                    columns={2}
+                    columnGap={15}
+                    rowGap={20}
+                    style={{padding: "12px"}}
+                >
                     {/* TYPE FIELD – standalone */}
                     <Field
                         field={TYPE_FIELD}
                         settings={settings}
-                        callback={(val) => applyPatch({type: val})}
+                        callback={applyPatch}
                         {...sharedConfig}
                     />
 
@@ -152,23 +165,22 @@ export function FigureInspector({attributes, updateSettings}) {
                                 key={field.slug}
                                 field={field}
                                 settings={settings}
-                                callback={(val) =>
-                                    applyPatch({[field.slug]: val})
-                                }
+                                callback={applyPatch}
                                 {...sharedConfig}
                             />
                         ))}
 
                     {/* MAP #2 — STYLE + TOGGLES */}
                     {settings.type &&
-                        (!!bpKey ? BREAKPOINT_FIGURE_SETTING_FIELDS : FIGURE_SETTING_FIELDS).map((field) => (
+                        (!!bpKey
+                                ? BREAKPOINT_FIGURE_SETTING_FIELDS
+                                : FIGURE_SETTING_FIELDS
+                        ).map((field) => (
                             <Field
                                 key={field.slug}
                                 field={field}
                                 settings={settings}
-                                callback={(val) =>
-                                    applyPatch({[field.slug]: val})
-                                }
+                                callback={applyPatch}
                                 {...sharedConfig}
                             />
                         ))}
@@ -193,11 +205,14 @@ export function FigureInspector({attributes, updateSettings}) {
             {LinkControls}
 
             <InspectorControls group="styles">
-                <PanelBody initialOpen={false} className="wpbs-block-controls is-style-unstyled" title={'Figure'}>
+                <PanelBody
+                    initialOpen={false}
+                    className="wpbs-block-controls is-style-unstyled"
+                    title={"Figure"}
+                >
                     <BreakpointPanels
                         value={value}
                         onChange={handlePanelsChange}
-                        //label="Figure"
                         render={{
                             base: renderBase,
                             breakpoints: renderBreakpoints,

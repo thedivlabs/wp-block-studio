@@ -1,31 +1,45 @@
-import './scss/block.scss'
+import "./scss/block.scss";
 
 import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {FigureInspector} from './controls';
-import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from 'Components/Style';
+import {FigureInspector} from "./controls";
+import {STYLE_ATTRIBUTES, withStyle, withStyleSave} from "Components/Style";
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
 import ResponsivePicture from "Components/ResponsivePicture";
 import {getAnchorProps} from "Components/Link";
 import {cleanObject, resolveFeaturedMedia} from "Includes/helper";
-import {
-    getBreakpointPropsList,
-    anyProp,
-    hasAnyImage,
-} from "./utils";
+import {getBreakpointPropsList, anyProp, hasAnyImage} from "./utils";
+import {isEqual} from "lodash";
 
 const selector = "wpbs-figure";
 
-const getClassNames = (attributes = {}, styleData) => {
-    const raw = attributes["wpbs-figure"] || {};
-    const base = raw.props || {};
+/**
+ * Normalize wpbs-figure shape into { props, breakpoints }
+ * Supports legacy flat format.
+ */
+const normalizeSettings = (raw) => {
+    if (raw && (raw.props || raw.breakpoints)) {
+        return {
+            props: raw.props || {},
+            breakpoints: raw.breakpoints || {},
+        };
+    }
 
-    const bpPropsList = getBreakpointPropsList(raw);
+    return {
+        props: raw || {},
+        breakpoints: {},
+    };
+};
+
+const getClassNames = (attributes = {}, settings = {}) => {
+    const base = settings.props || {};
+    const bpPropsList = getBreakpointPropsList(settings);
     const hasImage = hasAnyImage(base, bpPropsList);
 
     return [
         selector,
+        attributes.uniqueId ?? "",
         "h-fit w-fit max-w-full max-h-full flex",
 
         anyProp(base, bpPropsList, "contain") ? "--contain" : null,
@@ -34,8 +48,6 @@ const getClassNames = (attributes = {}, styleData) => {
         anyProp(base, bpPropsList, "origin") ? "--origin" : null,
 
         !hasImage ? "--empty" : null,
-
-        attributes.uniqueId ?? "",
     ]
         .filter(Boolean)
         .join(" ");
@@ -49,11 +61,12 @@ function renderFigureContent(settings, attributes, isEditor = false) {
         const link = baseProps.link;
         if (!link) return content;
 
-        return !isEditor
-            ? <a {...getAnchorProps(link)}>{content}</a>
-            : <a>{content}</a>;
+        return !isEditor ? (
+            <a {...getAnchorProps(link)}>{content}</a>
+        ) : (
+            <a>{content}</a>
+        );
     };
-
 
     const finalSettings = {
         props: {...baseProps},
@@ -77,9 +90,13 @@ function renderFigureContent(settings, attributes, isEditor = false) {
     // BREAKPOINT IMAGE LOGIC
     // -------------------------
     Object.entries(bpMap).forEach(([bpKey, bpEntry]) => {
-        const bpProps = bpEntry.props || {};
+        const bpProps = bpEntry?.props || {};
         const bpType = bpProps.type || baseProps.type;
-        const bpRes = (bpProps.resolution || baseProps.resolution || "large").toUpperCase();
+        const bpRes = (
+            bpProps.resolution ||
+            baseProps.resolution ||
+            "large"
+        ).toUpperCase();
 
         const imageObj = resolveFeaturedMedia({
             type: bpType,
@@ -88,19 +105,13 @@ function renderFigureContent(settings, attributes, isEditor = false) {
             isEditor,
         });
 
-
         finalSettings.breakpoints[bpKey] = {
             props: {
                 ...bpProps,
                 image: imageObj,
-            }
+            },
         };
-
     });
-
-    // ============================================================
-    // Pass to ResponsivePicture
-    // ============================================================
 
     const content = (
         <ResponsivePicture
@@ -116,28 +127,28 @@ function getCssProps(settings) {
     const baseProps = settings?.props || {};
     const breakpoints = settings?.breakpoints || {};
 
-    // ----- base props (no breakpoint) -----
     const overlay = baseProps.overlay ?? null;
     const origin = baseProps.origin ?? null;
     const blend = baseProps.blend ?? null;
+    const contain = baseProps.contain ?? null;
 
     const css = {
         props: {
             "--overlay": overlay,
             "--origin": origin,
             "--blend": blend,
+            "--contain": contain,
         },
         breakpoints: {},
     };
 
-    // ----- breakpoint overrides -----
     Object.entries(breakpoints).forEach(([bpKey, bpEntry = {}]) => {
-        const bpProps = bpEntry.props || {};
+        const bpProps = bpEntry?.props || {};
 
         const bpOverlay = bpProps.overlay ?? null;
         const bpOrigin = bpProps.origin ?? null;
         const bpBlend = bpProps.blend ?? null;
-        const bpContain = bpProps.contain
+        const bpContain = bpProps.contain ?? null;
 
         css.breakpoints[bpKey] = {
             props: {
@@ -153,7 +164,6 @@ function getCssProps(settings) {
 }
 
 function getPreload(settings) {
-
     const preloadObj = [];
 
     const baseProps = settings?.props || {};
@@ -187,7 +197,6 @@ function getPreload(settings) {
     return preloadObj;
 }
 
-
 registerBlockType(metadata.name, {
     apiVersion: 3,
     attributes: {
@@ -199,63 +208,76 @@ registerBlockType(metadata.name, {
         },
     },
 
-    edit: withStyle(
-        (props) => {
+    edit: withStyle((props) => {
+        const {
+            attributes,
+            BlockWrapper,
+            setCss,
+            setPreload,
+            setAttributes,
+        } = props;
 
-            const {attributes, styleData, BlockWrapper, setCss, setPreload, setAttributes} = props;
+        const rawSettings = attributes["wpbs-figure"] || {};
 
-            const {'wpbs-figure': settings = {}} = attributes;
+        const settings = useMemo(
+            () => normalizeSettings(rawSettings),
+            [rawSettings]
+        );
 
-            const classNames = getClassNames(attributes, styleData);
+        const classNames = getClassNames(attributes, settings);
 
-            // ---------------------------------------------------------
-            // SEND CSS + PRELOAD TO HOC
-            // ---------------------------------------------------------
-            useEffect(() => {
-                setCss(getCssProps(settings));
-                setPreload(getPreload(settings));   // ← uniqueId removed
-            }, [settings]);
+        // ---------------------------------------------------------
+        // SEND CSS + PRELOAD TO HOC (mirrors video block)
+        // ---------------------------------------------------------
+        useEffect(() => {
+            setCss(getCssProps(settings));
+            setPreload(getPreload(settings));
+        }, [settings, setCss, setPreload]);
 
-            const updateSettings = useCallback((newValue) => {
-                const result = {
-                    ...settings,
-                    ...newValue,
-                };
+        const updateSettings = useCallback(
+            (nextValue) => {
+                const normalized = normalizeSettings(nextValue);
+                if (!isEqual(settings, normalized)) {
+                    setAttributes({
+                        "wpbs-figure": normalized,
+                    });
+                }
+            },
+            [settings, setAttributes]
+        );
 
-                setAttributes({
-                    'wpbs-figure': result
-                });
-            }, [setAttributes, settings]);
-
-            const inspectorPanel = useMemo(() => (
+        const inspectorPanel = useMemo(
+            () => (
                 <FigureInspector
                     attributes={attributes}
                     updateSettings={updateSettings}
                 />
-            ), [settings]);
+            ),
+            [attributes, updateSettings]
+        );
 
-            return (
-                <>
-                    {inspectorPanel}
+        return (
+            <>
+                {inspectorPanel}
 
-                    <BlockWrapper
-                        props={props}
-                        className={classNames}
-                        hasBackground={true}
-                        tagName="figure"
-                    >
-                        {renderFigureContent(settings, attributes, true)}
-                    </BlockWrapper>
-                </>
-            );
-
-        }),
-
+                <BlockWrapper
+                    props={props}
+                    className={classNames}
+                    hasBackground={true}
+                    tagName="figure"
+                >
+                    {renderFigureContent(settings, attributes, true)}
+                </BlockWrapper>
+            </>
+        );
+    }),
 
     save: withStyleSave((props) => {
-        const {attributes, styleData, BlockWrapper} = props;
-        const settings = attributes["wpbs-figure"] || {};
-        const classNames = getClassNames(attributes, styleData);
+        const {attributes, BlockWrapper} = props;
+
+        const rawSettings = attributes["wpbs-figure"] || {};
+        const settings = normalizeSettings(rawSettings);
+        const classNames = getClassNames(attributes, settings);
 
         return (
             <BlockWrapper
@@ -268,6 +290,4 @@ registerBlockType(metadata.name, {
             </BlockWrapper>
         );
     }),
-
-
 });

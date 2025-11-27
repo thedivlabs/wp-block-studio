@@ -3,9 +3,8 @@
  */
 export const getBreakpointPropsList = (raw = {}) => {
     const breakpoints = raw.breakpoints || {};
-    return Object.values(breakpoints).map(bp => bp?.props || {});
+    return Object.values(breakpoints).map((bp) => bp?.props || {});
 };
-
 
 /**
  * Reads a property from base OR any breakpoint override.
@@ -18,7 +17,6 @@ export const anyProp = (baseProps = {}, bpPropsList = [], key) => {
     return false;
 };
 
-
 /**
  * Determines if an image object is a real image and not a placeholder.
  */
@@ -26,9 +24,7 @@ export const isRealImage = (img) => {
     if (!img || img.isPlaceholder) return false;
     if (img.id) return true;
     return img.source && img.source !== "#";
-
 };
-
 
 export const hasAnyImage = (baseProps = {}, bpPropsList = []) => {
     // If any level has a real image → true
@@ -49,6 +45,3 @@ export const hasAnyImage = (baseProps = {}, bpPropsList = []) => {
     // Otherwise → no image anywhere
     return false;
 };
-
-
-

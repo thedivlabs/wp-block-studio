@@ -51,11 +51,8 @@ export const BackgroundControls = function BackgroundControls({
                                                                   settings = {},
                                                                   callback,
                                                               }) {
-
-    // Local controlled state — this matches StyleEditorUI “layout”
+    
     const [localValue, setLocalValue] = useState(settings);
-
-    console.log(localValue);
 
     // Sync UI state when parent settings change
     useEffect(() => {

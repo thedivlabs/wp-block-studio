@@ -7,7 +7,7 @@ import {
     Button,
     Popover,
 } from '@wordpress/components';
-import {useEffect, useState, memo, useCallback, useMemo, useRef} from "@wordpress/element";
+import {useEffect, useState, memo, useCallback, useMemo} from "@wordpress/element";
 import {debounce, isEqual} from "lodash";
 
 const generateCSS = (fill, weight, opsz) =>
@@ -45,7 +45,6 @@ const IconPreview = memo(
     (prev, next) => isEqual(prev, next)
 );
 
-
 export const IconControl = ({
                                 fieldKey,
                                 props,
@@ -60,31 +59,22 @@ export const IconControl = ({
     const [local, setLocal] = useState(value);
     const [isOpen, setIsOpen] = useState(false);
 
-    const [isEditing, setIsEditing] = useState(false);
-    const editingRef = useRef(false);
-
-    useEffect(() => {
-        editingRef.current = isEditing;
-    }, [isEditing]);
-
     const icons = props.attributes["wpbs-icons"] || [];
 
+    //const fieldId = `${fieldKey}-${props.clientId}`;
+    const fieldId = fieldKey;
 
-    // ------------------------------
-    // Debounced commit
-    // ------------------------------
+
     const debouncedRegistryCommit = useMemo(
         () =>
             debounce((normalized) => {
-
-                // typing has ended
-                setIsEditing(false);
+                //if (!isCommit) return;
 
                 const nextIcons = [
-                    ...icons.filter((icon) => icon.key !== fieldKey),
+                    ...icons.filter((icon) => icon.key !== fieldId),
                     normalized.name
                         ? {
-                            key: fieldKey,
+                            key: fieldId,
                             name: normalized.name,
                             fill: normalized.style === "solid" ? 1 : 0,
                             weight: normalized.weight,
@@ -95,28 +85,23 @@ export const IconControl = ({
                 ].filter(Boolean);
 
                 props.setAttributes({"wpbs-icons": nextIcons});
+
                 if (typeof updateEditorIcons === "function") {
                     updateEditorIcons(nextIcons);
                 }
 
+
             }, 1500),
-        [icons, fieldKey, props.setAttributes, updateEditorIcons]
+        [icons, fieldId, props.setAttributes, updateEditorIcons]
     );
 
 
-    // ------------------------------
-    // Update local + notify HOC
-    // ------------------------------
     const update = useCallback(
         (key, val) => {
-
-            if (key === "name") {
-                setIsEditing(true);
-            }
-
             setLocal((prev) => {
                 const next = {...prev, [key]: val};
 
+                // create the clean normalized icon object immediately
                 const normalized = {
                     ...next,
                     name: next.name || "",
@@ -131,14 +116,10 @@ export const IconControl = ({
                     normalized.size
                 );
 
-                // invisible while typing:
-                const nameToSend = editingRef.current ? "" : normalized.name;
+                // send normalized object UP to HOC immediately
+                onChange(normalized);
 
-                onChange({
-                    ...normalized,
-                    name: nameToSend,
-                });
-
+                // fire delayed registry update
                 debouncedRegistryCommit(normalized);
 
                 return next;
@@ -154,9 +135,7 @@ export const IconControl = ({
         }
     }, [value]);
 
-
     const {name, weight = 300, size = 24, style = "outlined"} = local;
-
 
     const labelNode = (
         <>
@@ -182,7 +161,6 @@ export const IconControl = ({
         </>
     );
 
-
     return (
         <BaseControl label={labelNode} style={{marginBottom: 0}}>
             <div style={{display: "flex", alignItems: "center", gap: "5px"}}>
@@ -205,9 +183,15 @@ export const IconControl = ({
                     />
 
                     {isOpen && (
-                        <Popover position="bottom right" onClose={() => setIsOpen(false)}>
-                            <Grid columns={1} rowGap={15} style={{padding: "10px", width: "200px"}}>
-
+                        <Popover
+                            position="bottom right"
+                            onClose={() => setIsOpen(false)}
+                        >
+                            <Grid
+                                columns={1}
+                                rowGap={15}
+                                style={{padding: "10px", width: "200px"}}
+                            >
                                 <NumberControl
                                     label="Size"
                                     value={size}
@@ -240,7 +224,6 @@ export const IconControl = ({
                                         {value: "solid", label: "Solid (Filled)"},
                                     ]}
                                 />
-
                             </Grid>
                         </Popover>
                     )}
@@ -250,7 +233,6 @@ export const IconControl = ({
     );
 };
 
-
 export const MaterialIcon = ({
                                  name,
                                  weight = 300,
@@ -258,7 +240,9 @@ export const MaterialIcon = ({
                                  style = "outlined",
                                  className = "",
                              }) => {
-    const css = `'FILL' ${style === "solid" ? 1 : 0}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${size || 24}`;
+    const css = `'FILL' ${style === "solid" ? 1 : 0}, 'wght' ${weight}, 'GRAD' 0, 'opsz' ${
+        size || 24
+    }`;
 
     return !name ? null : (
         <span

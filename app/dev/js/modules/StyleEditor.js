@@ -664,11 +664,12 @@ function onStyleChange({css = {}, preload = [], props, styleRef}) {
     }
 
     const sameCss = _.isEqual(attributes["wpbs-css"], cleanedCss);
-    const samePreload = _.isEqual(attributes["wpbs-preload"], nextPreload);
 
-    if (sameCss && samePreload) {
+    
+    if (sameCss) {
         return;
     }
+
 
     const {dispatch} = wp.data;
     dispatch("core/block-editor").updateBlockAttributes(clientId, {

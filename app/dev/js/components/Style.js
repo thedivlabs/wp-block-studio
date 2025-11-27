@@ -6,7 +6,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {BackgroundControls} from "Components/Background";
 import {AdvancedControls} from "Components/AdvancedControls";
 import {isEqual, merge} from 'lodash';
-import {cleanObject, normalizeBreakpoints} from "Includes/helper";
+import {normalizeBreakpoints} from "Includes/helper";
 
 export const STYLE_ATTRIBUTES = {
     uniqueId: {type: "string"},
@@ -79,7 +79,6 @@ export const withStyle = (Component, config) => (props) => {
             }
 
             next = normalizeBreakpoints(next);
-
             setAttributes({"wpbs-style": next});
         },
         [setAttributes, styleData]
@@ -100,7 +99,6 @@ export const withStyle = (Component, config) => (props) => {
             }
 
             next = normalizeBreakpoints(next);
-
             setAttributes({"wpbs-background": next});
         },
         [setAttributes, bgData]
@@ -113,7 +111,6 @@ export const withStyle = (Component, config) => (props) => {
                 ...advData,
                 ...patch,
             };
-
             setAttributes({"wpbs-advanced": next});
         },
         [setAttributes, advData]
@@ -125,12 +122,15 @@ export const withStyle = (Component, config) => (props) => {
             if (!raw || typeof raw !== "object") return;
 
             const cleaned = cleanObject(raw, true);
+            const cleanedCurrent = cleanObject(blockCssRef.current, true);
 
-            if (isEqual(cleanObject(blockCssRef.current, true), cleaned)) return;
+
+            if (!cleaned || isEqual(cleaned, cleanedCurrent)) return;
 
             blockCssRef.current = cleaned;
 
             if (typeof onStyleChange === "function" && styleRef.current) {
+
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,

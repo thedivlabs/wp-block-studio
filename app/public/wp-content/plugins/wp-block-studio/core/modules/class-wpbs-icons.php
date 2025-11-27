@@ -143,7 +143,7 @@ final class WPBS_Icons {
 		$names = array_merge( $names, $this->get_global_icon_names() );
 
 		$names = array_values( array_unique( array_filter( array_map( 'trim', $names ) ) ) );
-
+		
 		if ( empty( $names ) ) {
 			return;
 		}

@@ -28,12 +28,6 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
 
     const updateSettings = useCallback(
         (patch) => {
-            console.log('updateSettings', patch);
-            /*let merged = merge({}, layout, patch);
-            merged = cleanObject(merged, true);
-            merged = normalizeBreakpoints(merged);
-
-            setLayout(merged);*/
             setLayout(patch);
             updateStyleSettings(patch);
         },
@@ -54,6 +48,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
                 <LayoutFields
                     label="Settings"
                     settings={entry.props || {}}
+                    suppress={baseLayoutSuppress}
                     updateFn={(patch) => update({props: patch})}
                 />
 

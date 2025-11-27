@@ -130,8 +130,6 @@ export const withStyle = (Component, config) => (props) => {
 
             blockCssRef.current = cleaned;
 
-            console.log(cleaned);
-
             if (typeof onStyleChange === "function" && styleRef.current) {
                 onStyleChange({
                     css: blockCssRef.current,

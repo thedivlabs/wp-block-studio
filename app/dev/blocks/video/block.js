@@ -279,7 +279,6 @@ registerBlockType(metadata.name, {
 
         const settings = attributes["wpbs-video"] || {};
 
-
         const updateSettings = useCallback(
             (patchObj) => {
                 const next = {...settings, ...patchObj};
@@ -290,10 +289,6 @@ registerBlockType(metadata.name, {
             [settings, setAttributes]
         );
 
-
-        //
-        // Sync CSS + preload
-        //
         useEffect(() => {
             setCss(getCssProps(settings));
             setPreload(getPreload(settings));
@@ -315,6 +310,11 @@ registerBlockType(metadata.name, {
                 )),
             [settings]
         );
+
+        useEffect(() => {
+            console.log(settings);
+            console.log(attributes);
+        }, []);
 
         return (
             <>

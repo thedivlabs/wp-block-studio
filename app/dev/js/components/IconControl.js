@@ -8,8 +8,9 @@ import {
     Popover,
 } from '@wordpress/components';
 import {useSetting} from "@wordpress/block-editor";
-import {useEffect, useMemo, useState, memo} from "@wordpress/element";
+import {useEffect, useMemo, useState, memo, useCallback} from "@wordpress/element";
 import {debounce, isEqual} from "lodash";
+import {cleanObject} from "Includes/helper";
 
 /* ------------------------------------------------------------
  * CSS utility for Material Symbols variable font
@@ -75,66 +76,54 @@ export const IconControl = ({
     /* --------------------------------------------
      * Debounced commit function
      * -------------------------------------------- */
-    const commit = useMemo(
-        () =>
-            debounce((next) => {
+    const commit = useCallback((next) => {
 
-                const normalized = {
-                    ...next,
-                    name: next.name || "",
-                    weight: Number(next.weight ?? 300),
-                    size: Number(next.size ?? 24),
-                    style: next.style ?? "outlined",
-                };
+        const normalized = {
+            ...next,
+            name: next.name || "",
+            weight: Number(next.weight ?? 300),
+            size: Number(next.size ?? 24),
+            style: next.style ?? "outlined",
+        };
 
-                // Generate CSS variation string
-                normalized.css = generateCSS(
-                    normalized.style === "solid" ? 1 : 0,
-                    normalized.weight,
-                    normalized.size
-                );
+        // Generate CSS variation string
+        normalized.css = generateCSS(
+            normalized.style === "solid" ? 1 : 0,
+            normalized.weight,
+            normalized.size
+        );
 
-                // 1. Update block-local field
-                onChange(normalized);
+        // 1. Update block-local field
+        onChange(normalized);
 
-                // 2. Update wpbs-icons (keep everyone else)
-                const nextIcons = [
-                    ...icons.filter((icon) => icon.key !== fieldId),
-                    normalized.name
-                        ? {
-                            key: fieldId,
-                            name: normalized.name,
-                            // Fill axis: solid → 1, outlined → 0
-                            fill: normalized.style === "solid" ? 1 : 0,
-                            weight: normalized.weight,
-                            opsz: normalized.size,
-                            grade: Number(normalized.grade ?? 0),
-                        }
-                        : null,
-                ].filter(Boolean);
-
-                if (!!isCommit) {
-                    props.setAttributes({"wpbs-icons": nextIcons});
+        // 2. Update wpbs-icons (keep everyone else)
+        const nextIcons = [
+            ...icons.filter((icon) => icon.key !== fieldId),
+            normalized.name
+                ? {
+                    key: fieldId,
+                    name: normalized.name,
+                    // Fill axis: solid → 1, outlined → 0
+                    fill: normalized.style === "solid" ? 1 : 0,
+                    weight: normalized.weight,
+                    opsz: normalized.size,
+                    grade: Number(normalized.grade ?? 0),
                 }
+                : null,
+        ].filter(Boolean);
 
-            }, 900),
-        [] // Stable debounce
-    );
-
-    /* --------------------------------------------
-     * Local → commit when changed
-     * -------------------------------------------- */
-    useEffect(() => {
-        if (!isEqual(local, value)) {
-            commit(local);
+        if (!!isCommit) {
+            props.setAttributes({"wpbs-icons": nextIcons});
         }
-    }, [local]);
+
+    }, [onChange, props.setAttributes]);
+
 
     /* --------------------------------------------
      * Sync external changes back into local
      * -------------------------------------------- */
     useEffect(() => {
-        if (!isEqual(value, local)) {
+        if (!isEqual(cleanObject(local, true), cleanObject(value, true))) {
             setLocal(value);
         }
     }, [value]);
@@ -143,10 +132,15 @@ export const IconControl = ({
      * Update local only
      * -------------------------------------------- */
     const update = (key, val) => {
+        if (isEqual(cleanObject(local, true), cleanObject(value, true))) {
+            return
+        }
         setLocal((prev) => ({
             ...prev,
             [key]: val,
         }));
+        commit(local);
+
     };
 
     const {name, weight = 300, size = 24, style = "outlined"} = local;

@@ -104,8 +104,8 @@ class WPBS_Blocks {
 		foreach ( $groups as $group_key => $group_items ) {
 
 			$attrs = [
-				'href'          => '#',
-				'rel'           => 'preload',
+				'href'          => '',
+				'rel'           => '',
 				'as'            => 'image',
 				'data-group'    => $group_key,
 				'fetchpriority' => 'high',
@@ -124,7 +124,7 @@ class WPBS_Blocks {
 
 				// Resolve URL
 				$src = $this->resolve_image_url( $id, $size );
-				
+
 				if ( ! $src || $src == '#' ) {
 					continue;
 				}

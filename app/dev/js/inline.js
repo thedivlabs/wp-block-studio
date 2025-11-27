@@ -37,9 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // hydrate preload safely
         if (chosen && chosen !== "#" && chosen.trim() !== "") {
             link.href = chosen;
+            link.rel = 'preload';
         } else {
             // Prevent Chrome warnings and invalid preloads
-            link.removeAttribute("href");
+            link.rel = '';
+            link.href = '';
         }
 
     });

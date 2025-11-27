@@ -124,6 +124,7 @@ class WPBS_Blocks {
 
 				// Resolve URL
 				$src = $this->resolve_image_url( $id, $size );
+				
 				if ( ! $src || $src == '#' ) {
 					continue;
 				}

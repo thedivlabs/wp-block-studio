@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // PRELOAD FIRST — this needs max priority
     const bp = window.WPBS?.settings?.breakpoints || {};
-    
+
     document.querySelectorAll('link[rel="preload"][data-group]').forEach(link => {
 
         let chosen = link.dataset.default || null;
@@ -34,10 +34,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // hydrate preload
-        if (chosen) {
+        // hydrate preload safely
+        if (chosen && chosen !== "#" && chosen.trim() !== "") {
             link.href = chosen;
+        } else {
+            // Prevent Chrome warnings and invalid preloads
+            link.removeAttribute("href");
         }
+
     });
 
 

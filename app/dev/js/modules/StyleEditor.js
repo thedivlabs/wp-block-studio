@@ -242,7 +242,7 @@ function parseBackgroundProps(props = {}) {
         media,           // unified media object
         resolution = "large",
         overlay,
-        color,
+        'bg-color': color,
         opacity,
         scale,
         fade,

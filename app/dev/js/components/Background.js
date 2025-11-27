@@ -99,15 +99,35 @@ export const BackgroundControls = function BackgroundControls({
     // ALWAYS produce a single object argument
     const handleChange = useCallback(
         (next = {}) => {
+
+            // Extract structural keys
+            const nextPropsPatch = next.props || {};
+            const nextBreakpointsPatch = next.breakpoints;
+
+            // Extract flat props (non-structural)
+            const flatPropsPatch = Object.fromEntries(
+                Object.entries(next).filter(
+                    ([key]) => key !== "props" && key !== "breakpoints"
+                )
+            );
+
+            // Merge props cleanly (no nesting of breakpoints)
+            const nextProps = {
+                ...value.props,
+                ...nextPropsPatch,
+                ...flatPropsPatch,  // Only real props, no structural keys
+            };
+
             const out = {
-                props: next.props ?? value.props,
-                breakpoints: next.breakpoints ?? value.breakpoints,
+                props: nextProps,
+                breakpoints: nextBreakpointsPatch ?? value.breakpoints,
             };
 
             callback(out);
         },
         [callback, value.props, value.breakpoints]
     );
+
 
     return (
         <PanelBody

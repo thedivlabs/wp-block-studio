@@ -173,9 +173,6 @@ export const Field = memo(
                     onChange: (newValue) => {
                         callback({[c.slug]: newValue});
                     },
-                    onColorCleared: () => {
-                        callback({[c.slug]: ""});
-                    },
                 }));
 
                 control = (

@@ -101,9 +101,19 @@ export const withStyle = (Component, config) => (props) => {
     ---------------------------------------------- */
     const updateBgSettings = useCallback(
         (patch) => {
-            const next = merge({}, bgData, patch);
+            console.log('patch', patch);
+            const next = {
+                ...bgData,
+                ...patch,
+                breakpoints: {
+                    ...(bgData.breakpoints || {}),
+                    ...(patch.breakpoints || {}), // allows null to delete
+                },
+            };
+            console.log('next', next);
             const normalized = normalizeBreakpoints(next);
-            setAttributes({"wpbs-background": cleanObject(normalized)});
+            console.log('normalized', normalized);
+            setAttributes({"wpbs-background": cleanObject(normalized, true)});
         },
         [setAttributes, bgData]
     );

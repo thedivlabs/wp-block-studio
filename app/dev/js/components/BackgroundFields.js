@@ -19,14 +19,6 @@ export const BackgroundFields = function BackgroundFields({
     const {backgroundFieldsMap: map = []} =
     window?.WPBS_StyleEditor ?? {};
 
-    // ALWAYS send a single object argument to updateFn
-    const onUpdate = useCallback(
-        (slug, value) => {
-            updateFn({[slug]: value});
-        },
-        [updateFn]
-    );
-
     const type = settings?.type ?? "";
     const hasSettings = !!settings && Object.keys(settings).length > 0;
 
@@ -108,20 +100,21 @@ export const BackgroundFields = function BackgroundFields({
                             </div>
                         </BaseControl>
 
-                        <PanelColorSettings
-                            className="wpbs-controls__color"
-                            enableAlpha
-                            colorSettings={[
-                                {
-                                    slug: "color",
-                                    label: "Color",
-                                    value: settings?.color ?? undefined,
-                                    onChange: (value) =>
-                                        updateFn({color: value}),
-                                },
-                            ]}
-                            __nextHasNoMarginBottom
+                        <Field
+                            field={{
+                                type: "color",
+                                slug: "color",
+                                label: "Color",
+                                full: true,
+                                colors: [
+                                    {slug: "bg-color", label: "Color"},
+                                ],
+                            }}
+                            settings={settings}
+                            callback={(obj) => updateFn(obj)}
+                            isToolsPanel={false}
                         />
+
 
                         <Grid columns={2} columnGap={15} rowGap={20}>
                             {!isBreakpoint && (

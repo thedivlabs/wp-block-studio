@@ -6,7 +6,7 @@ import {InspectorControls} from "@wordpress/block-editor";
 import {BackgroundControls} from "Components/Background";
 import {AdvancedControls} from "Components/AdvancedControls";
 import {isEqual, merge} from 'lodash';
-import {normalizeBreakpoints} from "Includes/helper";
+import {cleanObject, normalizeBreakpoints} from "Includes/helper";
 
 export const STYLE_ATTRIBUTES = {
     uniqueId: {type: "string"},
@@ -62,9 +62,6 @@ export const withStyle = (Component, config) => (props) => {
     }, []);
 
 
-    /* ----------------------------------------------
-       UPDATE: STYLE SETTINGS (now merges objects)
-    ---------------------------------------------- */
     const updateStyleSettings = useCallback(
         (patch) => {
 
@@ -85,37 +82,36 @@ export const withStyle = (Component, config) => (props) => {
     );
 
 
+    const updateBgSettings = useCallback(
+        (patch) => {
+
+            let next = {
+                ...bgData,
+                ...patch,
+            };
+
+            // Explicitly replace breakpoints, do NOT deep merge them
+            if (patch.breakpoints !== undefined) {
+                next.breakpoints = patch.breakpoints;
+            }
+
+            next = normalizeBreakpoints(next);
+
+            setAttributes({"wpbs-background": next});
+        },
+        [setAttributes, bgData]
+    );
+
+
     /* ----------------------------------------------
-       UPDATE: ADVANCED SETTINGS (now merges)
-    ---------------------------------------------- */
+   UPDATE: ADVANCED SETTINGS (now merges)
+---------------------------------------------- */
     const updateAdvancedSettings = useCallback(
         (patch) => {
             const next = merge({}, advData, patch);
             setAttributes({"wpbs-advanced": next});
         },
         [setAttributes, advData]
-    );
-
-    /* ----------------------------------------------
-       UPDATE: BACKGROUND SETTINGS (now merges)
-    ---------------------------------------------- */
-    const updateBgSettings = useCallback(
-        (patch) => {
-            console.log('patch', patch);
-            const next = {
-                ...bgData,
-                ...patch,
-                breakpoints: {
-                    ...(bgData.breakpoints || {}),
-                    ...(patch.breakpoints || {}), // allows null to delete
-                },
-            };
-            console.log('next', next);
-            const normalized = normalizeBreakpoints(next);
-            console.log('normalized', normalized);
-            setAttributes({"wpbs-background": cleanObject(normalized, true)});
-        },
-        [setAttributes, bgData]
     );
 
 

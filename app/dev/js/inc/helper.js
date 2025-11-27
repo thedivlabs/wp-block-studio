@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, {merge} from "lodash";
 
 export function resolveFeaturedMedia({type, media, resolution, isEditor}) {
     const res = (resolution || "large").toUpperCase();
@@ -35,6 +35,11 @@ export function resolveFeaturedMedia({type, media, resolution, isEditor}) {
     return normalized;
 }
 
+export const mergeEntry = (entry, patch, reset = false) => {
+    const base = reset ? {} : (entry || {});
+    return merge({}, base, patch || {});
+};
+
 export function normalizeBreakpoints(style = {}) {
     if (!style.breakpoints) return style;
 
@@ -43,7 +48,6 @@ export function normalizeBreakpoints(style = {}) {
     for (const key in out.breakpoints) {
         const entry = out.breakpoints[key];
 
-        // 🔥 THIS is the critical bit:
         if (entry === null) {
             delete out.breakpoints[key];
             continue;

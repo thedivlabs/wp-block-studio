@@ -9,14 +9,10 @@ import {BreakpointPanels} from "./BreakpointPanels";
 import {LayoutFields} from "./LayoutFields";
 import {HoverFields} from "Components/HoverFields";
 
-import {cleanObject, normalizeBreakpoints} from "Includes/helper";
+import {cleanObject, mergeEntry} from "Includes/helper";
 import {isEqual, merge} from "lodash";
 import {PanelBody} from "@wordpress/components";
 
-const mergeEntry = (entry, patch, reset = false) => {
-    const base = reset ? {} : (entry || {});
-    return merge({}, base, patch || {});
-};
 
 export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     const [layout, setLayout] = useState(settings);
@@ -38,6 +34,7 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
             merged = normalizeBreakpoints(merged);
 
             setLayout(merged);*/
+            setLayout(patch);
             updateStyleSettings(patch);
         },
         [layout, updateStyleSettings]
@@ -54,15 +51,14 @@ export const StyleEditorUI = ({settings = {}, updateStyleSettings}) => {
     const baseRenderer = ({entry, update}) => {
         const current = entry || {};
 
-        const handleLayoutUpdate = (patch, reset = false) => {
-            const next = mergeEntry(current, {props: patch}, reset);
-            update({...next});       // ALWAYS object
+        const handleLayoutUpdate = (patch) => {
+            update({props: patch});
         };
 
-        const handleHoverUpdate = (patch, reset = false) => {
-            const next = mergeEntry(current, {hover: patch}, reset);
-            update({...next});
+        const handleHoverUpdate = (patch) => {
+            update({hover: patch});
         };
+
 
         return (
             <Fragment>

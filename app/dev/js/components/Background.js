@@ -1,10 +1,10 @@
-import {memo, useCallback} from "@wordpress/element";
+import {useEffect, useCallback, useState} from "@wordpress/element";
 import {PanelBody} from "@wordpress/components";
 import {BreakpointPanels} from "Components/BreakpointPanels";
-import {merge, isPlainObject} from "lodash";
+import {isEqual, isPlainObject} from "lodash";
 import {BackgroundFields} from "./BackgroundFields";
 import {BackgroundMedia} from "./BackgroundMedia";
-import {resolveFeaturedMedia} from "Includes/helper";
+import {resolveFeaturedMedia, mergeEntry, cleanObject} from "Includes/helper";
 
 function resolveBackgroundSettings(settings = {}, isEditor = false) {
     const base = settings?.props || {};
@@ -47,87 +47,70 @@ function resolveBackgroundSettings(settings = {}, isEditor = false) {
     return resolved;
 }
 
-function deepMergeAllowUndefined(base = {}, patch = {}) {
-    const result = {...base};
-
-    for (const key in patch) {
-        const value = patch[key];
-
-        if (isPlainObject(value)) {
-            result[key] = deepMergeAllowUndefined(base[key] || {}, value);
-        } else {
-            result[key] = value;
-        }
-    }
-
-    return result;
-}
-
-function mergeEntryProps(entry = {}, patch = {}, reset = false) {
-    const currentProps = entry.props || {};
-    const baseProps = reset ? {} : currentProps;
-
-    return {
-        ...entry,
-        props: deepMergeAllowUndefined(baseProps, patch),
-    };
-}
-
-function makeEntryHandlers(entry = {}, update) {
-    const currentEntry = entry || {};
-    const settings = currentEntry.props || {};
-
-    const updateFn = (patch = {}, reset = false) => {
-        const nextEntry = mergeEntryProps(currentEntry, patch, reset);
-
-        // nextEntry is just props — BreakpointPanels expects update({ props })
-        update({props: nextEntry.props});
-    };
-
-    return {settings, updateFn};
-}
-
 export const BackgroundControls = function BackgroundControls({
                                                                   settings = {},
                                                                   callback,
                                                               }) {
-    const value = {
-        props: settings?.props || {},
-        breakpoints: settings?.breakpoints || {},
-    };
 
-    // ALWAYS produce a single object argument
+    // Local controlled state — this matches StyleEditorUI “layout”
+    const [localValue, setLocalValue] = useState(settings);
+
+    console.log(localValue);
+
+    // Sync UI state when parent settings change
+    useEffect(() => {
+        const incoming = cleanObject(settings || {}, false);
+        const local = cleanObject(localValue || {}, false);
+
+        if (!isEqual(incoming, local)) {
+            setLocalValue(settings || {});
+        }
+    }, [settings, localValue]);
+
+    // Unified object-only output, identical to StyleEditorUI
     const handleChange = useCallback(
-        (next = {}) => {
-
-            // Extract structural keys
-            const nextPropsPatch = next.props || {};
-            const nextBreakpointsPatch = next.breakpoints;
-
-            // Extract flat props (non-structural)
-            const flatPropsPatch = Object.fromEntries(
-                Object.entries(next).filter(
-                    ([key]) => key !== "props" && key !== "breakpoints"
-                )
-            );
-
-            // Merge props cleanly (no nesting of breakpoints)
-            const nextProps = {
-                ...value.props,
-                ...nextPropsPatch,
-                ...flatPropsPatch,  // Only real props, no structural keys
-            };
-
-            const out = {
-                props: nextProps,
-                breakpoints: nextBreakpointsPatch ?? value.breakpoints,
-            };
-
-            callback(out);
+        (patch = {}) => {
+            setLocalValue(patch);
+            callback(patch);
         },
-        [callback, value.props, value.breakpoints]
+        [callback]
     );
 
+    // Base renderer
+    const baseRenderer = ({entry, update}) => {
+        const current = entry || {};
+
+        const handlePropsUpdate = (patch, reset = false) => {
+            const next = mergeEntry(current, {props: patch}, reset);
+            update({...next});
+        };
+
+        return (
+            <BackgroundFields
+                settings={current.props || {}}
+                updateFn={handlePropsUpdate}
+                isBreakpoint={false}
+            />
+        );
+    };
+
+    // Breakpoint renderer
+    const breakpointRenderer = ({entry, update}) => {
+        const current = entry || {};
+
+        const handlePropsUpdate = (patch, reset = false) => {
+            const next = mergeEntry(current, {props: patch}, reset);
+            update({...next});
+        };
+
+        return (
+            <BackgroundFields
+                settings={current.props || {}}
+                updateFn={handlePropsUpdate}
+                isBreakpoint={true}
+            />
+        );
+    };
 
     return (
         <PanelBody
@@ -137,38 +120,11 @@ export const BackgroundControls = function BackgroundControls({
         >
             <BreakpointPanels
                 label="Background"
-                value={value}
+                value={localValue}
                 onChange={handleChange}
                 render={{
-                    base: ({entry, update}) => {
-                        const {settings, updateFn} = makeEntryHandlers(
-                            entry,
-                            update
-                        );
-
-                        return (
-                            <BackgroundFields
-                                settings={settings}
-                                updateFn={updateFn}
-                                isBreakpoint={false}
-                            />
-                        );
-                    },
-
-                    breakpoints: ({entry, update}) => {
-                        const {settings, updateFn} = makeEntryHandlers(
-                            entry,
-                            update
-                        );
-
-                        return (
-                            <BackgroundFields
-                                settings={settings}
-                                updateFn={updateFn}
-                                isBreakpoint={true}
-                            />
-                        );
-                    },
+                    base: baseRenderer,
+                    breakpoints: breakpointRenderer,
                 }}
             />
         </PanelBody>

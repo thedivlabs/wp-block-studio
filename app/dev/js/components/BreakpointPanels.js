@@ -30,7 +30,6 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         });
     }, [breakpoints, breakpointDefs]);
 
-
     // FIX #1 — MERGE base entry instead of overwriting
     const updateBase = useCallback(
         (nextEntry) => {
@@ -76,13 +75,10 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
         [normalizedBaseEntry, breakpoints, onChange]
     );
 
-
     const removeBreakpoint = useCallback(
         (bpKey) => {
-            const next = {
-                ...breakpoints,
-                [bpKey]: null, // <-- KEY FIX
-            };
+            const next = {...breakpoints};
+            delete next[bpKey];     // <-- the key change
 
             onChange({
                 ...normalizedBaseEntry,
@@ -103,6 +99,7 @@ export function BreakpointPanels({value = {}, onChange, render, label}) {
             const next = {...breakpoints};
             delete next[oldKey];
             next[newKey] = entry;
+
 
             onChange({
                 ...normalizedBaseEntry,

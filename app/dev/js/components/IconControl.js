@@ -91,7 +91,7 @@ export const IconControl = ({
                 ].filter(Boolean);
 
                 const patch = {
-                    [fieldKey]: normalized,
+                    ...normalized,
                 };
 
                 if (isCommit) {
@@ -99,7 +99,7 @@ export const IconControl = ({
                 }
 
                 onChange(patch);
-            }, 400),
+            }, 300),
         [icons, fieldId, onChange, isCommit]
     );
 

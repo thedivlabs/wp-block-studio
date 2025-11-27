@@ -94,9 +94,7 @@ export const IconControl = ({
                     ...normalized,
                 };
 
-                if (isCommit) {
-                    patch["wpbs-icons"] = nextIcons;
-                }
+                patch["wpbs-icons"] = nextIcons;
 
                 onChange(patch);
             }, 300),

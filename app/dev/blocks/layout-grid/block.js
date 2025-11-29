@@ -1,9 +1,9 @@
 import "./scss/block.scss";
 
-import {registerBlockType} from "@wordpress/blocks";
+import { registerBlockType } from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
+import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
 
 import {
     PanelBody,
@@ -14,10 +14,10 @@ import {
     TabPanel,
 } from "@wordpress/components";
 
-import {useCallback, useEffect, useMemo} from "@wordpress/element";
-import {isEqual} from "lodash";
+import { useCallback, useEffect, useMemo } from "@wordpress/element";
+import { isEqual } from "lodash";
 
-import {cleanObject} from "Includes/helper";
+import { cleanObject } from "Includes/helper";
 
 import {
     STYLE_ATTRIBUTES,
@@ -25,21 +25,29 @@ import {
     withStyleSave,
 } from "Components/Style";
 
-import {QueryConfigPanel} from "Components/QueryConfigPanel";
-import {BreakpointPanels} from "Components/BreakpointPanels";
+import { QueryConfigPanel } from "Components/QueryConfigPanel";
+import { BreakpointPanels } from "Components/BreakpointPanels";
+import { DividerOptions } from "Components/DividerOptions";
 
 const selector = "wpbs-layout-grid";
 
 /* --------------------------------------------------------------
  * Normalize wpbs-grid settings
- * Must preserve props, breakpoints, AND query.
+ * Must preserve props, breakpoints, AND query, AND divider.
  * -------------------------------------------------------------- */
 const normalizeGridSettings = (raw) => {
-    if (raw && (raw.props || raw.breakpoints || raw.query)) {
+    if (
+        raw &&
+        (raw.props ||
+            raw.breakpoints ||
+            raw.query ||
+            raw.divider)
+    ) {
         return {
             props: raw.props || {},
             breakpoints: raw.breakpoints || {},
             query: raw.query || {},
+            divider: raw.divider || {},
         };
     }
 
@@ -48,6 +56,7 @@ const normalizeGridSettings = (raw) => {
         props: raw || {},
         breakpoints: {},
         query: {},
+        divider: {},
     };
 };
 
@@ -111,7 +120,8 @@ const getPreload = () => [];
 /* --------------------------------------------------------------
  * Breakpoint Renderers
  * -------------------------------------------------------------- */
-const GridBaseRenderer = ({entry, update}) => {
+
+const GridBaseRenderer = ({ entry, update }) => {
     const props = entry ?? {};
 
     return (
@@ -120,7 +130,7 @@ const GridBaseRenderer = ({entry, update}) => {
                 label="Columns"
                 value={props.columns ?? 3}
                 onChange={(val) =>
-                    update({columns: parseInt(val, 10) || 1})
+                    update({ columns: parseInt(val, 10) || 1 })
                 }
                 min={1}
                 max={6}
@@ -130,14 +140,14 @@ const GridBaseRenderer = ({entry, update}) => {
             <ToggleControl
                 label="Centered"
                 checked={!!props.centered}
-                onChange={(val) => update({centered: !!val})}
+                onChange={(val) => update({ centered: !!val })}
                 __next40pxDefaultSize
             />
         </Grid>
     );
 };
 
-const GridBreakpointRenderer = ({entry, update}) => {
+const GridBreakpointRenderer = ({ entry, update }) => {
     const props = entry ?? {};
 
     return (
@@ -147,9 +157,9 @@ const GridBreakpointRenderer = ({entry, update}) => {
                 value={props.columns ?? ""}
                 onChange={(val) => {
                     if (val === "") {
-                        update({}); // No change (inherit base)
+                        update({}); // inherit base
                     } else {
-                        update({columns: parseInt(val, 10) || 1});
+                        update({ columns: parseInt(val, 10) || 1 });
                     }
                 }}
                 min={1}
@@ -160,7 +170,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
             <ToggleControl
                 label="Centered"
                 checked={!!props.centered}
-                onChange={(val) => update({centered: !!val})}
+                onChange={(val) => update({ centered: !!val })}
                 __next40pxDefaultSize
             />
         </Grid>
@@ -203,7 +213,7 @@ registerBlockType(metadata.name, {
         const classNames = getClassNames(attributes, gridSettings);
 
         /* --------------------------------------------
-         * Sync style + preload
+         * Sync CSS + Preload
          * -------------------------------------------- */
         useEffect(() => {
             setCss(getCssProps(gridSettings));
@@ -217,7 +227,7 @@ registerBlockType(metadata.name, {
             (nextValue) => {
                 const normalized = normalizeGridSettings(nextValue);
                 if (!isEqual(gridSettings, normalized)) {
-                    setAttributes({"wpbs-grid": normalized});
+                    setAttributes({ "wpbs-grid": normalized });
                 }
             },
             [gridSettings, setAttributes]
@@ -239,8 +249,7 @@ registerBlockType(metadata.name, {
         );
 
         /* --------------------------------------------
-         * TAB PANELS (Options + Loop)
-         * Modeled after CTA block ( [oai_citation:2‡block.js](sediment://file_000000005f6471f5bc8757ca7dff22af))
+         * Tabs Content
          * -------------------------------------------- */
         const tabOptions = useMemo(
             () => (
@@ -248,6 +257,7 @@ registerBlockType(metadata.name, {
                     columns={1}
                     columnGap={10}
                     rowGap={16}
+                    style={{ padding: "16px" }}
                 >
                     <TextControl
                         label="Button Label"
@@ -269,45 +279,71 @@ registerBlockType(metadata.name, {
         );
 
         const tabLoop = useMemo(
-            () => (<QueryConfigPanel
-                value={gridSettings.query || {}}
-                onChange={updateQuerySettings}
-            /> ),
+            () => (
+                <Grid
+                    columns={1}
+                    columnGap={10}
+                    rowGap={16}
+                    style={{ padding: "16px" }}
+                >
+                    <QueryConfigPanel
+                        value={gridSettings.query || {}}
+                        onChange={updateQuerySettings}
+                    />
+                </Grid>
+            ),
             [gridSettings, updateQuerySettings]
         );
 
+        const tabDivider = useMemo(
+            () => (
+                <DividerOptions
+                    value={gridSettings.divider || {}}
+                    onChange={(next) =>
+                        updateGridSettings({
+                            ...gridSettings,
+                            divider: next,
+                        })
+                    }
+                />
+            ),
+            [gridSettings, updateGridSettings]
+        );
+
         /* --------------------------------------------
-         * Inspector
+         * Inspector Controls
          * -------------------------------------------- */
         const inspectorPanel = (
             <PanelBody
                 title="Grid"
                 group="styles"
                 initialOpen={false}
-                className={"wpbs-layout-controls is-style-unstyled"}
+                className="wpbs-block-controls is-style-unstyled"
             >
-                <div style={{padding: "14px"}}>
-                    <TabPanel
-                        className="wpbs-editor-tabs"
-                        activeClass="active"
-                        initialTabName="options"
-                        tabs={[
-                            {name: "options", title: "Options"},
-                            {name: "loop", title: "Loop"},
-                        ]}
-                    >
-                        {(tab) => {
-                            switch (tab.name) {
-                                case "options":
-                                    return tabOptions;
-                                case "loop":
-                                    return tabLoop;
-                                default:
-                                    return null;
-                            }
-                        }}
-                    </TabPanel>
-                </div>
+                <TabPanel
+                    className="wpbs-editor-tabs"
+                    activeClass="active"
+                    initialTabName="options"
+                    tabs={[
+                        { name: "options", title: "Options" },
+                        { name: "loop", title: "Loop" },
+                        { name: "divider", title: "Divider" },
+                    ]}
+                >
+                    {(tab) => {
+                        switch (tab.name) {
+                            case "options":
+                                return tabOptions;
+                            case "loop":
+                                return tabLoop;
+                            case "divider":
+                                return tabDivider;
+                            default:
+                                return null;
+                        }
+                    }}
+                </TabPanel>
+
                 {/* Breakpoints BELOW tabs */}
                 <BreakpointPanels
                     value={gridSettings}
@@ -323,7 +359,7 @@ registerBlockType(metadata.name, {
 
         return (
             <>
-                <InspectorControls group={"styles"}>
+                <InspectorControls group="styles">
                     {inspectorPanel}
                 </InspectorControls>
 
@@ -358,7 +394,7 @@ registerBlockType(metadata.name, {
      * SAVE
      * ---------------------------------------------------------- */
     save: withStyleSave((props) => {
-        const {attributes, BlockWrapper} = props;
+        const { attributes, BlockWrapper } = props;
 
         const gridSettings = normalizeGridSettings(
             attributes["wpbs-grid"] || {}
@@ -378,10 +414,10 @@ registerBlockType(metadata.name, {
                         query: gridSettings.query || {},
                         grid: gridSettings || {},
                     }),
-                    ...(attributes?.["wpbs-props"] || {}),
+                    ...(attributes["wpbs-props"] || {}),
                 }}
             >
-                <InnerBlocks.Content/>
+                <InnerBlocks.Content />
             </BlockWrapper>
         );
     }),

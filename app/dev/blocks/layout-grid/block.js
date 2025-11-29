@@ -1,350 +1,409 @@
-import {registerBlockType} from '@wordpress/blocks';
-import {InspectorControls, useBlockProps, useInnerBlocksProps, InnerBlocks} from '@wordpress/block-editor';
-import {useCallback, useMemo} from "@wordpress/element";
-
+import { registerBlockType } from "@wordpress/blocks";
+import {
+    InspectorControls,
+    useBlockProps,
+    useInnerBlocksProps,
+    InnerBlocks,
+    PanelColorSettings,
+} from "@wordpress/block-editor";
+import {
+    useCallback,
+    useMemo,
+    Fragment,
+} from "@wordpress/element";
 import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
+    __experimentalBorderControl as BorderControl,
+    __experimentalInputControl as InputControl,
+    __experimentalUnitControl as UnitControl,
     PanelBody,
-    SelectControl, TextControl,
     ToggleControl,
+    TextControl,
+    BaseControl,
 } from "@wordpress/components";
-import {isEqual} from 'lodash';
-import {useInstanceId} from "@wordpress/compose";
+import { useInstanceId } from "@wordpress/compose";
+import { isEqual } from "lodash";
 
-import './scss/block.scss';
+import { QueryConfigPanel } from "Components/QueryConfigPanel";
+import { BreakpointPanels } from "Components/BreakpointPanels";
 
-const FEED_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'Wired', value: 'wired'},
-];
+import "./scss/block.scss";
 
-const DATE_FORMAT_OPTIONS = [
-    {label: 'Select', value: ''},
-    {label: 'October 8, 2025', value: 'F j, Y'},
-    {label: '2025-10-08', value: 'Y-m-d'},
-    {label: '10/08/2025', value: 'm/d/Y'},
-    {label: '08/10/2025', value: 'd/m/Y'},
-    {label: 'Oct 8, 2025', value: 'M j, Y'},
-    {label: 'Wed, Oct 8, 2025', value: 'D, M j, Y'},
-    {label: 'Wednesday, October 8, 2025', value: 'l, F j, Y'},
-    {label: '5:30 PM', value: 'g:i A'},
-    {label: '17:30', value: 'H:i'},
-    {label: 'October 8, 2025 5:30 PM', value: 'F j, Y g:i A'},
-];
-
-const IMAGE_SIZE_OPTIONS = [
-    { label: 'Select', value: '' },
-    { label: 'Thumbnail', value: 180 },
-    { label: 'Small', value: 320 },
-    { label: 'Medium', value: 480 },
-    { label: 'Large', value: 800 },
-];
-
+/* --------------------------------------------------------------
+ * Utility: classnames
+ * -------------------------------------------------------------- */
 const blockClassNames = (attributes) => {
-    const {settings = {}} = attributes;
+    const { settings = {}, "wpbs-grid": grid = {} } = attributes;
+    const centered = !!(grid?.props && grid.props.centered);
 
     return [
-        'wpbs-layout-grid',
+        "wpbs-layout-grid",
         settings?.instanceId ?? null,
-        !!settings?.centered ? '--centered' : null,
-    ].filter(Boolean).join(' ');
+        centered ? "--centered" : null,
+    ]
+        .filter(Boolean)
+        .join(" ");
 };
 
-const buildCssProps = (settings) => {
-    const {
-        breakpointSmall = 'xs',
-        breakpointLarge = 'normal',
-        itemsMobile,
-        itemsSmall,
-        itemsLarge = 3,
-    } = settings;
-
-    // Base CSS props (not breakpoint-specific)
-    const cssProps = {
-        '--columns': itemsLarge,
-    };
-
-    // Responsive breakpoints
-    const responsive = {};
-
-    if (itemsMobile) {
-        responsive[breakpointSmall] = {'--columns': itemsMobile ?? 1};
-    }
-    if (itemsSmall) {
-        responsive[breakpointLarge] = {'--columns': itemsSmall ?? 2};
-    }
-
-    return {
-        base: cssProps,
-        responsive,
-    };
-};
-
-const resolvePresetVar = (value) => {
-    if (typeof value === 'string' && value.startsWith('var:preset|')) {
-        // turn "var:preset|spacing|50" → "var(--wp--preset--spacing--50)"
-        const parts = value.replace('var:preset|', '').split('|');
-        return `var(--wp--preset--${parts.join('--')})`;
-    }
-    return value;
-};
-
-const Style = ({settings, breakpoints}) => {
-    if (!settings?.css?.responsive || !breakpoints || !settings?.instanceId) return null;
-
-    const selector = `.${settings.instanceId}`;
-
-    const baseRules = `.wpbs-layout-grid${selector} {${Object.entries(settings.css.base || {})
-        .map(([key, val]) => `${key}:${val};`)
-        .join('')}}`;
-
-
-    const responsiveRules = Object.entries(settings.css.responsive)
-        .map(([bpKey, vars]) => {
-            const varsStr = Object.entries(vars)
-                .map(([key, val]) => `${key}:${val};`)
-                .join('');
-            return `@media(max-width:${(breakpoints[bpKey]?.size - 1)}px){.wpbs-layout-grid${selector} {${varsStr}}}`;
+/* --------------------------------------------------------------
+ * CSS helper for grid props
+ * -------------------------------------------------------------- */
+const buildCssFromProps = (props = {}) => {
+    return Object.entries(props)
+        .filter(([, val]) => val !== undefined && val !== null && val !== "")
+        .map(([key, val]) => {
+            const cssName = key.startsWith("--") ? key : `--${key}`;
+            return `${cssName}:${val};`;
         })
-        .join('');
-
-    return <style>{[baseRules,responsiveRules].join(' ')}</style>;
+        .join("");
 };
 
-registerBlockType('wpbs/layout-grid', {
-    edit: ({attributes, setAttributes}) => {
+/* --------------------------------------------------------------
+ * Style element renderer (editor only)
+ * -------------------------------------------------------------- */
+const GridStyle = ({ grid, breakpoints, instanceId }) => {
+    if (!grid || !instanceId) return null;
 
-        const {settings = {}} = attributes;
+    const selector = `.wpbs-layout-grid.${instanceId}`;
+    const baseProps = grid.props || {};
+    const bpEntries = grid.breakpoints || {};
+
+    const baseRules = `${selector}{${buildCssFromProps(baseProps)}}`;
+
+    const responsiveRules = Object.entries(bpEntries)
+        .map(([bpKey, entry]) => {
+            const bpConfig = breakpoints[bpKey];
+            if (!bpConfig || !bpConfig.size) {
+                return "";
+            }
+
+            const bpProps = entry?.props || {};
+            const vars = buildCssFromProps(bpProps);
+            if (!vars) return "";
+
+            const maxWidth = bpConfig.size - 1;
+            return `@media(max-width:${maxWidth}px){${selector}{${vars}}}`;
+        })
+        .join("");
+
+    const css = baseRules + responsiveRules;
+
+    if (!css.trim()) return null;
+
+    return <style>{css}</style>;
+};
+
+/* --------------------------------------------------------------
+ * Breakpoint renderers
+ * -------------------------------------------------------------- */
+
+const GridBaseRenderer = ({ entry, update }) => {
+    const props = entry.props || {};
+    const columns = props.columns ?? 3;
+    const centered = !!props.centered;
+
+    return (
+        <Fragment>
+            <Grid columns={2} columnGap={10} rowGap={10}>
+                <NumberControl
+                    label="Columns"
+                    value={columns}
+                    onChange={(val) =>
+                        update({
+                            props: { columns: parseInt(val, 10) || 1 },
+                        })
+                    }
+                    min={1}
+                    max={6}
+                    __next40pxDefaultSize
+                />
+
+                <ToggleControl
+                    label="Centered"
+                    checked={centered}
+                    onChange={(val) =>
+                        update({
+                            props: { centered: !!val },
+                        })
+                    }
+                    __nextHasNoMarginBottom
+                />
+            </Grid>
+        </Fragment>
+    );
+};
+
+const GridBreakpointRenderer = ({ entry, update }) => {
+    const props = entry.props || {};
+    const columns = props.columns ?? "";
+
+    return (
+        <Grid columns={1} columnGap={10} rowGap={10}>
+            <NumberControl
+                label="Columns"
+                value={columns}
+                onChange={(val) =>
+                    update({
+                        props: {
+                            columns: val === "" ? undefined : parseInt(val, 10) || 1,
+                        },
+                    })
+                }
+                min={1}
+                max={6}
+                __next40pxDefaultSize
+            />
+        </Grid>
+    );
+};
+
+/* --------------------------------------------------------------
+ * BLOCK REGISTRATION
+ * -------------------------------------------------------------- */
+registerBlockType("wpbs/layout-grid", {
+    edit: ({ attributes, setAttributes }) => {
         const {
-            feed,
-            itemsMobile,
-            itemsSmall,
-            itemsLarge,
-            breakpointSmall,
-            breakpointLarge,
-            maxItems,
-            dateFormat,
-            buttonLabel,
-            imageSize,
-            centered,
+            settings = {},
+            query = {},
+            "wpbs-grid": gridValue = {},
+        } = attributes;
+
+        const {
+            buttonLabel = "Load more",
         } = settings;
-        const breakpoints = window?.AF?.breakpoints || {};
-        const breakpointsOptions = useMemo(() => {
-            return [
-                {label: 'Select', value: ''},
-                ...Object.entries(breakpoints).map(([key, value]) => ({
-                    label: value?.label ?? key,
-                    value: key
-                }))
-            ];
-        }, [breakpoints]);
 
-        const instanceId = useInstanceId(Object, 'wpbs-layout-grid');
+        const themeBreakpoints = WPBS?.settings?.breakpoints || {};
+        const instanceId = useInstanceId(Object, "wpbs-layout-grid");
 
+        /* --------------------------------------------
+         * Block wrapper props
+         * -------------------------------------------- */
         const blockProps = useBlockProps({
             className: blockClassNames(attributes),
             style: Object.fromEntries(
                 Object.entries({
-                    '--column-gap': resolvePresetVar(attributes?.style?.spacing?.blockGap?.left),
-                    '--row-gap': resolvePresetVar(attributes?.style?.spacing?.blockGap?.top),
-                }).filter(([_, v]) => v !== undefined)
-            )
+                    "--column-gap": attributes?.style?.spacing?.blockGap?.left,
+                    "--row-gap": attributes?.style?.spacing?.blockGap?.top,
+                }).filter(([, v]) => v !== undefined)
+            ),
         });
 
+        /* --------------------------------------------
+         * Inner blocks (card blueprint)
+         * -------------------------------------------- */
         const innerBlocksProps = useInnerBlocksProps(blockProps, {
-            allowedBlocks:[
-                'wpbs/layout-grid-card',
-            ]
+            allowedBlocks: ["wpbs/layout-grid-card"],
         });
 
+        /* --------------------------------------------
+         * Update settings (non-grid, non-query)
+         * -------------------------------------------- */
         const updateSettings = useCallback(
-            (newValue = {}) => {
-
-                const newSettings = {...settings, ...newValue};
-
-                // Only set if something actually changed
-                if (!isEqual(settings, newSettings)) {
-
-                    newSettings.css = buildCssProps(newSettings);
-                    newSettings.instanceId = instanceId;
-
-                    setAttributes({settings: newSettings});
+            (patch = {}) => {
+                const next = { ...settings, ...patch };
+                if (!isEqual(settings, next)) {
+                    next.instanceId = instanceId;
+                    setAttributes({ settings: next });
                 }
             },
             [settings, setAttributes]
         );
 
+        /* --------------------------------------------
+         * Update grid attribute (global + breakpoints)
+         * -------------------------------------------- */
+        const updateGrid = useCallback(
+            (next) => {
+                setAttributes({ "wpbs-grid": next || {} });
+            },
+            [setAttributes]
+        );
+
+        const updateGridPartial = useCallback(
+            (patch = {}) => {
+                const next = { ...(gridValue || {}), ...patch };
+                setAttributes({ "wpbs-grid": next });
+            },
+            [gridValue, setAttributes]
+        );
+
+        const grid = gridValue || {};
+
+        /* --------------------------------------------
+         * RENDER
+         * -------------------------------------------- */
         return (
             <>
                 <InspectorControls>
-                    <PanelBody initialOpen={true}>
-                        <Grid columns={1} columnGap={10} rowGap={10}>
-                            <SelectControl
-                                key={'feed'}
-                                label={'Feed'}
-                                value={feed}
-                                onChange={(newValue) => updateSettings({feed: newValue})}
-                                options={FEED_OPTIONS}
-                                __next40pxDefaultSize
-                                __nextHasNoMarginBottom
-                            />
-                            <Grid columns={3} columnGap={10} rowGap={10}>
-                                <NumberControl
-                                    key={'itemsMobile'}
-                                    label="Mobile"
-                                    value={itemsMobile}
-                                    onChange={(newValue) => updateSettings({itemsMobile: newValue})}
-                                    min={1}
-                                    max={4}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <NumberControl
-                                    key={'itemsSmall'}
-                                    label="Small"
-                                    value={itemsSmall}
-                                    onChange={(newValue) => updateSettings({itemsSmall: newValue})}
-                                    min={2}
-                                    max={6}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <NumberControl
-                                    key={'itemsLarge'}
-                                    label="Large"
-                                    value={itemsLarge}
-                                    onChange={(newValue) => updateSettings({itemsLarge: newValue})}
-                                    min={2}
-                                    max={6}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                            </Grid>
-                            <Grid columns={2} columnGap={10} rowGap={10}>
-                                <SelectControl
-                                    key={'breakpointSmall'}
-                                    label="Breakpoint Sm"
-                                    value={breakpointSmall}
-                                    onChange={(newValue) => updateSettings({breakpointSmall: newValue})}
-                                    options={breakpointsOptions}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <SelectControl
-                                    key={'breakpointLarge'}
-                                    label="Breakpoint Lg"
-                                    value={breakpointLarge}
-                                    onChange={(newValue) => updateSettings({breakpointLarge: newValue})}
-                                    options={breakpointsOptions}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <NumberControl
-                                    key={'maxItems'}
-                                    label="Max Items"
-                                    value={maxItems}
-                                    onChange={(newValue) => updateSettings({maxItems: newValue})}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <SelectControl
-                                    key="dateFormat"
-                                    label="Date Format"
-                                    value={dateFormat}
-                                    options={DATE_FORMAT_OPTIONS}
-                                    onChange={(newValue) => updateSettings({dateFormat: newValue})}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <SelectControl
-                                    key={'imageSize'}
-                                    label="Image Size"
-                                    value={imageSize}
-                                    onChange={(newValue) => updateSettings({imageSize: newValue})}
-                                    options={IMAGE_SIZE_OPTIONS}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                                <TextControl
-                                    key={'buttonLabel'}
-                                    label={'Button Label'}
-                                    value={buttonLabel}
-                                    onChange={(newValue) => updateSettings({buttonLabel: newValue})}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                            </Grid>
-                            <Grid columns={2} columnGap={10} rowGap={10} style={{marginTop: '15px'}}>
-                                <ToggleControl
-                                    key={'centered'}
-                                    label={'Centered'}
-                                    checked={!!centered}
-                                    onChange={(newValue) => updateSettings({centered: newValue})}
-                                    __next40pxDefaultSize
-                                    __nextHasNoMarginBottom
-                                />
-                            </Grid>
+                    {/* -------------------------
+                     * Query Configuration Panel
+                     * ------------------------- */}
+                    <QueryConfigPanel
+                        value={query}
+                        onChange={(next) => setAttributes({ query: next })}
+                        options={WPBS?.settings?.queryOptions || {}}
+                    />
 
+                    {/* -------------------------
+                     * Grid Layout & Options
+                     * ------------------------- */}
+                    <PanelBody
+                        title="Grid"
+                        group="styles"
+                        initialOpen={true}
+                    >
+                        {/* Global / non-breakpoint options */}
+                        <Grid columns={1} columnGap={10} rowGap={16}>
+                            <TextControl
+                                label="Button Label"
+                                value={buttonLabel}
+                                onChange={(val) =>
+                                    updateSettings({ buttonLabel: val })
+                                }
+                                __next40pxDefaultSize
+                            />
+
+                            <BorderControl
+                                __next40pxDefaultSize
+                                enableAlpha
+                                enableStyle
+                                disableUnits
+                                value={grid.divider || {}}
+                                colors={WPBS?.settings?.colors ?? []}
+                                __experimentalIsRenderedInSidebar={true}
+                                label="Divider"
+                                onChange={(newValue) =>
+                                    updateGridPartial({ divider: newValue })
+                                }
+                                shouldSanitizeBorder
+                            />
                         </Grid>
+
+                        <Grid columns={2} columnGap={10} rowGap={16}>
+                            <InputControl
+                                label="Divider Icon"
+                                value={grid["divider-icon"] || ""}
+                                onChange={(val) =>
+                                    updateGridPartial({
+                                        "divider-icon": val,
+                                    })
+                                }
+                                __next40pxDefaultSize
+                            />
+
+                            <UnitControl
+                                label="Icon Size"
+                                value={grid["divider-icon-size"] || ""}
+                                isResetValueOnUnitChange={true}
+                                onChange={(val) =>
+                                    updateGridPartial({
+                                        "divider-icon-size": val,
+                                    })
+                                }
+                                units={[
+                                    { value: "px", label: "px", default: "0px" },
+                                    { value: "em", label: "em", default: "0em" },
+                                    { value: "rem", label: "rem", default: "0rem" },
+                                    { value: "vw", label: "vw", default: "0vw" },
+                                ]}
+                                __next40pxDefaultSize
+                            />
+                        </Grid>
+
+                        <PanelColorSettings
+                            enableAlpha
+                            className="!p-0 !border-0 [&_.components-tools-panel-item]:!m-0"
+                            colorSettings={[
+                                {
+                                    slug: "divider-icon-color",
+                                    label: "Divider Icon Color",
+                                    value: grid["divider-icon-color"],
+                                    onChange: (newValue) =>
+                                        updateGridPartial({
+                                            "divider-icon-color": newValue,
+                                        }),
+                                    isShownByDefault: true,
+                                },
+                            ]}
+                        />
+
+                        {/* Breakpoint-based grid settings */}
+                        <BreakpointPanels
+                            value={grid}
+                            onChange={updateGrid}
+                            label="Grid Settings"
+                            render={{
+                                base: GridBaseRenderer,
+                                breakpoints: GridBreakpointRenderer,
+                            }}
+                        />
                     </PanelBody>
                 </InspectorControls>
+
                 <div {...innerBlocksProps} />
-                <Style settings={settings} breakpoints={breakpoints}/>
+
+                {/* Editor-only style for responsive columns */}
+                <GridStyle
+                    grid={grid}
+                    breakpoints={themeBreakpoints}
+                    instanceId={settings.instanceId || instanceId}
+                />
             </>
         );
     },
-    save: ({attributes}) => {
-        const {settings = {}} = attributes;
+
+    /* --------------------------------------------------------------
+     * SAVE
+     * -------------------------------------------------------------- */
+    save: ({ attributes }) => {
+        const {
+            settings = {},
+            query = {},
+        } = attributes;
 
         const blockProps = useBlockProps.save({
             className: blockClassNames(attributes),
-            'data-wp-interactive': 'wpbs/layout-grid',
-            'data-wp-context': JSON.stringify({
-                feed: settings?.feed || '',
-                dateFormat: settings?.dateFormat || '',
-                maxItems: settings?.maxItems || 12,
-                imageSize: settings?.imageSize,
+            "data-wp-interactive": "wpbs/layout-grid",
+            "data-wp-context": JSON.stringify({
+                query: query || {},
+                buttonLabel: settings?.buttonLabel || "Load more",
             }),
-            'data-wp-init': 'actions.init',
+            "data-wp-init": "actions.init",
             style: Object.fromEntries(
                 Object.entries({
-                    '--column-gap': resolvePresetVar(attributes?.style?.spacing?.blockGap?.left),
-                    '--row-gap': resolvePresetVar(attributes?.style?.spacing?.blockGap?.top),
-                    'column-gap': resolvePresetVar(attributes?.style?.spacing?.blockGap?.left),
-                    'row-gap': resolvePresetVar(attributes?.style?.spacing?.blockGap?.top),
-                }).filter(([_, v]) => v !== undefined)
-            )
+                    "--column-gap": attributes?.style?.spacing?.blockGap?.left,
+                    "--row-gap": attributes?.style?.spacing?.blockGap?.top,
+                    columnGap: attributes?.style?.spacing?.blockGap?.left,
+                    rowGap: attributes?.style?.spacing?.blockGap?.top,
+                }).filter(([, v]) => v !== undefined)
+            ),
         });
-
-        /*
-        * Return
-        * - Block wrapper
-        * --- Card template
-        * --- Pagination button
-        * */
 
         return (
             <div {...blockProps}>
-
+                {/* Template-driven cards */}
                 <template
-                    data-wp-each--item={'state.items'}
-                    data-wp-each-key={'context.item.guid'}
+                    data-wp-each--item={"state.items"}
+                    data-wp-each-key={"context.item.id"}
                 >
-                    <InnerBlocks.Content/>
+                    <InnerBlocks.Content />
                 </template>
 
-                <div className={'wpbs-layout-grid__footer'} data-wp-class--hidden="!state.hasMore">
-                <button
-                    type="button"
-                    class="wp-element-button"
-                    data-wp-on--click="actions.loadMore"
+                {/* Footer load more */}
+                <div
+                    className="wpbs-layout-grid__footer"
+                    data-wp-class--hidden="!state.hasMore"
                 >
-                    {settings?.buttonLabel ?? 'Load more'}
-                </button>
+                    <button
+                        type="button"
+                        class="wp-element-button"
+                        data-wp-on--click="actions.loadMore"
+                    >
+                        {settings?.buttonLabel ?? "Load more"}
+                    </button>
                 </div>
             </div>
         );
-    }
-
+    },
 });

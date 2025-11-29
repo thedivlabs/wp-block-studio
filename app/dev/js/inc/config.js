@@ -85,7 +85,6 @@ export const MediaSource = {
     }
 };
 
-
 export const IMAGE_BUTTON_STYLE = {
     width: '100%',
     display: 'flex',
@@ -275,7 +274,6 @@ export const BORDER_UNITS = [
     {value: 'em', label: 'em', default: 0},
     {value: 'rem', label: 'rem', default: 0},
 ];
-
 
 export const REL_OPTIONS = [
     {label: 'None', value: ''},

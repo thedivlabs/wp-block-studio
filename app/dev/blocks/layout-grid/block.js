@@ -115,7 +115,7 @@ const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10}>
+        <Grid columns={2} columnGap={10} rowGap={10} className={'wpbs-block-controls'}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
@@ -141,7 +141,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={1} columnGap={10} rowGap={10}>
+        <Grid columns={1} columnGap={10} rowGap={10} className={'wpbs-block-controls'}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
@@ -292,7 +292,7 @@ registerBlockType(metadata.name, {
                 title="Grid"
                 group="styles"
                 initialOpen={false}
-                className={"wpbs-block-controls is-style-unstyled"}
+                className={"is-style-unstyled"}
             >
                 <div style={{padding: "14px"}}>
                     <TabPanel

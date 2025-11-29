@@ -384,6 +384,8 @@ registerBlockType(metadata.name, {
                 </BlockWrapper>
             </>
         );
+    }, {
+        hasBackground:false
     }),
 
     /* ----------------------------------------------------------
@@ -415,5 +417,7 @@ registerBlockType(metadata.name, {
                 <InnerBlocks.Content />
             </BlockWrapper>
         );
+    },{
+        hasBackground:false
     }),
 });

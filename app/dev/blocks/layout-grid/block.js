@@ -294,7 +294,7 @@ registerBlockType(metadata.name, {
                 initialOpen={false}
                 className={"wpbs-block-controls is-style-unstyled"}
             >
-                <div style={{padding: "16px"}}>
+                <div style={{padding: "14px"}}>
                     <TabPanel
                         className="wpbs-editor-tabs"
                         activeClass="active"
@@ -316,7 +316,6 @@ registerBlockType(metadata.name, {
                         }}
                     </TabPanel>
                 </div>
-
                 {/* Breakpoints BELOW tabs */}
                 <BreakpointPanels
                     value={gridSettings}

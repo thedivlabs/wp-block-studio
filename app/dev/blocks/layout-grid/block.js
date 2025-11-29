@@ -291,15 +291,20 @@ registerBlockType(metadata.name, {
             [gridSettings, updateQuerySettings]
         );
 
-        const tabDivider = <DividerOptions
-            value={gridSettings.divider || {}}
-            onChange={(next) =>
-                updateGridSettings({
-                    ...gridSettings,
-                    divider: next,
-                })
-            }
-        />;
+        const tabDivider = useMemo(
+            () => (
+                <DividerOptions
+                    value={gridSettings.divider || {}}
+                    onChange={(next) =>
+                        updateGridSettings({
+                            ...gridSettings,
+                            divider: next,
+                        })
+                    }
+                />
+            ),
+            [gridSettings, updateGridSettings]
+        );
 
         /* --------------------------------------------
          * Inspector Controls

@@ -78,11 +78,14 @@ class WPBS {
 
 		add_filter( 'style_loader_tag', function ( $html, $handle, $href ) {
 
-			if ( is_admin() || in_array( $GLOBALS['pagenow'] ?? false, [ 'wp-login.php', 'wp-register.php' ], true ) ) {
+			if (
+				is_admin() ||
+				in_array( $GLOBALS['pagenow'] ?? false, [ 'wp-login.php', 'wp-register.php' ], true )
+			) {
 				return $html;
 			}
 
-			if ( str_contains( $handle, 'wpbs' ) ) {
+			if ( str_contains( $handle, 'wpbs' ) && ! in_array( $handle, [ 'wpbs-bundle-css' ] ) ) {
 
 				$href_no_query = wp_parse_url( $href, PHP_URL_PATH );
 

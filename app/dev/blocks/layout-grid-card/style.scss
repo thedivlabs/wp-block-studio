@@ -1,0 +1,16 @@
+.af-xml-grid-card {
+  display: flex;
+  flex-wrap: wrap;
+  transition: opacity 0.4s linear;
+  transition-delay: var(--delay, 0s);
+
+  &:not(.--editor) {
+    opacity: 0;
+  }
+
+  &.af-loop-card.--visible {
+    opacity: 1 !important;
+  }
+
+
+}

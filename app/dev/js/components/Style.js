@@ -84,7 +84,7 @@ export const withStyle = (Component, config) => (props) => {
                 uniqueId: instanceId,
             });
         },
-        [setAttributes, styleData, instanceId]
+        [setAttributes, styleData]
     );
 
 

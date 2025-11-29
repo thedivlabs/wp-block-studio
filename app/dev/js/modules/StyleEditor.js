@@ -682,30 +682,40 @@ export function initStyleEditor() {
     const identityStore = new Map();
 
     function registerBlock(uniqueId, clientId) {
+        // No uniqueId yet → fresh block
         if (!uniqueId) {
             return "fresh";
         }
 
-        if (!identityStore.has(uniqueId)) {
-            identityStore.set(uniqueId, new Set([clientId]));
-            return "normal";
+        let owners = identityStore.get(uniqueId);
+
+        // First time we've seen this ID
+        if (!owners) {
+            owners = new Set();
+            identityStore.set(uniqueId, owners);
         }
 
-        const owners = identityStore.get(uniqueId);
+        // No owners yet → this clientId becomes the owner
+        if (owners.size === 0) {
+            owners.add(clientId);
+            return "fresh";
+        }
 
+        // Already owned by this block
         if (owners.has(clientId)) {
             return "normal";
         }
 
-        owners.add(clientId);
+        // Another block owns this ID → collision
         return "clone";
     }
 
     function unregisterBlock(uniqueId, clientId) {
         if (!uniqueId) return;
-        if (!identityStore.has(uniqueId)) return;
 
         const owners = identityStore.get(uniqueId);
+        if (!owners) return;
+
         owners.delete(clientId);
 
         if (owners.size === 0) {

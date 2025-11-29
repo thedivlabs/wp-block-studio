@@ -36,7 +36,6 @@ export const withStyle = (Component, config) => (props) => {
     const blockGap = attributes?.style?.spacing?.blockGap;
     const blockGapDeps = typeof blockGap === 'object' ? JSON.stringify(blockGap) : blockGap;
 
-
     const {
         uniqueId,
         "wpbs-style": styleData = {props: {}, breakpoints: {}, hover: {}},
@@ -50,20 +49,25 @@ export const withStyle = (Component, config) => (props) => {
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
+        console.log("fresh block", uniqueId, instanceId);
+
         if (status === "fresh" || status === "clone") {
+            // assign the correct new ID
             setAttributes({uniqueId: instanceId});
 
+            // register new ownership
             registerBlock(instanceId, clientId);
 
+            // unregister old ID if it existed
             if (uniqueId && uniqueId !== instanceId) {
                 unregisterBlock(uniqueId, clientId);
             }
         }
 
         return () => {
-            unregisterBlock(attributes.uniqueId, clientId);
+            unregisterBlock(uniqueId, clientId);
         };
-    }, []);
+    }, [clientId]);
 
 
     const updateStyleSettings = useCallback(
@@ -79,10 +83,14 @@ export const withStyle = (Component, config) => (props) => {
             }
 
             next = normalizeBreakpoints(next);
-            setAttributes({
+
+            const result = {
                 "wpbs-style": next,
-                uniqueId: instanceId,
-            });
+            }
+
+            if (uniqueId !== instanceId) result["uniqueId"] = instanceId;
+
+            setAttributes(result);
         },
         [setAttributes, styleData]
     );
@@ -102,7 +110,15 @@ export const withStyle = (Component, config) => (props) => {
             }
 
             next = normalizeBreakpoints(next);
-            setAttributes({"wpbs-background": next});
+
+            const result = {
+                "wpbs-background": next,
+            }
+
+            if (uniqueId !== instanceId) result["uniqueId"] = instanceId;
+
+            setAttributes(result);
+
         },
         [setAttributes, bgData]
     );
@@ -143,7 +159,7 @@ export const withStyle = (Component, config) => (props) => {
                 });
             }
         },
-        [cleanObject, onStyleChange, uniqueId, styleData, bgData]
+        [cleanObject, onStyleChange, uniqueId]
     );
 
 

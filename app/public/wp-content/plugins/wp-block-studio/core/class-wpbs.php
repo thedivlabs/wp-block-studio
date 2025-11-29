@@ -291,7 +291,6 @@ class WPBS {
 		return trim( $vars );
 	}
 
-
 	public function theme_assets(): void {
 
 		/* Theme Bundle */
@@ -300,7 +299,7 @@ class WPBS {
 			self::$uri . 'build/bundle.css',
 		);
 
-		wp_add_inline_style( 'wpbs-bundle-css', $this->get_css_vars() );
+		//wp_add_inline_style( 'wpbs-bundle-css', $this->get_css_vars() );
 
 
 		/* Odometer */

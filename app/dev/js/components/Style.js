@@ -79,9 +79,12 @@ export const withStyle = (Component, config) => (props) => {
             }
 
             next = normalizeBreakpoints(next);
-            setAttributes({"wpbs-style": next});
+            setAttributes({
+                "wpbs-style": next,
+                uniqueId: instanceId,
+            });
         },
-        [setAttributes, styleData]
+        [setAttributes, styleData, instanceId]
     );
 
 
@@ -155,7 +158,7 @@ export const withStyle = (Component, config) => (props) => {
             props,
             styleRef,
         });
-    }, [styleData, blockGapDeps, uniqueId, bgData, onStyleChange]);
+    }, [styleData, blockGapDeps, uniqueId, bgData]);
 
 
     const applyPreload = useCallback(

@@ -115,7 +115,7 @@ const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} className={'wpbs-block-controls'}>
+        <Grid columns={2} columnGap={10} rowGap={10}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
@@ -141,7 +141,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={1} columnGap={10} rowGap={10} className={'wpbs-block-controls'}>
+        <Grid columns={1} columnGap={10} rowGap={10}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
@@ -269,18 +269,10 @@ registerBlockType(metadata.name, {
         );
 
         const tabLoop = useMemo(
-            () => (
-                <Grid
-                    columns={1}
-                    columnGap={10}
-                    rowGap={16}
-                >
-                    <QueryConfigPanel
-                        value={gridSettings.query || {}}
-                        onChange={updateQuerySettings}
-                    />
-                </Grid>
-            ),
+            () => (<QueryConfigPanel
+                value={gridSettings.query || {}}
+                onChange={updateQuerySettings}
+            /> ),
             [gridSettings, updateQuerySettings]
         );
 
@@ -292,7 +284,7 @@ registerBlockType(metadata.name, {
                 title="Grid"
                 group="styles"
                 initialOpen={false}
-                className={"is-style-unstyled"}
+                className={"wpbs-layout-controls is-style-unstyled"}
             >
                 <div style={{padding: "14px"}}>
                     <TabPanel

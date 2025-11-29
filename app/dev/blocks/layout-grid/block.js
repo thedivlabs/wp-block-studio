@@ -3,7 +3,7 @@ import "./scss/block.scss";
 import { registerBlockType } from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import { InnerBlocks } from "@wordpress/block-editor";
+import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
 
 import {
     PanelBody,
@@ -11,6 +11,7 @@ import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
     ToggleControl,
+    TabPanel,
 } from "@wordpress/components";
 
 import { useCallback, useEffect, useMemo } from "@wordpress/element";
@@ -211,7 +212,6 @@ registerBlockType(metadata.name, {
 
         /* --------------------------------------------
          * Unified updater
-         * Everything (props, breakpoints, query) goes through here
          * -------------------------------------------- */
         const updateGridSettings = useCallback(
             (nextValue) => {
@@ -223,7 +223,6 @@ registerBlockType(metadata.name, {
             [gridSettings, setAttributes]
         );
 
-        /* Query updates are now part of `wpbs-grid` */
         const updateQuerySettings = useCallback(
             (nextValue) => {
                 const cleaned = cleanObject(nextValue || {}, false);
@@ -240,12 +239,16 @@ registerBlockType(metadata.name, {
         );
 
         /* --------------------------------------------
-         * Inspector
+         * TAB PANELS (Options + Loop)
+         * Modeled after CTA block ( [oai_citation:2‡block.js](sediment://file_000000005f6471f5bc8757ca7dff22af))
          * -------------------------------------------- */
-        const inspectorPanel = (
-            <PanelBody title="Grid" group="styles" initialOpen={true}>
-                {/* Non-breakpoint global options */}
-                <Grid columns={1} columnGap={10} rowGap={16}>
+        const tabOptions = useMemo(
+            () => (
+                <Grid
+                    columns={1}
+                    columnGap={10}
+                    rowGap={16}
+                >
                     <TextControl
                         label="Button Label"
                         value={gridSettings.props.buttonLabel || ""}
@@ -261,8 +264,60 @@ registerBlockType(metadata.name, {
                         __next40pxDefaultSize
                     />
                 </Grid>
+            ),
+            [gridSettings, updateGridSettings]
+        );
 
-                {/* Breakpoint dynamic layout */}
+        const tabLoop = useMemo(
+            () => (
+                <Grid
+                    columns={1}
+                    columnGap={10}
+                    rowGap={16}
+                    style={{ padding: "16px" }}
+                >
+                    <QueryConfigPanel
+                        value={gridSettings.query || {}}
+                        onChange={updateQuerySettings}
+                    />
+                </Grid>
+            ),
+            [gridSettings, updateQuerySettings]
+        );
+
+        /* --------------------------------------------
+         * Inspector
+         * -------------------------------------------- */
+        const inspectorPanel = (
+            <PanelBody
+                title="Grid"
+                group="styles"
+                initialOpen={false}
+                className={"wpbs-block-controls is-style-unstyled"}
+            >
+                <TabPanel
+                    className="wpbs-editor-tabs"
+                    activeClass="active"
+                    initialTabName="options"
+                    style={{ padding: "16px" }}
+                    tabs={[
+                        { name: "options", title: "Options" },
+                        { name: "loop", title: "Loop" },
+                    ]}
+                >
+                    {(tab) => {
+                        switch (tab.name) {
+                            case "options":
+                                return tabOptions;
+                            case "loop":
+                                return tabLoop;
+                            default:
+                                return null;
+                        }
+                    }}
+                </TabPanel>
+
+                {/* Breakpoints BELOW tabs */}
                 <BreakpointPanels
                     value={gridSettings}
                     onChange={updateGridSettings}
@@ -272,20 +327,14 @@ registerBlockType(metadata.name, {
                         breakpoints: GridBreakpointRenderer,
                     }}
                 />
-
-                {/* Query editor */}
-                <PanelBody title="Query" initialOpen={false}>
-                    <QueryConfigPanel
-                        value={gridSettings.query || {}}
-                        onChange={updateQuerySettings}
-                    />
-                </PanelBody>
             </PanelBody>
         );
 
         return (
             <>
-                {inspectorPanel}
+                <InspectorControls group={"styles"}>
+                    {inspectorPanel}
+                </InspectorControls>
 
                 <BlockWrapper
                     props={props}

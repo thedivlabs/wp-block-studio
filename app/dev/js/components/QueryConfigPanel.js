@@ -490,9 +490,9 @@ export const QueryConfigPanel = ({
     );
 
     return (
-        <PanelBody title={title} initialOpen={false}>
+        <Grid columns={1} rowGap={20}>
             {/* Source */}
-            <Grid columns={1} columnGap={10} rowGap={16}>
+            <Grid columns={1} columnGap={15} rowGap={20}>
                 <SelectControl
                     label="Mode"
                     value={config.mode}
@@ -829,7 +829,7 @@ export const QueryConfigPanel = ({
 
             {/* Ordering & pagination */}
             <hr/>
-            <Grid columns={2} columnGap={10} rowGap={16}>
+            <Grid columns={2} columnGap={15} rowGap={20}>
                 <SelectControl
                     label="Order by"
                     value={config.orderby}
@@ -929,7 +929,7 @@ export const QueryConfigPanel = ({
 
             {/* Date range */}
             <hr/>
-            <Grid columns={2} columnGap={10} rowGap={16}>
+            <Grid columns={2} columnGap={15} rowGap={20}>
                 <SelectControl
                     label="Date range"
                     value={config.dateRange.mode}
@@ -1264,7 +1264,7 @@ export const QueryConfigPanel = ({
 
             {/* Formatting */}
             <hr/>
-            <Grid columns={2} columnGap={10} rowGap={16}>
+            <Grid columns={2} columnGap={15} rowGap={20}>
                 {dateFormatOptions.length > 0 && (
                     <SelectControl
                         label="Date format"
@@ -1325,6 +1325,6 @@ export const QueryConfigPanel = ({
                     />
                 )}
             </Grid>
-        </PanelBody>
+        </Grid>
     );
 };

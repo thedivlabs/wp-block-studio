@@ -155,7 +155,7 @@ export const withStyle = (Component, config) => (props) => {
             props,
             styleRef,
         });
-    }, [styleData, blockGapDeps, uniqueId, bgData]);
+    }, [styleData, blockGapDeps, uniqueId, bgData, onStyleChange]);
 
 
     const applyPreload = useCallback(

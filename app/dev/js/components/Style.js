@@ -49,8 +49,6 @@ export const withStyle = (Component, config) => (props) => {
     useEffect(() => {
         const status = registerBlock(uniqueId, clientId);
 
-        console.log("fresh block", uniqueId, instanceId);
-
         if (status === "fresh" || status === "clone") {
             // assign the correct new ID
             setAttributes({uniqueId: instanceId});

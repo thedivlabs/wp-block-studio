@@ -248,6 +248,7 @@ registerBlockType(metadata.name, {
                     columns={1}
                     columnGap={10}
                     rowGap={16}
+                    style={{ padding: "16px" }}
                 >
                     <TextControl
                         label="Button Label"
@@ -299,7 +300,6 @@ registerBlockType(metadata.name, {
                     className="wpbs-editor-tabs"
                     activeClass="active"
                     initialTabName="options"
-                    style={{ padding: "16px" }}
                     tabs={[
                         { name: "options", title: "Options" },
                         { name: "loop", title: "Loop" },

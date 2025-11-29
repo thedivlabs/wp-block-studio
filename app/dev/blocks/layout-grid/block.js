@@ -115,8 +115,6 @@ const getCssProps = (settings) => {
     return cleanObject(css);
 };
 
-const getPreload = () => [];
-
 /* --------------------------------------------------------------
  * Breakpoint Renderers
  * -------------------------------------------------------------- */
@@ -200,7 +198,6 @@ registerBlockType(metadata.name, {
             attributes,
             BlockWrapper,
             setCss,
-            setPreload,
             setAttributes,
         } = props;
 
@@ -217,8 +214,7 @@ registerBlockType(metadata.name, {
          * -------------------------------------------- */
         useEffect(() => {
             setCss(getCssProps(gridSettings));
-            setPreload(getPreload(gridSettings));
-        }, [gridSettings, setCss, setPreload]);
+        }, [gridSettings, setCss]);
 
         /* --------------------------------------------
          * Unified updater
@@ -406,7 +402,6 @@ registerBlockType(metadata.name, {
                 props={props}
                 className={classNames}
                 hasBackground={true}
-                tagName="div"
                 wrapperProps={{
                     "data-wp-interactive": "wpbs/layout-grid",
                     "data-wp-init": "actions.init",

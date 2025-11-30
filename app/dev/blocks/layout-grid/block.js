@@ -123,7 +123,7 @@ const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'12px'}}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'14px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? 3}
@@ -149,7 +149,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={1} columnGap={10} rowGap={10} style={{padding:'12px'}}>
+        <Grid columns={1} columnGap={10} rowGap={10} style={{padding:'14px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}

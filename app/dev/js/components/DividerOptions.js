@@ -26,7 +26,7 @@ export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
     const icon = divider.icon || {};
 
     const panelProps = {
-        columns: 2,
+        columns: 1,
         columnGap: 15,
         rowGap: 20,
         className: "wpbs-layout-tools__panel",

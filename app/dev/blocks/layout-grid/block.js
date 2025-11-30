@@ -364,6 +364,7 @@ registerBlockType(metadata.name, {
                 >
                     <InnerBlocks
                         allowedBlocks={[
+                            "wpbs/loop-card",
                             "wpbs/layout-element",
                             "wpbs/layout-grid-container",
                             "wpbs/pagination-button",

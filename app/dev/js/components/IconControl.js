@@ -321,13 +321,13 @@ export const MaterialIcon = ({
         fontSize: `${size}px`,
         fontWeight: weight,
         lineHeight: 1,
+        backgroundClip: "text"
     };
 
     if (gradient) {
         // Gradient text technique
         styleObj.background = gradient;
         styleObj.color = "transparent"; // fallback
-        styleObj.backgroundClip = "text";
         styleObj.WebkitBackgroundClip = "text";
         styleObj.WebkitTextFillColor = "transparent";
         styleObj.backgroundClip = "text";

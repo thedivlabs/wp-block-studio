@@ -11,7 +11,7 @@ import {
     __experimentalGrid as Grid,
     __experimentalNumberControl as NumberControl,
     ToggleControl,
-    TabPanel,
+    TabPanel, SelectControl,
 } from "@wordpress/components";
 
 import {useCallback, useEffect, useMemo} from "@wordpress/element";
@@ -135,12 +135,6 @@ const GridBaseRenderer = ({entry, update}) => {
                 __next40pxDefaultSize
             />
 
-            <ToggleControl
-                label="Centered"
-                checked={!!props.centered}
-                onChange={(val) => update({centered: !!val})}
-                __next40pxDefaultSize
-            />
         </Grid>
     );
 };
@@ -149,7 +143,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
-        <Grid columns={1} columnGap={10} rowGap={10} style={{padding:'14px'}}>
+        <Grid columns={2} columnGap={10} rowGap={10} style={{padding:'14px'}}>
             <NumberControl
                 label="Columns"
                 value={props.columns ?? ""}
@@ -165,12 +159,7 @@ const GridBreakpointRenderer = ({entry, update}) => {
                 __next40pxDefaultSize
             />
 
-            <ToggleControl
-                label="Centered"
-                checked={!!props.centered}
-                onChange={(val) => update({centered: !!val})}
-                __next40pxDefaultSize
-            />
+
         </Grid>
     );
 };

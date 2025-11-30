@@ -49,12 +49,9 @@ const IconPreview = memo(
         if (gradient) {
             styleObj.background = gradient;
             styleObj.color = "transparent";
-            styleObj.backgroundClip = "text";
-            styleObj.WebkitBackgroundClip = "text";
-            styleObj.WebkitTextFillColor = "transparent";
-            styleObj.backgroundClip = "text";
         } else if (color) {
             styleObj.color = color;
+            styleObj.background = "transparent";
         }
 
         return (

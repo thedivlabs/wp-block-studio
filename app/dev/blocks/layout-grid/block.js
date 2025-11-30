@@ -1,9 +1,9 @@
 import "./scss/block.scss";
 
-import { registerBlockType } from "@wordpress/blocks";
+import {registerBlockType} from "@wordpress/blocks";
 import metadata from "./block.json";
 
-import { InnerBlocks, InspectorControls } from "@wordpress/block-editor";
+import {InnerBlocks, InspectorControls} from "@wordpress/block-editor";
 
 import {
     PanelBody,
@@ -14,10 +14,10 @@ import {
     TabPanel,
 } from "@wordpress/components";
 
-import { useCallback, useEffect, useMemo } from "@wordpress/element";
-import { isEqual } from "lodash";
+import {useCallback, useEffect, useMemo} from "@wordpress/element";
+import {isEqual} from "lodash";
 
-import { cleanObject } from "Includes/helper";
+import {cleanObject} from "Includes/helper";
 
 import {
     STYLE_ATTRIBUTES,
@@ -25,9 +25,9 @@ import {
     withStyleSave,
 } from "Components/Style";
 
-import { QueryConfigPanel } from "Components/QueryConfigPanel";
-import { BreakpointPanels } from "Components/BreakpointPanels";
-import { DividerOptions } from "Components/DividerOptions";
+import {QueryConfigPanel} from "Components/QueryConfigPanel";
+import {BreakpointPanels} from "Components/BreakpointPanels";
+import {DividerOptions} from "Components/DividerOptions";
 
 const selector = "wpbs-layout-grid";
 
@@ -119,7 +119,7 @@ const getCssProps = (settings) => {
  * Breakpoint Renderers
  * -------------------------------------------------------------- */
 
-const GridBaseRenderer = ({ entry, update }) => {
+const GridBaseRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
@@ -128,7 +128,7 @@ const GridBaseRenderer = ({ entry, update }) => {
                 label="Columns"
                 value={props.columns ?? 3}
                 onChange={(val) =>
-                    update({ columns: parseInt(val, 10) || 1 })
+                    update({columns: parseInt(val, 10) || 1})
                 }
                 min={1}
                 max={6}
@@ -138,14 +138,14 @@ const GridBaseRenderer = ({ entry, update }) => {
             <ToggleControl
                 label="Centered"
                 checked={!!props.centered}
-                onChange={(val) => update({ centered: !!val })}
+                onChange={(val) => update({centered: !!val})}
                 __next40pxDefaultSize
             />
         </Grid>
     );
 };
 
-const GridBreakpointRenderer = ({ entry, update }) => {
+const GridBreakpointRenderer = ({entry, update}) => {
     const props = entry ?? {};
 
     return (
@@ -157,7 +157,7 @@ const GridBreakpointRenderer = ({ entry, update }) => {
                     if (val === "") {
                         update({}); // inherit base
                     } else {
-                        update({ columns: parseInt(val, 10) || 1 });
+                        update({columns: parseInt(val, 10) || 1});
                     }
                 }}
                 min={1}
@@ -168,7 +168,7 @@ const GridBreakpointRenderer = ({ entry, update }) => {
             <ToggleControl
                 label="Centered"
                 checked={!!props.centered}
-                onChange={(val) => update({ centered: !!val })}
+                onChange={(val) => update({centered: !!val})}
                 __next40pxDefaultSize
             />
         </Grid>
@@ -223,7 +223,7 @@ registerBlockType(metadata.name, {
             (nextValue) => {
                 const normalized = normalizeGridSettings(nextValue);
                 if (!isEqual(gridSettings, normalized)) {
-                    setAttributes({ "wpbs-grid": normalized });
+                    setAttributes({"wpbs-grid": normalized});
                 }
             },
             [gridSettings, setAttributes]
@@ -253,7 +253,7 @@ registerBlockType(metadata.name, {
                     columns={1}
                     columnGap={10}
                     rowGap={16}
-                    style={{ padding: "16px" }}
+                    style={{padding: "16px"}}
                 >
                     <TextControl
                         label="Button Label"
@@ -280,7 +280,7 @@ registerBlockType(metadata.name, {
                     columns={1}
                     columnGap={10}
                     rowGap={16}
-                    style={{ padding: "16px" }}
+                    style={{padding: "16px"}}
                 >
                     <QueryConfigPanel
                         value={gridSettings.query || {}}
@@ -293,7 +293,11 @@ registerBlockType(metadata.name, {
 
         const tabDivider = useMemo(
             () => (
-                <></>
+                <DividerOptions
+                    value={gridSettings.divider}
+                    onChange={(next) => updateSettings({divider: next})}
+                    props={props}
+                />
             ),
             [gridSettings, updateGridSettings]
         );
@@ -313,9 +317,9 @@ registerBlockType(metadata.name, {
                     activeClass="active"
                     initialTabName="options"
                     tabs={[
-                        { name: "options", title: "Options" },
-                        { name: "loop", title: "Loop" },
-                        { name: "divider", title: "Divider" },
+                        {name: "options", title: "Options"},
+                        {name: "loop", title: "Loop"},
+                        {name: "divider", title: "Divider"},
                     ]}
                 >
                     {(tab) => {
@@ -377,14 +381,14 @@ registerBlockType(metadata.name, {
             </>
         );
     }, {
-        hasBackground:false
+        hasBackground: false
     }),
 
     /* ----------------------------------------------------------
      * SAVE
      * ---------------------------------------------------------- */
     save: withStyleSave((props) => {
-        const { attributes, BlockWrapper } = props;
+        const {attributes, BlockWrapper} = props;
 
         const gridSettings = normalizeGridSettings(
             attributes["wpbs-grid"] || {}
@@ -406,10 +410,10 @@ registerBlockType(metadata.name, {
                     ...(attributes["wpbs-props"] || {}),
                 }}
             >
-                <InnerBlocks.Content />
+                <InnerBlocks.Content/>
             </BlockWrapper>
         );
-    },{
-        hasBackground:false
+    }, {
+        hasBackground: false
     }),
 });

@@ -61,7 +61,7 @@ export const DividerOptions = ({value = {}, props, onChange, ...restProps}) => {
             {/* ------- Icon Color ------- */}
             <PanelColorSettings
                 enableAlpha
-                className="!p-0 !border-0"
+                className="!p-0 !border-0 !m-0"
                 colorSettings={[
                     {
                         slug: "icon-color",

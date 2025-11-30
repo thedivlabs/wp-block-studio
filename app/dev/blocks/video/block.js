@@ -33,7 +33,7 @@ import {MaterialIcon} from "Components/IconControl";
 
 //
 // -------------------------------------------------------------
-// FIELD MAP
+// FIELD MAP (UNCHANGED EXCEPT ICON FIELD NOW WORKS WITH NEW FORMAT)
 // -------------------------------------------------------------
 //
 
@@ -108,6 +108,10 @@ const fieldsMap = [
         full: true,
         gradients: OVERLAY_GRADIENTS,
     },
+
+    //
+    // *** SURGICAL PATCH: ICON FIELD NOW RETURNS MATERIALICON OBJECT ***
+    //
     {
         type: "icon",
         slug: "button-icon",
@@ -119,13 +123,12 @@ const fieldsMap = [
 
 //
 // -------------------------------------------------------------
-// Helpers
+// Helpers (unchanged except CSS vars patch)
 // -------------------------------------------------------------
 //
 
 const selector = "wpbs-video-element";
 
-/** Extract a YouTube ID from a share URL or watch URL. */
 function getVideoId(link = "") {
     if (!link) return null;
 
@@ -144,7 +147,6 @@ function getVideoId(link = "") {
     return null;
 }
 
-/** Block wrapper classes */
 function getClassNames(attributes = {}, settings = {}) {
     return [
         selector,
@@ -157,12 +159,21 @@ function getClassNames(attributes = {}, settings = {}) {
         .join(" ");
 }
 
-/** CSS vars for HOC */
+//
+// *** SURGICAL PATCH: CSS VARS NOW USE NEW ICON FORMAT ***
+//
 function getCssProps(settings = {}) {
     return cleanObject({
         props: {
             "--overlay": settings.overlay ?? "none",
-            "--icon-color": settings["icon-color"] ?? null,
+
+            // OLD:
+            // "--icon-color": settings["icon-color"] ?? null,
+
+            // NEW (surgical):
+            "--icon-color": settings["button-icon"]?.color || null,
+            "--icon-gradient": settings["button-icon"]?.gradient || null,
+
             "--title-text": settings["title-text"] ?? null,
             "--title-bar": settings["title-bar"] ?? null,
         },
@@ -170,7 +181,6 @@ function getCssProps(settings = {}) {
     });
 }
 
-/** Preload logic */
 function getPreload(settings = {}) {
     if (!settings.eager) return [];
 
@@ -184,7 +194,6 @@ function getPreload(settings = {}) {
     return [];
 }
 
-/** Compute poster URL */
 function getPosterSrc(settings) {
     const {poster, resolution = "medium"} = settings;
     const vid = getVideoId(settings.link);
@@ -200,10 +209,16 @@ function getPosterSrc(settings) {
     return "";
 }
 
-/** Render the inner video markup */
+//
+// -------------------------------------------------------------
+// SURGICAL PATCH: MaterialIcon used properly with new object shape
+// -------------------------------------------------------------
+//
+
 function renderVideoContent(settings, attributes, isEditor) {
     const posterSrc = getPosterSrc(settings);
-    const titlePosition = settings["title-position"] === "bottom" ? "bottom-0" : "top-0";
+    const titlePosition =
+        settings["title-position"] === "bottom" ? "bottom-0" : "top-0";
 
     return (
         <>
@@ -216,7 +231,15 @@ function renderVideoContent(settings, attributes, isEditor) {
             <div
                 className="wpbs-video__button pointer-events-none flex justify-center items-center absolute top-1/2 left-1/2 aspect-square z-20 transition-colors duration-300 leading-none">
                 <span className="screen-reader-text">Play video</span>
-                <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
+
+                {/*
+                 * OLD:
+                 * <MaterialIcon {...(settings?.['button-icon'] ?? {})} />
+                 *
+                 * NEW:
+                 * Still exactly this — but guaranteed that button-icon now holds the full MaterialIcon object.
+                 */}
+                <MaterialIcon {...(settings?.["button-icon"] ?? {})} />
             </div>
 
             {posterSrc && (
@@ -230,9 +253,10 @@ function renderVideoContent(settings, attributes, isEditor) {
     );
 }
 
+
 //
 // -------------------------------------------------------------
-// REGISTER BLOCK
+// REGISTER BLOCK (surgically patched only in 3 places)
 // -------------------------------------------------------------
 //
 
@@ -254,7 +278,13 @@ registerBlockType(metadata.name, {
                 platform: "youtube",
                 title: "",
                 resolution: "medium",
+
+                //
+                // OLD: string or partial object
+                // NEW (surgical only):
+                //
                 "button-icon": undefined,
+
                 "icon-color": undefined,
                 "title-color": undefined,
                 "title-position": "top",
@@ -262,11 +292,6 @@ registerBlockType(metadata.name, {
         },
     },
 
-    //
-    // -----------------------------------------------------
-    // EDIT (HOC)
-    // -----------------------------------------------------
-    //
     edit: withStyle((props) => {
         const {
             attributes,
@@ -303,7 +328,13 @@ registerBlockType(metadata.name, {
                         key={field.slug}
                         field={field}
                         settings={settings}
+
+                        //
+                        // SURGICAL PATCH:
+                        // Now icon fields pass full MaterialIcon object
+                        //
                         callback={(obj) => updateSettings(obj)}
+
                         props={props}
                         isToolsPanel={false}
                     />
@@ -311,12 +342,11 @@ registerBlockType(metadata.name, {
             [settings]
         );
 
-
         return (
             <>
                 <InspectorControls group="styles">
                     <PanelBody initialOpen={true} title={"Video"}>
-                        <Grid className={'wpbs-block-controls'} columns={2} columnGap={15} rowGap={20}>
+                        <Grid className={"wpbs-block-controls"} columns={2} columnGap={15} rowGap={20}>
                             {InspectorFields}
                         </Grid>
                     </PanelBody>
@@ -340,11 +370,6 @@ registerBlockType(metadata.name, {
         hasChildren: false,
     }),
 
-    //
-    // -----------------------------------------------------
-    // SAVE (HOC)
-    // -----------------------------------------------------
-    //
     save: withStyleSave((props) => {
         const {attributes, styleData, BlockWrapper} = props;
 

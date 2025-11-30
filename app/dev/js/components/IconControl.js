@@ -36,12 +36,12 @@ const IconPreview = memo(
         const css = `'FILL' ${style === "solid" ? 1 : 0},
                      'wght' ${weight},
                      'GRAD' 0,
-                     'opsz' ${size}`;
+                     'opsz 32`;
 
         const styleObj = {
             fontVariationSettings: css,
             display: "inline-flex",
-            fontSize: `${size}px`,
+            fontSize: '32px',
             fontWeight: weight,
             lineHeight: 1,
         };

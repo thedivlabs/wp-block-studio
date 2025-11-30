@@ -22,18 +22,38 @@ export function ColorSelector({label, value, onChange, normalize = true}) {
     const colorValue = !isGradient ? value : undefined;
     const gradientValue = isGradient ? value : undefined;
 
-    const handleChange = (val) => {
-        if (!val) {
-            onChange("");
-            return;
+    const handleColorChange = (val) => {
+
+        if (val === undefined) {
+            return
         }
 
         if (normalize) {
-            onChange(val.color ?? val.gradient ?? "");
-        } else {
             onChange(val);
+        } else {
+            onChange({
+                color: val,
+                gradient: undefined
+            });
         }
     };
+
+    const handleGradientChange = (val) => {
+
+        if (val === undefined) {
+            return
+        }
+
+        if (normalize) {
+            onChange(val);
+        } else {
+            onChange({
+                gradient: val,
+                color: undefined
+            });
+        }
+    };
+
 
     return (
         <Dropdown

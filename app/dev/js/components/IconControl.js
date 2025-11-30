@@ -231,8 +231,8 @@ export const IconControl = ({
                                     normalize={false}
                                     onChange={(val) =>
                                         update({
-                                            color: val?.color ?? "",
-                                            gradient: val?.gradient ?? "",
+                                            color: val?.color,
+                                            gradient: val?.gradient,
                                         })
                                     }
                                 />

@@ -40,7 +40,7 @@ function buildGapCSS(attributes) {
     }
 
     if (baseLeft) {
-        css.props["--grid-column-gap"] = baseLeft;
+        css.props["--grid-col-gap"] = baseLeft;
     }
 
     /* -------------------------
@@ -94,6 +94,12 @@ registerBlockType(metadata.name, {
             useEffect(() => {
                 console.log(buildGapCSS(attributes));
             }, []);
+
+            const gapCss = useMemo(() => buildGapCSS(attributes), [JSON.stringify(attributes?.style?.spacing?.blockGap), attributes?.['wpbs-style']]);
+
+            useEffect(() => {
+                setCss(gapCss);
+            }, [gapCss])
 
             return (
                 <>

@@ -374,7 +374,8 @@ registerBlockType(metadata.name, {
             </>
         );
     }, {
-        hasBackground: false
+        hasBackground: false,
+        hasChildren:true
     }),
 
     /* ----------------------------------------------------------
@@ -407,6 +408,7 @@ registerBlockType(metadata.name, {
             </BlockWrapper>
         );
     }, {
-        hasBackground: false
+        hasBackground: false,
+        hasChildren:true
     }),
 });

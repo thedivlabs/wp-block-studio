@@ -20,6 +20,34 @@ export const STYLE_ATTRIBUTES = {
     "wpbs-icons": {type: "array", default: []},
 };
 
+function sortBreakpointsDescending(raw, breakpointsDef) {
+    if (!raw || typeof raw !== "object") return raw;
+
+    const bpObj = raw.breakpoints || {};
+    const ordered = {};
+
+    // turn into sortable array
+    const entries = Object.entries(bpObj);
+
+    entries.sort((a, b) => {
+        const sizeA = breakpointsDef[a[0]]?.size ?? 0;
+        const sizeB = breakpointsDef[b[0]]?.size ?? 0;
+
+        // sort DESCENDING: bigger max-width first
+        return sizeB - sizeA;
+    });
+
+    for (const [bp, val] of entries) {
+        ordered[bp] = val;
+    }
+
+    return {
+        ...raw,
+        breakpoints: ordered,
+    };
+}
+
+
 export const withStyle = (Component, config) => (props) => {
     const API = window?.WPBS_StyleEditor ?? {};
     const {onStyleChange, cleanObject, registerBlock, unregisterBlock} = API;
@@ -138,16 +166,20 @@ export const withStyle = (Component, config) => (props) => {
         (raw) => {
             if (!raw || typeof raw !== "object") return;
 
-            const cleaned = cleanObject(raw, true);
-            const cleanedCurrent = cleanObject(blockCssRef.current, true);
+            // <-- NEW
+            const sorted = sortBreakpointsDescending(
+                raw,
+                WPBS?.settings?.breakpoints || {}
+            );
 
+            const cleaned = cleanObject(sorted, true);
+            const cleanedCurrent = cleanObject(blockCssRef.current, true);
 
             if (!cleaned || isEqual(cleaned, cleanedCurrent)) return;
 
             blockCssRef.current = cleaned;
 
             if (typeof onStyleChange === "function" && styleRef.current) {
-
                 onStyleChange({
                     css: blockCssRef.current,
                     preload: blockPreloadRef.current,
